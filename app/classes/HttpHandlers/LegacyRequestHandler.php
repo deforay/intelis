@@ -45,7 +45,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
             return $this->createResponse($output);
         } catch (Throwable $e) {
             ob_end_clean(); // Clean the buffer in case of an error
-            LoggerUtility::log('error', "Error in $filePath : " . $e->getFile() . ":" .  $e->getLine() . ":" . $e->getMessage(), [
+            LoggerUtility::logError("Error in $filePath : " . $e->getFile() . ":" .  $e->getLine() . ":" . $e->getMessage(), [
                 'request' => $request->getUri()->getPath(),
                 'trace' => $e->getTraceAsString(),
                 'code' => $e->getCode(),
@@ -66,13 +66,11 @@ class LegacyRequestHandler implements RequestHandlerInterface
         if ($uri === '' || $uri === null) {
             return APPLICATION_PATH . '/index.php';
         }
-
         // Resolve the absolute path and ensure it's within the APPLICATION_PATH
         $resolvedPath = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri);
         $resolvedPath = is_dir($resolvedPath) ? "$resolvedPath/index.php" : $resolvedPath;
-
         if (!$resolvedPath || !str_starts_with($resolvedPath, realpath(APPLICATION_PATH)) || !is_readable($resolvedPath)) {
-            LoggerUtility::log('error', "Invalid Request : $resolvedPath");
+            LoggerUtility::logError("Invalid Request : $resolvedPath");
             throw new SystemException(_translate('Sorry! We could not find this page or resource'), 404);
         }
 

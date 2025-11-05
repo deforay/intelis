@@ -197,7 +197,7 @@ class Dhis2
 		try {
 			return $this->httpClient->get($this->currentRequestUrl . $path . $queryString);
 		} catch (GuzzleException $e) {
-			LoggerUtility::log('error', $e->getMessage(), [
+			LoggerUtility::logError($e->getMessage(), [
 				'url' => $this->currentRequestUrl . $path . $queryString
 			]);
 			return null;
@@ -222,7 +222,7 @@ class Dhis2
 				'json' => $data
 			]);
 		} catch (GuzzleException $e) {
-			LoggerUtility::log('error', $e->getMessage(), [
+			LoggerUtility::logError($e->getMessage(), [
 				'url' => $this->currentRequestUrl . $path . $queryString,
 				'data' => $data
 			]);
@@ -248,7 +248,7 @@ class Dhis2
 				'json' => $data
 			]);
 		} catch (GuzzleException $e) {
-			LoggerUtility::log('error', $e->getMessage(), [
+			LoggerUtility::logError($e->getMessage(), [
 				'url' => $this->currentRequestUrl . $path . $queryString,
 				'data' => $data
 			]);

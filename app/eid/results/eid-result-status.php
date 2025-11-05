@@ -280,9 +280,6 @@ foreach ($rejectionTypeResult as $type) {
   function loadVlRequestData() {
     $.blockUI();
     oTable = $('#vlRequestDataTable').dataTable({
-      "oLanguage": {
-        "sLengthMenu": "_MENU_ records per page"
-      },
       "bJQueryUI": false,
       "bAutoWidth": false,
       "bInfo": true,
@@ -327,7 +324,7 @@ foreach ($rejectionTypeResult as $type) {
         {
           "sClass": "center"
         },
-        //{"sClass":"center","bSortable":false},
+
       ],
       "aaSorting": [
         [<?= (!$general->isStandaloneInstance()) ? 11 : 10; ?>, "desc"]

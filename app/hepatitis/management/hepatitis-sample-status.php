@@ -207,9 +207,6 @@ $batResult = $db->rawQuery($batQuery);
 	function loadVlTATData() {
 		$.blockUI();
 		oTable = $('#hepatitisRequestDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

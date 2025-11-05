@@ -227,5 +227,5 @@ try {
 
     header("Location:/import-result/imported-results.php?t=$type");
 } catch (Exception $exc) {
-    LoggerUtility::log('error', $exc->getMessage());
+    LoggerUtility::logError($exc->getMessage());
 }

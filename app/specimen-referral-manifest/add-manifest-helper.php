@@ -91,7 +91,7 @@ try {
     header("Location:view-manifests.php?t=" . ($_POST['module']));
 } catch (Throwable $e) {
     $db->rollbackTransaction();
-    LoggerUtility::log('error',  $e->getMessage(), [
+    LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),

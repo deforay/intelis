@@ -20,7 +20,7 @@ if (!class_exists('SouthSudanCovid19DefaultPDFHelper')) {
                 if (!empty($this->logo) && trim($this->logo) != '') {
                     if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                        $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
+                        $this->Image($imageFilePath, 10, 5, 25, 0.0, '', '', 'T');
                     }
                 }
                 $this->SetFont('helvetica', 'B', 15);

@@ -96,7 +96,7 @@ try {
 	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 	echo urlencode(basename($filename));
 } catch (Exception $e) {
-	LoggerUtility::log('error', $e->getMessage(), [
+	LoggerUtility::logError($e->getMessage(), [
 		'code' => $e->getCode(),
 		'line' => $e->getLine(),
 		'file' => $e->getFile(),

@@ -456,7 +456,6 @@ try {
           $output['aaData'][] = $row;
      }
      echo JsonUtility::encodeUtf8Json($output);
-
 } catch (Throwable $e) {
      LoggerUtility::logError($e->getMessage(), [
           'exception' => $e,

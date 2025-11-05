@@ -123,7 +123,7 @@ try {
         }
     }
 } catch (Throwable $e) {
-    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
         'exception' => $e,

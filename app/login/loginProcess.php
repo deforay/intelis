@@ -37,7 +37,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $_SESSION['logged'] = false;
 
 $systemInfo = $general->getSystemConfig();
-$ipaddress = $general->getClientIpAddress($request);
+$ipAddress = $general->getClientIpAddress($request);
 
 SecurityService::checkLoginAttempts($ipAddress);
 
@@ -144,7 +144,7 @@ try {
     }
 } catch (Throwable $e) {
     $_SESSION['alertMsg'] = $e->getMessage();
-    LoggerUtility::log('error', $e->getMessage() . " | " . $ipaddress . " | " . $_POST['username'], [
+    LoggerUtility::logError($e->getMessage() . " | " . $ipAddress . " | " . $_POST['username'], [
         'errorType' => 'login',
         'exception' => $e,
         'code'  => $e->getCode(), // Error code

@@ -1,10 +1,11 @@
 <?php
 
+use App\Services\TestsService;
+use App\Services\CommonService;
+use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\SystemService;
 use App\Services\GeoLocationsService;
 
 
@@ -33,7 +34,7 @@ $sources = [
     'dhis2' => 'DHIS2'
 ];
 
-$activeModules = SystemService::getActiveModules();
+$activeTests = TestsService::getActiveTests();
 $state = $geolocationService->getProvinces("yes");
 
 ?>
@@ -127,32 +128,32 @@ $state = $geolocationService->getProvinces("yes");
                             </td>
                             <td>
                                 <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>" onchange="getSourceRequest(this.value);">
-                                    <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
+                                    <?php if (!empty($activeTests) && in_array('vl', $activeTests)) { ?>
                                         <option value="vl">
                                             <?= _translate("Viral Load"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
+                                    if (!empty($activeTests) && in_array('eid', $activeTests)) { ?>
                                         <option value="eid">
                                             <?= _translate("Early Infant Diagnosis"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
+                                    if (!empty($activeTests) && in_array('covid19', $activeTests)) { ?>
                                         <option value="covid19">
                                             <?= _translate("Covid-19"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
+                                    if (!empty($activeTests) && in_array('hepatitis', $activeTests)) { ?>
                                         <option value='hepatitis'>
                                             <?= _translate("Hepatitis"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
+                                    if (!empty($activeTests) && in_array('tb', $activeTests)) { ?>
                                         <option value='tb'>
                                             <?= _translate("TB"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeModules) && in_array('cd4', $activeModules)) { ?>
+                                    if (!empty($activeTests) && in_array('cd4', $activeTests)) { ?>
                                         <option value='cd4'>
                                             <?= _translate("CD4"); ?>
                                         </option>
@@ -182,11 +183,11 @@ $state = $geolocationService->getProvinces("yes");
 
                         <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
                             <tr>
-                                <th>No. of Samples Requested</th>
-                                <th>No. of Samples Acknowledged</th>
-                                <th>No. of Samples Received at Testing Lab</th>
-                                <th>No. of Samples Tested</th>
-                                <th>No. of Results Returned</th>
+                                <th><?= _translate("No. of Samples Requested"); ?></th>
+                                <th><?= _translate("No. of Samples Acknowledged"); ?></th>
+                                <th><?= _translate("No. of Samples Received at Testing Lab"); ?></th>
+                                <th><?= _translate("No. of Samples Tested"); ?></th>
+                                <th><?= _translate("No. of Results Returned"); ?></th>
                             </tr>
                             <tr>
                                 <td id="totalSamplesRequested"></td>
@@ -198,7 +199,7 @@ $state = $geolocationService->getProvinces("yes");
                         </table>
 
                         <a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
-                            <?php echo _translate("Export To Excel"); ?>
+                            <?php echo _translate("Export"); ?>
                         </a>
                         <table aria-describedby="table" id="sampleWiseReport" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
@@ -327,9 +328,6 @@ $state = $geolocationService->getProvinces("yes");
 
         $.blockUI();
         oTable = $('#sampleWiseReport').dataTable({
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ records per page"
-            },
             "bJQueryUI": false,
             "bAutoWidth": false,
             "bInfo": true,

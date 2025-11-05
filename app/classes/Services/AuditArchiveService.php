@@ -161,10 +161,10 @@ final class AuditArchiveService
                     // Normalize to preferred compression:
                     // Remove old files (any extension), then write fresh compressed file.
                     $dstBaseNoExt = $targetDir . DIRECTORY_SEPARATOR . $baseName;
-                    @unlink($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.zst");
-                    @unlink($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.gz");
-                    @unlink($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.zip");
-                    @unlink($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv"); // legacy plain
+                    MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.zst");
+                    MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.gz");
+                    MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.zip");
+                    MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv"); // legacy plain
 
                     $out = $this->writeCompressedCsv($dstBaseNoExt, $headers, $rows);
                     $this->log($progress, 'Wrote ' . basename($out));
@@ -410,10 +410,10 @@ final class AuditArchiveService
                 // Normalize to preferred compression:
                 // Remove old files (any extension), then write fresh compressed file.
                 $dstBaseNoExt = $targetDir . DIRECTORY_SEPARATOR . $baseName;
-                @unlink($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.zst");
-                @unlink($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.gz");
-                @unlink($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.zip");
-                @unlink($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv"); // legacy plain
+                MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.zst");
+                MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.gz");
+                MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv.zip");
+                MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$baseName.csv"); // legacy plain
 
                 $out = $this->writeCompressedCsv($dstBaseNoExt, $headers, $rows);
                 $this->log($progress, 'Wrote ' . basename($out));
@@ -458,7 +458,7 @@ final class AuditArchiveService
         }
         $csvH = fopen($tmpCsv, 'w');
         if ($csvH === false) {
-            @unlink($tmpCsv);
+            MiscUtility::deleteFile($tmpCsv);
             throw new RuntimeException('Failed to open temp CSV file');
         }
         fputcsv($csvH, $headers);
@@ -472,7 +472,7 @@ final class AuditArchiveService
         try {
             $out = ArchiveUtility::compressFile($tmpCsv, $target, $backend);
         } finally {
-            @unlink($tmpCsv);
+            MiscUtility::deleteFile($tmpCsv);
         }
         return $out;
     }

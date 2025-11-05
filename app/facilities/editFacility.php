@@ -210,7 +210,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 								<div class="form-group">
 									<label for="email" class="col-lg-4 control-label"><?php echo _translate("Email(s)"); ?> <br> <small><?php echo _translate("(comma separated)"); ?></small> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _translate('eg-email1@gmail.com,email2@gmail.com'); ?>" value="<?= ((string) $facilityInfo['facility_emails']); ?>" />
+										<input type="text" class="form-control" id="email" name="email" placeholder="e.g. email1@gmail.com,email2@gmail.com" value="<?= ((string) $facilityInfo['facility_emails']); ?>" />
 									</div>
 								</div>
 							</div>

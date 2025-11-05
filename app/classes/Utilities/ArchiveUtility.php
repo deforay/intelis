@@ -7,6 +7,7 @@ namespace App\Utilities;
 use ZipArchive;
 use RuntimeException;
 use InvalidArgumentException;
+use App\Utilities\MiscUtility;
 
 /**
  * Smart single-file compressor/decompressor with fallback support.
@@ -45,8 +46,8 @@ final class ArchiveUtility
     /** @var int Zstd thread count (0 = auto-detect) */
     private static int $zstdThreads = 0;
 
-    /** @var int|null Maximum allowed file size in bytes (default = 25MB) */
-    private static ?int $maxFileSize = 26214400; // 25 MB
+    /** @var int|null Maximum allowed file size in bytes (null = no limit) */
+    private static ?int $maxFileSize = null;
 
     /** @var int Default file permissions for created directories */
     private static int $dirPermissions = 0777;
@@ -120,7 +121,7 @@ final class ArchiveUtility
 
             return self::compressFile($tmp, $dst, $backend);
         } finally {
-            @unlink($tmp);
+            MiscUtility::deleteFile($tmp);
         }
     }
 

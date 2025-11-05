@@ -364,9 +364,6 @@ foreach ($rejectionTypeResult as $type) {
   function loadVlRequestData() {
     $.blockUI();
     oTable = $('#vlRequestDataTable').dataTable({
-      "oLanguage": {
-        "sLengthMenu": "_MENU_ records per page"
-      },
       "bJQueryUI": false,
       "bAutoWidth": false,
       "bInfo": true,
@@ -527,6 +524,7 @@ foreach ($rejectionTypeResult as $type) {
   }
 
   function submitTestStatus() {
+  $.blockUI();
     var stValue = $("#status").val();
     var approver = $("#approver").val();
     var tester = $("#tester").val();
@@ -570,6 +568,7 @@ foreach ($rejectionTypeResult as $type) {
     } else {
         alert("<?= _translate("Please select at least one checkbox", true); ?>");
     }
+    $.unblockUI();
   }
 
   /*function updateStatus(obj, optVal) {
@@ -594,7 +593,7 @@ foreach ($rejectionTypeResult as $type) {
       $("#rejectReasonDiv").hide();
     }
     if (obj.value != '') {
-      conf = confirm("< ?= _translate("Do you wish to change the status?", true); ?>");
+      conf = confirm("<?= _translate("Continue with updating the status of selected sample?", true); ?>");
       if (conf) {
         $.post("/vl/results/updateTestStatus.php", {
             status: obj.value,
@@ -623,7 +622,7 @@ foreach ($rejectionTypeResult as $type) {
 
   function updateRejectionReasonStatus(obj) {
     if (obj.value != '') {
-      conf = confirm("<?= _translate("Do you wish to change the status?", true); ?>");
+      conf = confirm("<?= _translate("Continue with updating the sample rejection?", true); ?>");
       if (conf) {
         $.post("/vl/results/updateTestStatus.php", {
             status: '4',

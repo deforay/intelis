@@ -35,6 +35,6 @@ try {
         $result = $db->insert($tableName, $data);
     }
 } catch (Throwable $exc) {
-    LoggerUtility::log('error', $exc->getMessage());
+    LoggerUtility::logError($exc->getMessage());
 }
 echo $result;

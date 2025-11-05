@@ -49,7 +49,7 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
             return $response;
         } catch (Throwable $e) {
             ob_end_clean();
-            //LoggerUtility::log('error', "API Error : " . $e->getMessage(), ['exception' => $e]);
+            //LoggerUtility::logError("API Error : " . $e->getMessage(), ['exception' => $e]);
             throw new SystemException("API Error : " . $e->getMessage(), 500, $e);
         }
     }
@@ -61,7 +61,7 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
         $filePath = APPLICATION_PATH . DIRECTORY_SEPARATOR . $uriPath;
         $resolvedPath = realpath($filePath);
         if (!$resolvedPath || is_dir($resolvedPath) || !str_starts_with($resolvedPath, realpath(APPLICATION_PATH)) || !is_readable($resolvedPath)) {
-            LoggerUtility::log('error', 'Invalid API Request : ' . $resolvedPath);
+            LoggerUtility::logError('Invalid API Request : ' . $resolvedPath);
             throw new SystemException(_translate('Sorry! We could not resolve this request'), 404);
         }
 

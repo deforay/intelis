@@ -28,7 +28,7 @@ final class CD4Service extends AbstractTestService
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (Throwable $e) {
-                LoggerUtility::log('error', 'Unable to generate Sample ID : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
+                LoggerUtility::logError('Unable to generate Sample ID : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error
@@ -126,11 +126,11 @@ final class CD4Service extends AbstractTestService
             $this->db->rollbackTransaction();
 
             //if ($this->db->getLastErrno() > 0) {
-            LoggerUtility::log('error', $this->db->getLastErrno() . ":" . $this->db->getLastError());
-            LoggerUtility::log('error', $this->db->getLastQuery());
+            LoggerUtility::logError($this->db->getLastErrno() . ":" . $this->db->getLastError());
+            LoggerUtility::logError($this->db->getLastQuery());
             //}
 
-            LoggerUtility::log('error', 'Insert CD4 Sample : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
+            LoggerUtility::logError('Insert CD4 Sample : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                 'exception' => $e,
                 'file' => $e->getFile(), // File where the error occurred
                 'line' => $e->getLine(), // Line number of the error

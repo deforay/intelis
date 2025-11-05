@@ -1,5 +1,7 @@
 #!/usr/bin/env php
 <?php
+
+use App\Utilities\MiscUtility;
 // bin/backup-configs.php
 // Recursively tar+gzip CONFIG_PATH plus runtime info into BACKUP_PATH/config.
 // Keeps last BACKUP_KEEP archives (default 7).
@@ -65,7 +67,7 @@ $it = new RecursiveIteratorIterator(
     RecursiveIteratorIterator::CHILD_FIRST
 );
 foreach ($it as $p) {
-    $p->isDir() ? @rmdir($p->getPathname()) : @unlink($p->getPathname());
+    $p->isDir() ? @rmdir($p->getPathname()) : MiscUtility::deleteFile($p->getPathname());
 }
 @rmdir($tmp);
 
@@ -85,7 +87,7 @@ if ($files !== false && count($files) > $KEEP) {
     });
     $toDelete = array_slice($files, $KEEP);
     foreach ($toDelete as $old) {
-        @unlink($old);
+        MiscUtility::deleteFile($old);
     }
     echo "ℹ️  Retention: kept $KEEP, removed " . count($toDelete) . " older backup(s).\n";
 }

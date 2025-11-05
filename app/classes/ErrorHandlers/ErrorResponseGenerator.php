@@ -78,7 +78,7 @@ class ErrorResponseGenerator
         // Generate a unique error ID for tracking
         $errorId = MiscUtility::generateErrorId();
 
-        LoggerUtility::log('error', $errorReason . ' : ' . $exception->getCode() . ' : ' . ($request->getUri() ?? 'UNABLE TO GET URI') . ': ' . $exception->getMessage(), [
+        LoggerUtility::logError($errorReason . ' : ' . $exception->getCode() . ' : ' . ($request->getUri() ?? 'UNABLE TO GET URI') . ': ' . $exception->getMessage(), [
             'error_id' => $errorId,
             'exception' => $exception,
             'file' => $exception->getFile(),

@@ -299,9 +299,6 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   function loadVlRequestData() {
     $.blockUI();
     oTable = $('#vlMonitoringTable').dataTable({
-      "oLanguage": {
-        "sLengthMenu": "_MENU_ records per page"
-      },
       "bJQueryUI": false,
       "bAutoWidth": false,
       "bInfo": true,

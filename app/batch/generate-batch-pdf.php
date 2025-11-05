@@ -256,9 +256,9 @@ if (!empty($id)) {
                         $tbl .= '<td  align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
                         $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['sample_code'] . '--' . $labAssignedCode . '</td>';
                         if ($barcodeFormat == 'QRCODE') {
-                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;">' . BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '</td>';
                         } else {
-                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;line-height:30px;"><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;line-height:30px;">' . BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '</td>';
                         }
                         if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
@@ -347,9 +347,9 @@ if (!empty($id)) {
                         $tbl .= '<td  align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
                         $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['sample_code'] . '<br>' . $labAssignedCode . '</td>';
                         if ($barcodeFormat == 'QRCODE') {
-                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;">' . BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '</td>';
                         } else {
-                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;line-height:30px;"><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '"></td>';
+                            $tbl .= '<td  align="center" width="30%" style="vertical-align:middle !important;line-height:30px;">' . BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '</td>';
                         }
                         if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                             $tbl .= '<td  align="center" width="20%" style="vertical-align:middle;">' . $sampleResult[0]['remote_sample_code'] . '</td>';
@@ -483,9 +483,9 @@ if (!empty($id)) {
                 $tbl .= '<td align="center" width="5%" style="vertical-align:middle;">' . $sampleCounter . '.</td>';
                 $tbl .= '<td align="center" width="20%" style="vertical-align:middle;">' . $sample['sample_code'] . '</td>';
                 if ($barcodeFormat == 'QRCODE') {
-                    $tbl .= '<td align="center" width="30%" style="vertical-align:middle;"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
+                    $tbl .= '<td align="center" width="30%" style="vertical-align:middle;">' . BatchPdfHelper::buildBarcodeImageTag($general, $sample['sample_code'], $barcodeFormat) . '</td>';
                 } else {
-                    $tbl .= '<td align="center" width="30%" style="vertical-align:middle;line-height:30px;"><img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"></td>';
+                    $tbl .= '<td align="center" width="30%" style="vertical-align:middle;line-height:30px;">' . BatchPdfHelper::buildBarcodeImageTag($general, $sample['sample_code'], $barcodeFormat) . '</td>';
                 }
                 if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                     $tbl .= '<td align="center" width="20%" style="vertical-align:middle;">' . $sample['remote_sample_code'] . '</td>';

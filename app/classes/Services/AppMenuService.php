@@ -99,7 +99,7 @@ final class AppMenuService
         // Insert the new menu item
         $inserted = $this->db->insert($this->table, $menuData);
         if (!$inserted) {
-            LoggerUtility::log('error', "Failed to insert " . $menuData['module'] . ":" . $menuData['parent_id'] . ":" . $menuData['display_text'] . " menu");
+            LoggerUtility::logError("Failed to insert " . $menuData['module'] . ":" . $menuData['parent_id'] . ":" . $menuData['display_text'] . " menu");
             return false;
         } else {
             return $this->db->getInsertId();

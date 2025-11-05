@@ -285,9 +285,6 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
     function loadVlRequestData() {
         $.blockUI();
         oTable = $('#vlRequestDataTable').dataTable({
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ records per page"
-            },
             "bJQueryUI": false,
             "bAutoWidth": false,
             "bInfo": true,
@@ -327,7 +324,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
                 {
                     "sClass": "center"
                 },
-                //{"sClass":"center","bSortable":false},
+
             ],
             "aaSorting": [
                 [<?= (!$general->isStandaloneInstance()) ? 9 : 8; ?>, "desc"]

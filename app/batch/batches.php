@@ -136,11 +136,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			width: '100%',
 			placeholder: "<?php echo _translate("Select Test Type"); ?>"
 		});
-		$.blockUI();
+
 		oTable = $('#batchCodeDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

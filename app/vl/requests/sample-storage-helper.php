@@ -54,6 +54,6 @@ try {
 
     header("Location:/vl/requests/sample-storage.php");
 } catch (Throwable $exc) {
-    LoggerUtility::log('error', $exc->getMessage());
+    LoggerUtility::logError($exc->getMessage());
     throw new SystemException(($exc->getMessage()));
 }
