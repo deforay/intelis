@@ -27,5 +27,5 @@ try {
     $_SESSION['alertMsg'] = _translate("Test Result Email Config values updated successfully.");
     MiscUtility::redirect("/vl/result-mail/testResultEmailConfig.php");
 } catch (Throwable $exc) {
-    LoggerUtility::log('error', $exc->getMessage());
+    LoggerUtility::logError($exc->getMessage());
 }

@@ -102,7 +102,7 @@ try {
         $_SESSION['alertMsg'] = _translate("Instrument import configuration initited for ") . $_POST['configurationName'] . _translate("Please proceed to write the import logic in the file ") . $_POST['configurationFile'] . _translate(" present in instruments folder");
     }
 } catch (Exception $e) {
-    LoggerUtility::log('error', $e->getMessage(), [
+    LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString()

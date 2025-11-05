@@ -189,11 +189,17 @@ final class UsersService
     {
         return MemoUtility::remember(function () use ($facilityMap, $status, $type, $updatedDateTime) {
 
+            // Use provided facilityMap or fall back to session facilityMap
+            $facilityMap = $facilityMap ?: ($_SESSION['facilityMap'] ?? null);
+
             if (!empty($facilityMap)) {
-                $facilityMap = explode(",", (string) $facilityMap);
+                if (is_string($facilityMap)) {
+                    $facilityMap = explode(",", $facilityMap);
+                }
                 $this->db->join("user_facility_map map", "map.user_id=u.user_id", "INNER");
                 $this->db->where('map.facility_id', $facilityMap, 'IN');
             }
+
             if ($status == 'active') {
                 $this->db->where("status='active'");
             }

@@ -342,6 +342,9 @@ final class TestRequestsService
             } elseif ($testType !== null && $manifestCode !== null) {
                 $this->db->reset();
                 $this->db->where('sample_package_code', trim((string) $manifestCode));
+                if ($testType == 'tb') {
+                    $this->db->orWhere('referral_manifest_code', trim((string) $manifestCode));
+                }
                 $uniqueIds = $this->db->getValue($tableName, 'unique_id', null);
             }
 

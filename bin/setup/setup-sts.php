@@ -186,8 +186,8 @@ try {
         }
 
         $out = @file_get_contents($outFile);
-        @unlink($inFile);
-        @unlink($outFile);
+        MiscUtility::deleteFile($inFile);
+        MiscUtility::deleteFile($outFile);
 
         $out = $out === false ? '' : trim($out);
         if ($out === '' || strpos($out, "\t") === false) {

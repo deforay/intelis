@@ -51,7 +51,7 @@ $remoteURL = $general->getRemoteURL();
     Highcharts.setOptions({
         chart: {
             style: {
-                fontFamily: 'Arial', // Set global font family (optional)
+                fontFamily: 'Arial', // Set global font family
                 fontSize: '16px' // Set global font size
             }
         },
@@ -71,6 +71,37 @@ $remoteURL = $general->getRemoteURL();
         }
     });
 
+    // Global DataTables defaults
+    $.extend(true, $.fn.dataTable.defaults, {
+        "language": {
+            "lengthMenu": "_MENU_ <?= _translate("records per page", true); ?>",
+            "zeroRecords": "<?= _translate("No records found", true); ?>",
+            "sEmptyTable": "<?= _translate("No data available in table", true); ?>",
+            "info": "<?= _translate("Showing _START_ to _END_ of _TOTAL_ entries", true); ?>",
+            "infoEmpty": "<?= _translate("Showing 0 to 0 of 0 entries", true); ?>",
+            "infoFiltered": "(<?= _translate("filtered from _MAX_ total entries", true); ?>)",
+            "search": "<?= _translate("Search", true); ?>:",
+            "paginate": {
+                "first": "<?= _translate("First", true); ?>",
+                "last": "<?= _translate("Last", true); ?>",
+                "next": "<?= _translate("Next", true); ?>",
+                "previous": "<?= _translate("Previous", true); ?>"
+            },
+            "sProcessing": "<?= _translate("Loading Table Data...", true); ?>",
+            "loadingRecords": "<?= _translate("Loading...", true); ?>"
+        },
+        "lengthMenu": [
+            [10, 25, 50, 100, 200, 250, 500],
+            [10, 25, 50, 100, 200, 250, 500]
+        ],
+        "pageLength": 10
+    });
+
+    // Global BlockUI defaults
+    if (typeof $.blockUI !== 'undefined') {
+        $.blockUI.defaults.message = '<h3><?= _translate("Please wait...", true); ?></h3>';
+    }
+
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
             if (settings.type === 'POST' || settings.type === 'PUT' || settings.type === 'DELETE') {
@@ -78,16 +109,17 @@ $remoteURL = $general->getRemoteURL();
             }
         },
         complete: function(xhr) {
+            const redirectUrl = '/login/login.php?e=timeout';
             // Fast path: standard status codes
             if (xhr && (xhr.status === 401 || xhr.status === 440)) {
-                window.location.href = '/login/login.php?e=timeout';
+                window.location.href = redirectUrl;
                 return;
             }
             // Optional fallback: if some proxy rewrites to 200 with a JSON flag
             try {
                 const body = JSON.parse(xhr.responseText || '{}');
                 if (body && body.error === 'session_expired') {
-                    window.location.href = '/login/login.php?e=timeout';
+                    window.location.href = redirectUrl;
                 }
             } catch (_) {
                 /* ignore non-JSON */

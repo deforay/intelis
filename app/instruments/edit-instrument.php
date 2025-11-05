@@ -93,7 +93,7 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 	$lowerText = "style='display:none;'";
 }
 $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
-$testTypeList = SystemService::getActiveModules(true);
+$activeTests = TestsService::getActiveTests();
 
 ?>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/smart-date-format.css">
@@ -187,7 +187,7 @@ $testTypeList = SystemService::getActiveModules(true);
 											<?php } ?>-->
 											<option value=""><?php echo _translate("Select Test Types"); ?></option>
 
-											<?php foreach ($testTypeList as $testType) { ?>
+											<?php foreach ($activeTests as $testType) { ?>
 												<option value="<?= $testType; ?>" <?php echo (in_array($testType, $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo TestsService::getTestName($testType); ?></option>
 											<?php } ?>
 										</select>
@@ -873,175 +873,174 @@ require_once APPLICATION_PATH . '/footer.php';
 ?>
 <?php require_once WEB_ROOT . '/assets/js/smart-date-format.js.php'; ?>
 <script type="text/javascript">
+	let tableRowId = <?php echo $i; ?>;
 
-let tableRowId = <?php echo $i; ?>;
+	$(document).ready(function() {
+		// Event delegation for date format detection - works for all current and future inputs
+		$(document).on('input', 'input[name="sampleDateInput[]"]', function() {
+			const input = $(this);
+			const value = input.val();
+			const rowIndex = getRowIndexFromInput(input);
 
-$(document).ready(function() {
-    // Event delegation for date format detection - works for all current and future inputs
-    $(document).on('input', 'input[name="sampleDateInput[]"]', function() {
-        const input = $(this);
-        const value = input.val();
-        const rowIndex = getRowIndexFromInput(input);
+			if (value.trim() === '') {
+				clearFormatSuggestions(rowIndex);
+				return;
+			}
 
-        if (value.trim() === '') {
-            clearFormatSuggestions(rowIndex);
-            return;
-        }
+			// Debounce the detection
+			clearTimeout(input.data('detectTimeout'));
+			input.data('detectTimeout', setTimeout(() => {
+				detectDateFormatForRow(value, rowIndex);
+			}, 600));
+		});
 
-        // Debounce the detection
-        clearTimeout(input.data('detectTimeout'));
-        input.data('detectTimeout', setTimeout(() => {
-            detectDateFormatForRow(value, rowIndex);
-        }, 600));
-    });
+		// Handle focus - show existing suggestions if available
+		$(document).on('focus', 'input[name="sampleDateInput[]"]', function() {
+			const input = $(this);
+			const rowIndex = getRowIndexFromInput(input);
+			const value = input.val();
 
-    // Handle focus - show existing suggestions if available
-    $(document).on('focus', 'input[name="sampleDateInput[]"]', function() {
-        const input = $(this);
-        const rowIndex = getRowIndexFromInput(input);
-        const value = input.val();
+			updateInputGuidance(value, rowIndex);
+		});
 
-        updateInputGuidance(value, rowIndex);
-    });
+		// Handle format selection clicks
+		$(document).on('click', '.format-suggestion', function() {
+			const format = $(this).data('format');
+			const rowIndex = $(this).data('row-index');
+			selectDateFormat(format, rowIndex);
+		});
 
-    // Handle format selection clicks
-    $(document).on('click', '.format-suggestion', function() {
-        const format = $(this).data('format');
-        const rowIndex = $(this).data('row-index');
-        selectDateFormat(format, rowIndex);
-    });
+		$('#configurationFile').on('change', function() {
+			$('input[name="fileName[]"]').each(function() {
+				if ($(this).val() === '') {
+					$(this).val($('#configurationFile').val());
+				}
+			});
+		});
 
-    $('#configurationFile').on('change', function() {
-        $('input[name="fileName[]"]').each(function() {
-            if ($(this).val() === '') {
-                $(this).val($('#configurationFile').val());
-            }
-        });
-    });
+		$('input[name="fileName[]"]').each(function() {
+			if ($(this).val() === '') {
+				$(this).val($('#configurationFile').val());
+			}
+		});
 
-    $('input[name="fileName[]"]').each(function() {
-        if ($(this).val() === '') {
-            $(this).val($('#configurationFile').val());
-        }
-    });
+		$('input[name="configMachineName[]"]').each(function(index) {
+			if ($(this).val() === '') {
+				$(this).val($('#configurationName').val() + ' - ' + (index + 1));
+			}
+		});
 
-    $('input[name="configMachineName[]"]').each(function(index) {
-        if ($(this).val() === '') {
-            $(this).val($('#configurationName').val() + ' - ' + (index + 1));
-        }
-    });
+		$(".select2").select2({
+			width: '100%',
+			placeholder: '<?php echo _translate("-- Select --"); ?>'
+		});
 
-    $(".select2").select2({
-        width: '100%',
-        placeholder: '<?php echo _translate("-- Select --"); ?>'
-    });
+		$("#supportedTests").selectize({
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+		});
 
-    $("#supportedTests").selectize({
-        plugins: ["restore_on_backspace", "remove_button", "clear_button"],
-    });
+		$('#supportedTests').on('change', function(e) {
+			var data = $('#supportedTests').val();
+			$(".ctlCalibrator, .lowVlResultText, .user-access-form").hide();
+			$.each(data, function(key, value) {
+				if (value != "") {
+					$(".user-access").show();
+				}
+				if (value == "vl" || value == "hepatitis") {
+					$(".lowVlResultText").show();
+				}
+				$("#" + value + "Table, ." + value + "-access").show();
+			});
+		});
+	});
 
-    $('#supportedTests').on('change', function(e) {
-        var data = $('#supportedTests').val();
-        $(".ctlCalibrator, .lowVlResultText, .user-access-form").hide();
-        $.each(data, function(key, value) {
-            if (value != "") {
-                $(".user-access").show();
-            }
-            if (value == "vl" || value == "hepatitis") {
-                $(".lowVlResultText").show();
-            }
-            $("#" + value + "Table, ." + value + "-access").show();
-        });
-    });
-});
+	// Helper function to get row index from input element
+	function getRowIndexFromInput(input) {
+		const inputId = input.attr('id');
+		return inputId.replace('sampleDateInput', '');
+	}
 
-// Helper function to get row index from input element
-function getRowIndexFromInput(input) {
-    const inputId = input.attr('id');
-    return inputId.replace('sampleDateInput', '');
-}
+	// Detect date format for a specific row
+	async function detectDateFormatForRow(inputValue, rowIndex) {
+		const container = $(`#formatSuggestions${rowIndex}`);
 
-// Detect date format for a specific row
-async function detectDateFormatForRow(inputValue, rowIndex) {
-    const container = $(`#formatSuggestions${rowIndex}`);
+		if (!container.length) {
+			console.error('Format suggestions container not found for row:', rowIndex);
+			return;
+		}
 
-    if (!container.length) {
-        console.error('Format suggestions container not found for row:', rowIndex);
-        return;
-    }
+		showLoadingIndicator(rowIndex);
 
-    showLoadingIndicator(rowIndex);
+		try {
+			const response = await $.post('/includes/smart-date-format.php', {
+				input: inputValue.trim(),
+				action: 'smart_detect'
+			});
 
-    try {
-        const response = await $.post('/includes/smart-date-format.php', {
-            input: inputValue.trim(),
-            action: 'smart_detect'
-        });
+			if (response.success) {
+				if (response.input_type === 'format') {
+					showFormatStringSuggestions(response.suggestions, rowIndex, inputValue);
+				} else if (response.input_type === 'sample' && response.suggestions.length > 0) {
+					showFormatSuggestions(response.suggestions, rowIndex);
+				} else {
+					showNoFormatFound(inputValue, rowIndex);
+				}
+			} else {
+				showNoFormatFound(inputValue, rowIndex);
+			}
+		} catch (error) {
+			console.error('Date format detection failed:', error);
+			showDetectionError(inputValue, rowIndex, error);
+		}
+	}
 
-        if (response.success) {
-            if (response.input_type === 'format') {
-                showFormatStringSuggestions(response.suggestions, rowIndex, inputValue);
-            } else if (response.input_type === 'sample' && response.suggestions.length > 0) {
-                showFormatSuggestions(response.suggestions, rowIndex);
-            } else {
-                showNoFormatFound(inputValue, rowIndex);
-            }
-        } else {
-            showNoFormatFound(inputValue, rowIndex);
-        }
-    } catch (error) {
-        console.error('Date format detection failed:', error);
-        showDetectionError(inputValue, rowIndex, error);
-    }
-}
-
-// Show loading indicator
-function showLoadingIndicator(rowIndex) {
-    const container = $(`#formatSuggestions${rowIndex}`);
-    container.html(`
+	// Show loading indicator
+	function showLoadingIndicator(rowIndex) {
+		const container = $(`#formatSuggestions${rowIndex}`);
+		container.html(`
         <div class="format-loading">
             <div class="spinner"></div>
             🔄 Analyzing date format...
         </div>
     `);
-}
+	}
 
-// Show format suggestions
-function showFormatSuggestions(suggestions, rowIndex) {
-    const container = $(`#formatSuggestions${rowIndex}`);
-    const uniqueSuggestions = removeDuplicates(suggestions, 'format');
+	// Show format suggestions
+	function showFormatSuggestions(suggestions, rowIndex) {
+		const container = $(`#formatSuggestions${rowIndex}`);
+		const uniqueSuggestions = removeDuplicates(suggestions, 'format');
 
-    const suggestionsHtml = uniqueSuggestions.map((suggestion, index) => {
-        return buildSuggestionHtml(suggestion, index, rowIndex);
-    }).join('');
+		const suggestionsHtml = uniqueSuggestions.map((suggestion, index) => {
+			return buildSuggestionHtml(suggestion, index, rowIndex);
+		}).join('');
 
-    container.html(suggestionsHtml);
-}
+		container.html(suggestionsHtml);
+	}
 
-// Show format string suggestions
-function showFormatStringSuggestions(suggestions, rowIndex, originalInput) {
-    const container = $(`#formatSuggestions${rowIndex}`);
+	// Show format string suggestions
+	function showFormatStringSuggestions(suggestions, rowIndex, originalInput) {
+		const container = $(`#formatSuggestions${rowIndex}`);
 
-    const suggestionsHtml = suggestions.map((suggestion, index) => {
-        if (suggestion.error) {
-            return buildErrorSuggestionHtml(suggestion);
-        }
-        return buildSuggestionHtml(suggestion, index, rowIndex);
-    }).join('');
+		const suggestionsHtml = suggestions.map((suggestion, index) => {
+			if (suggestion.error) {
+				return buildErrorSuggestionHtml(suggestion);
+			}
+			return buildSuggestionHtml(suggestion, index, rowIndex);
+		}).join('');
 
-    container.html(suggestionsHtml);
-}
+		container.html(suggestionsHtml);
+	}
 
-// Build suggestion HTML
-function buildSuggestionHtml(suggestion, index, rowIndex) {
-    const confidenceClass = `confidence-${suggestion.confidence}`;
-    const isUserFormat = suggestion.is_user_format || false;
-    const userFormatBadge = isUserFormat ?
-        '<span class="format-badge user-format">YOUR FORMAT</span>' : '';
+	// Build suggestion HTML
+	function buildSuggestionHtml(suggestion, index, rowIndex) {
+		const confidenceClass = `confidence-${suggestion.confidence}`;
+		const isUserFormat = suggestion.is_user_format || false;
+		const userFormatBadge = isUserFormat ?
+			'<span class="format-badge user-format">YOUR FORMAT</span>' : '';
 
-    const style = isUserFormat ? 'border: 2px solid #007bff; background: #f0f8ff;' : '';
+		const style = isUserFormat ? 'border: 2px solid #007bff; background: #f0f8ff;' : '';
 
-    return `
+		return `
         <div class="format-suggestion ${confidenceClass}"
              data-format="${suggestion.format}"
              data-row-index="${rowIndex}"
@@ -1065,22 +1064,22 @@ function buildSuggestionHtml(suggestion, index, rowIndex) {
             </div>
         </div>
     `;
-}
+	}
 
-// Build error suggestion HTML
-function buildErrorSuggestionHtml(suggestion) {
-    const correctionsHtml = suggestion.corrections ?
-        suggestion.corrections.map(correction =>
-            `<div class="format-corrections">
+	// Build error suggestion HTML
+	function buildErrorSuggestionHtml(suggestion) {
+		const correctionsHtml = suggestion.corrections ?
+			suggestion.corrections.map(correction =>
+				`<div class="format-corrections">
                 <div class="correction-item">
                     <strong style="color: #28a745;">Suggested:</strong>
                     <span class="correction-format">${correction.format}</span>
                 </div>
                 <small style="color: #666;">${correction.description}</small>
             </div>`
-        ).join('') : '';
+			).join('') : '';
 
-    return `
+		return `
         <div class="format-suggestion confidence-low"
              style="border-left-color: #dc3545 !important; background: #f8d7da;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
@@ -1094,204 +1093,204 @@ function buildErrorSuggestionHtml(suggestion) {
             </div>
         </div>
     `;
-}
+	}
 
-// Select a date format
-function selectDateFormat(format, rowIndex) {
-    const input = $(`#sampleDateInput${rowIndex}`);
-    const hiddenField = $(`#dateFormat${rowIndex}`);
-    const container = $(`#formatSuggestions${rowIndex}`);
+	// Select a date format
+	function selectDateFormat(format, rowIndex) {
+		const input = $(`#sampleDateInput${rowIndex}`);
+		const hiddenField = $(`#dateFormat${rowIndex}`);
+		const container = $(`#formatSuggestions${rowIndex}`);
 
-    // Update hidden field
-    hiddenField.val(format);
+		// Update hidden field
+		hiddenField.val(format);
 
-    // Update input appearance
-    input.removeClass('format-detected sample-detected')
-        .addClass('format-selected')
-        .prop('placeholder', `✅ Format locked: ${format}`)
-        .css('border-color', '#28a745');
+		// Update input appearance
+		input.removeClass('format-detected sample-detected')
+			.addClass('format-selected')
+			.prop('placeholder', `✅ Format locked: ${format}`)
+			.css('border-color', '#28a745');
 
-    if (input.val() && !input.val().includes(' ✓')) {
-        input.val(input.val() + ' ✓');
-    }
+		if (input.val() && !input.val().includes(' ✓')) {
+			input.val(input.val() + ' ✓');
+		}
 
-    // Show success message
-    container.html(`
+		// Show success message
+		container.html(`
         <div style="background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; padding: 8px; color: #155724;">
             ✅ <strong>Selected format:</strong> <code>${format}</code>
             <button onclick="clearSelection(${rowIndex})" style="float: right; background: none; border: none; color: #007bff; cursor: pointer;">Change</button>
         </div>
     `);
 
-    console.log(`Format selected for row ${rowIndex}:`, format);
-}
+		console.log(`Format selected for row ${rowIndex}:`, format);
+	}
 
-// Clear selection
-function clearSelection(rowIndex) {
-    const input = $(`#sampleDateInput${rowIndex}`);
-    const hiddenField = $(`#dateFormat${rowIndex}`);
-    const container = $(`#formatSuggestions${rowIndex}`);
+	// Clear selection
+	function clearSelection(rowIndex) {
+		const input = $(`#sampleDateInput${rowIndex}`);
+		const hiddenField = $(`#dateFormat${rowIndex}`);
+		const container = $(`#formatSuggestions${rowIndex}`);
 
-    // Reset input
-    input.removeClass('format-selected')
-        .prop('placeholder', '📅 Enter sample date')
-        .css('border-color', '#007bff');
+		// Reset input
+		input.removeClass('format-selected')
+			.prop('placeholder', '📅 Enter sample date')
+			.css('border-color', '#007bff');
 
-    if (input.val().includes(' ✓')) {
-        input.val(input.val().replace(' ✓', ''));
-    }
+		if (input.val().includes(' ✓')) {
+			input.val(input.val().replace(' ✓', ''));
+		}
 
-    // Reset hidden field
-    hiddenField.val('d/m/Y H:i');
+		// Reset hidden field
+		hiddenField.val('d/m/Y H:i');
 
-    // Clear container
-    container.html('');
+		// Clear container
+		container.html('');
 
-    // Trigger detection again if there's still a value
-    if (input.val().trim()) {
-        detectDateFormatForRow(input.val(), rowIndex);
-    }
-}
+		// Trigger detection again if there's still a value
+		if (input.val().trim()) {
+			detectDateFormatForRow(input.val(), rowIndex);
+		}
+	}
 
-// Clear format suggestions
-function clearFormatSuggestions(rowIndex) {
-    const container = $(`#formatSuggestions${rowIndex}`);
-    container.html('');
-}
+	// Clear format suggestions
+	function clearFormatSuggestions(rowIndex) {
+		const container = $(`#formatSuggestions${rowIndex}`);
+		container.html('');
+	}
 
-// Show no format found
-function showNoFormatFound(input, rowIndex) {
-    const container = $(`#formatSuggestions${rowIndex}`);
-    container.html(`
+	// Show no format found
+	function showNoFormatFound(input, rowIndex) {
+		const container = $(`#formatSuggestions${rowIndex}`);
+		container.html(`
         <div class="no-format-found">
             <strong>🤔 Could not detect format</strong><br>
             <small>Try: 06/19/2025, 19.06.2025 23:19, 2025-06-19</small>
         </div>
     `);
-}
+	}
 
-// Show detection error
-function showDetectionError(input, rowIndex, error) {
-    const container = $(`#formatSuggestions${rowIndex}`);
-    container.html(`
+	// Show detection error
+	function showDetectionError(input, rowIndex, error) {
+		const container = $(`#formatSuggestions${rowIndex}`);
+		container.html(`
         <div class="no-format-found">
             <strong>❌ Detection failed</strong><br>
             <small>Network error or server issue</small>
         </div>
     `);
-}
+	}
 
-// Update input guidance
-function updateInputGuidance(input, rowIndex) {
-    const inputElement = $(`#sampleDateInput${rowIndex}`);
-    const helpText = inputElement.siblings('small').first();
+	// Update input guidance
+	function updateInputGuidance(input, rowIndex) {
+		const inputElement = $(`#sampleDateInput${rowIndex}`);
+		const helpText = inputElement.siblings('small').first();
 
-    if (looksLikeDateFormat(input)) {
-        inputElement.removeClass('sample-detected format-selected')
-            .addClass('format-detected');
-        if (helpText.length) {
-            helpText.html('📝 Date format detected - analyzing...')
-                .css('color', '#9c27b0');
-        }
-    } else if (input.length > 0) {
-        inputElement.removeClass('format-detected format-selected')
-            .addClass('sample-detected');
-        if (helpText.length) {
-            helpText.html('📅 Sample date detected - finding format...')
-                .css('color', '#007bff');
-        }
-    } else {
-        inputElement.removeClass('format-detected sample-detected format-selected');
-        if (helpText.length) {
-            helpText.html('💡 Enter any date from your instrument to auto-detect format')
-                .css('color', '#666');
-        }
-    }
-}
+		if (looksLikeDateFormat(input)) {
+			inputElement.removeClass('sample-detected format-selected')
+				.addClass('format-detected');
+			if (helpText.length) {
+				helpText.html('📝 Date format detected - analyzing...')
+					.css('color', '#9c27b0');
+			}
+		} else if (input.length > 0) {
+			inputElement.removeClass('format-detected format-selected')
+				.addClass('sample-detected');
+			if (helpText.length) {
+				helpText.html('📅 Sample date detected - finding format...')
+					.css('color', '#007bff');
+			}
+		} else {
+			inputElement.removeClass('format-detected sample-detected format-selected');
+			if (helpText.length) {
+				helpText.html('💡 Enter any date from your instrument to auto-detect format')
+					.css('color', '#666');
+			}
+		}
+	}
 
-// Check if input looks like a date format
-function looksLikeDateFormat(input) {
-    const formatChars = ['Y', 'y', 'm', 'n', 'd', 'j', 'H', 'G', 'h', 'g', 'i', 's', 'A', 'M'];
-    const hasFormatChars = formatChars.some(char => input.includes(char));
-    const hasSeparators = /[\/\-\.\s:]/.test(input);
-    return hasFormatChars && hasSeparators && input.length > 3;
-}
+	// Check if input looks like a date format
+	function looksLikeDateFormat(input) {
+		const formatChars = ['Y', 'y', 'm', 'n', 'd', 'j', 'H', 'G', 'h', 'g', 'i', 's', 'A', 'M'];
+		const hasFormatChars = formatChars.some(char => input.includes(char));
+		const hasSeparators = /[\/\-\.\s:]/.test(input);
+		return hasFormatChars && hasSeparators && input.length > 3;
+	}
 
-// Remove duplicates helper
-function removeDuplicates(array, key) {
-    return array.filter((item, index) =>
-        array.findIndex(i => i[key] === item[key]) === index
-    );
-}
+	// Remove duplicates helper
+	function removeDuplicates(array, key) {
+		return array.filter((item, index) =>
+			array.findIndex(i => i[key] === item[key]) === index
+		);
+	}
 
-// Rest of your existing functions remain the same...
+	// Rest of your existing functions remain the same...
 
-function setConfigFileName() {
-    var configName = $("#configurationName").val();
-    if ($.trim(configName) != '') {
-        configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
-        if (configName.length > 0) {
-            configName = configName.replace(/\s+/g, ' ');
-            configName = configName.replace(/ /g, '-');
-            configName = configName.replace(/\-$/, '');
-            var configFileName = configName.toLowerCase() + ".php";
-            var path = '<?php echo $directory . '/'; ?>' + configFileName;
-            $.post("/includes/checkFileExists.php", {
-                    fileName: path,
-                },
-                function(data) {
-                    if (data === 'not exists') {
-                        $("#configurationFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
-                        $(".instrumentFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
-                        $('.select2').select2({
-                            width: '100%'
-                        });
-                    }
-                });
-        }
-    } else {
-        $("#configurationFile").val("");
-    }
-}
+	function setConfigFileName() {
+		var configName = $("#configurationName").val();
+		if ($.trim(configName) != '') {
+			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
+			if (configName.length > 0) {
+				configName = configName.replace(/\s+/g, ' ');
+				configName = configName.replace(/ /g, '-');
+				configName = configName.replace(/\-$/, '');
+				var configFileName = configName.toLowerCase() + ".php";
+				var path = '<?php echo $directory . '/'; ?>' + configFileName;
+				$.post("/includes/checkFileExists.php", {
+						fileName: path,
+					},
+					function(data) {
+						if (data === 'not exists') {
+							$("#configurationFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
+							$(".instrumentFile").append('<option value=' + configFileName + '>' + configFileName + '</option>');
+							$('.select2').select2({
+								width: '100%'
+							});
+						}
+					});
+			}
+		} else {
+			$("#configurationFile").val("");
+		}
+	}
 
-function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
-    $.post("/includes/checkDuplicate.php", {
-            tableName: tableName,
-            fieldName: fieldName,
-            value: obj.value.trim(),
-            fnct: fnct,
-            format: "html"
-        },
-        function(data) {
-            if (data === '1') {
-                alert(alrt);
-                document.getElementById(obj.id).value = "";
-            }
-        });
-}
+	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
+		$.post("/includes/checkDuplicate.php", {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: obj.value.trim(),
+				fnct: fnct,
+				format: "html"
+			},
+			function(data) {
+				if (data === '1') {
+					alert(alrt);
+					document.getElementById(obj.id).value = "";
+				}
+			});
+	}
 
-<?php
-$fileOptions = '';
-foreach ($fileList as $fileName) {
-    $fileOptions .= '<option value="' . $fileName . '">' . $fileName . '</option>';
-}
-?>
+	<?php
+	$fileOptions = '';
+	foreach ($fileList as $fileName) {
+		$fileOptions .= '<option value="' . $fileName . '">' . $fileName . '</option>';
+	}
+	?>
 
-function insRow() {
-    const rl = document.getElementById("machineTable").rows.length;
-    const a = document.getElementById("machineTable").insertRow(rl);
-    a.setAttribute("style", "display:none");
-    const b = a.insertCell(0);
-    const c = a.insertCell(1);
-    const d = a.insertCell(2);
-    const e = a.insertCell(3);
-    const f = a.insertCell(4);
-    f.setAttribute("align", "center");
-    f.setAttribute("style", "vertical-align:middle");
+	function insRow() {
+		const rl = document.getElementById("machineTable").rows.length;
+		const a = document.getElementById("machineTable").insertRow(rl);
+		a.setAttribute("style", "display:none");
+		const b = a.insertCell(0);
+		const c = a.insertCell(1);
+		const d = a.insertCell(2);
+		const e = a.insertCell(3);
+		const f = a.insertCell(4);
+		f.setAttribute("align", "center");
+		f.setAttribute("style", "vertical-align:middle");
 
-    b.innerHTML = `<input type="text" name="configMachineName[]" id="configMachineName${tableRowId}" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDuplication(this, 'configMachineName');" />`;
+		b.innerHTML = `<input type="text" name="configMachineName[]" id="configMachineName${tableRowId}" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDuplication(this, 'configMachineName');" />`;
 
-    c.innerHTML = `
+		c.innerHTML = `
         <div class="smart-date-cell">
             <div style="margin-bottom: 8px;">
                 <input type="text"
@@ -1308,137 +1307,137 @@ function insRow() {
         </div>
     `;
 
-    d.innerHTML = `<select name="fileName[]" id="fileName${tableRowId}" class="form-control select2 instrumentFile"><option value=""><?php echo _translate('Select File'); ?></option><?= $fileOptions; ?></select>`;
-    e.innerHTML = `<div class="col-md-3"><input type="checkbox" id="pocdevice${tableRowId}" name="pocdevice[]" value="" onclick="getLatiLongi(${tableRowId});"></div><div class="latLong${tableRowId}" style="display:none"><div class="col-md-4"><input type="text" name="latitude[]" id="latitude${tableRowId}" class="form-control" placeholder="<?php echo _translate('Latitude'); ?>" /></div><div class="col-md-4"><input type="text" name="longitude[]" id="longitude${tableRowId}" class="form-control" placeholder="<?php echo _translate('Longitude'); ?>" /></div></div>`;
-    f.innerHTML = `<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>`;
+		d.innerHTML = `<select name="fileName[]" id="fileName${tableRowId}" class="form-control select2 instrumentFile"><option value=""><?php echo _translate('Select File'); ?></option><?= $fileOptions; ?></select>`;
+		e.innerHTML = `<div class="col-md-3"><input type="checkbox" id="pocdevice${tableRowId}" name="pocdevice[]" value="" onclick="getLatiLongi(${tableRowId});"></div><div class="latLong${tableRowId}" style="display:none"><div class="col-md-4"><input type="text" name="latitude[]" id="latitude${tableRowId}" class="form-control" placeholder="<?php echo _translate('Latitude'); ?>" /></div><div class="col-md-4"><input type="text" name="longitude[]" id="longitude${tableRowId}" class="form-control" placeholder="<?php echo _translate('Longitude'); ?>" /></div></div>`;
+		f.innerHTML = `<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>`;
 
-    $(a).fadeIn(800);
-    $(`#fileName${tableRowId}`).select2({
-        width: '100%'
-    });
+		$(a).fadeIn(800);
+		$(`#fileName${tableRowId}`).select2({
+			width: '100%'
+		});
 
-    // No initialization needed! Event delegation handles everything automatically
+		// No initialization needed! Event delegation handles everything automatically
 
-    var configName = $("#configurationName").val();
-    if ($.trim(configName) != '') {
-        configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
-        if (configName.length > 0) {
-            configName = configName.replace(/\s+/g, ' ');
-            configName = configName.replace(/ /g, '-');
-            configName = configName.replace(/\-$/, '');
-            var configFileName = configName.toLowerCase() + ".php";
-            var path = '<?php echo $directory . '/'; ?>' + configFileName;
+		var configName = $("#configurationName").val();
+		if ($.trim(configName) != '') {
+			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
+			if (configName.length > 0) {
+				configName = configName.replace(/\s+/g, ' ');
+				configName = configName.replace(/ /g, '-');
+				configName = configName.replace(/\-$/, '');
+				var configFileName = configName.toLowerCase() + ".php";
+				var path = '<?php echo $directory . '/'; ?>' + configFileName;
 
-            $.post("/includes/checkFileExists.php", {
-                    fileName: path,
-                },
-                function(data) {
-                    if (data === 'not exists') {
-                        $(`#fileName${tableRowId}`).append(`<option value="${configFileName}">${configFileName}</option>`);
-                        $(`#fileName${tableRowId}`).select2({
-                            width: '100%'
-                        });
-                    }
-                });
-        }
-    }
+				$.post("/includes/checkFileExists.php", {
+						fileName: path,
+					},
+					function(data) {
+						if (data === 'not exists') {
+							$(`#fileName${tableRowId}`).append(`<option value="${configFileName}">${configFileName}</option>`);
+							$(`#fileName${tableRowId}`).select2({
+								width: '100%'
+							});
+						}
+					});
+			}
+		}
 
-    tableRowId++;
-}
+		tableRowId++;
+	}
 
-function removeAttributeRow(el) {
-    $(el).fadeOut("slow", function() {
-        el.parentNode.removeChild(el);
-        const rl = document.getElementById("machineTable").rows.length;
-        if (rl == 0) {
-            insRow();
-        }
-    });
-}
+	function removeAttributeRow(el) {
+		$(el).fadeOut("slow", function() {
+			el.parentNode.removeChild(el);
+			const rl = document.getElementById("machineTable").rows.length;
+			if (rl == 0) {
+				insRow();
+			}
+		});
+	}
 
-function checkDuplication(obj, name) {
-    const dublicateObj = document.getElementsByName(name + "[]");
-    for (let m = 0; m < dublicateObj.length; m++) {
-        if (obj.value != '' && obj.id != dublicateObj[m].id && obj.value == dublicateObj[m].value) {
-            alert('Duplicate value not allowed');
-            $('#' + obj.id).val('');
-        }
-    }
-}
+	function checkDuplication(obj, name) {
+		const dublicateObj = document.getElementsByName(name + "[]");
+		for (let m = 0; m < dublicateObj.length; m++) {
+			if (obj.value != '' && obj.id != dublicateObj[m].id && obj.value == dublicateObj[m].value) {
+				alert('Duplicate value not allowed');
+				$('#' + obj.id).val('');
+			}
+		}
+	}
 
-function getLatiLongi(id) {
-    if ($("#pocdevice" + id).is(':checked')) {
-        $(".latLong" + id).css("display", "block");
-    } else {
-        $(".latLong" + id).css("display", "none");
-    }
-}
+	function getLatiLongi(id) {
+		if ($("#pocdevice" + id).is(':checked')) {
+			$(".latLong" + id).css("display", "block");
+		} else {
+			$(".latLong" + id).css("display", "none");
+		}
+	}
 
-function changeDefaultReviewer(value, testType) {
-    const userConfirmed = confirm("Do you want to update existing records? ");
-    if (userConfirmed && value != '') {
-        $.post("/common/reference/update-default-reviewer.php", {
-                defaultReviewer: value,
-                testType: testType,
-            },
-            function(data) {
-                alert("<?php echo _translate("Updated successfully"); ?>.");
-            });
-    }
-}
+	function changeDefaultReviewer(value, testType) {
+		const userConfirmed = confirm("Do you want to update existing records? ");
+		if (userConfirmed && value != '') {
+			$.post("/common/reference/update-default-reviewer.php", {
+					defaultReviewer: value,
+					testType: testType,
+				},
+				function(data) {
+					alert("<?php echo _translate("Updated successfully"); ?>.");
+				});
+		}
+	}
 
-function changeDefaultApprover(value, testType) {
-    const userConfirmed = confirm("Do you want to update existing records? ");
-    if (userConfirmed && value != '') {
-        $.post("/common/reference/update-default-approver.php", {
-                defaultApprover: value,
-                testType: testType,
-            },
-            function(data) {
-                alert("<?php echo _translate("Updated successfully"); ?>.");
-            });
-    }
-}
+	function changeDefaultApprover(value, testType) {
+		const userConfirmed = confirm("Do you want to update existing records? ");
+		if (userConfirmed && value != '') {
+			$.post("/common/reference/update-default-approver.php", {
+					defaultApprover: value,
+					testType: testType,
+				},
+				function(data) {
+					alert("<?php echo _translate("Updated successfully"); ?>.");
+				});
+		}
+	}
 
-function validateNow() {
-    let allValid = true;
+	function validateNow() {
+		let allValid = true;
 
-    $('input[name="sampleDateInput[]"]').each(function(index) {
-        const rowId = getRowIndexFromInput($(this));
-        const sampleDate = $(this).val();
-        const selectedFormat = $(`#dateFormat${rowId}`).val();
+		$('input[name="sampleDateInput[]"]').each(function(index) {
+			const rowId = getRowIndexFromInput($(this));
+			const sampleDate = $(this).val();
+			const selectedFormat = $(`#dateFormat${rowId}`).val();
 
-        if (sampleDate && selectedFormat === 'd/m/Y H:i') {
-            if (!confirm(`Row ${parseInt(rowId) + 1}: You entered a sample date but haven't selected a detected format. Use default format 'd/m/Y H:i'?`)) {
-                allValid = false;
-                return false;
-            }
-        }
-    });
+			if (sampleDate && selectedFormat === 'd/m/Y H:i') {
+				if (!confirm(`Row ${parseInt(rowId) + 1}: You entered a sample date but haven't selected a detected format. Use default format 'd/m/Y H:i'?`)) {
+					allValid = false;
+					return false;
+				}
+			}
+		});
 
-    if (!allValid) {
-        return false;
-    }
+		if (!allValid) {
+			return false;
+		}
 
-    $('input[name="fileName[]"]').each(function() {
-        if ($(this).val() === '') {
-            $(this).val($('#configurationFile').val());
-        }
-    });
+		$('input[name="fileName[]"]').each(function() {
+			if ($(this).val() === '') {
+				$(this).val($('#configurationFile').val());
+			}
+		});
 
-    $('input[name="configMachineName[]"]').each(function(index) {
-        if ($(this).val() === '') {
-            $(this).val($('#configurationName').val() + ' - ' + (index + 1));
-        }
-    });
+		$('input[name="configMachineName[]"]').each(function(index) {
+			if ($(this).val() === '') {
+				$(this).val($('#configurationName').val() + ' - ' + (index + 1));
+			}
+		});
 
-    const flag = deforayValidator.init({
-        formId: 'instrumentForm'
-    });
+		const flag = deforayValidator.init({
+			formId: 'instrumentForm'
+		});
 
-    if (flag) {
-        $.blockUI();
-        document.getElementById('instrumentForm').submit();
-    }
-}
+		if (flag) {
+			$.blockUI();
+			document.getElementById('instrumentForm').submit();
+		}
+	}
 </script>

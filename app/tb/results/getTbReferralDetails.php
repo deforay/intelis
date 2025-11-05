@@ -84,7 +84,6 @@ WHERE vl.referred_to_lab_id IS NOT NULL
     AND vl.referred_to_lab_id != 0 
     AND vl.referral_manifest_code IS NOT NULL 
     AND vl.referral_manifest_code != '' 
-    AND vl.referral_manifest_code != 0 
     $sWhere 
 GROUP BY vl.referral_manifest_code, f2.facility_name, f2.facility_code";
 
@@ -98,7 +97,6 @@ if (!empty($sOrder)) {
 if (isset($sLimit) && $sLimit != '') {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// die($sQuery);
 [$result, $resultCount] = $db->getDataAndCount($sQuery);
 // Output
 $output = [
@@ -145,7 +143,7 @@ foreach ($result as $row) {
 
     $packageId = base64_encode($row['referral_manifest_code']);
     $printManifestPdfText = _translate("Print Manifest Referral PDF");
-    if ($row['lab_id'] != $row['referred_to_lab_id']) {
+    if ($row['lab_id'] != $row['referred_to_lab_id'] && !$general->isSTSInstance()) {
         $printBarcode = <<<BARCODEBUTTON
         <a href="javascript:void(0);" onclick="generateManifestPDF('{$packageId}');" class="btn btn-info btn-xs print-manifest" data-package-id="{$packageId}" title="{$printManifestPdfText}">
             <em class="fa-solid fa-barcode"></em> {$printManifestPdfText}

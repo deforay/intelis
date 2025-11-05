@@ -19,6 +19,7 @@ final class DatabaseService extends MysqliDb
     private $isTransactionActive = false;
     private $useSavepoints = false;
     private string $sessionCollation = 'utf8mb4_unicode_ci';
+    private string $sessionCharset = 'utf8mb4';
 
     public function __construct($host = null, $username = null, $password = null, $db = null, $port = null, $charset = 'utf8mb4')
     {
@@ -40,8 +41,10 @@ final class DatabaseService extends MysqliDb
 
         parent::__construct($host, $username, $password, $db, $port, $charset);
 
+        $this->sessionCharset = $charset ?: 'utf8mb4';
+
         // Ensure charset on the mysqli handle
-        mysqli_set_charset($this->mysqli(), $charset);
+        mysqli_set_charset($this->mysqli(), $this->sessionCharset);
 
         // Prefer the current database's default collation
         $rowDb = $this->rawQueryOne("SHOW VARIABLES LIKE 'collation_database'");
@@ -56,10 +59,7 @@ final class DatabaseService extends MysqliDb
         // Final fallback for very old installs
         $this->sessionCollation = $collation ?: 'utf8mb4_unicode_ci';
 
-        // Apply for this connection/session
-        // (Use tokens, no quotes needed for SET NAMES)
-        $this->rawQuery("SET NAMES {$charset} COLLATE {$this->sessionCollation}");
-        $this->rawQuery("SET collation_connection = '{$this->sessionCollation}'");
+        $this->applySessionSettings();
     }
 
     public function getMySQLVersion(): string
@@ -97,7 +97,7 @@ final class DatabaseService extends MysqliDb
             $this->connect($connectionName);
             return true;
         } catch (Throwable $e) {
-            LoggerUtility::log('error', $e->getMessage());
+            LoggerUtility::logError($e->getMessage());
             return false;
         }
     }
@@ -148,7 +148,7 @@ final class DatabaseService extends MysqliDb
         if ($result === false) { // Only false indicates failure
             $stmt->close();
             $this->reset();
-            LoggerUtility::log('error', 'DB Result Error: ' . $this->mysqli()->error);
+            LoggerUtility::logError('DB Result Error: ' . $this->mysqli()->error);
             throw new Exception("Failed to get result: " . $this->mysqli()->error);
         }
 
@@ -176,6 +176,62 @@ final class DatabaseService extends MysqliDb
             $references[$key] = &$values[$key];
         }
         return $references;
+    }
+
+    private function applySessionSettings(): void
+    {
+        try {
+            mysqli_set_charset($this->mysqli(), $this->sessionCharset);
+        } catch (Throwable $e) {
+            LoggerUtility::logWarning('Failed to set mysqli charset: ' . $e->getMessage());
+        }
+
+        $charset = $this->sessionCharset ?: 'utf8mb4';
+        $collation = $this->sessionCollation ?: 'utf8mb4_unicode_ci';
+
+        try {
+            $this->rawQuery("SET NAMES {$charset} COLLATE {$collation}");
+            $this->rawQuery("SET collation_connection = '{$collation}'");
+        } catch (Throwable $e) {
+            LoggerUtility::logWarning('Failed to apply session collation settings: ' . $e->getMessage());
+        }
+    }
+
+    public function ensureConnection(): void
+    {
+        $needsReconnect = false;
+
+        try {
+            $needsReconnect = !$this->ping();
+        } catch (Throwable $e) {
+            $needsReconnect = true;
+            LoggerUtility::logWarning('Database ping failed: ' . $e->getMessage());
+        }
+
+        if ($needsReconnect) {
+            $this->reconnect();
+        }
+    }
+
+    private function reconnect(): void
+    {
+        try {
+            $this->disconnectAll();
+        } catch (Throwable $e) {
+            LoggerUtility::logWarning('Failed to disconnect database connection cleanly: ' . $e->getMessage());
+        }
+
+        $connectionName = $this->defConnectionName ?? 'default';
+
+        try {
+            $this->connect($connectionName);
+            $this->isTransactionActive = false;
+            $this->useSavepoints = false;
+            $this->applySessionSettings();
+        } catch (Throwable $e) {
+            LoggerUtility::logError('Database reconnect attempt failed: ' . $e->getMessage());
+            throw new SystemException('Unable to reconnect to the database', 500, $e);
+        }
     }
 
     /**
@@ -328,7 +384,7 @@ final class DatabaseService extends MysqliDb
 
         $stmt = $this->mysqli()->prepare($sql);
         if (!$stmt) {
-            LoggerUtility::log('error', "Unable to prepare statement: " . $this->mysqli()->error . ':' . $this->mysqli()->errno);
+            LoggerUtility::logError("Unable to prepare statement: " . $this->mysqli()->error . ':' . $this->mysqli()->errno);
         }
 
         $allValues = array_merge($values, $updateValues);
@@ -341,29 +397,47 @@ final class DatabaseService extends MysqliDb
         } else {
             $error = $stmt->error;
             $stmt->close();
-            LoggerUtility::log('error', "Failed to execute upsert: $error");
+            LoggerUtility::logError("Failed to execute upsert: $error");
             return false;
         }
     }
 
+    private const COUNT_CACHE_TTL = 30;
+
     public function getDataAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
     {
         try {
+            $trimmed = preg_replace('/(?s)\/\*.*?\*\/|--.*?(?=\n|$)|#.*/', '', $sql);
+            $trimmed = ltrim($trimmed);
+            $trimmed = ltrim($trimmed, '(');   // allow wrapped SELECTs/CTEs
+
+            if (!preg_match('/\A(SELECT|WITH)\b/i', $trimmed)) {
+                throw new SystemException('Only SELECT statements are supported in getDataAndCount');
+            }
+
             $limitOffsetSet = isset($limit) && isset($offset);
-
-            // Apply limit/offset directly to the SQL query if needed
+            $statementForParsing = null;
+            $appliedLimitToQuery = false;
             $querySql = $sql;
-            if ($limitOffsetSet) {
-                // Parse the query and add limit/offset
-                $parser = new Parser($sql);
-                $statementForQuery = clone $parser->statements[0];
 
-                // Apply limit if needed
+            if ($limitOffsetSet || $returnGenerator) {
+                try {
+                    $parser = new Parser($sql);
+                    $statementForParsing = $parser->statements[0] ?? null;
+                } catch (Throwable $parseException) {
+                    LoggerUtility::log('warning', 'Failed to parse SQL for data/count batching: ' . $parseException->getMessage());
+                    $statementForParsing = null;
+                }
+            }
+
+            if ($limitOffsetSet && $statementForParsing !== null) {
+                $statementForQuery = clone $statementForParsing;
+
                 if (!isset($statementForQuery->limit) || empty($statementForQuery->limit)) {
                     $statementForQuery->limit = new Limit($limit, $offset);
+                    $querySql = $statementForQuery->build();
+                    $appliedLimitToQuery = true;
                 }
-
-                $querySql = $statementForQuery->build();
             }
 
             // Execute the main query
@@ -376,47 +450,174 @@ final class DatabaseService extends MysqliDb
             // Get count if needed
             $count = 0;
             if ($limitOffsetSet || $returnGenerator) {
-                // Try to get from session first (fastest)
-                $countQuerySessionKey = hash('sha256', $sql . json_encode($params));
+                $countResolved = false;
 
-                if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['queryCounters'][$countQuerySessionKey])) {
-                    $count = $_SESSION['queryCounters'][$countQuerySessionKey];
-                } else {
-                    // Generate the count SQL
-                    $parser = new Parser($sql);
-                    $originalStatement = clone $parser->statements[0];
-                    $statementForCount = clone $originalStatement;
-                    $statementForCount->limit = null;
-                    $statementForCount->order = null;
+                if ($limitOffsetSet && $appliedLimitToQuery && $returnGenerator === false && is_array($queryResult)) {
+                    $fetchedRows = count($queryResult);
 
-                    $countSql = '';
-                    if (!empty($originalStatement->group)) {
-                        // Group By exists — need subquery
-                        $innerSql = $statementForCount->build();
-                        $countSql = "SELECT COUNT(*) AS totalCount FROM ($innerSql) AS subquery";
-                    } else {
-                        // No Group By — simpler
-                        $statementForCount->expr = [new Expression('COUNT(*) AS totalCount')];
-                        $countSql = $statementForCount->build();
+                    if ($fetchedRows < (int)$limit) {
+                        $count = (int)$offset + $fetchedRows;
+                        $countResolved = true;
+                    }
+                }
+
+                // Cache configuration (30 seconds for LIS data freshness)
+                if (!$countResolved) {
+                    $countQuerySessionKey = hash('sha256', $sql . json_encode($params));
+                    $now = time();
+
+                    if (
+                        session_status() === PHP_SESSION_ACTIVE &&
+                        isset($_SESSION['queryCounters'][$countQuerySessionKey]['count']) &&
+                        isset($_SESSION['queryCounters'][$countQuerySessionKey]['timestamp']) &&
+                        ($now - (int)$_SESSION['queryCounters'][$countQuerySessionKey]['timestamp']) < self::COUNT_CACHE_TTL
+                    ) {
+                        $count = (int)$_SESSION['queryCounters'][$countQuerySessionKey]['count'];
+                        $countResolved = true;
                     }
 
-                    // Execute count query
-                    $countResult = $this->rawQueryOne($countSql, $params);
-                    $count = (int)($countResult['totalCount'] ?? 0);
+                    if (!$countResolved) {
+                        $originalIsolationLevel = $this->getSessionIsolationLevel();
+                        $downgradedIsolation = false;
 
-                    if (session_status() === PHP_SESSION_ACTIVE) {
-                        // Cache in session
-                        $_SESSION['queryCounters'][$countQuerySessionKey] = $count;
+                        if ($originalIsolationLevel !== null && $originalIsolationLevel !== 'READ COMMITTED') {
+                            $downgradedIsolation = $this->setSessionIsolationLevelSafe('READ COMMITTED');
+                        }
+
+                        try {
+                            $countSql = $this->buildCountSql($sql, $statementForParsing);
+                            $countResult = $this->rawQueryOne($countSql, $params);
+                            $count = (int)($countResult['totalCount'] ?? 0);
+                            $countResolved = true;
+
+                            if (session_status() === PHP_SESSION_ACTIVE) {
+                                if (!isset($_SESSION['queryCounters']) || !is_array($_SESSION['queryCounters'])) {
+                                    $_SESSION['queryCounters'] = [];
+                                }
+
+                                $_SESSION['queryCounters'][$countQuerySessionKey] = [
+                                    'count' => $count,
+                                    'timestamp' => $now
+                                ];
+                            }
+                        } catch (Throwable $countException) {
+                            if (
+                                session_status() === PHP_SESSION_ACTIVE &&
+                                isset($_SESSION['queryCounters'][$countQuerySessionKey]['count'])
+                            ) {
+                                $count = (int)$_SESSION['queryCounters'][$countQuerySessionKey]['count'];
+                                LoggerUtility::log('warning', 'Count query timed out, using cached value: ' . $countException->getMessage());
+                                $countResolved = true;
+                            } else {
+                                LoggerUtility::logError('Count query failed with no cache: ' . $countException->getMessage());
+                            }
+                        } finally {
+                            if ($downgradedIsolation && $originalIsolationLevel !== null) {
+                                $this->setSessionIsolationLevelSafe($originalIsolationLevel);
+                            }
+                        }
                     }
                 }
             } else {
-                $count = count($queryResult);
+                $count = is_array($queryResult) ? count($queryResult) : 0;
             }
 
             return [$queryResult, max((int)$count, 0)];
         } catch (Throwable $e) {
             throw new SystemException('Query Execution Failed. SQL: ' . substr($sql, 0, 500) . ' | Error: ' . $e->getMessage(), 500, $e);
         }
+    }
+
+    private function buildCountSql(string $sql, ?object $statementForParsing = null): string
+    {
+        try {
+            if ($statementForParsing === null) {
+                $parser = new Parser($sql);
+                $statementForParsing = $parser->statements[0] ?? null;
+            }
+
+            if ($statementForParsing !== null) {
+                $originalStatement = clone $statementForParsing;
+                $statementForCount = clone $originalStatement;
+                $statementForCount->limit = null;
+                $statementForCount->order = null;
+
+                if (!empty($originalStatement->group)) {
+                    $innerSql = $statementForCount->build();
+                    return "SELECT /*+ MAX_EXECUTION_TIME(10000) */ COUNT(*) AS totalCount FROM ($innerSql) AS subquery";
+                }
+
+                $statementForCount->expr = [new Expression('/*+ MAX_EXECUTION_TIME(10000) */ COUNT(*) AS totalCount')];
+                return $statementForCount->build();
+            }
+        } catch (Throwable $parseException) {
+            LoggerUtility::log('warning', 'Unable to rebuild count SQL using parser: ' . $parseException->getMessage());
+        }
+
+        $innerSql = rtrim($sql, ";\t\n\r\0\x0B ");
+        return "SELECT /*+ MAX_EXECUTION_TIME(10000) */ COUNT(*) AS totalCount FROM ($innerSql) AS subquery";
+    }
+
+    private function getSessionIsolationLevel(): ?string
+    {
+        $probes = [
+            'SELECT @@session.transaction_isolation AS isolation',
+            'SELECT @@session.tx_isolation AS isolation'
+        ];
+        $errors = [];
+
+        foreach ($probes as $probeSql) {
+            try {
+                $result = $this->rawQueryOne($probeSql);
+                if (!empty($result['isolation'])) {
+                    return $this->normalizeIsolationLevel($result['isolation']);
+                }
+            } catch (Throwable $e) {
+                $errors[] = $e->getMessage();
+            }
+        }
+
+        if (!empty($errors)) {
+            LoggerUtility::log('warning', 'Isolation level probe failed: ' . implode(' | ', $errors));
+        }
+
+        return null;
+    }
+
+    private function setSessionIsolationLevelSafe(string $level): bool
+    {
+        $normalizedLevel = $this->normalizeIsolationLevel($level);
+
+        if ($normalizedLevel === null) {
+            return false;
+        }
+
+        try {
+            $this->rawQuery("SET SESSION TRANSACTION ISOLATION LEVEL $normalizedLevel");
+            return true;
+        } catch (Throwable $e) {
+            LoggerUtility::log('warning', 'Failed to set isolation level: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    private function normalizeIsolationLevel(?string $level): ?string
+    {
+        if ($level === null) {
+            return null;
+        }
+
+        $normalized = strtoupper(trim($level));
+        $normalized = str_replace('-', ' ', $normalized);
+
+        $validLevels = [
+            'READ UNCOMMITTED',
+            'READ COMMITTED',
+            'REPEATABLE READ',
+            'SERIALIZABLE'
+        ];
+
+        return in_array($normalized, $validLevels, true) ? $normalized : null;
     }
 
 
@@ -468,7 +669,7 @@ final class DatabaseService extends MysqliDb
 
         $stmt = $this->mysqli()->prepare($sql);
         if (!$stmt) {
-            LoggerUtility::log('error', "Unable to prepare statement: " . $this->mysqli()->error);
+            LoggerUtility::logError("Unable to prepare statement: " . $this->mysqli()->error);
             return false;
         }
 
@@ -481,7 +682,7 @@ final class DatabaseService extends MysqliDb
         } else {
             $error = $stmt->error;
             $stmt->close();
-            LoggerUtility::log('error', "Failed to execute insertMultipleRows: $error");
+            LoggerUtility::logError("Failed to execute insertMultipleRows: $error");
             return false;
         }
     }

@@ -5,9 +5,10 @@ namespace App\Utilities;
 use Throwable;
 use Monolog\Level;
 use Monolog\Logger;
+use App\Utilities\MiscUtility;
 use Monolog\Handler\StreamHandler;
-use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\ErrorLogHandler;
+use Monolog\Handler\RotatingFileHandler;
 
 final class LoggerUtility
 {
@@ -140,7 +141,7 @@ final class LoggerUtility
                     break;
                 }
 
-                if (@unlink($file['path'])) {
+                if (MiscUtility::deleteFile($file['path'])) {
                     $currentSize -= $file['size'];
                     self::logToPhpErrorLog("Deleted old log file: {$file['path']}");
                 }

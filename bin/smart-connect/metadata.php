@@ -8,6 +8,7 @@ if ($cliMode) {
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -148,7 +149,7 @@ try {
 
     $response  = $apiService->postFile($url, 'referenceFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
 
-    unlink(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+    MiscUtility::deleteFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 
 
     $latestDateTime = null;

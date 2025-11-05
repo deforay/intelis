@@ -284,10 +284,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	$(document).ready(function() {
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-			               $sampleCode = htmlspecialchars($_GET['s']);
-               $facilityCode = htmlspecialchars($_GET['f']);
-               $patientID = htmlspecialchars($_GET['p']);
-               echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
+			$sampleCode = htmlspecialchars($_GET['s']);
+			$facilityCode = htmlspecialchars($_GET['f']);
+			$patientID = htmlspecialchars($_GET['p']);
+			echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
 		}
 		?>
 		$("#testType").select2({
@@ -345,9 +345,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	function loadRequestData() {
 		$.blockUI();
 		oTable = $('#RequestDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

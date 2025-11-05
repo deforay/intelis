@@ -201,8 +201,8 @@ try {
         $appMenuService->insertMenu($menuData);
     }
 } catch (Exception $e) {
-    LoggerUtility::log('error', $e->getMessage());
+    LoggerUtility::logError($e->getMessage());
     if (!empty($db->getLastError())) {
-        LoggerUtility::log('error', $db->getLastError());
+        LoggerUtility::logError($db->getLastError());
     }
 }

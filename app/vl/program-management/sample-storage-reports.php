@@ -305,9 +305,6 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 	function loadStorageData() {
 		$.blockUI();
 		oTable = $('#storageDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -368,9 +365,6 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 	function loadStorageHistoryData() {
 		$.blockUI();
 		opTable = $('#storageHistoryDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

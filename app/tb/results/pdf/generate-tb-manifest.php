@@ -35,16 +35,16 @@ if (trim((string) $id) != '') {
                 patient_dob, patient_age, sample_collection_date, patient_gender, patient_id, 
                 pd.manifest_code, l.facility_name as lab_name 
                 FROM specimen_manifests as pd 
-                JOIN form_tb as vl ON vl.sample_package_id = pd.manifest_id 
+                JOIN form_tb as vl ON vl.referral_manifest_code = pd.manifest_code 
                 JOIN facility_details as fd ON fd.facility_id = vl.facility_id 
                 JOIN facility_details as l ON l.facility_id = vl.lab_id 
-                WHERE pd.manifest_id IN($id)";
+                WHERE pd.manifest_code IN('$id')";
     $result = $db->query($sQuery);
 
     $labname = $result[0]['lab_name'] ?? "";
 
     $showPatientName = $general->getGlobalConfig('tb_show_participant_name_in_manifest');
-    $bQuery = "SELECT * FROM specimen_manifests as pd WHERE manifest_id IN($id)";
+    $bQuery = "SELECT * FROM specimen_manifests as pd WHERE manifest_code IN('$id')";
 
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
@@ -52,7 +52,7 @@ if (trim((string) $id) != '') {
         $oldPrintData = json_decode($bResult[0]['manifest_print_history']);
         $newPrintData = array('printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime());
         $oldPrintData[] = $newPrintData;
-        $db->where('manifest_id', $id);
+        $db->where('manifest_code', $id);
         $db->update('specimen_manifests', array(
             'manifest_print_history' => json_encode($oldPrintData)
         ));

@@ -168,7 +168,7 @@ final class CommonService
 
 
     // get data from the system_config table from database
-    public function getSystemConfig(?string $name = null)
+    public function getSystemConfig(?string $name = null): null|array|string
     {
         $cacheKey = 'app_system_config';
 
@@ -334,7 +334,7 @@ final class CommonService
     public function activityLog($eventType, $action, $resource)
     {
 
-        $ipaddress = $this->getClientIpAddress();
+        $ipAddress = $this->getClientIpAddress();
 
         $data = [
             'event_type' => $eventType,
@@ -342,7 +342,7 @@ final class CommonService
             'resource' => $resource,
             'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
             'date_time' => DateUtility::getCurrentDateTime(),
-            'ip_address' => $ipaddress,
+            'ip_address' => $ipAddress,
         ];
 
         $this->db->insert('activity_log', $data);
@@ -869,6 +869,15 @@ final class CommonService
         return $dateTime['dateTime'] ?? null;
     }
 
+    public function getLastApiSyncByTypeAndModule(string $syncType, string $testType): ?string
+    {
+        $lastSyncQuery = "SELECT MAX(`requested_on`) AS `dateTime`
+                            FROM `track_api_requests`
+                            WHERE `request_type` = ? AND `test_type` = ? AND (`response_data` IS NOT NULL OR `number_of_records` IS NOT NULL)";
+        $dateTime = $this->db->rawQueryOne($lastSyncQuery, [$syncType, $testType]);
+        return $dateTime['dateTime'] ?? null;
+    }
+
     public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null)
     {
         try {
@@ -919,9 +928,9 @@ final class CommonService
             return $this->db->insert("track_api_requests", $data);
         } catch (Throwable $exc) {
             if (!empty($this->db->getLastError())) {
-                LoggerUtility::log('error', 'Error in track_api_requests : ' . $this->db->getLastErrno() . ':' . $this->db->getLastError());
+                LoggerUtility::logError('Error in track_api_requests : ' . $this->db->getLastErrno() . ':' . $this->db->getLastError());
             }
-            LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage());
+            LoggerUtility::logError($exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage());
             return 0;
         }
     }
@@ -1001,6 +1010,9 @@ final class CommonService
 
     public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = [0, 0, 0]): string
     {
+        if ($code == null || $code == '') {
+            return '';
+        }
         return MemoUtility::remember(function () use ($code, $type, $width, $height, $color) {
             $barcodeobj = new TCPDFBarcode($code, $type);
             return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));

@@ -183,7 +183,7 @@ try {
     header("Location:/import-result/imported-results.php?t=eid");
 } catch (Exception $exc) {
 
-    LoggerUtility::log('error', $exc->getMessage(), ['file' => __FILE__, 'line' => __LINE__, 'trace' => $exc->getTraceAsString()]);
+    LoggerUtility::logError($exc->getMessage(), ['file' => __FILE__, 'line' => __LINE__, 'trace' => $exc->getTraceAsString()]);
 
     $_SESSION['alertMsg'] = _translate("Result file could not be imported. Please check if the file is of correct format.");
     header("Location:/import-result/import-file.php?t=vl");

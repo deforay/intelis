@@ -97,9 +97,6 @@ $sResult = $db->rawQuery($sQuery);
   function loadUserLoginRequestData() {
     $.blockUI();
     oTable = $('#userLoginHistoryDataTable').dataTable({
-      "oLanguage": {
-        "sLengthMenu": "_MENU_ records per page"
-      },
       "bJQueryUI": false,
       "bAutoWidth": false,
       "bInfo": true,

@@ -797,9 +797,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	function loadVlRequestData() {
 		$.blockUI();
 		oTable = $('#cd4RequestDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -807,7 +804,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			//"bStateSave" : true,
 			"bRetrieve": true,
 			"aoColumns": [
-				//{"sClass":"center","bSortable":false},
+
 				{
 					"sClass": "center"
 				},

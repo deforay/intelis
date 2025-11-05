@@ -249,8 +249,11 @@ function spinner(int $loopIndex, int $count, string $label = 'Processed', array 
     }
 
     echo "\r$lastSpinnerChar $label: $count";
-    ob_flush();
-    flush();
+
+    if (ob_get_level() > 0) {
+        ob_flush();
+        flush();
+    }
 }
 
 function clearSpinner(): void
@@ -314,7 +317,7 @@ if (!empty($_POST)) {
 }
 
 if ($syncSinceDate !== null) {
-    $io->info("Filtering requests from: $syncSinceDate");
+    $io->text("Filtering requests from: $syncSinceDate");
 }
 $transactionId = MiscUtility::generateULID();
 
@@ -360,6 +363,37 @@ if (!empty($forceSyncModule)) {
     $systemConfig['modules'][$forceSyncModule] = true;
 }
 
+$moduleSyncSinceDates = [];
+if ($syncSinceDate === null) {
+    $defaultWindowDays = (int) ($general->getGlobalConfig('data_sync_interval') ?? 30);
+    if ($defaultWindowDays <= 0) {
+        $defaultWindowDays = 30;
+    }
+    $defaultModuleSyncDate = DateUtility::daysAgo($defaultWindowDays);
+    $today = DateUtility::getCurrentDateTime('Y-m-d');
+
+    foreach ($systemConfig['modules'] as $moduleKey => $isEnabled) {
+        if ($isEnabled !== true) {
+            continue;
+        }
+
+        $moduleSyncDate = $defaultModuleSyncDate;
+        $lastSyncDateTime = $general->getLastApiSyncByTypeAndModule('receive-requests', $moduleKey);
+
+        if (!empty($lastSyncDateTime) && DateUtility::isDateValid($lastSyncDateTime)) {
+            $moduleSyncDate = (new DateTimeImmutable($lastSyncDateTime))
+                ->modify('-6 hours')
+                ->format('Y-m-d');
+        }
+
+        if ($moduleSyncDate > $today) {
+            $moduleSyncDate = $today;
+        }
+
+        $moduleSyncSinceDates[$moduleKey] = $moduleSyncDate;
+    }
+}
+
 $stsBearerToken = $general->getSTSToken();
 $apiService->setBearerToken($stsBearerToken);
 
@@ -379,8 +413,12 @@ foreach ($systemConfig['modules'] as $module => $status) {
         if (!empty($forceSyncModule) && trim((string)$forceSyncModule) == $module && !empty($manifestCode) && trim((string)$manifestCode) != "") {
             $basePayload['manifestCode'] = $manifestCode;
         }
-        if (!empty($syncSinceDate)) {
-            $basePayload['syncSinceDate'] = $syncSinceDate;
+        $effectiveSyncSinceDate = $syncSinceDate ?? ($moduleSyncSinceDates[$module] ?? null);
+        if (!empty($effectiveSyncSinceDate)) {
+            $basePayload['syncSinceDate'] = $effectiveSyncSinceDate;
+            if ($cliMode && $syncSinceDate === null && isset($moduleSyncSinceDates[$module])) {
+                $io->text("Requesting " . strtoupper($module) . " records updated since $effectiveSyncSinceDate");
+            }
         }
 
         // preserve for tracking later
@@ -397,7 +435,7 @@ foreach ($systemConfig['modules'] as $module => $status) {
         )->then(function ($response) use (&$responsePayload, $module, $cliMode, $io) {
             $responsePayload[$module] = $response->getBody()->getContents();
             if ($cliMode) {
-                $io->info("Received server response for $module");
+                $io->text("Received server response for $module");
             }
         })->otherwise(function ($reason) use ($module, $cliMode, $io) {
             if ($cliMode) {

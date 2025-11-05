@@ -9,7 +9,7 @@ UPDATE `system_config` SET `value` = '5.3.2' WHERE `system_config`.`name` = 'sc_
 INSERT INTO `global_config`
 (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`)
 VALUES
-('Auto Approve Interface Results', 'auto_approve_interface_results', 'no', 'interfacing', 'yes', CURRENT_TIMESTAMP, NULL, 'active');
+('Auto Approve Interface Results', 'auto_approve_interface_results', 'yes', 'interfacing', 'yes', CURRENT_TIMESTAMP, NULL, 'active');
 
 
 -- Amit 25-Sep-2025
@@ -109,3 +109,12 @@ INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES ('13
 -- Thana 30-Oct-2025
 ALTER TABLE `form_tb` ADD `referral_manifest_code` VARCHAR(64) NULL DEFAULT NULL AFTER `sample_package_code`;
 ALTER TABLE `audit_form_tb` ADD `referral_manifest_code` VARCHAR(64) NULL DEFAULT NULL AFTER `sample_package_code`;
+
+
+-- Thana 31-Oct-2025
+ALTER TABLE `form_vl` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
+ALTER TABLE `audit_form_vl` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
+
+-- Thana 03-Nov-2025
+ALTER TABLE `form_tb` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
+ALTER TABLE `audit_form_tb` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
