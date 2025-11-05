@@ -233,14 +233,17 @@ final class ResultsService
                     $resultFromLab['data_sync'] = 1;
                     $resultFromLab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                    if ($resultFromLab['result_status'] != SAMPLE_STATUS\ACCEPTED && $resultFromLab['result_status'] != SAMPLE_STATUS\REJECTED) {
-                        $keysToRemove = [
-                            'result',
-                            'is_sample_rejected',
-                            'reason_for_sample_rejection'
-                        ];
-                        $resultFromLab = MiscUtility::excludeKeys($resultFromLab, $keysToRemove);
-                    }
+                    // if (
+                    //     $resultFromLab['result_status'] != SAMPLE_STATUS\ACCEPTED &&
+                    //     $resultFromLab['result_status'] != SAMPLE_STATUS\REJECTED
+                    // ) {
+                    //     $keysToRemove = [
+                    //         'result',
+                    //         'is_sample_rejected',
+                    //         'reason_for_sample_rejection'
+                    //     ];
+                    //     $resultFromLab = MiscUtility::excludeKeys($resultFromLab, $keysToRemove);
+                    // }
 
                     $localRecord = $this->testRequestsService->findMatchingLocalRecord($resultFromLab, $this->tableName, $this->primaryKeyName);
 
@@ -251,19 +254,16 @@ final class ResultsService
                     // Now we update/insert the record
                     if (!empty($localRecord)) {
 
+                        $primaryKeyValue = $localRecord[$this->primaryKeyName];
                         if (MiscUtility::isArrayEqual($resultFromLab, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
-                            $id = true; // treating as updated
-                            $primaryKeyValue = $localRecord[$this->primaryKeyName];
-                            //continue;
+                            $id = true; // treating as updated as the incoming data is same as local
                         } else {
 
                             if ($isSilent) {
                                 unset($resultFromLab['last_modified_datetime']);
                             }
-
                             $this->db->where($this->primaryKeyName, $localRecord[$this->primaryKeyName]);
                             $id = $this->db->update($this->tableName, $resultFromLab);
-                            $primaryKeyValue = $localRecord[$this->primaryKeyName];
                         }
                     } else {
                         // $id = $this->db->insert($this->tableName, $resultFromLab);
