@@ -1,10 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Services\TestsService;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-use App\Services\SystemService;
 
 $title = _translate("Facilities");
 
@@ -18,22 +18,29 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$activeModules = SystemService::getActiveModules();
+$activeTests = TestsService::getActiveTests();
 
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $state = $geolocationService->getProvinces("yes");
+
 ?>
 <style>
-  /* select {
-    width: 400px !important
-  } */
-
   .select2-element {
     width: 300px;
   }
 </style>
+
+<style>
+  .action-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: flex-end;
+  }
+</style>
+
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -51,83 +58,88 @@ $state = $geolocationService->getProvinces("yes");
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table aria-describedby="table" class="table" id="advanceFilter" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%; display:none;">
-            <tbody>
-              <tr>
-                <td><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
-                <td>
-                  <select class="form-control select2-element" id="state" onchange="getDistrictByProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
-                    <?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
-                  </select>
-                </td>
-                <td><strong><?php echo _translate("District/County"); ?> :</strong></td>
-                <td>
-                  <select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>">
-                  </select>
-                </td>
+          <div id="advanceFilter" class="collapse" style="margin-left:1%;margin-top:20px;width:98%;">
+            <table class="table" aria-describedby="table" aria-hidden="true">
+              <tbody>
+                <tr>
+                  <td><strong><?= _translate("Province/State"); ?>&nbsp;:</strong></td>
+                  <td>
+                    <select class="form-control select2-element" id="state" onchange="getDistrictByProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+                      <?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
+                    </select>
+                  </td>
+                  <td><strong><?= _translate("District/County"); ?> :</strong></td>
+                  <td>
+                    <select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>">
+                    </select>
+                  </td>
 
-              </tr>
-              <tr>
-                <td>&nbsp;<strong>Facility Type &nbsp;:</strong></td>
-                <td>
-                  <select class="form-control isRequired select2-element" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="getTestType(); showSignature(this.value);">
-                    <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                    <?php
-                    foreach ($fResult as $type) {
-                    ?>
-                      <option value="<?php echo $type['facility_type_id']; ?>"><?php echo ($type['facility_type_name']); ?></option>
-                    <?php
-                    }
-                    ?>
-                  </select>
-                </td>
-                <td>&nbsp;<strong>Test Type &nbsp;:</strong></td>
-                <td>
-                  <select id="testType" name="testType" onchange="return checkFacilityType();" class="form-control select2-element" placeholder="<?php echo _translate('Please select the Test types'); ?>">
-                    <option value="">-- Choose Test Type--</option>
-                    <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
-                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'vl') ? "selected='selected'" : ""; ?> value="vl"><?php echo _translate("Viral Load"); ?></option>
-                    <?php }
-                    if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
-                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'eid') ? "selected='selected'" : ""; ?> value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
-                    <?php }
-                    if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
-                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'covid19') ? "selected='selected'" : ""; ?> value="covid19"><?php echo _translate("Covid-19"); ?></option>
-                    <?php }
-                    if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
-                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'hepatitis') ? "selected='selected'" : ""; ?> value='hepatitis'><?php echo _translate("Hepatitis"); ?></option>
-                    <?php }
-                    if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
-                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'tb') ? "selected='selected'" : ""; ?> value='tb'><?php echo _translate("TB"); ?></option>
-                    <?php }
-                    if (!empty($activeModules) && in_array('cd4', $activeModules)) { ?>
-                      <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'cd4') ? "selected='selected'" : ""; ?> value='cd4'><?php echo _translate("CD4"); ?></option>
-                    <?php } ?>
-                  </select>
-                </td>
-              </tr>
-              <tr>
+                </tr>
+                <tr>
+                  <td>&nbsp;<strong><?= _translate("Facility Type"); ?> &nbsp;:</strong></td>
+                  <td>
+                    <select class="form-control isRequired select2-element" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="getTestType(); showSignature(this.value);">
+                      <option value=""> <?php echo _translate("-- Select --"); ?> </option>
+                      <?php
+                      foreach ($fResult as $type) {
+                      ?>
+                        <option value="<?php echo $type['facility_type_id']; ?>"><?php echo $type['facility_type_name']; ?></option>
+                      <?php
+                      }
+                      ?>
+                    </select>
+                  </td>
+                  <td>&nbsp;<strong><?= _translate("Test Type"); ?> &nbsp;:</strong></td>
+                  <td>
+                    <select id="testType" name="testType" onchange="return checkFacilityType();" class="form-control select2-element" placeholder="<?php echo _translate('Please select the Test types'); ?>">
+                      <option value=""><?= _translate("-- Choose Test Type --"); ?> </option>
+                      <?php if (!empty($activeTests) && in_array('vl', $activeTests)) { ?>
+                        <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'vl') ? "selected='selected'" : ""; ?> value="vl"><?php echo _translate("Viral Load"); ?></option>
+                      <?php }
+                      if (!empty($activeTests) && in_array('eid', $activeTests)) { ?>
+                        <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'eid') ? "selected='selected'" : ""; ?> value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
+                      <?php }
+                      if (!empty($activeTests) && in_array('covid19', $activeTests)) { ?>
+                        <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'covid19') ? "selected='selected'" : ""; ?> value="covid19"><?php echo _translate("Covid-19"); ?></option>
+                      <?php }
+                      if (!empty($activeTests) && in_array('hepatitis', $activeTests)) { ?>
+                        <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'hepatitis') ? "selected='selected'" : ""; ?> value='hepatitis'><?php echo _translate("Hepatitis"); ?></option>
+                      <?php }
+                      if (!empty($activeTests) && in_array('tb', $activeTests)) { ?>
+                        <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'tb') ? "selected='selected'" : ""; ?> value='tb'><?php echo _translate("TB"); ?></option>
+                      <?php }
+                      if (!empty($activeTests) && in_array('cd4', $activeTests)) { ?>
+                        <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'cd4') ? "selected='selected'" : ""; ?> value='cd4'><?php echo _translate("CD4"); ?></option>
+                      <?php } ?>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
 
-                <td>&nbsp;<strong>Show Only Active &nbsp;:</strong></td>
-                <td>
-                  <select class="form-control select2-element" id="activeFacility" name="activeFacility" title="<?php echo _translate('Please select Active Facility'); ?>">
-                    <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                    <option value="active"><?php echo _translate("Yes"); ?></option>
-                    <option value="inactive"><?php echo _translate("No"); ?></option>
-                  </select>
-                </td>
-                <td></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="Search" class="btn btn-success btn-sm">
-                  &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-                  &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>Hide Advanced Search Options</span></button>
-                </td>
-              </tr>
+                  <td>&nbsp;<strong><?= _translate("Show Only Active"); ?> &nbsp;:</strong></td>
+                  <td>
+                    <select class="form-control select2-element" id="activeFacility" name="activeFacility" title="<?php echo _translate('Please select Active Facility'); ?>">
+                      <option value=""> <?php echo _translate("-- Select --"); ?> </option>
+                      <option value="active"><?php echo _translate("Yes"); ?></option>
+                      <option value="inactive"><?php echo _translate("No"); ?></option>
+                    </select>
+                  </td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="Search" class="btn btn-success btn-sm">
+                    <button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+                    <button class="btn btn-ghost btn-sm btn-icon" data-toggle="collapse" data-target="#advanceFilter" aria-expanded="false" aria-controls="advanceFilter">
+                      <em class="fa fa-filter"></em><span class="text"><?= _translate("Advanced Search") ?></span>
+                    </button>
 
-            </tbody>
-          </table>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div class="col-xs-12">
@@ -151,18 +163,41 @@ $state = $geolocationService->getProvinces("yes");
             </div>
           </span>
           <div class="box-header with-border">
-            <?php if (_isAllowed("addFacility.php") && ($general->isSTSInstance() || $general->isStandaloneInstance())) { ?>
-              <a href="upload-facilities.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Bulk Upload"); ?></a>
-              <a href="addFacility.php" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Facility"); ?></a>
-              <a href="mapTestType.php?type=testing-labs" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Manage Testing Lab"); ?></a>
-              <a href="mapTestType.php?type=health-facilities" class="btn btn-primary pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Manage Health Facilities"); ?></a>
-            <?php } ?>
-            &nbsp;<button id="filter" class="btn btn-primary btn-sm pull-right" style="margin-right:5px;line-height: 2;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span><?php echo _translate("Show Advanced Search Options"); ?></span></button>
-            <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
+            <div class="action-bar">
+
+              <!-- keep 1–2 primaries solid -->
+              <button class="btn btn-success btn-sm btn-icon" onclick="exportInexcel()">
+                <em class="fa fa-cloud-download"></em><span class="text"><?= _translate("Export") ?></span>
+              </button>
+
+              <button class="btn btn-ghost btn-sm btn-icon" data-toggle="collapse" data-target="#advanceFilter">
+                <em class="fa fa-filter"></em><span class="text"><?= _translate("Advanced Search") ?></span>
+              </button>
+              <?php if (_isAllowed("addFacility.php") && ($general->isSTSInstance() || $general->isStandaloneInstance())) { ?>
+                <!-- secondary actions stay visible, low-contrast, and will wrap -->
+                <a href="mapTestType.php?type=health-facilities" class="btn btn-ghost btn-sm btn-icon">
+                  <em class="fa fa-hospital"></em><span class="text"><?= _translate("Health Facilities") ?></span>
+                </a>
+
+                <a href="mapTestType.php?type=testing-labs" class="btn btn-ghost btn-sm btn-icon">
+                  <em class="fa fa-flask"></em><span class="text"><?= _translate("Testing Lab") ?></span>
+                </a>
+
+
+                <a href="upload-facilities.php" class="btn btn-ghost btn-sm btn-icon">
+                  <em class="fa fa-upload"></em><span class="text"><?= _translate("Bulk Upload") ?></span>
+                </a>
+
+                <a href="addFacility.php" class="btn btn-primary btn-sm btn-icon">
+                  <em class="fa fa-plus-circle"></em><span class="text"><?= _translate("Add Facility") ?></span>
+                </a>
+              <?php } ?>
+            </div>
           </div>
+
           <!-- /.box-header -->
           <div class="box-body">
-            <button class="btn btn-success pull-right" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> Export to excel</button>
+
             <table aria-describedby="table" id="facilityDataTable" class="table table-bordered table-striped" aria-hidden="true">
               <thead>
                 <tr>
@@ -200,7 +235,16 @@ $state = $geolocationService->getProvinces("yes");
 
   $(document).ready(function() {
 
-    $.blockUI();
+    var $btn = $('[data-target="#advanceFilter"]');
+    $('#advanceFilter').on('shown.bs.collapse', function() {
+        $btn.find('.text').text('<?= _translate("Hide Filters") ?>');
+      })
+      .on('hidden.bs.collapse', function() {
+        $btn.find('.text').text('<?= _translate("Advanced Search") ?>');
+      });
+
+
+
 
     $("#state").select2({
       placeholder: "<?php echo _translate("Select Province"); ?>"
@@ -209,16 +253,23 @@ $state = $geolocationService->getProvinces("yes");
       placeholder: "<?php echo _translate("Select District"); ?>"
     });
     oTable = $('#facilityDataTable').dataTable({
-      "oLanguage": {
-        "sLengthMenu": "_MENU_ records per page"
-      },
+      "lengthMenu": [
+        [10, 25, 50, 100, 200, 250, 500, -1],
+        [10, 25, 50, 100, 200, 250, 500, "All"]
+      ],
+
       "bJQueryUI": false,
       "bAutoWidth": false,
       "bInfo": true,
       "bScrollCollapse": true,
       "bStateSave": true,
+      "bDestroy": true,
       "bRetrieve": true,
-      "aaSorting": [2, "asc"],
+      "iDisplayLength": 25,
+      "aaSorting": [
+        [3, "asc"],
+        [1, "asc"]
+      ],
       "aoColumns": [{
           "sClass": "center"
         },
@@ -292,7 +343,7 @@ $state = $geolocationService->getProvinces("yes");
   function checkFacilityType() {
     fType = $("#facilityType").val();
     if (fType == "") {
-      alert("Please choose facility type first");
+      alert("<?= _translate("Please choose facility type first", true); ?>");
       $("#testType").val("");
       return false;
     }
@@ -312,7 +363,7 @@ $state = $geolocationService->getProvinces("yes");
       function(data) {
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
-          alert("<?php echo _translate("Unable to generate excel"); ?>");
+          alert("<?= _translate("Unable to generate excel", true); ?>");
         } else {
           $.unblockUI();
           window.open('/download.php?f=' + data, '_blank');
@@ -331,12 +382,6 @@ $state = $geolocationService->getProvinces("yes");
         Obj = $.parseJSON(data);
         $("#district").html(Obj['districts']);
       });
-  }
-
-
-  function hideAdvanceSearch(hideId, showId) {
-    $("#" + hideId).hide();
-    $("#" + showId).show();
   }
 </script>
 <?php

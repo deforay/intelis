@@ -163,7 +163,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										</small>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _translate('eg-email1@gmail.com,email2@gmail.com'); ?>" />
+										<input type="text" class="form-control" id="email" name="email" placeholder="e.g. email1@gmail.com, email2@gmail.com" />
 									</div>
 								</div>
 							</div>

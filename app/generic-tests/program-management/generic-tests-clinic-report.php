@@ -241,9 +241,6 @@ $state = $geolocationService->getProvinces("yes");
 	function patientHistoryReport() {
 		$.blockUI();
 		oTablepatientTestHistoryReport = $('#patientTestHistoryReport').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

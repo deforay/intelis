@@ -34,7 +34,7 @@ try {
         error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
         error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
     }
-    LoggerUtility::log('error', $exception->getFile() . ':' . $exception->getLine()  . ':' .  $exception->getMessage(), [
+    LoggerUtility::logError($exception->getFile() . ':' . $exception->getLine()  . ':' .  $exception->getMessage(), [
         'exception' => $exception,
         'file' => $exception->getFile(), // File where the error occurred
         'line' => $exception->getLine(), // Line number of the error

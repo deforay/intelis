@@ -24,8 +24,6 @@ $labNameList = $facilitiesService->getTestingLabs();
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $stateNameList = $geolocationService->getProvinces("yes");
 
-$activeModules = SystemService::getActiveModules();
-
 ?>
 <style>
     .select2-selection__choice {

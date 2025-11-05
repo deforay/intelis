@@ -69,7 +69,7 @@ $load = function (string $dir, string $filename): array {
         $out['raw']     = $raw;
     } catch (Throwable $e) {
         $out['error'] = $e->getMessage();
-        LoggerUtility::log('error', "Viewer load error for {$filename}: " . $e->getMessage());
+        LoggerUtility::logError("Viewer load error for {$filename}: " . $e->getMessage());
     }
     return $out;
 };

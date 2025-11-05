@@ -1,8 +1,13 @@
 <?php
 
+use App\Services\TestsService;
+
 $title = _translate("Dashboard");
 
 require_once APPLICATION_PATH . '/header.php';
+
+$activeTests = TestsService::getActiveTests();
+$userModules = $_SESSION['modules'] ?? [];
 
 ?>
 <style>
@@ -69,40 +74,24 @@ require_once APPLICATION_PATH . '/header.php';
 	<section class="content-header">
 		<div class="bs bs-tabs">
 			<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
-				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['modules'], array('vl'))) { ?>
-					<li class="active"><a href="#vlDashboard" data-name="vl" data-toggle="tab" onclick="generateDashboard('vl');">
-							<?= _translate("HIV Viral Load Tests"); ?>
-						</a></li>
-				<?php }
-				if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true && array_intersect($_SESSION['modules'], array('eid'))) { ?>
-					<li><a href="#eidDashboard" data-name="eid" data-toggle="tab" onclick="generateDashboard('eid');">
-							<?= _translate("EID Tests"); ?>
-						</a></li>
-				<?php }
-				if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['modules'], array('covid19'))) { ?>
-					<li><a href="#covid19Dashboard" data-name="covid19" data-toggle="tab" onclick="generateDashboard('covid19');">
-							<?= _translate("Covid-19 Tests"); ?>
-						</a></li>
-				<?php }
-				if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['modules'], array('hepatitis'))) { ?>
-					<li><a href="#hepatitisDashboard" data-toggle="tab" onclick="generateDashboard('hepatitis');">
-							<?= _translate("Hepatitis Tests"); ?>
-						</a></li>
-				<?php }
-				if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], array('tb'))) { ?>
-					<li><a href="#tbDashboard" data-toggle="tab" onclick="generateDashboard('tb');"><?= _translate("TB Tests"); ?></a></li>
-				<?php }
-				if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true && array_intersect($_SESSION['modules'], array('cd4'))) { ?>
-					<li><a href="#cd4Dashboard" data-toggle="tab" onclick="generateDashboard('cd4');"><?= _translate("CD4 Tests"); ?></a></li>
-				<?php }
-				if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true && array_intersect($_SESSION['modules'], array('generic-tests'))) { ?>
-					<li><a href="#genericTestsDashboard" data-toggle="tab" onclick="generateDashboard('generic-tests');"><?= _translate("Other Lab Tests"); ?></a></li>
-				<?php }
-				if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync'] === true) { ?>
-					<li><a href="#recencyDashboard" data-name="recency" data-toggle="tab" onclick="generateDashboard('recency')">
-							<?= _translate("Confirmation Tests for Recency"); ?>
-						</a></li>
-				<?php } ?>
+				<?php
+				foreach ($activeTests as $module) {
+					// Check if user has access to this module
+					if (in_array($module, $userModules)) {
+						$isFirstTab = ($module === $activeTests[0] && in_array($module, $userModules));
+						$activeClass = $isFirstTab ? ' class="active"' : '';
+						// Convert module name to camelCase dashboard ID (e.g., 'generic-tests' -> 'genericTestsDashboard')
+						$dashboardId = lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $module)))) . 'Dashboard';
+						$testName = TestsService::getTestName($module);
+						echo "<li{$activeClass}><a href=\"#{$dashboardId}\" data-toggle=\"tab\" onclick=\"generateDashboard('{$module}');\">{$testName}</a></li>";
+					}
+				}
+
+				// Recency module (different config path)
+				if (!empty(SYSTEM_CONFIG['recency']['vlsync'])) {
+					echo '<li><a href="#recencyDashboard" data-toggle="tab" onclick="generateDashboard(\'recency\');">' . _translate('Confirmation Tests for Recency') . '</a></li>';
+				}
+				?>
 			</ul>
 			<div id="myTabContent" class="tab-content">
 

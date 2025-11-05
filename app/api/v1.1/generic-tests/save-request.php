@@ -500,7 +500,7 @@ try {
         'error' => _translate('Failed to process this request. Please contact the system administrator if the problem persists'),
         'data' => []
     ];
-    LoggerUtility::log('error', $exc->getMessage(), [
+    LoggerUtility::logError($exc->getMessage(), [
         'file' => $exc->getFile(),
         'line' => $exc->getLine(),
         'trace' => $exc->getTraceAsString()

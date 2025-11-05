@@ -4,13 +4,14 @@ use App\Services\BatchService;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Helpers\BatchPdfHelper;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
-use App\Helpers\CustomBatchPdfHelper;
 use App\Registries\ContainerRegistry;
+use App\Helpers\CompactBatchPdfHelper;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -101,7 +102,7 @@ try {
 
         if (!empty($bResult)) {
             // create new PDF document
-            $pdf = new CustomBatchPdfHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+            $pdf = new CompactBatchPdfHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
             //$pdf->setHeading($bResult);
             $pdf->setHeading($bResult);
@@ -244,9 +245,9 @@ try {
                                 $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
                             }
                             if ($barcodeFormat == 'QRCODE') {
-                                $tbl .= '<img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">' . '<br>';
+                                $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '<br>';
                             } else {
-                                $tbl .= '<img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">' . '<br>';
+                                $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '<br>';
                             }
 
                             if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
@@ -333,9 +334,9 @@ try {
                                 $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
                             }
                             if ($barcodeFormat == 'QRCODE') {
-                                $tbl .= '<img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">' . '<br>';
+                                $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '<br>';
                             } else {
-                                $tbl .= '<img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sampleResult[0]['sample_code'], $barcodeFormat) . '">' . '<br>';
+                                $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sampleResult[0]['sample_code'], $barcodeFormat) . '<br>';
                             }
                             if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                                 $tbl .= 'Remote Sample ID : ' . $sampleResult[0]['remote_sample_code'] . '<br>';
@@ -472,9 +473,9 @@ try {
                         $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
                     }
                     if ($barcodeFormat == 'QRCODE') {
-                        $tbl .= '<img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"><br>';
+                        $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sample['sample_code'], $barcodeFormat) . '<br>';
                     } else {
-                        $tbl .= '<img style="width:200px;height:25px;" src="' . $general->getBarcodeImageContent($sample['sample_code'], $barcodeFormat) . '"><br>';
+                        $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sample['sample_code'], $barcodeFormat) . '<br>';
                     }
                     if (isset($_GET['type']) && $_GET['type'] == 'covid19') {
                         $tbl .= 'Remote Sample ID : ' . $sample['remote_sample_code'] . '<br>';

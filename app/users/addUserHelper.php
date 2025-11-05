@@ -167,7 +167,7 @@ try {
 
     $general->activityLog($eventType, $action, $resource);
 } catch (Throwable $exc) {
-    LoggerUtility::log('error', $exc->getMessage(), [
+    LoggerUtility::logError($exc->getMessage(), [
         'exception' => $exc->getMessage(),
         'file' => $exc->getFile(),
         'line' => $exc->getLine()

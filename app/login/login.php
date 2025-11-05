@@ -5,8 +5,11 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\SecurityService;
-use App\Exceptions\SystemException;
+use App\Services\SystemService;
 use App\Registries\ContainerRegistry;
+
+/** @var CommonService|null $commonService */
+$commonService = null;
 
 if (isset($_SESSION['userId'])) {
 	SecurityService::redirect("/dashboard/index.php", rotateCSRF: false);
@@ -15,9 +18,25 @@ if (isset($_SESSION['userId'])) {
 	if (!empty($_SESSION['alertMsg'])) {
 		$alertMessage = $_SESSION['alertMsg'];
 	}
+	$currentLocale = $_SESSION['APP_LOCALE'] ?? 'en_US';
+
+	/** @var CommonService $commonService */
+	$commonService = ContainerRegistry::get(CommonService::class);
+	$ipAddress = $commonService->getClientIpAddress();
+	$ipSessionData = $_SESSION[$ipAddress] ?? null;
 
 	SecurityService::resetSession();
 	SecurityService::restartSession();
+
+	$_SESSION['APP_LOCALE'] = $currentLocale;
+
+	/** @var SystemService $systemService */
+	$systemService = ContainerRegistry::get(SystemService::class);
+	$systemService->setLocale($currentLocale);
+
+	if ($ipSessionData !== null) {
+		$_SESSION[$ipAddress] = $ipSessionData;
+	}
 	if (isset($alertMessage) && trim((string) $_SESSION['alertMsg']) != "") {
 		$_SESSION['alertMsg'] = $alertMessage;
 	}
@@ -54,7 +73,7 @@ SecurityService::rotateCSRF();
 
 
 /** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+$general = $commonService ?? ContainerRegistry::get(CommonService::class);
 
 $ipAddress = $general->getClientIpAddress();
 
@@ -98,7 +117,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 <!-- LOGIN PAGE -->
 <?php $_SESSION['csrf_token'] ??= MiscUtility::generateRandomString(); ?>
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['APP_LOCALE']; ?>">
+<html lang="<?= $currentLocale; ?>">
 
 <head>
 	<meta charset="utf-8">

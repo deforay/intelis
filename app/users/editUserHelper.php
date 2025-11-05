@@ -76,7 +76,7 @@ try {
         if (isset($_POST['removedSignatureImage']) && trim((string) $_POST['removedSignatureImage']) != "") {
             $fImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];
             if (!empty($fImagePath) && file_exists($fImagePath)) {
-                unlink($fImagePath);
+                MiscUtility::deleteFile($fImagePath);
             }
             $data['user_signature'] = null;
         }
@@ -115,7 +115,7 @@ try {
                 ]);
                 $response = json_decode($result->getBody()->getContents());
                 if ($response->status == 'fail') {
-                    LoggerUtility::log('error', 'Recency profile not updated! for the user ' . $_POST['userName']);
+                    LoggerUtility::logError('Recency profile not updated! for the user ' . $_POST['userName']);
                 }
             }
 

@@ -282,7 +282,7 @@ try {
                 //echo ("Service Status:" . $status) . "<br>";
             }
         } catch (SystemException $e) {
-            LoggerUtility::log('error', $e->getMessage(), [
+            LoggerUtility::logError($e->getMessage(), [
                 'line' => $e->getLine(),
                 'file' => $e->getFile(),
                 'taskId' => $taskId ?? null,
@@ -348,9 +348,9 @@ try {
             //continue;
             $id = $db->insert("form_vl", $data);
             //echo "<h1>" . $id . "</h1>";
-            //LoggerUtility::log('error', "Error in Receive Rwanda FHIR Script : " . $db->getLastError() . PHP_EOL);
+            //LoggerUtility::logError("Error in Receive Rwanda FHIR Script : " . $db->getLastError() . PHP_EOL);
         } catch (Throwable $e) {
-            LoggerUtility::log('error', "Error in Receive Rwanda FHIR Script : " . $db->getLastError() . PHP_EOL);
+            LoggerUtility::logError("Error in Receive Rwanda FHIR Script : " . $db->getLastError() . PHP_EOL);
             throw new SystemException($e->getMessage(), $e->getCode(), $e);
         }
 
@@ -380,7 +380,7 @@ try {
         'processed' => $processedCounter,
         'errors' => ['Error while processing FHIR data: ' . $exception->getMessage()]
     ];
-    LoggerUtility::log('error', "Error while receiving FHIR data : " . $exception->getMessage());
+    LoggerUtility::logError("Error while receiving FHIR data : " . $exception->getMessage());
 }
 
 header('Content-Type: application/json');

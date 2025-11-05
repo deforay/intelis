@@ -118,9 +118,41 @@ try {
     }
 
     if ($sampleIds) {
+        $sampleIds = array_values(array_unique(array_filter(
+            $sampleIds,
+            static fn($id) => $id !== null && $id !== ''
+        )));
+
+        $maxRetries = 5;
+
         foreach (array_chunk($sampleIds, 100) as $batch) {
-            $db->where($primaryKeyName, $batch, 'IN');
-            $db->update($tableName, ['data_sync' => 1]);
+            $attempt = 0;
+
+            while (true) {
+                $db->where($primaryKeyName, $batch, 'IN');
+                $updateResult = $db->update($tableName, ['data_sync' => 1]);
+
+                if ($updateResult !== false) {
+                    break;
+                }
+
+                $errorCode = (int) $db->getLastErrno();
+
+                if (!in_array($errorCode, [1205, 1213], true)) {
+                    throw new SystemException(
+                        $db->getLastError() ?: 'Failed to update data_sync flag',
+                        $errorCode ?: 500
+                    );
+                }
+
+                if ($attempt >= $maxRetries) {
+                    throw new SystemException('Unable to mark samples as synced due to persistent database locks', 1205);
+                }
+
+                $attempt++;
+                usleep((int) (100000 * $attempt)); // Back off progressively
+                $db->reset(); // Clear state before retrying
+            }
         }
     }
 
@@ -135,7 +167,7 @@ try {
     $_SESSION['errorDisplayMessage'] = _translate('Unable to process the request');
 
     // Log extra context if you want
-    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
         'exception'     => $e,

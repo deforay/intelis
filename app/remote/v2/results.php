@@ -14,6 +14,7 @@ use App\Services\STS\ResultsService as STSResultsService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+$db->ensureConnection();
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);

@@ -66,7 +66,7 @@ $db->rawQuery($sql);
 $vlForm = (int) $general->getGlobalConfig('vl_form');
 
 $aColumns = array('p.manifest_code', 'p.module', 'facility_name', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
-$orderColumns = array('p.manifest_id', 'p.module', 'facility_name', 'p.manifest_code', 'p.manifest_id', 'p.request_created_datetime');
+$orderColumns = array('p.manifest_code', 'p.module', 'facility_name', 'p.number_of_samples', 'p.request_created_datetime');
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -112,8 +112,6 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-
-
 $sQuery = "SELECT p.request_created_datetime,
             p.manifest_code, p.manifest_status,
             p.module, p.manifest_id, p.number_of_samples,
@@ -122,8 +120,7 @@ $sQuery = "SELECT p.request_created_datetime,
             LEFT JOIN facility_details lab on lab.facility_id = p.lab_id";
 
 if (!empty($_SESSION['facilityMap'])) {
-    $sQuery .= " INNER JOIN $tableName t on t.sample_package_id = p.manifest_id ";
-    $sWhere[] = " t.facility_id IN(" . $_SESSION['facilityMap'] . ") ";
+    $sWhere[] = " EXISTS (SELECT 1 FROM $tableName t WHERE t.sample_package_code = p.manifest_code AND t.facility_id IN(" . $_SESSION['facilityMap'] . ")) ";
 }
 
 if (!empty($sWhere)) {
@@ -133,7 +130,6 @@ if (!empty($sWhere)) {
 }
 
 $sQuery = $sQuery . ' ' . $sWhere;
-$sQuery = $sQuery . ' GROUP BY p.manifest_id';
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -142,7 +138,6 @@ if (!empty($sOrder) && $sOrder !== '') {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-
 [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
 
@@ -187,9 +182,7 @@ foreach ($rResult as $aRow) {
         $aRow['module'] = "OTHER LAB TESTS ";
     }
     $row = [];
-    $manifestHash = $testRequestsService->getManifestHash([], $testType, $aRow['manifest_code']);
-    $tooltip = "<span class='top-tooltip' title='Manifest Hash: " . $manifestHash . "'>" . $aRow['manifest_code'] . "</span>";
-    $row[] = $tooltip;
+    $row[] = $aRow['manifest_code'];
     $row[] = strtoupper((string) $aRow['module']);
     $row[] = $aRow['labName'];
     $row[] = $aRow['number_of_samples'];

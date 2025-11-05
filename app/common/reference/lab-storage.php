@@ -68,9 +68,6 @@ $general = ContainerRegistry::get(CommonService::class);
 	$(document).ready(function() {
 		$.blockUI();
 		oTable = $('#labStorageTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

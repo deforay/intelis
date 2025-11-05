@@ -28,10 +28,10 @@ try {
     // Rollback transaction in case of error
     $db->rollbackTransaction();
     if (!empty($db->getLastError())) {
-        LoggerUtility::log('error', $e->getFile() . ':' . $e->getLine() . ":" . $db->getLastErrno() . ":" . $db->getLastError());
-        LoggerUtility::log('error', $e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
+        LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastErrno() . ":" . $db->getLastError());
+        LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
     }
-    LoggerUtility::log('error', $e->getFile() . ':' . $e->getLine()  . ':' .  $e->getMessage(), [
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine()  . ':' .  $e->getMessage(), [
         'exception' => $e,
         'file' => $e->getFile(), // File where the error occurred
         'line' => $e->getLine(), // Line number of the error

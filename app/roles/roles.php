@@ -64,9 +64,6 @@ require_once APPLICATION_PATH . '/header.php';
   $(document).ready(function() {
     $.blockUI();
     oTable = $('#roleDataTable').dataTable({
-      "oLanguage": {
-        "sLengthMenu": "_MENU_ records per page"
-      },
       "bJQueryUI": false,
       "bAutoWidth": false,
       "bInfo": true,

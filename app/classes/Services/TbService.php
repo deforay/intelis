@@ -28,7 +28,7 @@ final class TbService extends AbstractTestService
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (Throwable $e) {
-                LoggerUtility::log('error', 'Generate Sample ID : ' . $e->getMessage(), [
+                LoggerUtility::logError('Generate Sample ID : ' . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error
@@ -256,7 +256,7 @@ final class TbService extends AbstractTestService
             $this->db->rollbackTransaction();
 
             // Log error with context
-            LoggerUtility::log('error', 'Insert Sample Error: ' . $e->getMessage(), [
+            LoggerUtility::logError('Insert Sample Error: ' . $e->getMessage(), [
                 'exception' => $e,
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),

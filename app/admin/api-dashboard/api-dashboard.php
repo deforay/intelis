@@ -2,11 +2,11 @@
 // api-dashboard.php
 
 use App\Services\CommonService;
-use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
+use App\Services\TestsService;
 
 $title = _translate("API/EMR Dashboard");
 require_once APPLICATION_PATH . '/header.php';
@@ -25,7 +25,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $facility = $facilitiesService->getHealthFacilities();
 $labNameList = $facilitiesService->getTestingLabs();
-$activeModules = SystemService::getActiveModules();
+$activeTests = TestsService::getActiveTests();
 $state = $geolocationService->getProvinces("yes");
 
 ?>
@@ -242,22 +242,22 @@ $state = $geolocationService->getProvinces("yes");
                             <td><strong><?= _translate('Test Type'); ?>&nbsp;:</strong></td>
                             <td>
                                 <select id="testType" name="testType" class="form-control" style="width:150px;">
-                                    <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
+                                    <?php if (!empty($activeTests) && in_array('vl', $activeTests)) { ?>
                                         <option value="vl"><?= _translate("Viral Load"); ?></option>
                                     <?php }
-                                    if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
+                                    if (!empty($activeTests) && in_array('eid', $activeTests)) { ?>
                                         <option value="eid"><?= _translate("Early Infant Diagnosis"); ?></option>
                                     <?php }
-                                    if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
+                                    if (!empty($activeTests) && in_array('covid19', $activeTests)) { ?>
                                         <option value="covid19"><?= _translate("Covid-19"); ?></option>
                                     <?php }
-                                    if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
+                                    if (!empty($activeTests) && in_array('hepatitis', $activeTests)) { ?>
                                         <option value='hepatitis'><?= _translate("Hepatitis"); ?></option>
                                     <?php }
-                                    if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
+                                    if (!empty($activeTests) && in_array('tb', $activeTests)) { ?>
                                         <option value='tb'><?= _translate("TB"); ?></option>
                                     <?php }
-                                    if (!empty($activeModules) && in_array('cd4', $activeModules)) { ?>
+                                    if (!empty($activeTests) && in_array('cd4', $activeTests)) { ?>
                                         <option value='cd4'><?= _translate("CD4"); ?></option>
                                     <?php } ?>
                                 </select>

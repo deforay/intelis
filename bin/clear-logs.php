@@ -1,11 +1,15 @@
 #!/usr/bin/env php
 <?php
 
+use App\Utilities\MiscUtility;
+
 // bin/clear-logs.php
 // Removes generated log files while keeping sentinel files intact.
 // Options:
 //   --keep=<number>   Keep the newest N log files (default: 0)
 //   --days=<number>   Keep log files newer than N days (default: 0)
+
+require_once __DIR__ . '/../bootstrap.php';
 
 if (PHP_SAPI !== 'cli') {
     exit(0);
@@ -84,7 +88,7 @@ foreach ($files as $fileInfo) {
         continue;
     }
 
-    if (@unlink($fileInfo['path'])) {
+    if (MiscUtility::deleteFile($fileInfo['path'])) {
         $removedFiles++;
     } else {
         $errors[] = $fileInfo['path'];
