@@ -98,7 +98,6 @@ if (!empty($sOrder) && $sOrder !== '') {
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-die($sQuery);
 [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 $output = [
      "sEcho" => (int) $_POST['sEcho'],
