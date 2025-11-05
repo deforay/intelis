@@ -19,6 +19,7 @@ final class DatabaseService extends MysqliDb
     private $isTransactionActive = false;
     private $useSavepoints = false;
     private string $sessionCollation = 'utf8mb4_unicode_ci';
+    private string $sessionCharset = 'utf8mb4';
 
     public function __construct($host = null, $username = null, $password = null, $db = null, $port = null, $charset = 'utf8mb4')
     {
@@ -40,8 +41,10 @@ final class DatabaseService extends MysqliDb
 
         parent::__construct($host, $username, $password, $db, $port, $charset);
 
+        $this->sessionCharset = $charset ?: 'utf8mb4';
+
         // Ensure charset on the mysqli handle
-        mysqli_set_charset($this->mysqli(), $charset);
+        mysqli_set_charset($this->mysqli(), $this->sessionCharset);
 
         // Prefer the current database's default collation
         $rowDb = $this->rawQueryOne("SHOW VARIABLES LIKE 'collation_database'");
@@ -56,10 +59,7 @@ final class DatabaseService extends MysqliDb
         // Final fallback for very old installs
         $this->sessionCollation = $collation ?: 'utf8mb4_unicode_ci';
 
-        // Apply for this connection/session
-        // (Use tokens, no quotes needed for SET NAMES)
-        $this->rawQuery("SET NAMES {$charset} COLLATE {$this->sessionCollation}");
-        $this->rawQuery("SET collation_connection = '{$this->sessionCollation}'");
+        $this->applySessionSettings();
     }
 
     public function getMySQLVersion(): string
@@ -176,6 +176,62 @@ final class DatabaseService extends MysqliDb
             $references[$key] = &$values[$key];
         }
         return $references;
+    }
+
+    private function applySessionSettings(): void
+    {
+        try {
+            mysqli_set_charset($this->mysqli(), $this->sessionCharset);
+        } catch (Throwable $e) {
+            LoggerUtility::logWarning('Failed to set mysqli charset: ' . $e->getMessage());
+        }
+
+        $charset = $this->sessionCharset ?: 'utf8mb4';
+        $collation = $this->sessionCollation ?: 'utf8mb4_unicode_ci';
+
+        try {
+            $this->rawQuery("SET NAMES {$charset} COLLATE {$collation}");
+            $this->rawQuery("SET collation_connection = '{$collation}'");
+        } catch (Throwable $e) {
+            LoggerUtility::logWarning('Failed to apply session collation settings: ' . $e->getMessage());
+        }
+    }
+
+    public function ensureConnection(): void
+    {
+        $needsReconnect = false;
+
+        try {
+            $needsReconnect = !$this->ping();
+        } catch (Throwable $e) {
+            $needsReconnect = true;
+            LoggerUtility::logWarning('Database ping failed: ' . $e->getMessage());
+        }
+
+        if ($needsReconnect) {
+            $this->reconnect();
+        }
+    }
+
+    private function reconnect(): void
+    {
+        try {
+            $this->disconnectAll();
+        } catch (Throwable $e) {
+            LoggerUtility::logWarning('Failed to disconnect database connection cleanly: ' . $e->getMessage());
+        }
+
+        $connectionName = $this->defConnectionName ?? 'default';
+
+        try {
+            $this->connect($connectionName);
+            $this->isTransactionActive = false;
+            $this->useSavepoints = false;
+            $this->applySessionSettings();
+        } catch (Throwable $e) {
+            LoggerUtility::logError('Database reconnect attempt failed: ' . $e->getMessage());
+            throw new SystemException('Unable to reconnect to the database', 500, $e);
+        }
     }
 
     /**
