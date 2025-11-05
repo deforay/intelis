@@ -245,20 +245,11 @@ final class ResultsService
 
                     $localRecord = $this->testRequestsService->findMatchingLocalRecord($resultFromLab, $this->tableName, $this->primaryKeyName);
 
-                    $formAttributesValue = $resultFromLab['form_attributes'] ?? null;
-
-                    if (is_string($formAttributesValue) && $formAttributesValue !== '') {
-                        if (!JsonUtility::isJSON($formAttributesValue)) {
-                            LoggerUtility::logWarning('Ignoring invalid form_attributes JSON from STS', [
-                                'test_type' => $this->testType,
-                                'sample_code' => $resultFromLab['sample_code'] ?? null,
-                                'remote_form_attributes_preview' => substr($formAttributesValue, 0, 500),
-                            ]);
-                            $formAttributesValue = null;
-                        }
-                    }
-
-                    $formAttributes = JsonUtility::jsonToSetString($formAttributesValue, 'form_attributes');
+                    $formAttributes = JsonUtility::jsonToSetString(
+                        $localRecord['form_attributes'] ?? null,
+                        'form_attributes',
+                        $resultFromLab['form_attributes'] ?? null
+                    );
                     $resultFromLab['form_attributes'] = !empty($formAttributes) ? $this->db->func($formAttributes) : null;
 
 

@@ -202,12 +202,27 @@ final class JsonUtility
     // Convert a JSON string to a string that can be used with JSON_SET()
     public static function jsonToSetString(?string $json, string $column, $newData = []): ?string
     {
-        // Decode JSON string to array
-        $jsonData = $json && self::isJSON($json) ? json_decode($json, true) : [];
+        // Normalize existing JSON data
+        $jsonData = [];
+        if (is_array($json)) {
+            $jsonData = $json;
+        } elseif (is_string($json) && trim($json) !== '' && self::isJSON($json)) {
+            $decoded = json_decode($json, true);
+            if (is_array($decoded)) {
+                $jsonData = $decoded;
+            }
+        }
 
-        // Decode newData if it's a string
-        if (is_string($newData) && self::isJSON($newData)) {
+        // Normalize new data
+        if (is_string($newData) && trim($newData) !== '' && self::isJSON($newData)) {
             $newData = json_decode($newData, true);
+        }
+        if (!is_array($newData)) {
+            $newData = [];
+        }
+
+        if (!is_array($jsonData)) {
+            $jsonData = [];
         }
 
         // Combine original data and new data
@@ -222,6 +237,9 @@ final class JsonUtility
         $setString = '';
         foreach ($data as $key => $value) {
             $encoded = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            if ($encoded === false) {
+                continue;
+            }
             // Escape single quotes for SQL literal (standard MySQL escaping)
             $encoded = str_replace("'", "''", $encoded);
 
