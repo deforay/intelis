@@ -217,7 +217,7 @@ try {
         $row[] = ($aRow['facility_name']);
         $row[] = $tbResults[$aRow['result']];
         $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
-        $row[] = $status;
+       // $row[] = $status;
 
         $output['aaData'][] = $row;
     }

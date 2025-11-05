@@ -196,7 +196,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['facility_name']);
     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
-    $row[] = $status;
+   // $row[] = $status;
 
     $output['aaData'][] = $row;
 }
