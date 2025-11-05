@@ -10,12 +10,17 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
+if (!defined('RESULTS_SENDER_DEFAULT_CHUNK_SIZE')) {
+    define('RESULTS_SENDER_DEFAULT_CHUNK_SIZE', 1000);
+}
+
 // Services & utilities
 use App\Services\TbService;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\TestsService;
 use App\Services\Covid19Service;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -58,9 +63,11 @@ function showHelp(SymfonyStyle $io): void
     $io->section('Positionals / Flags');
     $io->definitionList(
         ['MODULE' => 'Optional. One of: vl, eid, covid19, hepatitis, tb, cd4, generic-tests'],
+        ['-t, --test' => 'Optional. Same as MODULE positional; accepts a value (e.g. -t vl)'],
         ['<date>' => 'Optional. Send results modified since date (YYYY-MM-DD), e.g. 2025-01-01'],
         ['<days>' => 'Optional. Send results modified in the last N days, e.g. 7'],
         ['silent' => 'Optional. Suppresses certain notifications / timestamp bumps where applicable'],
+        ['-c, --chunk-size' => 'Optional. Number of records per request (default ' . RESULTS_SENDER_DEFAULT_CHUNK_SIZE . ')'],
         ['-h, --help, help' => 'Show this help and exit']
     );
 
@@ -68,11 +75,13 @@ function showHelp(SymfonyStyle $io): void
     $io->listing([
         'php results-sender.php',
         'php results-sender.php vl',
+        'php results-sender.php -t vl',
         'php results-sender.php 7',
         'php results-sender.php 2025-01-01',
         'php results-sender.php covid19 3',
         'php results-sender.php eid silent',
         'php results-sender.php hepatitis 2025-01-01 silent',
+        'php results-sender.php vl -c 500',
     ]);
 
     $io->section('Notes');
@@ -129,6 +138,32 @@ function buildReferralManifestsPayload(DatabaseService $db, string $testType, ?a
     return $rows ?: [];
 }
 
+/**
+ * Decode list of acknowledged sample codes returned by STS.
+ *
+ * @return array<int,string>
+ */
+function decodeAcknowledgedSampleCodes(string $jsonResponse, string $testType): array
+{
+    $decoded = json_decode($jsonResponse, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        $message = json_last_error_msg();
+        throw new \RuntimeException("Failed to decode $testType acknowledgement: $message");
+    }
+
+    if (!is_array($decoded)) {
+        throw new \RuntimeException("Unexpected acknowledgement format received for $testType results.");
+    }
+
+    $filtered = array_filter(
+        $decoded,
+        static fn($code) => is_string($code) && $code !== ''
+    );
+
+    return array_values(array_unique($filtered));
+}
+
 // Check for help flag early
 if ($cliMode) {
     $args = array_slice($_SERVER['argv'], 1);
@@ -167,34 +202,93 @@ $isSilent = false;
 $syncSinceDate = null;
 $forceSyncModule = null;
 $sampleCode = null;
+$chunkSize = RESULTS_SENDER_DEFAULT_CHUNK_SIZE;
 
 if ($cliMode) {
+    $validModules = TestsService::getActiveTests();
+    $awaitingTestType = false;
+    $awaitingChunkSize = false;
+
     foreach ($argv as $index => $arg) {
-        if ($index === 0) continue;
+        if ($index === 0) {
+            continue;
+        }
 
         $arg = trim($arg);
 
+        if ($awaitingTestType) {
+            $moduleCandidate = strtolower($arg);
+            if (!in_array($moduleCandidate, $validModules, true)) {
+                $io->error("Invalid test type specified for -t/--test: $arg");
+                exit(1);
+            }
+            $forceSyncModule = $moduleCandidate;
+            $awaitingTestType = false;
+            continue;
+        }
+
+        if ($awaitingChunkSize) {
+            if (!ctype_digit($arg) || (int) $arg < 1) {
+                $io->error("Chunk size must be a positive integer. Received: $arg");
+                exit(1);
+            }
+            $chunkSize = max(1, (int) $arg);
+            $awaitingChunkSize = false;
+            continue;
+        }
+
         if ($arg === 'silent') {
             $isSilent = true;
+        } elseif ($arg === '-t' || $arg === '--test') {
+            $awaitingTestType = true;
+        } elseif ($arg === '-c' || $arg === '--chunk-size') {
+            $awaitingChunkSize = true;
+        } elseif (str_starts_with($arg, '--test=')) {
+            $moduleCandidate = strtolower(substr($arg, strlen('--test=')));
+            if (!in_array($moduleCandidate, $validModules, true)) {
+                $io->error("Invalid test type specified for --test: $moduleCandidate");
+                exit(1);
+            }
+            $forceSyncModule = $moduleCandidate;
+        } elseif (str_starts_with($arg, '--chunk-size=')) {
+            $value = substr($arg, strlen('--chunk-size='));
+            if (!ctype_digit($value) || (int) $value < 1) {
+                $io->error("Chunk size must be a positive integer. Received: $value");
+                exit(1);
+            }
+            $chunkSize = max(1, (int) $value);
         } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
             $syncSinceDate ??= DateUtility::getDateTime($arg, 'Y-m-d');
         } elseif (is_numeric($arg)) {
             $syncSinceDate ??= DateUtility::daysAgo((int)$arg);
-        } elseif (in_array($arg, ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'cd4', 'generic-tests'])) {
-            $forceSyncModule = $arg;
+        } elseif (in_array(strtolower($arg), $validModules, true)) {
+            $forceSyncModule = strtolower($arg);
         } else {
             $io->error("Invalid argument: $arg");
             exit(1);
         }
     }
 
+    if ($awaitingTestType) {
+        $io->error("Missing test type value after -t/--test");
+        exit(1);
+    }
+
+    if ($awaitingChunkSize) {
+        $io->error("Missing chunk size value after -c/--chunk-size");
+        exit(1);
+    }
+
     if ($syncSinceDate !== null) {
+        $syncSinceDate = DateUtility::getDateTime($syncSinceDate, 'Y-m-d H:i:s');
         $io->text("Syncing results since: $syncSinceDate");
     }
 
     if ($forceSyncModule !== null) {
         $io->text("Forcing module sync for: $forceSyncModule");
     }
+
+    $io->text("Chunk size per request: $chunkSize");
 }
 
 // Web fallback
@@ -238,7 +332,7 @@ try {
         }
 
         if (null !== $syncSinceDate) {
-            $genericQuery .= " AND DATE(generic.last_modified_datetime) >= '$syncSinceDate'";
+            $genericQuery .= " AND generic.last_modified_datetime >= '$syncSinceDate'";
         } else {
             $genericQuery .= " AND generic.data_sync = 0";
         }
@@ -246,19 +340,19 @@ try {
         $db->reset();
         $genericLabResult = $db->rawQuery($genericQuery);
         $count = count($genericLabResult);
-        if ($cliMode) {
-            $io->text("Selected $count row(s) in " . tdone($t) . "s");
-        }
 
-        $payload = null;
-        $jsonResponse = null;
         $acked = 0;
+        $totalChunks = 0;
 
         if ($count === 0) {
             if ($cliMode) {
                 $io->text("Nothing to send for Custom Tests.");
             }
         } else {
+
+            if ($cliMode) {
+                $io->text("Selected $count row(s) in " . tdone($t) . "s");
+            }
             /** @var GenericTestsService $genericService */
             $genericService = ContainerRegistry::get(GenericTestsService::class);
 
@@ -278,38 +372,69 @@ try {
                 $io->comment("Built payload in " . tdone($tBuild) . "s");
             }
 
-            // POST
-            if ($cliMode) {
-                $io->text("Posting $count records to $remoteURL...");
-            }
-            $tPost = t0();
-            $payload = [
-                "labId" => $labId,
-                "results" => $customTestResultData,
-                "testType" => "generic-tests",
-                'timestamp' => DateUtility::getCurrentTimestamp(),
-                "instanceId" => $general->getInstanceId(),
-                "silent" => $isSilent
-            ];
-            $jsonResponse = $apiService->post($url, $payload, gzip: true);
-            if ($cliMode) {
-                $io->comment("POST completed in " . tdone($tPost) . "s");
-            }
+            $chunks = array_chunk($customTestResultData, max(1, $chunkSize), true);
+            $totalChunks = count($chunks);
 
-            $result = json_decode($jsonResponse, true);
-            $acked = count($result ?? []);
+            foreach ($chunks as $chunkIndex => $chunk) {
+                $chunkNumber = $chunkIndex + 1;
+                $chunkCount = count($chunk);
 
-            // Update flags
-            if (!empty($result)) {
                 if ($cliMode) {
-                    $io->text("Updating local flags for $acked row(s)...");
+                    $io->text(sprintf(
+                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        $chunkNumber,
+                        $totalChunks,
+                        $chunkCount,
+                        $chunkCount === 1 ? '' : 's',
+                        $remoteURL
+                    ));
                 }
-                $tUpd = t0();
-                $db->where('sample_code', $result, 'IN');
-                $db->update('form_generic', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                $tPost = t0();
+                $payload = [
+                    "labId" => $labId,
+                    "results" => $chunk,
+                    "testType" => "generic-tests",
+                    'timestamp' => DateUtility::getCurrentTimestamp(),
+                    "instanceId" => $general->getInstanceId(),
+                    "silent" => $isSilent
+                ];
+                $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
                 }
+
+                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'generic-tests');
+                $acked += count($acknowledgedSamples);
+
+                if (!empty($acknowledgedSamples)) {
+                    if ($cliMode) {
+                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
+                    }
+                    $tUpd = t0();
+                    $db->where('sample_code', $acknowledgedSamples, 'IN');
+                    $db->update('form_generic', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    if ($cliMode) {
+                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    }
+                }
+
+                if ($cliMode) {
+                    $io->comment(sprintf('Acknowledged %d/%d so far', $acked, $count));
+                }
+
+                $chunkTransactionId = $transactionId . '-generic-tests-' . str_pad((string) $chunkNumber, 3, '0', STR_PAD_LEFT);
+                $general->addApiTracking(
+                    $chunkTransactionId,
+                    'intelis-system',
+                    $chunkCount,
+                    'send-results',
+                    'generic-tests',
+                    $url,
+                    $payload,
+                    $acknowledgedSamples,
+                    'json',
+                    $labId
+                );
             }
 
             if ($cliMode) {
@@ -317,7 +442,26 @@ try {
             }
         }
 
-        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
+        $summaryRequest = [
+            'recordsSelected' => $count,
+            'chunkSize' => $chunkSize,
+            'chunksProcessed' => $totalChunks,
+        ];
+        $summaryResponse = [
+            'recordsAcknowledged' => $acked,
+        ];
+        $general->addApiTracking(
+            $transactionId,
+            'intelis-system',
+            $count,
+            'send-results',
+            'generic-tests',
+            $url,
+            $summaryRequest,
+            $summaryResponse,
+            'json',
+            $labId
+        );
     }
 
     // ----------------------- VL -----------------------
@@ -338,7 +482,7 @@ try {
             $vlQuery .= " AND sample_code LIKE '$sampleCode'";
         }
         if (null !== $syncSinceDate) {
-            $vlQuery .= " AND DATE(vl.last_modified_datetime) >= '$syncSinceDate'";
+            $vlQuery .= " AND vl.last_modified_datetime >= '$syncSinceDate'";
         } else {
             $vlQuery .= " AND vl.data_sync = 0";
         }
@@ -346,13 +490,9 @@ try {
         $db->reset();
         $vlLabResult = $db->rawQuery($vlQuery);
         $count = count($vlLabResult);
-        if ($cliMode) {
-            $io->text("Selected $count row(s) in " . tdone($t) . "s");
-        }
 
-        $payload = null;
-        $jsonResponse = null;
         $acked = 0;
+        $totalChunks = 0;
 
         if ($count === 0) {
             if ($cliMode) {
@@ -360,34 +500,71 @@ try {
             }
         } else {
             if ($cliMode) {
-                $io->text("Posting $count records to $remoteURL...");
+                $io->text("Selected $count row(s) in " . tdone($t) . "s");
             }
-            $tPost = t0();
-            $payload = [
-                "labId" => $labId,
-                "results" => $vlLabResult,
-                "testType" => "vl",
-                'timestamp' => DateUtility::getCurrentTimestamp(),
-                "instanceId" => $general->getInstanceId()
-            ];
-            $jsonResponse = $apiService->post($url, $payload, gzip: true);
-            if ($cliMode) {
-                $io->comment("POST completed in " . tdone($tPost) . "s");
-            }
+            $chunks = array_chunk($vlLabResult, max(1, $chunkSize), true);
+            $totalChunks = count($chunks);
 
-            $result = json_decode($jsonResponse, true);
-            $acked = count($result ?? []);
+            foreach ($chunks as $chunkIndex => $chunk) {
+                $chunkNumber = $chunkIndex + 1;
+                $chunkCount = count($chunk);
 
-            if (!empty($result)) {
                 if ($cliMode) {
-                    $io->text("Updating local flags for $acked row(s)...");
+                    $io->text(sprintf(
+                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        $chunkNumber,
+                        $totalChunks,
+                        $chunkCount,
+                        $chunkCount === 1 ? '' : 's',
+                        $remoteURL
+                    ));
                 }
-                $tUpd = t0();
-                $db->where('sample_code', $result, 'IN');
-                $db->update('form_vl', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+
+                $tPost = t0();
+                $payload = [
+                    "labId" => $labId,
+                    "results" => $chunk,
+                    "testType" => "vl",
+                    'timestamp' => DateUtility::getCurrentTimestamp(),
+                    "instanceId" => $general->getInstanceId()
+                ];
+                $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
                 }
+
+                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'vl');
+                $acked += count($acknowledgedSamples);
+
+                if (!empty($acknowledgedSamples)) {
+                    if ($cliMode) {
+                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
+                    }
+                    $tUpd = t0();
+                    $db->where('sample_code', $acknowledgedSamples, 'IN');
+                    $db->update('form_vl', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    if ($cliMode) {
+                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    }
+                }
+
+                if ($cliMode) {
+                    $io->comment(sprintf('Acknowledged %d/%d so far', $acked, $count));
+                }
+
+                $chunkTransactionId = $transactionId . '-vl-' . str_pad((string) $chunkNumber, 3, '0', STR_PAD_LEFT);
+                $general->addApiTracking(
+                    $chunkTransactionId,
+                    'intelis-system',
+                    $chunkCount,
+                    'send-results',
+                    'vl',
+                    $url,
+                    $payload,
+                    $acknowledgedSamples,
+                    'json',
+                    $labId
+                );
             }
 
             if ($cliMode) {
@@ -395,7 +572,26 @@ try {
             }
         }
 
-        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
+        $summaryRequest = [
+            'recordsSelected' => $count,
+            'chunkSize' => $chunkSize,
+            'chunksProcessed' => $totalChunks,
+        ];
+        $summaryResponse = [
+            'recordsAcknowledged' => $acked,
+        ];
+        $general->addApiTracking(
+            $transactionId,
+            'intelis-system',
+            $count,
+            'send-results',
+            'vl',
+            $url,
+            $summaryRequest,
+            $summaryResponse,
+            'json',
+            $labId
+        );
     }
 
     // ----------------------- EID -----------------------
@@ -416,7 +612,7 @@ try {
             $eidQuery .= " AND sample_code LIKE '$sampleCode'";
         }
         if (null !== $syncSinceDate) {
-            $eidQuery .= " AND DATE(vl.last_modified_datetime) >= '$syncSinceDate'";
+            $eidQuery .= " AND vl.last_modified_datetime >= '$syncSinceDate'";
         } else {
             $eidQuery .= " AND vl.data_sync = 0";
         }
@@ -424,48 +620,81 @@ try {
         $db->reset();
         $eidLabResult = $db->rawQuery($eidQuery);
         $count = count($eidLabResult);
-        if ($cliMode) {
-            $io->text("Selected $count row(s) in " . tdone($t) . "s");
-        }
 
-        $payload = null;
-        $jsonResponse = null;
         $acked = 0;
+        $totalChunks = 0;
 
         if ($count === 0) {
             if ($cliMode) {
                 $io->text("Nothing to send for EID.");
             }
         } else {
-            if ($cliMode) {
-                $io->text("Posting $count records to $remoteURL...");
-            }
-            $tPost = t0();
-            $payload = [
-                "labId" => $labId,
-                "results" => $eidLabResult,
-                "testType" => "eid",
-                'timestamp' => DateUtility::getCurrentTimestamp(),
-                "instanceId" => $general->getInstanceId()
-            ];
-            $jsonResponse = $apiService->post($url, $payload, gzip: true);
-            if ($cliMode) {
-                $io->comment("POST completed in " . tdone($tPost) . "s");
-            }
 
-            $result = json_decode($jsonResponse, true);
-            $acked = count($result ?? []);
+            if ($cliMode) {
+                $io->text("Selected $count row(s) in " . tdone($t) . "s");
+            }
+            $chunks = array_chunk($eidLabResult, max(1, $chunkSize), true);
+            $totalChunks = count($chunks);
 
-            if (!empty($result)) {
+            foreach ($chunks as $chunkIndex => $chunk) {
+                $chunkNumber = $chunkIndex + 1;
+                $chunkCount = count($chunk);
+
                 if ($cliMode) {
-                    $io->text("Updating local flags for $acked row(s)...");
+                    $io->text(sprintf(
+                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        $chunkNumber,
+                        $totalChunks,
+                        $chunkCount,
+                        $chunkCount === 1 ? '' : 's',
+                        $remoteURL
+                    ));
                 }
-                $tUpd = t0();
-                $db->where('sample_code', $result, 'IN');
-                $db->update('form_eid', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                $tPost = t0();
+                $payload = [
+                    "labId" => $labId,
+                    "results" => $chunk,
+                    "testType" => "eid",
+                    'timestamp' => DateUtility::getCurrentTimestamp(),
+                    "instanceId" => $general->getInstanceId()
+                ];
+                $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
                 }
+
+                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'eid');
+                $acked += count($acknowledgedSamples);
+
+                if (!empty($acknowledgedSamples)) {
+                    if ($cliMode) {
+                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
+                    }
+                    $tUpd = t0();
+                    $db->where('sample_code', $acknowledgedSamples, 'IN');
+                    $db->update('form_eid', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    if ($cliMode) {
+                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    }
+                }
+
+                if ($cliMode) {
+                    $io->comment(sprintf('Acknowledged %d/%d so far', $acked, $count));
+                }
+
+                $chunkTransactionId = $transactionId . '-eid-' . str_pad((string) $chunkNumber, 3, '0', STR_PAD_LEFT);
+                $general->addApiTracking(
+                    $chunkTransactionId,
+                    'intelis-system',
+                    $chunkCount,
+                    'send-results',
+                    'eid',
+                    $url,
+                    $payload,
+                    $acknowledgedSamples,
+                    'json',
+                    $labId
+                );
             }
 
             if ($cliMode) {
@@ -473,7 +702,26 @@ try {
             }
         }
 
-        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'eid', $url, $payload, $jsonResponse, 'json', $labId);
+        $summaryRequest = [
+            'recordsSelected' => $count,
+            'chunkSize' => $chunkSize,
+            'chunksProcessed' => $totalChunks,
+        ];
+        $summaryResponse = [
+            'recordsAcknowledged' => $acked,
+        ];
+        $general->addApiTracking(
+            $transactionId,
+            'intelis-system',
+            $count,
+            'send-results',
+            'eid',
+            $url,
+            $summaryRequest,
+            $summaryResponse,
+            'json',
+            $labId
+        );
     }
 
     // ----------------------- COVID-19 -----------------------
@@ -494,7 +742,7 @@ try {
             $covid19Query .= " AND sample_code LIKE '$sampleCode'";
         }
         if (null !== $syncSinceDate) {
-            $covid19Query .= " AND DATE(c19.last_modified_datetime) >= '$syncSinceDate'";
+            $covid19Query .= " AND c19.last_modified_datetime >= '$syncSinceDate'";
         } else {
             $covid19Query .= " AND c19.data_sync = 0";
         }
@@ -502,19 +750,20 @@ try {
         $db->reset();
         $c19LabResult = $db->rawQuery($covid19Query);
         $count = count($c19LabResult);
-        if ($cliMode) {
-            $io->text("Selected $count row(s) in " . tdone($t) . "s");
-        }
 
-        $payload = null;
-        $jsonResponse = null;
         $acked = 0;
+        $totalChunks = 0;
 
         if ($count === 0) {
             if ($cliMode) {
                 $io->text("Nothing to send for COVID-19.");
             }
         } else {
+
+            if ($cliMode) {
+                $io->text("Selected $count row(s) in " . tdone($t) . "s");
+            }
+
             /** @var Covid19Service $covid19Service */
             $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
@@ -534,44 +783,95 @@ try {
                 $io->comment("Built payload in " . tdone($tBuild) . "s");
             }
 
-            // POST
-            if ($cliMode) {
-                $io->text("Posting $count records to $remoteURL...");
-            }
-            $tPost = t0();
-            $payload = [
-                "labId" => $labId,
-                "results" => $c19ResultData,
-                "testType" => "covid19",
-                'timestamp' => DateUtility::getCurrentTimestamp(),
-                "instanceId" => $general->getInstanceId()
-            ];
-            $jsonResponse = $apiService->post($url, $payload, gzip: true);
-            if ($cliMode) {
-                $io->comment("POST completed in " . tdone($tPost) . "s");
-            }
+            $chunks = array_chunk($c19ResultData, max(1, $chunkSize), true);
+            $totalChunks = count($chunks);
 
-            $result = json_decode($jsonResponse, true);
-            $acked = count($result ?? []);
+            foreach ($chunks as $chunkIndex => $chunk) {
+                $chunkNumber = $chunkIndex + 1;
+                $chunkCount = count($chunk);
 
-            if (!empty($result)) {
                 if ($cliMode) {
-                    $io->text("Updating local flags for $acked row(s)...");
+                    $io->text(sprintf(
+                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        $chunkNumber,
+                        $totalChunks,
+                        $chunkCount,
+                        $chunkCount === 1 ? '' : 's',
+                        $remoteURL
+                    ));
                 }
-                $tUpd = t0();
-                $db->where('sample_code', $result, 'IN');
-                $db->update('form_covid19', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                $tPost = t0();
+                $payload = [
+                    "labId" => $labId,
+                    "results" => $chunk,
+                    "testType" => "covid19",
+                    'timestamp' => DateUtility::getCurrentTimestamp(),
+                    "instanceId" => $general->getInstanceId()
+                ];
+                $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
                 }
+
+                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'covid19');
+                $acked += count($acknowledgedSamples);
+
+                if (!empty($acknowledgedSamples)) {
+                    if ($cliMode) {
+                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
+                    }
+                    $tUpd = t0();
+                    $db->where('sample_code', $acknowledgedSamples, 'IN');
+                    $db->update('form_covid19', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    if ($cliMode) {
+                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    }
+                }
+
+                if ($cliMode) {
+                    $io->comment(sprintf('Acknowledged %d/%d so far', $acked, $count));
+                }
+
+                $chunkTransactionId = $transactionId . '-covid19-' . str_pad((string) $chunkNumber, 3, '0', STR_PAD_LEFT);
+                $general->addApiTracking(
+                    $chunkTransactionId,
+                    'intelis-system',
+                    $chunkCount,
+                    'send-results',
+                    'covid19',
+                    $url,
+                    $payload,
+                    $acknowledgedSamples,
+                    'json',
+                    $labId
+                );
             }
 
             if ($cliMode) {
-                $io->success("COVID-19: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->text("COVID-19: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
             }
         }
 
-        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
+        $summaryRequest = [
+            'recordsSelected' => $count,
+            'chunkSize' => $chunkSize,
+            'chunksProcessed' => $totalChunks,
+        ];
+        $summaryResponse = [
+            'recordsAcknowledged' => $acked,
+        ];
+        $general->addApiTracking(
+            $transactionId,
+            'intelis-system',
+            $count,
+            'send-results',
+            'covid19',
+            $url,
+            $summaryRequest,
+            $summaryResponse,
+            'json',
+            $labId
+        );
     }
 
     // ----------------------- HEPATITIS -----------------------
@@ -592,7 +892,7 @@ try {
             $hepQuery .= " AND sample_code LIKE '$sampleCode'";
         }
         if (null !== $syncSinceDate) {
-            $hepQuery .= " AND DATE(hep.last_modified_datetime) >= '$syncSinceDate'";
+            $hepQuery .= " AND hep.last_modified_datetime >= '$syncSinceDate'";
         } else {
             $hepQuery .= " AND hep.data_sync = 0";
         }
@@ -600,13 +900,9 @@ try {
         $db->reset();
         $hepLabResult = $db->rawQuery($hepQuery);
         $count = count($hepLabResult);
-        if ($cliMode) {
-            $io->text("Selected $count row(s) in " . tdone($t) . "s");
-        }
 
-        $payload = null;
-        $jsonResponse = null;
         $acked = 0;
+        $totalChunks = 0;
 
         if ($count === 0) {
             if ($cliMode) {
@@ -614,42 +910,97 @@ try {
             }
         } else {
             if ($cliMode) {
-                $io->text("Posting $count records to $remoteURL...");
+                $io->text("Selected $count row(s) in " . tdone($t) . "s");
             }
-            $tPost = t0();
-            $payload = [
-                "labId" => $labId,
-                "results" => $hepLabResult,
-                "testType" => "hepatitis",
-                'timestamp' => DateUtility::getCurrentTimestamp(),
-                "instanceId" => $general->getInstanceId()
-            ];
-            $jsonResponse = $apiService->post($url, $payload, gzip: true);
-            if ($cliMode) {
-                $io->comment("POST completed in " . tdone($tPost) . "s");
-            }
+            $chunks = array_chunk($hepLabResult, max(1, $chunkSize), true);
+            $totalChunks = count($chunks);
 
-            $result = json_decode($jsonResponse, true);
-            $acked = count($result ?? []);
+            foreach ($chunks as $chunkIndex => $chunk) {
+                $chunkNumber = $chunkIndex + 1;
+                $chunkCount = count($chunk);
 
-            if (!empty($result)) {
                 if ($cliMode) {
-                    $io->text("Updating local flags for $acked row(s)...");
+                    $io->text(sprintf(
+                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        $chunkNumber,
+                        $totalChunks,
+                        $chunkCount,
+                        $chunkCount === 1 ? '' : 's',
+                        $remoteURL
+                    ));
                 }
-                $tUpd = t0();
-                $db->where('sample_code', $result, 'IN');
-                $db->update('form_hepatitis', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                $tPost = t0();
+                $payload = [
+                    "labId" => $labId,
+                    "results" => $chunk,
+                    "testType" => "hepatitis",
+                    'timestamp' => DateUtility::getCurrentTimestamp(),
+                    "instanceId" => $general->getInstanceId()
+                ];
+                $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
                 }
+
+                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'hepatitis');
+                $acked += count($acknowledgedSamples);
+
+                if (!empty($acknowledgedSamples)) {
+                    if ($cliMode) {
+                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
+                    }
+                    $tUpd = t0();
+                    $db->where('sample_code', $acknowledgedSamples, 'IN');
+                    $db->update('form_hepatitis', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    if ($cliMode) {
+                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    }
+                }
+
+                if ($cliMode) {
+                    $io->comment(sprintf('Acknowledged %d/%d so far', $acked, $count));
+                }
+
+                $chunkTransactionId = $transactionId . '-hepatitis-' . str_pad((string) $chunkNumber, 3, '0', STR_PAD_LEFT);
+                $general->addApiTracking(
+                    $chunkTransactionId,
+                    'intelis-system',
+                    $chunkCount,
+                    'send-results',
+                    'hepatitis',
+                    $url,
+                    $payload,
+                    $acknowledgedSamples,
+                    'json',
+                    $labId
+                );
             }
 
             if ($cliMode) {
-                $io->success("Hepatitis: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->text("Hepatitis: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
             }
         }
 
-        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
+        $summaryRequest = [
+            'recordsSelected' => $count,
+            'chunkSize' => $chunkSize,
+            'chunksProcessed' => $totalChunks,
+        ];
+        $summaryResponse = [
+            'recordsAcknowledged' => $acked,
+        ];
+        $general->addApiTracking(
+            $transactionId,
+            'intelis-system',
+            $count,
+            'send-results',
+            'hepatitis',
+            $url,
+            $summaryRequest,
+            $summaryResponse,
+            'json',
+            $labId
+        );
     }
 
     // ----------------------- TB -----------------------
@@ -673,7 +1024,7 @@ try {
             $tbQuery .= " AND sample_code LIKE '$sampleCode'";
         }
         if (null !== $syncSinceDate) {
-            $tbQuery .= " AND DATE(tb.last_modified_datetime) >= '$syncSinceDate'";
+            $tbQuery .= " AND tb.last_modified_datetime >= '$syncSinceDate'";
         } else {
             $tbQuery .= " AND tb.data_sync = 0";
         }
@@ -681,19 +1032,18 @@ try {
         $db->reset();
         $tbLabResult = $db->rawQuery($tbQuery);
         $count = count($tbLabResult);
-        if ($cliMode) {
-            $io->text("Selected $count row(s) in " . tdone($t) . "s");
-        }
 
-        $payload = null;
-        $jsonResponse = null;
         $acked = 0;
+        $totalChunks = 0;
 
         if ($count === 0) {
             if ($cliMode) {
                 $io->text("Nothing to send for TB.");
             }
         } else {
+            if ($cliMode) {
+                $io->text("Selected $count row(s) in " . tdone($t) . "s");
+            }
             // Build nested payload
             if ($cliMode) {
                 $io->text("Building payload...");
@@ -710,48 +1060,98 @@ try {
                 $io->comment("Built payload in " . tdone($tBuild) . "s");
             }
 
-            // Add referral manifests (if any)
-            $manifests = buildReferralManifestsPayload($db, 'tb', $tbTestResultData);
+            $chunks = array_chunk($tbTestResultData, max(1, $chunkSize), true);
+            $totalChunks = count($chunks);
 
-            // POST
-            if ($cliMode) {
-                $io->text("Posting $count records to $remoteURL...");
-            }
-            $tPost = t0();
-            $payload = [
-                "labId" => $labId,
-                "results" => $tbTestResultData,
-                "testType" => "tb",
-                'manifests' => $manifests,
-                'timestamp' => DateUtility::getCurrentTimestamp(),
-                "instanceId" => $general->getInstanceId()
-            ];
-            $jsonResponse = $apiService->post($url, $payload, gzip: true);
-            if ($cliMode) {
-                $io->comment("POST completed in " . tdone($tPost) . "s");
-            }
+            foreach ($chunks as $chunkIndex => $chunk) {
+                $chunkNumber = $chunkIndex + 1;
+                $chunkCount = count($chunk);
 
-            $result = json_decode($jsonResponse, true);
-            $acked = count($result ?? []);
+                $manifests = buildReferralManifestsPayload($db, 'tb', $chunk);
 
-            if (!empty($result)) {
                 if ($cliMode) {
-                    $io->text("Updating local flags for $acked row(s)...");
+                    $io->text(sprintf(
+                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        $chunkNumber,
+                        $totalChunks,
+                        $chunkCount,
+                        $chunkCount === 1 ? '' : 's',
+                        $remoteURL
+                    ));
                 }
-                $tUpd = t0();
-                $db->where('sample_code', $result, 'IN');
-                $db->update('form_tb', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                $tPost = t0();
+                $payload = [
+                    "labId" => $labId,
+                    "results" => $chunk,
+                    "testType" => "tb",
+                    'manifests' => $manifests,
+                    'timestamp' => DateUtility::getCurrentTimestamp(),
+                    "instanceId" => $general->getInstanceId()
+                ];
+                $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
                 }
+
+                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'tb');
+                $acked += count($acknowledgedSamples);
+
+                if (!empty($acknowledgedSamples)) {
+                    if ($cliMode) {
+                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
+                    }
+                    $tUpd = t0();
+                    $db->where('sample_code', $acknowledgedSamples, 'IN');
+                    $db->update('form_tb', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    if ($cliMode) {
+                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    }
+                }
+
+                if ($cliMode) {
+                    $io->comment(sprintf('Acknowledged %d/%d so far', $acked, $count));
+                }
+
+                $chunkTransactionId = $transactionId . '-tb-' . str_pad((string) $chunkNumber, 3, '0', STR_PAD_LEFT);
+                $general->addApiTracking(
+                    $chunkTransactionId,
+                    'intelis-system',
+                    $chunkCount,
+                    'send-results',
+                    'tb',
+                    $url,
+                    $payload,
+                    $acknowledgedSamples,
+                    'json',
+                    $labId
+                );
             }
 
             if ($cliMode) {
-                $io->success("TB: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->text("TB: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
             }
         }
 
-        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'tb', $url, $payload, $jsonResponse, 'json', $labId);
+        $summaryRequest = [
+            'recordsSelected' => $count,
+            'chunkSize' => $chunkSize,
+            'chunksProcessed' => $totalChunks,
+        ];
+        $summaryResponse = [
+            'recordsAcknowledged' => $acked,
+        ];
+        $general->addApiTracking(
+            $transactionId,
+            'intelis-system',
+            $count,
+            'send-results',
+            'tb',
+            $url,
+            $summaryRequest,
+            $summaryResponse,
+            'json',
+            $labId
+        );
     }
 
     // ----------------------- CD4 -----------------------
@@ -772,7 +1172,7 @@ try {
             $cd4Query .= " AND sample_code LIKE '$sampleCode'";
         }
         if (null !== $syncSinceDate) {
-            $cd4Query .= " AND DATE(cd4.last_modified_datetime) >= '$syncSinceDate'";
+            $cd4Query .= " AND cd4.last_modified_datetime >= '$syncSinceDate'";
         } else {
             $cd4Query .= " AND cd4.data_sync = 0";
         }
@@ -780,68 +1180,121 @@ try {
         $db->reset();
         $cd4LabResult = $db->rawQuery($cd4Query);
         $count = count($cd4LabResult);
-        if ($cliMode) {
-            $io->text("Selected $count row(s) in " . tdone($t) . "s");
-        }
-
-        $payload = null;
-        $jsonResponse = null;
         $acked = 0;
+        $totalChunks = 0;
 
         if ($count === 0) {
             if ($cliMode) {
                 $io->text("Nothing to send for CD4.");
             }
         } else {
+
             if ($cliMode) {
-                $io->text("Posting $count records to $remoteURL...");
-            }
-            $tPost = t0();
-            $payload = [
-                "labId" => $labId,
-                "results" => $cd4LabResult,
-                "testType" => "cd4",
-                'timestamp' => DateUtility::getCurrentTimestamp(),
-                "instanceId" => $general->getInstanceId()
-            ];
-            $jsonResponse = $apiService->post($url, $payload, gzip: true);
-            if ($cliMode) {
-                $io->comment("POST completed in " . tdone($tPost) . "s");
+                $io->text("Selected $count row(s) in " . tdone($t) . "s");
             }
 
-            $result = json_decode($jsonResponse, true);
-            $acked = count($result ?? []);
+            $chunks = array_chunk($cd4LabResult, max(1, $chunkSize), true);
+            $totalChunks = count($chunks);
 
-            if (!empty($result)) {
+            foreach ($chunks as $chunkIndex => $chunk) {
+                $chunkNumber = $chunkIndex + 1;
+                $chunkCount = count($chunk);
+
                 if ($cliMode) {
-                    $io->text("Updating local flags for $acked row(s)...");
+                    $io->text(sprintf(
+                        "Posting chunk %d/%d (%d record%s) to %s...",
+                        $chunkNumber,
+                        $totalChunks,
+                        $chunkCount,
+                        $chunkCount === 1 ? '' : 's',
+                        $remoteURL
+                    ));
                 }
-                $tUpd = t0();
-                $db->where('sample_code', $result, 'IN');
-                $db->update('form_cd4', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                $tPost = t0();
+                $payload = [
+                    "labId" => $labId,
+                    "results" => $chunk,
+                    "testType" => "cd4",
+                    'timestamp' => DateUtility::getCurrentTimestamp(),
+                    "instanceId" => $general->getInstanceId()
+                ];
+                $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
                 }
+
+                $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'cd4');
+                $acked += count($acknowledgedSamples);
+
+                if (!empty($acknowledgedSamples)) {
+                    if ($cliMode) {
+                        $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
+                    }
+                    $tUpd = t0();
+                    $db->where('sample_code', $acknowledgedSamples, 'IN');
+                    $db->update('form_cd4', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+                    if ($cliMode) {
+                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                    }
+                }
+
+                if ($cliMode) {
+                    $io->comment(sprintf('Acknowledged %d/%d so far', $acked, $count));
+                }
+
+                $chunkTransactionId = $transactionId . '-cd4-' . str_pad((string) $chunkNumber, 3, '0', STR_PAD_LEFT);
+                $general->addApiTracking(
+                    $chunkTransactionId,
+                    'intelis-system',
+                    $chunkCount,
+                    'send-results',
+                    'cd4',
+                    $url,
+                    $payload,
+                    $acknowledgedSamples,
+                    'json',
+                    $labId
+                );
             }
 
             if ($cliMode) {
-                $io->success("CD4: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->text("CD4: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
             }
         }
 
-        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
+        $summaryRequest = [
+            'recordsSelected' => $count,
+            'chunkSize' => $chunkSize,
+            'chunksProcessed' => $totalChunks,
+        ];
+        $summaryResponse = [
+            'recordsAcknowledged' => $acked,
+        ];
+        $general->addApiTracking(
+            $transactionId,
+            'intelis-system',
+            $count,
+            'send-results',
+            'cd4',
+            $url,
+            $summaryRequest,
+            $summaryResponse,
+            'json',
+            $labId
+        );
     }
 
     // Final sync timestamp update
     if ($cliMode) {
-        $io->text("Finalizing sync timestamps...");
+        $io->section("Timestamps");
+        $io->text("Updating sync timestamps...");
     }
     $tFinal = t0();
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
     $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
     if ($cliMode) {
-        $io->comment("Finalized in " . tdone($tFinal) . "s");
+        $io->text("Updated timestamps in " . tdone($tFinal) . "s");
     }
 } catch (Exception $e) {
     LoggerUtility::logError($e->getMessage(), [
