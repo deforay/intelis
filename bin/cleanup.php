@@ -107,37 +107,136 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
         return $stats;
     }
 
-    // Build find command to get all files (sorted by age, oldest first)
-    $findCmd = "find " . escapeshellarg($folder) . " -type f";
-    $findCmd .= " ! -name '.htaccess' ! -name 'index.php'";
-
-    // Only filter by age if we're NOT doing size-based cleanup
     if ($needsAgeCleanup && !$needsSizeCleanup) {
-        $findCmd .= " -mtime +" . (int)$duration;
+        $cutoffTimestamp = time() - ($duration * 86400);
+        $output->writeln("  <comment>Deleting files older than {$duration} day(s)...</comment>");
+
+        $startTime = microtime(true);
+        $deleted = 0;
+        $bytesFreed = 0;
+        $errors = 0;
+
+        try {
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($folder, FilesystemIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::CHILD_FIRST
+            );
+
+            foreach ($iterator as $fileInfo) {
+                if (!$fileInfo->isFile()) {
+                    continue;
+                }
+
+                $mtime = $fileInfo->getMTime();
+                if ($mtime >= $cutoffTimestamp) {
+                    continue;
+                }
+
+                $path = $fileInfo->getPathname();
+                $size = $fileInfo->getSize();
+
+                if (MiscUtility::deleteFile($path)) {
+                    $deleted++;
+                    $bytesFreed += $size;
+                } else {
+                    $errors++;
+                }
+            }
+        } catch (Throwable $e) {
+            $output->writeln("  <fire>✗ Failed while scanning directory: {$e->getMessage()}</fire>");
+            $stats['errors']++;
+        }
+
+        $elapsed = microtime(true) - $startTime;
+
+        if ($deleted > 0) {
+            $output->writeln("  <success>✓ Deleted:</success> {$deleted} files in " . round($elapsed, 2) . "s");
+            $output->writeln("  <success>✓ Freed:</success> " . formatBytes($bytesFreed));
+        } else {
+            $output->writeln("  <info>ℹ No files to delete</info>");
+        }
+
+        if ($errors > 0) {
+            $output->writeln("  <fire>✗ Errors:</fire> {$errors}");
+        }
+
+        $stats['files_deleted'] += $deleted;
+        $stats['bytes_freed'] += $bytesFreed;
+        $stats['errors'] += $errors;
+        $stats['dirs_deleted'] += pruneEmptyDirs($folder);
+
+        LoggerUtility::logInfo("Age-based cleanup completed for {$folder}", [
+            'files_deleted' => $deleted,
+            'bytes_freed' => $bytesFreed,
+            'duration_seconds' => round($elapsed, 2),
+        ]);
+
+        return $stats;
     }
 
-    // Get files with mtime and size: mtime|path|size
-    $findCmd .= " -printf '%T@|%p|%s\n' 2>/dev/null";
+    $filesToDelete = [];
+    $bytesToFree   = 0;
+    $targetSize    = $maxSizeBytes ? (int)($maxSizeBytes * 0.8) : 0; // Clean to 80% of limit
+    $streamingSucceeded = false;
 
-    exec($findCmd, $fileList, $exitCode);
+    // Try streaming with find + sort to avoid loading everything into memory
+    $findCmd = sprintf(
+        'find %s -type f ! -name \'.htaccess\' ! -name \'index.php\' -printf \'%%T@|%%p|%%s\n\' 2>/dev/null | sort -n',
+        escapeshellarg($folder)
+    );
 
-    $files = [];
+    $descriptorSpec = [
+        0 => ['pipe', 'r'],
+        1 => ['pipe', 'w'],
+        2 => ['pipe', 'w'],
+    ];
 
-    if ($exitCode === 0 && !empty($fileList)) {
-        foreach ($fileList as $line) {
-            $parts = explode('|', $line);
-            if (count($parts) === 3) {
-                $mtimeFloat = (float)$parts[0];
-                $files[] = [
-                    'mtime'     => $mtimeFloat,
-                    'path'      => $parts[1],
-                    'size'      => (int)$parts[2],
-                    'age_days'  => (time() - (int)$mtimeFloat) / 86400,
-                ];
+    $process = proc_open($findCmd, $descriptorSpec, $pipes);
+    if (is_resource($process)) {
+        fclose($pipes[0]);
+        $streamingSucceeded = true;
+        while (($line = fgets($pipes[1])) !== false) {
+            $parts = explode('|', trim($line));
+            if (count($parts) !== 3) {
+                continue;
+            }
+
+            $mtime = (float)$parts[0];
+            $path = $parts[1];
+            $size = (int)$parts[2];
+            $ageDays = (time() - (int)$mtime) / 86400;
+
+            $shouldDelete = false;
+            if ($needsAgeCleanup && $ageDays > $duration) {
+                $shouldDelete = true;
+            }
+            if ($needsSizeCleanup && $currentSize > $targetSize) {
+                $shouldDelete = true;
+            }
+
+            if ($shouldDelete) {
+                $filesToDelete[] = $path;
+                $bytesToFree += $size;
+                $currentSize -= $size;
+            }
+
+            if ($needsSizeCleanup && $currentSize <= $targetSize) {
+                break;
             }
         }
-    } else {
-        // Fallback to PHP iteration when find is unavailable (e.g. busybox)
+
+        fclose($pipes[1]);
+        $errorOutput = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
+        proc_close($process);
+
+        if ($errorOutput !== '') {
+            $streamingSucceeded = false;
+        }
+    }
+
+    if (!$streamingSucceeded) {
+        $files = [];
         try {
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($folder, FilesystemIterator::SKIP_DOTS)
@@ -161,49 +260,33 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
         } catch (Throwable $e) {
             $output->writeln("  <fire>✗ Failed to enumerate files: {$e->getMessage()}</fire>");
         }
-    }
 
-    if (empty($files)) {
-        $output->writeln("  <info>ℹ No files found</info>");
-        $stats['dirs_deleted'] += pruneEmptyDirs($folder);
-        return $stats;
-    }
+        if (!empty($files)) {
+            usort($files, fn($a, $b) => $a['mtime'] <=> $b['mtime']);
+            foreach ($files as $file) {
+                $shouldDelete = false;
+                if ($needsAgeCleanup && $file['age_days'] > $duration) {
+                    $shouldDelete = true;
+                }
+                if ($needsSizeCleanup && $currentSize > $targetSize) {
+                    $shouldDelete = true;
+                }
 
-    usort($files, fn($a, $b) => $a['mtime'] <=> $b['mtime']);
+                if ($shouldDelete) {
+                    $filesToDelete[] = $file['path'];
+                    $bytesToFree += $file['size'];
+                    $currentSize  -= $file['size'];
+                }
 
-    // Determine which files to delete
-    $filesToDelete = [];
-    $bytesToFree   = 0;
-    $targetSize    = $maxSizeBytes ? (int)($maxSizeBytes * 0.8) : 0; // Clean to 80% of limit
-
-    foreach ($files as $file) {
-        $shouldDelete = false;
-
-        // Delete if older than duration
-        if ($needsAgeCleanup && $file['age_days'] > $duration) {
-            $shouldDelete = true;
-        }
-
-        // Delete oldest files until we reach target size
-        if ($needsSizeCleanup && $currentSize > $targetSize) {
-            $shouldDelete = true;
-        }
-
-        if ($shouldDelete) {
-            $filesToDelete[] = $file['path'];
-            $bytesToFree += $file['size'];
-            $currentSize  -= $file['size'];
-        }
-
-        // Stop if we've reached target size
-        if ($needsSizeCleanup && $currentSize <= $targetSize) {
-            break;
+                if ($needsSizeCleanup && $currentSize <= $targetSize) {
+                    break;
+                }
+            }
         }
     }
 
     if (empty($filesToDelete)) {
         $output->writeln("  <info>ℹ No files to delete</info>");
-        // Still attempt to prune empty directories
         $stats['dirs_deleted'] += pruneEmptyDirs($folder);
         return $stats;
     }
@@ -211,7 +294,6 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
     $fileCount = count($filesToDelete);
     $output->writeln("  <comment>Deleting {$fileCount} files (" . formatBytes($bytesToFree) . ")...</comment>");
 
-    // Delete files
     $startTime = microtime(true);
     $deleted = 0;
     $errors  = 0;
