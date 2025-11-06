@@ -15,11 +15,34 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 
+
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
+
+
 // Request STS to send metadata to this instance of LIS
 
 $cliMode = php_sapi_name() === 'cli';
 $forceFlag = false;
 $truncateFlag = false;
+
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
+$systemConfig = SYSTEM_CONFIG;
+
+// only for LIS instances
+if ($general->isLISInstance() === false) {
+    exit(0);
+}
 
 if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
@@ -37,26 +60,6 @@ if ($cliMode) {
     $io->title("Preparing to sync metadata...");
 }
 
-
-ini_set('memory_limit', -1);
-set_time_limit(0);
-ini_set('max_execution_time', 300000);
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-/** @var ApiService $apiService */
-$apiService = ContainerRegistry::get(ApiService::class);
-
-$systemConfig = SYSTEM_CONFIG;
-
-// only for LIS instances
-if ($general->isLISInstance() === false) {
-    exit(0);
-}
 
 if (!empty($_POST)) {
     try {
