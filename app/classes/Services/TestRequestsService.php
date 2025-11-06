@@ -70,23 +70,37 @@ final class TestRequestsService
             }
 
             // Get queue items to process
-            try {
-                $this->db->reset();
+            $queueItems = [];
+            $priorityStatuses = [0, 2, 3]; // 0 = new, 2 = retryable failure, 3 = permanent failure (only if explicitly requested)
 
-                if (!empty($uniqueIds)) {
-                    $uniqueIds = is_array($uniqueIds) ? $uniqueIds : [$uniqueIds];
-                    $this->db->where('unique_id', $uniqueIds, 'IN');
+            foreach ($priorityStatuses as $status) {
+                try {
+                    $this->db->reset();
+
+                    if (!empty($uniqueIds)) {
+                        $uniqueIds = is_array($uniqueIds) ? $uniqueIds : [$uniqueIds];
+                        $this->db->where('unique_id', $uniqueIds, 'IN');
+                    }
+
+                    $this->db->where('processed', $status);
+                    if ($status === 3 && empty($uniqueIds)) {
+                        continue;
+                    }
+
+                    $queueItems = $this->db->get('queue_sample_code_generation', 100);
+                    if (!empty($queueItems)) {
+                        break;
+                    }
+                } catch (Throwable $e) {
+                    LoggerUtility::logError("Error fetching queue items (status {$status}): " . $e->getMessage(), [
+                        'exception' => $e,
+                        'last_db_query' => $this->db->getLastQuery(),
+                        'last_db_error' => $this->db->getLastError()
+                    ]);
+                    if ($status === 0) {
+                        return $response;
+                    }
                 }
-
-                $this->db->where('processed = 0');
-                $queueItems = $this->db->get('queue_sample_code_generation', 100);
-            } catch (Throwable $e) {
-                LoggerUtility::logError("Error fetching queue items: " . $e->getMessage(), [
-                    'exception' => $e,
-                    'last_db_query' => $this->db->getLastQuery(),
-                    'last_db_error' => $this->db->getLastError()
-                ]);
-                return $response;
             }
 
             if (empty($queueItems)) {
@@ -247,7 +261,8 @@ final class TestRequestsService
                 } catch (Throwable $e) {
                     // Handle individual item errors
                     try {
-                        $this->updateQueueItem($item['id'], 2, $e->getMessage());
+                        $newStatus = ($item['processed'] ?? 0) >= $maxTries ? 3 : 2;
+                        $this->updateQueueItem($item['id'], $newStatus, $e->getMessage());
 
                         LoggerUtility::logError("Error processing queue item {$item['id']}: " . $e->getMessage(), [
                             'exception' => $e,
