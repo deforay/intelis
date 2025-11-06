@@ -20,6 +20,7 @@ final class DatabaseService extends MysqliDb
     private $useSavepoints = false;
     private string $sessionCollation = 'utf8mb4_unicode_ci';
     private string $sessionCharset = 'utf8mb4';
+    private int $countQueryMaxExecutionMs = 10000;
 
     public function __construct($host = null, $username = null, $password = null, $db = null, $port = null, $charset = 'utf8mb4')
     {
@@ -75,6 +76,15 @@ final class DatabaseService extends MysqliDb
     public function isMySQL8OrHigher(): bool
     {
         return $this->getMySQLVersionId() >= 80000;
+    }
+
+    public function setCountQueryMaxExecutionTime(?int $milliseconds): void
+    {
+        if ($milliseconds === null || $milliseconds < 0) {
+            $this->countQueryMaxExecutionMs = 0;
+            return;
+        }
+        $this->countQueryMaxExecutionMs = $milliseconds;
     }
 
 
@@ -484,32 +494,52 @@ final class DatabaseService extends MysqliDb
                             $downgradedIsolation = $this->setSessionIsolationLevelSafe('READ COMMITTED');
                         }
 
-                        try {
-                            $countSql = $this->buildCountSql($sql, $statementForParsing);
-                            $countResult = $this->rawQueryOne($countSql, $params);
-                            $count = (int)($countResult['totalCount'] ?? 0);
+                        $useMaxExecutionHint = $this->countQueryMaxExecutionMs > 0;
+                        $updateCachedCount = function (int $value) use (&$countResolved, $countQuerySessionKey, $now): void {
                             $countResolved = true;
-
                             if (session_status() === PHP_SESSION_ACTIVE) {
                                 if (!isset($_SESSION['queryCounters']) || !is_array($_SESSION['queryCounters'])) {
                                     $_SESSION['queryCounters'] = [];
                                 }
-
                                 $_SESSION['queryCounters'][$countQuerySessionKey] = [
-                                    'count' => $count,
+                                    'count' => $value,
                                     'timestamp' => $now
                                 ];
                             }
+                        };
+
+                        try {
+                            $countSql = $this->buildCountSql($sql, $statementForParsing, $useMaxExecutionHint);
+                            $countResult = $this->rawQueryOne($countSql, $params);
+                            $count = (int)($countResult['totalCount'] ?? 0);
+                            $updateCachedCount($count);
                         } catch (Throwable $countException) {
-                            if (
-                                session_status() === PHP_SESSION_ACTIVE &&
-                                isset($_SESSION['queryCounters'][$countQuerySessionKey]['count'])
-                            ) {
-                                $count = (int)$_SESSION['queryCounters'][$countQuerySessionKey]['count'];
-                                LoggerUtility::log('warning', 'Count query timed out, using cached value: ' . $countException->getMessage());
-                                $countResolved = true;
-                            } else {
-                                LoggerUtility::logError('Count query failed with no cache: ' . $countException->getMessage());
+                            $message = $countException->getMessage();
+                            $maxExecutionExceeded = stripos($message, 'maximum statement execution time exceeded') !== false;
+
+                            if ($useMaxExecutionHint && $maxExecutionExceeded) {
+                                try {
+                                    $countSql = $this->buildCountSql($sql, $statementForParsing, false);
+                                    $countResult = $this->rawQueryOne($countSql, $params);
+                                    $count = (int)($countResult['totalCount'] ?? 0);
+                                    $updateCachedCount($count);
+                                    LoggerUtility::log('warning', 'Count query exceeded MAX_EXECUTION_TIME hint; retried without limit.');
+                                } catch (Throwable $retryException) {
+                                    $countException = $retryException;
+                                }
+                            }
+
+                            if (!$countResolved) {
+                                if (
+                                    session_status() === PHP_SESSION_ACTIVE &&
+                                    isset($_SESSION['queryCounters'][$countQuerySessionKey]['count'])
+                                ) {
+                                    $count = (int)$_SESSION['queryCounters'][$countQuerySessionKey]['count'];
+                                    LoggerUtility::log('warning', 'Count query timed out, using cached value: ' . $countException->getMessage());
+                                    $countResolved = true;
+                                } else {
+                                    LoggerUtility::logError('Count query failed with no cache: ' . $countException->getMessage());
+                                }
                             }
                         } finally {
                             if ($downgradedIsolation && $originalIsolationLevel !== null) {
@@ -528,8 +558,13 @@ final class DatabaseService extends MysqliDb
         }
     }
 
-    private function buildCountSql(string $sql, ?object $statementForParsing = null): string
+    private function buildCountSql(string $sql, ?object $statementForParsing = null, bool $useMaxExecutionHint = true): string
     {
+        $includeHint = $useMaxExecutionHint && $this->countQueryMaxExecutionMs > 0;
+        $countExpression = $includeHint
+            ? sprintf('/*+ MAX_EXECUTION_TIME(%d) */ COUNT(*) AS totalCount', $this->countQueryMaxExecutionMs)
+            : 'COUNT(*) AS totalCount';
+
         try {
             if ($statementForParsing === null) {
                 $parser = new Parser($sql);
@@ -544,10 +579,10 @@ final class DatabaseService extends MysqliDb
 
                 if (!empty($originalStatement->group)) {
                     $innerSql = $statementForCount->build();
-                    return "SELECT /*+ MAX_EXECUTION_TIME(10000) */ COUNT(*) AS totalCount FROM ($innerSql) AS subquery";
+                    return sprintf('SELECT %s FROM (%s) AS subquery', $countExpression, $innerSql);
                 }
 
-                $statementForCount->expr = [new Expression('/*+ MAX_EXECUTION_TIME(10000) */ COUNT(*) AS totalCount')];
+                $statementForCount->expr = [new Expression($countExpression)];
                 return $statementForCount->build();
             }
         } catch (Throwable $parseException) {
@@ -555,7 +590,7 @@ final class DatabaseService extends MysqliDb
         }
 
         $innerSql = rtrim($sql, ";\t\n\r\0\x0B ");
-        return "SELECT /*+ MAX_EXECUTION_TIME(10000) */ COUNT(*) AS totalCount FROM ($innerSql) AS subquery";
+        return sprintf('SELECT %s FROM (%s) AS subquery', $countExpression, $innerSql);
     }
 
     private function getSessionIsolationLevel(): ?string
