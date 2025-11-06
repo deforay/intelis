@@ -42,49 +42,75 @@ try {
     // First, fix any ACCEPTED results that have blank/null result values
     // Set status based on whether sample_code is created or not
     // if sample_code is set, it means sample has been registered at lab
-    $fixInvalidSql = "UPDATE form_vl
+$fixInvalidBatchSize = 500;
+$fixInvalidSql = "UPDATE form_vl
                         SET result_status = CASE 
                             WHEN sample_code IS NOT NULL THEN ?
                             ELSE ?
                         END,
                         data_sync = 0 
                         WHERE IFNULL(result_status, 0) = ? 
-                        AND (result IS NULL OR result = '')";
+                        AND (result IS NULL OR result = '')
+                        LIMIT ?";
 
-    $fixInvalidParams = [
-        SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
-        SAMPLE_STATUS\RECEIVED_AT_CLINIC,
-        SAMPLE_STATUS\ACCEPTED
-    ];
+$fixInvalidParamsBase = [
+    SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
+    SAMPLE_STATUS\RECEIVED_AT_CLINIC,
+    SAMPLE_STATUS\ACCEPTED
+];
 
-    $fixResult = $db->rawQuery($fixInvalidSql, $fixInvalidParams);
-    if ($fixResult !== false) {
-        $totalInvalidFixed = $db->count;
-    }
+do {
+    $attempt = 0;
+    $maxAttempts = 3;
+    $affected = 0;
 
-    $sql = "SELECT vl_sample_id, result_status, result
-            FROM form_vl
-            WHERE vl_result_category IS NULL
-                AND (
-                    result_status = ? 
-                    OR (result_status = ? AND result IS NOT NULL)
-                )
-            ORDER BY vl_sample_id
-            LIMIT ? OFFSET ?";
-
-    $params = [
-        SAMPLE_STATUS\REJECTED,
-        SAMPLE_STATUS\ACCEPTED,
-    ];
-
-    // Process batches in continuous loop
-    do {
-        $batchParams = array_merge($params, [$batchSize, $offset]);
-        $result = $db->rawQuery($sql, $batchParams);
-        $batchCount = count($result);
-
-        if ($batchCount === 0) {
+    while ($attempt < $maxAttempts) {
+        try {
+            $fixParams = array_merge($fixInvalidParamsBase, [$fixInvalidBatchSize]);
+            $fixResult = $db->rawQuery($fixInvalidSql, $fixParams);
+            if ($fixResult !== false) {
+                $affected = $db->count;
+                $totalInvalidFixed += $affected;
+            }
             break;
+        } catch (Throwable $e) {
+            $attempt++;
+            if (stripos($e->getMessage(), 'Lock wait timeout exceeded') !== false && $attempt < $maxAttempts) {
+                LoggerUtility::log('warning', 'Lock wait detected while fixing invalid VL results; retrying batch ' . $attempt);
+                usleep(200000); // 200ms backoff
+                continue;
+            }
+
+            throw $e;
+        }
+    }
+} while ($affected >= $fixInvalidBatchSize);
+
+$sql = "SELECT vl_sample_id, result_status, result
+        FROM form_vl
+        WHERE vl_sample_id > ?
+            AND vl_result_category IS NULL
+            AND (
+                result_status = ? 
+                OR (result_status = ? AND result IS NOT NULL)
+            )
+        ORDER BY vl_sample_id
+        LIMIT ?";
+
+$params = [
+    SAMPLE_STATUS\REJECTED,
+    SAMPLE_STATUS\ACCEPTED,
+];
+
+// Process batches in continuous loop
+do {
+    $lastProcessedId = $offset;
+    $batchParams = array_merge([$lastProcessedId], $params, [$batchSize]);
+    $result = $db->rawQuery($sql, $batchParams);
+    $batchCount = count($result);
+
+    if ($batchCount === 0) {
+        break;
         }
 
         $totalProcessed += $batchCount;
@@ -156,8 +182,10 @@ try {
             }
         }
 
-        $offset += $batchSize;
-    } while ($batchCount > 0);
+        $lastRow = end($result);
+        $offset = (int)($lastRow['vl_sample_id'] ?? $offset);
+        reset($result);
+} while ($batchCount > 0);
     if (!$isCli) {
         $duration = round(microtime(true) - $startTime, 2);
         echo "Completed! Invalid fixed: {$totalInvalidFixed}, Processed: {$totalProcessed}, Updated: {$totalUpdated}, Duration: {$duration}s\n";
