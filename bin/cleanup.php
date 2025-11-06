@@ -121,26 +121,52 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
 
     exec($findCmd, $fileList, $exitCode);
 
-    if ($exitCode !== 0 || empty($fileList)) {
-        $output->writeln("  <info>ℹ No files found</info>");
-        // Still attempt to prune empty directories
-        $stats['dirs_deleted'] += pruneEmptyDirs($folder);
-        return $stats;
+    $files = [];
+
+    if ($exitCode === 0 && !empty($fileList)) {
+        foreach ($fileList as $line) {
+            $parts = explode('|', $line);
+            if (count($parts) === 3) {
+                $mtimeFloat = (float)$parts[0];
+                $files[] = [
+                    'mtime'     => $mtimeFloat,
+                    'path'      => $parts[1],
+                    'size'      => (int)$parts[2],
+                    'age_days'  => (time() - (int)$mtimeFloat) / 86400,
+                ];
+            }
+        }
+    } else {
+        // Fallback to PHP iteration when find is unavailable (e.g. busybox)
+        try {
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($folder, FilesystemIterator::SKIP_DOTS)
+            );
+            foreach ($iterator as $file) {
+                if (!$file->isFile()) {
+                    continue;
+                }
+                $basename = $file->getFilename();
+                if (in_array($basename, ['.htaccess', 'index.php'], true)) {
+                    continue;
+                }
+                $mtime = $file->getMTime();
+                $files[] = [
+                    'mtime'     => (float)$mtime,
+                    'path'      => $file->getPathname(),
+                    'size'      => (int)$file->getSize(),
+                    'age_days'  => (time() - (int)$mtime) / 86400,
+                ];
+            }
+        } catch (Throwable $e) {
+            $output->writeln("  <fire>✗ Failed to enumerate files: {$e->getMessage()}</fire>");
+        }
     }
 
-    // Parse and sort files by age (oldest first)
-    $files = [];
-    foreach ($fileList as $line) {
-        $parts = explode('|', $line);
-        if (count($parts) === 3) {
-            $mtimeFloat = (float)$parts[0];
-            $files[] = [
-                'mtime'     => $mtimeFloat,
-                'path'      => $parts[1],
-                'size'      => (int)$parts[2],
-                'age_days'  => (time() - (int)$mtimeFloat) / 86400,
-            ];
-        }
+    if (empty($files)) {
+        $output->writeln("  <info>ℹ No files found</info>");
+        $stats['dirs_deleted'] += pruneEmptyDirs($folder);
+        return $stats;
     }
 
     usort($files, fn($a, $b) => $a['mtime'] <=> $b['mtime']);

@@ -928,15 +928,39 @@ fi
 print success "LIS copied to ${lis_path}."
 log_action "LIS copied to ${lis_path}."
 
+print header "Migrating directories to var/ structure"
+
 # Ensure var/* root exists
 mkdir -p "${lis_path}/var" 2>/dev/null || true
 chown www-data:www-data "${lis_path}/var" 2>/dev/null || true
 
-move_dir_fully "${lis_path}/logs"                      "${lis_path}/var/logs"
-move_dir_fully "${lis_path}/audit-trail"              "${lis_path}/var/audit-trail"
-move_dir_fully "${lis_path}/cache"                    "${lis_path}/var/cache"
-move_dir_fully "${lis_path}/metadata"            "${lis_path}/var/metadata"
-move_dir_fully "${lis_path}/public/uploads/track-api" "${lis_path}/var/track-api"
+# Define directories to migrate
+declare -A dir_migrations=(
+    ["${lis_path}/logs"]="logs"
+    ["${lis_path}/audit-trail"]="audit-trail"
+    ["${lis_path}/cache"]="cache"
+    ["${lis_path}/metadata"]="metadata"
+    ["${lis_path}/public/uploads/track-api"]="track-api"
+)
+
+# Migrate each directory with progress indication
+for src_dir in "${!dir_migrations[@]}"; do
+    dest_name="${dir_migrations[$src_dir]}"
+    dest_dir="${lis_path}/var/${dest_name}"
+    
+    if [ -d "$src_dir" ]; then
+        print info "Moving ${dest_name}/ to var/${dest_name}/"
+        move_dir_fully "$src_dir" "$dest_dir" &
+        migration_pid=$!
+        spinner "${migration_pid}"
+        wait ${migration_pid}
+        print success "✓ ${dest_name}/ migrated successfully"
+    else
+        print info "Skipping ${dest_name}/ (not found)"
+    fi
+done
+
+print success "Directory migration completed"
 
 # Set proper permissions
 set_permissions "${lis_path}" "quick"
