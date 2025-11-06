@@ -46,9 +46,9 @@ $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) ";
 if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) != '') {
 
-	[$startDate, $endDate] = DateUtility::convertDateRange($_POST['daterange']);
+	[$startDate, $endDate] = DateUtility::convertDateRange($_POST['daterange'], includeTime: true);
 
-	$where[] = " DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate' ";
+	$where[] = " vl.sample_collection_date BETWEEN '$startDate' AND '$endDate' ";
 }
 
 if (!empty($_SESSION['facilityMap'])) {
@@ -56,7 +56,7 @@ if (!empty($_SESSION['facilityMap'])) {
 }
 
 if (!empty($_POST['testingLab']) && $_POST['testingLab'] > 0) {
-	$where[] = " (vl.lab_id = 0 OR vl.lab_id IS NULL OR vl.lab_id = {$_POST['testingLab']}) ";
+	$where[] = " vl.lab_id = {$_POST['testingLab']} ";
 }
 
 if (!empty($_POST['testingLab']) && is_numeric($_POST['facility'])) {
