@@ -53,7 +53,7 @@ final class TestRequestsService
             // Handle process locking
             if (!$parallelProcess) {
                 try {
-                    $lockFile = MiscUtility::getLockFile(__CLASS__ . '-' . __FUNCTION__);
+                    $lockFile = MiscUtility::getLockFile(strtolower(__CLASS__ . '-' . __FUNCTION__));
 
                     if (!MiscUtility::isLockFileExpired($lockFile, 1800)) {
                         if ($isCli) {

@@ -125,6 +125,7 @@ abstract class AbstractTestService
                 $provinceCode = $params['provinceCode'] ?? '';
                 $sampleCodeFormat = $params['sampleCodeFormat'] ?? 'MMYY';
                 $prefix = $params['prefix'] ?? $this->shortCode ?? 'T';
+                $postfix = $params['postfix'] ?? '';
 
                 if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false) {
                     $sampleCollectionDate = 'now';
@@ -166,15 +167,15 @@ abstract class AbstractTestService
 
                 // Format the sample code based on the specified format
                 if ($sampleCodeFormat == 'auto') {
-                    $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString;
+                    $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $provinceCode . $autoFormatedString . $postfix;
                 } elseif ($sampleCodeFormat == 'auto2') {
-                    $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $year . $provinceCode . $prefix;
+                    $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $year . $provinceCode . $prefix . $postfix;
                 } elseif ($sampleCodeFormat == 'MMYY') {
-                    $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['monthYear'];
+                    $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['monthYear'] . $postfix;
                 } elseif ($sampleCodeFormat == 'YY') {
-                    $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['year'];
+                    $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['year'] . $postfix;
                 } else {
-                    $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix;
+                    $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $postfix;
                 }
 
                 $sampleCodeGenerator['sampleCode'] = $sampleCodeGenerator['sampleCodeFormat'] . $sampleCodeGenerator['maxId'];

@@ -26,6 +26,7 @@ final class GenericTestsService extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
             $params['prefix'] ??= $params['testType'] ?? $this->shortCode;
+            $params['postfix'] ??= '';
 
             try {
                 return $this->generateSampleCode($this->table, $params);
@@ -79,6 +80,7 @@ final class GenericTestsService extends AbstractTestService
             $uniqueId = $params['uniqueId'] ?? MiscUtility::generateULID();
             $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
             $params['prefix'] ??= $params['testType'] ?? $this->shortCode;
+            $params['postfix'] ??= '';
 
             // Insert into the Code Generation Queue
             $this->testRequestsService->addToSampleCodeQueue(

@@ -1,5 +1,19 @@
 <?php
 
+// app/tasks/remote/sts-metadata-receiver.php
+// Request STS to send metadata to this instance of LIS
+
+
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
+
+$cliMode = php_sapi_name() === 'cli';
+
+if ($cliMode) {
+    require_once __DIR__ . "/../../../bootstrap.php";
+}
+
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
@@ -15,22 +29,26 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
-ini_set('memory_limit', -1);
-set_time_limit(0);
-ini_set('max_execution_time', 300000);
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
 
 
-// Request STS to send metadata to this instance of LIS
-
-$cliMode = php_sapi_name() === 'cli';
 $forceFlag = false;
 $truncateFlag = false;
+$systemConfig = SYSTEM_CONFIG;
 
+// this script is only for LIS instances
+if ($general->isLISInstance() === false) {
+    exit(0);
+}
 
 if ($cliMode) {
-    require_once __DIR__ . "/../../../bootstrap.php";
-
     $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
 
     // Parse CLI arguments
@@ -41,26 +59,6 @@ if ($cliMode) {
     if (isset($options['t']) || isset($options['truncate'])) {
         $truncateFlag = true;
     }
-}
-
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-/** @var ApiService $apiService */
-$apiService = ContainerRegistry::get(ApiService::class);
-
-$systemConfig = SYSTEM_CONFIG;
-
-// only for LIS instances
-if ($general->isLISInstance() === false) {
-    exit(0);
-}
-
-if ($cliMode) {
     $io->title("Preparing to sync metadata...");
 }
 
