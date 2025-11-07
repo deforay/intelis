@@ -45,6 +45,7 @@ final class HepatitisService extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['hepatitis_sample_code'] ?? 'MMYY';
             $params['prefix'] ??= $globalConfig['hepatitis_sample_code_prefix'] ?? $this->shortCode;
+            $params['postfix'] ??= '';
 
             try {
                 return $this->generateSampleCode($this->table, $params);
