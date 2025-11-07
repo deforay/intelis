@@ -24,10 +24,11 @@ final class TbService extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['tb_sample_code'] ?? 'MMYY';
             $params['prefix'] ??= $globalConfig['tb_sample_code_prefix'] ?? $this->shortCode;
+            $postFix = '';
             if ($this->commonService->isLISInstance()) {
                 $postFix = $this->commonService->getSystemConfig('sc_testing_lab_id') ?? '';
             }
-            $params['postfix'] ??= $postFix ?? '';
+            $params['postfix'] ??= $postFix;
 
             try {
                 return $this->generateSampleCode($this->table, $params);

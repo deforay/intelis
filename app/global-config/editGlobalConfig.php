@@ -55,6 +55,291 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 	.eid_boxWidth {
 		width: 10%;
 	}
+
+	.config-modern {
+		background: #f6f7fb;
+		border-radius: 12px;
+		padding: 25px;
+		box-shadow: 0 10px 30px rgba(31, 50, 82, 0.08);
+	}
+
+	.config-box {
+		border: none;
+		box-shadow: none;
+		margin-bottom: 0;
+	}
+
+	.config-box-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 10px;
+		border: none;
+		padding-left: 0;
+		padding-right: 0;
+	}
+
+	.config-box-title {
+		margin: 0;
+		font-size: 20px;
+		font-weight: 600;
+		color: #2b3a4a;
+	}
+
+	.config-box-subtitle {
+		margin: 2px 0 0;
+		font-size: 13px;
+		color: #6b7c93;
+	}
+
+	.config-toolbar {
+		display: grid;
+		grid-template-columns: minmax(0, 1.8fr) minmax(220px, 0.8fr);
+		grid-auto-rows: auto;
+		gap: 12px 18px;
+		background: #fff;
+		border: 1px solid #e2e8f0;
+		border-radius: 10px;
+		padding: 12px 16px;
+		margin: 10px 0 25px;
+		box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+	}
+
+	.config-search {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex: 1 1 280px;
+		max-width: 520px;
+	}
+
+	.config-search em {
+		color: #94a3b8;
+	}
+
+	.config-search input {
+		width: 100%;
+		border-radius: 30px;
+		padding-left: 16px;
+	}
+
+	.config-clear-search {
+		padding: 0 8px;
+		color: #64748b;
+		display: none;
+	}
+
+	.config-jump {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	.config-jump select {
+		width: 100%;
+		border-radius: 30px;
+		border-color: #cbd5f5;
+	}
+
+	.config-section-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 10px;
+		margin-bottom: 20px;
+		flex-wrap: wrap;
+	}
+
+	.config-section-actions .btn {
+		border-radius: 20px;
+		font-size: 13px;
+		border-color: #cbd5f5;
+	}
+
+	.config-search-status {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-size: 13px;
+		color: #475569;
+		margin-bottom: 15px;
+		min-height: 18px;
+	}
+
+	.config-search-status .text-danger {
+		display: none;
+	}
+
+	.config-modern .panel {
+		border: 1px solid #e4e8f1;
+		border-radius: 12px;
+		box-shadow: 0 8px 18px rgba(43, 58, 74, 0.05);
+		margin-bottom: 20px;
+	}
+
+	.config-modern .panel-heading {
+		background: #fff;
+		border-bottom: 1px solid #edf1f7;
+		padding: 14px 18px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+	}
+
+	.config-modern .panel-title {
+		font-size: 16px;
+		font-weight: 600;
+		color: #1e293b;
+	}
+
+	.config-section-toggle {
+		border: none;
+		background: #f1f5f9;
+		color: #475569;
+		border-radius: 50%;
+		width: 32px;
+		height: 32px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.config-section-toggle:hover {
+		background: #e2e8f0;
+	}
+
+	.config-modern .panel-body {
+		padding: 25px 25px 10px;
+		background: #fff;
+	}
+
+	.config-section.is-collapsed .panel-body {
+		display: none;
+	}
+
+	.config-section.is-collapsed .config-section-toggle em {
+		transform: rotate(180deg);
+	}
+
+	.config-match {
+		background: #fef8e7;
+		border-radius: 10px;
+		padding-top: 12px;
+		padding-bottom: 12px;
+	}
+
+	.config-modern .form-group {
+		margin-bottom: 14px;
+	}
+
+	.config-modern .form-group .control-label {
+		font-size: 13px;
+		color: #475569;
+		font-weight: 600;
+	}
+
+	.config-modern .form-group .mandatory {
+		color: #ef4444;
+	}
+
+	.config-modern .form-control,
+	.config-modern .select2-selection {
+		border-radius: 8px !important;
+		border-color: #d0d7e6;
+		box-shadow: none;
+		min-height: 36px;
+	}
+
+	.config-modern .form-control:focus {
+		border-color: #778de7;
+		box-shadow: 0 0 0 3px rgba(119, 141, 231, 0.15);
+	}
+
+	.config-modern textarea.form-control {
+		min-height: 80px;
+	}
+
+	.config-modern .panel-body .row+.row {
+		margin-top: 10px;
+	}
+
+	.config-modern .help-block,
+	.config-modern small {
+		color: #7486a6;
+	}
+
+	.config-sticky-actions {
+		position: sticky;
+		top: 70px;
+		z-index: 15;
+		display: flex;
+		justify-content: flex-end;
+		gap: 10px;
+		padding: 12px 15px;
+		background: rgba(246, 247, 251, 0.95);
+		border: 1px solid #dfe7fb;
+		border-radius: 12px;
+		box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+		margin-bottom: 20px;
+	}
+
+	.config-sticky-actions .btn {
+		min-width: 110px;
+		border-radius: 20px;
+	}
+
+	.config-footer-actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 10px;
+		padding-top: 20px;
+		border-top: 1px solid #e2e8f0;
+	}
+
+	.config-footer-actions .btn {
+		border-radius: 20px;
+		min-width: 110px;
+	}
+
+	@media (max-width: 767px) {
+		.config-modern {
+			padding: 15px;
+		}
+
+		.config-modern .panel-body {
+			padding: 20px 15px 5px;
+		}
+
+		.config-toolbar {
+			display: flex;
+			flex-direction: column;
+			align-items: stretch;
+		}
+
+		.config-section-toggle {
+			width: 28px;
+			height: 28px;
+		}
+
+		.config-sticky-actions {
+			top: 60px;
+			flex-direction: column;
+		}
+
+		.config-jump {
+			width: 100%;
+		}
+
+		.config-section-actions {
+			flex-direction: column;
+			align-items: stretch;
+		}
+
+		.config-section-actions .btn {
+			width: 100%;
+		}
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -70,23 +355,53 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 	<!-- Main content -->
 	<section class="content">
 
-		<div class="box box-default">
-			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;">
-					<?php if (_isAllowed("editGlobalConfig.php") && !isset($_GET['e'])) { ?>
-						<!-- <div class="col-sm-6 pull-right">
-							<a href="javascript:void(0);" onclick="exportGeneralConfig();" class="btn btn-success pull-right"> <em class="fa-solid fa-file-excel"></em></em> <?php echo _translate("Export Config"); ?></a>
-						</div> -->
-						<div class="col-sm-6 pull-right">
-							<a href="editGlobalConfig.php?e=1" class="btn btn-primary pull-right"> <em class="fa-solid fa-pen-to-square"></em></em> <?php echo _translate("Edit System Configuration"); ?></a>
+		<div class="config-modern">
+			<div class="box box-default config-box">
+					<div class="box-header with-border config-box-header">
+						<div>
+							<p class="config-box-subtitle"><?php echo _translate("Use search or the jump menu to move directly to any configuration section."); ?></p>
 						</div>
+					<?php if (_isAllowed("editGlobalConfig.php") && !isset($_GET['e'])) { ?>
+						<a href="editGlobalConfig.php?e=1" class="btn btn-primary">
+							<em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("Edit System Configuration"); ?>
+						</a>
 					<?php } ?>
-					<br>
 				</div>
-			</div>
-			<!-- /.box-header -->
-			<div class="box-body">
-				<!-- form start -->
+					<div class="config-toolbar">
+						<div class="config-search">
+							<em class="fa-solid fa-magnifying-glass" aria-hidden="true"></em>
+							<input type="search" name="configSearch" id="configSearch" class="form-control" placeholder="<?php echo _translate('Search settings by keyword'); ?>" aria-label="<?php echo _translate('Search settings'); ?>" autocomplete="off" />
+							<button type="button" class="btn btn-link config-clear-search" id="clearConfigSearch"><?php echo _translate("Clear"); ?></button>
+						</div>
+						<div class="config-jump">
+							<select id="configSectionJump" class="form-control" data-placeholder="<?php echo _translate("Jump to a section"); ?>">
+								<option value=""><?php echo _translate("Jump to a section"); ?></option>
+							</select>
+						</div>
+					</div>
+					<div class="config-search-status">
+						<span id="configSearchFeedback" class="text-muted" style="display:none;"></span>
+						<span id="configSearchNoResults" class="text-danger"><?php echo _translate("No settings match your search."); ?></span>
+					</div>
+					<div class="config-sticky-actions hideFooter">
+						<button type="button" class="btn btn-primary" onclick="validateNow();return false;">
+							<em class="fa-solid fa-floppy-disk"></em> <?php echo _translate("Save"); ?>
+						</button>
+						<a href="editGlobalConfig.php" class="btn btn-default">
+							<?php echo _translate("Cancel"); ?>
+						</a>
+					</div>
+					<div class="config-section-actions">
+						<button type="button" class="btn btn-default btn-sm" id="expandAllConfigSections">
+							<em class="fa-solid fa-arrow-down"></em> <?php echo _translate("Expand All"); ?>
+						</button>
+						<button type="button" class="btn btn-default btn-sm" id="collapseAllConfigSections">
+							<em class="fa-solid fa-arrow-up"></em> <?php echo _translate("Collapse All"); ?>
+						</button>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+					<!-- form start -->
 				<form class="form-horizontal" method='post' name='editGlobalConfigForm' id='editGlobalConfigForm' enctype="multipart/form-data" autocomplete="off" action="globalConfigHelper.php">
 					<div class="box-body">
 						<div class="panel panel-default">
@@ -1450,12 +1765,16 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 
 						</div>
 						<!-- /.box-body -->
-						<div class="box-footer hideFooter">
-							<input type="hidden" class="readPage" name="removedLogoImage" id="removedLogoImage" />
-							<input type="hidden" class="" name="csrf_token" id="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
-							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-							<a href="editGlobalConfig.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
-						</div>
+							<div class="box-footer hideFooter config-footer-actions">
+								<input type="hidden" class="readPage" name="removedLogoImage" id="removedLogoImage" />
+								<input type="hidden" class="" name="csrf_token" id="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
+								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
+									<em class="fa-solid fa-floppy-disk"></em> <?php echo _translate("Save"); ?>
+								</a>
+								<a href="editGlobalConfig.php" class="btn btn-default">
+									<em class="fa-solid fa-rotate-left"></em> <?php echo _translate("Cancel"); ?>
+								</a>
+							</div>
 						<!-- /.box-footer -->
 				</form>
 				<!-- /.row -->
@@ -1463,7 +1782,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 
 		</div>
 		<!-- /.box -->
-
+	</div>
 	</section>
 	<!-- /.content -->
 </div>
@@ -1540,7 +1859,229 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 		// Initial update
 		// updateDropdownOptions();
 		updateAddButtonVisibility();
+
+		initConfigSections();
+		bindConfigSearch();
 	});
+
+	function initConfigSections() {
+		const $sections = $('.config-modern .panel');
+		if (!$sections.length) {
+			return;
+		}
+
+		$sections.each(function() {
+			const $section = $(this);
+			$section.addClass('config-section');
+
+			const $heading = $section.find('.panel-heading').first();
+			if (!$heading.find('.config-section-toggle').length) {
+				const $toggle = $('<button type="button" class="config-section-toggle" aria-expanded="true"><em class="fa-solid fa-chevron-up" aria-hidden="true"></em></button>');
+				$heading.append($toggle);
+			}
+
+			const sectionTitle = $.trim($heading.find('.panel-title').text());
+			if (sectionTitle && !$section.attr('data-section-title')) {
+				$section.attr('data-section-title', sectionTitle);
+			}
+		});
+
+		$('.config-section-toggle').off('click').on('click', function() {
+			const $section = $(this).closest('.config-section');
+			toggleSection($section);
+		});
+
+		$('#collapseAllConfigSections').off('click').on('click', function() {
+			setSectionState(true);
+		});
+
+		$('#expandAllConfigSections').off('click').on('click', function() {
+			setSectionState(false);
+		});
+
+		$('#clearConfigSearch').hide();
+		$('#configSearchNoResults').hide();
+		$('#configSearchFeedback').hide();
+
+		buildConfigSectionJump();
+	}
+
+	function toggleSection($section, forceCollapse = null) {
+		if (!$section || !$section.length) {
+			return;
+		}
+
+		const $body = $section.find('.panel-body').first();
+		const $toggle = $section.find('.config-section-toggle');
+		const $icon = $toggle.find('em');
+		const collapse = forceCollapse !== null ? forceCollapse : !$section.hasClass('is-collapsed');
+
+		if (forceCollapse !== null) {
+			if (collapse && $section.hasClass('is-collapsed')) {
+				return;
+			}
+			if (!collapse && !$section.hasClass('is-collapsed')) {
+				return;
+			}
+		}
+
+		if (collapse) {
+			$section.addClass('is-collapsed');
+			$body.stop(true, true).slideUp(150);
+			$icon.removeClass('fa-chevron-up').addClass('fa-chevron-down');
+			$toggle.attr('aria-expanded', 'false');
+		} else {
+			$section.removeClass('is-collapsed');
+			$body.stop(true, true).slideDown(150);
+			$icon.removeClass('fa-chevron-down').addClass('fa-chevron-up');
+			$toggle.attr('aria-expanded', 'true');
+		}
+	}
+
+	function setSectionState(shouldCollapse) {
+		$('.config-section').each(function() {
+			toggleSection($(this), shouldCollapse);
+		});
+	}
+
+	function buildConfigSectionJump() {
+		const $select = $('#configSectionJump');
+		if (!$select.length) {
+			return;
+		}
+
+		const placeholder = $select.data('placeholder') || $select.find('option:first').text();
+		$select.empty().append(`<option value="">${placeholder}</option>`);
+
+		$('.config-section').each(function(index) {
+			const $section = $(this);
+			let sectionId = $section.attr('id');
+			if (!sectionId) {
+				sectionId = `configSection-${index + 1}`;
+				$section.attr('id', sectionId);
+			}
+			const label = $section.attr('data-section-title') || $.trim($section.find('.panel-title').text());
+			if (label) {
+				$select.append(`<option value="${sectionId}">${label}</option>`);
+			}
+		});
+
+		$select.off('change').on('change', function() {
+			const targetId = $(this).val();
+			if (!targetId) {
+				return;
+			}
+			const $target = $('#' + targetId);
+			if ($target.length) {
+				toggleSection($target, false);
+				$('html, body').animate({
+					scrollTop: $target.offset().top - 80
+				}, 250);
+			}
+		});
+	}
+
+	function bindConfigSearch() {
+		const $searchInput = $('#configSearch');
+		if (!$searchInput.length) {
+			return;
+		}
+
+		const $clearBtn = $('#clearConfigSearch');
+		const $feedback = $('#configSearchFeedback');
+		const $noResults = $('#configSearchNoResults');
+		const strings = {
+			showing: "<?php echo _translate('Showing'); ?>",
+			settings: "<?php echo _translate('matching settings'); ?>",
+			noMatches: "<?php echo _translate('No settings match your search.'); ?>"
+		};
+
+		function debounce(func, wait) {
+			let timeout;
+			return function() {
+				const context = this;
+				const args = arguments;
+				clearTimeout(timeout);
+				timeout = setTimeout(function() {
+					func.apply(context, args);
+				}, wait);
+			};
+		}
+
+		function runSearch() {
+			const query = $.trim($searchInput.val()).toLowerCase();
+			let matchCount = 0;
+
+			if (!query) {
+				$('.config-section').show();
+				$('.config-section .form-group').removeClass('config-match');
+				$feedback.hide().text('');
+				$noResults.hide();
+				$clearBtn.hide();
+				return;
+			}
+
+			$('.config-section').each(function() {
+				const $section = $(this);
+				const title = ($section.data('section-title') || $section.find('.panel-title').text()).toLowerCase();
+				let sectionMatches = false;
+				let headingMatched = false;
+				let sectionFieldMatches = 0;
+
+				if (title.indexOf(query) !== -1) {
+					sectionMatches = true;
+					headingMatched = true;
+				}
+
+				$section.find('.form-group').each(function() {
+					const $field = $(this);
+					const labelText = $field.find('label').text();
+					const helperText = $field.find('.help-block, small').text();
+					const placeholderText = $field.find('input,select,textarea').map(function() {
+						return $(this).attr('placeholder') || '';
+					}).get().join(' ');
+					const textBlob = (labelText + ' ' + helperText + ' ' + placeholderText + ' ' + $field.text()).toLowerCase();
+					const fieldMatch = textBlob.indexOf(query) !== -1;
+					$field.toggleClass('config-match', fieldMatch);
+					if (fieldMatch) {
+						sectionMatches = true;
+						sectionFieldMatches++;
+						matchCount++;
+					}
+				});
+
+				if (headingMatched && sectionFieldMatches === 0) {
+					matchCount++;
+				}
+
+				if (sectionMatches) {
+					$section.show();
+					toggleSection($section, false);
+				} else {
+					$section.hide();
+				}
+			});
+
+			if (matchCount > 0) {
+				$feedback.text(strings.showing + ' ' + matchCount + ' ' + strings.settings).show();
+				$noResults.hide();
+			} else {
+				$feedback.hide();
+				$noResults.text(strings.noMatches).show();
+			}
+			$clearBtn.show();
+		}
+
+		const runSearchDebounced = debounce(runSearch, 150);
+		$searchInput.on('input', runSearchDebounced);
+		$searchInput.on('search', runSearch); // handles native clear on some browsers
+
+		$clearBtn.on('click', function() {
+			$searchInput.val('');
+			runSearch();
+			$searchInput.focus();
+		});
+	}
 
 	function validateNow() {
 		if (deleteTemplate) {
