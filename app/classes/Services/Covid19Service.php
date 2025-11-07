@@ -23,6 +23,7 @@ final class Covid19Service extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['covid19_sample_code'] ?? 'MMYY';
             $params['prefix'] ??= $globalConfig['covid19_sample_code_prefix'] ?? $this->shortCode;
+            $params['postfix'] ??= '';
 
             try {
                 return $this->generateSampleCode($this->table, $params);
