@@ -28,6 +28,22 @@ $forceFlag = false;
 $truncateFlag = false;
 
 
+if ($cliMode) {
+    require_once __DIR__ . "/../../../bootstrap.php";
+
+    $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+
+    // Parse CLI arguments
+    $options = getopt('ft', ['force', 'truncate']);
+    if (isset($options['f']) || isset($options['force'])) {
+        $forceFlag = true;
+    }
+    if (isset($options['t']) || isset($options['truncate'])) {
+        $truncateFlag = true;
+    }
+}
+
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -45,18 +61,6 @@ if ($general->isLISInstance() === false) {
 }
 
 if ($cliMode) {
-    require_once __DIR__ . "/../../../bootstrap.php";
-
-    $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
-
-    // Parse CLI arguments
-    $options = getopt('ft', ['force', 'truncate']);
-    if (isset($options['f']) || isset($options['force'])) {
-        $forceFlag = true;
-    }
-    if (isset($options['t']) || isset($options['truncate'])) {
-        $truncateFlag = true;
-    }
     $io->title("Preparing to sync metadata...");
 }
 
