@@ -1,12 +1,10 @@
 <?php
 // missing-samples-detail.php
 
-use App\Services\DatabaseService;
-use App\Services\FacilitiesService;
-use App\Registries\ContainerRegistry;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\SystemService;
-use App\Services\TestsService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 $title = _translate("Missing Sample Receipts - Detailed View");
 require_once APPLICATION_PATH . '/header.php';
@@ -16,6 +14,13 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_GET = _sanitizeInput($request->getQueryParams());
+
 
 $testType = $_GET['testType'] ?? 'vl';
 $dateRange = $_GET['dateRange'] ?? '';
@@ -140,168 +145,178 @@ $dateRange = $_GET['dateRange'] ?? '';
 </div>
 
 <script type="text/javascript">
-var dataTable;
+    var dataTable;
 
-$(document).ready(function() {
-    // Load priority counts
-    loadPriorityCounts();
+    $(document).ready(function() {
+        // Load priority counts
+        loadPriorityCounts();
 
-    // Initialize DataTable
-    dataTable = $('#missingSamplesDetailTable').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "/admin/api-dashboard/get-missing-samples-detail.php",
-            "type": "POST",
-            "data": function(d) {
-                d.testType = "<?= $testType; ?>";
-                d.dateRange = "<?= $dateRange; ?>";
-            }
-        },
-        "columns": [
-            {
-                "data": "priority",
-                "render": function(data, type, row) {
-                    let className = '';
-                    let icon = '';
-                    if (data === 'High') {
-                        className = 'label-danger';
-                        icon = 'fa-solid fa-exclamation-circle';
-                    } else if (data === 'Medium') {
-                        className = 'label-warning';
-                        icon = 'fa-solid fa-clock';
-                    } else {
-                        className = 'label-info';
-                        icon = 'fa-solid fa-info-circle';
+        // Initialize DataTable
+        dataTable = $('#missingSamplesDetailTable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "/admin/api-dashboard/get-missing-samples-detail.php",
+                "type": "POST",
+                "data": function(d) {
+                    d.testType = "<?= $testType; ?>";
+                    d.dateRange = "<?= $dateRange; ?>";
+                }
+            },
+            "columns": [{
+                    "data": "priority",
+                    "render": function(data, type, row) {
+                        let className = '';
+                        let icon = '';
+                        if (data === 'High') {
+                            className = 'label-danger';
+                            icon = 'fa-solid fa-exclamation-circle';
+                        } else if (data === 'Medium') {
+                            className = 'label-warning';
+                            icon = 'fa-solid fa-clock';
+                        } else {
+                            className = 'label-info';
+                            icon = 'fa-solid fa-info-circle';
+                        }
+                        return '<span class="label ' + className + '"><em class="' + icon + '"></em> ' + data + '</span>';
                     }
-                    return '<span class="label ' + className + '"><em class="' + icon + '"></em> ' + data + '</span>';
+                },
+                {
+                    "data": "sample_code"
+                },
+                {
+                    "data": "remote_sample_code"
+                },
+                {
+                    "data": "patient_info"
+                },
+                {
+                    "data": "facility_name"
+                },
+                {
+                    "data": "request_date"
+                },
+                {
+                    "data": "days_pending",
+                    "render": function(data, type, row) {
+                        let className = data > 7 ? 'label-danger' : (data > 3 ? 'label-warning' : 'label-info');
+                        return '<span class="label ' + className + '">' + data + ' days</span>';
+                    }
+                },
+                {
+                    "data": "source_of_request",
+                    "render": function(data, type, row) {
+                        let className = data.includes('API') ? 'label-primary' : 'label-default';
+                        return '<span class="label ' + className + '">' + data + '</span>';
+                    }
+                },
+                {
+                    "data": null,
+                    "orderable": false,
+                    "render": function(data, type, row) {
+                        return '<div class="btn-group">' +
+                            '<button class="btn btn-xs btn-primary" onclick="followUpSample(\'' + row.sample_code + '\');" title="Follow Up">' +
+                            '<em class="fa-solid fa-search"></em></button>' +
+                            '<button class="btn btn-xs btn-info" onclick="addNote(\'' + row.sample_code + '\');" title="Add Note">' +
+                            '<em class="fa-solid fa-sticky-note"></em></button>' +
+                            '<button class="btn btn-xs btn-warning" onclick="sendAlert(\'' + row.sample_code + '\');" title="Send Alert">' +
+                            '<em class="fa-solid fa-bell"></em></button>' +
+                            '</div>';
+                    }
                 }
-            },
-            { "data": "sample_code" },
-            { "data": "remote_sample_code" },
-            { "data": "patient_info" },
-            { "data": "facility_name" },
-            { "data": "request_date" },
-            {
-                "data": "days_pending",
-                "render": function(data, type, row) {
-                    let className = data > 7 ? 'label-danger' : (data > 3 ? 'label-warning' : 'label-info');
-                    return '<span class="label ' + className + '">' + data + ' days</span>';
+            ],
+            "order": [
+                [6, "desc"]
+            ], // Sort by days pending, descending
+            "pageLength": 25,
+            "responsive": true,
+            "dom": 'Bfrtip',
+            "buttons": [{
+                    extend: 'excel',
+                    text: '<em class="fa-solid fa-file-excel"></em> Export Excel',
+                    className: 'btn btn-success btn-sm',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7] // Exclude actions column
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    text: '<em class="fa-solid fa-file-pdf"></em> Export PDF',
+                    className: 'btn btn-danger btn-sm',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5, 6, 7] // Exclude actions column
+                    }
                 }
-            },
-            {
-                "data": "source_of_request",
-                "render": function(data, type, row) {
-                    let className = data.includes('API') ? 'label-primary' : 'label-default';
-                    return '<span class="label ' + className + '">' + data + '</span>';
-                }
-            },
-            {
-                "data": null,
-                "orderable": false,
-                "render": function(data, type, row) {
-                    return '<div class="btn-group">' +
-                        '<button class="btn btn-xs btn-primary" onclick="followUpSample(\'' + row.sample_code + '\');" title="Follow Up">' +
-                        '<em class="fa-solid fa-search"></em></button>' +
-                        '<button class="btn btn-xs btn-info" onclick="addNote(\'' + row.sample_code + '\');" title="Add Note">' +
-                        '<em class="fa-solid fa-sticky-note"></em></button>' +
-                        '<button class="btn btn-xs btn-warning" onclick="sendAlert(\'' + row.sample_code + '\');" title="Send Alert">' +
-                        '<em class="fa-solid fa-bell"></em></button>' +
-                        '</div>';
-                }
-            }
-        ],
-        "order": [[6, "desc"]], // Sort by days pending, descending
-        "pageLength": 25,
-        "responsive": true,
-        "dom": 'Bfrtip',
-        "buttons": [
-            {
-                extend: 'excel',
-                text: '<em class="fa-solid fa-file-excel"></em> Export Excel',
-                className: 'btn btn-success btn-sm',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5, 6, 7] // Exclude actions column
-                }
-            },
-            {
-                extend: 'pdf',
-                text: '<em class="fa-solid fa-file-pdf"></em> Export PDF',
-                className: 'btn btn-danger btn-sm',
-                exportOptions: {
-                    columns: [0, 1, 2, 3, 4, 5, 6, 7] // Exclude actions column
-                }
-            }
-        ]
+            ]
+        });
     });
-});
 
-function loadPriorityCounts() {
-    $.post("/admin/api-dashboard/get-missing-samples-priority-counts.php", {
-        testType: "<?= $testType; ?>",
-        dateRange: "<?= $dateRange; ?>"
-    }, function(data) {
-        const counts = JSON.parse(data);
-        $("#highPriorityCount").text(counts.high || 0);
-        $("#mediumPriorityCount").text(counts.medium || 0);
-    }).fail(function() {
-        $("#highPriorityCount").text("Error");
-        $("#mediumPriorityCount").text("Error");
-    });
-}
-
-function refreshData() {
-    loadPriorityCounts();
-    dataTable.ajax.reload();
-}
-
-function followUpSample(sampleCode) {
-    if (confirm('Open follow-up for sample: ' + sampleCode + '?')) {
-        window.open('/vl/requests/editVlRequest.php?id=' + sampleCode, '_blank');
-    }
-}
-
-function addNote(sampleCode) {
-    var note = prompt('Add a note for sample ' + sampleCode + ':');
-    if (note && note.trim() !== '') {
-        $.post("/admin/api-dashboard/add-sample-note.php", {
-            sampleCode: sampleCode,
+    function loadPriorityCounts() {
+        $.post("/admin/api-dashboard/get-missing-samples-priority-counts.php", {
             testType: "<?= $testType; ?>",
-            note: note.trim()
-        }, function(response) {
-            const result = typeof response === 'string' ? JSON.parse(response) : response;
-            if (result.success) {
-                alert('Note added successfully');
-            } else {
-                alert('Failed to add note: ' + (result.error || 'Unknown error'));
-            }
+            dateRange: "<?= $dateRange; ?>"
+        }, function(data) {
+            const counts = JSON.parse(data);
+            $("#highPriorityCount").text(counts.high || 0);
+            $("#mediumPriorityCount").text(counts.medium || 0);
         }).fail(function() {
-            alert('Failed to add note due to connection error');
+            $("#highPriorityCount").text("Error");
+            $("#mediumPriorityCount").text("Error");
         });
     }
-}
 
-function sendAlert(sampleCode) {
-    if (confirm('Send alert for missing sample: ' + sampleCode + '?')) {
-        $.post("/admin/api-dashboard/send-missing-sample-alert.php", {
-            sampleCode: sampleCode,
-            testType: "<?= $testType; ?>"
-        }, function(response) {
-            const result = typeof response === 'string' ? JSON.parse(response) : response;
-            if (result.success) {
-                alert('Alert sent successfully');
-            } else {
-                alert('Failed to send alert: ' + (result.error || 'Unknown error'));
-            }
-        }).fail(function() {
-            alert('Failed to send alert due to connection error');
-        });
+    function refreshData() {
+        loadPriorityCounts();
+        dataTable.ajax.reload();
     }
-}
 
-function exportMissingSamples() {
-    window.open('/admin/api-dashboard/export-missing-samples.php?testType=<?= $testType; ?>&dateRange=<?= urlencode($dateRange); ?>', '_blank');
-}
+    function followUpSample(sampleCode) {
+        if (confirm('Open follow-up for sample: ' + sampleCode + '?')) {
+            window.open('/vl/requests/editVlRequest.php?id=' + sampleCode, '_blank');
+        }
+    }
+
+    function addNote(sampleCode) {
+        var note = prompt('Add a note for sample ' + sampleCode + ':');
+        if (note && note.trim() !== '') {
+            $.post("/admin/api-dashboard/add-sample-note.php", {
+                sampleCode: sampleCode,
+                testType: "<?= $testType; ?>",
+                note: note.trim()
+            }, function(response) {
+                const result = typeof response === 'string' ? JSON.parse(response) : response;
+                if (result.success) {
+                    alert('Note added successfully');
+                } else {
+                    alert('Failed to add note: ' + (result.error || 'Unknown error'));
+                }
+            }).fail(function() {
+                alert('Failed to add note due to connection error');
+            });
+        }
+    }
+
+    function sendAlert(sampleCode) {
+        if (confirm('Send alert for missing sample: ' + sampleCode + '?')) {
+            $.post("/admin/api-dashboard/send-missing-sample-alert.php", {
+                sampleCode: sampleCode,
+                testType: "<?= $testType; ?>"
+            }, function(response) {
+                const result = typeof response === 'string' ? JSON.parse(response) : response;
+                if (result.success) {
+                    alert('Alert sent successfully');
+                } else {
+                    alert('Failed to send alert: ' + (result.error || 'Unknown error'));
+                }
+            }).fail(function() {
+                alert('Failed to send alert due to connection error');
+            });
+        }
+    }
+
+    function exportMissingSamples() {
+        window.open('/admin/api-dashboard/export-missing-samples.php?testType=<?= $testType; ?>&dateRange=<?= urlencode($dateRange); ?>', '_blank');
+    }
 </script>
 
 <!-- Follow-up Actions Modal -->
