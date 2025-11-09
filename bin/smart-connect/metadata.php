@@ -31,9 +31,11 @@ $apiService = ContainerRegistry::get(ApiService::class);
 $smartConnectURL = $general->getGlobalConfig('vldashboard_url');
 
 if (empty($smartConnectURL)) {
-    echo "VL Dashboard URL not set";
+    echo "Smart Connect URL not set";
     exit(0);
 }
+
+$baseUrl = rtrim((string) $smartConnectURL, "/");
 
 $data = [];
 
@@ -98,6 +100,19 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
 
 try {
 
+    $healthUrl = $baseUrl . "/api/health";
+
+    if ($apiService->checkConnectivity($healthUrl) !== true) {
+        LoggerUtility::log("error", "Unable to connect to Smart Connect health endpoint", [
+            'file' => __FILE__,
+            'line' => __LINE__,
+            'url'  => $healthUrl,
+        ]);
+        exit(0);
+    }
+
+    $url = $baseUrl . "/api/vlsm-metadata";
+
     foreach ($referenceTables as $table) {
         if ($data['forceSync'] === true) {
             $createResult = $db->rawQueryOne("SHOW CREATE TABLE `$table`");
@@ -129,8 +144,6 @@ try {
     fwrite($fp, json_encode($dataToSync));
     fclose($fp);
 
-
-    $url = rtrim((string) $smartConnectURL, "/") . "/api/vlsm-metadata";
 
     $params = [
         [

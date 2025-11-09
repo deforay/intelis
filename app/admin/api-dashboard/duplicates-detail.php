@@ -1,12 +1,20 @@
 <?php
 // duplicates-detail.php
 
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 
 $title = _translate("Potential Duplicate Entries - Detailed View");
 require_once APPLICATION_PATH . '/header.php';
+
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_GET = _sanitizeInput($request->getQueryParams());
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
