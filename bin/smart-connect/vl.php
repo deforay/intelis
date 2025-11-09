@@ -34,6 +34,27 @@ $output = [];
 
 try {
 
+    $smartConnectURL = $general->getGlobalConfig('vldashboard_url');
+
+    if (empty($smartConnectURL)) {
+        echo "Smart Connect URL not set";
+        exit(0);
+    }
+
+    $baseUrl = rtrim((string) $smartConnectURL, "/");
+    $healthUrl = $baseUrl . "/api/health";
+
+    if ($apiService->checkConnectivity($healthUrl) !== true) {
+        LoggerUtility::log("error", "Unable to connect to Smart Connect health endpoint", [
+            'file' => __FILE__,
+            'line' => __LINE__,
+            'url'  => $healthUrl,
+        ]);
+        exit(0);
+    }
+
+    $url = $baseUrl . "/api/vlsm";
+
     $instanceUpdateOn = $db->getValue('s_vlsm_instance', 'vl_last_dash_sync');
 
     if (!empty($instanceUpdateOn)) {
@@ -56,15 +77,6 @@ try {
     $fp = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'w');
     fwrite($fp, json_encode($output));
     fclose($fp);
-
-    $smartConnectURL = $general->getGlobalConfig('vldashboard_url');
-
-    if (empty($smartConnectURL)) {
-        echo "VL Dashboard URL not set";
-        exit(0);
-    }
-
-    $url = rtrim((string) $smartConnectURL, "/") . "/api/vlsm";
 
     $params = [
         [
