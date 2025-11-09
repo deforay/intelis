@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.2 || ^8.3 || ^8.4",
         "ext-bcmath": "*",
         "ext-curl": "*",
         "ext-fileinfo": "*",
@@ -47,7 +47,7 @@
         "php-di/php-di": "^7.1",
         "phpmailer/phpmailer": "^6.10",
         "phpmyadmin/sql-parser": "^5.11",
-        "phpoffice/phpspreadsheet": "^5.0",
+        "phpoffice/phpspreadsheet": "^5.2",
         "psr/log": "^3.0",
         "setasign/fpdi": "^2.6",
         "slim/psr7": "^1.7",
