@@ -262,7 +262,7 @@ function selectFileWithFzf(array $candidates, string $header): ?string
         2 => STDERR,
     ];
 
-    $process = proc_open($cmd, $descriptors, $pipes, null, buildProcessEnv());
+    $process = proc_open($cmd, $descriptors, $pipes, null, buildSafeProcessEnv());
     if (is_resource($process)) {
         proc_close($process);
     }
@@ -314,7 +314,7 @@ function encryptWithGpg(string $gzPath, string $gpgPath, string $passphrase): bo
         2 => ['pipe', 'w'],
     ];
 
-    $proc = proc_open($cmd, $descriptors, $pipes, null, buildProcessEnv());
+    $proc = proc_open($cmd, $descriptors, $pipes, null, buildSafeProcessEnv());
     if (!is_resource($proc)) {
         throw new SystemException('Failed to start gpg process.');
     }
@@ -379,7 +379,7 @@ function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backup
         1 => ['pipe', 'w'],
         2 => ['pipe', 'w'],
     ];
-    $proc = proc_open($gpgCmd, $descriptors, $pipes, null, buildProcessEnv());
+    $proc = proc_open($gpgCmd, $descriptors, $pipes, null, buildSafeProcessEnv());
     if (!is_resource($proc)) {
         throw new SystemException('Failed to start gpg decrypt process.');
     }
@@ -419,6 +419,16 @@ function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backup
 /**
  * Quick structural check that file is a readable GPG container (no passphrase needed).
  */
+/**
+ * Verify GPG file structure without decrypting
+ * 
+ * Security: Uses buildSafeProcessEnv() to prevent command injection via HTTP headers
+ * Additional validation: Blocks shell metacharacters in file paths
+ * 
+ * @param string $gpgPath Path to GPG encrypted file
+ * @param string|null $allowedDirectory Optional directory constraint for path validation
+ * @return bool True if GPG structure is valid, false otherwise
+ */
 function verifyGpgStructure(string $gpgPath, ?string $allowedDirectory = null): bool
 {
     if (!commandExists('gpg')) return false;
@@ -431,6 +441,14 @@ function verifyGpgStructure(string $gpgPath, ?string $allowedDirectory = null): 
         return false;
     }
 
+    // Additional validation: ensure path doesn't contain shell metacharacters
+    if (preg_match('/[;&|`$<>(){}[\]!]/', $realPath)) {
+        return false;
+    }
+
+    // Build environment without HTTP headers to prevent injection
+    $safeEnv = buildSafeProcessEnv();
+
     $cmd = ['gpg', '--batch', '--list-packets', $realPath];
 
     $desc = [
@@ -438,7 +456,7 @@ function verifyGpgStructure(string $gpgPath, ?string $allowedDirectory = null): 
         1 => ['pipe', 'w'],
         2 => ['pipe', 'w'],
     ];
-    $proc = proc_open($cmd, $desc, $pipes, null, buildProcessEnv());
+    $proc = proc_open($cmd, $desc, $pipes, null, $safeEnv);
     if (!is_resource($proc)) return false;
 
     fclose($pipes[0]);
@@ -2302,6 +2320,71 @@ function buildProcessEnv(array $extra = []): array
             unset($env[$key]);
         } else {
             $env[$key] = $value;
+        }
+    }
+
+    return $env;
+}
+
+/**
+ * Build a safe process environment that excludes HTTP headers
+ * to prevent command injection attacks via user-controlled input.
+ */
+function buildSafeProcessEnv(array $extra = []): array
+{
+    $env = [];
+
+    // Whitelist of safe environment variables
+    $safeVars = [
+        'PATH',
+        'HOME',
+        'USER',
+        'SHELL',
+        'LANG',
+        'LC_ALL',
+        'LC_CTYPE',
+        'TERM',
+        'PWD',
+        'TMPDIR',
+        'TMP',
+        'TEMP',
+        'TZ',
+        'LOGNAME'
+    ];
+
+    if (isset($_ENV) && is_array($_ENV) && $_ENV !== []) {
+        foreach ($safeVars as $var) {
+            if (isset($_ENV[$var])) {
+                $env[$var] = $_ENV[$var];
+            }
+        }
+    } else {
+        // Only copy safe, non-HTTP variables from $_SERVER
+        foreach ($_SERVER as $key => $value) {
+            if (is_string($key) && in_array($key, $safeVars, true)) {
+                $env[$key] = (string) $value;
+            }
+        }
+    }
+
+    // Ensure PATH is always set
+    if (empty($env['PATH'])) {
+        $path = getenv('PATH');
+        if (!is_string($path) || $path === '') {
+            $path = '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/homebrew/bin:/opt/homebrew/sbin';
+        }
+        $env['PATH'] = $path;
+    }
+
+    // Apply any extra variables (sanitized)
+    foreach ($extra as $key => $value) {
+        if ($value === null) {
+            unset($env[$key]);
+        } else {
+            // Only allow alphanumeric keys with underscores
+            if (is_string($key) && preg_match('/^[A-Z_][A-Z0-9_]*$/', $key)) {
+                $env[$key] = (string) $value;
+            }
         }
     }
 
