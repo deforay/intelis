@@ -37,7 +37,7 @@ if (isset($_SESSION['userId'])) {
 	if ($ipSessionData !== null) {
 		$_SESSION[$ipAddress] = $ipSessionData;
 	}
-	if (isset($alertMessage) && trim((string) $_SESSION['alertMsg']) != "") {
+	if (!empty($alertMessage)) {
 		$_SESSION['alertMsg'] = $alertMessage;
 	}
 }
@@ -371,27 +371,31 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 						format: "html"
 					})
 					.done(function(data) {
-						try {
-							// Parse the JSON response
-							const response = JSON.parse(data);
-
-							if (response.captchaRequired) {
-								captchaflag = true;
-								$('#captcha').show();
-								getCaptcha('capChaw');
-								$("#challengeResponse").addClass("isRequired");
-							} else {
-								//$('#captcha').hide(); // Hide CAPTCHA if not required
-								$("#challengeResponse").removeClass("isRequired");
+						// jQuery auto-parses JSON when the response header is JSON,
+						// so support both string and object responses.
+						let response = data;
+						if (typeof data === "string") {
+							try {
+								response = JSON.parse(data);
+							} catch (e) {
+								console.error("Invalid JSON response:", data);
+								return;
 							}
+						}
 
-							// Handle any error message in the response
-							if (response.error) {
-								alert(response.error); // Show an error message if any
-							}
+						if (response.captchaRequired) {
+							captchaflag = true;
+							$('#captcha').show();
+							getCaptcha('capChaw');
+							$("#challengeResponse").addClass("isRequired");
+						} else {
+							//$('#captcha').hide(); // Hide CAPTCHA if not required
+							$("#challengeResponse").removeClass("isRequired");
+						}
 
-						} catch (e) {
-							console.error("Invalid JSON response:", data); // Log invalid JSON for debugging
+						// Handle any error message in the response
+						if (response.error) {
+							alert(response.error); // Show an error message if any
 						}
 					})
 					.fail(function(jqXHR, textStatus, errorThrown) {
