@@ -309,7 +309,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 				challenge_field = document.getElementById("challengeResponse").value;
 				if (captchaflag === true) {
 					if (challenge_field !== "") {
-						$.post('/includes/check-captcha-route.php', {
+						$.post('/login/check-captcha.php', {
 								challenge_field: challenge_field,
 								format: "html"
 							},
