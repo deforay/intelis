@@ -252,8 +252,10 @@ foreach ($rejectionTypeResult as $type) {
                 <?php echo $rejectionReason; ?>
               </select>
             </div>
+            
             <div class="col-md-2 col-sm-2"><input type="button" onclick="submitTestStatus();" value="<?php echo _translate('Apply'); ?>" class="btn btn-success btn-sm"></div>
-          </div>  </div>
+          </div> 
+          
           <!-- /.box-header -->
           <div class="box-body">
             <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
@@ -306,7 +308,7 @@ foreach ($rejectionTypeResult as $type) {
           <!-- /.box-body -->
         </div>
         <!-- /.box -->
-
+      </div>
       </div>
       <!-- /.col -->
     </div>
