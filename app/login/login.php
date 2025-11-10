@@ -167,6 +167,36 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		.hpot {
 			display: none;
 		}
+
+		@keyframes shake {
+			0% {
+				transform: translateX(0);
+			}
+
+			20% {
+				transform: translateX(-12px);
+			}
+
+			40% {
+				transform: translateX(12px);
+			}
+
+			60% {
+				transform: translateX(-8px);
+			}
+
+			80% {
+				transform: translateX(8px);
+			}
+
+			100% {
+				transform: translateX(0);
+			}
+		}
+
+		#loginPanel.shake {
+			animation: shake 0.45s ease;
+		}
 	</style>
 
 	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
@@ -206,7 +236,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 		?>
 		<div id="loginbox" style="margin-top:20px;margin-bottom:70px;float:right;margin-right:10px;" class="mainbox col-md-3 col-sm-8 ">
-			<div class="panel panel-default" style="opacity: 0.93;">
+			<div class="panel panel-default" id="loginPanel" style="opacity: 0.93;">
 				<div class="panel-heading">
 					<div class="panel-title"><?= $systemDisplayName; ?></div>
 				</div>
@@ -291,6 +321,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 			headers: window.additionalXHRParams
 		});
 
+		const hasInitialAlert = <?= $initialAlert ? 'true' : 'false'; ?>;
 		let captchaflag = false;
 
 		function getCaptcha(captchaDivId) {
@@ -298,6 +329,16 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 			$("#" + captchaDivId).load(function() {
 				$.blockUI();
 			});
+		}
+
+		function triggerShake() {
+			const panel = document.getElementById('loginPanel');
+			if (!panel) return;
+			panel.classList.remove('shake');
+			// Force reflow so removing the class resets the animation,
+			// allowing repeated shakes.
+			void panel.offsetWidth;
+			panel.classList.add('shake');
 		}
 
 		function validateNow() {
@@ -351,11 +392,15 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 			<?php }
 			if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) != "") { ?>
 				alert("<?= $_SESSION['alertMsg']; ?>");
+				triggerShake();
 			<?php $_SESSION['alertMsg'] = '';
 				unset($_SESSION['alertMsg']);
 			} ?>
 
 			checkLoginAttempts();
+			if (hasInitialAlert) {
+				triggerShake();
+			}
 		});
 
 
