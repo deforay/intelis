@@ -393,7 +393,7 @@ $errorInfo ??= [];
                 <?php if (!empty($errorInfo['error_id'])) : ?>
                   <div class="error-id-section">
                     <div class="error-id">
-                      <?= _translate('Error ID'); ?>: <?= htmlspecialchars($errorInfo['error_id'], ENT_QUOTES, 'UTF-8'); ?>
+                      <?= _translate('Error ID'); ?>: <?= htmlspecialchars((string) $errorInfo['error_id'], ENT_QUOTES, 'UTF-8'); ?>
                     </div>
                   </div>
                 <?php endif; ?>
@@ -413,7 +413,7 @@ $errorInfo ??= [];
                 <h4><?= _translate('What you can try'); ?></h4>
                 <ul>
                   <?php foreach ($errorInfo['suggested_actions'] as $action) : ?>
-                    <li><?= htmlspecialchars($action, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li><?= htmlspecialchars((string) $action, ENT_QUOTES, 'UTF-8'); ?></li>
                   <?php endforeach; ?>
                 </ul>
               </div>

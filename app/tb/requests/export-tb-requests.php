@@ -30,9 +30,9 @@ $sQuery = $_SESSION['tbRequestSearchResultQuery'];
 
 
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-    $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Date specimen Received", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Date specimen collected", "Reason for Test Request",  "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+    $headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Date specimen Received", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Date specimen collected", "Reason for Test Request", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released"];
 } else {
-    $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Date specimen Received", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Sex", "Date specimen collected", "Reason for Test Request", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+    $headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Date specimen Received", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Sex", "Date specimen collected", "Reason for Test Request", "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released"];
 }
 
 if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
@@ -40,7 +40,7 @@ if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID",
 }
 
 
-$buildRow = function ($aRow, $no) use ($general, $key, $tbResults, $db) {
+$buildRow = function ($aRow, $no) use ($general, $key, $tbResults, $db): array {
     $row = [];
 
     // Get testing platform and test method
@@ -64,7 +64,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $tbResults, $db) {
 
     //set sample rejection
     $sampleRejection = 'No';
-    if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+    if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
         $sampleRejection = 'Yes';
     }
     if (!empty($aRow['patient_name'])) {
@@ -103,7 +103,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $tbResults, $db) {
         $row[] = $patientFname . " " . $patientLname;
     }
     $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-    $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+    $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) !== '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
     $row[] = $aRow['patient_gender'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     $row[] = $aRow['test_reason_name'];
@@ -122,7 +122,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $tbResults, $db) {
 // Build filter info for header row
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim($value) != '' && trim($value) != '-- Select --') {
+	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
 	}
 }
@@ -130,7 +130,7 @@ foreach ($_POST as $key => $value) {
 // Prepare headings (with alpha-numeric conversion if requested)
 $processedHeadings = $headings;
 if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-	$processedHeadings = array_map(function ($value) {
+	$processedHeadings = array_map(function ($value): array|string|null {
 		$string = str_replace(' ', '', $value);
 		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
 	}, $headings);

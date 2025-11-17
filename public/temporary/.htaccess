@@ -1,9 +1,0 @@
-Options -Indexes
-
-Header always edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
-Header set X-Content-Type-Options "nosniff"
-
-<FilesMatch ".(php|phtml|perl|py|htaccess|htpasswd|ini|psd|log|sh|json|lock|phar|yml|md|sql|zip|hgignore|hg|hgtags|DS_Store)$">
-  Order Allow,Deny
-  Deny from all
-</FilesMatch>

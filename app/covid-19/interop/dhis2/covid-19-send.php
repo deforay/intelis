@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\SOUTH_SUDAN;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -20,8 +21,6 @@ $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
 
-$fileArray = array(
-    COUNTRY\SOUTH_SUDAN => 'forms/send-southsudan.php'
-);
+$fileArray = [SOUTH_SUDAN => 'forms/send-southsudan.php'];
 
 require_once($fileArray[$arr['vl_form']]);

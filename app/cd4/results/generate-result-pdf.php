@@ -1,5 +1,14 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const COUNTRY\SOUTH_SUDAN;
+use const COUNTRY\SIERRA_LEONE;
+use const COUNTRY\DRC;
+use const COUNTRY\CAMEROON;
+use const COUNTRY\PNG;
+use const COUNTRY\WHO;
+use const COUNTRY\RWANDA;
+
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
@@ -14,7 +23,7 @@ use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -33,7 +42,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $arr = $general->getGlobalConfig();
 //set mField Array
 $mFieldArray = [];
-if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
+if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) !== '') {
 	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
 }
 
@@ -78,7 +87,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 	if (!empty($_POST['sampleCodes'])) {
 		$searchQueryWhere[] = " vl.sample_code IN(" . $_POST['sampleCodes'] . ") ";
 	}
-	if (!empty($searchQueryWhere)) {
+	if ($searchQueryWhere !== []) {
 		$searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
 	}
 	//echo ($searchQuery);
@@ -96,15 +105,7 @@ $printDate = DateUtility::humanReadableDateFormat($currentDateTime, true);
 
 $currentDateTime = DateUtility::getCurrentDateTime();
 
-$fileArray = array(
-	COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
-	COUNTRY\SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php',
-	COUNTRY\DRC => 'pdf/result-pdf-drc.php',
-	COUNTRY\CAMEROON => 'pdf/result-pdf-cameroon.php',
-	COUNTRY\PNG => 'pdf/result-pdf-png.php',
-	COUNTRY\WHO => 'pdf/result-pdf-who.php',
-	COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
-);
+$fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php', DRC => 'pdf/result-pdf-drc.php', CAMEROON => 'pdf/result-pdf-cameroon.php', PNG => 'pdf/result-pdf-png.php', WHO => 'pdf/result-pdf-who.php', RWANDA => 'pdf/result-pdf-rwanda.php'];
 
 $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  time() . '-' . MiscUtility::generateRandomString(6);
 MiscUtility::makeDirectory($pathFront);
@@ -117,11 +118,11 @@ $_SESSION['aliasPage'] = 1;
 foreach ($requestResult as $result) {
 
 	if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
-		$pData = array('result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+		$pData = ['result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
 		$db->where('cd4_id', $result['cd4_id']);
 		$id = $db->update('form_cd4', $pData);
 	} elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
-		$pData = array('result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+		$pData = ['result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
 		$db->where('cd4_id', $result['cd4_id']);
 		$id = $db->update('form_cd4', $pData);
 	}
@@ -144,7 +145,7 @@ foreach ($requestResult as $result) {
 }
 
 
-if (!empty($pages)) {
+if ($pages !== []) {
 	$resultPdf = new PdfConcatenateHelper();
 	$resultPdf->setFiles($pages);
 	$resultPdf->setPrintHeader(false);

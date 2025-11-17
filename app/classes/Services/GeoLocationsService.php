@@ -9,11 +9,8 @@ use App\Services\DatabaseService;
 final class GeoLocationsService
 {
 
-    protected DatabaseService $db;
-
-    public function __construct(DatabaseService $db)
+    public function __construct(protected DatabaseService $db)
     {
-        $this->db = $db;
     }
 
     public function getProvinces($isApi = "no", $onlyActive = true, $facilityMap = null)
@@ -26,9 +23,9 @@ final class GeoLocationsService
         return $this->fetchActiveGeolocations(null, $province, $isApi, $onlyActive, $facilityMap);
     }
 
-    public function fetchActiveGeolocations($geoId = 0, $parent = 0, $api = "yes", $onlyActive = true, $facilityMap = null, $updatedDateTime = null)
+    public function fetchActiveGeolocations($geoId = 0, $parent = 0, $api = "yes", $onlyActive = true, $facilityMap = null, $updatedDateTime = null, bool $orderByStatus = false): mixed
     {
-        return MemoUtility::remember(function () use ($geoId, $parent, $api, $onlyActive, $facilityMap, $updatedDateTime) {
+        return MemoUtility::remember(function () use ($geoId, $parent, $api, $onlyActive, $facilityMap, $updatedDateTime, $orderByStatus) {
 
             $returnArr = [];
             if ($onlyActive) {
@@ -59,7 +56,12 @@ final class GeoLocationsService
                 $this->db->where("facility_id IN ($facilityMap)");
             }
 
-            $this->db->orderBy("geo_name", "asc");
+            if ($orderByStatus) {
+                $this->db->orderBy("(geo_status = 'active')", "DESC");
+                $this->db->orderBy("geo_name", "ASC");
+            } else {
+                $this->db->orderBy("geo_name", "asc");
+            }
 
             $response = $this->db->get("geographical_divisions");
 
@@ -82,7 +84,7 @@ final class GeoLocationsService
         }
 
         $pQuery = "SELECT geo_id FROM geographical_divisions WHERE (geo_parent = 0) AND (geo_code like ?)";
-        $pResult = $this->db->rawQueryOne($pQuery, array($code));
+        $pResult = $this->db->rawQueryOne($pQuery, [$code]);
 
         if ($pResult) {
             return $pResult['geo_id'];
@@ -111,14 +113,7 @@ final class GeoLocationsService
     public function addGeoLocation($geoName, $parent = 0)
     {
 
-        $data = array(
-            'geo_name'         => $geoName,
-            'geo_status'       => 'active',
-            'created_by'       => $_SESSION['userId'],
-            'created_on'       => DateUtility::getCurrentDateTime(),
-            'updated_datetime' => DateUtility::getCurrentDateTime(),
-            'data_sync'       => 0
-        );
+        $data = ['geo_name'         => $geoName, 'geo_status'       => 'active', 'created_by'       => $_SESSION['userId'], 'created_on'       => DateUtility::getCurrentDateTime(), 'updated_datetime' => DateUtility::getCurrentDateTime(), 'data_sync'       => 0];
         if ($parent > 0) {
             $data['geo_parent'] = $parent;
         }
@@ -186,7 +181,7 @@ final class GeoLocationsService
         return $response;
     }
 
-    public function getDistrictDropdown($selectedProvince = null, $selectedDistrict = null, $option = null)
+    public function getDistrictDropdown($selectedProvince = null, $selectedDistrict = null, $option = null): string
     {
         if (!empty($selectedProvince)) {
 

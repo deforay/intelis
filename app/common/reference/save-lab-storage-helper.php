@@ -25,7 +25,7 @@ $tableName = "lab_storage";
 $primaryKey = "storage_id";
 
 try {
-	if (isset($_POST['storageCode']) && !empty($_POST['storageCode']) && trim((string) $_POST['storageCode']) != "") {
+	if (isset($_POST['storageCode']) && !empty($_POST['storageCode']) && trim((string) $_POST['storageCode']) !== "") {
 
 		$save = $storageService->saveLabStorage($_POST);
 		if ($save) {

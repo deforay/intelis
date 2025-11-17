@@ -1,11 +1,12 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use Brick\PhoneNumber\PhoneNumber;
 use Brick\PhoneNumber\PhoneNumberParseException;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -18,13 +19,8 @@ if (isset($_POST['phoneNumber'])) {
     try {
         $phoneNumber = PhoneNumber::parse($phoneNumberInput);
 
-        if ($strictCheck) {
-            $data['isValid'] = $phoneNumber->isValidNumber();
-        } else {
-            // a more lenient and faster check than `isValidNumber()`
-            $data['isValid'] = $phoneNumber->isPossibleNumber();
-        }
-    } catch (PhoneNumberParseException $e) {
+        $data['isValid'] = $strictCheck ? $phoneNumber->isValidNumber() : $phoneNumber->isPossibleNumber();
+    } catch (PhoneNumberParseException) {
         $data['isValid'] = false;
     }
 }

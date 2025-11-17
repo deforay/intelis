@@ -1,5 +1,7 @@
 <?php
 // Allow from any origin
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -41,13 +43,13 @@ try {
     /** @var ApiService $apiService */
     $apiService = ContainerRegistry::get(ApiService::class);
 
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $jsonData = $apiService->getJsonFromRequest($request, true);
     $result = explode('&', (string) $jsonData);
 
     /* While it coming from the recency service we change the params */
-    if ($result[9] == "service=") {
+    if ($result[9] === "service=") {
         $sam = explode('=', $result[0]);
         $pat = explode('=', $result[1]);
         $fac = explode('=', $result[2]);
@@ -74,7 +76,7 @@ try {
     $data = [];
     $vlReqFromTable = "form_vl";
 
-    if (!empty($result) && $result[0] != "") {
+    if ($result !== [] && $result[0] != "") {
 
         /* To get province and district from facility id */
         $facilityQuery = "SELECT facility_id, facility_state, facility_district from facility_details WHERE other_id = ?";
@@ -88,7 +90,7 @@ try {
         $data['facility_id'] = $facilityResult[0]['facility_id'];
         $data['patient_province'] = $facilityResult[0]['facility_state'];
         $data['patient_district'] = $facilityResult[0]['facility_district'];
-        $data['sample_collection_date'] = date('Y-m-d', strtotime($result[5]));
+        $data['sample_collection_date'] = date('Y-m-d', strtotime((string) $result[5]));
         // $data['sample_type']= $result[6];
         $data['specimen_type'] = 2;
         $data['request_created_by'] = $result[8];
@@ -99,8 +101,8 @@ try {
         $data['recency_vl'] = 'yes';
         $data['reason_for_vl_testing'] = 9999; // 9999 is Recency Test in r_vl_test_reasons table
         $data['vlsm_country_id'] = (int) $general->getGlobalConfig('vl_form');
-        $data['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-        $data['patient_dob'] = date('Y-m-d', strtotime($result[9]));
+        $data['result_status'] = RECEIVED_AT_CLINIC;
+        $data['patient_dob'] = date('Y-m-d', strtotime((string) $result[9]));
         $data['patient_age_in_years'] = $result[10];
         $data['patient_gender'] = $result[11];
 

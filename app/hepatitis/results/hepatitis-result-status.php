@@ -103,12 +103,10 @@ foreach ($rejectionTypeResult as $type) {
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
 									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 									<?php
-									foreach ($batResult as $code) {
-									?>
+									foreach ($batResult as $code) { ?>
 										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
 									<?php
-									}
-									?>
+									} ?>
 								</select>
 							</td>
 						</tr>
@@ -119,12 +117,10 @@ foreach ($rejectionTypeResult as $type) {
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 									<?php
-									foreach ($fResult as $name) {
-									?>
+									foreach ($fResult as $name) { ?>
 										<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
 									<?php
-									}
-									?>
+									} ?>
 								</select>
 							</td>
 							<td>&nbsp;<strong><?php echo _translate("Show Samples that are"); ?> &nbsp;:</strong></td>
@@ -153,37 +149,37 @@ foreach ($rejectionTypeResult as $type) {
 								<option value="2"><?php echo _translate("Lost"); ?></option>
 							</select>
 						</div>
- <div class="col-md-2 col-sm-2">
-               <select class="form-control" id="approver" name="approver" title="<?php echo _translate('Please select approver'); ?>" disabled="disabled">
-                <option value="">
-                  <?php echo _translate("-- Select Approver --"); ?>
-                </option>
-                  <?php foreach ($userResult as $uName) { ?>
-                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-                  <?php } ?>
-                </select>
-                  </div>
-                  <div class="col-md-2 col-sm-2">
-                 <select class="form-control" id="tester" name="tester" title="<?php echo _translate('Please select tester'); ?>" disabled="disabled">
-                <option value="">
-                  <?php echo _translate("-- Select Tester --"); ?>
-                </option>
-                  <?php foreach ($userResult as $uName) { ?>
-                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-                  <?php } ?>
-                </select>
-                  </div>
-                  <div class="col-md-2 col-sm-2">
-                 <select class="form-control" id="reviewer" name="reviewer" title="<?php echo _translate('Please select reviewer'); ?>" disabled="disabled">
-                <option value="">
-                  <?php echo _translate("-- Select Reviewer --"); ?>
-                </option>
-                  <?php foreach ($userResult as $uName) { ?>
-                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-                  <?php } ?>
-                </select>
-                 
-            </div>
+						<div class="col-md-2 col-sm-2">
+							<select class="form-control" id="approver" name="approver" title="<?php echo _translate('Please select approver'); ?>" disabled="disabled">
+								<option value="">
+									<?php echo _translate("-- Select Approver --"); ?>
+								</option>
+								<?php foreach ($userResult as $uName) { ?>
+									<option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+								<?php } ?>
+							</select>
+						</div>
+						<div class="col-md-2 col-sm-2">
+							<select class="form-control" id="tester" name="tester" title="<?php echo _translate('Please select tester'); ?>" disabled="disabled">
+								<option value="">
+									<?php echo _translate("-- Select Tester --"); ?>
+								</option>
+								<?php foreach ($userResult as $uName) { ?>
+									<option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+								<?php } ?>
+							</select>
+						</div>
+						<div class="col-md-2 col-sm-2">
+							<select class="form-control" id="reviewer" name="reviewer" title="<?php echo _translate('Please select reviewer'); ?>" disabled="disabled">
+								<option value="">
+									<?php echo _translate("-- Select Reviewer --"); ?>
+								</option>
+								<?php foreach ($userResult as $uName) { ?>
+									<option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+								<?php } ?>
+							</select>
+
+						</div>
 
 						<div style="display:none;" class="col-md-5 col-sm-5 bulkRejectionReason">
 							<select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _translate('Please select test status'); ?>">
@@ -320,7 +316,7 @@ foreach ($rejectionTypeResult as $type) {
 				}
 			],
 			"aaSorting": [
-				[<?= (!$general->isStandaloneInstance()) ? 8 : 7; ?>, "desc"]
+				[<?= ($general->isStandaloneInstance()) ? 7 : 8; ?>, "desc"]
 			],
 			"fnDrawCallback": function() {
 				var checkBoxes = document.getElementsByName("chk[]");
@@ -440,49 +436,48 @@ foreach ($rejectionTypeResult as $type) {
 		var tester = $("#tester").val();
 		var reviewer = $("#reviewer").val();
 		var testIds = $("#checkedTests").val();
-		  if(testIds != ''){
-      if ((stValue != '' && approver != '' && reviewer != '')) {
-			conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
-			if (conf) {
-				$.post("/hepatitis/results/update-status.php", {
-						status: stValue,
-						approver: approver,
-						tester: tester,
-						reviewer: reviewer,
-						id: testIds,
-						rejectedReason: $("#bulkRejectionReason").val()
-					},
-					function(data) {
-						if (data != "") {
-							$("#checkedTests").val('');
-							selectedTests = [];
-							selectedTestsId = [];
-							$("#checkTestsData").attr("checked", false);
-							$("#status").val('');
-							$("#status").prop('disabled', true);
-							$("#approver").val('');
-							$("#approver").prop('disabled', true);
-							$("#tester").val('');
-							$("#tester").prop('disabled', true);
-							$("#reviewer").val('');
-							$("#reviewer").prop('disabled', true);
-							$("#bulkRejectionReason").val('');
-							$(".bulkRejectionReason").hide();
-							oTable.fnDraw();
-							alert("<?= _translate("Updated successfully."); ?>");
-						}
-					});
-			  }
-      }
-      else{
-        alert("<?= _translate("Please select Status, Approver & Reviewer fields to update", true); ?>");
-      }
-    } else {
-        alert("<?= _translate("Please select at least one checkbox", true); ?>");
-    }
-  }
+		if (testIds != '') {
+			if ((stValue != '' && approver != '' && reviewer != '')) {
+				conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
+				if (conf) {
+					$.post("/hepatitis/results/update-status.php", {
+							status: stValue,
+							approver: approver,
+							tester: tester,
+							reviewer: reviewer,
+							id: testIds,
+							rejectedReason: $("#bulkRejectionReason").val()
+						},
+						function(data) {
+							if (data != "") {
+								$("#checkedTests").val('');
+								selectedTests = [];
+								selectedTestsId = [];
+								$("#checkTestsData").attr("checked", false);
+								$("#status").val('');
+								$("#status").prop('disabled', true);
+								$("#approver").val('');
+								$("#approver").prop('disabled', true);
+								$("#tester").val('');
+								$("#tester").prop('disabled', true);
+								$("#reviewer").val('');
+								$("#reviewer").prop('disabled', true);
+								$("#bulkRejectionReason").val('');
+								$(".bulkRejectionReason").hide();
+								oTable.fnDraw();
+								alert("<?= _translate("Updated successfully."); ?>");
+							}
+						});
+				}
+			} else {
+				alert("<?= _translate("Please select Status, Approver & Reviewer fields to update", true); ?>");
+			}
+		} else {
+			alert("<?= _translate("Please select at least one checkbox", true); ?>");
+		}
+	}
 
-	
+
 	function updateRejectionReasonStatus(obj) {
 		if (obj.value != '') {
 			conf = confirm("<?php echo _translate("Do you wish to change the status ?"); ?>");
@@ -502,7 +497,7 @@ foreach ($rejectionTypeResult as $type) {
 							$("#status").prop('disabled', true);
 							$("#approver").val('');
 							$("#approver").prop('disabled', true);
-							$("#tester").val('');	
+							$("#tester").val('');
 							$("#tester").prop('disabled', true);
 							$("#reviewer").val('');
 							$("#reviewer").prop('disabled', true);

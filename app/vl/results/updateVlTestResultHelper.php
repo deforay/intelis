@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -23,7 +24,7 @@ $vlService = ContainerRegistry::get(VlService::class);
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
@@ -43,7 +44,7 @@ try {
 
     $testingPlatform = null;
     $instrumentId = null;
-    if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) != '') {
+    if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) !== '') {
         $platForm = explode("##", (string) $_POST['testingPlatform']);
         $testingPlatform = $platForm[0];
         $instrumentId = $platForm[3];
@@ -106,12 +107,8 @@ try {
     if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
         $allChange = json_decode(base64_decode((string) $_POST['reasonForResultChangesHistory']), true);
     }
-    if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) != '') {
-        $allChange[] = array(
-            'usr' => $_SESSION['userId'] ?? $_POST['userId'],
-            'msg' => $_POST['reasonForResultChanges'],
-            'dtime' => DateUtility::getCurrentDateTime()
-        );
+    if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) !== '') {
+        $allChange[] = ['usr' => $_SESSION['userId'] ?? $_POST['userId'], 'msg' => $_POST['reasonForResultChanges'], 'dtime' => DateUtility::getCurrentDateTime()];
     }
     if (!empty($allChange)) {
         $reasonForChanges = json_encode($allChange);
@@ -252,11 +249,7 @@ try {
 
     $db->where('vl_sample_id', $_POST['vlSampleId']);
     $getPrevResult = $db->getOne('form_vl');
-    if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult) {
-        $vlData['result_modified'] = "yes";
-    } else {
-        $vlData['result_modified'] = "no";
-    }
+    $vlData['result_modified'] = $getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult ? "yes" : "no";
 
 
     // only if result status has changed, let us update
@@ -268,16 +261,11 @@ try {
 
     $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vlData);
-    $patientId = (isset($_POST['artNo'])) ? $_POST['artNo'] : '';
+    $patientId = $_POST['artNo'] ?? '';
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("VL result updated successfully");
         //Log result updates
-        $data = array(
-            'user_id' => $_SESSION['userId'],
-            'vl_sample_id' => $_POST['vlSampleId'],
-            'test_type' => 'vl',
-            'updated_datetime' => DateUtility::getCurrentDateTime()
-        );
+        $data = ['user_id' => $_SESSION['userId'], 'vl_sample_id' => $_POST['vlSampleId'], 'test_type' => 'vl', 'updated_datetime' => DateUtility::getCurrentDateTime()];
         $db->insert($tableName2, $data);
 
         $eventType = 'update-vl-result';

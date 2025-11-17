@@ -1,6 +1,6 @@
 <?php
 // get-non-originating-results.php
-
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -10,7 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -25,7 +25,7 @@ try {
     $sWhere = [];
 
     // Date range filter
-    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
+    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
         $sWhere[] = " t.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
     }
@@ -34,7 +34,7 @@ try {
     $sWhere[] = " t.result_pulled_via_api_datetime IS NOT NULL ";
     $sWhere[] = " COALESCE(t.source_of_request, 'manual') != 'api' ";
 
-    $whereSql = !empty($sWhere) ? (' WHERE ' . implode(' AND ', $sWhere)) : '';
+    $whereSql = $sWhere === [] ? ('') : ' WHERE ' . implode(' AND ', $sWhere);
 
     $query = "
         SELECT
@@ -62,23 +62,13 @@ try {
     foreach ($results as $row) {
         $requestSource = $row['request_source'];
         $readableSource = '';
-        switch ($requestSource) {
-            case 'api':
-                $readableSource = 'API';
-                break;
-            case 'vlsts':
-                $readableSource = 'STS';
-                break;
-            case 'vlsm':
-            case 'manual':
-                $readableSource = 'LIS (Manual)';
-                break;
-            case 'app':
-                $readableSource = 'Tablet App';
-                break;
-            default:
-                $readableSource = ucfirst($requestSource);
-        }
+        $readableSource = match ($requestSource) {
+            'api' => 'API',
+            'vlsts' => 'STS',
+            'vlsm', 'manual' => 'LIS (Manual)',
+            'app' => 'Tablet App',
+            default => ucfirst((string) $requestSource),
+        };
 
         // Determine issue type
         $issueType = '';

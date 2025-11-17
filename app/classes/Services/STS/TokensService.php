@@ -12,7 +12,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 final class TokensService
 {
-    protected CommonService $commonService;
     protected DatabaseService $db;
     protected string $primaryKeyName;
 
@@ -21,10 +20,9 @@ final class TokensService
 
     protected $facilitiesTable = 'facility_details';
 
-    public function __construct(DatabaseService $db, CommonService $commonService)
+    public function __construct(DatabaseService $db, protected CommonService $commonService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
-        $this->commonService = $commonService;
     }
 
     public function createToken(int $facilityId, int $expiryInDays = 90): string
@@ -36,7 +34,7 @@ final class TokensService
         $this->db->where('facility_id', $facilityId);
         $existingTokenData = $this->db->getOne($this->facilitiesTable, ['sts_token', 'sts_token_expiry']);
 
-        if ($existingTokenData && strtotime($existingTokenData['sts_token_expiry']) > time()) {
+        if ($existingTokenData && strtotime((string) $existingTokenData['sts_token_expiry']) > time()) {
             // Token exists and is still valid, so return it without updating
             return $existingTokenData['sts_token'];
         }
@@ -61,14 +59,13 @@ final class TokensService
     public function validateToken(?string $token, int $facilityId): bool
     {
 
-        if (!empty($token) && !empty($facilityId)) {
+        if ($token !== null && $token !== '' && $token !== '0' && $facilityId !== 0) {
 
             $this->db->where('facility_id', $facilityId);
             $result = $this->db->getOne($this->facilitiesTable, ['sts_token', 'sts_token_expiry']);
-
             if ($result && $result['sts_token'] === $token) {
                 // Directly check if the current time is less than the stored expiry
-                if (time() < strtotime($result['sts_token_expiry'])) {
+                if (time() < strtotime((string) $result['sts_token_expiry'])) {
                     return true;
                 }
                 // Token expired, so generate a new one

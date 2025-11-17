@@ -1,5 +1,6 @@
 <?php
 
+use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -45,32 +46,32 @@ $sQuery = "SELECT vl.*,
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
             LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-            WHERE vl.result_status != " . SAMPLE_STATUS\REJECTED . "
+            WHERE vl.result_status != " . REJECTED . "
             AND vl.sample_code is NOT NULL
             AND (vl.result IS NULL OR vl.result='')";
 
-if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) != '') {
+if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) !== '') {
     $sWhere[] = ' b.batch_code LIKE "%' . $_POST['noResultBatchCode'] . '%"';
 }
 
-if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSampleTestDate']) != '') {
+if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSampleTestDate']) !== '') {
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['noResultSampleTestDate'] ?? '');
     $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
 }
 if (isset($_POST['noResultSampleType']) && $_POST['noResultSampleType'] != '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['noResultSampleType'] . '"';
 }
-if (isset($_POST['noResultState']) && trim((string) $_POST['noResultState']) != '') {
+if (isset($_POST['noResultState']) && trim((string) $_POST['noResultState']) !== '') {
     $sWhere[] = " f.facility_state_id = '" . $_POST['noResultState'] . "' ";
 }
-if (isset($_POST['noResultDistrict']) && trim((string) $_POST['noResultDistrict']) != '') {
+if (isset($_POST['noResultDistrict']) && trim((string) $_POST['noResultDistrict']) !== '') {
     $sWhere[] = " f.facility_district_id = '" . $_POST['noResultDistrict'] . "' ";
 }
 if (isset($_POST['noResultFacilityName']) && $_POST['noResultFacilityName'] != '') {
     $sWhere[] = ' f.facility_id IN (' . $_POST['noResultFacilityName'] . ')';
 }
 if (isset($_POST['noResultGender']) && $_POST['noResultGender'] != '') {
-    if (trim((string) $_POST['noResultGender']) == "unreported") {
+    if (trim((string) $_POST['noResultGender']) === "unreported") {
         $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
     } else {
         $sWhere[] = ' vl.patient_gender ="' . $_POST['noResultGender'] . '"';
@@ -89,9 +90,9 @@ if (!empty($sWhere)) {
     $sWhere = implode(" AND ", $sWhere);
 }
 $sQuery = $sQuery . ' AND ' . $sWhere;
-$sQuery = $sQuery . ' group by vl.vl_sample_id';
+$sQuery .= ' group by vl.vl_sample_id';
 if (!empty($sOrder) && $sOrder !== '') {
-    $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+    $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
     $sQuery = "$sQuery ORDER BY $sOrder";
 }
 $_SESSION['resultNotAvailable'] = $sQuery;
@@ -114,11 +115,7 @@ $output = [
 
 foreach ($rResult as $aRow) {
 
-    if ($aRow['remote_sample'] == 'yes') {
-        $decrypt = 'remote_sample_code';
-    } else {
-        $decrypt = 'sample_code';
-    }
+    $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
     $patientFname = $aRow['patient_first_name'] ?? '';
     $patientMname = $aRow['patient_middle_name'] ?? '';
     $patientLname = $aRow['patient_last_name'] ?? '';

@@ -28,7 +28,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['fac
 //facility details
 if (isset($vlQueryInfo['facility_id']) && $vlQueryInfo['facility_id'] > 0) {
 	$facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
-	$facilityResult = $db->rawQuery($facilityQuery, array($vlQueryInfo['facility_id']));
+	$facilityResult = $db->rawQuery($facilityQuery, [$vlQueryInfo['facility_id']]);
 }
 if (!isset($facilityResult[0]['facility_code'])) {
 	$facilityResult[0]['facility_code'] = '';
@@ -58,7 +58,7 @@ if ($facilityResult[0]['contact_person'] != '') {
 }
 
 $stateName = $facilityResult[0]['facility_state'];
-if (trim((string) $stateName) != '') {
+if (trim((string) $stateName) !== '') {
 	$stateQuery = "SELECT * from geographical_divisions where geo_name='" . $stateName . "'";
 	$stateResult = $db->query($stateQuery);
 }
@@ -67,7 +67,7 @@ if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 }
 //district details
 $districtResult = [];
-if (trim((string) $stateName) != '') {
+if (trim((string) $stateName) !== '') {
 	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "' AND status='active'";
 	$districtResult = $db->query($districtQuery);
 	$facilityQuery = "SELECT * from facility_details where `status`='active' AND facility_type='2' Order By facility_name";
@@ -100,9 +100,9 @@ $disable = "disabled = 'disabled'";
 
 $isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp((string) $vlQueryInfo['vl_test_platform'], "genexpert") === 0);
 
-if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
+if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
 	$vlQueryInfo['result'] = trim(str_ireplace((string) $vlQueryInfo['result_value_hiv_detection'], "", (string) $vlQueryInfo['result']));
-} elseif ($isGeneXpert === true && !empty($vlQueryInfo['result'])) {
+} elseif ($isGeneXpert && !empty($vlQueryInfo['result'])) {
 
 	$vlQueryInfo['result_value_hiv_detection'] = null;
 
@@ -197,7 +197,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								<div class="col-xs-4 col-md-4">
 									<div class="form-group">
 										<label for="sampleReordered">
-											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please indicate if this is a reordered sample"> Sample Reordered
+											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please indicate if this is a reordered sample"> Sample Reordered
 										</label>
 									</div>
 								</div>
@@ -220,7 +220,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										<select class="form-control " name="province" id="province" title="Please choose state" <?php echo $disable; ?> style="width:100%;" onchange="getfacilityDetails(this);">
 											<option value=""> -- Select -- </option>
 											<?php foreach ($pdResult as $provinceName) { ?>
-												<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo ($facilityResult[0]['facility_state'] . "##" . $stateResult[0]['geo_code'] == $provinceName['geo_name'] . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>;
+												<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo ($facilityResult[0]['facility_state'] . "##" . $stateResult[0]['geo_code'] === $provinceName['geo_name'] . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>;
 											<?php } ?>
 										</select>
 									</div>
@@ -231,12 +231,10 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										<select class="form-control" name="district" id="district" title="Please choose county" <?php echo $disable; ?> style="width:100%;" onchange="getfacilityDistrictwise(this);">
 											<option value=""> -- Select -- </option>
 											<?php
-											foreach ($districtResult as $districtName) {
-											?>
+											foreach ($districtResult as $districtName) { ?>
 												<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($facilityResult[0]['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ($districtName['facility_district']); ?></option>
 											<?php
-											}
-											?>
+											} ?>
 										</select>
 									</div>
 								</div>
@@ -255,21 +253,21 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									</div>
 								</div>
 							</div>
-							<div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) != '' || trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
-								<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+							<div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '' || trim((string) $facilityResult[0]['contact_person']) !== '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '') ? '' : 'none'; ?>;">
 									<strong>Clinic/Health Center Email(s)</strong>
 								</div>
-								<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '') ? '' : 'none'; ?>;">
 									<?php echo $facilityResult[0]['facility_emails']; ?></div>
-								<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '') ? '' : 'none'; ?>;">
 									<strong>Clinic/Health Center Mobile No.(s)</strong>
 								</div>
-								<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '') ? '' : 'none'; ?>;">
 									<?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
-								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) !== '') ? '' : 'none'; ?>;">
 									<strong>Clinic Contact Person -</strong>
 								</div>
-								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) !== '') ? '' : 'none'; ?>;">
 									<?php echo ($user); ?></div>
 							</div>
 						</div>
@@ -511,7 +509,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 															$vlTestReasonResultRow = $db->query($vlTestReasonQueryRow);
 															$checked = '';
 															$display = '';
-															if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'routine' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'routine') {
+															if (trim((string) $vlQueryInfo['reason_for_vl_testing']) === 'routine' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'routine') {
 																$checked = 'checked="checked"';
 																$display = 'block';
 															} else {
@@ -530,7 +528,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<div class="col-md-6">
 												<label class="col-lg-5 control-label">Date of Last VL Test</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_routine']) !== '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -550,7 +548,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 															<?php
 															$checked = '';
 															$display = '';
-															if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'failure') {
+															if (trim((string) $vlQueryInfo['reason_for_vl_testing']) === 'failure') {
 																$checked = 'checked="checked"';
 																$display = 'block';
 															} else {
@@ -570,7 +568,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<div class="col-md-6">
 												<label class="col-lg-5 control-label">Date of Last VL Test</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_failure_ac']) !== '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -590,7 +588,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 															<?php
 															$checked = '';
 															$display = '';
-															if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'suspect') {
+															if (trim((string) $vlQueryInfo['reason_for_vl_testing']) === 'suspect') {
 																$checked = 'checked="checked"';
 																$display = 'block';
 															} else {
@@ -609,7 +607,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											<div class="col-md-6">
 												<label class="col-lg-5 control-label">Date of Last VL Test</label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" <?php echo $disable; ?> />
+													<input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_failure']) !== '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
 											<div class="col-md-6">
@@ -796,7 +794,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 															</select>
 														</div>
 													</div>
-													<div class="col-md-6 hivDetection" style="<?php echo (($isGeneXpert === false) || ($isGeneXpert === true && $vlQueryInfo['is_sample_rejected'] === 'yes')) ? 'display: none;' : ''; ?>">
+													<div class="col-md-6 hivDetection" style="<?php echo (($isGeneXpert === false) || ($isGeneXpert && $vlQueryInfo['is_sample_rejected'] === 'yes')) ? 'display: none;' : ''; ?>">
 														<label for="hivDetection" class="col-lg-5 control-label">HIV
 															Detection </label>
 														<div class="col-lg-7">

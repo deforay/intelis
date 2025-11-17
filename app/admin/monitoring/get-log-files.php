@@ -6,9 +6,9 @@ use App\Registries\AppRegistry;
 // Fast Log Reader Class for Performance
 class FastLogReader
 {
-    private $chunkSize = 8192; // 8KB chunks
-    private $maxMemoryUsage = 50 * 1024 * 1024; // 50MB max memory
-    private $streamingThreshold = 100 * 1024 * 1024; // 100MB for streaming mode
+    private int $chunkSize = 8192; // 8KB chunks
+    private int $maxMemoryUsage = 50 * 1024 * 1024; // 50MB max memory
+    private int $streamingThreshold = 100 * 1024 * 1024; // 100MB for streaming mode
 
     public function readLogFileReverse($filePath, $start = 0, $limit = 50, $searchTerm = '')
     {
@@ -39,7 +39,10 @@ class FastLogReader
         return $result;
     }
 
-    private function chunkedReverseRead($handle, $fileSize, $start, $limit, $searchTerm)
+    /**
+     * @return non-falsy-string[]
+     */
+    private function chunkedReverseRead($handle, int|bool $fileSize, $start, $limit, $searchTerm): array
     {
         $lines = [];
         $buffer = '';
@@ -58,16 +61,12 @@ class FastLogReader
 
             $chunkLines = explode("\n", $buffer);
 
-            if ($position > $this->chunkSize) {
-                $buffer = array_shift($chunkLines);
-            } else {
-                $buffer = '';
-            }
+            $buffer = $position > $this->chunkSize ? array_shift($chunkLines) : '';
 
             for ($i = count($chunkLines) - 1; $i >= 0; $i--) {
                 $line = trim($chunkLines[$i]);
 
-                if (empty($line)) {
+                if ($line === '' || $line === '0') {
                     continue;
                 }
 
@@ -92,7 +91,10 @@ class FastLogReader
         return $lines;
     }
 
-    private function streamingReverseRead($handle, $fileSize, $start, $limit, $searchTerm)
+    /**
+     * @return non-falsy-string[]
+     */
+    private function streamingReverseRead($handle, int|bool $fileSize, $start, $limit, $searchTerm): array
     {
         $lines = [];
         $buffer = '';
@@ -125,7 +127,7 @@ class FastLogReader
             for ($i = count($chunkLines) - 1; $i >= 0; $i--) {
                 $line = trim($chunkLines[$i]);
 
-                if (empty($line)) {
+                if ($line === '' || $line === '0') {
                     continue;
                 }
 
@@ -150,7 +152,7 @@ class FastLogReader
         return $lines;
     }
 
-    private function lineMatchesSearch($line, $searchTerm)
+    private function lineMatchesSearch(string $line, $searchTerm)
     {
         if (empty($searchTerm)) {
             return true;
@@ -160,7 +162,7 @@ class FastLogReader
         return lineContainsAllSearchTerms($line, $searchTerm);
     }
 
-    public function getFileStats($filePath)
+    public function getFileStats($filePath): ?array
     {
         if (!file_exists($filePath)) {
             return null;
@@ -205,7 +207,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $logType = $_GET['log_type'] ?? 'application';
 $linesPerPage = 50; // Increased for better performance
 $start = isset($_GET['start']) ? intval($_GET['start']) : 0;
-$searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
+$searchTerm = isset($_GET['search']) ? trim((string) $_GET['search']) : '';
 $exportFormat = $_GET['export_format'] ?? '';
 
 // Initialize fast log reader
@@ -218,57 +220,53 @@ if ($logType === 'php_error') {
     $file = LOG_PATH . '/' . $date . '-logfile.log';
 }
 
-function getMostRecentLogFile($logDirectory)
+function getMostRecentLogFile(string $logDirectory): ?string
 {
     $files = glob($logDirectory . '/*.log');
     if (!$files) {
         return null;
     }
 
-    usort($files, function ($a, $b) {
-        return filemtime($b) - filemtime($a);
-    });
+    usort($files, fn($a, $b): int => filemtime($b) - filemtime($a));
 
     return $files[0];
 }
 
-function parseSearchTerms($searchString)
+function parseSearchTerms($searchString): array
 {
     $terms = [];
-    preg_match_all('/"([^"]+)"|\'([^\']+)\'|\^(\S+)|\+(\S+)|(\S+)\$|(\S+)\*|\*(\S+)|\b(\S+)\b/', $searchString, $matches, PREG_SET_ORDER);
+    preg_match_all('/"([^"]+)"|\'([^\']+)\'|\^(\S+)|\+(\S+)|(\S+)\$|(\S+)\*|\*(\S+)|\b(\S+)\b/', (string) $searchString, $matches, PREG_SET_ORDER);
 
     foreach ($matches as $match) {
-        if (!empty($match[1])) {
+        if (isset($match[1]) && ($match[1] !== '' && $match[1] !== '0')) {
             $terms[] = ['type' => 'phrase', 'value' => $match[1]];
-        } elseif (!empty($match[2])) {
+        } elseif (isset($match[2]) && ($match[2] !== '' && $match[2] !== '0')) {
             $terms[] = ['type' => 'phrase', 'value' => $match[2]];
-        } elseif (!empty($match[3])) {
+        } elseif (isset($match[3]) && ($match[3] !== '' && $match[3] !== '0')) {
             $terms[] = ['type' => 'start', 'value' => $match[3]];
-        } elseif (!empty($match[4])) {
+        } elseif (isset($match[4]) && ($match[4] !== '' && $match[4] !== '0')) {
             $terms[] = ['type' => 'exact', 'value' => $match[4]];
-        } elseif (!empty($match[5])) {
+        } elseif (isset($match[5]) && ($match[5] !== '' && $match[5] !== '0')) {
             $terms[] = ['type' => 'end', 'value' => $match[5]];
-        } elseif (!empty($match[6])) {
+        } elseif (isset($match[6]) && ($match[6] !== '' && $match[6] !== '0')) {
             $terms[] = ['type' => 'starts_with', 'value' => $match[6]];
-        } elseif (!empty($match[7])) {
+        } elseif (isset($match[7]) && ($match[7] !== '' && $match[7] !== '0')) {
             $terms[] = ['type' => 'ends_with', 'value' => $match[7]];
-        } elseif (!empty($match[8])) {
+        } elseif (isset($match[8]) && ($match[8] !== '' && $match[8] !== '0')) {
             $terms[] = ['type' => 'partial', 'value' => $match[8]];
         }
     }
 
-    return array_filter($terms, function ($term) {
-        return strlen($term['value']) > 0;
-    });
+    return array_filter($terms, fn($term): bool => strlen((string) $term['value']) > 0);
 }
 
-function lineContainsAllSearchTerms($line, $search)
+function lineContainsAllSearchTerms($line, $search): bool
 {
     if (empty($search)) {
         return true;
     }
 
-    $terms = parseSearchTerms(trim($search));
+    $terms = parseSearchTerms(trim((string) $search));
 
     if (empty($terms)) {
         return true;
@@ -279,37 +277,37 @@ function lineContainsAllSearchTerms($line, $search)
 
         switch ($term['type']) {
             case 'exact':
-                $pattern = '/\b' . preg_quote($term['value'], '/') . '\b/i';
-                $found = preg_match($pattern, $line);
+                $pattern = '/\b' . preg_quote((string) $term['value'], '/') . '\b/i';
+                $found = preg_match($pattern, (string) $line);
                 break;
 
             case 'start':
-                $pattern = '/^' . preg_quote($term['value'], '/') . '/i';
-                $found = preg_match($pattern, $line);
+                $pattern = '/^' . preg_quote((string) $term['value'], '/') . '/i';
+                $found = preg_match($pattern, (string) $line);
                 break;
 
             case 'end':
-                $pattern = '/' . preg_quote($term['value'], '/') . '$/i';
-                $found = preg_match($pattern, $line);
+                $pattern = '/' . preg_quote((string) $term['value'], '/') . '$/i';
+                $found = preg_match($pattern, (string) $line);
                 break;
 
             case 'starts_with':
-                $pattern = '/\b' . preg_quote($term['value'], '/') . '/i';
-                $found = preg_match($pattern, $line);
+                $pattern = '/\b' . preg_quote((string) $term['value'], '/') . '/i';
+                $found = preg_match($pattern, (string) $line);
                 break;
 
             case 'ends_with':
-                $pattern = '/' . preg_quote($term['value'], '/') . '\b/i';
-                $found = preg_match($pattern, $line);
+                $pattern = '/' . preg_quote((string) $term['value'], '/') . '\b/i';
+                $found = preg_match($pattern, (string) $line);
                 break;
 
             case 'phrase':
-                $found = stripos($line, $term['value']) !== false;
+                $found = stripos((string) $line, (string) $term['value']) !== false;
                 break;
 
             case 'partial':
             default:
-                $found = stripos($line, $term['value']) !== false;
+                $found = stripos((string) $line, (string) $term['value']) !== false;
                 break;
         }
 
@@ -321,24 +319,24 @@ function lineContainsAllSearchTerms($line, $search)
     return true;
 }
 
-function detectLogLevel($line)
+function detectLogLevel($line): string
 {
-    $line = strtolower($line);
-    if (strpos($line, 'error') !== false || strpos($line, 'exception') !== false || strpos($line, 'fatal') !== false) {
+    $line = strtolower((string) $line);
+    if (str_contains($line, 'error') || str_contains($line, 'exception') || str_contains($line, 'fatal')) {
         return 'error';
-    } elseif (strpos($line, 'warn') !== false) {
+    } elseif (str_contains($line, 'warn')) {
         return 'warning';
-    } elseif (strpos($line, 'info') !== false) {
+    } elseif (str_contains($line, 'info')) {
         return 'info';
-    } elseif (strpos($line, 'debug') !== false) {
+    } elseif (str_contains($line, 'debug')) {
         return 'debug';
     }
     return 'info';
 }
 
-function formatApplicationLogEntry($entry)
+function formatApplicationLogEntry($entry): string|array|null
 {
-    $entry = preg_replace('/\\\\n#(\d+)/', '<br/><span style="color:#e83e8c;font-weight:bold;">#$1</span>', $entry);
+    $entry = preg_replace('/\\\\n#(\d+)/', '<br/><span style="color:#e83e8c;font-weight:bold;">#$1</span>', (string) $entry);
     $entry = preg_replace('/\n#(\d+)/', '<br/><span style="color:#e83e8c;font-weight:bold;">#$1</span>', $entry);
     $entry = preg_replace('/\\n#(\d+)/', '<br/><span style="color:#e83e8c;font-weight:bold;">#$1</span>', $entry);
 
@@ -346,13 +344,13 @@ function formatApplicationLogEntry($entry)
 
     $entry = preg_replace_callback(
         '/(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[+-]\d{2}:\d{2})?)/i',
-        function ($matches) {
+        function ($matches): string {
             $isoTimestamp = $matches[1];
 
             try {
                 $humanReadable = DateUtility::humanReadableDateFormat($isoTimestamp, includeTime: true, withSeconds: true);
                 return '<strong title="' . htmlspecialchars($isoTimestamp) . '">' . $humanReadable . '</strong>';
-            } catch (Exception $e) {
+            } catch (Exception) {
                 return '<strong>' . $isoTimestamp . '</strong>';
             }
         },
@@ -372,35 +370,35 @@ function formatApplicationLogEntry($entry)
     return $entry;
 }
 
-function processPHPErrorLog($entries)
+/**
+ * @return mixed[]
+ */
+function processPHPErrorLog($entries): array
 {
     $processedEntries = [];
     $currentEntry = '';
     $inStackTrace = false;
 
     foreach ($entries as $line) {
-        if (preg_match('/^\[\d{2}-\w{3}-\d{4}/', $line)) {
+        if (preg_match('/^\[\d{2}-\w{3}-\d{4}/', (string) $line)) {
             if (!empty($currentEntry)) {
                 $processedEntries[] = $currentEntry;
                 $currentEntry = '';
             }
             $inStackTrace = false;
             $currentEntry = $line;
-
             if (
-                stripos($line, 'Fatal error') !== false ||
-                stripos($line, 'Uncaught') !== false ||
-                stripos($line, 'Exception') !== false
+                stripos((string) $line, 'Fatal error') !== false ||
+                stripos((string) $line, 'Uncaught') !== false ||
+                stripos((string) $line, 'Exception') !== false
             ) {
                 $inStackTrace = true;
             }
-        } else {
-            if (preg_match('/^#\d+/', $line)) {
-                $currentEntry .= "\n" . $line;
-                $inStackTrace = true;
-            } else if ($inStackTrace || trim($line) !== '') {
-                $currentEntry .= "\n" . $line;
-            }
+        } elseif (preg_match('/^#\d+/', (string) $line)) {
+            $currentEntry .= "\n" . $line;
+            $inStackTrace = true;
+        } elseif ($inStackTrace || trim((string) $line) !== '') {
+            $currentEntry .= "\n" . $line;
         }
     }
 
@@ -411,21 +409,19 @@ function processPHPErrorLog($entries)
     return $processedEntries;
 }
 
-function formatPhpErrorLogEntry($entry)
+function formatPhpErrorLogEntry($entry): string|array|null
 {
-    $html = nl2br(htmlspecialchars($entry));
+    $html = nl2br(htmlspecialchars((string) $entry));
 
     $html = preg_replace('/\[(\d{2}-\w{3}-\d{4}\s\d{2}:\d{2}:\d{2}\s\w+)\]/', '<strong>[$1]</strong>', $html);
-    $html = preg_replace('/(#\d+)/', '<span style="color:#e83e8c;font-weight:bold;">$1</span>', $html);
-    $html = preg_replace('/(PHP (?:Fatal error|Warning|Notice|Deprecated):)/', '<span style="color:#dc3545;font-weight:bold;">$1</span>', $html);
-    $html = preg_replace('/(thrown in)/', '<span style="color:#dc3545;">$1</span>', $html);
-    $html = preg_replace('/in (\/[\w\/\.\-]+\.php)/', 'in <span style="color:#17a2b8;">$1</span>', $html);
-    $html = preg_replace('/(on line |:)(\d+)/', '$1<span style="color:#fd7e14;font-weight:bold;">$2</span>', $html);
-
-    return $html;
+    $html = preg_replace('/(#\d+)/', '<span style="color:#e83e8c;font-weight:bold;">$1</span>', (string) $html);
+    $html = preg_replace('/(PHP (?:Fatal error|Warning|Notice|Deprecated):)/', '<span style="color:#dc3545;font-weight:bold;">$1</span>', (string) $html);
+    $html = preg_replace('/(thrown in)/', '<span style="color:#dc3545;">$1</span>', (string) $html);
+    $html = preg_replace('/in (\/[\w\/\.\-]+\.php)/', 'in <span style="color:#17a2b8;">$1</span>', (string) $html);
+    return preg_replace('/(on line |:)(\d+)/', '$1<span style="color:#fd7e14;font-weight:bold;">$2</span>', (string) $html);
 }
 
-function createLogLine($content, $lineNumber, $logLevel)
+function createLogLine(string $content, string $lineNumber, string $logLevel): string
 {
     return '<div class="logLine log-' . $logLevel . '" data-linenumber="' . $lineNumber . '" data-level="' . $logLevel . '" onclick="copyToClipboard(this.innerHTML, ' . $lineNumber . ')">
         <span class="lineNumber">' . $lineNumber . '</span>' . $content . '</div>';
@@ -446,10 +442,8 @@ if (file_exists($file)) {
         $logEntries = processPHPErrorLog($fileContent);
         $logEntries = array_reverse($logEntries);
 
-        if (!empty($searchTerm)) {
-            $logEntries = array_filter($logEntries, function ($entry) use ($searchTerm) {
-                return lineContainsAllSearchTerms($entry, $searchTerm);
-            });
+        if ($searchTerm !== '' && $searchTerm !== '0') {
+            $logEntries = array_filter($logEntries, fn($entry) => lineContainsAllSearchTerms($entry, $searchTerm));
             $logEntries = array_values($logEntries);
         }
 
@@ -457,7 +451,7 @@ if (file_exists($file)) {
 
         echo "<div class='log-header'>" . _translate("Viewing PHP Error Log") . "</div>";
 
-        if (empty($logEntries)) {
+        if ($logEntries === []) {
             echo "<div class='logLine'>No more logs.</div>";
             exit();
         }
@@ -496,7 +490,7 @@ if (file_exists($file)) {
         foreach ($logEntries as $index => $entry) {
             $lineNumber = $start + $index + 1;
             $logLevel = detectLogLevel($entry);
-            $entry = htmlspecialchars($entry);
+            $entry = htmlspecialchars((string) $entry);
 
             $lines = preg_split('/\\\\n|\\n|\n/', $entry);
             $formattedEntry = '';
@@ -518,67 +512,64 @@ if (file_exists($file)) {
             echo "<div class='logLine'>No more logs.</div>";
         }
     }
-} else {
-    if ($logType === 'application') {
-        $recentFile = getMostRecentLogFile(LOG_PATH);
+} elseif ($logType === 'application') {
+    $recentFile = getMostRecentLogFile(LOG_PATH);
+    if ($recentFile) {
+        if (preg_match('/(\d{4}-\d{2}-\d{2})/', basename((string) $recentFile), $matches)) {
+            $isoDate = $matches[1];
+            $dateObj = new DateTime($isoDate);
+            $actualLogDate = $dateObj->format('d-M-Y');
+        }
 
-        if ($recentFile) {
-            if (preg_match('/(\d{4}-\d{2}-\d{2})/', basename($recentFile), $matches)) {
-                $isoDate = $matches[1];
-                $dateObj = new DateTime($isoDate);
-                $actualLogDate = $dateObj->format('d-M-Y');
-            }
+        // Use fast log reader for recent file too
+        $logEntries = $logReader->readLogFileReverse($recentFile, $start, $linesPerPage, $searchTerm);
+        $recentFileStats = $logReader->getFileStats($recentFile);
 
-            // Use fast log reader for recent file too
-            $logEntries = $logReader->readLogFileReverse($recentFile, $start, $linesPerPage, $searchTerm);
-            $recentFileStats = $logReader->getFileStats($recentFile);
+        echo "<div class='log-header'>" . _translate("No data found for the selected date") . " - " . ($_GET['date'] ?? date('d-M-Y')) . "<br>" .
+            _translate("Showing the most recent log file") . " : " . basename((string) $recentFile);
 
-            echo "<div class='log-header'>" . _translate("No data found for the selected date") . " - " . ($_GET['date'] ?? date('d-M-Y')) . "<br>" .
-                _translate("Showing the most recent log file") . " : " . basename($recentFile);
+        if ($recentFileStats) {
+            $sizeFormatted = number_format($recentFileStats['size'] / 1024, 1);
+            $linesFormatted = number_format($recentFileStats['estimated_lines']);
+            echo " (File: {$sizeFormatted} KB, ~{$linesFormatted} lines, Mode: {$recentFileStats['mode']})";
+        }
 
-            if ($recentFileStats) {
-                $sizeFormatted = number_format($recentFileStats['size'] / 1024, 1);
-                $linesFormatted = number_format($recentFileStats['estimated_lines']);
-                echo " (File: {$sizeFormatted} KB, ~{$linesFormatted} lines, Mode: {$recentFileStats['mode']})";
-            }
+        echo "</div>";
 
-            echo "</div>";
+        if (empty($logEntries)) {
+            echo "<div class='logLine'>No logs found.</div>";
+            exit();
+        }
 
-            if (empty($logEntries)) {
-                echo "<div class='logLine'>No logs found.</div>";
-                exit();
-            }
+        foreach ($logEntries as $index => $entry) {
+            $lineNumber = $start + $index + 1;
+            $logLevel = detectLogLevel($entry);
+            $entry = htmlspecialchars((string) $entry);
 
-            foreach ($logEntries as $index => $entry) {
-                $lineNumber = $start + $index + 1;
-                $logLevel = detectLogLevel($entry);
-                $entry = htmlspecialchars($entry);
+            $lines = preg_split('/\\\\n|\\n|\n/', $entry);
+            $formattedEntry = '';
 
-                $lines = preg_split('/\\\\n|\\n|\n/', $entry);
-                $formattedEntry = '';
-
-                foreach ($lines as $i => $line) {
-                    if (preg_match('/^#(\d+)/', $line, $matches)) {
-                        $line = '<span style="color:#e83e8c;font-weight:bold;">#' . $matches[1] . '</span>' . substr($line, strlen($matches[0]));
-                        $formattedEntry .= ($i > 0 ? '<br/>' : '') . $line;
-                    } else {
-                        $formattedEntry .= ($i > 0 ? '<br/>' : '') . $line;
-                    }
+            foreach ($lines as $i => $line) {
+                if (preg_match('/^#(\d+)/', $line, $matches)) {
+                    $line = '<span style="color:#e83e8c;font-weight:bold;">#' . $matches[1] . '</span>' . substr($line, strlen($matches[0]));
+                    $formattedEntry .= ($i > 0 ? '<br/>' : '') . $line;
+                } else {
+                    $formattedEntry .= ($i > 0 ? '<br/>' : '') . $line;
                 }
-
-                $formattedEntry = formatApplicationLogEntry($formattedEntry);
-                echo createLogLine($formattedEntry, $lineNumber, $logLevel);
             }
 
-            if (count($logEntries) < $linesPerPage) {
-                echo "<div class='logLine'>No more logs.</div>";
-            }
-        } else {
-            echo '<div class="logLine">No log files found.</div>';
+            $formattedEntry = formatApplicationLogEntry($formattedEntry);
+            echo createLogLine($formattedEntry, $lineNumber, $logLevel);
+        }
+
+        if (count($logEntries) < $linesPerPage) {
+            echo "<div class='logLine'>No more logs.</div>";
         }
     } else {
-        echo '<div class="logLine">No PHP error log found.</div>';
+        echo '<div class="logLine">No log files found.</div>';
     }
+} else {
+    echo '<div class="logLine">No PHP error log found.</div>';
 }
 
 // Send performance info to frontend for display

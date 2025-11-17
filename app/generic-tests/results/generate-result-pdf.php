@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
@@ -13,7 +15,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -29,7 +31,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $arr = $general->getGlobalConfig();
 
 $requestResult = null;
-if ((isset($_POST['id']) && !empty(trim((string) $_POST['id']))) || (isset($_POST['sampleCodes']) && !empty(trim((string) $_POST['sampleCodes'])))) {
+if ((isset($_POST['id']) && !in_array(trim((string) $_POST['id']), ['', '0'], true)) || (isset($_POST['sampleCodes']) && !in_array(trim((string) $_POST['sampleCodes']), ['', '0'], true))) {
 
 	$searchQuery = "SELECT vl.*,
 					f.*,
@@ -58,14 +60,14 @@ if ((isset($_POST['id']) && !empty(trim((string) $_POST['id']))) || (isset($_POS
 					LEFT JOIN r_generic_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection";
 
 	$searchQueryWhere = [];
-	if (!empty(trim((string) $_POST['id']))) {
+	if (!in_array(trim((string) $_POST['id']), ['', '0'], true)) {
 		$searchQueryWhere[] = " vl.sample_id IN(" . $_POST['id'] . ") ";
 	}
 
-	if (isset($_POST['sampleCodes']) && !empty(trim((string) $_POST['sampleCodes']))) {
+	if (isset($_POST['sampleCodes']) && !in_array(trim((string) $_POST['sampleCodes']), ['', '0'], true)) {
 		$searchQueryWhere[] = " vl.sample_code IN(" . $_POST['sampleCodes'] . ") ";
 	}
-	if (!empty($searchQueryWhere)) {
+	if ($searchQueryWhere !== []) {
 		$searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
 	}
 	// echo ($searchQuery);die;
@@ -80,11 +82,11 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 
 foreach ($requestResult as $requestRow) {
 	if (($general->isLISInstance()) && empty($requestRow['result_printed_on_lis_datetime'])) {
-		$pData = array('result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+		$pData = ['result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
 		$db->where('sample_id', $requestRow['sample_id']);
 		$id = $db->update('form_generic', $pData);
 	} elseif (($general->isSTSInstance()) && empty($requestRow['result_printed_on_sts_datetime'])) {
-		$pData = array('result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+		$pData = ['result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
 		$db->where('sample_id', $requestRow['sample_id']);
 		$id = $db->update('form_generic', $pData);
 	}
@@ -96,7 +98,7 @@ $expStr = explode(" ", $printedTime);
 $printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 
-$_SESSION['nbPages'] = sizeof($requestResult);
+$_SESSION['nbPages'] = count($requestResult);
 $_SESSION['aliasPage'] = 1;
 
-include('result-pdf.php');
+include(__DIR__ . '/result-pdf.php');

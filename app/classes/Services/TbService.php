@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use Override;
+use const COUNTRY\PNG;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
@@ -16,6 +20,7 @@ final class TbService extends AbstractTestService
     public string $testType = 'tb';
 
 
+    #[Override]
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
@@ -70,13 +75,7 @@ final class TbService extends AbstractTestService
 
     public function insertTbTests($tbSampleId, $testKitName = null, $labId = null, $sampleTestedDatetime = null, $result = null)
     {
-        $tbTestData = array(
-            'tb_id' => $tbSampleId,
-            'test_name' => $testKitName,
-            'facility_id' => $labId,
-            'sample_tested_datetime' => $sampleTestedDatetime,
-            'result' => $result
-        );
+        $tbTestData = ['tb_id' => $tbSampleId, 'test_name' => $testKitName, 'facility_id' => $labId, 'sample_tested_datetime' => $sampleTestedDatetime, 'result' => $result];
         return $this->db->insert("tb_tests", $tbTestData);
     }
 
@@ -85,8 +84,9 @@ final class TbService extends AbstractTestService
         $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = $tbSampleId ORDER BY test_id ASC");
 
         foreach ($response as $row) {
-            if ($row['result'] == 'positive')
+            if ($row['result'] == 'positive') {
                 return true;
+            }
         }
 
         return false;
@@ -140,15 +140,14 @@ final class TbService extends AbstractTestService
     {
         $response = [];
         // Using this in sync requests/results
-        if (is_array($tbId) && !empty($tbId)) {
+        if (is_array($tbId) && $tbId !== []) {
             $results = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` IN (" . implode(",", $tbId) . ") ORDER BY tb_test_id ASC");
-
             foreach ($results as $row) {
                 $response[$row['tb_id']][$row['tb_test_id']] = $row;
             }
-        } else if (isset($tbId) && $tbId != "" && !is_array($tbId)) {
+        } elseif (isset($tbId) && $tbId != "" && !is_array($tbId)) {
             $response = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` = $tbId ORDER BY tb_test_id ASC");
-        } else if (!is_array($tbId)) {
+        } elseif (!is_array($tbId)) {
             $response = $this->db->rawQuery("SELECT * FROM tb_tests ORDER BY tb_test_id ASC");
         }
         return $response;
@@ -163,6 +162,7 @@ final class TbService extends AbstractTestService
         return $this->db->rawQueryOne($sQuery);
     }
 
+    #[Override]
     public function insertSample($params, $returnSampleData = false)
     {
         try {
@@ -171,9 +171,9 @@ final class TbService extends AbstractTestService
 
             // Get form configuration and extract parameters
             $formId = (int) $this->commonService->getGlobalConfig('vl_form');
-            $params['provinceId'] = $params['provinceId'] ?? $params['province'];
-            if (strpos($params['provinceId'], '##') !== false) {
-                $parray = explode('##', $params['provinceId']);
+            $params['provinceId'] ??= $params['province'];
+            if (str_contains((string) $params['provinceId'], '##')) {
+                $parray = explode('##', (string) $params['provinceId']);
                 $provinceId = $parray[0];
             } else {
 
@@ -185,7 +185,7 @@ final class TbService extends AbstractTestService
             if (
                 empty($sampleCollectionDate) ||
                 !DateUtility::isDateValid($sampleCollectionDate) ||
-                ($formId == COUNTRY\PNG && empty($provinceId))
+                ($formId == PNG && empty($provinceId))
             ) {
                 return $returnSampleData ? ['id' => 0, 'uniqueId' => null] : 0;
             }
@@ -227,11 +227,11 @@ final class TbService extends AbstractTestService
             if ($this->commonService->isSTSInstance()) {
                 $testRequestData['remote_sample'] = 'yes';
                 $testRequestData['result_status'] = ($accessType === 'testing-lab')
-                    ? SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB
-                    : SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+                    ? RECEIVED_AT_TESTING_LAB
+                    : RECEIVED_AT_CLINIC;
             } else {
                 $testRequestData['remote_sample'] = 'no';
-                $testRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                $testRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
             }
 
             // Add form attributes

@@ -46,7 +46,7 @@ final class SmartDateFormatDetector
     public static function detectFormat(string $sampleDate): array
     {
         $sampleDate = trim($sampleDate);
-        if (empty($sampleDate)) {
+        if ($sampleDate === '' || $sampleDate === '0') {
             return [];
         }
 
@@ -196,7 +196,7 @@ final class SmartDateFormatDetector
                                 'parsed_date' => $testDate->format('Y-m-d H:i:s')
                             ];
                         }
-                    } catch (Throwable $e) {
+                    } catch (Throwable) {
                         continue;
                     }
                 }
@@ -258,7 +258,7 @@ final class SmartDateFormatDetector
                     }
                 }
             }
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             // Carbon couldn't parse it intelligently, continue with other methods
         }
 
@@ -277,7 +277,7 @@ final class SmartDateFormatDetector
                         'parsed_date' => $parsedDate->format('Y-m-d H:i:s')
                     ];
                     $seenFormats[$format] = true;
-                } catch (Throwable $e) {
+                } catch (Throwable) {
                     continue;
                 }
             }
@@ -474,7 +474,7 @@ final class SmartDateFormatDetector
 
         // Generate single-character substitutions
         foreach ($substitutions as $from => $to) {
-            if (strpos($format, $from) !== false) {
+            if (str_contains($format, $from)) {
                 $altFormat = str_replace($from, $to, $format);
                 if ($altFormat !== $format) {
                     $alternatives[] = $altFormat;
@@ -543,14 +543,14 @@ final class SmartDateFormatDetector
         $changesMade = [];
 
         foreach ($commonMistakes as $mistake => $correction) {
-            if (strpos($correctedFormat, $mistake) !== false) {
+            if (str_contains($correctedFormat, $mistake)) {
                 $correctedFormat = str_replace($mistake, $correction, $correctedFormat);
                 $changesMade[] = "Changed '$mistake' to '$correction'";
             }
         }
 
         // Test if correction is valid
-        if (!empty($changesMade)) {
+        if ($changesMade !== []) {
             try {
                 $testDate = Carbon::create(2025, 6, 19, 14, 30, 45);
                 $testDate->format($correctedFormat);
@@ -560,13 +560,13 @@ final class SmartDateFormatDetector
                     'changes' => $changesMade,
                     'description' => _translate('Corrected common format mistakes:', true) . ' ' .  implode(', ', $changesMade)
                 ];
-            } catch (Throwable $e) {
+            } catch (Throwable) {
                 // Correction still invalid, continue to suggest common patterns
             }
         }
 
         // Suggest common patterns if format is very wrong or no corrections worked
-        if (strlen($format) > 5 && (count($corrections) === 0 || count($changesMade) === 0)) {
+        if (strlen($format) > 5 && ($corrections === [] || $changesMade === [])) {
             $corrections[] = [
                 'format' => 'd/m/Y H:i',
                 'changes' => [_translate('Suggested common European format', true)],
@@ -699,9 +699,7 @@ final class SmartDateFormatDetector
     private static function segmentString(string $str): array
     {
         $segments = preg_split('/[^\w]/', $str);
-        return array_filter($segments, function ($segment) {
-            return !empty(trim($segment));
-        });
+        return array_filter($segments, fn($segment): bool => !in_array(trim((string) $segment), ['', '0'], true));
     }
 
     /**
@@ -857,7 +855,7 @@ final class SmartDateFormatDetector
         }
 
         // Generate valid combinations (ensuring no segment is used twice)
-        if (!empty($componentOptions['year']) && !empty($componentOptions['month']) && !empty($componentOptions['day'])) {
+        if (isset($componentOptions['year']) && $componentOptions['year'] !== [] && (isset($componentOptions['month']) && $componentOptions['month'] !== []) && (isset($componentOptions['day']) && $componentOptions['day'] !== [])) {
             foreach ($componentOptions['year'] as $yearOption) {
                 foreach ($componentOptions['month'] as $monthOption) {
                     foreach ($componentOptions['day'] as $dayOption) {
@@ -895,7 +893,7 @@ final class SmartDateFormatDetector
      */
     private static function buildFormatString(array $combination, array $separators): ?string
     {
-        if (empty($combination)) {
+        if ($combination === []) {
             return null;
         }
 
@@ -953,7 +951,7 @@ final class SmartDateFormatDetector
                         'parsed_date' => $testDate->format('Y-m-d H:i:s')
                     ];
                 }
-            } catch (Throwable $e) {
+            } catch (Throwable) {
                 continue;
             }
         }
@@ -1119,7 +1117,7 @@ final class SmartDateFormatDetector
                         'parsed_date' => $parsed->format('Y-m-d H:i:s')
                     ];
                 }
-            } catch (Throwable $e) {
+            } catch (Throwable) {
                 continue;
             }
         }
@@ -1135,10 +1133,10 @@ final class SmartDateFormatDetector
         $formats = [];
 
         // Analyze string characteristics
-        $hasColon = strpos($dateString, ':') !== false;
-        $hasSlash = strpos($dateString, '/') !== false;
-        $hasDot = strpos($dateString, '.') !== false;
-        $hasDash = strpos($dateString, '-') !== false;
+        $hasColon = str_contains($dateString, ':');
+        $hasSlash = str_contains($dateString, '/');
+        $hasDot = str_contains($dateString, '.');
+        $hasDash = str_contains($dateString, '-');
         $hasAmPm = preg_match('/\b(AM|PM|am|pm)\b/', $dateString);
         $hasAlpha = preg_match('/[A-Za-z]/', $dateString);
 
@@ -1153,7 +1151,7 @@ final class SmartDateFormatDetector
         if ($hasDash) {
             $separators[] = '-';
         }
-        if (empty($separators)) {
+        if ($separators === []) {
             $separators[] = '/';
         }
 
@@ -1243,7 +1241,7 @@ final class SmartDateFormatDetector
         }
 
         // Add compact formats for numeric-only strings
-        if (!strpos($dateString, ' ') && !$hasAlpha && ctype_digit(preg_replace('/[^\d]/', '', $dateString))) {
+        if (!strpos($dateString, ' ') && !$hasAlpha && ctype_digit((string) preg_replace('/[^\d]/', '', $dateString))) {
             $compactFormats = [
                 'Ymd',
                 'YmdH',
@@ -1266,7 +1264,7 @@ final class SmartDateFormatDetector
         try {
             $parsed = Carbon::createFromFormat($format, $original);
             return $parsed && $parsed->format($format) === $original;
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             return false;
         }
     }
@@ -1292,14 +1290,14 @@ final class SmartDateFormatDetector
             if ($parsed && $parsed->format($format) === $dateString) {
                 $score += 30;
             }
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             $score -= 20;
         }
 
-        if (strpos($format, 'Y') !== false) {
+        if (str_contains($format, 'Y')) {
             $score += 10;
         }
-        if (strpos($format, 'y') !== false) {
+        if (str_contains($format, 'y')) {
             $score -= 5;
         }
 
@@ -1319,22 +1317,22 @@ final class SmartDateFormatDetector
     {
         $score = 50;
 
-        if (strpos($format, 'Y') !== false) {
+        if (str_contains($format, 'Y')) {
             $score += 15;
         }
-        if (preg_match('/\b0\d/', $dateString) && strpos($format, 'd') !== false) {
+        if (preg_match('/\b0\d/', $dateString) && str_contains($format, 'd')) {
             $score += 10;
         }
-        if (preg_match('/\b0\d/', $dateString) && strpos($format, 'm') !== false) {
+        if (preg_match('/\b0\d/', $dateString) && str_contains($format, 'm')) {
             $score += 10;
         }
-        if (strpos($format, 'y') !== false) {
+        if (str_contains($format, 'y')) {
             $score -= 10;
         }
-        if (strpos($format, 'M') !== false) {
+        if (str_contains($format, 'M')) {
             $score += 20;
         }
-        if (strpos($format, 'A') !== false) {
+        if (str_contains($format, 'A')) {
             $score += 10;
         }
 
@@ -1358,20 +1356,20 @@ final class SmartDateFormatDetector
             if ($parsed->format($format) === $original) {
                 $score += 20;
             }
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             $score -= 30;
         }
 
-        if (strpos($format, 'Y') !== false) {
+        if (str_contains($format, 'Y')) {
             $score += 10;
         }
-        if (strpos($format, 'y') !== false) {
+        if (str_contains($format, 'y')) {
             $score -= 5;
         }
-        if (strpos($format, 'M') !== false) {
+        if (str_contains($format, 'M')) {
             $score += 15;
         }
-        if (strpos($format, 'A') !== false) {
+        if (str_contains($format, 'A')) {
             $score += 5;
         }
 
@@ -1392,63 +1390,30 @@ final class SmartDateFormatDetector
         // Split format into individual characters and process each
         $chars = str_split($format);
         $result = '';
+        $counter = count($chars);
 
-        for ($i = 0; $i < count($chars); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             $char = $chars[$i];
 
-            switch ($char) {
-                case 'Y':
-                    $result .= 'YYYY';
-                    break;
-                case 'y':
-                    $result .= 'YY';
-                    break;
-                case 'm':
-                    $result .= 'MM';
-                    break;
-                case 'n':
-                    $result .= 'M';
-                    break;
-                case 'd':
-                    $result .= 'DD';
-                    break;
-                case 'j':
-                    $result .= 'D';
-                    break;
-                case 'H':
-                    $result .= 'HH';
-                    break;
-                case 'G':
-                    $result .= 'H';
-                    break;
-                case 'h':
-                    $result .= 'hh';
-                    break;
-                case 'g':
-                    $result .= 'h';
-                    break;
-                case 'i':
-                    $result .= 'mm';
-                    break;
-                case 's':
-                    $result .= 'ss';
-                    break;
-                case 'A':
-                    $result .= 'AM/PM';
-                    break;
-                case 'a':
-                    $result .= 'am/pm';
-                    break;
-                case 'M':
-                    $result .= 'Mon';
-                    break;
-                case 'F':
-                    $result .= 'Month';
-                    break;
-                default:
-                    $result .= $char;
-                    break;
-            }
+            match ($char) {
+                'Y' => $result .= 'YYYY',
+                'y' => $result .= 'YY',
+                'm' => $result .= 'MM',
+                'n' => $result .= 'M',
+                'd' => $result .= 'DD',
+                'j' => $result .= 'D',
+                'H' => $result .= 'HH',
+                'G' => $result .= 'H',
+                'h' => $result .= 'hh',
+                'g' => $result .= 'h',
+                'i' => $result .= 'mm',
+                's' => $result .= 'ss',
+                'A' => $result .= 'AM/PM',
+                'a' => $result .= 'am/pm',
+                'M' => $result .= 'Mon',
+                'F' => $result .= 'Month',
+                default => $result .= $char,
+            };
         }
 
         return $result;
@@ -1461,37 +1426,37 @@ final class SmartDateFormatDetector
     {
         $parts = [];
 
-        if (strpos($format, 'Y') !== false) {
+        if (str_contains($format, 'Y')) {
             $parts[] = _translate('4-digit year', true);
-        } elseif (strpos($format, 'y') !== false) {
+        } elseif (str_contains($format, 'y')) {
             $parts[] = _translate('2-digit year', true);
         }
 
-        if (strpos($format, 'M') !== false) {
+        if (str_contains($format, 'M')) {
             $parts[] = _translate('month name', true);
-        } elseif (strpos($format, 'm') !== false) {
+        } elseif (str_contains($format, 'm')) {
             $parts[] = _translate('month with leading zero', true);
-        } elseif (strpos($format, 'n') !== false) {
+        } elseif (str_contains($format, 'n')) {
             $parts[] = _translate('month without leading zero', true);
         }
 
-        if (strpos($format, 'd') !== false) {
+        if (str_contains($format, 'd')) {
             $parts[] = _translate('day with leading zero', true);
-        } elseif (strpos($format, 'j') !== false) {
+        } elseif (str_contains($format, 'j')) {
             $parts[] = _translate('day without leading zero', true);
         }
 
-        if (strpos($format, 'H') !== false) {
+        if (str_contains($format, 'H')) {
             $parts[] = _translate('24-hour format', true);
-        } elseif (strpos($format, 'g') !== false || strpos($format, 'h') !== false) {
+        } elseif (str_contains($format, 'g') || str_contains($format, 'h')) {
             $parts[] = _translate('12-hour format', true);
         }
 
-        if (strpos($format, 'A') !== false) {
+        if (str_contains($format, 'A')) {
             $parts[] = _translate('with AM/PM', true);
         }
 
-        if (strpos($format, 's') !== false) {
+        if (str_contains($format, 's')) {
             $parts[] = _translate('with seconds', true);
         }
 
@@ -1506,7 +1471,7 @@ final class SmartDateFormatDetector
         try {
             $exampleDate = Carbon::create(2025, 6, 19, 14, 30, 45);
             return $exampleDate->format($format);
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             return _translate('Example not available', true);
         }
     }
@@ -1558,7 +1523,7 @@ final class SmartDateFormatDetector
         $unique = array_values($formatMap);
 
         // Sort by confidence, then by method priority
-        usort($unique, function ($a, $b) {
+        usort($unique, function (array $a, array $b): int {
             $confidenceOrder = ['high' => 3, 'medium' => 2, 'low' => 1];
             $methodOrder = [
                 'single_digit_detection' => 4,
@@ -1580,7 +1545,7 @@ final class SmartDateFormatDetector
             }
 
             // Finally by format string for consistent ordering
-            return strcmp($a['format'], $b['format']);
+            return strcmp((string) $a['format'], (string) $b['format']);
         });
 
         // Final deduplication check - remove any remaining duplicates by format
@@ -1604,7 +1569,7 @@ final class SmartDateFormatDetector
     public static function getBestFormat(string $sampleDate): ?string
     {
         $suggestions = self::detectFormat($sampleDate);
-        return !empty($suggestions) ? $suggestions[0]['format'] : null;
+        return $suggestions === [] ? null : $suggestions[0]['format'];
     }
 
     /**
@@ -1619,17 +1584,17 @@ final class SmartDateFormatDetector
                 $format = $suggestion['format'];
 
                 // Check for US patterns (M/D/Y, M.D.Y, M-D-Y)
-                if (preg_match('/^[mn][\/\.-][dj][\/\.-][Yy]/', $format)) {
+                if (preg_match('/^[mn][\/\.-][dj][\/\.-][Yy]/', (string) $format)) {
                     return _translate('US', true);
                 }
 
                 // Check for European patterns (D/M/Y, D.M.Y, D-M-Y)
-                if (preg_match('/^[dj][\/\.-][mn][\/\.-][Yy]/', $format)) {
+                if (preg_match('/^[dj][\/\.-][mn][\/\.-][Yy]/', (string) $format)) {
                     return _translate('European', true);
                 }
 
                 // Check for ISO patterns (Y-M-D)
-                if (preg_match('/^[Yy][\/\.-][mn][\/\.-][dj]/', $format)) {
+                if (preg_match('/^[Yy][\/\.-][mn][\/\.-][dj]/', (string) $format)) {
                     return _translate('ISO', true);
                 }
             }
@@ -1654,16 +1619,16 @@ final class SmartDateFormatDetector
             $format = $suggestion['format'];
 
             // Check for day/month ambiguity
-            if (preg_match('/^[mn][\/\.-][dj][\/\.-]/', $format)) {
+            if (preg_match('/^[mn][\/\.-][dj][\/\.-]/', (string) $format)) {
                 $usFormat = $suggestion;
                 $hasAmbiguousFormats = true;
-            } elseif (preg_match('/^[dj][\/\.-][mn][\/\.-]/', $format)) {
+            } elseif (preg_match('/^[dj][\/\.-][mn][\/\.-]/', (string) $format)) {
                 $euFormat = $suggestion;
                 $hasAmbiguousFormats = true;
             }
 
             // Add specific warnings
-            if (strpos($format, 'y') !== false) {
+            if (str_contains((string) $format, 'y')) {
                 $suggestion['warning'] = _translate('2-digit years can be ambiguous (e.g., 25 = 2025 or 1925?)', true);
             }
 
@@ -1704,7 +1669,7 @@ final class SmartDateFormatDetector
         }
 
         // Sort by count and confidence
-        uasort($formatCounts, function ($a, $b) {
+        uasort($formatCounts, function (array $a, array $b): int {
             if ($a['count'] !== $b['count']) {
                 return $b['count'] - $a['count'];
             }
@@ -1713,9 +1678,7 @@ final class SmartDateFormatDetector
             return $confidenceOrder[$b['suggestion']['confidence']] - $confidenceOrder[$a['suggestion']['confidence']];
         });
 
-        return array_map(function ($item) {
-            return $item['suggestion'];
-        }, array_slice($formatCounts, 0, 5, true));
+        return array_map(fn($item) => $item['suggestion'], array_slice($formatCounts, 0, 5, true));
     }
 
     /**
@@ -1802,12 +1765,12 @@ final class SmartDateFormatDetector
         foreach ($testFormats as $format) {
             try {
                 $parsed = Carbon::createFromFormat($format, $sampleDate);
-                $reformatted = $parsed ? $parsed->format($format) : 'FAILED';
+                $reformatted = $parsed instanceof Carbon ? $parsed->format($format) : 'FAILED';
                 $matches = ($reformatted === $sampleDate);
 
                 $results[] = [
                     'format' => $format,
-                    'parsed' => $parsed ? $parsed->format('Y-m-d H:i:s') : 'FAILED',
+                    'parsed' => $parsed instanceof Carbon ? $parsed->format('Y-m-d H:i:s') : 'FAILED',
                     'reformatted' => $reformatted,
                     'exact_match' => $matches
                 ];

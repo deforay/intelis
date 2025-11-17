@@ -2,7 +2,10 @@
 
 ///  if you change anyting in this file make sure Api file for covid 19 update also
 // Path   /vlsm/api/covid-19/v1/update-request.php
-
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\REJECTED;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -36,7 +39,7 @@ $tableName1 = "activity_log";
 $testTableName = 'covid19_tests';
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
@@ -48,33 +51,33 @@ try {
 		$instanceId = $_SESSION['instanceId'];
 	}
 
-	if (isset($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) != "") {
+	if (isset($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) !== "") {
 		$_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($_POST['sampleCollectionDate'], true);
 	} else {
 		$_POST['sampleCollectionDate'] = null;
 	}
 
-	if (isset($_POST['sampleDispatchedDate']) && trim((string) $_POST['sampleDispatchedDate']) != "") {
+	if (isset($_POST['sampleDispatchedDate']) && trim((string) $_POST['sampleDispatchedDate']) !== "") {
 		$_POST['sampleDispatchedDate'] = DateUtility::isoDateFormat($_POST['sampleDispatchedDate'], true);
 	} else {
 		$_POST['sampleDispatchedDate'] = null;
 	}
 
 	//Set sample received date
-	if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
+	if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== "") {
 		$_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'], true);
 	} else {
 		$_POST['sampleReceivedDate'] = null;
 	}
 
-	if (isset($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) != "") {
+	if (isset($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) !== "") {
 		$_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($_POST['sampleTestedDateTime'], true);
 	} else {
 		$_POST['sampleTestedDateTime'] = null;
 	}
 
 
-	if (isset($_POST['arrivalDateTime']) && trim((string) $_POST['arrivalDateTime']) != "") {
+	if (isset($_POST['arrivalDateTime']) && trim((string) $_POST['arrivalDateTime']) !== "") {
 		$_POST['arrivalDateTime'] = DateUtility::isoDateFormat($_POST['arrivalDateTime'], true);
 	} else {
 		$_POST['arrivalDateTime'] = null;
@@ -95,12 +98,7 @@ try {
 					WHERE rejection_reason_name like ?";
 		$rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
 		if (empty($rejectionResult)) {
-			$data = array(
-				'rejection_reason_name' => $_POST['newRejectionReason'],
-				'rejection_type' => 'general',
-				'rejection_reason_status' => 'active',
-				'updated_datetime' => DateUtility::getCurrentDateTime()
-			);
+			$data = ['rejection_reason_name' => $_POST['newRejectionReason'], 'rejection_type' => 'general', 'rejection_reason_status' => 'active', 'updated_datetime' => DateUtility::getCurrentDateTime()];
 			$id = $db->insert('r_covid19_sample_rejection_reasons', $data);
 			$_POST['sampleRejectionReason'] = $id;
 		} else {
@@ -111,22 +109,22 @@ try {
 
 
 	if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
-		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+		$status = RECEIVED_AT_CLINIC;
 	}
 
 	if (!empty($_POST['oldStatus'])) {
 		$status = $_POST['oldStatus'];
 	}
 
-	if ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
-		$status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+	if ($general->isLISInstance() && $_POST['oldStatus'] == RECEIVED_AT_CLINIC) {
+		$status = RECEIVED_AT_TESTING_LAB;
 	}
 
 	$resultSentToSource = null;
 
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$_POST['result'] = null;
-		$status = SAMPLE_STATUS\REJECTED;
+		$status = REJECTED;
 		$resultSentToSource = 'pending';
 	}
 
@@ -135,10 +133,10 @@ try {
 	}
 
 
-	if ($general->isSTSInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
-		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-	} elseif ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
-		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+	if ($general->isSTSInstance() && $_POST['oldStatus'] == RECEIVED_AT_CLINIC) {
+		$_POST['status'] = RECEIVED_AT_CLINIC;
+	} elseif ($general->isLISInstance() && $_POST['oldStatus'] == RECEIVED_AT_CLINIC) {
+		$_POST['status'] = RECEIVED_AT_TESTING_LAB;
 	}
 	if (isset($_POST['status']) && $_POST['status'] == '') {
 		$_POST['status'] = $_POST['oldStatus'];
@@ -151,123 +149,116 @@ try {
 	//$systemPatientCode = $patientsService->savePatient($_POST, 'form_covid19');
 
 
-	$covid19Data = array(
-		'external_sample_code' => !empty($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,
-		'facility_id' => !empty($_POST['facilityId']) ? $_POST['facilityId'] : null,
-		'investigator_name' => !empty($_POST['investigatorName']) ? $_POST['investigatorName'] : null,
-		'investigator_phone' => !empty($_POST['investigatorPhone']) ? $_POST['investigatorPhone'] : null,
-		'investigator_email' => !empty($_POST['investigatorEmail']) ? $_POST['investigatorEmail'] : null,
-		'clinician_name' => !empty($_POST['clinicianName']) ? $_POST['clinicianName'] : null,
-		'clinician_phone' => !empty($_POST['clinicianPhone']) ? $_POST['clinicianPhone'] : null,
-		'clinician_email' => !empty($_POST['clinicianEmail']) ? $_POST['clinicianEmail'] : null,
-		'test_number' => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
-		'province_id' => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
-		'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
-		//'system_patient_code' => $systemPatientCode,
-		'testing_point' => !empty($_POST['testingPoint']) ? $_POST['testingPoint'] : null,
-		'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
-		'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
-		'source_of_alert' => !empty($_POST['sourceOfAlertPOE']) ? $_POST['sourceOfAlertPOE'] : null,
-		'source_of_alert_other' => (!empty($_POST['sourceOfAlertPOE']) && $_POST['sourceOfAlertPOE'] == 'others') ? $_POST['alertPoeOthers'] : null,
-		'patient_id' => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
-		'patient_name' => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
-		'patient_surname' => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
-		'patient_dob' => !empty($_POST['dob']) ? DateUtility::isoDateFormat($_POST['dob']) : null,
-		'patient_gender' => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
-		'health_insurance_code' => $_POST['healthInsuranceCode'] ?? null,
-		'is_patient_pregnant' => !empty($_POST['isPatientPregnant']) ? $_POST['isPatientPregnant'] : null,
-		'patient_age' => !empty($_POST['ageInYears']) ? $_POST['ageInYears'] : null,
-		'patient_phone_number' => !empty($_POST['patientPhoneNumber']) ? $_POST['patientPhoneNumber'] : null,
-		'patient_email' => !empty($_POST['patientEmail']) ? $_POST['patientEmail'] : null,
-		'patient_address' => !empty($_POST['patientAddress']) ? $_POST['patientAddress'] : null,
-		'patient_province' => !empty($_POST['patientProvince']) ? $_POST['patientProvince'] : null,
-		'patient_district' => !empty($_POST['patientDistrict']) ? $_POST['patientDistrict'] : null,
-		'patient_city' => !empty($_POST['patientCity']) ? $_POST['patientCity'] : null,
-		'patient_zone' => !empty($_POST['patientZone']) ? $_POST['patientZone'] : null,
-		'patient_occupation' => !empty($_POST['patientOccupation']) ? $_POST['patientOccupation'] : null,
-		'does_patient_smoke' => !empty($_POST['doesPatientSmoke']) ? $_POST['doesPatientSmoke'] : null,
-		'patient_nationality' => !empty($_POST['patientNationality']) ? $_POST['patientNationality'] : null,
-		'patient_passport_number' => !empty($_POST['patientPassportNumber']) ? $_POST['patientPassportNumber'] : null,
-		'vaccination_status' => !empty($_POST['vaccinationStatus']) ? $_POST['vaccinationStatus'] : null,
-		'vaccination_dosage' => !empty($_POST['vaccinationDosage']) ? $_POST['vaccinationDosage'] : null,
-		'vaccination_type' => !empty($_POST['vaccinationType']) ? $_POST['vaccinationType'] : null,
-		'vaccination_type_other' => !empty($_POST['vaccinationTypeOther']) ? $_POST['vaccinationTypeOther'] : null,
-		'flight_airline' => !empty($_POST['airline']) ? $_POST['airline'] : null,
-		'flight_seat_no' => !empty($_POST['seatNo']) ? $_POST['seatNo'] : null,
-		'flight_arrival_datetime' => !empty($_POST['arrivalDateTime']) ? $_POST['arrivalDateTime'] : null,
-		'flight_airport_of_departure' => !empty($_POST['airportOfDeparture']) ? $_POST['airportOfDeparture'] : null,
-		'flight_transit' => !empty($_POST['transit']) ? $_POST['transit'] : null,
-		'reason_of_visit' => !empty($_POST['reasonOfVisit']) ? $_POST['reasonOfVisit'] : null,
-		'is_sample_collected' => !empty($_POST['isSampleCollected']) ? $_POST['isSampleCollected'] : null,
-		'reason_for_covid19_test' => !empty($_POST['reasonForCovid19Test']) ? $_POST['reasonForCovid19Test'] : null,
-		'type_of_test_requested' => !empty($_POST['testTypeRequested']) ? $_POST['testTypeRequested'] : null,
-		'specimen_type' => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
-		'specimen_taken_before_antibiotics' => !empty($_POST['specimenTakenBeforeAntibiotics']) ? $_POST['specimenTakenBeforeAntibiotics'] : null,
-		'sample_collection_date' => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
-		'sample_dispatched_datetime' => !empty($_POST['sampleDispatchedDate']) ? $_POST['sampleDispatchedDate'] : null,
-		'health_outcome' => !empty($_POST['healthOutcome']) ? $_POST['healthOutcome'] : null,
-		'health_outcome_date' => !empty($_POST['outcomeDate']) ? DateUtility::isoDateFormat($_POST['outcomeDate']) : null,
-		'is_sample_post_mortem' => !empty($_POST['isSamplePostMortem']) ? $_POST['isSamplePostMortem'] : null,
-		'priority_status' => !empty($_POST['priorityStatus']) ? $_POST['priorityStatus'] : null,
-		'number_of_days_sick' => !empty($_POST['numberOfDaysSick']) ? $_POST['numberOfDaysSick'] : null,
-		'suspected_case' => !empty($_POST['suspectedCase']) ? $_POST['suspectedCase'] : null,
-		'asymptomatic' => !empty($_POST['asymptomatic']) ? $_POST['asymptomatic'] : null,
-		'date_of_symptom_onset' => !empty($_POST['dateOfSymptomOnset']) ? DateUtility::isoDateFormat($_POST['dateOfSymptomOnset']) : null,
-		'date_of_initial_consultation' => !empty($_POST['dateOfInitialConsultation']) ? DateUtility::isoDateFormat($_POST['dateOfInitialConsultation']) : null,
-		'fever_temp' => !empty($_POST['feverTemp']) ? $_POST['feverTemp'] : null,
-		'medical_history' => !empty($_POST['medicalHistory']) ? $_POST['medicalHistory'] : null,
-		'recent_hospitalization' => !empty($_POST['recentHospitalization']) ? $_POST['recentHospitalization'] : null,
-		'patient_lives_with_children' => !empty($_POST['patientLivesWithChildren']) ? $_POST['patientLivesWithChildren'] : null,
-		'patient_cares_for_children' => !empty($_POST['patientCaresForChildren']) ? $_POST['patientCaresForChildren'] : null,
-		'temperature_measurement_method' => !empty($_POST['temperatureMeasurementMethod']) ? $_POST['temperatureMeasurementMethod'] : null,
-		'respiratory_rate' => !empty($_POST['respiratoryRate']) ? $_POST['respiratoryRate'] : null,
-		'oxygen_saturation' => !empty($_POST['oxygenSaturation']) ? $_POST['oxygenSaturation'] : null,
-		'close_contacts' => !empty($_POST['closeContacts']) ? $_POST['closeContacts'] : null,
-		'contact_with_confirmed_case' => !empty($_POST['contactWithConfirmedCase']) ? $_POST['contactWithConfirmedCase'] : null,
-		'has_recent_travel_history' => !empty($_POST['hasRecentTravelHistory']) ? $_POST['hasRecentTravelHistory'] : null,
-		'travel_country_names' => !empty($_POST['countryName']) ? $_POST['countryName'] : null,
-		'travel_return_date' => !empty($_POST['returnDate']) ? DateUtility::isoDateFormat($_POST['returnDate']) : null,
-		'sample_received_at_lab_datetime' => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
-		'sample_condition' => !empty($_POST['sampleCondition']) ? $_POST['sampleCondition'] : (!empty($_POST['specimenQuality']) ? $_POST['specimenQuality'] : null),
-		// 'lab_technician'                       => (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
-		'is_sample_rejected' => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
-		'result' => !empty($_POST['result']) ? $_POST['result'] : null,
-		'result_sent_to_source' => $resultSentToSource,
-		'if_have_other_diseases' => (!empty($_POST['ifOtherDiseases'])) ? $_POST['ifOtherDiseases'] : null,
-		'other_diseases' => (!empty($_POST['otherDiseases']) && $_POST['result'] != 'positive') ? $_POST['otherDiseases'] : null,
-		'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
-		'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-		'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : null,
-		'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] : null,
-		'tested_by' => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
-		'is_result_authorised' => !empty($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
-		'authorized_by' => !empty($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
-		'authorized_on' => !empty($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
-		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
-		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
-		'rejection_on' => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-		//'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
-		'result_status' => $status,
-		'data_sync' => 0,
-		'reason_for_sample_rejection' => (!empty($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-		'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
-		
-		'last_modified_by' => $_SESSION['userId'],
-		'last_modified_datetime' => DateUtility::getCurrentDateTime()
-	);
+	$covid19Data = [
+     'external_sample_code' => empty($_POST['externalSampleCode']) ? null : $_POST['externalSampleCode'],
+     'facility_id' => empty($_POST['facilityId']) ? null : $_POST['facilityId'],
+     'investigator_name' => empty($_POST['investigatorName']) ? null : $_POST['investigatorName'],
+     'investigator_phone' => empty($_POST['investigatorPhone']) ? null : $_POST['investigatorPhone'],
+     'investigator_email' => empty($_POST['investigatorEmail']) ? null : $_POST['investigatorEmail'],
+     'clinician_name' => empty($_POST['clinicianName']) ? null : $_POST['clinicianName'],
+     'clinician_phone' => empty($_POST['clinicianPhone']) ? null : $_POST['clinicianPhone'],
+     'clinician_email' => empty($_POST['clinicianEmail']) ? null : $_POST['clinicianEmail'],
+     'test_number' => empty($_POST['testNumber']) ? null : $_POST['testNumber'],
+     'province_id' => empty($_POST['provinceId']) ? null : $_POST['provinceId'],
+     'lab_id' => empty($_POST['labId']) ? null : $_POST['labId'],
+     //'system_patient_code' => $systemPatientCode,
+     'testing_point' => empty($_POST['testingPoint']) ? null : $_POST['testingPoint'],
+     'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') ? base64_decode((string) $_POST['fundingSource']) : null,
+     'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') ? base64_decode((string) $_POST['implementingPartner']) : null,
+     'source_of_alert' => empty($_POST['sourceOfAlertPOE']) ? null : $_POST['sourceOfAlertPOE'],
+     'source_of_alert_other' => (!empty($_POST['sourceOfAlertPOE']) && $_POST['sourceOfAlertPOE'] == 'others') ? $_POST['alertPoeOthers'] : null,
+     'patient_id' => empty($_POST['patientId']) ? null : $_POST['patientId'],
+     'patient_name' => empty($_POST['firstName']) ? null : $_POST['firstName'],
+     'patient_surname' => empty($_POST['lastName']) ? null : $_POST['lastName'],
+     'patient_dob' => empty($_POST['dob']) ? null : DateUtility::isoDateFormat($_POST['dob']),
+     'patient_gender' => empty($_POST['patientGender']) ? null : $_POST['patientGender'],
+     'health_insurance_code' => $_POST['healthInsuranceCode'] ?? null,
+     'is_patient_pregnant' => empty($_POST['isPatientPregnant']) ? null : $_POST['isPatientPregnant'],
+     'patient_age' => empty($_POST['ageInYears']) ? null : $_POST['ageInYears'],
+     'patient_phone_number' => empty($_POST['patientPhoneNumber']) ? null : $_POST['patientPhoneNumber'],
+     'patient_email' => empty($_POST['patientEmail']) ? null : $_POST['patientEmail'],
+     'patient_address' => empty($_POST['patientAddress']) ? null : $_POST['patientAddress'],
+     'patient_province' => empty($_POST['patientProvince']) ? null : $_POST['patientProvince'],
+     'patient_district' => empty($_POST['patientDistrict']) ? null : $_POST['patientDistrict'],
+     'patient_city' => empty($_POST['patientCity']) ? null : $_POST['patientCity'],
+     'patient_zone' => empty($_POST['patientZone']) ? null : $_POST['patientZone'],
+     'patient_occupation' => empty($_POST['patientOccupation']) ? null : $_POST['patientOccupation'],
+     'does_patient_smoke' => empty($_POST['doesPatientSmoke']) ? null : $_POST['doesPatientSmoke'],
+     'patient_nationality' => empty($_POST['patientNationality']) ? null : $_POST['patientNationality'],
+     'patient_passport_number' => empty($_POST['patientPassportNumber']) ? null : $_POST['patientPassportNumber'],
+     'vaccination_status' => empty($_POST['vaccinationStatus']) ? null : $_POST['vaccinationStatus'],
+     'vaccination_dosage' => empty($_POST['vaccinationDosage']) ? null : $_POST['vaccinationDosage'],
+     'vaccination_type' => empty($_POST['vaccinationType']) ? null : $_POST['vaccinationType'],
+     'vaccination_type_other' => empty($_POST['vaccinationTypeOther']) ? null : $_POST['vaccinationTypeOther'],
+     'flight_airline' => empty($_POST['airline']) ? null : $_POST['airline'],
+     'flight_seat_no' => empty($_POST['seatNo']) ? null : $_POST['seatNo'],
+     'flight_arrival_datetime' => empty($_POST['arrivalDateTime']) ? null : $_POST['arrivalDateTime'],
+     'flight_airport_of_departure' => empty($_POST['airportOfDeparture']) ? null : $_POST['airportOfDeparture'],
+     'flight_transit' => empty($_POST['transit']) ? null : $_POST['transit'],
+     'reason_of_visit' => empty($_POST['reasonOfVisit']) ? null : $_POST['reasonOfVisit'],
+     'is_sample_collected' => empty($_POST['isSampleCollected']) ? null : $_POST['isSampleCollected'],
+     'reason_for_covid19_test' => empty($_POST['reasonForCovid19Test']) ? null : $_POST['reasonForCovid19Test'],
+     'type_of_test_requested' => empty($_POST['testTypeRequested']) ? null : $_POST['testTypeRequested'],
+     'specimen_type' => empty($_POST['specimenType']) ? null : $_POST['specimenType'],
+     'specimen_taken_before_antibiotics' => empty($_POST['specimenTakenBeforeAntibiotics']) ? null : $_POST['specimenTakenBeforeAntibiotics'],
+     'sample_collection_date' => empty($_POST['sampleCollectionDate']) ? null : $_POST['sampleCollectionDate'],
+     'sample_dispatched_datetime' => empty($_POST['sampleDispatchedDate']) ? null : $_POST['sampleDispatchedDate'],
+     'health_outcome' => empty($_POST['healthOutcome']) ? null : $_POST['healthOutcome'],
+     'health_outcome_date' => empty($_POST['outcomeDate']) ? null : DateUtility::isoDateFormat($_POST['outcomeDate']),
+     'is_sample_post_mortem' => empty($_POST['isSamplePostMortem']) ? null : $_POST['isSamplePostMortem'],
+     'priority_status' => empty($_POST['priorityStatus']) ? null : $_POST['priorityStatus'],
+     'number_of_days_sick' => empty($_POST['numberOfDaysSick']) ? null : $_POST['numberOfDaysSick'],
+     'suspected_case' => empty($_POST['suspectedCase']) ? null : $_POST['suspectedCase'],
+     'asymptomatic' => empty($_POST['asymptomatic']) ? null : $_POST['asymptomatic'],
+     'date_of_symptom_onset' => empty($_POST['dateOfSymptomOnset']) ? null : DateUtility::isoDateFormat($_POST['dateOfSymptomOnset']),
+     'date_of_initial_consultation' => empty($_POST['dateOfInitialConsultation']) ? null : DateUtility::isoDateFormat($_POST['dateOfInitialConsultation']),
+     'fever_temp' => empty($_POST['feverTemp']) ? null : $_POST['feverTemp'],
+     'medical_history' => empty($_POST['medicalHistory']) ? null : $_POST['medicalHistory'],
+     'recent_hospitalization' => empty($_POST['recentHospitalization']) ? null : $_POST['recentHospitalization'],
+     'patient_lives_with_children' => empty($_POST['patientLivesWithChildren']) ? null : $_POST['patientLivesWithChildren'],
+     'patient_cares_for_children' => empty($_POST['patientCaresForChildren']) ? null : $_POST['patientCaresForChildren'],
+     'temperature_measurement_method' => empty($_POST['temperatureMeasurementMethod']) ? null : $_POST['temperatureMeasurementMethod'],
+     'respiratory_rate' => empty($_POST['respiratoryRate']) ? null : $_POST['respiratoryRate'],
+     'oxygen_saturation' => empty($_POST['oxygenSaturation']) ? null : $_POST['oxygenSaturation'],
+     'close_contacts' => empty($_POST['closeContacts']) ? null : $_POST['closeContacts'],
+     'contact_with_confirmed_case' => empty($_POST['contactWithConfirmedCase']) ? null : $_POST['contactWithConfirmedCase'],
+     'has_recent_travel_history' => empty($_POST['hasRecentTravelHistory']) ? null : $_POST['hasRecentTravelHistory'],
+     'travel_country_names' => empty($_POST['countryName']) ? null : $_POST['countryName'],
+     'travel_return_date' => empty($_POST['returnDate']) ? null : DateUtility::isoDateFormat($_POST['returnDate']),
+     'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
+     'sample_condition' => empty($_POST['sampleCondition']) ? (!empty($_POST['specimenQuality']) ? $_POST['specimenQuality'] : null) : ($_POST['sampleCondition']),
+     // 'lab_technician'                       => (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] :  $_SESSION['userId'],
+     'is_sample_rejected' => empty($_POST['isSampleRejected']) ? null : $_POST['isSampleRejected'],
+     'result' => empty($_POST['result']) ? null : $_POST['result'],
+     'result_sent_to_source' => $resultSentToSource,
+     'if_have_other_diseases' => (empty($_POST['ifOtherDiseases'])) ? null : $_POST['ifOtherDiseases'],
+     'other_diseases' => (!empty($_POST['otherDiseases']) && $_POST['result'] != 'positive') ? $_POST['otherDiseases'] : null,
+     'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
+     'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+     'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : null,
+     'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] : null,
+     'tested_by' => empty($_POST['testedBy']) ? null : $_POST['testedBy'],
+     'is_result_authorised' => empty($_POST['isResultAuthorized']) ? null : $_POST['isResultAuthorized'],
+     'authorized_by' => empty($_POST['authorizedBy']) ? null : $_POST['authorizedBy'],
+     'authorized_on' => empty($_POST['authorizedOn']) ? null : DateUtility::isoDateFormat($_POST['authorizedOn']),
+     'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
+     'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
+     'rejection_on' => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
+     //'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
+     'result_status' => $status,
+     'data_sync' => 0,
+     'reason_for_sample_rejection' => (!empty($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
+     'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) !== '') ? $_POST['correctiveAction'] : null,
+     'last_modified_by' => $_SESSION['userId'],
+     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+ ];
 
 	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$getPrevResult = $db->getOne('form_covid19');
 	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
 		$covid19Data['result_modified'] = "yes";
 
-		$reasonForChangesArr = array(
-			'user' => $_SESSION['userId'] ?? $_POST['userId'],
-			'dateOfChange' => DateUtility::getCurrentDateTime(),
-			'previousResult' => $getPrevResult['result'],
-			'previousResultStatus' => $getPrevResult['result_status'],
-			'reasonForChange' => $_POST['reasonForChanging']
-		);
+		$reasonForChangesArr = ['user' => $_SESSION['userId'] ?? $_POST['userId'], 'dateOfChange' => DateUtility::getCurrentDateTime(), 'previousResult' => $getPrevResult['result'], 'previousResultStatus' => $getPrevResult['result_status'], 'reasonForChange' => $_POST['reasonForChanging']];
 
 		$reasonForChanges = json_encode($reasonForChangesArr);
 	} else {
@@ -287,7 +278,7 @@ try {
 	$covid19Data['last_modified_by'] = $_SESSION['userId'];
 	$covid19Data['lab_technician'] = (!empty($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'];
 
-	if (isset($_POST['deletedRow']) && trim((string) $_POST['deletedRow']) != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
+	if (isset($_POST['deletedRow']) && trim((string) $_POST['deletedRow']) !== '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 		$deleteRows = explode(',', (string) $_POST['deletedRow']);
 		foreach ($deleteRows as $delete) {
 			$db->where('test_id', base64_decode($delete));
@@ -298,76 +289,65 @@ try {
 	$sid = $db->delete("covid19_patient_symptoms");
 	//if (isset($_POST['asymptomatic']) && $_POST['asymptomatic'] != "yes") {
 	if (!empty($_POST['symptomDetected']) || (!empty($_POST['symptom']))) {
-		for ($i = 0; $i < count($_POST['symptomDetected']); $i++) {
-			$symptomData = [];
-			$symptomData["covid19_id"] = $_POST['covid19SampleId'];
-			$symptomData["symptom_id"] = $_POST['symptomId'][$i];
-			$symptomData["symptom_detected"] = $_POST['symptomDetected'][$i];
-			$symptomData["symptom_details"] = (!empty($_POST['symptomDetails'][$_POST['symptomId'][$i]])) ? json_encode($_POST['symptomDetails'][$_POST['symptomId'][$i]]) : null;
-			//var_dump($symptomData);
-			$db->insert("covid19_patient_symptoms", $symptomData);
-		}
-	}
+     $counter = count($_POST['symptomDetected']);
+     for ($i = 0; $i < $counter; $i++) {
+   			$symptomData = [];
+   			$symptomData["covid19_id"] = $_POST['covid19SampleId'];
+   			$symptomData["symptom_id"] = $_POST['symptomId'][$i];
+   			$symptomData["symptom_detected"] = $_POST['symptomDetected'][$i];
+   			$symptomData["symptom_details"] = (empty($_POST['symptomDetails'][$_POST['symptomId'][$i]])) ? null : json_encode($_POST['symptomDetails'][$_POST['symptomId'][$i]]);
+   			//var_dump($symptomData);
+   			$db->insert("covid19_patient_symptoms", $symptomData);
+   		}
+ }
 	//}
 
 	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$db->delete("covid19_reasons_for_testing");
 	if (!empty($_POST['reasonDetails'])) {
-		$reasonData = [];
-		$reasonData["covid19_id"] = $_POST['covid19SampleId'];
-		$reasonData["reasons_id"] = $_POST['reasonForCovid19Test'];
-		$reasonData["reasons_detected"] = "yes";
-		$reasonData["reason_details"] = json_encode($_POST['reasonDetails']);
-		$db->insert("covid19_reasons_for_testing", $reasonData);
-	} else {
-		if (!empty($_POST['reasonForCovid19Test'])) {
-			$reasonData = [];
-			$reasonData["covid19_id"] = $_POST['covid19SampleId'];
-			$reasonData["reasons_id"] = $_POST['reasonForCovid19Test'];
-			$reasonData["reasons_detected"] = "yes";
-			$reasonData["reason_details"] = null;
-			$db->insert("covid19_reasons_for_testing", $reasonData);
-		}
-	}
+     $reasonData = [];
+     $reasonData["covid19_id"] = $_POST['covid19SampleId'];
+     $reasonData["reasons_id"] = $_POST['reasonForCovid19Test'];
+     $reasonData["reasons_detected"] = "yes";
+     $reasonData["reason_details"] = json_encode($_POST['reasonDetails']);
+     $db->insert("covid19_reasons_for_testing", $reasonData);
+ } elseif (!empty($_POST['reasonForCovid19Test'])) {
+     $reasonData = [];
+     $reasonData["covid19_id"] = $_POST['covid19SampleId'];
+     $reasonData["reasons_id"] = $_POST['reasonForCovid19Test'];
+     $reasonData["reasons_detected"] = "yes";
+     $reasonData["reason_details"] = null;
+     $db->insert("covid19_reasons_for_testing", $reasonData);
+ }
 
 	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$pid = $db->delete("covid19_patient_comorbidities");
 	if (!empty($_POST['comorbidityDetected'])) {
-
-		for ($i = 0; $i < count($_POST['comorbidityDetected']); $i++) {
-			$comorbidityData = [];
-			$comorbidityData["covid19_id"] = $_POST['covid19SampleId'];
-			$comorbidityData["comorbidity_id"] = $_POST['comorbidityId'][$i];
-			$comorbidityData["comorbidity_detected"] = $_POST['comorbidityDetected'][$i];
-			$db->insert("covid19_patient_comorbidities", $comorbidityData);
-		}
-	}
+     $counter = count($_POST['comorbidityDetected']);
+     for ($i = 0; $i < $counter; $i++) {
+   			$comorbidityData = [];
+   			$comorbidityData["covid19_id"] = $_POST['covid19SampleId'];
+   			$comorbidityData["comorbidity_id"] = $_POST['comorbidityId'][$i];
+   			$comorbidityData["comorbidity_detected"] = $_POST['comorbidityDetected'][$i];
+   			$db->insert("covid19_patient_comorbidities", $comorbidityData);
+   		}
+ }
 
 
 	if (isset($_POST['covid19SampleId']) && $_POST['covid19SampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
 
 		if (!empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testName) {
-				if (trim((string) $_POST['testName'][$testKey]) != "") {
+				if (trim((string) $_POST['testName'][$testKey]) !== "") {
 					$testingPlatform = null;
 					$instrumentId = null;
-					if (isset($_POST['testingPlatform'][$testKey]) && trim((string) $_POST['testingPlatform'][$testKey]) != '') {
+					if (isset($_POST['testingPlatform'][$testKey]) && trim((string) $_POST['testingPlatform'][$testKey]) !== '') {
 						$platForm = explode("##", (string) $_POST['testingPlatform'][$testKey]);
 						$testingPlatform = $platForm[0];
 						$instrumentId = $platForm[1];
 					}
 
-					$covid19TestData = array(
-						'covid19_id' => $_POST['covid19SampleId'],
-						'test_name' => ($testName == 'other') ? $_POST['testNameOther'][$testKey] : $testName,
-						'facility_id' => $_POST['labId'] ?? null,
-						'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true),
-						'testing_platform' => $testingPlatform ?? null,
-						'instrument_id' => $instrumentId ?? null,
-						'kit_lot_no' => (str_contains((string)$testName, 'RDT')) ? $_POST['lotNo'][$testKey] : null,
-						'kit_expiry_date' => (str_contains((string)$testName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null,
-						'result' => $_POST['testResult'][$testKey],
-					);
+					$covid19TestData = ['covid19_id' => $_POST['covid19SampleId'], 'test_name' => ($testName == 'other') ? $_POST['testNameOther'][$testKey] : $testName, 'facility_id' => $_POST['labId'] ?? null, 'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true), 'testing_platform' => $testingPlatform ?? null, 'instrument_id' => $instrumentId ?? null, 'kit_lot_no' => (str_contains((string)$testName, 'RDT')) ? $_POST['lotNo'][$testKey] : null, 'kit_expiry_date' => (str_contains((string)$testName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null, 'result' => $_POST['testResult'][$testKey]];
 					if (isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != '') {
 						$db->where('test_id', base64_decode((string) $_POST['testId'][$testKey]));
 						$db->update($testTableName, $covid19TestData);

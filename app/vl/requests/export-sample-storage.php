@@ -34,21 +34,9 @@ $resultSet = $db->rawQueryGenerator($_SESSION['sampleStorageQuery']);
 foreach ($resultSet as $aRow) {
 	$row = [];
 
-	if ($aRow['patient_first_name'] != '') {
-		$patientFname = $aRow['patient_first_name'];
-	} else {
-		$patientFname = '';
-	}
-	if ($aRow['patient_middle_name'] != '') {
-		$patientMname = $aRow['patient_middle_name'];
-	} else {
-		$patientMname = '';
-	}
-	if ($aRow['patient_last_name'] != '') {
-		$patientLname = $aRow['patient_last_name'];
-	} else {
-		$patientLname = '';
-	}
+	$patientFname = $aRow['patient_first_name'] != '' ? $aRow['patient_first_name'] : '';
+	$patientMname = $aRow['patient_middle_name'] != '' ? $aRow['patient_middle_name'] : '';
+	$patientLname = $aRow['patient_last_name'] != '' ? $aRow['patient_last_name'] : '';
 
 	$row[] = $no;
 	$row[] = $aRow["sample_code"];
@@ -70,7 +58,7 @@ foreach ($resultSet as $aRow) {
 	$row[] = $aRow['volume'];
 	$row[] = DateUtility::humanReadableDateFormat($aRow['date_out'] ?? '');
 	$row[] = $aRow['comments'] ?? null;
-	$row[] = ucfirst($aRow['sample_status']);
+	$row[] = ucfirst((string) $aRow['sample_status']);
 
 	$output[] = $row;
 	unset($row);

@@ -19,7 +19,7 @@ $globalConfig = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 
 
-if (isset($_SESSION['storageDataQuery']) && trim((string) $_SESSION['storageDataQuery']) != "") {
+if (isset($_SESSION['storageDataQuery']) && trim((string) $_SESSION['storageDataQuery']) !== "") {
 
      $output = [];
      $headings = [_translate("Sample ID"), _translate("Storage Date"), _translate("Volume of Sample(ml)"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Status")];

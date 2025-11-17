@@ -38,7 +38,7 @@ try {
     $activeTests = TestsService::getActiveTests();
 
     $sampleCode = null;
-    if (!empty($_POST)) {
+    if ($_POST !== []) {
         // Define $sampleCode from POST data
         $request = AppRegistry::get('request');
         $_POST = _sanitizeInput($request->getParsedBody());
@@ -74,7 +74,7 @@ try {
         ['COLUMN_NAME' => 'revision'],
         ['COLUMN_NAME' => 'dt_datetime']
     ];
-    $dbColumns = $formTable ? $auditArchiveService->getColumns($db, $formTable) : [];
+    $dbColumns = $formTable !== '' && $formTable !== '0' ? $auditArchiveService->getColumns($db, $formTable) : [];
     $resultColumn = array_merge($auditColumns, $dbColumns); // Merge audit columns with database columns
 ?>
     <style>
@@ -289,9 +289,7 @@ try {
                     $filePath = $auditArchiveService->resolveAuditFilePath($_POST['testType'], $uniqueId);
                     $posts = $filePath ? $auditArchiveService->readAuditDataFromCsvFlexible($filePath) : [];
                     // Sort the records by revision ID
-                    usort($posts, function ($a, $b) {
-                        return (int)($a['revision'] ?? 0) <=> (int)($b['revision'] ?? 0);
-                    });
+                    usort($posts, fn($a, $b): int => (int)($a['revision'] ?? 0) <=> (int)($b['revision'] ?? 0));
 
                     // Fetch current data
                     $currentData = $db->rawQuery("SELECT * FROM $formTable WHERE unique_id = ?", [$uniqueId]);
@@ -312,7 +310,7 @@ try {
                                                     $i = 0;
                                                     foreach ($resultColumn as $col) {
                                                         $selected = "";
-                                                        if (!empty($_POST['hiddenColumns']) && in_array($i, explode(",", $_POST['hiddenColumns']))) {
+                                                        if (!empty($_POST['hiddenColumns']) && in_array($i, explode(",", (string) $_POST['hiddenColumns']))) {
                                                             $selected = "selected";
                                                         }
                                                         echo "<option value='$i' $selected>{$col['COLUMN_NAME']}</option>";
@@ -367,8 +365,9 @@ try {
                                                 <tbody>
                                                     <?php
                                                     $userCache = [];
+                                                        $counter = count($posts);
 
-                                                    for ($i = 0; $i < count($posts); $i++) {
+                                                    for ($i = 0; $i < $counter; $i++) {
                                                         echo "<tr>";
                                                         foreach ($colArr as $j => $colName) {
                                                             $value = array_key_exists($colName, $posts[$i]) ? $posts[$i][$colName] : '';
@@ -378,7 +377,7 @@ try {
                                                             // Check if value changed from previous revision
                                                             if ($j > 2 && $previousValue !== null && $value !== $previousValue) {
                                                                 // Format the value to show what changed
-                                                                $displayValue = "<span class='diff-old'>" . htmlspecialchars($previousValue) . "</span> <span class='diff-new'>" . htmlspecialchars($value) . "</span>";
+                                                                $displayValue = "<span class='diff-old'>" . htmlspecialchars((string) $previousValue) . "</span> <span class='diff-new'>" . htmlspecialchars((string) $value) . "</span>";
                                                                 echo "<td class='diff-cell'>" . $displayValue . "</td>";
                                                             } else {
                                                                 // Look up username for user IDs
@@ -389,7 +388,7 @@ try {
                                                                     }
                                                                     $value = $userCache[$value];
                                                                 }
-                                                                echo "<td>" . htmlspecialchars($value) . "</td>";
+                                                                echo "<td>" . htmlspecialchars((string) $value) . "</td>";
                                                             }
                                                         }
                                                         echo "</tr>";
@@ -417,8 +416,8 @@ try {
                                                             <i class="<?= $icon ?>"></i>
                                                         </div>
                                                         <div class="timeline-content">
-                                                            <h4><?= ucfirst($action) ?> - Revision <?= $revision ?></h4>
-                                                            <p><i class="fa fa-calendar"></i> <?= date('F j, Y, g:i a', strtotime($date)) ?></p>
+                                                            <h4><?= ucfirst((string) $action) ?> - Revision <?= $revision ?></h4>
+                                                            <p><i class="fa fa-calendar"></i> <?= date('F j, Y, g:i a', strtotime((string) $date)) ?></p>
                                                             <div class="timeline-changes">
                                                                 <?php
                                                                 // Show what changed in this revision
@@ -444,14 +443,14 @@ try {
                                                                                         $user = $usersService->getUserByID($newValue, ['user_name']);
                                                                                         $userCache[$newValue] = $user['user_name'] ?? $newValue;
                                                                                     }
-                                                                                    $oldValue = !empty($oldValue) ? $userCache[$oldValue] : '';
-                                                                                    $newValue = !empty($newValue) ? $userCache[$newValue] : '';
+                                                                                    $oldValue = empty($oldValue) ? '' : $userCache[$oldValue];
+                                                                                    $newValue = empty($newValue) ? '' : $userCache[$newValue];
                                                                                 }
 
                                                                                 echo "<div class='change-item'>";
                                                                                 echo "<span class='change-field'>{$colName}:</span> ";
-                                                                                echo "<span class='change-old'>" . htmlspecialchars($oldValue) . "</span> → ";
-                                                                                echo "<span class='change-new'>" . htmlspecialchars($newValue) . "</span>";
+                                                                                echo "<span class='change-old'>" . htmlspecialchars((string) $oldValue) . "</span> → ";
+                                                                                echo "<span class='change-new'>" . htmlspecialchars((string) $newValue) . "</span>";
                                                                                 echo "</div>";
                                                                             }
                                                                         }
@@ -481,8 +480,9 @@ try {
                                         <div role="tabpanel" class="tab-pane" id="tabChanges">
                                             <div class="change-summary">
                                                 <div class="panel-group" id="changeSummary">
-                                                    <?php
-                                                    for ($i = 1; $i < count($posts); $i++) {
+
+                                                                $counter = count($posts);<?php
+                                                    for ($i = 1; $i < $counter; $i++) {
                                                         $current = $posts[$i];
                                                         $previous = $posts[$i - 1];
                                                         $changes = [];
@@ -503,8 +503,8 @@ try {
                                                                             $user = $usersService->getUserByID($newValue, ['user_name']);
                                                                             $userCache[$newValue] = $user['user_name'] ?? $newValue;
                                                                         }
-                                                                        $oldValue = !empty($oldValue) ? $userCache[$oldValue] : '';
-                                                                        $newValue = !empty($newValue) ? $userCache[$newValue] : '';
+                                                                        $oldValue = empty($oldValue) ? '' : $userCache[$oldValue];
+                                                                        $newValue = empty($newValue) ? '' : $userCache[$newValue];
                                                                     }
 
                                                                     $changes[$colName] = [
@@ -515,14 +515,14 @@ try {
                                                             }
                                                         }
 
-                                                        if (!empty($changes)) {
+                                                        if ($changes !== []) {
                                                     ?>
                                                             <div class="panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <h4 class="panel-title">
                                                                         <a data-toggle="collapse" data-parent="#changeSummary" href="#collapse<?= $current['revision'] ?>">
-                                                                            Revision <?= $current['revision'] ?> - <?= ucfirst($current['action']) ?>
-                                                                            (<?= date('Y-m-d H:i:s', strtotime($current['dt_datetime'])) ?>)
+                                                                            Revision <?= $current['revision'] ?> - <?= ucfirst((string) $current['action']) ?>
+                                                                            (<?= date('Y-m-d H:i:s', strtotime((string) $current['dt_datetime'])) ?>)
                                                                         </a>
                                                                     </h4>
                                                                 </div>
@@ -540,8 +540,8 @@ try {
                                                                                 <?php foreach ($changes as $field => $change): ?>
                                                                                     <tr>
                                                                                         <td><?= $field ?></td>
-                                                                                        <td class="old-value"><?= htmlspecialchars($change['from']) ?></td>
-                                                                                        <td class="new-value"><?= htmlspecialchars($change['to']) ?></td>
+                                                                                        <td class="old-value"><?= htmlspecialchars((string) $change['from']) ?></td>
+                                                                                        <td class="new-value"><?= htmlspecialchars((string) $change['to']) ?></td>
                                                                                     </tr>
                                                                                 <?php endforeach; ?>
                                                                             </tbody>
@@ -568,8 +568,8 @@ try {
                                                                 <?php foreach ($posts as $post): ?>
                                                                     <option value="<?= $post['revision'] ?>">
                                                                         <?= _translate("Revision"); ?> <?= $post['revision'] ?>
-                                                                        (<?= ucfirst($post['action']) ?> -
-                                                                        <?= date('Y-m-d H:i:s', strtotime($post['dt_datetime'])) ?>)
+                                                                        (<?= ucfirst((string) $post['action']) ?> -
+                                                                        <?= date('Y-m-d H:i:s', strtotime((string) $post['dt_datetime'])) ?>)
                                                                     </option>
                                                                 <?php endforeach; ?>
                                                             </select>
@@ -585,8 +585,8 @@ try {
                                                                 ?>
                                                                     <option value="<?= $post['revision'] ?>" <?= $selected ?>>
                                                                         <?= _translate("Revision"); ?> <?= $post['revision'] ?>
-                                                                        (<?= ucfirst($post['action']) ?> -
-                                                                        <?= date('Y-m-d H:i:s', strtotime($post['dt_datetime'])) ?>)
+                                                                        (<?= ucfirst((string) $post['action']) ?> -
+                                                                        <?= date('Y-m-d H:i:s', strtotime((string) $post['dt_datetime'])) ?>)
                                                                     </option>
                                                                 <?php endforeach; ?>
                                                             </select>
@@ -646,7 +646,7 @@ try {
                                                         }
                                                         $value = $userCache[$value];
                                                     }
-                                                    echo '<td>' . htmlspecialchars(stripslashes($value)) . '</td>';
+                                                    echo '<td>' . htmlspecialchars(stripslashes((string) $value)) . '</td>';
                                                 }
                                                 ?>
                                             </tr>

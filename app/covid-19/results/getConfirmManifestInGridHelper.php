@@ -12,8 +12,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$aColumns = array('p.manifest_code', 'p.module', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
-$orderColumns = array('p.manifest_id', 'p.module', 'p.manifest_code', 'p.manifest_id', 'p.request_created_datetime');
+$aColumns = ['p.manifest_code', 'p.module', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')"];
+$orderColumns = ['p.manifest_id', 'p.module', 'p.manifest_code', 'p.manifest_id', 'p.request_created_datetime'];
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -38,7 +38,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -64,7 +64,7 @@ $primaryKey = "covid19_id";
 $sQuery = "select p.request_created_datetime, p.manifest_code, p.manifest_status, p.module, p.manifest_id,count(vl." . $sCode . ") as sample_code from form_covid19 vl right join covid19_positive_confirmation_manifest p on vl.positive_test_manifest_id = p.manifest_id";
 
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
 }
 if (isset($vlfmResult[0]['facilityId'])) {
@@ -72,7 +72,7 @@ if (isset($vlfmResult[0]['facilityId'])) {
     $facilityQuery = " AND facility_id IN(" . $vlfmResult[0]['facilityId'] . ")";
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-$sQuery = $sQuery . ' GROUP BY p.manifest_code';
+$sQuery .= ' GROUP BY p.manifest_code';
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -83,12 +83,7 @@ if (isset($sLimit) && isset($sOffset)) {
 
 [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $resultCount,
-    "iTotalDisplayRecords" => $resultCount,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 $package = false;
 $edit = false;
 

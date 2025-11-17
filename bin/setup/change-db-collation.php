@@ -26,7 +26,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 $options = getopt('dbtsv', ['dry-run', 'batch-size:', 'table:', 'skip-columns', 'verbose']);
 $dryRun = isset($options['dry-run']) || isset($options['d']);
 $batchSize = isset($options['batch-size']) ? (int)$options['batch-size'] : (isset($options['b']) ? (int)$options['b'] : 10);
-$specificTable = isset($options['table']) ? $options['table'] : (isset($options['t']) ? $options['t'] : null);
+$specificTable = $options['table'] ?? $options['t'] ?? null;
 $skipColumnConversion = isset($options['skip-columns']) || isset($options['s']);
 $verbose = isset($options['verbose']) || isset($options['v']);
 
@@ -56,12 +56,14 @@ $colors = [
  * @param string|null $color
  * @param bool $alwaysShow
  */
-function echoMessage(string $message, ?string $color = null, bool $alwaysShow = false, ?ProgressBar $bar = null)
+function echoMessage(string $message, ?string $color = null, bool $alwaysShow = false, ?ProgressBar $bar = null): void
 {
     global $verbose, $colors;
-    if (!$verbose && !$alwaysShow) return;
+    if (!$verbose && !$alwaysShow) {
+        return;
+    }
 
-    $printer = function () use ($message, $color, $colors) {
+    $printer = function () use ($message, $color, $colors): void {
         if ($color && isset($colors[$color])) {
             echo $colors[$color] . $message . $colors['reset'] . PHP_EOL;
         } else {
@@ -69,7 +71,7 @@ function echoMessage(string $message, ?string $color = null, bool $alwaysShow = 
         }
     };
 
-    if ($bar) {
+    if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
         MiscUtility::spinnerPausePrint($bar, $printer);
     } else {
         $printer();
@@ -211,7 +213,7 @@ function buildColumnDefinition(array $column, string $targetCollation): string
             'LOCALTIMESTAMP'
         ];
 
-        if (in_array(strtoupper($defaultValue), array_map('strtoupper', $functionDefaults))) {
+        if (in_array(strtoupper((string) $defaultValue), array_map('strtoupper', $functionDefaults))) {
             $definition .= " DEFAULT $defaultValue";
         } else {
             // Escape and quote string defaults
@@ -287,7 +289,7 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
     $collation = $db->isMySQL8OrHigher() ? 'utf8mb4_0900_ai_ci' : 'utf8mb4_unicode_ci';
 
     // Check if table needs conversion
-    list($tableNeedsConversion, $currentCollation) = tableNeedsConversion($db, $connectionName, $tableName, $collation);
+    [$tableNeedsConversion, $currentCollation] = tableNeedsConversion($db, $connectionName, $tableName, $collation);
 
     // Get table size information
     try {
@@ -297,7 +299,7 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
                 WHERE table_schema = DATABASE()
                 AND table_name = '$tableName'"
         );
-        $tableSize = !empty($tableSizeInfo) ? $tableSizeInfo[0]['Size'] : 'unknown';
+        $tableSize = empty($tableSizeInfo) ? 'unknown' : $tableSizeInfo[0]['Size'];
     } catch (Throwable $e) {
         $tableSize = 'unknown';
     }
@@ -342,7 +344,7 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
     // Only get columns that need conversion
     $columnsNeedingConversion = getColumnsNeedingConversion($db, $connectionName, $tableName, $collation);
 
-    if (empty($columnsNeedingConversion)) {
+    if ($columnsNeedingConversion === []) {
         echoMessage("✅ All columns in $tableName already use correct collation", 'green');
         return $result;
     }
@@ -360,7 +362,7 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
                 // Show indexes that might be affected in verbose mode
                 if ($verbose) {
                     $indexes = getColumnIndexes($db, $connectionName, $tableName, $columnName);
-                    if (!empty($indexes)) {
+                    if ($indexes !== []) {
                         echoMessage("    ⚠ Column $columnName has " . count($indexes) . " indexes that may be affected", 'yellow');
                         foreach ($indexes as $index) {
                             $indexType = $index['NON_UNIQUE'] == '0' ? 'UNIQUE' : 'INDEX';
@@ -369,7 +371,7 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
                     }
                 }
 
-                if ($bar) {
+                if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
                     MiscUtility::spinnerUpdate($bar, $tableName, $columnName, $currentColumn, $totalColumns);
                 }
                 echoMessage("  ⚙ Converting column: $columnName (current: {$column['COLLATION_NAME']})", 'cyan', false, $bar);
@@ -548,14 +550,14 @@ try {
     if ($specificTable) {
         try {
             $tablesList = fetchTables($db, $dbName, 'default', $specificTable);
-            $allTables = array_map(fn($table) => ['table' => $table, 'connection' => 'default'], $tablesList);
+            $allTables = array_map(fn($table): array => ['table' => $table, 'connection' => 'default'], $tablesList);
         } catch (Exception $e) {
             // If not found in default DB, try interface DB
             if ($interfaceDbConfig) {
                 $interfaceDbName = $interfaceDbConfig['db'] ?? null;
                 if ($interfaceDbName) {
                     $tablesList = fetchTables($db, $interfaceDbName, 'interface', $specificTable);
-                    $allTables = array_map(fn($table) => ['table' => $table, 'connection' => 'interface'], $tablesList);
+                    $allTables = array_map(fn($table): array => ['table' => $table, 'connection' => 'interface'], $tablesList);
                 }
             } else {
                 throw $e;
@@ -574,14 +576,14 @@ try {
             }
         }
 
-        if (empty($tablesList) && empty($interfaceTablesList)) {
+        if ($tablesList === [] && $interfaceTablesList === []) {
             throw new Exception("No tables found for conversion.");
         }
 
         // Merge tables and include connection info
         $allTables = array_merge(
-            array_map(fn($table) => ['table' => $table, 'connection' => 'default'], $tablesList),
-            array_map(fn($table) => ['table' => $table, 'connection' => 'interface'], $interfaceTablesList)
+            array_map(fn($table): array => ['table' => $table, 'connection' => 'default'], $tablesList),
+            array_map(fn($table): array => ['table' => $table, 'connection' => 'interface'], $interfaceTablesList)
         );
     }
 
@@ -597,7 +599,7 @@ try {
     $results = processBatches(
         $allTables,
         $batchSize,
-        function ($tableData, $current, $total) use ($db, $dryRun, $skipColumnConversion, $verbose,  $bar) {
+        function (array $tableData, $current, $total) use ($db, $dryRun, $skipColumnConversion, $verbose,  $bar): array {
             $table = $tableData['table'];
 
             // show the table on the spinner

@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Override;
 use App\Utilities\MiscUtility;
 use TCPDF;
 
@@ -12,7 +13,7 @@ class ManifestPdfHelper extends TCPDF
     public ?string $labname = "";
     public ?string $manifestType;
 
-    public function setHeading($logo, $text, $labname)
+    public function setHeading(?string $logo, string $text, ?string $labname): void
     {
         $this->logo = $logo;
         $this->text = $text;
@@ -25,13 +26,12 @@ class ManifestPdfHelper extends TCPDF
         $this->manifestType = $manifestType ?: _translate("Sample Referral Manifest");
     }
     //Page header
-    public function Header()
+    #[Override]
+    public function Header(): void
     {
-        if (trim($this->logo) != "") {
-            if (MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
-            }
+        if (trim((string) $this->logo) != "" && MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+            $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+            $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
         }
         $this->SetFont('helvetica', '', 7);
         $this->writeHTMLCell(30, 0, 10, 26, $this->text, 0, 0, 0, true, 'A');
@@ -40,11 +40,9 @@ class ManifestPdfHelper extends TCPDF
         $this->SetFont('helvetica', '', 10);
         $this->writeHTMLCell(0, 0, 0, 20, $this->labname, 0, 0, 0, true, 'C');
 
-        if (trim($this->logo) != "") {
-            if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($imageFilePath, 262, 10, 15, '', '', '', 'T');
-            }
+        if (trim((string) $this->logo) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+            $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+            $this->Image($imageFilePath, 262, 10, 15, '', '', '', 'T');
         }
         $this->SetFont('helvetica', '', 7);
         $this->writeHTMLCell(30, 0, 255, 26, $this->text, 0, 0, 0, true, 'A');
@@ -53,7 +51,8 @@ class ManifestPdfHelper extends TCPDF
     }
 
     // Page footer
-    public function Footer()
+    #[Override]
+    public function Footer(): void
     {
         // Position at 15 mm from bottom
         $this->SetY(-15);

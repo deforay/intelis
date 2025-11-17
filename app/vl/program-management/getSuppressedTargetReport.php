@@ -44,30 +44,27 @@ $sWhere = ' WHERE vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 if (!empty($_POST['facilityName'])) {
     $fac = $_POST['facilityName'];
     $out = '';
-    for ($s = 0; $s < count($fac); $s++) {
-        if ($out) {
-            $out = $out . ',"' . $fac[$s] . '"';
-        } else {
-            $out = '("' . $fac[$s] . '"';
-        }
+    $counter = count($fac);
+    for ($s = 0; $s < $counter; $s++) {
+        $out = $out !== '' && $out !== '0' ? $out . ',"' . $fac[$s] . '"' : '("' . $fac[$s] . '"';
     }
-    $out = $out . ')';
+    $out .= ')';
     if (isset($sWhere)) {
         $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out;
     }
 }
 $sTestDate = '';
 $eTestDate = '';
-if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
     $s_t_date = explode("to", (string) $_POST['sampleTestDate']);
-    if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
+    if (isset($s_t_date[0]) && trim($s_t_date[0]) !== "") {
         $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
     }
-    if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
+    if (isset($s_t_date[1]) && trim($s_t_date[1]) !== "") {
         $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
     }
 }
-if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
     if (isset($sWhere)) {
         $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
     } else {
@@ -93,7 +90,6 @@ foreach ($rResult as $subRow) {
 }
 
 ksort($res);
-end($res);
 if (isset($_POST['monthYear']) && $_POST['monthYear'] != '') {
     $monthYear = '01-' . $_POST['monthYear'];
     $mon = date('Y-M', strtotime($monthYear));
@@ -101,7 +97,7 @@ if (isset($_POST['monthYear']) && $_POST['monthYear'] != '') {
     // print_r($mon);
     // print_r($res);die;
 } else {
-    $monthYear = key($res);
+    $monthYear = array_key_last($res);
     $resArray = end($res);
 }
 

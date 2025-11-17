@@ -1,5 +1,8 @@
 <?php
 
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\REJECTED;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -63,19 +66,19 @@ try {
                 $result = $general->getDataFromOneFieldAndValue('r_eid_results', 'result', $rowData['AE']);
                 $resultStatus = $general->getDataFromOneFieldAndValue('r_sample_status', 'status_name', $rowData['AK']);
 
-                if (trim((string) $rowData['W']) != '') {
+                if (trim((string) $rowData['W']) !== '') {
                     $sampleCollectionDate = date('Y-m-d H:i:s', strtotime((string) $rowData['W']));
                 } else {
                     $sampleCollectionDate = null;
                 }
 
-                if (trim((string) $rowData['Z']) != '') {
+                if (trim((string) $rowData['Z']) !== '') {
                     $sampleReceivedDate = date('Y-m-d H:i:s', strtotime((string) $rowData['Z']));
                 } else {
                     $sampleReceivedDate = null;
                 }
 
-                if (trim((string) $rowData['AD']) != '') {
+                if (trim((string) $rowData['AD']) !== '') {
                     $sampleTestDate = date('Y-m-d H:i:s', strtotime((string) $rowData['AD']));
                 } else {
                     $sampleTestDate = null;
@@ -86,29 +89,29 @@ try {
                     $instanceId = $_SESSION['instanceId'];
                 }
 
-                $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                $status = RECEIVED_AT_TESTING_LAB;
                 if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
-                    $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+                    $status = RECEIVED_AT_CLINIC;
                 }
 
 
-                if (isset($rowData['AB']) && strtolower((string) $rowData['AB']) == 'yes') {
+                if (isset($rowData['AB']) && strtolower((string) $rowData['AB']) === 'yes') {
                     $result['result_id'] = null;
-                    $status = SAMPLE_STATUS\REJECTED;
+                    $status = REJECTED;
                 }
 
                 if (!empty($rowData['I'])) {
                     $rowData['I'] = strtolower((string) $rowData['I']);
-                    if ($rowData['I'] == 'm' || $rowData['I'] == 'male') {
+                    if ($rowData['I'] === 'm' || $rowData['I'] === 'male') {
                         $rowData['I'] = 'male';
-                    } else if ($rowData['I'] == 'f' || $rowData['I'] == 'female') {
+                    } elseif ($rowData['I'] === 'f' || $rowData['I'] === 'female') {
                         $rowData['I'] = 'female';
                     } else {
                         $rowData['I'] = null;
                     }
                 }
 
-                $eidData = array(
+                $eidData = [
                     'vlsm_instance_id' => $instanceId,
                     'vlsm_country_id' => 1,
                     'sample_code' => $rowData['B'] ?? null,
@@ -147,8 +150,8 @@ try {
                     'request_created_by' => $_SESSION['userId'],
                     'request_created_datetime' => DateUtility::getCurrentDateTime(),
                     'last_modified_by' => $_SESSION['userId'],
-                    'last_modified_datetime' => DateUtility::getCurrentDateTime()
-                );
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                ];
 
                 if (empty($sampleCode)) {
                     $lastId = $db->insert($tableName, $eidData);

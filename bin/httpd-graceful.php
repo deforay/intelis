@@ -1,13 +1,17 @@
 #!/usr/bin/env php
 <?php
-if (php_sapi_name() !== 'cli') exit(0);
+if (php_sapi_name() !== 'cli') {
+    exit(0);
+}
 
 // --- helpers ---
 function run(string $cmd): array
 {
     $desc = [1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
     $p = @proc_open($cmd, $desc, $pipes);
-    if (!is_resource($p)) return [127, '', ''];
+    if (!is_resource($p)) {
+        return [127, '', ''];
+    }
     $out = stream_get_contents($pipes[1]);
     fclose($pipes[1]);
     $err = stream_get_contents($pipes[2]);

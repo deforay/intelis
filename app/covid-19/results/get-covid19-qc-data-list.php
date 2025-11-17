@@ -38,7 +38,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -68,7 +68,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS qc.*, kit.testkit_name, l_f.facility_name,
             LEFT JOIN user_details as u_d ON u_d.user_id=qc.tested_by
             LEFT JOIN facility_details as l_f ON qc.lab_id=l_f.facility_id";
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $sQuery = $sQuery . ' where ' . implode(' AND ', $sWhere);
 }
 
@@ -89,12 +89,7 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 /*
     * Output
 */
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
 

@@ -14,13 +14,8 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_covid19_qc_testkits";
 $primaryKey = "testkit_id";
 try {
-    if (isset($_POST['testKitName']) && trim((string) $_POST['testKitName']) != "") {
-        $data = array(
-            'testkit_name'                  => $_POST['testKitName'],
-            'status'                        => $_POST['testKitStatus'],
-            'labels_and_expected_results'   => json_encode(array("label" => $_POST['qcTestLable'], 'expected' => $_POST['expectedResult'])),
-            'updated_datetime'              => DateUtility::getCurrentDateTime(),
-        );
+    if (isset($_POST['testKitName']) && trim((string) $_POST['testKitName']) !== "") {
+        $data = ['testkit_name'                  => $_POST['testKitName'], 'status'                        => $_POST['testKitStatus'], 'labels_and_expected_results'   => json_encode(["label" => $_POST['qcTestLable'], 'expected' => $_POST['expectedResult']]), 'updated_datetime'              => DateUtility::getCurrentDateTime()];
 
         if (isset($_POST['qcTestId']) && $_POST['qcTestId'] != "") {
             $db->where($primaryKey, base64_decode((string) $_POST['qcTestId']));

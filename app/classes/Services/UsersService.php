@@ -15,16 +15,12 @@ use Laminas\Diactoros\ServerRequest;
 final class UsersService
 {
 
-    protected $db;
     protected string $table = 'user_details';
-    protected $commonService;
 
     private int $passwordCost = 12;
 
-    public function __construct(DatabaseService $db, CommonService $commonService)
+    public function __construct(protected DatabaseService $db, protected CommonService $commonService)
     {
-        $this->db = $db;
-        $this->commonService = $commonService;
     }
 
     public function isAllowed(mixed $currentRequest, mixed $privileges = null): bool
@@ -56,7 +52,7 @@ final class UsersService
         return $isAllowed;
     }
 
-    private function getRequestArray($currentRequest)
+    private function getRequestArray($currentRequest): array
     {
         if ($currentRequest instanceof ServerRequest) {
             $currentRequest = AppRegistry::get('currentRequestURI');
@@ -76,9 +72,9 @@ final class UsersService
 
             $pathWithoutQuery = $urlParts['path'];
 
-            while (count($queryParams) > 0) {
+            while ($queryParams !== []) {
                 array_pop($queryParams);
-                $requestArray[] = $pathWithoutQuery . (count($queryParams) > 0 ? '?' . http_build_query($queryParams) : '');
+                $requestArray[] = $pathWithoutQuery . ($queryParams !== [] ? '?' . http_build_query($queryParams) : '');
             }
         }
 
@@ -104,8 +100,8 @@ final class UsersService
             $fullPathsAndBasenames = [];
             foreach ($privileges as $privilege) {
                 $fullPathsAndBasenames[$privilege] = $privilege; // Full path as key and value
-                $basename = basename($privilege);
-                if ($basename == 'index.php') {
+                $basename = basename((string) $privilege);
+                if ($basename === 'index.php') {
                     continue;
                 }
                 $fullPathsAndBasenames[$basename] = $basename; // Basename as key and value
@@ -148,7 +144,7 @@ final class UsersService
         ];
     }
 
-    public function getUserByID($userId, $columns = '*')
+    public function getUserByID($userId, $columns = '*'): mixed
     {
         return MemoUtility::remember(function () use ($userId, $columns) {
             if (is_array($columns)) {
@@ -166,7 +162,7 @@ final class UsersService
             'user_name' => null,
             'user_signature' => null
         ];
-        if (!empty($defaultUserId)) {
+        if ($defaultUserId !== null && $defaultUserId !== '' && $defaultUserId !== '0') {
             $userInfo = $this->getUserByID($defaultUserId, ['user_name', 'user_signature']);
             if ($userInfo) {
                 $result['user_name'] = $userInfo['user_name'];
@@ -185,7 +181,7 @@ final class UsersService
         return $result;
     }
 
-    public function getAllUsers($facilityMap = null, $status = null, $type = null, $updatedDateTime = null)
+    public function getAllUsers($facilityMap = null, $status = null, $type = null, $updatedDateTime = null): mixed
     {
         return MemoUtility::remember(function () use ($facilityMap, $status, $type, $updatedDateTime) {
 
@@ -269,7 +265,7 @@ final class UsersService
 
     public function findUserByApiToken(?string $token = null): ?array
     {
-        if (empty($token)) {
+        if ($token === null || $token === '' || $token === '0') {
             return null;
         }
 
@@ -289,7 +285,7 @@ final class UsersService
 
     public function findUserByUserId(?string $userId = null, $specificColumns = '*'): ?array
     {
-        if (!empty($userId)) {
+        if ($userId !== null && $userId !== '' && $userId !== '0') {
             $this->db->where('u.user_id', $userId);
             $this->db->where('u.status', 'active');
             $this->db->join("roles r", "u.role_id=r.role_id", "INNER");
@@ -303,7 +299,7 @@ final class UsersService
     public function validateAuthToken(?string $token = null): bool
     {
         $result = null;
-        if (!empty($token)) {
+        if ($token !== null && $token !== '' && $token !== '0') {
             $this->db->where('api_token', $token);
             $this->db->where('status', 'active');
             $result = $this->db->getOne($this->table, 'user_id');
@@ -315,7 +311,7 @@ final class UsersService
     {
         $result = $this->findUserByApiToken($token) ?? null;
 
-        if (!empty($result)) {
+        if ($result !== null && $result !== []) {
             $tokenExpiration = $result['api_token_exipiration_days'] ?? 0;
             $lastTokenDate = $result['api_token_generated_datetime'] ?? null;
 
@@ -347,7 +343,7 @@ final class UsersService
     {
         // Tokens with expiration = 0 are tokens that never expire
         // if $lastTokenDate is empty, the token was manually generated and should not be updated
-        if ($tokenExpiration === 0 || empty($lastTokenDate)) {
+        if ($tokenExpiration === 0 || ($lastTokenDate === null || $lastTokenDate === '' || $lastTokenDate === '0')) {
             return false;
         }
 
@@ -407,14 +403,14 @@ final class UsersService
             $response['role']['code'] = $row['role_code'];
             $response['role']['type'] = $row['access_type'];
 
-            $row['display_name'] = strtolower(trim(preg_replace("![^a-z0-9]+!i", " ", (string) $row['display_name'])));
+            $row['display_name'] = strtolower(trim((string) preg_replace("![^a-z0-9]+!i", " ", (string) $row['display_name'])));
             $row['display_name'] = preg_replace("![^a-z0-9]+!i", "-", $row['display_name']);
             $response['privileges'][$row['module']][$row['resource_id']][] = $row['display_name'];
         }
         return $response;
     }
 
-    public function recordLoginAttempt($loginId, $loginStatus, $userId = null)
+    public function recordLoginAttempt($loginId, $loginStatus, $userId = null): void
     {
         /** @var ServerRequest $request */
         $request = AppRegistry::get('request');
@@ -431,7 +427,7 @@ final class UsersService
         $this->db->insert('user_login_history', $data);
     }
 
-    public function passwordHash($password)
+    public function passwordHash($password): ?string
     {
         if (empty($password)) {
             return null;
@@ -450,7 +446,7 @@ final class UsersService
             return false;
         }
 
-        $verified =  password_verify($password, $hash);
+        $verified =  password_verify((string) $password, (string) $hash);
 
         if ($verified) {
             $options = ['cost' => $this->passwordCost];
@@ -469,7 +465,7 @@ final class UsersService
         if (!isset($data) || empty($data) || !isset($userId) || empty($userId)) {
             return null;
         }
-        $saveData['user_attributes'] = !empty($data) ? $this->db->func($data) : null;
+        $saveData['user_attributes'] = empty($data) ? null : $this->db->func($data);
         $this->db->where('user_id', $userId);
         return $this->db->update($this->table, $saveData);
     }

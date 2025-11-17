@@ -19,14 +19,14 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
-$module = (!empty($_POST['userSelectedTestType'])) ? $_POST['userSelectedTestType'] : $_POST['module'];
+$module = (empty($_POST['userSelectedTestType'])) ? $_POST['module'] : $_POST['userSelectedTestType'];
 
 $tableName = TestsService::getTestTableName($module);
 $query = "SELECT p.manifest_code, p.lab_id, p.request_created_datetime
 			FROM specimen_manifests as p
 			INNER JOIN $tableName as vl ON vl.sample_package_code = p.manifest_code ";
 $where = [];
-if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) != '') {
+if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) !== '') {
 	[$startDate, $endDate] = DateUtility::convertDateRange($_POST['daterange'], includeTime: true);
 	$where[] = "p.request_created_datetime BETWEEN '$startDate' AND '$endDate'";
 }
@@ -43,7 +43,7 @@ if (!empty($_POST['genericTestType'])) {
 }
 
 
-if (!empty($where)) {
+if ($where !== []) {
 	$query .= " WHERE " . implode(" AND ", $where);
 }
 $query .= " GROUP BY p.manifest_code ORDER BY p.last_modified_datetime ASC";

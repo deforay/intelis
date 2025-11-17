@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
@@ -37,7 +38,7 @@ function saveUserSignature(array &$data): void
     MiscUtility::makeDirectory($signatureDir);
 
     $filePath = $signatureDir . DIRECTORY_SEPARATOR . $data['signature_image_filename'];
-    file_put_contents($filePath, base64_decode($data['signature_image_content']));
+    file_put_contents($filePath, base64_decode((string) $data['signature_image_content']));
 
     unset($data['signature_image_content'], $data['signature_image_filename']);
 }
@@ -45,7 +46,7 @@ function saveUserSignature(array &$data): void
 try {
     $db->beginTransaction();
 
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $jsonResponse = $apiService->getJsonFromRequest($request);
 
@@ -106,8 +107,8 @@ try {
         }
 
 
-        if (!empty($tableInfo)) {
-            foreach ($tableInfo['table'] as $j => $table) {
+        if ($tableInfo !== []) {
+            foreach (array_keys($tableInfo['table']) as $j) {
                 $primaryKey = $checkColumn = $tableInfo['primaryKey'][$j];
                 $tableName = $tableInfo['table'][$j];
 
@@ -123,7 +124,7 @@ try {
                     $data['updated_datetime'] = DateUtility::getCurrentDateTime();
 
                     try {
-                        if ($tableName == 'instrument_controls' || $tableName == 'instrument_machines') {
+                        if ($tableName === 'instrument_controls' || $tableName === 'instrument_machines') {
                             if ((in_array($data['instrument_id'], $deletedId)) === false &&
                                 !empty($data['instrument_id'])
                             ) {
@@ -133,7 +134,7 @@ try {
                             }
                             $id = $db->setQueryOption(['IGNORE'])->insert($tableName, $data);
                         } else {
-                            if ($tableName == 'user_details') {
+                            if ($tableName === 'user_details') {
                                 // Unset unwanted columns
                                 foreach (['login_id', 'role_id', 'password', 'status'] as $unsetKey) {
                                     unset($data[$unsetKey]);

@@ -25,11 +25,11 @@ $delimiter = $globalConfig['default_csv_delimiter'] ?? ',';
 $enclosure = $globalConfig['default_csv_enclosure'] ?? '"';
 
 
-if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) != "") {
+if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) !== "") {
 
     $output = [];
 
-    $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient Id.", "Patient's Name", "Sample Collection Date", "Lab Name", "Sample Status");
+    $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient Id.", "Patient's Name", "Sample Collection Date", "Lab Name", "Sample Status"];
     if ($general->isStandaloneInstance()) {
         $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
     }
@@ -38,15 +38,11 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $row = [];
         //sample collecion date
         $sampleCollectionDate = '';
-        if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+        if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", (string) $aRow['sample_collection_date']);
             $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
         }
-        if ($aRow['remote_sample'] == 'yes') {
-            $decrypt = 'remote_sample_code';
-        } else {
-            $decrypt = 'sample_code';
-        }
+        $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
         //$patientFname = ($general->crypto('doNothing',$aRow['patient_first_name'],$aRow[$decrypt]));
         $row[] = $aRow['sample_code'];
         if (!$general->isStandaloneInstance()) {

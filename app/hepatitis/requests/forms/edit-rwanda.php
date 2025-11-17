@@ -9,6 +9,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
+
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
@@ -356,8 +357,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                             <?php
-                                            $disabled = (isset($hepatitisInfo['is_result_authorised']) && $hepatitisInfo['is_result_authorised'] == 'no') ? "disabled" : "";
-                                            ?>
+                                            $disabled = (isset($hepatitisInfo['is_result_authorised']) && $hepatitisInfo['is_result_authorised'] == 'no') ? "disabled" : ""; ?>
                                             <th style="width:15%;">Authorized By</th>
                                             <td style="width:35%;">
                                                 <select name="authorizedBy" <?php echo $disabled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">

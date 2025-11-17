@@ -20,38 +20,24 @@ $general = ContainerRegistry::get(CommonService::class);
 $sarr = $general->getSystemConfig();
 
 
-if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamples']) != "") {
+if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamples']) !== "") {
      $rResult = $db->rawQuery($_SESSION['rejectedSamples']);
 
      $excel = new Spreadsheet();
      $output = [];
      $sheet = $excel->getActiveSheet();
-     $headings = array("Lab Name", "Facility Name", "Rejection Reason", "Reason Category", "No. of Samples");
+     $headings = ["Lab Name", "Facility Name", "Rejection Reason", "Reason Category", "No. of Samples"];
 
 
      $colNo = 1;
 
-     $styleArray = array(
-          'font' => array(
-               'bold' => true,
-               'size' => '13',
-          ),
-          'alignment' => array(
-               'horizontal' => Alignment::HORIZONTAL_CENTER,
-               'vertical' => Alignment::VERTICAL_CENTER,
-          ),
-          'borders' => array(
-               'outline' => array(
-                    'style' => Border::BORDER_THIN,
-               ),
-          )
-     );
+     $styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
 
 
      $sheet->mergeCells('A1:E1');
      $nameValue = '';
      foreach ($_POST as $key => $value) {
-          if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
+          if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
                $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }

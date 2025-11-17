@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -16,16 +17,16 @@ $geoDb = ContainerRegistry::get(GeoLocationsService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
 $text = '';
 $field = $_GET['fieldName'];
 $table = $_GET['tableName'];
-$returnField = (!empty($_GET['returnField'])) ? $_GET['returnField'] : null;
-$limit = (!empty($_GET['limit'])) ? $_GET['limit'] : null;
-$text = (!empty($_GET['q'])) ? $_GET['q'] : null;
+$returnField = (empty($_GET['returnField'])) ? null : $_GET['returnField'];
+$limit = (empty($_GET['limit'])) ? null : $_GET['limit'];
+$text = (empty($_GET['q'])) ? null : $_GET['q'];
 
 // Set value as id
 if (!empty($text) && $text != "") {
@@ -34,12 +35,10 @@ if (!empty($text) && $text != "") {
     } else {
         $cQuery = "SELECT DISTINCT $field FROM $table WHERE $field like '%" . $text . "%' AND $field is not null";
     }
+} elseif (isset($returnField) && $returnField != "") {
+    $cQuery = "SELECT DISTINCT $returnField FROM $table WHERE $field is not null";
 } else {
-    if (isset($returnField) && $returnField != "") {
-        $cQuery = "SELECT DISTINCT $returnField FROM $table WHERE $field is not null";
-    } else {
-        $cQuery = "SELECT DISTINCT $field FROM $table WHERE $field is not null";
-    }
+    $cQuery = "SELECT DISTINCT $field FROM $table WHERE $field is not null";
 }
 if (!empty($limit) && $limit > 0) {
     $cQuery .= " limit " . $limit;
@@ -51,12 +50,12 @@ if (isset($returnField) && $returnField != "") {
     $echoResult = [];
     if (count($cResult) > 0) {
         foreach ($cResult as $row) {
-            $echoResult[] = array("id" => $row[$field], "text" => ($row[$field]));
+            $echoResult[] = ["id" => $row[$field], "text" => ($row[$field])];
         }
     } else {
-        $echoResult[] = array("id" => $text, 'text' => $text);
+        $echoResult[] = ["id" => $text, 'text' => $text];
     }
 
-    $result = array("result" => $echoResult);
+    $result = ["result" => $echoResult];
     echo json_encode($result);
 }

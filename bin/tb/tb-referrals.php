@@ -1,22 +1,17 @@
 <?php
 
+
+use const SAMPLE_STATUS\REFERRED;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
-use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
-
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = AppRegistry::get('request');
-$_GET = _sanitizeInput($request->getQueryParams());
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -63,7 +58,7 @@ try {
             // Update the form_tb table - set lab_id to referred_to_lab_id
             $updateData = [
                 'lab_id' => $newLabId,
-                'result_status' => SAMPLE_STATUS\REFERRED,
+                'result_status' => REFERRED,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'data_sync' => 0
             ];

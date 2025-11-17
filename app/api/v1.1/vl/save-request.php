@@ -1,7 +1,12 @@
 <?php
 
 // api/v1.1/vl/save-request.php
-
+use Slim\Psr7\Request;
+use const COUNTRY\PNG;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\TEST_FAILED;
+use const SAMPLE_STATUS\REJECTED;
 use JsonMachine\Items;
 use App\Services\VlService;
 use App\Services\ApiService;
@@ -49,7 +54,7 @@ try {
 
     $db->beginTransaction();
 
-    /** @var Slim\Psr7\Request $request */
+    /** @var Request $request */
     $request = AppRegistry::get('request');
     $noOfFailedRecords = 0;
     $duplicateBlockedRecords = 0;
@@ -125,7 +130,7 @@ try {
             'sampleReceivedDate',
         ];
 
-        if ($formId == COUNTRY\PNG) {
+        if ($formId == PNG) {
             $mandatoryFields[] = 'provinceId';
         }
 
@@ -157,7 +162,7 @@ try {
         // Process province data
         if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", (string) $data['provinceId']);
-            if (!empty($province)) {
+            if ($province !== []) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id');
@@ -236,14 +241,14 @@ try {
         }
 
         // Process result status and data
-        $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+        $status = RECEIVED_AT_TESTING_LAB;
         if ($roleUser['access_type'] != 'testing-lab') {
-            $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+            $status = RECEIVED_AT_CLINIC;
         }
 
         $data['sampleDispatchedOn'] = (isset($data['dateDispatchedFromClinicToLab']) && !empty($data['dateDispatchedFromClinicToLab'])) ? $data['dateDispatchedFromClinicToLab'] : $data['sampleDispatchedOn'];
 
-        if (isset($data['patientGender']) && trim((string) $data['patientGender']) == 'male') {
+        if (isset($data['patientGender']) && trim((string) $data['patientGender']) === 'male') {
             $data['patientPregnant'] = null;
             $data['breastfeeding'] = null;
         }
@@ -286,13 +291,13 @@ try {
                 ];
             }
         }
-        if (!empty($allChange)) {
+        if ($allChange !== []) {
             $reasonForChanges = json_encode($allChange);
         }
 
         /* Field missing corrections */
-        $data['dob'] = $data['dob'] ?? $data['patientDob'] ?? null;
-        $data['sampleTestingDateAtLab'] = $data['sampleTestingDateAtLab'] ?? $data['sampleTestedDateTime'] ?? null;
+        $data['dob'] ??= $data['patientDob'] ?? null;
+        $data['sampleTestingDateAtLab'] ??= $data['sampleTestedDateTime'] ?? null;
 
         // BUILD THE COMPLETE DATA ARRAY FIRST
         $vlFulldata = [
@@ -384,28 +389,24 @@ try {
         $vlFulldata['patient_last_name'] = $data['patientLastName'] ?? '';
 
         $patientFullName = [];
-        if (!empty(trim((string) $vlFulldata['patient_first_name']))) {
+        if (!in_array(trim((string) $vlFulldata['patient_first_name']), ['', '0'], true)) {
             $patientFullName[] = trim((string) $vlFulldata['patient_first_name']);
         }
-        if (!empty(trim((string) $vlFulldata['patient_middle_name']))) {
+        if (!in_array(trim((string) $vlFulldata['patient_middle_name']), ['', '0'], true)) {
             $patientFullName[] = trim((string) $vlFulldata['patient_middle_name']);
         }
-        if (!empty(trim((string) $vlFulldata['patient_last_name']))) {
+        if (!in_array(trim((string) $vlFulldata['patient_last_name']), ['', '0'], true)) {
             $patientFullName[] = trim((string) $vlFulldata['patient_last_name']);
         }
 
-        if (!empty($patientFullName)) {
-            $patientFullName = implode(" ", $patientFullName);
-        } else {
-            $patientFullName = '';
-        }
+        $patientFullName = $patientFullName === [] ? '' : implode(" ", $patientFullName);
         $vlFulldata['patient_first_name'] = $patientFullName;
         $vlFulldata['patient_middle_name'] = null;
         $vlFulldata['patient_last_name'] = null;
 
         // Set user and timestamps
         if (!empty($rowData)) {
-            $vlFulldata['last_modified_datetime'] = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
+            $vlFulldata['last_modified_datetime'] = (empty($data['updatedOn'])) ? DateUtility::getCurrentDateTime() : DateUtility::isoDateFormat($data['updatedOn'], true);
             $vlFulldata['last_modified_by'] = $user['user_id'];
         } else {
             $tbData['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
@@ -418,9 +419,9 @@ try {
         // Process result category
         $vlFulldata['vl_result_category'] = $vlService->getVLResultCategory($vlFulldata['result_status'], $vlFulldata['result']);
         if ($vlFulldata['vl_result_category'] == 'failed' || $vlFulldata['vl_result_category'] == 'invalid') {
-            $vlFulldata['result_status'] = SAMPLE_STATUS\TEST_FAILED;
+            $vlFulldata['result_status'] = TEST_FAILED;
         } elseif ($vlFulldata['vl_result_category'] == 'rejected') {
-            $vlFulldata['result_status'] = SAMPLE_STATUS\REJECTED;
+            $vlFulldata['result_status'] = REJECTED;
         }
 
 
@@ -472,7 +473,7 @@ try {
             try {
                 // Pass the entire vlFulldata array - let the function extract what it needs
                 // Add exclude ID for updates
-                $vlFulldata['excludeSampleId'] = !empty($rowData) ? $rowData['vl_sample_id'] : null;
+                $vlFulldata['excludeSampleId'] = empty($rowData) ? null : $rowData['vl_sample_id'];
 
                 $duplicateCheck = $testRequestsService->detectDuplicateSample($vlFulldata, 'vl', 7, true);
 
@@ -498,7 +499,7 @@ try {
                         'duplicateCount' => $duplicateCount,
                         'withinDays' => $duplicateCheck['withinDays'],
                         'searchCriteria' => $duplicateCheck['searchCriteria'],
-                        'duplicates' => array_map(fn($dup) => [
+                        'duplicates' => array_map(fn($dup): array => [
                             'sampleCode' => $dup['sample_code'] ?? $dup['remote_sample_code'] ?? $dup['app_sample_code'],
                             'collectionDate' => $dup['sample_collection_date_formatted'],
                             'daysDifference' => $dup['days_abs_difference'],
@@ -588,7 +589,7 @@ try {
         }
 
         // Add duplicate detection info to form attributes (only for allowed samples)
-        if (!empty($duplicateWarning)) {
+        if ($duplicateWarning !== null && $duplicateWarning !== []) {
             $formAttributes['duplicateWarning'] = $duplicateWarning;
         }
         if (isset($duplicateInfo[$rootKey]) && !isset($duplicateInfo[$rootKey]['error'])) {
@@ -597,7 +598,7 @@ try {
 
         // Finalize form attributes
         $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
-        $vlFulldata['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+        $vlFulldata['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes);
 
         // Clean up data and perform database update
         $vlFulldata = MiscUtility::arrayEmptyStringsToNull($vlFulldata);
@@ -626,7 +627,7 @@ try {
             ];
 
             // Add duplicate warning information if present
-            if (!empty($duplicateWarning)) {
+            if ($duplicateWarning !== null && $duplicateWarning !== []) {
                 $sampleResponse['warning'] = $duplicateWarning['message'];
                 $sampleResponse['duplicateWarning'] = $duplicateWarning;
             }
@@ -653,7 +654,7 @@ try {
     $db->commitTransaction();
 
     // For inserted samples, generate sample code
-    if (!empty($uniqueIdsForSampleCodeGeneration)) {
+    if ($uniqueIdsForSampleCodeGeneration !== []) {
         $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
         if (!empty($sampleCodeData)) {
             foreach ($responseData as $rootKey => $currentSampleData) {
@@ -693,7 +694,7 @@ try {
     ];
 
     // Add detailed duplicate information only if duplicates were detected
-    if ($enableDuplicateDetection && !empty($duplicateInfo)) {
+    if ($enableDuplicateDetection && $duplicateInfo !== []) {
         $payload['duplicateDetails'] = $duplicateInfo;
         $payload['summary']['duplicateRecords'] = [
             'blockedRecords' => $duplicateBlockedRecords,
@@ -701,10 +702,8 @@ try {
             'totalDuplicatesDetected' => count($duplicateInfo),
             'duplicates' => [
                 'highRisk' => $duplicateBlockedRecords,
-                'mediumRisk' => $duplicateWarningRecords - array_sum(array_map(function ($info) {
-                    return isset($info['riskLevel']) && $info['riskLevel'] === 'low' ? 1 : 0;
-                }, $duplicateInfo)),
-                'lowRisk' => array_sum(array_map(fn($info) => isset($info['riskLevel']) && $info['riskLevel'] === 'low' ? 1 : 0, $duplicateInfo))
+                'mediumRisk' => $duplicateWarningRecords - array_sum(array_map(fn($info): int => isset($info['riskLevel']) && $info['riskLevel'] === 'low' ? 1 : 0, $duplicateInfo)),
+                'lowRisk' => array_sum(array_map(fn($info): int => isset($info['riskLevel']) && $info['riskLevel'] === 'low' ? 1 : 0, $duplicateInfo))
             ]
         ];
     }

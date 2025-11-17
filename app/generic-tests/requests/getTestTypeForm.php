@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
@@ -14,12 +15,12 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
-$genericTestInfo = $db->rawQuery($genericTestQuery, array($_POST['vlSampleId']));
+$genericTestInfo = $db->rawQuery($genericTestQuery, [$_POST['vlSampleId']]);
 // echo "<pre>";print_r($genericTestInfo);die;
 foreach ($genericTestInfo as $ikey => $row) {
     $subTestLabels[] = $row['sub_test_name'];
@@ -59,9 +60,9 @@ if (isset($testMethodResult) && !empty($testMethodResult)) {
 $othersSectionFields = [];
 $otherSection = [];
 $s = [];
-function getClassNameFromFieldType($fieldType)
+function getClassNameFromFieldType($fieldType): mixed
 {
-    return MemoUtility::remember(function () use ($fieldType) {
+    return MemoUtility::remember(function () use ($fieldType): string {
         if ($fieldType == 'number') {
             return " forceNumeric ";
         } elseif ($fieldType == 'date') {
@@ -71,7 +72,7 @@ function getClassNameFromFieldType($fieldType)
     });
 }
 
-function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth)
+function getDropDownField(array $testAttribute, string $testAttributeId, $value, $inputClass, $isRequired, $fieldType, $disabled, $inputWidth): string
 {
     $fieldName = 'dynamicFields[' . $testAttributeId . ']';
     $isMultiple = $testAttribute['field_type'] == 'multiple';
@@ -105,7 +106,7 @@ function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass,
     foreach (explode(',', (string) $testAttribute['dropdown_options']) as $option) {
         if ($isMultiple && is_array($value)) {
 
-            $selected = (!empty($value) && in_array($option, $value)) ? "selected" : "";
+            $selected = ($value !== [] && in_array($option, $value)) ? "selected" : "";
         } else {
             $selected = (!empty($value) && $value == $option) ? "selected" : "";
         }
@@ -115,7 +116,7 @@ function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass,
     return $field;
 }
 
-function getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth, $mandatory)
+function getField(array $testAttribute, string $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth, string $mandatory): string
 {
     $fieldDiv = "<div class='col-md-6 $sectionClass'>";
     $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttributeId . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
@@ -395,11 +396,7 @@ if (!empty($testResultsAttribute)) {
                     foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {
                         $selected = (isset($finalTestResults[strtolower($subTest)]['final_result']) && $finalTestResults[strtolower($subTest)]['final_result'] == trim((string) $r)) ? "selected='selected'" : "";
                         $selectedResult = (isset($_POST['result']) && ($_POST['result'] == trim((string) $r))) ? "selected='selected'" : "";
-                        if (isset($subTest) && !empty($subTest)) {
-                            $selected = $selected ?? $selectedResult;
-                        } else {
-                            $selected = $selectedResult ?? $selected;
-                        }
+                        $selected = isset($subTest) && ($subTest !== '' && $subTest !== '0') ? $selected ?? $selectedResult : $selectedResult ?? $selected;
                         // $subTestResultSection .= '<option value="' . trim((string) $r) . '" ' . $selected . '>' . ($r) . '</option>';
                         $subTestResultSection .= '<option value="' . trim((string) $r) . '"> ' . $r . ' </option>';
                     }
@@ -414,12 +411,8 @@ if (!empty($testResultsAttribute)) {
                     if (!empty($testResultsAttribute['quantitative_result'])) {
                         foreach ($testResultsAttribute['quantitative_result'] as $qkey => $qrow) {
                             $selected = (isset($finalTestResults[strtolower($subTest)]['final_result']) && $finalTestResults[strtolower($subTest)]['final_result'] == trim((string) $qrow)) ? "selected='selected'" : "";
-                            $selectedResult = (isset($_POST['result']) && strtolower($_POST['result']) == trim((string) $qrow)) ? "selected='selected'" : "";
-                            if (isset($subTest) && !empty($subTest)) {
-                                $selected = $selected ?? $selectedResult;
-                            } else {
-                                $selected = $selectedResult ?? $selected;
-                            }
+                            $selectedResult = (isset($_POST['result']) && strtolower((string) $_POST['result']) === trim((string) $qrow)) ? "selected='selected'" : "";
+                            $selected = isset($subTest) && ($subTest !== '' && $subTest !== '0') ? $selected ?? $selectedResult : $selectedResult ?? $selected;
                             $subTestResultSection .= '<option value="' . trim((string) $qrow) . '" ' . $selected . ' data-interpretation="' . $testResultsAttribute['quantitative_result_interpretation'][$qkey] . '"> ' . ($qrow) . ' </option>';
                         }
                         $subTestResultSection .= '</datalist></td></tr>';

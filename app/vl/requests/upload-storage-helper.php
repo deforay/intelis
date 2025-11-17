@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -19,7 +20,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -54,7 +55,7 @@ try {
             $sheetData   = $sheetData->toArray(null, true, true, true);
             $returnArray = [];
             $resultArray = array_slice($sheetData, 1);
-            $filteredArray = array_filter((array)$resultArray, function ($row) {
+            $filteredArray = array_filter((array)$resultArray, function ($row): array {
                 return array_filter($row); // Remove empty rows
             });
             $total = count($filteredArray);
@@ -88,24 +89,18 @@ try {
                     $freezerCheck = $general->fetchDataFromTable('lab_storage', $condition1);
 
                     if (empty($freezerCheck)) {
-                        $data = array(
-                            'storage_id' => MiscUtility::generateULID(),
-                            'storage_code'     => $rowData['C'],
-                            'lab_id'     => $getSample[0]['lab_id'],
-                            'storage_status' => "active",
-                            'updated_datetime'    => DateUtility::getCurrentDateTime()
-                        );
+                        $data = ['storage_id' => MiscUtility::generateULID(), 'storage_code'     => $rowData['C'], 'lab_id'     => $getSample[0]['lab_id'], 'storage_status' => "active", 'updated_datetime'    => DateUtility::getCurrentDateTime()];
                         $db->insert('lab_storage', $data);
                         $storageId = $data['storage_id'];
                     } else {
                         $storageId = $freezerCheck[0]['storage_id'];
                     }
-                    $formAttributes = json_decode($getSample[0]['form_attributes']);
+                    $formAttributes = json_decode((string) $getSample[0]['form_attributes']);
                 }
 
                 try {
                     if (!isset($formAttributes->storage) && empty($formAttributes->storage)) {
-                        $formAttributes->storage = array("storageId" => $storageId, "storageCode" => $rowData['C'], "rack" => $rowData['D'], "box" => $rowData['E'], "position" => $rowData['F'], "volume" => $rowData['G']);
+                        $formAttributes->storage = ["storageId" => $storageId, "storageCode" => $rowData['C'], "rack" => $rowData['D'], "box" => $rowData['E'], "position" => $rowData['F'], "volume" => $rowData['G']];
                         // Convert the $formAttributes array to a JSON string and set it using JsonUtility::jsonToSetString
                         $formAttributesString = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
                         $vlData['form_attributes'] = $db->func($formAttributesString);
@@ -113,9 +108,9 @@ try {
                         $id = $db->update('form_vl', $vlData);
                     } else {
                         $storageNotAdded[] = $rowData;
-                        $failedRow[] = array($rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'], $rowData['G']);
+                        $failedRow[] = [$rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'], $rowData['G']];
                     }
-                } catch (Throwable $e) {
+                } catch (Throwable) {
                     $storageNotAdded[] = $rowData;
                     $failedRow[] = [$rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'], $rowData['G']];
                     LoggerUtility::logError(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());

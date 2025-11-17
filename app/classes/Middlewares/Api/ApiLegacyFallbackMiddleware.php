@@ -2,6 +2,7 @@
 
 namespace App\Middlewares\Api;
 
+use Override;
 use Throwable;
 use Laminas\Diactoros\Response;
 use App\Utilities\LoggerUtility;
@@ -14,11 +15,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ApiLegacyFallbackMiddleware implements MiddlewareInterface
 {
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
             return $handler->handle($request);
-        } catch (HttpNotFoundException $e) {
+        } catch (HttpNotFoundException) {
             return $this->handleLegacyCode($request);
         } catch (Throwable $e) {
             // Log the exception here if needed
@@ -37,7 +39,7 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
 
         ob_start();
         try {
-            (function () use ($filePath) {
+            (function () use ($filePath): void {
                 require_once $filePath;
             })();
             $output = ob_get_clean();
@@ -57,7 +59,7 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
     private function sanitizePath(string $uriPath): string
     {
         $uriPath = preg_replace('/([\/.])\1+/', '$1', $uriPath);
-        $uriPath = trim(parse_url($uriPath, PHP_URL_PATH), "/");
+        $uriPath = trim(parse_url((string) $uriPath, PHP_URL_PATH), "/");
         $filePath = APPLICATION_PATH . DIRECTORY_SEPARATOR . $uriPath;
         $resolvedPath = realpath($filePath);
         if (!$resolvedPath || is_dir($resolvedPath) || !str_starts_with($resolvedPath, realpath(APPLICATION_PATH)) || !is_readable($resolvedPath)) {

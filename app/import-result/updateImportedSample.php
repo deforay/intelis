@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -13,7 +14,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -24,14 +25,12 @@ try {
     // Handle bulk sample test date updates
     if (isset($_POST['bulkSampleTestDate']) && isset($_POST['tempSampleIds'])) {
         $sampleTestDate = $_POST['bulkSampleTestDate'];
-        $tempSampleIds = explode(',', $_POST['tempSampleIds']);
+        $tempSampleIds = explode(',', (string) $_POST['tempSampleIds']);
 
         // Validate all IDs are numeric to prevent injection
-        $validIds = array_filter($tempSampleIds, function ($id) {
-            return is_numeric(trim($id));
-        });
+        $validIds = array_filter($tempSampleIds, fn($id): bool => is_numeric(trim((string) $id)));
 
-        if (!empty($validIds)) {
+        if ($validIds !== []) {
             $placeholders = str_repeat('?,', count($validIds) - 1) . '?';
             $updateQuery = "UPDATE temp_sample_import SET sample_tested_datetime = ? WHERE temp_sample_id IN ($placeholders)";
 
@@ -83,21 +82,15 @@ try {
     }
 
     // Handle sample code update
-    if (isset($_POST['sampleCode']) && trim((string) $_POST['sampleCode']) != '') {
+    if (isset($_POST['sampleCode']) && trim((string) $_POST['sampleCode']) !== '') {
         $sampleResult = $db->rawQuery("SELECT sample_code FROM form_vl WHERE sample_code='" . trim((string) $_POST['sampleCode']) . "'");
-        if (!empty($sampleResult)) {
-            $sampleDetails = _translate('Result already exists');
-        } else {
-            $sampleDetails = _translate('New Sample');
-        }
+        $sampleDetails = empty($sampleResult) ? _translate('New Sample') : _translate('Result already exists');
         $db->where('temp_sample_id', $_POST['tempsampleId']);
         $result = $db->update($tableName, ['sample_code' => $_POST['sampleCode'], 'sample_details' => $sampleDetails]);
-    }
-    // Handle sample type update
-    else if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
+    } elseif (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
         $sampleControlResult = $db->rawQuery("SELECT r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim((string) $_POST['sampleType']) . "'");
         $db->where('temp_sample_id', $_POST['tempsampleId']);
-        $result = $db->update($tableName, array('sample_type' => trim((string) $_POST['sampleType'])));
+        $result = $db->update($tableName, ['sample_type' => trim((string) $_POST['sampleType'])]);
     }
 
     echo $result;

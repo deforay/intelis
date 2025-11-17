@@ -93,16 +93,7 @@ try {
         $shortCode = strtoupper((string) $_POST['testShortCode']);
         // Remove all special characters and spaces, except hyphens
         $shortCode = preg_replace('/[^A-Z0-9-]/', '', $shortCode);
-        $data = array(
-            'test_standard_name' => $_POST['testStandardName'],
-            'test_generic_name' => $_POST['testGenericName'],
-            'test_short_code' => $shortCode,
-            'test_loinc_code' => !empty($_POST['testLoincCode']) ? $_POST['testLoincCode'] : null,
-            'test_category' => !empty($_POST['testCategory']) ? $_POST['testCategory'] : null,
-            'test_form_config' => json_encode($testAttribute),
-            'test_results_config' => json_encode($_POST['resultConfig']),
-            'test_status' => $_POST['status']
-        );
+        $data = ['test_standard_name' => $_POST['testStandardName'], 'test_generic_name' => $_POST['testGenericName'], 'test_short_code' => $shortCode, 'test_loinc_code' => empty($_POST['testLoincCode']) ? null : $_POST['testLoincCode'], 'test_category' => empty($_POST['testCategory']) ? null : $_POST['testCategory'], 'test_form_config' => json_encode($testAttribute), 'test_results_config' => json_encode($_POST['resultConfig']), 'test_status' => $_POST['status']];
         $db->where('test_type_id', $testTypeId);
         $db->update($tableName, $data);
 
@@ -112,7 +103,7 @@ try {
                 $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName2);
                 foreach ($_POST['sampleType'] as $val) {
-                    $value = array('sample_type_id' => $val, 'test_type_id' => $testTypeId);
+                    $value = ['sample_type_id' => $val, 'test_type_id' => $testTypeId];
                     $db->insert($tableName2, $value);
                 }
             }
@@ -130,7 +121,7 @@ try {
                         $db->insert('r_generic_test_reasons', $d);
                         $val = $db->getInsertId();
                     }
-                    $value = array('test_reason_id' => $val, 'test_type_id' => $testTypeId);
+                    $value = ['test_reason_id' => $val, 'test_type_id' => $testTypeId];
                     $db->insert($tableName3, $value);
                 }
             }
@@ -138,7 +129,7 @@ try {
                 $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName4);
                 foreach ($_POST['symptoms'] as $val) {
-                    $value = array('symptom_id' => $val, 'test_type_id' => $testTypeId);
+                    $value = ['symptom_id' => $val, 'test_type_id' => $testTypeId];
                     $db->insert($tableName4, $value);
                 }
             }
@@ -156,7 +147,7 @@ try {
                         $db->insert('r_generic_test_failure_reasons', $d);
                         $val = $db->getInsertId();
                     }
-                    $value = array('test_failure_reason_id' => $val, 'test_type_id' => $testTypeId);
+                    $value = ['test_failure_reason_id' => $val, 'test_type_id' => $testTypeId];
                     $db->insert($tableName5, $value);
                 }
             }
@@ -174,7 +165,7 @@ try {
                         $db->insert('r_generic_sample_rejection_reasons', $d);
                         $val = $db->getInsertId();
                     }
-                    $value = array('rejection_reason_id' => $val, 'test_type_id' => $testTypeId);
+                    $value = ['rejection_reason_id' => $val, 'test_type_id' => $testTypeId];
                     $db->insert($tableName6, $value);
                 }
             }
@@ -183,7 +174,7 @@ try {
                 $db->where('test_type_id', $testTypeId);
                 $db->delete($tableName7);
                 foreach ($_POST['resultConfig']['test_result_unit'] as $val) {
-                    $value = array('unit_id' => $val, 'test_type_id' => $testTypeId);
+                    $value = ['unit_id' => $val, 'test_type_id' => $testTypeId];
                     $db->insert($tableName7, $value);
                 }
             }
@@ -200,7 +191,7 @@ try {
                         $db->insert('r_generic_test_methods', $d);
                         $val = $db->getInsertId();
                     }
-                    $value = array('test_method_id' => $val, 'test_type_id' => $testTypeId);
+                    $value = ['test_method_id' => $val, 'test_type_id' => $testTypeId];
                     $db->insert($tableName8, $value);
                 }
             }

@@ -1,7 +1,7 @@
 
 ## Installing InteLIS on Ubuntu 24.04
 
-A script to install InteLIS on a fresh instance of Ubuntu 24.04 is available. This script is **ONLY FOR A FRESH OS**, it will install Apache, MySQL 8.0 & PHP 8.2 and could OVERWRITE any existing web setup on the machine.
+A script to install InteLIS on a fresh instance of Ubuntu 24.04 is available. This script is **ONLY FOR A FRESH OS**, it will install Apache, MySQL 8.0 & PHP 8.4 and could OVERWRITE any existing web setup on the machine.
 
 It also does not set up mail settings or configure system security so you will have to do those separately. You can use the script as a reference if you’re installing on a non-fresh machine.
 

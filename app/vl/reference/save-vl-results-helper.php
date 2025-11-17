@@ -17,9 +17,9 @@ $primaryKey = "result_id";
 // print_r(base64_decode($_POST['resultId']));die;
 try {
 	//echo '<pre>'; print_r($_POST); die;
-	if (isset($_POST['resultName']) && trim((string) $_POST['resultName']) != "") {
+	if (isset($_POST['resultName']) && trim((string) $_POST['resultName']) !== "") {
 		if (!empty($_POST['selectedInstruments'])) {
-			$jsonInstruments = json_encode(explode(',', $_POST['selectedInstruments']), true);
+			$jsonInstruments = json_encode(explode(',', (string) $_POST['selectedInstruments']), true);
 		} else {
 			$jsonInstruments = null;
 		}

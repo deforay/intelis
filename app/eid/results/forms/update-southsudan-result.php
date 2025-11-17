@@ -121,8 +121,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <select class="form-control" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
                                             <option value=""> -- Select -- </option>
                                             <?php
-                                            foreach ($implementingPartnerList as $implementingPartner) {
-                                            ?>
+                                            foreach ($implementingPartnerList as $implementingPartner) { ?>
                                                 <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($eidInfo['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                             <?php } ?>
                                         </select>
@@ -132,8 +131,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
                                             <option value=""> -- Select -- </option>
                                             <?php
-                                            foreach ($fundingSourceList as $fundingSource) {
-                                            ?>
+                                            foreach ($fundingSourceList as $fundingSource) { ?>
                                                 <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($eidInfo['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                             <?php } ?>
                                         </select>
@@ -677,7 +675,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
     function getMachine(value) {
         $.post("/instruments/get-machine-names-by-instrument.php", {
                 instrumentId: value,
-                machine: <?php echo !empty($eidInfo['import_machine_name']) ? $eidInfo['import_machine_name'] : '""'; ?>,
+                machine: <?php echo empty($eidInfo['import_machine_name']) ? '""' : $eidInfo['import_machine_name']; ?>,
                 testType: 'eid'
             },
             function(data) {

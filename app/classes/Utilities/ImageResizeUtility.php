@@ -2,6 +2,9 @@
 
 namespace App\Utilities;
 
+use Stringable;
+use GdImage;
+use Override;
 use Exception;
 use Throwable;
 use App\Exceptions\SystemException;
@@ -12,7 +15,7 @@ use App\Exceptions\SystemException;
  * https://github.com/gumlet/php-image-resize
  *
  */
-class ImageResizeUtility
+class ImageResizeUtility implements Stringable
 {
     const CROPTOP = 1;
     const CROPCENTRE = 2;
@@ -63,7 +66,7 @@ class ImageResizeUtility
      * @return ImageResizeUtility
      * @throws SystemException
      */
-    public static function createFromString($image_data)
+    public static function createFromString($image_data): self
     {
         if (empty($image_data) || $image_data === null) {
             throw new SystemException('image_data must not be empty');
@@ -78,7 +81,7 @@ class ImageResizeUtility
      * @param callable $filter
      * @return $this
      */
-    public function addFilter(callable $filter)
+    public function addFilter(callable $filter): static
     {
         $this->filters[] = $filter;
         return $this;
@@ -196,17 +199,17 @@ class ImageResizeUtility
     }
 
     // http://stackoverflow.com/a/28819866
-    public function imageCreateJpegfromExif($filename)
+    public function imageCreateJpegfromExif($filename): GdImage|false
     {
         $img = imagecreatefromjpeg($filename);
 
-        if (!function_exists('exif_read_data') || !isset($this->source_info['APP1'])  || !str_starts_with($this->source_info['APP1'], 'Exif')) {
+        if (!function_exists('exif_read_data') || !isset($this->source_info['APP1'])  || !str_starts_with((string) $this->source_info['APP1'], 'Exif')) {
             return $img;
         }
 
         try {
             $exif = @exif_read_data($filename);
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             $exif = null;
         }
 
@@ -241,7 +244,7 @@ class ImageResizeUtility
      * @param boolean $exact_size
      * @return static
      */
-    public function save($filename, $image_type = null, $quality = null, $permissions = null, $exact_size = false)
+    public function save($filename, $image_type = null, $quality = null, $permissions = null, $exact_size = false): static
     {
         $image_type = $image_type ?: $this->source_type;
         $quality = is_numeric($quality) ? (int) abs($quality) : null;
@@ -298,12 +301,10 @@ class ImageResizeUtility
                     } else {
                         $dest_image = imagecreate($this->getDestWidth(), $this->getDestHeight());
                     }
+                } elseif (!empty($exact_size) && is_array($exact_size)) {
+                    $dest_image = imagecreatetruecolor($exact_size[0], $exact_size[1]);
                 } else {
-                    if (!empty($exact_size) && is_array($exact_size)) {
-                        $dest_image = imagecreatetruecolor($exact_size[0], $exact_size[1]);
-                    } else {
-                        $dest_image = imagecreatetruecolor($this->getDestWidth(), $this->getDestHeight());
-                    }
+                    $dest_image = imagecreatetruecolor($this->getDestWidth(), $this->getDestHeight());
                 }
 
                 imagealphablending($dest_image, false);
@@ -421,7 +422,7 @@ class ImageResizeUtility
      * @param int $quality
      * @return string
      */
-    public function getImageAsString($image_type = null, $quality = null)
+    public function getImageAsString($image_type = null, $quality = null): string|false
     {
         $string_temp = tempnam(sys_get_temp_dir(), '');
 
@@ -439,7 +440,8 @@ class ImageResizeUtility
      *
      * @return string
      */
-    public function __toString()
+    #[Override]
+    public function __toString(): string
     {
         return $this->getImageAsString();
     }
@@ -449,7 +451,7 @@ class ImageResizeUtility
      * @param string $image_type
      * @param integer $quality
      */
-    public function output($image_type = null, $quality = null)
+    public function output($image_type = null, $quality = null): void
     {
         $image_type = $image_type ?: $this->source_type;
 
@@ -465,7 +467,7 @@ class ImageResizeUtility
      * @param boolean $allow_enlarge
      * @return static
      */
-    public function resizeToShortSide($max_short, $allow_enlarge = false)
+    public function resizeToShortSide($max_short, $allow_enlarge = false): static
     {
         if ($this->getSourceHeight() < $this->getSourceWidth()) {
             $ratio = $max_short / $this->getSourceHeight();
@@ -489,7 +491,7 @@ class ImageResizeUtility
      * @param boolean $allow_enlarge
      * @return static
      */
-    public function resizeToLongSide($max_long, $allow_enlarge = false)
+    public function resizeToLongSide($max_long, $allow_enlarge = false): static
     {
         if ($this->getSourceHeight() > $this->getSourceWidth()) {
             $ratio = $max_long / $this->getSourceHeight();
@@ -513,7 +515,7 @@ class ImageResizeUtility
      * @param boolean $allow_enlarge
      * @return static
      */
-    public function resizeToHeight($height, $allow_enlarge = false)
+    public function resizeToHeight($height, $allow_enlarge = false): static
     {
         $ratio = $height / $this->getSourceHeight();
         $width = (int) round($this->getSourceWidth() * $ratio);
@@ -530,7 +532,7 @@ class ImageResizeUtility
      * @param boolean $allow_enlarge
      * @return static
      */
-    public function resizeToWidth($width, $allow_enlarge = false)
+    public function resizeToWidth($width, $allow_enlarge = false): static
     {
         $ratio  = $width / $this->getSourceWidth();
         $height = (int) round($this->getSourceHeight() * $ratio);
@@ -572,7 +574,7 @@ class ImageResizeUtility
      * @param integer|float $scale
      * @return static
      */
-    public function scale($scale)
+    public function scale($scale): static
     {
         $width  = (int) round($this->getSourceWidth() * $scale / 100);
         $height = (int) round($this->getSourceHeight() * $scale / 100);
@@ -590,17 +592,14 @@ class ImageResizeUtility
      * @param boolean $allow_enlarge
      * @return static
      */
-    public function resize($width, $height, $allow_enlarge = false)
+    public function resize($width, $height, $allow_enlarge = false): static
     {
-        if (!$allow_enlarge) {
-            // if the user hasn't explicitly allowed enlarging,
-            // but either of the dimensions are larger then the original,
-            // then just use original dimensions - this logic may need rethinking
-
-            if ($width > $this->getSourceWidth() || $height > $this->getSourceHeight()) {
-                $width  = $this->getSourceWidth();
-                $height = $this->getSourceHeight();
-            }
+        // if the user hasn't explicitly allowed enlarging,
+        // but either of the dimensions are larger then the original,
+        // then just use original dimensions - this logic may need rethinking
+        if (!$allow_enlarge && ($width > $this->getSourceWidth() || $height > $this->getSourceHeight())) {
+            $width  = $this->getSourceWidth();
+            $height = $this->getSourceHeight();
         }
 
         $this->source_x = 0;
@@ -624,7 +623,7 @@ class ImageResizeUtility
      * @param integer $position
      * @return static
      */
-    public function crop($width, $height, $allow_enlarge = false, $position = self::CROPCENTER)
+    public function crop($width, $height, $allow_enlarge = false, $position = self::CROPCENTER): static
     {
         if (!$allow_enlarge) {
             // this logic is slightly different to resize(),
@@ -682,17 +681,9 @@ class ImageResizeUtility
         }
         $this->source_x = $x;
         $this->source_y = $y;
-        if ($width > $this->getSourceWidth() - $x) {
-            $this->source_w = $this->getSourceWidth() - $x;
-        } else {
-            $this->source_w = $width;
-        }
+        $this->source_w = $width > $this->getSourceWidth() - $x ? $this->getSourceWidth() - $x : $width;
 
-        if ($height > $this->getSourceHeight() - $y) {
-            $this->source_h = $this->getSourceHeight() - $y;
-        } else {
-            $this->source_h = $height;
-        }
+        $this->source_h = $height > $this->getSourceHeight() - $y ? $this->getSourceHeight() - $y : $height;
 
         $this->dest_w = $width;
         $this->dest_h = $height;
@@ -746,7 +737,7 @@ class ImageResizeUtility
      * @param integer $position
      * @return integer
      */
-    protected function getCropPosition($expectedSize, $position = self::CROPCENTER)
+    protected function getCropPosition($expectedSize, $position = self::CROPCENTER): int
     {
         $size = 0;
         switch ($position) {
@@ -771,7 +762,7 @@ class ImageResizeUtility
      * @param bool $enable
      * @return static
      */
-    public function gamma($enable = false)
+    public function gamma(bool $enable = false): static
     {
         $this->gamma_correct = $enable;
 

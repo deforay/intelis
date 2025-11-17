@@ -131,27 +131,7 @@ $pResult = $db->get("form_cd4 vl", 25, "fd.facility_id,
 									//if (!in_array($value, $artNoList)) {
 									$artNoList[] = $value;
 									$patientDetails = json_encode(
-										array(
-											"name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'],
-											"gender" => $patient['patient_gender'],
-											"dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']),
-											"age_in_years" => $patient['patient_age_in_years'],
-											"age_in_months" => $patient['patient_age_in_months'],
-											"is_pregnant" => $patient['is_patient_pregnant'],
-											"is_breastfeeding" => $patient['is_patient_breastfeeding'],
-											"trimester" => $patient['pregnancy_trimester'],
-											"mobile" => $patient['patient_mobile_number'],
-											"consent_to_receive_sms" => $patient['consent_to_receive_sms'],
-											"treatment_initiated_date" => DateUtility::humanReadableDateFormat($patient['treatment_initiated_date']),
-											"current_regimen" => $patient['current_regimen'],
-											"last_cd4_date" => DateUtility::humanReadableDateFormat($patient['last_cd4_date']),
-											"last_cd4_result" => $patient['last_cd4_result'],
-											"patient_art_no" => $patient['patient_art_no'],
-											"is_encrypted" => $patient['is_encrypted'],
-											"is_patient_new" => $patient['is_patient_new'],
-											"sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']),
-											"cd4_result" => $patient['cd4_result'],
-										)
+										["name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'], "gender" => $patient['patient_gender'], "dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']), "age_in_years" => $patient['patient_age_in_years'], "age_in_months" => $patient['patient_age_in_months'], "is_pregnant" => $patient['is_patient_pregnant'], "is_breastfeeding" => $patient['is_patient_breastfeeding'], "trimester" => $patient['pregnancy_trimester'], "mobile" => $patient['patient_mobile_number'], "consent_to_receive_sms" => $patient['consent_to_receive_sms'], "treatment_initiated_date" => DateUtility::humanReadableDateFormat($patient['treatment_initiated_date']), "current_regimen" => $patient['current_regimen'], "last_cd4_date" => DateUtility::humanReadableDateFormat($patient['last_cd4_date']), "last_cd4_result" => $patient['last_cd4_result'], "patient_art_no" => $patient['patient_art_no'], "is_encrypted" => $patient['is_encrypted'], "is_patient_new" => $patient['is_patient_new'], "sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']), "cd4_result" => $patient['cd4_result']]
 									);
 
 								?>

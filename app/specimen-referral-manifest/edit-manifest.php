@@ -146,7 +146,7 @@ if ($module == 'generic-tests') {
 							<div class="form-group">
 								<label for="packageCode" class="col-lg-4 control-label">Testing Lab :</label>
 								<div class="col-lg-7" style="margin-left:3%;">
-									<select class="form-control" id="testingLab" name="testingLab" title="Choose one test lab" <?= !empty($pResult['lab_id']) ? 'readonly="readonly"' : ''; ?>>
+									<select class="form-control" id="testingLab" name="testingLab" title="Choose one test lab" <?= empty($pResult['lab_id']) ? '' : 'readonly="readonly"'; ?>>
 										<?= $general->generateSelectOptions($testingLabs, $pResult['lab_id'], '-- Select --'); ?>
 									</select>
 								</div>

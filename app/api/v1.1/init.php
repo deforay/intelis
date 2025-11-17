@@ -1,5 +1,7 @@
 <?php
 // Allow from any origin
+use Slim\Psr7\Request;
+use const COUNTRY\DRC;
 use App\Services\TbService;
 use App\Services\VlService;
 use App\Services\ApiService;
@@ -40,7 +42,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 
-/** @var Slim\Psr7\Request $request */
+/** @var Request $request */
 $request = AppRegistry::get('request');
 $origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
@@ -170,7 +172,7 @@ try {
             if ($updatedDateTime) {
                 $condition .= " AND updated_datetime >= '$updatedDateTime'";
             }
-            $rejectionTypeResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', array('rejection_type'), false, $condition, 'rejection_type');
+            $rejectionTypeResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', ['rejection_type'], false, $condition, 'rejection_type');
 
             foreach ($rejectionTypeResult as $key => $type) {
                 $reasons[$module][$key]['show'] = ucwords((string) $type['rejection_type']);
@@ -178,7 +180,7 @@ try {
                 if ($updatedDateTime) {
                     $condition .= " AND updated_datetime >= '$updatedDateTime'";
                 }
-                $rejectionResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', array('rejection_reason_id', 'rejection_reason_name'), false, $condition);
+                $rejectionResult = $general->getDataByTableAndFields('r_' . $module . '_sample_rejection_reasons', ['rejection_reason_id', 'rejection_reason_name'], false, $condition);
                 foreach ($rejectionResult as $subKey => $reject) {
                     $reasons[$module][$key]['reasons'][$subKey]['value'] = $reject['rejection_reason_id'];
                     $reasons[$module][$key]['reasons'][$subKey]['show'] = ($reject['rejection_reason_name']);
@@ -191,7 +193,7 @@ try {
                 $testReasonTable = 'r_generic_test_reasons';
                 $testReasonName = "test_reason";
             }
-            $testReasonsResult = $general->getDataByTableAndFields($testReasonTable, array('test_reason_id', $testReasonName, 'parent_reason'), false, " test_reason_status like 'active' ", $testReasonName);
+            $testReasonsResult = $general->getDataByTableAndFields($testReasonTable, ['test_reason_id', $testReasonName, 'parent_reason'], false, " test_reason_status like 'active' ", $testReasonName);
             foreach ($testReasonsResult as $subKey => $reject) {
                 $testReasons[$module]['testReasons'][$subKey]['parent'] = $reject['parent_reason'] ?? 0;
                 $testReasons[$module]['testReasons'][$subKey]['value'] = $reject['test_reason_id'];
@@ -232,7 +234,7 @@ try {
         /* Province Details */
         $data['covid19']['provinceList'] = $data['provinceList'] ?? [];
         /* District Details */
-        $data['covid19']['districtList'] = $data['districtList'] ?? [];;
+        $data['covid19']['districtList'] = $data['districtList'] ?? [];
         /* Health Facility Details */
         $data['covid19']['fundingSourceList'] = $data['fundingSourceList'] ?? [];
         $data['covid19']['implementingPartnerList'] = $implementingPartnerList;
@@ -240,7 +242,7 @@ try {
 
         /* Type of Test Request */
         $typeOfTestReqList = [];
-        if ($formId == COUNTRY\DRC) {
+        if ($formId == DRC) {
             $typeOfTestReqResult = [
                 "PCR/RT-PCR",
                 "RdRp-SARS Cov-2",

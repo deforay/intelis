@@ -1,4 +1,8 @@
 <?php
+
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+
 //this file gets the requests from the remote server and updates the local database
 
 $cliMode = php_sapi_name() === 'cli';
@@ -133,7 +137,7 @@ function syncTestRequest(
     $didFail = false;
     $failureReason = null;
     $resultRecord = $localRecord;
-    if (!empty($localRecord)) {
+    if ($localRecord !== []) {
         // Build the patchable payload
         $updatePayload = MiscUtility::excludeKeys($incoming, $excludeKeysForUpdate);
 
@@ -143,11 +147,7 @@ function syncTestRequest(
             'form_attributes',
             ['syncTransactionId' => $transactionId]
         );
-        if (!empty($formAttributes)) {
-            $updatePayload['form_attributes'] = $db->func($formAttributes);
-        } else {
-            $updatePayload['form_attributes'] = null;
-        }
+        $updatePayload['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes);
         $updatePayload['is_result_mail_sent'] ??= 'no';
 
         // Conditional backfill of remote_sample_code
@@ -172,7 +172,7 @@ function syncTestRequest(
                 unset($updatePayload['last_modified_datetime']);
             }
             if (($updatePayload['lab_id'] == $updatePayload['referred_to_lab_id']) && ($updatePayload['referred_to_lab_id'] != $updatePayload['referred_by_lab_id'])) {
-                $updatePayload['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                $updatePayload['result_status'] = RECEIVED_AT_TESTING_LAB;
             }
             $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
             $res = $db->update($tableName, $updatePayload);
@@ -189,21 +189,17 @@ function syncTestRequest(
         }
     } else {
         // Insert path
-        $incoming['source_of_request'] = $incoming['source_of_request'] ?? 'vlsts';
+        $incoming['source_of_request'] ??= 'vlsts';
         $formAttributes = JsonUtility::jsonToSetString(
             $incoming['form_attributes'] ?? null,
             'form_attributes',
             ['syncTransactionId' => $transactionId]
         );
-        if (!empty($formAttributes)) {
-            $incoming['form_attributes'] = $db->func($formAttributes);
-        } else {
-            $incoming['form_attributes'] = null;
-        }
+        $incoming['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes);
         $incoming['is_result_mail_sent'] ??= 'no';
         $incoming['data_sync'] = 0;
         if (($incoming['lab_id'] == $incoming['referred_to_lab_id']) && ($incoming['referred_to_lab_id'] != $incoming['referred_by_lab_id'])) {
-            $incoming['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+            $incoming['result_status'] = RECEIVED_AT_TESTING_LAB;
         }
         $res = $db->insert($tableName, $incoming);
         if ($res === true || $res > 0) {
@@ -261,6 +257,27 @@ function clearSpinner(): void
     echo "\r" . str_repeat(' ', 40) . "\r";
 }
 
+
+
+$labId = $general->getSystemConfig('sc_testing_lab_id');
+$isLIS = $general->isLISInstance();
+if (false == $isLIS) {
+    LoggerUtility::logError("This instance is not configured as LIS. Exiting.");
+    if ($cliMode) {
+        $io->error("This instance is not configured as LIS. Exiting.");
+    }
+    exit(0);
+}
+
+if (null == $labId || '' == $labId) {
+    LoggerUtility::logError("Please check if Testing Lab ID is set");
+    if ($cliMode) {
+        $io->error("Testing Lab ID is not set in System Config. Exiting.");
+    }
+    exit(0);
+}
+
+
 $forceSyncModule = $manifestCode = null;
 $syncSinceDate = null;
 $isSilent = false;
@@ -282,7 +299,7 @@ if ($cliMode) {
 
     // Scan all args to find a valid date or number-of-days
     foreach ($args as $arg) {
-        if (str_contains(strtolower($arg), 'silent')) {
+        if (str_contains(strtolower((string) $arg), 'silent')) {
             $isSilent = true;
             continue;
         }
@@ -291,7 +308,7 @@ if ($cliMode) {
             continue;
         }
 
-        $arg = trim($arg);
+        $arg = trim((string) $arg);
         if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
             $syncSinceDate = DateUtility::getDateTime($arg, 'Y-m-d');
             break;
@@ -302,8 +319,8 @@ if ($cliMode) {
     }
 }
 
-if (!empty($_POST)) {
-    /** @var Laminas\Diactoros\ServerRequest $request */
+if ($_POST !== []) {
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $postParams = $request->getParsedBody();
 
@@ -321,7 +338,8 @@ if ($syncSinceDate !== null) {
 }
 $transactionId = MiscUtility::generateULID();
 
-$labId = $general->getSystemConfig('sc_testing_lab_id');
+
+
 $version = VERSION;
 
 $systemConfig = SYSTEM_CONFIG;
@@ -399,7 +417,7 @@ $apiService->setBearerToken($stsBearerToken);
 
 $promises = [];
 $requestInfo = []; // to retain url+payload for tracking
-$startTime = microtime(true);
+$startTime = MiscUtility::startTimer();
 $responsePayload = [];
 
 foreach ($systemConfig['modules'] as $module => $status) {
@@ -410,14 +428,14 @@ foreach ($systemConfig['modules'] as $module => $status) {
     ];
     if ($status === true) {
         $basePayload['testType'] = $module;
-        if (!empty($forceSyncModule) && trim((string)$forceSyncModule) == $module && !empty($manifestCode) && trim((string)$manifestCode) != "") {
+        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == $module && !empty($manifestCode) && trim((string) $manifestCode) !== "") {
             $basePayload['manifestCode'] = $manifestCode;
         }
         $effectiveSyncSinceDate = $syncSinceDate ?? ($moduleSyncSinceDates[$module] ?? null);
         if (!empty($effectiveSyncSinceDate)) {
             $basePayload['syncSinceDate'] = $effectiveSyncSinceDate;
             if ($cliMode && $syncSinceDate === null && isset($moduleSyncSinceDates[$module])) {
-                $io->text("Requesting " . strtoupper($module) . " records updated since $effectiveSyncSinceDate");
+                $io->text("Requesting " . strtoupper((string) $module) . " records updated since $effectiveSyncSinceDate");
             }
         }
 
@@ -432,12 +450,12 @@ foreach ($systemConfig['modules'] as $module => $status) {
             $basePayload,
             gzip: true,
             async: true
-        )->then(function ($response) use (&$responsePayload, $module, $cliMode, $io) {
+        )->then(function ($response) use (&$responsePayload, $module, $cliMode, $io): void {
             $responsePayload[$module] = $response->getBody()->getContents();
             if ($cliMode) {
                 $io->text("Received server response for $module");
             }
-        })->otherwise(function ($reason) use ($module, $cliMode, $io) {
+        })->otherwise(function (string $reason) use ($module, $cliMode, $io): void {
             if ($cliMode) {
                 $io->error("STS Request sync for $module failed: $reason");
             }
@@ -449,9 +467,8 @@ foreach ($systemConfig['modules'] as $module => $status) {
 // Wait for all promises
 Utils::settle($promises)->wait();
 
-$endTime = microtime(true);
 if ($cliMode) {
-    $io->comment("Total download time for STS Requests: " . sprintf('%.2f', $endTime - $startTime) . " seconds");
+    $io->comment("Total download time for STS Requests: " . MiscUtility::elapsedTime($startTime) . " seconds");
 }
 
 // Define per-module config
@@ -804,7 +821,7 @@ try {
             try {
                 $db->beginTransaction();
 
-                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, $remoteData);
+                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, (array) $remoteData);
                 $syncResult = syncTestRequest(
                     $request,
                     $tableName,
@@ -1033,7 +1050,7 @@ try {
             try {
                 $db->beginTransaction();
 
-                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, $remoteData);
+                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, (array) $remoteData);
                 $localRecord = $testRequestsService->findMatchingLocalRecord($request, $tableName, $primaryKeyName);
 
                 if (!empty($localRecord)) {
@@ -1070,34 +1087,21 @@ try {
                         'result_printed_on_sts_datetime',
                         'data_from_tests'
                     ];
-
                     // Merge test_type_form and form_attributes like original
                     $testTypeForm = JsonUtility::jsonToSetString(
                         $localRecord['test_type_form'] ?? null,
                         'test_type_form',
                         $request['test_type_form'] ?? null
                     );
-                    if (!empty($testTypeForm)) {
-                        $request['test_type_form'] = $db->func($testTypeForm);
-                    } else {
-                        $request['test_type_form'] = null;
-                    }
-
+                    $request['test_type_form'] = $testTypeForm === null || $testTypeForm === '' || $testTypeForm === '0' ? null : $db->func($testTypeForm);
                     $formAttributes = JsonUtility::jsonToSetString(
                         $localRecord['form_attributes'] ?? null,
                         'form_attributes',
                         $request['form_attributes'] ?? null
                     );
-                    if (!empty($formAttributes)) {
-                        $request['form_attributes'] = $db->func($formAttributes);
-                    } else {
-                        $request['form_attributes'] = null;
-                    }
-
+                    $request['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes);
                     $request['is_result_mail_sent'] ??= 'no';
-
                     $updatePayload = MiscUtility::excludeKeys($request, $removeKeysForUpdate);
-
                     // Conditional backfill of remote_sample_code
                     if (!empty($request['remote_sample_code']) && empty($localRecord['remote_sample_code'])) {
                         $db->rawQuery(
@@ -1106,13 +1110,11 @@ try {
                         );
                         $localRecord['remote_sample_code'] = $request['remote_sample_code'];
                     }
-
                     $needsUpdate = !MiscUtility::isArrayEqual(
                         $updatePayload,
                         $localRecord,
                         ['last_modified_datetime', 'form_attributes']
                     );
-
                     if ($needsUpdate) {
                         $updatePayload['last_modified_datetime'] = DateUtility::getCurrentDateTime();
                         if ($isSilent) {
@@ -1124,39 +1126,27 @@ try {
                         $id = true;
                     }
                     $genericId = $localRecord[$primaryKeyName];
-                } else {
+                } elseif (!empty($request['sample_collection_date'])) {
                     // Insert path
-                    if (!empty($request['sample_collection_date'])) {
-                        $request['source_of_request'] = 'vlsts';
-                        $testTypeForm = JsonUtility::jsonToSetString(
-                            $request['test_type_form'] ?? null,
-                            'test_type_form'
-                        );
-                        if (!empty($testTypeForm)) {
-                            $request['test_type_form'] = $db->func($testTypeForm);
-                        } else {
-                            $request['test_type_form'] = null;
-                        }
-
-                        $formAttributes = JsonUtility::jsonToSetString(
-                            $request['form_attributes'] ?? null,
-                            'form_attributes',
-                            ['syncTransactionId' => $transactionId]
-                        );
-                        if (!empty($formAttributes)) {
-                            $request['form_attributes'] = $db->func($formAttributes);
-                        } else {
-                            $request['form_attributes'] = null;
-                        }
-                        $request['is_result_mail_sent'] ??= 'no';
-                        $request['data_sync'] = 0;
-
-                        $id = $db->insert($tableName, $request);
-                        $genericId = $db->getInsertId();
-                    } else {
-                        $id = false;
-                        $genericId = null;
-                    }
+                    $request['source_of_request'] = 'vlsts';
+                    $testTypeForm = JsonUtility::jsonToSetString(
+                        $request['test_type_form'] ?? null,
+                        'test_type_form'
+                    );
+                    $request['test_type_form'] = $testTypeForm === null || $testTypeForm === '' || $testTypeForm === '0' ? null : $db->func($testTypeForm);
+                    $formAttributes = JsonUtility::jsonToSetString(
+                        $request['form_attributes'] ?? null,
+                        'form_attributes',
+                        ['syncTransactionId' => $transactionId]
+                    );
+                    $request['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes);
+                    $request['is_result_mail_sent'] ??= 'no';
+                    $request['data_sync'] = 0;
+                    $id = $db->insert($tableName, $request);
+                    $genericId = $db->getInsertId();
+                } else {
+                    $id = false;
+                    $genericId = null;
                 }
 
                 if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests']) && !empty($genericId)) {
@@ -1254,8 +1244,8 @@ $db->where('vlsm_instance_id', $general->getInstanceId());
 $db->update('s_vlsm_instance', ['last_remote_requests_sync' => DateUtility::getCurrentDateTime()]);
 
 if (
-    isset($forceSyncModule) && trim((string)$forceSyncModule) != ""
-    && isset($manifestCode) && trim((string)$manifestCode) != ""
+    isset($forceSyncModule) && trim((string) $forceSyncModule) !== ""
+    && isset($manifestCode) && trim((string) $manifestCode) !== ""
 ) {
     $formTable = TestsService::getTestTableName($forceSyncModule);
     $primaryKey = TestsService::getPrimaryColumn($forceSyncModule);

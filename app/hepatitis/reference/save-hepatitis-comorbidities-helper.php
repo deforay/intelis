@@ -18,12 +18,8 @@ $tableName = "r_hepatitis_comorbidities";
 $primaryKey = "comorbidity_id";
 // print_r($_POST);die;
 try {
-	if (isset($_POST['comorbidityName']) && trim((string) $_POST['comorbidityName']) != "") {
-		$data = array(
-			'comorbidity_name'         => $_POST['comorbidityName'],
-			'comorbidity_status'     => $_POST['comorbidityStatus'],
-			'updated_datetime'     => DateUtility::getCurrentDateTime(),
-		);
+	if (isset($_POST['comorbidityName']) && trim((string) $_POST['comorbidityName']) !== "") {
+		$data = ['comorbidity_name'         => $_POST['comorbidityName'], 'comorbidity_status'     => $_POST['comorbidityStatus'], 'updated_datetime'     => DateUtility::getCurrentDateTime()];
 		if (isset($_POST['comorbidityId']) && $_POST['comorbidityId'] != "") {
 			$db->where($primaryKey, base64_decode((string) $_POST['comorbidityId']));
 			$lastId = $db->update($tableName, $data);

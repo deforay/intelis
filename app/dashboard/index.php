@@ -97,7 +97,7 @@ $userModules = $_SESSION['modules'] ?? [];
 
 				<?php if (
 					isset(SYSTEM_CONFIG['modules']['vl'])
-					&& SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['modules'], array('vl'))
+					&& SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['modules'], ['vl'])
 				) { ?>
 					<div class="tab-pane fade in active" id="vlDashboard">
 						<!-- VL content -->
@@ -187,7 +187,7 @@ $userModules = $_SESSION['modules'] ?? [];
 				<!-- EID START-->
 				<?php if (
 					isset(SYSTEM_CONFIG['modules']['eid']) &&
-					SYSTEM_CONFIG['modules']['eid'] === true && array_intersect($_SESSION['modules'], array('eid'))
+					SYSTEM_CONFIG['modules']['eid'] === true && array_intersect($_SESSION['modules'], ['eid'])
 				) { ?>
 
 					<div class="tab-pane fade in" id="eidDashboard">
@@ -234,7 +234,7 @@ $userModules = $_SESSION['modules'] ?? [];
 				<!-- COVID-19 START-->
 				<?php if (
 					isset(SYSTEM_CONFIG['modules']['covid19']) &&
-					SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['modules'], array('covid19'))
+					SYSTEM_CONFIG['modules']['covid19'] === true && array_intersect($_SESSION['modules'], ['covid19'])
 				) { ?>
 
 					<div class="tab-pane fade in" id="covid19Dashboard">
@@ -282,7 +282,7 @@ $userModules = $_SESSION['modules'] ?? [];
 				<!-- Hepatitis START-->
 				<?php if (
 					isset(SYSTEM_CONFIG['modules']['hepatitis']) &&
-					SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['modules'], array('hepatitis'))
+					SYSTEM_CONFIG['modules']['hepatitis'] === true && array_intersect($_SESSION['modules'], ['hepatitis'])
 				) { ?>
 
 					<div class="tab-pane fade in" id="hepatitisDashboard">
@@ -330,7 +330,7 @@ $userModules = $_SESSION['modules'] ?? [];
 				<!-- TB START-->
 				<?php if (
 					isset(SYSTEM_CONFIG['modules']['tb']) &&
-					SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], array('tb'))
+					SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], ['tb'])
 				) { ?>
 
 					<div class="tab-pane fade in" id="tbDashboard">
@@ -379,7 +379,7 @@ $userModules = $_SESSION['modules'] ?? [];
 				<!-- CD4 START-->
 				<?php if (
 					isset(SYSTEM_CONFIG['modules']['cd4']) &&
-					SYSTEM_CONFIG['modules']['cd4'] === true && array_intersect($_SESSION['modules'], array('cd4'))
+					SYSTEM_CONFIG['modules']['cd4'] === true && array_intersect($_SESSION['modules'], ['cd4'])
 				) { ?>
 
 					<div class="tab-pane fade in" id="cd4Dashboard">
@@ -429,7 +429,7 @@ $userModules = $_SESSION['modules'] ?? [];
 				<!-- OTHER LAB TESTS START-->
 				<?php if (
 					isset(SYSTEM_CONFIG['modules']['generic-tests']) &&
-					SYSTEM_CONFIG['modules']['generic-tests'] === true && array_intersect($_SESSION['modules'], array('generic-tests'))
+					SYSTEM_CONFIG['modules']['generic-tests'] === true && array_intersect($_SESSION['modules'], ['generic-tests'])
 				) { ?>
 
 					<div class="tab-pane fade in" id="genericTestsDashboard">

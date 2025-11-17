@@ -1,6 +1,5 @@
 <?php
 
-use voku\helper\AntiXSS;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MemoUtility;
@@ -10,6 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use Laminas\Diactoros\UploadedFile;
 use App\Utilities\FileCacheUtility;
+use App\Utilities\InputSanitizer;
 use App\Registries\ContainerRegistry;
 use function iter\count as iterCount;
 use function iter\toArray as iterToArray;
@@ -23,7 +23,7 @@ function _translate(?string $text, bool|string $escapeTextOrContext = false): st
     if (session_status() !== PHP_SESSION_NONE) {
         $sessionLocale = $_SESSION['APP_LOCALE'] ?? '';
     }
-    if (empty($text) || !is_string($text) || $sessionLocale === 'en_US') {
+    if ($text === null || $text === '' || $text === '0' || !is_string($text) || $sessionLocale === 'en_US') {
         return $text ?? '';
     }
 
@@ -53,7 +53,7 @@ function _translate(?string $text, bool|string $escapeTextOrContext = false): st
 }
 
 
-function _isAllowed($currentRequest, $privileges = null)
+function _isAllowed($currentRequest, $privileges = null): bool
 {
     /** @var UsersService  $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
@@ -69,8 +69,6 @@ function _isAllowed($currentRequest, $privileges = null)
  */
 function _sanitizeInput(mixed $input, bool $nullifyEmptyStrings = false): mixed
 {
-    $antiXss = new AntiXSS();
-
     if (is_array($input)) {
         foreach ($input as $key => $value) {
             $input[$key] = _sanitizeInput($value, $nullifyEmptyStrings);
@@ -90,8 +88,8 @@ function _sanitizeInput(mixed $input, bool $nullifyEmptyStrings = false): mixed
         // FULL Unicode and invisible junk cleaning
         $input = MiscUtility::cleanString($input);
 
-        // XSS cleaning
-        $input = $antiXss->xss_clean($input);
+        // XSS cleaning via HTML Purifier
+        $input = InputSanitizer::clean($input);
 
         // Convert empty strings to null if $nullifyEmptyStrings is true
         if ($nullifyEmptyStrings && $input === '') {
@@ -155,11 +153,11 @@ function _sanitizeFiles($files, array $allowedTypes = [], bool $sanitizeFileName
                         round($maxSize / 1048576, 2) . ' MB');
                 }
 
-                $fileExtension = strtolower(pathinfo($file->getClientFilename(), PATHINFO_EXTENSION));
+                $fileExtension = strtolower(pathinfo((string) $file->getClientFilename(), PATHINFO_EXTENSION));
                 $fileMimeType = $file->getClientMediaType();
 
                 if (
-                    !empty($allowedTypes) &&
+                    $allowedTypes !== [] &&
                     (!in_array($fileExtension, $allowedTypes) ||
                         !in_array($fileMimeType, $allowedMimeTypes))
                 ) {
@@ -172,7 +170,7 @@ function _sanitizeFiles($files, array $allowedTypes = [], bool $sanitizeFileName
                     $tempFile = $file->getStream()->getMetadata('uri');
                     if ($tempFile && file_exists($tempFile)) {
                         $actualMimeType = mime_content_type($tempFile);
-                        if (!empty($allowedMimeTypes) && !in_array($actualMimeType, $allowedMimeTypes)) {
+                        if ($allowedMimeTypes !== [] && !in_array($actualMimeType, $allowedMimeTypes)) {
                             throw new SystemException('File content type does not match the allowed types');
                         }
                     }
@@ -180,7 +178,7 @@ function _sanitizeFiles($files, array $allowedTypes = [], bool $sanitizeFileName
 
                 if ($sanitizeFileName) {
                     // Option 1: Preserve original filename with sanitization
-                    $sanitizedFilename = $slugger->slug(pathinfo($file->getClientFilename(), PATHINFO_FILENAME))->lower() . '.' . pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
+                    $sanitizedFilename = $slugger->slug(pathinfo((string) $file->getClientFilename(), PATHINFO_FILENAME))->lower() . '.' . pathinfo((string) $file->getClientFilename(), PATHINFO_EXTENSION);
                     if (strlen($sanitizedFilename) > 0 && $sanitizedFilename[0] === '.') {
                         $sanitizedFilename = '_' . ltrim($sanitizedFilename, '.');
                     }
@@ -297,7 +295,7 @@ function _serveSecureFile(
     header('Content-Transfer-Encoding: binary');
 
     // Clear output buffer before sending the file
-    if (ob_get_level()) {
+    if (ob_get_level() !== 0) {
         ob_end_clean();
     }
 
@@ -417,7 +415,7 @@ function _capitalizeWords(string $string): string
  */
 function _capitalizeFirstLetter(string $string): string
 {
-    if (empty($string)) {
+    if ($string === '' || $string === '0') {
         return $string;
     }
 
@@ -456,7 +454,7 @@ function _toLowerCase(?string $string): ?string
  * @param string $key The key to retrieve from the array.
  * @return mixed Returns the value associated with the key, or null if not found or not an iterator.
  */
-function _getIteratorKey($iterator, $key)
+function _getIteratorKey(mixed $iterator, $key)
 {
     if ($iterator instanceof Iterator) {
         $array = iterToArray($iterator);
@@ -471,7 +469,7 @@ function _getIteratorKey($iterator, $key)
  * @param mixed $iterator The potential iterator or Traversable object.
  * @return int Returns the count of elements. Returns 0 if the input is not Traversable.
  */
-function _getIteratorCount($iterator): int
+function _getIteratorCount(mixed $iterator): int
 {
     if ($iterator instanceof Traversable) {
         return iterCount($iterator);
@@ -479,9 +477,9 @@ function _getIteratorCount($iterator): int
     return 0;
 }
 
-function _sanitizeOutput($string)
+function _sanitizeOutput($string): string
 {
-    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars((string) $string, ENT_QUOTES, 'UTF-8');
 }
 
 function _getFromFileCache(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600)
@@ -492,7 +490,7 @@ function _getFromFileCache(string $key, callable $computeValueCallback, ?array $
 }
 
 
-function _invalidateFileCacheByTags($tags)
+function _invalidateFileCacheByTags($tags): void
 {
     /** @var FileCacheUtility $fileCache */
     $fileCache = ContainerRegistry::get(FileCacheUtility::class);
@@ -500,7 +498,7 @@ function _invalidateFileCacheByTags($tags)
     $fileCache->invalidateTags($tags);
 }
 
-function _logdump($data, $useVardump = true)
+function _logdump($data, $useVardump = true): void
 {
     MiscUtility::dumpToErrorLog($data, $useVardump);
 }

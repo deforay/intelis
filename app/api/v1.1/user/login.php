@@ -1,5 +1,6 @@
 <?php
 
+use Slim\Psr7\Request;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
@@ -11,7 +12,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
-/** @var Slim\Psr7\Request $request */
+/** @var Request $request */
 $request = AppRegistry::get('request');
 
 /** @var DatabaseService $db */

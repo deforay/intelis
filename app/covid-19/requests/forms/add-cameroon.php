@@ -334,12 +334,16 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                     <tr>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" value="<?php if (isset($_SESSION['covid19Data']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_collection_date'], true); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);" />
+                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" value="<?php if (isset($_SESSION['covid19Data']['sample_collection_date'])) {
+                                                                                                                                                                                                                            echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_collection_date'], true);
+                                                                                                                                                                                                                        } ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);" />
                                             <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Dispatched On"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="<?= _translate('Sample Dispatched On'); ?>" value="<?php if (isset($_SESSION['covid19Data']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_collection_date'], true); ?>" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="<?= _translate('Sample Dispatched On'); ?>" value="<?php if (isset($_SESSION['covid19Data']['sample_collection_date'])) {
+                                                                                                                                                                                                                                    echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_collection_date'], true);
+                                                                                                                                                                                                                                } ?>" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -364,7 +368,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                         <tr>
                                             <th scope="row"><label for=""><?= _translate("Sample Received Date"); ?> </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate('Please enter sample receipt date'); ?>" value="<?php if (isset($_SESSION['covid19Data']['sample_received_at_lab_datetime'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_received_at_lab_datetime'], true); ?>" style="width:100%;" />
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate('Please enter sample receipt date'); ?>" value="<?php if (isset($_SESSION['covid19Data']['sample_received_at_lab_datetime'])) {
+                                                                                                                                                                                                                                                                            echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_received_at_lab_datetime'], true);
+                                                                                                                                                                                                                                                                        } ?>" style="width:100%;" />
                                             </td>
                                         </tr>
                                     <?php } ?>
@@ -653,12 +659,10 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                         <select name="state" id="state" class="form-control isRequired" title="<?= _translate('Please choose province/state'); ?>">
                                             <option value=""> <?= _translate("-- Select --"); ?> </option>
                                             <?php
-                                            foreach ($pResult as $province) {
-                                            ?>
+                                            foreach ($pResult as $province) { ?>
                                                 <option value="<?php echo $province['geo_name']; ?>"><?php echo $province['geo_name']; ?></option>
                                             <?php
-                                            }
-                                            ?>
+                                            } ?>
                                             <option value="other"><?= _translate('Other'); ?></option>
                                         </select>
                                         <input type="text" class="form-control" name="provinceNew" id="provinceNew" placeholder="<?= _translate('Enter Province/State'); ?>" title="<?= _translate('Please enter province/state'); ?>" style="margin-top:4px;display:none;" />

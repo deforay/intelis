@@ -63,9 +63,9 @@ foreach ($iterator as $entry) {
 $keepByCount = [];
 $keepByDays = [];
 
-if ($keepCount > 0 && !empty($files)) {
+if ($keepCount > 0 && $files !== []) {
     $sortedByMtimeDesc = $files;
-    usort($sortedByMtimeDesc, fn($a, $b) => $b['mtime'] <=> $a['mtime']); // newest first
+    usort($sortedByMtimeDesc, fn($a, $b): int => $b['mtime'] <=> $a['mtime']); // newest first
     $filesToKeep = array_slice($sortedByMtimeDesc, 0, $keepCount);
     foreach ($filesToKeep as $fileInfo) {
         $keepByCount[$fileInfo['path']] = true;
@@ -95,8 +95,8 @@ foreach ($files as $fileInfo) {
     }
 }
 
-if (!empty($directories)) {
-    usort($directories, fn($a, $b) => strlen($b) <=> strlen($a)); // deepest first
+if ($directories !== []) {
+    usort($directories, fn($a, $b): int => strlen((string) $b) <=> strlen((string) $a)); // deepest first
     foreach ($directories as $dirPath) {
         if ($dirPath === $logDir) {
             continue;
@@ -127,7 +127,7 @@ if (!empty($summaryParts)) {
 
 echo $message . PHP_EOL;
 
-if (!empty($errors)) {
+if ($errors !== []) {
     fwrite(STDERR, "[clear-logs] Failed to remove the following paths:" . PHP_EOL);
     foreach ($errors as $errorPath) {
         fwrite(STDERR, "  - {$errorPath}" . PHP_EOL);

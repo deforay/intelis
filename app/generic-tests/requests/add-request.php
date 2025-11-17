@@ -77,7 +77,7 @@ $sResult = $general->fetchDataFromTable('r_generic_sample_types', $condition1);
 $testReason = $general->fetchDataFromTable('r_generic_test_reasons');
 $pdResult = $general->fetchDataFromTable('geographical_divisions');
 
-$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
+$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", ["unit_id", "unit_name"], true, "unit_status='active'");
 
 $lResult = $facilitiesService->getTestingLabs('generic-tests', true, true);
 
@@ -242,7 +242,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                         <div class="col-md-6">
                                              <label class="col-lg-5" for="sampleReordered"> <?= _translate("Sample Reordered"); ?></label>
                                              <div class="col-lg-7">
-                                                  <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $genericResultInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="<?php echo _translate('Please indicate if this is a reordered sample'); ?>">
+                                                  <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $genericResultInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> title="<?php echo _translate('Please indicate if this is a reordered sample'); ?>">
 
                                              </div>
                                         </div>
@@ -497,7 +497,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                             <select name="reasonForTesting" id="reasonForTesting" class="form-control result-optional" title="<?php echo _translate('Please choose reason for testing'); ?>">
                                                                  <option value=""><?= _translate("-- Select --"); ?></option>
                                                                  <?php foreach ($testReason as $treason) { ?>
-                                                                      <option value="<?php echo $treason['test_reason_id']; ?>"><?php echo (string) $treason['test_reason']; ?></option>
+                                                                      <option value="<?php echo $treason['test_reason_id']; ?>"><?php echo $treason['test_reason']; ?></option>
                                                                  <?php } ?>
                                                             </select>
                                                        </div>
@@ -727,25 +727,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 
      </section>
 </div>
-<!-- BARCODESTUFF START -->
-<?php
-if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
-     if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
-          <script src="/assets/js/DYMO.Label.Framework.js"></script>
-          <script src="/uploads/barcode-formats/dymo-format.js"></script>
-          <script src="/assets/js/dymo-print.js"></script>
-     <?php
-     } else if ($global['bar_code_printing'] == 'zebra-printer') {
-     ?>
-          <script src="/assets/js/zebra-browserprint.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-browserprint.js") ?>"></script>
-          <script src="/uploads/barcode-formats/zebra-format.js?v=<?= filemtime(WEB_ROOT . "/uploads/barcode-formats/zebra-format.js") ?>"></script>
-          <script src="/assets/js/zebra-print.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-print.js") ?>"></script>
-<?php
-     }
-}
-?>
-<!-- BARCODESTUFF END -->
+<?= CommonService::barcodeScripts(); ?>
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
 
 <script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
@@ -829,9 +811,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-               $sampleCode = htmlspecialchars($_GET['s']);
-               $facilityCode = htmlspecialchars($_GET['f']);
-               $patientID = htmlspecialchars($_GET['p']);
+               $sampleCode = htmlspecialchars((string) $_GET['s']);
+               $facilityCode = htmlspecialchars((string) $_GET['f']);
+               $patientID = htmlspecialchars((string) $_GET['p']);
                echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
           }
           ?>

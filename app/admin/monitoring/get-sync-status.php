@@ -88,7 +88,7 @@ if (empty($resultSet)) {
 
         // Calculate days since last sync for better user understanding
         $daysSinceSync = null;
-        if (!empty($latestSync)) {
+        if ($latestSync !== 0) {
             $latest = Carbon::createFromTimestamp($latestSync);
             $now = Carbon::now();
             $daysSinceSync = $latest->diffInDays($now, false); // false = return negative if future
@@ -105,14 +105,14 @@ if (empty($resultSet)) {
 ?>
         <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode((string) $aRow['facility_id']); ?>">
             <td>
-                <?= htmlspecialchars($aRow['facility_name']); ?>
+                <?= htmlspecialchars((string) $aRow['facility_name']); ?>
                 <br><small class="text-muted">
                     <span class="sync-indicator <?= $color ?>-indicator"></span>
                     <?= $daysSinceText ?>
                 </small>
             </td>
             <td class="text-center">
-                <?= $latestSync ? DateUtility::humanReadableDateFormat(date('Y-m-d H:i:s', $latestSync), true) : '-'; ?>
+                <?= $latestSync !== 0 ? DateUtility::humanReadableDateFormat(date('Y-m-d H:i:s', $latestSync), true) : '-'; ?>
             </td>
             <td class="text-center">
                 <?= DateUtility::humanReadableDateFormat($aRow['lastResultsSync'] ?? '', true) ?: '-'; ?>

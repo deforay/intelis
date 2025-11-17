@@ -32,9 +32,9 @@ foreach ($geResult as $row) {
 }
 
 
-$selectedSamplesArray = !empty($_POST['selectedSamples']) ? json_decode((string) $_POST['selectedSamples'], true) : [];
+$selectedSamplesArray = empty($_POST['selectedSamples']) ? [] : json_decode((string) $_POST['selectedSamples'], true);
 
-if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty($selectedSamplesArray)) {
+if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empty($selectedSamplesArray)) {
    //Pdf code start
 
 ?>
@@ -63,7 +63,8 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
                         <tbody>
                            <?php
                            $resultOlySamples = [];
-                           for ($s = 0; $s < count($selectedSamplesArray); $s++) {
+$counter = count($selectedSamplesArray);
+                           for ($s = 0; $s < $counter; $s++) {
                               $sampleQuery = "SELECT vl_sample_id,sample_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
                               $sampleResult = $db->rawQuery($sampleQuery);
                               if (isset($sampleResult[0]['sample_code'])) {
@@ -96,7 +97,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
                   </div>
                </div>
             </form>
-         <?php } ?>
+<?php } ?>
          </div>
       </div>
    </div>

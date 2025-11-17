@@ -39,7 +39,7 @@ if ($_SESSION['accessType'] == 'collection-site') {
 }
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
-$microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
+$microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
 $typeOfPatient = json_decode((string) $tbInfo['patient_type']);
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);

@@ -590,7 +590,7 @@ $testName = TestsService::getTestTypes();
 
         /** Step form script end */
         <?php
-        if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) != "") {
+        if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) !== "") {
         ?>
           alert("<?php echo $_SESSION['alertMsg']; ?>");
         <?php

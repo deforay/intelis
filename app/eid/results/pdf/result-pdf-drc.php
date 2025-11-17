@@ -29,7 +29,7 @@ $eidResults = $eidService->getEidResults();
 if (!empty($result)) {
 
     $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%eid%' AND signatory_status like 'active' ORDER BY display_order ASC";
-    $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
+    $signResults = $db->rawQuery($signQuery, [$result['lab_id']]);
 
     $_SESSION['aliasPage'] = $page;
     if (!isset($result['labName'])) {
@@ -37,8 +37,10 @@ if (!empty($result)) {
     }
     $draftTextShow = false;
     //Set watermark text
-    for ($m = 0; $m < count($mFieldArray); $m++) {
-        if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+    $counter = count($mFieldArray);
+    //Set watermark text
+    for ($m = 0; $m < $counter; $m++) {
+        if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) === '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
             $draftTextShow = true;
             break;
         }
@@ -50,11 +52,7 @@ if (!empty($result)) {
     } else {
         $logoPrintInPdf = $arr['logo'];
     }
-    if (isset($result['headerText']) && $result['headerText'] != '') {
-        $headerText = $result['headerText'];
-    } else {
-        $headerText = $arr['header'];
-    }
+    $headerText = isset($result['headerText']) && $result['headerText'] != '' ? $result['headerText'] : $arr['header'];
 
     $pdf->setHeading($logoPrintInPdf, $headerText, $result['labName'], '', $result['lab_id'], $arr['vl_form']);
     // set document information
@@ -68,8 +66,8 @@ if (!empty($result)) {
     $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
     // set header and footer fonts
-    $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-    $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+    $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+    $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
 
     // set default monospaced font
     $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -101,26 +99,26 @@ if (!empty($result)) {
     $pdf->SetFont('helvetica', '', 18);
     $pdf->AddPage();
 
-    if (!isset($result['facility_code']) || trim((string) $result['facility_code']) == '') {
+    if (!isset($result['facility_code']) || trim((string) $result['facility_code']) === '') {
         $result['facility_code'] = '';
     }
-    if (!isset($result['facility_state']) || trim((string) $result['facility_state']) == '') {
+    if (!isset($result['facility_state']) || trim((string) $result['facility_state']) === '') {
         $result['facility_state'] = '';
     }
-    if (!isset($result['facility_district']) || trim((string) $result['facility_district']) == '') {
+    if (!isset($result['facility_district']) || trim((string) $result['facility_district']) === '') {
         $result['facility_district'] = '';
     }
-    if (!isset($result['facility_name']) || trim((string) $result['facility_name']) == '') {
+    if (!isset($result['facility_name']) || trim((string) $result['facility_name']) === '') {
         $result['facility_name'] = '';
     }
-    if (!isset($result['labName']) || trim((string) $result['labName']) == '') {
+    if (!isset($result['labName']) || trim((string) $result['labName']) === '') {
         $result['labName'] = '';
     }
     //Set Age
     $age = 'Unknown';
-    if (isset($result['child_age']) && trim((string) $result['child_age']) != '' && trim((string) $result['child_age']) > 0) {
+    if (isset($result['child_age']) && trim((string) $result['child_age']) !== '' && trim((string) $result['child_age']) > 0) {
         $age = $result['child_age'];
-    } elseif (isset($result['child_dob']) && trim((string) $result['child_dob']) != '' && $result['child_dob'] != '0000-00-00') {
+    } elseif (isset($result['child_dob']) && trim((string) $result['child_dob']) !== '' && $result['child_dob'] != '0000-00-00') {
         $todayDate = strtotime(date('Y-m-d'));
         $dob = strtotime((string) $result['child_dob']);
         $difference = $todayDate - $dob;
@@ -134,7 +132,7 @@ if (!empty($result)) {
     $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true);
     $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '', true);
 
-    if (!isset($result['child_gender']) || trim((string) $result['child_gender']) == '') {
+    if (!isset($result['child_gender']) || trim((string) $result['child_gender']) === '') {
         $result['child_gender'] = _translate('Unreported');
     }
 
@@ -165,7 +163,7 @@ if (!empty($result)) {
     $tndMessage = '';
     $smileyShow = false;
     $messageTextSize = '12px';
-    if ($result['result'] != null && trim((string) $result['result']) != '') {
+    if ($result['result'] != null && trim((string) $result['result']) !== '') {
         $resultType = is_numeric($result['result']);
         $vlResult = $eidResults[$result['result']];
         if ($vlResult == 'negative') {
@@ -174,13 +172,13 @@ if (!empty($result)) {
             }
             $showMessage = "";
             $tndMessage = '';
-        } else if ($vlResult == 'positive') {
+        } elseif ($vlResult == 'positive') {
             if (isset($smileyShow) && $smileyShow != '') {
                 $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
             }
             $showMessage = '';
             $messageTextSize = '15px';
-        } else if ($vlResult == 'indeterminate') {
+        } elseif ($vlResult == 'indeterminate') {
             //if (isset($smileyShow) && $smileyShow != '') {
             //$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="frown_face"/>';
             //}
@@ -324,7 +322,7 @@ if (!empty($result)) {
         $html .= '<tr>';
         $html .= '<td colspan="3" style="line-height:10px;"></td>';
         $html .= '</tr>';
-        if (trim((string) $result['lab_tech_comments']) != '') {
+        if (trim((string) $result['lab_tech_comments']) !== '') {
             $html .= '<tr>';
             $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Commentaires du laboratoire&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . ($result['lab_tech_comments']) . '</span></td>';
             $html .= '</tr>';
@@ -400,24 +398,19 @@ if (!empty($result)) {
         $pages[] = $filename;
         $page++;
     }
-    if (isset($_POST['source']) && trim((string) $_POST['source']) == 'print') {
+    if (isset($_POST['source']) && trim((string) $_POST['source']) === 'print') {
         //Add event log
         $eventType = 'print-result';
         $action = $_SESSION['userName'] . ' print the EID test result with patient code ' . $result['child_id'];
         $resource = 'print-test-result';
-        $data = array(
-            'event_type' => $eventType,
-            'action' => $action,
-            'resource' => $resource,
-            'date_time' => DateUtility::getCurrentDateTime()
-        );
+        $data = ['event_type' => $eventType, 'action' => $action, 'resource' => $resource, 'date_time' => DateUtility::getCurrentDateTime()];
         $db->insert($tableName1, $data);
         //Update print datetime in VL tbl.
         $vlQuery = "SELECT result_printed_datetime FROM form_eid as vl WHERE vl.eid_id ='" . $result['eid_id'] . "'";
         $vlResult = $db->query($vlQuery);
-        if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+        if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) === '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
             $db->where('eid_id', $result['eid_id']);
-            $db->update($tableName2, array('result_printed_datetime' => DateUtility::getCurrentDateTime()));
+            $db->update($tableName2, ['result_printed_datetime' => DateUtility::getCurrentDateTime()]);
         }
     }
 }

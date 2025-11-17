@@ -2,6 +2,7 @@
 
 namespace App\Middlewares;
 
+use Override;
 use Throwable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -11,13 +12,11 @@ use App\ErrorHandlers\ErrorResponseGenerator;
 
 readonly class ErrorHandlerMiddleware implements MiddlewareInterface
 {
-    private ErrorResponseGenerator $errorResponseGenerator;
-
-    public function __construct(ErrorResponseGenerator $errorResponseGenerator)
+    public function __construct(private ErrorResponseGenerator $errorResponseGenerator)
     {
-        $this->errorResponseGenerator = $errorResponseGenerator;
     }
 
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {

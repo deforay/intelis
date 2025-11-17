@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -9,7 +10,7 @@ use App\Registries\ContainerRegistry;
 $db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -18,7 +19,7 @@ $fieldName = $_POST['fieldName'];
 $value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
-if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
+if ($value !== '' && $value !== '0' && !empty($fieldName) && !empty($tableName)) {
     try {
         $tableCondition = '';
         $remoteSampleCodeCondition = '';
@@ -35,21 +36,17 @@ if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
         $sQuery = "SELECT * FROM $tableName WHERE ($fieldName= ? $tableCondition) $remoteSampleCodeCondition";
         $parameters = [$value];
 
-        if (!empty($tableCondition)) {
+        if ($tableCondition !== '' && $tableCondition !== '0') {
             $parameters[] = $table[1];
         }
 
-        if (!empty($remoteSampleCodeCondition)) {
+        if ($remoteSampleCodeCondition !== '' && $remoteSampleCodeCondition !== '0') {
             $parameters[] = $value;
         }
 
         $result = $db->rawQueryOne($sQuery, $parameters);
 
-        if ($result) {
-            $data = base64_encode((string) $result['eid_id']) . "##" . $result[$fieldName];
-        } else {
-            $data = 0;
-        }
+        $data = $result ? base64_encode((string) $result['eid_id']) . "##" . $result[$fieldName] : 0;
     } catch (Exception $e) {
         LoggerUtility::logError($e->getMessage(), [
             'file' => $e->getFile(),

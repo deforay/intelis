@@ -58,24 +58,25 @@ $tQuery = "SELECT COUNT(tb_id) as total,status_id,status_name
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
 $sWhere = [];
-if (!empty($whereCondition))
+if ($whereCondition !== '' && $whereCondition !== '0') {
     $sWhere[] = $whereCondition;
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+}
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
     $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 }
-if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
+if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
     $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
     $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $tQuery .= " where " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
@@ -102,34 +103,35 @@ $vlSuppressionQuery = "SELECT   COUNT(tb_id) as total,
 
 // $sWhere = " AND (vl.result!='' and vl.result is not null) ";
 $sWhere = [];
-if (!empty($whereCondition))
+if ($whereCondition !== '' && $whereCondition !== '0') {
     $sWhere[] = $whereCondition;
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+}
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
     $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 }
-if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
+if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
     $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
     $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 }
-if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
+if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
 }
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
 //get LAB TAT
 //get LAB TAT
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
     $tatStartDate = $testedStartDate;
     $tatEndDate = $testedEndDate;
 } else {
@@ -160,11 +162,11 @@ $tatSampleQuery = "SELECT
     vl.result != '' AND
     DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate'  ";
 $sWhere = [];
-if (!empty($whereCondition)) {
+if ($whereCondition !== '' && $whereCondition !== '0') {
     $sWhere[] = $whereCondition;
 }
 
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
     $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate' ";
 } else {
     $date = new DateTime();
@@ -178,7 +180,7 @@ if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $tatSampleQuery .= " AND " . implode(" AND ", $sWhere);
 }
 $tatSampleQuery .= " GROUP BY monthDate ORDER BY sample_tested_datetime ";
@@ -211,27 +213,28 @@ $testReasonQuery = "SELECT count(vl.sample_code) AS total, tr.test_reason_name
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 $sWhere[] = ' vl.reason_for_tb_test IS NOT NULL ';
-if (!empty($whereCondition))
+if ($whereCondition !== '' && $whereCondition !== '0') {
     $sWhere[] = $whereCondition;
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+}
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
     $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 }
-if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
+if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
     $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
     $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $testReasonQuery .= ' where ' . implode(" AND ", $sWhere);
 }
-$testReasonQuery = $testReasonQuery . " GROUP BY tr.test_reason_name";
+$testReasonQuery .= " GROUP BY tr.test_reason_name";
 $testReasonResult = $db->rawQuery($testReasonQuery);
 // echo "<pre>";print_r($testReasonResult);die;
 ?>

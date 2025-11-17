@@ -1,7 +1,7 @@
 <?php
 
 // this file is included in /hepatitis/interop/dhis2/hepatitis-receive.php
-
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Interop\Dhis2;
 use JsonMachine\Items;
 use App\Utilities\DateUtility;
@@ -75,7 +75,7 @@ try {
     $jsonResponse = $dhis2->get($url, $data);
     $jsonResponse = (string) $jsonResponse->getBody();
 
-    if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) {
+    if ($jsonResponse === '' || $jsonResponse === '[]' || ($jsonResponse === '' || $jsonResponse === '0')) {
         die('No Response from API');
     }
 
@@ -215,7 +215,7 @@ try {
             $formData = array_merge($singleEventData, $attributesAndScreeningData);
 
             // if DHIS2 Case ID is not set then skip
-            if (!isset($formData['external_sample_code']) || empty(trim((string) $formData['external_sample_code']))) {
+            if (!isset($formData['external_sample_code']) || in_array(trim((string) $formData['external_sample_code']), ['', '0'], true)) {
                 continue;
             }
 
@@ -245,11 +245,7 @@ try {
                 $db->where("facility_name like '" . $formData['lab_id'] . "%'");
                 $db->orWhere("other_id", $formData['lab_id']);
                 $lab = $db->getOne("facility_details");
-                if (!empty($lab)) {
-                    $formData['lab_id'] = $lab['facility_id'];
-                } else {
-                    $formData['lab_id'] = null;
-                }
+                $formData['lab_id'] = empty($lab) ? null : $lab['facility_id'];
             } else {
                 $processingErrors[] = 'Lab ID not found: ' . $uniqueID . ' ==== Hep Sample ID : ' . $formData['external_sample_code'];
                 continue;
@@ -270,12 +266,12 @@ try {
             $formData['province_id'] = $prov['geo_id'] ?? null;
 
             $formData['specimen_type'] = 1; // Always Whole Blood
-            $formData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC; // Registered on STS but not in Testing Lab
+            $formData['result_status'] = RECEIVED_AT_CLINIC; // Registered on STS but not in Testing Lab
 
             $formData['social_category'] = $dhis2SocialCategoryOptions[$formData['social_category']] ?? null;
             $formData['patient_gender'] = $dhis2GenderOptions[$formData['patient_gender']] ?? null;
 
-            $formData['reason_for_hepatitis_test'] = $formData['reason_for_hepatitis_test'] ?? 1;
+            $formData['reason_for_hepatitis_test'] ??= 1;
 
             //Initial HBV OR HCV VL
             if ($formData['reason_for_vl_test'] == 'I_VL001') {
@@ -347,7 +343,7 @@ try {
     $db->commitTransaction();
 
     // For inserted samples, generate sample code
-    if (!empty($uniqueIdsForSampleCodeGeneration)) {
+    if ($uniqueIdsForSampleCodeGeneration !== []) {
         $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
     }
 } catch (Throwable $exception) {

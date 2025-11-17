@@ -1,7 +1,9 @@
 <?php
 
 // this file is included in /import-result/processImportedResults.php
-
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\ON_HOLD;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -11,7 +13,7 @@ use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -41,7 +43,8 @@ try {
     $status = explode(",", (string) $_POST['status']);
     $rejectedReasonId = explode(",", (string) $_POST['rejectReasonId']);
     if ($_POST['value'] != '' && !empty($_POST['value'])) {
-        for ($i = 0; $i < count($id); $i++) {
+        $counter = count($id);
+        for ($i = 0; $i < $counter; $i++) {
             $sQuery = "SELECT * FROM temp_sample_import
                         WHERE imported_by =? AND temp_sample_id=?";
             $rResult = $db->rawQueryOne($sQuery, [$importedBy, $id[$i]]);
@@ -56,7 +59,7 @@ try {
                 $comments = $_POST['comments'];
             }
 
-            if (strtolower($rResult['sample_type']) != 's') {
+            if (strtolower((string) $rResult['sample_type']) !== 's') {
                 $data = [
                     'control_code' => $rResult['sample_code'],
                     'lab_id' => $rResult['lab_id'],
@@ -75,7 +78,7 @@ try {
                     'import_machine_file_name' => $rResult['import_machine_file_name'],
                     'imported_date_time' => $rResult['result_imported_datetime'],
                 ];
-                if ($status[$i] == SAMPLE_STATUS\REJECTED) {
+                if ($status[$i] == REJECTED) {
                     $data['is_sample_rejected'] = 'yes';
                     $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                     $data['hbv_vl_count'] = null;
@@ -103,7 +106,7 @@ try {
                     'manual_result_entry' => 'no',
                     'result_printed_datetime' => null
                 ];
-                if ($status[$i] == SAMPLE_STATUS\ON_HOLD) {
+                if ($status[$i] == ON_HOLD) {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];
@@ -131,10 +134,10 @@ try {
 
                     $testType = strtolower((string) $hepResult['hepatitis_test_type']);
                     $resultField = $otherField = null;
-                    if ($testType == 'hbv') {
+                    if ($testType === 'hbv') {
                         $resultField = "hbv_vl_count";
                         $otherField = "hcv_vl_count";
-                    } elseif ($testType == 'hcv') {
+                    } elseif ($testType === 'hcv') {
                         $resultField = "hcv_vl_count";
                         $otherField = "hbv_vl_count";
                     } else {
@@ -142,7 +145,7 @@ try {
                         $otherField = "hbv_vl_count";
                     }
 
-                    if ($status[$i] == SAMPLE_STATUS\REJECTED) {
+                    if ($status[$i] == REJECTED) {
                         $data['is_sample_rejected'] = 'yes';
                         $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                         $data[$resultField] = null;
@@ -154,7 +157,7 @@ try {
                         $data[$resultField] = $data[$otherField] = null;
                         $data[$resultField] = $rResult['result'];
 
-                        if (empty($testType)) {
+                        if ($testType === '' || $testType === '0') {
                             $data[$otherField] = $data[$resultField];
                         }
                     }
@@ -183,16 +186,10 @@ try {
                 }
             }
             if (isset($hepatitisId) && $hepatitisId != "") {
-                $db->insert('log_result_updates', array(
-                    "user_id" => $_SESSION['userId'],
-                    "vl_sample_id" => $hepatitisId,
-                    "test_type" => "vl",
-                    "result_method" => "import",
-                    "updated_datetime" => DateUtility::getCurrentDateTime()
-                ));
+                $db->insert('log_result_updates', ["user_id" => $_SESSION['userId'], "vl_sample_id" => $hepatitisId, "test_type" => "vl", "result_method" => "import", "updated_datetime" => DateUtility::getCurrentDateTime()]);
             }
             $db->where('temp_sample_id', $id[$i]);
-            $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));
+            $result = $db->update('temp_sample_import', ['temp_sample_status' => 1]);
         }
         if (MiscUtility::fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'])) {
             copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name']);
@@ -205,7 +202,8 @@ try {
                     WHERE imported_by =? AND tsr.result_status='7'";
     $accResult = $db->rawQuery($accQuery, [$importedBy]);
     if ($accResult) {
-        for ($i = 0; $i < count($accResult); $i++) {
+        $counter = count($accResult);
+        for ($i = 0; $i < $counter; $i++) {
 
 
             $query = "SELECT hepatitis_id,
@@ -220,10 +218,10 @@ try {
 
             $testType = strtolower((string) $hepResult['hepatitis_test_type']);
             $resultField = $otherField = null;
-            if ($testType == 'hbv') {
+            if ($testType === 'hbv') {
                 $resultField = "hbv_vl_count";
                 $otherField = "hcv_vl_count";
-            } elseif ($testType == 'hcv') {
+            } elseif ($testType === 'hcv') {
                 $resultField = "hcv_vl_count";
                 $otherField = "hbv_vl_count";
             } else {
@@ -252,7 +250,7 @@ try {
             $data['hbv_vl_count'] = null;
             $data['hcv_vl_count'] = null;
 
-            if ($accResult[$i]['result_status'] == SAMPLE_STATUS\REJECTED) {
+            if ($accResult[$i]['result_status'] == REJECTED) {
                 $data['is_sample_rejected'] = 'yes';
                 $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
             } else {
@@ -275,7 +273,7 @@ try {
                 copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']);
             }
             $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
-            $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));
+            $result = $db->update('temp_sample_import', ['temp_sample_status' => 1]);
         }
     }
     $sCode = implode(', ', $printSampleCode);

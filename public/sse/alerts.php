@@ -58,7 +58,7 @@ try {
     if ($lastId > $maxId) {
         $lastId = (int)$maxId;
     }
-} catch (\Throwable $e) {
+} catch (Throwable) {
     // store should be available; if this happens, just end quietly
     exit(0);
 }
@@ -85,7 +85,7 @@ $bytesSent  = 0;
 ignore_user_abort(false);
 
 while (true) {
-    if (connection_aborted()) {
+    if (connection_aborted() !== 0) {
         break;
     }
 
@@ -96,7 +96,7 @@ while (true) {
         if (count($rows) > 200) {
             $rows = array_slice($rows, 0, 200);
         }
-        if (!empty($rows)) {
+        if ($rows !== []) {
             $gotAny = true;
         }
 
@@ -122,7 +122,7 @@ while (true) {
                 break;
             }
         }
-    } catch (\Throwable $e) {
+    } catch (Throwable) {
         // If store fails mid-connection, just end quietly (client will reconnect)
         exit(0);
     }

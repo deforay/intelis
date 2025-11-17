@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -10,7 +11,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -53,15 +54,15 @@ try {
                          a.requested_on
                     FROM track_api_requests as a";
 
-     if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
+     if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
           [$startDate, $endDate] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
           $sWhere[] = " DATE(a.requested_on) BETWEEN '$startDate' AND '$endDate' ";
      }
 
-     if (isset($_POST['syncedType']) && trim((string) $_POST['syncedType']) != '') {
+     if (isset($_POST['syncedType']) && trim((string) $_POST['syncedType']) !== '') {
           $sWhere[] = ' a.request_type like "' . $_POST['syncedType'] . '"';
      }
-     if (isset($_POST['testType']) && trim((string) $_POST['testType']) != '') {
+     if (isset($_POST['testType']) && trim((string) $_POST['testType']) !== '') {
           $sWhere[] = ' a.test_type like "' . $_POST['testType'] . '"';
      }
 
@@ -71,7 +72,7 @@ try {
      }
 
      if (!empty($sOrder) && $sOrder !== '') {
-          $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+          $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
           $sQuery = "$sQuery ORDER BY $sOrder";
      }
 

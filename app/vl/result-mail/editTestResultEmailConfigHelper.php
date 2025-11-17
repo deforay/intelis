@@ -11,15 +11,11 @@ use App\Services\SecurityService;
 $tableName = "other_config";
 try {
     foreach ($_POST as $fieldName => $fieldValue) {
-        if (trim($fieldName) != '') {
+        if (trim($fieldName) !== '') {
             if ($fieldName == 'rs_field') {
-                if (count($fieldValue) > 0) {
-                    $fieldValue = implode(',', $fieldValue);
-                } else {
-                    $fieldValue = '';
-                }
+                $fieldValue = count($fieldValue) > 0 ? implode(',', $fieldValue) : '';
             }
-            $data = array('value' => $fieldValue);
+            $data = ['value' => $fieldValue];
             $db->where('name', $fieldName);
             $db->update($tableName, $data);
         }

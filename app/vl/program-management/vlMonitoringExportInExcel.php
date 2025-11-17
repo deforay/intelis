@@ -20,7 +20,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMonitoringResultQuery']) != "") {
+if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMonitoringResultQuery']) !== "") {
     $rResult = $db->rawQuery($_SESSION['vlMonitoringResultQuery']);
 
     //get current quarter total samples tested
@@ -68,19 +68,19 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
 
     $sWhere = [];
     if (!empty($_POST['sampleCollectionDate'])) {
-        if (trim((string) $start_date) == trim((string) $end_date)) {
+        if (trim((string) $start_date) === trim((string) $end_date)) {
             $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
             $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
-    if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
     }
-    if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
         $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
-    if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+    if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
         $sWhere[] =  ' f.facility_id = "' . $_POST['facilityName'] . '"';
     }
     $sQuery = $sQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.result!=""';
@@ -99,19 +99,19 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
                                 FROM form_vl as vl
                                 JOIN facility_details as f ON vl.facility_id=f.facility_id";
     if (!empty($_POST['sampleCollectionDate'])) {
-        if (trim((string) $start_date) == trim((string) $end_date)) {
+        if (trim((string) $start_date) === trim((string) $end_date)) {
             $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
             $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
-    if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $sWhere[] = " f.facility_district LIKE '%" . $_POST['district'] . "%' ";
     }
-    if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
         $sWhere[] =  " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
-    if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+    if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
         $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
     }
 
@@ -138,23 +138,23 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
                                                 AND IFNULL(reason_for_vl_testing, 0)  != 9999';
 
             if (!empty($_POST['sampleCollectionDate'])) {
-                if (trim((string) $start_date) == trim((string) $end_date)) {
+                if (trim((string) $start_date) === trim((string) $end_date)) {
                     $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
                 } else {
                     $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
                 }
             }
 
-            if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+            if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
                 $sWhere[] =  "  f.facility_district LIKE '%" . $_POST['district'] . "%' ";
             }
-            if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+            if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
                 $sWhere[] = " f.facility_state LIKE '%" . $_POST['state'] . "%' ";
             }
-            if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+            if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
                 $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
             }
-            $checkEmptyResultSampleQuery = $checkEmptyResultSampleQuery . implode(" AND ", $sWhere);
+            $checkEmptyResultSampleQuery .= implode(" AND ", $sWhere);
             $checkEmptySampleResult[$sample['sample_name']] = $db->rawQuery($checkEmptyResultSampleQuery);
         }
     }
@@ -189,27 +189,27 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
                                 AND MONTH(sample_collection_date)='$mnth'
                                 AND YEAR(sample_collection_date)='$year'";
         if (!empty($_POST['sampleCollectionDate'])) {
-            if (trim((string) $start_date) == trim((string) $end_date)) {
+            if (trim((string) $start_date) === trim((string) $end_date)) {
                 $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
             } else {
                 $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
             }
         }
-        if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-            if (trim((string) $sTestDate) == trim((string) $eTestDate)) {
+        if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
+            if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
                 $sWhere[] =  '  DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
             } else {
                 $sWhere[] =  '  DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
             }
         }
-        if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+        if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
             $sWhere[] = "  f.facility_district LIKE '%" . $_POST['district'] . "%' ";
         }
-        if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+        if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
             $sWhere[] =  "  f.facility_state LIKE '%" . $_POST['state'] . "%' ";
         }
 
-        if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+        if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
             $sWhere[] =  '  f.facility_id = "' . $_POST['facilityName'] . '"';
         }
         $checkResultAvgQuery = $checkResultAvgQuery . ' ' . implode(" AND ", $sWhere) . ' AND vl.result=""';
@@ -217,7 +217,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
         if (count($checkResultAvgResult) > 0) {
             $total = 0;
             foreach ($checkResultAvgResult as $data) {
-                $total = $total + $data['diff'];
+                $total += $data['diff'];
             }
             $avgResult[$j] = round($total / count($checkResultAvgResult));
         }
@@ -227,11 +227,7 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
     }
     //total avg
     $totalAvg = 0;
-    if (count($avgResult) == 0) {
-        $totalAvg = 0;
-    } else {
-        $totalAvg = round(array_sum($avgResult) / count($avgResult));
-    }
+    $totalAvg = count($avgResult) == 0 ? 0 : round(array_sum($avgResult) / count($avgResult));
 
     $startMonth = date("M-Y", strtotime((string) $start_date));
     $endMonth = date("M-Y", strtotime((string) $end_date));
@@ -242,82 +238,27 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
 
     $colNo = 1;
 
-    $headingStyle = array(
-        'font' => array(
-            'bold' => true,
-            'size' => '11',
-        ),
-        'alignment' => array(
-            'horizontal' => Alignment::HORIZONTAL_LEFT,
-        ),
-    );
-    $backgroundStyle = array(
-        'font' => array(
-            'bold' => true,
-            'size' => '13',
-            'color' => array('rgb' => 'FFFFFF'),
-        ),
-        'alignment' => array(
-            'horizontal' => Alignment::HORIZONTAL_CENTER,
-        ),
-        'fill' => array(
-            'fillType' => Fill::FILL_SOLID,
-            'color' => array('rgb' => '5c5c5c'),
-        ),
-    );
-    $questionStyle = array(
-        'font' => array(
-            //'bold' => true,
-            'size' => '11',
-        ),
-        'alignment' => array(
-            //'wrapText' => true
-            //'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-        ),
-        'fill' => array(
-            'fillType' => Fill::FILL_SOLID,
-            'color' => array('rgb' => 'A9A9A9'),
-        ),
-    );
-    $genderquestionStyle = array(
-        'font' => array(
-            //'bold' => true,
-            'size' => '11',
-        ),
-        'alignment' => array(
-            'horizontal' => Alignment::HORIZONTAL_LEFT,
-        ),
-        'fill' => array(
-            'fillType' => Fill::FILL_SOLID,
-            'color' => array('rgb' => 'A9A9A9'),
-        ),
-    );
-    $styleArray = array(
-        'font' => array(
-            //'bold' => true,
-            'size' => '11',
-        ),
-        'alignment' => array(
-            'horizontal' => Alignment::HORIZONTAL_LEFT,
-            'vertical' => Alignment::VERTICAL_CENTER,
-        ),
-        'borders' => array(
-            'outline' => array(
-                'borderStyle' => Border::BORDER_THIN,
-            ),
-        ),
-    );
+    $headingStyle = ['font' => ['bold' => true, 'size' => '11'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT]];
+    $backgroundStyle = ['font' => ['bold' => true, 'size' => '13', 'color' => ['rgb' => 'FFFFFF']], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER], 'fill' => ['fillType' => Fill::FILL_SOLID, 'color' => ['rgb' => '5c5c5c']]];
+    $questionStyle = ['font' => [
+        //'bold' => true,
+        'size' => '11',
+    ], 'alignment' => [], 'fill' => ['fillType' => Fill::FILL_SOLID, 'color' => ['rgb' => 'A9A9A9']]];
+    $genderquestionStyle = ['font' => [
+        //'bold' => true,
+        'size' => '11',
+    ], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT], 'fill' => ['fillType' => Fill::FILL_SOLID, 'color' => ['rgb' => 'A9A9A9']]];
+    $styleArray = ['font' => [
+        //'bold' => true,
+        'size' => '11',
+    ], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['borderStyle' => Border::BORDER_THIN]]];
 
-    $borderStyle = array(
+    $borderStyle = [
         //'alignment' => array(
         //    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
         //),
-        'borders' => array(
-            'outline' => array(
-                'borderStyle' => Border::BORDER_THICK,
-            ),
-        ),
-    );
+        'borders' => ['outline' => ['borderStyle' => Border::BORDER_THICK]],
+    ];
     if ($_POST['fyName'] == '-- Select --') {
         $_POST['fyName'] = '';
     }
@@ -579,20 +520,20 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
     $sheet->setCellValue('B' . $q4, html_entity_decode('If yes, please list:', ENT_QUOTES, 'UTF-8'));
     $sheet->mergeCells('G' . $q4 . ':I' . $q44);
     $sheet->mergeCells('J' . $q4 . ':M' . $q44);
-    $q4 = $q4 + 2;
-    $q44 = $q44 + 2;
+    $q4 += 2;
+    $q44 += 2;
     $sheet->mergeCells('B' . $q4 . ':F' . $q44);
     $sheet->setCellValue('B' . $q4, html_entity_decode('Platform Type:', ENT_QUOTES, 'UTF-8'));
     $sheet->mergeCells('G' . $q4 . ':I' . $q44);
     $sheet->mergeCells('J' . $q4 . ':M' . $q44);
-    $q4 = $q4 + 2;
-    $q44 = $q44 + 2;
+    $q4 += 2;
+    $q44 += 2;
     $sheet->mergeCells('B' . $q4 . ':F' . $q44);
     $sheet->setCellValue('B' . $q4, html_entity_decode('Quantity:', ENT_QUOTES, 'UTF-8'));
     $sheet->mergeCells('G' . $q4 . ':I' . $q44);
     $sheet->mergeCells('J' . $q4 . ':M' . $q44);
-    $q4 = $q4 + 2;
-    $q44 = $q44 + 2;
+    $q4 += 2;
+    $q44 += 2;
     $sheet->mergeCells('B' . $q4 . ':F' . $q44);
     $sheet->setCellValue('B' . $q4, html_entity_decode('Planned location of placement:', ENT_QUOTES, 'UTF-8'));
     $sheet->mergeCells('G' . $q4 . ':I' . $q44);
@@ -608,8 +549,8 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
     $sheet->mergeCells('G' . $q5 . ':I' . $q55);
     $sheet->mergeCells('J' . $q5 . ':M' . $q55);
 
-    $q5 = $q5 + 2;
-    $q55 = $q55 + 2;
+    $q5 += 2;
+    $q55 += 2;
     $sheet->mergeCells('A' . $q5 . ':A' . $q55);
     $sheet->setCellValue('A' . $q5, html_entity_decode('Q5.1', ENT_QUOTES, 'UTF-8'));
     $sheet->mergeCells('B' . $q5 . ':F' . $q55);
@@ -628,8 +569,8 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
     $sheet->mergeCells('J' . $q6 . ':M' . $q66);
     $sheet->setCellValue('J' . $q6, html_entity_decode('Reasons:', ENT_QUOTES, 'UTF-8'));
 
-    $q6 = $q6 + 2;
-    $q66 = $q66 + 2;
+    $q6 += 2;
+    $q66 += 2;
     $sheet->mergeCells('A' . $q6 . ':A' . $q66);
     $sheet->setCellValue('A' . $q6, html_entity_decode('Q6.1', ENT_QUOTES, 'UTF-8'));
     $sheet->mergeCells('B' . $q6 . ':F' . $q66);
@@ -672,20 +613,20 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
                     JOIN facility_details as f ON vl.facility_id=f.facility_id
                     WHERE MONTH(sample_collection_date)='$mnth'
                     AND YEAR(sample_collection_date)='$year'";
-            if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+            if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
                 $sWhere = $sWhere . " AND f.facility_district LIKE '%" . $_POST['district'] . "%' ";
             }
-            if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-                if (trim((string) $sTestDate) == trim((string) $eTestDate)) {
+            if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
+                if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
                     $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
                 } else {
                     $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
                 }
             }
-            if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+            if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
                 $sWhere = $sWhere . " AND f.facility_state LIKE '%" . $_POST['state'] . "%' ";
             }
-            if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+            if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
                 $sWhere = $sWhere . ' AND f.facility_id = "' . $_POST['facilityName'] . '"';
             }
             $invalidResult[$dFormat] = $db->rawQuery($invalidResultQuery);
@@ -717,31 +658,31 @@ if (isset($_SESSION['vlMonitoringResultQuery']) && trim((string) $_SESSION['vlMo
     $sheet->mergeCells('J' . $q8 . ':M' . $q8);
     $sheet->getStyle('G' . $q8 . ':M' . $q8)->applyFromArray($questionStyle);
     $sheet->setCellValue('H' . $q8, html_entity_decode('Days Down', ENT_QUOTES, 'UTF-8'));
-    $q8 = $q8 + 1;
-    $q88 = $q88 + 1;
+    $q8 += 1;
+    $q88 += 1;
     $sheet->mergeCells('H' . $q8 . ':I' . $q8);
     $sheet->mergeCells('J' . $q8 . ':M' . $q8);
-    $q8 = $q8 + 1;
-    $q88 = $q88 + 1;
+    $q8 += 1;
+    $q88 += 1;
     $sheet->mergeCells('H' . $q8 . ':I' . $q8);
     $sheet->mergeCells('J' . $q8 . ':M' . $q8);
-    $q8 = $q8 + 1;
-    $q88 = $q88 + 1;
+    $q8 += 1;
+    $q88 += 1;
     $sheet->mergeCells('H' . $q8 . ':I' . $q8);
     $sheet->mergeCells('J' . $q8 . ':M' . $q8);
-    $q8 = $q8 + 1;
-    $q88 = $q88 + 1;
+    $q8 += 1;
+    $q88 += 1;
     $sheet->mergeCells('H' . $q8 . ':I' . $q8);
     $sheet->mergeCells('J' . $q8 . ':M' . $q8);
-    $q8 = $q8 + 1;
-    $q88 = $q88 + 1;
+    $q8 += 1;
+    $q88 += 1;
     $sheet->mergeCells('H' . $q8 . ':I' . $q8);
     $sheet->mergeCells('J' . $q8 . ':M' . $q8);
 
     $sheet->mergeCells('A' . $mergeQ8 . ':A' . $q8);
     $sheet->mergeCells('B' . $mergeQ8 . ':F' . $q8);
-    $q8 = $q8 + 1;
-    $q88 = $q88 + 1;
+    $q8 += 1;
+    $q88 += 1;
 
     $sheet->mergeCells('A' . $q8 . ':A' . $q88);
     $sheet->setCellValue('A' . $q8, html_entity_decode('Q8.1', ENT_QUOTES, 'UTF-8'));

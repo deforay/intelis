@@ -20,13 +20,9 @@ $tableName = "r_cd4_sample_types";
 $primaryKey = "sample_id";
 
 try {
-	if (isset($_POST['sampleName']) && trim((string) $_POST['sampleName']) != "") {
+	if (isset($_POST['sampleName']) && trim((string) $_POST['sampleName']) !== "") {
 
-		$data = array(
-			'sample_name' => $_POST['sampleName'],
-			'status' => $_POST['sampleStatus'],
-			'updated_datetime' => DateUtility::getCurrentDateTime(),
-		);
+		$data = ['sample_name' => $_POST['sampleName'], 'status' => $_POST['sampleStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
 		if (isset($_POST['sampleId']) && $_POST['sampleId'] != "") {
 			$db->where($primaryKey, base64_decode((string) $_POST['sampleId']));
 			$lastId = $db->update($tableName, $data);

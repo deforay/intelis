@@ -22,11 +22,7 @@ final class SecurityService
             setcookie(
                 session_name(),
                 '',
-                time() - 42000,
-                $params["path"],
-                $params["domain"],
-                $params["secure"],
-                $params["httponly"]
+                ['expires' => time() - 42000, 'path' => $params["path"], 'domain' => $params["domain"], 'secure' => $params["secure"], 'httponly' => $params["httponly"]]
             );
         }
 
@@ -46,7 +42,7 @@ final class SecurityService
 
             $isSecure = (
                 (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' && $_SERVER['HTTPS'] !== '0')
-                || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+                || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower((string) $_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
             );
 
             session_set_cookie_params([
@@ -61,7 +57,7 @@ final class SecurityService
         }
     }
 
-    public static function checkContentLength(ServerRequest $request)
+    public static function checkContentLength(ServerRequest $request): void
     {
         // Only check Content-Length for POST, PUT, and PATCH requests
         $method = strtoupper($request->getMethod());
@@ -119,7 +115,7 @@ final class SecurityService
         $_SESSION['csrf_token_time'] = time();
     }
 
-    private static function invalidateCSRF()
+    private static function invalidateCSRF(): void
     {
         if (isset($_SESSION['csrf_token'])) {
             unset($_SESSION['csrf_token']);
@@ -140,7 +136,7 @@ final class SecurityService
         exit;
     }
 
-    public static function checkLoginAttempts($ipAddress)
+    public static function checkLoginAttempts($ipAddress): void
     {
         $lockoutPeriod = 15 * 60; // Lockout period in seconds (15 minutes)
 
@@ -151,7 +147,7 @@ final class SecurityService
             ];
             // Check if the user is locked out
             if ($_SESSION[$ipAddress]['failedAttempts'] >= 10) {
-                $lastFailedLoginTimestamp = strtotime($_SESSION[$ipAddress]['lastFailedLogin']);
+                $lastFailedLoginTimestamp = strtotime((string) $_SESSION[$ipAddress]['lastFailedLogin']);
                 $timeSinceLastFail = time() - $lastFailedLoginTimestamp;
 
                 if ($timeSinceLastFail < $lockoutPeriod) {

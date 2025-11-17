@@ -20,7 +20,7 @@ $sarr = $general->getSystemConfig();
 $key = (string) $general->getGlobalConfig('key');
 
 
-$aColumns = array('patient_first_name', 'patient_code', 'patient_gender', 'patient_phone_number', 'patient_address', 'status');
+$aColumns = ['patient_first_name', 'patient_code', 'patient_gender', 'patient_phone_number', 'patient_address', 'status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -53,7 +53,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -77,7 +77,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM $tableName";
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
@@ -106,12 +106,7 @@ $aResultTotal = $db->rawQuery("select COUNT($primaryKey) as total FROM $tableNam
 $iTotal = $aResultTotal[0]['total'];
 
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $edit = '<a href="edit-patient.php?id=' . base64_encode((string) $aRow['patient_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';

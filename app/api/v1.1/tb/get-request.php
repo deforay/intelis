@@ -1,5 +1,6 @@
 <?php
 
+use Slim\Psr7\Request;
 use App\Services\TbService;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -17,7 +18,7 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
-/** @var Slim\Psr7\Request $request */
+/** @var Request $request */
 $request = AppRegistry::get('request');
 
 
@@ -172,7 +173,7 @@ try {
     }
     $where[] = " vl.app_sample_code is not null";
     $whereStr = "";
-    if (!empty($where)) {
+    if ($where !== []) {
         $whereStr = " WHERE " . implode(" AND ", $where);
     }
     $sQuery .= $whereStr . " ORDER BY vl.last_modified_datetime DESC limit 100 ";

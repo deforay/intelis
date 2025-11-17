@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -11,7 +13,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -31,8 +33,8 @@ try {
     $primaryKey = "eid_id";
     $key = (string) $general->getGlobalConfig('key');
 
-    $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name');
-    $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.sample_collection_date', 'fd.facility_name');
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name'];
+    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.sample_collection_date', 'fd.facility_name'];
     if ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
@@ -70,7 +72,7 @@ try {
         $searchArray = explode(" ", (string) $_POST['sSearch']);
         $sWhereSub = "";
         foreach ($searchArray as $search) {
-            if ($sWhereSub == "") {
+            if ($sWhereSub === "") {
                 $sWhereSub .= "(";
             } else {
                 $sWhereSub .= " AND (";
@@ -102,15 +104,15 @@ try {
                 LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
                 INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-                WHERE vl.result_status != " . SAMPLE_STATUS\REJECTED . "
+                WHERE vl.result_status != " . REJECTED . "
                 AND vl.sample_code is NOT NULL AND (vl.result IS NULL OR vl.result='')";
-    if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) != '') {
+    if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) !== '') {
         $sWhere[] = ' b.batch_code LIKE "%' . $_POST['noResultBatchCode'] . '%"';
     }
 
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['noResultSampleTestDate'] ?? '');
-    if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSampleTestDate']) != '') {
-        if (trim((string) $start_date) == trim((string) $end_date)) {
+    if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSampleTestDate']) !== '') {
+        if (trim((string) $start_date) === trim((string) $end_date)) {
             $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
         } else {
             $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -119,17 +121,17 @@ try {
     if (isset($_POST['noResultSampleType']) && $_POST['noResultSampleType'] != '') {
         $sWhere[] = ' s.sample_id = "' . $_POST['noResultSampleType'] . '"';
     }
-    if (isset($_POST['noResultState']) && trim((string) $_POST['noResultState']) != '') {
+    if (isset($_POST['noResultState']) && trim((string) $_POST['noResultState']) !== '') {
         $sWhere[] = " f.facility_state_id = '" . $_POST['noResultState'] . "' ";
     }
-    if (isset($_POST['noResultDistrict']) && trim((string) $_POST['noResultDistrict']) != '') {
+    if (isset($_POST['noResultDistrict']) && trim((string) $_POST['noResultDistrict']) !== '') {
         $sWhere[] = " f.facility_district_id = '" . $_POST['noResultDistrict'] . "' ";
     }
     if (isset($_POST['noResultFacilityName']) && $_POST['noResultFacilityName'] != '') {
         $sWhere[] = ' f.facility_id IN (' . $_POST['noResultFacilityName'] . ')';
     }
     if (isset($_POST['noResultGender']) && $_POST['noResultGender'] != '') {
-        if (trim((string) $_POST['noResultGender']) == "unreported") {
+        if (trim((string) $_POST['noResultGender']) === "unreported") {
             $sWhere[] =  ' (vl.child_gender = "unreported" OR vl.child_gender ="" OR vl.child_gender IS NULL)';
         } else {
             $sWhere[] =  ' (vl.child_gender IS NOT NULL AND vl.child_gender ="' . $_POST['noResultGender'] . '") ';
@@ -148,12 +150,12 @@ try {
     }
 
 
-    if (!empty($sWhere)) {
+    if ($sWhere !== []) {
         $sWhere = ' AND ' . implode(' AND ', $sWhere);
         $sQuery = $sQuery . ' ' . $sWhere;
     }
 
-    $sQuery = $sQuery . ' group by vl.eid_id';
+    $sQuery .= ' group by vl.eid_id';
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -170,24 +172,15 @@ try {
     $_SESSION['resultNotAvailableCount'] = $iTotal;
 
 
-    $output = array(
-        "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $iTotal,
-        "iTotalDisplayRecords" => $iFilteredTotal,
-        "aaData" => []
-    );
+    $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
     foreach ($rResult as $aRow) {
-        if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+        if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
             $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
         } else {
             $aRow['sample_collection_date'] = '';
         }
-        if ($aRow['remote_sample'] == 'yes') {
-            $decrypt = 'remote_sample_code';
-        } else {
-            $decrypt = 'sample_code';
-        }
+        $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
         $childName = $general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]);
 
         $row = [];

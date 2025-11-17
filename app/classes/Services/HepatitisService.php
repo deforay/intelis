@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use Override;
+use const COUNTRY\PNG;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
@@ -37,6 +41,7 @@ final class HepatitisService extends AbstractTestService
     public string $testType = 'hepatitis';
 
 
+    #[Override]
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
@@ -192,6 +197,7 @@ final class HepatitisService extends AbstractTestService
         return $riskFactorsData;
     }
 
+    #[Override]
     public function insertSample($params, $returnSampleData = false)
     {
         $formId = (int) $this->commonService->getGlobalConfig('vl_form');
@@ -208,7 +214,7 @@ final class HepatitisService extends AbstractTestService
 
             // PNG FORM (formId = 5) CANNOT HAVE PROVINCE EMPTY
             // Sample Collection Date Cannot be Empty
-            if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false || ($formId == COUNTRY\PNG && empty($provinceId))) {
+            if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false || ($formId == PNG && empty($provinceId))) {
                 return 0;
             }
 
@@ -249,13 +255,13 @@ final class HepatitisService extends AbstractTestService
 
             if ($this->commonService->isSTSInstance()) {
                 $tesRequestData['remote_sample'] = 'yes';
-                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+                $tesRequestData['result_status'] = RECEIVED_AT_CLINIC;
                 if ($accessType === 'testing-lab') {
-                    $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                    $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
                 }
             } else {
                 $tesRequestData['remote_sample'] = 'no';
-                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
             }
 
             $formAttributes = [

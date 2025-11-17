@@ -1,5 +1,6 @@
 <?php
 
+use Slim\Psr7\Request;
 use Slim\Psr7\UploadedFile;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -39,7 +40,7 @@ try {
     /** @var ApiService $apiService */
     $apiService = ContainerRegistry::get(ApiService::class);
 
-    /** @var Slim\Psr7\Request $request */
+    /** @var Request $request */
     $request = AppRegistry::get('request');
 
     $origJson = $apiService->getJsonFromRequest($request);
@@ -52,7 +53,7 @@ try {
 
     $authToken = ApiService::extractBearerToken($request);
     $user = $usersService->findUserByApiToken($authToken);
-    if (!empty($_REQUEST) && !empty($_REQUEST['post']) && JsonUtility::isJSON($_REQUEST['post'])) {
+    if ($_REQUEST !== [] && !empty($_REQUEST['post']) && JsonUtility::isJSON($_REQUEST['post'])) {
         $input = _sanitizeInput($_REQUEST);
         $input['post'] = json_decode((string) $input['post'], true);
     } elseif (!empty($origJson) && JsonUtility::isJSON($origJson)) {
@@ -60,20 +61,18 @@ try {
     } else {
         throw new SystemException("2 Invalid request. Please check your request parameters.");
     }
-    $apiKey = !empty($input['x-api-key']) ? $input['x-api-key'] : null;
+    $apiKey = empty($input['x-api-key']) ? null : $input['x-api-key'];
 
     if ((empty($input['post']) || $input['post'] === false) && empty($user)) {
         throw new SystemException("3 Invalid request. Please check your request parameters.");
+    } elseif (!empty($user)) {
+        $post = $input;
     } else {
-        if (!empty($user)) {
-            $post = $input;
-        } else {
-            $post = $input['post'];
-        }
+        $post = $input['post'];
     }
 
     if (JsonUtility::isJSON($post)) {
-        $post = json_decode($post, true);
+        $post = json_decode((string) $post, true);
     }
     $post['loginId'] ??= null;
     $post['role'] ??= null;
@@ -85,10 +84,10 @@ try {
         }
         $userId = $post['userId'] ?? null;
         if (MiscUtility::isBase64($userId)) {
-            $userId = base64_decode($userId);
+            $userId = base64_decode((string) $userId);
         }
     } else {
-        $userId = !empty($post['userId']) ? $db->escape($post['userId']) : null;
+        $userId = empty($post['userId']) ? null : $db->escape($post['userId']);
     }
 
     $aRow = null;
@@ -105,9 +104,9 @@ try {
         'user_id' => (!empty($userId) && $userId != "") ? $userId : MiscUtility::generateUUID(),
         'user_name' => $db->escape($post['userName']),
         'email' => $db->escape($post['email']),
-        'interface_user_name' => !empty($post['interfaceUserName']) ? json_encode(array_map('trim', explode(",", $post['interfaceUserName']))) : null,
+        'interface_user_name' => empty($post['interfaceUserName']) ? null : json_encode(array_map('trim', explode(",", (string) $post['interfaceUserName']))),
         'phone_number' => $db->escape($post['phoneNo']),
-        'updated_datetime'=> DateUtility::getCurrentDateTime()
+        'updated_datetime' => DateUtility::getCurrentDateTime()
     ];
 
     if (!empty($post['status'])) {
@@ -118,10 +117,10 @@ try {
         $data['password'] = $usersService->passwordHash($post['password']);
     }
     if (!empty($post['role'])) {
-        $data['role_id'] =  $db->escape($post['role']);
+        $data['role_id'] = $db->escape($post['role']);
     }
     if (!empty($post['loginId'])) {
-        $data['login_id'] =  $db->escape($post['loginId']);
+        $data['login_id'] = $db->escape($post['loginId']);
     }
 
     if ($sanitizedSignFile instanceof UploadedFile && $sanitizedSignFile->getError() === UPLOAD_ERR_OK && $sanitizedSignFile->getSize() > 0) {
@@ -130,7 +129,7 @@ try {
 
         $extension = MiscUtility::getFileExtension($sanitizedSignFile->getClientFilename());
 
-        $imageName = "usign-" . htmlspecialchars($data['user_id']) . "." . $extension;
+        $imageName = "usign-" . htmlspecialchars((string) $data['user_id']) . "." . $extension;
 
         $signatureImagePath = realpath($signatureImagePath) . DIRECTORY_SEPARATOR . $imageName;
 
@@ -160,20 +159,23 @@ try {
         $id = $db->insert("user_details", $data);
     }
 
-    if ($id === true && trim($post['selectedFacility']) != '') {
-        $db->where('user_id', $data['user_id']);
-        $delId = $db->delete("user_facility_map");
-        $selectedFacility = explode(",", $post['selectedFacility']);
-        $uniqueFacilityId = array_unique($selectedFacility);
-        for ($j = 0; $j <= count($selectedFacility); $j++) {
-            if (isset($uniqueFacilityId[$j])) {
-                $insertData = [
-                    'facility_id' => $selectedFacility[$j],
-                    'user_id' => $data['user_id'],
-                ];
-                $db->insert("user_facility_map", $insertData);
-            }
-        }
+    if ($id != false) {
+        // if (trim((string) $post['selectedFacility']) !== '') {
+        //     $db->where('user_id', $data['user_id']);
+        //     $delId = $db->delete("user_facility_map");
+        //     $selectedFacility = explode(",", (string) $post['selectedFacility']);
+        //     $uniqueFacilityId = array_unique($selectedFacility);
+        //     $counter = count($selectedFacility);
+        //     for ($j = 0; $j <= $counter; $j++) {
+        //         if (isset($uniqueFacilityId[$j])) {
+        //             $insertData = [
+        //                 'facility_id' => $selectedFacility[$j],
+        //                 'user_id' => $data['user_id'],
+        //             ];
+        //             $db->insert("user_facility_map", $insertData);
+        //         }
+        //     }
+        // }
 
         $payload = [
             'status' => 'success',

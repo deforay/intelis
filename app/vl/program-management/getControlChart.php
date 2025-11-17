@@ -18,7 +18,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 try {
 
     $sWhere = [];
-    if (isset($_POST['cType']) && trim((string) $_POST['cType']) != '') {
+    if (isset($_POST['cType']) && trim((string) $_POST['cType']) !== '') {
         $sWhere[] = ' vl.control_type = "' . $_POST['cType'] . '" ';
     }
     if (!empty($_POST['sampleTestDate'])) {
@@ -27,7 +27,7 @@ try {
     }
 
     $whereConditions = '';
-    if (!empty($sWhere)) {
+    if ($sWhere !== []) {
         $whereConditions = "WHERE " . implode(" AND ", $sWhere);
     }
 
@@ -53,12 +53,10 @@ try {
 
     $sumTotal = array_column($controlResult, 'sumTotal');
 
-    if (!empty($sumTotal)) {
+    if ($sumTotal !== []) {
         $mean = array_sum($sumTotal) / count($sumTotal);
 
-        $sd_square = function ($x) use ($mean) {
-            return pow($x - $mean, 2);
-        };
+        $sd_square = fn($x): float|int => ($x - $mean) ** 2;
 
         $sd = (count($sumTotal) > 1) ? sqrt(array_sum(array_map($sd_square, $sumTotal)) / (count($sumTotal) - 1)) : 0;
     } else {

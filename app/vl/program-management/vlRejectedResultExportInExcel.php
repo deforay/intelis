@@ -22,11 +22,11 @@ $delimiter = $globalConfig['default_csv_delimiter'] ?? ',';
 $enclosure = $globalConfig['default_csv_enclosure'] ?? '"';
 
 
-if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['rejectedViralLoadResult']) != "") {
+if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['rejectedViralLoadResult']) !== "") {
 
 
      $output = [];
-     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action");
+     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
@@ -39,26 +39,14 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
-          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $aRow['sample_collection_date']);
                $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
           }
 
-          if ($aRow['patient_first_name'] != '') {
-               $patientFname = $aRow['patient_first_name'];
-          } else {
-               $patientFname = '';
-          }
-          if ($aRow['patient_middle_name'] != '') {
-               $patientMname = $aRow['patient_middle_name'];
-          } else {
-               $patientMname = '';
-          }
-          if ($aRow['patient_last_name'] != '') {
-               $patientLname = $aRow['patient_last_name'];
-          } else {
-               $patientLname = '';
-          }
+          $patientFname = $aRow['patient_first_name'] != '' ? $aRow['patient_first_name'] : '';
+          $patientMname = $aRow['patient_middle_name'] != '' ? $aRow['patient_middle_name'] : '';
+          $patientLname = $aRow['patient_last_name'] != '' ? $aRow['patient_last_name'] : '';
           $row[] = $aRow['sample_code'];
           if (!$general->isStandaloneInstance()) {
                $row[] = $aRow['remote_sample_code'];

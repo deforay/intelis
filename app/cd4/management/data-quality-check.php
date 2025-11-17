@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -10,7 +11,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -36,8 +37,8 @@ try {
     $primaryKey = "cd4_id";
 
 
-    $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.cd4_result', 'ts.status_name');
-    $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.cd4_result', 'ts.status_name');
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.cd4_result', 'ts.status_name'];
+    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.cd4_result', 'ts.status_name'];
     if ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
@@ -74,7 +75,7 @@ try {
         $searchArray = explode(" ", (string) $_POST['sSearch']);
         $sWhereSub = "";
         foreach ($searchArray as $search) {
-            if ($sWhereSub == "") {
+            if ($sWhereSub === "") {
                 $sWhereSub .= "(";
             } else {
                 $sWhereSub .= " AND (";
@@ -105,27 +106,28 @@ try {
     }
 
     if (!empty($_POST['sampleCollectionDate'])) {
-        if (trim((string) $start_date) == trim((string) $end_date)) {
+        if (trim((string) $start_date) === trim((string) $end_date)) {
             $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
         } else {
             $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
-    if (isset($_POST['formField']) && trim((string) $_POST['formField']) != '') {
+    if (isset($_POST['formField']) && trim((string) $_POST['formField']) !== '') {
         $sWhereSub = '';
         $sWhereSubC = " (";
         $searchArray = explode(",", (string) $_POST['formField']);
         foreach ($searchArray as $search) {
-            if ($sWhereSub == "") {
+            if ($sWhereSub === "") {
                 $sWhereSub .= $sWhereSubC;
                 $sWhereSub .= "(";
             } else {
                 $sWhereSub .= " AND (";
             }
-            if ($search == 'sample_collection_date')
+            if ($search === 'sample_collection_date') {
                 $sWhereSub .= 'vl.' . $search . " IS NULL";
-            else
+            } else {
                 $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
+            }
             $sWhereSub .= ")";
         }
         $sWhereSub .= ")";
@@ -141,11 +143,7 @@ try {
         $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
     }
 
-    if (!empty($sWhere)) {
-        $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
-    } else {
-        $sWhere = "";
-    }
+    $sWhere = $sWhere === [] ? "" : ' WHERE ' . implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
     $_SESSION['vlIncompleteForm'] = $sQuery;
     if (!empty($sOrder) && $sOrder !== '') {
@@ -167,25 +165,16 @@ try {
     /*
                                                        * Output
                                                        */
-    $output = array(
-        "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $iTotal,
-        "iTotalDisplayRecords" => $iFilteredTotal,
-        "aaData" => []
-    );
+    $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
     foreach ($rResult as $aRow) {
-        if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+        if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
             $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
         } else {
             $aRow['sample_collection_date'] = '';
         }
 
-        if ($aRow['remote_sample'] == 'yes') {
-            $decrypt = 'remote_sample_code';
-        } else {
-            $decrypt = 'sample_code';
-        }
+        $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
 
         $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow[$decrypt]));
 

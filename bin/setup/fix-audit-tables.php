@@ -46,9 +46,9 @@ require_once __DIR__ . '/../../bootstrap.php';
 )]
 final class FixAuditTablesCommand extends Command
 {
-    private const CHARSET = 'utf8mb4';
-    private const COLLATE = 'utf8mb4_0900_ai_ci';
-    private const RESERVED_AUDIT_COLS = ['action', 'revision', 'dt_datetime'];
+    private const string CHARSET = 'utf8mb4';
+    private const string COLLATE = 'utf8mb4_0900_ai_ci';
+    private const array RESERVED_AUDIT_COLS = ['action', 'revision', 'dt_datetime'];
 
     /** @var DatabaseService */
     private $db;
@@ -56,6 +56,7 @@ final class FixAuditTablesCommand extends Command
     private $mysqli;
     private string $dbName;
 
+    #[\Override]
     protected function configure(): void
     {
         $this
@@ -66,6 +67,7 @@ final class FixAuditTablesCommand extends Command
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Print SQL only, don’t execute.');
     }
 
+    #[\Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->db = ContainerRegistry::get(DatabaseService::class);
@@ -76,6 +78,7 @@ final class FixAuditTablesCommand extends Command
         $this->dbName = (string) (SYSTEM_CONFIG['database']['db'] ?? '');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -89,14 +92,14 @@ final class FixAuditTablesCommand extends Command
         $tableMap = $this->buildTableMapFromTestsService();
 
         if ($only = $input->getOption('only')) {
-            $wanted = array_map('trim', explode(',', $only));
-            $tableMap = array_filter($tableMap, function ($info, $form) use ($wanted) {
+            $wanted = array_map('trim', explode(',', (string) $only));
+            $tableMap = array_filter($tableMap, function ($info, $form) use ($wanted): bool {
                 [$audit] = $info;
                 return in_array($form, $wanted, true) || in_array($audit, $wanted, true);
             }, ARRAY_FILTER_USE_BOTH);
         }
 
-        if (empty($tableMap)) {
+        if ($tableMap === []) {
             $io->warning('No matching form tables found to process.');
             return Command::SUCCESS;
         }
@@ -156,7 +159,9 @@ final class FixAuditTablesCommand extends Command
         foreach ($types as $meta) {
             $form = $meta['tableName'] ?? null;
             $pk   = $meta['primaryKey'] ?? null;
-            if (!$form || !$pk) continue;
+            if (!$form || !$pk) {
+                continue;
+            }
             $exists = $this->db->rawQueryValue(
                 "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=? AND TABLE_NAME=?",
                 [$this->dbName, $form]
@@ -198,11 +203,15 @@ final class FixAuditTablesCommand extends Command
     private function showCreate(string $table): string
     {
         $res = $this->mysqli->query("SHOW CREATE TABLE `{$this->dbName}`.`{$table}`");
-        if (!$res) throw new RuntimeException("SHOW CREATE TABLE {$this->dbName}.{$table} failed: " . $this->mysqli->error);
+        if (!$res) {
+            throw new RuntimeException("SHOW CREATE TABLE {$this->dbName}.{$table} failed: " . $this->mysqli->error);
+        }
         $row = $res->fetch_assoc();
         $res->free();
         foreach ($row as $k => $v) {
-            if ($k !== 'Table' && $k !== 'View') return $v;
+            if ($k !== 'Table' && $k !== 'View') {
+                return $v;
+            }
         }
         throw new RuntimeException("Unexpected SHOW CREATE TABLE result for {$this->dbName}.{$table}");
     }
@@ -228,7 +237,9 @@ final class FixAuditTablesCommand extends Command
             "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=? AND TABLE_NAME=?",
             [$this->dbName, $audit]
         );
-        if ($exists) return $sql;
+        if ($exists) {
+            return $sql;
+        }
 
         // Create and align
         $sql[] = "CREATE TABLE `{$this->dbName}`.`$audit` LIKE `{$this->dbName}`.`$form`";
@@ -295,9 +306,15 @@ final class FixAuditTablesCommand extends Command
 
         // Ensure audit columns
         $have = $this->listColumns($audit);
-        if (!isset($have['action']))      $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN `action` VARCHAR(8) NOT NULL DEFAULT 'insert' FIRST";
-        if (!isset($have['revision']))    $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN `revision` INT NOT NULL AFTER `action`";
-        if (!isset($have['dt_datetime'])) $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`";
+        if (!isset($have['action'])) {
+            $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN `action` VARCHAR(8) NOT NULL DEFAULT 'insert' FIRST";
+        }
+        if (!isset($have['revision'])) {
+            $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN `revision` INT NOT NULL AFTER `action`";
+        }
+        if (!isset($have['dt_datetime'])) {
+            $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`";
+        }
 
         // Strip AUTO_INCREMENT on pk if present (safe even when PK already composite)
         $auditPkDDL = $this->getColumnDDL($audit, $pk);
@@ -329,7 +346,9 @@ final class FixAuditTablesCommand extends Command
 
         // ADD missing (strip AI if it's the pk)
         foreach ($formCols as $col => $ddl) {
-            if (in_array($col, self::RESERVED_AUDIT_COLS, true)) continue;
+            if (in_array($col, self::RESERVED_AUDIT_COLS, true)) {
+                continue;
+            }
             if (!array_key_exists($col, $auditCols)) {
                 $addDDL = ($col === $pk) ? $this->stripAutoIncrementFromDDL($ddl) : $ddl;
                 $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN $addDDL";
@@ -338,8 +357,12 @@ final class FixAuditTablesCommand extends Command
 
         // MODIFY mismatches (compare with AI stripped for pk)
         foreach ($formCols as $col => $ddl) {
-            if (in_array($col, self::RESERVED_AUDIT_COLS, true)) continue;
-            if (!array_key_exists($col, $auditCols)) continue;
+            if (in_array($col, self::RESERVED_AUDIT_COLS, true)) {
+                continue;
+            }
+            if (!array_key_exists($col, $auditCols)) {
+                continue;
+            }
 
             $lhs = ($col === $pk) ? $this->stripAutoIncrementFromDDL($ddl) : $ddl;           // desired
             $rhs = ($col === $pk) ? $this->stripAutoIncrementFromDDL($auditCols[$col]) : $auditCols[$col]; // current
@@ -350,8 +373,10 @@ final class FixAuditTablesCommand extends Command
         }
 
         if ($dropExtras) {
-            foreach ($auditCols as $col => $_) {
-                if (in_array($col, self::RESERVED_AUDIT_COLS, true)) continue;
+            foreach (array_keys($auditCols) as $col) {
+                if (in_array($col, self::RESERVED_AUDIT_COLS, true)) {
+                    continue;
+                }
                 if (!array_key_exists($col, $formCols)) {
                     $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` DROP COLUMN `$col`";
                 }
@@ -404,10 +429,8 @@ SQL;
                 }
                 while ($this->mysqli->more_results() && $this->mysqli->next_result()) { /* drain */
                 }
-            } else {
-                if (!$this->mysqli->query($sql)) {
-                    throw new RuntimeException('SQL failed: ' . $this->mysqli->error . ' (' . $sql . ')');
-                }
+            } elseif (!$this->mysqli->query($sql)) {
+                throw new RuntimeException('SQL failed: ' . $this->mysqli->error . ' (' . $sql . ')');
             }
         }
     }
@@ -416,7 +439,7 @@ SQL;
     {
         $io->section("$audit ⇐ $form");
         foreach ($sqlBatch as $sql) {
-            if (str_starts_with($sql, 'DELIMITER')) {
+            if (str_starts_with((string) $sql, 'DELIMITER')) {
                 $io->writeln('<comment>-- trigger block --</comment>');
             } else {
                 $io->writeln($sql . ';');
@@ -451,7 +474,7 @@ SQL;
                 $curr[] = $ln;
             }
         }
-        return implode(";\n", array_map(static fn($s) => trim($s, " \n;"), $buf)) . ";";
+        return implode(";\n", array_map(static fn($s): string => trim((string) $s, " \n;"), $buf)) . ";";
     }
 }
 

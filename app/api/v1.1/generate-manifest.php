@@ -1,7 +1,7 @@
 <?php
 
 // app/api/v1.1/generate-manifest.php
-
+use Slim\Psr7\Request;
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
@@ -35,7 +35,7 @@ $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-/** @var Slim\Psr7\Request $request */
+/** @var Request $request */
 $request = AppRegistry::get('request');
 $origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
@@ -84,7 +84,7 @@ try {
     $response = [];
 
     if (!empty($facilityMap)) {
-        $arrFacility =  explode(",", $facilityMap);
+        $arrFacility =  explode(",", (string) $facilityMap);
         if (in_array($input['labId'], $arrFacility) == false) {
             $response = [
                 'status' => 'Failed',
@@ -96,7 +96,7 @@ try {
     }
 
     $whereString = '';
-    if (!empty($where)) {
+    if ($where !== []) {
         $whereString = " WHERE " . implode(" AND ", $where);
     }
     $sQuery .= $whereString;
@@ -140,7 +140,7 @@ try {
         }
 
         // Create new manifest only if there are samples to add
-        if (!empty($samplesToAdd)) {
+        if ($samplesToAdd !== []) {
 
             $manifestHash = $testRequestsService->getManifestHash($selectedSamples, $input['testType']);
             $data = [
@@ -181,7 +181,7 @@ try {
         $missedSamples = array_values(array_diff($input['sampleCode'], $availableSamples));
 
         // Prepare response maintaining backward compatibility
-        if (!empty($addedToManifest) || !empty($alreadyInManifest)) {
+        if ($addedToManifest !== [] || $alreadyInManifest !== []) {
             // Prepare the main data structure (maintaining old format)
             $responseData = [
                 'alreadyInManifest' => $missedSamples, // Keep old key name for backward compatibility
@@ -189,7 +189,7 @@ try {
             ];
 
             // Add new existingManifests key for samples already in manifests
-            if (!empty($alreadyInManifest)) {
+            if ($alreadyInManifest !== []) {
                 $responseData['existingManifests'] = [];
                 foreach ($alreadyInManifest as $manifestCode => $samples) {
                     $responseData['existingManifests'][] = [
@@ -206,7 +206,7 @@ try {
             ];
 
             // Add manifestCode only if new manifest was created (maintaining old structure)
-            if (!empty($addedToManifest)) {
+            if ($addedToManifest !== []) {
                 $payload['manifestCode'] = $sampleManifestCode;
                 $payload['manifestHash'] = $manifestHash;
             }

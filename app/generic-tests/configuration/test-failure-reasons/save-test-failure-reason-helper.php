@@ -16,15 +16,10 @@ $tableName = "r_generic_test_failure_reasons";
 $testFailureReasonId = (int) base64_decode((string) $_POST['testFailureReasonId']);
 $_POST['testFailureReason'] = trim((string) $_POST['testFailureReason']);
 try {
-    if (!empty($_POST['testFailureReason'])) {
+    if (isset($_POST['testFailureReason']) && ($_POST['testFailureReason'] !== '' && $_POST['testFailureReason'] !== '0')) {
 
-        $data = array(
-            'test_failure_reason' => $_POST['testFailureReason'],
-            'test_failure_reason_code' => trim((string) $_POST['testFailureReasonCode']),
-            'test_failure_reason_status' => $_POST['testFailureReasonStatus'],
-            'updated_datetime' => DateUtility::getCurrentDateTime()
-        );
-        if (!empty($testFailureReasonId)) {
+        $data = ['test_failure_reason' => $_POST['testFailureReason'], 'test_failure_reason_code' => trim((string) $_POST['testFailureReasonCode']), 'test_failure_reason_status' => $_POST['testFailureReasonStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
+        if ($testFailureReasonId !== 0) {
             $db->where('test_failure_reason_id', $testFailureReasonId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {

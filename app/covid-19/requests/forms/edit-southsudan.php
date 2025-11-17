@@ -38,9 +38,6 @@ $covid19SelectedComorbidities = $covid19Service->getCovid19ComorbiditiesByFormId
 // Getting the list of Provinces, Districts and Facilities
 
 $rKey = '';
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-
-
 if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
@@ -55,26 +52,13 @@ if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
     $sampleCode = 'sample_code';
     $rKey = '';
 }
-//check user exist in user_facility_map table
-$chkUserFcMapQry = "SELECT user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-$chkUserFcMapResult = $db->query($chkUserFcMapQry);
-if ($chkUserFcMapResult) {
-    $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
-}
-$pdResult = $db->query($pdQuery);
+
+$pdResult = $db->query("SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'");
 $provinceInfo = [];
 foreach ($pdResult as $state) {
     $provinceInfo[$state['geo_name']] = ($state['geo_name']);
 }
-$province = "<option value=''> -- Select -- </option>";
-foreach ($pdResult as $provinceName) {
-    $selected = "";
-    if ($covid19Info['geo_id'] == $provinceName['geo_id']) {
-        $selected = "selected='selected'";
-    }
-    $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'" . $selected . ">" . ($provinceName['geo_name']) . "</option>";
-}
-
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
 
 ?>
@@ -449,7 +433,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     <td>
                                                                         <?php
                                                                         $value = '';
-                                                                        if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'ELISA', 'other'))) {
+                                                                        if (!in_array($rows['test_name'], ['Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'ELISA', 'other'])) {
                                                                             $value = 'value="' . $rows['test_name'] . '"';
                                                                             $show =  "block";
                                                                         } else {
@@ -461,7 +445,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             <option value="RDT-Antibody" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>>RDT-Antibody</option>
                                                                             <option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>>RDT-Antigen</option>
                                                                             <option value="ELISA" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>>ELISA</option>
-                                                                            <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>Others</option>
+                                                                            <option value="other" <?php echo (isset($show) && $show === 'block') ? "selected='selected'" : ""; ?>>Others</option>
                                                                         </select>
                                                                         <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testNameOther<?= ($indexKey + 1); ?>" title="Please enter the name of the Testkit (or) Test Method used" placeholder="Enter Test Method used" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
@@ -478,7 +462,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                                 <option value="STANDARD™ Q COVID-19 Ag Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'STANDARD™ Q COVID-19 Ag Test') ? "selected='selected'" : ""; ?>>STANDARD™ Q COVID-19 Ag Test</option>
                                                                                 <option value="LumiraDx ™ SARS-CoV-2 Ag Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'LumiraDx ™ SARS-CoV-2 Ag Test') ? "selected='selected'" : ""; ?>>LumiraDx ™ SARS-CoV-2 Ag Test</option>
                                                                                 <option value="Sure Status® COVID-19 Antigen Card Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'Sure Status® COVID-19 Antigen Card Test') ? "selected='selected'" : ""; ?>>Sure Status® COVID-19 Antigen Card Test</option>
-                                                                                <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>>Others</option>
+                                                                                <option value="other" <?php echo (isset($show) && $show === 'block') ? "selected='selected'" : ""; ?>>Others</option>
                                                                             <?php } else { ?>
                                                                             <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'] . '##' . $rows['instrument_id'], '-- Select --');
                                                                             } ?>
@@ -486,7 +470,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     </td>
                                                                     <td class="kitlabels" style="display: none;"><input type="text" value="<?php echo $rows['kit_lot_no']; ?>" name="lotNo[]" id="lotNo<?= ($indexKey + 1); ?>" class="form-control kit-fields<?= ($indexKey + 1); ?>" placeholder="Kit lot no" title="Please enter the kit lot no. for row 1" style="<?php echo $display; ?>" /></td>
                                                                     <td class="kitlabels" style="display: none;"><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['kit_expiry_date']); ?>" name="expDate[]" id="expDate<?= ($indexKey + 1); ?>" class="form-control expDate kit-fields<?= ($indexKey + 1); ?>" placeholder="Expiry date" title="Please enter the expiry date for row 1" style="<?php echo $display; ?>" /></td>
-                                                                    <td><select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult<?= ($indexKey + 1); ?>" title="Please select the result for row <?= ($indexKey + 1); ?>">
+                                                                    <td>
+                                                                        <select class="form-control test-result test-name-table-input result-focus" name="testResult[]" id="testResult<?= $indexKey + 1; ?>" title="Please select the result for row <?= $indexKey + 1; ?>">
                                                                             <option value=''> -- Select -- </option>
                                                                             <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                                 <option value="<?php echo $c19ResultKey; ?>" <?php echo ($rows['result'] == $c19ResultKey) ? "selected='selected'" : ""; ?>> <?php echo $c19ResultValue; ?> </option>
@@ -547,8 +532,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </tr>
                                         <tr>
                                             <?php
-                                            $disabled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : "";
-                                            ?>
+                                            $disabled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : ""; ?>
                                             <th scope="row">Authorized By</th>
                                             <td>
                                                 <select name="authorizedBy" <?php echo $disabled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
@@ -603,7 +587,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     provinceName = true;
     facilityName = true;
     machineName = true;
-    let testCounter = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo)) : 0; ?>;
+    let testCounter = <?php echo (empty($covid19TestInfo)) ? (0) : count($covid19TestInfo); ?>;
     deletedRow = [];
 
     function getfacilityDetails(obj) {

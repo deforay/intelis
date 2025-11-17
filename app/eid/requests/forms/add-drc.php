@@ -13,11 +13,7 @@ $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
 
-if ($general->isSTSInstance()) {
-	$sampleCode = 'remote_sample_code';
-} else {
-	$sampleCode = 'sample_code';
-}
+$sampleCode = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 

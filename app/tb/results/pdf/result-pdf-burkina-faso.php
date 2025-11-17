@@ -1,7 +1,7 @@
 <?php
 
 // This file is included in /vl/results/generate-result-pdf.php
-
+use const SAMPLE_STATUS\REJECTED;
 use App\Services\TbService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -81,12 +81,13 @@ if (!empty($result)) {
 
      //Set watermark text
      if (!empty($mFieldArray)) {
-          for ($m = 0; $m < count($mFieldArray); $m++) {
-               if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
-                    $draftTextShow = true;
-                    break;
-               }
-          }
+         $counter = count($mFieldArray);
+         for ($m = 0; $m < $counter; $m++) {
+              if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) === '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+                   $draftTextShow = true;
+                   break;
+              }
+         }
      }
      // create new PDF document
      $pdf = new SierraLeoneTBResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -107,8 +108,8 @@ if (!empty($result)) {
      $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
      // set header and footer fonts
-     $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-     $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+     $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+     $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
 
      // set default monospaced font
      $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -130,30 +131,30 @@ if (!empty($result)) {
      $pdf->SetFont('helvetica', '', 18);
 
      $pdf->AddPage();
-     if (!isset($result['facility_code']) || trim((string) $result['facility_code']) == '') {
+     if (!isset($result['facility_code']) || trim((string) $result['facility_code']) === '') {
           $result['facility_code'] = '';
      }
-     if (!isset($result['facility_state']) || trim((string) $result['facility_state']) == '') {
+     if (!isset($result['facility_state']) || trim((string) $result['facility_state']) === '') {
           $result['facility_state'] = '';
      }
-     if (!isset($result['facility_district']) || trim((string) $result['facility_district']) == '') {
+     if (!isset($result['facility_district']) || trim((string) $result['facility_district']) === '') {
           $result['facility_district'] = '';
      }
-     if (!isset($result['facility_name']) || trim((string) $result['facility_name']) == '') {
+     if (!isset($result['facility_name']) || trim((string) $result['facility_name']) === '') {
           $result['facility_name'] = '';
      }
-     if (!isset($result['labName']) || trim((string) $result['labName']) == '') {
+     if (!isset($result['labName']) || trim((string) $result['labName']) === '') {
           $result['labName'] = '';
      }
      //Set Age
      $age = 'Unknown';
-     if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
+     if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) !== '' && $result['patient_dob'] != '0000-00-00') {
           $todayDate = strtotime(date('Y-m-d'));
           $dob = strtotime((string) $result['patient_dob']);
           $difference = $todayDate - $dob;
           $seconds_per_year = 60 * 60 * 24 * 365;
           $age = round($difference / $seconds_per_year);
-     } elseif (isset($result['patient_age']) && trim((string) $result['patient_age']) != '' && trim((string) $result['patient_age']) > 0) {
+     } elseif (isset($result['patient_age']) && trim((string) $result['patient_age']) !== '' && trim((string) $result['patient_age']) > 0) {
           $age = $result['patient_age'];
      }
 
@@ -163,7 +164,7 @@ if (!empty($result)) {
 
      $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
 
-     if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
+     if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) === '') {
           $result['patient_gender'] = _translate('Unreported');
      }
      $smileyContent = '';
@@ -171,11 +172,11 @@ if (!empty($result)) {
      $tndMessage = '';
      $messageTextSize = '15px';
 
-     if ($result['result_status'] == SAMPLE_STATUS\REJECTED || $result['is_sample_rejected'] == 'yes') {
+     if ($result['result_status'] == REJECTED || $result['is_sample_rejected'] == 'yes') {
           $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
      }
 
-     if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
+     if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) === "no") {
           $smileyContent = '';
      } else {
           $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
@@ -218,7 +219,7 @@ if (!empty($result)) {
           $patientLname = $general->crypto('decrypt', $patientLname, $key);
      }
      if (isset($tbInfo['reason_for_tb_test']) && !empty($tbInfo['reason_for_tb_test'])) {
-          $reasonForTbTest = json_decode($tbInfo['reason_for_tb_test']);
+          $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
           $diagnosis = (array)$reasonForTbTest->elaboration->diagnosis;
           $followup = (array)$reasonForTbTest->elaboration->followup;
      }
@@ -245,8 +246,8 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_weight'] . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['is_displaced_population']) . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['is_referred_by_community_actor']) . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords((string) $result['is_displaced_population']) . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords((string) $result['is_referred_by_community_actor']) . '</td>';
      $html .= '</tr>';
      $html .= '</table>';
      $html .= '</td>';
@@ -311,7 +312,7 @@ if (!empty($result)) {
      $html .= '<table style="padding:10px 2px 2px 2px;">';
      $logValue = '';
 
-     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;width:90%;">&nbsp;&nbsp;' . _translate("XPERT MTB Result") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . ucwords($tbXPertResults[$result['xpert_mtb_result']]) . '</td><td style="width:10%;">' . $smileyContent . '</td></tr>';
+     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;width:90%;">&nbsp;&nbsp;' . _translate("XPERT MTB Result") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . ucwords((string) $tbXPertResults[$result['xpert_mtb_result']]) . '</td><td style="width:10%;">' . $smileyContent . '</td></tr>';
      if ($result['reason_for_sample_rejection'] != '' && $result['is_sample_rejected'] == 'yes') {
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;' . _translate("Rejection Reason") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
      }
@@ -323,24 +324,21 @@ if (!empty($result)) {
      $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
 
-     if ($result['is_sample_rejected'] == 'no') {
-          if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
-               $html .= '<tr>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("TESTED BY") . '</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
-               $html .= '</tr>';
-
-               $html .= '<tr>';
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-               if (!empty($testedBySignaturePath) && MiscUtility::isImageValid(($testedBySignaturePath))) {
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testedBySignaturePath . '" style="width:50px;" /></td>';
-               } else {
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-               }
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-               $html .= '</tr>';
-          }
+     if ($result['is_sample_rejected'] == 'no' && (!empty($testedBy) && !empty($result['sample_tested_datetime']))) {
+         $html .= '<tr>';
+         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("TESTED BY") . '</td>';
+         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
+         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
+         $html .= '</tr>';
+         $html .= '<tr>';
+         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
+         if ($testedBySignaturePath !== null && $testedBySignaturePath !== '' && $testedBySignaturePath !== '0' && MiscUtility::isImageValid(($testedBySignaturePath))) {
+              $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testedBySignaturePath . '" style="width:50px;" /></td>';
+         } else {
+              $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+         }
+         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+         $html .= '</tr>';
      }
      if (!empty($reviewedBy)) {
           $html .= '<tr>';
@@ -355,12 +353,12 @@ if (!empty($result)) {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-          if (!empty($reviewedBySignaturePath) && MiscUtility::isImageValid(($reviewedBySignaturePath))) {
+          if ($reviewedBySignaturePath !== null && $reviewedBySignaturePath !== '' && $reviewedBySignaturePath !== '0' && MiscUtility::isImageValid(($reviewedBySignaturePath))) {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:50px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }
-          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (!empty($result['result_reviewed_datetime']) ? $result['result_reviewed_datetime'] : $result['sample_tested_datetime']) . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (empty($result['result_reviewed_datetime']) ? $result['sample_tested_datetime'] : $result['result_reviewed_datetime']) . '</td>';
           $html .= '</tr>';
      }
 
@@ -374,7 +372,7 @@ if (!empty($result)) {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
-          if (!empty($revisedBySignaturePath) && MiscUtility::isImageValid($revisedBySignaturePath)) {
+          if ($revisedBySignaturePath !== null && $revisedBySignaturePath !== '' && $revisedBySignaturePath !== '0' && MiscUtility::isImageValid($revisedBySignaturePath)) {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedBySignaturePath . '" style="width:70px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -433,7 +431,7 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '</table>';
 
-     if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
+     if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == REJECTED)) {
           $pdf->writeHTML($html);
           $pdf->lastPage();
           $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
@@ -448,7 +446,7 @@ if (!empty($result)) {
           $pages[] = $filename;
           $page++;
      }
-     if (isset($_POST['source']) && trim((string) $_POST['source']) == 'print') {
+     if (isset($_POST['source']) && trim((string) $_POST['source']) === 'print') {
           $sampleCode = 'sample_code';
           if ($general->isSTSInstance()) {
                $sampleCode = 'remote_sample_code';
@@ -460,24 +458,19 @@ if (!empty($result)) {
           }
           $sampleId = (isset($result[$sampleCode]) && !empty($result[$sampleCode])) ? ' sample id ' . $result[$sampleCode] : '';
           $patientId = (isset($result['patient_id']) && !empty($result['patient_id'])) ? ' patient id ' . $result['patient_id'] : '';
-          $concat = (!empty($sampleId) && !empty($patientId)) ? ' and' : '';
+          $concat = ($sampleId !== '' && $sampleId !== '0' && ($patientId !== '' && $patientId !== '0')) ? ' and' : '';
           //Add event log
           $eventType = 'print-result';
           $action = $_SESSION['userName'] . ' generated the test result PDF with ' . $sampleId . $concat . $patientId;
           $resource = 'print-test-result';
-          $data = array(
-               'event_type' => $eventType,
-               'action' => $action,
-               'resource' => $resource,
-               'date_time' => $currentDateTime
-          );
+          $data = ['event_type' => $eventType, 'action' => $action, 'resource' => $resource, 'date_time' => $currentDateTime];
           $db->insert($tableName1, $data);
           //Update print datetime in VL tbl.
           $vlQuery = "SELECT result_printed_datetime FROM $tableName2 as vl WHERE vl.tb_id ='" . $result['tb_id'] . "'";
           $vlResult = $db->query($vlQuery);
-          if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+          if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) === '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
                $db->where('tb_id', $result['tb_id']);
-               $db->update($tableName2, array('result_printed_datetime' => $currentDateTime, 'result_dispatched_datetime' => $currentDateTime));
+               $db->update($tableName2, ['result_printed_datetime' => $currentDateTime, 'result_dispatched_datetime' => $currentDateTime]);
           }
      }
 }

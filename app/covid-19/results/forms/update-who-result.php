@@ -112,8 +112,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
                                             <option value=""> -- Select --</option>
                                             <?php
-                                            foreach ($implementingPartnerList as $implementingPartner) {
-                                            ?>
+                                            foreach ($implementingPartnerList as $implementingPartner) { ?>
                                                 <option value="<?php echo ($implementingPartner['i_partner_id']); ?>" <?php echo ($covid19Info['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                             <?php } ?>
                                         </select>
@@ -123,8 +122,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose funding source" style="width:100%;">
                                             <option value=""> -- Select --</option>
                                             <?php
-                                            foreach ($fundingSourceList as $fundingSource) {
-                                            ?>
+                                            foreach ($fundingSourceList as $fundingSource) { ?>
                                                 <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($covid19Info['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                             <?php } ?>
                                         </select>
@@ -566,7 +564,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     provinceName = true;
     facilityName = true;
     machineName = true;
-    tableRowId = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
+    tableRowId = <?php echo (empty($covid19TestInfo)) ? (2) : count($covid19TestInfo) + 1; ?>;
     deletedRow = [];
 
     function getfacilityDetails(obj) {

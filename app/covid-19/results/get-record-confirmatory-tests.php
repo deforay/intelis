@@ -1,5 +1,7 @@
 <?php
 
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
@@ -22,13 +24,13 @@ $tableName = "form_covid19";
 $primaryKey = "covid19_id";
 
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
 if ($general->isSTSInstance()) {
-     $sampleCode = 'remote_sample_code';
-} else if ($general->isStandaloneInstance()) {
-     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
-     $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+    $sampleCode = 'remote_sample_code';
+} elseif ($general->isStandaloneInstance()) {
+    $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+    $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
 }
 if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
      array_unshift($orderColumns, "vl.covid19_id");
@@ -67,7 +69,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
+          if ($sWhereSub === "") {
                $sWhereSub .= "(";
           } else {
                $sWhereSub .= " AND (";
@@ -112,49 +114,49 @@ $t_start_date = '';
 $t_end_date = '';
 if (!empty($_POST['sampleCollectionDate'])) {
      $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+     if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
           $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
      }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+     if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
           $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
      }
 }
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
      $sWhere = ' WHERE ' . $sWhere;
-     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
           $sWhere = $sWhere . ' AND b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) == trim((string) $end_date)) {
+          if (trim((string) $start_date) === trim((string) $end_date)) {
                $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
           } else {
                $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
      }
 
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
           $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
      }
-     if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
+     if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           if ($_POST['status'] == 'no_result') {
-               $statusCondition = ' AND (vl.result is NULL OR vl.result ="") AND vl.result_status != ' . SAMPLE_STATUS\REJECTED;
-          } else if ($_POST['status'] == 'result') {
-               $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !="" AND vl. != ' . SAMPLE_STATUS\REJECTED . ')';
+              $statusCondition = ' AND (vl.result is NULL OR vl.result ="") AND vl.result_status != ' . REJECTED;
+          } elseif ($_POST['status'] == 'result') {
+              $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !="" AND vl. != ' . REJECTED . ')';
           } else {
-               $statusCondition = ' AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
+               $statusCondition = ' AND vl.result_status = ' . REJECTED;
           }
-          $sWhere = $sWhere . $statusCondition;
+          $sWhere .= $statusCondition;
      }
 
-     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
+     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
           $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
      }
-     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
+     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
           $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
      }
 } else {
-     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
           $setWhr = 'where';
           $sWhere = ' WHERE ' . $sWhere;
           $sWhere = $sWhere . ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -162,7 +164,7 @@ if (!empty($sWhere)) {
 
      if (!empty($_POST['sampleCollectionDate'])) {
           if (isset($setWhr)) {
-               if (trim((string) $start_date) == trim((string) $end_date)) {
+               if (trim((string) $start_date) === trim((string) $end_date)) {
                     $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
                } else {
                     $sWhere = $sWhere . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -175,7 +177,7 @@ if (!empty($sWhere)) {
      }
 
 
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND f.facility_id IN (' . $_POST['facilityName'] . ')';
           } else {
@@ -185,31 +187,31 @@ if (!empty($sWhere)) {
           }
      }
 
-     if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
+     if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           if (isset($setWhr)) {
                if ($_POST['status'] == 'no_result') {
-                    $statusCondition = ' AND  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
-               } else if ($_POST['status'] == 'result') {
-                    $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status != ' . SAMPLE_STATUS\REJECTED . ')';
+                   $statusCondition = ' AND  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . REJECTED;
+               } elseif ($_POST['status'] == 'result') {
+                   $statusCondition = ' AND (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status != ' . REJECTED . ')';
                } else {
-                    $statusCondition = ' AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
+                    $statusCondition = ' AND vl.result_status = ' . REJECTED;
                }
-               $sWhere = $sWhere . $statusCondition;
+               $sWhere .= $statusCondition;
           } else {
                $setWhr = 'where';
                $sWhere = ' WHERE ' . $sWhere;
                if ($_POST['status'] == 'no_result') {
-                    $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
-               } else if ($_POST['status'] == 'result') {
-                    $statusCondition = ' (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status != ' . SAMPLE_STATUS\REJECTED . ')';
+                   $statusCondition = '  (vl.result is NULL OR vl.result ="")  AND vl.result_status = ' . REJECTED;
+               } elseif ($_POST['status'] == 'result') {
+                   $statusCondition = ' (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status != ' . REJECTED . ')';
                } else {
-                    $statusCondition = ' vl.result_status = ' . SAMPLE_STATUS\REJECTED;
+                    $statusCondition = ' vl.result_status = ' . REJECTED;
                }
-               $sWhere = $sWhere . $statusCondition;
+               $sWhere .= $statusCondition;
           }
      }
 
-     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
+     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
           } else {
@@ -218,7 +220,7 @@ if (!empty($sWhere)) {
                $sWhere = $sWhere . ' vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
           }
      }
-     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
+     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
           } else {
@@ -231,9 +233,9 @@ if (!empty($sWhere)) {
 $dWhere = '';
 // Only approved results can be printed
 if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
-     if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
-          if (trim($sWhere) != '') {
-               $sWhere = $sWhere . " AND ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
+     if (!isset($_POST['status']) || trim((string) $_POST['status']) === '') {
+          if (trim($sWhere) !== '') {
+               $sWhere .= " AND ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
           } else {
                $sWhere = "WHERE ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
           }
@@ -241,12 +243,12 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
 
      $dWhere = "WHERE ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
 } else {
-     if (trim($sWhere) != '') {
-          $sWhere = $sWhere . "  AND vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+     if (trim($sWhere) !== '') {
+          $sWhere = $sWhere . "  AND vl.result_status != " . RECEIVED_AT_CLINIC;
      } else {
-          $sWhere = "WHERE vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+          $sWhere = "WHERE vl.result_status != " . RECEIVED_AT_CLINIC;
      }
-     $dWhere = "WHERE vl.result_statu != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+     $dWhere = "WHERE vl.result_statu != " . RECEIVED_AT_CLINIC;
 }
 
 
@@ -277,12 +279,7 @@ $aResultTotal = $db->rawQuery("SELECT * FROM form_covid19 as vl LEFT JOIN facili
 $iTotal = count($aResultTotal);
 
 
-$output = array(
-     "sEcho" => (int) $_POST['sEcho'],
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
-     "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
      $row = [];

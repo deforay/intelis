@@ -1,5 +1,9 @@
 <?php
 
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\ON_HOLD;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\TEST_FAILED;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -22,22 +26,21 @@ $module = $_POST['module'];
 if ($module == 'vl') {
     $mainTableName = "form_vl";
     $rejectionTableName = 'r_vl_sample_rejection_reasons';
-} else if ($module == 'eid') {
+} elseif ($module == 'eid') {
     $mainTableName = "form_eid";
     $rejectionTableName = 'r_eid_sample_rejection_reasons';
     $eidObj = ContainerRegistry::get(EidService::class);
     $eidResults = $eidObj->getEidResults();
-} else if ($module == 'covid19') {
+} elseif ($module == 'covid19') {
     $mainTableName = "form_covid19";
     $rejectionTableName = 'r_covid19_sample_rejection_reasons';
-
     /** @var Covid19Service $covid19Service */
     $covid19Service = ContainerRegistry::get(Covid19Service::class);
     $covid19Results = $covid19Service->getCovid19Results();
-} else if ($module == 'hepatitis') {
+} elseif ($module == 'hepatitis') {
     $mainTableName = "form_hepatitis";
     $rejectionTableName = 'r_hepatitis_sample_rejection_reasons';
-} else if ($module == 'tb') {
+} elseif ($module == 'tb') {
     $mainTableName = "form_tb";
     $rejectionTableName = 'r_tb_sample_rejection_reasons';
 }
@@ -147,7 +150,7 @@ if (!empty($columnSearch) && $columnSearch != '') {
 $sOrder = 'temp_sample_id ASC';
 $sWhere[] = "temp_sample_status=0 AND imported_by ='$importedBy' ";
 $whereCondition = "";
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $whereCondition = "WHERE " . implode(" AND ", $sWhere);
 }
 $sQuery = "$sQuery $whereCondition ORDER BY temp_sample_id ASC";
@@ -175,21 +178,21 @@ foreach ($rResult as $aRow) {
     $controlCode = "'" . $aRow['sample_type'] . "'";
     $color = '';
     $status = '';
-    if (isset($aRow['sample_code']) && trim((string) $aRow['sample_code']) != '') {
+    if (isset($aRow['sample_code']) && trim((string) $aRow['sample_code']) !== '') {
         $batchCodeQuery = "SELECT batch_code from batch_details as b_d INNER JOIN $mainTableName as vl ON vl.sample_batch_id = b_d.batch_id WHERE vl.sample_code = ?";
-        $batchCodeResult = $db->rawQueryOne($batchCodeQuery, array($aRow['sample_code']));
+        $batchCodeResult = $db->rawQueryOne($batchCodeQuery, [$aRow['sample_code']]);
         if (!empty($batchCodeResult)) {
             $batchCode = "'" . $batchCodeResult['batch_code'] . "'";
             $aRow['batch_code'] = $batchCodeResult['batch_code'];
         }
     }
-    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     } else {
         $aRow['sample_collection_date'] = '';
     }
     // Always show datepicker for test dates
-    if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) !== '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
         // Has existing date - show datepicker with the date pre-filled
         $existingDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
         $aRow['sample_tested_datetime'] = '<input type="text" class="test-date-picker form-control" id="testDate' . $aRow['temp_sample_id'] . '"
@@ -223,25 +226,23 @@ foreach ($rResult as $aRow) {
     //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['temp_sample_id'] . '"  value="' . $aRow['temp_sample_id'] . '" onclick="toggleTest(this);"  />';
     $status = '<select class="form-control"  name="status[]" id="' . $aRow['temp_sample_id'] . '" title="Please select status" onchange="toggleTest(this,' . $sampleCode . ')">
 			<option value="">-- Select --</option>
-			<option value="' . SAMPLE_STATUS\ACCEPTED . '" ' . ($aRow['result_status'] == SAMPLE_STATUS\ACCEPTED ? "selected=selected" : "") . '>Accepted</option>
-			<option value="' . SAMPLE_STATUS\ON_HOLD . '" ' . ($aRow['result_status'] == SAMPLE_STATUS\ON_HOLD ? "selected=selected" : "") . '>Hold</option>
-			<option value="' . SAMPLE_STATUS\REJECTED . '" ' . ($aRow['result_status'] == SAMPLE_STATUS\REJECTED  ? "selected=selected" : "") . '>Rejected</option>
-			<option value="' . SAMPLE_STATUS\TEST_FAILED . '" ' . ($aRow['result_status'] == SAMPLE_STATUS\TEST_FAILED  ? "selected=selected" : "") . '>Failed</option>
+			<option value="' . ACCEPTED . '" ' . ($aRow['result_status'] == ACCEPTED ? "selected=selected" : "") . '>Accepted</option>
+			<option value="' . ON_HOLD . '" ' . ($aRow['result_status'] == ON_HOLD ? "selected=selected" : "") . '>Hold</option>
+			<option value="' . REJECTED . '" ' . ($aRow['result_status'] == REJECTED  ? "selected=selected" : "") . '>Rejected</option>
+			<option value="' . TEST_FAILED . '" ' . ($aRow['result_status'] == TEST_FAILED  ? "selected=selected" : "") . '>Failed</option>
 			</select><br><br>';
     //}
     //sample to control & control to sample
     if (!empty($scResult) && !empty($inResult) && !empty($inResult[0]) && !empty($scResult) && $inResult[0]['number_of_in_house_controls'] > 0 && $tsrResult[0]['count'] > 0 && $tsrResult[0]['count'] > $refno) {
         $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">-- Select --</option>';
+    } elseif ($aRow['sample_type'] == 'S' || $aRow['sample_type'] == 's') {
+        $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControlAlert(' . $totalControls . ')"><option value="">-- Select --</option>';
     } else {
-        if ($aRow['sample_type'] == 'S' || $aRow['sample_type'] == 's') {
-            $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControlAlert(' . $totalControls . ')"><option value="">-- Select --</option>';
-        } else {
-            $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">-- Select --</option>';
-        }
+        $controlName = '<select class="form-control"  name="controlName[]" id="controlName' . $aRow['temp_sample_id'] . '" title="Please select control" onchange="sampleToControl(this,' . $controlCode . ',' . $aRow['temp_sample_id'] . ')"><option value="">-- Select --</option>';
     }
 
     foreach ($scResult as $control) {
-        if (trim((string) $control['r_sample_control_name']) != '') {
+        if (trim((string) $control['r_sample_control_name']) !== '') {
             $controlName .= '<option value="' . $control['r_sample_control_name'] . '" ' . ($aRow['sample_type'] == ($control['r_sample_control_name']) ? "selected=selected" : "") . '>' . ($control['r_sample_control_name']) . '</option>';
         }
     }

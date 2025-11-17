@@ -9,7 +9,7 @@ if (count($adminCount) == 0) {
 }
 
 
-function bgGradient($baseColor)
+function bgGradient($baseColor): string
 {
     if ($baseColor === 'red') {
         // Two shades of red
@@ -104,7 +104,7 @@ $bgColor = $general->isSTSInstance() ? 'red' : 'blue';
         }
         $(document).ready(function() {
             <?php
-            if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) != "") {
+            if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) !== "") {
             ?>
                 alert("<?php echo $_SESSION['alertMsg']; ?>");
             <?php

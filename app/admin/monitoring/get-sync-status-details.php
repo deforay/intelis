@@ -65,28 +65,28 @@ $sQuery = "SELECT f.facility_id,
             FROM facility_details AS f
                 LEFT JOIN geographical_divisions as g_d_s ON g_d_s.geo_id = f.facility_state_id
                 LEFT JOIN geographical_divisions as g_d_d ON g_d_d.geo_id = f.facility_district_id ";
-if (isset($_POST['testType']) && trim((string) $_POST['testType']) != '' && isset($_POST['labId']) && trim((string) $_POST['labId']) != '') {
+if (isset($_POST['testType']) && trim((string) $_POST['testType']) !== '' && isset($_POST['labId']) && trim((string) $_POST['labId']) !== '') {
     $sWhere[] = ' f.facility_id IN (SELECT DISTINCT facility_id from ' . $table . ' WHERE lab_id = ' . base64_decode((string) $_POST['labId']) . ') ';
 }
-if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
     $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
-if (isset($_POST['province']) && trim((string) $_POST['province']) != '') {
+if (isset($_POST['province']) && trim((string) $_POST['province']) !== '') {
     $sWhere[] = ' f.facility_state_id = "' . $_POST['province'] . '"';
 }
-if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
     $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
 if (!empty($sWhere)) {
     $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);
 }
-$sQuery = $sQuery . " ORDER BY latestSync DESC, f.facility_name ASC";
+$sQuery .= " ORDER BY latestSync DESC, f.facility_name ASC";
 
 $_SESSION['labSyncStatusDetails'] = $sQuery;
 
 $rResult = $db->rawQuery($sQuery);
 foreach ($rResult as $key => $aRow) { ?>
-    <tr data-facilityId="<?= base64_encode((string) $aRow['facility_id']); ?>" data-labId="<?= htmlspecialchars((string) $_POST['labId']); ?>" data-url="<?php echo urlencode($url); ?>">
+    <tr data-facilityId="<?= base64_encode((string) $aRow['facility_id']); ?>" data-labId="<?= htmlspecialchars((string) $_POST['labId']); ?>" data-url="<?php echo urlencode((string) $url); ?>">
         <td>
             <?= htmlspecialchars((string) $aRow['facility_name']); ?>
         </td>

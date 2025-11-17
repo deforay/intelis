@@ -76,11 +76,11 @@ $vlTestReasonQuery = "SELECT * FROM r_generic_test_reasons WHERE test_reason_sta
 $testReason = $db->query($vlTestReasonQuery);
 
 $vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
-$genericResultInfo = $db->rawQueryOne($vlQuery, array($id));
+$genericResultInfo = $db->rawQueryOne($vlQuery, [$id]);
 
 $genericResultInfo['patient_dob'] = DateUtility::humanReadableDateFormat($genericResultInfo['patient_dob'] ?? null);
 
-if (isset($genericResultInfo['sample_collection_date']) && trim((string) $genericResultInfo['sample_collection_date']) != '' && $genericResultInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
+if (isset($genericResultInfo['sample_collection_date']) && trim((string) $genericResultInfo['sample_collection_date']) !== '' && $genericResultInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
 	$sampleCollectionDate = $genericResultInfo['sample_collection_date'];
 	$expStr = explode(" ", (string) $genericResultInfo['sample_collection_date']);
 	$genericResultInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
@@ -89,14 +89,14 @@ if (isset($genericResultInfo['sample_collection_date']) && trim((string) $generi
 	$genericResultInfo['sample_collection_date'] = DateUtility::getCurrentDateTime();
 }
 
-if (isset($genericResultInfo['sample_dispatched_datetime']) && trim((string) $genericResultInfo['sample_dispatched_datetime']) != '' && $genericResultInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+if (isset($genericResultInfo['sample_dispatched_datetime']) && trim((string) $genericResultInfo['sample_dispatched_datetime']) !== '' && $genericResultInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $genericResultInfo['sample_dispatched_datetime']);
 	$genericResultInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['sample_dispatched_datetime'] = '';
 }
 
-if (isset($genericResultInfo['result_approved_datetime']) && trim((string) $genericResultInfo['result_approved_datetime']) != '' && $genericResultInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
+if (isset($genericResultInfo['result_approved_datetime']) && trim((string) $genericResultInfo['result_approved_datetime']) !== '' && $genericResultInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
 	$sampleCollectionDate = $genericResultInfo['result_approved_datetime'];
 	$expStr = explode(" ", (string) $genericResultInfo['result_approved_datetime']);
 	$genericResultInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
@@ -105,27 +105,27 @@ if (isset($genericResultInfo['result_approved_datetime']) && trim((string) $gene
 	$genericResultInfo['result_approved_datetime'] = '';
 }
 
-if (isset($genericResultInfo['treatment_initiated_date']) && trim((string) $genericResultInfo['treatment_initiated_date']) != '' && $genericResultInfo['treatment_initiated_date'] != '0000-00-00') {
+if (isset($genericResultInfo['treatment_initiated_date']) && trim((string) $genericResultInfo['treatment_initiated_date']) !== '' && $genericResultInfo['treatment_initiated_date'] != '0000-00-00') {
 	$genericResultInfo['treatment_initiated_date'] = DateUtility::humanReadableDateFormat($genericResultInfo['treatment_initiated_date']);
 } else {
 	$genericResultInfo['treatment_initiated_date'] = '';
 }
 
-if (isset($genericResultInfo['test_requested_on']) && trim((string) $genericResultInfo['test_requested_on']) != '' && $genericResultInfo['test_requested_on'] != '0000-00-00') {
+if (isset($genericResultInfo['test_requested_on']) && trim((string) $genericResultInfo['test_requested_on']) !== '' && $genericResultInfo['test_requested_on'] != '0000-00-00') {
 	$genericResultInfo['test_requested_on'] = DateUtility::humanReadableDateFormat($genericResultInfo['test_requested_on']);
 } else {
 	$genericResultInfo['test_requested_on'] = '';
 }
 
 
-if (isset($genericResultInfo['sample_received_at_hub_datetime']) && trim((string) $genericResultInfo['sample_received_at_hub_datetime']) != '' && $genericResultInfo['sample_received_at_hub_datetime'] != '0000-00-00 00:00:00') {
+if (isset($genericResultInfo['sample_received_at_hub_datetime']) && trim((string) $genericResultInfo['sample_received_at_hub_datetime']) !== '' && $genericResultInfo['sample_received_at_hub_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $genericResultInfo['sample_received_at_hub_datetime']);
 	$genericResultInfo['sample_received_at_hub_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['sample_received_at_hub_datetime'] = '';
 }
 
-if (isset($genericResultInfo['sample_received_at_lab_datetime']) && trim((string) $genericResultInfo['sample_received_at_lab_datetime']) != '' && $genericResultInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+if (isset($genericResultInfo['sample_received_at_lab_datetime']) && trim((string) $genericResultInfo['sample_received_at_lab_datetime']) !== '' && $genericResultInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $genericResultInfo['sample_received_at_lab_datetime']);
 	$genericResultInfo['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
@@ -133,14 +133,14 @@ if (isset($genericResultInfo['sample_received_at_lab_datetime']) && trim((string
 }
 
 
-if (isset($genericResultInfo['sample_tested_datetime']) && trim((string) $genericResultInfo['sample_tested_datetime']) != '' && $genericResultInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+if (isset($genericResultInfo['sample_tested_datetime']) && trim((string) $genericResultInfo['sample_tested_datetime']) !== '' && $genericResultInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $genericResultInfo['sample_tested_datetime']);
 	$genericResultInfo['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['sample_tested_datetime'] = '';
 }
 
-if (isset($genericResultInfo['result_dispatched_datetime']) && trim((string) $genericResultInfo['result_dispatched_datetime']) != '' && $genericResultInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+if (isset($genericResultInfo['result_dispatched_datetime']) && trim((string) $genericResultInfo['result_dispatched_datetime']) !== '' && $genericResultInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $genericResultInfo['result_dispatched_datetime']);
 	$genericResultInfo['result_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
@@ -148,28 +148,28 @@ if (isset($genericResultInfo['result_dispatched_datetime']) && trim((string) $ge
 }
 
 //Set Date of demand
-if (isset($genericResultInfo['date_test_ordered_by_physician']) && trim((string) $genericResultInfo['date_test_ordered_by_physician']) != '' && $genericResultInfo['date_test_ordered_by_physician'] != '0000-00-00') {
+if (isset($genericResultInfo['date_test_ordered_by_physician']) && trim((string) $genericResultInfo['date_test_ordered_by_physician']) !== '' && $genericResultInfo['date_test_ordered_by_physician'] != '0000-00-00') {
 	$genericResultInfo['date_test_ordered_by_physician'] = DateUtility::humanReadableDateFormat($genericResultInfo['date_test_ordered_by_physician']);
 } else {
 	$genericResultInfo['date_test_ordered_by_physician'] = '';
 }
 
 //Set Dispatched From Clinic To Lab Date
-if (isset($genericResultInfo['sample_dispatched_datetime']) && trim($genericResultInfo['sample_dispatched_datetime']) != '' && $genericResultInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $genericResultInfo['sample_dispatched_datetime']);
+if (isset($genericResultInfo['sample_dispatched_datetime']) && trim((string) $genericResultInfo['sample_dispatched_datetime']) !== '' && $genericResultInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $genericResultInfo['sample_dispatched_datetime']);
 	$genericResultInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['sample_dispatched_datetime'] = '';
 }
 //Set Date of result printed datetime
-if (isset($genericResultInfo['result_printed_datetime']) && trim((string) $genericResultInfo['result_printed_datetime']) != "" && $genericResultInfo['result_printed_datetime'] != '0000-00-00 00:00:00') {
+if (isset($genericResultInfo['result_printed_datetime']) && trim((string) $genericResultInfo['result_printed_datetime']) !== "" && $genericResultInfo['result_printed_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $genericResultInfo['result_printed_datetime']);
 	$genericResultInfo['result_printed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$genericResultInfo['result_printed_datetime'] = '';
 }
 //reviewed datetime
-if (isset($genericResultInfo['result_reviewed_datetime']) && trim((string) $genericResultInfo['result_reviewed_datetime']) != '' && $genericResultInfo['result_reviewed_datetime'] != null && $genericResultInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+if (isset($genericResultInfo['result_reviewed_datetime']) && trim((string) $genericResultInfo['result_reviewed_datetime']) !== '' && $genericResultInfo['result_reviewed_datetime'] != null && $genericResultInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $genericResultInfo['result_reviewed_datetime']);
 	$genericResultInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
@@ -193,21 +193,17 @@ if ($genericResultInfo['patient_last_name'] != '') {
 	$patientLastName = '';
 }
 $patientFullName = [];
-if (trim((string) $patientFirstName) != '') {
+if (trim((string) $patientFirstName) !== '') {
 	$patientFullName[] = trim((string) $patientFirstName);
 }
-if (trim((string) $patientMiddleName) != '') {
+if (trim((string) $patientMiddleName) !== '') {
 	$patientFullName[] = trim((string) $patientMiddleName);
 }
-if (trim((string) $patientLastName) != '') {
+if (trim((string) $patientLastName) !== '') {
 	$patientFullName[] = trim((string) $patientLastName);
 }
 
-if (!empty($patientFullName)) {
-	$patientFullName = implode(" ", $patientFullName);
-} else {
-	$patientFullName = '';
-}
+$patientFullName = $patientFullName === [] ? '' : implode(" ", $patientFullName);
 $testMethods = $genericTestsService->getTestMethod($genericResultInfo['test_type']);
 //$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
 $testResultUnits = $genericTestsService->getTestResultUnit($genericResultInfo['test_type']);
@@ -254,7 +250,7 @@ if (isset($genericResultInfo['facility_id']) && $genericResultInfo['facility_id'
 						FROM facility_details as f
 						LEFT JOIN user_details as u ON u.user_id=f.contact_person
 						WHERE f.facility_id= ? AND f.status='active'";
-	$facilityResult = $db->rawQuery($facilityQuery, array($genericResultInfo['facility_id']));
+	$facilityResult = $db->rawQuery($facilityQuery, [$genericResultInfo['facility_id']]);
 }
 if (!isset($facilityResult[0]['facility_code'])) {
 	$facilityResult[0]['facility_code'] = '';
@@ -428,7 +424,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 								<div class="col-md-6">
 									<label class="col-lg-5" for="sampleReordered"> <?= _translate("Sample Reordered"); ?></label>
 									<div class="col-lg-7">
-										<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $genericResultInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample">
+										<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $genericResultInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample">
 
 									</div>
 								</div>
@@ -481,21 +477,21 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 										</div>
 									</div>
 								</div>
-								<div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) != '' || trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
-									<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+								<div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '' || trim((string) $facilityResult[0]['contact_person']) !== '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '') ? '' : 'none'; ?>;">
 										<strong><?= _translate("Clinic Email(s)"); ?></strong>
 									</div>
-									<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '') ? '' : 'none'; ?>;">
 										<?php echo $facilityResult[0]['facility_emails']; ?></div>
-									<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '') ? '' : 'none'; ?>;">
 										<strong><?= _translate("Clinic Mobile No.(s)"); ?></strong>
 									</div>
-									<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '') ? '' : 'none'; ?>;">
 										<?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
-									<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) !== '') ? '' : 'none'; ?>;">
 										<strong><?= _translate("Clinic Contact Person"); ?> -</strong>
 									</div>
-									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;">
+									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) !== '') ? '' : 'none'; ?>;">
 										<?php echo ($user); ?></div>
 								</div>
 
@@ -697,7 +693,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 													<option value=""><?= _translate("-- Select --"); ?></option>
 													<?php foreach ($testReason as $treason) { ?>
 														<option value="<?php echo $treason['test_reason_id']; ?>" <?php echo ($genericResultInfo['reason_for_testing'] == $treason['test_reason_id']) ? 'selected="selected"' : ''; ?>>
-															<?php echo (string) $treason['test_reason']; ?></option>
+															<?php echo $treason['test_reason']; ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -908,7 +904,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-md-6 change-reason" style="display:<?php echo (empty($reasonForChange)) ? "none" : "block"; ?>;">
+											<div class="col-md-6 change-reason" style="display:<?php echo ($reasonForChange === '' || $reasonForChange === '0') ? "none" : "block"; ?>;">
 												<label class="col-lg-5 control-label" for="reasonForResultChanges"><?= _translate("Reason For Changes in Result"); ?><span class="mandatory">*</span></label>
 												<div class="col-lg-7">
 													<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="<?= _translate('Enter Reason For Result Changes'); ?>" title="<?= _translate('Please enter reason for result changes'); ?>" style="width:100%;"><?= $reasonForChange; ?></textarea>
@@ -951,7 +947,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 <script>
 	let provinceName = true;
 	let facilityName = true;
-	let testCounter = <?php echo (!empty($genericTestInfo)) ? (count($genericTestInfo)) : 1; ?>;
+	let testCounter = <?php echo (empty($genericTestInfo)) ? (1) : count($genericTestInfo); ?>;
 	let __clone = null;
 	let reason = null;
 	let resultValue = null;

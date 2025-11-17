@@ -23,13 +23,13 @@ $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 
-if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) != "") {
+if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) !== "") {
      $rResult = $db->rawQuery($_SESSION['highViralResult']);
 
      $output = [];
-     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL");
+     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL"];
      if ($general->isStandaloneInstance()) {
-          $headings = array('Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL");
+          $headings = ['Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL"];
      }
      if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
           $headings = MiscUtility::removeMatchingElements($headings, ["Patient's Name"]);
@@ -42,30 +42,18 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           //sample collecion date
           $sampleCollectionDate = '';
           $sampleTestDate = '';
-          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $aRow['sample_collection_date']);
                $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
           }
-          if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+          if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) !== '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $aRow['sample_tested_datetime']);
                $sampleTestDate = date("d-m-Y", strtotime($expStr[0]));
           }
 
-          if ($aRow['patient_first_name'] != '') {
-               $patientFname = $aRow['patient_first_name'];
-          } else {
-               $patientFname = '';
-          }
-          if ($aRow['patient_middle_name'] != '') {
-               $patientMname = $aRow['patient_middle_name'];
-          } else {
-               $patientMname = '';
-          }
-          if ($aRow['patient_last_name'] != '') {
-               $patientLname = $aRow['patient_last_name'];
-          } else {
-               $patientLname = '';
-          }
+          $patientFname = $aRow['patient_first_name'] != '' ? $aRow['patient_first_name'] : '';
+          $patientMname = $aRow['patient_middle_name'] != '' ? $aRow['patient_middle_name'] : '';
+          $patientLname = $aRow['patient_last_name'] != '' ? $aRow['patient_last_name'] : '';
           $row[] = $aRow['sample_code'];
           if (!$general->isStandaloneInstance()) {
                $row[] = $aRow['remote_sample_code'];
@@ -91,8 +79,9 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
      }
      if ($_POST['markAsComplete'] == 'true') {
           $vlId = implode(",", $vlSampleId);
-          if (!empty($vlId))
-               $db->rawQuery("UPDATE form_vl SET contact_complete_status = 'yes' WHERE vl_sample_id IN (" . $vlId . ")");
+          if ($vlId !== '' && $vlId !== '0') {
+              $db->rawQuery("UPDATE form_vl SET contact_complete_status = 'yes' WHERE vl_sample_id IN (" . $vlId . ")");
+          }
      }
 
      if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 50000) {
@@ -106,32 +95,9 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $excel = new Spreadsheet();
           $sheet = $excel->getActiveSheet();
 
-          $styleArray = array(
-               'font' => array(
-                    'bold' => true,
-                    'size' => '13',
-               ),
-               'alignment' => array(
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-               ),
-               'borders' => array(
-                    'outline' => array(
-                         'style' => Border::BORDER_THIN,
-                    ),
-               )
-          );
+          $styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
 
-          $borderStyle = array(
-               'alignment' => array(
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-               ),
-               'borders' => array(
-                    'outline' => array(
-                         'style' => Border::BORDER_THIN,
-                    ),
-               )
-          );
+          $borderStyle = ['alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
 
           $sheet->mergeCells('A1:AE1');
 

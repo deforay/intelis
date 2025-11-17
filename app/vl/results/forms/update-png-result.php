@@ -50,7 +50,7 @@ $sResult = $db->query($sQuery);
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 //facility details
 $facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
-$facilityResult = $db->rawQuery($facilityQuery, array($vlQueryInfo['facility_id']));
+$facilityResult = $db->rawQuery($facilityQuery, [$vlQueryInfo['facility_id']]);
 if (!isset($facilityResult[0]['facility_state']) || $facilityResult[0]['facility_state'] == '') {
 	$facilityResult[0]['facility_state'] = "";
 }
@@ -69,28 +69,28 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['facility_id'], '-- Selecione --');
 
 
-if (isset($vlQueryInfo['failed_test_date']) && trim((string) $vlQueryInfo['failed_test_date']) != '' && trim((string) $vlQueryInfo['failed_test_date']) != '0000-00-00 00:00:00') {
+if (isset($vlQueryInfo['failed_test_date']) && trim((string) $vlQueryInfo['failed_test_date']) !== '' && trim((string) $vlQueryInfo['failed_test_date']) !== '0000-00-00 00:00:00') {
 	$failedDate = explode(" ", (string) $vlQueryInfo['failed_test_date']);
 	$vlQueryInfo['failed_test_date'] = DateUtility::humanReadableDateFormat($failedDate[0]) . " " . $failedDate[1];
 } else {
 	$vlQueryInfo['failed_test_date'] = '';
 }
-if (isset($vlQueryInfo['art_cd_date']) && trim((string) $vlQueryInfo['art_cd_date']) != '' && $vlQueryInfo['art_cd_date'] != '0000-00-00') {
+if (isset($vlQueryInfo['art_cd_date']) && trim((string) $vlQueryInfo['art_cd_date']) !== '' && $vlQueryInfo['art_cd_date'] != '0000-00-00') {
 	$vlQueryInfo['art_cd_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['art_cd_date']);
 } else {
 	$vlQueryInfo['art_cd_date'] = '';
 }
-if (isset($vlQueryInfo['qc_date']) && trim((string) $vlQueryInfo['qc_date']) != '' && $vlQueryInfo['qc_date'] != '0000-00-00') {
+if (isset($vlQueryInfo['qc_date']) && trim((string) $vlQueryInfo['qc_date']) !== '' && $vlQueryInfo['qc_date'] != '0000-00-00') {
 	$vlQueryInfo['qc_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['qc_date']);
 } else {
 	$vlQueryInfo['qc_date'] = '';
 }
-if (isset($vlQueryInfo['report_date']) && trim((string) $vlQueryInfo['report_date']) != '' && $vlQueryInfo['report_date'] != '0000-00-00') {
+if (isset($vlQueryInfo['report_date']) && trim((string) $vlQueryInfo['report_date']) !== '' && $vlQueryInfo['report_date'] != '0000-00-00') {
 	$vlQueryInfo['report_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['report_date']);
 } else {
 	$vlQueryInfo['report_date'] = '';
 }
-if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_date']) != '' && $vlQueryInfo['clinic_date'] != '0000-00-00') {
+if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_date']) !== '' && $vlQueryInfo['clinic_date'] != '0000-00-00') {
 	$vlQueryInfo['clinic_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['clinic_date']);
 } else {
 	$vlQueryInfo['clinic_date'] = '';
@@ -189,7 +189,7 @@ $disable = "disabled = 'disabled'";
 										<select class="form-control" name="province" id="province" <?php echo $disable; ?> title="Please choose province" style="width:100%;" onchange="getfacilityDetails(this);">
 											<option value=""> -- Select -- </option>
 											<?php foreach ($pdResult as $provinceName) { ?>
-												<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower((string) $facilityResult[0]['facility_state']) . "##" . $stateResult[0]['geo_code'] == strtolower((string) $provinceName['geo_name']) . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>;
+												<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower((string) $facilityResult[0]['facility_state']) . "##" . $stateResult[0]['geo_code'] === strtolower((string) $provinceName['geo_name']) . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>;
 											<?php } ?>
 										</select>
 									</td>
@@ -200,12 +200,10 @@ $disable = "disabled = 'disabled'";
 										<select class="form-control" name="district" id="district" <?php echo $disable; ?> title="Please choose district" onchange="getfacilityDistrictwise(this);" style="width:100%;">
 											<option value=""> -- Select -- </option>
 											<?php
-											foreach ($districtResult as $districtName) {
-											?>
+											foreach ($districtResult as $districtName) { ?>
 												<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($facilityResult[0]['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ($districtName['facility_district']); ?></option>
 											<?php
-											}
-											?>
+											} ?>
 										</select>
 									</td>
 									<td style="width:14%" class="labels">
@@ -325,12 +323,10 @@ $disable = "disabled = 'disabled'";
 										<select class="form-control" id="currentRegimen" name="currentRegimen" <?php echo $disable; ?> title="Please choose ART Regimen" onchange="checkValue();" style="width:100%;">
 											<option value=""> -- Select -- </option>
 											<?php
-											foreach ($aResult as $parentRow) {
-											?>
+											foreach ($aResult as $parentRow) { ?>
 												<option value="<?php echo $parentRow['art_code']; ?>" <?php echo ($vlQueryInfo['current_regimen'] == $parentRow['art_code']) ? "selected='selected'" : "" ?>><?php echo $parentRow['art_code']; ?></option>
 											<?php
-											}
-											?>
+											} ?>
 											<option value="other">Other</option>
 										</select>
 										<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="New Art Regimen" title="Please enter new ART regimen" style="display:none;width:100%;margin-top:1vh;">
@@ -507,7 +503,7 @@ $disable = "disabled = 'disabled'";
 											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlvlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalViralLoadResult');" class="testingPlatformSelect form-control isRequired" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
-													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
+													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
 												<?php
 												}
 												?>
@@ -565,7 +561,7 @@ $disable = "disabled = 'disabled'";
 											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults', 'failedvlResult');" class="testingPlatformSelect form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
-													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['failed_test_tech'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
+													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>" <?php echo ($vlQueryInfo['failed_test_tech'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?></option>
 												<?php
 												}
 												?>

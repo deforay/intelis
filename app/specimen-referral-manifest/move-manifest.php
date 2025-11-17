@@ -214,7 +214,7 @@ if ($module == 'generic-tests') {
                                     <span class="mandatory">*</span>
                                 </label>
                                 <div class="col-lg-7">
-                                    <select class="form-control select2 isRequired" id="assignLab" name="assignLab" title="Choose one assign lab" onchange="checkLab(this);" style="width:100%;">
+                                    <select class="form-control select2 isRequired" id="assignLab" name="assignLab" title="<?= _translate("Choose the Testing Lab where these manifests are being moved to"); ?>" onchange="checkLab(this);" style="width:100%;">
                                         <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                     </select>
                                 </div>
@@ -223,11 +223,11 @@ if ($module == 'generic-tests') {
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="reasonForChange" class="col-lg-5 control-label">
-                                    <?php echo _translate("Reason for Moving Manifest"); ?>
+                                    <?php echo _translate("Reason for Moving Manifest(s)"); ?>
                                     <span class="mandatory">*</span>
                                 </label>
                                 <div class="col-lg-7">
-                                    <textarea class="form-control isRequired" id="reasonForChange" name="reasonForChange" placeholder="<?= _translate('Enter reason for moving this manifest'); ?>" title="<?= _translate('Enter the Reason for moving this manifest', true); ?>" rows="3"></textarea>
+                                    <textarea class="form-control isRequired" id="reasonForChange" name="reasonForChange" placeholder="<?= _translate('Enter the reason for moving the selected manifest(s)'); ?>" title="<?= _translate("Enter the reason for moving the selected manifest(s)", true); ?> rows="3"></textarea>
                                 </div>
                             </div>
                         </div>

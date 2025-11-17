@@ -39,7 +39,9 @@ function loadState(string $path): array
         $raw = @file_get_contents($path);
         if ($raw !== false) {
             $data = json_decode($raw, true);
-            if (is_array($data)) return $data;
+            if (is_array($data)) {
+                return $data;
+            }
         }
     }
     return [];
@@ -64,10 +66,14 @@ function setStateAndMaybeAlert(
 
 function assertWritableDir(string $dir): bool
 {
-    if (!is_dir($dir) || !is_writable($dir)) return false;
+    if (!is_dir($dir) || !is_writable($dir)) {
+        return false;
+    }
     $probe = rtrim($dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '.wcheck';
     $ok = @file_put_contents($probe, 'x') !== false;
-    if ($ok) MiscUtility::deleteFile($probe);
+    if ($ok) {
+        MiscUtility::deleteFile($probe);
+    }
     return $ok;
 }
 
@@ -81,7 +87,7 @@ foreach ($paths as $name => $path) {
         $state,
         $key,
         $ok ? 'ok' : 'critical',
-        function ($old, $new) use ($name, $path) {
+        function ($old, $new) use ($name, $path): void {
             if ($new === 'critical') {
                 SystemService::insertSystemAlert(
                     'error',
@@ -124,7 +130,7 @@ setStateAndMaybeAlert(
     $state,
     'disk',
     $diskStatus,
-    function ($old, $new) use ($diskMount, $usedPct, $level) {
+    function ($old, $new) use ($diskMount, $usedPct, $level): void {
         if ($new === 'warn' || $new === 'critical') {
             SystemService::insertSystemAlert(
                 $level,
@@ -158,7 +164,7 @@ try {
         $mysqlStatus = 'warn';
         $mysqlLevel  = 'warn';
     }
-} catch (Throwable $e) {
+} catch (Throwable) {
     $mysqlStatus = 'critical';
     $mysqlLevel  = 'critical';
 }
@@ -167,7 +173,7 @@ setStateAndMaybeAlert(
     $state,
     'mysql',
     $mysqlStatus,
-    function ($old, $new) use ($mysqlLevel, $latencyMs) {
+    function ($old, $new) use ($mysqlLevel, $latencyMs): void {
         if ($new === 'critical') {
             SystemService::insertSystemAlert(
                 'critical',

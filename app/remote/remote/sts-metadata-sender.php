@@ -1,6 +1,8 @@
 <?php
 //get data from STS send to requesting LIS instance
-
+use Laminas\Diactoros\ServerRequest;
+use function iter\toArray;
+use function iter\map;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -10,7 +12,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-require_once(dirname(__FILE__) . "/../../../bootstrap.php");
+require_once(__DIR__ . "/../../../bootstrap.php");
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -29,7 +31,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 $payload = [];
 
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $data = $apiService->getJsonFromRequest($request, decode: true);
 
@@ -304,14 +306,14 @@ if (!empty($data['facilityLastModified'])) {
 }
 
 // Facilities
-$response['facilities'] = iter\toArray(iter\map(function ($facility) {
+$response['facilities'] = toArray(map(function (array $facility): array {
     unset($facility['sts_token'], $facility['sts_token_expiry']);
     return $facility;
 }, $general->fetchDataFromTable('facility_details', $condition)));
 
 
 $updatedFacilities = [];
-if (!empty($response['facilities'])) {
+if (isset($response['facilities']) && $response['facilities'] !== []) {
     $updatedFacilities = array_unique(array_column($response['facilities'], 'facility_id'));
 }
 
@@ -332,7 +334,7 @@ $response['labReportSignatories'] = $general->fetchDataFromTable('lab_report_sig
 
 // Health Facilities
 $condition = [];
-if (!empty($updatedFacilities)) {
+if ($updatedFacilities !== []) {
     $condition[] = "facility_id IN (" . implode(',', $updatedFacilities) . ")";
 }
 if (!empty($data['healthFacilityLastModified'])) {
@@ -344,7 +346,7 @@ $response['healthFacilities'] = $general->fetchDataFromTable('health_facilities'
 
 // Testing Labs
 $condition = [];
-if (!empty($updatedFacilities)) {
+if ($updatedFacilities !== []) {
     $condition[] = "facility_id IN (" . implode(',', $updatedFacilities) . ")";
 }
 if (!empty($data['testingLabsLastModified'])) {
@@ -391,12 +393,7 @@ $response['geoDivisions'] = $general->fetchDataFromTable('geographical_divisions
 // $response['patients'] = $general->fetchDataFromTable('patients', $condition);
 
 
-if (!empty($response)) {
-    // using array_filter without callback will remove keys with empty values
-    $payload = JsonUtility::encodeUtf8Json(array_filter($response));
-} else {
-    $payload = json_encode([]);
-}
+$payload = $response === [] ? json_encode([]) : JsonUtility::encodeUtf8Json(array_filter($response));
 
 $general->addApiTracking($transactionId, 'intelis-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 

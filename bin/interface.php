@@ -13,7 +13,7 @@ if ($isCli === false) {
 // Handle Ctrl+C gracefully (if pcntl extension is available)
 if ($isCli && function_exists('pcntl_signal') && function_exists('pcntl_async_signals')) {
     pcntl_async_signals(true);
-    pcntl_signal(SIGINT, function () {
+    pcntl_signal(SIGINT, function (): void {
         echo PHP_EOL . PHP_EOL;
         echo "⚠️  Interface sync cancelled by user." . PHP_EOL;
         exit(130); // Standard exit code for SIGINT
@@ -30,13 +30,13 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
-use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
+    MiscUtility::safeCliEcho('⚠️  Interfacing is not enabled. Please enable it in configuration.' . PHP_EOL);
     LoggerUtility::logError('Interfacing is not enabled. Please enable it in configuration.');
     exit;
 }
@@ -84,12 +84,10 @@ foreach ($argv as $arg) {
 $lockFile = MiscUtility::getLockFile(__FILE__);
 
 // Only handle lock file if force is NOT used
-if (!$forceExecution) {
-    // Check if the lock file already exists
-    if (!MiscUtility::isLockFileExpired($lockFile)) {
-        echo "Another instance of the script : " . basename(__FILE__) . " is already running." . PHP_EOL;
-        exit;
-    }
+// Check if the lock file already exists
+if (!$forceExecution && !MiscUtility::isLockFileExpired($lockFile)) {
+    echo "Another instance of the script : " . basename(__FILE__) . " is already running." . PHP_EOL;
+    exit;
 }
 
 MiscUtility::touchLockFile($lockFile); // Create or update the lock file
@@ -194,7 +192,7 @@ try {
 
         // First pass to check if any row has "copies"-type unit (but NOT containing "log")
         foreach ($group as $row) {
-            $unit = strtolower(preg_replace('/\s+/', '', (string) ($row['test_unit'] ?? '')));
+            $unit = strtolower((string) preg_replace('/\s+/', '', (string) ($row['test_unit'] ?? '')));
 
             // Skip if it contains "log" - it's not a pure copies unit
             if (str_contains($unit, 'log')) {
@@ -211,7 +209,7 @@ try {
 
         // Second pass to filter
         foreach ($group as $row) {
-            $unit = strtolower(preg_replace('/\s+/', '', (string) ($row['test_unit'] ?? '')));
+            $unit = strtolower((string) preg_replace('/\s+/', '', (string) ($row['test_unit'] ?? '')));
             $isLog = str_contains($unit, 'log');
 
             // If we have pure copies (not log), skip log results
@@ -234,7 +232,7 @@ try {
 
     $interfaceData = $filtered;
 
-    if (empty($interfaceData)) {
+    if ($interfaceData === []) {
         if ($isCli) {
             echo "No results to process" . PHP_EOL;
         }
@@ -246,7 +244,7 @@ try {
     ];
 
     $numberOfResults = 0;
-    if (!empty($interfaceData)) {
+    if ($interfaceData !== []) {
 
         $totalResults = count($interfaceData); // Get the total number of items
         if ($isCli) {
@@ -295,7 +293,7 @@ try {
                 $columnsToSelect = "$primaryKeyColumn, unique_id, sample_code, remote_sample_code, lab_assigned_code";
 
                 // If the table name is there in $additionalColumns, add the additional columns
-                if (!empty($additionalColumns) && array_key_exists($individualTableName, $additionalColumns)) {
+                if ($additionalColumns !== [] && array_key_exists($individualTableName, $additionalColumns)) {
                     $extraColumnsString = implode(', ', $additionalColumns[$individualTableName]);
                     $columnsToSelect = "$primaryKeyColumn, unique_id, $extraColumnsString";
                 }
@@ -363,8 +361,8 @@ try {
             }
 
 
-            $approved = !empty($instrumentDetails['approved_by']) ? json_decode((string) $instrumentDetails['approved_by'], true) : [];
-            $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode((string) $instrumentDetails['reviewed_by'], true) : [];
+            $approved = empty($instrumentDetails['approved_by']) ? [] : json_decode((string) $instrumentDetails['approved_by'], true);
+            $reviewed = empty($instrumentDetails['reviewed_by']) ? [] : json_decode((string) $instrumentDetails['reviewed_by'], true);
             $instrumentId = $instrumentDetails['instrument_id'] ?? null;
             $lowerLimit = $instrumentDetails['lower_limit'] ?? null;
 
@@ -383,9 +381,9 @@ try {
 
                     $unit = trim((string) $result['test_unit']);
 
-                    if ($vlResult == "-1.00") {
+                    if ($vlResult === "-1.00") {
                         $vlResult = "Target Not Detected";
-                    } elseif (strtolower($vlResult) == 'detected' && !empty($lowerLimit)) {
+                    } elseif (strtolower($vlResult) === 'detected' && !empty($lowerLimit)) {
                         $vlResult = "< $lowerLimit";
                     }
 
@@ -396,7 +394,7 @@ try {
                     $interpretedResults = [];
 
 
-                    if (!empty($vlResult) && !in_array(strtolower($vlResult), ['fail', 'failed', 'failure', 'error', 'err'])) {
+                    if ($vlResult !== '' && $vlResult !== '0' && !in_array(strtolower($vlResult), ['fail', 'failed', 'failure', 'error', 'err'])) {
                         $interpretedResults = $vlService->interpretViralLoadResult($vlResult, $unit, $instrumentDetails['low_vl_result_text'] ?? null);
                         if (!empty($interpretedResults)) {
                             $logVal = $interpretedResults['logVal'];
@@ -451,21 +449,21 @@ try {
                     'data_sync' => 0
                 ];
 
-                if ($silent === true) {
+                if ($silent) {
                     unset($data['last_modified_datetime']);
                 }
 
                 if ($formId === COUNTRY\CAMEROON && !empty($result['raw_text'])) {
                     $sampleCode = $tableInfo['sample_code'];
 
-                    $stringToSearch = preg_quote($sampleCode, '/') . '\^CV\s+(\d+)';
+                    $stringToSearch = preg_quote((string) $sampleCode, '/') . '\^CV\s+(\d+)';
 
                     $pattern = "/$stringToSearch/i";
 
-                    $data['cv_number'] = (preg_match($pattern, $result['raw_text'], $matches)) ? trim($matches[1]) : null;
+                    $data['cv_number'] = (preg_match($pattern, (string) $result['raw_text'], $matches)) ? trim($matches[1]) : null;
                 }
 
-                if (strtolower((string) $vlResult) == 'failed' || strtolower((string) $vlResult) == 'fail' || strtolower((string) $vlResult) == 'invalid' || strtolower((string) $vlResult) == 'inconclusive') {
+                if (strtolower((string) $vlResult) === 'failed' || strtolower((string) $vlResult) === 'fail' || strtolower((string) $vlResult) === 'invalid' || strtolower((string) $vlResult) === 'inconclusive') {
                     $data['result_status'] = SAMPLE_STATUS\TEST_FAILED; // Invalid
                 }
 
@@ -506,7 +504,7 @@ try {
                 $logVal = null;
                 $txtVal = null;
                 //set result in result fields
-                if (trim((string) $result['results']) != "") {
+                if (trim((string) $result['results']) !== "") {
 
                     if (str_contains(strtolower((string)$result['results']), 'not detected')) {
                         $eidResult = 'negative';
@@ -539,7 +537,7 @@ try {
                     'data_sync' => 0
                 ];
 
-                if ($silent === true) {
+                if ($silent) {
                     unset($data['last_modified_datetime']);
                 }
 
@@ -581,17 +579,17 @@ try {
                 $txtVal = null;
                 $otherFieldResult = null;
                 $testType = strtolower((string) $tableInfo['hepatitis_test_type']);
-                if ($testType == 'hbv') {
+                if ($testType === 'hbv') {
                     $resultField = "hbv_vl_count";
                     $otherField = "hcv_vl_count";
-                } elseif ($testType == 'hcv') {
+                } elseif ($testType === 'hcv') {
                     $resultField = "hcv_vl_count";
                     $otherField = "hbv_vl_count";
                 } else {
                     continue;
                 }
                 //set result in result fields
-                if (trim((string) $result['results']) != "") {
+                if (trim((string) $result['results']) !== "") {
 
                     $hepatitisResult = trim((string) $result['results']);
                     $unit = trim((string) $result['test_unit']);
@@ -625,7 +623,7 @@ try {
                     'data_sync' => 0
                 ];
 
-                if ($silent === true) {
+                if ($silent) {
                     unset($data['last_modified_datetime']);
                 }
 
@@ -659,7 +657,7 @@ try {
             }
 
             if (!empty($result['added_on'])) {
-                $addedOnValues[] = strtotime($result['added_on']);
+                $addedOnValues[] = strtotime((string) $result['added_on']);
             }
 
             $db->connection('default')->commitTransaction();
@@ -688,7 +686,7 @@ try {
 
     $batchSize = 1000;
 
-    $updateSyncStatus = function ($db, $sqliteDb, $ids, $status, $mysqlConnected, $sqliteConnected) use ($batchSize) {
+    $updateSyncStatus = function ($db, $sqliteDb, $ids, $status, $mysqlConnected, $sqliteConnected) use ($batchSize): void {
         if (!empty($ids)) {
             $currentDateTime = DateUtility::getCurrentDateTime();
 
@@ -756,11 +754,11 @@ try {
         ]);
     }
     // Close SQLite connection
-    if ($sqliteConnected && $sqliteDb !== null) {
+    if ($sqliteConnected && $sqliteDb instanceof \PDO) {
         $sqliteDb = null;
     }
 
-    if (!empty($addedOnValues)) {
+    if ($addedOnValues !== []) {
 
         $maxAddedOn = DateUtility::getDateTime(max($addedOnValues));
 

@@ -52,7 +52,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 $sKey = '';
 $sFormat = '';
-$testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name', 'parent_reason'), false, " test_reason_status like 'active' ");
+$testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", ['test_reason_id', 'test_reason_name', 'parent_reason'], false, " test_reason_status like 'active' ");
 $subTestReasons = $testReasonsResult = [];
 foreach ($testReasonsResultDetails as $row) {
      if ($row['parent_reason'] == 0) {
@@ -412,7 +412,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                        <h3 class="box-title"><?= _translate("Indication for Viral Load Testing"); ?> <span class="mandatory">*</span></h3><small> <?= _translate("(Please choose one):(To be completed by clinician)"); ?></small>
                                                   </div>
                                                   <div class="box-body">
-                                                       <?php if (!empty($testReasonsResult)) {
+                                                       <?php if ($testReasonsResult !== []) {
                                                             foreach ($testReasonsResult as $key => $title) { ?>
                                                                  <div class="row">
                                                                       <div class="col-md-6">
@@ -436,7 +436,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                            </div>
                                                                       </div>
                                                                  <?php } ?>
-                                                                 <?php if (!empty($subTestReasons[$key])) { ?>
+                                                                 <?php if (isset($subTestReasons[$key]) && $subTestReasons[$key] !== []) { ?>
                                                                       <div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:none;">
                                                                            <div class="col-md-6">
                                                                                 <label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>
@@ -692,26 +692,8 @@ foreach ($testReasonsResultDetails as $row) {
           </div>
      </section>
 </div>
-<!-- BARCODESTUFF START -->
-<?php
-if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
-     if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
-          <script src="/assets/js/DYMO.Label.Framework.js"></script>
-          <script src="/uploads/barcode-formats/dymo-format.js"></script>
-          <script src="/assets/js/dymo-print.js"></script>
-     <?php
-     } else if ($global['bar_code_printing'] == 'zebra-printer') {
-     ?>
-          <script src="/assets/js/zebra-browserprint.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-browserprint.js") ?>"></script>
-          <script src="/uploads/barcode-formats/zebra-format.js?v=<?= filemtime(WEB_ROOT . "/uploads/barcode-formats/zebra-format.js") ?>"></script>
-          <script src="/assets/js/zebra-print.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-print.js") ?>"></script>
-<?php
 
-     }
-}
-?>
-<!-- BARCODESTUFF END -->
+<?= CommonService::barcodeScripts(); ?>
 
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
 <script>
@@ -812,9 +794,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-               $sampleCode = htmlspecialchars($_GET['s']);
-               $facilityCode = htmlspecialchars($_GET['f']);
-               $patientID = htmlspecialchars($_GET['p']);
+               $sampleCode = htmlspecialchars((string) $_GET['s']);
+               $facilityCode = htmlspecialchars((string) $_GET['f']);
+               $patientID = htmlspecialchars((string) $_GET['p']);
                echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
           }
           ?>

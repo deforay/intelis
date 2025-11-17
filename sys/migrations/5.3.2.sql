@@ -118,3 +118,4 @@ ALTER TABLE `audit_form_vl` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `
 -- Thana 03-Nov-2025
 ALTER TABLE `form_tb` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
 ALTER TABLE `audit_form_tb` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
+

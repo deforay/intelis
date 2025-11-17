@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Throwable;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
 use Exception;
 use SAMPLE_STATUS;
 use App\Services\TestsService;
@@ -28,12 +30,10 @@ class TestResultImportService
     protected TestResultsService $testResultsService;
     protected CommonService $general;
     protected array $postData;
-    protected string $testType;
     protected string $currentFileName;
 
-    public function __construct(string $testType = 'vl')
+    public function __construct(protected string $testType = 'vl')
     {
-        $this->testType = $testType;
         $this->db = ContainerRegistry::get(DatabaseService::class);
         $this->testResultsService = ContainerRegistry::get(TestResultsService::class);
         $this->general = ContainerRegistry::get(CommonService::class);
@@ -50,7 +50,7 @@ class TestResultImportService
         $userId = $_SESSION['userId'] ?? null;
         if (!empty($userId)) {
             $this->db->where('imported_by', $userId);
-            if (!empty($this->testType)) {
+            if ($this->testType !== '' && $this->testType !== '0') {
                 $this->db->where('module', $this->testType);
             }
             $this->db->delete('temp_sample_import');
@@ -62,7 +62,7 @@ class TestResultImportService
      * @param array $allowedExtensions
      * @return string|array Returns string for text files, array for Excel files
      */
-    public function handleFileUpload(array $allowedExtensions = ['txt', 'csv', 'xls', 'xlsx'], string $operation = 'parse')
+    public function handleFileUpload(array $allowedExtensions = ['txt', 'csv', 'xls', 'xlsx'], string $operation = 'parse'): string|array
     {
         if (
             !isset($_FILES['resultFile']) ||
@@ -73,7 +73,7 @@ class TestResultImportService
         }
 
         $originalFileName = $_FILES['resultFile']['name'];
-        $sanitizedFileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename($originalFileName)));
+        $sanitizedFileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $originalFileName)));
         $extension = MiscUtility::getFileExtension($sanitizedFileName);
 
         if (!in_array($extension, $allowedExtensions)) {
@@ -93,7 +93,7 @@ class TestResultImportService
             throw new SystemException('Failed to move uploaded file', 500);
         }
 
-        if ($operation == 'parse') {
+        if ($operation === 'parse') {
 
             // Parse and return file contents based on extension
             if ($extension === 'txt') {
@@ -140,7 +140,7 @@ class TestResultImportService
     {
         foreach ($parsedData as $sampleCode => $sampleData) {
             $dbRecord = $this->prepareSampleRecord($sampleData, $sampleCode);
-            if (!empty($dbRecord) && $this->shouldInsertRecord($dbRecord)) {
+            if ($dbRecord !== [] && $this->shouldInsertRecord($dbRecord)) {
                 $this->db->insert("temp_sample_import", $dbRecord);
             }
         }
@@ -158,12 +158,12 @@ class TestResultImportService
             'module' => $this->testType,
             'lab_id' => base64_decode((string) $this->postData['labId']),
             'vl_test_platform' => $this->postData['vltestPlatform'] ?? null,
-            'import_machine_name' => base64_decode($this->postData['machineName']),
+            'import_machine_name' => base64_decode((string) $this->postData['machineName']),
             'result_reviewed_by' => $_SESSION['userId'],
             'sample_code' => $sampleData['sampleCode'] ?? '',
             'sample_type' => $sampleData['sampleType'] ?? 'S',
             'sample_tested_datetime' => $sampleData['testingDate'] ?? null,
-            'result_status' => (string) SAMPLE_STATUS\PENDING_APPROVAL,
+            'result_status' => (string) PENDING_APPROVAL,
             'import_machine_file_name' => $this->currentFileName ?? '',
             'lab_tech_comments' => $sampleData['resultFlag'] ?? '',
             'lot_number' => $sampleData['lotNumber'] ?? null,
@@ -189,7 +189,7 @@ class TestResultImportService
 
         // Set sample details based on existing record
         if (!empty($existingResult)) {
-            $data['sample_details'] = !empty($existingResult['result']) ? 'Result already exists' : 'Existing Sample';
+            $data['sample_details'] = empty($existingResult['result']) ? 'Existing Sample' : 'Result already exists';
             $data['facility_id'] = $existingResult['facility_id'];
         } else {
             $data['sample_details'] = 'New Sample';
@@ -226,7 +226,7 @@ class TestResultImportService
     /**
      * Handle import error
      */
-    public function handleError(Exception $e): void
+    public function handleError(Throwable $e): void
     {
         LoggerUtility::logError($e->getMessage(), [
             'file' => $e->getFile(),
@@ -257,11 +257,11 @@ class TestResultImportService
      */
     public function parseDate(string $dateString, ?string $inputFormat = null): ?string
     {
-        if (empty($dateString)) {
+        if ($dateString === '' || $dateString === '0') {
             return null;
         }
 
-        return MemoUtility::remember(function () use ($dateString, $inputFormat) {
+        return MemoUtility::remember(function () use ($dateString, $inputFormat): ?string {
             $fullFormat = $inputFormat ?? $this->postData['dateFormat'] ?? 'n/d/Y g:i:s A';
 
             // Check if input contains time (look for colon pattern)
@@ -275,7 +275,7 @@ class TestResultImportService
                 // Use the full format, but adjust if AM/PM is missing from input
                 $hasAmPm = preg_match('/\b(am|pm|AM|PM)\b/', trim($dateString));
 
-                if (!$hasAmPm && strpos($fullFormat, 'A') !== false) {
+                if (!$hasAmPm && str_contains($fullFormat, 'A')) {
                     // Remove AM/PM from format and convert to 24-hour format
                     $actualFormat = str_replace(['g', 'h', ' A', 'A'], ['G', 'H', '', ''], $fullFormat);
                 } else {
@@ -294,7 +294,7 @@ class TestResultImportService
             return null;
         }
 
-        return MemoUtility::remember(function () use ($testDateFromInstrument, $inputFormat, $interpretFormat) {
+        return MemoUtility::remember(function () use ($testDateFromInstrument, $inputFormat, $interpretFormat): array {
 
             $inputFormat = trim((string) $inputFormat);
 
@@ -326,7 +326,9 @@ class TestResultImportService
      */
     public function getUserByName(string $username): ?int
     {
-        if (empty($username)) return null;
+        if ($username === '' || $username === '0') {
+            return null;
+        }
 
         $usersService = ContainerRegistry::get(UsersService::class);
         return $usersService->getOrCreateUser($username);
@@ -337,9 +339,9 @@ class TestResultImportService
     // Also checks UTF-8 encoding and converts if needed
     public function removeControlCharsAndEncode($inputString, $encodeToUTF8 = true): string
     {
-        return MemoUtility::remember(function () use ($inputString, $encodeToUTF8) {
+        return MemoUtility::remember(function () use ($inputString, $encodeToUTF8): string|object|int|float|bool|array|null {
             $inputString = preg_replace('/[[:cntrl:]]/', '', (string) $inputString);
-            if ($encodeToUTF8 === true && mb_detect_encoding($inputString, 'UTF-8', true) === false) {
+            if ($encodeToUTF8 === true && mb_detect_encoding((string) $inputString, 'UTF-8', true) === false) {
                 $inputString = MiscUtility::toUtf8($inputString);
             }
             return $inputString;
@@ -356,7 +358,9 @@ class TestResultImportService
 
     protected function insertSampleControl(string $sampleType): void
     {
-        if (empty($sampleType)) return;
+        if ($sampleType === '' || $sampleType === '0') {
+            return;
+        }
 
         $query = "SELECT r_sample_control_name FROM r_sample_controls WHERE r_sample_control_name = ?";
         $exists = $this->db->rawQueryOne($query, [trim($sampleType)]);

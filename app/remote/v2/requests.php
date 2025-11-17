@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Utilities\JsonUtility;
@@ -41,7 +42,7 @@ $payload = [];
 try {
     $db->beginTransaction();
 
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
 
     $authToken = ApiService::extractBearerToken($request);
@@ -120,7 +121,7 @@ try {
     if ($sampleIds) {
         $sampleIds = array_values(array_unique(array_filter(
             $sampleIds,
-            static fn($id) => $id !== null && $id !== ''
+            static fn($id): bool => $id !== null && $id !== ''
         )));
 
         $maxRetries = 5;

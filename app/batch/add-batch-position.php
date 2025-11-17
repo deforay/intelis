@@ -35,7 +35,7 @@ $title = _translate($testName . " | Add Batch Position");
 require_once APPLICATION_PATH . '/header.php';
 
 $id = (isset($_GET['id'])) ? base64_decode((string)$_GET['id']) : null;
-if (!isset($id) || trim($id) == '') {
+if (!isset($id) || trim($id) === '') {
 	MiscUtility::redirect("batches.php?type=" . $_GET['type']);
 	exit;
 }

@@ -1,5 +1,6 @@
 <?php
 
+use const SAMPLE_STATUS\REJECTED;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -12,17 +13,16 @@ if (!class_exists('DRCCovid19PDF2')) {
     class DRCCovid19PDF2 extends Covid19ResultPDFHelper
     {
         //Page header
-        public function Header()
+        #[Override]
+        public function Header(): void
         {
             // Logo
-            if (!empty($this->htitle) && trim($this->htitle) != '') {
-                if (!empty($this->logo) && trim($this->logo) != '') {
-                    if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                        $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                        $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
-                    }
+            if ($this->htitle !== null && $this->htitle !== '' && $this->htitle !== '0' && trim($this->htitle) !== '') {
+                if ($this->logo !== null && $this->logo !== '' && $this->logo !== '0' && trim($this->logo) !== '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                    $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                    $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                 }
-                if (!empty($this->facilityInfo) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
+                if ($this->facilityInfo !== null && $this->facilityInfo !== [] && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
                     $this->Image($imageFilePath, 175, 5, 25, '', '', '', 'T');
                 }
@@ -31,7 +31,7 @@ if (!class_exists('DRCCovid19PDF2')) {
             $this->writeHTMLCell(0, 0, 12, 5, 'REPUBLIQUE DEMOCRATIQUE DU CONGO', 0, 0, false, true, 'C');
             $this->SetFont('helvetica', 'B', 10);
             $this->writeHTMLCell(0, 0, 12, 10, $this->text, 0, 0, false, true, 'C');
-            if (!empty($this->lab) && trim($this->lab) != '') {
+            if ($this->lab !== null && $this->lab !== '' && $this->lab !== '0' && trim($this->lab) !== '') {
                 $this->SetFont('helvetica', 'B', 11);
                 $this->writeHTMLCell(0, 0, 12, 15, strtoupper($this->lab), 0, 0, false, true, 'C');
             }
@@ -47,8 +47,8 @@ if (!class_exists('DRCCovid19PDF2')) {
 
             // Define the path to the image that you want to use as watermark.
             $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->logo;
-            if (!empty($this->logo) && file_exists($img_file)) {
-            } else if (!empty($this->logo) && UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo) {
+            if ($this->logo !== null && $this->logo !== '' && $this->logo !== '0' && file_exists($img_file)) {
+            } elseif ($this->logo !== null && $this->logo !== '' && $this->logo !== '0' && UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo) {
                 if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                     $img_file = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                 }
@@ -56,7 +56,7 @@ if (!class_exists('DRCCovid19PDF2')) {
                 $img_file = "";
             }
             // Render the image
-            if ($img_file != "") {
+            if ($img_file !== "") {
                 $this->SetAlpha(0.1);
                 $this->Image($img_file, 55, 60, 100, null, '', '', '', false, 300, 'M');
             }
@@ -71,7 +71,8 @@ if (!class_exists('DRCCovid19PDF2')) {
         } */
         }
         // Page footer
-        public function Footer()
+        #[Override]
+        public function Footer(): void
         {
             $this->writeHTML("<hr>");
             // Set font
@@ -105,8 +106,8 @@ $pdf->SetTitle('Covid-19 Rapport du patient');
 $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
 // set header and footer fonts
-$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+$pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+$pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
 
 // set default monospaced font
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -130,34 +131,34 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 $pdf->SetFont('helvetica', '', 18);
 
 $pdf->AddPage();
-if (!isset($result['facility_code']) || trim((string) $result['facility_code']) == '') {
+if (!isset($result['facility_code']) || trim((string) $result['facility_code']) === '') {
     $result['facility_code'] = '';
 }
-if (!isset($result['facility_state']) || trim((string) $result['facility_state']) == '') {
+if (!isset($result['facility_state']) || trim((string) $result['facility_state']) === '') {
     $result['facility_state'] = '';
 }
-if (!isset($result['facility_district']) || trim((string) $result['facility_district']) == '') {
+if (!isset($result['facility_district']) || trim((string) $result['facility_district']) === '') {
     $result['facility_district'] = '';
 }
-if (!isset($result['facility_name']) || trim((string) $result['facility_name']) == '') {
+if (!isset($result['facility_name']) || trim((string) $result['facility_name']) === '') {
     $result['facility_name'] = '';
 }
-if (!isset($result['labName']) || trim((string) $result['labName']) == '') {
+if (!isset($result['labName']) || trim((string) $result['labName']) === '') {
     $result['labName'] = '';
 }
 //Set Age
 $age = 'Unknown';
-if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
+if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) !== '' && $result['patient_dob'] != '0000-00-00') {
     $todayDate = strtotime(date('Y-m-d'));
     $dob = strtotime((string) $result['patient_dob']);
     $difference = $todayDate - $dob;
     $seconds_per_year = 60 * 60 * 24 * 365;
     $age = round($difference / $seconds_per_year);
-} elseif (isset($result['patient_age']) && trim((string) $result['patient_age']) != '' && trim((string) $result['patient_age']) > 0) {
+} elseif (isset($result['patient_age']) && trim((string) $result['patient_age']) !== '' && trim((string) $result['patient_age']) > 0) {
     $age = $result['patient_age'];
 }
 
-if (isset($result['sample_collection_date']) && trim((string) $result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
+if (isset($result['sample_collection_date']) && trim((string) $result['sample_collection_date']) !== '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", (string) $result['sample_collection_date']);
     $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]);
     $sampleCollectionTime = $expStr[1];
@@ -167,14 +168,14 @@ if (isset($result['sample_collection_date']) && trim((string) $result['sample_co
 }
 $sampleReceivedDate = '';
 $sampleReceivedTime = '';
-if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['sample_received_at_lab_datetime']) !== '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", (string) $result['sample_received_at_lab_datetime']);
     $sampleReceivedDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $sampleReceivedTime = $expStr[1];
 }
 $resultPrintedDate = '';
 $resultPrintedTime = '';
-if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) !== '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", (string) $result['result_printed_datetime']);
     $resultPrintedDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $resultPrintedTime = $expStr[1];
@@ -184,19 +185,19 @@ if (isset($result['result_printed_datetime']) && trim((string) $result['result_p
     $resultPrintedTime = $expStr[1];
 }
 
-if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) !== '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", (string) $result['sample_tested_datetime']);
     $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $result['sample_tested_datetime'] = '';
 }
 
-if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
+if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) === '') {
     $result['patient_gender'] = _translate('Unreported');
 }
 
 $userRes = [];
-if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
+if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) !== '') {
     $resultApprovedBy = ($result['approvedBy']);
     $userRes = $usersService->getUserByID($result['result_approved_by'], 'user_signature');
 } else {
@@ -212,23 +213,23 @@ $smileyContent = '';
 $showMessage = '';
 $tndMessage = '';
 $messageTextSize = '12px';
-if ($result['result'] != null && trim((string) $result['result']) != '') {
+if ($result['result'] != null && trim((string) $result['result']) !== '') {
     $resultType = is_numeric($result['result']);
     if ($result['result'] == 'positive') {
         $vlResult = $result['result'];
         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="smile_face"/>';
-    } else if ($result['result'] == 'negative') {
+    } elseif ($result['result'] == 'negative') {
         $vlResult = $result['result'];
         $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
-    } else if ($result['result'] == 'indeterminate') {
+    } elseif ($result['result'] == 'indeterminate') {
         $vlResult = $result['result'];
         $smileyContent = '';
     }
 }
-if ($result['result_status'] == SAMPLE_STATUS\REJECTED) {
+if ($result['result_status'] == REJECTED) {
     $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="rejected"/>';
 }
-if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
+if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) === "no") {
     $smileyContent = '';
 }
 $html = '<table style="padding:0px 2px 2px 2px;">';
@@ -336,11 +337,7 @@ $html .= '</tr>';
 
 
 $labManagerRes = $usersService->getUserByID($result['lab_manager'], 'user_name');
-if ($labManagerRes) {
-    $labManager = $labManagerRes['user_name'];
-} else {
-    $labManager = "";
-}
+$labManager = $labManagerRes ? $labManagerRes['user_name'] : "";
 
 $html .= '<tr>';
 $html .= '<td colspan="3" style="line-height:14px;font-size:12px;text-align:center;"><br><br><strong>' . $labManager . '</strong><br>Médecin Virologue<br><span style="font-size:10px;font-weight:normal;">Medical Virologist</span></td>';
@@ -352,7 +349,7 @@ $html .= '</tr>';
 $html .= '</table>';
 $html .= '</td></tr></table>';
 
-if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
+if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == REJECTED)) {
     $viewId = CommonService::encryptViewQRCode($result['unique_id']);
     $pdf->writeHTML($html);
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
@@ -372,23 +369,18 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     $pages[] = $filename;
     $page++;
 }
-if (isset($_POST['source']) && trim((string) $_POST['source']) == 'print') {
+if (isset($_POST['source']) && trim((string) $_POST['source']) === 'print') {
     //Add event log
     $eventType = 'print-result';
     $action = ($_SESSION['userName'] ?: 'System') . ' generated the test result PDF with Patient ID/Code ' . $result['patient_id'];
     $resource = 'print-test-result';
-    $data = array(
-        'event_type' => $eventType,
-        'action' => $action,
-        'resource' => $resource,
-        'date_time' => $currentDateTime
-    );
+    $data = ['event_type' => $eventType, 'action' => $action, 'resource' => $resource, 'date_time' => $currentDateTime];
     $db->insert($tableName1, $data);
     //Update print datetime in VL tbl.
     $vlQuery = "SELECT result_printed_datetime FROM form_covid19 as vl WHERE vl.covid19_id ='" . $result['covid19_id'] . "'";
     $vlResult = $db->query($vlQuery);
-    if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+    if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) === '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
         $db->where('covid19_id', $result['covid19_id']);
-        $db->update($tableName2, array('result_printed_datetime' => $currentDateTime, 'result_dispatched_datetime' => $currentDateTime));
+        $db->update($tableName2, ['result_printed_datetime' => $currentDateTime, 'result_dispatched_datetime' => $currentDateTime]);
     }
 }

@@ -16,13 +16,8 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_cd4_test_reasons";
 $primaryKey = "test_reason_id";
 try {
-	if (isset($_POST['testReasonName']) && trim((string) $_POST['testReasonName']) != "") {
-		$data = array(
-			'test_reason_name' 		=> $_POST['testReasonName'],
-			'parent_reason' 		=> (isset($_POST['parentReason']) && $_POST['parentReason'] != "") ? $_POST['parentReason'] : 0,
-			'test_reason_status'    => $_POST['testReasonStatus'],
-			'updated_datetime'  	=> DateUtility::getCurrentDateTime(),
-		);
+	if (isset($_POST['testReasonName']) && trim((string) $_POST['testReasonName']) !== "") {
+		$data = ['test_reason_name' 		=> $_POST['testReasonName'], 'parent_reason' 		=> (isset($_POST['parentReason']) && $_POST['parentReason'] != "") ? $_POST['parentReason'] : 0, 'test_reason_status'    => $_POST['testReasonStatus'], 'updated_datetime'  	=> DateUtility::getCurrentDateTime()];
 		if (isset($_POST['testReasonId']) && $_POST['testReasonId'] != "") {
 			$db->where($primaryKey, base64_decode((string) $_POST['testReasonId']));
 			$lastId = $db->update($tableName, $data);

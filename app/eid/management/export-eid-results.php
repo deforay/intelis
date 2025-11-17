@@ -1,5 +1,7 @@
 <?php
 
+use const COUNTRY\CAMEROON;
+use const COUNTRY\DRC;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -29,14 +31,14 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 
 
-if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExportResultQuery']) != "") {
+if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExportResultQuery']) !== "") {
 
 
 
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type", "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+		$headings = ["S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type", "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
 	} else {
-		$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type",  "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+		$headings = ["S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type", "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
 	}
 	if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
 		unset($headings[$key]);
@@ -44,16 +46,16 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 	//$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding",  "PCR Test Performed Before", "Last PCR Test results","Reason For PCR Test", "Sample Collection Date", "Sample Type", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 
 
-	if ($formId != COUNTRY\CAMEROON) {
+	if ($formId != CAMEROON) {
 		$headings = MiscUtility::removeMatchingElements($headings, ["Lab Assigned Code"]);
 	}
 
-	if ($formId != COUNTRY\DRC) {
+	if ($formId != DRC) {
 		$headings = MiscUtility::removeMatchingElements($headings, ["Freezer", "Rack", "Box", "Position", "Volume (ml)"]);
 	}
 
 	// Row builder function
-	$buildRow = function ($aRow, $no) use ($general, $key, $formId) {
+	$buildRow = function ($aRow, $no) use ($general, $key, $formId): array {
 		$row = [];
 
 		//set gender
@@ -67,7 +69,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		}
 		//set sample rejection
 		$sampleRejection = 'No';
-		if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
 			$sampleRejection = 'Yes';
 		}
 
@@ -84,7 +86,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$row[] = $aRow['facility_district'];
 		$row[] = $aRow['facility_state'];
 		$row[] = ($aRow['lab_name']);
-		if ($formId == COUNTRY\CAMEROON) {
+		if ($formId == CAMEROON) {
 			$row[] = $aRow['lab_assigned_code'];
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
@@ -100,7 +102,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 			$row[] = $aRow['mother_id'];
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['child_dob']);
-		$row[] = ($aRow['child_age'] != null && trim((string) $aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
+		$row[] = ($aRow['child_age'] != null && trim((string) $aRow['child_age']) !== '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
 		$row[] = $gender;
 		$row[] = $aRow['has_infant_stopped_breastfeeding'];
 		$row[] = $aRow['request_clinician_phone_number'];
@@ -112,8 +114,8 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$row[] = $aRow['sample_name'] ?: null;
 		$row[] = $aRow['eid_number'];
 		$row[] = $sampleRejection;
-		if ($formId == COUNTRY\DRC) {
-			$formAttributes = !empty($aRow['form_attributes']) ? json_decode($aRow['form_attributes']) : null;
+		if ($formId == DRC) {
+			$formAttributes = empty($aRow['form_attributes']) ? null : json_decode((string) $aRow['form_attributes']);
 			$storageObj = isset($formAttributes->storage) ? json_decode($formAttributes->storage) : null;
 
 			$row[] = $storageObj->storageCode ?? '';
@@ -159,5 +161,5 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 	}
 
 	$writer->close();
-	echo urlencode(basename($filename));
+	echo urlencode(basename((string) $filename));
 }

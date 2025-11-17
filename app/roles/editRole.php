@@ -255,7 +255,7 @@ if ($priInfo) {
 									<label for="allowAllPrivileges">
 										<?php echo _translate("Select All"); ?>
 									</label>
-									<input type="radio" class='' name="allPrivilegesRadio" id="denyAllPrivileges" name="switch-one" value="no" /></a>
+									<input type="radio" class='' name="allPrivilegesRadio" id="denyAllPrivileges" name="switch-one" value="no" <?= ($isSuperAdmin) ? 'disabled' : ''; ?> /></a>
 									<label for="denyAllPrivileges">
 										<?php echo _translate("Unselect All"); ?>
 									</label>
@@ -275,12 +275,7 @@ if ($priInfo) {
 
 									foreach ($rInfo as $moduleRow) {
 										$moduleName = ($moduleRow['module'] == 'generic-tests') ? "Other Lab Tests" : $moduleRow['module'];
-										if ($a == 0) {
-											$liClass = "active";
-										} else {
-											$liClass = "";
-										}
-									?>
+										$liClass = $a == 0 ? "active" : ""; ?>
 										<li class="<?= $liClass; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper((string) $moduleName); ?> </a></li>
 									<?php
 										$a++;
@@ -292,11 +287,7 @@ if ($priInfo) {
 									$b = 0;
 									$j = 1;
 									foreach ($rInfo as $moduleRow) {
-										if ($b == 0) {
-											$tabCls = "active";
-										} else {
-											$tabCls = "";
-										}
+										$tabCls = $b == 0 ? "active" : "";
 										echo '<div class="tab-pane fade in ' . $tabCls . '" id="' . $moduleRow['module'] . '">';
 										echo "<table aria-describedby='table' class='table table-striped responsive-utilities jambo_table'>";
 
@@ -308,7 +299,6 @@ if ($priInfo) {
 
 											echo "<tr class ='togglerTr'>";
 											echo "<th>";
-
 									?>
 											<small class="toggler">
 												<h4 style="font-weight: bold;">
@@ -317,7 +307,7 @@ if ($priInfo) {
 												<div class="super-switch privilege-switch pull-right">
 													<input type='radio' class='' id='all<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'>
 													<label for='all<?= $mRes[0]; ?>'><?php echo _translate("All"); ?></label>
-													<input type='radio' class='' id='none<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'>
+													<input type='radio' class='' id='none<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);' <?= ($isSuperAdmin) ? 'disabled' : ''; ?>>
 													<label for='none<?= $mRes[0]; ?>'><?php echo _translate("None"); ?></label>
 												</div>
 											</small>
@@ -338,7 +328,12 @@ if ($priInfo) {
 											echo "<td style='text-align:center;vertical-align:middle;' class='privilegesNode' id='" . $mRes[0] . "'>";
 
 											foreach ($pInfo as $privilege) {
-												if (in_array($privilege['privilege_id'], $priId)) {
+												if ($isSuperAdmin) {
+													$allowChecked = " checked='checked' ";
+													$denyChecked = "";
+													$allowStyle = "allow-label";
+													$denyStyle = "";
+												} elseif (in_array($privilege['privilege_id'], $priId)) {
 													$allowChecked = " checked='' ";
 													$denyChecked = "";
 													$allowStyle = "allow-label";
@@ -355,7 +350,7 @@ if ($priInfo) {
 
 														<div class='privilege-switch' data-privilegeid='" . $privilege['privilege_id'] . "' id='switch" . $privilege['privilege_id'] . "' style='margin: 30px 0 36px 90px;'>
 															<input type='radio' class='selectPrivilege' name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='selectPrivilege" . $privilege['privilege_id'] . "' $allowChecked ><label for='selectPrivilege" . $privilege['privilege_id'] . "' class='$allowStyle'>Yes</label>
-															<input type='radio' class='unselectPrivilege' name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='unselectPrivilege" . $privilege['privilege_id'] . "' $denyChecked > <label for='unselectPrivilege" . $privilege['privilege_id'] . "' class='$denyStyle'> No</label>
+															<input type='radio' class='unselectPrivilege' name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='unselectPrivilege" . $privilege['privilege_id'] . "' $denyChecked " . ($isSuperAdmin ? "disabled='disabled'" : "") . " > <label for='unselectPrivilege" . $privilege['privilege_id'] . "' class='$denyStyle'> No</label>
 														</div>
 														</div>";
 											}
@@ -365,8 +360,7 @@ if ($priInfo) {
 										echo "</table></div>";
 										$b++;
 										$j++;
-									}
-									?>
+									} ?>
 								</div>
 
 							</div>

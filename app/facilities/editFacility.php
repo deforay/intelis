@@ -45,7 +45,7 @@ $facilityInfo = $db->rawQueryOne('SELECT * FROM facility_details WHERE facility_
 $facilityAttributes = json_decode((string) $facilityInfo['facility_attributes']);
 
 
-$facilityReportFormat = (array)json_decode($facilityInfo['report_format']);
+$facilityReportFormat = (array)json_decode((string) $facilityInfo['report_format']);
 // echo "<pre>";
 // print_r($facilityReportFormat);die;
 $fQuery = "SELECT * FROM facility_type";
@@ -78,20 +78,16 @@ if (!empty($testTypeInfo)) {
 	$div .= '<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" ><thead><th> Test Type</th> <th> Monthly Target <span class="mandatory">*</span></th><th>Suppressed Monthly Target <span class="mandatory">*</span></th> </thead><tbody>';
 	$tf = 0;
 	foreach ($testTypeInfo as $test) {
-		if ($editTestType) {
-			$editTestType = $editTestType . ',' . $test['test_type'];
-		} else {
-			$editTestType = $test['test_type'];
-		}
+		$editTestType = $editTestType ? $editTestType . ',' . $test['test_type'] : $test['test_type'];
 
 		$testOrg = '';
 		if ($test['test_type'] == 'vl') {
 			$testOrg = 'Viral Load';
 			$extraDiv = '<td><input type="text" class="" name="supMonTar[]" id ="supMonTar' . $tf . '" value="' . $test['suppressed_monthly_target'] . '" title="Please enter Suppressed monthly target"/></td>';
-		} else if ($test['test_type'] == 'eid') {
+		} elseif ($test['test_type'] == 'eid') {
 			$testOrg = 'Early Infant Diagnosis';
 			$extraDiv = '<td></td>';
-		} else if ($test['test_type'] == 'covid19') {
+		} elseif ($test['test_type'] == 'covid19') {
 			$testOrg = 'Covid-19';
 			$extraDiv = '<td></td>';
 		}
@@ -193,13 +189,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<?php
 											$k = 10;
-											foreach ($fResult as $type) {
-											?>
+											foreach ($fResult as $type) { ?>
 												<option data-disable="<?php echo $k; ?>" value="<?= ((string) $type['facility_type_id']); ?>" <?php echo ($facilityInfo['facility_type'] == $type['facility_type_id']) ? "selected='selected'" : "" ?>><?php echo ($type['facility_type_name']); ?></option>
 											<?php
-												$k = $k + 10;
-											}
-											?>
+												$k += 10;
+											} ?>
 										</select>
 									</div>
 								</div>
@@ -220,8 +214,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									<div class="col-lg-7">
 										<select class="form-control" id="allowResultUpload" name="allowResultUpload" title="<?php echo _translate('Please select if this lab can upload test results file'); ?>">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-											<option <?php if (isset($facilityAttributes->allow_results_file_upload) && $facilityAttributes->allow_results_file_upload === 'yes') echo 'selected="selected"'; ?> value="yes">Yes</option>
-											<option <?php if (isset($facilityAttributes->allow_results_file_upload) && $facilityAttributes->allow_results_file_upload === 'no') echo 'selected="selected"'; ?> value="no">No</option>
+											<option <?php if (isset($facilityAttributes->allow_results_file_upload) && $facilityAttributes->allow_results_file_upload === 'yes') {
+														echo 'selected="selected"';
+													} ?> value="yes">Yes</option>
+											<option <?php if (isset($facilityAttributes->allow_results_file_upload) && $facilityAttributes->allow_results_file_upload === 'no') {
+														echo 'selected="selected"';
+													} ?> value="no">No</option>
 										</select>
 									</div>
 								</div>
@@ -235,7 +233,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									<div class="col-lg-7">
 										<?php
 										$testingPointsJSON = $facilityInfo['testing_points'] ?? '[]';
-										$decoded = json_decode($testingPointsJSON, true);
+										$decoded = json_decode((string) $testingPointsJSON, true);
 										$testingPoints = is_array($decoded) ? implode(", ", $decoded) : '';
 										?>
 										<input type="text" class="form-control" id="testingPoints" name="testingPoints" placeholder="<?php echo _translate('eg. VCT, PMTCT'); ?>" value="<?= $testingPoints ?>" />
@@ -268,7 +266,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 								<div class="form-group">
 									<label for="state" class="col-lg-4 control-label"><?php echo _translate("Province/State"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<?php if (sizeof($geoLocationParentArray) > 0) { ?>
+										<?php if (count($geoLocationParentArray) > 0) { ?>
 											<select name="stateId" id="stateId" class="form-control isRequired" title="<?php echo _translate('Please choose province/state'); ?>">
 												<?= $general->generateSelectOptions($geoLocationParentArray, $facilityInfo['facility_state_id'], _translate("-- Select --")); ?>
 												<option value="other">Other</option>
@@ -415,7 +413,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					</div>
 					<div class="row labDiv" style="display:<?php echo $labDiv; ?>;">
 						<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-							$count = sizeof($reportFormats['vl']); ?>
+							$count = count($reportFormats['vl']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
 									<label for="reportFormat" class="col-lg-4 control-label"><?php echo _translate("Report Format For VL"); ?></label>
@@ -436,7 +434,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							</div>
 						<?php }
 						if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-							$count = sizeof($reportFormats['eid']); ?>
+							$count = count($reportFormats['eid']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
 									<label for="reportFormat" class="col-lg-4 control-label"><?php echo _translate("Report Format For EID"); ?></label>
@@ -456,7 +454,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							</div>
 						<?php }
 						if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-							$count = sizeof($reportFormats['covid19']); ?>
+							$count = count($reportFormats['covid19']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
 									<label for="reportFormat" class="col-lg-4 control-label"><?php echo _translate("Report Format For Covid-19"); ?></label>
@@ -476,7 +474,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							</div>
 						<?php }
 						if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
-							$count = sizeof($reportFormats['hepatitis']); ?>
+							$count = count($reportFormats['hepatitis']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
 									<label for="reportFormat" class="col-lg-4 control-label"><?php echo _translate("Report Format For Hepatitis"); ?></label>
@@ -494,7 +492,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							</div>
 						<?php }
 						if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-							$count = sizeof($reportFormats['tb']); ?>
+							$count = count($reportFormats['tb']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
 									<label for="reportFormat" class="col-lg-4 control-label"><?php echo _translate("Report Format For TB"); ?></label>
@@ -521,8 +519,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
 											<?php
 
-											if (isset($facilityInfo['facility_logo']) && trim((string) $facilityInfo['facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) {
-											?>
+											if (isset($facilityInfo['facility_logo']) && trim((string) $facilityInfo['facility_logo']) !== '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) { ?>
 												<img src="/uploads/facility-logo/<?= ((string) $facilityInfo['facility_id']); ?>/<?= ((string) $facilityInfo['facility_logo']); ?>" alt="Logo image">
 											<?php } else { ?>
 
@@ -533,8 +530,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												<input type="file" id="labLogo" name="labLogo" title="<?php echo _translate('Please select logo image'); ?>" onchange="getNewLabImage('<?= ((string) $facilityInfo['facility_logo']); ?>');">
 											</span>
 											<?php
-											if (isset($facilityInfo['facility_logo']) && trim((string) $facilityInfo['facility_logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) {
-											?>
+											if (isset($facilityInfo['facility_logo']) && trim((string) $facilityInfo['facility_logo']) !== '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) { ?>
 												<a id="clearLabImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearLabImage('<?= ((string) $facilityInfo['facility_logo']); ?>')"><?php echo _translate("Clear"); ?></a>
 											<?php } ?>
 											<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _translate("Remove"); ?></a>
@@ -566,16 +562,14 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									$showreportTemplate = "style='display:block'";
 									if (isset($facilityAttributes) && isset($facilityAttributes->report_template) && $facilityAttributes->report_template != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $facilityAttributes->report_template)) {
 										$lmSign = "/uploads/labs/" . $facilityInfo['facility_id'] . "/report-template/" . $facilityAttributes->report_template;
-										$showreportTemplate = "style='display:none'";
-									?>
+										$showreportTemplate = "style='display:none'"; ?>
 										<span id="reportTemplateSpan" class="form-control">
 											<a href="javascript:void(0);" onclick="showreportTemplateFile();">
 												<span class="alert-danger" style="padding: 0.4em; border-radius: 50%; float: right; height: 1.6em; width: 1.6em; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1;">X</span>
 											</a>
 											<a href=<?php echo $lmSign; ?> target="_blank"> <?php echo $facilityAttributes->report_template; ?> </a>
 										</span>
-									<?php }
-									?>
+									<?php } ?>
 									<input <?php echo $showreportTemplate; ?> class="showreportTemplateFile form-control" type="file" name="reportTemplate" id="reportTemplate" placeholder="' . _translate('Upload Report Template') . '" accept=".pdf" title="' . _translate('Please Upload Report Template') . '">
 								</div>
 							</div>
@@ -619,7 +613,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										<?php echo _translate("Report Top Margin"); ?>
 									</label>
 									<div class="col-lg-7">
-										<input type="number" value="<?php echo (isset($facilityAttributes->report_top_margin)) ? $facilityAttributes->report_top_margin : '17' ?>" class="form-control" name="reportTopMargin" id="reportTopMargin" placeholder="<?php echo _translate('Report Top Margin'); ?>" title="<?php echo _translate('Please enter the report top margin'); ?>">
+										<input type="number" value="<?php echo $facilityAttributes->report_top_margin ?? '17' ?>" class="form-control" name="reportTopMargin" id="reportTopMargin" placeholder="<?php echo _translate('Report Top Margin'); ?>" title="<?php echo _translate('Please enter the report top margin'); ?>">
 									</div>
 								</div>
 							</div>
@@ -733,7 +727,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<?php echo $div; ?>
 					</div>
 
-					<div class="row testTypeFileSection" <?php echo (isset($facilityReportFormat) && !empty($facilityReportFormat)) ? "" : 'style="display:none;"'; ?>>
+					<div class="row testTypeFileSection" <?php echo (isset($facilityReportFormat) && $facilityReportFormat !== []) ? "" : 'style="display:none;"'; ?>>
 						<div class="col-md-12">
 							<hr>
 							<h4><?php echo _translate("Test Type Templates"); ?></h4>
@@ -747,7 +741,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									</tr>
 								</thead>
 								<tbody id="testTypeFileDetails">
-									<?php if (isset($facilityReportFormat) && !empty($facilityReportFormat)) {
+									<?php if (isset($facilityReportFormat) && $facilityReportFormat !== []) {
 										$n = 1;
 										foreach ($facilityReportFormat as $test => $file) {
 											$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $file->file;  ?>
@@ -1191,7 +1185,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		$('#deletedRow').val(deletedRowVar);
 		console.log($('#deletedRow').val());
 	}
-	let testTypeFileCounter = <?php echo (count($facilityReportFormat) > 0) ? count($facilityReportFormat) : 1; ?>;
+	let testTypeFileCounter = <?php echo ($facilityReportFormat !== []) ? count($facilityReportFormat) : 1; ?>;
 	// Function to add new test type file row
 	function addTestTypeFileRow() {
 		testTypeFileCounter++;

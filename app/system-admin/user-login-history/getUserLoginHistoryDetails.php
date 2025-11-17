@@ -16,7 +16,7 @@ $tableName = "user_login_history";
 $primaryKey = "history_id";
 
 
-$aColumns = array('login_id', 'login_attempted_datetime', 'ip_address', 'browser', 'operating_system', 'login_status');
+$aColumns = ['login_id', 'login_attempted_datetime', 'ip_address', 'browser', 'operating_system', 'login_status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -49,7 +49,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -82,12 +82,12 @@ $start_date = '';
 $end_date = '';
 $cWhere = [];
 
-if (isset($_POST['userDate']) && trim((string) $_POST['userDate']) != '') {
+if (isset($_POST['userDate']) && trim((string) $_POST['userDate']) !== '') {
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['userDate'] ?? '');
 }
 
-if (isset($_POST['userDate']) && trim((string) $_POST['userDate']) != '') {
-    if (trim((string) $start_date) == trim((string) $end_date)) {
+if (isset($_POST['userDate']) && trim((string) $_POST['userDate']) !== '') {
+    if (trim((string) $start_date) === trim((string) $end_date)) {
         $cWhere[] = " DATE(ul.login_attempted_datetime) = '$start_date'";
     } else {
         $cWhere[] = " DATE(ul.login_attempted_datetime) BETWEEN '$start_date' AND '$end_date'";
@@ -95,11 +95,11 @@ if (isset($_POST['userDate']) && trim((string) $_POST['userDate']) != '') {
 }
 // print_r($cWhere);die;
 
-if (isset($_POST['loginId']) && trim((string) $_POST['loginId']) != '') {
+if (isset($_POST['loginId']) && trim((string) $_POST['loginId']) !== '') {
     $cWhere[] = ' ul.login_id = "' . $_POST['loginId'] . '"';
 }
 
-if ((isset($sWhere) && $sWhere != "") || (count($cWhere) > 0)) {
+if ((isset($sWhere) && $sWhere !== "") || ($cWhere !== [])) {
     $sWhere = " WHERE $sWhere";
     $sQuery = $sQuery . ' ' . $sWhere . implode(" AND ", $cWhere);
 }

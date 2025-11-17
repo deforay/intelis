@@ -1,7 +1,8 @@
 <?php
 
 // vl/program-management/export-vl-results.php
-
+use const COUNTRY\CAMEROON;
+use const COUNTRY\DRC;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -25,9 +26,9 @@ $globalConf = $general->getGlobalConfig();
 $formId = (int) $globalConf['vl_form'];
 
 
-if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery']) != "") {
+if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery']) !== "") {
 
-	if ($formId == COUNTRY\CAMEROON && $globalConf['vl_excel_export_format'] == "cresar") {
+	if ($formId == CAMEROON && $globalConf['vl_excel_export_format'] == "cresar") {
 		$headings = [_translate('S.No.'), _translate("Sample ID"), _translate('Region of sending facility'), _translate('District of sending facility'), _translate('Sending facility'), _translate('Project'), _translate('Existing ART Code'), _translate('Date of Birth'), _translate('Age'), _translate('Patient Name'), _translate('Sex'), _translate('Universal Insurance Code'), _translate('Sample Creation Date'), _translate('Sample Created By'), _translate('Sample collection date'), _translate('Sample Type'), _translate('Requested by contact'), _translate('Treatment start date'), _translate("Treatment Protocol"), _translate('ARV Protocol'), _translate('CV Number'), _translate('Batch Code'), _translate('Test Platform'), _translate("Test platform detection limit"), _translate("Sample Tested"), _translate("Date of test"), _translate("Date of result sent to facility"), _translate("Sample Rejected"), _translate("Communication of rejected samples or high viral load (yes, no or NA)"), _translate("Result Value"), _translate("Result Printed Date"), _translate("Result Value Log"), _translate("Is suppressed"), _translate("Name of reference Lab"), _translate("Sample Reception Date"), _translate("Category of testing site"), _translate("TAT"), _translate("Age Range"), _translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"), _translate("Invalid test (yes or no)"), _translate("Invalid sample repeated (yes or no)"), _translate("Error codes (yes or no)"), _translate("Error codes values"), _translate("Tests repeated due to error codes (yes or no)"), _translate("New CV number"), _translate("Date of repeat test"), _translate("Result sent back to facility (yes or no)"), _translate("Result Type"), _translate("Observations")];
 	} else {
 		$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Health Facility Name"), _translate("Testing Lab"), _translate("Lab Assigned Code"), _translate("Sample Reception Date"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Patient Contact Number"), _translate("Date of Birth"), _translate("Age"), _translate("Sex"),  _translate('Universal Insurance Code'), _translate("Patient Cellphone Number"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Has regimen Changed?"), _translate("Date of Regimen Change"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Requesting Clinican Cellphone Number"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Rejection Reason"), _translate("Recommended Corrective Action"), _translate('Freezer'), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Sample Tested On"), _translate("Result (cp/mL)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
@@ -41,16 +42,16 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 		$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
 	}
 
-	if ($formId != COUNTRY\DRC) {
+	if ($formId != DRC) {
 		$headings = MiscUtility::removeMatchingElements($headings, [_translate('Freezer'), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)")]);
 	}
 
-	if ($formId != COUNTRY\CAMEROON) {
+	if ($formId != CAMEROON) {
 		$headings = MiscUtility::removeMatchingElements($headings, [_translate("Universal Insurance Code"), _translate("Lab Assigned Code")]);
 	}
 
 	// Row builder function
-	$buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf) {
+	$buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf): array {
 		$row = [];
 
 		$age = null;
@@ -64,11 +65,11 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 
 		//set ARV adherence
 		$arvAdherence = '';
-		if (trim((string) $aRow['arv_adherance_percentage']) == 'good') {
+		if (trim((string) $aRow['arv_adherance_percentage']) === 'good') {
 			$arvAdherence = 'Good >= 95%';
-		} elseif (trim((string) $aRow['arv_adherance_percentage']) == 'fair') {
+		} elseif (trim((string) $aRow['arv_adherance_percentage']) === 'fair') {
 			$arvAdherence = 'Fair 85-94%';
-		} elseif (trim((string) $aRow['arv_adherance_percentage']) == 'poor') {
+		} elseif (trim((string) $aRow['arv_adherance_percentage']) === 'poor') {
 			$arvAdherence = 'Poor <85%';
 		}
 
@@ -86,16 +87,14 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 
 		$row[] = $no;
 
-		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-			if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-				$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
-				$patientFname = $general->crypto('decrypt', $patientFname, $key);
-				$patientMname = $general->crypto('decrypt', $patientMname, $key);
-				$patientLname = $general->crypto('decrypt', $patientLname, $key);
-			}
-		}
+		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes' && (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes')) {
+      $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+      $patientFname = $general->crypto('decrypt', $patientFname, $key);
+      $patientMname = $general->crypto('decrypt', $patientMname, $key);
+      $patientLname = $general->crypto('decrypt', $patientLname, $key);
+  }
 
-		if ($formId == COUNTRY\CAMEROON && $globalConf['vl_excel_export_format'] == "cresar") {
+		if ($formId == CAMEROON && $globalConf['vl_excel_export_format'] == "cresar") {
 			$lineOfTreatment = '';
 			if ($aRow['line_of_treatment'] == 1) {
 				$lineOfTreatment = '1st Line';
@@ -116,7 +115,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = $aRow['patient_age_in_years'];
 			$row[] = trim("$patientFname $patientMname $patientLname");
 			$row[] = $gender;
-			if ($formId == COUNTRY\CAMEROON) {
+			if ($formId === CAMEROON) {
 				$row[] = $aRow['health_insurance_code'] ?? null;
 			}
 			$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '');
@@ -130,11 +129,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = $aRow['cv_number'];
 			$row[] = $aRow['batch_code'];
 			$row[] = $aRow['vl_test_platform'];
-			if (!empty($aRow['vl_test_platform'])) {
-				$row[] = $aRow['lower_limit'] . " - " . $aRow['higher_limit'];
-			} else {
-				$row[] = "";
-			}
+			$row[] = empty($aRow['vl_test_platform']) ? "" : $aRow['lower_limit'] . " - " . $aRow['higher_limit'];
 			$row[] = ($aRow['sample_tested_datetime'] != "") ? "Yes" : "No";
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
@@ -170,7 +165,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 
 			$row[] = $aRow['facility_name'];
 			$row[] = $aRow['lab_name'];
-			if ($formId == COUNTRY\CAMEROON) {
+			if ($formId == CAMEROON) {
 				$row[] = $aRow['lab_assigned_code'];
 			}
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
@@ -185,7 +180,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
 			$row[] = $aRow['patient_age_in_years'];
 			$row[] = $gender;
-			if ($formId == COUNTRY\CAMEROON) {
+			if ($formId == CAMEROON) {
 				$row[] = $aRow['health_insurance_code'] ?? null;
 			}
 			$row[] = $aRow['patient_mobile_number'];
@@ -206,8 +201,8 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = $sampleRejection;
 			$row[] = $aRow['rejection_reason'];
 			$row[] = $aRow['recommended_corrective_action_name'];
-			if ($formId == COUNTRY\DRC) {
-				$formAttributes = json_decode($aRow['form_attributes']);
+			if ($formId == DRC) {
+				$formAttributes = json_decode((string) $aRow['form_attributes']);
 				if (is_object($formAttributes->storage)) {
 					$formAttributes->storage = json_encode($formAttributes->storage);
 				}

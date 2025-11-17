@@ -91,7 +91,7 @@ $id = (isset($_GET['id'])) ? MiscUtility::desqid($_GET['id']) : null;
 
 //$id = ($_GET['id']);
 $eidQuery = "SELECT * from form_eid where eid_id=?";
-$eidInfo = $db->rawQueryOne($eidQuery, array($id));
+$eidInfo = $db->rawQueryOne($eidQuery, [$id]);
 
 
 $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'active'");
@@ -111,7 +111,7 @@ foreach ($testPlatformResult as $row) {
 }
 
 
-if (isset($eidInfo['sample_dispatched_datetime']) && trim((string) $eidInfo['sample_dispatched_datetime']) != '' && $eidInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+if (isset($eidInfo['sample_dispatched_datetime']) && trim((string) $eidInfo['sample_dispatched_datetime']) !== '' && $eidInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $eidInfo['sample_dispatched_datetime'];
     $expStr = explode(" ", (string) $eidInfo['sample_dispatched_datetime']);
     $eidInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
@@ -119,7 +119,7 @@ if (isset($eidInfo['sample_dispatched_datetime']) && trim((string) $eidInfo['sam
     $sampleCollectionDate = '';
     $eidInfo['sample_dispatched_datetime'] = '';
 }
-if (isset($eidInfo['sample_collection_date']) && trim((string) $eidInfo['sample_collection_date']) != '' && $eidInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
+if (isset($eidInfo['sample_collection_date']) && trim((string) $eidInfo['sample_collection_date']) !== '' && $eidInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $eidInfo['sample_collection_date'];
     $expStr = explode(" ", (string) $eidInfo['sample_collection_date']);
     $eidInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
@@ -127,7 +127,7 @@ if (isset($eidInfo['sample_collection_date']) && trim((string) $eidInfo['sample_
     $sampleCollectionDate = '';
     $eidInfo['sample_collection_date'] = '';
 }
-if (isset($eidInfo['sample_received_at_lab_datetime']) && trim((string) $eidInfo['sample_received_at_lab_datetime']) != '' && $eidInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+if (isset($eidInfo['sample_received_at_lab_datetime']) && trim((string) $eidInfo['sample_received_at_lab_datetime']) !== '' && $eidInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $eidInfo['sample_received_at_lab_datetime'];
     $expStr = explode(" ", (string) $eidInfo['sample_received_at_lab_datetime']);
     $eidInfo['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
@@ -135,7 +135,7 @@ if (isset($eidInfo['sample_received_at_lab_datetime']) && trim((string) $eidInfo
     $sampleCollectionDate = '';
     $eidInfo['sample_received_at_lab_datetime'] = '';
 }
-if (isset($eidInfo['sample_tested_datetime']) && trim((string) $eidInfo['sample_tested_datetime']) != '' && $eidInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+if (isset($eidInfo['sample_tested_datetime']) && trim((string) $eidInfo['sample_tested_datetime']) !== '' && $eidInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $eidInfo['sample_tested_datetime'];
     $expStr = explode(" ", (string) $eidInfo['sample_tested_datetime']);
     $eidInfo['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
@@ -144,21 +144,21 @@ if (isset($eidInfo['sample_tested_datetime']) && trim((string) $eidInfo['sample_
     $eidInfo['sample_tested_datetime'] = '';
 }
 
-if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['result_approved_datetime']) != '' && $eidInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
+if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['result_approved_datetime']) !== '' && $eidInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", (string) $eidInfo['result_approved_datetime']);
     $eidInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $eidInfo['result_approved_datetime'] = '';
 }
 
-if (isset($eidInfo['result_reviewed_datetime']) && trim((string) $eidInfo['result_reviewed_datetime']) != '' && $eidInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+if (isset($eidInfo['result_reviewed_datetime']) && trim((string) $eidInfo['result_reviewed_datetime']) !== '' && $eidInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", (string) $eidInfo['result_reviewed_datetime']);
     $eidInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
     $eidInfo['result_reviewed_datetime'] = '';
 }
 
-if (isset($eidInfo['result_dispatched_datetime']) && trim((string) $eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+if (isset($eidInfo['result_dispatched_datetime']) && trim((string) $eidInfo['result_dispatched_datetime']) !== '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", (string) $eidInfo['result_dispatched_datetime']);
     $eidInfo['result_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
@@ -195,16 +195,7 @@ if (isset($arr['eid_min_patient_id_length']) && $arr['eid_min_patient_id_length'
 }
 
 
-$fileArray = array(
-    COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
-    COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
-    COUNTRY\DRC => 'forms/edit-drc.php',
-    COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
-    COUNTRY\PNG => 'forms/edit-png.php',
-    COUNTRY\WHO => 'forms/edit-who.php',
-    COUNTRY\RWANDA => 'forms/edit-rwanda.php',
-    COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'
-);
+$fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php', COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'];
 
 require_once($fileArray[$arr['vl_form']]);
 

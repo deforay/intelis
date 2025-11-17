@@ -75,19 +75,24 @@ $state = $geolocationService->getProvinces("yes");
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table aria-describedby="table" class="table pageFilters" aria-hidden="true"
+                        style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                             <td><strong>
                                     <?= _translate('Date Range'); ?>&nbsp;:
                                 </strong></td>
                             <td>
-                                <input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _translate('Enter date range'); ?>" style="width:220px;background:#fff;" />
+                                <input type="text" id="dateRange" name="dateRange" class="form-control daterangefield"
+                                    placeholder="<?php echo _translate('Enter date range'); ?>"
+                                    style="width:220px;background:#fff;" />
                             </td>
                             <td><strong>
                                     <?= _translate('Province/State'); ?>&nbsp;:
                                 </strong></td>
                             <td>
-                                <select class="form-control select2-element" id="state" onchange="getByProvince()" name="state" title="<?php echo _translate('Please select Province/State'); ?>" multiple="multiple">
+                                <select class="form-control select2-element" id="state" onchange="getByProvince()"
+                                    name="state" title="<?php echo _translate('Please select Province/State'); ?>"
+                                    multiple="multiple">
                                     <?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
                                 </select>
                             </td>
@@ -96,7 +101,9 @@ $state = $geolocationService->getProvinces("yes");
                                 </strong>
                             </td>
                             <td>
-                                <select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict(this.value)" multiple="multiple">
+                                <select class="form-control select2-element" id="district" name="district"
+                                    title="<?php echo _translate('Please select District/County'); ?>"
+                                    onchange="getByDistrict(this.value)" multiple="multiple">
                                 </select>
                             </td>
                         </tr>
@@ -107,7 +114,8 @@ $state = $geolocationService->getProvinces("yes");
                                 </strong>
                             </td>
                             <td>
-                                <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose health facility" style="width:100%;" multiple="multiple">
+                                <select class="form-control isRequired " name="facilityId" id="facilityId"
+                                    title="Please choose health facility" style="width:100%;" multiple="multiple">
                                     <?= $general->generateSelectOptions($facility, null, '--Select--'); ?>
                                 </select>
                             </td>
@@ -117,7 +125,8 @@ $state = $geolocationService->getProvinces("yes");
                                 </strong>
                             </td>
                             <td>
-                                <select style="width:220px;" class="form-control select2" id="labName" name="labName" title="<?php echo _translate('Please select the Lab name'); ?>" multiple="multiple">
+                                <select style="width:220px;" class="form-control select2" id="labName" name="labName"
+                                    title="<?php echo _translate('Please select the Lab name'); ?>" multiple="multiple">
                                     <?= $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
                                 </select>
                             </td>
@@ -127,33 +136,35 @@ $state = $geolocationService->getProvinces("yes");
                                 </strong>
                             </td>
                             <td>
-                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>" onchange="getSourceRequest(this.value);">
-                                    <?php if (!empty($activeTests) && in_array('vl', $activeTests)) { ?>
+                                <select id="testType" name="testType" class="form-control"
+                                    placeholder="<?php echo _translate('Please select the Test types'); ?>"
+                                    onchange="getSourceRequest(this.value);">
+                                    <?php if ($activeTests !== [] && in_array('vl', $activeTests)) { ?>
                                         <option value="vl">
                                             <?= _translate("Viral Load"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeTests) && in_array('eid', $activeTests)) { ?>
+                                    if ($activeTests !== [] && in_array('eid', $activeTests)) { ?>
                                         <option value="eid">
                                             <?= _translate("Early Infant Diagnosis"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeTests) && in_array('covid19', $activeTests)) { ?>
+                                    if ($activeTests !== [] && in_array('covid19', $activeTests)) { ?>
                                         <option value="covid19">
                                             <?= _translate("Covid-19"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeTests) && in_array('hepatitis', $activeTests)) { ?>
+                                    if ($activeTests !== [] && in_array('hepatitis', $activeTests)) { ?>
                                         <option value='hepatitis'>
                                             <?= _translate("Hepatitis"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeTests) && in_array('tb', $activeTests)) { ?>
+                                    if ($activeTests !== [] && in_array('tb', $activeTests)) { ?>
                                         <option value='tb'>
                                             <?= _translate("TB"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeTests) && in_array('cd4', $activeTests)) { ?>
+                                    if ($activeTests !== [] && in_array('cd4', $activeTests)) { ?>
                                         <option value='cd4'>
                                             <?= _translate("CD4"); ?>
                                         </option>
@@ -167,15 +178,18 @@ $state = $geolocationService->getProvinces("yes");
                                     <?php echo _translate("Source of Request"); ?>&nbsp;:
                                 </strong></td>
                             <td>
-                                <select class="form-control" id="originalSourceOfRequest" name="originalSourceOfRequest" title="<?php echo _translate('Please select source of request'); ?>"></select>
+                                <select class="form-control" id="originalSourceOfRequest" name="originalSourceOfRequest"
+                                    title="<?php echo _translate('Please select source of request'); ?>"></select>
                             </td>
                         </tr>
                         <tr>
 
-                            <td colspan="6"><button onclick="searchRequestData();" value="Search" class="btn btn-primary btn-sm"><span>
+                            <td colspan="6"><button onclick="searchRequestData();" value="Search"
+                                    class="btn btn-primary btn-sm"><span>
                                         <?php echo _translate("Search"); ?>
                                     </span></button>
-                                <button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+                                <button class="btn btn-danger btn-sm"
+                                    onclick="document.location.href = document.location"><span>Reset</span></button>
                             </td>
                         </tr>
                     </table>
@@ -198,10 +212,13 @@ $state = $geolocationService->getProvinces("yes");
                             </tr>
                         </table>
 
-                        <a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
+                        <a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
+                            href="javascript:void(0);" onclick="exportTestRequests();"><em
+                                class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
                             <?php echo _translate("Export"); ?>
                         </a>
-                        <table aria-describedby="table" id="sampleWiseReport" class="table table-bordered table-striped" aria-hidden="true">
+                        <table aria-describedby="table" id="sampleWiseReport" class="table table-bordered table-striped"
+                            aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th>
@@ -269,8 +286,7 @@ $state = $geolocationService->getProvinces("yes");
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
     var oTable = null;
-    $(document).ready(function() {
-        getSourceRequest('vl');
+    $(document).ready(function () {
 
 
         $('#labName').select2({
@@ -292,35 +308,36 @@ $state = $geolocationService->getProvinces("yes");
         });
 
         $('#dateRange').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _translate("Clear", true); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
-                startDate: moment().subtract(179, 'days'),
-                endDate: moment(),
-                maxDate: moment(),
-                ranges: {
-                    'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-                    'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-                    'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-                    'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-                    'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-                    'Current Year To Date': [moment().startOf('year'), moment()]
-                }
+            locale: {
+                cancelLabel: "<?= _translate("Clear", true); ?>",
+                format: 'DD-MMM-YYYY',
+                separator: ' to ',
             },
-            function(start, end) {
+            startDate: moment().subtract(179, 'days'),
+            endDate: moment(),
+            maxDate: moment(),
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+                'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+                'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+                'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+                'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                'Current Year To Date': [moment().startOf('year'), moment()]
+            }
+        },
+            function (start, end) {
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
             });
 
-        //searchRequestData();
+
+        getSourceRequest('vl');
     });
 
 
@@ -335,56 +352,56 @@ $state = $geolocationService->getProvinces("yes");
             //"bStateSave" : true,
             "bRetrieve": true,
             "aoColumns": [{
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center",
-                },
-                {
-                    "sClass": "center",
-                },
-                {
-                    "sClass": "center",
-                },
-                {
-                    "sClass": "center",
-                },
-                {
-                    "sClass": "center",
-                },
-                {
-                    "sClass": "center",
-                },
-                {
-                    "sClass": "center",
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                }
+                "sClass": "center"
+            },
+            {
+                "sClass": "center",
+            },
+            {
+                "sClass": "center",
+            },
+            {
+                "sClass": "center",
+            },
+            {
+                "sClass": "center",
+            },
+            {
+                "sClass": "center",
+            },
+            {
+                "sClass": "center",
+            },
+            {
+                "sClass": "center",
+            },
+            {
+                "sClass": "center"
+            },
+            {
+                "sClass": "center"
+            },
+            {
+                "sClass": "center"
+            },
+            {
+                "sClass": "center"
+            },
+            {
+                "sClass": "center"
+            },
+            {
+                "sClass": "center"
+            },
+            {
+                "sClass": "center"
+            }
             ],
             "aaSorting": [14, "desc"],
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-samplewise-report.php",
-            "fnServerData": function(sSource, aoData, fnCallback) {
+            "fnServerData": function (sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "dateRange",
                     "value": $("#dateRange").val()
@@ -418,7 +435,7 @@ $state = $geolocationService->getProvinces("yes");
                     "type": "POST",
                     "url": sSource,
                     "data": aoData,
-                    "success": function(json) {
+                    "success": function (json) {
                         $("#totalSamplesRequested").html("");
                         $("#totalSamplesAck").html("");
                         $("#totalSamplesReceived").html("");
@@ -448,12 +465,12 @@ $state = $geolocationService->getProvinces("yes");
         $("#facilityId").html('');
         $("#labName").html('');
         $.post("/common/get-by-province-id.php", {
-                provinceId: state,
-                districts: true,
-                facilities: true,
-                labs: true,
-            },
-            function(data) {
+            provinceId: state,
+            districts: true,
+            facilities: true,
+            labs: true,
+        },
+            function (data) {
                 Obj = $.parseJSON(data);
                 $("#district").append(Obj['districts']);
                 $("#facilityId").append(Obj['facilities']);
@@ -472,10 +489,10 @@ $state = $geolocationService->getProvinces("yes");
 
         $.blockUI();
         $.post("/admin/monitoring/export-samplewise-reports.php", {
-                reqSampleType: $('#requestSampleType').val(),
-                patientInfo: $('#patientInfo').val(),
-            },
-            function(data) {
+            reqSampleType: $('#requestSampleType').val(),
+            patientInfo: $('#patientInfo').val(),
+        },
+            function (data) {
                 $.unblockUI();
                 if (data === "" || data === null || data === undefined) {
                     alert("<?= _translate("Unable to generate the excel file", true); ?>");
@@ -490,7 +507,7 @@ $state = $geolocationService->getProvinces("yes");
         $("#originalSourceOfRequest").empty();
         $.post("/admin/monitoring/get-source-request-list.php", {
             testType
-        }, function(data) {
+        }, function (data) {
             $("#originalSourceOfRequest").html(data).val('api');
             getSourcesOfRequestReport();
             $.unblockUI();

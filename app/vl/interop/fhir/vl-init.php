@@ -22,9 +22,7 @@ $arr = $general->getGlobalConfig();
 // $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 // $instanceId = $instanceResult['vlsm_instance_id'];
 
-$fileArray = array(
-    7 => 'forms/rwanda/init-rwanda.php'
-);
+$fileArray = [7 => 'forms/rwanda/init-rwanda.php'];
 
 //require_once($fileArray[$arr['vl_form']]);
-require_once('forms/rwanda/init-rwanda.php');
+require_once(__DIR__ . '/forms/rwanda/init-rwanda.php');

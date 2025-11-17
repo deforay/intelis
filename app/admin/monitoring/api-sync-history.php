@@ -50,19 +50,23 @@ foreach ($syncedTypeResults as $synced) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" class="table pageFilters" aria-hidden="true" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table pageFilters" aria-hidden="true" cellspacing="3"
+						style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><strong>
 									<?= _translate('Date Range'); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _translate('Enter date range'); ?>" style="width:220px;background:#fff;" />
+								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield"
+									placeholder="<?php echo _translate('Enter date range'); ?>"
+									style="width:220px;background:#fff;" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Test Type"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>">
+								<select id="testType" name="testType" class="form-control"
+									placeholder="<?php echo _translate('Please select the Test types'); ?>">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
@@ -102,7 +106,8 @@ foreach ($syncedTypeResults as $synced) {
 									<?php echo _translate("API Type"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select style="width:220px;" class="form-control select2" id="syncedType" name="syncedType" title="<?php echo _translate('Please select the API type'); ?>">
+								<select style="width:220px;" class="form-control select2" id="syncedType"
+									name="syncedType" title="<?php echo _translate('Please select the API type'); ?>">
 									<?php echo $general->generateSelectOptions($syncedType, null, '--Select--'); ?>
 								</select>
 							</td>
@@ -115,7 +120,8 @@ foreach ($syncedTypeResults as $synced) {
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="vlRequestDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th>
@@ -163,8 +169,7 @@ foreach ($syncedTypeResults as $synced) {
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var oTable = null;
-	$(document).ready(function() {
-		loadVlRequestData();
+	$(document).ready(function () {
 		$('#dateRange').daterangepicker({
 			locale: {
 				cancelLabel: "<?= _translate("Clear", true); ?>",
@@ -189,6 +194,9 @@ foreach ($syncedTypeResults as $synced) {
 				'Current Year To Date': [moment().startOf('year'), moment()]
 			}
 		});
+
+
+		loadVlRequestData();
 	});
 
 	function loadVlRequestData() {
@@ -220,7 +228,7 @@ foreach ($syncedTypeResults as $synced) {
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/admin/monitoring/get-api-sync-history-list.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "dateRange",
 					"value": $("#dateRange").val()

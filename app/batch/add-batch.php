@@ -70,7 +70,7 @@ foreach ($testPlatformResult as $machine) {
     $lastOrderQuery = "SELECT label_order   FROM batch_details
                         WHERE machine = ? ORDER BY request_created_datetime DESC";
     $lastOrderInfo = $db->rawQuery($lastOrderQuery, [$machine['instrument_id']]);
-    if (isset($lastOrderInfo[0]['label_order']) && trim((string) $lastOrderInfo[0]['label_order']) != '') {
+    if (isset($lastOrderInfo[0]['label_order']) && trim((string) $lastOrderInfo[0]['label_order']) !== '') {
         $machinesLabelOrder[$machine['instrument_id']] = implode(",", json_decode((string) $lastOrderInfo[0]['label_order'], true));
     } else {
         $machinesLabelOrder[$machine['instrument_id']] = '';

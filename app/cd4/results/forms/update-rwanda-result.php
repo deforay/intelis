@@ -20,7 +20,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $cd4QueryInfo['fa
 //facility details
 if (isset($cd4QueryInfo['facility_id']) && $cd4QueryInfo['facility_id'] > 0) {
 	$facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
-	$facilityResult = $db->rawQuery($facilityQuery, array($cd4QueryInfo['facility_id']));
+	$facilityResult = $db->rawQuery($facilityQuery, [$cd4QueryInfo['facility_id']]);
 }
 if (!isset($facilityResult[0]['facility_code'])) {
 	$facilityResult[0]['facility_code'] = '';
@@ -48,7 +48,7 @@ if (!isset($facilityResult[0]['facility_district']) || $facilityResult[0]['facil
 }
 
 $stateName = $facilityResult[0]['facility_state'];
-if (trim((string) $stateName) != '') {
+if (trim((string) $stateName) !== '') {
 	$stateQuery = "SELECT * from geographical_divisions where geo_name='" . $stateName . "'";
 	$stateResult = $db->query($stateQuery);
 }
@@ -57,7 +57,7 @@ if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 }
 //district details
 $districtResult = [];
-if (trim((string) $stateName) != '') {
+if (trim((string) $stateName) !== '') {
 	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "' AND status='active'";
 	$districtResult = $db->query($districtQuery);
 	$facilityQuery = "SELECT * from facility_details where `status`='active' AND facility_type='2' Order By facility_name";
@@ -72,7 +72,8 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
 	$rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
 	$rch .= '<tbody>';
 	$splitChanges = explode('vlsm', (string) $cd4QueryInfo['reason_for_result_changes']);
-	for ($c = 0; $c < count($splitChanges); $c++) {
+ $counter = count($splitChanges);
+	for ($c = 0; $c < $counter; $c++) {
 		$getData = explode("##", $splitChanges[$c]);
 		$expStr = explode(" ", $getData[2]);
 		$changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
@@ -134,7 +135,7 @@ $disable = "disabled = 'disabled'";
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="sampleReordered">
-											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $cd4QueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please indicate if this is a reordered sample"> Sample Reordered
+											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $cd4QueryInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please indicate if this is a reordered sample"> Sample Reordered
 										</label>
 									</div>
 								</div>
@@ -145,7 +146,7 @@ $disable = "disabled = 'disabled'";
 									<select class="form-control isRequired" name="province" id="province" title="Please choose province" <?php echo $disable; ?> style="width:100%;" onchange="getfacilityDetails(this);">
 										<option value=""> -- Select -- </option>
 										<?php foreach ($pdResult as $provinceName) { ?>
-											<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo ($facilityResult[0]['facility_state'] . "##" . $stateResult[0]['geo_code'] == $provinceName['geo_name'] . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>;
+											<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo ($facilityResult[0]['facility_state'] . "##" . $stateResult[0]['geo_code'] === $provinceName['geo_name'] . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>;
 										<?php } ?>
 									</select>
 								</div>
@@ -179,17 +180,17 @@ $disable = "disabled = 'disabled'";
 								<div class="col-xs-2 col-md-2 femails" style="display:< ?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
 									<strong>Clinic/Health Center Email(s)</strong>
 								</div>
-								<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '') ? '' : 'none'; ?>;">
 									<?php echo $facilityResult[0]['facility_emails']; ?></div>
-								<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '') ? '' : 'none'; ?>;">
 									<strong>Clinic/Health Center Mobile No.(s)</strong>
 								</div>
-								<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '') ? '' : 'none'; ?>;">
 									<?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
-								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) !== '') ? '' : 'none'; ?>;">
 									<strong>Clinic Contact Person </strong>
 								</div>
-								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) !== '') ? '' : 'none'; ?>;">
 									<?php echo ($user); ?></div>
 							</div>-->
 							<div class="row">
@@ -411,7 +412,7 @@ $disable = "disabled = 'disabled'";
 															$cd4Value = '';
 															$cd4ValuePercentage = '';
 															$cragResult = '';
-															if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'baselineInitiation' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'baselineInitiation') {
+															if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) === 'baselineInitiation' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'baselineInitiation') {
 																$checked = 'checked="checked"';
 																$display = 'block';
 																$cd4Date = $cd4QueryInfo['last_cd4_date'];
@@ -469,7 +470,7 @@ $disable = "disabled = 'disabled'";
 															$cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
 															$checked = '';
 															$display = '';
-															if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'assessmentAHD' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'assessmentAHD') {
+															if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) === 'assessmentAHD' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'assessmentAHD') {
 																$checked = 'checked="checked"';
 																$display = 'block';
 																$cd4Date = $cd4QueryInfo['last_cd4_date'];
@@ -527,7 +528,7 @@ $disable = "disabled = 'disabled'";
 															$cd4TestReasonResultRow = $db->query($cd4TestReasonQueryRow);
 															$checked = '';
 															$display = '';
-															if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'treatmentCoinfection' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'treatmentCoinfection') {
+															if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) === 'treatmentCoinfection' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'treatmentCoinfection') {
 																$checked = 'checked="checked"';
 																$display = 'block';
 																$cd4Date = $cd4QueryInfo['last_cd4_date'];
@@ -582,7 +583,7 @@ $disable = "disabled = 'disabled'";
 													<div class="form-group">
 														<div class="col-lg-12">
 															<label class="radio-inline">
-																<input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" <?php echo $disable; ?> <?php echo trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == '9999' ? "checked='checked'" : ""; ?> onclick="showTesting('recency')">
+																<input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" <?php echo $disable; ?> <?php echo trim((string) $cd4QueryInfo['reason_for_cd4_testing']) === '9999' ? "checked='checked'" : ""; ?> onclick="showTesting('recency')">
 																<strong>Confirmation Test for Recency</strong>
 															</label>
 														</div>

@@ -2,13 +2,15 @@
 
 namespace App\Utilities;
 
+use Closure;
+use ReflectionFunction;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
 class MemoUtility
 {
     private static array $cache = [];
-    private const MAX_ENTRIES = 1000;
+    private const int MAX_ENTRIES = 1000;
 
     private static function deepSort(array $array): array
     {
@@ -70,13 +72,13 @@ class MemoUtility
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
         $caller = ($trace[1]['class'] ?? '') . ($trace[1]['type'] ?? '') . ($trace[1]['function'] ?? '');
 
-        if (empty($caller) || $caller === 'Closure') {
+        if ($caller === '' || $caller === '0' || $caller === 'Closure') {
             $caller = ($trace[0]['file'] ?? '') . ':' . ($trace[0]['line'] ?? 0);
         }
 
         $args = [];
-        if ($callback instanceof \Closure) {
-            $reflection = new \ReflectionFunction($callback);
+        if ($callback instanceof Closure) {
+            $reflection = new ReflectionFunction($callback);
             $args = $reflection->getStaticVariables();
         }
 

@@ -7,14 +7,11 @@ use App\Utilities\FileCacheUtility;
 
 final class ConfigService
 {
-    protected $fileCache;
-
-    public function __construct(FileCacheUtility $fileCache)
+    public function __construct(protected FileCacheUtility $fileCache)
     {
-        $this->fileCache = $fileCache;
     }
 
-    public function getConfigFile()
+    public function getConfigFile(): string
     {
         $configFile = ROOT_PATH . "/configs/config." . APPLICATION_ENV . ".php";
         if (!file_exists($configFile)) {
@@ -28,7 +25,7 @@ final class ConfigService
         return include $this->getConfigFile();
     }
 
-    public function updateConfig(array $keyValuePairs)
+    public function updateConfig(array $keyValuePairs): void
     {
         $filePath = $this->getConfigFile();
         $config = $this->getConfig();
@@ -54,7 +51,7 @@ final class ConfigService
         $this->fileCache->clear();
     }
 
-    private function writeFormattedConfig(string $filePath, array $config)
+    private function writeFormattedConfig(string $filePath, array $config): void
     {
         $formattedConfigArrayDefinition = $this->formatArrayAsPhpCode($config);
         file_put_contents($filePath, "<?php\n\n\$systemConfig = [];\n\n" . $formattedConfigArrayDefinition . "\n\nreturn \$systemConfig;\n");
@@ -77,7 +74,7 @@ final class ConfigService
         return rtrim($result);
     }
 
-    private function buildArrayLines(array $array, string $currentKey, array &$lines, string &$currentSection, array &$sections)
+    private function buildArrayLines(array $array, string $currentKey, array &$lines, string &$currentSection, array &$sections): void
     {
         foreach ($array as $key => $value) {
             $formattedKey = var_export($key, true);
@@ -118,7 +115,7 @@ final class ConfigService
         return '';
     }
 
-    public static function generateAPIKeyForSTS($domain = null)
+    public static function generateAPIKeyForSTS($domain = null): string
     {
         if (empty($domain)) {
             $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
@@ -126,7 +123,7 @@ final class ConfigService
         }
 
         // Remove any trailing slashes
-        $domain = rtrim($domain, '/');
+        $domain = rtrim((string) $domain, '/');
         return MiscUtility::generateUUIDv5($domain);
     }
 }

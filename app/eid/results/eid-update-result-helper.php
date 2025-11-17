@@ -1,5 +1,7 @@
 <?php
 
+use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -64,8 +66,8 @@ try {
     'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
     'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
     'result_dispatched_datetime' => (isset($_POST['resultDispatchedOn']) && $_POST['resultDispatchedOn'] != "") ? $_POST['resultDispatchedOn'] : null,
-    'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
-    'result_status' => SAMPLE_STATUS\PENDING_APPROVAL,
+    'reason_for_changing' => (empty($_POST['reasonForChanging'])) ? null : $_POST['reasonForChanging'],
+    'result_status' => PENDING_APPROVAL,
     'data_sync' => 0,
     'reason_for_sample_rejection' => $_POST['sampleRejectionReason'] ?? null,
     'rejection_on' => isset($_POST['rejectionDate']) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
@@ -85,7 +87,7 @@ try {
 
   if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
     $eidData['result'] = null;
-    $eidData['result_status'] = SAMPLE_STATUS\REJECTED;
+    $eidData['result_status'] = REJECTED;
   }
 
   $formAttributes = [

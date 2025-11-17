@@ -3,6 +3,7 @@
 
 // Check if script is run from command line
 $isCli = php_sapi_name() === 'cli';
+use App\Services\CommonService;
 // Require bootstrap file if run from command line
 if ($isCli) {
     require_once __DIR__ . '/../../bootstrap.php';
@@ -18,7 +19,7 @@ $fileCache = ContainerRegistry::get(FileCacheUtility::class);
 
 
 // If not run from command line and 'instance' is set in session, unset it
-if (!$isCli && isset($_SESSION['instance'])) {
+if (!$isCli && CommonService::isSessionActive() && isset($_SESSION['instance'])) {
     unset($_SESSION['instance']);
 }
 

@@ -37,42 +37,42 @@ $type = $_POST['type'];
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 $query = "SELECT hepatitis.sample_code,hepatitis.hepatitis_id,hepatitis.facility_id,f.facility_name,f.facility_code FROM form_hepatitis as hepatitis LEFT JOIN facility_details as f ON hepatitis.facility_id=f.facility_id where ((hepatitis.result_status = 7 AND ((hepatitis.hcv_vl_count is NOT NULL AND hepatitis.hcv_vl_count !='') OR (hepatitis.hbv_vl_count is NOT NULL AND hepatitis.hbv_vl_count !=''))) OR (hepatitis.result_status = 4 AND ((hepatitis.hcv_vl_count is NULL AND hepatitis.hcv_vl_count ='') OR (hepatitis.hbv_vl_count is NULL AND hepatitis.hbv_vl_count =''))))";
-if (isset($facility) && !empty(array_filter($facility))) {
+if (isset($facility) && array_filter($facility) !== []) {
   $query = $query . " AND hepatitis.facility_id IN (" . implode(',', $facility) . ")";
 }
-if (trim((string) $sampleType) != '') {
+if (trim((string) $sampleType) !== '') {
   $query = $query . " AND hepatitis.specimen_type='" . $sampleType . "'";
 }
-if (trim((string) $gender) != '') {
+if (trim((string) $gender) !== '') {
   $query = $query . " AND hepatitis.patient_gender='" . $gender . "'";
 }
-if (trim((string) $state) != '') {
+if (trim((string) $state) !== '') {
   $query = $query . " AND f.facility_state LIKE '%" . $state . "%' ";
 }
-if (trim((string) $district) != '') {
+if (trim((string) $district) !== '') {
   $query = $query . " AND f.facility_district LIKE '%" . $district . "%' ";
 }
-if (isset($batch) && !empty(array_filter($batch))) {
+if (isset($batch) && array_filter($batch) !== []) {
   $query = $query . " AND hepatitis.sample_batch_id IN (" . implode(',', $batch) . ")";
 }
-if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
+if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
   $query = $query . " AND hepatitis.result_status='" . $_POST['status'] . "'";
 }
-if (trim((string) $mailSentStatus) != '') {
-  if (trim((string) $type) == 'request') {
+if (trim((string) $mailSentStatus) !== '') {
+  if (trim((string) $type) === 'request') {
     $query = $query . " AND hepatitis.is_request_mail_sent='" . $mailSentStatus . "'";
-  } elseif (trim((string) $type) == 'result') {
+  } elseif (trim((string) $type) === 'result') {
     $query = $query . " AND hepatitis.is_result_mail_sent='" . $mailSentStatus . "' AND (hepatitis.hcv_vl_count!= '' OR hepatitis.hbv_vl_count!= '')";
   }
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-  if (trim((string) $start_date) == trim((string) $end_date)) {
+  if (trim((string) $start_date) === trim((string) $end_date)) {
     $query = $query . ' AND DATE(sample_collection_date) = "' . $start_date . '"';
   } else {
     $query = $query . ' AND DATE(sample_collection_date) >= "' . $start_date . '" AND DATE(sample_collection_date) <= "' . $end_date . '"';
   }
 }
-$query = $query . " ORDER BY f.facility_name ASC";
+$query .= " ORDER BY f.facility_name ASC";
 // echo $query;die;
 $result = $db->rawQuery($query);
 ?>
@@ -86,7 +86,7 @@ $result = $db->rawQuery($query);
       <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="Please select sample(s)">
         <?php
         foreach ($result as $sample) {
-          if (trim((string) $sample['sample_code']) != '') {
+          if (trim((string) $sample['sample_code']) !== '') {
         ?>
             <option value="<?php echo $sample['hepatitis_id']; ?>"><?= $sample['sample_code']; ?></option>
         <?php

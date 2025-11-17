@@ -1,5 +1,9 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -22,7 +26,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $patientsService = ContainerRegistry::get(PatientsService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
@@ -40,7 +44,7 @@ try {
     if (empty($instanceId) && $_POST['instanceId']) {
         $instanceId = $_POST['instanceId'];
     }
-    if (!empty($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) != "") {
+    if (!empty($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) !== "") {
         $sampleCollectionDate = explode(" ", (string) $_POST['sampleCollectionDate']);
         $_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
     } else {
@@ -48,44 +52,44 @@ try {
     }
 
     //Set sample received date
-    if (!empty($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
+    if (!empty($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== "") {
         $sampleReceivedDate = explode(" ", (string) $_POST['sampleReceivedDate']);
         $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
         $_POST['sampleReceivedDate'] = null;
     }
-    if (!empty($_POST['resultDispatchedDatetime']) && trim((string) $_POST['resultDispatchedDatetime']) != "") {
+    if (!empty($_POST['resultDispatchedDatetime']) && trim((string) $_POST['resultDispatchedDatetime']) !== "") {
         $resultDispatchedDatetime = explode(" ", (string) $_POST['resultDispatchedDatetime']);
         $_POST['resultDispatchedDatetime'] = DateUtility::isoDateFormat($resultDispatchedDatetime[0]) . " " . $resultDispatchedDatetime[1];
     } else {
         $_POST['resultDispatchedDatetime'] = null;
     }
-    if (!empty($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) != "") {
+    if (!empty($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) !== "") {
         $sampleTestedDate = explode(" ", (string) $_POST['sampleTestedDateTime']);
         $_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     } else {
         $_POST['sampleTestedDateTime'] = null;
     }
-    if (isset($_POST['sampleDispatchedDate']) && trim((string) $_POST['sampleDispatchedDate']) != "") {
+    if (isset($_POST['sampleDispatchedDate']) && trim((string) $_POST['sampleDispatchedDate']) !== "") {
         $sampleDispatchedDate = explode(" ", (string) $_POST['sampleDispatchedDate']);
         $_POST['sampleDispatchedDate'] = DateUtility::isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
     } else {
         $_POST['sampleDispatchedDate'] = null;
     }
-    if (isset($_POST['resultDate']) && trim((string) $_POST['resultDate']) != "") {
+    if (isset($_POST['resultDate']) && trim((string) $_POST['resultDate']) !== "") {
         $resultDate = explode(" ", (string) $_POST['resultDate']);
         $_POST['resultDate'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
         $_POST['resultDate'] = null;
     }
-    if (!empty($_POST['arrivalDateTime']) && trim((string) $_POST['arrivalDateTime']) != "") {
+    if (!empty($_POST['arrivalDateTime']) && trim((string) $_POST['arrivalDateTime']) !== "") {
         $arrivalDate = explode(" ", (string) $_POST['arrivalDateTime']);
         $_POST['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
         $_POST['arrivalDateTime'] = null;
     }
 
-    if (!empty($_POST['requestedDate']) && trim((string) $_POST['requestedDate']) != "") {
+    if (!empty($_POST['requestedDate']) && trim((string) $_POST['requestedDate']) !== "") {
         $arrivalDate = explode(" ", (string) $_POST['requestedDate']);
         $_POST['requestedDate'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
@@ -93,53 +97,53 @@ try {
     }
 
 
-    if (isset($_POST['xpertDateOfResult']) && trim((string) $_POST['xpertDateOfResult']) != "") {
+    if (isset($_POST['xpertDateOfResult']) && trim((string) $_POST['xpertDateOfResult']) !== "") {
         $xpertresultDate = explode(" ", (string) $_POST['xpertDateOfResult']);
         $_POST['xpertDateOfResult'] = DateUtility::isoDateFormat($xpertresultDate[0]) . " " . $xpertresultDate[1];
     } else {
         $_POST['xpertDateOfResult'] = null;
     }
 
-    if (isset($_POST['tbLamDateOfResult']) && trim((string) $_POST['tbLamDateOfResult']) != "") {
+    if (isset($_POST['tbLamDateOfResult']) && trim((string) $_POST['tbLamDateOfResult']) !== "") {
         $resultDate = explode(" ", (string) $_POST['tbLamDateOfResult']);
         $_POST['tbLamDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
         $_POST['tbLamDateOfResult'] = null;
     }
 
-    if (isset($_POST['cultureDateOfResult']) && trim((string) $_POST['cultureDateOfResult']) != "") {
+    if (isset($_POST['cultureDateOfResult']) && trim((string) $_POST['cultureDateOfResult']) !== "") {
         $resultDate = explode(" ", (string) $_POST['cultureDateOfResult']);
         $_POST['cultureDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
         $_POST['cultureDateOfResult'] = null;
     }
 
-    if (isset($_POST['identificationDateOfResult']) && trim((string) $_POST['identificationDateOfResult']) != "") {
+    if (isset($_POST['identificationDateOfResult']) && trim((string) $_POST['identificationDateOfResult']) !== "") {
         $resultDate = explode(" ", (string) $_POST['identificationDateOfResult']);
         $_POST['identificationDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
         $_POST['identificationDateOfResult'] = null;
     }
 
-    if (isset($_POST['drugMGITDateOfResult']) && trim((string) $_POST['drugMGITDateOfResult']) != "") {
+    if (isset($_POST['drugMGITDateOfResult']) && trim((string) $_POST['drugMGITDateOfResult']) !== "") {
         $resultDate = explode(" ", (string) $_POST['drugMGITDateOfResult']);
         $_POST['drugMGITDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
         $_POST['drugMGITDateOfResult'] = null;
     }
 
-    if (isset($_POST['drugLPADateOfResult']) && trim((string) $_POST['drugLPADateOfResult']) != "") {
+    if (isset($_POST['drugLPADateOfResult']) && trim((string) $_POST['drugLPADateOfResult']) !== "") {
         $resultDate = explode(" ", (string) $_POST['drugLPADateOfResult']);
         $_POST['drugLPADateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
         $_POST['drugLPADateOfResult'] = null;
     }
 
-    if (empty(trim((string) $_POST['sampleCode']))) {
+    if (in_array(trim((string) $_POST['sampleCode']), ['', '0'], true)) {
         $_POST['sampleCode'] = null;
     }
 
-    if (isset($_POST['patientGender']) && (trim((string) $_POST['patientGender']) == 'male' || trim((string) $_POST['patientGender']) == 'unreported')) {
+    if (isset($_POST['patientGender']) && (trim((string) $_POST['patientGender']) === 'male' || trim((string) $_POST['patientGender']) === 'unreported')) {
         $_POST['patientPregnant'] = "N/A";
         $_POST['breastfeeding'] = "N/A";
     }
@@ -153,15 +157,15 @@ try {
         $sampleCodeKey = 'sample_code_key';
     }
 
-    $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+    $status = RECEIVED_AT_TESTING_LAB;
     if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
-        $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+        $status = RECEIVED_AT_CLINIC;
     }
     $resultSentToSource = null;
 
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
         $_POST['result'] = null;
-        $status = SAMPLE_STATUS\REJECTED;
+        $status = REJECTED;
         $resultSentToSource = 'pending';
     }
     if (!empty($_POST['dob'])) {
@@ -190,12 +194,7 @@ try {
 					WHERE rejection_reason_name like ?";
         $rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
         if (empty($rejectionResult)) {
-            $data = array(
-                'rejection_reason_name' => $_POST['newRejectionReason'],
-                'rejection_type' => 'general',
-                'rejection_reason_status' => 'active',
-                'updated_datetime' => DateUtility::getCurrentDateTime()
-            );
+            $data = ['rejection_reason_name' => $_POST['newRejectionReason'], 'rejection_type' => 'general', 'rejection_reason_status' => 'active', 'updated_datetime' => DateUtility::getCurrentDateTime()];
             $id = $db->insert('r_tb_sample_rejection_reasons', $data);
             $_POST['sampleRejectionReason'] = $id;
         } else {
@@ -204,7 +203,7 @@ try {
     }
 
     $reason = $_POST['reasonForTbTest'] ?? null;
-    $reason['reason'] = array($reason['reason'] => 'yes');
+    $reason['reason'] = [$reason['reason'] => 'yes'];
 
     //Update patient Information in Patients Table
     //$systemPatientCode = $patientsService->savePatient($_POST, 'form_tb');
@@ -212,65 +211,65 @@ try {
     $tbData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],
-        'facility_id' => !empty($_POST['facilityId']) ? $_POST['facilityId'] : null,
-        'requesting_clinician' => !empty($_POST['requestingClinician']) ? $_POST['requestingClinician'] : null,
-        'specimen_quality' => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
-        'province_id' => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
-        'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : $_POST['testResult']['labId'][0],
-        'affiliated_lab_id' => !empty($_POST['affiliatedLabId']) ? $_POST['affiliatedLabId'] : null,
-        'etb_tracker_number' => !empty($_POST['trackerNo']) ? $_POST['trackerNo'] : null,
+        'facility_id' => empty($_POST['facilityId']) ? null : $_POST['facilityId'],
+        'requesting_clinician' => empty($_POST['requestingClinician']) ? null : $_POST['requestingClinician'],
+        'specimen_quality' => empty($_POST['testNumber']) ? null : $_POST['testNumber'],
+        'province_id' => empty($_POST['provinceId']) ? null : $_POST['provinceId'],
+        'lab_id' => empty($_POST['labId']) ? $_POST['testResult']['labId'][0] : $_POST['labId'],
+        'affiliated_lab_id' => empty($_POST['affiliatedLabId']) ? null : $_POST['affiliatedLabId'],
+        'etb_tracker_number' => empty($_POST['trackerNo']) ? null : $_POST['trackerNo'],
         //'system_patient_code' => $systemPatientCode,
-        'implementing_partner' => !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
-        'funding_source' => !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
-        'referring_unit' => !empty($_POST['referringUnit']) ? $_POST['referringUnit'] : null,
-        'patient_id' => !empty($_POST['patientId']) ? $_POST['patientId'] : null,
-        'patient_type' => !empty($_POST['typeOfPatient']) ? json_encode($_POST['typeOfPatient']) : null,
-        'patient_name' => !empty($_POST['firstName']) ? $_POST['firstName'] : null,
-        'patient_surname' => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
-        'patient_dob' => !empty($_POST['dob']) ? $_POST['dob'] : null,
-        'patient_gender' => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
+        'implementing_partner' => empty($_POST['implementingPartner']) ? null : $_POST['implementingPartner'],
+        'funding_source' => empty($_POST['fundingSource']) ? null : $_POST['fundingSource'],
+        'referring_unit' => empty($_POST['referringUnit']) ? null : $_POST['referringUnit'],
+        'patient_id' => empty($_POST['patientId']) ? null : $_POST['patientId'],
+        'patient_type' => empty($_POST['typeOfPatient']) ? null : json_encode($_POST['typeOfPatient']),
+        'patient_name' => empty($_POST['firstName']) ? null : $_POST['firstName'],
+        'patient_surname' => empty($_POST['lastName']) ? null : $_POST['lastName'],
+        'patient_dob' => empty($_POST['dob']) ? null : $_POST['dob'],
+        'patient_gender' => empty($_POST['patientGender']) ? null : $_POST['patientGender'],
         'is_patient_pregnant' => $_POST['patientPregnant'] ?? null,
         'is_patient_breastfeeding' => $_POST['breastfeeding'] ?? null,
-        'patient_age' => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
-        'patient_weight' => !empty($_POST['patientWeight']) ? $_POST['patientWeight'] : null,
-        'patient_phone' => !empty($_POST['patientPhoneNumber']) ? $_POST['patientPhoneNumber'] : null,
-        'patient_address' => !empty($_POST['patientAddress']) ? $_POST['patientAddress'] : null,
-        'is_displaced_population' => !empty($_POST['displacedPopulation']) ? $_POST['displacedPopulation'] : null,
-        'is_referred_by_community_actor' => !empty($_POST['isReferredByCommunityActor']) ? $_POST['isReferredByCommunityActor'] : null,
-        'reason_for_tb_test' => !empty($reason) ? json_encode($reason) : null,
-        'risk_factors' => !empty($_POST['riskFactors']) ? $_POST['riskFactors'] : null,
-        'risk_factor_other' => !empty($_POST['riskFactorsOther']) ? $_POST['riskFactorsOther'] : null,
-        'is_specimen_reordered' => !empty($_POST['reOrderedCorrectiveAction']) ? $_POST['reOrderedCorrectiveAction'] : null,
-        'purpose_of_test' => !empty($_POST['purposeOfTbTest']) ? $_POST['purposeOfTbTest'] : null,
-        'hiv_status' => !empty($_POST['hivStatus']) ? $_POST['hivStatus'] : null,
-        'is_patient_initiated_on_tb_treatment' => !empty($_POST['isPatientInitiatedTreatment']) ? $_POST['isPatientInitiatedTreatment'] : null,
-        'date_of_treatment_initiation' => !empty($_POST['treatmentDate']) ? DateUtility::isoDateFormat($_POST['treatmentDate']) : null,
-        'current_regimen' => !empty($_POST['currentRegimen']) ? $_POST['currentRegimen'] : null,
-        'date_of_initiation_of_current_regimen' => !empty($_POST['regimenDate']) ? DateUtility::isoDateFormat($_POST['regimenDate']) : null,
-        'previously_treated_for_tb' => !empty($_POST['previouslyTreatedForTB']) ? $_POST['previouslyTreatedForTB'] : null,
-        'tests_requested' => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
-        'number_of_sputum_samples' => !empty($_POST['numberOfSputumSamples']) ? $_POST['numberOfSputumSamples'] : null,
-        'first_sputum_samples_collection_date' => !empty($_POST['firstSputumSamplesCollectionDate']) ? $_POST['firstSputumSamplesCollectionDate'] : null,
-        'sample_requestor_name' => !empty($_POST['sampleRequestorName']) ? $_POST['sampleRequestorName'] : null,
-        'specimen_type' => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
-        'sample_collection_date' => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
-        'sample_dispatched_datetime' => !empty($_POST['sampleDispatchedDate']) ? $_POST['sampleDispatchedDate'] : null,
-        'sample_received_at_lab_datetime' => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
-        'is_sample_rejected' => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : '',
-        'recommended_corrective_action' => !empty($_POST['correctiveAction']) ? $_POST['correctiveAction'] : '',
-        'xpert_mtb_result' => !empty($_POST['xPertMTMResult']) ? $_POST['xPertMTMResult'] : null,
-        'culture_result' => !empty($_POST['cultureResult']) ? $_POST['cultureResult'] : null,
-        'identification_result' => !empty($_POST['identicationResult']) ? $_POST['identicationResult'] : null,
-        'drug_mgit_result' => !empty($_POST['drugMGITResult']) ? $_POST['drugMGITResult'] : null,
-        'drug_lpa_result' => !empty($_POST['drugLPAResult']) ? $_POST['drugLPAResult'] : null,
-        'xpert_result_date' => !empty($_POST['xpertDateOfResult']) ? $_POST['xpertDateOfResult'] : null,
-        'culture_result_date' => !empty($_POST['cultureDateOfResult']) ? $_POST['cultureDateOfResult'] : null,
-        'tblam_result_date' => !empty($_POST['tbLamDateOfResult']) ? $_POST['tbLamDateOfResult'] : null,
-        'identification_result_date' => !empty($_POST['identificationDateOfResult']) ? $_POST['identificationDateOfResult'] : null,
-        'drug_mgit_result_date' => !empty($_POST['drugMGITDateOfResult']) ? $_POST['drugMGITDateOfResult'] : null,
-        'drug_lpa_result_date' => !empty($_POST['drugLPADateOfResult']) ? $_POST['drugLPADateOfResult'] : null,
+        'patient_age' => empty($_POST['patientAge']) ? null : $_POST['patientAge'],
+        'patient_weight' => empty($_POST['patientWeight']) ? null : $_POST['patientWeight'],
+        'patient_phone' => empty($_POST['patientPhoneNumber']) ? null : $_POST['patientPhoneNumber'],
+        'patient_address' => empty($_POST['patientAddress']) ? null : $_POST['patientAddress'],
+        'is_displaced_population' => empty($_POST['displacedPopulation']) ? null : $_POST['displacedPopulation'],
+        'is_referred_by_community_actor' => empty($_POST['isReferredByCommunityActor']) ? null : $_POST['isReferredByCommunityActor'],
+        'reason_for_tb_test' => empty($reason) ? null : json_encode($reason),
+        'risk_factors' => empty($_POST['riskFactors']) ? null : $_POST['riskFactors'],
+        'risk_factor_other' => empty($_POST['riskFactorsOther']) ? null : $_POST['riskFactorsOther'],
+        'is_specimen_reordered' => empty($_POST['reOrderedCorrectiveAction']) ? null : $_POST['reOrderedCorrectiveAction'],
+        'purpose_of_test' => empty($_POST['purposeOfTbTest']) ? null : $_POST['purposeOfTbTest'],
+        'hiv_status' => empty($_POST['hivStatus']) ? null : $_POST['hivStatus'],
+        'is_patient_initiated_on_tb_treatment' => empty($_POST['isPatientInitiatedTreatment']) ? null : $_POST['isPatientInitiatedTreatment'],
+        'date_of_treatment_initiation' => empty($_POST['treatmentDate']) ? null : DateUtility::isoDateFormat($_POST['treatmentDate']),
+        'current_regimen' => empty($_POST['currentRegimen']) ? null : $_POST['currentRegimen'],
+        'date_of_initiation_of_current_regimen' => empty($_POST['regimenDate']) ? null : DateUtility::isoDateFormat($_POST['regimenDate']),
+        'previously_treated_for_tb' => empty($_POST['previouslyTreatedForTB']) ? null : $_POST['previouslyTreatedForTB'],
+        'tests_requested' => empty($_POST['testTypeRequested']) ? null : json_encode($_POST['testTypeRequested']),
+        'number_of_sputum_samples' => empty($_POST['numberOfSputumSamples']) ? null : $_POST['numberOfSputumSamples'],
+        'first_sputum_samples_collection_date' => empty($_POST['firstSputumSamplesCollectionDate']) ? null : $_POST['firstSputumSamplesCollectionDate'],
+        'sample_requestor_name' => empty($_POST['sampleRequestorName']) ? null : $_POST['sampleRequestorName'],
+        'specimen_type' => empty($_POST['specimenType']) ? null : $_POST['specimenType'],
+        'sample_collection_date' => empty($_POST['sampleCollectionDate']) ? null : $_POST['sampleCollectionDate'],
+        'sample_dispatched_datetime' => empty($_POST['sampleDispatchedDate']) ? null : $_POST['sampleDispatchedDate'],
+        'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
+        'is_sample_rejected' => empty($_POST['isSampleRejected']) ? '' : $_POST['isSampleRejected'],
+        'recommended_corrective_action' => empty($_POST['correctiveAction']) ? '' : $_POST['correctiveAction'],
+        'xpert_mtb_result' => empty($_POST['xPertMTMResult']) ? null : $_POST['xPertMTMResult'],
+        'culture_result' => empty($_POST['cultureResult']) ? null : $_POST['cultureResult'],
+        'identification_result' => empty($_POST['identicationResult']) ? null : $_POST['identicationResult'],
+        'drug_mgit_result' => empty($_POST['drugMGITResult']) ? null : $_POST['drugMGITResult'],
+        'drug_lpa_result' => empty($_POST['drugLPAResult']) ? null : $_POST['drugLPAResult'],
+        'xpert_result_date' => empty($_POST['xpertDateOfResult']) ? null : $_POST['xpertDateOfResult'],
+        'culture_result_date' => empty($_POST['cultureDateOfResult']) ? null : $_POST['cultureDateOfResult'],
+        'tblam_result_date' => empty($_POST['tbLamDateOfResult']) ? null : $_POST['tbLamDateOfResult'],
+        'identification_result_date' => empty($_POST['identificationDateOfResult']) ? null : $_POST['identificationDateOfResult'],
+        'drug_mgit_result_date' => empty($_POST['drugMGITDateOfResult']) ? null : $_POST['drugMGITDateOfResult'],
+        'drug_lpa_result_date' => empty($_POST['drugLPADateOfResult']) ? null : $_POST['drugLPADateOfResult'],
         'result_sent_to_source' => $resultSentToSource,
-        'result_dispatched_datetime' => !empty($_POST['resultDispatchedDatetime']) ? $_POST['resultDispatchedDatetime'] : null,
+        'result_dispatched_datetime' => empty($_POST['resultDispatchedDatetime']) ? null : $_POST['resultDispatchedDatetime'],
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != "") ? $_POST['approvedBy'] : "",
@@ -279,8 +278,8 @@ try {
         'other_referring_unit' => (isset($_POST['typeOfReferringUnit']) && $_POST['typeOfReferringUnit'] != "") ? $_POST['typeOfReferringUnit'] : null,
         'other_specimen_type' => (isset($_POST['specimenTypeOther']) && $_POST['specimenTypeOther'] != "") ? $_POST['specimenTypeOther'] : null,
         'other_patient_type' => (isset($_POST['typeOfPatientOther']) && $_POST['typeOfPatientOther'] != "") ? $_POST['typeOfPatientOther'] : null,
-        'tested_by' => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
-        'result_date' => !empty($_POST['resultDate']) ? $_POST['resultDate'] : null,
+        'tested_by' => empty($_POST['testedBy']) ? null : $_POST['testedBy'],
+        'result_date' => empty($_POST['resultDate']) ? null : $_POST['resultDate'],
         'rejection_on' => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
         'result_status' => $status,
         'data_sync' => 0,
@@ -289,7 +288,7 @@ try {
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         'request_created_by' => $_SESSION['userId'],
-        'lab_tech_comments' => !empty($_POST['labComments']) ? $_POST['labComments'] : '',
+        'lab_tech_comments' => empty($_POST['labComments']) ? '' : $_POST['labComments'],
         'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
         'source_of_request' => "web"
     ];
@@ -341,30 +340,23 @@ try {
                 }
             }
         }
-    } else {
-        if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-            if (!empty($_POST['testResult'])) {
-                $db->where('tb_id', $_POST['tbSampleId']);
-                $db->delete($testTableName);
-
-                foreach ($_POST['testResult'] as $testKey => $testResult) {
-                    if (!empty($testResult) && trim((string) $testResult) != "") {
-                        $db->insert(
-                            $testTableName,
-                            array(
-                                'tb_id' => $_POST['tbSampleId'],
-                                'actual_no' => $_POST['actualNo'][$testKey] ?? null,
-                                'test_result' => $testResult,
-                                'updated_datetime' => DateUtility::getCurrentDateTime()
-                            )
-                        );
-                    }
-                }
-            }
-        } else {
+    } elseif (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
+        if (!empty($_POST['testResult'])) {
             $db->where('tb_id', $_POST['tbSampleId']);
             $db->delete($testTableName);
+
+            foreach ($_POST['testResult'] as $testKey => $testResult) {
+                if (!empty($testResult) && trim((string) $testResult) !== "") {
+                    $db->insert(
+                        $testTableName,
+                        ['tb_id' => $_POST['tbSampleId'], 'actual_no' => $_POST['actualNo'][$testKey] ?? null, 'test_result' => $testResult, 'updated_datetime' => DateUtility::getCurrentDateTime()]
+                    );
+                }
+            }
         }
+    } else {
+        $db->where('tb_id', $_POST['tbSampleId']);
+        $db->delete($testTableName);
     }
 
     $tbData['is_encrypted'] = 'no';

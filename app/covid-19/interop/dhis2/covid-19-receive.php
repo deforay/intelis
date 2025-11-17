@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\SOUTH_SUDAN;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -21,8 +22,6 @@ require_once(APPLICATION_PATH . '/covid-19/interop/dhis2/covid-19-init.php');
 
 $instanceId = $general->getInstanceId();
 
-$fileArray = array(
-    COUNTRY\SOUTH_SUDAN => 'forms/receive-southsudan.php'
-);
+$fileArray = [SOUTH_SUDAN => 'forms/receive-southsudan.php'];
 
 require_once($fileArray[$arr['vl_form']]);

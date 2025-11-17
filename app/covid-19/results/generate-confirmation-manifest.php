@@ -1,6 +1,7 @@
 <?php
 
 
+use Laminas\Diactoros\ServerRequest;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -15,7 +16,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -26,25 +27,24 @@ $barcodeFormat = $globalConfig['barcode_format'] ?? 'C39';
 
 class Covid19ConfirmationManifestPDF extends Fpdi
 {
-    public ?string $logo;
-    public ?string $text;
-    public ?string $labname;
+    public ?string $logo = null;
+    public ?string $text = null;
+    public ?string $labname = null;
 
-    public function setHeading($logo, $text, $labname)
+    public function setHeading(?string $logo, ?string $text, ?string $labname): void
     {
         $this->logo = $logo;
         $this->text = $text;
         $this->labname = $labname;
     }
     //Page header
-    public function Header()
+    #[Override]
+    public function Header(): void
     {
 
-        if (trim($this->logo) != "") {
-            if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
-            }
+        if (trim((string) $this->logo) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+            $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+            $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
         }
         $this->SetFont('helvetica', '', 7);
         $this->writeHTMLCell(30, 0, 10, 26, $this->text, 0, 0, 0, true, 'A');
@@ -53,11 +53,9 @@ class Covid19ConfirmationManifestPDF extends Fpdi
         $this->SetFont('helvetica', '', 10);
         $this->writeHTMLCell(0, 0, 0, 20, $this->labname, 0, 0, 0, true, 'C');
 
-        if (trim($this->logo) != "") {
-            if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($imageFilePath, 262, 10, 15, '', '', '', 'T');
-            }
+        if (trim((string) $this->logo) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+            $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+            $this->Image($imageFilePath, 262, 10, 15, '', '', '', 'T');
         }
         $this->SetFont('helvetica', '', 7);
         $this->writeHTMLCell(30, 0, 255, 26, $this->text, 0, 0, 0, true, 'A');
@@ -66,7 +64,8 @@ class Covid19ConfirmationManifestPDF extends Fpdi
     }
 
     // Page footer
-    public function Footer()
+    #[Override]
+    public function Footer(): void
     {
         // Position at 15 mm from bottom
         $this->SetY(-15);
@@ -78,7 +77,7 @@ class Covid19ConfirmationManifestPDF extends Fpdi
 }
 
 
-if (trim($id) != '') {
+if (trim((string) $id) !== '') {
 
     $sQuery = "SELECT sample_code,
                     remote_sample_code,
@@ -123,8 +122,8 @@ if (trim($id) != '') {
         $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
         // set header and footer fonts
-        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+        $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
 
         // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -141,8 +140,8 @@ if (trim($id) != '') {
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
         // set some language-dependent strings (optional)
-        if (@file_exists(dirname(__FILE__) . '/lang/eng.php')) {
-            require_once(dirname(__FILE__) . '/lang/eng.php');
+        if (@file_exists(__DIR__ . '/lang/eng.php')) {
+            require_once(__DIR__ . '/lang/eng.php');
             $pdf->setLanguageArray($l);
         }
 

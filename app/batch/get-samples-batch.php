@@ -29,13 +29,11 @@ $sortBy = $_POST['sortBy'] ?? 'sampleCode';
 
 
 $sortType = match ($_POST['sortType']) {
-    'a', 'asc' => 'asc',
     'd', 'desc' => 'desc',
     default => 'asc',
 };
 
 $orderBy = match ($sortBy) {
-    'sampleCode' => 'sample_code',
     'lastModified' => 'last_modified_datetime',
     'requestCreated' => 'request_created_datetime',
     'labAssignedCode' => 'lab_assigned_code',
@@ -98,21 +96,21 @@ if (!empty($_POST['sampleCollectionDate'])) {
     $swhere[] = $where[] = " DATE(sample_collection_date) BETWEEN '$startDate' AND '$endDate' ";
 }
 
-if (!empty($_POST['sampleReceivedAtLab']) && trim((string) $_POST['sampleReceivedAtLab']) != '') {
+if (!empty($_POST['sampleReceivedAtLab']) && trim((string) $_POST['sampleReceivedAtLab']) !== '') {
     [$sampleReceivedStartDate, $sampleReceivedEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedAtLab'] ?? '');
     $swhere[] = $where[] = " DATE(sample_received_at_lab_datetime) BETWEEN '$sampleReceivedStartDate' AND '$sampleReceivedEndDate' ";
 }
 
-if (!empty($_POST['lastModifiedDateTime']) && trim((string) $_POST['lastModifiedDateTime']) != '') {
+if (!empty($_POST['lastModifiedDateTime']) && trim((string) $_POST['lastModifiedDateTime']) !== '') {
     [$lastModifiedStartDate, $lastModifiedEndDate] = DateUtility::convertDateRange($_POST['lastModifiedDateTime'] ?? '');
     $swhere[] = $where[] = " DATE(last_modified_datetime) BETWEEN '$lastModifiedStartDate' AND '$lastModifiedEndDate' ";
 }
 
-if (!empty($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
+if (!empty($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
     $swhere[] = $where[] = ' funding_source = "' . $_POST['fundingSource'] . '"';
 }
 
-if (!empty($_POST['userId']) && trim((string) $_POST['userId']) != '') {
+if (!empty($_POST['userId']) && trim((string) $_POST['userId']) !== '') {
     $swhere[] = $where[] = ' vl.request_created_by = "' . $_POST['userId'] . '"';
 }
 

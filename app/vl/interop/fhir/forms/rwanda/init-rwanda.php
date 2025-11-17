@@ -63,28 +63,30 @@ foreach ($entries as $entry) {
 
     $db->where("geo_name", $facilityState);
     $db->where("geo_parent", 0);
-    $facilityStateRow = $db->getOne('geographical_divisions', array("geo_id", "geo_name"));
+    $facilityStateRow = $db->getOne('geographical_divisions', ["geo_id", "geo_name"]);
     if (!empty($facilityStateRow)) {
         $facilityStateId = $facilityStateRow['geo_id'];
     } else {
-        $facilityStateId = $db->insert('geographical_divisions', array('geo_name' => $facilityState, 'geo_parent' => 0, 'geo_status' => 'active'));
+        $facilityStateId = $db->insert('geographical_divisions', ['geo_name' => $facilityState, 'geo_parent' => 0, 'geo_status' => 'active']);
     }
 
 
     $facilityDistrict = ((string) $resource->getAddress()[0]->getDistrict());
     $db->where("geo_name", $facilityDistrict);
     $db->where("geo_parent", $facilityStateId);
-    $facilityStateRow = $db->getOne('geographical_divisions', array("geo_id", "geo_name"));
+    $facilityStateRow = $db->getOne('geographical_divisions', ["geo_id", "geo_name"]);
     if (!empty($facilityStateRow)) {
         $facilityDistrictId = $facilityStateRow['geo_id'];
     } else {
-        $facilityDistrictId = $db->insert('geographical_divisions', array('geo_name' => $facilityDistrict, 'geo_parent' => $facilityStateId, 'geo_status' => 'active'));
+        $facilityDistrictId = $db->insert('geographical_divisions', ['geo_name' => $facilityDistrict, 'geo_parent' => $facilityStateId, 'geo_status' => 'active']);
     }
 
     $facilityRow = $facilitiesService->getFacilityByAttribute('facility_fhir_id', $facilityFHIRId);
 
     // looks like this FHIR Facility ID is already in the database. No need to do anything
-    if (!empty($facilityRow)) continue;
+    if (!empty($facilityRow)) {
+        continue;
+    }
 
     $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
     $instanceId = $instanceResult['vlsm_instance_id'];
@@ -118,10 +120,6 @@ foreach ($entries as $entry) {
         $id = $db->insert("facility_details", $data);
     }
 
-    $dataTest = array(
-        'test_type' => 'vl',
-        'facility_id' => $id,
-        "updated_datetime" => DateUtility::getCurrentDateTime()
-    );
-    $db->setQueryOption(array('IGNORE'))->insert('health_facilities', $dataTest);
+    $dataTest = ['test_type' => 'vl', 'facility_id' => $id, "updated_datetime" => DateUtility::getCurrentDateTime()];
+    $db->setQueryOption(['IGNORE'])->insert('health_facilities', $dataTest);
 }

@@ -144,37 +144,37 @@ $state = $geolocationService->getProvinces("yes");
                                     </div>
                                 <?php } ?>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_collection_date" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Collection Date"); ?></label> <br>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_collection_date" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Collection Date"); ?></label> <br>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label> <br>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label> <br>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="state" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="state" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("District/County"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("District/County"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_type_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_type_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="last_modified_datetime" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Last Modified Date"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="last_modified_datetime" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Last Modified Date"); ?></label>
                                 </div>
                                 <div class="col-md-3">
-                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Status"); ?></label>
+                                    <input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Status"); ?></label>
                                 </div>
                             </div>
                         </div>
@@ -244,17 +244,7 @@ $state = $geolocationService->getProvinces("yes");
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 
-<?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
-    if ($global['bar_code_printing'] == 'dymo-labelwriter-450') { ?>
-        <script src="/assets/js/DYMO.Label.Framework.js"></script>
-        <script src="/uploads/barcode-formats/dymo-format.js"></script>
-        <script src="/assets/js/dymo-print.js"></script>
-    <?php } else if ($global['bar_code_printing'] == 'zebra-printer') { ?>
-        <script src="/assets/js/zebra-browserprint.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-browserprint.js") ?>"></script>
-        <script src="/uploads/barcode-formats/zebra-format.js?v=<?= filemtime(WEB_ROOT . "/uploads/barcode-formats/zebra-format.js") ?>"></script>
-        <script src="/assets/js/zebra-print.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-print.js") ?>"></script>
-<?php }
-} ?>
+<?= CommonService::barcodeScripts(); ?>
 
 <script type="text/javascript">
     var startDate = "";
@@ -285,9 +275,9 @@ $state = $geolocationService->getProvinces("yes");
         });
         <?php
         if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-            $sampleCode = htmlspecialchars($_GET['s']);
-            $facilityCode = htmlspecialchars($_GET['f']);
-            $patientID = htmlspecialchars($_GET['p']);
+            $sampleCode = htmlspecialchars((string) $_GET['s']);
+            $facilityCode = htmlspecialchars((string) $_GET['f']);
+            $patientID = htmlspecialchars((string) $_GET['p']);
             echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
         }
         ?>

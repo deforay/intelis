@@ -55,7 +55,7 @@ function formatBytes(int $bytes, int $precision = 2): string
     $bytes = max($bytes, 0);
     $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
     $pow = min($pow, count($units) - 1);
-    $bytes /= pow(1024, $pow);
+    $bytes /= 1024 ** $pow;
     return round($bytes, $precision) . ' ' . $units[$pow];
 }
 
@@ -84,7 +84,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
 
     // Get current size with fast du command
     exec("du -sb " . escapeshellarg($folder) . " 2>/dev/null", $duOutput, $exitCode);
-    $currentSize = ($exitCode === 0 && !empty($duOutput[0]))
+    $currentSize = ($exitCode === 0 && (isset($duOutput[0]) && ($duOutput[0] !== '' && $duOutput[0] !== '0')))
         ? (int)explode("\t", $duOutput[0])[0]
         : 0;
 
@@ -261,8 +261,8 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
             $output->writeln("  <fire>✗ Failed to enumerate files: {$e->getMessage()}</fire>");
         }
 
-        if (!empty($files)) {
-            usort($files, fn($a, $b) => $a['mtime'] <=> $b['mtime']);
+        if ($files !== []) {
+            usort($files, fn($a, $b): int => $a['mtime'] <=> $b['mtime']);
             foreach ($files as $file) {
                 $shouldDelete = false;
                 if ($needsAgeCleanup && $file['age_days'] > $duration) {
@@ -285,7 +285,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
         }
     }
 
-    if (empty($filesToDelete)) {
+    if ($filesToDelete === []) {
         $output->writeln("  <info>ℹ No files to delete</info>");
         $stats['dirs_deleted'] += pruneEmptyDirs($folder);
         return $stats;
@@ -355,11 +355,17 @@ function pruneEmptyDirs(string $folder): int
 function runDbToolsClean(?int $keep, ?int $days, ConsoleOutput $output): int
 {
     $args = [];
-    if ($keep !== null) $args[] = '--keep=' . (int)$keep;
-    if ($days !== null) $args[] = '--days=' . (int)$days;
+    if ($keep !== null) {
+        $args[] = '--keep=' . (int)$keep;
+    }
+    if ($days !== null) {
+        $args[] = '--days=' . (int)$days;
+    }
 
     // Fallback: require at least one policy
-    if (!$args) $args[] = '--days=30';
+    if ($args === []) {
+        $args[] = '--days=30';
+    }
 
     $script = BIN_PATH . DIRECTORY_SEPARATOR . 'db-tools.php';
     if (!is_file($script)) {

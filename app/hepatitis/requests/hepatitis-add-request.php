@@ -103,15 +103,7 @@ $fundingSourceList = $general->getFundingSources();
 $implementingPartnerList = $general->getImplementationPartners();
 
 
-$fileArray = array(
-    COUNTRY\SOUTH_SUDAN => 'forms/add-southsudan.php',
-    COUNTRY\SIERRA_LEONE => 'forms/add-sierraleone.php',
-    COUNTRY\DRC => 'forms/add-drc.php',
-    COUNTRY\CAMEROON => 'forms/add-cameroon.php',
-    COUNTRY\PNG => 'forms/add-png.php',
-    COUNTRY\WHO => 'forms/add-who.php',
-    COUNTRY\RWANDA => 'forms/add-rwanda.php'
-);
+$fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/add-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/add-sierraleone.php', COUNTRY\DRC => 'forms/add-drc.php', COUNTRY\CAMEROON => 'forms/add-cameroon.php', COUNTRY\PNG => 'forms/add-png.php', COUNTRY\WHO => 'forms/add-who.php', COUNTRY\RWANDA => 'forms/add-rwanda.php'];
 
 require_once $fileArray[$arr['vl_form']];
 ?>

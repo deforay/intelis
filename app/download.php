@@ -4,9 +4,10 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
+use Laminas\Diactoros\ServerRequest;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -14,12 +15,12 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $fileName = $_GET['f'] ?? null;
 
 if ($fileName !== null && MiscUtility::isBase64($fileName)) {
-    $fileName = base64_decode($fileName);
+    $fileName = base64_decode((string) $fileName);
 }
 
 // Check if the file exists in the given path or the temporary path
 if (!empty($fileName)) {
-    $fileName = urldecode($fileName);
+    $fileName = urldecode((string) $fileName);
     if (file_exists($fileName)) {
         // $fileName is already set
     } elseif (file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . $fileName)) {
@@ -34,8 +35,8 @@ if (!empty($fileName)) {
     $fileName = null;
 }
 
-if (empty($fileName)) {
-    $redirect = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/';
+if ($fileName === null || $fileName === '' || $fileName === '0') {
+    $redirect = empty($_SERVER['HTTP_REFERER']) ? '/' : $_SERVER['HTTP_REFERER'];
     header("Location:" . urlencode((string) $redirect));
     exit;
 }

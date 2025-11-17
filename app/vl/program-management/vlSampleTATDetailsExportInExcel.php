@@ -54,7 +54,7 @@ $colNo = 1;
 $sheet->mergeCells('A1:AE1');
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
+	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 	}
 }

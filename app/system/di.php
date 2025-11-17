@@ -1,7 +1,10 @@
 <?php
 
 // app/system/di.php
-
+use function DI\factory;
+use function DI\get;
+use function DI\autowire;
+use function DI\create;
 use DI\ContainerBuilder;
 use App\Services\TbService;
 use App\Services\VlService;
@@ -91,7 +94,7 @@ if (!$isCli && !empty($systemConfig['system']['cache_di']) && true === $systemCo
 // Configuration and DB
 $builder->addDefinitions([
     'applicationConfig' => $systemConfig,
-    'db' => DI\factory(function (ContainerInterface $c) {
+    'db' => factory(function (ContainerInterface $c): DatabaseService {
         $dbConfig = $c->get('applicationConfig')['database'] ?? [];
 
         try {
@@ -140,68 +143,68 @@ HTML;
             exit;
         }
     }),
-    DatabaseService::class => DI\get('db')
+    DatabaseService::class => get('db')
 ]);
 
 // Services
 $builder->addDefinitions([
-    CommonService::class  => DI\autowire(),
-    ConfigService::class  => DI\autowire(),
-    SystemService::class  => DI\autowire(),
-    ResultPdfService::class  => DI\autowire(),
-    BatchService::class  => DI\autowire(),
-    VlService::class => DI\autowire(),
-    CD4Service::class => DI\autowire(),
-    EidService::class =>  DI\autowire(),
-    Covid19Service::class => DI\autowire(),
-    HepatitisService::class => DI\autowire(),
-    TbService::class => DI\autowire(),
-    GenericTestsService::class => DI\autowire(),
-    UsersService::class => DI\autowire(),
-    GeoLocationsService::class => DI\autowire(),
-    TestResultsService::class => DI\autowire(),
-    AuditArchiveService::class => DI\autowire(),
-    AppMenuService::class => DI\autowire(),
-    FacilitiesService::class => DI\autowire(),
-    InstrumentsService::class => DI\autowire(),
-    PatientsService::class => DI\autowire(),
-    ApiService::class => DI\autowire(),
-    TestsService::class => DI\autowire(),
-    StorageService::class => DI\autowire(),
-    TestRequestsService::class => DI\autowire(),
-    STSRequestsService::class => DI\autowire(),
-    STSResultsService::class => DI\autowire(),
-    STSTokensService::class => DI\autowire(),
+    CommonService::class  => autowire(),
+    ConfigService::class  => autowire(),
+    SystemService::class  => autowire(),
+    ResultPdfService::class  => autowire(),
+    BatchService::class  => autowire(),
+    VlService::class => autowire(),
+    CD4Service::class => autowire(),
+    EidService::class =>  autowire(),
+    Covid19Service::class => autowire(),
+    HepatitisService::class => autowire(),
+    TbService::class => autowire(),
+    GenericTestsService::class => autowire(),
+    UsersService::class => autowire(),
+    GeoLocationsService::class => autowire(),
+    TestResultsService::class => autowire(),
+    AuditArchiveService::class => autowire(),
+    AppMenuService::class => autowire(),
+    FacilitiesService::class => autowire(),
+    InstrumentsService::class => autowire(),
+    PatientsService::class => autowire(),
+    ApiService::class => autowire(),
+    TestsService::class => autowire(),
+    StorageService::class => autowire(),
+    TestRequestsService::class => autowire(),
+    STSRequestsService::class => autowire(),
+    STSResultsService::class => autowire(),
+    STSTokensService::class => autowire(),
 ]);
 
 // Middlewares
 $builder->addDefinitions([
-    LegacyRequestHandler::class => DI\autowire(),
-    AppAuthMiddleware::class => DI\autowire(),
-    SystemAdminAuthMiddleware::class => DI\autowire(),
-    ApiAuthMiddleware::class => DI\autowire(),
-    AclMiddleware::class => DI\autowire(),
-    CSRFMiddleware::class => DI\autowire(),
-    ErrorHandlerMiddleware::class => DI\autowire(),
-    ApiErrorHandlingMiddleware::class => DI\autowire(),
-    ApiLegacyFallbackMiddleware::class => DI\autowire(),
+    LegacyRequestHandler::class => autowire(),
+    AppAuthMiddleware::class => autowire(),
+    SystemAdminAuthMiddleware::class => autowire(),
+    ApiAuthMiddleware::class => autowire(),
+    AclMiddleware::class => autowire(),
+    CSRFMiddleware::class => autowire(),
+    ErrorHandlerMiddleware::class => autowire(),
+    ApiErrorHandlingMiddleware::class => autowire(),
+    ApiLegacyFallbackMiddleware::class => autowire(),
 ]);
 
 // Utilities, Helpers and Other Classes
 $builder->addDefinitions([
-    DateUtility::class => DI\create(DateUtility::class),
-    CaptchaUtility::class => DI\create(CaptchaUtility::class),
-    FileCacheUtility::class => DI\create(FileCacheUtility::class),
-    MiscUtility::class => DI\create(MiscUtility::class),
-    MemoUtility::class => DI\create(MemoUtility::class),
-    LoggerUtility::class => DI\create(LoggerUtility::class),
-    ValidationUtility::class => DI\create(ValidationUtility::class),
-    ErrorResponseGenerator::class => DI\create(ErrorResponseGenerator::class)
+    DateUtility::class => create(DateUtility::class),
+    CaptchaUtility::class => create(CaptchaUtility::class),
+    FileCacheUtility::class => create(FileCacheUtility::class),
+    MiscUtility::class => create(MiscUtility::class),
+    MemoUtility::class => create(MemoUtility::class),
+    LoggerUtility::class => create(LoggerUtility::class),
+    ValidationUtility::class => create(ValidationUtility::class),
+    ErrorResponseGenerator::class => create(ErrorResponseGenerator::class)
         ->constructor($debugMode),
-    PdfConcatenateHelper::class => DI\create(PdfConcatenateHelper::class),
-    PdfWatermarkHelper::class => DI\create(PdfWatermarkHelper::class),
-    BatchPdfHelper::class => DI\create(BatchPdfHelper::class),
-    AppRegistry::class => DI\create(AppRegistry::class),
+    PdfConcatenateHelper::class => create(PdfConcatenateHelper::class),
+    PdfWatermarkHelper::class => create(PdfWatermarkHelper::class),
+    BatchPdfHelper::class => create(BatchPdfHelper::class),
+    AppRegistry::class => create(AppRegistry::class),
 ]);
 
 

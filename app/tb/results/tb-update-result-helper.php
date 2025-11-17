@@ -1,5 +1,8 @@
 <?php
 
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -29,7 +32,7 @@ try {
     if (empty($instanceId) && $_POST['instanceId']) {
         $instanceId = $_POST['instanceId'];
     }
-    if (!empty($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) != "") {
+    if (!empty($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) !== "") {
         $sampleCollectionDate = explode(" ", (string) $_POST['sampleCollectionDate']);
         $_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
     } else {
@@ -37,40 +40,40 @@ try {
     }
 
     //Set sample received date
-    if (!empty($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
+    if (!empty($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== "") {
         $sampleReceivedDate = explode(" ", (string) $_POST['sampleReceivedDate']);
         $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
     } else {
         $_POST['sampleReceivedDate'] = null;
     }
-    if (!empty($_POST['resultDispatchedDatetime']) && trim((string) $_POST['resultDispatchedDatetime']) != "") {
+    if (!empty($_POST['resultDispatchedDatetime']) && trim((string) $_POST['resultDispatchedDatetime']) !== "") {
         $resultDispatchedDatetime = explode(" ", (string) $_POST['resultDispatchedDatetime']);
         $_POST['resultDispatchedDatetime'] = DateUtility::isoDateFormat($resultDispatchedDatetime[0]) . " " . $resultDispatchedDatetime[1];
     } else {
         $_POST['resultDispatchedDatetime'] = null;
     }
-    if (!empty($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) != "") {
+    if (!empty($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) !== "") {
         $sampleTestedDate = explode(" ", (string) $_POST['sampleTestedDateTime']);
         $_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
     } else {
         $_POST['sampleTestedDateTime'] = null;
     }
 
-    if (!empty($_POST['arrivalDateTime']) && trim((string) $_POST['arrivalDateTime']) != "") {
+    if (!empty($_POST['arrivalDateTime']) && trim((string) $_POST['arrivalDateTime']) !== "") {
         $arrivalDate = explode(" ", (string) $_POST['arrivalDateTime']);
         $_POST['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
         $_POST['arrivalDateTime'] = null;
     }
 
-    if (!empty($_POST['requestedDate']) && trim((string) $_POST['requestedDate']) != "") {
+    if (!empty($_POST['requestedDate']) && trim((string) $_POST['requestedDate']) !== "") {
         $arrivalDate = explode(" ", (string) $_POST['requestedDate']);
         $_POST['requestedDate'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
     } else {
         $_POST['requestedDate'] = null;
     }
 
-    if (empty(trim((string) $_POST['sampleCode']))) {
+    if (in_array(trim((string) $_POST['sampleCode']), ['', '0'], true)) {
         $_POST['sampleCode'] = null;
     }
 
@@ -82,16 +85,16 @@ try {
         $sampleCodeKey = 'sample_code_key';
     }
 
-    $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+    $status = RECEIVED_AT_TESTING_LAB;
     if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
-        $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+        $status = RECEIVED_AT_CLINIC;
     }
 
     $resultSentToSource = null;
 
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
         $_POST['result'] = null;
-        $status = SAMPLE_STATUS\REJECTED;
+        $status = REJECTED;
         $resultSentToSource = 'pending';
     }
     if (!empty($_POST['dob'])) {
@@ -110,7 +113,7 @@ try {
         $_POST['provinceId'] = $geolocationService->getProvinceIdByName($province[0]);
     }
 
-    if (isset($_POST['resultDate']) && trim((string) $_POST['resultDate']) != "") {
+    if (isset($_POST['resultDate']) && trim((string) $_POST['resultDate']) !== "") {
         $resultDate = explode(" ", (string) $_POST['resultDate']);
         $_POST['resultDate'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
@@ -118,42 +121,42 @@ try {
     }
 
 
-    if (isset($_POST['xpertDateOfResult']) && trim((string) $_POST['xpertDateOfResult']) != "") {
+    if (isset($_POST['xpertDateOfResult']) && trim((string) $_POST['xpertDateOfResult']) !== "") {
         $xpertresultDate = explode(" ", (string) $_POST['xpertDateOfResult']);
         $_POST['xpertDateOfResult'] = DateUtility::isoDateFormat($xpertresultDate[0]) . " " . $xpertresultDate[1];
     } else {
         $_POST['xpertDateOfResult'] = null;
     }
 
-    if (isset($_POST['tbLamDateOfResult']) && trim((string) $_POST['tbLamDateOfResult']) != "") {
+    if (isset($_POST['tbLamDateOfResult']) && trim((string) $_POST['tbLamDateOfResult']) !== "") {
         $resultDate = explode(" ", (string) $_POST['tbLamDateOfResult']);
         $_POST['tbLamDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
         $_POST['tbLamDateOfResult'] = null;
     }
 
-    if (isset($_POST['cultureDateOfResult']) && trim((string) $_POST['cultureDateOfResult']) != "") {
+    if (isset($_POST['cultureDateOfResult']) && trim((string) $_POST['cultureDateOfResult']) !== "") {
         $resultDate = explode(" ", (string) $_POST['cultureDateOfResult']);
         $_POST['cultureDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
         $_POST['cultureDateOfResult'] = null;
     }
 
-    if (isset($_POST['identificationDateOfResult']) && trim((string) $_POST['identificationDateOfResult']) != "") {
+    if (isset($_POST['identificationDateOfResult']) && trim((string) $_POST['identificationDateOfResult']) !== "") {
         $resultDate = explode(" ", (string) $_POST['identificationDateOfResult']);
         $_POST['identificationDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
         $_POST['identificationDateOfResult'] = null;
     }
 
-    if (isset($_POST['drugMGITDateOfResult']) && trim((string) $_POST['drugMGITDateOfResult']) != "") {
+    if (isset($_POST['drugMGITDateOfResult']) && trim((string) $_POST['drugMGITDateOfResult']) !== "") {
         $resultDate = explode(" ", (string) $_POST['drugMGITDateOfResult']);
         $_POST['drugMGITDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
         $_POST['drugMGITDateOfResult'] = null;
     }
 
-    if (isset($_POST['drugLPADateOfResult']) && trim((string) $_POST['drugLPADateOfResult']) != "") {
+    if (isset($_POST['drugLPADateOfResult']) && trim((string) $_POST['drugLPADateOfResult']) !== "") {
         $resultDate = explode(" ", (string) $_POST['drugLPADateOfResult']);
         $_POST['drugLPADateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
     } else {
@@ -166,12 +169,7 @@ try {
 					WHERE rejection_reason_name like ?";
         $rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
         if (empty($rejectionResult)) {
-            $data = array(
-                'rejection_reason_name' => $_POST['newRejectionReason'],
-                'rejection_type' => 'general',
-                'rejection_reason_status' => 'active',
-                'updated_datetime' => DateUtility::getCurrentDateTime()
-            );
+            $data = ['rejection_reason_name' => $_POST['newRejectionReason'], 'rejection_type' => 'general', 'rejection_reason_status' => 'active', 'updated_datetime' => DateUtility::getCurrentDateTime()];
             $id = $db->insert('r_tb_sample_rejection_reasons', $data);
             $_POST['sampleRejectionReason'] = $id;
         } else {
@@ -189,48 +187,45 @@ try {
         $_POST['approvedBy'] = $_POST['testResult']['approvedBy'][0];
         $_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['testResult']['approvedOn'][0] ?? null);
     }
-    $tbData = array(
+    $tbData = [
         //'specimen_quality'                    => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
-        'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : $_POST['testResult']['labId'][0],
+        'lab_id' => empty($_POST['labId']) ? $_POST['testResult']['labId'][0] : $_POST['labId'],
         //'reason_for_tb_test'                  => !empty($_POST['reasonForTbTest']) ? json_encode($_POST['reasonForTbTest']) : null,
         //'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
         //'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
         //  'sample_collection_date'              => !empty($_POST['sampleCollectionDate']) ? $_POST['sampleCollectionDate'] : null,
-        'result_date' => !empty($_POST['resultDate']) ? $_POST['resultDate'] : null,
-        'sample_received_at_lab_datetime' => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
-        'is_sample_rejected' => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
-
-        'xpert_mtb_result' => !empty($_POST['xPertMTMResult']) ? $_POST['xPertMTMResult'] : null,
-        'culture_result' => !empty($_POST['cultureResult']) ? $_POST['cultureResult'] : null,
-        'identification_result' => !empty($_POST['identicationResult']) ? $_POST['identicationResult'] : null,
-        'drug_mgit_result' => !empty($_POST['drugMGITResult']) ? $_POST['drugMGITResult'] : null,
-        'drug_lpa_result' => !empty($_POST['drugLPAResult']) ? $_POST['drugLPAResult'] : null,
-        'xpert_result_date' => !empty($_POST['xpertDateOfResult']) ? $_POST['xpertDateOfResult'] : null,
-        'culture_result_date' => !empty($_POST['cultureDateOfResult']) ? $_POST['cultureDateOfResult'] : null,
-        'tblam_result_date' => !empty($_POST['tbLamDateOfResult']) ? $_POST['tbLamDateOfResult'] : null,
-        'identification_result_date' => !empty($_POST['identificationDateOfResult']) ? $_POST['identificationDateOfResult'] : null,
-        'drug_mgit_result_date' => !empty($_POST['drugMGITDateOfResult']) ? $_POST['drugMGITDateOfResult'] : null,
-        'drug_lpa_result_date' => !empty($_POST['drugLPADateOfResult']) ? $_POST['drugLPADateOfResult'] : null,
-
+        'result_date' => empty($_POST['resultDate']) ? null : $_POST['resultDate'],
+        'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
+        'is_sample_rejected' => empty($_POST['isSampleRejected']) ? null : $_POST['isSampleRejected'],
+        'xpert_mtb_result' => empty($_POST['xPertMTMResult']) ? null : $_POST['xPertMTMResult'],
+        'culture_result' => empty($_POST['cultureResult']) ? null : $_POST['cultureResult'],
+        'identification_result' => empty($_POST['identicationResult']) ? null : $_POST['identicationResult'],
+        'drug_mgit_result' => empty($_POST['drugMGITResult']) ? null : $_POST['drugMGITResult'],
+        'drug_lpa_result' => empty($_POST['drugLPAResult']) ? null : $_POST['drugLPAResult'],
+        'xpert_result_date' => empty($_POST['xpertDateOfResult']) ? null : $_POST['xpertDateOfResult'],
+        'culture_result_date' => empty($_POST['cultureDateOfResult']) ? null : $_POST['cultureDateOfResult'],
+        'tblam_result_date' => empty($_POST['tbLamDateOfResult']) ? null : $_POST['tbLamDateOfResult'],
+        'identification_result_date' => empty($_POST['identificationDateOfResult']) ? null : $_POST['identificationDateOfResult'],
+        'drug_mgit_result_date' => empty($_POST['drugMGITDateOfResult']) ? null : $_POST['drugMGITDateOfResult'],
+        'drug_lpa_result_date' => empty($_POST['drugLPADateOfResult']) ? null : $_POST['drugLPADateOfResult'],
         'result_sent_to_source' => $resultSentToSource,
-        'result_dispatched_datetime' => !empty($_POST['resultDispatchedDatetime']) ? $_POST['resultDispatchedDatetime'] : null,
+        'result_dispatched_datetime' => empty($_POST['resultDispatchedDatetime']) ? null : $_POST['resultDispatchedDatetime'],
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
         'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
         'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != "") ? $_POST['approvedBy'] : "",
         'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != "") ? $_POST['approvedOn'] : null,
         'sample_tested_datetime' => (isset($_POST['sampleTestedDateTime']) && $_POST['sampleTestedDateTime'] != "") ? $_POST['sampleTestedDateTime'] : null,
-        'tested_by' => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
+        'tested_by' => empty($_POST['testedBy']) ? null : $_POST['testedBy'],
         'rejection_on' => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
         'result_status' => $status,
         'data_sync' => 0,
         'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
-        'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
-
+        'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) !== '') ? $_POST['correctiveAction'] : null,
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         'request_created_by' => $_SESSION['userId'],
-        'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId']
-    );
+        'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
+    ];
     if (isset($_POST['finalResult']) && !empty($_POST['finalResult'])) {
         $tbData['result'] = $_POST['finalResult'];
     }
@@ -279,30 +274,23 @@ try {
                 }
             }
         }
-    } else {
-        if (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-            if (!empty($_POST['testResult'])) {
-                $db->where('tb_id', $_POST['tbSampleId']);
-                $db->delete($testTableName);
-
-                foreach ($_POST['testResult'] as $testKey => $testResult) {
-                    if (!empty($testResult) && trim((string) $testResult) != "") {
-                        $db->insert(
-                            $testTableName,
-                            array(
-                                'tb_id' => $_POST['tbSampleId'],
-                                'actual_no' => $_POST['actualNo'][$testKey] ?? null,
-                                'test_result' => $testResult,
-                                'updated_datetime' => DateUtility::getCurrentDateTime()
-                            )
-                        );
-                    }
-                }
-            }
-        } else {
+    } elseif (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
+        if (!empty($_POST['testResult'])) {
             $db->where('tb_id', $_POST['tbSampleId']);
             $db->delete($testTableName);
+
+            foreach ($_POST['testResult'] as $testKey => $testResult) {
+                if (!empty($testResult) && trim((string) $testResult) !== "") {
+                    $db->insert(
+                        $testTableName,
+                        ['tb_id' => $_POST['tbSampleId'], 'actual_no' => $_POST['actualNo'][$testKey] ?? null, 'test_result' => $testResult, 'updated_datetime' => DateUtility::getCurrentDateTime()]
+                    );
+                }
+            }
         }
+    } else {
+        $db->where('tb_id', $_POST['tbSampleId']);
+        $db->delete($testTableName);
     }
 
     if (!empty($_POST['tbSampleId'])) {

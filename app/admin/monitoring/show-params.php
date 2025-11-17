@@ -95,8 +95,8 @@ if ($statusCode !== null) {
 }
 
 // Safe JS embedding (objects or null)
-$jsRequest  = $req['decoded'] !== null ? json_encode($req['decoded'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : 'null';
-$jsResponse = $res['decoded'] !== null ? json_encode($res['decoded'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : 'null';
+$jsRequest  = JsonUtility::encodeUtf8Json($req['decoded']);
+$jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
 
 ?>
 <!DOCTYPE html>
@@ -528,11 +528,11 @@ $jsResponse = $res['decoded'] !== null ? json_encode($res['decoded'], JSON_UNESC
             <div class="content">
                 <div class="both-missing-alert">
                     <i class="fa fa-exclamation-circle error-icon-large"></i>
-                    <h2>No Data Available</h2>
-                    <p>Both request and response data files are missing or could not be loaded.</p>
+                    <h2><?= _translate('Data Available'); ?></h2>
+                    <p><?= _translate('Both request and response data files are missing or could not be loaded.'); ?></p>
                     <div class="error-detail">
-                        <div><strong>Request Error:</strong> <?= htmlspecialchars((string)$req['error'], ENT_QUOTES, 'UTF-8') ?></div>
-                        <div style="margin-top:10px;"><strong>Response Error:</strong> <?= htmlspecialchars((string)$res['error'], ENT_QUOTES, 'UTF-8') ?></div>
+                        <div><strong><?= _translate('Request Error'); ?>:</strong> <?= _translate('File could not be loaded or is invalid'); ?></div>
+                        <div style="margin-top:10px;"><strong><?= _translate('Response Error'); ?>:</strong> <?= _translate('File could not be loaded or is invalid'); ?></div>
                     </div>
                     <p style="margin-top:20px;font-size:12px;">
                         Transaction: <?= htmlspecialchars($transactionId, ENT_QUOTES, 'UTF-8') ?><br>
@@ -578,12 +578,12 @@ $jsResponse = $res['decoded'] !== null ? json_encode($res['decoded'], JSON_UNESC
                         <?php if ($req['decoded'] === null): ?>
                             <div class="error-message">
                                 <i class="fa fa-file-o error-icon-large"></i>
-                                <div class="error-title">Request Not Available</div>
-                                <p>Couldn’t load <code><?= htmlspecialchars($reqName, ENT_QUOTES, 'UTF-8') ?></code>.</p>
+                                <div class="error-title"><?= _translate('Request Not Available'); ?></div>
+                                <p><?= _translate("Couldn't load"); ?> <code><?= htmlspecialchars($reqName, ENT_QUOTES, 'UTF-8') ?></code>.</p>
                                 <div class="error-detail"><?= htmlspecialchars((string)$req['error'], ENT_QUOTES, 'UTF-8') ?></div>
                             </div>
                         <?php else: ?>
-                            <div>Loading…</div>
+                            <div><?= _translate('Loading…');?></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -594,7 +594,7 @@ $jsResponse = $res['decoded'] !== null ? json_encode($res['decoded'], JSON_UNESC
                         <div class="panel-header <?= $res['decoded'] === null ? 'has-error' : '' ?>">
                             <div class="panel-title">
                                 <i class="fa fa-arrow-circle-down <?= $res['decoded'] === null ? 'error-icon' : 'response-icon' ?>"></i>
-                                <span>Response <?= $res['decoded'] === null ? '(Missing)' : '' ?></span>
+                                <span><?= _translate('Response'); ?> <?= $res['decoded'] === null ? '(Missing)' : '' ?></span>
                             </div>
                             <div class="panel-actions">
                                 <button class="action-btn" onclick="copyJSON('response')" <?= $res['decoded'] === null ? 'disabled' : '' ?>><i class="fa fa-copy"></i> Copy</button>
@@ -605,8 +605,8 @@ $jsResponse = $res['decoded'] !== null ? json_encode($res['decoded'], JSON_UNESC
                             <?php if ($res['decoded'] === null): ?>
                                 <div class="error-message">
                                     <i class="fa fa-file-o error-icon-large"></i>
-                                    <div class="error-title">Response Not Available</div>
-                                    <p>Couldn’t load <code><?= htmlspecialchars($resName, ENT_QUOTES, 'UTF-8') ?></code>.</p>
+                                    <div class="error-title"><?= _translate('Response Not Available'); ?></div>
+                                    <p><?= _translate("Couldn't load");?> <code><?= htmlspecialchars($resName, ENT_QUOTES, 'UTF-8') ?></code>.</p>
                                     <div class="error-detail"><?= htmlspecialchars((string)$res['error'], ENT_QUOTES, 'UTF-8') ?></div>
                                 </div>
                             <?php else: ?>

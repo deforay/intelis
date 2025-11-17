@@ -18,8 +18,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$aColumns = array('lff.facility_name', "DATE_FORMAT(b.list_request_created_datetime,'%d-%b-%Y %H:%i:%s')");
-$orderColumns = array('lff.facility_name', '', '', '', '', '', 'b.list_request_created_datetime');
+$aColumns = ['lff.facility_name', "DATE_FORMAT(b.list_request_created_datetime,'%d-%b-%Y %H:%i:%s')"];
+$orderColumns = ['lff.facility_name', '', '', '', '', '', 'b.list_request_created_datetime'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -53,7 +53,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -76,11 +76,11 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 $sQuery = "select ms.*,lff.facility_name as labNameFrom,lft.facility_name as labNameTo,count(msm.test_type_sample_id) as sample_code from move_samples as ms inner join move_samples_map msm on msm.move_sample_id = ms.move_sample_id LEFT JOIN facility_details as lff ON ms.moved_from_lab_id=lff.facility_id LEFT JOIN facility_details as lft ON ms.moved_to_lab_id=lft.facility_id";
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
 }
 $sQuery = $sQuery . ' ' . $sWhere;
-$sQuery = $sQuery . ' group by ms.move_sample_id';
+$sQuery .= ' group by ms.move_sample_id';
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -99,16 +99,11 @@ $iFilteredTotal = count($aResultFilterTotal);
 $aResultTotal = $db->rawQuery("select ms.*,lff.facility_name as labNameFrom,lft.facility_name as labNameTo,count(msm.test_type_sample_id) as sample_code from move_samples as ms inner join move_samples_map msm on msm.move_sample_id = ms.move_sample_id LEFT JOIN facility_details as lff ON ms.moved_from_lab_id=lff.facility_id LEFT JOIN facility_details as lft ON ms.moved_to_lab_id=lft.facility_id group by ms.move_sample_id");
 $iTotal = count($aResultTotal);
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $humanDate = "";
-    if (trim((string) $aRow['list_request_created_datetime']) != "" && $aRow['list_request_created_datetime'] != '0000-00-00 00:00:00') {
+    if (trim((string) $aRow['list_request_created_datetime']) !== "" && $aRow['list_request_created_datetime'] != '0000-00-00 00:00:00') {
         $date = $aRow['list_request_created_datetime'];
         $humanDate = date("d-M-Y H:i:s", strtotime((string) $date));
     }

@@ -39,14 +39,14 @@ final class JsonUtility
         }
     }
 
-    private const MAX_LOG_PREVIEW = 2000;
+    private const int MAX_LOG_PREVIEW = 2000;
     private static function previewString(string $s, int $max = self::MAX_LOG_PREVIEW): string
     {
         $len = mb_strlen($s, 'UTF-8');
         $p = mb_substr($s, 0, $max, 'UTF-8');
         $p = preg_replace('/[\x00-\x1F\x7F]/u', ' ', $p);
         // redact common secrets
-        $p = preg_replace('/("?(password|token|secret|authorization|api[_-]?key)"?\s*:\s*)"[^"]*"/i', '$1"***"', $p);
+        $p = preg_replace('/("?(password|token|secret|authorization|api[_-]?key)"?\s*:\s*)"[^"]*"/i', '$1"***"', (string) $p);
         return $len > $max ? ($p . '… (len=' . $len . ')') : $p . " (len={$len})";
     }
 
@@ -125,7 +125,7 @@ final class JsonUtility
             return null;
         }
 
-        foreach (explode('.', $path) as $segment) {
+        foreach (explode('.', (string) $path) as $segment) {
             if (!isset($data[$segment])) {
                 return null;
             }
@@ -187,9 +187,15 @@ final class JsonUtility
 
     public static function jsonValueToString($value): string
     {
-        if ($value === null) return 'null';
-        if (is_bool($value)) return $value ? 'true' : 'false';
-        if (is_numeric($value)) return (string)$value;
+        if ($value === null) {
+            return 'null';
+        }
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+        if (is_numeric($value)) {
+            return (string)$value;
+        }
         if (is_array($value) || is_object($value)) {
             $json = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
             $json = str_replace("'", "''", $json);
@@ -229,7 +235,7 @@ final class JsonUtility
         $data = array_merge($jsonData, $newData);
 
         // Return null if there's nothing to set
-        if (empty($data)) {
+        if ($data === []) {
             return null;
         }
 

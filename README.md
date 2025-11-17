@@ -3,7 +3,7 @@
 > **Integrated Laboratory Information & Sample Tracking System**
 > Simple, open-source LIS to manage and track samples for HIV VL, EID, TB, Hepatitis, COVID-19, CD4 and other priority diseases.
 
-![PHP](https://img.shields.io/badge/PHP-8.2+-blue)
+![PHP](https://img.shields.io/badge/PHP-8.4+-blue)
  ![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04%2B-orange)
  ![Status](https://img.shields.io/badge/status-stable-success)
  ![License: InteLIS Community Copyleft License (Non-Commercial)](https://img.shields.io/badge/License-Community%20Copyleft%20v1.0-blue)
@@ -53,7 +53,7 @@ See the full license text in [LICENSE.md](LICENSE.md).
 
 - Apache 2.x (with `rewrite` and `headers` modules enabled)
 - MySQL 5.7 or higher
-- PHP 8.2.x
+- PHP 8.4.x
 - [Composer](https://getcomposer.org/download/)
 
 ------

@@ -8,9 +8,9 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -22,7 +22,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilityService = ContainerRegistry::get(FacilitiesService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -51,15 +51,17 @@ try {
     if (0 == $uploadedFile->getError()) {
 
         $spreadsheet = IOFactory::load($targetPath);
-        $sheetData   = $spreadsheet->getActiveSheet();
-        $sheetData   = $sheetData->toArray(null, true, true, true);
+        $sheetData = $spreadsheet->getActiveSheet();
+        $sheetData = $sheetData->toArray(null, true, true, true);
         $returnArray = [];
         $resultArray = array_slice($sheetData, 1);
-        $filteredArray = array_filter((array)$resultArray, function ($row) {
+        $filteredArray = array_filter((array) $resultArray, function ($row): array {
             return array_filter($row); // Remove empty rows
         });
         $total = count($filteredArray);
         $facilityNotAdded = [];
+        $insertedCount = 0;
+        $updatedCount = 0;
 
         if ($total == 0) {
             $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
@@ -84,22 +86,22 @@ try {
             $facilityCheck = $general->getDataFromOneFieldAndValue('facility_details', 'facility_name', $rowData['A']);
             $facilityCodeCheck = $general->getDataFromOneFieldAndValue('facility_details', 'facility_code', $rowData['B']);
 
-            $provinceId = $facilityService->getOrCreateProvince(trim($rowData['D']));
-            $districtId = $facilityService->getOrCreateDistrict(trim($rowData['E']), null, $provinceId);
+            $provinceId = $facilityService->getOrCreateProvince(trim((string) $rowData['D']));
+            $districtId = $facilityService->getOrCreateDistrict(trim((string) $rowData['E']), null, $provinceId);
 
             $data = [
-                'facility_name' => trim($rowData['A']) ?? null,
-                'facility_code' => trim($rowData['B']) ?? null,
+                'facility_name' => trim((string) $rowData['A']) ?? null,
+                'facility_code' => trim((string) $rowData['B']) ?? null,
                 'vlsm_instance_id' => $instanceId,
-                'facility_mobile_numbers' => trim($rowData['I']) ?? null,
-                'address' => trim($rowData['G']) ?? null,
-                'facility_state' => trim($rowData['D']) ?? null,
-                'facility_district' => trim($rowData['E']) ?? null,
+                'facility_mobile_numbers' => trim((string) $rowData['I']) ?? null,
+                'address' => trim((string) $rowData['G']) ?? null,
+                'facility_state' => trim((string) $rowData['D']) ?? null,
+                'facility_district' => trim((string) $rowData['E']) ?? null,
                 'facility_state_id' => $provinceId ?? null,
                 'facility_district_id' => $districtId ?? null,
-                'latitude' => trim($rowData['J']) ?? null,
-                'longitude' => trim($rowData['K']) ?? null,
-                'facility_emails' => trim($rowData['H']) ?? null,
+                'latitude' => trim((string) $rowData['J']) ?? null,
+                'longitude' => trim((string) $rowData['K']) ?? null,
+                'facility_emails' => trim((string) $rowData['H']) ?? null,
                 'facility_type' => trim($rowData['F']) ?? null,
                 'updated_datetime' => DateUtility::getCurrentDateTime(),
                 'status' => 'active'
@@ -109,30 +111,48 @@ try {
                 if ($uploadOption == "facility_name_match") {
                     if (!empty($facilityCheck)) {
                         $db->where("facility_id", $facilityCheck['facility_id']);
-                        $db->update('facility_details', $data);
+                        $result = $db->update('facility_details', $data);
+                        if ($result !== false) {
+                            $updatedCount++;
+                        } else {
+                            $facilityNotAdded[] = $rowData;
+                        }
                     } else {
                         $facilityNotAdded[] = $rowData;
                     }
                 } elseif ($uploadOption == "facility_code_match") {
                     if (!empty($facilityCodeCheck)) {
                         $db->where("facility_id", $facilityCodeCheck['facility_id']);
-                        $db->update('facility_details', $data);
+                        $result = $db->update('facility_details', $data);
+                        if ($result !== false) {
+                            $updatedCount++;
+                        } else {
+                            $facilityNotAdded[] = $rowData;
+                        }
                     } else {
                         $facilityNotAdded[] = $rowData;
                     }
                 } elseif ($uploadOption == "facility_name_code_match") {
                     if (!empty($facilityCodeCheck) && !empty($facilityCheck)) {
                         $db->where("facility_id", $facilityCheck['facility_id']);
-                        $db->update('facility_details', $data);
+                        $result = $db->update('facility_details', $data);
+                        if ($result !== false) {
+                            $updatedCount++;
+                        } else {
+                            $facilityNotAdded[] = $rowData;
+                        }
+                    } else {
+                        $facilityNotAdded[] = $rowData;
+                    }
+                } elseif (empty($facilityCodeCheck) && empty($facilityCheck)) {
+                    $result = $db->insert('facility_details', $data);
+                    if ($result !== false) {
+                        $insertedCount++;
                     } else {
                         $facilityNotAdded[] = $rowData;
                     }
                 } else {
-                    if (empty($facilityCodeCheck) && empty($facilityCheck)) {
-                        $db->insert('facility_details', $data);
-                    } else {
-                        $facilityNotAdded[] = $rowData;
-                    }
+                    $facilityNotAdded[] = $rowData;
                 }
             } catch (Throwable $e) {
                 $facilityNotAdded[] = $rowData;
@@ -162,7 +182,17 @@ try {
             $writer->save($filename);
         }
 
-        $_SESSION['alertMsg'] = _translate("Facilities added successfully");
+
+        $logMessage = sprintf(
+            _translate('%s uploaded %d facilities in bulk (Inserted: %d, Updated: %d, Failed: %d)'),
+            $_SESSION['userName'],
+            $total,
+            $insertedCount,
+            $updatedCount,
+            $notAdded
+        );
+        $_SESSION['alertMsg'] = $logMessage;
+        $general->activityLog('bulk-upload-facility', $logMessage, 'facility');
     } else {
         throw new SystemException(_translate("Bulk Facility Import Failed") . " - " . $uploadedFile->getError());
     }

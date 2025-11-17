@@ -61,57 +61,19 @@ try {
                 $resultStatus = $general->getDataFromOneFieldAndValue('r_sample_status', 'status_name', $rowData['AM']);
                 $labTechnician = $usersService->getOrCreateUser($rowData['AP']);
 
-                if (trim((string) $rowData['S']) != '') {
+                if (trim((string) $rowData['S']) !== '') {
                     $sampleCollectionDate = date('Y-m-d H:i:s', strtotime((string) $rowData['S']));
                 } else {
                     $sampleCollectionDate = null;
                 }
 
-                if (trim((string) $rowData['V']) != '') {
+                if (trim((string) $rowData['V']) !== '') {
                     $sampleReceivedDate = date('Y-m-d H:i:s', strtotime((string) $rowData['V']));
                 } else {
                     $sampleReceivedDate = null;
                 }
 
-                $data = array(
-                    'sample_code'                           => $rowData['A'],
-                    'vlsm_country_id'                       => $arr['vl_form'],
-                    'source_of_alert'                       => (isset($rowData['B']) && $rowData['B'] != "") ? strtolower(str_replace(" ", "-", (string) $rowData['B'])) : null,
-                    'source_of_alert_other'                 => $rowData['C'],
-                    'facility_id'                           => $facility['facility_id'] ?? null,
-                    'patient_name'                          => $rowData['E'],
-                    'patient_id'                            => $rowData['F'],
-                    'external_sample_code'                  => $rowData['G'],
-                    'patient_dob'                           => date('Y-m-d', strtotime((string) $rowData['H'])),
-                    'patient_age'                           => $rowData['I'],
-                    'patient_gender'                        => strtolower((string) $rowData['J']),
-                    'patient_phone_number'                  => $rowData['K'],
-                    'patient_address'                       => $rowData['L'],
-                    'patient_province'                      => $rowData['M'],
-                    'patient_district'                      => $rowData['N'],
-                    'patient_city'                          => $rowData['O'],
-                    'patient_nationality'                   => $rowData['P'],
-                    'type_of_test_requested'                => $rowData['Q'],
-                    'reason_for_covid19_test'               => $testReason['test_reason_id'] ?? null,
-                    'sample_collection_date'                => $sampleCollectionDate,
-                    'specimen_type'                         => $sampleType['sample_id'] ?? null,
-                    'test_number'                           => $rowData['U'],
-                    'sample_received_at_lab_datetime'    => $sampleReceivedDate,
-                    'lab_id'                                => $labName['facility_id'] ?? null,
-                    'is_sample_rejected'                    => strtolower((string) $rowData['X']),
-                    'reason_for_sample_rejection'           => (isset($rejectionReason['rejection_reason_id']) && $rejectionReason['rejection_reason_id'] != "") ? $rejectionReason['rejection_reason_id'] : 9999,
-                    'rejection_on'                          => date('Y-m-d', strtotime((string) $rowData['Z'])),
-                    'result'                                => $result['result_id'],
-                    'is_result_authorised'                  => strtolower((string) $rowData['AJ']),
-                    'authorized_by'                         => ($rowData['AK']),
-                    'authorized_on'                         => date('Y-m-d', strtotime((string) $rowData['AL'])),
-                    'last_modified_datetime'                => DateUtility::getCurrentDateTime(),
-                    'last_modified_by'                      => $_SESSION['userId'],
-                    'result_status'                         => $resultStatus['status_id'] ?? null,
-                    'sample_condition'                      => strtolower((string) $rowData['AN']),
-                    'patient_passport_number'               => $rowData['A0'],
-                    'lab_technician'                        => $labTechnician ?? null,
-                );
+                $data = ['sample_code'                           => $rowData['A'], 'vlsm_country_id'                       => $arr['vl_form'], 'source_of_alert'                       => (isset($rowData['B']) && $rowData['B'] != "") ? strtolower(str_replace(" ", "-", (string) $rowData['B'])) : null, 'source_of_alert_other'                 => $rowData['C'], 'facility_id'                           => $facility['facility_id'] ?? null, 'patient_name'                          => $rowData['E'], 'patient_id'                            => $rowData['F'], 'external_sample_code'                  => $rowData['G'], 'patient_dob'                           => date('Y-m-d', strtotime((string) $rowData['H'])), 'patient_age'                           => $rowData['I'], 'patient_gender'                        => strtolower((string) $rowData['J']), 'patient_phone_number'                  => $rowData['K'], 'patient_address'                       => $rowData['L'], 'patient_province'                      => $rowData['M'], 'patient_district'                      => $rowData['N'], 'patient_city'                          => $rowData['O'], 'patient_nationality'                   => $rowData['P'], 'type_of_test_requested'                => $rowData['Q'], 'reason_for_covid19_test'               => $testReason['test_reason_id'] ?? null, 'sample_collection_date'                => $sampleCollectionDate, 'specimen_type'                         => $sampleType['sample_id'] ?? null, 'test_number'                           => $rowData['U'], 'sample_received_at_lab_datetime'    => $sampleReceivedDate, 'lab_id'                                => $labName['facility_id'] ?? null, 'is_sample_rejected'                    => strtolower((string) $rowData['X']), 'reason_for_sample_rejection'           => (isset($rejectionReason['rejection_reason_id']) && $rejectionReason['rejection_reason_id'] != "") ? $rejectionReason['rejection_reason_id'] : 9999, 'rejection_on'                          => date('Y-m-d', strtotime((string) $rowData['Z'])), 'result'                                => $result['result_id'], 'is_result_authorised'                  => strtolower((string) $rowData['AJ']), 'authorized_by'                         => ($rowData['AK']), 'authorized_on'                         => date('Y-m-d', strtotime((string) $rowData['AL'])), 'last_modified_datetime'                => DateUtility::getCurrentDateTime(), 'last_modified_by'                      => $_SESSION['userId'], 'result_status'                         => $resultStatus['status_id'] ?? null, 'sample_condition'                      => strtolower((string) $rowData['AN']), 'patient_passport_number'               => $rowData['A0'], 'lab_technician'                        => $labTechnician ?? null];
 
                 if (empty($sampleCode)) {
                     $lastId = $db->insert($tableName, $data);
@@ -135,14 +97,7 @@ try {
                     $db->delete($testTableName);
 
                     foreach ($testData as $testKitName) {
-                        $covid19TestData = array(
-                            'covid19_id'            => $lastId,
-                            'test_name'             => $testKitName['testRequest'],
-                            'facility_id'           => $labName['facility_id'] ?? null,
-                            'testing_platform'      => $testKitName['testingPlatform'],
-                            'sample_tested_datetime' => DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true),
-                            'result'                => strtolower((string) $testKitName['testResult']),
-                        );
+                        $covid19TestData = ['covid19_id'            => $lastId, 'test_name'             => $testKitName['testRequest'], 'facility_id'           => $labName['facility_id'] ?? null, 'testing_platform'      => $testKitName['testingPlatform'], 'sample_tested_datetime' => DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true), 'result'                => strtolower((string) $testKitName['testResult'])];
                         $db->insert($testTableName, $covid19TestData);
                         $covid19Data['sample_tested_datetime'] = DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true);
                     }

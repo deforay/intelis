@@ -1,5 +1,6 @@
 <?php
 
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -19,8 +20,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 $tableName = "form_covid19";
 $primaryKey = "covid19_id";
 
-$aColumns = array('vl.sample_tested_datetime', 'f.facility_name');
-$orderColumns = array('vl.sample_tested_datetime', 'f.facility_name');
+$aColumns = ['vl.sample_tested_datetime', 'f.facility_name'];
+$orderColumns = ['vl.sample_tested_datetime', 'f.facility_name'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -53,7 +54,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
+          if ($sWhereSub === "") {
                $sWhereSub .= "(";
           } else {
                $sWhereSub .= " AND (";
@@ -87,59 +88,51 @@ RIGHT JOIN testing_lab_health_facilities_map as fm ON vl.lab_id=fm.vl_lab_id";
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 [$sTestDate, $eTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
-if (!empty($sWhere)) {
-     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-          if (trim((string) $sTestDate) == trim((string) $eTestDate)) {
+if ($sWhere !== []) {
+     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
+          if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
           } else {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           }
      }
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
           $fac = explode(',', (string) $_POST['facilityName']);
           $out = '';
-          for ($s = 0; $s < count($fac); $s++) {
-               if ($out)
-                    $out = $out . ',"' . $fac[$s] . '"';
-               else
-                    $out = '("' . $fac[$s] . '"';
+          $counter = count($fac);
+          for ($s = 0; $s < $counter; $s++) {
+               $out = $out !== '' && $out !== '0' ? $out . ',"' . $fac[$s] . '"' : '("' . $fac[$s] . '"';
           }
-          $out = $out . ')';
+          $out .= ')';
 
           $sWhere[] = ' vl.lab_id IN ' . $out;
      }
 } else {
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
           $fac = explode(',', (string) $_POST['facilityName']);
           $out = '';
-          for ($s = 0; $s < count($fac); $s++) {
-               if ($out)
-                    $out = $out . ',"' . $fac[$s] . '"';
-               else
-                    $out = '("' . $fac[$s] . '"';
+          $counter = count($fac);
+          for ($s = 0; $s < $counter; $s++) {
+               $out = $out !== '' && $out !== '0' ? $out . ',"' . $fac[$s] . '"' : '("' . $fac[$s] . '"';
           }
-          $out = $out . ')';
+          $out .= ')';
           $sWhere[] = '  vl.lab_id IN ' . $out;
      }
 
-     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
 }
-$sWhere[] = ' vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+$sWhere[] = ' vl.result!="" AND vl.result_status != ' . RECEIVED_AT_CLINIC;
 
 $sWhere[] = " tl.test_type = 'covid19'";
 
-if (!empty($sWhere)) {
-     $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
-} else {
-     $sWhere = "";
-}
+$sWhere = $sWhere === [] ? [] : ' WHERE ' . implode(' AND ', $sWhere);
 $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 if ($_POST['targetType'] == 1) {
-     $sQuery = $sQuery . ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
+     $sQuery .= ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 } elseif ($_POST['targetType'] == 2) {
-     $sQuery = $sQuery . ' HAVING tl.monthly_target < SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
+     $sQuery .= ' HAVING tl.monthly_target < SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 }
 $_SESSION['covid19MonitoringThresholdReportQuery'] = $sQuery;
 //die($sQuery);
@@ -158,10 +151,7 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 
-$output = array(
-     "sEcho" => (int) $_POST['sEcho'],
-     "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "aaData" => []];
 
 $cnt = 0;
 foreach ($rResult as $rowData) {

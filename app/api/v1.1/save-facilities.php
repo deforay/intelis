@@ -1,6 +1,7 @@
 <?php
 
 
+use Slim\Psr7\Request;
 use JsonMachine\Items;
 use App\Services\VlService;
 use App\Services\ApiService;
@@ -43,7 +44,7 @@ try {
 
     $db->beginTransaction();
 
-    /** @var Slim\Psr7\Request $request */
+    /** @var Request $request */
     $request = AppRegistry::get('request');
     $noOfFailedRecords = 0;
 
@@ -145,9 +146,10 @@ try {
             $data['facilityDistrictId'] = $lastDistrictId;
         }
 
-        if (isset($data['reportEmail']) && trim((string) $data['reportEmail']) != '') {
+        if (isset($data['reportEmail']) && trim((string) $data['reportEmail']) !== '') {
             $expEmail = explode(",", (string) $data['reportEmail']);
-            for ($i = 0; $i < count($expEmail); $i++) {
+            $counter = count($expEmail);
+            for ($i = 0; $i < $counter; $i++) {
                 $reportEmail = filter_var($expEmail[$i], FILTER_VALIDATE_EMAIL);
                 if ($reportEmail != '') {
                     if ($email != '') {

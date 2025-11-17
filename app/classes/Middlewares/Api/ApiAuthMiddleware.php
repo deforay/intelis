@@ -2,6 +2,7 @@
 
 namespace App\Middlewares\Api;
 
+use Override;
 use App\Services\UsersService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -11,16 +12,14 @@ use Slim\Psr7\Response;
 
 readonly class ApiAuthMiddleware implements MiddlewareInterface
 {
-    private UsersService $usersService;
-
-    public function __construct(UsersService $usersService)
+    public function __construct(private UsersService $usersService)
     {
-        $this->usersService = $usersService;
     }
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
-        if ($this->shouldExcludeFromAuthCheck($request) === true) {
+        if ($this->shouldExcludeFromAuthCheck($request)) {
 
             // Skip the authentication check if the request is an AJAX request,
             // a CLI request, or if the requested URI is excluded from the
@@ -70,7 +69,7 @@ readonly class ApiAuthMiddleware implements MiddlewareInterface
 
     private function validateToken(?string $token): bool
     {
-        if (empty($token)) {
+        if ($token === null || $token === '' || $token === '0') {
             return false;
         }
 
@@ -80,7 +79,7 @@ readonly class ApiAuthMiddleware implements MiddlewareInterface
     private function checkAndResetTokenIfNeeded(string $token): ?string
     {
         $user = $this->usersService->handleTokenAuthentication($token);
-        if (!empty($user) && isset($user['token_updated']) && $user['token_updated'] === true) {
+        if ($user !== null && $user !== [] && isset($user['token_updated']) && $user['token_updated'] === true) {
             return $user['new_token'];
         } else {
             return null;
@@ -108,10 +107,6 @@ readonly class ApiAuthMiddleware implements MiddlewareInterface
         }
 
         $input = $request->getParsedBody();
-        if ($uri === '/api/v1.1/user/save-user-profile.php' && !empty($input['x-api-key'])) {
-            return true;
-        }
-
-        return false;
+        return $uri === '/api/v1.1/user/save-user-profile.php' && !empty($input['x-api-key']);
     }
 }

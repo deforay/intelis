@@ -100,7 +100,7 @@ try {
         // Process lot information
         $lotNumberVal = $sheetData[$lotNumberCol];
         $lotExpirationDateVal = null;
-        if (trim((string) $sheetData[$lotExpirationDateCol]) != '') {
+        if (trim((string) $sheetData[$lotExpirationDateCol]) !== '') {
             $lotExpirationDateVal = $importService->parseDate($sheetData[$lotExpirationDateCol]);
         }
 

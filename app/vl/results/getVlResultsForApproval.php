@@ -1,5 +1,9 @@
 <?php
 
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\LOST_OR_MISSING;
+use const SAMPLE_STATUS\CANCELLED;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -55,7 +59,7 @@ $sQuery = "SELECT vl.*,
                LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
 
 
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
      $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
@@ -82,13 +86,13 @@ if (!empty($_SESSION['facilityMap'])) {
 
 $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
      $sWhere = ' WHERE ' . implode(" AND ", $sWhere);
 }
 
 $sQuery .= $sWhere;
 if (!empty($sOrder) && $sOrder !== '') {
-     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+     $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
      $sQuery = "$sQuery ORDER BY $sOrder";
 }
 
@@ -109,10 +113,10 @@ foreach ($rResult as $aRow) {
 
      $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
                <option value="">' . _translate("-- Select --") . '</option>
-               <option value="' . SAMPLE_STATUS\ACCEPTED . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\ACCEPTED ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
-               <option value="' . SAMPLE_STATUS\REJECTED . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\REJECTED  ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
-               <option value="' . SAMPLE_STATUS\LOST_OR_MISSING . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\LOST_OR_MISSING  ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
-               <option value="' . SAMPLE_STATUS\CANCELLED . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\CANCELLED  ? "selected=selected" : "") . '>' . _translate("Cancelled") . '</option>
+               <option value="' . ACCEPTED . '" ' . ($aRow['status_id'] == ACCEPTED ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
+               <option value="' . REJECTED . '" ' . ($aRow['status_id'] == REJECTED  ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
+               <option value="' . LOST_OR_MISSING . '" ' . ($aRow['status_id'] == LOST_OR_MISSING  ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
+               <option value="' . CANCELLED . '" ' . ($aRow['status_id'] == CANCELLED  ? "selected=selected" : "") . '>' . _translate("Cancelled") . '</option>
                </select><br><br>';
 
      $row = [];

@@ -1,5 +1,12 @@
 <?php
 
+use Slim\Psr7\Request;
+use const COUNTRY\PNG;
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -43,7 +50,7 @@ $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 try {
 
     $db->beginTransaction();
-    /** @var Slim\Psr7\Request $request */
+    /** @var Request $request */
     $request = AppRegistry::get('request');
     $noOfFailedRecords = 0;
 
@@ -64,7 +71,7 @@ try {
         ]);
 
         $appVersion = _getIteratorKey($appVersion, 'appVersion');
-    } catch (PathNotFoundException | Throwable $e) {
+    } catch (PathNotFoundException | Throwable) {
         // If the pointer is not found, appVersion remains null
         $appVersion = null;
     }
@@ -77,7 +84,7 @@ try {
         if (empty($input)) {
             throw new PathNotFoundException();
         }
-    } catch (PathNotFoundException | Throwable $ex) {
+    } catch (PathNotFoundException | Throwable) {
         throw new SystemException("Invalid request");
     }
     $primaryKey = 'covid19_id';
@@ -104,7 +111,7 @@ try {
     $version = $general->getAppVersion();
     /* To save the user attributes from API */
     $userAttributes = [];
-    foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
+    foreach (['deviceId', 'osVersion', 'ipAddress'] as $header) {
         $userAttributes[$header] = $apiService->getHeader($request, $header);
     }
     $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');
@@ -130,7 +137,7 @@ try {
             'sampleReceivedDate',
         ];
 
-        if ($formId == COUNTRY\PNG) {
+        if ($formId == PNG) {
             $mandatoryFields[] = 'provinceId';
         }
 
@@ -160,7 +167,7 @@ try {
 
         if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", (string) $data['provinceId']);
-            if (!empty($province)) {
+            if ($province !== []) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id');
@@ -173,19 +180,19 @@ try {
         }
         if (isset($data['patientNationality']) && !is_numeric($data['patientNationality'])) {
             $iso = explode("(", (string) $data['patientNationality']);
-            if (!empty($iso)) {
+            if ($iso !== []) {
                 $data['patientNationality'] = trim($iso[0]);
             }
             $data['patientNationality'] = $general->getValueByName($data['patientNationality'], 'iso_name', 'r_countries', 'id');
         }
         $pprovince = explode("##", (string) $data['patientProvince']);
-        if (!empty($pprovince)) {
+        if ($pprovince !== []) {
             $data['patientProvince'] = $pprovince[0];
         }
 
         $data['api'] = "yes";
-        $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
-        $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
+        $provinceCode = (empty($data['provinceCode'])) ? null : $data['provinceCode'];
+        $provinceId = (empty($data['provinceId'])) ? null : $data['provinceId'];
         $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
 
         $update = "no";
@@ -211,14 +218,14 @@ try {
                 $sQueryWhere[] = " (app_sample_code like '" . $data['appSampleCode'] . "' AND lab_id = '" . $data['labId'] . "') ";
             }
 
-            if (!empty($sQueryWhere)) {
+            if ($sQueryWhere !== []) {
                 $sQuery .= " WHERE " . implode(" OR ", $sQueryWhere);
             }
 
             $rowData = $db->rawQueryOne($sQuery);
 
             if (!empty($rowData)) {
-                if ($rowData['result_status'] == SAMPLE_STATUS\ACCEPTED || $rowData['locked'] == 'yes') {
+                if ($rowData['result_status'] == ACCEPTED || $rowData['locked'] == 'yes') {
                     $noOfFailedRecords++;
                     $responseData[$rootKey] = [
                         'transactionId' => $transactionId,
@@ -273,67 +280,67 @@ try {
                 continue;
             }
         }
-        $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+        $status = RECEIVED_AT_TESTING_LAB;
         if ($roleUser['access_type'] != 'testing-lab') {
-            $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+            $status = RECEIVED_AT_CLINIC;
         }
 
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
-            $status = SAMPLE_STATUS\REJECTED;
+            $status = REJECTED;
         } elseif (
             isset($globalConfig['covid19_auto_approve_api_results']) &&
             $globalConfig['covid19_auto_approve_api_results'] == "yes" &&
             (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
             (!empty($data['result']))
         ) {
-            $status = SAMPLE_STATUS\ACCEPTED;
+            $status = ACCEPTED;
         } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (!empty($data['result']))) {
-            $status = SAMPLE_STATUS\PENDING_APPROVAL;
+            $status = PENDING_APPROVAL;
         }
 
         //Set sample received date
-        if (!empty($data['sampleReceivedDate']) && trim((string) $data['sampleReceivedDate']) != "") {
+        if (!empty($data['sampleReceivedDate']) && trim((string) $data['sampleReceivedDate']) !== "") {
             $data['sampleReceivedDate'] = DateUtility::isoDateFormat($data['sampleReceivedDate'], true);
         } else {
             $data['sampleReceivedDate'] = null;
         }
-        if (!empty($data['sampleTestedDateTime']) && trim((string) $data['sampleTestedDateTime']) != "") {
+        if (!empty($data['sampleTestedDateTime']) && trim((string) $data['sampleTestedDateTime']) !== "") {
             $data['sampleTestedDateTime'] = DateUtility::isoDateFormat($data['sampleTestedDateTime'], true);
         } else {
             $data['sampleTestedDateTime'] = null;
         }
 
-        if (!empty($data['arrivalDateTime']) && trim((string) $data['arrivalDateTime']) != "") {
+        if (!empty($data['arrivalDateTime']) && trim((string) $data['arrivalDateTime']) !== "") {
             $data['arrivalDateTime'] = DateUtility::isoDateFormat($data['arrivalDateTime'], true);
         } else {
             $data['arrivalDateTime'] = null;
         }
 
-        if (!empty($data['revisedOn']) && trim((string) $data['revisedOn']) != "") {
+        if (!empty($data['revisedOn']) && trim((string) $data['revisedOn']) !== "") {
             $data['revisedOn'] = DateUtility::isoDateFormat($data['revisedOn'], true);
         } else {
             $data['revisedOn'] = null;
         }
 
-        if (isset($data['approvedOn']) && trim((string) $data['approvedOn']) != "") {
+        if (isset($data['approvedOn']) && trim((string) $data['approvedOn']) !== "") {
             $data['approvedOn'] = DateUtility::isoDateFormat($data['approvedOn'], true);
         } else {
             $data['approvedOn'] = null;
         }
 
-        if (isset($data['reviewedOn']) && trim((string) $data['reviewedOn']) != "") {
+        if (isset($data['reviewedOn']) && trim((string) $data['reviewedOn']) !== "") {
             $data['reviewedOn'] = DateUtility::isoDateFormat($data['reviewedOn'], true);
         } else {
             $data['reviewedOn'] = null;
         }
-        if (isset($data['resultDispatchedOn']) && trim((string) $data['resultDispatchedOn']) != "") {
+        if (isset($data['resultDispatchedOn']) && trim((string) $data['resultDispatchedOn']) !== "") {
             $data['resultDispatchedOn'] = DateUtility::isoDateFormat($data['resultDispatchedOn'], true);
         } else {
             $data['resultDispatchedOn'] = null;
         }
 
-        if (isset($data['sampleDispatchedOn']) && trim((string) $data['sampleDispatchedOn']) != "") {
+        if (isset($data['sampleDispatchedOn']) && trim((string) $data['sampleDispatchedOn']) !== "") {
             $data['sampleDispatchedOn'] = DateUtility::isoDateFormat($data['sampleDispatchedOn'], true);
         } else {
             $data['sampleDispatchedOn'] = null;
@@ -358,7 +365,7 @@ try {
                 ];
             }
         }
-        if (!empty($allChange)) {
+        if ($allChange !== []) {
             $reasonForChanges = json_encode($allChange);
         }
         /* New API changes start */
@@ -375,87 +382,87 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'external_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
             'app_sample_code' => $data['appSampleCode'] ?? $data['externalSampleCode'] ?? null,
-            'facility_id' => !empty($data['facilityId']) ? $data['facilityId'] : null,
-            'investigator_name' => !empty($data['investigatorName']) ? $data['investigatorName'] : null,
-            'investigator_phone' => !empty($data['investigatorPhone']) ? $data['investigatorPhone'] : null,
-            'investigator_email' => !empty($data['investigatorEmail']) ? $data['investigatorEmail'] : null,
-            'clinician_name' => !empty($data['clinicianName']) ? $data['clinicianName'] : null,
-            'clinician_phone' => !empty($data['clinicianPhone']) ? $data['clinicianPhone'] : null,
-            'clinician_email' => !empty($data['clinicianEmail']) ? $data['clinicianEmail'] : null,
-            'test_number' => !empty($data['testNumber']) ? $data['testNumber'] : null,
-            'province_id' => !empty($data['provinceId']) ? $data['provinceId'] : null,
-            'lab_id' => !empty($data['labId']) ? $data['labId'] : null,
-            'testing_point' => !empty($data['testingPoint']) ? $data['testingPoint'] : null,
-            'implementing_partner' => !empty($data['implementingPartner']) ? $data['implementingPartner'] : null,
-            'source_of_alert' => !empty($data['sourceOfAlertPOE']) ? strtolower(str_replace(" ", "-", (string) $data['sourceOfAlertPOE'])) : null,
+            'facility_id' => empty($data['facilityId']) ? null : $data['facilityId'],
+            'investigator_name' => empty($data['investigatorName']) ? null : $data['investigatorName'],
+            'investigator_phone' => empty($data['investigatorPhone']) ? null : $data['investigatorPhone'],
+            'investigator_email' => empty($data['investigatorEmail']) ? null : $data['investigatorEmail'],
+            'clinician_name' => empty($data['clinicianName']) ? null : $data['clinicianName'],
+            'clinician_phone' => empty($data['clinicianPhone']) ? null : $data['clinicianPhone'],
+            'clinician_email' => empty($data['clinicianEmail']) ? null : $data['clinicianEmail'],
+            'test_number' => empty($data['testNumber']) ? null : $data['testNumber'],
+            'province_id' => empty($data['provinceId']) ? null : $data['provinceId'],
+            'lab_id' => empty($data['labId']) ? null : $data['labId'],
+            'testing_point' => empty($data['testingPoint']) ? null : $data['testingPoint'],
+            'implementing_partner' => empty($data['implementingPartner']) ? null : $data['implementingPartner'],
+            'source_of_alert' => empty($data['sourceOfAlertPOE']) ? null : strtolower(str_replace(" ", "-", (string) $data['sourceOfAlertPOE'])),
             'source_of_alert_other' => (!empty($data['sourceOfAlertPOE']) && $data['sourceOfAlertPOE'] == 'others') ? $data['alertPoeOthers'] : null,
-            'funding_source' => !empty($data['fundingSource']) ? $data['fundingSource'] : null,
-            'patient_id' => !empty($data['patientId']) ? $data['patientId'] : null,
-            'patient_name' => !empty($data['firstName']) ? trim((string) $data['firstName']) : null,
-            'patient_surname' => !empty($data['lastName']) ? $data['lastName'] : null,
-            'patient_dob' => !empty($data['dob']) ? DateUtility::isoDateFormat($data['dob']) : null,
-            'patient_gender' => !empty($data['patientGender']) ? $data['patientGender'] : null,
+            'funding_source' => empty($data['fundingSource']) ? null : $data['fundingSource'],
+            'patient_id' => empty($data['patientId']) ? null : $data['patientId'],
+            'patient_name' => empty($data['firstName']) ? null : trim((string) $data['firstName']),
+            'patient_surname' => empty($data['lastName']) ? null : $data['lastName'],
+            'patient_dob' => empty($data['dob']) ? null : DateUtility::isoDateFormat($data['dob']),
+            'patient_gender' => empty($data['patientGender']) ? null : $data['patientGender'],
             'health_insurance_code' => $data['healthInsuranceCode'] ?? null,
-            'patient_email' => !empty($data['patientEmail']) ? $data['patientEmail'] : null,
-            'is_patient_pregnant' => !empty($data['isPatientPregnant']) ? $data['isPatientPregnant'] : null,
-            'patient_age' => !empty($data['patientAge']) ? $data['patientAge'] : null,
-            'patient_phone_number' => !empty($data['patientPhoneNumber']) ? $data['patientPhoneNumber'] : null,
-            'patient_address' => !empty($data['patientAddress']) ? $data['patientAddress'] : null,
-            'patient_province' => !empty($data['patientProvince']) ? $data['patientProvince'] : null,
-            'patient_district' => !empty($data['patientDistrict']) ? $data['patientDistrict'] : null,
-            'patient_city' => !empty($data['patientCity']) ? $data['patientCity'] : null,
-            'patient_zone' => !empty($data['patientZone']) ? $data['patientZone'] : null,
-            'patient_occupation' => !empty($data['patientOccupation']) ? $data['patientOccupation'] : null,
-            'does_patient_smoke' => !empty($data['doesPatientSmoke']) ? $data['doesPatientSmoke'] : null,
-            'patient_nationality' => !empty($data['patientNationality']) ? $data['patientNationality'] : null,
-            'patient_passport_number' => !empty($data['patientPassportNumber']) ? $data['patientPassportNumber'] : null,
-            'flight_airline' => !empty($data['airline']) ? $data['airline'] : null,
-            'flight_seat_no' => !empty($data['seatNo']) ? $data['seatNo'] : null,
+            'patient_email' => empty($data['patientEmail']) ? null : $data['patientEmail'],
+            'is_patient_pregnant' => empty($data['isPatientPregnant']) ? null : $data['isPatientPregnant'],
+            'patient_age' => empty($data['patientAge']) ? null : $data['patientAge'],
+            'patient_phone_number' => empty($data['patientPhoneNumber']) ? null : $data['patientPhoneNumber'],
+            'patient_address' => empty($data['patientAddress']) ? null : $data['patientAddress'],
+            'patient_province' => empty($data['patientProvince']) ? null : $data['patientProvince'],
+            'patient_district' => empty($data['patientDistrict']) ? null : $data['patientDistrict'],
+            'patient_city' => empty($data['patientCity']) ? null : $data['patientCity'],
+            'patient_zone' => empty($data['patientZone']) ? null : $data['patientZone'],
+            'patient_occupation' => empty($data['patientOccupation']) ? null : $data['patientOccupation'],
+            'does_patient_smoke' => empty($data['doesPatientSmoke']) ? null : $data['doesPatientSmoke'],
+            'patient_nationality' => empty($data['patientNationality']) ? null : $data['patientNationality'],
+            'patient_passport_number' => empty($data['patientPassportNumber']) ? null : $data['patientPassportNumber'],
+            'flight_airline' => empty($data['airline']) ? null : $data['airline'],
+            'flight_seat_no' => empty($data['seatNo']) ? null : $data['seatNo'],
             'flight_arrival_datetime' => DateUtility::isoDateFormat($data['arrivalDateTime'] ?? '', true),
-            'flight_airport_of_departure' => !empty($data['airportOfDeparture']) ? $data['airportOfDeparture'] : null,
-            'flight_transit' => !empty($data['transit']) ? $data['transit'] : null,
-            'reason_of_visit' => !empty($data['reasonOfVisit']) ? $data['reasonOfVisit'] : null,
-            'is_sample_collected' => !empty($data['isSampleCollected']) ? $data['isSampleCollected'] : null,
-            'reason_for_covid19_test' => !empty($data['reasonForCovid19Test']) ? $data['reasonForCovid19Test'] : null,
-            'type_of_test_requested' => !empty($data['testTypeRequested']) ? $data['testTypeRequested'] : null,
-            'specimen_type' => !empty($data['specimenType']) ? $data['specimenType'] : null,
+            'flight_airport_of_departure' => empty($data['airportOfDeparture']) ? null : $data['airportOfDeparture'],
+            'flight_transit' => empty($data['transit']) ? null : $data['transit'],
+            'reason_of_visit' => empty($data['reasonOfVisit']) ? null : $data['reasonOfVisit'],
+            'is_sample_collected' => empty($data['isSampleCollected']) ? null : $data['isSampleCollected'],
+            'reason_for_covid19_test' => empty($data['reasonForCovid19Test']) ? null : $data['reasonForCovid19Test'],
+            'type_of_test_requested' => empty($data['testTypeRequested']) ? null : $data['testTypeRequested'],
+            'specimen_type' => empty($data['specimenType']) ? null : $data['specimenType'],
             'sample_dispatched_datetime' => $data['sampleDispatchedOn'],
             'result_dispatched_datetime' => $data['resultDispatchedOn'],
             'sample_collection_date' => $sampleCollectionDate,
-            'health_outcome' => !empty($data['healthOutcome']) ? $data['healthOutcome'] : null,
-            'health_outcome_date' => !empty($data['outcomeDate']) ? DateUtility::isoDateFormat($data['outcomeDate']) : null,
+            'health_outcome' => empty($data['healthOutcome']) ? null : $data['healthOutcome'],
+            'health_outcome_date' => empty($data['outcomeDate']) ? null : DateUtility::isoDateFormat($data['outcomeDate']),
             // 'is_sampledata_mortem'                => !empty($data['isSamplePostMortem']) ? $data['isSamplePostMortem'] : null,
-            'priority_status' => !empty($data['priorityStatus']) ? $data['priorityStatus'] : null,
-            'number_of_days_sick' => !empty($data['numberOfDaysSick']) ? $data['numberOfDaysSick'] : null,
-            'suspected_case' => !empty($data['suspectedCase']) ? $data['suspectedCase'] : null,
-            'date_of_symptom_onset' => !empty($data['dateOfSymptomOnset']) ? DateUtility::isoDateFormat($data['dateOfSymptomOnset']) : null,
-            'date_of_initial_consultation' => !empty($data['dateOfInitialConsultation']) ? DateUtility::isoDateFormat($data['dateOfInitialConsultation']) : null,
-            'fever_temp' => !empty($data['feverTemp']) ? $data['feverTemp'] : null,
-            'medical_history' => !empty($data['medicalHistory']) ? $data['medicalHistory'] : null,
-            'recent_hospitalization' => !empty($data['recentHospitalization']) ? $data['recentHospitalization'] : null,
-            'patient_lives_with_children' => !empty($data['patientLivesWithChildren']) ? $data['patientLivesWithChildren'] : null,
-            'patient_cares_for_children' => !empty($data['patientCaresForChildren']) ? $data['patientCaresForChildren'] : null,
-            'temperature_measurement_method' => !empty($data['temperatureMeasurementMethod']) ? $data['temperatureMeasurementMethod'] : null,
-            'respiratory_rate' => !empty($data['respiratoryRate']) ? $data['respiratoryRate'] : null,
-            'oxygen_saturation' => !empty($data['oxygenSaturation']) ? $data['oxygenSaturation'] : null,
-            'close_contacts' => !empty($data['closeContacts']) ? $data['closeContacts'] : null,
-            'contact_with_confirmed_case' => !empty($data['contactWithConfirmedCase']) ? $data['contactWithConfirmedCase'] : null,
-            'has_recent_travel_history' => !empty($data['hasRecentTravelHistory']) ? $data['hasRecentTravelHistory'] : null,
-            'travel_country_names' => !empty($data['countryName']) ? $data['countryName'] : null,
-            'travel_return_date' => !empty($data['returnDate']) ? DateUtility::isoDateFormat($data['returnDate']) : null,
-            'sample_received_at_lab_datetime' => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
-            'sample_condition' => !empty($data['sampleCondition']) ? $data['sampleCondition'] : ($data['specimenQuality'] ?? null),
-            'asymptomatic' => !empty($data['asymptomatic']) ? $data['asymptomatic'] : null,
+            'priority_status' => empty($data['priorityStatus']) ? null : $data['priorityStatus'],
+            'number_of_days_sick' => empty($data['numberOfDaysSick']) ? null : $data['numberOfDaysSick'],
+            'suspected_case' => empty($data['suspectedCase']) ? null : $data['suspectedCase'],
+            'date_of_symptom_onset' => empty($data['dateOfSymptomOnset']) ? null : DateUtility::isoDateFormat($data['dateOfSymptomOnset']),
+            'date_of_initial_consultation' => empty($data['dateOfInitialConsultation']) ? null : DateUtility::isoDateFormat($data['dateOfInitialConsultation']),
+            'fever_temp' => empty($data['feverTemp']) ? null : $data['feverTemp'],
+            'medical_history' => empty($data['medicalHistory']) ? null : $data['medicalHistory'],
+            'recent_hospitalization' => empty($data['recentHospitalization']) ? null : $data['recentHospitalization'],
+            'patient_lives_with_children' => empty($data['patientLivesWithChildren']) ? null : $data['patientLivesWithChildren'],
+            'patient_cares_for_children' => empty($data['patientCaresForChildren']) ? null : $data['patientCaresForChildren'],
+            'temperature_measurement_method' => empty($data['temperatureMeasurementMethod']) ? null : $data['temperatureMeasurementMethod'],
+            'respiratory_rate' => empty($data['respiratoryRate']) ? null : $data['respiratoryRate'],
+            'oxygen_saturation' => empty($data['oxygenSaturation']) ? null : $data['oxygenSaturation'],
+            'close_contacts' => empty($data['closeContacts']) ? null : $data['closeContacts'],
+            'contact_with_confirmed_case' => empty($data['contactWithConfirmedCase']) ? null : $data['contactWithConfirmedCase'],
+            'has_recent_travel_history' => empty($data['hasRecentTravelHistory']) ? null : $data['hasRecentTravelHistory'],
+            'travel_country_names' => empty($data['countryName']) ? null : $data['countryName'],
+            'travel_return_date' => empty($data['returnDate']) ? null : DateUtility::isoDateFormat($data['returnDate']),
+            'sample_received_at_lab_datetime' => empty($data['sampleReceivedDate']) ? null : $data['sampleReceivedDate'],
+            'sample_condition' => empty($data['sampleCondition']) ? $data['specimenQuality'] ?? null : ($data['sampleCondition']),
+            'asymptomatic' => empty($data['asymptomatic']) ? null : $data['asymptomatic'],
             'lab_technician' => (!empty($data['labTechnician']) && $data['labTechnician'] != '') ? $data['labTechnician'] : $user['user_id'],
-            'is_sample_rejected' => !empty($data['isSampleRejected']) ? $data['isSampleRejected'] : null,
-            'result' => !empty($data['result']) ? $data['result'] : null,
-            'if_have_other_diseases' => (!empty($data['ifOtherDiseases'])) ? $data['ifOtherDiseases'] : null,
+            'is_sample_rejected' => empty($data['isSampleRejected']) ? null : $data['isSampleRejected'],
+            'result' => empty($data['result']) ? null : $data['result'],
+            'if_have_other_diseases' => (empty($data['ifOtherDiseases'])) ? null : $data['ifOtherDiseases'],
             'other_diseases' => (!empty($data['otherDiseases']) && $data['result'] != 'positive') ? $data['otherDiseases'] : null,
-            'tested_by' => !empty($data['testedBy']) ? $data['testedBy'] : null,
-            'is_result_authorised' => !empty($data['isResultAuthorized']) ? $data['isResultAuthorized'] : null,
-            'lab_tech_comments' => !empty($data['approverComments']) ? $data['approverComments'] : null,
-            'authorized_by' => !empty($data['authorizedBy']) ? $data['authorizedBy'] : null,
-            'authorized_on' => !empty($data['authorizedOn']) ? DateUtility::isoDateFormat($data['authorizedOn']) : null,
+            'tested_by' => empty($data['testedBy']) ? null : $data['testedBy'],
+            'is_result_authorised' => empty($data['isResultAuthorized']) ? null : $data['isResultAuthorized'],
+            'lab_tech_comments' => empty($data['approverComments']) ? null : $data['approverComments'],
+            'authorized_by' => empty($data['authorizedBy']) ? null : $data['authorizedBy'],
+            'authorized_on' => empty($data['authorizedOn']) ? null : DateUtility::isoDateFormat($data['authorizedOn']),
             'revised_by' => (isset($_POST['revisedBy']) && $_POST['revisedBy'] != "") ? $_POST['revisedBy'] : "",
             'revised_on' => (isset($_POST['revisedOn']) && $_POST['revisedOn'] != "") ? $_POST['revisedOn'] : null,
             'result_reviewed_by' => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : "",
@@ -469,10 +476,10 @@ try {
             'data_sync' => 0,
             'reason_for_sample_rejection' => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
             'source_of_request' => $data['sourceOfRequest'] ?? "API",
-            'form_attributes' => !empty($formAttributes) ? $db->func($formAttributes) : null
+            'form_attributes' => $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes)
         ];
         if (!empty($rowData)) {
-            $covid19Data['last_modified_datetime'] = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
+            $covid19Data['last_modified_datetime'] = (empty($data['updatedOn'])) ? DateUtility::getCurrentDateTime() : DateUtility::isoDateFormat($data['updatedOn'], true);
             $covid19Data['last_modified_by'] = $user['user_id'];
         } else {
             $covid19Data['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
@@ -486,11 +493,12 @@ try {
             $db->delete("covid19_patient_symptoms");
             $syptomDetections = $data['covid19PatientSymptomsArray'] ?? $data['symptom'];
             if (!empty($syptomDetections)) {
-                for ($i = 0; $i < count($syptomDetections); $i++) {
+                $counter = count($syptomDetections);
+                for ($i = 0; $i < $counter; $i++) {
 
-                    $data['symptomId'][$i] = $data['symptomId'][$i] ?? $syptomDetections[$i]['id'];
-                    $data['symptomDetected'][$i] = $data['symptomDetected'][$i] ?? $syptomDetections[$i]['symptom'];
-                    $data['symptomDetails'][$i] = $data['symptomDetails'][$i] ?? $syptomDetections[$i]['detail'];
+                    $data['symptomId'][$i] ??= $syptomDetections[$i]['id'];
+                    $data['symptomDetected'][$i] ??= $syptomDetections[$i]['symptom'];
+                    $data['symptomDetails'][$i] ??= $syptomDetections[$i]['detail'];
 
                     $symptomData = [];
                     $symptomData["covid19_id"] = $data['covid19SampleId'];
@@ -499,7 +507,7 @@ try {
                     if (isset($data['covid19PatientSymptomsArray']) && !empty($data['covid19PatientSymptomsArray'])) {
                         $symptomData["symptom_details"] = $syptomDetections[$i]['detail'] ?? null;
                     } else {
-                        $symptomData["symptom_details"] = (!empty($data['symptomDetails'][$data['symptomId'][$i]])) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
+                        $symptomData["symptom_details"] = (empty($data['symptomDetails'][$data['symptomId'][$i]])) ? null : json_encode($data['symptomDetails'][$data['symptomId'][$i]]);
                     }
                     $db->insert("covid19_patient_symptoms", $symptomData);
                 }
@@ -529,7 +537,8 @@ try {
         $db->where('covid19_id', $data['covid19SampleId']);
         $db->delete("covid19_patient_comorbidities");
         if (!empty($data['comorbidityDetected'])) {
-            for ($i = 0; $i < count($data['comorbidityDetected']); $i++) {
+            $counter = count($data['comorbidityDetected']);
+            for ($i = 0; $i < $counter; $i++) {
                 $comorbidityData = [];
                 $comorbidityData["covid19_id"] = $data['covid19SampleId'];
                 $comorbidityData["comorbidity_id"] = $data['comorbidityId'][$i];
@@ -543,7 +552,7 @@ try {
                 $db->delete($testTableName);
                 foreach ($data['c19Tests'] as $testKey => $test) {
                     if (!empty($test['testName'])) {
-                        if (isset($test['testDate']) && trim((string) $test['testDate']) != "") {
+                        if (isset($test['testDate']) && trim((string) $test['testDate']) !== "") {
                             $data['testDate'] = DateUtility::isoDateFormat($data['testDate'], true);
                         } else {
                             $test['testDate'] = null;
@@ -600,7 +609,7 @@ try {
     $db->commitTransaction();
 
     // For inserted samples, generate sample code
-    if (!empty($uniqueIdsForSampleCodeGeneration)) {
+    if ($uniqueIdsForSampleCodeGeneration !== []) {
         $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
         if (!empty($sampleCodeData)) {
             foreach ($responseData as $rootKey => $currentSampleData) {

@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+
 // Force no caching
 header("Cache-Control: no-cache, must-revalidate");
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
@@ -22,12 +24,12 @@ $general = ContainerRegistry::get(CommonService::class);
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 // Clear the query count cache for this manifest
-if (session_status() === PHP_SESSION_ACTIVE && !empty($_POST['manifestCode'])) {
+if (CommonService::isSessionActive() && !empty($_POST['manifestCode'])) {
      unset($_SESSION['queryCounters']);
 }
 
@@ -35,7 +37,7 @@ if (empty($_POST['manifestCode'])) {
      throw new SystemException(_translate('Manifest code is required'));
 }
 
-$_POST['manifestCode'] = trim($_POST['manifestCode']);
+$_POST['manifestCode'] = trim((string) $_POST['manifestCode']);
 
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
@@ -95,16 +97,16 @@ $sQuery = "SELECT vl.sample_collection_date,
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-if (!empty($_POST['manifestCode'])) {
+if (isset($_POST['manifestCode']) && ($_POST['manifestCode'] !== '' && $_POST['manifestCode'] !== '0')) {
      $sWhere[] = " vl.sample_package_code = '{$_POST['manifestCode']}'";
 }
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
      $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 
 if (!empty($sOrder) && $sOrder !== '') {
-     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+     $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
      $sQuery = "$sQuery ORDER BY $sOrder";
 }
 

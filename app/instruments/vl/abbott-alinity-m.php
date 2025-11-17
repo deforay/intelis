@@ -71,7 +71,7 @@ try {
 
         if (
             !empty($interpretedResults['result']) &&
-            (in_array(strtolower($interpretedResults['result']), $bdl) ||
+            (in_array(strtolower((string) $interpretedResults['result']), $bdl) ||
                 ($interpretedResults['absDecimalVal'] < 400))
         ) {
             $interpretedResults['txtVal'] =
@@ -89,7 +89,7 @@ try {
 
         if (
             !empty($interpretedResults['result']) &&
-            in_array(strtolower($interpretedResults['result']), $bdl)
+            in_array(strtolower((string) $interpretedResults['result']), $bdl)
         ) {
             $interpretedResults['txtVal'] =
                 $interpretedResults['result'] = 'Target Not Detected';

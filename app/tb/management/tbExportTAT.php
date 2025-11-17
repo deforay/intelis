@@ -24,31 +24,17 @@ $excel = new Spreadsheet();
 $output = [];
 $sheet = $excel->getActiveSheet();
 
-$headings = array("TB Sample ID", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Result Print Date", "Sample Email Date");
+$headings = ["TB Sample ID", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Result Print Date", "Sample Email Date"];
 
 $colNo = 1;
 
-$styleArray = array(
-	'font' => array(
-		'bold' => true,
-		'size' => '13',
-	),
-	'alignment' => array(
-		'horizontal' => Alignment::HORIZONTAL_CENTER,
-		'vertical' => Alignment::VERTICAL_CENTER,
-	),
-	'borders' => array(
-		'outline' => array(
-			'style' => Border::BORDER_THICK,
-		),
-	)
-);
+$styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THICK]]];
 
 
 $sheet->mergeCells('A1:AE1');
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
+	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 	}
 }
@@ -66,11 +52,11 @@ foreach ($rResult as $aRow) {
 	$row = [];
 	//sample collecion date
 	$sampleCollectionDate = '';
-	if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+	if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
 		$expStr = explode(" ", (string) $aRow['sample_collection_date']);
 		$sampleCollectionDate =  DateUtility::humanReadableDateFormat($expStr[0]);
 	}
-	if (isset($aRow['sample_received_at_lab_datetime']) && trim((string) $aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['sample_received_at_lab_datetime']) && trim((string) $aRow['sample_received_at_lab_datetime']) !== '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
 		$sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 	} else {
 		$sampleRecievedDate = '';

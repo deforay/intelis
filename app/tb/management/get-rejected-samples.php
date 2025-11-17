@@ -42,32 +42,28 @@ if (!empty($_POST['sampleCollectionDate'])) {
     $sWhere = [];
     $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
 
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+    if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+    if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
         $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
     $sWhere[] = ' DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '"';
 }
-if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
+if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
-if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
+if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
     $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
 }
-if (is_array($_POST['clinicName']) && !empty($_POST['clinicName'])) {
+if (is_array($_POST['clinicName']) && (isset($_POST['clinicName']) && $_POST['clinicName'] !== [])) {
     $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
 }
 if (!empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
-if (!empty($sWhere)) {
-    $sWhere = " where " . implode(' AND ', $sWhere);
-} else {
-    $sWhere = "";
-}
+$sWhere = empty($sWhere) ? "" : " where " . implode(' AND ', $sWhere);
 
 $vlQuery = $vlQuery . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
 //vl.vlsm_country_id = "' . $formId . '" AND
@@ -76,7 +72,7 @@ $tableResult = $db->rawQuery($vlQuery);
 
 foreach ($tableResult as $tableRow) {
     if (!isset($tResult[$tableRow['rejection_reason_name']])) {
-        $tResult[$tableRow['rejection_reason_name']] = array('total' => null, 'category' => null);
+        $tResult[$tableRow['rejection_reason_name']] = ['total' => null, 'category' => null];
     }
     $tResult[$tableRow['rejection_reason_name']]['total'] += $tableRow['total'];
     $tResult[$tableRow['rejection_reason_name']]['category'] = $tableRow['rejection_type'];
@@ -85,7 +81,7 @@ foreach ($tableResult as $tableRow) {
 }
 
 
-if (!empty($tResult)) {
+if ($tResult !== []) {
 ?>
     <div id="container" style="width: 100%; height: 500px; margin: 20px auto;"></div>
     <!-- <div id="rejectedType" style="width: 100%; height: 400px; margin: 20px auto;margin-top:50px;"></div> -->
@@ -130,7 +126,7 @@ if (!empty($tableResult)) { ?>
         $("#tbRequestDataTable").DataTable();
     });
     <?php
-    if (!empty($tResult)) { ?>
+    if ($tResult !== []) { ?>
         $('#container').highcharts({
             chart: {
                 plotBackgroundColor: null,

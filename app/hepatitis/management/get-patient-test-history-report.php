@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\ACCEPTED;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -11,7 +13,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -32,8 +34,8 @@ try {
     $tableName = "form_hepatitis";
     $primaryKey = "hepatitis_id";
 
-    $aColumns = array('vl.patient_id', 'vl.patient_name', 'vl.patient_age', 'vl.patient_dob', 'f.facility_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.hcv_vl_count', 'vl.hbv_vl_count');
-    $orderColumns = array('vl.patient_id', 'vl.patient_name', 'vl.patient_age', 'vl.patient_dob', 'f.facility_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.hcv_vl_count', 'vl.hbv_vl_count');
+    $aColumns = ['vl.patient_id', 'vl.patient_name', 'vl.patient_age', 'vl.patient_dob', 'f.facility_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.hcv_vl_count', 'vl.hbv_vl_count'];
+    $orderColumns = ['vl.patient_id', 'vl.patient_name', 'vl.patient_age', 'vl.patient_dob', 'f.facility_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.hcv_vl_count', 'vl.hbv_vl_count'];
 
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = $primaryKey;
@@ -58,10 +60,7 @@ try {
     }
 
 
-    /*
-         * SQL queries
-         * Get data to display
-        */
+
     $sQuery = "SELECT
                 vl.hepatitis_id,
                 vl.patient_id,
@@ -84,7 +83,7 @@ try {
             LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
-    $sWhere[] = ' vl.hcv_vl_count != "" OR vl.hbv_vl_count != "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
+    $sWhere[] = ' vl.hcv_vl_count != "" OR vl.hbv_vl_count != "" AND result_status = ' . ACCEPTED;
 
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
         $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
@@ -97,12 +96,12 @@ try {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
     }
 
-    if (!empty($sWhere)) {
+    if ($sWhere !== []) {
         $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
     }
 
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['patientTestHistoryResult'] = $sQuery;
@@ -117,14 +116,9 @@ try {
     $_SESSION['patientTestHistoryResultCount'] = $resultCount;
 
     /*
-         * Output
-        */
-    $output = array(
-        "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $resultCount,
-        "iTotalDisplayRecords" => $resultCount,
-        "aaData" => []
-    );
+     * Output
+     */
+    $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 
     foreach ($rResult as $aRow) {
 

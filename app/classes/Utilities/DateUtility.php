@@ -2,6 +2,7 @@
 
 namespace App\Utilities;
 
+use Exception;
 use Throwable;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -10,11 +11,11 @@ use App\Exceptions\SystemException;
 
 final class DateUtility
 {
-    public static function isDateFormatValid($date, $format = 'Y-m-d', $strict = true): bool
+    public static function isDateFormatValid($date, string $format = 'Y-m-d', $strict = true): bool
     {
         $date = trim((string) $date);
 
-        if (empty($date) || 'undefined' === $date || 'null' === $date) {
+        if ($date === '' || $date === '0' || 'undefined' === $date || 'null' === $date) {
             return false;
         }
 
@@ -29,13 +30,13 @@ final class DateUtility
             return null;
         }
 
-        return MemoUtility::remember(function () use ($date, $format, $inputFormat) {
+        return MemoUtility::remember(function () use ($date, $format, $inputFormat): ?string {
 
             $trimmedDate = trim($date);
 
             // Perform preliminary checks for obviously invalid date strings
-            if ((!empty($inputFormat) && self::isDateFormatValid($trimmedDate, $inputFormat, true) === false)
-                || (empty($inputFormat) && self::isDateValid($trimmedDate) === false)
+            if (($inputFormat !== null && $inputFormat !== '' && $inputFormat !== '0' && self::isDateFormatValid($trimmedDate, $inputFormat, true) === false)
+                || (($inputFormat === null || $inputFormat === '' || $inputFormat === '0') && self::isDateValid($trimmedDate) === false)
             ) {
                 return null;
             }
@@ -63,7 +64,7 @@ final class DateUtility
                 }
 
                 // If parsing was successful, format and return the date string
-                $procssedDateTime = $carbonDate ? $carbonDate->format($format) : null;
+                $procssedDateTime = $carbonDate instanceof Carbon ? $carbonDate->format($format) : null;
             } catch (Throwable $e) {
                 // Catches exceptions from Carbon::parse (e.g., InvalidFormatException)
                 // or any other errors during the process.
@@ -95,17 +96,16 @@ final class DateUtility
     }
 
     /**
-     * @param mixed $date
      * @return bool
      */
-    public static function isDateValid($date): bool
+    public static function isDateValid(mixed $date): bool
     {
         $isValid = false;
 
         $date = trim((string) $date);
 
         if (
-            empty($date)
+            $date === '' || $date === '0'
             || in_array($date, ['undefined', 'null', ''], true)
             || preg_match('/[_*]|--/', $date)
         ) {
@@ -134,7 +134,7 @@ final class DateUtility
             }
         } else {
             try {
-                $isValid = self::parseDate($date, ignoreTime: true) !== null;
+                $isValid = self::parseDate($date, ignoreTime: true) instanceof Carbon;
             } catch (Throwable $e) {
                 LoggerUtility::logError("DateUtility::isDateValid: Exception while validating date '$date': " . $e->getMessage(), [
                     'line' => $e->getLine(),
@@ -149,9 +149,9 @@ final class DateUtility
     }
 
 
-    public static function humanReadableDateFormat($date, $includeTime = false, $format = null, $withSeconds = false)
+    public static function humanReadableDateFormat($date, $includeTime = false, ?string $format = null, $withSeconds = false): mixed
     {
-        return MemoUtility::remember(function () use ($date, $includeTime, $format, $withSeconds) {
+        return MemoUtility::remember(function () use ($date, $includeTime, $format, $withSeconds): ?string {
 
             if (!self::isDateValid($date)) {
                 return null;
@@ -160,7 +160,7 @@ final class DateUtility
             $format ??= $_SESSION['phpDateFormat'] ?? 'd-M-Y';
 
             // Check if the format already includes time components
-            $hasTimeComponent = preg_match('/[HhGgis]/', $format);
+            $hasTimeComponent = preg_match('/[HhGgis]/', (string) $format);
 
             // If the format doesn't have a time component and $includeTime is true, append the appropriate time format
             if ($includeTime && !$hasTimeComponent) {
@@ -172,14 +172,14 @@ final class DateUtility
     }
 
 
-    public static function getCurrentDateTime($format = 'Y-m-d H:i:s')
+    public static function getCurrentDateTime(string $format = 'Y-m-d H:i:s'): string
     {
         return Carbon::now()->format($format);
     }
 
-    public static function isoDateFormat($date, $includeTime = false)
+    public static function isoDateFormat($date, $includeTime = false): mixed
     {
-        return MemoUtility::remember(function () use ($date, $includeTime) {
+        return MemoUtility::remember(function () use ($date, $includeTime): ?string {
             if (!self::isDateValid($date)) {
                 return null;
             }
@@ -189,9 +189,9 @@ final class DateUtility
         });
     }
 
-    public static function ageInYearMonthDays($dateOfBirth)
+    public static function ageInYearMonthDays($dateOfBirth): mixed
     {
-        return MemoUtility::remember(function () use ($dateOfBirth) {
+        return MemoUtility::remember(function () use ($dateOfBirth): ?array {
 
             if (!self::isDateValid($dateOfBirth)) {
                 return null;
@@ -206,7 +206,7 @@ final class DateUtility
         });
     }
 
-    public static function dateDiff($dateString1, $dateString2, $format = null)
+    public static function dateDiff($dateString1, $dateString2, $format = null): ?string
     {
         if (!self::isDateValid($dateString1) || !self::isDateValid($dateString2)) {
             return null;
@@ -294,7 +294,7 @@ final class DateUtility
             }
 
             return $parsedInputDate->gt($parsedComparisonDate);
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             // Handle or log the error appropriately
             // This catches cases where Carbon could not parse the date strings
             return false;
@@ -332,8 +332,8 @@ final class DateUtility
 
     public static function convertDateRange(?string $dateRange, $seperator = "to", bool $includeTime = false): array
     {
-        return MemoUtility::remember(function () use ($dateRange, $seperator, $includeTime) {
-            if (empty($dateRange)) {
+        return MemoUtility::remember(function () use ($dateRange, $seperator, $includeTime): array {
+            if ($dateRange === null || $dateRange === '' || $dateRange === '0') {
                 return ['', ''];
             }
 
@@ -353,7 +353,7 @@ final class DateUtility
                     } else {
                         $startDate = $start->format('Y-m-d');
                     }
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     LoggerUtility::logError("Failed to parse start date: " . $dates[0] . " - " . $e->getMessage());
                 }
             }
@@ -368,7 +368,7 @@ final class DateUtility
                     } else {
                         $endDate = $end->format('Y-m-d');
                     }
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     LoggerUtility::logError("Failed to parse end date: " . $dates[1] . " - " . $e->getMessage());
                 }
             }
@@ -383,7 +383,7 @@ final class DateUtility
      * @param int $months The number of months to subtract.
      * @return string The date in 'Y-m-d' format.
      */
-    public static function getDateBeforeMonths(int $months)
+    public static function getDateBeforeMonths(int $months): string
     {
         return Carbon::now()->subMonths($months)->format('Y-m-d');
     }
@@ -397,7 +397,7 @@ final class DateUtility
      */
     private static function filterValidDates(array $dates): array
     {
-        return array_filter($dates, fn($date) => self::isDateValid($date));
+        return array_filter($dates, fn($date): bool => self::isDateValid($date));
     }
 
     /**
@@ -406,13 +406,13 @@ final class DateUtility
      * @param string ...$dates A variable number of date strings.
      * @return string|null The earliest date in 'Y-m-d H:i:s' format, or null if all dates are invalid or no dates are provided.
      */
-    public static function getLowestDate(...$dates)
+    public static function getLowestDate(...$dates): ?string
     {
         // Filter out invalid dates
         $validDates = self::filterValidDates($dates);
 
         // If there are no valid dates, return null
-        if (empty($validDates)) {
+        if ($validDates === []) {
             return null;
         }
 
@@ -434,13 +434,13 @@ final class DateUtility
      * @param string ...$dates A variable number of date strings.
      * @return string|null The latest date in 'Y-m-d H:i:s' format, or null if all dates are invalid or no dates are provided.
      */
-    public static function getHighestDate(...$dates)
+    public static function getHighestDate(...$dates): ?string
     {
         // Filter out invalid dates
         $validDates = self::filterValidDates($dates);
 
         // If there are no valid dates, return null
-        if (empty($validDates)) {
+        if ($validDates === []) {
             return null;
         }
 
@@ -464,7 +464,7 @@ final class DateUtility
      *                      age in years ('patient_age_in_years'), or age in months ('patient_age_in_months').
      * @return string The calculated age as a string, with years or months specified as appropriate.
      */
-    public static function calculatePatientAge($result)
+    public static function calculatePatientAge($result): string
     {
         if (!isset($result['patient_dob']) && !isset($result['patient_age_in_years']) && !isset($result['patient_age']) && !isset($result['patient_age_in_months'])) {
             return _translate('Unknown');

@@ -97,17 +97,18 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 		color: black !important;
 	}
 
-	<?php if (!empty($_GET['id'])) { ?>header {
-		display: none;
-	}
+	<?php if (!empty($_GET['id'])) { ?>
+		header {
+			display: none;
+		}
 
-	.main-sidebar {
-		z-index: -9;
-	}
+		.main-sidebar {
+			z-index: -9;
+		}
 
-	.content-wrapper {
-		margin-left: 0px;
-	}
+		.content-wrapper {
+			margin-left: 0px;
+		}
 
 	<?php } ?>
 </style>
@@ -136,37 +137,44 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" id="advancedFilters" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
+					<table aria-describedby="table" id="advancedFilters" class="table pageFilters" aria-hidden="true"
+						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
 						<tr>
 							<td><strong>
 									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" value="<?php echo (!empty($_GET['daterange'])) ? $_GET['daterange'] : ""; ?>" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate"
+									class="form-control daterangefield"
+									placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly
+									style="background:#fff;"
+									value="<?php echo (empty($_GET['daterange'])) ? "" : $_GET['daterange']; ?>" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Sample Received at Lab Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control daterangefield" placeholder="<?php echo _translate('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab"
+									class="form-control daterangefield"
+									placeholder="<?php echo _translate('Select Sample Received Date At Lab'); ?>"
+									readonly style="background:#fff;" />
 							</td>
 
 							<td><strong>
 									<?php echo _translate("Sample Type"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+								<select class="form-control" id="sampleType" name="sampleType"
+									title="<?php echo _translate('Please select sample type'); ?>">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<?php
-									foreach ($sResult as $type) {
-									?>
+									foreach ($sResult as $type) { ?>
 										<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?>
 										</option>
-									<?php
-									}
-									?>
+										<?php
+									} ?>
 								</select>
 							</td>
 						</tr>
@@ -176,13 +184,17 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Tested Date'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleTestedDate" name="sampleTestedDate"
+									class="form-control daterangefield"
+									placeholder="<?php echo _translate('Select Tested Date'); ?>" readonly
+									style="background:#fff;" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Viral Load Suppression"); ?> &nbsp;:
 								</strong></td>
 							<td>
-								<select class="form-control" id="vLoad" name="vLoad" title="Please select VL Suppression" style="width:220px;">
+								<select class="form-control" id="vLoad" name="vLoad"
+									title="Please select VL Suppression" style="width:220px;">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
@@ -194,7 +206,9 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Print Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="printDate" name="printDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="printDate" name="printDate" class="form-control daterangefield"
+									placeholder="<?php echo _translate('Select Print Date'); ?>" readonly
+									style="width:220px;background:#fff;" />
 							</td>
 						</tr>
 						<tr>
@@ -203,28 +217,32 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Request Creation Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="requestCreatedDatetime" name="requestCreatedDatetime" class="form-control daterangefield" placeholder="<?php echo _translate('Select Request Created Datetime'); ?>" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="requestCreatedDatetime" name="requestCreatedDatetime"
+									class="form-control daterangefield"
+									placeholder="<?php echo _translate('Select Request Created Datetime'); ?>" readonly
+									style="width:220px;background:#fff;" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Status"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
+								<select name="status" id="status" class="form-control"
+									title="<?php echo _translate('Please choose status'); ?>"
+									onchange="checkSampleCollectionDate();">
 									<option value="" selected=selected><?php echo _translate("All Status"); ?></option>
 									<?php
-									foreach ($sampleStatusData as $sample) {
-									?>
+									foreach ($sampleStatusData as $sample) { ?>
 										<option value="<?= $sample['status_id']; ?>"><?= $sample['status_name'] ?></option>
-									<?php
-									}
-									?>
+										<?php
+									} ?>
 								</select>
 							</td>
 							<td><strong>
 									<?php echo _translate("Show only Reordered Samples"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="showReordSample" id="showReordSample" class="form-control" title="Please choose record sample">
+								<select name="showReordSample" id="showReordSample" class="form-control"
+									title="Please choose record sample">
 									<option value=""><?= _translate('-- Select --'); ?></option>
 									<option value="yes">
 										<?php echo _translate("Yes"); ?>
@@ -242,7 +260,8 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 										<strong>
 											<?php echo _translate("Pregnant"); ?>&nbsp;:
 										</strong>
-										<select name="patientPregnant" id="patientPregnant" class="form-control" title="<?php echo _translate('Please choose pregnant option'); ?>">
+										<select name="patientPregnant" id="patientPregnant" class="form-control"
+											title="<?php echo _translate('Please choose pregnant option'); ?>">
 											<option value="">
 												<?php echo _translate("-- Select --"); ?>
 											</option>
@@ -258,7 +277,8 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 										<strong>
 											<?php echo _translate("Breastfeeding"); ?>&nbsp;:
 										</strong>
-										<select name="breastFeeding" id="breastFeeding" class="form-control" title="<?php echo _translate('Please choose pregnant option'); ?>">
+										<select name="breastFeeding" id="breastFeeding" class="form-control"
+											title="<?php echo _translate('Please choose pregnant option'); ?>">
 											<option value="">
 												<?php echo _translate("-- Select --"); ?>
 											</option>
@@ -276,22 +296,26 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Batch Code"); ?> :
 								</strong></td>
 							<td>
-								<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+								<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete"
+									placeholder="<?php echo _translate('Enter Batch Code'); ?>"
+									style="background:#fff;" />
 
 							</td>
 							<td><strong>
 									<?php echo _translate("Funding Sources"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _translate('Please choose funding source'); ?>">
+								<select class="form-control" name="fundingSource" id="fundingSource"
+									title="<?php echo _translate('Please choose funding source'); ?>">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<?php
-									foreach ($fundingSourceList as $fundingSource) {
-									?>
-										<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
-											<?= $fundingSource['funding_source_name']; ?></option>
+									foreach ($fundingSourceList as $fundingSource) { ?>
+										<option
+											value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
+											<?= $fundingSource['funding_source_name']; ?>
+										</option>
 									<?php } ?>
 								</select>
 							</td>
@@ -302,15 +326,17 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Implementing Partners"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _translate('Please choose implementing partner'); ?>">
+								<select class="form-control" name="implementingPartner" id="implementingPartner"
+									title="<?php echo _translate('Please choose implementing partner'); ?>">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<?php
-									foreach ($implementingPartnerList as $implementingPartner) {
-									?>
-										<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
-											<?= $implementingPartner['i_partner_name']; ?></option>
+									foreach ($implementingPartnerList as $implementingPartner) { ?>
+										<option
+											value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+											<?= $implementingPartner['i_partner_name']; ?>
+										</option>
 									<?php } ?>
 								</select>
 							</td>
@@ -318,7 +344,9 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Sex"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">
+								<select name="gender" id="gender" class="form-control"
+									title="<?php echo _translate('Please select sex'); ?>" style="width:220px;"
+									onchange="hideFemaleDetails(this.value)">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
@@ -337,7 +365,8 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Sample Type"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _translate('Please select request sample type'); ?>">
+								<select class="form-control" id="requestSampleType" name="requestSampleType"
+									title="<?php echo _translate('Please select request sample type'); ?>">
 									<option value="">
 										<?php echo _translate("All"); ?>
 									</option>
@@ -356,7 +385,8 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Source of Request"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _translate('Please select source of request'); ?>">
+								<select class="form-control" id="srcOfReq" name="srcOfReq"
+									title="<?php echo _translate('Please select source of request'); ?>">
 									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
@@ -364,7 +394,9 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Community Sample"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="communitySample" id="communitySample" class="form-control" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
+								<select name="communitySample" id="communitySample" class="form-control"
+									title="<?php echo _translate('Please choose community sample'); ?>"
+									style="width:100%;">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
@@ -381,7 +413,10 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Province/State"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="state" id="state" onchange="getByProvince(this.value)" class="form-control" title="<?php echo _translate('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+								<select name="state" id="state" onchange="getByProvince(this.value)"
+									class="form-control"
+									title="<?php echo _translate('Please choose Province/State/Region'); ?>"
+									onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 								</select>
 							</td>
@@ -392,14 +427,17 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("District/County"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _translate('Please select District/County'); ?>">
+								<select class="form-control" id="district" onchange="getByDistrict(this.value)"
+									name="district" title="<?php echo _translate('Please select District/County'); ?>">
 								</select>
 							</td>
 							<td><strong>
 									<?php echo _translate("Facility Name"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _translate('Please select facility name'); ?>" style="width:100%;">
+								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple"
+									title="<?php echo _translate('Please select facility name'); ?>"
+									style="width:100%;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
@@ -407,7 +445,8 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Testing Lab"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;">
+								<select class="form-control" id="vlLab" name="vlLab"
+									title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
@@ -417,7 +456,9 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Export with Patient ID and Name"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
+								<select name="patientInfo" id="patientInfo" class="form-control"
+									title="<?php echo _translate('Please choose community sample'); ?>"
+									style="width:100%;">
 									<option value="yes">
 										<?php echo _translate("Yes"); ?>
 									</option>
@@ -431,13 +472,17 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Patient ID"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
+								<input type="text" id="patientId" name="patientId" class="form-control"
+									placeholder="<?php echo _translate('Enter Patient ID'); ?>"
+									style="background:#fff;" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Patient Name"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
+								<input type="text" id="patientName" name="patientName" class="form-control"
+									placeholder="<?php echo _translate('Enter Patient Name'); ?>"
+									style="background:#fff;" />
 							</td>
 						</tr>
 
@@ -447,7 +492,8 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 										<?php echo _translate("Include Recency Samples"); ?>&nbsp;:
 									</strong></td>
 								<td>
-									<select name="recencySamples" id="recencySamples" class="form-control" title="<?php echo _translate('Include Recency Samples'); ?>" style="width:100%;">
+									<select name="recencySamples" id="recencySamples" class="form-control"
+										title="<?php echo _translate('Include Recency Samples'); ?>" style="width:100%;">
 										<option value="yes">
 											<?php echo _translate("Yes"); ?>
 										</option>
@@ -461,7 +507,9 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Show Rejected Samples"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="rejectedSamples" id="rejectedSamples" class="form-control" title="<?php echo _translate('Please choose show rejected samples'); ?>" style="width:100%;">
+								<select name="rejectedSamples" id="rejectedSamples" class="form-control"
+									title="<?php echo _translate('Please choose show rejected samples'); ?>"
+									style="width:100%;">
 									<option value="yes" selected="selected">
 										<?php echo _translate("Yes"); ?>
 									</option>
@@ -473,44 +521,53 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 						</tr>
 
 						<tr>
-							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-default btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+							<td colspan="2"><input type="button" onclick="searchVlRequestData();"
+									value="<?= _translate('Search'); ?>" class="btn btn-default btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm"
+									onclick="document.location.href = document.location"><span>
 										<?= _translate('Reset'); ?>
 									</span></button>
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advancedFilters','filter');"><span>
+								&nbsp;<button class="btn btn-danger btn-sm"
+									onclick="hideAdvanceSearch('advancedFilters','filter');"><span>
 										<?php echo _translate("Hide Advanced Search Options"); ?>
 									</span></button>
 							</td>
 							<td colspan="4">
 								<?php
 								if (_isAllowed("/vl/requests/addVlRequest.php") && !$hidesrcofreq) { ?>
-									<a href="/vl/requests/addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
+									<a href="/vl/requests/addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em
+											class="fa-solid fa-plus"></em>
 										<?php echo _translate("Add VL Request Form"); ?>
 									</a>
 								<?php }
 								?>
 
-								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span>
+								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
+									onclick="$('#showhide').fadeToggle();return false;"><span>
 										<?php echo _translate("Manage Columns"); ?>
 									</span></button>
 								&nbsp;
 								<?php
 								if (_isAllowed("/vl/requests/export-vl-requests.php")) {
-								?>
-									<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
+									?>
+									<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
+										href="javascript:void(0);" onclick="exportTestRequests();"><em
+											class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
 										<?php echo _translate("Export Excel"); ?>
 									</a>
 								<?php } ?>
 							</td>
 						</tr>
 					</table>
-					<table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+					<table aria-describedby="table" id="filter" class="table" aria-hidden="true"
+						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr id="">
 							<td>
 
 								<?php
 								if (_isAllowed("/vl/requests/addVlRequest.php") && !$hidesrcofreq) { ?>
-									<a href="/vl/requests/addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
+									<a href="/vl/requests/addVlRequest.php" class="btn btn-primary btn-sm pull-right"> <em
+											class="fa-solid fa-plus"></em>
 										<?php echo _translate("Add VL Request Form"); ?>
 									</a>
 								<?php }
@@ -525,34 +582,44 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 								<?php }
 								?>
 
-								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="$('#showhide').fadeToggle();return false;"><span>
+								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
+									onclick="$('#showhide').fadeToggle();return false;"><span>
 										<?php echo _translate("Manage Columns"); ?>
 									</span></button>
 								<?php if (_isAllowed("/vl/requests/export-vl-requests.php")) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
+									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
+										href="javascript:void(0);" onclick="exportTestRequests();"><em
+											class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
 										<?php echo _translate("Export Excel"); ?>
 									</a>
 								<?php } ?>
 
 								<?php if (!empty($interopConfig['FHIR']['url'])) { ?>
-									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="sendEMRDataToFHIR();"><em class="fa-solid fa-paper-plane"></em>
+									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;"
+										href="javascript:void(0);" onclick="sendEMRDataToFHIR();"><em
+											class="fa-solid fa-paper-plane"></em>
 										<?php echo _translate("EMR/FHIR - SEND RESULTS"); ?>
 									</a>
-									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="receiveEMRDataFromFHIR();"><em class="fa-solid fa-download"></em>
+									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;"
+										href="javascript:void(0);" onclick="receiveEMRDataFromFHIR();"><em
+											class="fa-solid fa-download"></em>
 										<?php echo _translate("EMR/FHIR - GET TESTS"); ?>
 									</a>
 								<?php } ?>
-								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advancedFilters');"><span>
+								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
+									onclick="hideAdvanceSearch('filter','advancedFilters');"><span>
 										<?php echo _translate("Show Advanced Search Options"); ?>
 									</span></button>
 							</td>
 						</tr>
 					</table>
-					<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="showhide" class="">
+					<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;"
+						id="showhide" class="">
 						<div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;">
 							<div class="col-md-12">
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0">
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0"
+										data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0">
 										<?php echo _translate("Sample ID"); ?>
 									</label>
 								</div>
@@ -560,60 +627,106 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 								if (!$general->isStandaloneInstance()) {
 									$i = 1; ?>
 									<div class="col-md-3">
-										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
+										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>"
+											id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code"
+											class="showhideCheckBox" /> <label
+											for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
 									</div>
 								<?php } ?>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_collection_date" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Collection Date"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="sample_collection_date" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Collection Date"); ?></label>
 									<br>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="batch_code" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label> <br>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="patient_art_no" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label> <br>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="patient_first_name" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="lab_name" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="facility_name" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="state" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="state"
+										class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("District/County"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="district" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>"><?php echo _translate("District/County"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="sample_name" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label>
 								</div>
 								<?php if ($formId == COUNTRY\CAMEROON) { ?>
 									<div class="col-md-3">
-										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="health_insurance_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Health Insurance Code"); ?></label>
+										<input type="checkbox" onclick="fnShowHide(this.value);"
+											value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+											data-showhide="health_insurance_code" class="showhideCheckBox" /> <label
+											for="iCol<?php echo $i; ?>"><?php echo _translate("Health Insurance Code"); ?></label>
 									</div>
 									<div class="col-md-3">
-										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_assigned_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
+										<input type="checkbox" onclick="fnShowHide(this.value);"
+											value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+											data-showhide="lab_assigned_code" class="showhideCheckBox" /> <label
+											for="iCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
 									</div>
 								<?php } ?>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result"
+										class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="last_modified_datetime" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Last Modified Date"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="last_modified_datetime" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>"><?php echo _translate("Last Modified Date"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Status"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="status_name" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>"><?php echo _translate("Status"); ?></label>
 								</div>
 							</div>
 						</div>
 					</span>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="vlRequestDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -686,13 +799,14 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 						</table>
 						<?php
 						if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') {
-						?>
+							?>
 
 							<div id="printer_data_loading" style="display:none"><span id="loading_message">
 									<?php echo _translate("Loading Printer Details"); ?>...
 								</span><br />
 								<div class="progress" style="width:100%">
-									<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+									<div class="progress-bar progress-bar-striped active" role="progressbar"
+										aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 									</div>
 								</div>
 							</div> <!-- /printer_data_loading -->
@@ -709,7 +823,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 								<?php echo _translate("Printer"); ?>: <select id="printers"></select>
 							</div> <!-- /printer_select -->
 
-						<?php
+							<?php
 						}
 						?>
 
@@ -729,23 +843,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript" src="/assets/js/tooltipster.bundle.min.js"></script>
 
-<?php
-if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
-	if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
-		<script src="/assets/js/DYMO.Label.Framework.js"></script>
-		<script src="/uploads/barcode-formats/dymo-format.js"></script>
-		<script src="/assets/js/dymo-print.js"></script>
-	<?php
-	} else if ($global['bar_code_printing'] == 'zebra-printer') {
-	?>
-		<script src="/assets/js/zebra-browserprint.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-browserprint.js") ?>"></script>
-		<script src="/uploads/barcode-formats/zebra-format.js?v=<?= filemtime(WEB_ROOT . "/uploads/barcode-formats/zebra-format.js") ?>"></script>
-		<script src="/assets/js/zebra-print.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-print.js") ?>"></script>
-<?php
-	}
-}
-?>
+<?= CommonService::barcodeScripts(); ?>
 
 
 
@@ -757,10 +855,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	let selectedTestsId = [];
 	let oTable = null;
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 		$("#batchCode").autocomplete({
-			source: function(request, response) {
+			source: function (request, response) {
 				// Fetch data
 				$.ajax({
 					url: "/batch/getBatchCodeHelper.php",
@@ -770,7 +868,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 						search: request.term,
 						type: 'vl'
 					},
-					success: function(data) {
+					success: function (data) {
 						response(data);
 					}
 
@@ -780,9 +878,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-			$sampleCode = htmlspecialchars($_GET['s']);
-			$facilityCode = htmlspecialchars($_GET['f']);
-			$patientID = htmlspecialchars($_GET['p']);
+			$sampleCode = htmlspecialchars((string) $_GET['s']);
+			$facilityCode = htmlspecialchars((string) $_GET['f']);
+			$patientID = htmlspecialchars((string) $_GET['p']);
 			echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
 		}
 		?>
@@ -792,35 +890,33 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#vlLab").select2({
 			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
 		});
-
-		loadVlRequestData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _translate("Clear", true); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-					'Current Year To Date': [moment().startOf('year'), moment()]
-				}
+			locale: {
+				cancelLabel: "<?= _translate("Clear", true); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+				'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+				'Current Year To Date': [moment().startOf('year'), moment()]
+			}
+		},
+			function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
@@ -830,7 +926,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		<?php } else { ?>
 			$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
 		<?php } ?>
-		$(".showhideCheckBox").change(function() {
+
+
+
+		loadVlRequestData();
+
+		$(".showhideCheckBox").change(function () {
 			if ($(this).attr('checked')) {
 				idpart = $(this).attr('data-showhide');
 				$("#" + idpart + "-sort").show();
@@ -840,7 +941,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			}
 		});
 
-		$("#showhide").hover(function() {}, function() {
+		$("#showhide").hover(function () { }, function () {
 			$(this).fadeOut('slow')
 		});
 		var i = '<?php echo $i; ?>';
@@ -852,9 +953,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				$("#iCol" + colNo + "-sort").hide();
 			}
 		}
-		$("#advancedFilters input, #advancedFilters select").on("change", function() {
+		$("#advancedFilters input, #advancedFilters select").on("change", function () {
 			searchExecuted = false;
 		});
+
 	});
 
 	function fnShowHide(iCol) {
@@ -936,7 +1038,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				[<?= $lastModifiedColumnPosition; ?>, "desc"],
 				[<?= $sampleColumnToSort; ?>, "desc"]
 			],
-			"fnDrawCallback": function() {
+			"fnDrawCallback": function () {
 				var checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
@@ -951,7 +1053,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/vl/requests/get-request-list.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "batchCode",
 					"value": $("#batchCode").val()
@@ -1120,21 +1222,21 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	function toggleAllVisible() {
 		//alert(tabStatus);
-		$(".checkTests").each(function() {
+		$(".checkTests").each(function () {
 			$(this).prop('checked', false);
 			selectedTests.splice($.inArray(this.value, selectedTests), 1);
 			selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
 			$("#status").prop('disabled', true);
 		});
 		if ($("#checkTestsData").is(':checked')) {
-			$(".checkTests").each(function() {
+			$(".checkTests").each(function () {
 				$(this).prop('checked', true);
 				selectedTests.push(this.value);
 				selectedTestsId.push(this.id);
 			});
 			$("#status").prop('disabled', false);
 		} else {
-			$(".checkTests").each(function() {
+			$(".checkTests").each(function () {
 				$(this).prop('checked', false);
 				selectedTests.splice($.inArray(this.value, selectedTests), 1);
 				selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
@@ -1151,11 +1253,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
 			if (conf) {
 				$.post("/vl/results/updateTestStatus.php", {
-						status: stValue,
-						id: testIds,
-						format: "html"
-					},
-					function(data) {
+					status: stValue,
+					id: testIds,
+					format: "html"
+				},
+					function (data) {
 						if (data != "") {
 							$("#checkedTests").val('');
 							selectedTests = [];
@@ -1184,10 +1286,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 		$.blockUI();
 		$.post("/vl/requests/export-vl-requests.php", {
-				reqSampleType: $('#requestSampleType').val(),
-				patientInfo: $('#patientInfo').val(),
-			},
-			function(data) {
+			reqSampleType: $('#requestSampleType').val(),
+			patientInfo: $('#patientInfo').val(),
+		},
+			function (data) {
 				$.unblockUI();
 				exportButton.html(originalButtonHtml).prop('disabled', false);
 				if (data === "" || data === null || data === undefined) {
@@ -1214,16 +1316,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 			if (remoteSync && remoteURL != null && remoteURL != '') {
 				var jqxhr = $.ajax({
-						url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=vl",
-					})
-					.done(function(data) {
+					url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=vl",
+				})
+					.done(function (data) {
 						//console.log(data);
 						//alert( "success" );
 					})
-					.fail(function() {
+					.fail(function () {
 						$.unblockUI();
 					})
-					.always(function() {
+					.always(function () {
 						oTable.fnDraw();
 						$.unblockUI();
 					});
@@ -1238,9 +1340,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
 		var jqxhr = $.ajax({
-				url: "/vl/interop/fhir/vl-receive.php",
-			})
-			.done(function(data) {
+			url: "/vl/interop/fhir/vl-receive.php",
+		})
+			.done(function (data) {
 				//console.log(data);
 				//alert( "success" );
 				$.unblockUI();
@@ -1252,10 +1354,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				oTable.fnDraw();
 				$.unblockUI();
 			})
-			.fail(function() {
+			.fail(function () {
 				$.unblockUI();
 			})
-			.always(function() {
+			.always(function () {
 				oTable.fnDraw();
 				$.unblockUI();
 			});
@@ -1268,9 +1370,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		});
 
 		var jqxhr = $.ajax({
-				url: "/vl/interop/fhir/vl-send.php",
-			})
-			.done(function(data) {
+			url: "/vl/interop/fhir/vl-send.php",
+		})
+			.done(function (data) {
 				////console.log(data);
 				//alert( "success" );
 				$.unblockUI();
@@ -1281,10 +1383,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				oTable.fnDraw();
 				$.unblockUI();
 			})
-			.fail(function() {
+			.fail(function () {
 				$.unblockUI();
 			})
-			.always(function() {
+			.always(function () {
 				oTable.fnDraw();
 				$.unblockUI();
 			});
@@ -1296,11 +1398,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#facilityName").html('');
 		$("#vlLab").html('');
 		$.post("/common/get-by-province-id.php", {
-				provinceId: provinceId,
-				districts: true,
-				facilities: true,
-			},
-			function(data) {
+			provinceId: provinceId,
+			districts: true,
+			facilities: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#district").html(Obj['districts']);
 				$("#facilityName").html(Obj['facilities']);
@@ -1312,11 +1414,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#facilityName").html('');
 		$("#vlLab").html('');
 		$.post("/common/get-by-district-id.php", {
-				districtId: districtId,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			districtId: districtId,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#facilityName").html(Obj['facilities']);
 				$("#vlLab").html(Obj['labs']);

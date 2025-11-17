@@ -1,8 +1,8 @@
 <?php
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-
+/** @var ServerRequest $request */
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
@@ -22,14 +22,8 @@ try {
         $db->where('role_id', $roleId);
         $db->delete("roles_privileges_map");
 
-        if (isset($_POST['roleName']) && trim((string) $_POST['roleName']) != "") {
-                $data = array(
-                        'role_name' => $_POST['roleName'],
-                        'role_code' => $_POST['roleCode'],
-                        'status' => $_POST['status'],
-                        'access_type' => $_POST['accessType'],
-                        'landing_page' => $_POST['landingPage']
-                );
+        if (isset($_POST['roleName']) && trim((string) $_POST['roleName']) !== "") {
+                $data = ['role_name' => $_POST['roleName'], 'role_code' => $_POST['roleCode'], 'status' => $_POST['status'], 'access_type' => $_POST['accessType'], 'landing_page' => $_POST['landingPage']];
                 $db->where('role_id', $roleId);
                 $db->update($tableName1, $data);
         }
@@ -39,10 +33,7 @@ try {
         if (!empty($roleId) && $roleId > 0) {
                 foreach ($_POST['resource'] as $key => $priviId) {
                         if ($priviId == 'allow') {
-                                $value = array(
-                                        'role_id' => $roleId,
-                                        'privilege_id' => $key
-                                );
+                                $value = ['role_id' => $roleId, 'privilege_id' => $key];
                                 $db->insert("roles_privileges_map", $value);
                         }
                 }

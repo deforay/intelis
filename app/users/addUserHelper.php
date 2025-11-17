@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use GuzzleHttp\Client;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -23,7 +24,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 $_POST = array_map('trim', $_POST);
@@ -35,7 +36,7 @@ $sanitizedUserSignature = _sanitizeFiles($uploadedFiles['userSignature'], ['png'
 $signatureImage = null;
 
 try {
-    if (trim((string) $_POST['userName']) != '' && trim((string) $_POST['loginId']) != '' && ($_POST['role']) != '' && ($_POST['password']) != '') {
+    if (trim((string) $_POST['userName']) !== '' && trim((string) $_POST['loginId']) !== '' && ($_POST['role']) != '' && ($_POST['password']) != '') {
         $userId = MiscUtility::generateUUID();
 
         $_POST['loginId'] = strtolower(trim((string) $_POST['loginId']));
@@ -96,10 +97,10 @@ try {
         $id = $db->insert('user_details', $data);
 
 
-        if ($id === true && trim((string) $_POST['selectedFacility']) != '') {
+        if ($id === true && trim((string) $_POST['selectedFacility']) !== '') {
             $selectedFacility = MiscUtility::desqid($_POST['selectedFacility'], returnArray: true);
             $uniqueFacilityId = array_unique($selectedFacility);
-            if (!empty($uniqueFacilityId)) {
+            if ($uniqueFacilityId !== []) {
                 $facilityUser = [];
                 foreach ($uniqueFacilityId as $facilityId) {
                     $facilityUser[] = [
@@ -108,7 +109,7 @@ try {
                     ];
                 }
 
-                if (!empty($facilityUser)) {
+                if ($facilityUser !== []) {
                     $db->insertMulti('user_facility_map', $facilityUser);
                 }
             }

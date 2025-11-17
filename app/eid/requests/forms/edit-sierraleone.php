@@ -891,7 +891,7 @@ $aResult = $db->query($aQuery);
             var instrumentId = platForm[1];
             $.post("/instruments/get-machine-names-by-instrument.php", {
                     instrumentId: testingPlatform,
-                    machine: <?php echo !empty($eidInfo['import_machine_name']) ? $eidInfo['import_machine_name'] : '""'; ?>,
+                    machine: <?php echo empty($eidInfo['import_machine_name']) ? '""' : $eidInfo['import_machine_name']; ?>,
                     testType: 'eid'
                 },
                 function(data) {

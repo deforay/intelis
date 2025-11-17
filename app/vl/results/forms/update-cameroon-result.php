@@ -30,7 +30,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['fac
 //facility details
 if (isset($vlQueryInfo['facility_id']) && $vlQueryInfo['facility_id'] > 0) {
 	$facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
-	$facilityResult = $db->rawQuery($facilityQuery, array($vlQueryInfo['facility_id']));
+	$facilityResult = $db->rawQuery($facilityQuery, [$vlQueryInfo['facility_id']]);
 }
 if (!isset($facilityResult[0]['facility_code'])) {
 	$facilityResult[0]['facility_code'] = '';
@@ -60,7 +60,7 @@ if ($facilityResult[0]['contact_person'] != '') {
 }
 
 $stateName = $facilityResult[0]['facility_state'];
-if (trim((string) $stateName) != '') {
+if (trim((string) $stateName) !== '') {
 	$stateQuery = "SELECT * from geographical_divisions where geo_name='" . $stateName . "'";
 	$stateResult = $db->query($stateQuery);
 }
@@ -69,7 +69,7 @@ if (!isset($stateResult[0]['geo_code']) || $stateResult[0]['geo_code'] == '') {
 }
 //district details
 $districtResult = [];
-if (trim((string) $stateName) != '') {
+if (trim((string) $stateName) !== '') {
 	$districtQuery = "SELECT DISTINCT facility_district from facility_details where facility_state='" . $stateName . "' AND status='active'";
 	$districtResult = $db->query($districtQuery);
 	/* $facilityQuery = "SELECT * from facility_details where `status`='active' AND facility_type='2'";
@@ -102,9 +102,9 @@ $disable = "disabled = 'disabled'";
 
 $isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp((string) $vlQueryInfo['vl_test_platform'], "genexpert") === 0);
 
-if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
+if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
 	$vlQueryInfo['result'] = trim(str_ireplace((string) $vlQueryInfo['result_value_hiv_detection'], "", (string) $vlQueryInfo['result']));
-} elseif ($isGeneXpert === true && !empty($vlQueryInfo['result'])) {
+} elseif ($isGeneXpert && !empty($vlQueryInfo['result'])) {
 
 	$vlQueryInfo['result_value_hiv_detection'] = null;
 
@@ -145,7 +145,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		}
 	}
 }
-$testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name', 'parent_reason'), false, " test_reason_status like 'active' ");
+$testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", ['test_reason_id', 'test_reason_name', 'parent_reason'], false, " test_reason_status like 'active' ");
 $subTestReasons = $testReasonsResult = [];
 foreach ($testReasonsResultDetails as $row) {
 	if ($row['parent_reason'] == 0) {
@@ -205,7 +205,7 @@ foreach ($testReasonsResultDetails as $row) {
 								<div class="col-xs-4 col-md-4">
 									<div class="form-group">
 										<label for="sampleReordered">
-											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="<?= _translate('Please indicate if this is a reordered sample'); ?>"> <?= _translate('Sample Reordered'); ?>
+											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="<?= _translate('Please indicate if this is a reordered sample'); ?>"> <?= _translate('Sample Reordered'); ?>
 										</label>
 									</div>
 								</div>
@@ -228,7 +228,7 @@ foreach ($testReasonsResultDetails as $row) {
 										<select class="form-control " name="province" id="province" title="<?= _translate('Please choose state'); ?>" <?php echo $disable; ?> style="width:100%;" onchange="getfacilityDetails(this);">
 											<option value=""> <?= _translate('-- Select --'); ?> </option>
 											<?php foreach ($pdResult as $provinceName) { ?>
-												<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo ($facilityResult[0]['facility_state'] . "##" . $stateResult[0]['geo_code'] == $provinceName['geo_name'] . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>;
+												<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo ($facilityResult[0]['facility_state'] . "##" . $stateResult[0]['geo_code'] === $provinceName['geo_name'] . "##" . $provinceName['geo_code']) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>;
 											<?php } ?>
 										</select>
 									</div>
@@ -239,12 +239,10 @@ foreach ($testReasonsResultDetails as $row) {
 										<select class="form-control" name="district" id="district" title="<?= _translate('Please choose county'); ?>" <?php echo $disable; ?> style="width:100%;" onchange="getfacilityDistrictwise(this);">
 											<option value=""> <?= _translate('-- Select --'); ?>' </option>
 											<?php
-											foreach ($districtResult as $districtName) {
-											?>
+											foreach ($districtResult as $districtName) { ?>
 												<option value="<?php echo $districtName['facility_district']; ?>" <?php echo ($facilityResult[0]['facility_district'] == $districtName['facility_district']) ? "selected='selected'" : "" ?>><?php echo ($districtName['facility_district']); ?></option>
 											<?php
-											}
-											?>
+											} ?>
 										</select>
 									</div>
 								</div>
@@ -263,21 +261,21 @@ foreach ($testReasonsResultDetails as $row) {
 									</div>
 								</div>
 							</div>
-							<div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) != '' || trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
-								<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+							<div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '' || trim((string) $facilityResult[0]['contact_person']) !== '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '') ? '' : 'none'; ?>;">
 									<strong><?= _translate('Clinic/Health Center Email(s)'); ?></strong>
 								</div>
-								<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '') ? '' : 'none'; ?>;">
 									<?php echo $facilityResult[0]['facility_emails']; ?></div>
-								<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '') ? '' : 'none'; ?>;">
 									<strong><?= _translate('Clinic/Health Center Mobile No.(s)'); ?></strong>
 								</div>
-								<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '') ? '' : 'none'; ?>;">
 									<?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
-								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) !== '') ? '' : 'none'; ?>;">
 									<strong><?= _translate('Clinic Contact Person'); ?></strong>
 								</div>
-								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;">
+								<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) !== '') ? '' : 'none'; ?>;">
 									<?php echo ($user); ?></div>
 							</div>
 							<div class="row">
@@ -287,8 +285,7 @@ foreach ($testReasonsResultDetails as $row) {
 										<select <?php echo $disable; ?> class="form-control" name="fundingSource" id="fundingSource" title="<?= _translate('Please choose implementing partner'); ?>" style="width:100%;">
 											<option value=""> <?= _translate("-- Select --"); ?> </option>
 											<?php
-											foreach ($fundingSourceList as $fundingSource) {
-											?>
+											foreach ($fundingSourceList as $fundingSource) { ?>
 												<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
 											<?php } ?>
 										</select>
@@ -300,8 +297,7 @@ foreach ($testReasonsResultDetails as $row) {
 										<select <?php echo $disable; ?> class="form-control" name="implementingPartner" id="implementingPartner" title="<?= _translate('Please choose implementing partner'); ?>" style="width:100%;">
 											<option value=""> <?= _translate('-- Select --'); ?> </option>
 											<?php
-											foreach ($implementingPartnerList as $implementingPartner) {
-											?>
+											foreach ($implementingPartnerList as $implementingPartner) { ?>
 												<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
 											<?php } ?>
 										</select>
@@ -456,12 +452,10 @@ foreach ($testReasonsResultDetails as $row) {
 										<select name="specimenType" id="specimenType" class="form-control " title="<?= _translate('Please choose sample type'); ?>" <?php echo $disable; ?>>
 											<option value=""> <?= _translate('-- Select --'); ?> </option>
 											<?php
-											foreach ($sResult as $name) {
-											?>
+											foreach ($sResult as $name) { ?>
 												<option value="<?php echo $name['sample_id']; ?>" <?php echo ($vlQueryInfo['specimen_type'] == $name['sample_id']) ? "selected='selected'" : "" ?>><?= _translate($name['sample_name']); ?></option>
 											<?php
-											}
-											?>
+											} ?>
 										</select>
 									</div>
 								</div>
@@ -535,7 +529,7 @@ foreach ($testReasonsResultDetails as $row) {
 									<h3 class="box-title"><?= _translate('Reason of Request of the Viral Load'); ?> <span class="mandatory">*</span></h3><small> <?= _translate('(Please pick one): (To be completed by clinician)'); ?></small>
 								</div>
 								<div class="box-body">
-									<?php if (isset($testReasonsResult) && !empty($testReasonsResult)) {
+									<?php if (isset($testReasonsResult) && $testReasonsResult !== []) {
 										foreach ($testReasonsResult as $key => $title) { ?>
 											<div class="row">
 												<div class="col-md-6">
@@ -559,7 +553,7 @@ foreach ($testReasonsResultDetails as $row) {
 													</div>
 												</div>
 											<?php } ?>
-											<?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) { ?>
+											<?php if (isset($subTestReasons[$key]) && (isset($subTestReasons[$key]) && $subTestReasons[$key] !== [])) { ?>
 												<div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:<?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "block" : "none"; ?>;">
 													<div class="col-md-6">
 														<label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>

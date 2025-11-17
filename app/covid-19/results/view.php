@@ -14,11 +14,11 @@ $keyFromGlobalConfig = $general->getGlobalConfig('key');
 
 $uniqueId = null;
 $decryption = CommonService::decryptViewQRCode($_GET['q']);
-$data = explode('&&&', urldecode($decryption));
+$data = explode('&&&', urldecode((string) $decryption));
 $uniqueId = $data[0] ?? null;
 
 $invalidRequest = _translate("INVALID REQUEST");
-if (empty($uniqueId)) {
+if ($uniqueId === null || $uniqueId === '' || $uniqueId === '0') {
     die("<br><br><br><br><br><br><h1 style='text-align:center;font-family:arial;font-size:1.3em;'>$invalidRequest</h1>");
 }
 

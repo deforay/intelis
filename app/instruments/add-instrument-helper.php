@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -19,13 +20,13 @@ $importMachineTable = "instrument_machines";
 $importControlTable = "instrument_controls";
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $_POST['configurationName'] = trim((string) $_POST['configurationName']);
 try {
-    if (!empty($_POST['configurationName'])) {
+    if (isset($_POST['configurationName']) && ($_POST['configurationName'] !== '' && $_POST['configurationName'] !== '0')) {
 
         if (!empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
@@ -43,14 +44,14 @@ try {
             }
         }
         $matchedTests = array_diff($_POST['userTestType'], $_POST['supportedTests']);
-        foreach ($matchedTests as $key => $row) {
+        foreach (array_keys($matchedTests) as $key) {
             $_POST['reviewedBy'][$key] = "";
             $_POST['approvedBy'][$key] = "";
         }
-        $_POST['reviewedBy'] = !empty($_POST['reviewedBy']) ? json_encode(array_combine($_POST['userTestType'], $_POST['reviewedBy'])) : null;
-        $_POST['approvedBy'] = !empty($_POST['approvedBy']) ? json_encode(array_combine($_POST['userTestType'], $_POST['approvedBy'])) : null;
+        $_POST['reviewedBy'] = empty($_POST['reviewedBy']) ? null : json_encode(array_combine($_POST['userTestType'], $_POST['reviewedBy']));
+        $_POST['approvedBy'] = empty($_POST['approvedBy']) ? null : json_encode(array_combine($_POST['userTestType'], $_POST['approvedBy']));
 
-        $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
+        $_POST['supportedTests'] = empty($_POST['supportedTests']) ? null : json_encode($_POST['supportedTests']);
 
         $data = [
             'instrument_id' => MiscUtility::generateULID(),
@@ -69,17 +70,18 @@ try {
         ];
         $id = $db->insert($tableName, $data);
         if ($id !== false && !empty($_POST['configMachineName'])) {
-            for ($c = 0; $c < count($_POST['configMachineName']); $c++) {
+            $counter = count($_POST['configMachineName']);
+            for ($c = 0; $c < $counter; $c++) {
                 $pocDev = 'no';
-                if (trim((string) $_POST['latitude'][$c]) != '' && trim((string) $_POST['longitude'][$c]) != '') {
+                if (trim((string) $_POST['latitude'][$c]) !== '' && trim((string) $_POST['longitude'][$c]) !== '') {
                     $pocDev = 'yes';
                 }
-                if (trim((string) $_POST['configMachineName'][$c]) != '') {
+                if (trim((string) $_POST['configMachineName'][$c]) !== '') {
                     $configMachineData = [
                         'instrument_id' => $data['instrument_id'],
                         'config_machine_name' => $_POST['configMachineName'][$c],
-                        'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null,
-                        'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null,
+                        'date_format' => empty($_POST['dateFormat'][$c]) ? null : $_POST['dateFormat'][$c],
+                        'file_name' => empty($_POST['fileName'][$c]) ? null : $_POST['fileName'][$c],
                         'poc_device' => $pocDev,
                         'latitude' => $_POST['latitude'][$c],
                         'longitude' => $_POST['longitude'][$c],
@@ -92,7 +94,7 @@ try {
 
         if ($id !== false && !empty($_POST['testType'])) {
             foreach ($_POST['testType'] as $key => $val) {
-                if (trim((string) $val) != '') {
+                if (trim((string) $val) !== '') {
                     $configControlData = ['test_type' => $val, 'instrument_id' => $data['instrument_id'], 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]];
                     $db->insert($importControlTable, $configControlData);
                 }

@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -17,7 +18,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -27,11 +28,7 @@ try {
     $cnt = count($_POST['sampleUniqueId']);
     for ($i = 0; $i < $cnt; $i++) {
         if (!empty($_POST['volume'][$i]) && (($_POST['volume'][$i]) > 0) && !empty($_POST['freezer'][$i]) && !empty($_POST['rack'][$i]) && !empty($_POST['box'][$i]) && !empty($_POST['position'][$i])) {
-            if ($_POST['dateOut'][$i] != "") {
-                $dateOut = DateUtility::isoDateFormat($_POST['dateOut'][$i]);
-            } else {
-                $dateOut = null;
-            }
+            $dateOut = $_POST['dateOut'][$i] != "" ? DateUtility::isoDateFormat($_POST['dateOut'][$i]) : null;
             $data = [
                 'test_type' => 'vl',
                 'sample_unique_id' => $_POST['sampleUniqueId'][$i],

@@ -144,7 +144,7 @@ fclose($myfile);
     }
     $(document).ready(function() {
       <?php
-      if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) != "") {
+      if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) !== "") {
       ?>
         alert("<?php echo $_SESSION['alertMsg']; ?>");
       <?php

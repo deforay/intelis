@@ -71,10 +71,10 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 //$id = ($_GET['id']);
 $covid19Query = "SELECT * from form_covid19 WHERE covid19_id=?";
-$covid19Info = $db->rawQueryOne($covid19Query, array($id));
+$covid19Info = $db->rawQueryOne($covid19Query, [$id]);
 
 $covid19TestQuery = "SELECT * from covid19_tests WHERE covid19_id=? ORDER BY test_id ASC";
-$covid19TestInfo = $db->rawQuery($covid19TestQuery, array($id));
+$covid19TestInfo = $db->rawQuery($covid19TestQuery, [$id]);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -97,7 +97,7 @@ $covid19Info['result_approved_datetime'] = DateUtility::humanReadableDateFormat(
 
 $countryResult = $general->fetchDataFromTable('r_countries');
 $countyData = [];
-if (isset($countryResult) && sizeof($countryResult) > 0) {
+if (isset($countryResult) && count($countryResult) > 0) {
     foreach ($countryResult as $country) {
         $countyData[$country['id']] = $country['iso_name'];
     }
@@ -130,15 +130,7 @@ foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
-$fileArray = array(
-    COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
-    COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
-    COUNTRY\DRC => 'forms/edit-drc.php',
-    COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
-    COUNTRY\PNG => 'forms/edit-png.php',
-    COUNTRY\WHO => 'forms/edit-who.php',
-    COUNTRY\RWANDA => 'forms/edit-rwanda.php',
-);
+$fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php'];
 
 require_once($fileArray[$arr['vl_form']]);
 

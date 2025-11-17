@@ -1,6 +1,8 @@
 <?php
 
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
 use App\Exceptions\SystemException;
@@ -10,12 +12,12 @@ use App\Utilities\MiscUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 try {
-    $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
+    $dateFormat = (empty($_POST['dateFormat'])) ? 'd/m/Y H:i' : $_POST['dateFormat'];
 
     /** @var TestResultsService $testResultsService */
     $testResultsService = ContainerRegistry::get(TestResultsService::class);
@@ -24,11 +26,7 @@ try {
 
     // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
-    $allowedExtensions = array(
-        'xls',
-        'xlsx',
-        'csv'
-    );
+    $allowedExtensions = ['xls', 'xlsx', 'csv'];
     if (
         isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
         || $_FILES['resultFile']['size'] <= 0
@@ -74,8 +72,9 @@ try {
 
         foreach ($sheetData as $rowIndex => $row) {
 
-            if ($rowIndex < $skipTillRow)
+            if ($rowIndex < $skipTillRow) {
                 continue;
+            }
 
             $sampleCode    = "";
             $sampleType    = "";
@@ -100,7 +99,7 @@ try {
 
 
 
-            if (trim((string) $row[$absValCol]) != "") {
+            if (trim((string) $row[$absValCol]) !== "") {
                 $resVal = (int)$row[$absValCol];
                 if ($resVal > 0) {
                     $absDecimalVal = $absVal = trim((string) $row[$absValCol]);
@@ -114,7 +113,7 @@ try {
                 }
             }
 
-            if (trim((string) $row[$absValCol]) != "") {
+            if (trim((string) $row[$absValCol]) !== "") {
                 $resVal = explode("(", (string) $row[$absValCol]);
                 if (count($resVal) == 2) {
                     $absVal = trim($resVal[0]);
@@ -122,32 +121,24 @@ try {
                     $expAbsVal = explode("E", $absVal);
                     if (count($expAbsVal) == 2) {
                         $multipleVal = substr($expAbsVal[1], 1);
-                        $absDecimalVal = $expAbsVal[0] * pow(10, $multipleVal);
+                        $absDecimalVal = $expAbsVal[0] * 10 ** $multipleVal;
                     }
                     $logVal = substr(trim($resVal[1]), 0, -1);
                 } else {
                     $txtVal = trim((string) $row[$absValCol]);
-                    if ($txtVal == 'Invalid') {
+                    if ($txtVal === 'Invalid') {
                         $resultFlag = trim($txtVal);
                     }
                 }
             }
 
 
-            if ($sampleCode == "")
+            if ($sampleCode == "") {
                 continue;
+            }
 
 
-            $infoFromFile[$sampleCode] = array(
-                "sampleCode" => $sampleCode,
-                "logVal" => $logVal,
-                "absVal" => $absVal,
-                "absDecimalVal" => $absDecimalVal,
-                "txtVal" => $txtVal,
-                "resultFlag" => $resultFlag,
-                "testingDate" => $testingDate,
-                "sampleType" => $sampleType
-            );
+            $infoFromFile[$sampleCode] = ["sampleCode" => $sampleCode, "logVal" => $logVal, "absVal" => $absVal, "absDecimalVal" => $absDecimalVal, "txtVal" => $txtVal, "resultFlag" => $resultFlag, "testingDate" => $testingDate, "sampleType" => $sampleType];
 
 
             $m++;
@@ -156,29 +147,14 @@ try {
 
         foreach ($infoFromFile as $sampleCode => $d) {
 
-            $data = array(
-                'module' => 'vl',
-                'lab_id' => base64_decode((string) $_POST['labId']),
-                'vl_test_platform' => $_POST['vltestPlatform'],
-                'result_reviewed_by' => $_SESSION['userId'],
-                'sample_code' => $d['sampleCode'],
-                'result_value_log' => $d['logVal'],
-                'sample_type' => $d['sampleType'],
-                'result_value_absolute' => $d['absVal'],
-                'result_value_text' => $d['txtVal'],
-                'result_value_absolute_decimal' => $d['absDecimalVal'],
-                'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
-                'import_machine_file_name' => $fileName,
-                'lab_tech_comments' => $d['resultFlag']
-            );
+            $data = ['module' => 'vl', 'lab_id' => base64_decode((string) $_POST['labId']), 'vl_test_platform' => $_POST['vltestPlatform'], 'result_reviewed_by' => $_SESSION['userId'], 'sample_code' => $d['sampleCode'], 'result_value_log' => $d['logVal'], 'sample_type' => $d['sampleType'], 'result_value_absolute' => $d['absVal'], 'result_value_text' => $d['txtVal'], 'result_value_absolute_decimal' => $d['absDecimalVal'], 'sample_tested_datetime' => $d['testingDate'], 'result_status' => RECEIVED_AT_TESTING_LAB, 'import_machine_file_name' => $fileName, 'lab_tech_comments' => $d['resultFlag']];
 
 
             if ($d['absVal'] != "") {
                 $data['result'] = $d['absVal'];
-            } else if ($d['logVal'] != "") {
+            } elseif ($d['logVal'] != "") {
                 $data['result'] = $d['logVal'];
-            } else if ($d['txtVal'] != "") {
+            } elseif ($d['txtVal'] != "") {
                 $data['result'] = $d['txtVal'];
             } else {
                 $data['result'] = "";

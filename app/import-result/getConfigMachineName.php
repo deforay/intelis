@@ -10,10 +10,10 @@ $importMachineTable = "instrument_machines";
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$configId = base64_decode($_POST['configId']);
+$configId = base64_decode((string) $_POST['configId']);
 $cacheKey = "instrument_config_$configId";
 
-$output = _getFromFileCache($cacheKey, function () use ($db, $importMachineTable, $configId) {
+$output = _getFromFileCache($cacheKey, function () use ($db, $importMachineTable, $configId): string {
 
     $iResult = $db->rawQueryOne(
         "SELECT instrument_id, machine_name, import_machine_file_name FROM instruments WHERE instrument_id = ?",
@@ -46,14 +46,14 @@ $output = _getFromFileCache($cacheKey, function () use ($db, $importMachineTable
     $selectedAttr = count($configMachineInfo) == 1 ? ' selected' : '';
 
     foreach ($configMachineInfo as $machine) {
-        $fileName = $machine['file_name'] ?: $iResult['import_machine_file_name'] ?: '';
+        $fileName = ($machine['file_name'] ?: $iResult['import_machine_file_name']) ?: '';
         $options .= sprintf(
             '<option value="%s" data-filename="%s" data-dateformat="%s"%s>%s</option>',
             $machine['config_machine_id'],
-            htmlspecialchars($fileName),
-            htmlspecialchars($machine['date_format']),
+            htmlspecialchars((string) $fileName),
+            htmlspecialchars((string) $machine['date_format']),
             $selectedAttr,
-            htmlspecialchars($machine['config_machine_name'])
+            htmlspecialchars((string) $machine['config_machine_name'])
         );
     }
 

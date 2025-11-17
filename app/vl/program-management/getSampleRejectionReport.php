@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -11,7 +12,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -32,8 +33,8 @@ try {
     $tableName = "form_vl";
     $primaryKey = "vl_sample_id";
 
-    $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
-    $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name'];
+    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name'];
 
     if ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
@@ -63,10 +64,7 @@ try {
     }
 
 
-    /*
-         * SQL queries
-         * Get data to display
-        */
+
     $sQuery = "SELECT vl.*,
             f.*,
             s.*,
@@ -82,13 +80,13 @@ try {
             INNER JOIN r_vl_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
             LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action ";
     $sWhere[] = " vl.is_sample_rejected='yes' AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
-    if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) != '') {
+    if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) !== '') {
         $sWhere[] = ' b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
     }
 
     if (!empty($_POST['rjtSampleTestDate'])) {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['rjtSampleTestDate'] ?? '');
-        if (trim((string) $start_date) == trim((string) $end_date)) {
+        if (trim((string) $start_date) === trim((string) $end_date)) {
             $sWhere[] = " DATE(vl.sample_tested_datetime) = '$start_date' ";
         } else {
             $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$start_date' AND '$end_date' ";
@@ -96,26 +94,26 @@ try {
     }
 
     if (isset($_POST['rjtSampleType']) && $_POST['rjtSampleType'] != '') {
-        $sWhere[] =  ' s.sample_id = "' . $_POST['rjtSampleType'] . '"';
+        $sWhere[] = ' s.sample_id = "' . $_POST['rjtSampleType'] . '"';
     }
-    if (isset($_POST['rjtState']) && trim((string) $_POST['rjtState']) != '') {
+    if (isset($_POST['rjtState']) && trim((string) $_POST['rjtState']) !== '') {
         $sWhere[] = " f.facility_state_id = '" . $_POST['rjtState'] . "' ";
     }
-    if (isset($_POST['rjtDistrict']) && trim((string) $_POST['rjtDistrict']) != '') {
+    if (isset($_POST['rjtDistrict']) && trim((string) $_POST['rjtDistrict']) !== '') {
         $sWhere[] = " f.facility_district_id = '" . $_POST['rjtDistrict'] . "' ";
     }
     if (isset($_POST['rjtFacilityName']) && $_POST['rjtFacilityName'] != '') {
-        $sWhere[] =  ' f.facility_id IN (' . $_POST['rjtFacilityName'] . ')';
+        $sWhere[] = ' f.facility_id IN (' . $_POST['rjtFacilityName'] . ')';
     }
     if (isset($_POST['rjtGender']) && $_POST['rjtGender'] != '') {
-        if (trim((string) $_POST['rjtGender']) == "unreported") {
+        if (trim((string) $_POST['rjtGender']) === "unreported") {
             $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
         } else {
             $sWhere[] = ' vl.patient_gender ="' . $_POST['rjtGender'] . '"';
         }
     }
     if (isset($_POST['rjtPatientPregnant']) && $_POST['rjtPatientPregnant'] != '') {
-        $sWhere[] =  ' vl.is_patient_pregnant = "' . $_POST['rjtPatientPregnant'] . '"';
+        $sWhere[] = ' vl.is_patient_pregnant = "' . $_POST['rjtPatientPregnant'] . '"';
     }
     if (isset($_POST['rjtPatientBreastfeeding']) && $_POST['rjtPatientBreastfeeding'] != '') {
         $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['rjtPatientBreastfeeding'] . '"';
@@ -129,14 +127,14 @@ try {
     }
 
 
-    if (!empty($sWhere)) {
+    if ($sWhere !== []) {
         $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
     }
 
     //$sQuery = $sQuery . ' GROUP BY vl.vl_sample_id';
 
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['rejectedViralLoadResult'] = $sQuery;
@@ -151,24 +149,15 @@ try {
     $_SESSION['rejectedViralLoadResultCount'] = $resultCount;
 
     /*
-         * Output
-        */
-    $output = array(
-        "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $resultCount,
-        "iTotalDisplayRecords" => $resultCount,
-        "aaData" => []
-    );
+     * Output
+     */
+    $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 
     foreach ($rResult as $aRow) {
 
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 
-        if ($aRow['remote_sample'] == 'yes') {
-            $decrypt = 'remote_sample_code';
-        } else {
-            $decrypt = 'sample_code';
-        }
+        $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
         $patientFname = $aRow['patient_first_name'] ?? '';
         $patientMname = $aRow['patient_middle_name'] ?? '';
         $patientLname = $aRow['patient_last_name'] ?? '';

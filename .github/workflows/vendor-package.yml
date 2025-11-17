@@ -29,7 +29,7 @@ jobs:
     name: Build Vendor Package
     runs-on: ubuntu-latest
     env:
-      PHP_VERSION: '8.2'
+      PHP_VERSION: '8.4'
       PACKAGE_NAME: 'vendor.tar.gz'
     steps:
       - name: Checkout code

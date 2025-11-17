@@ -1,5 +1,9 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\ACCEPTED;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -15,7 +19,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -41,13 +45,13 @@ try {
 
 
      $sampleCode = 'sample_code';
-     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
+     $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
      if ($general->isSTSInstance()) {
-          $sampleCode = 'remote_sample_code';
-     } else if ($general->isStandaloneInstance()) {
-          $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
-          $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+         $sampleCode = 'remote_sample_code';
+     } elseif ($general->isStandaloneInstance()) {
+         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
      if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
           array_unshift($orderColumns, "vl.covid19_id");
@@ -87,7 +91,7 @@ try {
           $searchArray = explode(" ", (string) $_POST['sSearch']);
           $sWhereSub = "";
           foreach ($searchArray as $search) {
-               if ($sWhereSub == "") {
+               if ($sWhereSub === "") {
                     $sWhereSub .= "(";
                } else {
                     $sWhereSub .= " AND (";
@@ -133,41 +137,41 @@ try {
 
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
      //$sWhere = ' WHERE ' . $sWhere;
-     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) == trim((string) $end_date)) {
+          if (trim((string) $start_date) === trim((string) $end_date)) {
                $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
           } else {
                $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
      }
 
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
           $sWhere[] = '  f.facility_id IN (' . $_POST['facilityName'] . ')';
      }
-     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
+     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
           $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
      }
-     if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
+     if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           if ($_POST['status'] == 'no_result') {
-               $statusCondition = '  (vl.result is NULL OR vl.result = "") AND vl.result_status = ' . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-          } else if ($_POST['status'] == 'result') {
-               $statusCondition = ' (vl.result is NOT NULL AND vl.result != "") ';
+              $statusCondition = '  (vl.result is NULL OR vl.result = "") AND vl.result_status = ' . RECEIVED_AT_TESTING_LAB;
+          } elseif ($_POST['status'] == 'result') {
+              $statusCondition = ' (vl.result is NOT NULL AND vl.result != "") ';
           } else {
-               $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
+               $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . REJECTED;
           }
           $sWhere[] = $statusCondition;
      } else {      // Only approved results can be printed
 
-          $sWhere[] = ' ((vl.result_status = ' . SAMPLE_STATUS\ACCEPTED . ' AND vl.result is NOT NULL AND vl.result !="") OR (vl.result_status = ' . SAMPLE_STATUS\REJECTED . ' AND (vl.result is NULL OR vl.result = ""))) AND result_printed_datetime is NULL';
+          $sWhere[] = ' ((vl.result_status = ' . ACCEPTED . ' AND vl.result is NOT NULL AND vl.result !="") OR (vl.result_status = ' . REJECTED . ' AND (vl.result is NULL OR vl.result = ""))) AND result_printed_datetime is NULL';
      }
 
-     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
+     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
           $sWhere[] = ' vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
      }
-     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
+     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
           $sWhere[] = ' vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
      }
 
@@ -176,7 +180,7 @@ try {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
      }
 
-     if (!empty($sWhere)) {
+     if ($sWhere !== []) {
           $sWhere = implode(' AND ', $sWhere);
           $sQuery = $sQuery . ' WHERE ' . $sWhere;
      }
@@ -199,20 +203,13 @@ try {
      $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 
-     $output = array(
-          "sEcho" => (int) $_POST['sEcho'],
-          "iTotalRecords" => $iTotal,
-          "iTotalDisplayRecords" => $iFilteredTotal,
-          "aaData" => []
-     );
+     $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
      foreach ($rResult as $aRow) {
           $row = [];
           $print = '<a href="covid-19-update-result.php?id=' . base64_encode((string) $aRow['covid19_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
-          if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
-               if (!_isAllowed("/covid-19/requests/edit-locked-covid19-samples")) {
-                    $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title=' . _translate("Locked") . ' disabled><em class="fa-solid fa-lock"></em> ' . _translate("Locked") . '</a>';
-               }
+          if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/covid-19/requests/edit-locked-covid19-samples")) {
+               $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title=' . _translate("Locked") . ' disabled><em class="fa-solid fa-lock"></em> ' . _translate("Locked") . '</a>';
           }
 
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
@@ -231,7 +228,7 @@ try {
           $row[] = $aRow['patient_name'] . " " . $aRow['patient_surname'];
           $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
 
-          if (isset($aRow['lastModifiedDate']) && trim((string) $aRow['lastModifiedDate']) != '' && $aRow['lastModifiedDate'] != '0000-00-00 00:00:00') {
+          if (isset($aRow['lastModifiedDate']) && trim((string) $aRow['lastModifiedDate']) !== '' && $aRow['lastModifiedDate'] != '0000-00-00 00:00:00') {
                $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['lastModifiedDate'], true);
           } else {
                $aRow['last_modified_datetime'] = '';

@@ -38,16 +38,16 @@ try {
         $endDate = date('Y-m-d');
     }
     /* State filter */
-    if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
         $whereCondition .= " AND f.facility_state_id = '" . $_POST['state'] . "' ";
     }
 
     /* District filters */
-    if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $whereCondition .= " AND f.facility_district_id = '" . $_POST['district'] . "' ";
     }
     /* Facility filter */
-    if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+    if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
         $whereCondition .=  ' AND f.facility_id IN (' . $_POST['facilityName'] . ') ';
     }
 

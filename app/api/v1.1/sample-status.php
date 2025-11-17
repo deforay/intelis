@@ -1,5 +1,6 @@
 <?php
 
+use Slim\Psr7\Request;
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
@@ -24,7 +25,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-/** @var Slim\Psr7\Request $request */
+/** @var Request $request */
 $request = AppRegistry::get('request');
 
 
@@ -75,7 +76,7 @@ try {
     /* To skip some status */
     // $where[] = " (vl.result_status NOT IN (4, 7, 8)) ";
     $whereString = '';
-    if (!empty($where)) {
+    if ($where !== []) {
         $whereString = " WHERE " . implode(" AND ", $where);
     }
     $sQuery .= $whereString;

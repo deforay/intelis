@@ -92,7 +92,7 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
     $path = $uri->getPath();
     $queryString = $uri->getQuery();
     // Clean up the URI Path for double slashes or dots
-    $path = preg_replace('/([\\/\\.])\\1+/', '$1', $path);
+    $path = preg_replace('/([\\/\\.])\\1+/', '$1', (string) $path);
     $currentURI = $path . ($queryString ? "?$queryString" : '');
 
     AppRegistry::set('currentRequestBaseName', basename($path));

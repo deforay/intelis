@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
@@ -12,7 +13,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -36,7 +37,7 @@ if (!empty($covid19Symptoms)) {
 
         $subSymptoms = '<tr class="symptomRow' . $_POST['symptomParent'] . ' hide-symptoms" id="' . $_POST['symptomParent'] . '">
                 <td colspan="2" style="padding-left: 70px;display: flex;">';
-        if ($symptoms['symptom_id'] == 16 || trim((string) $symptoms['symptom_name']) == 'Nombre de selles par /24h') {
+        if ($symptoms['symptom_id'] == 16 || trim((string) $symptoms['symptom_name']) === 'Nombre de selles par /24h') {
             $subSymptoms .= '<label class="radio-inline" for="symptomDetails' . $symptoms['symptom_id'] . '" style="padding-left:17px !important;margin-left:0;">' . ($symptoms['symptom_name']) . '</label>
                                     <input type="text" value="' . end($symptomsArray[$_POST['symptomParent']]) . '" class="form-control reason-checkbox symptoms-checkbox" id="symptomDetails' . $symptoms['symptom_id'] . '" name="symptomDetails[' . $_POST['symptomParent'] . '][]" placeholder="' . $symptoms['symptom_name'] . '" title="' . $symptoms['symptom_name'] . '" ' . $disabled . ' style=" width: 25%; margin-left: 10px; ">';
         } else {

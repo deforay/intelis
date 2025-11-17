@@ -19,7 +19,7 @@ try {
     $adminCount = $db->getValue("system_admin", "count(*)");
     if ($adminCount != 0) {
         if (isset($adminUsername)) {
-            $params = array($adminUsername);
+            $params = [$adminUsername];
             $adminRow = $db->rawQueryOne("SELECT * FROM system_admin as ud WHERE ud.system_admin_login = ?", $params);
 
             if (!empty($adminRow) && $usersService->passwordVerify($adminUsername, $adminPassword, (string) $adminRow['system_admin_password'])) {

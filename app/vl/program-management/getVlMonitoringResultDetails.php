@@ -1,5 +1,6 @@
 <?php
 
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -25,8 +26,8 @@ $key = (string) $general->getGlobalConfig('key');
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
-$aColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'ts.status_name');
+$aColumns = ['vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name'];
+$orderColumns = ['vl.sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 's.sample_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'ts.status_name'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -59,7 +60,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
+          if ($sWhereSub === "") {
                $sWhereSub .= "(";
           } else {
                $sWhereSub .= " AND (";
@@ -111,7 +112,7 @@ $sQuery = "SELECT vl.sample_code,
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim((string) $start_date) == trim((string) $end_date)) {
+     if (trim((string) $start_date) === trim((string) $end_date)) {
           $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
           $sWhere[] = '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -121,24 +122,24 @@ if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
      $sWhere[] = ' vl.lab_id = "' . $_POST['facilityName'] . '"';
 }
 
-if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
      $sWhere[] = " f.facility_district_id LIKE " . $_POST['district'];
 }
-if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
      $sWhere[] = " f.facility_state_id LIKE " . $_POST['state'];
 }
 
-if (!empty($sWhere)) {
-     $sWhere[] = ' vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+if ($sWhere !== []) {
+     $sWhere[] = ' vl.result!="" AND vl.result_status != ' . RECEIVED_AT_CLINIC;
 } else {
-     $sWhere[] = ' WHERE vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+     $sWhere[] = ' WHERE vl.result!="" AND vl.result_status != ' . RECEIVED_AT_CLINIC;
 }
 
 if (!empty($_SESSION['facilityMap'])) {
      $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
      $sWhere = implode(' AND ', $sWhere);
 }
 $sQuery = $sQuery . ' ' . $sWhere;

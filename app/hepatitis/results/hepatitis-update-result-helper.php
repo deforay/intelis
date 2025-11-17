@@ -1,5 +1,6 @@
 <?php
 
+use const SAMPLE_STATUS\PENDING_APPROVAL;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -27,11 +28,11 @@ try {
 	$resultSentToSource = 'pending';
 
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
-		$_POST['hcvCount'] = $_POST['hbvCount'] = null;
-		$resultSentToSource = 'pending';
-	} else if (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
-		$resultSentToSource = null;
-	}
+     $_POST['hcvCount'] = $_POST['hbvCount'] = null;
+     $resultSentToSource = 'pending';
+ } elseif (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
+     $resultSentToSource = null;
+ }
 
 	$hepatitisData = [
 		'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
@@ -52,7 +53,7 @@ try {
 		'authorized_on' => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
 		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
 		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
-		'result_status' => SAMPLE_STATUS\PENDING_APPROVAL,
+		'result_status' => PENDING_APPROVAL,
 		'result_sent_to_source' => $resultSentToSource,
 		'data_sync' => 0,
 		'last_modified_by' => $_SESSION['userId'],

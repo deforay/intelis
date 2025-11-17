@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const CORE\SYSADMIN_SECRET_KEY_FILE;
 use App\Services\UsersService;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -7,7 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -15,7 +17,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $usersService = ContainerRegistry::get(UsersService::class);
 
 try {
-    $secretKey = file_get_contents(CORE\SYSADMIN_SECRET_KEY_FILE);
+    $secretKey = file_get_contents(SYSADMIN_SECRET_KEY_FILE);
 
     if ($_POST['secretKey'] == trim($secretKey)) {
         if (!empty($_POST['password'])) {
@@ -25,7 +27,7 @@ try {
                 'system_admin_password' => $usersService->passwordHash($_POST['password'])
             ];
             $db->insert("system_admin", $insertData);
-            MiscUtility::deleteFile(CORE\SYSADMIN_SECRET_KEY_FILE);
+            MiscUtility::deleteFile(SYSADMIN_SECRET_KEY_FILE);
             $_SESSION['alertMsg'] = _translate("System Admin added successfully");
             header("Location:/system-admin/login/login.php");
         }
