@@ -715,8 +715,8 @@ $remoteURL = $general->getRemoteURL();
         } else if (pName == '' && cName == '') {
             provinceName = true;
             facilityName = true;
-            $("#province").html("<?= empty($province) ? '' : $province; ?>");
-            $("#facilityId").html("<?= empty($facility) ? '' : $facility; ?>");
+            $("#province").html("<?= (isset($province) && !is_array($province)) ? $province : ''; ?>");
+            $("#facilityId").html("<?= (isset($facility) && !is_array($facility)) ? $facility : ''; ?>");
         }
         $.unblockUI();
     }

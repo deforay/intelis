@@ -1,11 +1,11 @@
 <?php
 
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -94,28 +94,43 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
           <div class="box box-default">
                <div class="box-header with-border">
-                    <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
+                    <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+                         <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
                </div>
                <!-- /.box-header -->
                <div class="box-body">
                     <!-- form start -->
-                    <form class="form-horizontal" method='post' name='userEditForm' id='userEditForm' autocomplete="off" action="editUserHelper.php" enctype="multipart/form-data">
+                    <form class="form-horizontal" method='post' name='userEditForm' id='userEditForm' autocomplete="off"
+                         action="editUserHelper.php" enctype="multipart/form-data">
                          <div class="box-body">
                               <div class="row">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="userName" class="col-lg-4 control-label"><?php echo _translate("User Name"); ?> <span class="mandatory">*</span></label>
+                                             <label for="userName"
+                                                  class="col-lg-4 control-label"><?php echo _translate("User Name"); ?>
+                                                  <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control isRequired" id="userName" name="userName" placeholder="<?php echo _translate('User Name'); ?>" title="<?php echo _translate('Please enter user name'); ?>" value="<?php echo $userInfo['user_name']; ?>" />
-                                                  <input type="hidden" name="userId" id="userId" value="<?php echo base64_encode((string) $userInfo['user_id']); ?>" />
+                                                  <input type="text" class="form-control isRequired" id="userName"
+                                                       name="userName"
+                                                       placeholder="<?php echo _translate('User Name'); ?>"
+                                                       title="<?php echo _translate('Please enter user name'); ?>"
+                                                       value="<?php echo $userInfo['user_name']; ?>" />
+                                                  <input type="hidden" name="userId" id="userId"
+                                                       value="<?php echo base64_encode((string) $userInfo['user_id']); ?>" />
                                              </div>
                                         </div>
                                    </div>
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="email" class="col-lg-4 control-label"><?php echo _translate("Email"); ?> </label>
+                                             <label for="email"
+                                                  class="col-lg-4 control-label"><?php echo _translate("Email"); ?>
+                                             </label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control" id="email" name="email" placeholder="<?php echo _translate('Email'); ?>" title="<?php echo _translate('Please enter email'); ?>" value="<?php echo $userInfo['email']; ?>" onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _translate("This email id that you entered already exists.Try another email id"); ?>',null)" />
+                                                  <input type="text" class="form-control" id="email" name="email"
+                                                       placeholder="<?php echo _translate('Email'); ?>"
+                                                       title="<?php echo _translate('Please enter email'); ?>"
+                                                       value="<?php echo $userInfo['email']; ?>"
+                                                       onblur="checkNameValidation('user_details','email',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _translate("This email id that you entered already exists.Try another email id"); ?>',null)" />
                                              </div>
                                         </div>
                                    </div>
@@ -123,22 +138,33 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                               <div class="row">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="phoneNo" class="col-lg-4 control-label"><?php echo _translate("Phone Number"); ?></label>
+                                             <label for="phoneNo"
+                                                  class="col-lg-4 control-label"><?php echo _translate("Phone Number"); ?></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo" placeholder="<?php echo _translate('Phone Number'); ?>" title="<?php echo _translate('Please enter phone number'); ?>" value="<?php echo $userInfo['phone_number']; ?>" />
+                                                  <input type="text" class="form-control phone-number" id="phoneNo"
+                                                       name="phoneNo"
+                                                       placeholder="<?php echo _translate('Phone Number'); ?>"
+                                                       title="<?php echo _translate('Please enter phone number'); ?>"
+                                                       value="<?php echo $userInfo['phone_number']; ?>" />
                                              </div>
                                         </div>
                                    </div>
 
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="role" class="col-lg-4 control-label"><?php echo _translate("Role"); ?> <span class="mandatory">*</span></label>
+                                             <label for="role"
+                                                  class="col-lg-4 control-label"><?php echo _translate("Role"); ?> <span
+                                                       class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <select class="form-control isRequired" name='role' id='role' title="<?php echo _translate('Please select the role'); ?>">
+                                                  <select class="form-control isRequired" name='role' id='role'
+                                                       title="<?php echo _translate('Please select the role'); ?>">
                                                        <option value=""><?php echo _translate("--Select--"); ?></option>
                                                        <?php foreach ($result as $row) {
-                                                       ?>
-                                                            <option value="<?php echo $row['role_id']; ?>" data-code="<?php echo $row['role_code']; ?>" <?php echo (isset($userInfo['role_id']) && $userInfo['role_id'] == $row['role_id']) ? "selected='selected'" : ""; ?>><?php echo (($row['role_name'])); ?></option>
+                                                            ?>
+                                                            <option value="<?php echo $row['role_id']; ?>"
+                                                                 data-code="<?php echo $row['role_code']; ?>" <?php echo (isset($userInfo['role_id']) && $userInfo['role_id'] == $row['role_id']) ? "selected='selected'" : ""; ?>>
+                                                                 <?php echo (($row['role_name'])); ?>
+                                                            </option>
                                                        <?php } ?>
                                                   </select>
                                              </div>
@@ -147,13 +173,33 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                               </div>
 
 
-                              <div class="row show-token" style="display: <?php echo (!empty($userInfo['api_token']) || 'API' == ($userInfo['role_code'])) ? 'block' : 'none'; ?>;">
+                              <div class="row show-token"
+                                   style="display: <?php echo (!empty($userInfo['api_token']) || 'API' == ($userInfo['role_code'])) ? 'block' : 'none'; ?>;">
                                    <div class="col-md-12 col-lg-12">
                                         <div class="form-group">
-                                             <label for="authToken" class="col-lg-2 control-label"><?php echo _translate("AuthToken"); ?> <span class="mandatory">*</span></label>
+                                             <label for="authToken"
+                                                  class="col-lg-2 control-label"><?php echo _translate("AuthToken"); ?>
+                                                  <span class="mandatory">*</span></label>
                                              <div class="col-lg-9">
-                                                  <input type="text" value="<?php echo $userInfo['api_token']; ?>" class="form-control" id="authToken" name="authToken" placeholder="<?php echo _translate('Auth Token'); ?>" title="<?php echo _translate('Please Generate the auth token'); ?>" readonly>
-                                                  <a style="display:block; margin-top:1em; width:30%;" href="javascript:void(0);" class="btn btn-sm btn-primary" onclick="generateToken('authToken');"><?php echo _translate("Generate Another Token"); ?></a>
+
+
+                                                  <div class="input-group">
+                                                       <input type="text" value="<?php echo $userInfo['api_token']; ?>"
+                                                            class="form-control" id="authToken" name="authToken"
+                                                            placeholder="<?php echo _translate('Auth Token'); ?>"
+                                                            title="<?php echo _translate('Please Generate the auth token'); ?>"
+                                                            readonly style="; background-color: #fff;">
+                                                       <span class="input-group-btn">
+                                                            <button class="btn btn-default" type="button"
+                                                                 onclick="generateToken('authToken');"
+                                                                 title="Generate Another Token">
+                                                                 <i class="fa fa-random"></i>
+                                                                 <?= _translate("Generate Another Token"); ?>
+                                                            </button>
+
+                                                       </span>
+                                                  </div>
+
                                              </div>
                                         </div>
                                    </div>
@@ -161,20 +207,31 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                               <div class="row">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="interfaceUserName" class="col-lg-4 control-label"><?php echo _translate("Interface User Name (from your Molecular testing machine)"); ?></label>
+                                             <label for="interfaceUserName"
+                                                  class="col-lg-4 control-label"><?php echo _translate("Interface User Name (from your Molecular testing machine)"); ?></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" value="<?php echo $interfaceUsers ?>" class="form-control" id="interfaceUserName" name="interfaceUserName" placeholder="<?php echo _translate('Interface User Name'); ?>" title="<?php echo _translate('Please enter interface user name'); ?>" />
+                                                  <input type="text" value="<?php echo $interfaceUsers ?>"
+                                                       class="form-control" id="interfaceUserName"
+                                                       name="interfaceUserName"
+                                                       placeholder="<?php echo _translate('Interface User Name'); ?>"
+                                                       title="<?php echo _translate('Please enter interface user name'); ?>" />
                                              </div>
                                         </div>
                                    </div>
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="appAccessable" class="col-lg-4 control-label"><?php echo _translate("Mobile App Access"); ?></label>
+                                             <label for="appAccessable"
+                                                  class="col-lg-4 control-label"><?php echo _translate("Mobile App Access"); ?></label>
                                              <div class="col-lg-7">
-                                                  <select class="form-control" name='appAccessable' id='appAccessable' title="<?php echo _translate('Please select the mobile App access or not'); ?>?">
+                                                  <select class="form-control" name='appAccessable' id='appAccessable'
+                                                       title="<?php echo _translate('Please select the mobile App access or not'); ?>?">
                                                        <option value=""><?php echo _translate("--Select--"); ?></option>
-                                                       <option value="yes" <?php echo ($userInfo['app_access'] == 'yes') ? "selected='selected'" : "" ?>><?php echo _translate("Yes"); ?></option>
-                                                       <option value="no" <?php echo ($userInfo['app_access'] == 'no') ? "selected='selected'" : "" ?>><?php echo _translate("No"); ?></option>
+                                                       <option value="yes" <?php echo ($userInfo['app_access'] == 'yes') ? "selected='selected'" : "" ?>>
+                                                            <?php echo _translate("Yes"); ?>
+                                                       </option>
+                                                       <option value="no" <?php echo ($userInfo['app_access'] == 'no') ? "selected='selected'" : "" ?>>
+                                                            <?php echo _translate("No"); ?>
+                                                       </option>
                                                   </select>
                                              </div>
                                         </div>
@@ -184,34 +241,49 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                               <div class="row">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="" class="col-lg-4 control-label"><?php echo _translate("Signature"); ?> <br><?php echo _translate("(Used to embed in Result PDF)"); ?></label>
+                                             <label for=""
+                                                  class="col-lg-4 control-label"><?php echo _translate("Signature"); ?>
+                                                  <br><?php echo _translate("(Used to embed in Result PDF)"); ?></label>
                                              <div class="col-lg-8">
-                                                  <div class="fileinput fileinput-new userSignature" data-provides="fileinput">
-                                                       <div class="fileinput-preview thumbnail image-placeholder" data-trigger="fileinput" style="width:200px; height:150px;">
+                                                  <div class="fileinput fileinput-new userSignature"
+                                                       data-provides="fileinput">
+                                                       <div class="fileinput-preview thumbnail image-placeholder"
+                                                            data-trigger="fileinput" style="width:200px; height:150px;">
                                                             <?php
 
                                                             if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) !== '' && MiscUtility::isImageValid($signatureImagePath . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
                                                                  $signFileName = basename((string) $userInfo['user_signature']);
-                                                            ?>
-                                                                 <img src="/uploads/users-signature/<?php echo $signFileName; ?>" alt="Signature image">
+                                                                 ?>
+                                                                 <img src="/uploads/users-signature/<?php echo $signFileName; ?>"
+                                                                      alt="Signature image">
                                                             <?php } else { ?>
 
                                                             <?php } ?>
                                                        </div>
                                                        <div>
-                                                            <span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _translate("Select Signature Image"); ?></span><span class="fileinput-exists"><?php echo _translate("Change"); ?></span>
-                                                                 <input type="file" id="userSignature" name="userSignature" accept="image/png,image/gpg,image/jpeg" title="<?php echo _translate('Please select user signature'); ?>" onchange="getNewSignatureImage('<?php echo $userInfo['user_signature']; ?>');">
+                                                            <span class="btn btn-default btn-file"><span
+                                                                      class="fileinput-new"><?php echo _translate("Select Signature Image"); ?></span><span
+                                                                      class="fileinput-exists"><?php echo _translate("Change"); ?></span>
+                                                                 <input type="file" id="userSignature"
+                                                                      name="userSignature"
+                                                                      accept="image/png,image/gpg,image/jpeg"
+                                                                      title="<?php echo _translate('Please select user signature'); ?>"
+                                                                      onchange="getNewSignatureImage('<?php echo $userInfo['user_signature']; ?>');">
                                                             </span>
                                                             <?php
                                                             if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) !== '' && file_exists($userInfo['user_signature'])) {
-                                                            ?>
-                                                                 <a id="clearUserSignature" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearUserSignature('<?php echo $userInfo['user_signature']; ?>')"><?php echo _translate("Clear"); ?></a>
+                                                                 ?>
+                                                                 <a id="clearUserSignature" href="javascript:void(0);"
+                                                                      class="btn btn-default" data-dismiss="fileupload"
+                                                                      onclick="clearUserSignature('<?php echo $userInfo['user_signature']; ?>')"><?php echo _translate("Clear"); ?></a>
                                                             <?php } ?>
-                                                            <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _translate("Remove"); ?></a>
+                                                            <a href="#" class="btn btn-default fileinput-exists"
+                                                                 data-dismiss="fileinput"><?php echo _translate("Remove"); ?></a>
                                                        </div>
                                                   </div>
                                                   <div class="box-body">
-                                                       <?php echo _translate("Image Size"); ?> : <code>100px x 100px</code>
+                                                       <?php echo _translate("Image Size"); ?> :
+                                                       <code>100px x 100px</code>
                                                   </div>
                                              </div>
                                         </div>
@@ -220,9 +292,16 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="loginId" class="col-lg-4 control-label"><?php echo _translate("Login Id"); ?> <span class="mandatory">*</span></label>
+                                             <label for="loginId"
+                                                  class="col-lg-4 control-label"><?php echo _translate("Login Id"); ?>
+                                                  <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <input type="text" class="form-control isRequired" id="loginId" name="loginId" placeholder="<?php echo _translate('Login Id'); ?>" title="<?php echo _translate('Please enter login id'); ?>" value="<?php echo $userInfo['login_id']; ?>" onblur="checkNameValidation('user_details','login_id',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _translate("This login id that you entered already exists.Try another login id"); ?>',null)" />
+                                                  <input type="text" class="form-control isRequired" id="loginId"
+                                                       name="loginId"
+                                                       placeholder="<?php echo _translate('Login Id'); ?>"
+                                                       title="<?php echo _translate('Please enter login id'); ?>"
+                                                       value="<?php echo $userInfo['login_id']; ?>"
+                                                       onblur="checkNameValidation('user_details','login_id',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _translate("This login id that you entered already exists.Try another login id"); ?>',null)" />
                                                   <small class="form-text text-muted">
                                                        <?php echo _translate("Only lowercase letters, numbers, hyphens (-), and underscores (_) are allowed. No spaces."); ?>
                                                   </small>
@@ -237,13 +316,21 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                               <div class=" row">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?> </label>
+                                             <label for="password"
+                                                  class="col-lg-4 control-label"><?php echo _translate("Password"); ?>
+                                             </label>
                                              <div class="col-lg-7">
                                                   <div class="input-group">
-                                                       <input type="password" class="form-control ppwd" id="password" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
+                                                       <input type="password" class="form-control ppwd" id="password"
+                                                            name="password"
+                                                            placeholder="<?php echo _translate('Password'); ?>"
+                                                            title="<?php echo _translate('Please enter the password'); ?>" />
                                                        <span class="input-group-btn">
-                                                            <button class="btn btn-default" type="button" id="generatePassword" onclick="passwordType();" title="Generate Password">
-                                                                 <i class="fa fa-random"></i> <?= _translate("Generate"); ?>
+                                                            <button class="btn btn-default" type="button"
+                                                                 id="generatePassword" onclick="passwordType();"
+                                                                 title="Generate Password">
+                                                                 <i class="fa fa-random"></i>
+                                                                 <?= _translate("Generate"); ?>
                                                             </button>
 
                                                        </span>
@@ -256,9 +343,13 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                    </div>
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="confirmPassword" class="col-lg-4 control-label"><?php echo _translate("Confirm Password"); ?></label>
+                                             <label for="confirmPassword"
+                                                  class="col-lg-4 control-label"><?php echo _translate("Confirm Password"); ?></label>
                                              <div class="col-lg-7">
-                                                  <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _translate('Confirm Password'); ?>" title="" />
+                                                  <input type="password" class="form-control cpwd confirmPassword"
+                                                       id="confirmPassword" name="password"
+                                                       placeholder="<?php echo _translate('Confirm Password'); ?>"
+                                                       title="" />
                                              </div>
                                         </div>
                                    </div>
@@ -268,11 +359,17 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                    <div class="row"></div>
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="status" class="col-lg-4 control-label"><?php echo _translate("User Status"); ?> <span class="mandatory">*</span></label>
+                                             <label for="status"
+                                                  class="col-lg-4 control-label"><?php echo _translate("User Status"); ?>
+                                                  <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <select class="form-control isRequired" name='status' id='status' title="<?php echo _translate('Please select the status'); ?>">
-                                                       <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                                                       <option value="active" <?php echo ($userInfo['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _translate("Active"); ?></option>
+                                                  <select class="form-control isRequired" name='status' id='status'
+                                                       title="<?php echo _translate('Please select the status'); ?>">
+                                                       <option value=""> <?php echo _translate("-- Select --"); ?>
+                                                       </option>
+                                                       <option value="active" <?php echo ($userInfo['status'] == 'active') ? "selected='selected'" : "" ?>>
+                                                            <?php echo _translate("Active"); ?>
+                                                       </option>
                                                        <option value="inactive" <?php echo ($userInfo['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _translate("Inactive"); ?></option>
                                                   </select>
                                              </div>
@@ -283,19 +380,24 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
                               <div class="row" style="margin: 15px;<?php echo $display; ?>">
                                    <div class="col-md-12">
-                                        <button type="button" class="btn btn-primary btn-sm pull-left" style="margin-right:5px;line-height: 2;" onclick="hideAdvanceSearch();"><span>Show Advanced Search Options</span></button>
+                                        <button type="button" class="btn btn-primary btn-sm pull-left"
+                                             style="margin-right:5px;line-height: 2;"
+                                             onclick="hideAdvanceSearch();"><span>Show Advanced Search
+                                                  Options</span></button>
                                    </div>
                               </div>
                               <div class="row" style="margin: 15px;<?php echo $display; ?>">
                                    <div class="col-md-12">
-                                        <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="display: none;">
+                                        <table aria-describedby="table" id="advanceFilter" class="table"
+                                             aria-hidden="true" style="display: none;">
                                              <tr>
                                                   <td><strong>
                                                             <?php echo _translate("Province/State"); ?>&nbsp;:
                                                        </strong></td>
                                                   <td>
                                                        <?php if (count($geoLocationParentArray) > 0) { ?>
-                                                            <select name="stateId" id="stateId" class="form-control" title="<?php echo _translate('Please choose province/state'); ?>">
+                                                            <select name="stateId" id="stateId" class="form-control"
+                                                                 title="<?php echo _translate('Please choose province/state'); ?>">
                                                                  <?= $general->generateSelectOptions($geoLocationParentArray, null, _translate("-- Select --")); ?>
                                                             </select>
                                                        <?php } ?>
@@ -304,15 +406,19 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                             <?php echo _translate("District/County"); ?>&nbsp;:
                                                        </strong></td>
                                                   <td>
-                                                       <select name="districtId" id="districtId" class="form-control" title="<?php echo _translate('Please choose District/County'); ?>">
+                                                       <select name="districtId" id="districtId" class="form-control"
+                                                            title="<?php echo _translate('Please choose District/County'); ?>">
                                                             <option value="">
                                                                  <?php echo _translate("-- Select --"); ?>
                                                             </option>
                                                        </select>
                                                   </td>
                                                   <td>
-                                                       <input type="button" name="filter" id="filter" onclick="getFacilitiesToMap();" value="Search" class="btn btn-primary btn-sm" />
-                                                       <button class="btn btn-danger btn-sm" type="button" onclick="document.location.href = document.location"><span>
+                                                       <input type="button" name="filter" id="filter"
+                                                            onclick="getFacilitiesToMap();" value="Search"
+                                                            class="btn btn-primary btn-sm" />
+                                                       <button class="btn btn-danger btn-sm" type="button"
+                                                            onclick="document.location.href = document.location"><span>
                                                                  <?= _translate('Reset'); ?>
                                                             </span></button>
                                                   </td>
@@ -323,30 +429,46 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                               <div class="row" style="margin: 15px;<?php echo $display; ?>">
 
                                    <div class="col-md-12">
-                                        <h4 style="font-weight:bold;"> <?php echo _translate("Map User to Selected Facilities (optional)"); ?></h4>
+                                        <h4 style="font-weight:bold;">
+                                             <?php echo _translate("Map User to Selected Facilities (optional)"); ?>
+                                        </h4>
 
                                         <div class="col-md-5">
-                                             <select name="mappedFacilities[]" id="search" class="form-control" size="8" multiple="multiple">
+                                             <select name="mappedFacilities[]" id="search" class="form-control" size="8"
+                                                  multiple="multiple">
                                              </select>
-                                             <div class="sampleCounterDiv"><?= _translate("Number of unselected facilities"); ?> : <span id="unselectedCount"></span></div>
+                                             <div class="sampleCounterDiv">
+                                                  <?= _translate("Number of unselected facilities"); ?> : <span
+                                                       id="unselectedCount"></span>
+                                             </div>
                                         </div>
 
                                         <div class="col-md-2">
-                                             <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-                                             <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-                                             <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-                                             <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+                                             <button type="button" id="search_rightAll" class="btn btn-block"><em
+                                                       class="fa-solid fa-forward"></em></button>
+                                             <button type="button" id="search_rightSelected" class="btn btn-block"><em
+                                                       class="fa-sharp fa-solid fa-chevron-right"></em></button>
+                                             <button type="button" id="search_leftSelected" class="btn btn-block"><em
+                                                       class="fa-sharp fa-solid fa-chevron-left"></em></button>
+                                             <button type="button" id="search_leftAll" class="btn btn-block"><em
+                                                       class="fa-solid fa-backward"></em></button>
                                         </div>
 
                                         <div class="col-md-5">
-                                             <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+                                             <select name="to[]" id="search_to" class="form-control" size="8"
+                                                  multiple="multiple">
                                                   <?php foreach ($preselectedFacilities as $value) {
                                                        if ($activeFacilities !== [] && array_key_exists($value, $activeFacilities)) { ?>
-                                                            <option value="<?php echo $value; ?>"><?php echo $activeFacilities[$value]; ?> </option>
-                                                  <?php }
+                                                            <option value="<?php echo $value; ?>">
+                                                                 <?php echo $activeFacilities[$value]; ?>
+                                                            </option>
+                                                       <?php }
                                                   } ?>
                                              </select>
-                                             <div class="sampleCounterDiv"><?= _translate("Number of selected facilities"); ?> : <span id="selectedCount"></span></div>
+                                             <div class="sampleCounterDiv">
+                                                  <?= _translate("Number of selected facilities"); ?> : <span
+                                                       id="selectedCount"></span>
+                                             </div>
                                         </div>
                                    </div>
                               </div>
@@ -356,7 +478,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                          <div class="box-footer">
                               <input type="hidden" name="selectedFacility" id="selectedFacility" />
                               <input type="hidden" name="removedSignatureImage" id="removedSignatureImage" />
-                              <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+                              <a class="btn btn-primary" href="javascript:void(0);"
+                                   onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
                               <a href="users.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
                          </div>
                          <!-- /.box-footer -->
@@ -386,9 +509,9 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
      }
 
 
-     jQuery(document).ready(function($) {
+     jQuery(document).ready(function ($) {
 
-          $('#loginId').on('input', function() {
+          $('#loginId').on('input', function () {
                let val = $(this).val();
                val = val.toLowerCase(); // convert to lowercase
                val = val.replace(/\s+/g, ''); // remove all spaces
@@ -406,24 +529,24 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                     left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
                     right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />'
                },
-               fireSearch: function(value) {
+               fireSearch: function (value) {
                     return value.length > 2;
                },
                autoSelectNext: true,
                keepRenderingSort: true
           });
 
-          $("#showFilter").click(function() {
+          $("#showFilter").click(function () {
                $("#showFilter").hide();
                $("#facilityFilter,#hideFilter").fadeIn();
           });
 
-          $("#hideFilter").click(function() {
+          $("#hideFilter").click(function () {
                $("#facilityFilter,#hideFilter").hide();
                $("#showFilter").fadeIn();
           });
 
-          $('#role').change(function(e) {
+          $('#role').change(function (e) {
                var selectedText = $(this).find("option:selected").attr('data-code');
                if (selectedText == "API") {
                     $('.show-token').show();
@@ -434,7 +557,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                }
           });
 
-          $('#userSignature').change(function(e) {
+          $('#userSignature').change(function (e) {
                const file = this.files[0];
                const fileType = file['type'];
                const validImageTypes = ['image/jpg', 'image/jpeg', 'image/png'];
@@ -457,7 +580,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                width: '100%'
           });
 
-          $("#stateId").change(function() {
+          $("#stateId").change(function () {
                if ($(this).val() == 'other') {
                     $('#provinceNew').show();
                } else {
@@ -468,9 +591,9 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                var pName = $(this).val();
                if ($.trim(pName) != '') {
                     $.post("/includes/siteInformationDropdownOptions.php", {
-                              pName: pName,
-                         },
-                         function(data) {
+                         pName: pName,
+                    },
+                         function (data) {
                               if (data != "") {
                                    details = data.split("###");
                                    $("#districtId").html(details[1]);
@@ -492,14 +615,14 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                message: '<h3><?= _translate("Trying to get mapped facilities", true); ?> <br><?php echo _translate("Please wait", true); ?>...</h3>'
           });
           $.post("getFacilitiesHelper.php", {
-                    provinceId: $('#stateId').val(),
-                    districtId: $('#districtId').val(),
-                    selectedFacility: '<?php echo $facilityMap; ?>'
-               },
-               function(toAppend) {
+               provinceId: $('#stateId').val(),
+               districtId: $('#districtId').val(),
+               selectedFacility: '<?php echo $facilityMap; ?>'
+          },
+               function (toAppend) {
                     if (toAppend != "" && toAppend != null && toAppend != undefined) {
                          $('#search').html(toAppend)
-                         setTimeout(function() {
+                         setTimeout(function () {
                               $("#search_rightSelected").trigger('click');
                          }, 10);
                          var count = $('#search option').length;
@@ -517,7 +640,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
      function validateNow() {
           $("#search").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES
           var selVal = [];
-          $('#search_to option').each(function(i, selected) {
+          $('#search_to option').each(function (i, selected) {
                selVal[i] = $(selected).val();
           });
           const sqids = new Sqids()
@@ -543,13 +666,13 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
           //str=obj.value;
           removeDots = removeDots.replace(/\s{2,}/g, ' ');
           $.post("/includes/checkDuplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: removeDots.trim(),
-                    fnct: fnct,
-                    format: "html"
-               },
-               function(data) {
+               tableName: tableName,
+               fieldName: fieldName,
+               value: removeDots.trim(),
+               fnct: fnct,
+               format: "html"
+          },
+               function (data) {
                     if (data === '1') {
                          alert(alrt);
                          document.getElementById(obj.id).value = "";
@@ -572,11 +695,11 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
           var pName = $("#province").val();
           if (pName != '') {
                $.post("/includes/siteInformationDropdownOptions.php", {
-                         pName: pName,
-                         fType: $("#facilityType").val(),
-                         comingFromUser: 'yes'
-                    },
-                    function(data) {
+                    pName: pName,
+                    fType: $("#facilityType").val(),
+                    comingFromUser: 'yes'
+               },
+                    function (data) {
                          if (data != "") {
                               details = data.split("###");
                               $("#district").html(details[1]);
@@ -592,11 +715,11 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
           var dName = $("#district").val();
           if (dName != '') {
                $.post("/includes/siteInformationDropdownOptions.php", {
-                         dName: dName,
-                         fType: $("#facilityType").val(),
-                         comingFromUser: 'yes'
-                    },
-                    function(data) {
+                    dName: dName,
+                    fType: $("#facilityType").val(),
+                    comingFromUser: 'yes'
+               },
+                    function (data) {
                          if (data != "") {
                               details = data.split("###");
                               $("#search").html(details[0]);
@@ -617,10 +740,10 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                getProvinceDistricts();
           } else if (fType != '') {
                $.post("/includes/siteInformationDropdownOptions.php", {
-                         fType: fType,
-                         comingFromUser: 'yes'
-                    },
-                    function(data) {
+                    fType: fType,
+                    comingFromUser: 'yes'
+               },
+                    function (data) {
                          $("#search").html(data);
                     });
           }
@@ -629,9 +752,9 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
      function generateToken(id) {
           $.post("/includes/generate-auth-token.php", {
-                    s: 8
-               },
-               function(data) {
+               s: 8
+          },
+               function (data) {
                     if (data != "") {
                          $("#" + id).val(data);
                     }

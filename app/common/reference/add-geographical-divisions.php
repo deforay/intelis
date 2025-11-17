@@ -17,8 +17,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
-$geoQuery = "SELECT * from geographical_divisions WHERE geo_status ='active'";
-
+$geoQuery = "SELECT geo_id, geo_name FROM geographical_divisions WHERE geo_status ='active' AND geo_parent = 0 ORDER BY geo_name";
 $geoParentInfo = $db->query($geoQuery);
 $geoArray = [];
 foreach ($geoParentInfo as $type) {
@@ -70,7 +69,7 @@ foreach ($geoParentInfo as $type) {
                                 <div class="form-group">
                                     <label for="geoParent" class="col-lg-4 control-label"><?php echo _translate("Parent Geographical Division"); ?></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control" id="geoParent" name="geoParent" placeholder="<?php echo _translate('Parent Division'); ?>" title="<?php echo _translate('Please select Parent Division'); ?>">
+                                        <select class="form-control select2-element" id="geoParent" name="geoParent" placeholder="<?php echo _translate('Parent Division'); ?>" title="<?php echo _translate('Please select Parent Division'); ?>">
                                             <?= $general->generateSelectOptions($geoArray, null, _translate("-- Select --")); ?>
                                         </select>
                                     </div>
@@ -110,6 +109,14 @@ foreach ($geoParentInfo as $type) {
 <!--</div>-->
 
 <script type="text/javascript">
+    $(document).ready(function() {
+        $('#geoParent').select2({
+            width: '100%',
+            allowClear: true,
+            placeholder: "<?php echo _translate('-- Select --'); ?>"
+        });
+    });
+
     function validateNow() {
 
         flag = deforayValidator.init({

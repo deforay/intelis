@@ -58,6 +58,8 @@ try {
 
     $districtFilter = isset($_POST['districtFilter']) ? (int) $_POST['districtFilter'] : 0;
     $provinceFilter = isset($_POST['provinceFilter']) ? (int) $_POST['provinceFilter'] : 0;
+    $levelFilter = $_POST['levelFilter'] ?? 'all';
+    $duplicateOnly = $_POST['duplicateOnly'] ?? 'no';
     $orphanOnly = $_POST['orphanOnly'] ?? 'no';
 
     if ($districtFilter > 0) {
@@ -66,8 +68,24 @@ try {
         $sWhere[] = "(g.geo_parent = $provinceFilter OR g.geo_id = $provinceFilter)";
     }
 
+    if ($levelFilter === 'provinces') {
+        $sWhere[] = "g.geo_parent = 0";
+    } elseif ($levelFilter === 'districts') {
+        $sWhere[] = "g.geo_parent != 0";
+    }
+
     if ($orphanOnly === 'yes') {
-        $sWhere[] = "(g.geo_parent != 0 AND (p.geo_id IS NULL OR p.geo_status != 'active'))";
+        $sWhere[] = "(g.geo_parent != 0 AND g.geo_status = 'active' AND (p.geo_id IS NULL OR p.geo_status != 'active'))";
+    }
+
+    if ($duplicateOnly === 'yes') {
+        $sWhere[] = "g.geo_status = 'active'";
+        $sWhere[] = "EXISTS (
+                        SELECT 1 FROM geographical_divisions g2
+                        WHERE g2.geo_id != g.geo_id
+                        AND g2.geo_status = 'active'
+                        AND LOWER(REPLACE(REPLACE(TRIM(g2.geo_name), ' ', ''), '-', '')) = LOWER(REPLACE(REPLACE(TRIM(g.geo_name), ' ', ''), '-', ''))
+                    )";
     }
 
     $whereSql = empty($sWhere) ? ('') : ' WHERE ' . implode(' AND ', $sWhere);

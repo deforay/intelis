@@ -30,6 +30,7 @@ $state = $geolocationService->getProvinces("yes");
   .select2-element {
     width: 300px;
   }
+
   .orphan-facility {
     background-color: #fff4d6 !important;
   }
@@ -67,13 +68,15 @@ $state = $geolocationService->getProvinces("yes");
                 <tr>
                   <td><strong><?= _translate("Province/State"); ?>&nbsp;:</strong></td>
                   <td>
-                    <select class="form-control select2-element" id="state" onchange="getDistrictByProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+                    <select class="form-control select2-element" id="state" onchange="getDistrictByProvince(this.value)"
+                      name="state" title="<?php echo _translate('Please select Province/State'); ?>">
                       <?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
                     </select>
                   </td>
                   <td><strong><?= _translate("District/County"); ?> :</strong></td>
                   <td>
-                    <select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>">
+                    <select class="form-control select2-element" id="district" name="district"
+                      title="<?php echo _translate('Please select Province/State'); ?>">
                     </select>
                   </td>
 
@@ -81,26 +84,32 @@ $state = $geolocationService->getProvinces("yes");
                 <tr>
                   <td>&nbsp;<strong><?= _translate("Facility Type"); ?> &nbsp;:</strong></td>
                   <td>
-                    <select class="form-control isRequired select2-element" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="getTestType(); showSignature(this.value);">
+                    <select class="form-control isRequired select2-element" id="facilityType" name="facilityType"
+                      title="<?php echo _translate('Please select facility type'); ?>"
+                      onchange="getTestType(); showSignature(this.value);">
                       <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                       <?php
                       foreach ($fResult as $type) {
-                      ?>
-                        <option value="<?php echo $type['facility_type_id']; ?>"><?php echo $type['facility_type_name']; ?></option>
-                      <?php
+                        ?>
+                        <option value="<?php echo $type['facility_type_id']; ?>">
+                          <?php echo $type['facility_type_name']; ?></option>
+                        <?php
                       }
                       ?>
                     </select>
                   </td>
                   <td>&nbsp;<strong><?= _translate("Test Type"); ?> &nbsp;:</strong></td>
                   <td>
-                    <select id="testType" name="testType" onchange="return checkFacilityType();" class="form-control select2-element" placeholder="<?php echo _translate('Please select the Test types'); ?>">
+                    <select id="testType" name="testType" onchange="return checkFacilityType();"
+                      class="form-control select2-element"
+                      placeholder="<?php echo _translate('Please select the Test types'); ?>">
                       <option value=""><?= _translate("-- Choose Test Type --"); ?> </option>
                       <?php if ($activeTests !== [] && in_array('vl', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'vl') ? "selected='selected'" : ""; ?> value="vl"><?php echo _translate("Viral Load"); ?></option>
                       <?php }
                       if ($activeTests !== [] && in_array('eid', $activeTests)) { ?>
-                        <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'eid') ? "selected='selected'" : ""; ?> value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
+                        <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'eid') ? "selected='selected'" : ""; ?> value="eid"><?php echo _translate("Early Infant Diagnosis"); ?>
+                        </option>
                       <?php }
                       if ($activeTests !== [] && in_array('covid19', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'covid19') ? "selected='selected'" : ""; ?> value="covid19"><?php echo _translate("Covid-19"); ?></option>
@@ -121,7 +130,8 @@ $state = $geolocationService->getProvinces("yes");
 
                   <td>&nbsp;<strong><?= _translate("Show Only Active"); ?> &nbsp;:</strong></td>
                   <td>
-                    <select class="form-control select2-element" id="activeFacility" name="activeFacility" title="<?php echo _translate('Please select Active Facility'); ?>">
+                    <select class="form-control select2-element" id="activeFacility" name="activeFacility"
+                      title="<?php echo _translate('Please choose if you want to show only active'); ?>">
                       <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                       <option value="active"><?php echo _translate("Yes"); ?></option>
                       <option value="inactive"><?php echo _translate("No"); ?></option>
@@ -140,9 +150,12 @@ $state = $geolocationService->getProvinces("yes");
                   </td>
                 </tr>
                 <tr>
-                  <td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="Search" class="btn btn-success btn-sm">
-                    <button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
-                    <button class="btn btn-ghost btn-sm btn-icon" data-toggle="collapse" data-target="#advanceFilter" aria-expanded="false" aria-controls="advanceFilter">
+                  <td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();"
+                      value="Search" class="btn btn-success btn-sm">
+                    <button class="btn btn-danger btn-sm"
+                      onclick="document.location.href = document.location"><span>Reset</span></button>
+                    <button class="btn btn-ghost btn-sm btn-icon" data-toggle="collapse" data-target="#advanceFilter"
+                      aria-expanded="false" aria-controls="advanceFilter">
                       <em class="fa fa-filter"></em><span class="text"><?= _translate("Advanced Search") ?></span>
                     </button>
 
@@ -156,20 +169,29 @@ $state = $geolocationService->getProvinces("yes");
       </div>
       <div class="col-xs-12">
         <div class="box">
-          <span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;margin-left: 325px;" id="showhide" class="">
+          <span
+            style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;margin-left: 325px;"
+            id="showhide" class="">
             <div class="row" style="background:#e0e0e0;padding: 15px;">
               <div class="col-md-12">
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="facility_code" class="showhideCheckBox" /> <label for="iCol0"><?php echo _translate("Facility Code"); ?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0"
+                    data-showhide="facility_code" class="showhideCheckBox" /> <label
+                    for="iCol0"><?php echo _translate("Facility Code"); ?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol1"><?php echo _translate("Facility Name"); ?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1"
+                    data-showhide="facility_name" class="showhideCheckBox" /> <label
+                    for="iCol1"><?php echo _translate("Facility Name"); ?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="2" id="iCol2" data-showhide="facility_type" class="showhideCheckBox" /> <label for="iCol2"><?php echo _translate("Facility Type"); ?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="2" id="iCol2"
+                    data-showhide="facility_type" class="showhideCheckBox" /> <label
+                    for="iCol2"><?php echo _translate("Facility Type"); ?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _translate("Status"); ?></label> <br>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status"
+                    class="showhideCheckBox" /> <label for="iCol3"><?php echo _translate("Status"); ?></label> <br>
                 </div>
               </div>
             </div>
@@ -210,7 +232,8 @@ $state = $geolocationService->getProvinces("yes");
           <!-- /.box-header -->
           <div class="box-body">
 
-            <table aria-describedby="table" id="facilityDataTable" class="table table-bordered table-striped" aria-hidden="true">
+            <table aria-describedby="table" id="facilityDataTable" class="table table-bordered table-striped"
+              aria-hidden="true">
               <thead>
                 <tr>
                   <th><?php echo _translate("Facility Code"); ?></th>
@@ -245,13 +268,13 @@ $state = $geolocationService->getProvinces("yes");
 <script>
   var oTable = null;
 
-  $(document).ready(function() {
+  $(document).ready(function () {
 
     var $btn = $('[data-target="#advanceFilter"]');
-    $('#advanceFilter').on('shown.bs.collapse', function() {
-        $btn.find('.text').text('<?= _translate("Hide Filters") ?>');
-      })
-      .on('hidden.bs.collapse', function() {
+    $('#advanceFilter').on('shown.bs.collapse', function () {
+      $btn.find('.text').text('<?= _translate("Hide Filters") ?>');
+    })
+      .on('hidden.bs.collapse', function () {
         $btn.find('.text').text('<?= _translate("Advanced Search") ?>');
       });
 
@@ -283,33 +306,33 @@ $state = $geolocationService->getProvinces("yes");
         [1, "asc"]
       ],
       "aoColumns": [{
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
         <?php if (_isAllowed("editFacility.php") && ($general->isSTSInstance() || $general->isStandaloneInstance())) { ?> {
-            "sClass": "center",
-            "bSortable": false
-          },
+          "sClass": "center",
+          "bSortable": false
+        },
         <?php } ?>
       ],
       "bProcessing": true,
       "bServerSide": true,
       "sAjaxSource": "getFacilityDetails.php",
-      "fnServerData": function(sSource, aoData, fnCallback) {
+      "fnServerData": function (sSource, aoData, fnCallback) {
         aoData.push({
           "name": "state",
           "value": $("#state").val()
@@ -371,14 +394,14 @@ $state = $geolocationService->getProvinces("yes");
     $.blockUI();
     oTable.fnDraw();
     $.post("/facilities/facilityExportInExcel.php", {
-        state: $("#state").val(),
-        district: $("#district").val(),
-        facilityType: $("#facilityType").val(),
-        testType: $("#testType").val(),
-        activeFacility: $("#activeFacility").val(),
-        orphanFacility: $("#orphanFacility").is(':checked') ? 'yes' : ''
-      },
-      function(data) {
+      state: $("#state").val(),
+      district: $("#district").val(),
+      facilityType: $("#facilityType").val(),
+      testType: $("#testType").val(),
+      activeFacility: $("#activeFacility").val(),
+      orphanFacility: $("#orphanFacility").is(':checked') ? 'yes' : ''
+    },
+      function (data) {
         if (data == "" || data == null || data == undefined) {
           $.unblockUI();
           alert("<?= _translate("Unable to generate excel", true); ?>");
@@ -393,10 +416,10 @@ $state = $geolocationService->getProvinces("yes");
   function getDistrictByProvince(provinceId) {
     $("#district").html('');
     $.post("/common/get-by-province-id.php", {
-        provinceId: provinceId,
-        districts: true,
-      },
-      function(data) {
+      provinceId: provinceId,
+      districts: true,
+    },
+      function (data) {
         Obj = $.parseJSON(data);
         $("#district").html(Obj['districts']);
       });

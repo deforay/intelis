@@ -28,7 +28,7 @@ if (!isset($id) || $id == "") {
     header("Location:geographical-divisions-details.php");
 }
 
-$geoQuery = "SELECT * FROM geographical_divisions WHERE geo_status ='active'";
+$geoQuery = "SELECT geo_id, geo_name FROM geographical_divisions WHERE geo_status ='active' AND geo_parent = 0 ORDER BY geo_name";
 $geoParentInfo = $db->query($geoQuery);
 $geoArray = [];
 foreach ($geoParentInfo as $type) {
@@ -178,7 +178,7 @@ if (!$isProvince) {
                                     <label for="geoParent"
                                         class="col-lg-4 control-label"><?php echo _translate("Parent Geographical Division"); ?></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control" id="geoParent" name="geoParent"
+                                        <select class="form-control select2-element" id="geoParent" name="geoParent"
                                             placeholder="<?php echo _translate('Parent Division'); ?>"
                                             title="<?php echo _translate('Please select Parent division'); ?>">
                                             <?= $general->generateSelectOptions($geoArray, $geoInfo['geo_parent'], _translate("-- Select --")); ?>
@@ -347,6 +347,14 @@ if (!$isProvince) {
 </div>
 
 <script type="text/javascript">
+    $(document).ready(function() {
+        $('#geoParent').select2({
+            width: '100%',
+            allowClear: true,
+            placeholder: "<?php echo _translate('-- Select --'); ?>"
+        });
+    });
+
     var isProvinceDivision = <?php echo $isProvince ? 'true' : 'false'; ?>;
     var moveProvinceRequiredMsg = "<?php echo _translate("Please select an active province to move existing districts and facilities."); ?>";
     var moveDistrictRequiredMsg = "<?php echo _translate("Please select an active district to move existing facilities."); ?>";
