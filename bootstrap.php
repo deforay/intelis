@@ -73,7 +73,6 @@ require_once __DIR__ . '/app/system/di.php';
 require_once __DIR__ . '/app/system/functions.php';
 
 
-
 defined('SYSTEM_CONFIG') ||
     define('SYSTEM_CONFIG', ContainerRegistry::get('applicationConfig'));
 

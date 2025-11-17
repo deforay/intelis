@@ -1,5 +1,9 @@
 <?php
 
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
+
 use Laminas\Diactoros\ServerRequest;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
@@ -85,12 +89,6 @@ function showHelp(SymfonyStyle $io): void
 
     exit(0);
 }
-
-
-
-ini_set('memory_limit', -1);
-set_time_limit(0);
-ini_set('max_execution_time', 300000);
 
 // Check for help flag early
 if ($cliMode) {

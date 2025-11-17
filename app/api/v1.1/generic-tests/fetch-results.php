@@ -198,7 +198,7 @@ try {
 
     $where = [];
     if (!empty($user)) {
-        $facilityMap = $facilitiesService->getUserFacilityMap($user['user_id'], 1);
+        $facilityMap = $facilitiesService->getUserFacilityMap($user['user_id']);
         if (!empty($facilityMap)) {
             $where[] = " vl.facility_id IN (" . $facilityMap . ")";
         } else {
@@ -269,7 +269,7 @@ try {
         $db->where($primaryKey, $affectedSamples, 'IN');
         $db->where('result_sent_to_source_datetime IS NULL');
         $db->update($tableName, [
-            'result_sent_to_source'          => 'sent',
+            'result_sent_to_source' => 'sent',
             'result_sent_to_source_datetime' => $now,
         ]);
 
