@@ -39,21 +39,21 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-//$id = $_GET['id'];
+
 $facilityInfo = $db->rawQueryOne('SELECT * FROM facility_details WHERE facility_id= ?', [$id]);
 
 $facilityAttributes = json_decode((string) $facilityInfo['facility_attributes']);
 
 
-$facilityReportFormat = (array)json_decode((string) $facilityInfo['report_format']);
-// echo "<pre>";
-// print_r($facilityReportFormat);die;
+$facilityReportFormat = (array) json_decode((string) $facilityInfo['report_format']);
+
+
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
-$pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 
-//$chkvlLabResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as vlfm where vl_lab_id = ?', array($id));
-//$chkHcResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as vlfm where facility_id = ?', array($id));
+
+
+
 
 $fType = $facilityInfo['facility_type'];
 
@@ -146,28 +146,44 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+					<?php echo _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='editFacilityForm' id='editFacilityForm' autocomplete="off" enctype="multipart/form-data" action="editFacilityHelper.php">
+				<form class="form-horizontal" method='post' name='editFacilityForm' id='editFacilityForm'
+					autocomplete="off" enctype="multipart/form-data" action="editFacilityHelper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="facilityName" class="col-lg-4 control-label"><?php echo _translate("Facility Name"); ?> <span class="mandatory">*</span></label>
+									<label for="facilityName"
+										class="col-lg-4 control-label"><?php echo _translate("Facility Name"); ?> <span
+											class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="facilityName" name="facilityName" placeholder="<?php echo _translate('Facility Name'); ?>" title="<?php echo _translate('Please enter facility name'); ?>" value="<?= ((string) $facilityInfo['facility_name']); ?>" onblur="checkNameValidation('facility_details','facility_name',this,'<?php echo "facility_id##" . ((string) $facilityInfo['facility_id']); ?>','<?php echo _translate("The facility name that you entered already exists.Enter another name"); ?>',null)" />
-										<input type="hidden" class="form-control isRequired" id="facilityId" name="facilityId" value="<?php echo base64_encode((string) $facilityInfo['facility_id']); ?>" />
+										<input type="text" class="form-control isRequired" id="facilityName"
+											name="facilityName" placeholder="<?php echo _translate('Facility Name'); ?>"
+											title="<?php echo _translate('Please enter facility name'); ?>"
+											value="<?= ((string) $facilityInfo['facility_name']); ?>"
+											onblur="checkNameValidation('facility_details','facility_name',this,'<?php echo "facility_id##" . ((string) $facilityInfo['facility_id']); ?>','<?php echo _translate("The facility name that you entered already exists.Enter another name"); ?>',null)" />
+										<input type="hidden" class="form-control isRequired" id="facilityId"
+											name="facilityId"
+											value="<?php echo base64_encode((string) $facilityInfo['facility_id']); ?>" />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="facilityCode" class="col-lg-4 control-label"><?php echo _translate("Facility Code"); ?><br> <small><?php echo _translate("(National Unique Code)"); ?></small> </label>
+									<label for="facilityCode"
+										class="col-lg-4 control-label"><?php echo _translate("Facility Code"); ?><br>
+										<small><?php echo _translate("(National Unique Code)"); ?></small> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="<?php echo _translate('Facility Code'); ?>" title="<?php echo _translate('Please enter facility code'); ?>" value="<?= ((string) $facilityInfo['facility_code']); ?>" onblur="checkNameValidation('facility_details','facility_code',this,'<?php echo 'facility_id##' . ((string) $facilityInfo['facility_id']); ?>','<?php echo _translate("The code that you entered already exists.Try another code"); ?>',null)" />
+										<input type="text" class="form-control" id="facilityCode" name="facilityCode"
+											placeholder="<?php echo _translate('Facility Code'); ?>"
+											title="<?php echo _translate('Please enter facility code'); ?>"
+											value="<?= ((string) $facilityInfo['facility_code']); ?>"
+											onblur="checkNameValidation('facility_details','facility_code',this,'<?php echo 'facility_id##' . ((string) $facilityInfo['facility_id']); ?>','<?php echo _translate("The code that you entered already exists.Try another code"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -175,23 +191,34 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="otherId" class="col-lg-4 control-label"><?php echo _translate("Other/External Code"); ?> </label>
+									<label for="otherId"
+										class="col-lg-4 control-label"><?php echo _translate("Other/External Code"); ?>
+									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="otherId" name="otherId" placeholder="<?php echo _translate('Other/External Code'); ?>" value="<?= ((string) $facilityInfo['other_id']); ?>" />
+										<input type="text" class="form-control" id="otherId" name="otherId"
+											placeholder="<?php echo _translate('Other/External Code'); ?>"
+											value="<?= ((string) $facilityInfo['other_id']); ?>" />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="facilityType" class="col-lg-4 control-label"><?php echo _translate("Facility Type"); ?> <span class="mandatory">*</span> </label>
+									<label for="facilityType"
+										class="col-lg-4 control-label"><?php echo _translate("Facility Type"); ?> <span
+											class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="getTestType(); showSignature(this.value);">
+										<select class="form-control isRequired" id="facilityType" name="facilityType"
+											title="<?php echo _translate('Please select facility type'); ?>"
+											onchange="getTestType(); showSignature(this.value);">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<?php
 											$k = 10;
 											foreach ($fResult as $type) { ?>
-												<option data-disable="<?php echo $k; ?>" value="<?= ((string) $type['facility_type_id']); ?>" <?php echo ($facilityInfo['facility_type'] == $type['facility_type_id']) ? "selected='selected'" : "" ?>><?php echo ($type['facility_type_name']); ?></option>
-											<?php
+												<option data-disable="<?php echo $k; ?>"
+													value="<?= ((string) $type['facility_type_id']); ?>" <?php echo ($facilityInfo['facility_type'] == $type['facility_type_id']) ? "selected='selected'" : "" ?>>
+													<?php echo ($type['facility_type_name']); ?>
+												</option>
+												<?php
 												$k += 10;
 											} ?>
 										</select>
@@ -202,24 +229,31 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="email" class="col-lg-4 control-label"><?php echo _translate("Email(s)"); ?> <br> <small><?php echo _translate("(comma separated)"); ?></small> </label>
+									<label for="email"
+										class="col-lg-4 control-label"><?php echo _translate("Email(s)"); ?> <br>
+										<small><?php echo _translate("(comma separated)"); ?></small> </label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="email" name="email" placeholder="e.g. email1@gmail.com,email2@gmail.com" value="<?= ((string) $facilityInfo['facility_emails']); ?>" />
+										<input type="text" class="form-control" id="email" name="email"
+											placeholder="e.g. email1@gmail.com,email2@gmail.com"
+											value="<?= ((string) $facilityInfo['facility_emails']); ?>" />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6 allowResultsUpload" style="display:<?php echo $allowFileDiv; ?>;">
 								<div class="form-group">
-									<label for="allowResultUpload" class="col-lg-4 control-label"><?php echo _translate("Allow Results File Upload"); ?> <span class="mandatory">*</span></label>
+									<label for="allowResultUpload"
+										class="col-lg-4 control-label"><?php echo _translate("Allow Results File Upload"); ?>
+										<span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select class="form-control" id="allowResultUpload" name="allowResultUpload" title="<?php echo _translate('Please select if this lab can upload test results file'); ?>">
+										<select class="form-control" id="allowResultUpload" name="allowResultUpload"
+											title="<?php echo _translate('Please select if this lab can upload test results file'); ?>">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<option <?php if (isset($facilityAttributes->allow_results_file_upload) && $facilityAttributes->allow_results_file_upload === 'yes') {
-														echo 'selected="selected"';
-													} ?> value="yes">Yes</option>
+												echo 'selected="selected"';
+											} ?> value="yes">Yes</option>
 											<option <?php if (isset($facilityAttributes->allow_results_file_upload) && $facilityAttributes->allow_results_file_upload === 'no') {
-														echo 'selected="selected"';
-													} ?> value="no">No</option>
+												echo 'selected="selected"';
+											} ?> value="no">No</option>
 										</select>
 									</div>
 								</div>
@@ -229,22 +263,29 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testingPoints" class="col-lg-4 control-label"><?php echo _translate("Testing Point(s)"); ?><br> <small><?php echo _translate("(comma separated)"); ?></small> </label>
+									<label for="testingPoints"
+										class="col-lg-4 control-label"><?php echo _translate("Testing Point(s)"); ?><br>
+										<small><?php echo _translate("(comma separated)"); ?></small> </label>
 									<div class="col-lg-7">
 										<?php
 										$testingPointsJSON = $facilityInfo['testing_points'] ?? '[]';
 										$decoded = json_decode((string) $testingPointsJSON, true);
 										$testingPoints = is_array($decoded) ? implode(", ", $decoded) : '';
 										?>
-										<input type="text" class="form-control" id="testingPoints" name="testingPoints" placeholder="<?php echo _translate('eg. VCT, PMTCT'); ?>" value="<?= $testingPoints ?>" />
+										<input type="text" class="form-control" id="testingPoints" name="testingPoints"
+											placeholder="<?php echo _translate('eg. VCT, PMTCT'); ?>"
+											value="<?= $testingPoints ?>" />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="Lab Manager" class="col-lg-4 control-label"><?php echo _translate("Lab Manager"); ?></label>
+									<label for="Lab Manager"
+										class="col-lg-4 control-label"><?php echo _translate("Lab Manager"); ?></label>
 									<div class="col-lg-7">
-										<select name="contactPerson" id="contactPerson" class="select2 form-control" title="<?php echo _translate('Please choose Lab Manager'); ?>" style="width: 100%;">
+										<select name="contactPerson" id="contactPerson" class="select2 form-control"
+											title="<?php echo _translate('Please choose Lab Manager'); ?>"
+											style="width: 100%;">
 											<?= $general->generateSelectOptions($userInfo, $facilityInfo['contact_person'], _translate("-- Select --")); ?>
 										</select>
 									</div>
@@ -256,26 +297,40 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="phoneNo" class="col-lg-4 control-label"><?php echo _translate("Phone Number"); ?></label>
+									<label for="phoneNo"
+										class="col-lg-4 control-label"><?php echo _translate("Phone Number"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo" placeholder="<?php echo _translate('Phone Number'); ?>" value="<?= ((string) $facilityInfo['facility_mobile_numbers']); ?>" onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,'<?php echo "facility_id##" . $facilityInfo['facility_id']; ?>','<?php echo _translate("The mobile no that you entered already exists.Enter another mobile no."); ?>',null)" />
+										<input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo"
+											placeholder="<?php echo _translate('Phone Number'); ?>"
+											value="<?= ((string) $facilityInfo['facility_mobile_numbers']); ?>"
+											onblur="checkNameValidation('facility_details','facility_mobile_numbers',this,'<?php echo "facility_id##" . $facilityInfo['facility_id']; ?>','<?php echo _translate("The mobile no that you entered already exists.Enter another mobile no."); ?>',null)" />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="state" class="col-lg-4 control-label"><?php echo _translate("Province/State"); ?> <span class="mandatory">*</span> </label>
+									<label for="state"
+										class="col-lg-4 control-label"><?php echo _translate("Province/State"); ?> <span
+											class="mandatory">*</span> </label>
 									<div class="col-lg-7">
 										<?php if (count($geoLocationParentArray) > 0) { ?>
-											<select name="stateId" id="stateId" class="form-control isRequired" title="<?php echo _translate('Please choose province/state'); ?>">
+											<select name="stateId" id="stateId" class="form-control isRequired"
+												title="<?php echo _translate('Please choose province/state'); ?>">
 												<?= $general->generateSelectOptions($geoLocationParentArray, $facilityInfo['facility_state_id'], _translate("-- Select --")); ?>
 												<option value="other">Other</option>
 											</select>
-											<input type="text" class="form-control" name="provinceNew" id="provinceNew" placeholder="<?php echo _translate('Enter Province/State'); ?>" title="<?php echo _translate('Please enter province/state'); ?>" style="margin-top:4px;display:none;" />
-											<input type="hidden" name="state" id="state" value="<?= ((string) $facilityInfo['facility_state']); ?>" />
+											<input type="text" class="form-control" name="provinceNew" id="provinceNew"
+												placeholder="<?php echo _translate('Enter Province/State'); ?>"
+												title="<?php echo _translate('Please enter province/state'); ?>"
+												style="margin-top:4px;display:none;" />
+											<input type="hidden" name="state" id="state"
+												value="<?= ((string) $facilityInfo['facility_state']); ?>" />
 										<?php }
 										if ((!isset($facilityInfo['facility_state_id']) || $facilityInfo['facility_state_id'] == "") && (isset($facilityInfo['facility_state']) || $facilityInfo['facility_state'] != "")) { ?>
-											<input type="text" value="<?= ((string) $facilityInfo['facility_state']); ?>" class="form-control isRequired" name="oldState" id="oldState" placeholder="<?php echo _translate('Enter Province/State'); ?>" title="<?php echo _translate('Please enter province/state'); ?>" />
+											<input type="text" value="<?= ((string) $facilityInfo['facility_state']); ?>"
+												class="form-control isRequired" name="oldState" id="oldState"
+												placeholder="<?php echo _translate('Enter Province/State'); ?>"
+												title="<?php echo _translate('Please enter province/state'); ?>" />
 										<?php } ?>
 									</div>
 								</div>
@@ -286,25 +341,39 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="district" class="col-lg-4 control-label"><?php echo _translate("District/County"); ?> <span class="mandatory">*</span></label>
+									<label for="district"
+										class="col-lg-4 control-label"><?php echo _translate("District/County"); ?>
+										<span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select name="districtId" id="districtId" class="form-control isRequired" title="<?php echo _translate('Please choose District/County'); ?>">
+										<select name="districtId" id="districtId" class="form-control isRequired"
+											title="<?php echo _translate('Please choose District/County'); ?>">
 											<?= $general->generateSelectOptions($geoLocationChildArray, $facilityInfo['facility_district_id'], _translate("-- Select --")); ?>
 											<option value="other">Other</option>
 										</select>
-										<input type="text" class="form-control" name="districtNew" id="districtNew" placeholder="<?php echo _translate('Enter District/County'); ?>" title="<?php echo _translate('Please enter District/County'); ?>" style="margin-top:4px;display:none;" />
-										<input type="hidden" id="district" name="district" value="<?= ((string) $facilityInfo['facility_district']); ?>" />
+										<input type="text" class="form-control" name="districtNew" id="districtNew"
+											placeholder="<?php echo _translate('Enter District/County'); ?>"
+											title="<?php echo _translate('Please enter District/County'); ?>"
+											style="margin-top:4px;display:none;" />
+										<input type="hidden" id="district" name="district"
+											value="<?= ((string) $facilityInfo['facility_district']); ?>" />
 										<?php if ((!isset($facilityInfo['facility_district_id']) || $facilityInfo['facility_district_id'] == "") && (isset($facilityInfo['facility_district']) || $facilityInfo['facility_district'] != "")) { ?>
-											<input type="text" value="<?= ((string) $facilityInfo['facility_district']); ?>" class="form-control isRequired" name="oldDistrict" id="oldDistrict" placeholder="<?php echo _translate('Enter District/County'); ?>" title="<?php echo _translate('Please enter district/county'); ?>" />
+											<input type="text" value="<?= ((string) $facilityInfo['facility_district']); ?>"
+												class="form-control isRequired" name="oldDistrict" id="oldDistrict"
+												placeholder="<?php echo _translate('Enter District/County'); ?>"
+												title="<?php echo _translate('Please enter district/county'); ?>" />
 										<?php } ?>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="hubName" class="col-lg-4 control-label"><?php echo _translate("Linked Hub Name (if applicable)"); ?></label>
+									<label for="hubName"
+										class="col-lg-4 control-label"><?php echo _translate("Linked Hub Name (if applicable)"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="hubName" name="hubName" placeholder="<?php echo _translate('Hub Name'); ?>" title="<?php echo _translate('Please enter hub name'); ?>" value="<?= ((string) $facilityInfo['facility_hub_name']); ?>" />
+										<input type="text" class="form-control" id="hubName" name="hubName"
+											placeholder="<?php echo _translate('Hub Name'); ?>"
+											title="<?php echo _translate('Please enter hub name'); ?>"
+											value="<?= ((string) $facilityInfo['facility_hub_name']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -314,37 +383,22 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="address" class="col-lg-4 control-label"><?php echo _translate("Address"); ?></label>
+									<label for="address"
+										class="col-lg-4 control-label"><?php echo _translate("Address"); ?></label>
 									<div class="col-lg-7">
-										<textarea class="form-control" name="address" id="address" placeholder="<?php echo _translate('Address'); ?>"><?= ((string) $facilityInfo['address']); ?></textarea>
+										<textarea class="form-control" name="address" id="address"
+											placeholder="<?php echo _translate('Address'); ?>"><?= ((string) $facilityInfo['address']); ?></textarea>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="country" class="col-lg-4 control-label"><?php echo _translate("Country"); ?></label>
+									<label for="country"
+										class="col-lg-4 control-label"><?php echo _translate("Country"); ?></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="country" name="country" placeholder="<?php echo _translate('Country'); ?>" value="<?= ((string) $facilityInfo['country']); ?>" />
-									</div>
-								</div>
-							</div>
-
-						</div>
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="latitude" class="col-lg-4 control-label"><?php echo _translate("Latitude"); ?></label>
-									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric" id="latitude" name="latitude" placeholder="<?php echo _translate('Latitude'); ?>" title="<?php echo _translate('Please enter latitude'); ?>" value="<?= ((string) $facilityInfo['latitude']); ?>" />
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="longitude" class="col-lg-4 control-label"><?php echo _translate("Longitude"); ?></label>
-									<div class="col-lg-7">
-										<input type="text" class="form-control forceNumeric" id="longitude" name="longitude" placeholder="<?php echo _translate('Longitude'); ?>" title="<?php echo _translate('Please enter longitude'); ?>" value="<?= ((string) $facilityInfo['longitude']); ?>" />
+										<input type="text" class="form-control" id="country" name="country"
+											placeholder="<?php echo _translate('Country'); ?>"
+											value="<?= ((string) $facilityInfo['country']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -353,43 +407,93 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="status" class="col-lg-4 control-label"><?php echo _translate("Status"); ?> <span class="mandatory">*</span></label>
+									<label for="latitude"
+										class="col-lg-4 control-label"><?php echo _translate("Latitude"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='status' id='status' title="<?php echo _translate('Please select the status'); ?>">
+										<input type="text" class="form-control forceNumeric" id="latitude"
+											name="latitude" placeholder="<?php echo _translate('Latitude'); ?>"
+											title="<?php echo _translate('Please enter latitude'); ?>"
+											value="<?= ((string) $facilityInfo['latitude']); ?>" />
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="longitude"
+										class="col-lg-4 control-label"><?php echo _translate("Longitude"); ?></label>
+									<div class="col-lg-7">
+										<input type="text" class="form-control forceNumeric" id="longitude"
+											name="longitude" placeholder="<?php echo _translate('Longitude'); ?>"
+											title="<?php echo _translate('Please enter longitude'); ?>"
+											value="<?= ((string) $facilityInfo['longitude']); ?>" />
+									</div>
+								</div>
+							</div>
+
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="status"
+										class="col-lg-4 control-label"><?php echo _translate("Status"); ?> <span
+											class="mandatory">*</span></label>
+									<div class="col-lg-7">
+										<select class="form-control isRequired" name='status' id='status'
+											title="<?php echo _translate('Please select the status'); ?>">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-											<option value="active" <?php echo ($facilityInfo['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _translate("Active"); ?></option>
-											<option value="inactive" <?php echo ($facilityInfo['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _translate("Inactive"); ?></option>
+											<option value="active" <?php echo ($facilityInfo['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _translate("Active"); ?>
+											</option>
+											<option value="inactive" <?php echo ($facilityInfo['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _translate("Inactive"); ?>
+											</option>
 										</select>
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testType" class="col-lg-4 control-label test-type"><?php echo _translate("Test Type"); ?></label>
+									<label for="testType"
+										class="col-lg-4 control-label test-type"><?php echo _translate("Test Type"); ?></label>
 									<div class="col-lg-7">
-										<select id="testType" name="testType[]" title="<?php echo _translate('Choose at least one test type'); ?>" onchange="getTestType();" multiple>
+										<select id="testType" name="testType[]"
+											title="<?php echo _translate('Choose at least one test type'); ?>"
+											onchange="getTestType();" multiple>
 											<option value=""><?php echo _translate("Select Test Types"); ?></option>
 
 											<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
-												<option value='vl' <?php echo (preg_match("/vl/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("Viral Load"); ?></option>
+												<option value='vl' <?php echo (preg_match("/vl/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : ''; ?>>
+													<?php echo _translate("Viral Load"); ?>
+												</option>
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
-												<option value='eid' <?php echo (preg_match("/eid/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("Early Infant Diagnosis"); ?></option>
+												<option value='eid' <?php echo (preg_match("/eid/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : ''; ?>>
+													<?php echo _translate("Early Infant Diagnosis"); ?>
+												</option>
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
-												<option value='covid19' <?php echo (preg_match("/covid19/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("Covid-19"); ?></option>
+												<option value='covid19' <?php echo (preg_match("/covid19/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : ''; ?>>
+													<?php echo _translate("Covid-19"); ?>
+												</option>
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
-												<option value='hepatitis' <?php echo (preg_match("/hepatitis/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("Hepatitis"); ?></option>
+												<option value='hepatitis' <?php echo (preg_match("/hepatitis/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : ''; ?>>
+													<?php echo _translate("Hepatitis"); ?>
+												</option>
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
-												<option value='tb' <?php echo (preg_match("/tb/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("TB"); ?></option>
+												<option value='tb' <?php echo (preg_match("/tb/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : ''; ?>>
+													<?php echo _translate("TB"); ?>
+												</option>
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
-												<option value='cd4' <?php echo (preg_match("/cd4/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("CD4"); ?></option>
+												<option value='cd4' <?php echo (preg_match("/cd4/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : ''; ?>>
+													<?php echo _translate("CD4"); ?>
+												</option>
 											<?php }
 											if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
-												<option value='generic-tests' <?php echo (preg_match("/generic-tests/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : '';  ?>><?php echo _translate("Other Lab Tests"); ?></option>
+												<option value='generic-tests' <?php echo (preg_match("/generic-tests/i", (string) $facilityInfo['test_type'])) ? "selected='selected'" : ''; ?>>
+													<?php echo _translate("Other Lab Tests"); ?>
+												</option>
 											<?php } ?>
 										</select>
 									</div>
@@ -399,12 +503,18 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<div class="row">
 							<div class="col-md-6 availablePlatforms" style="display:none;">
 								<div class="form-group">
-									<label for="availablePlatforms" class="col-lg-4 control-label"><?php echo _translate("Available Platforms"); ?></label>
+									<label for="availablePlatforms"
+										class="col-lg-4 control-label"><?php echo _translate("Available Platforms"); ?></label>
 									<div class="col-lg-7">
-										<select id="availablePlatforms" name="availablePlatforms[]" title="<?php echo _translate('Choose one Available Platforms'); ?>" multiple>
-											<option value="microscopy" <?php echo in_array('microscopy', $availPlatforms) ? "selected='selected'" :  ''; ?>><?php echo _translate("Microscopy"); ?></option>
-											<option value="xpert" <?php echo in_array('xpert', $availPlatforms) ? "selected='selected'" : '';  ?>><?php echo _translate("Xpert"); ?></option>
-											<option value="lam" <?php echo in_array('lam', $availPlatforms) ? "selected='selected'" : '';  ?>><?php echo _translate("Lam"); ?></option>
+										<select id="availablePlatforms" name="availablePlatforms[]"
+											title="<?php echo _translate('Choose one Available Platforms'); ?>"
+											multiple>
+											<option value="microscopy" <?php echo in_array('microscopy', $availPlatforms) ? "selected='selected'" : ''; ?>>
+												<?php echo _translate("Microscopy"); ?>
+											</option>
+											<option value="xpert" <?php echo in_array('xpert', $availPlatforms) ? "selected='selected'" : ''; ?>><?php echo _translate("Xpert"); ?>
+											</option>
+											<option value="lam" <?php echo in_array('lam', $availPlatforms) ? "selected='selected'" : ''; ?>><?php echo _translate("Lam"); ?></option>
 										</select>
 									</div>
 								</div>
@@ -416,16 +526,20 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							$count = count($reportFormats['vl']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
-									<label for="reportFormat" class="col-lg-4 control-label"><?php echo _translate("Report Format For VL"); ?></label>
+									<label for="reportFormat"
+										class="col-lg-4 control-label"><?php echo _translate("Report Format For VL"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='reportFormat[vl]' id='reportFormat' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
+										<select class="form-control" name='reportFormat[vl]' id='reportFormat'
+											title="<?php echo _translate('Please select the status'); ?>"
+											onchange="checkIfExist(this);">
 											<?php if ($count > 1) { ?>
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['vl'] as $key => $value) {
 												foreach ($value as $k => $v) { ?>
-													<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['vl'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
-											<?php
+													<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['vl'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?>
+													</option>
+													<?php
 												}
 											} ?>
 										</select>
@@ -437,16 +551,20 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							$count = count($reportFormats['eid']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
-									<label for="reportFormat" class="col-lg-4 control-label"><?php echo _translate("Report Format For EID"); ?></label>
+									<label for="reportFormat"
+										class="col-lg-4 control-label"><?php echo _translate("Report Format For EID"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='reportFormat[eid]' id='reportFormat' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
+										<select class="form-control" name='reportFormat[eid]' id='reportFormat'
+											title="<?php echo _translate('Please select the status'); ?>"
+											onchange="checkIfExist(this);">
 											<?php if (($count > 1)) { ?>
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['eid'] as $key => $value) { ?>
 												<?php foreach ($value as $k => $v) { ?>
-													<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['eid'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
-											<?php }
+													<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['eid'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?>
+													</option>
+												<?php }
 											} ?>
 										</select>
 									</div>
@@ -457,16 +575,21 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							$count = count($reportFormats['covid19']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
-									<label for="reportFormat" class="col-lg-4 control-label"><?php echo _translate("Report Format For Covid-19"); ?></label>
+									<label for="reportFormat"
+										class="col-lg-4 control-label"><?php echo _translate("Report Format For Covid-19"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='reportFormat[covid19]' id='reportFormat' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
+										<select class="form-control" name='reportFormat[covid19]' id='reportFormat'
+											title="<?php echo _translate('Please select the status'); ?>"
+											onchange="checkIfExist(this);">
 											<?php if (($count > 1)) { ?>
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['covid19'] as $key => $value) {
 												foreach ($value as $k => $v) { ?>
-													<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['covid19'] == $k) ? "selected='selected'" : ""; ?>><?php echo ($v); ?></option>
-											<?php }
+													<option value="<?php echo $k; ?>" <?php echo (!empty($formats) && $formats['covid19'] == $k) ? "selected='selected'" : ""; ?>>
+														<?php echo ($v); ?>
+													</option>
+												<?php }
 											} ?>
 										</select>
 									</div>
@@ -477,14 +600,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							$count = count($reportFormats['hepatitis']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
-									<label for="reportFormat" class="col-lg-4 control-label"><?php echo _translate("Report Format For Hepatitis"); ?></label>
+									<label for="reportFormat"
+										class="col-lg-4 control-label"><?php echo _translate("Report Format For Hepatitis"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='reportFormat[hepatitis]' id='reportFormat' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
+										<select class="form-control" name='reportFormat[hepatitis]' id='reportFormat'
+											title="<?php echo _translate('Please select the status'); ?>"
+											onchange="checkIfExist(this);">
 											<?php if (($count > 1)) { ?>
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['hepatitis'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo (!empty($formats) && $formats['hepatitis'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
+												<option value="<?php echo $key; ?>" <?php echo (!empty($formats) && $formats['hepatitis'] == $key) ? "selected='selected'" : ""; ?>>
+													<?php echo ($value); ?>
+												</option>
 											<?php } ?>
 										</select>
 									</div>
@@ -495,14 +623,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							$count = count($reportFormats['tb']); ?>
 							<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 								<div class="form-group">
-									<label for="reportFormat" class="col-lg-4 control-label"><?php echo _translate("Report Format For TB"); ?></label>
+									<label for="reportFormat"
+										class="col-lg-4 control-label"><?php echo _translate("Report Format For TB"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='reportFormat[tb]' id='reportFormat' title="<?php echo _translate('Please select the status'); ?>" onchange="checkIfExist(this);">
+										<select class="form-control" name='reportFormat[tb]' id='reportFormat'
+											title="<?php echo _translate('Please select the status'); ?>"
+											onchange="checkIfExist(this);">
 											<?php if (($count > 1)) { ?>
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
 											<?php } ?>
 											<?php foreach ($reportFormats['tb'] as $key => $value) { ?>
-												<option value="<?php echo $key; ?>" <?php echo (!empty($formats) && $formats['tb'] == $key) ? "selected='selected'" : ""; ?>><?php echo ($value); ?></option>
+												<option value="<?php echo $key; ?>" <?php echo (!empty($formats) && $formats['tb'] == $key) ? "selected='selected'" : ""; ?>>
+													<?php echo ($value); ?>
+												</option>
 											<?php } ?>
 										</select>
 									</div>
@@ -513,40 +646,55 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					<div class="row logoImage">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="" class="col-lg-4 control-label"><?php echo _translate("Logo Image"); ?> </label>
+								<label for="" class="col-lg-4 control-label"><?php echo _translate("Logo Image"); ?>
+								</label>
 								<div class="col-lg-8">
 									<div class="fileinput fileinput-new labLogo" data-provides="fileinput">
-										<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
+										<div class="fileinput-preview thumbnail" data-trigger="fileinput"
+											style="width:200px; height:150px;">
 											<?php
 
 											if (isset($facilityInfo['facility_logo']) && trim((string) $facilityInfo['facility_logo']) !== '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) { ?>
-												<img src="/uploads/facility-logo/<?= ((string) $facilityInfo['facility_id']); ?>/<?= ((string) $facilityInfo['facility_logo']); ?>" alt="Logo image">
+												<img src="/uploads/facility-logo/<?= ((string) $facilityInfo['facility_id']); ?>/<?= ((string) $facilityInfo['facility_logo']); ?>"
+													alt="Logo image">
 											<?php } else { ?>
 
 											<?php } ?>
 										</div>
 										<div>
-											<span class="btn btn-default btn-file"><span class="fileinput-new"><?php echo _translate("Select image"); ?></span><span class="fileinput-exists"><?php echo _translate("Change"); ?></span>
-												<input type="file" id="labLogo" name="labLogo" title="<?php echo _translate('Please select logo image'); ?>" onchange="getNewLabImage('<?= ((string) $facilityInfo['facility_logo']); ?>');">
+											<span class="btn btn-default btn-file"><span
+													class="fileinput-new"><?php echo _translate("Select image"); ?></span><span
+													class="fileinput-exists"><?php echo _translate("Change"); ?></span>
+												<input type="file" id="labLogo" name="labLogo"
+													title="<?php echo _translate('Please select logo image'); ?>"
+													onchange="getNewLabImage('<?= ((string) $facilityInfo['facility_logo']); ?>');">
 											</span>
 											<?php
 											if (isset($facilityInfo['facility_logo']) && trim((string) $facilityInfo['facility_logo']) !== '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $facilityInfo['facility_logo'])) { ?>
-												<a id="clearLabImage" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearLabImage('<?= ((string) $facilityInfo['facility_logo']); ?>')"><?php echo _translate("Clear"); ?></a>
+												<a id="clearLabImage" href="javascript:void(0);" class="btn btn-default"
+													data-dismiss="fileupload"
+													onclick="clearLabImage('<?= ((string) $facilityInfo['facility_logo']); ?>')"><?php echo _translate("Clear"); ?></a>
 											<?php } ?>
-											<a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput"><?php echo _translate("Remove"); ?></a>
+											<a href="#" class="btn btn-default fileinput-exists"
+												data-dismiss="fileinput"><?php echo _translate("Remove"); ?></a>
 										</div>
 									</div>
 									<div class="box-body">
-										<?php echo _translate("Please make sure logo image size of"); ?>: <code><?php echo _translate("80x80"); ?></code>
+										<?php echo _translate("Please make sure logo image size of"); ?>:
+										<code><?php echo _translate("80x80"); ?></code>
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="" class="col-lg-4 control-label"><?php echo _translate("Header Text"); ?></label>
+								<label for=""
+									class="col-lg-4 control-label"><?php echo _translate("Header Text"); ?></label>
 								<div class="col-lg-7">
-									<input type="text" class="form-control " id="headerText" name="headerText" placeholder="<?php echo _translate('Header Text'); ?>" title="<?php echo _translate('Please enter header text'); ?>" value="<?= ((string) $facilityInfo['header_text']); ?>" />
+									<input type="text" class="form-control " id="headerText" name="headerText"
+										placeholder="<?php echo _translate('Header Text'); ?>"
+										title="<?php echo _translate('Please enter header text'); ?>"
+										value="<?= ((string) $facilityInfo['header_text']); ?>" />
 								</div>
 							</div>
 						</div>
@@ -565,12 +713,16 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										$showreportTemplate = "style='display:none'"; ?>
 										<span id="reportTemplateSpan" class="form-control">
 											<a href="javascript:void(0);" onclick="showreportTemplateFile();">
-												<span class="alert-danger" style="padding: 0.4em; border-radius: 50%; float: right; height: 1.6em; width: 1.6em; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1;">X</span>
+												<span class="alert-danger"
+													style="padding: 0.4em; border-radius: 50%; float: right; height: 1.6em; width: 1.6em; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1;">X</span>
 											</a>
 											<a href=<?php echo $lmSign; ?> target="_blank"> <?php echo $facilityAttributes->report_template; ?> </a>
 										</span>
 									<?php } ?>
-									<input <?php echo $showreportTemplate; ?> class="showreportTemplateFile form-control" type="file" name="reportTemplate" id="reportTemplate" placeholder="' . _translate('Upload Report Template') . '" accept=".pdf" title="' . _translate('Please Upload Report Template') . '">
+									<input <?php echo $showreportTemplate; ?>
+										class="showreportTemplateFile form-control" type="file" name="reportTemplate"
+										id="reportTemplate" placeholder="' . _translate('Upload Report Template') . '"
+										accept=".pdf" title="' . _translate('Please Upload Report Template') . '">
 								</div>
 							</div>
 						</div>
@@ -583,7 +735,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										<?php echo _translate("Display Page Number in Footer"); ?>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control" name='displayPagenoInFooter' id='displayPagenoInFooter' title="<?php echo _translate('Display Page Number in Footer'); ?>">
+										<select class="form-control" name='displayPagenoInFooter' id='displayPagenoInFooter'
+											title="<?php echo _translate('Display Page Number in Footer'); ?>">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<option value="yes" <?php echo (isset($facilityAttributes->display_page_number_in_footer) && $facilityAttributes->display_page_number_in_footer === 'yes') ? "selected='selected'" : "" ?>><?php echo _translate("Yes"); ?></option>
 											<option value="no" <?php echo (isset($facilityAttributes->display_page_number_in_footer) && $facilityAttributes->display_page_number_in_footer === 'no') ? "selected='selected'" : "" ?>><?php echo _translate("No"); ?></option>
@@ -597,7 +750,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										<?php echo _translate("Display Signature Table"); ?>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control" name='displaySignatureTable' id='displaySignatureTable' title="<?php echo _translate('Display Signature Table'); ?>">
+										<select class="form-control" name='displaySignatureTable' id='displaySignatureTable'
+											title="<?php echo _translate('Display Signature Table'); ?>">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<option value="yes" <?php echo (isset($facilityAttributes->display_signature_table) && $facilityAttributes->display_signature_table === 'yes') ? "selected='selected'" : "" ?>><?php echo _translate("Yes"); ?></option>
 											<option value="no" <?php echo (isset($facilityAttributes->display_signature_table) && $facilityAttributes->display_signature_table === 'no') ? "selected='selected'" : "" ?>><?php echo _translate("No"); ?></option>
@@ -613,7 +767,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										<?php echo _translate("Report Top Margin"); ?>
 									</label>
 									<div class="col-lg-7">
-										<input type="number" value="<?php echo $facilityAttributes->report_top_margin ?? '17' ?>" class="form-control" name="reportTopMargin" id="reportTopMargin" placeholder="<?php echo _translate('Report Top Margin'); ?>" title="<?php echo _translate('Please enter the report top margin'); ?>">
+										<input type="number"
+											value="<?php echo $facilityAttributes->report_top_margin ?? '17' ?>"
+											class="form-control" name="reportTopMargin" id="reportTopMargin"
+											placeholder="<?php echo _translate('Report Top Margin'); ?>"
+											title="<?php echo _translate('Please enter the report top margin'); ?>">
 									</div>
 								</div>
 							</div>
@@ -623,9 +781,13 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										<?php echo _translate("Bottom Text Location"); ?>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control" name="bottomTextLocation" id="bottomTextLocation" title="<?php echo _translate('Please enter the Bottom Text Location'); ?>">
-											<option value="aboveFooter" <?php echo (isset($facilityAttributes->bottom_text_location) && $facilityAttributes->bottom_text_location === 'aboveFooter') ? "selected='selected'" : "" ?>><?php echo _translate("Above Footer"); ?></option>
-											<option value="belowPlatformName" <?php echo (isset($facilityAttributes->bottom_text_location) && $facilityAttributes->bottom_text_location === 'belowPlatformName') ? "selected='selected'" : "" ?>><?php echo _translate("Below Platform Name"); ?></option>
+										<select class="form-control" name="bottomTextLocation" id="bottomTextLocation"
+											title="<?php echo _translate('Please enter the Bottom Text Location'); ?>">
+											<option value="aboveFooter" <?php echo (isset($facilityAttributes->bottom_text_location) && $facilityAttributes->bottom_text_location === 'aboveFooter') ? "selected='selected'" : "" ?>><?php echo _translate("Above Footer"); ?>
+											</option>
+											<option value="belowPlatformName" <?php echo (isset($facilityAttributes->bottom_text_location) && $facilityAttributes->bottom_text_location === 'belowPlatformName') ? "selected='selected'" : "" ?>>
+												<?php echo _translate("Below Platform Name"); ?>
+											</option>
 										</select>
 									</div>
 								</div>
@@ -635,7 +797,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					<div class="row" id="sampleType"></div>
 					<div class="row-item labDiv" style="display:<?php echo $labDiv; ?>;">
 						<hr>
-						<h4 class="col-lg-12"><?= _translate("The following information is sometimes used to show names, designations and signatures in some reports."); ?></h4>
+						<h4 class="col-lg-12">
+							<?= _translate("The following information is sometimes used to show names, designations and signatures in some reports."); ?>
+						</h4>
 						<table aria-describedby="table" class="col-lg-12 table table-bordered">
 							<thead>
 								<tr>
@@ -652,69 +816,120 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 								<?php if (!empty($signResults)) {
 									foreach ($signResults as $key => $row) { ?>
 										<tr>
-											<td style="vertical-align:middle;width:15%;"><input type="hidden" name="signId[]" id="signId<?php echo ($key + 1); ?>" value="<?php echo $row['signatory_id'] ?>" /><input value="<?php echo $row['name_of_signatory'] ?>" type="text" class="form-control" name="signName[]" id="signName<?php echo ($key + 1); ?>" placeholder="<?php echo _translate('Name'); ?>" title="<?php echo _translate('Please enter the name'); ?>"></td>
-											<td style="vertical-align:middle;width:10%;"><input value="<?php echo $row['designation'] ?>" type="text" class="form-control" name="designation[]" id="designation<?php echo ($key + 1); ?>" placeholder="<?php echo _translate('Designation'); ?>" title="<?php echo _translate('Please enter the Designation'); ?>"></td>
+											<td style="vertical-align:middle;width:15%;"><input type="hidden" name="signId[]"
+													id="signId<?php echo ($key + 1); ?>"
+													value="<?php echo $row['signatory_id'] ?>" /><input
+													value="<?php echo $row['name_of_signatory'] ?>" type="text"
+													class="form-control" name="signName[]"
+													id="signName<?php echo ($key + 1); ?>"
+													placeholder="<?php echo _translate('Name'); ?>"
+													title="<?php echo _translate('Please enter the name'); ?>"></td>
+											<td style="vertical-align:middle;width:10%;"><input
+													value="<?php echo $row['designation'] ?>" type="text" class="form-control"
+													name="designation[]" id="designation<?php echo ($key + 1); ?>"
+													placeholder="<?php echo _translate('Designation'); ?>"
+													title="<?php echo _translate('Please enter the Designation'); ?>"></td>
 											<td style="vertical-align:middle;width:10%;">
 												<?php $lmSign = "/uploads/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
 												$show = "style='display:block'";
 												if (isset($row['signature']) && $row['signature'] != "") {
 													$show = "style='display:none'";
-												?>
-													<span id="spanClass<?php echo ($key + 1); ?>"><a href="javascript:void(0);" onclick="showFile(<?= $key + 1; ?>);"><span class="alert-danger" style="padding: 0.4em; border-radius: 50%; float: right; height: 1.6em; width: 1.6em; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1;">X</span></a><img alt="Facility" src="<?php echo $lmSign; ?>" style="width: 100px;" /></span>
+													?>
+													<span id="spanClass<?php echo ($key + 1); ?>"><a href="javascript:void(0);"
+															onclick="showFile(<?= $key + 1; ?>);"><span class="alert-danger"
+																style="padding: 0.4em; border-radius: 50%; float: right; height: 1.6em; width: 1.6em; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1;">X</span></a><img
+															alt="Facility" src="<?php echo $lmSign; ?>"
+															style="width: 100px;" /></span>
 												<?php }
 												?>
-												<input <?php echo $show; ?> class="showFile<?php echo ($key + 1); ?>" type="file" name="signature[]" id="signature<?= $key + 1; ?>" placeholder="<?php echo _translate('Signature'); ?>" title="<?php echo _translate('Please enter the Signature'); ?>">
+												<input <?php echo $show; ?> class="showFile<?php echo ($key + 1); ?>"
+													type="file" name="signature[]" id="signature<?= $key + 1; ?>"
+													placeholder="<?php echo _translate('Signature'); ?>"
+													title="<?php echo _translate('Please enter the Signature'); ?>">
 											</td>
 											<td style="vertical-align:middle;width:10%;">
-												<select class="select2 testSignType" id="testSignType<?php echo ($key + 1); ?>" name="testSignType[<?= $key + 1; ?>][]" title="<?php echo _translate('Choose at least one test type'); ?>" multiple>
+												<select class="select2 testSignType" id="testSignType<?php echo ($key + 1); ?>"
+													name="testSignType[<?= $key + 1; ?>][]"
+													title="<?php echo _translate('Choose at least one test type'); ?>" multiple>
 													<option value="vl" <?php echo (isset($row['test_types']) && in_array("vl", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Viral Load"); ?></option>
 													<option value="eid" <?php echo (isset($row['test_types']) && in_array("eid", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Early Infant Diagnosis"); ?></option>
-													<option value="covid19" <?php echo (isset($row['test_types']) && in_array("covid19", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Covid-19"); ?></option>
-													<option value='hepatitis' <?php echo (isset($row['test_types']) && in_array("hepatitis", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Hepatitis"); ?></option>
+													<option value="covid19" <?php echo (isset($row['test_types']) && in_array("covid19", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Covid-19"); ?>
+													</option>
+													<option value='hepatitis' <?php echo (isset($row['test_types']) && in_array("hepatitis", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Hepatitis"); ?>
+													</option>
 													<option value='tb' <?php echo (isset($row['test_types']) && in_array("tb", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("TB"); ?></option>
-													<option value='generic-tests' <?php echo (isset($row['test_types']) && in_array("generic-tests", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("Other Lab Tests"); ?></option>
+													<option value='generic-tests' <?php echo (isset($row['test_types']) && in_array("generic-tests", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>>
+														<?php echo _translate("Other Lab Tests"); ?>
+													</option>
 													<option value='cd4' <?php echo (isset($row['test_types']) && in_array("cd4", explode(",", (string) $row['test_types']))) ? 'selected="selected"' : ''; ?>><?php echo _translate("CD4"); ?></option>
 												</select>
 											</td>
-											<td style="vertical-align:middle;width:5%;"><input value="<?php echo $row['display_order'] ?>" type="number" class="form-control" name="sortOrder[]" id="sortOrder<?= $key + 1; ?>" placeholder="<?php echo _translate('Display Order'); ?>" title="<?php echo _translate('Please enter the Display Order'); ?>"></td>
+											<td style="vertical-align:middle;width:5%;"><input
+													value="<?php echo $row['display_order'] ?>" type="number"
+													class="form-control" name="sortOrder[]" id="sortOrder<?= $key + 1; ?>"
+													placeholder="<?php echo _translate('Display Order'); ?>"
+													title="<?php echo _translate('Please enter the Display Order'); ?>"></td>
 											<td style="vertical-align:middle;width:7%;">
-												<select class="form-control" id="signStatus<?= $key + 1; ?>" name="signStatus[]" title="<?php echo _translate('Please select the status'); ?>">
-													<option value="active" <?php echo (isset($row['test_types']) && $row['test_types'] == 'active') ? 'selected="selected"' : ''; ?>><?php echo _translate("Active"); ?></option>
-													<option value="inactive" <?php echo (isset($row['test_types']) && $row['test_types'] == 'inactive') ? 'selected="selected"' : ''; ?>><?php echo _translate("Inactive"); ?></option>
+												<select class="form-control" id="signStatus<?= $key + 1; ?>" name="signStatus[]"
+													title="<?php echo _translate('Please select the status'); ?>">
+													<option value="active" <?php echo (isset($row['test_types']) && $row['test_types'] == 'active') ? 'selected="selected"' : ''; ?>>
+														<?php echo _translate("Active"); ?>
+													</option>
+													<option value="inactive" <?php echo (isset($row['test_types']) && $row['test_types'] == 'inactive') ? 'selected="selected"' : ''; ?>>
+														<?php echo _translate("Inactive"); ?>
+													</option>
 												</select>
 											</td>
 											<td style="vertical-align:middle;text-align: center;width:7%;">
-												<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-												<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);deletedRow(<?php echo $row['signatory_id'] ?>);"><em class="fa-solid fa-minus"></em></a>
+												<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);"
+													onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+												<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);"
+													onclick="removeNewRow(this.parentNode.parentNode);deletedRow(<?php echo $row['signatory_id'] ?>);"><em
+														class="fa-solid fa-minus"></em></a>
 											</td>
 										</tr>
 									<?php }
 								} else { ?>
 									<tr>
-										<td style="width:14%;"><input type="text" class="form-control" name="signName[]" id="signName1" placeholder="<?php echo _translate('Name'); ?>" title="<?php echo _translate('Please enter the name'); ?>"></td>
-										<td style="width:14%;"><input type="text" class="form-control" name="designation[]" id="designation1" placeholder="<?php echo _translate('Designation'); ?>" title="<?php echo _translate('Please enter the Designation'); ?>"></td>
-										<td style="width:10%;"><input type="file" name="signature[]" id="signature1" placeholder="<?php echo _translate('Signature'); ?>" title="<?php echo _translate('Please enter the Signature'); ?>"></td>
+										<td style="width:14%;"><input type="text" class="form-control" name="signName[]"
+												id="signName1" placeholder="<?php echo _translate('Name'); ?>"
+												title="<?php echo _translate('Please enter the name'); ?>"></td>
+										<td style="width:14%;"><input type="text" class="form-control" name="designation[]"
+												id="designation1" placeholder="<?php echo _translate('Designation'); ?>"
+												title="<?php echo _translate('Please enter the Designation'); ?>"></td>
+										<td style="width:10%;"><input type="file" name="signature[]" id="signature1"
+												placeholder="<?php echo _translate('Signature'); ?>"
+												title="<?php echo _translate('Please enter the Signature'); ?>"></td>
 										<td style="width:14%;">
-											<select class="select2 testSignType" id="testSignType1" name="testSignType[1][]" title="<?php echo _translate('Choose at least one test type'); ?>" multiple>
+											<select class="select2 testSignType" id="testSignType1" name="testSignType[1][]"
+												title="<?php echo _translate('Choose at least one test type'); ?>" multiple>
 												<option value="vl"><?php echo _translate("Viral Load"); ?></option>
-												<option value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
+												<option value="eid"><?php echo _translate("Early Infant Diagnosis"); ?>
+												</option>
 												<option value="covid19"><?php echo _translate("Covid-19"); ?></option>
 												<option value='hepatitis'><?php echo _translate("Hepatitis"); ?></option>
 												<option value='tb'><?php echo _translate("TB"); ?></option>
-												<option value='generic-tests'><?php echo _translate("Other Lab Tests"); ?></option>
+												<option value='generic-tests'><?php echo _translate("Other Lab Tests"); ?>
+												</option>
 												<option value='cd4'><?php echo _translate("CD4"); ?></option>
 											</select>
 										</td>
-										<td style="width:14%;"><input type="number" class="form-control" name="sortOrder[]" id="sortOrder1" placeholder="<?php echo _translate('Display Order'); ?>" title="<?php echo _translate('Please enter the Display Order'); ?>"></td>
+										<td style="width:14%;"><input type="number" class="form-control" name="sortOrder[]"
+												id="sortOrder1" placeholder="<?php echo _translate('Display Order'); ?>"
+												title="<?php echo _translate('Please enter the Display Order'); ?>"></td>
 										<td style="width:14%;">
-											<select class="form-control" id="signStatus1" name="signStatus[]" title="<?php echo _translate('Please select the status'); ?>">
+											<select class="form-control" id="signStatus1" name="signStatus[]"
+												title="<?php echo _translate('Please select the status'); ?>">
 												<option value="active"><?php echo _translate("Active"); ?></option>
 												<option value="inactive"><?php echo _translate("Inactive"); ?></option>
 											</select>
 										</td>
 										<td style="vertical-align:middle;text-align: center;width:10%;">
-											<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-											<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeNewRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+											<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);"
+												onclick="addNewRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+											<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);"
+												onclick="removeNewRow(this.parentNode.parentNode);"><em
+													class="fa-solid fa-minus"></em></a>
 										</td>
 									</tr>
 								<?php } ?>
@@ -734,22 +949,34 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<table class="table table-bordered" id="testTypeFileTable">
 								<thead>
 									<tr>
-										<th style="width:30%;vertical-align:middle;text-align: center;"><?php echo _translate("Test Type"); ?></th>
-										<th style="width:50%;vertical-align:middle;text-align: center;"><?php echo _translate("Upload File (PDF)"); ?></th>
-										<th style="width:10%;vertical-align:middle;text-align: center;"><?php echo _translate("Header Margin"); ?></th>
-										<th style="width:10%;vertical-align:middle;text-align: center;"><?php echo _translate("Action"); ?></th>
+										<th style="width:30%;vertical-align:middle;text-align: center;">
+											<?php echo _translate("Test Type"); ?>
+										</th>
+										<th style="width:50%;vertical-align:middle;text-align: center;">
+											<?php echo _translate("Upload File (PDF)"); ?>
+										</th>
+										<th style="width:10%;vertical-align:middle;text-align: center;">
+											<?php echo _translate("Header Margin"); ?>
+										</th>
+										<th style="width:10%;vertical-align:middle;text-align: center;">
+											<?php echo _translate("Action"); ?>
+										</th>
 									</tr>
 								</thead>
 								<tbody id="testTypeFileDetails">
 									<?php if (isset($facilityReportFormat) && $facilityReportFormat !== []) {
 										$n = 1;
 										foreach ($facilityReportFormat as $test => $file) {
-											$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $file->file;  ?>
+											$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $file->file; ?>
 											<tr>
 												<td>
-													<select class="form-control testTypeFileSelect" name="testTypeFile[<?php echo ($n - 1); ?>]" id="testTypeFile<?php echo $n; ?>">
+													<select class="form-control testTypeFileSelect"
+														name="testTypeFile[<?php echo ($n - 1); ?>]"
+														id="testTypeFile<?php echo $n; ?>">
 														<option value=""><?php echo _translate("Select Test Type"); ?></option>
-														<option value="default" <?php echo ($test == 'default') ? 'selected="selected"' : ''; ?>><?php echo _translate("Default format"); ?></option>
+														<option value="default" <?php echo ($test == 'default') ? 'selected="selected"' : ''; ?>>
+															<?php echo _translate("Default format"); ?>
+														</option>
 														<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 															<option value="vl" <?php echo ($test == 'vl') ? 'selected="selected"' : ''; ?>><?php echo _translate("Viral Load"); ?></option>
 														<?php }
@@ -757,10 +984,13 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<option value="eid" <?php echo ($test == 'eid') ? 'selected="selected"' : ''; ?>><?php echo _translate("Early Infant Diagnosis"); ?></option>
 														<?php }
 														if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
-															<option value="covid19" <?php echo ($test == 'covid19') ? 'selected="selected"' : ''; ?>><?php echo _translate("Covid-19"); ?></option>
+															<option value="covid19" <?php echo ($test == 'covid19') ? 'selected="selected"' : ''; ?>><?php echo _translate("Covid-19"); ?>
+															</option>
 														<?php }
 														if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
-															<option value='hepatitis' <?php echo ($test == 'hepatitis') ? 'selected="selected"' : ''; ?>><?php echo _translate("Hepatitis"); ?></option>
+															<option value='hepatitis' <?php echo ($test == 'hepatitis') ? 'selected="selected"' : ''; ?>>
+																<?php echo _translate("Hepatitis"); ?>
+															</option>
 														<?php }
 														if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
 															<option value='tb' <?php echo ($test == 'tb') ? 'selected="selected"' : ''; ?>><?php echo _translate("TB"); ?></option>
@@ -769,46 +999,80 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<option value='cd4' <?php echo ($test == 'cd4') ? 'selected="selected"' : ''; ?>><?php echo _translate("CD4"); ?></option>
 														<?php }
 														if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
-															<option value='generic-tests' <?php echo ($test == 'generic-tests') ? 'selected="selected"' : ''; ?>><?php echo _translate("Other Lab Tests"); ?></option>
+															<option value='generic-tests' <?php echo ($test == 'generic-tests') ? 'selected="selected"' : ''; ?>>
+																<?php echo _translate("Other Lab Tests"); ?>
+															</option>
 														<?php } ?>
 													</select>
 												</td>
 												<td style="vertical-align:middle;text-align: center;margin-left:20px;">
 													<?php if (isset($file) && !empty($file) && (file_exists($filePath) && !is_dir($filePath))) { ?>
 														<div class="m-5">
-															<a href="/uploads/labs/report-template/<?php echo $test; ?>/<?php echo $facilityInfo['facility_id']; ?>/<?php echo $file->file; ?>" class="oldFile<?php echo $n; ?> btn btn-sm btn-primary" title="View / Expend Current File" target="_blank" style="margin-left: -35px; "><i class="fa fa-eye"></i> View</a>
-															<a href="javascript:void(0);" class="btn btn-warning oldFile<?php echo $n; ?>" title="Replace Report Layout" onclick="removeReport(<?php echo $n; ?>);">Replace</a>
-															<a href="javascript:void(0);" class="btn btn-danger oldFile<?php echo $n; ?>" title="Delete Report Template" onclick="deleteReport(<?php echo $n; ?>);removeReport(<?php echo $n; ?>);"><i class="icon-trash"></i> Remove</a>
-															<input type="hidden" name="deleteTemplate[<?php echo ($n - 1); ?>]" id="deleteTemplate<?php echo $n; ?>" />
-															<input type="hidden" value="<?php echo $file->file; ?>" name="oldTemplate[<?php echo ($n - 1); ?>]" id="oldTemplate<?php echo $n; ?>" />
+															<a href="/uploads/labs/report-template/<?php echo $test; ?>/<?php echo $facilityInfo['facility_id']; ?>/<?php echo $file->file; ?>"
+																class="oldFile<?php echo $n; ?> btn btn-sm btn-primary"
+																title="View / Expend Current File" target="_blank"
+																style="margin-left: -35px; "><i class="fa fa-eye"></i> View</a>
+															<a href="javascript:void(0);"
+																class="btn btn-warning oldFile<?php echo $n; ?>"
+																title="Replace Report Layout"
+																onclick="removeReport(<?php echo $n; ?>);">Replace</a>
+															<a href="javascript:void(0);"
+																class="btn btn-danger oldFile<?php echo $n; ?>"
+																title="Delete Report Template"
+																onclick="deleteReport(<?php echo $n; ?>);removeReport(<?php echo $n; ?>);"><i
+																	class="icon-trash"></i> Remove</a>
+															<input type="hidden" name="deleteTemplate[<?php echo ($n - 1); ?>]"
+																id="deleteTemplate<?php echo $n; ?>" />
+															<input type="hidden" value="<?php echo $file->file; ?>"
+																name="oldTemplate[<?php echo ($n - 1); ?>]"
+																id="oldTemplate<?php echo $n; ?>" />
 														</div>
 													<?php } ?>
-													<input <?php echo (isset($file->file) && !empty($file->file) && file_exists($filePath)) ? 'style="display:none;"' : ''; ?> type="file" class="form-control newFile<?php echo $n; ?>" name="reportTemplate[]" id="reportTemplate<?php echo $n; ?>" accept=".pdf" title="<?php echo _translate('Please upload PDF file'); ?>">
+													<input <?php echo (isset($file->file) && !empty($file->file) && file_exists($filePath)) ? 'style="display:none;"' : ''; ?> type="file"
+														class="form-control newFile<?php echo $n; ?>" name="reportTemplate[]"
+														id="reportTemplate<?php echo $n; ?>" accept=".pdf"
+														title="<?php echo _translate('Please upload PDF file'); ?>">
 												</td>
 												<td>
-													<input value="<?php echo $file->mtop; ?>" type="text" class="form-control" name="headerMargin[<?php echo ($n - 1); ?>]" id="headerMargin<?php echo $n; ?>" placeholder="<?php echo _translate('Top margin'); ?>" title="<?php echo _translate('Please enter the header margin'); ?>">
+													<input value="<?php echo $file->mtop; ?>" type="text" class="form-control"
+														name="headerMargin[<?php echo ($n - 1); ?>]"
+														id="headerMargin<?php echo $n; ?>"
+														placeholder="<?php echo _translate('Top margin'); ?>"
+														title="<?php echo _translate('Please enter the header margin'); ?>">
 												</td>
 												<td style="vertical-align:middle;text-align: center;">
-													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-													<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestTypeFileRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+													<a class="btn btn-xs btn-primary" href="javascript:void(0);"
+														onclick="addTestTypeFileRow();"><em
+															class="fa-solid fa-plus"></em></a>&nbsp;
+													<a class="btn btn-xs btn-default" href="javascript:void(0);"
+														onclick="removeTestTypeFileRow(this.parentNode.parentNode);"><em
+															class="fa-solid fa-minus"></em></a>
 												</td>
 											</tr>
-										<?php $n += 1;
+											<?php $n += 1;
 										}
 									} else { ?>
 										<tr>
 											<td style="text-align: center;">
-												<input type="hidden" value="default" class="form-control testTypeFileSelect" name="testTypeFile[]" id="testTypeFile1">
-												<label class="label-control text-center"><?php echo _translate("Default"); ?></label>
+												<input type="hidden" value="default" class="form-control testTypeFileSelect"
+													name="testTypeFile[]" id="testTypeFile1">
+												<label
+													class="label-control text-center"><?php echo _translate("Default"); ?></label>
 											</td>
 											<td>
-												<input type="file" class="form-control" name="reportTemplate[]" id="reportTemplate1" accept=".pdf" title="<?php echo _translate('Please upload PDF file'); ?>">
+												<input type="file" class="form-control" name="reportTemplate[]"
+													id="reportTemplate1" accept=".pdf"
+													title="<?php echo _translate('Please upload PDF file'); ?>">
 											</td>
 											<td>
-												<input type="text" class="form-control" name="headerMargin[]" id="headerMargin1" placeholder="<?php echo _translate('Top margin'); ?>" title="<?php echo _translate('Please enter the header margin'); ?>">
+												<input type="text" class="form-control" name="headerMargin[]"
+													id="headerMargin1" placeholder="<?php echo _translate('Top margin'); ?>"
+													title="<?php echo _translate('Please enter the header margin'); ?>">
 											</td>
 											<td style="vertical-align:middle;text-align: center;">
-												<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+												<a class="btn btn-xs btn-primary" href="javascript:void(0);"
+													onclick="addTestTypeFileRow();"><em
+														class="fa-solid fa-plus"></em></a>&nbsp;
 											</td>
 										</tr>
 									<?php } ?>
@@ -822,7 +1086,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				<input type="hidden" name="selectedUser" id="selectedUser" />
 				<input type="hidden" name="removedLabLogoImage" id="removedLabLogoImage" />
 				<input type="hidden" name="deletedRow" id="deletedRow" />
-				<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+				<a class="btn btn-primary" href="javascript:void(0);"
+					onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
 				<a href="facilities.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
 			</div>
 			<!-- /.box-footer -->
@@ -842,7 +1107,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 <script type="text/javascript">
 	var deletedRowVar = [];
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 		getTestType();
 
@@ -877,7 +1142,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			width: '100%'
 		});
 
-		$("#stateId").change(function() {
+		$("#stateId").change(function () {
 			if ($(this).val() == 'other') {
 				$('#provinceNew').show();
 			} else {
@@ -888,10 +1153,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			var pName = $(this).val();
 			if ($.trim(pName) != '') {
 				$.post("/includes/siteInformationDropdownOptions.php", {
-						pName: pName,
-						dName: '<?php echo (isset($facilityInfo['facility_district_id']) && $facilityInfo['facility_district_id'] != "") ? trim((string) $facilityInfo['facility_district_id']) : trim((string) $facilityInfo['facility_district']); ?>'
-					},
-					function(data) {
+					pName: pName,
+					dName: '<?php echo (isset($facilityInfo['facility_district_id']) && $facilityInfo['facility_district_id'] != "") ? trim((string) $facilityInfo['facility_district_id']) : trim((string) $facilityInfo['facility_district']); ?>'
+				},
+					function (data) {
 						if (data != "") {
 							details = data.split("###");
 							$("#districtId").html(details[1]);
@@ -902,7 +1167,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			$.unblockUI();
 		});
 
-		$("#districtId").change(function() {
+		$("#districtId").change(function () {
 			if ($(this).val() == 'other') {
 				$('#districtNew').show();
 			} else {
@@ -917,7 +1182,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	});
 	var selVal = [];
 	var first = 0;
-	$('#search_to option').each(function(i, selected) {
+	$('#search_to option').each(function (i, selected) {
 		selVal[i] = $(selected).val();
 	});
 	$("#selectedUser").val(selVal);
@@ -925,7 +1190,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	function validateNow() {
 		$('.selectize-control, .selectize-dropdown').removeClass('isRequired');
 		var selVal = [];
-		$('#search_to option').each(function(i, selected) {
+		$('#search_to option').each(function (i, selected) {
 			selVal[i] = $(selected).val();
 		});
 		$("#selectedUser").val(selVal);
@@ -948,13 +1213,13 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
+			tableName: tableName,
+			fieldName: fieldName,
+			value: removeDots.trim(),
+			fnct: fnct,
+			format: "html"
+		},
+			function (data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";
@@ -962,7 +1227,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			});
 	}
 
-	$('#state').on('change', function() {
+	$('#state').on('change', function () {
 		if (this.value == 'other') {
 			$('#provinceNew').show();
 			$('#provinceNew').addClass('isRequired');
@@ -974,7 +1239,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		}
 	});
 
-	$('#facilityType').on('change', function() {
+	$('#facilityType').on('change', function () {
 		if (this.value == '2') {
 			$("#allowResultUpload option[value=yes]").attr('selected', 'selected');
 			$("#allowResultUpload option[value='']").removeAttr('selected', 'selected');
@@ -1014,10 +1279,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	function getFacilityUser() {
 		if ($("#facilityType").val() == '1' || $("#facilityType").val() == '4') {
 			$.post("/facilities/getFacilityMapUser.php", {
-					fType: $("#facilityType").val(),
-					facilityId: <?= ($id); ?>,
-				},
-				function(data) {
+				fType: $("#facilityType").val(),
+				facilityId: <?= ($id); ?>,
+			},
+				function (data) {
 					$("#userDetails").html(data);
 				});
 		} else {
@@ -1109,10 +1374,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 		if ($("#testType").val() != '') {
 			$.post("/facilities/getSampleType.php", {
-					facilityId: $("#facilityId").val(),
-					testType: $("#testType").val()
-				},
-				function(data) {
+				facilityId: $("#facilityId").val(),
+				testType: $("#testType").val()
+			},
+				function (data) {
 					$("#sampleType").html(data);
 				});
 		} else {
@@ -1160,7 +1425,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	}
 
 	function removeNewRow(el) {
-		$(el).fadeOut("slow", function() {
+		$(el).fadeOut("slow", function () {
 			el.parentNode.removeChild(el);
 			rl = document.getElementById("signDetails").rows.length;
 			if (rl == 0) {
@@ -1190,44 +1455,44 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	function addTestTypeFileRow() {
 		testTypeFileCounter++;
 		let rowString = `<tr>
-            <td>
-                <select class="form-control testTypeFileSelect" name="testTypeFile[]" id="testTypeFile${testTypeFileCounter}">
-                    <option value=""><?php echo _translate("Select Test Type", true); ?></option>
+			<td>
+				<select class="form-control testTypeFileSelect" name="testTypeFile[]" id="testTypeFile${testTypeFileCounter}">
+					<option value=""><?php echo _translate("Select Test Type", true); ?></option>
 					<option value="default"><?php echo _translate("Default format"); ?></option>
-                    <?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
-                        <option value="vl"><?php echo _translate("Viral Load", true); ?></option>
-                    <?php }
+					<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
+						<option value="vl"><?php echo _translate("Viral Load", true); ?></option>
+					<?php }
 					if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
-                        <option value="eid"><?php echo _translate("Early Infant Diagnosis", true); ?></option>
-                    <?php }
+						<option value="eid"><?php echo _translate("Early Infant Diagnosis", true); ?></option>
+					<?php }
 					if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
-                        <option value="covid19"><?php echo _translate("Covid-19", true); ?></option>
-                    <?php }
+						<option value="covid19"><?php echo _translate("Covid-19", true); ?></option>
+					<?php }
 					if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
-                        <option value='hepatitis'><?php echo _translate("Hepatitis", true); ?></option>
-                    <?php }
+						<option value='hepatitis'><?php echo _translate("Hepatitis", true); ?></option>
+					<?php }
 					if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
-                        <option value='tb'><?php echo _translate("TB", true); ?></option>
-                    <?php }
+						<option value='tb'><?php echo _translate("TB", true); ?></option>
+					<?php }
 					if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
-                        <option value='cd4'><?php echo _translate("CD4", true); ?></option>
-                    <?php }
+						<option value='cd4'><?php echo _translate("CD4", true); ?></option>
+					<?php }
 					if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
-                        <option value='generic-tests'><?php echo _translate("Other Lab Tests", true); ?></option>
-                    <?php } ?>
-                </select>
-            </td>
-            <td>
-                <input type="file" class="form-control" name="reportTemplate[]" id="reportTemplate${testTypeFileCounter}" accept=".pdf" title="<?php echo _translate('Please upload PDF file', true); ?>">
-            </td>
+						<option value='generic-tests'><?php echo _translate("Other Lab Tests", true); ?></option>
+					<?php } ?>
+				</select>
+			</td>
+			<td>
+				<input type="file" class="form-control" name="reportTemplate[]" id="reportTemplate${testTypeFileCounter}" accept=".pdf" title="<?php echo _translate('Please upload PDF file', true); ?>">
+			</td>
 			<td>
 				<input type="text" class="form-control" name="headerMargin[]" id="headerMargin${testTypeFileCounter}" placeholder="<?php echo _translate('Top margin'); ?>" title="<?php echo _translate('Please enter the header margin'); ?>">
 			</td>
-            <td style="vertical-align:middle;text-align: center;">
-                <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-                <a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestTypeFileRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-            </td>
-        </tr>`;
+			<td style="vertical-align:middle;text-align: center;">
+				<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+				<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestTypeFileRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+			</td>
+		</tr>`;
 
 		$("#testTypeFileDetails").append(rowString);
 	}
@@ -1236,7 +1501,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	function removeTestTypeFileRow(el) {
 		let rowCount = document.getElementById("testTypeFileDetails").rows.length;
 		if (rowCount > 1) {
-			$(el).fadeOut("slow", function() {
+			$(el).fadeOut("slow", function () {
 				console.log(el.parentNode);
 				return false;
 				el.parentNode.removeChild(el);
