@@ -447,6 +447,10 @@ require_once APPLICATION_PATH . '/header.php';
 			refreshTable();
 		});
 
+		$('#levelFilter').on('change', function () {
+			refreshTable();
+		});
+
 		$duplicateToggle.on('change', function () {
 			if ($(this).is(':checked')) {
 				$('#statusFilter').val('active').trigger('change');
