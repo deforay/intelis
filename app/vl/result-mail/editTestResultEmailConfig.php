@@ -6,15 +6,18 @@ $otherConfigQuery = "SELECT * from other_config WHERE type='result'";
 $otherConfigResult = $db->query($otherConfigQuery);
 $arr = [];
 // now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($otherConfigResult); $i++) {
+$counter = count($otherConfigResult);
+// now we create an associative array so that we can easily create view variables
+for ($i = 0; $i < $counter; $i++) {
 	$arr[$otherConfigResult[$i]['name']] = $otherConfigResult[$i]['value'];
 }
 
 $resultArr = [];
 //Set selected field
-if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
+if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) !== '') {
 	$explodField = explode(",", (string) $arr['rs_field']);
-	for ($f = 0; $f < count($explodField); $f++) {
+ $counter = count($explodField);
+	for ($f = 0; $f < $counter; $f++) {
 		$resultArr[] = $explodField[$f];
 	}
 }

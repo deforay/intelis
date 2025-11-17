@@ -14,7 +14,7 @@ if (isset($_POST['testType'])) {
     $sourceList = $general->getSourcesOfTestRequests($table,  true);
     $option = "<option value=''>"._translate("-- Unspecified --")."</option>";
     foreach ($sourceList as $optionValue => $displayText) {
-        $option .= "<option value='". strtolower($optionValue). "'>$displayText</option>";
+        $option .= "<option value='". strtolower((string) $optionValue). "'>$displayText</option>";
     }
     echo $option;
 }

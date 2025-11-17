@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -12,13 +13,12 @@ use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 if (empty($_POST['testingLab']) || 0 == (int) $_POST['testingLab']) {
-    $_SESSION['alertMsg'] = _translate("Please select the Testing lab", true);;
+    $_SESSION['alertMsg'] = _translate("Please select the Testing lab", true);
     header("Location:/specimen-referral-manifest/add-manifest.php?t=" . ($_POST['module']));
 }
 
@@ -41,7 +41,7 @@ try {
 
     $manifestHash = $testRequestsService->getManifestHash($selectedSamples, $_POST['module'], $_POST['packageCode']);
     $numberOfSamples = count($selectedSamples);
-    if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "") {
+    if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) !== "") {
         $currentDateTime = DateUtility::getCurrentDateTime();
         $data = [
             'manifest_code'              => $_POST['packageCode'],

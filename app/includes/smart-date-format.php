@@ -2,6 +2,7 @@
 
 // includes/smart-date-format.php
 // This file handles the smart date format detection and validation
+use Carbon\Carbon;
 use App\Utilities\SmartDateFormatDetector;
 
 header('Content-Type: application/json');
@@ -87,9 +88,9 @@ try {
             }
 
             try {
-                $testDate = \Carbon\Carbon::create(2025, 6, 19, 14, 30, 45);
+                $testDate = Carbon::create(2025, 6, 19, 14, 30, 45);
                 $formatted = $testDate->format($format);
-                $parsed = \Carbon\Carbon::createFromFormat($format, $formatted);
+                $parsed = Carbon::createFromFormat($format, $formatted);
 
                 if ($parsed && $parsed->format($format) === $formatted) {
                     $response = [

@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -13,11 +14,11 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-if (!isset($_POST['type']) || empty(trim($_POST['type']))) {
+if (!isset($_POST['type']) || in_array(trim((string) $_POST['type']), ['', '0'], true)) {
     echo '0';
 } else {
 

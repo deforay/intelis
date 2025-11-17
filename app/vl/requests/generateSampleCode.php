@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\VlService;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
@@ -10,7 +11,7 @@ use App\Utilities\DateUtility;
 $vlService = ContainerRegistry::get(VlService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 

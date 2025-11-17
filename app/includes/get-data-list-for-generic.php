@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
@@ -12,7 +13,7 @@ $geoDb = ContainerRegistry::get(GeoLocationsService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -20,13 +21,13 @@ $text = '';
 $fieldId = $_GET['fieldId'] ?? null;
 $field = $_GET['fieldName'] ?? null;
 $table = $_GET['tableName'] ?? null;
-$returnField = (!empty($_GET['returnField'])) ? $_GET['returnField'] : null;
-$limit = (!empty($_GET['limit'])) ? $_GET['limit'] : null;
-$text = (!empty($_GET['q'])) ? $_GET['q'] : null;
+$returnField = (empty($_GET['returnField'])) ? null : $_GET['returnField'];
+$limit = (empty($_GET['limit'])) ? null : $_GET['limit'];
+$text = (empty($_GET['q'])) ? null : $_GET['q'];
 
 // Set value as id
 $selectField = $field;
-$fieldId = (!empty($fieldId)) ? $fieldId : $field;
+$fieldId = (empty($fieldId)) ? $field : $fieldId;
 if (!empty($fieldId)) {
     $selectField = "$field, $fieldId";
 }
@@ -37,12 +38,10 @@ if (!empty($text) && $text != "") {
     } else {
         $cQuery = "SELECT DISTINCT $selectField FROM $table WHERE $field like '%" . $text . "%' AND $field is not null";
     }
+} elseif (isset($returnField) && $returnField != "") {
+    $cQuery = "SELECT DISTINCT $returnField FROM $table WHERE $field is not null";
 } else {
-    if (isset($returnField) && $returnField != "") {
-        $cQuery = "SELECT DISTINCT $returnField FROM $table WHERE $field is not null";
-    } else {
-        $cQuery = "SELECT DISTINCT $selectField FROM $table WHERE $field is not null";
-    }
+    $cQuery = "SELECT DISTINCT $selectField FROM $table WHERE $field is not null";
 }
 if (!empty($_GET['status'])) {
     $cQuery .= " AND " . $_GET['status'] . " like 'active' ";

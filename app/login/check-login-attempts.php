@@ -1,12 +1,13 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 
 try {
@@ -18,7 +19,7 @@ try {
 	/** @var UsersService $usersService */
 	$usersService = ContainerRegistry::get(UsersService::class);
 
-	if (!empty($loginId) && $usersService->continuousFailedLogins($loginId) >= 3) {
+	if ($loginId !== '' && $loginId !== '0' && $usersService->continuousFailedLogins($loginId) >= 3) {
 		$response = ['captchaRequired' => true];
 	} else {
 		$response = ['captchaRequired' => false];

@@ -6,7 +6,9 @@ use App\Utilities\MiscUtility;
 // Recursively tar+gzip CONFIG_PATH plus runtime info into BACKUP_PATH/config.
 // Keeps last BACKUP_KEEP archives (default 7).
 
-if (php_sapi_name() !== 'cli') exit(0);
+if (php_sapi_name() !== 'cli') {
+    exit(0);
+}
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -82,9 +84,7 @@ echo "✅ Config Backed up : $out\n";
 $files = glob($DEST_DIR . '/' . $PREFIX . '*' . $EXT);
 if ($files !== false && count($files) > $KEEP) {
     // Sort by mtime desc (newest first)
-    usort($files, function ($a, $b) {
-        return filemtime($b) <=> filemtime($a);
-    });
+    usort($files, fn($a, $b): int => filemtime($b) <=> filemtime($a));
     $toDelete = array_slice($files, $KEEP);
     foreach ($toDelete as $old) {
         MiscUtility::deleteFile($old);

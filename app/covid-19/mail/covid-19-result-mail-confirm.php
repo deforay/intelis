@@ -33,31 +33,30 @@ foreach ($geResult as $row) {
 $filename = '';
 $downloadFile1 = '';
 $downloadFile2 = '';
-if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty($_POST['sample'])) {
-   if (isset($mailconf['rs_field']) && trim((string) $mailconf['rs_field']) != '') {
+if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empty($_POST['sample'])) {
+   if (isset($mailconf['rs_field']) && trim((string) $mailconf['rs_field']) !== '') {
       //Pdf code start
       // create new PDF document
       class Covid19MailPDF extends TCPDF
       {
-         public ?string $logo;
+         public ?string $logo = null;
          public ?string  $text = '';
 
 
          //Page header
-         public function setHeading($logo, $text)
+         public function setHeading(?string $logo, ?string $text): void
          {
             $this->logo = $logo;
             $this->text = $text;
          }
          //Page header
-         public function Header()
+         #[\Override]
+         public function Header(): void
          {
 
-            if (!empty($this->logo) && trim($this->logo) != '') {
-               if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                  $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                  $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
-               }
+            if (isset($this->logo) && ($this->logo !== null && $this->logo !== '' && $this->logo !== '0') && trim($this->logo) !== '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
             }
             $this->SetFont('helvetica', 'B', 7);
             $this->writeHTMLCell(30, 0, 16, 28, $this->text, 0, 0, 0, true, 'A');
@@ -67,7 +66,8 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
          }
 
          // Page footer
-         public function Footer()
+         #[\Override]
+         public function Footer(): void
          {
             // Position at 15 mm from bottom
             $this->SetY(-15);
@@ -90,8 +90,8 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
       $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
       // set header and footer fonts
-      $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-      $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+      $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+      $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
 
       // set default monospaced font
       $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -115,106 +115,108 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
       $filedGroup = explode(",", (string) $mailconf['rs_field']);
       $pdfContent .= '<table style="width;100%;border:1px solid #333;padding:0px 2px 2px 2px;" cellspacing="0" cellpadding="2">';
       $pdfContent .= '<tr>';
-      for ($f = 0; $f < count($filedGroup); $f++) {
-         if ($filedGroup[$f] == 'Province') {
+      $counter = count($filedGroup);
+      for ($f = 0; $f < $counter; $f++) {
+         if ($filedGroup[$f] === 'Province') {
             $filedGroup[$f] = 'Province/State';
-         } elseif ($filedGroup[$f] == 'District Name') {
+         } elseif ($filedGroup[$f] === 'District Name') {
             $filedGroup[$f] = 'District/County';
          }
          $pdfContent .= '<td style="border:1px solid #333;"><strong>' . $filedGroup[$f] . '</strong></td>';
       }
       $pdfContent .= '</tr>';
-      for ($s = 0; $s < count($_POST['sample']); $s++) {
+      $counter = count($_POST['sample']);
+      for ($s = 0; $s < $counter; $s++) {
          $sampleQuery = "SELECT sample_code FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.covid19_id = '" . $_POST['sample'][$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
          $sampleResult = $db->rawQuery($sampleQuery);
          if (isset($sampleResult[0]['sample_code'])) {
             $pdfContent .= '<tr>';
             for ($f = 0; $f < count($filedGroup); $f++) {
                $field = '';
-               if ($filedGroup[$f] == "Sample ID") {
+               if ($filedGroup[$f] === "Sample ID") {
                   $field = 'sample_code';
-               } elseif ($filedGroup[$f] == "Urgency") {
+               } elseif ($filedGroup[$f] === "Urgency") {
                   $field = 'test_urgency';
-               } elseif ($filedGroup[$f] == "Province") {
+               } elseif ($filedGroup[$f] === "Province") {
                   $field = 'facility_state';
-               } elseif ($filedGroup[$f] == "District Name") {
+               } elseif ($filedGroup[$f] === "District Name") {
                   $field = 'facility_district';
-               } elseif ($filedGroup[$f] == "Clinic Name") {
+               } elseif ($filedGroup[$f] === "Clinic Name") {
                   $field = 'facility_name';
-               } elseif ($filedGroup[$f] == "Clinician Name") {
+               } elseif ($filedGroup[$f] === "Clinician Name") {
                   $field = 'lab_contact_person';
-               } elseif ($filedGroup[$f] == "Sample Collection Date") {
+               } elseif ($filedGroup[$f] === "Sample Collection Date") {
                   $field = 'sample_collection_date';
-               } elseif ($filedGroup[$f] == "Sample Received Date") {
+               } elseif ($filedGroup[$f] === "Sample Received Date") {
                   $field = 'sample_received_at_lab_datetime';
-               } elseif ($filedGroup[$f] == "Collected by (Initials)") {
+               } elseif ($filedGroup[$f] === "Collected by (Initials)") {
                   $field = 'sample_collected_by';
-               } elseif ($filedGroup[$f] == "Sex") {
+               } elseif ($filedGroup[$f] === "Sex") {
                   $field = 'patient_gender';
-               } elseif ($filedGroup[$f] == "Date Of Birth") {
+               } elseif ($filedGroup[$f] === "Date Of Birth") {
                   $field = 'patient_dob';
-               } elseif ($filedGroup[$f] == "Age in years") {
+               } elseif ($filedGroup[$f] === "Age in years") {
                   $field = 'patient_age_in_years';
-               } elseif ($filedGroup[$f] == "Age in months") {
+               } elseif ($filedGroup[$f] === "Age in months") {
                   $field = 'patient_age_in_months';
-               } elseif ($filedGroup[$f] == "Is Patient Pregnant?") {
+               } elseif ($filedGroup[$f] === "Is Patient Pregnant?") {
                   $field = 'is_patient_pregnant';
-               } elseif ($filedGroup[$f] == "Is Patient Breastfeeding?") {
+               } elseif ($filedGroup[$f] === "Is Patient Breastfeeding?") {
                   $field = 'is_patient_breastfeeding';
-               } elseif ($filedGroup[$f] == "Patient ID/ART/TRACNET") {
+               } elseif ($filedGroup[$f] === "Patient ID/ART/TRACNET") {
                   $field = 'patient_art_no';
-               } elseif ($filedGroup[$f] == "Date Of ART Initiation") {
+               } elseif ($filedGroup[$f] === "Date Of ART Initiation") {
                   $field = 'date_of_initiation_of_current_regimen';
-               } elseif ($filedGroup[$f] == "ART Regimen") {
+               } elseif ($filedGroup[$f] === "ART Regimen") {
                   $field = 'current_regimen';
-               } elseif ($filedGroup[$f] == "Patient consent to SMS Notification?") {
+               } elseif ($filedGroup[$f] === "Patient consent to SMS Notification?") {
                   $field = 'consent_to_receive_sms';
-               } elseif ($filedGroup[$f] == "Patient Mobile Number") {
+               } elseif ($filedGroup[$f] === "Patient Mobile Number") {
                   $field = 'patient_mobile_number';
-               } elseif ($filedGroup[$f] == "Date of Last VL Test") {
+               } elseif ($filedGroup[$f] === "Date of Last VL Test") {
                   $field = 'last_viral_load_date';
-               } elseif ($filedGroup[$f] == "Result Of Last Viral Load") {
+               } elseif ($filedGroup[$f] === "Result Of Last Viral Load") {
                   $field = 'last_viral_load_result';
-               } elseif ($filedGroup[$f] == "Viral Load Log") {
+               } elseif ($filedGroup[$f] === "Viral Load Log") {
                   $field = 'last_vl_result_in_log';
-               } elseif ($filedGroup[$f] == "Reason For VL Test") {
+               } elseif ($filedGroup[$f] === "Reason For VL Test") {
                   $field = 'reason_for_covid19_testing';
-               } elseif ($filedGroup[$f] == "Lab Name") {
+               } elseif ($filedGroup[$f] === "Lab Name") {
                   $field = 'lab_id';
-               } elseif ($filedGroup[$f] == "Lab ID") {
+               } elseif ($filedGroup[$f] === "Lab ID") {
                   $field = 'lab_code';
-               } elseif ($filedGroup[$f] == "VL Testing Platform") {
+               } elseif ($filedGroup[$f] === "VL Testing Platform") {
                   $field = 'vl_test_platform';
-               } elseif ($filedGroup[$f] == "Specimen type") {
+               } elseif ($filedGroup[$f] === "Specimen type") {
                   $field = 'sample_name';
-               } elseif ($filedGroup[$f] == "Sample Testing Date") {
+               } elseif ($filedGroup[$f] === "Sample Testing Date") {
                   $field = 'sample_tested_datetime';
-               } elseif ($filedGroup[$f] == "Viral Load Result(copiesl/ml)") {
+               } elseif ($filedGroup[$f] === "Viral Load Result(copiesl/ml)") {
                   $field = 'result_value_absolute';
-               } elseif ($filedGroup[$f] == "Log Value") {
+               } elseif ($filedGroup[$f] === "Log Value") {
                   $field = 'result_value_log';
-               } elseif ($filedGroup[$f] == "Is Sample Rejected") {
+               } elseif ($filedGroup[$f] === "Is Sample Rejected") {
                   $field = 'is_sample_rejected';
-               } elseif ($filedGroup[$f] == "Rejection Reason") {
+               } elseif ($filedGroup[$f] === "Rejection Reason") {
                   $field = 'rejection_reason_name';
-               } elseif ($filedGroup[$f] == "Reviewed By") {
+               } elseif ($filedGroup[$f] === "Reviewed By") {
                   $field = 'result_reviewed_by';
-               } elseif ($filedGroup[$f] == "Approved By") {
+               } elseif ($filedGroup[$f] === "Approved By") {
                   $field = 'result_approved_by';
-               } elseif ($filedGroup[$f] == "Lab Tech. Comments") {
+               } elseif ($filedGroup[$f] === "Lab Tech. Comments") {
                   $field = 'lab_tech_comments';
-               } elseif ($filedGroup[$f] == "Status") {
+               } elseif ($filedGroup[$f] === "Status") {
                   $field = 'status_name';
                }
 
-               if ($field == '') {
+               if ($field === '') {
                   continue;
                }
-               if ($field ==  'result_reviewed_by') {
+               if ($field === 'result_reviewed_by') {
                   $fValueQuery = "SELECT u.user_name as reviewedBy FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_covid19_sample_type as s_type ON s_type.sample_id=vl.specimen_type LEFT JOIN r_covid19_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN user_details as u ON u.user_id = vl.result_reviewed_by where vl.covid19_id = '" . $_POST['sample'][$s] . "'";
-               } elseif ($field ==  'result_approved_by') {
+               } elseif ($field === 'result_approved_by') {
                   $fValueQuery = "SELECT u.user_name as approvedBy FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_covid19_sample_type as s_type ON s_type.sample_id=vl.specimen_type LEFT JOIN r_covid19_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN user_details as u ON u.user_id = vl.result_approved_by where vl.covid19_id = '" . $_POST['sample'][$s] . "'";
-               } elseif ($field ==  'lab_id') {
+               } elseif ($field === 'lab_id') {
                   $fValueQuery = "SELECT f.facility_name as labName FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id where vl.covid19_id = '" . $_POST['sample'][$s] . "'";
                } else {
                   $fValueQuery = "SELECT $field FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_covid19_sample_type as s_type ON s_type.sample_id=vl.specimen_type LEFT JOIN r_covid19_sample_rejection_reasons as s_r_r ON s_r_r.rejection_reason_id=vl.reason_for_sample_rejection LEFT JOIN r_sample_status as t_s ON t_s.status_id=vl.result_status where vl.covid19_id = '" . $_POST['sample'][$s] . "'";
@@ -222,24 +224,24 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
                $fValueResult = $db->rawQuery($fValueQuery);
                $fieldValue = '';
                if (!empty($fValueResult)) {
-                  if ($field == 'sample_collection_date' || $field == 'sample_received_at_lab_datetime' || $field == 'sample_tested_datetime') {
-                     if (isset($fValueResult[0][$field]) && trim((string) $fValueResult[0][$field]) != '' && trim((string) $fValueResult[0][$field]) != '0000-00-00 00:00:00') {
+                  if ($field === 'sample_collection_date' || $field === 'sample_received_at_lab_datetime' || $field === 'sample_tested_datetime') {
+                     if (isset($fValueResult[0][$field]) && trim((string) $fValueResult[0][$field]) !== '' && trim((string) $fValueResult[0][$field]) !== '0000-00-00 00:00:00') {
                         $fieldValue = DateUtility::humanReadableDateFormat($fValueResult[0][$field], true);
                      }
-                  } elseif ($field == 'patient_dob' || $field == 'date_of_initiation_of_current_regimen' || $field == 'last_viral_load_date') {
-                     if (isset($fValueResult[0][$field]) && trim((string) $fValueResult[0][$field]) != '' && trim((string) $fValueResult[0][$field]) != '0000-00-00') {
+                  } elseif ($field === 'patient_dob' || $field === 'date_of_initiation_of_current_regimen' || $field === 'last_viral_load_date') {
+                     if (isset($fValueResult[0][$field]) && trim((string) $fValueResult[0][$field]) !== '' && trim((string) $fValueResult[0][$field]) !== '0000-00-00') {
                         $fieldValue = DateUtility::humanReadableDateFormat($fValueResult[0][$field]);
                      }
-                  } elseif ($field ==  'vl_test_platform' || $field ==  'patient_gender' || $field == 'is_sample_rejected') {
+                  } elseif ($field === 'vl_test_platform' || $field === 'patient_gender' || $field === 'is_sample_rejected') {
                      $fieldValue = (str_replace("_", " ", (string) $fValueResult[0][$field]));
-                  } elseif ($field ==  'result_reviewed_by') {
-                     $fieldValue = (isset($fValueResult[0]['reviewedBy'])) ? $fValueResult[0]['reviewedBy'] : '';
-                  } elseif ($field ==  'result_approved_by') {
-                     $fieldValue = (isset($fValueResult[0]['approvedBy'])) ? $fValueResult[0]['approvedBy'] : '';
-                  } elseif ($field ==  'lab_id') {
-                     $fieldValue = (isset($fValueResult[0]['labName'])) ? $fValueResult[0]['labName'] : '';
+                  } elseif ($field === 'result_reviewed_by') {
+                     $fieldValue = $fValueResult[0]['reviewedBy'] ?? '';
+                  } elseif ($field === 'result_approved_by') {
+                     $fieldValue = $fValueResult[0]['approvedBy'] ?? '';
+                  } elseif ($field === 'lab_id') {
+                     $fieldValue = $fValueResult[0]['labName'] ?? '';
                   } else {
-                     $fieldValue = (isset($fValueResult[0][$field])) ? $fValueResult[0][$field] : '';
+                     $fieldValue = $fValueResult[0][$field] ?? '';
                   }
                }
                $pdfContent .= '<td style="border:1px solid #333;">' . $fieldValue . '</td>';
@@ -290,7 +292,8 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
                      <tbody>
                         <?php
                         $resultOlySamples = [];
-                        for ($s = 0; $s < count($_POST['sample']); $s++) {
+$counter = count($_POST['sample']);
+                        for ($s = 0; $s < $counter; $s++) {
                            $sampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.covid19_id = '" . $_POST['sample'][$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
                            $sampleResult = $db->rawQuery($sampleQuery);
                            if (isset($sampleResult[0]['sample_code'])) {

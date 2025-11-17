@@ -60,12 +60,10 @@ $batResult = $db->rawQuery($batQuery);
 								<select class="form-control" id="batchCode" name="batchCode" title="Please select batch code">
 									<option value=""> -- Select -- </option>
 									<?php
-									foreach ($batResult as $code) {
-									?>
+									foreach ($batResult as $code) { ?>
 										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
 									<?php
-									}
-									?>
+									} ?>
 								</select>
 							</td>
 						</tr>
@@ -75,13 +73,11 @@ $batResult = $db->rawQuery($batQuery);
 								<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="Please select sample type">
 									<option value=""> -- Select -- </option>
 									<?php
-									foreach ($sResult as $type) {
-									?>
+									foreach ($sResult as $type) { ?>
 										<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?>
 										</option>
 									<?php
-									}
-									?>
+									} ?>
 								</select>
 							</td>
 
@@ -90,12 +86,10 @@ $batResult = $db->rawQuery($batQuery);
 								<select class="form-control" id="facilityName" name="facilityName" title="Please select facility name">
 									<option value=""> -- Select -- </option>
 									<?php
-									foreach ($fResult as $name) {
-									?>
+									foreach ($fResult as $name) { ?>
 										<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
 									<?php
-									}
-									?>
+									} ?>
 								</select>
 							</td>
 						</tr>

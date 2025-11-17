@@ -18,16 +18,10 @@ $tableName = "r_vl_art_regimen";
 $primaryKey = "art_id";
 // echo "<pre>";print_r($_POST);die;
 try {
-	if (isset($_POST['artCode']) && trim((string) $_POST['artCode']) != "") {
+	if (isset($_POST['artCode']) && trim((string) $_POST['artCode']) !== "") {
 
 
-		$data = array(
-			'art_code'          => $_POST['artCode'],
-			'parent_art'        => (isset($_POST['parentArtCode']) && $_POST['parentArtCode'] != "") ? $_POST['parentArtCode'] : 0,
-			'headings'          => $_POST['category'],
-			'art_status'        => $_POST['artStatus'],
-			'updated_datetime'  => DateUtility::getCurrentDateTime()
-		);
+		$data = ['art_code'          => $_POST['artCode'], 'parent_art'        => (isset($_POST['parentArtCode']) && $_POST['parentArtCode'] != "") ? $_POST['parentArtCode'] : 0, 'headings'          => $_POST['category'], 'art_status'        => $_POST['artStatus'], 'updated_datetime'  => DateUtility::getCurrentDateTime()];
 		if (isset($_POST['artCodeId']) && $_POST['artCodeId'] != "") {
 			$db->where($primaryKey, base64_decode((string) $_POST['artCodeId']));
 			$lastId = $db->update($tableName, $data);

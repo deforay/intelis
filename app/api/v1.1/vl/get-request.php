@@ -1,6 +1,6 @@
 <?php
 // Allow from any origin
-
+use Slim\Psr7\Request;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
@@ -20,7 +20,7 @@ set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
 
-/** @var Slim\Psr7\Request $request */
+/** @var Request $request */
 $request = AppRegistry::get('request');
 
 

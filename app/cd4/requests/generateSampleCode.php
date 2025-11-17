@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use Throwable;
 use App\Services\CD4Service;
 use App\Utilities\DateUtility;
@@ -10,7 +11,7 @@ use App\Registries\ContainerRegistry;
 $cd4Service = ContainerRegistry::get(CD4Service::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 

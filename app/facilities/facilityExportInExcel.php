@@ -21,27 +21,32 @@ $general = ContainerRegistry::get(CommonService::class);
 $excel = new Spreadsheet();
 $output = [];
 $sheet = $excel->getActiveSheet();
+$sWhere = [];
 $facilityType = $_POST['facilityType'];
-if (isset($facilityType) && trim((string) $facilityType) != '') {
+if (isset($facilityType) && trim((string) $facilityType) !== '') {
 	$sWhere[] = ' f_t.facility_type_id = "' . $_POST['facilityType'] . '"';
 }
-if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
 	$sWhere[] = " d.geo_name LIKE '%" . $_POST['district'] . "%' ";
 }
-if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
 	$sWhere[] = " p.geo_name LIKE '%" . $_POST['state'] . "%' ";
 }
 $qry = "";
-if (isset($_POST['testType']) && trim((string) $_POST['testType']) != '') {
-	if (!empty($facilityType)) {
-		if ($facilityType == '2') {
+if (isset($_POST['testType']) && trim((string) $_POST['testType']) !== '' && !empty($facilityType)) {
+	if ($facilityType == '2') {
 			$qry = " LEFT JOIN testing_labs tl ON tl.facility_id=f_d.facility_id";
 			$sWhere[] = ' tl.test_type = "' . $_POST['testType'] . '"';
 		} else {
 			$qry = " LEFT JOIN health_facilities hf ON hf.facility_id=f_d.facility_id";
 			$sWhere[] = ' hf.test_type = "' . $_POST['testType'] . '"';
 		}
-	}
+}
+if (isset($_POST['activeFacility']) && trim((string) $_POST['activeFacility']) !== '') {
+	$sWhere[] = " f_d.status = '" . $_POST['activeFacility'] . "' ";
+}
+if (isset($_POST['orphanFacility']) && $_POST['orphanFacility'] === 'yes') {
+	$sWhere[] = "(f_d.status = 'active' AND (p.geo_status IS NULL OR p.geo_status != 'active' OR d.geo_status IS NULL OR d.geo_status != 'active'))";
 }
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS f_d.*, f_t.*,p.geo_name as province ,d.geo_name as district
             FROM facility_details as f_d
@@ -66,13 +71,13 @@ $rResult = $db->rawQuery($sQuery);
 /*   Added to activity log */
 $general->activityLog('Export-facilities', $_SESSION['userName'] . ' Exported facilities details to excelsheet' . $_POST['facilityName'], 'facility');
 
-$headings = array("Facility Name", "Facility Code", "External Facility Code", "Facility Type", "status", "Province/State", "District/County", "Address", "Email", "Phone Number", "Latitude", "Longitude");
+$headings = ["Facility Name", "Facility Code", "External Facility Code", "Facility Type", "status", "Province/State", "District/County", "Address", "Email", "Phone Number", "Latitude", "Longitude"];
 
 $colNo = 1;
 
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
+	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 	}
 }

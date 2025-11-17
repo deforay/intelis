@@ -1,7 +1,7 @@
 <?php
 
 // imported in /vl/results/generate-result-pdf.php
-
+use const SAMPLE_STATUS\REJECTED;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -38,11 +38,7 @@ try {
 			$logoPrintInPdf = $arr['logo'];
 		}
 
-		if (isset($result['headerText']) && $result['headerText'] != '') {
-			$headerText = $result['headerText'];
-		} else {
-			$headerText = $arr['header'];
-		}
+		$headerText = isset($result['headerText']) && $result['headerText'] != '' ? $result['headerText'] : $arr['header'];
 
 		$pdf->setHeading($logoPrintInPdf, $headerText, $result['labName'], '', $result['lab_id']);
 		// set document information
@@ -53,8 +49,8 @@ try {
 		$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
 		// set header and footer fonts
-		$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-		$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+		$pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+		$pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
 
 		// set default monospaced font
 		$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -79,19 +75,19 @@ try {
 		$pdf->SetFont('freesans', '', 18);
 
 		$pdf->AddPage();
-		if (!isset($result['facility_code']) || trim((string) $result['facility_code']) == '') {
+		if (!isset($result['facility_code']) || trim((string) $result['facility_code']) === '') {
 			$result['facility_code'] = '';
 		}
-		if (!isset($result['facility_state']) || trim((string) $result['facility_state']) == '') {
+		if (!isset($result['facility_state']) || trim((string) $result['facility_state']) === '') {
 			$result['facility_state'] = '';
 		}
-		if (!isset($result['facility_district']) || trim((string) $result['facility_district']) == '') {
+		if (!isset($result['facility_district']) || trim((string) $result['facility_district']) === '') {
 			$result['facility_district'] = '';
 		}
-		if (!isset($result['facility_name']) || trim((string) $result['facility_name']) == '') {
+		if (!isset($result['facility_name']) || trim((string) $result['facility_name']) === '') {
 			$result['facility_name'] = '';
 		}
-		if (!isset($result['labName']) || trim((string) $result['labName']) == '') {
+		if (!isset($result['labName']) || trim((string) $result['labName']) === '') {
 			$result['labName'] = '';
 		}
 		//Set Age
@@ -105,7 +101,7 @@ try {
 		$result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
 		$result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date'] ?? '');
 
-		if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
+		if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) === '') {
 			$result['patient_gender'] = _translate('Unreported');
 		}
 
@@ -143,11 +139,11 @@ try {
 		} elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
 			$smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
 			$showMessage = ($arr['h_vl_msg']);
-		} elseif ($result['result_status'] == SAMPLE_STATUS\REJECTED || $result['is_sample_rejected'] == 'yes') {
+		} elseif ($result['result_status'] == REJECTED || $result['is_sample_rejected'] == 'yes') {
 			$smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
 		}
 
-		if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
+		if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) === "no") {
 			$smileyContent = '';
 		} else {
 			$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
@@ -264,7 +260,7 @@ try {
 		$html .= '</table>';
 		$html .= '</td>';
 		$html .= '</tr>';
-		if (trim((string) $showMessage) != '') {
+		if (trim((string) $showMessage) !== '') {
 			$html .= '<tr>';
 			$html .= '<td colspan="3" style="line-height:13px;font-size:' . $messageTextSize . ';text-align:left;">' . $showMessage . '</td>';
 			$html .= '</tr>';
@@ -272,7 +268,7 @@ try {
 			$html .= '<td colspan="3" style="line-height:16px;"></td>';
 			$html .= '</tr>';
 		}
-		if (trim($tndMessage) != '') {
+		if (trim($tndMessage) !== '') {
 			$html .= '<tr>';
 			$html .= '<td colspan="3" style="line-height:13px;font-size:18px;text-align:left;">' . $tndMessage . '</td>';
 			$html .= '</tr>';
@@ -282,7 +278,7 @@ try {
 		}
 		//if (empty($signResults)) {
 
-		if (!empty($approvedBySignaturePath) && MiscUtility::isImageValid($approvedBySignaturePath) && !empty($resultApprovedBy)) {
+		if ($approvedBySignaturePath !== null && $approvedBySignaturePath !== '' && $approvedBySignaturePath !== '0' && MiscUtility::isImageValid($approvedBySignaturePath) && !empty($resultApprovedBy)) {
 			$html .= '<tr>';
 			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $approvedBySignaturePath . '" style="width:100px;margin-top:-20px;" /><br></td>';
 			$html .= '</tr>';
@@ -389,7 +385,7 @@ try {
 		$pages[] = $filename;
 		$page++;
 
-		if (isset($_POST['source']) && trim((string) $_POST['source']) == 'print') {
+		if (isset($_POST['source']) && trim((string) $_POST['source']) === 'print') {
 			$sampleCode = 'sample_code';
 			if ($general->isSTSInstance()) {
 				$sampleCode = 'remote_sample_code';
@@ -401,7 +397,7 @@ try {
 			}
 			$sampleId = (isset($result[$sampleCode]) && !empty($result[$sampleCode])) ? ' sample id ' . $result[$sampleCode] : '';
 			$patientId = (isset($result['patient_art_no']) && !empty($result['patient_art_no'])) ? ' patient id ' . $result['patient_art_no'] : '';
-			$concat = (!empty($sampleId) && !empty($patientId)) ? ' and' : '';
+			$concat = ($sampleId !== '' && $sampleId !== '0' && ($patientId !== '' && $patientId !== '0')) ? ' and' : '';
 			//Add event log
 			$eventType = 'print-result';
 			$action = $_SESSION['userName'] . ' printed the test result with ' . $sampleId . $concat . $patientId;
@@ -417,7 +413,7 @@ try {
 			$vlQuery = "SELECT result_printed_datetime
 						FROM form_vl as vl WHERE vl.vl_sample_id = ?";
 			$vlResult = $db->rawQueryOne($vlQuery, [$result['vl_sample_id']]);
-			if ($vlResult['result_printed_datetime'] == null || trim((string) $vlResult['result_printed_datetime']) == '' || str_starts_with(trim($vlResult['result_printed_datetime']), '0000')) {
+			if ($vlResult['result_printed_datetime'] == null || trim((string) $vlResult['result_printed_datetime']) === '' || str_starts_with(trim((string) $vlResult['result_printed_datetime']), '0000')) {
 				$db->where('vl_sample_id', $result['vl_sample_id']);
 				$db->update('form_vl', ['result_printed_datetime' => DateUtility::getCurrentDateTime()]);
 			}

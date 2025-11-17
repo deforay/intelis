@@ -146,7 +146,7 @@ require_once APPLICATION_PATH . '/header.php';
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		let testType = "<?= !empty($testType) ? $testType : '' ?>";
+		let testType = "<?= empty($testType) ? '' : $testType ?>";
 		if (testType != "") {
 			$("#testType").val(testType);
 			selectedTestType();

@@ -423,7 +423,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     <td>
                                                                         <?php
                                                                         $value = '';
-                                                                        if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'ELISA', 'other'))) {
+                                                                        if (!in_array($rows['test_name'], ['Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'ELISA', 'other'])) {
                                                                             $value = 'value="' . $rows['test_name'] . '"';
                                                                             $show =  "block";
                                                                         } else {
@@ -435,7 +435,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             <option value="RDT-Antibody" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>><?= _translate("RDT-Antibody"); ?></option>
                                                                             <option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>><?= _translate("RDT-Antigen"); ?></option>
                                                                             <option value="ELISA" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>><?= _translate("ELISA"); ?></option>
-                                                                            <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>><?= _translate("Others"); ?></option>
+                                                                            <option value="other" <?php echo (isset($show) && $show === 'block') ? "selected='selected'" : ""; ?>><?= _translate("Others"); ?></option>
                                                                         </select>
                                                                         <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testNameOther<?= ($indexKey + 1); ?>" title="<?= _translate("Please enter the name of the Testkit (or) Test Method used"); ?>" placeholder="<?= _translate("Enter the name of the Testkit <?= ($indexKey + 1); ?>"); ?>" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
@@ -452,7 +452,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                                 <option value="STANDARD™ Q COVID-19 Ag Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'STANDARD™ Q COVID-19 Ag Test') ? "selected='selected'" : ""; ?>><?= _translate("STANDARD™ Q COVID-19 Ag Test"); ?></option>
                                                                                 <option value="LumiraDx ™ SARS-CoV-2 Ag Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'LumiraDx ™ SARS-CoV-2 Ag Test') ? "selected='selected'" : ""; ?>><?= _translate("LumiraDx ™ SARS-CoV-2 Ag Test"); ?></option>
                                                                                 <option value="Sure Status® COVID-19 Antigen Card Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'Sure Status® COVID-19 Antigen Card Test') ? "selected='selected'" : ""; ?>><?= _translate("Sure Status® COVID-19 Antigen Card Test"); ?></option>
-                                                                                <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>><?= _translate("Others"); ?></option>
+                                                                                <option value="other" <?php echo (isset($show) && $show === 'block') ? "selected='selected'" : ""; ?>><?= _translate("Others"); ?></option>
                                                                             <?php } else { ?>
                                                                             <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'], '-- Select --');
                                                                             } ?>
@@ -575,7 +575,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     provinceName = true;
     facilityName = true;
     machineName = true;
-    let testCounter = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo)) : 0; ?>;
+    let testCounter = <?php echo (empty($covid19TestInfo)) ? (0) : count($covid19TestInfo); ?>;
     deletedRow = [];
 
     function getTestingPoints() {

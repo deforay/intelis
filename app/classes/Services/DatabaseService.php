@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use MysqliDb;
+use Override;
 use Exception;
 use Generator;
 use Throwable;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use PhpMyAdmin\SqlParser\Parser;
 use App\Exceptions\SystemException;
@@ -16,27 +18,28 @@ use PhpMyAdmin\SqlParser\Components\Expression;
 final class DatabaseService extends MysqliDb
 {
 
-    private $isTransactionActive = false;
+    private bool $isTransactionActive = false;
     private $useSavepoints = false;
     private string $sessionCollation = 'utf8mb4_unicode_ci';
     private string $sessionCharset = 'utf8mb4';
     private int $countQueryMaxExecutionMs = 10000;
+    private array $parserStatementCache = [];
 
     public function __construct($host = null, $username = null, $password = null, $db = null, $port = null, $charset = 'utf8mb4')
     {
         // allow array config
         if (is_array($host)) {
-            $cfg     = $host;
-            $host    = $cfg['host']     ?? null;
+            $cfg = $host;
+            $host = $cfg['host'] ?? null;
             $username = $cfg['username'] ?? null;
             $password = $cfg['password'] ?? null;
-            $db      = $cfg['db']       ?? null;
-            $port    = $cfg['port']     ?? null;
-            $charset = $cfg['charset']  ?? 'utf8mb4';
+            $db = $cfg['db'] ?? null;
+            $port = $cfg['port'] ?? null;
+            $charset = $cfg['charset'] ?? 'utf8mb4';
         }
 
         // persistent connection
-        if ($host && is_string($host) && strpos($host, 'p:') !== 0) {
+        if ($host && is_string($host) && !str_starts_with($host, 'p:')) {
             $host = "p:$host";
         }
 
@@ -97,7 +100,7 @@ final class DatabaseService extends MysqliDb
         $this->commitTransaction();
     }
 
-    public function isConnected($connectionName = null)
+    public function isConnected($connectionName = null): bool
     {
         if ($connectionName === null) {
             $connectionName = $this->defConnectionName ?? 'default';
@@ -127,7 +130,7 @@ final class DatabaseService extends MysqliDb
      */
     public function rawQueryGenerator(?string $query, $bindParams = null)
     {
-        if (empty($query) || $query === '') {
+        if ($query === null || $query === '' || $query === '0' || $query === '') {
             return yield from [];
         }
         $this->_query = $query;
@@ -138,7 +141,7 @@ final class DatabaseService extends MysqliDb
         }
 
         // parameter binding
-        if (is_array($bindParams) && !empty($bindParams)) {
+        if (is_array($bindParams) && $bindParams !== []) {
             $types = '';
             $values = [];
 
@@ -149,7 +152,7 @@ final class DatabaseService extends MysqliDb
 
             // Use reference binding
             $bindReferences = array_merge([&$types], $this->createReferences($values));
-            call_user_func_array([$stmt, 'bind_param'], $bindReferences);
+            call_user_func_array($stmt->bind_param(...), $bindReferences);
         }
 
         $stmt->execute();
@@ -182,7 +185,7 @@ final class DatabaseService extends MysqliDb
     private function createReferences(array $values): array
     {
         $references = [];
-        foreach ($values as $key => $value) {
+        foreach (array_keys($values) as $key) {
             $references[$key] = &$values[$key];
         }
         return $references;
@@ -334,7 +337,7 @@ final class DatabaseService extends MysqliDb
      * @param string $tableName The name of the table.
      * @return array Array of primary key column names.
      */
-    public function getPrimaryKeys($tableName)
+    public function getPrimaryKeys($tableName): array
     {
         $sql = "SHOW KEYS FROM `$tableName` WHERE Key_name = 'PRIMARY'";
         $result = $this->mysqli()->query($sql);
@@ -355,7 +358,7 @@ final class DatabaseService extends MysqliDb
      * @param array|string  $primaryKeys String or Array of primary key column names.
      * @return bool Returns true on success or false on failure.
      */
-    public function upsert($tableName, array $tableData, array $updateColumns = [], $primaryKeys = [])
+    public function upsert($tableName, array $tableData, array $updateColumns = [], $primaryKeys = []): bool
     {
         $this->reset();
         $keys = array_keys($tableData);
@@ -367,7 +370,7 @@ final class DatabaseService extends MysqliDb
 
         $sql = "INSERT INTO `$tableName` (`" . implode('`, `', $keys) . "`) VALUES (" . implode(', ', $placeholders) . ")";
 
-        if (empty($updateColumns)) {
+        if ($updateColumns === []) {
             $updateColumns = array_diff($keys, $primaryKeys);  // Default to using all data keys except primary keys
         }
 
@@ -379,16 +382,15 @@ final class DatabaseService extends MysqliDb
                 if (in_array($column, $keys) && !in_array($column, $primaryKeys)) {
                     $updateParts[] = "`$column` = VALUES(`$column`)";
                 }
-            } else {
+            } elseif (!in_array($key, $primaryKeys)) {
                 // Associative array, direct assignment from updateColumns
-                if (!in_array($key, $primaryKeys)) {
-                    $updateParts[] = "`$key` = ?";
-                    $updateValues[] = $column;  // Assuming column is the value to update
-                }
+                $updateParts[] = "`$key` = ?";
+                $updateValues[] = $column;
+                // Assuming column is the value to update
             }
         }
 
-        if (!empty($updateParts)) {
+        if ($updateParts !== []) {
             $sql .= " ON DUPLICATE KEY UPDATE " . implode(', ', $updateParts);
         }
 
@@ -412,150 +414,214 @@ final class DatabaseService extends MysqliDb
         }
     }
 
-    private const COUNT_CACHE_TTL = 30;
+    private const int COUNT_CACHE_TTL = 30;
 
     public function getDataAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
     {
         try {
-            $trimmed = preg_replace('/(?s)\/\*.*?\*\/|--.*?(?=\n|$)|#.*/', '', $sql);
-            $trimmed = ltrim($trimmed);
-            $trimmed = ltrim($trimmed, '(');   // allow wrapped SELECTs/CTEs
+            $trimmed = $this->sanitizeSqlForSelect($sql);
 
             if (!preg_match('/\A(SELECT|WITH)\b/i', $trimmed)) {
                 throw new SystemException('Only SELECT statements are supported in getDataAndCount');
             }
 
             $limitOffsetSet = isset($limit) && isset($offset);
-            $statementForParsing = null;
-            $appliedLimitToQuery = false;
-            $querySql = $sql;
+            [$querySql, $statementForParsing, $appliedLimitToQuery] = $this->prepareQuerySql(
+                $sql,
+                $limit,
+                $offset,
+                $limitOffsetSet,
+                $returnGenerator
+            );
 
-            if ($limitOffsetSet || $returnGenerator) {
-                try {
-                    $parser = new Parser($sql);
-                    $statementForParsing = $parser->statements[0] ?? null;
-                } catch (Throwable $parseException) {
-                    LoggerUtility::log('warning', 'Failed to parse SQL for data/count batching: ' . $parseException->getMessage());
-                    $statementForParsing = null;
-                }
-            }
+            $queryResult = $returnGenerator
+                ? $this->rawQueryGenerator($querySql, $params)
+                : $this->rawQuery($querySql, $params);
 
-            if ($limitOffsetSet && $statementForParsing !== null) {
-                $statementForQuery = clone $statementForParsing;
+            $count = $this->resolveCount(
+                $sql,
+                $params,
+                $statementForParsing,
+                $limit,
+                $offset,
+                $returnGenerator,
+                $queryResult,
+                $appliedLimitToQuery,
+                $limitOffsetSet
+            );
 
-                if (!isset($statementForQuery->limit) || empty($statementForQuery->limit)) {
-                    $statementForQuery->limit = new Limit($limit, $offset);
-                    $querySql = $statementForQuery->build();
-                    $appliedLimitToQuery = true;
-                }
-            }
-
-            // Execute the main query
-            if ($returnGenerator === true) {
-                $queryResult = $this->rawQueryGenerator($querySql, $params);
-            } else {
-                $queryResult = $this->rawQuery($querySql, $params);
-            }
-
-            // Get count if needed
-            $count = 0;
-            if ($limitOffsetSet || $returnGenerator) {
-                $countResolved = false;
-
-                if ($limitOffsetSet && $appliedLimitToQuery && $returnGenerator === false && is_array($queryResult)) {
-                    $fetchedRows = count($queryResult);
-
-                    if ($fetchedRows < (int)$limit) {
-                        $count = (int)$offset + $fetchedRows;
-                        $countResolved = true;
-                    }
-                }
-
-                // Cache configuration (30 seconds for LIS data freshness)
-                if (!$countResolved) {
-                    $countQuerySessionKey = hash('sha256', $sql . json_encode($params));
-                    $now = time();
-
-                    if (
-                        session_status() === PHP_SESSION_ACTIVE &&
-                        isset($_SESSION['queryCounters'][$countQuerySessionKey]['count']) &&
-                        isset($_SESSION['queryCounters'][$countQuerySessionKey]['timestamp']) &&
-                        ($now - (int)$_SESSION['queryCounters'][$countQuerySessionKey]['timestamp']) < self::COUNT_CACHE_TTL
-                    ) {
-                        $count = (int)$_SESSION['queryCounters'][$countQuerySessionKey]['count'];
-                        $countResolved = true;
-                    }
-
-                    if (!$countResolved) {
-                        $originalIsolationLevel = $this->getSessionIsolationLevel();
-                        $downgradedIsolation = false;
-
-                        if ($originalIsolationLevel !== null && $originalIsolationLevel !== 'READ COMMITTED') {
-                            $downgradedIsolation = $this->setSessionIsolationLevelSafe('READ COMMITTED');
-                        }
-
-                        $useMaxExecutionHint = $this->countQueryMaxExecutionMs > 0;
-                        $updateCachedCount = function (int $value) use (&$countResolved, $countQuerySessionKey, $now): void {
-                            $countResolved = true;
-                            if (session_status() === PHP_SESSION_ACTIVE) {
-                                if (!isset($_SESSION['queryCounters']) || !is_array($_SESSION['queryCounters'])) {
-                                    $_SESSION['queryCounters'] = [];
-                                }
-                                $_SESSION['queryCounters'][$countQuerySessionKey] = [
-                                    'count' => $value,
-                                    'timestamp' => $now
-                                ];
-                            }
-                        };
-
-                        try {
-                            $countSql = $this->buildCountSql($sql, $statementForParsing, $useMaxExecutionHint);
-                            $countResult = $this->rawQueryOne($countSql, $params);
-                            $count = (int)($countResult['totalCount'] ?? 0);
-                            $updateCachedCount($count);
-                        } catch (Throwable $countException) {
-                            $message = $countException->getMessage();
-                            $maxExecutionExceeded = stripos($message, 'maximum statement execution time exceeded') !== false;
-
-                            if ($useMaxExecutionHint && $maxExecutionExceeded) {
-                                try {
-                                    $countSql = $this->buildCountSql($sql, $statementForParsing, false);
-                                    $countResult = $this->rawQueryOne($countSql, $params);
-                                    $count = (int)($countResult['totalCount'] ?? 0);
-                                    $updateCachedCount($count);
-                                    LoggerUtility::log('warning', 'Count query exceeded MAX_EXECUTION_TIME hint; retried without limit.');
-                                } catch (Throwable $retryException) {
-                                    $countException = $retryException;
-                                }
-                            }
-
-                            if (!$countResolved) {
-                                if (
-                                    session_status() === PHP_SESSION_ACTIVE &&
-                                    isset($_SESSION['queryCounters'][$countQuerySessionKey]['count'])
-                                ) {
-                                    $count = (int)$_SESSION['queryCounters'][$countQuerySessionKey]['count'];
-                                    LoggerUtility::log('warning', 'Count query timed out, using cached value: ' . $countException->getMessage());
-                                    $countResolved = true;
-                                } else {
-                                    LoggerUtility::logError('Count query failed with no cache: ' . $countException->getMessage());
-                                }
-                            }
-                        } finally {
-                            if ($downgradedIsolation && $originalIsolationLevel !== null) {
-                                $this->setSessionIsolationLevelSafe($originalIsolationLevel);
-                            }
-                        }
-                    }
-                }
-            } else {
-                $count = is_array($queryResult) ? count($queryResult) : 0;
-            }
-
-            return [$queryResult, max((int)$count, 0)];
+            return [$queryResult, max((int) $count, 0)];
         } catch (Throwable $e) {
             throw new SystemException('Query Execution Failed. SQL: ' . substr($sql, 0, 500) . ' | Error: ' . $e->getMessage(), 500, $e);
         }
+    }
+
+    private function sanitizeSqlForSelect(string $sql): string
+    {
+        $trimmed = preg_replace('/(?s)\/\*.*?\*\/|--.*?(?=\n|$)|#.*/', '', $sql);
+        $trimmed = ltrim((string) $trimmed);
+        return ltrim($trimmed, '(');
+    }
+
+    /**
+     * @return array{0:string,1:?object,2:bool}
+     */
+    private function prepareQuerySql(
+        string $sql,
+        ?int $limit,
+        ?int $offset,
+        bool $limitOffsetSet,
+        bool $returnGenerator
+    ): array {
+        $statementForParsing = null;
+        $appliedLimitToQuery = false;
+        $querySql = $sql;
+
+        if ($limitOffsetSet || $returnGenerator) {
+            $statementForParsing = $this->getParsedStatement($sql);
+        }
+
+        if ($limitOffsetSet && $statementForParsing !== null) {
+            $statementForQuery = clone $statementForParsing;
+            $hasLimit = isset($statementForQuery->limit) &&
+                $statementForQuery->limit !== null &&
+                !empty($statementForQuery->limit);
+
+            if (!$hasLimit) {
+                $statementForQuery->limit = new Limit($limit, $offset);
+                $querySql = $statementForQuery->build();
+                $appliedLimitToQuery = true;
+            }
+        }
+
+        return [$querySql, $statementForParsing, $appliedLimitToQuery];
+    }
+
+    private function getParsedStatement(string $sql): ?object
+    {
+        $cacheKey = hash('sha256', $sql);
+
+        if (array_key_exists($cacheKey, $this->parserStatementCache)) {
+            return $this->parserStatementCache[$cacheKey];
+        }
+
+        try {
+            $parser = new Parser($sql);
+            $statementForParsing = $parser->statements[0] ?? null;
+        } catch (Throwable $parseException) {
+            LoggerUtility::log('warning', 'Failed to parse SQL for data/count batching: ' . $parseException->getMessage());
+            $statementForParsing = null;
+        }
+
+        $this->parserStatementCache[$cacheKey] = $statementForParsing;
+
+        return $statementForParsing;
+    }
+
+    private function resolveCount(
+        string $sql,
+        ?array $params,
+        ?object $statementForParsing,
+        ?int $limit,
+        ?int $offset,
+        bool $returnGenerator,
+        $queryResult,
+        bool $appliedLimitToQuery,
+        bool $limitOffsetSet
+    ): int {
+        if (!$limitOffsetSet && !$returnGenerator) {
+            return is_array($queryResult) ? count($queryResult) : 0;
+        }
+
+        $count = 0;
+        $countResolved = false;
+
+        if ($limitOffsetSet && $appliedLimitToQuery && $returnGenerator === false && is_array($queryResult)) {
+            $fetchedRows = count($queryResult);
+
+            if ($fetchedRows < (int) $limit) {
+                $count = (int) $offset + $fetchedRows;
+                $countResolved = true;
+            }
+        }
+
+        if ($countResolved) {
+            return $count;
+        }
+
+        $countQuerySessionKey = hash('sha256', $sql . json_encode($params));
+        $now = time();
+
+        if (
+            CommonService::isSessionActive() &&
+            isset($_SESSION['queryCounters'][$countQuerySessionKey]['count']) &&
+            isset($_SESSION['queryCounters'][$countQuerySessionKey]['timestamp']) &&
+            ($now - (int) $_SESSION['queryCounters'][$countQuerySessionKey]['timestamp']) < self::COUNT_CACHE_TTL
+        ) {
+            return (int) $_SESSION['queryCounters'][$countQuerySessionKey]['count'];
+        }
+
+        $originalIsolationLevel = $this->getSessionIsolationLevel();
+        $downgradedIsolation = false;
+
+        if ($originalIsolationLevel !== null && $originalIsolationLevel !== 'READ COMMITTED') {
+            $downgradedIsolation = $this->setSessionIsolationLevelSafe('READ COMMITTED');
+        }
+
+        $useMaxExecutionHint = $this->countQueryMaxExecutionMs > 0;
+        $updateCachedCount = function (int $value) use (&$countResolved, $countQuerySessionKey, $now): void {
+            $countResolved = true;
+            if (CommonService::isSessionActive()) {
+                if (!isset($_SESSION['queryCounters']) || !is_array($_SESSION['queryCounters'])) {
+                    $_SESSION['queryCounters'] = [];
+                }
+                $_SESSION['queryCounters'][$countQuerySessionKey] = [
+                    'count' => $value,
+                    'timestamp' => $now
+                ];
+            }
+        };
+
+        try {
+            $countSql = $this->buildCountSql($sql, $statementForParsing, $useMaxExecutionHint);
+            $countResult = $this->rawQueryOne($countSql, $params);
+            $count = (int) ($countResult['totalCount'] ?? 0);
+            $updateCachedCount($count);
+        } catch (Throwable $countException) {
+            $message = $countException->getMessage();
+            $maxExecutionExceeded = stripos($message, 'maximum statement execution time exceeded') !== false;
+
+            if ($useMaxExecutionHint && $maxExecutionExceeded) {
+                try {
+                    $countSql = $this->buildCountSql($sql, $statementForParsing, false);
+                    $countResult = $this->rawQueryOne($countSql, $params);
+                    $count = (int) ($countResult['totalCount'] ?? 0);
+                    $updateCachedCount($count);
+                    LoggerUtility::log('warning', 'Count query exceeded MAX_EXECUTION_TIME hint; retried without limit.');
+                } catch (Throwable $retryException) {
+                    $countException = $retryException;
+                }
+            }
+
+            if (!$countResolved) {
+                if (
+                    CommonService::isSessionActive() &&
+                    isset($_SESSION['queryCounters'][$countQuerySessionKey]['count'])
+                ) {
+                    $count = (int) $_SESSION['queryCounters'][$countQuerySessionKey]['count'];
+                    LoggerUtility::log('warning', 'Count query timed out, using cached value: ' . $countException->getMessage());
+                    $countResolved = true;
+                } else {
+                    LoggerUtility::logError('Count query failed with no cache: ' . $countException->getMessage());
+                }
+            }
+        } finally {
+            if ($downgradedIsolation && $originalIsolationLevel !== null) {
+                $this->setSessionIsolationLevelSafe($originalIsolationLevel);
+            }
+        }
+
+        return $count;
     }
 
     private function buildCountSql(string $sql, ?object $statementForParsing = null, bool $useMaxExecutionHint = true): string
@@ -612,7 +678,7 @@ final class DatabaseService extends MysqliDb
             }
         }
 
-        if (!empty($errors)) {
+        if ($errors !== []) {
             LoggerUtility::log('warning', 'Isolation level probe failed: ' . implode(' | ', $errors));
         }
 
@@ -656,6 +722,7 @@ final class DatabaseService extends MysqliDb
     }
 
 
+    #[Override]
     public function reset(): void
     {
         parent::reset();
@@ -673,7 +740,7 @@ final class DatabaseService extends MysqliDb
      */
     public function insertMultipleRows(string $tableName, array $data, string $insertType = 'insert', array $updateColumns = []): bool
     {
-        if (empty($data)) {
+        if ($data === []) {
             return false;
         }
 
@@ -693,7 +760,7 @@ final class DatabaseService extends MysqliDb
         if ($insertType === 'ignore') {
             $sql = "INSERT IGNORE INTO `$tableName` (`$columns`) VALUES $placeholdersString";
         } elseif ($insertType === 'upsert') {
-            $updatePart = implode(', ', array_map(fn($col) => "`$col` = VALUES(`$col`)", $updateColumns));
+            $updatePart = implode(', ', array_map(fn($col): string => "`$col` = VALUES(`$col`)", $updateColumns));
             $sql = "INSERT INTO `$tableName` (`$columns`) VALUES $placeholdersString ON DUPLICATE KEY UPDATE $updatePart";
         } else {
             $sql = "INSERT INTO `$tableName` (`$columns`) VALUES $placeholdersString";
@@ -748,7 +815,7 @@ final class DatabaseService extends MysqliDb
     public function getTableFieldsAsArray(string $tableName, array $unwantedColumns = []): array
     {
         $tableFieldsAsArray = [];
-        if (!empty($tableName) && $tableName != '') {
+        if ($tableName !== '' && $tableName !== '0' && $tableName !== '') {
             try {
 
                 $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
@@ -758,7 +825,7 @@ final class DatabaseService extends MysqliDb
 
                 // Create an array with all column names set to null
                 $tableFieldsAsArray = array_fill_keys($columnNames, null);
-                if (!empty($unwantedColumns)) {
+                if ($unwantedColumns !== []) {
                     $tableFieldsAsArray = MiscUtility::excludeKeys($tableFieldsAsArray, $unwantedColumns);
                 }
             } catch (Throwable $e) {

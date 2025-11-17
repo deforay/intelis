@@ -43,7 +43,7 @@ $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 
 $sWhere = [];
 
-if (!empty($whereCondition)) {
+if ($whereCondition !== '' && $whereCondition !== '0') {
 	$sWhere[] = $whereCondition;
 }
 
@@ -55,25 +55,25 @@ $tQuery = "SELECT COUNT(eid_id) as total,status_id,status_name
 
 //filter
 
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
 	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
 	[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 	$sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
 }
-if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
+if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
 	[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 	$sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
 	[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 	$sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
 }
 if (!empty($_POST['labName'])) {
 	$sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
 	$tQuery .= " where " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
@@ -84,8 +84,9 @@ $tResult = $db->rawQuery($tQuery);
 
 //HVL and LVL Samples
 $sWhere = [];
-if (!empty($whereCondition))
-	$sWhere[] = $whereCondition;
+if ($whereCondition !== '' && $whereCondition !== '0') {
+    $sWhere[] = $whereCondition;
+}
 $vlSuppressionQuery = "SELECT   COUNT(eid_id) as total,
 		SUM(CASE
 				WHEN (vl.result = 'positive') THEN 1
@@ -102,38 +103,38 @@ $vlSuppressionQuery = "SELECT   COUNT(eid_id) as total,
 
 $sWhere[] = " (vl.result!='' and vl.result is not null) ";
 
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
 	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
 	[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 	$sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$start_date' AND '$end_date'";
 }
-if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
+if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
 	[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 	$sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
 	[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 	$sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
 }
-if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
+if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
 	$sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
 if (!empty($_POST['labName'])) {
 	$sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
 	$vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
 }
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
 //get LAB TAT
 $sWhere = [];
-if (!empty($whereCondition)) {
+if ($whereCondition !== '' && $whereCondition !== '0') {
 	$sWhere[] = $whereCondition;
 }
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
 	[$tatStartDate, $tatEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 } else {
 	$date = new DateTime();
@@ -169,7 +170,7 @@ if (!empty($_POST['labName'])) {
 	$sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
 	$tatSampleQuery .= " AND " . implode(" AND ", $sWhere);
 }
 $tatSampleQuery .= " GROUP BY monthDate ORDER BY sample_tested_datetime ";

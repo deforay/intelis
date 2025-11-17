@@ -167,7 +167,7 @@ $rInfo = $db->query($resourcesQuery);
 											<option value="/dashboard/index.php">
 												<?php echo _translate("Dashboard"); ?>
 											</option>
-											<?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
+											<?php if ($activeModules !== [] && in_array('vl', $activeModules)) { ?>
 												<option value="/vl/requests/addVlRequest.php">
 													<?php echo _translate("Add New VL Request"); ?>
 												</option>
@@ -175,7 +175,7 @@ $rInfo = $db->query($resourcesQuery);
 													<?php echo _translate("VL View Test Requests"); ?>
 												</option>
 											<?php }
-											if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
+											if ($activeModules !== [] && in_array('eid', $activeModules)) { ?>
 												<option value="/eid/requests/eid-add-request.php">
 													<?php echo _translate("Add New EID Request"); ?>
 												</option>
@@ -183,7 +183,7 @@ $rInfo = $db->query($resourcesQuery);
 													<?php echo _translate("EID View Test Requests"); ?>
 												</option>
 											<?php }
-											if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
+											if ($activeModules !== [] && in_array('covid19', $activeModules)) { ?>
 												<option value="/covid-19/requests/covid-19-add-request.php">
 													<?php echo _translate("Add New Covid-19 Request"); ?>
 												</option>
@@ -191,7 +191,7 @@ $rInfo = $db->query($resourcesQuery);
 													<?php echo _translate("Covid-19 View Test Requests"); ?>
 												</option>
 											<?php }
-											if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
+											if ($activeModules !== [] && in_array('hepatitis', $activeModules)) { ?>
 												<option value="/hepatitis/requests/hepatitis-add-request.php">
 													<?php echo _translate("Add New Hepatitis Request"); ?>
 												</option>
@@ -199,7 +199,7 @@ $rInfo = $db->query($resourcesQuery);
 													<?php echo _translate("Hepatitis View Test Requests"); ?>
 												</option>
 											<?php }
-											if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
+											if ($activeModules !== [] && in_array('tb', $activeModules)) { ?>
 												<option value=><?php echo _translate("Add New TB Request"); ?></option>
 												<option value='/tb/requests/tb-requests.php'>
 													<?php echo _translate("TB View Test Requests"); ?>
@@ -289,17 +289,11 @@ $rInfo = $db->query($resourcesQuery);
 
 									foreach ($rInfo as $moduleRow) {
 										$moduleName = ($moduleRow['module'] == 'generic-tests') ? "Other Lab Tests" : $moduleRow['module'];
-										if ($a == 0) {
-											$liClass = "active";
-										} else {
-											$liClass = "";
-										}
-									?>
+										$liClass = $a == 0 ? "active" : ""; ?>
 										<li class="<?= $liClass; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper((string) $moduleName); ?> </a></li>
 									<?php
 										$a++;
-									}
-									?>
+									} ?>
 								</ul>
 
 								<div id="myTabContent" class="tab-content">
@@ -307,11 +301,7 @@ $rInfo = $db->query($resourcesQuery);
 									$b = 0;
 									$j = 1;
 									foreach ($rInfo as $moduleRow) {
-										if ($b == 0) {
-											$tabCls = "active";
-										} else {
-											$tabCls = "";
-										}
+										$tabCls = $b == 0 ? "active" : "";
 										echo '<div class="tab-pane fade in ' . $tabCls . '" id="' . $moduleRow['module'] . '">';
 										echo "<table aria-describedby='table' class='table table-striped responsive-utilities jambo_table'>";
 
@@ -322,8 +312,7 @@ $rInfo = $db->query($resourcesQuery);
 											$mRes = explode(",", $mRes);
 
 											echo "<tr class ='togglerTr'>";
-											echo "<th>";
-									?>
+											echo "<th>"; ?>
 											<small class="toggler">
 												<h4 style="font-weight: bold;">
 													<?= _translate($mRes[1]); ?>
@@ -366,8 +355,7 @@ $rInfo = $db->query($resourcesQuery);
 										echo "</table></div>";
 										$b++;
 										$j++;
-									}
-									?>
+									} ?>
 								</div>
 
 							</div>

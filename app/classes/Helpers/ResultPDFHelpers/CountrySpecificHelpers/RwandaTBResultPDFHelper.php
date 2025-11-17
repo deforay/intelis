@@ -2,6 +2,7 @@
 
 namespace App\Helpers\ResultPDFHelpers\CountrySpecificHelpers;
 
+use Override;
 use App\Utilities\MiscUtility;
 use App\Helpers\ResultPDFHelpers\TBResultPDFHelper;
 
@@ -19,7 +20,8 @@ class RwandaTBResultPDFHelper extends TBResultPDFHelper
     private bool $templateImported = false;
     private bool $enableFooter = true; // Default is true to render footer
 
-    public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null, $facilityInfo = [], $pdfTemplatePath)
+    #[Override]
+    public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null, $facilityInfo = [], $pdfTemplatePath = null): void
     {
         $this->logo = $logo;
         $this->text = $text;
@@ -31,30 +33,28 @@ class RwandaTBResultPDFHelper extends TBResultPDFHelper
         $this->pdfTemplatePath = $pdfTemplatePath ?? null;
     }
     //Page header
-    public function Header()
+    #[Override]
+    public function Header(): void
     {
         // die($this->pdfTemplatePath);
         // die;
         // Logo
-        if (!empty($this->pdfTemplatePath) && MiscUtility::fileExists($this->pdfTemplatePath)) {
+        if ($this->pdfTemplatePath !== null && $this->pdfTemplatePath !== '' && $this->pdfTemplatePath !== '0' && MiscUtility::fileExists($this->pdfTemplatePath)) {
             if (!$this->templateImported) {
                 $this->setSourceFile($this->pdfTemplatePath);
                 $this->templateImported = true;
             }
             $tplIdx = $this->importPage(1);
             $this->useTemplate($tplIdx, 0, 0);
-        } else if (!empty($this->htitle) && trim($this->htitle) != '') {
-
-            if (isset($this->formId) && $this->formId == 1) {
-                if (!empty($this->logo) && trim($this->logo) != '') {
-                    if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                        $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                        $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
-                    }
+        } elseif ($this->htitle !== null && $this->htitle !== '' && $this->htitle !== '0' && trim($this->htitle) !== '') {
+            if ($this->formId !== null && $this->formId == 1) {
+                if ($this->logo !== null && $this->logo !== '' && $this->logo !== '0' && trim($this->logo) !== '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                    $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                    $this->Image($imageFilePath, 10, 5, 25, 0, '', '', 'T');
                 }
                 $this->SetFont('helvetica', 'B', 15);
                 $this->writeHTMLCell(0, 0, 15, 7, $this->text, 0, 0, 0, true, 'C');
-                if (!empty($this->lab) && trim($this->lab) != '') {
+                if ($this->lab !== null && $this->lab !== '' && $this->lab !== '0' && trim($this->lab) !== '') {
                     $this->SetFont('helvetica', 'B', 11);
                     // $this->writeHTMLCell(0, 0, 40, 15, strtoupper($this->lab), 0, 0, 0, true, 'L', true);
                     $this->writeHTMLCell(0, 0, 15, 15, 'Public Health Laboratory', 0, 0, 0, true, 'C');
@@ -82,16 +82,14 @@ class RwandaTBResultPDFHelper extends TBResultPDFHelper
 
                 // $this->writeHTMLCell(0, 0, 25, 35, '<hr>', 0, 0, 0, true, 'C', true);
             } else {
-                if (!empty($this->logo) && trim($this->logo) != '') {
-                    if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                        $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                        $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
-                    }
+                if ($this->logo !== null && $this->logo !== '' && $this->logo !== '0' && trim($this->logo) !== '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+                    $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+                    $this->Image($imageFilePath, 95, 5, 15, 0, '', '', 'T');
                 }
 
                 $this->SetFont('helvetica', 'B', 8);
                 $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
-                if (!empty($this->lab) && trim($this->lab) != '') {
+                if ($this->lab !== null && $this->lab !== '' && $this->lab !== '0' && trim($this->lab) !== '') {
                     $this->SetFont('helvetica', '', 9);
                     $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
                 }
@@ -105,6 +103,7 @@ class RwandaTBResultPDFHelper extends TBResultPDFHelper
     }
 
     // Page footer
+    #[Override]
     public function Footer(): void
     {
         // Position at 15 mm from bottom

@@ -22,10 +22,10 @@ $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 $key = $arr['key'] ?? "";
 
-if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) != "") {
+if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) !== "") {
 
     $output = [];
-    $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status");
+    $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status"];
     if ($general->isStandaloneInstance()) {
         $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
     }
@@ -38,7 +38,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $row = [];
         //sample collecion date
         $sampleCollectionDate = '';
-        if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+        if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", (string) $aRow['sample_collection_date']);
             $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
         }
@@ -48,21 +48,9 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         //   $sampleId = $aRow['sample_code'];
         // }
 
-        if ($aRow['patient_first_name'] != '') {
-            $patientFname = $aRow['patient_first_name'];
-        } else {
-            $patientFname = '';
-        }
-        if ($aRow['patient_middle_name'] != '') {
-            $patientMname = $aRow['patient_middle_name'];
-        } else {
-            $patientMname = '';
-        }
-        if ($aRow['patient_last_name'] != '') {
-            $patientLname = $aRow['patient_last_name'];
-        } else {
-            $patientLname = '';
-        }
+        $patientFname = $aRow['patient_first_name'] != '' ? $aRow['patient_first_name'] : '';
+        $patientMname = $aRow['patient_middle_name'] != '' ? $aRow['patient_middle_name'] : '';
+        $patientLname = $aRow['patient_last_name'] != '' ? $aRow['patient_last_name'] : '';
         $row[] = $aRow['sample_code'];
         if (!$general->isStandaloneInstance()) {
             $row[] = $aRow['remote_sample_code'];
@@ -94,21 +82,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $excel = new Spreadsheet();
         $sheet = $excel->getActiveSheet();
 
-        $styleArray = array(
-            'font' => array(
-                'bold' => true,
-                'size' => '13',
-            ),
-            'alignment' => array(
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER,
-            ),
-            'borders' => array(
-                'outline' => array(
-                    'style' => Border::BORDER_THIN,
-                ),
-            ),
-        );
+        $styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
 
         $sheet->mergeCells('A1:AE1');
 

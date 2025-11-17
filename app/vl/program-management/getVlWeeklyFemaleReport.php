@@ -54,7 +54,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
   $searchArray = explode(" ", (string) $_POST['sSearch']);
   $sWhereSub = "";
   foreach ($searchArray as $search) {
-    if ($sWhereSub == "") {
+    if ($sWhereSub === "") {
       $sWhereSub .= "(";
     } else {
       $sWhereSub .= " AND (";
@@ -125,29 +125,29 @@ $sQuery = "SELECT
 
 
 
-if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
   [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '', includeTime: true);
   $sWhere[] = "vl.sample_tested_datetime BETWEEN '$startDate' AND '$endDate'";
 }
 
-if (isset($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) != '') {
+if (isset($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) !== '') {
   [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '', includeTime: true);
   $sWhere[] = "vl.sample_collection_date BETWEEN '$startDate' AND '$endDate'";
 }
 
-if (isset($_POST['lab']) && trim((string) $_POST['lab']) != '') {
+if (isset($_POST['lab']) && trim((string) $_POST['lab']) !== '') {
   $sWhere[] =  "  vl.lab_id IN (" . $_POST['lab'] . ")";
 }
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
   $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
   $sWhere = implode(' AND ', $sWhere);
 }
 
 $sQuery = $sQuery . ' AND ' . $sWhere;
-$sQuery = $sQuery . ' GROUP BY vl.facility_id';
+$sQuery .= ' GROUP BY vl.facility_id';
 
 
 if (!empty($sOrder) && $sOrder !== '') {

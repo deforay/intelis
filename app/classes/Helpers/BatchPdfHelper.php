@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Override;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -9,16 +10,16 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 
 class BatchPdfHelper extends Fpdi
 {
-    public ?string $logo;
-    public ?string $text;
-    public ?string $batch;
-    public ?string $resulted;
-    public ?string $reviewed;
-    public ?string $createdBy;
-    public ?string $worksheetName;
+    public ?string $logo = null;
+    public ?string $text = null;
+    public ?string $batch = null;
+    public ?string $resulted = null;
+    public ?string $reviewed = null;
+    public ?string $createdBy = null;
+    public ?string $worksheetName = null;
 
 
-    public function setHeading($logo, $text, $batch, $resulted, $reviewed, $createdBy, $worksheetName): void
+    public function setHeading(?string $logo, ?string $text, ?string $batch, ?string $resulted, ?string $reviewed, ?string $createdBy, ?string $worksheetName): void
     {
         $this->logo = $logo;
         $this->text = $text;
@@ -29,14 +30,13 @@ class BatchPdfHelper extends Fpdi
         $this->worksheetName = $worksheetName;
     }
     //Page header
+    #[Override]
     public function Header(): void
     {
 
-        if (trim($this->logo) != "") {
-            if (MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
-            }
+        if (trim((string) $this->logo) != "" && MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+            $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+            $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
         }
         $this->SetFont('helvetica', '', 7);
         $this->writeHTMLCell(30, 0, 10, 26, $this->text, 0, 0, 0, true, 'A');
@@ -52,6 +52,7 @@ class BatchPdfHelper extends Fpdi
     }
 
     // Page footer
+    #[Override]
     public function Footer(): void
     {
         // Position at 15 mm from bottom

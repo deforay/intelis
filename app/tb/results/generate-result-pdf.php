@@ -1,5 +1,15 @@
 <?php
 
+use App\Utilities\JsonUtility;
+use Laminas\Diactoros\ServerRequest;
+use const COUNTRY\SOUTH_SUDAN;
+use const COUNTRY\SIERRA_LEONE;
+use const COUNTRY\DRC;
+use const COUNTRY\CAMEROON;
+use const COUNTRY\PNG;
+use const COUNTRY\WHO;
+use const COUNTRY\RWANDA;
+use const COUNTRY\BURKINA_FASO;
 use App\Services\TbService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -17,7 +27,7 @@ ini_set('max_execution_time', 300000);
 
 try {
     // Sanitized values from $request object
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -51,7 +61,7 @@ try {
     // Build search query
     $allQuery = $_SESSION['tbPrintQuery'] ?? '';
 
-    if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
+    if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
         $searchQuery = "SELECT tb.*, f.*,
         ft.facility_type_name as facilityType, 
         g_d_s.geo_name as province, 
@@ -128,20 +138,20 @@ try {
 
     // Set mandatory field array
     $mFieldArray = [];
-    if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
+    if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) !== '') {
         $mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
     }
 
     // Default report format files by country/form ID
     $fileArray = [
-        COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
-        COUNTRY\SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php',
-        COUNTRY\DRC => 'pdf/result-pdf-drc.php',
-        COUNTRY\CAMEROON => 'pdf/result-pdf-cameroon.php',
-        COUNTRY\PNG => 'pdf/result-pdf-png.php',
-        COUNTRY\WHO => 'pdf/result-pdf-who.php',
-        COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
-        COUNTRY\BURKINA_FASO => 'pdf/result-pdf-burkina-faso.php'
+        SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
+        SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php',
+        DRC => 'pdf/result-pdf-drc.php',
+        CAMEROON => 'pdf/result-pdf-cameroon.php',
+        PNG => 'pdf/result-pdf-png.php',
+        WHO => 'pdf/result-pdf-who.php',
+        RWANDA => 'pdf/result-pdf-rwanda.php',
+        BURKINA_FASO => 'pdf/result-pdf-burkina-faso.php'
     ];
 
     // Allowed report formats for security (whitelist)
@@ -186,17 +196,11 @@ try {
 
                 // Update print timestamps
                 if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
-                    $pData = array(
-                        'result_printed_on_lis_datetime' => $currentDateTime,
-                        'result_printed_datetime' => $currentDateTime
-                    );
+                    $pData = ['result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
                     $db->where('tb_id', $result['tb_id']);
                     $db->update('form_tb', $pData);
                 } elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
-                    $pData = array(
-                        'result_printed_on_sts_datetime' => $currentDateTime,
-                        'result_printed_datetime' => $currentDateTime
-                    );
+                    $pData = ['result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
                     $db->where('tb_id', $result['tb_id']);
                     $db->update('form_tb', $pData);
                 }
@@ -221,7 +225,7 @@ try {
 
                 // Get lab report signatories
                 $signQuery = "SELECT * from lab_report_signatories where lab_id = ? AND test_types like '%tb%' AND signatory_status like 'active' ORDER BY display_order ASC";
-                $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
+                $signResults = $db->rawQuery($signQuery, [$result['lab_id']]);
 
                 $_SESSION['aliasPage'] = $page;
 
@@ -241,8 +245,8 @@ try {
                     $selectedReportFormats = $formatCache[$cacheKey];
                 } else {
                     // Parse the report format configuration
-                    if (isset($result['reportFormat']) && trim($result['reportFormat']) !== '') {
-                        $selectedReportFormats = json_decode($result['reportFormat'], true);
+                    if (isset($result['reportFormat']) && trim((string) $result['reportFormat']) !== '') {
+                        $selectedReportFormats = json_decode((string) $result['reportFormat'], true);
 
                         // Check for JSON decode errors
                         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -279,7 +283,7 @@ try {
 
                 // Fall back to default format if custom format not available
                 if ($reportFormatFile === null) {
-                    if (isset($fileArray[$formId]) && !empty($fileArray[$formId])) {
+                    if (isset($fileArray[$formId]) && (isset($fileArray[$formId]) && ($fileArray[$formId] !== '' && $fileArray[$formId] !== '0'))) {
                         $defaultFormatPath = __DIR__ . DIRECTORY_SEPARATOR . $fileArray[$formId];
 
                         if (file_exists($defaultFormatPath) && is_readable($defaultFormatPath)) {
@@ -325,7 +329,7 @@ try {
         }
 
         // Concatenate all pages into final PDF
-        if (!empty($pages)) {
+        if ($pages !== []) {
             try {
                 $resultPdf = new PdfConcatenateHelper();
                 $resultPdf->setFiles($pages);
@@ -339,7 +343,7 @@ try {
                 error_log("TB PDF report successfully generated: " . $resultFilename);
             } catch (Exception $e) {
                 error_log("Error concatenating TB PDF pages: " . $e->getMessage());
-                throw new Exception("Failed to generate final TB PDF report: " . $e->getMessage());
+                throw new Exception("Failed to generate final TB PDF report: " . $e->getMessage(), $e->getCode(), $e);
             }
         } else {
             error_log("No pages generated for TB PDF report");
@@ -371,7 +375,7 @@ try {
 
     // Return error response
     http_response_code(500);
-    echo json_encode([
+    echo JsonUtility::encodeUtf8Json([
         'status' => 'error',
         'message' => 'Failed to generate TB PDF report: ' . $e->getMessage()
     ]);

@@ -57,19 +57,23 @@ foreach ($actions as $list) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
+						style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<th scope="row">
 								<?= _translate('Date Range'); ?>&nbsp;:
 							</th>
 							<td>
-								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield" placeholder="<?php echo _translate('Enter date range'); ?>" style="width:220px;background:#fff;" />
+								<input type="text" id="dateRange" name="dateRange" class="form-control daterangefield"
+									placeholder="<?php echo _translate('Enter date range'); ?>"
+									style="width:220px;background:#fff;" />
 							</td>
 							<th scope="row">
 								<?php echo _translate("Users"); ?>&nbsp;:
 							</th>
 							<td>
-								<select style="width:220px;" class="form-control select2" id="userName" name="userName" title="<?php echo _translate('Please select the user name'); ?>">
+								<select style="width:220px;" class="form-control select2" id="userName" name="userName"
+									title="<?php echo _translate('Please select the user name'); ?>">
 									<?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
 								</select>
 							</td>
@@ -79,7 +83,8 @@ foreach ($actions as $list) {
 								<?php echo _translate("Type of Action"); ?>&nbsp;:
 							</th>
 							<td>
-								<select style="width:220px;" class="form-control" id="typeOfAction" name="typeOfAction" title="<?php echo _translate('Type of Action'); ?>">
+								<select style="width:220px;" class="form-control" id="typeOfAction" name="typeOfAction"
+									title="<?php echo _translate('Type of Action'); ?>">
 									<?php echo $general->generateSelectOptions($actionList, null, '--All--'); ?>
 								</select>
 							</td>
@@ -87,7 +92,8 @@ foreach ($actions as $list) {
 								<button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span>
 										<?php echo _translate("Search"); ?>
 									</span></button>
-								<a href="/admin/monitoring/activity-log.php" class="btn btn-danger btn-sm" style=" margin-left: 15px; "><span>
+								<a href="/admin/monitoring/activity-log.php" class="btn btn-danger btn-sm"
+									style=" margin-left: 15px; "><span>
 										<?php echo _translate("Clear"); ?>
 									</span></a>
 							</td>
@@ -95,7 +101,8 @@ foreach ($actions as $list) {
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="auditTrailDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="auditTrailDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th>
@@ -134,7 +141,7 @@ foreach ($actions as $list) {
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
 	var oTable = null;
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$('#userName').select2({
 			placeholder: "Select user to filter"
 		});
@@ -143,42 +150,43 @@ foreach ($actions as $list) {
 			placeholder: "Select action to filter"
 		});
 
-		loadVlRequestData();
 		$('#dateRange').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _translate("Clear", true); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-					'Current Year To Date': [moment().startOf('year'), moment()]
-				}
+			locale: {
+				cancelLabel: "<?= _translate("Clear", true); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+				'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+				'Current Year To Date': [moment().startOf('year'), moment()]
+			}
+		},
+			function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
 
+
+		loadVlRequestData();
+
 	});
 
 	function loadVlRequestData() {
-		$.blockUI();
 		oTable = $('#auditTrailDataTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -198,8 +206,8 @@ foreach ($actions as $list) {
 			"aaSorting": [3, "desc"],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "/admin/monitoring/get-audit-trail-list.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"sAjaxSource": "/admin/monitoring/get-activity-log.php",
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "dateRange",
 					"value": $("#dateRange").val()
@@ -221,7 +229,6 @@ foreach ($actions as $list) {
 				});
 			}
 		});
-		$.unblockUI();
 	}
 </script>
 <?php

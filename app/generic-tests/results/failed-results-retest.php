@@ -2,7 +2,8 @@
 
 
 // echo "<pre>";print_r($_POST['bulkIds']);die;
-
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -17,9 +18,9 @@ try {
     $general = ContainerRegistry::get(CommonService::class);
     $sarr = $general->getSystemConfig();
     /* Status definition */
-    $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+    $status = RECEIVED_AT_TESTING_LAB;
     if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
-        $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+        $status = RECEIVED_AT_CLINIC;
     }
     $query = "SELECT sample_code, remote_sample_code, facility_id, sample_batch_id, result, result_status, sample_id FROM form_generic";
     if ($_POST['bulkIds'] && is_array($_POST['vlId'])) {
@@ -36,14 +37,7 @@ try {
     }
     $id = $db->update(
         "form_generic",
-        array(
-            "result" => null,
-            "sample_batch_id" => null,
-            "sample_tested_datetime" => null,
-            "lot_expiration_date" => null,
-            "lot_number" => null,
-            "result_status" => $status
-        )
+        ["result" => null, "sample_batch_id" => null, "sample_tested_datetime" => null, "lot_expiration_date" => null, "lot_number" => null, "result_status" => $status]
     );
 
     if ($id > 0 && !empty($response)) {
@@ -51,18 +45,7 @@ try {
             if (isset($result['sample_id']) && $result['sample_id'] != "") {
                 $db->insert(
                     'failed_result_retest_tracker',
-                    array(
-                        'test_type_pid' => (isset($result['sample_id']) && $result['sample_id'] != "") ? $result['sample_id'] : null,
-                        'test_type' => 'generic-tests',
-                        'sample_code' => (isset($result['sample_code']) && $result['sample_code'] != "") ? $result['sample_code'] : null,
-                        'remote_sample_code' => (isset($result['remote_sample_code']) && $result['remote_sample_code'] != "") ? $result['remote_sample_code'] : null,
-                        'batch_id' => (isset($result['sample_batch_id']) && $result['sample_batch_id'] != "") ? $result['sample_batch_id'] : null,
-                        'facility_id' => (isset($result['facility_id']) && $result['facility_id'] != "") ? $result['facility_id'] : null,
-                        'result' => (isset($result['result']) && $result['result'] != "") ? $result['result'] : null,
-                        'result_status' => (isset($result['result_status']) && $result['result_status'] != "") ? $result['result_status'] : null,
-                        'updated_datetime' => DateUtility::getCurrentDateTime(),
-                        'updated_by' => $_SESSION['userId']
-                    )
+                    ['test_type_pid' => (isset($result['sample_id']) && $result['sample_id'] != "") ? $result['sample_id'] : null, 'test_type' => 'generic-tests', 'sample_code' => (isset($result['sample_code']) && $result['sample_code'] != "") ? $result['sample_code'] : null, 'remote_sample_code' => (isset($result['remote_sample_code']) && $result['remote_sample_code'] != "") ? $result['remote_sample_code'] : null, 'batch_id' => (isset($result['sample_batch_id']) && $result['sample_batch_id'] != "") ? $result['sample_batch_id'] : null, 'facility_id' => (isset($result['facility_id']) && $result['facility_id'] != "") ? $result['facility_id'] : null, 'result' => (isset($result['result']) && $result['result'] != "") ? $result['result'] : null, 'result_status' => (isset($result['result_status']) && $result['result_status'] != "") ? $result['result_status'] : null, 'updated_datetime' => DateUtility::getCurrentDateTime(), 'updated_by' => $_SESSION['userId']]
                 );
             }
         }

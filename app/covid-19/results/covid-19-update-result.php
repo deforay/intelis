@@ -72,13 +72,13 @@ $specimenTypeResult = $db->query($sQuery);
 
 
 $covid19Query = "SELECT * FROM form_covid19 where covid19_id=?";
-$covid19Info = $db->rawQueryOne($covid19Query, array($id));
+$covid19Info = $db->rawQueryOne($covid19Query, [$id]);
 
 $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id=$id ORDER BY test_id ASC";
 $covid19TestInfo = $db->rawQuery($covid19TestQuery);
 
 $disable = "disabled = 'disabled'";
-if (isset($covid19Info['result_reviewed_datetime']) && trim((string) $covid19Info['result_reviewed_datetime']) != '' && $covid19Info['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+if (isset($covid19Info['result_reviewed_datetime']) && trim((string) $covid19Info['result_reviewed_datetime']) !== '' && $covid19Info['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $covid19Info['result_reviewed_datetime']);
 	$covid19Info['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
@@ -149,15 +149,7 @@ if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes
 
 
 
-$fileArray = array(
-	COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php',
-	COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php',
-	COUNTRY\DRC => 'forms/update-drc-result.php',
-	COUNTRY\CAMEROON => 'forms/update-cameroon-result.php',
-	COUNTRY\PNG => 'forms/update-png-result.php',
-	COUNTRY\WHO => 'forms/update-who-result.php',
-	COUNTRY\RWANDA => 'forms/update-rwanda-result.php'
-);
+$fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php', COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php', COUNTRY\DRC => 'forms/update-drc-result.php', COUNTRY\CAMEROON => 'forms/update-cameroon-result.php', COUNTRY\PNG => 'forms/update-png-result.php', COUNTRY\WHO => 'forms/update-who-result.php', COUNTRY\RWANDA => 'forms/update-rwanda-result.php'];
 
 require_once($fileArray[$formId]);
 

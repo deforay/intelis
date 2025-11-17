@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -20,7 +22,7 @@ ini_set('max_execution_time', 300000);
 try {
 
     // Sanitized values from $request object
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -33,7 +35,7 @@ try {
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
 
-    $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
+    $dateFormat = (empty($_POST['dateFormat'])) ? 'd/m/Y H:i' : $_POST['dateFormat'];
 
     /** @var TestResultsService $testResultsService */
     $testResultsService = ContainerRegistry::get(TestResultsService::class);
@@ -101,7 +103,7 @@ try {
                 'result_value_absolute' => $interpretedResults['absVal'],
                 'result_value_absolute_decimal' => $interpretedResults['absDecimalVal'],
                 'sample_tested_datetime' => $testDate,
-                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
+                'result_status' => RECEIVED_AT_TESTING_LAB,
                 'import_machine_file_name' => $fileName,
                 'result_imported_datetime' => DateUtility::getCurrentDateTime(),
                 'imported_by' => $_SESSION['userId'],

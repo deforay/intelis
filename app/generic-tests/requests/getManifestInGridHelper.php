@@ -16,7 +16,7 @@ $gconfig = $general->getGlobalConfig();
 
 
 // Clear the query count cache for this manifest
-if (session_status() === PHP_SESSION_ACTIVE && !empty($_POST['manifestCode'])) {
+if (CommonService::isSessionActive() && !empty($_POST['manifestCode'])) {
      unset($_SESSION['queryCounters']);
 }
 
@@ -25,8 +25,8 @@ $tableName = "form_generic";
 $primaryKey = "sample_id";
 
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.last_modified_datetime', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name'];
+$orderColumns = ['vl.sample_code', 'vl.last_modified_datetime', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
 if ($general->isSTSInstance()) {
      $sampleCode = 'remote_sample_code';
 } elseif ($general->isStandaloneInstance()) {
@@ -66,7 +66,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
+          if ($sWhereSub === "") {
                $sWhereSub .= "(";
           } else {
                $sWhereSub .= " AND (";
@@ -97,12 +97,12 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS *, ts.status_name FROM form_generic as vl
           LEFT JOIN r_generic_test_reasons as tr ON tr.test_reason_id=vl.reason_for_testing
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
      $sWhere = ' WHERE ' . $sWhere;
      if (isset($_POST['manifestCode']) && $_POST['manifestCode'] != '') {
           $manifestCode = $_POST['manifestCode'];
 
-          $sWhere = $sWhere . " AND vl.sample_package_code IN
+          $sWhere .= " AND vl.sample_package_code IN
                     (
                         '$manifestCode',
                         (SELECT DISTINCT sample_package_code FROM form_generic WHERE remote_sample_code LIKE '$manifestCode')
@@ -110,11 +110,11 @@ if (!empty($sWhere)) {
      }
 } else {
      $manifestCode = $_POST['manifestCode'];
-     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) != '') {
+     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
           $manifestCode = $_POST['manifestCode'];
 
           $sWhere = ' WHERE ' . $sWhere;
-          $sWhere = $sWhere . " vl.sample_package_code IN
+          $sWhere .= " vl.sample_package_code IN
                     (
                         '$manifestCode',
                         (SELECT DISTINCT sample_package_code FROM form_generic WHERE remote_sample_code LIKE '$manifestCode')
@@ -138,12 +138,7 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 
-$output = array(
-     "sEcho" => (int) $_POST['sEcho'],
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
-     "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
 

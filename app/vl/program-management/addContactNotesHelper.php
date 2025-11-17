@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -9,7 +10,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -24,13 +25,8 @@ $tableName = "vl_contact_notes";
 
 try {
     $result = '';
-    if (isset($_POST['notes']) && trim((string) $_POST['notes']) != "") {
-        $data = array(
-            'contact_notes' => $_POST['notes'],
-            'treament_contact_id' => $_POST['treamentId'],
-            'collected_on' => DateUtility::isoDateFormat($_POST['dateVal']),
-            'added_on' => DateUtility::getCurrentDateTime()
-        );
+    if (isset($_POST['notes']) && trim((string) $_POST['notes']) !== "") {
+        $data = ['contact_notes' => $_POST['notes'], 'treament_contact_id' => $_POST['treamentId'], 'collected_on' => DateUtility::isoDateFormat($_POST['dateVal']), 'added_on' => DateUtility::getCurrentDateTime()];
         //print_r($data);die;
         $result = $db->insert($tableName, $data);
     }

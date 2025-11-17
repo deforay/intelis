@@ -62,32 +62,32 @@ $activeTests = TestsService::getActiveTests();
                             </td>
                             <td>
                                 <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>">
-                                    <?php if (!empty($activeTests) && in_array('vl', $activeTests)) { ?>
+                                    <?php if ($activeTests !== [] && in_array('vl', $activeTests)) { ?>
                                         <option value="vl">
                                             <?php echo _translate("Viral Load"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeTests) && in_array('eid', $activeTests)) { ?>
+                                    if ($activeTests !== [] && in_array('eid', $activeTests)) { ?>
                                         <option value="eid">
                                             <?php echo _translate("Early Infant Diagnosis"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeTests) && in_array('covid19', $activeTests)) { ?>
+                                    if ($activeTests !== [] && in_array('covid19', $activeTests)) { ?>
                                         <option value="covid19">
                                             <?php echo _translate("Covid-19"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeTests) && in_array('hepatitis', $activeTests)) { ?>
+                                    if ($activeTests !== [] && in_array('hepatitis', $activeTests)) { ?>
                                         <option value='hepatitis'>
                                             <?php echo _translate("Hepatitis"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeTests) && in_array('tb', $activeTests)) { ?>
+                                    if ($activeTests !== [] && in_array('tb', $activeTests)) { ?>
                                         <option value='tb'>
                                             <?php echo _translate("TB"); ?>
                                         </option>
                                     <?php }
-                                    if (!empty($activeTests) && in_array('cd4', $activeTests)) { ?>
+                                    if ($activeTests !== [] && in_array('cd4', $activeTests)) { ?>
                                         <option value='cd4'>
                                             <?php echo _translate("CD4"); ?>
                                         </option>

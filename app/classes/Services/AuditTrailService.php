@@ -2,13 +2,16 @@
 
 namespace App\Services;
 
+use Generator;
+use Exception;
+use App\Registries\ContainerRegistry;
 use App\Services\TestsService;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 
 class AuditTrailService
 {
-    private static $compressionType = null;
+    private static ?string $compressionType = null;
 
     /**
      * Detect available compression type
@@ -41,7 +44,7 @@ class AuditTrailService
     /**
      * Read CSV lines from compressed file using generator
      */
-    private static function readCsvLines(string $compressedFile): \Generator
+    private static function readCsvLines(string $compressedFile): Generator
     {
         if (!file_exists($compressedFile)) {
             return;
@@ -52,7 +55,6 @@ class AuditTrailService
         $command = match ($type) {
             'zstd' => "zstd -d -c " . escapeshellarg($compressedFile) . " 2>/dev/null",
             'pigz' => "pigz -d -c " . escapeshellarg($compressedFile) . " 2>/dev/null",
-            'gzip' => "gzip -d -c " . escapeshellarg($compressedFile) . " 2>/dev/null",
             default => "gzip -d -c " . escapeshellarg($compressedFile) . " 2>/dev/null"
         };
 
@@ -136,7 +138,7 @@ class AuditTrailService
                 foreach ($headers as $index => $header) {
                     $value = $row[$index] ?? 'null';
                     // Decode JSON-encoded values
-                    $record[$header] = $value === 'null' ? null : json_decode($value, true);
+                    $record[$header] = $value === 'null' ? null : json_decode((string) $value, true);
                 }
 
                 // Apply filters if specified
@@ -144,11 +146,11 @@ class AuditTrailService
                     continue;
                 }
 
-                if (isset($options['from_date']) && strtotime($record['dt_datetime'] ?? '') < strtotime($options['from_date'])) {
+                if (isset($options['from_date']) && strtotime($record['dt_datetime'] ?? '') < strtotime((string) $options['from_date'])) {
                     continue;
                 }
 
-                if (isset($options['to_date']) && strtotime($record['dt_datetime'] ?? '') > strtotime($options['to_date'])) {
+                if (isset($options['to_date']) && strtotime($record['dt_datetime'] ?? '') > strtotime((string) $options['to_date'])) {
                     continue;
                 }
 
@@ -157,13 +159,13 @@ class AuditTrailService
 
             // Sort by revision (default: descending - newest first)
             $sortOrder = $options['sort_order'] ?? 'desc';
-            usort($auditHistory, function ($a, $b) use ($sortOrder) {
+            usort($auditHistory, function ($a, $b) use ($sortOrder): int {
                 $comparison = ($a['revision'] ?? 0) <=> ($b['revision'] ?? 0);
                 return $sortOrder === 'desc' ? -$comparison : $comparison;
             });
 
             return $auditHistory;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             LoggerUtility::logError("Error reading audit trail", [
                 'testType' => $testType,
                 'uniqueId' => $uniqueId ?? 'unknown',
@@ -197,7 +199,7 @@ class AuditTrailService
     {
         $history = self::getAuditHistory($sampleData, $testType, ['sort_order' => 'desc']);
 
-        return !empty($history) ? $history[0] : null;
+        return $history === [] ? null : $history[0];
     }
 
     /**
@@ -208,7 +210,7 @@ class AuditTrailService
         $differences = [];
 
         // If no specific fields specified, compare all fields
-        if (empty($fieldsToCompare)) {
+        if ($fieldsToCompare === []) {
             $fieldsToCompare = array_unique(array_merge(
                 array_keys($revision1),
                 array_keys($revision2)
@@ -232,7 +234,7 @@ class AuditTrailService
                         'new' => $value2
                     ];
                 }
-            } else if ($value1 !== $value2) {
+            } elseif ($value1 !== $value2) {
                 $differences[$field] = [
                     'old' => $value1,
                     'new' => $value2
@@ -255,14 +257,15 @@ class AuditTrailService
         }
 
         $changeLog = [];
+        $counter = count($history);
 
-        for ($i = 1; $i < count($history); $i++) {
+        for ($i = 1; $i < $counter; $i++) {
             $previous = $history[$i - 1];
             $current = $history[$i];
 
             $differences = self::compareRevisions($previous, $current);
 
-            if (!empty($differences)) {
+            if ($differences !== []) {
                 $changeLog[] = [
                     'from_revision' => $previous['revision'],
                     'to_revision' => $current['revision'],
@@ -283,7 +286,7 @@ class AuditTrailService
     {
         $history = self::getAuditHistory($sampleData, $testType);
 
-        if (empty($history)) {
+        if ($history === []) {
             return [
                 'total_revisions' => 0,
                 'first_created' => null,
@@ -298,9 +301,7 @@ class AuditTrailService
         $actions = array_count_values(array_column($history, 'action'));
 
         // Sort history by datetime for chronological stats
-        usort($history, function ($a, $b) {
-            return strtotime($a['dt_datetime'] ?? '') <=> strtotime($b['dt_datetime'] ?? '');
-        });
+        usort($history, fn($a, $b): int => strtotime($a['dt_datetime'] ?? '') <=> strtotime($b['dt_datetime'] ?? ''));
 
         return [
             'total_revisions' => count($history),
@@ -320,12 +321,12 @@ class AuditTrailService
     {
         $history = self::getAuditHistory($sampleData, $testType);
 
-        if (empty($history)) {
+        if ($history === []) {
             return '';
         }
 
         // Use specified columns or all columns from first record
-        if (empty($columns)) {
+        if ($columns === []) {
             $columns = array_keys($history[0]);
         }
 
@@ -379,8 +380,8 @@ class AuditTrailService
                 return;
             }
 
-            /** @var \App\Services\DatabaseService $db */
-            $db = \App\Registries\ContainerRegistry::get(\App\Services\DatabaseService::class);
+            /** @var DatabaseService $db */
+            $db = ContainerRegistry::get(DatabaseService::class);
 
             // Get all audit records for this sample from the database
             $db->where($idColumn, $entityId);
@@ -392,7 +393,7 @@ class AuditTrailService
             }
 
             $archivePath = VAR_PATH . "/audit-trail/{$testType}";
-            \App\Utilities\MiscUtility::makeDirectory($archivePath);
+            MiscUtility::makeDirectory($archivePath);
 
             $fileExtension = self::getFileExtension();
             $filePath = "{$archivePath}/{$uniqueId}{$fileExtension}";
@@ -406,10 +407,12 @@ class AuditTrailService
                 $lineNumber = 0;
                 foreach (self::readCsvLines($filePath) as $row) {
                     $lineNumber++;
-                    if ($lineNumber === 1) continue; // Skip header
+                    if ($lineNumber === 1) {
+                        continue;
+                    } // Skip header
 
                     if (isset($row[1])) {
-                        $existingRevisions[] = (int)json_decode($row[1]);
+                        $existingRevisions[] = (int)json_decode((string) $row[1]);
                     }
                 }
             }
@@ -419,7 +422,7 @@ class AuditTrailService
             $tempHandle = fopen($tempFile, 'w');
 
             if ($tempHandle === false) {
-                throw new \Exception("Failed to create temp file");
+                throw new Exception("Failed to create temp file");
             }
 
             // Write headers
@@ -430,9 +433,12 @@ class AuditTrailService
                 $lineNumber = 0;
                 foreach (self::readCsvLines($filePath) as $row) {
                     $lineNumber++;
-                    if ($lineNumber === 1) continue; // Skip header
+                    if ($lineNumber === 1) {
+                        continue;
+                    } // Skip header
 
-                    fputcsv($tempHandle, $row);
+                    // Ensure $row is an array for fputcsv
+                    fputcsv($tempHandle, is_array($row) ? $row : (array)$row);
                 }
             }
 
@@ -461,7 +467,7 @@ class AuditTrailService
 
             // Clean up temp file
             MiscUtility::deleteFile($tempFile);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             LoggerUtility::logError("Error processing sample audit data", [
                 'testType' => $testType,
                 'uniqueId' => $uniqueId ?? 'unknown',
@@ -478,7 +484,6 @@ class AuditTrailService
         $type = self::detectCompressionType();
         return match ($type) {
             'zstd' => '.csv.zst',
-            'pigz', 'gzip' => '.csv.gz',
             default => '.csv.gz'
         };
     }
@@ -493,7 +498,6 @@ class AuditTrailService
         $command = match ($type) {
             'zstd' => sprintf('zstd -3 -T0 -q -f -o %s %s', escapeshellarg($outputFile), escapeshellarg($inputFile)),
             'pigz' => sprintf('pigz -c %s > %s', escapeshellarg($inputFile), escapeshellarg($outputFile)),
-            'gzip' => sprintf('gzip -c %s > %s', escapeshellarg($inputFile), escapeshellarg($outputFile)),
             default => sprintf('gzip -c %s > %s', escapeshellarg($inputFile), escapeshellarg($outputFile))
         };
 

@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
@@ -7,7 +8,7 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -19,14 +20,10 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $mappingType = $_POST['mappingType'];
 $testType   = $_POST['testType'];
 
-if ($mappingType == "testing-labs") {
-    $tableName = "testing_labs";
-} else {
-    $tableName = "health_facilities";
-}
+$tableName = $mappingType == "testing-labs" ? "testing_labs" : "health_facilities";
 
 try {
-    if (!empty($_POST)) {
+    if ($_POST !== []) {
         $db->where('test_type', $testType);
         $db->delete($tableName);
         $mappedFacilities = MiscUtility::desqid($_POST['selectedFacilities']);

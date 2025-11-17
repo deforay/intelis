@@ -68,7 +68,7 @@ $styleArray = [
 ];
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-    if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
+    if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
         $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
     }
 }
@@ -113,7 +113,7 @@ $sheet->getStyle('O5:O5')->applyFromArray($styleArray);
 
 $no = 1;
 foreach ($rResult as $aRow) {
-    $rejectedObj = json_decode($aRow['reason_for_result_changes']);
+    $rejectedObj = json_decode((string) $aRow['reason_for_result_changes']);
     $row = [];
     $row[] = $aRow['sample_code'];
     $row[] = $aRow['remote_sample_code'];

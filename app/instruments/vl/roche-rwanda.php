@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Registries\AppRegistry;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -10,7 +12,7 @@ use App\Utilities\MiscUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -23,11 +25,7 @@ try {
 
     // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
-    $allowedExtensions = array(
-        'xls',
-        'xlsx',
-        'csv'
-    );
+    $allowedExtensions = ['xls', 'xlsx', 'csv'];
     if (
         isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
         || $_FILES['resultFile']['size'] <= 0
@@ -76,8 +74,9 @@ try {
         $lotExpirationDateCol = 'P';
 
         foreach ($sheetData as $rowIndex => $row) {
-            if ($rowIndex < $skipTillRow)
+            if ($rowIndex < $skipTillRow) {
                 continue;
+            }
 
             $sampleCode = "";
             $sampleType = "";
@@ -101,7 +100,7 @@ try {
                 $alterDate = str_replace("/", "-", $alterDateTime[0]);
                 $strToArray = explode("-", $alterDate);
                 if (strlen($strToArray[0]) == 2 && strlen($strToArray[2]) == 2) {
-                    if ($strToArray[0] == date('y')) {
+                    if ($strToArray[0] === date('y')) {
                         $alterDate = date('Y') . "-" . $strToArray[1] . "-" . $strToArray[2];
                     } else {
                         $alterDate = $strToArray[0] . "-" . $strToArray[1] . "-" . date('Y');
@@ -110,7 +109,7 @@ try {
                 $testingDate = date('Y-m-d H:i', strtotime($alterDate . " " . $alterDateTime[1]));
             }
 
-            if (trim((string) $row[$absValCol]) != "") {
+            if (trim((string) $row[$absValCol]) !== "") {
                 $resVal = explode("(", (string) $row[$absValCol]);
                 if (count($resVal) == 2) {
 
@@ -118,7 +117,7 @@ try {
                         $resVal[0] = str_replace("<", "", $resVal[0]);
                         $absDecimalVal = (float) trim($resVal[0]);
                         $absVal = "< " . (float) trim($resVal[0]);
-                    } else if (str_contains($resVal[0], ">")) {
+                    } elseif (str_contains($resVal[0], ">")) {
                         $resVal[0] = str_replace(">", "", $resVal[0]);
                         $absDecimalVal = (float) trim($resVal[0]);
                         $absVal = "> " . (float) trim($resVal[0]);
@@ -128,24 +127,24 @@ try {
                     }
 
                     $logVal = substr(trim($resVal[1]), 0, -1);
-                    if ($logVal == "1.30" || $logVal == "1.3") {
+                    if ($logVal === "1.30" || $logVal === "1.3") {
                         $absDecimalVal = 20;
                         $absVal = "< 20";
                     }
                 } else {
                     $txtVal = trim((string) $row[$absValCol]);
-                    if ($txtVal == 'Invalid') {
+                    if ($txtVal === 'Invalid') {
                         $resultFlag = trim($txtVal);
                     }
                 }
             }
 
             $lotNumberVal = $row[$lotNumberCol];
-            if (trim((string) $row[$lotExpirationDateCol]) != '') {
+            if (trim((string) $row[$lotExpirationDateCol]) !== '') {
                 $alterDate = str_replace("/", "-", (string) $row[$lotExpirationDateCol]);
                 $strToArray = explode("-", $alterDate);
                 if (strlen($strToArray[0]) == 2 && strlen($strToArray[2]) == 2) {
-                    if ($strToArray[0] == date('y')) {
+                    if ($strToArray[0] === date('y')) {
                         $alterDate = date('Y') . "-" . $strToArray[1] . "-" . $strToArray[2];
                     } else {
                         $alterDate = $strToArray[0] . "-" . $strToArray[1] . "-" . date('Y');
@@ -159,19 +158,7 @@ try {
             }
             //   continue;
 
-            $infoFromFile[$sampleCode] = array(
-                "sampleCode" => $sampleCode,
-                "logVal" => $logVal,
-                "absVal" => $absVal,
-                "absDecimalVal" => $absDecimalVal,
-                "txtVal" => $txtVal,
-                "resultFlag" => $resultFlag,
-                "testingDate" => $testingDate,
-                "sampleType" => $sampleType,
-                "lotNumber" => $lotNumberVal,
-                "lotExpirationDate" => $lotExpirationDateVal,
-                "reviewBy" => $reviewBy
-            );
+            $infoFromFile[$sampleCode] = ["sampleCode" => $sampleCode, "logVal" => $logVal, "absVal" => $absVal, "absDecimalVal" => $absDecimalVal, "txtVal" => $txtVal, "resultFlag" => $resultFlag, "testingDate" => $testingDate, "sampleType" => $sampleType, "lotNumber" => $lotNumberVal, "lotExpirationDate" => $lotExpirationDateVal, "reviewBy" => $reviewBy];
 
             $m++;
         }
@@ -184,32 +171,14 @@ try {
             if ($d['sampleType'] == 'S' || $d['sampleType'] == 's') {
                 $refno += 1;
             }
-            $data = array(
-                'module' => 'vl',
-                'lab_id' => base64_decode((string) $_POST['labId']),
-                'vl_test_platform' => $_POST['vltestPlatform'],
-                'import_machine_name' => $_POST['configMachineName'],
-                'result_reviewed_by' => $_SESSION['userId'],
-                'sample_code' => $d['sampleCode'],
-                'result_value_log' => $d['logVal'],
-                'sample_type' => $d['sampleType'],
-                'result_value_absolute' => $d['absVal'],
-                'result_value_text' => $d['txtVal'],
-                'result_value_absolute_decimal' => $d['absDecimalVal'],
-                'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
-                'import_machine_file_name' => $fileName,
-                'lab_tech_comments' => $d['resultFlag'],
-                'lot_number' => $d['lotNumber'],
-                'lot_expiration_date' => $d['lotExpirationDate']
-            );
+            $data = ['module' => 'vl', 'lab_id' => base64_decode((string) $_POST['labId']), 'vl_test_platform' => $_POST['vltestPlatform'], 'import_machine_name' => $_POST['configMachineName'], 'result_reviewed_by' => $_SESSION['userId'], 'sample_code' => $d['sampleCode'], 'result_value_log' => $d['logVal'], 'sample_type' => $d['sampleType'], 'result_value_absolute' => $d['absVal'], 'result_value_text' => $d['txtVal'], 'result_value_absolute_decimal' => $d['absDecimalVal'], 'sample_tested_datetime' => $d['testingDate'], 'result_status' => RECEIVED_AT_TESTING_LAB, 'import_machine_file_name' => $fileName, 'lab_tech_comments' => $d['resultFlag'], 'lot_number' => $d['lotNumber'], 'lot_expiration_date' => $d['lotExpirationDate']];
 
             //echo "<pre>";var_dump($data);continue;
             if ($d['absVal'] != "") {
                 $data['result'] = $d['absVal'];
-            } else if ($d['logVal'] != "") {
+            } elseif ($d['logVal'] != "") {
                 $data['result'] = $d['logVal'];
-            } else if ($d['txtVal'] != "") {
+            } elseif ($d['txtVal'] != "") {
                 $data['result'] = $d['txtVal'];
             } else {
                 $data['result'] = "";
@@ -228,7 +197,7 @@ try {
             $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
+                $scData = ['r_sample_control_name' => trim((string) $d['sampleType'])];
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($vlResult) && !empty($sampleCode)) {

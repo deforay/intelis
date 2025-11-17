@@ -117,19 +117,7 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 									$artNoList[] = $value;
 
 									$patientDetails = json_encode(
-										array(
-											"name" => $patient['child_name'] . " " . $patient['child_surname'],
-											"gender" => $patient['child_gender'],
-											"dob" => DateUtility::humanReadableDateFormat($patient['child_dob']),
-											"age" => $patient['child_age'],
-											"caretaker_no" => $patient['caretaker_phone_number'],
-											"child_id" => $patient['child_id'],
-											"mother_id" => $patient['mother_id'],
-											"caretaker_address" => $patient['caretaker_address'],
-											"mother_name" => $patient['mother_name'],
-											"mother_dob" => DateUtility::humanReadableDateFormat($patient['mother_dob']),
-											"mother_marital_status" => $patient['mother_marital_status'],
-										)
+										["name" => $patient['child_name'] . " " . $patient['child_surname'], "gender" => $patient['child_gender'], "dob" => DateUtility::humanReadableDateFormat($patient['child_dob']), "age" => $patient['child_age'], "caretaker_no" => $patient['caretaker_phone_number'], "child_id" => $patient['child_id'], "mother_id" => $patient['mother_id'], "caretaker_address" => $patient['caretaker_address'], "mother_name" => $patient['mother_name'], "mother_dob" => DateUtility::humanReadableDateFormat($patient['mother_dob']), "mother_marital_status" => $patient['mother_marital_status']]
 									);
 								?>
 									<tr>

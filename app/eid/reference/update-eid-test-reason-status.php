@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -17,16 +18,14 @@ $tableName = "r_eid_test_reasons";
 try {
 
     // Sanitized values from $request object
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
     $id = explode(",", (string) $_POST['id']);
-    for ($i = 0; $i < count($id); $i++) {
-        $status = array(
-            'test_reason_status' => $_POST['status'],
-            'updated_datetime'     =>  DateUtility::getCurrentDateTime(),
-        );
+    $counter = count($id);
+    for ($i = 0; $i < $counter; $i++) {
+        $status = ['test_reason_status' => $_POST['status'], 'updated_datetime'     =>  DateUtility::getCurrentDateTime()];
         $db->where('test_reason_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];

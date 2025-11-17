@@ -1,5 +1,6 @@
 <?php
 
+use Slim\Psr7\Request;
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
@@ -25,7 +26,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-/** @var Slim\Psr7\Request $request */
+/** @var Request $request */
 $request = AppRegistry::get('request');
 //$origJson = $request->getBody()->getContents();
 $origJson = $apiService->getJsonFromRequest($request);
@@ -79,7 +80,7 @@ try {
     }
 
     $whereString = '';
-    if (!empty($where)) {
+    if ($where !== []) {
         $whereString = " WHERE " . implode(" AND ", $where);
     }
     $sQuery .= $whereString;

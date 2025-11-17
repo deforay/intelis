@@ -25,13 +25,13 @@ $vlsmFormId = (int) $general->getGlobalConfig('vl_form');
 
 
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_type_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_type_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
 if ($general->isSTSInstance()) {
      $sampleCode = 'remote_sample_code';
 } elseif ($general->isStandaloneInstance()) {
-     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_type_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     $aColumns = ['vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
+     $orderColumns = ['vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_type_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
 }
 
 /* Indexed column (used for fast and accurate table cardinality) */
@@ -67,7 +67,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
+          if ($sWhereSub === "") {
                $sWhereSub .= "(";
           } else {
                $sWhereSub .= " AND (";
@@ -97,12 +97,12 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS *, vl.last_modified_datetime FROM form_gen
 
 
 
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
      $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim((string) $start_date) == trim((string) $end_date)) {
+     if (trim((string) $start_date) === trim((string) $end_date)) {
           $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
           $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -116,9 +116,9 @@ if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
 }
 if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
      if ($_POST['statusFilter'] == 'approvedOrRejected') {
-          $sWhere[] = ' vl.result_status IN (4,7)';
-     } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
-          $sWhere[] = ' vl.result_status IN (6,8)';
+         $sWhere[] = ' vl.result_status IN (4,7)';
+     } elseif ($_POST['statusFilter'] == 'notApprovedOrRejected') {
+         $sWhere[] = ' vl.result_status IN (6,8)';
      }
 }
 
@@ -128,11 +128,11 @@ if (!empty($_SESSION['facilityMap'])) {
 
 $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
      $sWhere = ' WHERE ' . implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . $sWhere;
+$sQuery .= $sWhere;
 if (!empty($sOrder) && $sOrder !== '') {
      $sOrder = preg_replace('/\s+/', ' ', $sOrder);
      $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -152,12 +152,7 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 /*
 * Output
 */
-$output = array(
-     "sEcho" => (int) $_POST['sEcho'],
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
-     "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 $vlRequest = false;
 $vlView = false;
 if ((_isAllowed("/generic-tests/requests/edit-request.php"))) {

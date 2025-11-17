@@ -9,8 +9,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $tableName = "track_api_requests";
 $primaryKey = "api_track_id";
 
-$aColumns = array('l.facility_name', "DATE_FORMAT(requested_on,'%d-%b-%Y')", 'number_of_records', 'request_type');
-$oColumns = array('l.facility_name', 'requested_on', 'number_of_records', 'request_type');
+$aColumns = ['l.facility_name', "DATE_FORMAT(requested_on,'%d-%b-%Y')", 'number_of_records', 'request_type'];
+$oColumns = ['l.facility_name', 'requested_on', 'number_of_records', 'request_type'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -43,7 +43,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -69,7 +69,7 @@ $sQuery = "SELECT tar.*, l.facility_name as labName FROM $tableName AS tar
             LEFT JOIN facility_details as l ON l.facility_id=tar.facility_id
             WHERE request_type IN('results', 'requests')";
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' AND ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
@@ -95,12 +95,7 @@ $aResultTotal = $db->rawQuery("select COUNT($primaryKey) as total FROM $tableNam
 $iTotal = $aResultTotal[0]['total'];
 
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $row = [];

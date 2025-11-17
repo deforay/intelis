@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use GuzzleHttp\Client;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -23,7 +24,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 $_POST = array_map('trim', $_POST);
@@ -43,7 +44,7 @@ $signatureImagePath = realpath($signatureImagePath);
 $signatureImage = null;
 
 try {
-    if (trim((string) $_POST['userName']) != '' && trim((string) $_POST['loginId']) != '' && ($_POST['role']) != '') {
+    if (trim((string) $_POST['userName']) !== '' && trim((string) $_POST['loginId']) !== '' && ($_POST['role']) != '') {
 
         $data = [
             'user_name'             => $_POST['userName'],
@@ -73,9 +74,9 @@ try {
             $data['api_token'] = ApiService::generateAuthToken();
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
         }
-        if (isset($_POST['removedSignatureImage']) && trim((string) $_POST['removedSignatureImage']) != "") {
+        if (isset($_POST['removedSignatureImage']) && trim((string) $_POST['removedSignatureImage']) !== "") {
             $fImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];
-            if (!empty($fImagePath) && file_exists($fImagePath)) {
+            if ($fImagePath !== '' && $fImagePath !== '0' && file_exists($fImagePath)) {
                 MiscUtility::deleteFile($fImagePath);
             }
             $data['user_signature'] = null;
@@ -100,7 +101,7 @@ try {
             $signatureImagePath = isset($userInfo['user_signature']) ? $signatureImagePath . DIRECTORY_SEPARATOR . $userInfo['user_signature'] :  null;
         }
 
-        if (isset($_POST['password']) && trim((string) $_POST['password']) != "") {
+        if (isset($_POST['password']) && trim((string) $_POST['password']) !== "") {
 
             /* Recency cross login block */
             if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty(SYSTEM_CONFIG['recency']['url'])) {
@@ -131,10 +132,10 @@ try {
         $db->where('user_id', $userId);
         $delId = $db->delete("user_facility_map");
 
-        if ($userId != '' && trim((string) $_POST['selectedFacility']) != '') {
+        if ($userId != '' && trim((string) $_POST['selectedFacility']) !== '') {
             $selectedFacility = MiscUtility::desqid($_POST['selectedFacility'], returnArray: true);
             $uniqueFacilityId = array_unique($selectedFacility);
-            if (!empty($uniqueFacilityId)) {
+            if ($uniqueFacilityId !== []) {
                 $data = [];
                 foreach ($uniqueFacilityId as $facilityId) {
                     $data[] = [
@@ -143,7 +144,7 @@ try {
                     ];
                 }
 
-                if (!empty($data)) {
+                if ($data !== []) {
                     $db->insertMulti("user_facility_map", $data);
                 }
             }
@@ -172,7 +173,7 @@ try {
                 ]
             ];
 
-            if (!empty($signatureImagePath) && MiscUtility::isImageValid($signatureImagePath)) {
+            if ($signatureImagePath !== null && $signatureImagePath !== '' && $signatureImagePath !== '0' && MiscUtility::isImageValid($signatureImagePath)) {
                 $multipart[] = [
                     'name' => 'sign',
                     'contents' => fopen($signatureImagePath, 'r')

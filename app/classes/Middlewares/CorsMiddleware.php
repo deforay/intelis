@@ -2,15 +2,16 @@
 
 namespace App\Middlewares;
 
+use Override;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Laminas\Diactoros\Response;
+use Laminas\Diactoros\Response\EmptyResponse;
 
 class CorsMiddleware implements MiddlewareInterface
 {
-    private $options;
+    private array $options;
 
     public function __construct(array $options = [])
     {
@@ -24,6 +25,7 @@ class CorsMiddleware implements MiddlewareInterface
         ], $options);
     }
 
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // Figure out who is asking so we can decide whether to include CORS headers.
@@ -54,7 +56,7 @@ class CorsMiddleware implements MiddlewareInterface
         if (strtoupper($request->getMethod()) === 'OPTIONS') {
             // Browser preflight (OPTIONS) checks if cross-origin request would be permitted.
             // We answer it directly so the real request only runs when the policy allows it.
-            return new Response\EmptyResponse(204, $baseHeaders);
+            return new EmptyResponse(204, $baseHeaders);
         }
 
         $response = $handler->handle($request);

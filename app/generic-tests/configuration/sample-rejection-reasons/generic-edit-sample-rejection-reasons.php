@@ -53,7 +53,7 @@ $rsnInfo = $db->query($rsnQuery);
 								<div class="form-group">
 									<label for="rejectionReasonName" class="col-lg-4 control-label">Rejection Reason Name <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="rejectionReasonName" name="rejectionReasonName" value="<?php echo $rsnInfo[0]['rejection_reason_name']; ?>" placeholder="Rejection Reason Name" title="Please enter Rejection Reason name" onblur="checkNameValidation('r_generic_sample_rejection_reasons','rejection_reason_name',this,'<?php echo "rejection_reason_id##" . htmlspecialchars($id); ?>','This Rejection reason name that you entered already exists.Try another Rejection reason name',null)" />
+										<input type="text" class="form-control isRequired" id="rejectionReasonName" name="rejectionReasonName" value="<?php echo $rsnInfo[0]['rejection_reason_name']; ?>" placeholder="Rejection Reason Name" title="Please enter Rejection Reason name" onblur="checkNameValidation('r_generic_sample_rejection_reasons','rejection_reason_name',this,'<?php echo "rejection_reason_id##" . htmlspecialchars((string) $id); ?>','This Rejection reason name that you entered already exists.Try another Rejection reason name',null)" />
 										<input type="hidden" class="form-control isRequired" id="rejectionReasonId" name="rejectionReasonId" value="<?php echo $_GET['id']; ?>" />
 									</div>
 								</div>
@@ -74,7 +74,7 @@ $rsnInfo = $db->query($rsnQuery);
 								<div class="form-group">
 									<label for="rejectionReasonCode" class="col-lg-4 control-label">Rejection Reason Code <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" value="<?php echo $rsnInfo[0]['rejection_reason_code']; ?>" id="rejectionReasonCode" name="rejectionReasonCode" placeholder="Rejection Reason Code" title="Please enter Rejection Reason Code" onblur="checkNameValidation('r_generic_sample_rejection_reasons','rejection_reason_code',this,'<?php echo "rejection_reason_id##" . htmlspecialchars($id); ?>','This Rejection reason code that you entered already exists.Try another Rejection reason code',null)" />
+										<input type="text" class="form-control isRequired" value="<?php echo $rsnInfo[0]['rejection_reason_code']; ?>" id="rejectionReasonCode" name="rejectionReasonCode" placeholder="Rejection Reason Code" title="Please enter Rejection Reason Code" onblur="checkNameValidation('r_generic_sample_rejection_reasons','rejection_reason_code',this,'<?php echo "rejection_reason_id##" . htmlspecialchars((string) $id); ?>','This Rejection reason code that you entered already exists.Try another Rejection reason code',null)" />
 									</div>
 								</div>
 							</div>

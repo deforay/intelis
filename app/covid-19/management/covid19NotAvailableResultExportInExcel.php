@@ -28,11 +28,11 @@ $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 
-if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) != "") {
+if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) !== "") {
 
     $output = [];
 
-    $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient Id.", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status");
+    $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient Id.", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status"];
     if ($general->isStandaloneInstance()) {
         $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
     }
@@ -43,15 +43,11 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $row = [];
         //sample collecion date
         $sampleCollectionDate = '';
-        if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+        if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
             $expStr = explode(" ", (string) $aRow['sample_collection_date']);
             $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
         }
-        if ($aRow['remote_sample'] == 'yes') {
-            $decrypt = 'remote_sample_code';
-        } else {
-            $decrypt = 'sample_code';
-        }
+        $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
         $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow[$decrypt]));
         $row[] = $aRow['sample_code'];
         if (!$general->isStandaloneInstance()) {
@@ -82,27 +78,13 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $excel = new Spreadsheet();
         $sheet = $excel->getActiveSheet();
 
-        $styleArray = array(
-            'font' => array(
-                'bold' => true,
-                'size' => '13',
-            ),
-            'alignment' => array(
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER,
-            ),
-            'borders' => array(
-                'outline' => array(
-                    'style' => Border::BORDER_THIN,
-                ),
-            ),
-        );
+        $styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
 
 
         $sheet->mergeCells('A1:AE1');
         $nameValue = '';
         foreach ($_POST as $key => $value) {
-            if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
+            if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
                 $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
             }
         }

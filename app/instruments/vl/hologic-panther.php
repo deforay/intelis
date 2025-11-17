@@ -2,7 +2,8 @@
 
 // For Hologic Panther test results import
 // File gets called in import-file-helper.php based on the selected instrument type
-
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -11,11 +12,11 @@ use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'm/d/Y H:i:s';
+$dateFormat = (empty($_POST['dateFormat'])) ? 'm/d/Y H:i:s' : $_POST['dateFormat'];
 
 /** @var TestResultsService $testResultsService */
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
@@ -65,15 +66,15 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
                 }
 
                 // Skip if end marker or not enough columns
-                if (isset($sheetData[0]) && str_contains($sheetData[0], '[end]') || count($sheetData) < 20) {
+                if (isset($sheetData[0]) && str_contains((string) $sheetData[0], '[end]') || count($sheetData) < 20) {
                     continue;
                 }
 
-                $sampleCode = isset($sheetData[$sampleIdCol]) ? trim($sheetData[$sampleIdCol]) : "";
-                $sampleType = isset($sheetData[$sampleTypeCol]) ? trim($sheetData[$sampleTypeCol]) : "";
-                $resultValue = isset($sheetData[$resultCol]) ? trim($sheetData[$resultCol]) : "";
-                $logVal = isset($sheetData[$logValCol]) ? trim($sheetData[$logValCol]) : "";
-                $validity = isset($sheetData[$validityCol]) ? trim($sheetData[$validityCol]) : "";
+                $sampleCode = isset($sheetData[$sampleIdCol]) ? trim((string) $sheetData[$sampleIdCol]) : "";
+                $sampleType = isset($sheetData[$sampleTypeCol]) ? trim((string) $sheetData[$sampleTypeCol]) : "";
+                $resultValue = isset($sheetData[$resultCol]) ? trim((string) $sheetData[$resultCol]) : "";
+                $logVal = isset($sheetData[$logValCol]) ? trim((string) $sheetData[$logValCol]) : "";
+                $validity = isset($sheetData[$validityCol]) ? trim((string) $sheetData[$validityCol]) : "";
 
                 // Process the result value
                 $absVal = "";
@@ -96,52 +97,41 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
                 // Process testing date
                 $testingDate = null;
-                if (isset($sheetData[$testDateCol]) && trim($sheetData[$testDateCol]) != '') {
+                if (isset($sheetData[$testDateCol]) && trim((string) $sheetData[$testDateCol]) !== '') {
                     try {
                         $testingDateObject = DateTimeImmutable::createFromFormat($dateFormat, $sheetData[$testDateCol]);
                         if ($testingDateObject) {
                             $testingDate = $testingDateObject->format('Y-m-d H:i:s');
                         }
-                    } catch (Exception $e) {
+                    } catch (Exception) {
                         // If date parsing fails, leave as null
                     }
                 }
 
                 // Process lot expiration date
                 $lotExpirationDateVal = null;
-                if (isset($sheetData[$lotExpirationDateCol]) && trim($sheetData[$lotExpirationDateCol]) != '') {
+                if (isset($sheetData[$lotExpirationDateCol]) && trim((string) $sheetData[$lotExpirationDateCol]) !== '') {
                     try {
                         $lotExpirationDateObject = DateTimeImmutable::createFromFormat($dateFormat, $sheetData[$lotExpirationDateCol]);
                         if ($lotExpirationDateObject) {
                             $lotExpirationDateVal = $lotExpirationDateObject->format('Y-m-d H:i:s');
                         }
-                    } catch (Exception $e) {
+                    } catch (Exception) {
                         // If date parsing fails, leave as null
                     }
                 }
 
                 // Get lot number
-                $lotNumberVal = isset($sheetData[$lotNumberCol]) ? trim($sheetData[$lotNumberCol]) : "";
+                $lotNumberVal = isset($sheetData[$lotNumberCol]) ? trim((string) $sheetData[$lotNumberCol]) : "";
 
                 // Process sample type
-                if ($sampleType == 'Specimen') {
+                if ($sampleType === 'Specimen') {
                     $sampleType = 'S';
                 }
 
                 // Store the parsed data
-                if (!isset($infoFromFile[$sampleCode]) && !empty($sampleCode)) {
-                    $infoFromFile[$sampleCode] = array(
-                        "sampleCode" => $sampleCode,
-                        "logVal" => $logVal,
-                        "absVal" => $absVal,
-                        "absDecimalVal" => $absDecimalVal,
-                        "txtVal" => $txtVal,
-                        "resultFlag" => $validity,
-                        "testingDate" => $testingDate,
-                        "sampleType" => $sampleType,
-                        "lotNumber" => $lotNumberVal,
-                        "lotExpirationDate" => $lotExpirationDateVal,
-                    );
+                if (!isset($infoFromFile[$sampleCode]) && ($sampleCode !== '' && $sampleCode !== '0')) {
+                    $infoFromFile[$sampleCode] = ["sampleCode" => $sampleCode, "logVal" => $logVal, "absVal" => $absVal, "absDecimalVal" => $absDecimalVal, "txtVal" => $txtVal, "resultFlag" => $validity, "testingDate" => $testingDate, "sampleType" => $sampleType, "lotNumber" => $lotNumberVal, "lotExpirationDate" => $lotExpirationDateVal];
                 }
             }
 
@@ -153,9 +143,9 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
             // Prepare result value
             if ($d['txtVal'] != "") {
                 $resultValue = $d['txtVal'];
-            } else if ($d['absVal'] != "") {
+            } elseif ($d['absVal'] != "") {
                 $resultValue = $d['absVal'];
-            } else if ($d['logVal'] != "") {
+            } elseif ($d['logVal'] !== "") {
                 $resultValue = $d['logVal'];
             } else {
                 $resultValue = "";
@@ -175,7 +165,7 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
                 'result_value_text' => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal'],
                 'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
+                'result_status' => RECEIVED_AT_TESTING_LAB,
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag'],
                 'lot_number' => $d['lotNumber'],
@@ -196,7 +186,7 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
             }
 
             // Check if result already exists
-            if (!empty($vlResult) && !empty($sampleCode)) {
+            if (!empty($vlResult) && ($sampleCode !== '' && $sampleCode !== '0')) {
                 if (!empty($vlResult['result'])) {
                     $data['sample_details'] = _translate('Result already exists');
                 }

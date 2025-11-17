@@ -219,7 +219,7 @@ $batchResult = $db->rawQuery($batchQuery);
                     <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="Please select sample(s)">
                       <?php
                       foreach ($result as $sample) {
-                        if (trim((string) $sample['sample_code']) != '') {
+                        if (trim((string) $sample['sample_code']) !== '') {
                       ?>
                           <option value="<?php echo $sample['covid19_id']; ?>"><?= $sample['sample_code']; ?></option>
                       <?php

@@ -99,28 +99,7 @@ $pResult = $db->rawQuery($pQuery);
 									$artNoList[] = $value;
 
 									$patientDetails = json_encode(
-										array(
-											"firstname" => ($patient['patient_name']),
-											"lastname" => ($patient['patient_surname']),
-											"gender" => $patient['patient_gender'],
-											"dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']),
-											"age" => $patient['patient_age'],
-											"is_patient_pregnant" => $patient['is_patient_pregnant'],
-											"is_patient_breastfeeding" => $patient['is_patient_breastfeeding'],
-											"patient_phone_number" => $patient['patient_phone_number'],
-											"patient_id" => $patient['patient_id'],
-											"patient_passport_number" => $patient['patient_passport_number'],
-											"patient_address" => $patient['patient_address'],
-											"patient_nationality" => $patient['patient_nationality'],
-											"patient_city" => $patient['patient_city'],
-											"patient_province" => $patient['patient_province'],
-											"patient_district" => $patient['patient_district'],
-											"geo_code" => $patient['geo_code'],
-											"geo_name" => $patient['geo_name'],
-											"province_id" => $patient['province_id'],
-											"patient_zone" => $patient['patient_zone'],
-											"external_sample_code" => $patient['external_sample_code'],
-										)
+										["firstname" => ($patient['patient_name']), "lastname" => ($patient['patient_surname']), "gender" => $patient['patient_gender'], "dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']), "age" => $patient['patient_age'], "is_patient_pregnant" => $patient['is_patient_pregnant'], "is_patient_breastfeeding" => $patient['is_patient_breastfeeding'], "patient_phone_number" => $patient['patient_phone_number'], "patient_id" => $patient['patient_id'], "patient_passport_number" => $patient['patient_passport_number'], "patient_address" => $patient['patient_address'], "patient_nationality" => $patient['patient_nationality'], "patient_city" => $patient['patient_city'], "patient_province" => $patient['patient_province'], "patient_district" => $patient['patient_district'], "geo_code" => $patient['geo_code'], "geo_name" => $patient['geo_name'], "province_id" => $patient['province_id'], "patient_zone" => $patient['patient_zone'], "external_sample_code" => $patient['external_sample_code']]
 									);
 								?>
 

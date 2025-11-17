@@ -9,18 +9,14 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Dhis2
 {
-	private const DEFAULT_CONTENT_TYPE = 'application/json';
+	private const string DEFAULT_CONTENT_TYPE = 'application/json';
 	private readonly Client $httpClient;
 	private bool $authenticated = false;
-	private string $contentType;
-	public string $currentRequestUrl;
 
-	public function __construct(string $dhis2url, string $username, string $password, string $contentType = self::DEFAULT_CONTENT_TYPE)
+	public function __construct(public string $currentRequestUrl, string $username, string $password, private string $contentType = self::DEFAULT_CONTENT_TYPE)
 	{
-		$this->currentRequestUrl = $dhis2url;
-		$this->contentType = $contentType;
 		$this->httpClient = new Client([
-			'base_uri' => rtrim($dhis2url, '/'),
+			'base_uri' => rtrim($this->currentRequestUrl, '/'),
 			'auth' => [$username, $password],
 			'headers' => ['Content-Type' => $this->contentType]
 		]);
@@ -28,7 +24,7 @@ class Dhis2
 		try {
 			$response = $this->httpClient->get('/api/33/system/ping');
 			$this->authenticated = $response->getStatusCode() === 200;
-		} catch (GuzzleException $e) {
+		} catch (GuzzleException) {
 			$this->authenticated = false;
 		}
 	}
@@ -50,28 +46,26 @@ class Dhis2
 
 
 	// Returns all orgs if $orgUnitID is not specified
-	public function getOrgUnits($orgUnitID = null)
+	public function getOrgUnits($orgUnitID = null): false|Response|null
 	{
-		if (!$this->isAuthenticated())
-			return false;
+		if (!$this->isAuthenticated()) {
+      return false;
+  }
 
 		$urlParams[] = "paging=false";
 
-		if ($orgUnitID == null) {
-			$path = "/api/organisationUnits";
-		} else {
-			$path = "/api/organisationUnits/" . $orgUnitID;
-		}
+		$path = $orgUnitID == null ? "/api/organisationUnits" : "/api/organisationUnits/" . $orgUnitID;
 
 
 		return $this->get($path, $urlParams);
 	}
 
 	// Returns all programs if programId is not specified
-	public function getPrograms($orgUnitID, $programId = null)
+	public function getPrograms($orgUnitID, $programId = null): false|Response|null
 	{
-		if (!$this->isAuthenticated() || empty($orgUnitID))
-			return false;
+		if (!$this->isAuthenticated() || empty($orgUnitID)) {
+      return false;
+  }
 
 		$urlParams[] = "paging=false";
 
@@ -86,11 +80,12 @@ class Dhis2
 	}
 
 	//Get all data sets for specified orgUnit
-	public function getDataSets($orgUnitID, $dataSetId = "")
+	public function getDataSets($orgUnitID, $dataSetId = ""): false|Response|null
 	{
 
-		if (!$this->isAuthenticated() || empty($orgUnitID))
-			return false;
+		if (!$this->isAuthenticated() || empty($orgUnitID)) {
+      return false;
+  }
 
 
 		$urlParams[] = "paging=false";
@@ -106,11 +101,12 @@ class Dhis2
 	}
 
 	//Get all data set elements for specified data set
-	public function getDataElements($dataSetID)
+	public function getDataElements(?string $dataSetID): false|Response|null
 	{
 
-		if (!$this->isAuthenticated() || empty($dataSetID))
-			return false;
+		if (!$this->isAuthenticated() || ($dataSetID === null || $dataSetID === '' || $dataSetID === '0')) {
+      return false;
+  }
 
 		$urlParams[] = "paging=false";
 		$urlParams[] = "filter=dataSetElements.dataSet.id:eq:" . $dataSetID;
@@ -119,13 +115,13 @@ class Dhis2
 		return $this->get($path, $urlParams);
 	}
 
-	public function getCurrentRequestUrl()
+	public function getCurrentRequestUrl(): string
 	{
 		return $this->currentRequestUrl;
 	}
 
 	//Get all data set elements combo for specified data set element
-	public function getDataElementsCombo($dataElementID)
+	public function getDataElementsCombo($dataElementID): false|Response|null
 	{
 
 		if (!$this->isAuthenticated() || empty($dataElementID)) {
@@ -139,7 +135,7 @@ class Dhis2
 		return $this->get($path, $urlParams);
 	}
 
-	public function sendDataValueSets($orgUnitId, $dataSetId, $period, $completeDate, $dataValues)
+	public function sendDataValueSets($orgUnitId, $dataSetId, $period, $completeDate, $dataValues): ?Response
 	{
 
 		if (!empty($orgUnitId)) {
@@ -162,7 +158,7 @@ class Dhis2
 
 
 	// Get data value sets from Dhis2
-	public function getDataValueSets($orgUnitId, $dataSetId, $period = null, $startDate = null, $endDate = null)
+	public function getDataValueSets($orgUnitId, $dataSetId, $period = null, $startDate = null, $endDate = null): false|Response|null
 	{
 
 		if (empty($orgUnitId) || empty($dataSetId)) {
@@ -173,11 +169,11 @@ class Dhis2
 		$urlParams[] = "orgUnit=$orgUnitId";
 
 		if (!empty($startDate) && !empty($endDate)) {
-			$urlParams[] = "startDate=$startDate";
-			$urlParams[] = "endDate=$endDate";
-		} else if (!empty($period)) {
-			$urlParams[] = "period=$period";
-		} else {
+      $urlParams[] = "startDate=$startDate";
+      $urlParams[] = "endDate=$endDate";
+  } elseif (!empty($period)) {
+      $urlParams[] = "period=$period";
+  } else {
 			// Either period or startDate/endDate need to be present
 			return false;
 		}
@@ -188,11 +184,7 @@ class Dhis2
 	// Send GET request to DHIS2
 	public function get(string $path, array $urlParams = []): ?Response
 	{
-		if (!empty($urlParams)) {
-			$queryString = '?' . implode('&', $urlParams);
-		} else {
-			$queryString = '';
-		}
+		$queryString = $urlParams === [] ? '' : '?' . implode('&', $urlParams);
 
 		try {
 			return $this->httpClient->get($this->currentRequestUrl . $path . $queryString);
@@ -211,11 +203,7 @@ class Dhis2
 			return null;
 		}
 
-		if (!empty($urlParams)) {
-			$queryString = '?' . implode('&', $urlParams);
-		} else {
-			$queryString = '';
-		}
+		$queryString = $urlParams === [] ? '' : '?' . implode('&', $urlParams);
 
 		try {
 			return $this->httpClient->post($this->currentRequestUrl . $path . $queryString, [
@@ -237,11 +225,7 @@ class Dhis2
 			return null;
 		}
 
-		if (!empty($urlParams)) {
-			$queryString = '?' . implode('&', $urlParams);
-		} else {
-			$queryString = '';
-		}
+		$queryString = $urlParams === [] ? '' : '?' . implode('&', $urlParams);
 
 		try {
 			return $this->httpClient->put($path . $queryString, [
@@ -264,11 +248,7 @@ class Dhis2
 			return $eventPayload;
 		}
 		foreach ($inputArray as $name => $value) {
-			$dataValues[] = array(
-				"dataElement" => $name,
-				"value" => $value,
-				"providedElsewhere" => false
-			);
+			$dataValues[] = ["dataElement" => $name, "value" => $value, "providedElsewhere" => false];
 		}
 
 		if (!empty($eventPayload['dataValues'])) {

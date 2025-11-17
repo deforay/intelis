@@ -22,7 +22,7 @@ $cliMode = php_sapi_name() === 'cli';
 // --- graceful Ctrl+C (if pcntl available)
 if (function_exists('pcntl_signal') && function_exists('pcntl_async_signals')) {
     pcntl_async_signals(true);
-    pcntl_signal(SIGINT, function () {
+    pcntl_signal(SIGINT, function (): void {
         echo PHP_EOL . "⚠️  Setup cancelled by user." . PHP_EOL;
         exit(130);
     });
@@ -59,10 +59,14 @@ try {
     {
         echo $prompt;
         $h = fopen('php://stdin', 'r');
-        if ($h === false) return null;
+        if ($h === false) {
+            return null;
+        }
         $line = fgets($h);
         fclose($h);
-        if ($line === false) return null;
+        if ($line === false) {
+            return null;
+        }
         return trim($line);
     }
 
@@ -82,22 +86,30 @@ try {
     function normalizeUrl(string $url, ?int $labId = null): string
     {
         $url = trim($url);
-        if ($url === '') return $url;
+        if ($url === '') {
+            return $url;
+        }
 
         // If full URL given, test as-is first, then flip scheme
         if (preg_match('/^https?:\/\//i', $url)) {
             $testUrl = rtrim($url, '/');
-            if (CommonService::validateStsUrl($testUrl, $labId)) return $testUrl;
+            if (CommonService::validateStsUrl($testUrl, $labId)) {
+                return $testUrl;
+            }
             $domain = preg_replace('/^https?:\/\//i', '', $url);
         } else {
             $domain = $url;
         }
 
-        $https = 'https://' . rtrim($domain, '/');
-        if (CommonService::validateStsUrl($https, $labId)) return $https;
+        $https = 'https://' . rtrim((string) $domain, '/');
+        if (CommonService::validateStsUrl($https, $labId)) {
+            return $https;
+        }
 
-        $http = 'http://' . rtrim($domain, '/');
-        if (CommonService::validateStsUrl($http, $labId)) return $http;
+        $http = 'http://' . rtrim((string) $domain, '/');
+        if (CommonService::validateStsUrl($http, $labId)) {
+            return $http;
+        }
 
         // default to https (later validation may still fail)
         return $https;
@@ -108,7 +120,9 @@ try {
      */
     function maybeInstallFzf(): void
     {
-        if (hasCmd('fzf')) return;
+        if (hasCmd('fzf')) {
+            return;
+        }
         $isRoot = function_exists('posix_geteuid') ? (posix_geteuid() === 0) : false;
         $hasApt = hasCmd('apt-get');
 
@@ -144,7 +158,7 @@ try {
         foreach ($labs as &$l) {
             $name = str_replace(["\r", "\n", "\t"], ' ', (string) $l['facility_name']);
             $name = preg_replace('/\s+/', ' ', $name);
-            $l['facility_name'] = trim($name);
+            $l['facility_name'] = trim((string) $name);
         }
         unset($l);
         return $labs;
@@ -161,7 +175,7 @@ try {
         $outFile = tempnam(sys_get_temp_dir(), 'labs_out_');
 
         // Keep two clear fields: "ID<TAB>Name"
-        $lines = array_map(fn($l) => $l['facility_id'] . "\t" . $l['facility_name'], $labs);
+        $lines = array_map(fn($l): string => $l['facility_id'] . "\t" . $l['facility_name'], $labs);
         file_put_contents($inFile, implode(PHP_EOL, $lines));
 
         // Show both fields and filter on both (nth=1,2). Keep attached to TTY and write selection via keybind.
@@ -190,7 +204,7 @@ try {
         MiscUtility::deleteFile($outFile);
 
         $out = $out === false ? '' : trim($out);
-        if ($out === '' || strpos($out, "\t") === false) {
+        if ($out === '' || !str_contains($out, "\t")) {
             return null; // user aborted or nothing selected
         }
 
@@ -341,7 +355,7 @@ try {
                 $trim = trim($line);
                 $output[] = $trim;
                 if (stripos($trim, 'error') !== false || stripos($trim, 'warning') !== false) {
-                    MiscUtility::spinnerPausePrint($bar, function () use ($trim) {
+                    MiscUtility::spinnerPausePrint($bar, function () use ($trim): void {
                         echo $trim . PHP_EOL;
                     });
                 }
@@ -409,7 +423,7 @@ try {
         MiscUtility::spinnerAdvance($labFetchBar, 1);
         MiscUtility::spinnerFinish($labFetchBar);
 
-        if (empty($testingLabs)) {
+        if ($testingLabs === []) {
             $io->error('No active testing labs found. Please ensure facilities are properly configured.');
             throw new RuntimeException('No active labs found');
         }

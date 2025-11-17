@@ -16,19 +16,19 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamples']) != "") {
+if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamples']) !== "") {
      $rResult = $db->rawQuery($_SESSION['rejectedSamples']);
 
      $output = [];
      $excel = new Spreadsheet();
      $sheet = $excel->getActiveSheet();
-     $headings = array("Lab Name", "Facility Name", "Rejection Reason", "Reason Category", "Recommended Corrective Action", "No. of Samples");
+     $headings = ["Lab Name", "Facility Name", "Rejection Reason", "Reason Category", "Recommended Corrective Action", "No. of Samples"];
 
 
      $colNo = 1;
      $nameValue = '';
      foreach ($_POST as $key => $value) {
-          if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
+          if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
                $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }

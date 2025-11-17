@@ -32,10 +32,10 @@ use App\Utilities\MiscUtility;
  */
 final class ArchiveUtility
 {
-    public const BACKEND_ZSTD = 'zstd';
-    public const BACKEND_PIGZ = 'pigz';
-    public const BACKEND_GZIP = 'gzip';
-    public const BACKEND_ZIP  = 'zip';
+    public const string BACKEND_ZSTD = 'zstd';
+    public const string BACKEND_PIGZ = 'pigz';
+    public const string BACKEND_GZIP = 'gzip';
+    public const string BACKEND_ZIP  = 'zip';
 
     /** @var array<string, bool> Cache for command availability checks */
     private static array $cmdCache = [];
@@ -69,29 +69,16 @@ final class ArchiveUtility
         self::validateSourceFile($src);
         self::ensureDestinationDirectory($dst);
 
-        $backend = $backend ?? self::pickBestBackend();
+        $backend ??= self::pickBestBackend();
         $dst     = self::ensureExtension($dst, $backend);
 
-        switch ($backend) {
-            case self::BACKEND_ZSTD:
-                self::compressWithZstd($src, $dst);
-                break;
-
-            case self::BACKEND_PIGZ:
-                self::compressWithPigz($src, $dst);
-                break;
-
-            case self::BACKEND_GZIP:
-                self::compressWithGzip($src, $dst);
-                break;
-
-            case self::BACKEND_ZIP:
-                self::compressWithZip($src, $dst);
-                break;
-
-            default:
-                throw new InvalidArgumentException("Unsupported backend: $backend");
-        }
+        match ($backend) {
+            self::BACKEND_ZSTD => self::compressWithZstd($src, $dst),
+            self::BACKEND_PIGZ => self::compressWithPigz($src, $dst),
+            self::BACKEND_GZIP => self::compressWithGzip($src, $dst),
+            self::BACKEND_ZIP => self::compressWithZip($src, $dst),
+            default => throw new InvalidArgumentException("Unsupported backend: $backend"),
+        };
 
         if (!is_file($dst)) {
             throw new RuntimeException("Compression produced no output file: $dst");
@@ -256,7 +243,7 @@ final class ArchiveUtility
 
         // No file found with any extension
         $message = "Archive not found: $directory/$filename";
-        if ($lastException !== null) {
+        if ($lastException instanceof RuntimeException) {
             $message .= " (last error: " . $lastException->getMessage() . ")";
         }
 
@@ -467,10 +454,8 @@ final class ArchiveUtility
     {
         $dstDir = dirname($dst);
 
-        if (!is_dir($dstDir)) {
-            if (!@mkdir($dstDir, self::$dirPermissions, true)) {
-                throw new RuntimeException("Cannot create destination directory: $dstDir");
-            }
+        if (!is_dir($dstDir) && !@mkdir($dstDir, self::$dirPermissions, true)) {
+            throw new RuntimeException("Cannot create destination directory: $dstDir");
         }
 
         if (!is_writable($dstDir)) {

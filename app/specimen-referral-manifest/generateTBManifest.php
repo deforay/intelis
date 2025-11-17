@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -20,15 +21,15 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $id = base64_decode((string) $_POST['id']);
-if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) == 'pk2') {
+if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) === 'pk2') {
     $id = $_POST['ids'];
 }
-if (trim((string) $id) != '') {
+if (trim((string) $id) !== '') {
 
     $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,TRIM(CONCAT(COALESCE(vl.patient_name, ''), ' ', COALESCE(vl.patient_surname, ''))) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.manifest_code, l.facility_name as lab_name from specimen_manifests as pd Join form_tb as vl ON vl.sample_package_id=pd.manifest_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.manifest_id IN($id)";
     $result = $db->query($sQuery);
@@ -42,16 +43,14 @@ if (trim((string) $id) != '') {
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
 
-        $oldPrintData = json_decode($bResult[0]['manifest_print_history']);
+        $oldPrintData = json_decode((string) $bResult[0]['manifest_print_history']);
 
-        $newPrintData = array('printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime());
+        $newPrintData = ['printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
         $oldPrintData[] = $newPrintData;
         $db->where('manifest_id', $id);
-        $db->update('specimen_manifests', array(
-            'manifest_print_history' => json_encode($oldPrintData)
-        ));
+        $db->update('specimen_manifests', ['manifest_print_history' => json_encode($oldPrintData)]);
 
-        $reasonHistory = json_decode($bResult[0]['manifest_change_history']);
+        $reasonHistory = json_decode((string) $bResult[0]['manifest_change_history']);
         // create new PDF document
         $pdf = new ManifestPdfHelper(_translate('TB Sample Referral Manifest'), PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -68,8 +67,8 @@ if (trim((string) $id) != '') {
         $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
         // set header and footer fonts
-        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+        $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
 
         // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);

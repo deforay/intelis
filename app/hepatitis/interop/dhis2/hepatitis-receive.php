@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\RWANDA;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -29,9 +30,7 @@ require_once(APPLICATION_PATH . '/hepatitis/interop/dhis2/hepatitis-init.php');
 
 $instanceId = $general->getInstanceId();
 
-$fileArray = array(
-    COUNTRY\RWANDA => 'forms/receive-rwanda.php'
-);
+$fileArray = [RWANDA => 'forms/receive-rwanda.php'];
 
 
 require_once($fileArray[$arr['vl_form']]);

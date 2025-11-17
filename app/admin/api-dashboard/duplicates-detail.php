@@ -67,9 +67,9 @@ $facilityId = $_GET['facilityId'] ?? '';
                     <div class="box-header">
                         <h3 class="box-title"><?= _translate('Potential Duplicate Test Requests'); ?></h3>
                         <div class="box-tools pull-right">
-                            <span class="label label-info">Test Type: <?= strtoupper($testType); ?></span>
+                            <span class="label label-info">Test Type: <?= strtoupper((string) $testType); ?></span>
                             <?php if ($dateRange): ?>
-                                <span class="label label-primary">Period: <?= htmlspecialchars($dateRange); ?></span>
+                                <span class="label label-primary">Period: <?= htmlspecialchars((string) $dateRange); ?></span>
                             <?php endif; ?>
                         </div>
                     </div>

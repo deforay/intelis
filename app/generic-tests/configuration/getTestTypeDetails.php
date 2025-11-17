@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use App\Services\UsersService;
 use App\Registries\ContainerRegistry;
@@ -8,7 +9,7 @@ use App\Registries\ContainerRegistry;
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -17,7 +18,7 @@ $primaryKey = "test_type_id";
 
 
 
-$aColumns = array('test_standard_name', 'test_generic_name', 'test_short_code', 'test_loinc_code', 'test_status');
+$aColumns = ['test_standard_name', 'test_generic_name', 'test_short_code', 'test_loinc_code', 'test_status'];
 
 
 
@@ -52,7 +53,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -76,7 +77,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM r_test_types";
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
@@ -104,12 +105,7 @@ $aResultTotal = $db->rawQuery("SELECT * FROM r_test_types");
 //print_r($aResultTotal);
 $iTotal = count($aResultTotal);
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $row = [];
@@ -126,7 +122,7 @@ foreach ($rResult as $aRow) {
     if (_isAllowed("/generic-tests/configuration/edit-test-type.php") && $general->isLISInstance() === false) {
         $clone = '<a href="clone-test-type.php?id=' . base64_encode((string) $aRow['test_type_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Clone") . '"><em class="fa-solid fa-copy"></em> ' . _translate("Clone") . '</em></a>';
     }
-    if ((!empty($edit)) || !empty($clone)) {
+    if (($edit !== '' && $edit !== '0') || $clone !== '' && $clone !== '0') {
         $row[] = $edit . $clone;
     }
     $output['aaData'][] = $row;

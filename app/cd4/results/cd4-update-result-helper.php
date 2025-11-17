@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
 use App\Services\CD4Service;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -19,7 +21,7 @@ $cd4Service = ContainerRegistry::get(CD4Service::class);
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -29,7 +31,7 @@ $tableName2 = "log_result_updates";
 try {
     $instanceId = $general->getInstanceId();
     $testingPlatform = null;
-    if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) != '') {
+    if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) !== '') {
         $platForm = explode("##", (string) $_POST['testingPlatform']);
         $testingPlatform = $platForm[0];
     }
@@ -76,12 +78,12 @@ try {
     if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
         $allChange = $_POST['reasonForResultChangesHistory'];
     }
-    if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) != '') {
+    if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) !== '') {
         $reasonForChanges = $_SESSION['userName'] . '##' . $_POST['reasonForResultChanges'] . '##' . DateUtility::getCurrentDateTime();
     }
-    if (!empty($allChange) && !empty($reasonForChanges)) {
+    if (!empty($allChange) && ($reasonForChanges !== null && $reasonForChanges !== '' && $reasonForChanges !== '0')) {
         $allChange = $reasonForChanges . 'vlsm' . $allChange;
-    } elseif (!empty($reasonForChanges)) {
+    } elseif ($reasonForChanges !== null && $reasonForChanges !== '' && $reasonForChanges !== '0') {
         $allChange = $reasonForChanges;
     }
 
@@ -103,7 +105,7 @@ try {
         'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'] ?? '', true),
         'result_dispatched_datetime' => $_POST['resultDispatchedOn'],
         'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
-        'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim((string) $_POST['rejectionReason']) != '') ? $_POST['rejectionReason'] : null,
+        'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim((string) $_POST['rejectionReason']) !== '') ? $_POST['rejectionReason'] : null,
         'rejection_on' => DateUtility::isoDateFormat($_POST['rejectionDate'] ?? ''),
         'result_reviewed_by' => $_POST['reviewedBy'] ?? null,
         'result_reviewed_datetime' => DateUtility::isoDateFormat($_POST['reviewedOn'] ?? ''),
@@ -112,7 +114,7 @@ try {
         'result_approved_datetime' => DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true),
         'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
         'lab_tech_comments' => $_POST['labComments'] ?? null,
-        'result_status' => SAMPLE_STATUS\PENDING_APPROVAL,
+        'result_status' => PENDING_APPROVAL,
         'request_created_datetime' => DateUtility::getCurrentDateTime(),
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         'result_modified'  => 'no',

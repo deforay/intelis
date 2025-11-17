@@ -7,19 +7,13 @@ use GuzzleHttp\Psr7\Request;
 
 class Fhir
 {
-	private readonly string $fhirURL;
 	public string $requestUrl;
-	private readonly string $bearerToken;
-	private string $contentType;
 	public bool $authenticated;
 
 
-	public function __construct($fhirURL, $bearerToken, $contentType = 'application/fhir+json')
-	{
-		$this->fhirURL = $fhirURL;
-		$this->bearerToken = $bearerToken;
-		$this->contentType = $contentType;
-	}
+	public function __construct(private readonly string $fhirURL, private readonly string $bearerToken, private string $contentType = 'application/fhir+json')
+ {
+ }
 
 	public function isAuthenticated(): bool
 	{
@@ -28,7 +22,7 @@ class Fhir
 
 	// Used to specify content type
 	// can be 'application/xml' or 'application/json'
-	public function setContentType($contentType): void
+	public function setContentType(string $contentType): void
 	{
 		$this->contentType = $contentType;
 	}
@@ -62,18 +56,14 @@ class Fhir
 		return $res->getBody()->getContents();
 	}
 
-	public function get($path, $urlParams = [])
+	public function get(?string $path, $urlParams = [])
 	{
 
-		if (empty($path)) {
+		if ($path === null || $path === '' || $path === '0') {
 			return false;
 		}
 
-		if (!empty($urlParams)) {
-			$urlParams = '?' . implode("&", $urlParams);
-		} else {
-			$urlParams = "";
-		}
+		$urlParams = empty($urlParams) ? "" : '?' . implode("&", $urlParams);
 
 		$this->requestUrl = $this->getFhirURL() . $path . $urlParams;
 

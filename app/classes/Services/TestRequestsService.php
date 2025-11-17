@@ -2,6 +2,14 @@
 
 namespace App\Services;
 
+use InvalidArgumentException;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const COUNTRY\PNG;
+use const SAMPLE_STATUS\REFERRED;
 use COUNTRY;
 use DateTime;
 use Throwable;
@@ -20,13 +28,8 @@ use App\Services\GeoLocationsService;
 
 final class TestRequestsService
 {
-    protected DatabaseService $db;
-    protected CommonService $commonService;
-
-    public function __construct(DatabaseService $db, CommonService $commonService)
+    public function __construct(protected DatabaseService $db, protected CommonService $commonService)
     {
-        $this->db = $db;
-        $this->commonService = $commonService;
     }
 
     public function addToSampleCodeQueue(?string $uniqueId, string $testType, string $sampleCollectionDate, ?string $provinceCode = null, ?string $sampleCodeFormat = null, ?string $prefix = null, ?string $accessType = null): bool
@@ -42,7 +45,10 @@ final class TestRequestsService
         ]);
     }
 
-    public function processSampleCodeQueue($uniqueIds = [], $parallelProcess = false, $maxTries = 5, $interval = 5)
+    /**
+     * @return mixed[]
+     */
+    public function processSampleCodeQueue($uniqueIds = [], $parallelProcess = false, $maxTries = 5, $interval = 5): array
     {
         $response = [];
         $lockFile = null;
@@ -53,7 +59,7 @@ final class TestRequestsService
             // Handle process locking
             if (!$parallelProcess) {
                 try {
-                    $lockFile = MiscUtility::getLockFile(strtolower(__CLASS__ . '-' . __FUNCTION__));
+                    $lockFile = MiscUtility::getLockFile(strtolower(self::class . '-' . __FUNCTION__));
 
                     if (!MiscUtility::isLockFileExpired($lockFile, 1800)) {
                         if ($isCli) {
@@ -118,7 +124,7 @@ final class TestRequestsService
                     // Refresh lock file periodically
                     if (!$parallelProcess && $counter % 10 === 0) {
                         try {
-                            if ($lockFile) {
+                            if ($lockFile !== '' && $lockFile !== '0') {
                                 MiscUtility::touchLockFile($lockFile);
                             }
                         } catch (Throwable $e) {
@@ -162,9 +168,9 @@ final class TestRequestsService
                     $presetStatus = null;
                     try {
                         $excludedStatuses = [
-                            SAMPLE_STATUS\REJECTED,
-                            SAMPLE_STATUS\ACCEPTED,
-                            SAMPLE_STATUS\PENDING_APPROVAL
+                            REJECTED,
+                            ACCEPTED,
+                            PENDING_APPROVAL
                         ];
 
                         if (isset($rowData['result_status']) && in_array($rowData['result_status'], $excludedStatuses)) {
@@ -209,7 +215,7 @@ final class TestRequestsService
                                 'remote_sample_code' => $sampleData['sampleCode'],
                                 'remote_sample_code_format' => $sampleData['sampleCodeFormat'],
                                 'remote_sample_code_key' => $sampleData['sampleCodeKey'],
-                                'result_status' => $presetStatus ?? SAMPLE_STATUS\RECEIVED_AT_CLINIC
+                                'result_status' => $presetStatus ?? RECEIVED_AT_CLINIC
                             ];
 
                             if ($accessType === 'testing-lab') {
@@ -218,7 +224,7 @@ final class TestRequestsService
                         } else {
                             $tesRequestData = [
                                 'remote_sample' => 'no',
-                                'result_status' => $presetStatus ?? SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
+                                'result_status' => $presetStatus ?? RECEIVED_AT_TESTING_LAB,
                                 'sample_code' => $sampleData['sampleCode'],
                                 'sample_code_format' => $sampleData['sampleCodeFormat'],
                                 'sample_code_key' => $sampleData['sampleCodeKey']
@@ -309,7 +315,7 @@ final class TestRequestsService
         }
     }
 
-    private function updateQueueItem($id, $processed, $error = null)
+    private function updateQueueItem($id, int $processed, $error = null)
     {
         $data = [
             'processed' => $processed,
@@ -342,7 +348,7 @@ final class TestRequestsService
             'manifestCode' => $manifestCode
         ], JSON_UNESCAPED_UNICODE));
 
-        return $fileCache->get($keyHash, function () use ($selectedSamples, $testType, $manifestCode) {
+        return $fileCache->get($keyHash, function () use ($selectedSamples, $testType, $manifestCode): string {
 
             $selectedSamples = is_array($selectedSamples) ? $selectedSamples : [];
 
@@ -350,7 +356,7 @@ final class TestRequestsService
             $primaryKey = TestsService::getPrimaryColumn($testType);
             $uniqueIds = [];
 
-            if ($testType !== null && !empty($selectedSamples)) {
+            if ($testType !== null && $selectedSamples !== []) {
                 $this->db->reset();
                 $this->db->where($primaryKey, $selectedSamples, 'IN');
                 $uniqueIds = $this->db->getValue($tableName, 'unique_id', null);
@@ -406,7 +412,7 @@ final class TestRequestsService
             $primaryKey = TestsService::getPrimaryColumn($testType);
             $this->db->reset();
             $this->db->where('sample_package_code', trim((string) $manifestCode));
-            if ($testType == 'tb') {
+            if ($testType === 'tb') {
                 $this->db->orWhere('referral_manifest_code', trim((string) $manifestCode));
             }
             $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
@@ -436,7 +442,7 @@ final class TestRequestsService
         /** @var ApiService $apiService */
         $apiService = ContainerRegistry::get(ApiService::class);
         $stsToken = $this->commonService->getSTSToken();
-        if (!empty($stsToken)) {
+        if ($stsToken !== null && $stsToken !== '' && $stsToken !== '0') {
             $apiService->setBearerToken($stsToken);
         }
 
@@ -497,7 +503,7 @@ final class TestRequestsService
         return $result;
     }
 
-    public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat = 'MMYY', $prefix = null)
+    public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat = 'MMYY', $prefix = null): int
     {
         try {
             if (empty($manifestCode)) {
@@ -535,7 +541,7 @@ final class TestRequestsService
 
                     $provinceCode = null;
                     // For PNG, we need to get the province code
-                    if ($formId == COUNTRY\PNG) {
+                    if ($formId == PNG) {
                         /** @var GeoLocationsService $geoService */
                         $geoService = ContainerRegistry::get(GeoLocationsService::class);
 
@@ -558,7 +564,7 @@ final class TestRequestsService
                 }
             }
 
-            if (!empty($uniqueIdsForSampleCodeGeneration)) {
+            if ($uniqueIdsForSampleCodeGeneration !== []) {
                 $sampleCodeData = $this->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
                 if ($sampleCodeData !== false && !empty($sampleCodeData)) {
 
@@ -582,13 +588,13 @@ final class TestRequestsService
             $timestamp = DateUtility::getCurrentDateTime();
 
             // Common logic builder
-            $buildUpdateData = function (bool $updateStatusAlso) use ($userId, $sampleReceivedOn, $timestamp) {
+            $buildUpdateData = function (bool $updateStatusAlso) use ($userId, $sampleReceivedOn, $timestamp): array {
                 $data = [
                     'last_modified_datetime' => $timestamp
                 ];
 
                 if ($updateStatusAlso) {
-                    $data['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                    $data['result_status'] = RECEIVED_AT_TESTING_LAB;
                     $data['data_sync'] = 0;
                     $data['last_modified_by'] = $userId;
                 }
@@ -603,7 +609,7 @@ final class TestRequestsService
 
             // Case 1: When result_status == RECEIVED_AT_CLINIC or REFERRED
             $this->db->reset();
-            $this->db->where('result_status IN (' . SAMPLE_STATUS\RECEIVED_AT_CLINIC . ', ' . SAMPLE_STATUS\REFERRED . ')');
+            $this->db->where('result_status IN (' . RECEIVED_AT_CLINIC . ', ' . REFERRED . ')');
             $this->db->where('sample_code IS NOT NULL');
             $this->db->where('sample_package_code', $manifestCode);
             $this->db->update($tableName, $buildUpdateData(true));
@@ -611,7 +617,7 @@ final class TestRequestsService
             // This is to allow users to just update the SAMPLE RECEIVED AT LAB DATETIME in bulk
             // Case 2: When result_status != RECEIVED_AT_CLINIC and != REFERRED
             $this->db->reset();
-            $this->db->where('result_status NOT IN (' . SAMPLE_STATUS\RECEIVED_AT_CLINIC . ', ' . SAMPLE_STATUS\REFERRED . ')');
+            $this->db->where('result_status NOT IN (' . RECEIVED_AT_CLINIC . ', ' . REFERRED . ')');
             $this->db->where('sample_code IS NOT NULL');
             $this->db->where('sample_package_code', $manifestCode);
             $this->db->update($tableName, $buildUpdateData(false));
@@ -631,17 +637,17 @@ final class TestRequestsService
     public function findMatchingLocalRecord(array $recordFromOtherSystem, string $tableName, string $primaryKeyName): array
     {
         // validate identifiers to avoid injection
-        $idPattern = '/^[A-Za-z0-9_]+$/';
+        $idPattern = '/^\w+$/';
         if (!preg_match($idPattern, $tableName) || !preg_match($idPattern, $primaryKeyName)) {
-            throw new \InvalidArgumentException('Invalid table or primary key name');
+            throw new InvalidArgumentException('Invalid table or primary key name');
         }
-        $quote = fn($ident) => "`$ident`";
+        $quote = fn($ident): string => "`$ident`";
         $quotedTable = $quote(ident: $tableName);
 
         // Build select fields (exclude primary key)
         $columns = array_diff(array_keys($recordFromOtherSystem), [$primaryKeyName]);
-        $safeCols = array_filter($columns, fn($c) => preg_match($idPattern, $c));
-        if ($safeCols) {
+        $safeCols = array_filter($columns, fn($c): int|false => preg_match($idPattern, (string) $c));
+        if ($safeCols !== []) {
             $select = implode(', ', array_map($quote, $safeCols));
             $fields = $quote($primaryKeyName) . ', ' . $select;
         } else {
@@ -690,7 +696,7 @@ final class TestRequestsService
             ];
         }
 
-        if (empty($candidates)) {
+        if ($candidates === []) {
             return [];
         }
 
@@ -698,7 +704,7 @@ final class TestRequestsService
         //$matchedByCriteria = null;
 
         foreach ($candidates as $cand) {
-            $selectPart = $fields === '*' ? '*' : $fields;
+            $selectPart = $fields;
             $sql = "SELECT {$selectPart} FROM {$quotedTable} WHERE {$cand['where']} FOR UPDATE";
             $res = $this->db->rawQueryOne($sql, $cand['params']);
             if (!empty($res)) {
@@ -754,8 +760,8 @@ final class TestRequestsService
             }
 
             // Must have either patientId OR patient name (after normalization)
-            $hasPatientId = !empty($patientId);
-            $hasPatientName = !empty($patientFirstName) || !empty($patientLastName);
+            $hasPatientId = $patientId !== null && $patientId !== '' && $patientId !== '0';
+            $hasPatientName = $patientFirstName !== null && $patientFirstName !== '' && $patientFirstName !== '0' || $patientLastName !== null && $patientLastName !== '' && $patientLastName !== '0';
 
             if (!$hasPatientId && !$hasPatientName) {
                 return [
@@ -786,23 +792,21 @@ final class TestRequestsService
                     // For VL, full name is stored in first_name field
                     $patientMatchConditions[] = "COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ?";
                     $queryParams[] = $patientFirstName;
-                } else {
+                } elseif ($patientFirstName !== null && $patientFirstName !== '' && $patientFirstName !== '0' && ($patientLastName !== null && $patientLastName !== '' && $patientLastName !== '0')) {
                     // For other tests, use separate first/last name fields
-                    if (!empty($patientFirstName) && !empty($patientLastName)) {
-                        $patientMatchConditions[] = "(COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? AND COALESCE(TRIM(t1.$patientLastNameColumn), '') = ?)";
-                        $queryParams[] = $patientFirstName;
-                        $queryParams[] = $patientLastName;
-                    } elseif (!empty($patientFirstName)) {
-                        $patientMatchConditions[] = "COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ?";
-                        $queryParams[] = $patientFirstName;
-                    } elseif (!empty($patientLastName)) {
-                        $patientMatchConditions[] = "COALESCE(TRIM(t1.$patientLastNameColumn), '') = ?";
-                        $queryParams[] = $patientLastName;
-                    }
+                    $patientMatchConditions[] = "(COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? AND COALESCE(TRIM(t1.$patientLastNameColumn), '') = ?)";
+                    $queryParams[] = $patientFirstName;
+                    $queryParams[] = $patientLastName;
+                } elseif ($patientFirstName !== null && $patientFirstName !== '' && $patientFirstName !== '0') {
+                    $patientMatchConditions[] = "COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ?";
+                    $queryParams[] = $patientFirstName;
+                } elseif ($patientLastName !== null && $patientLastName !== '' && $patientLastName !== '0') {
+                    $patientMatchConditions[] = "COALESCE(TRIM(t1.$patientLastNameColumn), '') = ?";
+                    $queryParams[] = $patientLastName;
                 }
             }
 
-            if (empty($patientMatchConditions)) {
+            if ($patientMatchConditions === []) {
                 return [
                     'isDuplicate' => false,
                     'error' => 'No valid patient identifiers found'
@@ -1099,9 +1103,7 @@ final class TestRequestsService
             }
 
             // Identify duplicate groups (same day collections)
-            $duplicateGroups = array_filter($sampleGroups, function ($group) {
-                return count($group) > 1;
-            });
+            $duplicateGroups = array_filter($sampleGroups, fn($group): bool => count($group) > 1);
 
             return [
                 'totalSamples' => count($samples),

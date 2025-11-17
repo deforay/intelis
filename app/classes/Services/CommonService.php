@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use const COUNTRY\CAMEROON;
 use COUNTRY;
 use Exception;
 use Throwable;
@@ -30,18 +31,13 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 final class CommonService
 {
-    protected DatabaseService $db;
-    protected FacilitiesService $facilitiesService;
-    protected $fileCache;
+    public function __construct(protected DatabaseService $db, protected FacilitiesService $facilitiesService, protected FileCacheUtility $fileCache)
+    {
+    }
 
-    public function __construct(
-        DatabaseService $db,
-        FacilitiesService $facilitiesService,
-        FileCacheUtility $fileCache
-    ) {
-        $this->db = $db;
-        $this->facilitiesService = $facilitiesService;
-        $this->fileCache = $fileCache;
+    public static function isSessionActive()
+    {
+        return session_status() === PHP_SESSION_ACTIVE;
     }
 
 
@@ -60,7 +56,7 @@ final class CommonService
 
     public function getRemoteURL(): ?string
     {
-        return $this->fileCache->get('remoteURL', function () {
+        return $this->fileCache->get('remoteURL', function (): ?string {
             $remoteURL = SYSTEM_CONFIG['remoteURL'];
             if ($remoteURL == '' || empty($remoteURL)) {
                 return null;
@@ -100,7 +96,7 @@ final class CommonService
 
     public static function getClientIpAddress(?ServerRequestInterface $request = null): ?string
     {
-        if ($request === null) {
+        if (!$request instanceof ServerRequestInterface) {
             $request = AppRegistry::get('request');
         }
 
@@ -119,7 +115,7 @@ final class CommonService
             $headerValue = $request->getHeaderLine($header);
             if (!empty($headerValue)) {
                 // In case of multiple IPs, take the first
-                $ip = trim(explode(',', $headerValue)[0]);
+                $ip = trim(explode(',', (string) $headerValue)[0]);
                 if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
                     return $ip;
                 }
@@ -172,7 +168,7 @@ final class CommonService
     {
         $cacheKey = 'app_system_config';
 
-        $allConfigs = $this->fileCache->get($cacheKey, function () {
+        $allConfigs = $this->fileCache->get($cacheKey, function (): array {
             $returnConfig = [];
             $systemConfigResult = $this->db->get('system_config');
             foreach ($systemConfigResult as $config) {
@@ -197,7 +193,7 @@ final class CommonService
     {
         $cacheKey = 'app_global_config';
         $db = $this->db;
-        $allConfigs =  $this->fileCache->get($cacheKey, function () use ($db) {
+        $allConfigs = $this->fileCache->get($cacheKey, function () use ($db): array {
             $returnConfig = [];
             $configResult = $db->get('global_config');
             foreach ($configResult as $config) {
@@ -209,9 +205,53 @@ final class CommonService
         return $name ? ($allConfigs[$name] ?? null) : ($allConfigs ?? []);
     }
 
+    /**
+     * Emit the barcode-printing script tags based on global configuration.
+     * Usage: <?= CommonService::barcodeScripts(); ?>
+     */
+    public static function barcodeScripts(): string
+    {
+        /** @var CommonService $commonService */
+        $commonService = ContainerRegistry::get(self::class);
+        $barCodePrintingMode = $commonService->getGlobalConfig('bar_code_printing');
+
+        if (empty($barCodePrintingMode) || strtolower((string) $barCodePrintingMode) === 'off') {
+            return '';
+        }
+
+        $scripts = [];
+
+        if ($barCodePrintingMode === 'dymo-labelwriter-450') {
+            $scripts[] = '<script src="/assets/js/DYMO.Label.Framework.js"></script>';
+            $scripts[] = '<script src="/uploads/barcode-formats/dymo-format.js"></script>';
+            $scripts[] = '<script src="/assets/js/dymo-print.js"></script>';
+        } elseif ($barCodePrintingMode === 'zebra-printer') {
+            $scripts[] = sprintf(
+                '<script src="/assets/js/zebra-browserprint.js?v=%s"></script>',
+                self::getAssetVersion('/assets/js/zebra-browserprint.js')
+            );
+            $scripts[] = sprintf(
+                '<script src="/uploads/barcode-formats/zebra-format.js?v=%s"></script>',
+                self::getAssetVersion('/uploads/barcode-formats/zebra-format.js')
+            );
+            $scripts[] = sprintf(
+                '<script src="/assets/js/zebra-print.js?v=%s"></script>',
+                self::getAssetVersion('/assets/js/zebra-print.js')
+            );
+        }
+
+        return implode(PHP_EOL, $scripts) . PHP_EOL;
+    }
+
+    private static function getAssetVersion(string $relativePath): int
+    {
+        $absolutePath = rtrim(WEB_ROOT, DIRECTORY_SEPARATOR) . $relativePath;
+        return file_exists($absolutePath) ? (int) filemtime($absolutePath) : time();
+    }
 
 
-    public function getDataByTableAndFields($table, $fields, $option = true, $condition = null, $group = null)
+
+    public function getDataByTableAndFields($table, $fields, $option = true, $condition = null, $group = null): mixed
     {
         return MemoUtility::remember(function () use ($table, $fields, $option, $condition, $group) {
             $response = [];
@@ -252,15 +292,15 @@ final class CommonService
     public function fetchDataFromTable(string $tableName, string|array|null $conditions = [], string|array|null $columns = '*', $numRows = null): ?array
     {
         return MemoUtility::remember(function () use ($tableName, $conditions, $columns, $numRows) {
-            if ($this->db == null || empty($tableName)) {
+            if ($this->db == null || ($tableName === '' || $tableName === '0')) {
                 return null;
             }
 
-            if (!isset($columns) || $columns == '' || empty($columns)) {
+            if (!isset($columns) || $columns == '' || ($columns === '' || $columns === '0' || $columns === [])) {
                 $columns = '*';
             }
 
-            if ($conditions !== '' && !empty($conditions)) {
+            if ($conditions !== '' && ($conditions !== '' && $conditions !== '0' && $conditions !== [])) {
                 $conditions = is_array($conditions) ? $conditions : [$conditions];
                 foreach ($conditions as $where) {
                     $this->db->where($where);
@@ -278,17 +318,17 @@ final class CommonService
 
             $cipher = sodium_bin2base64(
                 $nonce .
-                    sodium_crypto_secretbox(
-                        (string) $message,
-                        $nonce,
-                        (string) $key
-                    ),
+                sodium_crypto_secretbox(
+                    (string) $message,
+                    $nonce,
+                    (string) $key
+                ),
                 SODIUM_BASE64_VARIANT_URLSAFE
             );
             sodium_memzero($message);
             sodium_memzero($key);
             return $cipher;
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             return $message;
         }
     }
@@ -296,8 +336,8 @@ final class CommonService
     public static function decrypt($encrypted, $key): string
     {
         try {
-            $decoded = sodium_base642bin($encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
-            if (empty($decoded)) {
+            $decoded = sodium_base642bin((string) $encrypted, SODIUM_BASE64_VARIANT_URLSAFE);
+            if ($decoded === '' || $decoded === '0') {
                 throw new SystemException('The message encoding failed');
             }
             if (strlen($decoded) < (SODIUM_CRYPTO_SECRETBOX_NONCEBYTES + SODIUM_CRYPTO_SECRETBOX_MACBYTES)) {
@@ -313,7 +353,7 @@ final class CommonService
             sodium_memzero($ciphertext);
             sodium_memzero($key);
             return $plain;
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             return '';
         }
     }
@@ -331,16 +371,16 @@ final class CommonService
         };
     }
 
-    public function activityLog($eventType, $action, $resource)
+    public function activityLog($eventType, $action, $resource): void
     {
 
-        $ipAddress = $this->getClientIpAddress();
+        $ipAddress = self::getClientIpAddress();
 
         $data = [
             'event_type' => $eventType,
             'action' => $action,
             'resource' => $resource,
-            'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
+            'user_id' => (empty($_SESSION['userId'])) ? null : $_SESSION['userId'],
             'date_time' => DateUtility::getCurrentDateTime(),
             'ip_address' => $ipAddress,
         ];
@@ -348,9 +388,9 @@ final class CommonService
         $this->db->insert('activity_log', $data);
     }
 
-    public function getUserMappedProvinces($facilityMap = null)
+    public function getUserMappedProvinces($facilityMap = null): mixed
     {
-        return MemoUtility::remember(function () use ($facilityMap) {
+        return MemoUtility::remember(function () use ($facilityMap): string {
             $facilityMap ??= $_SESSION['facilityMap'] ?? null;
 
             $query = "SELECT gd.geo_name, gd.geo_id, gd.geo_code
@@ -368,9 +408,7 @@ final class CommonService
                 $result = $this->db->rawQuery($query);
             }
 
-            $options = array_map(function ($row) {
-                return "<option data-code='{$row['geo_code']}' data-province-id='{$row['geo_id']}' data-name='{$row['geo_name']}' value='{$row['geo_id']}##{$row['geo_code']}'> {$row['geo_name']} </option>";
-            }, $result);
+            $options = array_map(fn($row): string => "<option data-code='{$row['geo_code']}' data-province-id='{$row['geo_id']}' data-name='{$row['geo_name']}' value='{$row['geo_id']}##{$row['geo_code']}'> {$row['geo_name']} </option>", $result);
 
             array_unshift($options, "<option value=''>" . _translate("-- Select --") . " </option>");
 
@@ -378,9 +416,9 @@ final class CommonService
         });
     }
 
-    public function generateSelectOptions($optionList, $selectedOptions = [], $emptySelectText = false)
+    public function generateSelectOptions($optionList, $selectedOptions = [], $emptySelectText = false): mixed
     {
-        return MemoUtility::remember(function () use ($optionList, $selectedOptions, $emptySelectText) {
+        return MemoUtility::remember(function () use ($optionList, $selectedOptions, $emptySelectText): string {
 
             $response = '';
 
@@ -388,7 +426,7 @@ final class CommonService
                 return '';
             }
             if ($emptySelectText !== false) {
-                $response .= "<option value=''>" . htmlspecialchars($emptySelectText) . "</option>";
+                $response .= "<option value=''>" . htmlspecialchars((string) $emptySelectText) . "</option>";
             }
 
             foreach ($optionList as $optId => $optName) {
@@ -424,7 +462,7 @@ final class CommonService
         }
     }
 
-    public function getTestingPlatforms($testType = null)
+    public function getTestingPlatforms($testType = null): mixed
     {
         return MemoUtility::remember(function () use ($testType) {
             if (!empty($testType)) {
@@ -436,7 +474,7 @@ final class CommonService
         });
     }
 
-    public function getDataFromOneFieldAndValue($tablename, $fieldname, $fieldValue, $condition = null)
+    public function getDataFromOneFieldAndValue($tablename, $fieldname, $fieldValue, $condition = null): mixed
     {
         return MemoUtility::remember(function () use ($tablename, $fieldname, $fieldValue, $condition) {
             $query = "SELECT * FROM $tablename WHERE $fieldname = ?";
@@ -449,7 +487,7 @@ final class CommonService
 
     public function getRejectionReasons($testType): array
     {
-        return MemoUtility::remember(function () use ($testType) {
+        return MemoUtility::remember(function () use ($testType): array {
             $rejectionReasons = [];
             $rejArray = ['general', 'whole blood', 'plasma', 'dbs', 'testing'];
             if (in_array($testType, ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'generic-tests'])) {
@@ -476,11 +514,11 @@ final class CommonService
     }
 
 
-    public function getLocaleList(?int $formId = null)
+    public function getLocaleList(?int $formId = null): mixed
     {
-        return MemoUtility::remember(function () use ($formId) {
-            if (empty($formId) || $formId == 0) {
-                $formId = (int)$this->getGlobalConfig('vl_form') ?? 0;
+        return MemoUtility::remember(function () use ($formId): array {
+            if ($formId === null || $formId === 0 || $formId == 0) {
+                $formId = (int) $this->getGlobalConfig('vl_form') ?? 0;
             }
             // Locale mapping
             $localeMap = [
@@ -493,7 +531,7 @@ final class CommonService
             // Define Cameroon locales
             $cameroonLocales = ['en_CM', 'fr_CM'];
 
-            if ($formId === COUNTRY\CAMEROON) {
+            if ($formId === CAMEROON) {
                 // Keep only Cameroon locales
                 $localeMap = array_intersect_key($localeMap, array_flip($cameroonLocales));
             } elseif ($formId !== 0) {
@@ -512,7 +550,7 @@ final class CommonService
 
         $pdfFormatPaths = glob(APPLICATION_PATH . "/$module/results/pdf/result-pdf-$countryShortCode*.{php}", GLOB_BRACE);
 
-        if (empty($pdfFormatPaths)) {
+        if ($pdfFormatPaths === [] || $pdfFormatPaths === false) {
             return [];
         }
 
@@ -535,7 +573,7 @@ final class CommonService
         return $this->db->getValue("s_available_country_forms", "short_name");
     }
 
-    public function trackQRPageViews($type, $typeId, $sampleCode)
+    public function trackQRPageViews($type, $typeId, $sampleCode): void
     {
 
         /** @var ServerRequest $request */
@@ -548,7 +586,7 @@ final class CommonService
             'browser' => $this->getClientBrowser($request),
             'operating_system' => $this->getClientOS($request),
             'date_time' => DateUtility::getCurrentDateTime(),
-            'ip_address' => $this->getClientIpAddress($request),
+            'ip_address' => self::getClientIpAddress($request),
         ];
 
         $this->db->insert('track_qr_code_page', $data);
@@ -556,7 +594,7 @@ final class CommonService
 
     public function getClientOS(?ServerRequest $request = null): string
     {
-        if ($request === null) {
+        if (!$request instanceof ServerRequest) {
             $request = AppRegistry::get('request');
         }
 
@@ -614,7 +652,7 @@ final class CommonService
 
     public function getClientBrowser(?ServerRequest $request = null): string
     {
-        if ($request === null) {
+        if (!$request instanceof ServerRequest) {
             $request = AppRegistry::get('request');
         }
 
@@ -818,7 +856,7 @@ final class CommonService
             $instanceName = [];
             if ($this->isLISInstance()) {
                 $labId = $this->getSystemConfig('sc_testing_lab_id') ?? null;
-                if (!empty($labId)) {
+                if ($labId !== '' && $labId !== '0' && $labId !== []) {
                     $lab = $this->facilitiesService->getFacilityById($labId);
                     $instanceName[] = $lab['facility_name'];
                 }
@@ -887,7 +925,7 @@ final class CommonService
             $folderPath = VAR_PATH . DIRECTORY_SEPARATOR . 'track-api';
 
             // Save request data
-            if (!empty($requestData) && $requestData != '[]') {
+            if ($requestData !== null && $requestData !== '' && $requestData !== '0' && $requestData !== '[]') {
                 $requestDir = $folderPath . DIRECTORY_SEPARATOR . 'requests';
                 MiscUtility::makeDirectory($requestDir);
 
@@ -900,7 +938,7 @@ final class CommonService
             }
 
             // Save response data
-            if (!empty($responseData) && $responseData != '[]') {
+            if ($responseData !== null && $responseData !== '' && $responseData !== '0' && $responseData !== '[]') {
                 $responseDir = $folderPath . DIRECTORY_SEPARATOR . 'responses';
                 MiscUtility::makeDirectory($responseDir);
 
@@ -1013,24 +1051,24 @@ final class CommonService
         if ($code == null || $code == '') {
             return '';
         }
-        return MemoUtility::remember(function () use ($code, $type, $width, $height, $color) {
+        return MemoUtility::remember(function () use ($code, $type, $width, $height, $color): string {
             $barcodeobj = new TCPDFBarcode($code, $type);
             return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
         });
     }
 
-    public function get2DBarcodeImageContent($code, $type = 'QRCODE', $width = 2, $height = 30, $color = [0, 0, 0])
+    public function get2DBarcodeImageContent($code, $type = 'QRCODE', $width = 2, $height = 30, $color = [0, 0, 0]): mixed
     {
-        return MemoUtility::remember(function () use ($code, $type, $width, $height, $color) {
+        return MemoUtility::remember(function () use ($code, $type, $width, $height, $color): string {
             $barcodeobj = new TCPDF2DBarcode($code, $type);
             return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
         });
     }
 
-    public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false)
+    public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false): ?string
     {
         $str = str_replace($character, '', ucwords((string) $string, $character));
-        return (!$capitalizeFirstCharacter) ? lcfirst($str) : null;
+        return ($capitalizeFirstCharacter) ? null : lcfirst($str);
     }
 
     public function getPrimaryKeyField($table)
@@ -1086,7 +1124,7 @@ final class CommonService
             if ($asNameValuePair) {
                 $processedData = [];
                 foreach ($data as $list) {
-                    $processedData[$list['source_of_request']] = !empty($commonSources[$list['source_of_request']]) ? $commonSources[$list['source_of_request']] : $list['source_of_request'];
+                    $processedData[$list['source_of_request']] = empty($commonSources[$list['source_of_request']]) ? $list['source_of_request'] : $commonSources[$list['source_of_request']];
                 }
                 return $processedData;
             }
@@ -1099,7 +1137,7 @@ final class CommonService
     {
         $this->db->where("status", "active");
         $this->db->orderBy('status_name', "ASC");
-        $result =  $this->db->get('r_sample_status');
+        $result = $this->db->get('r_sample_status');
         $response = [];
         if ($api) {
             foreach ($result as $row) {
@@ -1112,13 +1150,13 @@ final class CommonService
     }
     public function multipleColumnSearch(?string $searchText, ?array $allColumns, bool $splitSearch = false): ?string
     {
-        return MemoUtility::remember(function () use ($searchText, $allColumns, $splitSearch) {
+        return MemoUtility::remember(function () use ($searchText, $allColumns, $splitSearch): ?string {
 
             // Initialize the where clause array
             $sWhere = [];
 
             // Ensure the search text and columns are not empty
-            if (!empty($searchText) && !empty($allColumns) && is_array($allColumns)) {
+            if ($searchText !== null && $searchText !== '' && $searchText !== '0' && ($allColumns !== null && $allColumns !== []) && is_array($allColumns)) {
                 // Trim the search text
                 $searchText = trim($searchText);
 
@@ -1132,7 +1170,7 @@ final class CommonService
                         $sWhereSub[] = "$column LIKE '%$escapedSearchText%'";
                     }
                 }
-                if (!empty($sWhereSub)) {
+                if ($sWhereSub !== []) {
                     $sWhere[] = " (" . implode(' OR ', $sWhereSub) . ") ";
                 }
 
@@ -1155,7 +1193,7 @@ final class CommonService
                                     $sWhereSub[] = "$column LIKE '%$escapedSearch%'";
                                 }
                             }
-                            if (!empty($sWhereSub)) {
+                            if ($sWhereSub !== []) {
                                 $sWhere[] = " (" . implode(' OR ', $sWhereSub) . ") ";
                             }
                         }
@@ -1164,14 +1202,14 @@ final class CommonService
             }
 
             // Combine all where clauses into a single SQL string
-            return !empty($sWhere) ? implode(' OR ', $sWhere) : null;
+            return $sWhere === [] ? null : implode(' OR ', $sWhere);
         });
     }
 
 
-    public function generateDataTablesSorting($postData, $orderColumns)
+    public function generateDataTablesSorting($postData, $orderColumns): mixed
     {
-        return MemoUtility::remember(function () use ($postData, $orderColumns) {
+        return MemoUtility::remember(function () use ($postData, $orderColumns): string|array|null {
             $sOrder = null;
             if (isset($postData['iSortCol_0'])) {
                 for ($i = 0; $i < (int) $postData['iSortingCols']; $i++) {
@@ -1244,7 +1282,7 @@ final class CommonService
             $where[] = " f.updated_datetime >= '$updatedDateTime'";
         }
         $whereStr = "";
-        if (!empty($where)) {
+        if ($where !== []) {
             $whereStr = " WHERE " . implode(" AND ", $where);
         }
         if (!empty($activeModule)) {
@@ -1269,7 +1307,10 @@ final class CommonService
         return $response;
     }
 
-    public function getProvinceDetailsApi($user = null, $onlyActive = false, $updatedDateTime = null)
+    /**
+     * @return array<mixed, array<'districtDetails'|'show'|'value', mixed>>
+     */
+    public function getProvinceDetailsApi($user = null, $onlyActive = false, $updatedDateTime = null): array
     {
         // Query to get provinces (top-level geographical divisions)
         $query = "
@@ -1306,7 +1347,7 @@ final class CommonService
         }
 
         // Combine all WHERE conditions
-        if (!empty($where)) {
+        if ($where !== []) {
             $query .= " AND " . implode(" AND ", $where);
         }
 
@@ -1333,7 +1374,10 @@ final class CommonService
         return $response;
     }
 
-    public function getDistrictDetailsApi($user = null, $onlyActive = false, $updatedDateTime = null)
+    /**
+     * @return array<mixed, array<'facilityDetails'|'provinceDetails'|'show'|'value', mixed>>
+     */
+    public function getDistrictDetailsApi($user = null, $onlyActive = false, $updatedDateTime = null): array
     {
         // Query to get districts with their province information
         $query = "
@@ -1372,7 +1416,7 @@ final class CommonService
         }
 
         // Combine all WHERE conditions
-        if (!empty($where)) {
+        if ($where !== []) {
             $query .= " AND " . implode(" AND ", $where);
         }
 
@@ -1434,10 +1478,8 @@ final class CommonService
             }
         }
 
-        if (!$module && $facilityType == 1) {
-            if (!empty($activeModule)) {
-                $where[] = " hf.test_type IN ('$activeModule')";
-            }
+        if (!$module && $facilityType == 1 && !empty($activeModule)) {
+            $where[] = " hf.test_type IN ('$activeModule')";
         }
 
         if (!empty($testType)) {
@@ -1455,7 +1497,7 @@ final class CommonService
             $where[] = " f.updated_datetime >= '$updatedDateTime'";
         }
         $whereStr = "";
-        if (!empty($where)) {
+        if ($where !== []) {
             $whereStr = " WHERE " . implode(" AND ", $where);
         }
         $query .= "$whereStr GROUP BY facility_name ORDER BY facility_name ASC ";
@@ -1487,7 +1529,10 @@ final class CommonService
         return $response;
     }
 
-    public function getSubFields($tableName, $primary, $name, $condition = null)
+    /**
+     * @return array<mixed, array<'show'|'value', mixed>>
+     */
+    public function getSubFields($tableName, $primary, $name, $condition = null): array
     {
 
         if (!empty($condition)) {
@@ -1507,7 +1552,7 @@ final class CommonService
     /**
      * Function to check if STS URL is working by hitting the version API
      */
-    public static function validateStsUrl($url, $labId = null)
+    public static function validateStsUrl($url, $labId = null): bool
     {
         // Get VERSION constant or default
         $version = defined('VERSION') ? VERSION : '1.0';
@@ -1515,7 +1560,7 @@ final class CommonService
         // Use current lab ID if available, or a default test value
         $testLabId = $labId ?: '1';
 
-        $apiUrl = rtrim($url, '/') . "/api/version.php?labId=" . $testLabId . "&version=" . $version;
+        $apiUrl = rtrim((string) $url, '/') . "/api/version.php?labId=" . $testLabId . "&version=" . $version;
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $apiUrl);
@@ -1533,7 +1578,7 @@ final class CommonService
         return $httpCode === 200;
     }
 
-    public static function encryptViewQRCode($uniqueId)
+    public static function encryptViewQRCode(string $uniqueId): string
     {
         $ciphering = "AES-128-CTR";
         $options = 0;
@@ -1548,12 +1593,12 @@ final class CommonService
             $encryption_iv
         ) . '#' . bin2hex($encryption_iv);
     }
-    public static function decryptViewQRCode($viewId)
+    public static function decryptViewQRCode($viewId): string|false
     {
         $ciphering = "AES-128-CTR";
         $options = 0;
-        if (str_contains($viewId, '#')) {
-            list($encryptedData, $ivHex) = explode('#', $viewId, 2);
+        if (str_contains((string) $viewId, '#')) {
+            [$encryptedData, $ivHex] = explode('#', (string) $viewId, 2);
             // Convert the hex string back to binary for the IV
             $decryption_iv = hex2bin($ivHex);
         } else {
@@ -1572,7 +1617,7 @@ final class CommonService
         );
     }
 
-    public function applyBordersToSheet(Worksheet $sheet)
+    public function applyBordersToSheet(Worksheet $sheet): Worksheet
     {
         // Retrieve the highest row and highest column
         $highestRow = $sheet->getHighestRow();
@@ -1597,7 +1642,7 @@ final class CommonService
         return $sheet;
     }
 
-    public function setAllColumnWidths(Worksheet $sheet, $width = 20)
+    public function setAllColumnWidths(Worksheet $sheet, $width = 20): Worksheet
     {
         // Set the default width for all columns in the sheet
         $sheet->getDefaultColumnDimension()->setWidth($width);
@@ -1605,7 +1650,7 @@ final class CommonService
         return $sheet;
     }
 
-    public function centerAndBoldRowInSheet(Worksheet $sheet, $startCell = 'A1')
+    public function centerAndBoldRowInSheet(Worksheet $sheet, string $startCell = 'A1'): Worksheet
     {
         // Extract the row number from the start cell
         $startRow = preg_replace('/[^0-9]/', '', $startCell);
@@ -1626,9 +1671,9 @@ final class CommonService
 
     public function getTableFieldsAsArray(string $tableName, array $unwantedColumns = []): array
     {
-        return MemoUtility::remember(function () use ($tableName, $unwantedColumns) {
+        return MemoUtility::remember(function () use ($tableName, $unwantedColumns): array {
             $tableFieldsAsArray = [];
-            if (!empty($tableName) && $tableName != '') {
+            if ($tableName !== '' && $tableName !== '0' && $tableName !== '') {
                 try {
                     $tableFieldsAsArray = $this->db->getTableFieldsAsArray($tableName, $unwantedColumns);
                 } catch (Throwable $e) {
@@ -1664,20 +1709,20 @@ final class CommonService
         return $status;
     }
 
-    public function getMaxSampleBatchId($table)
+    public function getMaxSampleBatchId($table): int
     {
         $maxSampleBatchIdQuery = "SELECT MAX(CONVERT(sample_batch_id, UNSIGNED)) AS max_sample_batch_id FROM $table";
         $result = $this->db->rawQuery($maxSampleBatchIdQuery);
-        return isset($result[0]['max_sample_batch_id']) ? (int)$result[0]['max_sample_batch_id'] : 0;
+        return isset($result[0]['max_sample_batch_id']) ? (int) $result[0]['max_sample_batch_id'] : 0;
     }
-    public function getMaxBatchId($table)
+    public function getMaxBatchId($table): int
     {
         $maxBatchIdQuery = "SELECT MAX(CONVERT(batch_id, UNSIGNED)) AS max_batch_id FROM $table";
         $result = $this->db->rawQuery($maxBatchIdQuery);
-        return isset($result[0]['max_batch_id']) ? (int)$result[0]['max_batch_id'] : 0;
+        return isset($result[0]['max_batch_id']) ? (int) $result[0]['max_batch_id'] : 0;
     }
 
-    public function updateNullColumnsWithDefaults($tableName, $columnsDefaults)
+    public function updateNullColumnsWithDefaults($tableName, $columnsDefaults): void
     {
         // Construct the SET clause of the update query
         $setClauses = [];
@@ -1693,7 +1738,7 @@ final class CommonService
         $this->db->rawQuery($updateQuery);
     }
 
-    public static function validateUploadedFile($uploadedFilePath, $formatFilePath)
+    public static function validateUploadedFile(string $uploadedFilePath, string $formatFilePath): bool
     {
         // Load the uploaded Excel file
         $uploadedSpreadsheet = IOFactory::load($uploadedFilePath);
@@ -1712,25 +1757,15 @@ final class CommonService
         $templateHeaders = $templateSheet->rangeToArray('A1:Z1')[0];  // Adjust range as needed
 
         // Normalize headers for case-insensitive comparison and remove spaces/newlines
-        $normalizedUploadedHeaders = array_map(function ($header) {
-            return strtolower(preg_replace('/\s+/', '', $header));
-        }, $uploadedHeaders);
+        $normalizedUploadedHeaders = array_map(fn($header) => strtolower(preg_replace('/\s+/', '', (string) $header)), $uploadedHeaders);
 
-        $normalizedTemplateHeaders = array_map(function ($header) {
-            return strtolower(preg_replace('/\s+/', '', $header));
-        }, $templateHeaders);
-
+        $normalizedTemplateHeaders = array_map(fn($header) => strtolower(preg_replace('/\s+/', '', (string) $header)), $templateHeaders);
         // Compare the column headers
-        if ($normalizedUploadedHeaders !== $normalizedTemplateHeaders) {
-            // The column headers do not match the template
-            return false;
-        }
-
         // Compare additional formatting, data types, or any other specific requirements
         // ...
-
         // If all checks pass, return true
-        return true;
+        // The column headers do not match the template
+        return $normalizedUploadedHeaders === $normalizedTemplateHeaders;
     }
 
     public static function validateM2MToken(ServerRequestInterface $request, string $path): bool

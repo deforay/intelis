@@ -98,16 +98,16 @@ $_SESSION['eidPrintSearchResultQuery'] = $samplePrintQuery;
                             <tbody>
                                 <tr>
                                     <td>
-                                        <?php echo (isset($tsResult[0]['totalCount'])) ? $tsResult[0]['totalCount'] : 0; ?>
+                                        <?php echo $tsResult[0]['totalCount'] ?? 0; ?>
                                     </td>
                                     <td>
-                                        <?php echo (isset($tsResult[0]['positive'])) ? $tsResult[0]['positive'] : 0; ?>
+                                        <?php echo $tsResult[0]['positive'] ?? 0; ?>
                                     </td>
                                     <td>
-                                        <?php echo (isset($tsResult[0]['negative'])) ? $tsResult[0]['negative'] : 0; ?>
+                                        <?php echo $tsResult[0]['negative'] ?? 0; ?>
                                     </td>
                                     <td>
-                                        <?php echo (isset($tsResult[0]['indeterminate'])) ? $tsResult[0]['indeterminate'] : 0; ?>
+                                        <?php echo $tsResult[0]['indeterminate'] ?? 0; ?>
                                     </td>
                                 </tr>
                             </tbody>

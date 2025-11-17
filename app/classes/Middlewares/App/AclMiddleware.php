@@ -2,6 +2,9 @@
 
 namespace App\Middlewares\App;
 
+use Override;
+use Throwable;
+use RuntimeException;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -27,9 +30,13 @@ class AclMiddleware implements MiddlewareInterface
         '/status'
     ];
 
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $ip = CommonService::getClientIpAddress($request);
+        $currentURI = null;
+        $user = null;
+
         try {
             $currentURI = $this->getCurrentRequestUri();
             $user = $_SESSION['userName'] ?? null;
@@ -42,11 +49,12 @@ class AclMiddleware implements MiddlewareInterface
                 return $handler->handle($request);
             }
 
-            // Access denied
+            // Access denied - handleAccessDenied always throws, but IDE needs explicit indication
             $this->handleAccessDenied($currentURI, $user, $request);
+            throw new RuntimeException('This line should is never reached'); // Satisfies static analysis
         } catch (SystemException $e) {
             throw $e;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             LoggerUtility::logError('ACL Middleware error: ' . $e->getMessage(), [
                 'exception' => $e,
                 'uri' => $currentURI ?? 'unknown',
@@ -77,7 +85,7 @@ class AclMiddleware implements MiddlewareInterface
 
         $refererPath = $this->getRefererPath($referer);
 
-        if (!$this->isSameDomain($request, $referer) || empty($refererPath)) {
+        if (!$this->isSameDomain($request, $referer) || ($refererPath === '' || $refererPath === '0')) {
             return false;
         }
 
@@ -87,7 +95,7 @@ class AclMiddleware implements MiddlewareInterface
 
     private function isValidReferer(string $referer): bool
     {
-        if (empty($referer) || strlen($referer) > 2048) {
+        if ($referer === '' || $referer === '0' || strlen($referer) > 2048) {
             return false;
         }
 
@@ -142,7 +150,7 @@ class AclMiddleware implements MiddlewareInterface
         $currentHost = strtolower($request->getUri()->getHost());
         $refererHost = strtolower(parse_url($referer, PHP_URL_HOST) ?? '');
 
-        return !empty($currentHost) && !empty($refererHost) && $currentHost === $refererHost;
+        return $currentHost !== '' && $currentHost !== '0' && ($refererHost !== '' && $refererHost !== '0') && $currentHost === $refererHost;
     }
 
     private function shouldExcludeFromAclCheck(ServerRequestInterface $request): bool
@@ -163,7 +171,7 @@ class AclMiddleware implements MiddlewareInterface
     {
         $uri = AppRegistry::get('currentRequestURI');
         if (empty($uri)) {
-            throw new \RuntimeException('Current request URI not found in AppRegistry');
+            throw new RuntimeException('Current request URI not found in AppRegistry');
         }
         return $uri;
     }

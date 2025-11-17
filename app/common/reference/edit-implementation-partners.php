@@ -22,7 +22,7 @@ if (!isset($id) || $id == "") {
     header("Location:geographical-divisions-details.php");
 }
 $query = "SELECT * from r_implementation_partners where i_partner_id = ?";
-$partnerInfo = $db->rawQuery($query, array($id));
+$partnerInfo = $db->rawQuery($query, [$id]);
 
 ?>
 <!-- Content Wrapper. Contains page content -->

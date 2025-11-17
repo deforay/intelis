@@ -26,21 +26,21 @@ $key = (string) $general->getGlobalConfig('key');
 
 
 $sessionQuery = $_SESSION['hepatitisRequestSearchResultQuery'];
-if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
+if (isset($sessionQuery) && trim((string) $sessionQuery) !== "") {
 
 
     $output = [];
     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-        $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
+        $headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner"];
     } else {
-        $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Sex", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
+        $headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient DoB", "Patient Age", "Patient Sex", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner"];
     }
     if ($general->isStandaloneInstance() && ($key = array_search('Remote Sample ID', $headings)) !== false) {
         unset($headings[$key]);
     }
 
 
-    $buildRow = function ($aRow, $no) use ($general, $key) {
+    $buildRow = function ($aRow, $no) use ($general, $key): array {
         $row = [];
 
         //Sex
@@ -53,7 +53,7 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
 
         //set sample rejection
         $sampleRejection = 'No';
-        if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+        if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
             $sampleRejection = 'Yes';
         }
 
@@ -97,7 +97,7 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
             $row[] = $patientFname . " " . $patientLname;
         }
         $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-        $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+        $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) !== '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
         $row[] = $gender;
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
         $row[] = $sampleRejection;
@@ -118,7 +118,7 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
 // Build filter info for header row
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim($value) != '' && trim($value) != '-- Select --') {
+	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
 	}
 }
@@ -126,7 +126,7 @@ foreach ($_POST as $key => $value) {
 // Prepare headings (with alpha-numeric conversion if requested)
 $processedHeadings = $headings;
 if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-	$processedHeadings = array_map(function ($value) {
+	$processedHeadings = array_map(function ($value): array|string|null {
 		$string = str_replace(' ', '', $value);
 		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
 	}, $headings);

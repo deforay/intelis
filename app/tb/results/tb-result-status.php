@@ -327,7 +327,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 
             ],
             "aaSorting": [
-                [<?= (!$general->isStandaloneInstance()) ? 9 : 8; ?>, "desc"]
+                [<?= ($general->isStandaloneInstance()) ? 8 : 9; ?>, "desc"]
             ],
             "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");

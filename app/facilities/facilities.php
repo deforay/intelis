@@ -30,6 +30,9 @@ $state = $geolocationService->getProvinces("yes");
   .select2-element {
     width: 300px;
   }
+  .orphan-facility {
+    background-color: #fff4d6 !important;
+  }
 </style>
 
 <style>
@@ -93,22 +96,22 @@ $state = $geolocationService->getProvinces("yes");
                   <td>
                     <select id="testType" name="testType" onchange="return checkFacilityType();" class="form-control select2-element" placeholder="<?php echo _translate('Please select the Test types'); ?>">
                       <option value=""><?= _translate("-- Choose Test Type --"); ?> </option>
-                      <?php if (!empty($activeTests) && in_array('vl', $activeTests)) { ?>
+                      <?php if ($activeTests !== [] && in_array('vl', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'vl') ? "selected='selected'" : ""; ?> value="vl"><?php echo _translate("Viral Load"); ?></option>
                       <?php }
-                      if (!empty($activeTests) && in_array('eid', $activeTests)) { ?>
+                      if ($activeTests !== [] && in_array('eid', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'eid') ? "selected='selected'" : ""; ?> value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
                       <?php }
-                      if (!empty($activeTests) && in_array('covid19', $activeTests)) { ?>
+                      if ($activeTests !== [] && in_array('covid19', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'covid19') ? "selected='selected'" : ""; ?> value="covid19"><?php echo _translate("Covid-19"); ?></option>
                       <?php }
-                      if (!empty($activeTests) && in_array('hepatitis', $activeTests)) { ?>
+                      if ($activeTests !== [] && in_array('hepatitis', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'hepatitis') ? "selected='selected'" : ""; ?> value='hepatitis'><?php echo _translate("Hepatitis"); ?></option>
                       <?php }
-                      if (!empty($activeTests) && in_array('tb', $activeTests)) { ?>
+                      if ($activeTests !== [] && in_array('tb', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'tb') ? "selected='selected'" : ""; ?> value='tb'><?php echo _translate("TB"); ?></option>
                       <?php }
-                      if (!empty($activeTests) && in_array('cd4', $activeTests)) { ?>
+                      if ($activeTests !== [] && in_array('cd4', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'cd4') ? "selected='selected'" : ""; ?> value='cd4'><?php echo _translate("CD4"); ?></option>
                       <?php } ?>
                     </select>
@@ -124,8 +127,17 @@ $state = $geolocationService->getProvinces("yes");
                       <option value="inactive"><?php echo _translate("No"); ?></option>
                     </select>
                   </td>
-                  <td></td>
-                  <td></td>
+                  <td>
+                    <strong><?= _translate("Show Orphaned Facilities"); ?>:</strong>
+                  </td>
+                  <td>
+                    <div class="form-check" style="margin-top:5px;">
+                      <input type="checkbox" class="form-check-input" id="orphanFacility" value="yes">
+                      <label class="form-check-label" for="orphanFacility">
+                        <?= _translate("Active facilities whose province or district is missing/inactive"); ?>
+                      </label>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="Search" class="btn btn-success btn-sm">
@@ -318,6 +330,10 @@ $state = $geolocationService->getProvinces("yes");
           "name": "activeFacility",
           "value": $("#activeFacility").val()
         });
+        aoData.push({
+          "name": "orphanFacility",
+          "value": $("#orphanFacility").is(':checked') ? 'yes' : ''
+        });
         $.ajax({
           "dataType": 'json',
           "type": "POST",
@@ -359,6 +375,8 @@ $state = $geolocationService->getProvinces("yes");
         district: $("#district").val(),
         facilityType: $("#facilityType").val(),
         testType: $("#testType").val(),
+        activeFacility: $("#activeFacility").val(),
+        orphanFacility: $("#orphanFacility").is(':checked') ? 'yes' : ''
       },
       function(data) {
         if (data == "" || data == null || data == undefined) {

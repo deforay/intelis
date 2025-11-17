@@ -1,5 +1,8 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Services\CD4Service;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -27,7 +30,7 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
@@ -44,20 +47,20 @@ try {
         $_POST['sampleCode'],
         $_POST['sampleCollectionDate']
     ];
-    if (empty($_POST) || ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
+    if ($_POST === [] || ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
         $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
         header("Location:/cd4/requests/cd4-add-request.php");
         die;
     }
 
     if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
-        $resultStatus = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+        $resultStatus = RECEIVED_AT_CLINIC;
     } else {
-        $resultStatus = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+        $resultStatus = RECEIVED_AT_TESTING_LAB;
     }
 
     //add province
-    if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
+    if (isset($splitProvince[0]) && trim((string) $splitProvince[0]) !== '') {
         $provinceQuery = "SELECT * from geographical_divisions where geo_name=?";
         $provinceInfo = $db->rawQueryOne($provinceQuery, [$splitProvince[0]]);
         if (empty($provinceInfo)) {
@@ -69,7 +72,7 @@ try {
     }
 
 
-    if (isset($_POST['newArtRegimen']) && trim((string) $_POST['newArtRegimen']) != "") {
+    if (isset($_POST['newArtRegimen']) && trim((string) $_POST['newArtRegimen']) !== "") {
         $artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen
                         WHERE art_code like ?";
         $artResult = $db->rawQueryOne($artQuery);
@@ -88,8 +91,8 @@ try {
 
     try {
         //update facility code
-        if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) != '') {
-            $fData = array('facility_code' => $_POST['facilityCode']);
+        if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) !== '') {
+            $fData = ['facility_code' => $_POST['facilityCode']];
             $db->where('facility_id', $_POST['facilityId']);
             $id = $db->update('facility_details', $fData);
         }
@@ -101,7 +104,7 @@ try {
             'trace' => $e->getTraceAsString()
         ]);
     }
-    if (isset($_POST['gender']) && trim((string) $_POST['gender']) == 'male') {
+    if (isset($_POST['gender']) && trim((string) $_POST['gender']) === 'male') {
         $_POST['patientPregnant'] = "N/A";
         $_POST['breastfeeding'] = "N/A";
     }
@@ -109,7 +112,7 @@ try {
 
     $testingPlatform = null;
     $instrumentId = null;
-    if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) != '') {
+    if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) !== '') {
         $platForm = explode("##", (string) $_POST['testingPlatform']);
         $testingPlatform = $platForm[0];
         $instrumentId = $platForm[3];
@@ -162,31 +165,26 @@ try {
     }
 
     //set cd4 test reason
-    if (isset($_POST['reasonForCD4Testing']) && trim((string) $_POST['reasonForCD4Testing']) != "") {
-        if (!is_numeric($_POST['reasonForCD4Testing'])) {
-            if ($_POST['reasonForCD4Testing'] == "other") {
-                $_POST['reasonForCD4Testing'] = $_POST['newreasonForCD4Testing'];
-            }
-            $reasonQuery = "SELECT test_reason_id FROM r_cd4_test_reasons
+    if (isset($_POST['reasonForCD4Testing']) && trim((string) $_POST['reasonForCD4Testing']) !== "" && !is_numeric($_POST['reasonForCD4Testing'])) {
+        if ($_POST['reasonForCD4Testing'] == "other") {
+            $_POST['reasonForCD4Testing'] = $_POST['newreasonForCD4Testing'];
+        }
+        $reasonQuery = "SELECT test_reason_id FROM r_cd4_test_reasons
                         WHERE test_reason_name= ?";
-            $reasonResult = $db->rawQuery($reasonQuery, [$_POST['reasonForCD4Testing']]);
-            if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
-                $_POST['reasonForCD4Testing'] = $reasonResult[0]['test_reason_id'];
-            } else {
-                $data = array(
-                    'test_reason_name' => $_POST['reasonForCD4Testing'],
-                    'test_reason_status' => 'active'
-                );
-                $id = $db->insert('r_cd4_test_reasons', $data);
-                $_POST['reasonForCD4Testing'] = $id;
-            }
+        $reasonResult = $db->rawQuery($reasonQuery, [$_POST['reasonForCD4Testing']]);
+        if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
+            $_POST['reasonForCD4Testing'] = $reasonResult[0]['test_reason_id'];
+        } else {
+            $data = ['test_reason_name' => $_POST['reasonForCD4Testing'], 'test_reason_status' => 'active'];
+            $id = $db->insert('r_cd4_test_reasons', $data);
+            $_POST['reasonForCD4Testing'] = $id;
         }
     }
 
 
     //update facility emails
-    if (trim($_POST['emailHf']) != '') {
-        $fData = array('facility_emails' => $_POST['emailHf']);
+    if (trim((string) $_POST['emailHf']) !== '') {
+        $fData = ['facility_emails' => $_POST['emailHf']];
         $db->where('facility_id', $_POST['facilityId']);
         $id = $db->update('facility_details', $fData);
     }
@@ -252,7 +250,7 @@ try {
         'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'] ?? '', true),
         'result_dispatched_datetime' => DateUtility::isoDateFormat($_POST['resultDispatchedOn'] ?? '', true),
         'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
-        'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim((string) $_POST['rejectionReason']) != '') ? $_POST['rejectionReason'] : null,
+        'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim((string) $_POST['rejectionReason']) !== '') ? $_POST['rejectionReason'] : null,
         'rejection_on' => DateUtility::isoDateFormat($_POST['rejectionDate'] ?? ''),
         'result_reviewed_by' => $_POST['reviewedBy'] ?? null,
         'result_reviewed_datetime' => DateUtility::isoDateFormat($_POST['reviewedOn'] ?? ''),
@@ -266,8 +264,8 @@ try {
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         'result_modified'  => 'no',
         'manual_result_entry' => 'yes',
-        'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
-        'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
+        'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') ? base64_decode((string) $_POST['fundingSource']) : null,
+        'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') ? base64_decode((string) $_POST['implementingPartner']) : null,
     ];
 
 

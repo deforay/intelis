@@ -18,11 +18,11 @@ $primaryKey = "cd4_id";
 
 
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_first_name', 'vl.patient_art_no',  "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.cd4_result', 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.cd4_result', 'ts.status_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_first_name', 'vl.patient_art_no', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.cd4_result', 'ts.status_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.cd4_result', 'ts.status_name'];
 if ($general->isSTSInstance()) {
     $sampleCode = 'remote_sample_code';
-} else if ($general->isStandaloneInstance()) {
+} elseif ($general->isStandaloneInstance()) {
     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
     $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
 }
@@ -58,7 +58,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -83,7 +83,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,ts.*,fd.facility_name as 
 $start_date = '';
 $end_date = '';
 
-if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) != '') {
+if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) !== '') {
     $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
 }
 /* if(isset($_POST['hvlContactStatus']) && trim($_POST['hvlContactStatus'])!= ''){
@@ -95,15 +95,15 @@ if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) != ''
 		}
 	} */
 
-if (isset($_POST['hvlSampleTestDate']) && trim((string) $_POST['hvlSampleTestDate']) != '') {
+if (isset($_POST['hvlSampleTestDate']) && trim((string) $_POST['hvlSampleTestDate']) !== '') {
     $s_c_date = explode("to", (string) $_POST['hvlSampleTestDate']);
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+    if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+    if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
         $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
-    if (trim((string) $start_date) == trim((string) $end_date)) {
+    if (trim((string) $start_date) === trim((string) $end_date)) {
         $sWhere[] = '  DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
     } else {
         $sWhere[] = '  DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
@@ -112,10 +112,10 @@ if (isset($_POST['hvlSampleTestDate']) && trim((string) $_POST['hvlSampleTestDat
 if (isset($_POST['hvlSampleType']) && $_POST['hvlSampleType'] != '') {
     $sWhere[] =  ' s.sample_id = "' . $_POST['hvlSampleType'] . '"';
 }
-if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
     $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
 }
-if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
     $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
 }
 if (isset($_POST['hvlFacilityName']) && $_POST['hvlFacilityName'] != '') {
@@ -134,14 +134,10 @@ if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 
-if (!empty($sWhere)) {
-    $sWhere = ' AND ' . implode(' AND ', $sWhere);
-} else {
-    $sWhere = "";
-}
-$sQuery = $sQuery . $sWhere;
+$sWhere = $sWhere === [] ? "" : ' AND ' . implode(' AND ', $sWhere);
+$sQuery .= $sWhere;
 
-$sQuery = $sQuery . ' group by vl.cd4_id';
+$sQuery .= ' group by vl.cd4_id';
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -158,29 +154,20 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $_SESSION['highViralResultCount'] = $iTotal;
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
-    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     } else {
         $aRow['sample_collection_date'] = '';
     }
-    if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) !== '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
         $aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
     } else {
         $aRow['sample_tested_datetime'] = '';
     }
-    if ($aRow['remote_sample'] == 'yes') {
-        $decrypt = 'remote_sample_code';
-    } else {
-        $decrypt = 'sample_code';
-    }
+    $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
     $patientName = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow[$decrypt]);
     $row = [];
     $row[] = $aRow['sample_code'];

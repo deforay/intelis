@@ -12,13 +12,11 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ErrorResponseGenerator
 {
-    private readonly bool $isDebug;
     private array $errorReasons = [];
     private array $safeErrorMessages = [];
 
-    public function __construct(bool $isDebug)
+    public function __construct(private readonly bool $isDebug)
     {
-        $this->isDebug = $isDebug;
         $this->errorReasons = [
             500 => _translate('Internal Server Error'),
             404 => _translate('Not Found'),

@@ -36,10 +36,10 @@ if (!$isLIS || !$cliMode) {
 $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
 
 // Set the URL for the token generation endpoint
-$remoteURL = rtrim($general->getRemoteURL(), '/');
+$remoteURL = rtrim((string) $general->getRemoteURL(), '/');
 
 // Check connectivity
-if (empty($remoteURL) || $remoteURL == '') {
+if ($remoteURL === '' || $remoteURL === '0' || $remoteURL === '') {
     LoggerUtility::logError("Please check if STS URL is set");
     exit(0);
 }
@@ -49,7 +49,7 @@ $options = getopt('', ['key:']);
 $apiKey = $options['key'] ?? null;
 
 
-if (empty($apiKey)) {
+if ($apiKey === '' || $apiKey === '0' || $apiKey === [] || $apiKey === false || $apiKey === null) {
     $apiKey = ConfigService::generateAPIKeyForSTS($remoteURL);
 }
 if (!$cliMode) {

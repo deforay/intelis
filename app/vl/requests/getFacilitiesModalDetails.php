@@ -11,7 +11,7 @@ $primaryKey = "facility_id";
 
 
 
-$aColumns = array('facility_id', 'facility_code', 'facility_name', 'facility_type_name');
+$aColumns = ['facility_id', 'facility_code', 'facility_name', 'facility_type_name'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -47,7 +47,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -71,34 +71,34 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM facility_details as f_d LEFT JOIN facility_type as f_t ON f_t.facility_type_id=f_d.facility_type";
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
-    $sWhere = $sWhere . ' AND status = "active"';
-    if (isset($_POST['hub']) && trim((string) $_POST['hub']) != '') {
+    $sWhere .= ' AND status = "active"';
+    if (isset($_POST['hub']) && trim((string) $_POST['hub']) !== '') {
         $sWhere = $sWhere . " AND f_d.facility_hub_name LIKE '%" . $_POST['hub'] . "%' ";
     }
-    if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $sWhere = $sWhere . " AND f_d.facility_district LIKE '%" . $_POST['district'] . "%' ";
     }
-    if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
         $sWhere = $sWhere . " AND f_d.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
-    if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+    if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
         $sWhere = $sWhere . " AND f_t.facility_type_id='" . $_POST['facilityName'] . "'";
     }
     $sQuery = $sQuery . ' ' . $sWhere;
 } else {
     $sWhere = ' where status = "active"';
-    if (isset($_POST['hub']) && trim((string) $_POST['hub']) != '') {
+    if (isset($_POST['hub']) && trim((string) $_POST['hub']) !== '') {
         $sWhere = $sWhere . " AND f_d.facility_hub_name LIKE '%" . $_POST['hub'] . "%' ";
     }
-    if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $sWhere = $sWhere . " AND f_d.facility_district LIKE '%" . $_POST['district'] . "%' ";
     }
-    if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
         $sWhere = $sWhere . " AND f_d.facility_state LIKE '%" . $_POST['state'] . "%' ";
     }
-    if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+    if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
         $sWhere = $sWhere . " AND f_t.facility_type_id='" . $_POST['facilityName'] . "'";
     }
     $sQuery = $sQuery . ' ' . $sWhere;
@@ -132,12 +132,7 @@ if ($_POST['type'] == 'all') {
 $iTotal = $aResultTotal[0]['total'];
 
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $facilityDetails = $aRow['facility_id'] . "##" . $aRow['facility_name'] . "##" . $aRow['facility_state'] . "##" . $aRow['facility_hub_name'] . "##" . $aRow['contact_person'] . "##" . $aRow['facility_mobile_numbers'] . "##" . $aRow['facility_district'] . "##" . $aRow['facility_emails'];

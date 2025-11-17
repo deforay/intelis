@@ -63,12 +63,12 @@ if ($cliMode) {
 }
 
 
-if (!empty($_POST)) {
+if ($_POST !== []) {
     try {
         $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
         $forceFlag = $_POST['force'] ?? false;
         $remoteURL = $_POST['remoteURL'] ?? null;
-    } catch (Throwable $e) {
+    } catch (Throwable) {
         LoggerUtility::logError("Invalid Request. Please try again");
         exit(0);
     }
@@ -77,11 +77,22 @@ if (!empty($_POST)) {
 }
 
 if (empty($remoteURL) || $remoteURL == '') {
+    if ($cliMode) {
+        $io->error(_translate("Please check if STS URL is set"));
+    }
     LoggerUtility::logError("Please check if STS URL is set");
     exit(0);
 }
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
+
+if (null == $labId || '' == $labId) {
+    if ($cliMode) {
+        $io->warning(_translate("Please check if Testing Lab ID is set"));
+    }
+    LoggerUtility::logWarning("Please check if Testing Lab ID is set");
+    exit(0);
+}
 
 $version = VERSION;
 
@@ -107,13 +118,13 @@ $cd4DataToSync = [];
 
 
 $payload = [
-    'globalConfigLastModified'      => $forceFlag ? null : $general->getLastModifiedDateTime('global_config'),
-    'facilityLastModified'          => $forceFlag ? null : $general->getLastModifiedDateTime('facility_details'),
-    'healthFacilityLastModified'    => $forceFlag ? null : $general->getLastModifiedDateTime('health_facilities'),
-    'testingLabsLastModified'       => $forceFlag ? null : $general->getLastModifiedDateTime('testing_labs'),
-    'fundingSourcesLastModified'    => $forceFlag ? null : $general->getLastModifiedDateTime('r_funding_sources'),
-    'partnersLastModified'          => $forceFlag ? null : $general->getLastModifiedDateTime('r_implementation_partners'),
-    'geoDivisionsLastModified'      => $forceFlag ? null : $general->getLastModifiedDateTime('geographical_divisions'),
+    'globalConfigLastModified' => $forceFlag ? null : $general->getLastModifiedDateTime('global_config'),
+    'facilityLastModified' => $forceFlag ? null : $general->getLastModifiedDateTime('facility_details'),
+    'healthFacilityLastModified' => $forceFlag ? null : $general->getLastModifiedDateTime('health_facilities'),
+    'testingLabsLastModified' => $forceFlag ? null : $general->getLastModifiedDateTime('testing_labs'),
+    'fundingSourcesLastModified' => $forceFlag ? null : $general->getLastModifiedDateTime('r_funding_sources'),
+    'partnersLastModified' => $forceFlag ? null : $general->getLastModifiedDateTime('r_implementation_partners'),
+    'geoDivisionsLastModified' => $forceFlag ? null : $general->getLastModifiedDateTime('geographical_divisions'),
     //'patientsLastModified'          => $forceFlag ? null : $general->getLastModifiedDateTime('patients'),
     'time' => time(),
     "instanceId" => $general->getInstanceId()
@@ -121,42 +132,42 @@ $payload = [
 
 // This array is used to sync data that we will later receive from the API call
 $commonDataToSync = [
-    'globalConfig'  => [
+    'globalConfig' => [
         'primaryKey' => 'name',
         'tableName' => 'global_config',
         'canTruncate' => false
     ],
-    'users'  => [
+    'users' => [
         'primaryKey' => 'user_id',
         'tableName' => 'user_details',
         'canTruncate' => false
     ],
-    'facilities'  => [
+    'facilities' => [
         'primaryKey' => 'facility_id',
         'tableName' => 'facility_details',
         'canTruncate' => true
     ],
-    'healthFacilities'  => [
+    'healthFacilities' => [
         'primaryKey' => 'facility_id',
         'tableName' => 'health_facilities',
         'canTruncate' => true
     ],
-    'testingLabs'  => [
+    'testingLabs' => [
         'primaryKey' => 'facility_id',
         'tableName' => 'testing_labs',
         'canTruncate' => true
     ],
-    'fundingSources'  => [
+    'fundingSources' => [
         'primaryKey' => 'funding_source_id',
         'tableName' => 'r_funding_sources',
         'canTruncate' => true
     ],
-    'partners'  => [
+    'partners' => [
         'primaryKey' => 'i_partner_id',
         'tableName' => 'r_implementation_partners',
         'canTruncate' => true
     ],
-    'geoDivisions'  => [
+    'geoDivisions' => [
         'primaryKey' => 'geo_id',
         'tableName' => 'geographical_divisions',
         'canTruncate' => true
@@ -450,7 +461,10 @@ try {
         $db->rawQuery("SET FOREIGN_KEY_CHECKS = 0;"); // Disable foreign key checks
 
         foreach ($parsedData as $dataType => $dataValues) {
-            if (empty($dataType) || $dataType === '' || empty($dataToSync[$dataType]['tableName']) || $dataToSync[$dataType]['tableName'] == '' || empty($dataValues)) {
+            if ($dataValues instanceof \Traversable) {
+                $dataValues = iterator_to_array($dataValues, true);
+            }
+            if (empty($dataType) || $dataType === '' || empty($dataToSync[$dataType]['tableName']) || $dataToSync[$dataType]['tableName'] === '' || empty($dataValues)) {
                 continue;
             }
 
@@ -458,7 +472,7 @@ try {
 
                 $db->beginTransaction();
                 // Truncate table if truncate flag is set and table can be truncated
-                if ($cliMode && $truncateFlag && $dataToSync[$dataType]['canTruncate'] !== false) {
+                if ($cliMode && $truncateFlag && $dataToSync[$dataType]['canTruncate']) {
                     $db->rawQuery("TRUNCATE TABLE {$dataToSync[$dataType]['tableName']}");
                 }
 
@@ -494,7 +508,7 @@ try {
                         $updateColumns = array_keys($tableData);
                         $primaryKey = $dataToSync[$dataType]['primaryKey'];
 
-                        if ($dataToSync[$dataType]['tableName'] == 'user_details') {
+                        if ($dataToSync[$dataType]['tableName'] === 'user_details') {
                             foreach (['login_id', 'role_id', 'password', 'status'] as $unsetKey) {
                                 unset($tableData[$unsetKey]);
                             }
@@ -518,7 +532,7 @@ try {
                                 $apiService->downloadFile($remoteFileUrl, $localFilePath);
                             }
 
-                            $facilityAttributes = !empty($tableData['facility_attributes']) ? json_decode($tableData['facility_attributes'], true) : [];
+                            $facilityAttributes = empty($tableData['facility_attributes']) ? [] : json_decode((string) $tableData['facility_attributes'], true);
 
                             if (!empty($facilityAttributes['report_template'])) {
                                 $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
@@ -536,7 +550,7 @@ try {
                 }
                 // Global config report template sync
                 if ($dataType === 'globalConfig') {
-                    $reportFormat = !empty($tableData['value']) ? json_decode($tableData['value'], true) : [];
+                    $reportFormat = empty($tableData['value']) ? [] : json_decode((string) $tableData['value'], true);
                     if (!empty($reportFormat) && $tableData['name'] = 'report_format') {
                         foreach ($reportFormat as $test => $row) {
                             $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test;

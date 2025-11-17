@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\ACCEPTED;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -12,7 +14,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -38,8 +40,8 @@ try {
     $tableName = "form_eid";
     $primaryKey = "eid_id";
 
-    $aColumns = array('vl.child_id', 'vl.child_name', 'vl.child_age', 'vl.child_dob', 'f.facility_name', 'vl.clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result');
-    $orderColumns = array('vl.child_id', 'vl.child_name', 'vl.child_age', 'vl.child_dob', 'f.facility_name', 'vl.clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result');
+    $aColumns = ['vl.child_id', 'vl.child_name', 'vl.child_age', 'vl.child_dob', 'f.facility_name', 'vl.clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result'];
+    $orderColumns = ['vl.child_id', 'vl.child_name', 'vl.child_age', 'vl.child_dob', 'f.facility_name', 'vl.clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result'];
 
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = $primaryKey;
@@ -64,10 +66,7 @@ try {
     }
 
 
-    /*
-         * SQL queries
-         * Get data to display
-        */
+
 
     $sQuery = "SELECT
                 vl.eid_id,
@@ -91,7 +90,7 @@ try {
             LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
-    $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
+    $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . ACCEPTED;
 
     if (isset($_POST['childId']) && $_POST['childId'] != "") {
         $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
@@ -104,14 +103,14 @@ try {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
     }
 
-    if (!empty($sWhere)) {
+    if ($sWhere !== []) {
         $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
     }
 
     //$sQuery = $sQuery . ' GROUP BY vl.eid_id';
 
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['patientTestHistoryResult'] = $sQuery;
@@ -126,14 +125,9 @@ try {
     $_SESSION['patientTestHistoryResultCount'] = $resultCount;
 
     /*
-         * Output
-        */
-    $output = array(
-        "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $resultCount,
-        "iTotalDisplayRecords" => $resultCount,
-        "aaData" => []
-    );
+     * Output
+     */
+    $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 
     foreach ($rResult as $aRow) {
 

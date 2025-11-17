@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const COUNTRY\CAMEROON;
 use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -17,7 +19,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 try {
 
     // Sanitized values from $request object
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -49,7 +51,7 @@ try {
     $aColumns = ['b.batch_code', 'b.batch_code', 'b.lab_assigned_batch_code', null, "DATE_FORMAT(vl.sample_tested_datetime, '%d-%b-%Y')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')"];
     $orderColumns = ['b.batch_code', 'b.batch_code', 'b.lab_assigned_batch_code', null, 'last_tested_date', 'b.last_modified_datetime'];
 
-    if ($formId != COUNTRY\CAMEROON) {
+    if ($formId != CAMEROON) {
         $aColumns = MiscUtility::removeMatchingElements($aColumns, ['b.lab_assigned_batch_code']);
         $orderColumns = MiscUtility::removeMatchingElements($orderColumns, ['b.lab_assigned_batch_code']);
     }
@@ -82,7 +84,7 @@ try {
         $testTypeCol = " vl.test_type, ";
     }
 
-    if ($formTable == 'form_cd4') {
+    if ($formTable === 'form_cd4') {
         $resultCondition = "(vl.cd4_result IS NOT NULL AND vl.cd4_result != '')";
     } else {
         $resultCondition = "(vl.result IS NOT NULL AND vl.result != '')";
@@ -104,14 +106,14 @@ try {
                 FROM batch_details b
                 LEFT JOIN $formTable vl ON vl.sample_batch_id = b.batch_id";
 
-    if (!empty($sWhere)) {
+    if ($sWhere !== []) {
         $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
     }
 
-    $sQuery = $sQuery . ' GROUP BY b.batch_id';
+    $sQuery .= ' GROUP BY b.batch_id';
 
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
         $sQuery = "$sQuery ORDER BY $sOrder";
     }
 
@@ -135,7 +137,7 @@ try {
         $editPosition = true;
     }
     if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
-        $testTypeInfo = $general->getDataByTableAndFields("r_test_types", array("test_type_id", "test_standard_name", "test_loinc_code"), false, "test_status='active'");
+        $testTypeInfo = $general->getDataByTableAndFields("r_test_types", ["test_type_id", "test_standard_name", "test_loinc_code"], false, "test_status='active'");
         $testTypes = [];
         foreach ($testTypeInfo as $tests) {
             $testTypes[$tests['test_type_id']] = $tests['test_standard_name'];
@@ -187,7 +189,7 @@ try {
         if (!empty($_POST['type']) && $_POST['type'] == 'generic-tests') {
             $row[] = $testTypes[$aRow['test_type']];
         }
-        if ($formId == COUNTRY\CAMEROON) {
+        if ($formId == CAMEROON) {
             $row[] = $aRow['lab_assigned_batch_code'];
         }
         $row[] = $aRow['total_samples'];

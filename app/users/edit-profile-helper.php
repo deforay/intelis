@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -21,7 +22,7 @@ $systemService = ContainerRegistry::get(SystemService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -34,7 +35,7 @@ if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty($_POST['u']) && !empty($_PO
     $fromRecencyAPI = true;
 }
 
-if ($fromRecencyAPI === true) {
+if ($fromRecencyAPI) {
     $_POST['userName'] = $_POST['u'];
     $_POST['password'] = $_POST['t'];
     $userId = null;
@@ -45,9 +46,9 @@ if ($fromRecencyAPI === true) {
 try {
 
     $wasUpdated = false;
-    if (!empty(trim((string) $_POST['userName']))) {
+    if (!in_array(trim((string) $_POST['userName']), ['', '0'], true)) {
 
-        if ($fromRecencyAPI === true) {
+        if ($fromRecencyAPI) {
             $data['user_name'] = $_POST['userName'];
             $decryptedPassword = CommonService::decrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
             $data['password'] = $decryptedPassword;
@@ -66,7 +67,7 @@ try {
                 'phone_number' => $_POST['phoneNo'],
             ];
 
-            if (isset($_POST['password']) && trim((string) $_POST['password']) != "") {
+            if (isset($_POST['password']) && trim((string) $_POST['password']) !== "") {
                 $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", [$userId]);
                 if ($usersService->passwordVerify((string) $_SESSION['loginId'], (string) $_POST['password'], (string) $userRow['password'])) {
                     $_SESSION['alertMsg'] = _translate("Your new password cannot be same as the current password. Please try another password.");
@@ -101,7 +102,7 @@ try {
         }
 
 
-        if ($fromRecencyAPI === true) {
+        if ($fromRecencyAPI) {
             $response = [];
             if ($wasUpdated !== false) {
                 $response['status'] = "success";

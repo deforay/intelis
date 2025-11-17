@@ -57,7 +57,7 @@ $vlTestReasonResult = $db->query($vlTestReasonQuery);
 
 
 $eidQuery = "SELECT * from form_eid where eid_id=?";
-$eidInfo = $db->rawQueryOne($eidQuery, array($id));
+$eidInfo = $db->rawQueryOne($eidQuery, [$id]);
 
 
 /** @var EidService $eidService */
@@ -86,7 +86,7 @@ $machine = [];
 foreach ($iResult as $val) {
 	$machine[$val['config_machine_id']] = $val['config_machine_name'];
 }
-if (isset($eidInfo['result_dispatched_datetime']) && trim((string) $eidInfo['result_dispatched_datetime']) != '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+if (isset($eidInfo['result_dispatched_datetime']) && trim((string) $eidInfo['result_dispatched_datetime']) !== '' && $eidInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $eidInfo['result_dispatched_datetime']);
 	$eidInfo['result_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
@@ -169,16 +169,7 @@ if (!empty($eidInfo['is_encrypted']) && $eidInfo['is_encrypted'] == 'yes') {
 </style>
 <?php
 
-$fileArray = array(
-	COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php',
-	COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php',
-	COUNTRY\DRC => 'forms/update-drc-result.php',
-	COUNTRY\CAMEROON => 'forms/update-cameroon-result.php',
-	COUNTRY\PNG => 'forms/update-png-result.php',
-	COUNTRY\WHO => 'forms/update-who-result.php',
-	COUNTRY\RWANDA => 'forms/update-rwanda-result.php',
-	COUNTRY\BURKINA_FASO => 'forms/update-burkina-faso-result.php'
-);
+$fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php', COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php', COUNTRY\DRC => 'forms/update-drc-result.php', COUNTRY\CAMEROON => 'forms/update-cameroon-result.php', COUNTRY\PNG => 'forms/update-png-result.php', COUNTRY\WHO => 'forms/update-who-result.php', COUNTRY\RWANDA => 'forms/update-rwanda-result.php', COUNTRY\BURKINA_FASO => 'forms/update-burkina-faso-result.php'];
 
 require_once($fileArray[$arr['vl_form']]);
 

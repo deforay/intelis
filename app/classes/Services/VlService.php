@@ -2,6 +2,16 @@
 
 namespace App\Services;
 
+use Override;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\TEST_FAILED;
+use const SAMPLE_STATUS\NO_RESULT;
+use const SAMPLE_STATUS\ACCEPTED;
+use const COUNTRY\SOUTH_SUDAN;
+use const COUNTRY\PNG;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
@@ -68,7 +78,7 @@ final class VlService extends AbstractTestService
     {
 
         $suppressionLimit = $this->commonService->getGlobalConfig('viral_load_threshold_limit');
-        if (!empty($suppressionLimit) && is_numeric($suppressionLimit)) {
+        if ($suppressionLimit !== '' && $suppressionLimit !== '0' && $suppressionLimit !== [] && is_numeric($suppressionLimit)) {
             return (int) $suppressionLimit;
         }
         return $this->suppressionLimit;
@@ -137,6 +147,7 @@ final class VlService extends AbstractTestService
         return trim($input);
     }
 
+    #[Override]
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
@@ -170,7 +181,7 @@ final class VlService extends AbstractTestService
         $query = "SELECT * FROM r_vl_sample_type WHERE `status` like 'active' $where";
         try {
             return $this->db->rawQuery($query);
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             return [];
         }
     }
@@ -191,7 +202,7 @@ final class VlService extends AbstractTestService
 
     public function getVLResultCategory($resultStatus, $finalResult): ?string
     {
-        return MemoUtility::remember(function () use ($resultStatus, $finalResult) {
+        return MemoUtility::remember(function () use ($resultStatus, $finalResult): ?string {
             $vlResultCategory = null;
             $orignalResultValue = $finalResult;
             $patterns = [
@@ -201,7 +212,7 @@ final class VlService extends AbstractTestService
 
 
             $finalResult = preg_replace($patterns, '', (string) $finalResult);
-            $finalResult = trim($finalResult);
+            $finalResult = trim((string) $finalResult);
 
 
             if ($resultStatus == 4) {
@@ -221,17 +232,13 @@ final class VlService extends AbstractTestService
                     if (isset($matches[2]) && is_numeric($matches[2])) {
                         $interpretedResult =  $this->parseNumericValue($matches[2]);
                     }
+                } elseif (in_array(strtolower((string) $orignalResultValue), $this->suppressedArray)) {
+                    $interpretedResult = 10;
+                } elseif (preg_match('/\d+(\.\d+)?[eE][+-]?\d+/', $finalResult, $matches)) {
+                    // Extract scientific notation if present
+                    $interpretedResult = $this->parseNumericValue($matches[0]);
                 } else {
-                    if (in_array(strtolower((string) $orignalResultValue), $this->suppressedArray)) {
-                        $interpretedResult = 10;
-                    } else {
-                        // Extract scientific notation if present
-                        if (preg_match('/\d+(\.\d+)?[eE][+-]?\d+/', $finalResult, $matches)) {
-                            $interpretedResult = $this->parseNumericValue($matches[0]);
-                        } else {
-                            $interpretedResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_SCIENTIFIC);
-                        }
-                    }
+                    $interpretedResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_SCIENTIFIC);
                 }
 
                 if ($interpretedResult < $this->getSuppressionLimit()) {
@@ -256,22 +263,22 @@ final class VlService extends AbstractTestService
         $resultStatus = $params['result_status'] ?? null;
         $params['isSampleRejected'] ??= null;
 
-        if ($resultStatus == SAMPLE_STATUS\REJECTED || $params['isSampleRejected'] == 'yes') {
+        if ($resultStatus == REJECTED || $params['isSampleRejected'] == 'yes') {
             $isRejected = 'yes';
             $finalResult = $params['vlResult'] = $params['vlLog'] = null;
-            $resultStatus = SAMPLE_STATUS\REJECTED;
+            $resultStatus = REJECTED;
         } elseif (!empty($params['vlResult'])) {
-            $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
+            $resultStatus = PENDING_APPROVAL; // Awaiting Approval
             //Result is saved as entered
             $finalResult = $params['vlResult'];
 
             if (in_array(strtolower((string) $params['vlResult']), $this->failureCases)) {
                 $hivDetection = null;
-                $resultStatus = SAMPLE_STATUS\TEST_FAILED; // Invalid/Failed
+                $resultStatus = TEST_FAILED; // Invalid/Failed
                 //$finalResult = $params['vlResult'];
             } elseif (in_array(strtolower((string) $params['vlResult']), ['noresult', 'no result', 'no'])) {
                 $hivDetection = null;
-                $resultStatus = SAMPLE_STATUS\NO_RESULT; // No Result
+                $resultStatus = NO_RESULT; // No Result
             } else {
 
                 $interpretedResults = $this->interpretViralLoadResult($params['vlResult']);
@@ -282,8 +289,8 @@ final class VlService extends AbstractTestService
                 $txtVal = $interpretedResults['txtVal'] ?? null;
             }
         } elseif (!empty($params['vlLog']) && is_numeric($params['vlLog'])) {
-            $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL; // Awaiting Approval
-            $finalResult = pow(10, $params['vlLog']);
+            $resultStatus = PENDING_APPROVAL; // Awaiting Approval
+            $finalResult = 10 ** $params['vlLog'];
         }
 
         $hivDetection ??= '';
@@ -292,11 +299,11 @@ final class VlService extends AbstractTestService
         if (
             !empty($params['api']) &&
             $params['api'] == 'yes' &&
-            $resultStatus == SAMPLE_STATUS\PENDING_APPROVAL &&
-            !empty($finalResult) &&
+            $resultStatus == PENDING_APPROVAL &&
+            ($finalResult !== '' && $finalResult !== '0') &&
             $this->commonService->getGlobalConfig('vl_auto_approve_api_results') == 'yes'
         ) {
-            $resultStatus = SAMPLE_STATUS\ACCEPTED;
+            $resultStatus = ACCEPTED;
         }
 
 
@@ -315,7 +322,7 @@ final class VlService extends AbstractTestService
 
     public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null): ?array
     {
-        return MemoUtility::remember(function () use ($result, $unit, $defaultLowVlResultText) {
+        return MemoUtility::remember(function () use ($result, $unit, $defaultLowVlResultText): ?array {
 
             // Remove copy number units like cp/mL, copies/mL, etc.
             $result = str_ireplace($this->copiesPatterns, '', $result);
@@ -344,7 +351,7 @@ final class VlService extends AbstractTestService
                     'txtVal' => $originalResult,
                     'finalResult' => $originalResult,
                     'originalResult' => $originalResult,
-                    'resultStatus' => SAMPLE_STATUS\TEST_FAILED
+                    'resultStatus' => TEST_FAILED
                 ];
             } elseif ($vlResultType == 'numeric') {
                 $interpretedData =  $this->interpretViralLoadNumericResult($result, $unit);
@@ -356,30 +363,25 @@ final class VlService extends AbstractTestService
         });
     }
 
-    public function countrySpecificInterpretations($vlResult)
+    public function countrySpecificInterpretations($vlResult): mixed
     {
         return MemoUtility::remember(function () use ($vlResult) {
             $formId = (int) $this->commonService->getGlobalConfig('vl_form');
-            if ($formId === COUNTRY\SOUTH_SUDAN) {
-                switch ($vlResult) {
-                    case 'bdl':
-                    case 'target not detected':
-                    case 'not detected':
-                    case 'tnd':
-                        return 'Below Detection Limit';
-                    default:
-                        return $vlResult;
-                }
+            if ($formId === SOUTH_SUDAN) {
+                return match ($vlResult) {
+                    'bdl', 'target not detected', 'not detected', 'tnd' => 'Below Detection Limit',
+                    default => $vlResult,
+                };
             }
             return $vlResult;
         });
     }
 
-    public function interpretViralLoadTextResult($result, $unit = null, $defaultLowVlResultText = null): ?array
+    public function interpretViralLoadTextResult($result, ?string $unit = null, $defaultLowVlResultText = null): ?array
     {
 
         // If result is blank, then return null
-        if (empty(trim((string) $result))) {
+        if (in_array(trim((string) $result), ['', '0'], true)) {
             return null;
         }
 
@@ -389,12 +391,12 @@ final class VlService extends AbstractTestService
         }
 
         $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results');
-        $interpretAndConvertResult = !empty($interpretAndConvertResult) && $interpretAndConvertResult === 'yes';
+        $interpretAndConvertResult = $interpretAndConvertResult !== '' && $interpretAndConvertResult !== '0' && $interpretAndConvertResult !== [] && $interpretAndConvertResult === 'yes';
 
         $resultStatus = null;
 
         // Some machines and some countries prefer a default text result
-        $vlDefaultTextResult = !empty(trim((string) $defaultLowVlResultText)) && trim((string) $defaultLowVlResultText) != "" ? $defaultLowVlResultText : "Target Not Detected";
+        $vlDefaultTextResult = !in_array(trim((string) $defaultLowVlResultText), ['', '0'], true) && trim((string) $defaultLowVlResultText) !== "" ? $defaultLowVlResultText : "Target Not Detected";
 
         $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
 
@@ -453,7 +455,7 @@ final class VlService extends AbstractTestService
     public function interpretViralLoadNumericResult(string $result, ?string $unit = null): ?array
     {
         $result = trim($result);
-        if (empty($result)) {
+        if ($result === '' || $result === '0') {
             return null;
         }
 
@@ -475,10 +477,10 @@ final class VlService extends AbstractTestService
 
             $absDecimalVal = 0;
             if ($numericValue !== null) {
-                if (!empty($unit) && str_contains($unit, 'Log')) {
+                if ($unit !== null && $unit !== '' && $unit !== '0' && str_contains($unit, 'Log')) {
                     $logVal = $numericValue;
-                    $absDecimalVal = round(pow(10, $logVal));
-                } elseif (!empty($unit)) {
+                    $absDecimalVal = round(10 ** $logVal);
+                } elseif ($unit !== null && $unit !== '' && $unit !== '0') {
                     [$absDecimalVal, $unit] = $this->processResultAndUnit($numericValue, $unit);
                 } else {
                     $absDecimalVal = $numericValue;
@@ -486,7 +488,7 @@ final class VlService extends AbstractTestService
             }
 
             $absVal = $absDecimalVal;
-            $vlResult = $operator ? "$operator $absDecimalVal" : $absDecimalVal;
+            $vlResult = $operator !== '' && $operator !== '0' ? "$operator $absDecimalVal" : $absDecimalVal;
         } else {
             // Fallback parsing (rare)
             $absDecimalVal = $this->parseNumericValue($result);
@@ -528,21 +530,22 @@ final class VlService extends AbstractTestService
                     ? (float)$matches[1]
                     : (float)$matches[2];
 
-                $processedResult *= pow(10, $exponent); // Apply the multiplier
+                $processedResult *= 10 ** $exponent; // Apply the multiplier
                 $processedUnit = preg_replace('/10\*\s*-?\d+|E[+-]?\d+/i', '', $unit); // Clean the unit
             }
 
             // Remove any non-printable or unexpected characters from the unit
-            $processedUnit = preg_replace('/[^a-zA-Z0-9\s\/().%]/', '', $processedUnit);
+            $processedUnit = preg_replace('/[^a-zA-Z0-9\s\/().%]/', '', (string) $processedUnit);
 
             // Trim extra spaces and clean up the unit string
-            $processedUnit = trim($processedUnit);
+            $processedUnit = trim((string) $processedUnit);
         }
 
         return [strval($processedResult), $processedUnit];
     }
 
 
+    #[Override]
     public function insertSample($params, $returnSampleData = false): int | array
     {
         try {
@@ -560,7 +563,7 @@ final class VlService extends AbstractTestService
             if (
                 empty($sampleCollectionDate) ||
                 DateUtility::isDateValid($sampleCollectionDate) === false ||
-                ($formId == COUNTRY\PNG && empty($provinceId))
+                ($formId == PNG && empty($provinceId))
             ) {
                 return 0;
             }
@@ -605,13 +608,13 @@ final class VlService extends AbstractTestService
 
             if ($this->commonService->isSTSInstance()) {
                 $tesRequestData['remote_sample'] = 'yes';
-                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+                $tesRequestData['result_status'] = RECEIVED_AT_CLINIC;
                 if ($accessType === 'testing-lab') {
-                    $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                    $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
                 }
             } else {
                 $tesRequestData['remote_sample'] = 'no';
-                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
             }
 
             $formAttributes = [
@@ -670,7 +673,7 @@ final class VlService extends AbstractTestService
         }
     }
 
-    public function getVlResults($instrumentId = null)
+    public function getVlResults($instrumentId = null): void
     {
         _getFromFileCache('vl_results_for_instrument', function () use ($instrumentId) {
 
@@ -723,15 +726,15 @@ final class VlService extends AbstractTestService
      * 5. Removes detection phrases
      * 6. Validates remaining string as numeric
      */
-    public function checkViralLoadValueType($input, $customTextPatterns = [])
+    public function checkViralLoadValueType(mixed $input, $customTextPatterns = []): mixed
     {
-        return MemoUtility::remember(function () use ($input, $customTextPatterns) {
+        return MemoUtility::remember(function () use ($input, $customTextPatterns): string {
             // Check if it's null or empty first
-            if (is_null($input) || trim((string) $input) == '') {
+            if (is_null($input) || trim((string) $input) === '') {
                 return 'empty';
             }
             // Remove copy number units like cp/mL, copies/mL, etc.
-            $input = str_ireplace($this->copiesPatterns, '', strtolower($input));
+            $input = str_ireplace($this->copiesPatterns, '', strtolower((string) $input));
 
             // Check for any custom text patterns (exact match)
             if (!empty($customTextPatterns) && in_array($input, $customTextPatterns, true)) {
@@ -759,9 +762,9 @@ final class VlService extends AbstractTestService
         });
     }
 
-    public function extractViralLoadValue($input, $returnWithOperator = true): ?string
+    public function extractViralLoadValue(string $input, $returnWithOperator = true): ?string
     {
-        return MemoUtility::remember(function () use ($input, $returnWithOperator) {
+        return MemoUtility::remember(function () use ($input, $returnWithOperator): float|string|null {
             $processed = $this->preprocessViralLoadInput($input);
 
             if (is_numeric($processed)) {
@@ -778,7 +781,10 @@ final class VlService extends AbstractTestService
         });
     }
 
-    public function getLabStorage($labId = null, $onlyActive = true)
+    /**
+     * @return non-falsy-string[]
+     */
+    public function getLabStorage($labId = null, $onlyActive = true): array
     {
 
         if ($onlyActive) {

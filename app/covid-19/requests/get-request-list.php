@@ -1,5 +1,8 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -11,7 +14,7 @@ use App\Services\TestRequestsService;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -38,14 +41,14 @@ try {
 
      $sampleCode = 'sample_code';
 
-     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'l_f.facility_name', 'f.facility_name', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'lab_name', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     $aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'l_f.facility_name', 'f.facility_name', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name'];
+     $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'lab_name', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
 
      if ($general->isSTSInstance()) {
-          $sampleCode = 'remote_sample_code';
-     } else if ($general->isStandaloneInstance()) {
-          $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
-          $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+         $sampleCode = 'remote_sample_code';
+     } elseif ($general->isStandaloneInstance()) {
+         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
 
 
@@ -81,7 +84,7 @@ try {
           $searchArray = explode(" ", (string) $_POST['sSearch']);
           $sWhereSub = "";
           foreach ($searchArray as $search) {
-               if ($sWhereSub == "") {
+               if ($sWhereSub === "") {
                     $sWhereSub .= " (";
                } else {
                     $sWhereSub .= " AND (";
@@ -138,90 +141,90 @@ try {
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
      [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
      [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
-     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) == trim((string) $end_date)) {
+          if (trim((string) $start_date) === trim((string) $end_date)) {
                $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
           } else {
                $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
      }
 
-     if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-          if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
+     if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
+          if (trim((string) $labStartDate) === trim((string) $labEndDate)) {
                $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
           } else {
                $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
           }
      }
 
-     if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-          if (trim((string) $testedStartDate) == trim((string) $testedEndDate)) {
+     if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
+          if (trim((string) $testedStartDate) === trim((string) $testedEndDate)) {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
           } else {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
           }
      }
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
           $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
      }
-     if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
           $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
      }
-     if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
           $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
      }
-     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
+     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
           $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
      }
 
 
-     if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
-          if (trim((string) $_POST['gender']) == "unreported") {
+     if (isset($_POST['gender']) && trim((string) $_POST['gender']) !== '') {
+          if (trim((string) $_POST['gender']) === "unreported") {
                $sWhere[] = ' vl.patient_gender="unreported" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
           } else {
                $sWhere[] = ' vl.patient_gender IN ("' . $_POST['gender'] . '")';
           }
      }
      /* Sample status filter */
-     if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
+     if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';
      }
-     if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) != '') {
+     if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) !== '') {
           $sWhere[] = ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
      }
-     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
+     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
           $sWhere[] = ' vl.funding_source IN ("' . base64_decode((string) $_POST['fundingSource']) . '")';
      }
-     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
+     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
           $sWhere[] = ' vl.implementing_partner IN ("' . base64_decode((string) $_POST['implementingPartner']) . '")';
      }
 
-     if (isset($_POST['srcOfReq']) && trim((string) $_POST['srcOfReq']) != '') {
+     if (isset($_POST['srcOfReq']) && trim((string) $_POST['srcOfReq']) !== '') {
           $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '"';
      }
 
-     if (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) == 'result') {
-          $sWhere[] = ' vl.result != ""  ';
-     } else if (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) == 'noresult') {
-          $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
+     if (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) === 'result') {
+         $sWhere[] = ' vl.result != ""  ';
+     } elseif (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) === 'noresult') {
+         $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
      }
-     if (isset($_POST['patientId']) && trim((string) $_POST['patientId']) != '') {
+     if (isset($_POST['patientId']) && trim((string) $_POST['patientId']) !== '') {
           $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
      }
      if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
           $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
      }
      /* Source of request show model conditions */
-     if (isset($_POST['dateRangeModel']) && trim((string) $_POST['dateRangeModel']) != '') {
+     if (isset($_POST['dateRangeModel']) && trim((string) $_POST['dateRangeModel']) !== '') {
           $sWhere[] = ' DATE(vl.sample_collection_date) like "' . DateUtility::isoDateFormat($_POST['dateRangeModel']) . '"';
      }
-     if (isset($_POST['srcOfReqModel']) && trim((string) $_POST['srcOfReqModel']) != '') {
+     if (isset($_POST['srcOfReqModel']) && trim((string) $_POST['srcOfReqModel']) !== '') {
           $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReqModel'] . '" ';
      }
-     if (isset($_POST['labIdModel']) && trim((string) $_POST['labIdModel']) != '') {
+     if (isset($_POST['labIdModel']) && trim((string) $_POST['labIdModel']) !== '') {
           $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
@@ -231,7 +234,7 @@ try {
           $sWhere[] = " vl.sample_received_at_lab_datetime is NOT NULL ";
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
-          $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
+          $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . ACCEPTED;
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
           $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
@@ -241,11 +244,11 @@ try {
                $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
           }
      } elseif (!$_POST['hidesrcofreq']) {
-          $sWhere[] = 'vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+          $sWhere[] = 'vl.result_status != ' . RECEIVED_AT_CLINIC;
      }
 
 
-     if (!empty($sWhere)) {
+     if ($sWhere !== []) {
           $_SESSION['covid19RequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
           $sQuery = $sQuery . ' WHERE ' . $sWhere;
      }
@@ -265,12 +268,7 @@ try {
      $_SESSION['covid19RequestSearchResultQueryCount'] = $resultCount;
 
 
-     $output = array(
-          "sEcho" => (int) $_POST['sEcho'],
-          "iTotalRecords" => $resultCount,
-          "iTotalDisplayRecords" => $resultCount,
-          "aaData" => []
-     );
+     $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
      $editRequest = false;
      $syncRequest = false;
      if ((_isAllowed("/covid-19/requests/covid-19-edit-request.php"))) {
@@ -322,13 +320,13 @@ try {
           }
 
           //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['covid19_id'] . '"  value="' . $aRow['covid19_id'] . '" onclick="toggleTest(this);"  />';
-          if (!empty($sampleCodeTooltip)) {
+          if ($sampleCodeTooltip !== '' && $sampleCodeTooltip !== '0') {
                $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['sample_code'] . '</span>';
           } else {
                $row[] = '<span>' . $aRow['sample_code'] . '</span>';
           }
           if (!$general->isStandaloneInstance()) {
-               if (!empty($sampleCodeTooltip)) {
+               if ($sampleCodeTooltip !== '' && $sampleCodeTooltip !== '0') {
                     $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['remote_sample_code'] . '</span>';
                } else {
                     $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
@@ -338,7 +336,7 @@ try {
           $row[] = $aRow['batch_code'];
           $row[] = ($aRow['lab_name']);
           $row[] = ($aRow['facility_name']);
-          if (!empty($patientTooltip)) {
+          if ($patientTooltip !== '' && $patientTooltip !== '0') {
                $row[] = '<span class="top-tooltip" title="' . $patientTooltip . '">' . $aRow['patient_id'] . '</span>';
           } else {
                $row[] = '<span>' . $aRow['patient_id'] . '</span>';
@@ -352,10 +350,8 @@ try {
 
           if ($editRequest) {
                $edit = '<a href="covid-19-edit-request.php?id=' . base64_encode((string) $aRow['covid19_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
-               if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
-                    if (!_isAllowed("/covid-19/requests/edit-locked-covid19-samples")) {
-                         $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
-                    }
+               if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/covid-19/requests/edit-locked-covid19-samples")) {
+                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
                }
           }
 

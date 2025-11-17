@@ -1,10 +1,11 @@
 <?php
 
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -16,12 +17,12 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$labId = !empty($_POST['labId']) ? $_POST['labId'] : null;
-$selectedTestingPoint = !empty($_POST['selectedTestingPoint']) ? $_POST['selectedTestingPoint'] : null;
+$labId = empty($_POST['labId']) ? null : $_POST['labId'];
+$selectedTestingPoint = empty($_POST['selectedTestingPoint']) ? null : $_POST['selectedTestingPoint'];
 $response = "";
 
 $testingPoints = $facilitiesService->getTestingPoints($labId);
@@ -32,7 +33,7 @@ if (!empty($testingPoints)) {
     $testingPointsList[$val] = $val;
   }
 }
-if (!empty($testingPointsList)) {
+if ($testingPointsList !== []) {
   $response = $general->generateSelectOptions($testingPointsList, $selectedTestingPoint, "-- Select --");
 }
 

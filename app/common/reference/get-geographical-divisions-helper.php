@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -9,7 +10,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -45,7 +46,31 @@ try {
     if (!empty($columnSearch) && $columnSearch != '') {
         $sWhere[] = $columnSearch;
     }
-    $whereSql = !empty($sWhere) ? (' WHERE ' . implode(' AND ', $sWhere)) : '';
+
+    $statusFilter = $_POST['statusFilter'] ?? 'active';
+    $validStatuses = ['active', 'inactive', 'all'];
+    if (!in_array($statusFilter, $validStatuses, true)) {
+        $statusFilter = 'active';
+    }
+    if ($statusFilter !== 'all') {
+        $sWhere[] = "g.geo_status = '$statusFilter'";
+    }
+
+    $districtFilter = isset($_POST['districtFilter']) ? (int) $_POST['districtFilter'] : 0;
+    $provinceFilter = isset($_POST['provinceFilter']) ? (int) $_POST['provinceFilter'] : 0;
+    $orphanOnly = $_POST['orphanOnly'] ?? 'no';
+
+    if ($districtFilter > 0) {
+        $sWhere[] = "g.geo_id = $districtFilter";
+    } elseif ($provinceFilter > 0) {
+        $sWhere[] = "(g.geo_parent = $provinceFilter OR g.geo_id = $provinceFilter)";
+    }
+
+    if ($orphanOnly === 'yes') {
+        $sWhere[] = "(g.geo_parent != 0 AND (p.geo_id IS NULL OR p.geo_status != 'active'))";
+    }
+
+    $whereSql = empty($sWhere) ? ('') : ' WHERE ' . implode(' AND ', $sWhere);
 
 
     $sQuery = "SELECT
@@ -61,7 +86,7 @@ try {
 
 
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
 
@@ -79,7 +104,7 @@ try {
 
     foreach ($rResult as $aRow) {
         $row   = [];
-        $row[] = $aRow['geo_name'];
+        $row[] = '<span class="geo-division-name" data-district-id="' . (int)$aRow['geo_id'] . '">' . htmlspecialchars((string)$aRow['geo_name']) . '</span>';
         $row[] = $aRow['geo_code'];
         $row[] = $aRow['parent_name'] ?? '';
         $row[] = $aRow['geo_status'];

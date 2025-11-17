@@ -18,15 +18,10 @@ $tableName = "r_generic_test_reasons";
 $testReasonId = (int) base64_decode((string) $_POST['testReasonId']);
 $_POST['testReason'] = trim((string) $_POST['testReason']);
 try {
-    if (!empty($_POST['testReason'])) {
+    if (isset($_POST['testReason']) && ($_POST['testReason'] !== '' && $_POST['testReason'] !== '0')) {
 
-        $data = array(
-            'test_reason' => $_POST['testReason'],
-            'test_reason_code' => trim((string) $_POST['testReasonCode']),
-            'test_reason_status' => $_POST['testReasonStatus'],
-            'updated_datetime' => DateUtility::getCurrentDateTime()
-        );
-        if (!empty($testReasonId)) {
+        $data = ['test_reason' => $_POST['testReason'], 'test_reason_code' => trim((string) $_POST['testReasonCode']), 'test_reason_status' => $_POST['testReasonStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
+        if ($testReasonId !== 0) {
             $db->where('test_reason_id', $testReasonId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {

@@ -10,6 +10,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 // Sanitized values from $request object
+
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
@@ -63,38 +64,32 @@ if (!empty($_POST['sampleCollectionDate'])) {
 	$to = date('Y-m-d');
 	$sWhere[] = " (DATE(vl.sample_collection_date) BETWEEN '$from' AND '$to')";
 }
-if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
+if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== '') {
 	$sWhere[] = " (DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate')";
 }
 
-if (isset($_POST['freezerCode']) && trim((string) $_POST['freezerCode']) != '') {
+if (isset($_POST['freezerCode']) && trim((string) $_POST['freezerCode']) !== '') {
 	$sWhere[] = ' h.freezer_id = "' . $_POST['freezerCode'] . '"';
 }
 
 if ($general->isLISInstance() && $arr['vl_lab_id'] != '') {
 	$sWhere[] = ' s.lab_id = "' . $arr['vl_lab_id'] . '"';
-} else {
-	if (isset($_POST['labId']) && trim((string) $_POST['labId']) != '') {
-		$sWhere[] = ' s.lab_id = "' . $_POST['labId'] . '"';
-	}
+} elseif (isset($_POST['labId']) && trim((string) $_POST['labId']) !== '') {
+	$sWhere[] = ' s.lab_id = "' . $_POST['labId'] . '"';
 }
 
-if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
 	$sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
-if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
 	$sWhere[] = ' f.facility_state_id = "' . $_POST['state'] . '"';
 }
 
-if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
 	$sWhere[] = ' f.facility_id IN (' . implode(',', $_POST['facilityName']) . ')';
 }
 
-if (isset($sWhere) && !empty($sWhere)) {
-	$sWhere =  ' AND ' . implode(" AND ", $sWhere);
-} else {
-	$sWhere = "";
-}
+$sWhere = isset($sWhere) && !empty($sWhere) ? ' AND ' . implode(" AND ", $sWhere) : "";
 $vlQuery = "SELECT vl.*,f.facility_name,s.storage_code,h.*,r.removal_reason_name FROM form_vl as vl
             LEFT JOIN lab_storage_history as h ON h.sample_unique_id = vl.unique_id
 			LEFT JOIN lab_storage as s ON s.storage_id = h.freezer_id
@@ -115,7 +110,7 @@ foreach ($vlQueryInfo as $info) {
 
 $sampleUniqueId = implode(',', $uniqueId);
 $currentStorage = "";
-if (!empty($sampleUniqueId)) {
+if ($sampleUniqueId !== '' && $sampleUniqueId !== '0') {
 	$getCurrentStorage = "SELECT sh.*,s.storage_code,s.storage_id FROM lab_storage_history as sh
 	LEFT JOIN lab_storage as s ON s.storage_id=sh.freezer_id WHERE sh.sample_unique_id IN ($sampleUniqueId) ";
 	$currentStorage = $db->rawQuery($getCurrentStorage);
@@ -182,7 +177,9 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 									</strong>
 								</td>
 								<td>
-									<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" value="<?php if (isset($_POST['sampleCollectionDate']) && $_POST['sampleCollectionDate'] != "") echo str_replace('+', ' ', $_POST['sampleCollectionDate']); ?>" style="width:220px;" />
+									<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" value="<?php if (isset($_POST['sampleCollectionDate']) && $_POST['sampleCollectionDate'] != "") {
+																																																																	echo str_replace('+', ' ', $_POST['sampleCollectionDate']);
+																																																																} ?>" style="width:220px;" />
 								</td>
 							</tr>
 							<tr>
@@ -237,8 +234,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 										<a href="/vl/requests/upload-storage.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?php echo _translate("Storage Bulk Upload"); ?>
 										</a>
-									<?php }
-									?>
+									<?php } ?>
 								</td>
 							</tr>
 						</table>
@@ -304,8 +300,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 											if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
 												$key = (string) $general->getGlobalConfig('key');
 												$vl['patient_art_no'] = $general->crypto('decrypt', $vl['patient_art_no'], $key);
-											}
-									?>
+											} ?>
 											<tr>
 												<td class="dataTables_empty">
 													<?php echo $vl['sample_code'];
@@ -364,20 +359,27 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 													< ?php echo ucfirst($vl['sample_status']); ?>
 												</td>-->
 												<td class="dataTables_empty">
-													<?php if ($existingStorage != "" && (strtolower($vl['sample_status']) != "removed")) { ?>
+													<?php if ($existingStorage != "" && (strtolower((string) $vl['sample_status']) !== "removed")) {
+													?>
 														<a href="#" class="btn btn-danger btn-xs" onclick="showRemovalReason(<?= $i; ?>);"><em class="fa-solid fa-xmark"></em>&nbsp; Remove</a>
-														<select id="sampleRemovalReason<?= $i; ?>" name="sampleRemovalReason[<?= $i; ?>]" class="form-control" title="Please Enter Sample Removal Reason" onchange="removeSampleFromFreezer(this.value,<?= $i; ?>);" style="width:100%; display:none;">
-															<option value=""><?= _translate("-- Select --"); ?> </option>
-															<?php foreach ($sRemoveResult as $reason) { ?>
+														<select id="sampleRemovalReason<?= $i;
+																						?>" name="sampleRemovalReason[<?= $i; ?>]" class="form-control" title="Please Enter Sample Removal Reason" onchange="removeSampleFromFreezer(this.value,<?= $i;
+																																																												?>);" style="width:100%; display:none;">
+															<option value=""><?= _translate("-- Select --");
+																				?> </option>
+															<?php
+															foreach ($sRemoveResult as $reason) { ?>
 																<option value="<?php echo $reason['removal_reason_id']; ?>"><?php echo ($reason['removal_reason_name']); ?></option>
-															<?php } ?>
+															<?php }
+															?>
 															<option value="other">Other</option>
 														</select>
-														<input type="text" class="form-control" name="newSampleRemovalReason[<?= $i; ?>]" id="newSampleRemovalReason<?= $i; ?>" onchange="removeSampleFromFreezer(this.value,<?= $i; ?>);" style="display:none;" />
-													<?php } else {
-														if ($vl['removal_reason_name'] != "") {
-															echo "Sample Removed Reason : " . $vl['removal_reason_name'];
-														}
+														<input type="text" class="form-control" name="newSampleRemovalReason[<?= $i; ?>]" id="newSampleRemovalReason<?= $i;
+																																									?>" onchange="removeSampleFromFreezer(this.value,<?= $i;
+																																																						?>);" style="display:none;" />
+													<?php
+													} elseif ($vl['removal_reason_name'] != "") {
+														echo "Sample Removed Reason : " . $vl['removal_reason_name'];
 													} ?>
 												</td>
 											</tr>
@@ -437,7 +439,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 		});
 
 		var currentLabId = $('#labId').val();
-		<?php if ($general->isLISInstance()) { ?> 
+		<?php if ($general->isLISInstance()) { ?>
 			if (currentLabId != '') {
 				getFreezers(currentLabId, 'freezerCode'); // Load the freezers for the current lab
 				$('.labField').hide();
@@ -484,6 +486,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 					'Current Year To Date': [moment().startOf('year'), moment()]
 				}
 			},
+
 			function(start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
@@ -527,20 +530,21 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 			});
 	}
 
+	const presetDistrict = <?= json_encode($_POST['district'] ?? '') ?>;
+
 	function getByProvince(provinceId) {
-		$("#district").html('');
-		//$("#facilityName").html('');
+		$("#district").empty();
 		$.post("/common/get-by-province-id.php", {
 				provinceId: provinceId,
-				districts: '<?php if (isset($_POST['district'])) echo $_POST['district']; ?>',
-				//facilities: true,
+				districts: presetDistrict
 			},
 			function(data) {
-				Obj = $.parseJSON(data);
-				$("#district").html(Obj['districts']);
-				//$("#facilityName").html(Obj['facilities']);
-			});
+				const Obj = $.parseJSON(data);
+				$("#district").html(Obj.districts);
+			}
+		);
 	}
+
 
 	function getByDistrict(districtId) {
 		$("#facilityName").html('');

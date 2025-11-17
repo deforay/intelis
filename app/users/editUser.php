@@ -190,8 +190,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                        <div class="fileinput-preview thumbnail image-placeholder" data-trigger="fileinput" style="width:200px; height:150px;">
                                                             <?php
 
-                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && MiscUtility::isImageValid($signatureImagePath . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
-                                                                 $signFileName = basename($userInfo['user_signature']);
+                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) !== '' && MiscUtility::isImageValid($signatureImagePath . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
+                                                                 $signFileName = basename((string) $userInfo['user_signature']);
                                                             ?>
                                                                  <img src="/uploads/users-signature/<?php echo $signFileName; ?>" alt="Signature image">
                                                             <?php } else { ?>
@@ -203,7 +203,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                                  <input type="file" id="userSignature" name="userSignature" accept="image/png,image/gpg,image/jpeg" title="<?php echo _translate('Please select user signature'); ?>" onchange="getNewSignatureImage('<?php echo $userInfo['user_signature']; ?>');">
                                                             </span>
                                                             <?php
-                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && file_exists($userInfo['user_signature'])) {
+                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) !== '' && file_exists($userInfo['user_signature'])) {
                                                             ?>
                                                                  <a id="clearUserSignature" href="javascript:void(0);" class="btn btn-default" data-dismiss="fileupload" onclick="clearUserSignature('<?php echo $userInfo['user_signature']; ?>')"><?php echo _translate("Clear"); ?></a>
                                                             <?php } ?>
@@ -294,7 +294,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                             <?php echo _translate("Province/State"); ?>&nbsp;:
                                                        </strong></td>
                                                   <td>
-                                                       <?php if (sizeof($geoLocationParentArray) > 0) { ?>
+                                                       <?php if (count($geoLocationParentArray) > 0) { ?>
                                                             <select name="stateId" id="stateId" class="form-control" title="<?php echo _translate('Please choose province/state'); ?>">
                                                                  <?= $general->generateSelectOptions($geoLocationParentArray, null, _translate("-- Select --")); ?>
                                                             </select>
@@ -341,7 +341,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                         <div class="col-md-5">
                                              <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
                                                   <?php foreach ($preselectedFacilities as $value) {
-                                                       if (!empty($activeFacilities) && array_key_exists($value, $activeFacilities)) { ?>
+                                                       if ($activeFacilities !== [] && array_key_exists($value, $activeFacilities)) { ?>
                                                             <option value="<?php echo $value; ?>"><?php echo $activeFacilities[$value]; ?> </option>
                                                   <?php }
                                                   } ?>

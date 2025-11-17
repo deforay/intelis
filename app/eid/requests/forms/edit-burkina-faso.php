@@ -34,7 +34,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", (string) $eidInfo['mother_treatment']) : [];
 if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
     $facilityQuery = "SELECT * FROM facility_details WHERE facility_id= ? AND status='active'";
-    $facilityResult = $db->rawQuery($facilityQuery, array($eidInfo['facility_id']));
+    $facilityResult = $db->rawQuery($facilityQuery, [$eidInfo['facility_id']]);
 }
 
 $eidInfo['child_dob'] = DateUtility::humanReadableDateFormat($eidInfo['child_dob']);
@@ -716,7 +716,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
     function getMachine(value) {
         $.post("/instruments/get-machine-names-by-instrument.php", {
                 instrumentId: value,
-                machine: <?php echo !empty($eidInfo['import_machine_name']) ? $eidInfo['import_machine_name'] : '""'; ?>,
+                machine: <?php echo empty($eidInfo['import_machine_name']) ? '""' : $eidInfo['import_machine_name']; ?>,
                 testType: 'eid'
             },
             function(data) {

@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\BatchService;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
@@ -21,7 +22,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $batchService = ContainerRegistry::get(BatchService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -182,7 +183,7 @@ if (!empty($id)) {
                     </tr>
                 </table><hr>';
         }
-        if (isset($bResult['label_order']) && trim((string) $bResult['label_order']) != '') {
+        if (isset($bResult['label_order']) && trim((string) $bResult['label_order']) !== '') {
             $jsonToArray = json_decode((string) $bResult['label_order'], true);
             $sampleCounter = 1;
             if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
@@ -193,10 +194,11 @@ if (!empty($id)) {
                 }
                 $sampleCounter = $alphaNumeric[0];
             }
-            for ($j = 0; $j < count($jsonToArray); $j++) {
+            $counter = count($jsonToArray);
+            for ($j = 0; $j < $counter; $j++) {
                 if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
                     $xplodJsonToArray = explode("_", (string) $jsonToArray[$alphaNumeric[$j]]);
-                    if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+                    if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] === "s") {
                         if ((isset($_GET['type']) && $_GET['type'] == 'tb') || (isset($_GET['type']) && $_GET['type'] == 'cd4')) {
                             $sampleQuery = "SELECT sample_code,
                                                     remote_sample_code,
@@ -234,7 +236,7 @@ if (!empty($id)) {
                         $lotExpirationDate = '';
                         $labAssignedCode = '';
                         if (!empty($sampleResult[0]['lot_expiration_date'])) {
-                            if (trim((string) $sampleResult[0]['lot_number']) != '') {
+                            if (trim((string) $sampleResult[0]['lot_number']) !== '') {
                                 $lotExpirationDate .= '<br>';
                             }
                             $lotExpirationDate .= DateUtility::humanReadableDateFormat($sampleResult[0]['lot_expiration_date']);
@@ -296,7 +298,7 @@ if (!empty($id)) {
                     $sampleCounter = $alphaNumeric[($j + 1)];
                 } else {
                     $xplodJsonToArray = explode("_", (string) $jsonToArray[$j]);
-                    if (!empty($xplodJsonToArray) && count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+                    if ($xplodJsonToArray !== [] && count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] === "s") {
                         if ((isset($_GET['type']) && $_GET['type'] == 'tb') || (isset($_GET['type']) && $_GET['type'] == 'cd4')) {
                             $sampleQuery = "SELECT sample_code,
                                             remote_sample_code,
@@ -328,7 +330,7 @@ if (!empty($id)) {
                         $lotExpirationDate = '';
                         $labAssignedCode = '';
                         if (!empty($sampleResult[0]['lot_expiration_date'])) {
-                            if (trim((string) $sampleResult[0]['lot_number']) != '') {
+                            if (trim((string) $sampleResult[0]['lot_number']) !== '') {
                                 $lotExpirationDate .= '<br>';
                             }
                             $lotExpirationDate .= DateUtility::humanReadableDateFormat($sampleResult[0]['lot_expiration_date'] ?? '');
@@ -465,7 +467,7 @@ if (!empty($id)) {
                 $lotDetails = '';
                 $lotExpirationDate = '';
                 if (!empty($sample['lot_expiration_date'])) {
-                    if (trim((string) $sample['lot_number']) != '') {
+                    if (trim((string) $sample['lot_number']) !== '') {
                         $lotExpirationDate .= '<br>';
                     }
                     $lotExpirationDate .= DateUtility::humanReadableDateFormat($sample['lot_expiration_date']);

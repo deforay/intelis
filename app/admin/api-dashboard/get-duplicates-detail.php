@@ -1,6 +1,6 @@
 <?php
 // get-duplicates-detail.php
-
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -10,7 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -91,30 +91,30 @@ try {
     }
 
     // Date range filter
-    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
+    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
         $sWhere[] = " t1.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
     }
 
     // Lab filter
-    if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
+    if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
         $sWhere[] = " t1.lab_id IN (" . $_POST['labName'] . ")";
     }
 
     // State filter
-    if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
         $provinceId = implode(',', $_POST['state']);
         $sWhere[] = " f1.facility_state_id IN ($provinceId)";  // Fixed: f1 instead of f
     }
 
     // District filter
-    if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $districtId = implode(',', $_POST['district']);
         $sWhere[] = " f1.facility_district_id IN ($districtId)";  // Fixed: f1 instead of f
     }
 
     // Facility filter
-    if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) != '') {
+    if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) !== '') {
         $facilityId = implode(',', $_POST['facilityId']);
         $sWhere[] = " t1.facility_id IN ($facilityId)";
     }
@@ -129,7 +129,7 @@ try {
     $sWhere[] = " t1.sample_collection_date IS NOT NULL ";
 
     // Main query to find duplicates - ALIGNED WITH METRICS LOGIC
-    $whereSql = !empty($sWhere) ? (' WHERE ' . implode(' AND ', $sWhere)) : '';
+    $whereSql = $sWhere === [] ? ('') : ' WHERE ' . implode(' AND ', $sWhere);
 
     // Main query to find duplicates - ALIGNED WITH METRICS LOGIC
     $duplicatesQuery = "SELECT
@@ -177,7 +177,7 @@ try {
         )";
 
     // Add ordering
-    if (!empty($sOrder)) {
+    if ($sOrder !== '' && $sOrder !== '0') {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $duplicatesQuery .= " ORDER BY $sOrder";
     } else {
@@ -208,44 +208,37 @@ try {
         $patientInfo = '';
         if (!empty($row[$patientIdColumn])) {
             $idLabel = ($testType === 'vl' || $testType === 'cd4') ? 'ART' : 'ID';
-            $patientInfo = '<strong>' . $idLabel . ':</strong> ' . htmlspecialchars($row[$patientIdColumn]);
+            $patientInfo = '<strong>' . $idLabel . ':</strong> ' . htmlspecialchars((string) $row[$patientIdColumn]);
         }
         if (!empty($row[$patientFirstNameColumn]) || !empty($row[$patientLastNameColumn])) {
             $name = trim(($row[$patientFirstNameColumn] ?? '') . ' ' . ($row[$patientLastNameColumn] ?? ''));
-            if (!empty($name)) {
-                $patientInfo .= (!empty($patientInfo) ? '<br>' : '') . '<strong>Name:</strong> ' . htmlspecialchars($name);
+            if ($name !== '' && $name !== '0') {
+                $patientInfo .= ($patientInfo === '' || $patientInfo === '0' ? '' : '<br>') . '<strong>Name:</strong> ' . htmlspecialchars($name);
             }
         }
 
         // Format sources
-        $sources = explode(', ', $row['sources']);
-        $readableSources = array_map(function ($source) {
-            return $source === 'api' ? 'API' : ucfirst($source);
-        }, array_unique($sources));
+        $sources = explode(', ', (string) $row['sources']);
+        $readableSources = array_map(fn($source): string => $source === 'api' ? 'API' : ucfirst((string) $source), array_unique($sources));
 
         // Risk level styling
         $riskClass = '';
-        switch ($row['risk_level']) {
-            case 'High':
-                $riskClass = 'label-danger';
-                break;
-            case 'Medium':
-                $riskClass = 'label-warning';
-                break;
-            default:
-                $riskClass = 'label-info';
-        }
+        $riskClass = match ($row['risk_level']) {
+            'High' => 'label-danger',
+            'Medium' => 'label-warning',
+            default => 'label-info',
+        };
 
         $formattedRow = [
             $row['risk_sort_value'], // Hidden sort value - index 0
             '<span class="label ' . $riskClass . '">' . $row['risk_level'] . '</span>', // Visible risk level - index 1
             $patientInfo, // index 2
-            '<small>' . htmlspecialchars($row['sample_ids']) . '</small>', // index 3
-            '<small>' . htmlspecialchars($row['collection_dates']) . '</small>', // index 4
+            '<small>' . htmlspecialchars((string) $row['sample_ids']) . '</small>', // index 3
+            '<small>' . htmlspecialchars((string) $row['collection_dates']) . '</small>', // index 4
             implode(', ', $readableSources), // index 5
             '<span class="label label-primary">' . $row['duplicate_count'] . '</span>', // index 6
             '<span class="label ' . ($row['days_span'] <= 1 ? 'label-danger' : ($row['days_span'] <= 3 ? 'label-warning' : 'label-info')) . '">' . $row['days_span'] . ' days</span>', // index 7
-            '<small>' . htmlspecialchars($row['facility_names']) . '</small>' // index 8
+            '<small>' . htmlspecialchars((string) $row['facility_names']) . '</small>' // index 8
         ];
 
         $output['data'][] = $formattedRow;

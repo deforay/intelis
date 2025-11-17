@@ -1,7 +1,11 @@
 <?php
 
 // this file is included in /import-result/processImportedResults.php
-
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\ON_HOLD;
+use const SAMPLE_STATUS\TEST_FAILED;
+use const SAMPLE_STATUS\ACCEPTED;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -14,7 +18,7 @@ use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -62,7 +66,7 @@ try {
                 $comments = $_POST['comments'];
             }
 
-            if (strtolower($rResult['sample_type']) != 's') {
+            if (strtolower((string) $rResult['sample_type']) !== 's') {
 
                 $data = [
                     'control_code' => $rResult['sample_code'],
@@ -88,7 +92,7 @@ try {
                     'is_sample_rejected' => 'no'
                 ];
 
-                if ($status[$i] == SAMPLE_STATUS\REJECTED) {
+                if ($status[$i] == REJECTED) {
                     $data['is_sample_rejected'] = 'yes';
                     $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                     $data['result_value_log'] = null;
@@ -123,7 +127,7 @@ try {
                     'import_machine_name' => $rResult['import_machine_name']
                 ];
 
-                if ($status[$i] == SAMPLE_STATUS\ON_HOLD) {
+                if ($status[$i] == ON_HOLD) {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];
@@ -144,7 +148,7 @@ try {
                     $data['result_approved_datetime'] = DateUtility::getCurrentDateTime();
                     $sampleVal = $rResult['sample_code'];
 
-                    if ($status[$i] == SAMPLE_STATUS\REJECTED) {
+                    if ($status[$i] == REJECTED) {
                         $data['is_sample_rejected'] = 'yes';
                         $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                         $data['result_value_log'] = null;
@@ -152,7 +156,7 @@ try {
                         $data['result_value_text'] = null;
                         $data['result_value_absolute_decimal'] = null;
                         $data['result'] = null;
-                        $data['result_status'] = SAMPLE_STATUS\REJECTED;
+                        $data['result_status'] = REJECTED;
                     } else {
                         $data['is_sample_rejected'] = 'no';
                         $data['reason_for_sample_rejection'] = null;
@@ -162,8 +166,8 @@ try {
                     $vlResult = $db->rawQuery($query, [$sampleVal]);
 
                     $data['result_status'] = $status[$i];
-                    if (in_array(strtolower($data['result']), ['fail', 'failed', 'err', 'error'])) {
-                        $data['result_status'] = SAMPLE_STATUS\TEST_FAILED;
+                    if (in_array(strtolower((string) $data['result']), ['fail', 'failed', 'err', 'error'])) {
+                        $data['result_status'] = TEST_FAILED;
                     }
 
                     $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
@@ -215,7 +219,7 @@ try {
     //get all accepted data result
     $accQuery = "SELECT * FROM temp_sample_import as tsr
                         LEFT JOIN form_vl as vl ON vl.sample_code=tsr.sample_code
-                        WHERE imported_by =? AND tsr.result_status= " . SAMPLE_STATUS\ACCEPTED;
+                        WHERE imported_by =? AND tsr.result_status= " . ACCEPTED;
     $accResult = $db->rawQuery($accQuery, [$importedBy]);
     if ($accResult) {
         $resultCount = count($accResult);
@@ -247,7 +251,7 @@ try {
                 'cv_number' => $accResult[$i]['cv_number'],
             ];
 
-            if ($accResult[$i]['result_status'] == SAMPLE_STATUS\REJECTED) {
+            if ($accResult[$i]['result_status'] == REJECTED) {
                 $data['is_sample_rejected'] = 'yes';
                 $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                 $data['result_value_log'] = null;
@@ -256,7 +260,7 @@ try {
                 $data['result_value_absolute_decimal'] = null;
                 $data['result'] = null;
             } else {
-                $data['result_status'] = $status[$i] ?? SAMPLE_STATUS\ACCEPTED;
+                $data['result_status'] = $status[$i] ?? ACCEPTED;
                 $data['is_sample_rejected'] = 'no';
                 $data['reason_for_sample_rejection'] = null;
             }
@@ -264,9 +268,9 @@ try {
             $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
 
             if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
-                $data['result_status'] = SAMPLE_STATUS\TEST_FAILED;
+                $data['result_status'] = TEST_FAILED;
             } elseif ($data['vl_result_category'] == 'rejected') {
-                $data['result_status'] = SAMPLE_STATUS\REJECTED;
+                $data['result_status'] = REJECTED;
             }
             $data['data_sync'] = 0;
             $db->where('sample_code', $accResult[$i]['sample_code']);

@@ -1,7 +1,6 @@
 <?php
 
 use App\Services\CommonService;
-use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -339,21 +338,25 @@ $stateNameList = $geolocationService->getProvinces("yes");
                         <div class="filter-row">
                             <div class="filter-group">
                                 <label for="province"><?php echo _translate("Province/State"); ?></label>
-                                <select name="province" id="province" onchange="getDistrictByProvince(this.value)" class="form-control" title="<?php echo _translate('Please choose Province/State/Region'); ?>">
+                                <select name="province" id="province" onchange="getDistrictByProvince(this.value)"
+                                    class="form-control"
+                                    title="<?php echo _translate('Please choose Province/State/Region'); ?>">
                                     <?= $general->generateSelectOptions($stateNameList, null, _translate("-- Select --")); ?>
                                 </select>
                             </div>
 
                             <div class="filter-group">
                                 <label for="district"><?php echo _translate("District/County"); ?></label>
-                                <select class="form-control" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>">
+                                <select class="form-control" id="district" name="district"
+                                    title="<?php echo _translate('Please select Province/State'); ?>">
                                     <option value=""><?php echo _translate("-- Select Province First --"); ?></option>
                                 </select>
                             </div>
 
                             <div class="filter-group">
                                 <label for="labName"><?php echo _translate("Lab Name"); ?></label>
-                                <select class="form-control select2" id="labName" name="labName" title="<?php echo _translate('Please select the Lab name'); ?>">
+                                <select class="form-control select2" id="labName" name="labName"
+                                    title="<?php echo _translate('Please select the Lab name'); ?>">
                                     <?php echo $general->generateSelectOptions($labNameList, null, _translate('-- Select --')); ?>
                                 </select>
                             </div>
@@ -382,7 +385,8 @@ $stateNameList = $geolocationService->getProvinces("yes");
                     <div class="box-body">
                         <div class="table-container">
                             <div class="table-responsive">
-                                <table aria-describedby="table" id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
+                                <table aria-describedby="table" id="syncStatusDataTable"
+                                    class="table table-bordered table-striped table-hover" aria-hidden="true">
                                     <thead>
                                         <tr>
                                             <th class="center">
@@ -405,7 +409,8 @@ $stateNameList = $geolocationService->getProvinces("yes");
                                     <tbody id="syncStatusTable">
                                         <tr>
                                             <td colspan="5" class="dataTables_empty center">
-                                                <i class="fa fa-spinner fa-spin"></i> <?php echo _translate("Loading data..."); ?>
+                                                <i class="fa fa-spinner fa-spin"></i>
+                                                <?php echo _translate("Loading data..."); ?>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -437,7 +442,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
     let currentRequest;
     let autoRefreshInterval;
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Initialize select2 with better performance
         $('#labName').select2({
             width: '100%',
@@ -458,11 +463,8 @@ $stateNameList = $geolocationService->getProvinces("yes");
             allowClear: true
         });
 
-        // Initial load
-        loadData();
-
         // Row click handler for drill-down
-        $('#syncStatusDataTable tbody').on('click', 'tr', function() {
+        $('#syncStatusDataTable tbody').on('click', 'tr', function () {
             let facilityId = $(this).attr('data-facilityId');
             if (facilityId && !$(this).hasClass('dataTables_empty')) {
                 let link = "/admin/monitoring/lab-sync-details.php?labId=" + facilityId;
@@ -470,23 +472,26 @@ $stateNameList = $geolocationService->getProvinces("yes");
             }
         });
 
-        // Auto-refresh setup
-        setupAutoRefresh();
-
         // Debounced search on filter changes
-        $('#province, #district, #labName').on('change', function() {
+        $('#province, #district, #labName').on('change', function () {
             clearTimeout(loadDataTimeout);
             loadDataTimeout = setTimeout(loadData, 500);
         });
 
         // Auto-refresh toggle
-        $('#autoRefresh').on('change', function() {
+        $('#autoRefresh').on('change', function () {
             if ($(this).is(':checked')) {
                 setupAutoRefresh();
             } else {
                 clearInterval(autoRefreshInterval);
             }
         });
+
+
+        // Initial load
+        loadData();
+        // Auto-refresh setup
+        setupAutoRefresh();
     });
 
     function setupAutoRefresh() {
@@ -496,7 +501,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
         }
 
         // Set up new interval (5 minutes)
-        autoRefreshInterval = setInterval(function() {
+        autoRefreshInterval = setInterval(function () {
             if ($('#autoRefresh').is(':checked')) {
                 showRefreshIndicator();
                 loadData(true); // Silent refresh
@@ -506,7 +511,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
 
     function showRefreshIndicator() {
         $('#refreshIndicator').addClass('show');
-        setTimeout(function() {
+        setTimeout(function () {
             $('#refreshIndicator').removeClass('show');
         }, 2000);
     }
@@ -532,7 +537,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
             type: "POST",
             data: postData,
             timeout: 30000,
-            success: function(data) {
+            success: function (data) {
                 $("#syncStatusTable").html(data);
                 updateStatusSummary();
                 hideLoading();
@@ -542,7 +547,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                     showNotification('<?php echo _translate("Data loaded successfully"); ?>', 'success');
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 if (status !== 'abort') {
                     console.error('Failed to load sync status:', error);
                     $("#syncStatusTable").html(
@@ -555,7 +560,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                     showNotification('<?php echo _translate("Failed to load data"); ?>', 'error');
                 }
             },
-            complete: function() {
+            complete: function () {
                 currentRequest = null;
             }
         });
@@ -593,10 +598,10 @@ $stateNameList = $geolocationService->getProvinces("yes");
             count: targetValue
         }, {
             duration: 1000,
-            step: function() {
+            step: function () {
                 element.text(Math.floor(this.count));
             },
-            complete: function() {
+            complete: function () {
                 element.text(targetValue);
             }
         });
@@ -624,7 +629,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 provinceId: provinceId,
                 districts: true,
             },
-            success: function(data) {
+            success: function (data) {
                 try {
                     const obj = $.parseJSON(data);
                     $("#district").html(obj['districts']).prop('disabled', false);
@@ -635,7 +640,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                     showNotification('<?php echo _translate("Error loading districts"); ?>', 'error');
                 }
             },
-            error: function() {
+            error: function () {
                 $("#district").html('<option value=""><?php echo _translate("Error loading districts"); ?></option>').prop('disabled', false);
                 showNotification('<?php echo _translate("Error loading districts"); ?>', 'error');
             }
@@ -657,7 +662,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 labName: $('#labName').val()
             },
             timeout: 60000,
-            success: function(data) {
+            success: function (data) {
                 if (data && data.trim()) {
                     window.open('/download.php?f=' + data, '_blank');
                     showNotification('<?php echo _translate("Export generated successfully"); ?>', 'success');
@@ -665,10 +670,10 @@ $stateNameList = $geolocationService->getProvinces("yes");
                     showNotification('<?php echo _translate("Unable to generate the excel file. Please try again."); ?>', 'error');
                 }
             },
-            error: function() {
+            error: function () {
                 showNotification('<?php echo _translate("Failed to generate export. Please try again."); ?>', 'error');
             },
-            complete: function() {
+            complete: function () {
                 exportButton.html(originalButtonHtml).prop('disabled', false);
             }
         });
@@ -688,15 +693,15 @@ $stateNameList = $geolocationService->getProvinces("yes");
         $('body').append(notification);
 
         // Auto-dismiss after 5 seconds
-        setTimeout(function() {
-            notification.fadeOut(function() {
+        setTimeout(function () {
+            notification.fadeOut(function () {
                 $(this).remove();
             });
         }, 5000);
     }
 
     // Keyboard shortcuts
-    $(document).keydown(function(e) {
+    $(document).keydown(function (e) {
         // Ctrl+R or F5 for refresh
         if ((e.ctrlKey && e.keyCode === 82) || e.keyCode === 116) {
             e.preventDefault();
@@ -710,7 +715,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
     });
 
     // Cleanup on page unload
-    $(window).on('beforeunload', function() {
+    $(window).on('beforeunload', function () {
         if (currentRequest) {
             currentRequest.abort();
         }

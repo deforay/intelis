@@ -7,15 +7,15 @@ use App\Services\DatabaseService;
 
 final class ResultPdfService
 {
-    protected DatabaseService $db;
-    public function __construct(DatabaseService $db)
+    public function __construct(protected DatabaseService $db)
     {
-        $this->db = $db;
     }
 
-    public function getReportTemplate($labId): ?string
+    public function getReportTemplate(?string $labId): ?string
     {
-        if (empty($labId)) return null;
+        if ($labId === null || $labId === '' || $labId === '0') {
+            return null;
+        }
         $sql = "SELECT facility_attributes->>'$.report_template' as `report_template` FROM facility_details WHERE facility_id = ?";
         $params = [$labId];
         $result = $this->db->rawQueryOne($sql, $params);

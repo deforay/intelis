@@ -20,8 +20,8 @@ $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
 
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.last_modified_datetime', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name'];
+$orderColumns = ['vl.sample_code', 'vl.last_modified_datetime', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
 if ($general->isSTSInstance()) {
      $sampleCode = 'remote_sample_code';
 } elseif ($general->isStandaloneInstance()) {
@@ -61,7 +61,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
+          if ($sWhereSub === "") {
                $sWhereSub .= "(";
           } else {
                $sWhereSub .= " AND (";
@@ -89,27 +89,25 @@ $sQuery = "SELECT * FROM form_hepatitis as vl
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-if (!empty($sWhere)) {
-     $sWhere = ' WHERE ' . $sWhere;
-     if (isset($_POST['manifestCode']) && $_POST['manifestCode'] != '') {
-          $manifestCode = $_POST['manifestCode'];
+if ($sWhere !== '' && $sWhere !== '0') {
+    $sWhere = ' WHERE ' . $sWhere;
+    if (isset($_POST['manifestCode']) && $_POST['manifestCode'] != '') {
+         $manifestCode = $_POST['manifestCode'];
 
-          $sWhere = $sWhere . " AND vl.sample_package_code IN
+         $sWhere .= " AND vl.sample_package_code IN
                     (
                         '$manifestCode',
                         (SELECT DISTINCT sample_package_code FROM form_hepatitis WHERE remote_sample_code LIKE '$manifestCode')
                     )";
-     }
-} else {
-     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) != '') {
-          $manifestCode = $_POST['manifestCode'];
-          $sWhere = ' WHERE ' . $sWhere;
-          $sWhere = $sWhere . " vl.sample_package_code IN
+    }
+} elseif (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
+    $manifestCode = $_POST['manifestCode'];
+    $sWhere = ' WHERE ' . $sWhere;
+    $sWhere .= " vl.sample_package_code IN
                     (
                         '$manifestCode',
                         (SELECT DISTINCT sample_package_code FROM form_hepatitis WHERE remote_sample_code LIKE '$manifestCode')
                     )";
-     }
 }
 $sFilter = '';
 $sQuery = $sQuery . ' ' . $sWhere;
@@ -125,12 +123,7 @@ if (isset($sLimit) && isset($sOffset)) {
 [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
 
-$output = array(
-     "sEcho" => (int) $_POST['sEcho'],
-     "iTotalRecords" => $resultCount,
-     "iTotalDisplayRecords" => $resultCount,
-     "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 
 foreach ($rResult as $aRow) {
 

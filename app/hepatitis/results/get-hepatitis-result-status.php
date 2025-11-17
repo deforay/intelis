@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -11,7 +12,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -38,7 +39,7 @@ try {
     $orderColumns = ['vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name'];
     if ($general->isSTSInstance()) {
         $sampleCode = 'remote_sample_code';
-    } else if ($general->isStandaloneInstance()) {
+    } elseif ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
     }
@@ -72,7 +73,7 @@ try {
 
 
 
-    if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+    if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
         $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
     }
     if (!empty($_POST['sampleCollectionDate'])) {
@@ -85,7 +86,7 @@ try {
     if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
         if ($_POST['statusFilter'] == 'approvedOrRejected') {
             $sWhere[] =  ' vl.result_status IN (4,7)';
-        } else if ($_POST['statusFilter'] == 'notApprovedOrRejected') {
+        } elseif ($_POST['statusFilter'] == 'notApprovedOrRejected') {
             $sWhere[] = ' vl.result_status IN (6,8)';
         }
     }
@@ -96,13 +97,13 @@ try {
     $sWhere[] = ' (vl.hcv_vl_count !="" OR vl.hbv_vl_count !="") ';
 
     /* Implode all the where fields for filtering the data */
-    if (!empty($sWhere)) {
+    if ($sWhere !== []) {
         $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
     }
 
     //echo $sQuery;
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
         $sQuery = "$sQuery ORDER BY $sOrder";
     }
 
@@ -117,12 +118,7 @@ try {
     $_SESSION['hepatitisRequestSearchResultQueryCount'] = $resultCount;
 
 
-    $output = array(
-        "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $resultCount,
-        "iTotalDisplayRecords" => $resultCount,
-        "aaData" => []
-    );
+    $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
     $vlRequest = false;
     $vlView = false;
     if ((_isAllowed("/hepatitis/requests/hepatitis-edit-request.php"))) {
@@ -133,7 +129,7 @@ try {
     }
 
     foreach ($rResult as $aRow) {
-        if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+        if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
             $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
         } else {
             $aRow['sample_collection_date'] = '';
@@ -152,7 +148,7 @@ try {
 
         $row = [];
         $row[] = '<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['hepatitis_id'] . '"  value="' . $aRow['hepatitis_id'] . '" onclick="toggleTest(this);"  />';
-        $row[] = $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '');
+        $row[] = $aRow['sample_code'] . (empty($aRow['external_sample_code']) ? '' : "<br>/" . $aRow['external_sample_code']);
         if (!$general->isStandaloneInstance()) {
             $row[] = $aRow['remote_sample_code'];
         }

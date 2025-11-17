@@ -33,7 +33,7 @@ if ($general->isStandaloneInstance()) {
 
 
 $key = (string) $general->getGlobalConfig('key');
-$buildRow = function ($aRow, $no) use ($general, $key) {
+$buildRow = function ($aRow, $no) use ($general, $key): array {
 	$row = [];
 	$age = null;
 	$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
@@ -45,32 +45,20 @@ $buildRow = function ($aRow, $no) use ($general, $key) {
 	$gender = MiscUtility::getGenderFromString($aRow['patient_gender']);
 
 	$arvAdherence = '';
-	if (trim((string) $aRow['arv_adherance_percentage']) == 'good') {
+	if (trim((string) $aRow['arv_adherance_percentage']) === 'good') {
 		$arvAdherence = 'Good >= 95%';
-	} elseif (trim((string) $aRow['arv_adherance_percentage']) == 'fair') {
+	} elseif (trim((string) $aRow['arv_adherance_percentage']) === 'fair') {
 		$arvAdherence = 'Fair 85-94%';
-	} elseif (trim((string) $aRow['arv_adherance_percentage']) == 'poor') {
+	} elseif (trim((string) $aRow['arv_adherance_percentage']) === 'poor') {
 		$arvAdherence = 'Poor <85%';
 	}
 
 	$sampleRejection = ($aRow['is_sample_rejected'] == 'yes' || ($aRow['reason_for_sample_rejection'] != null && $aRow['reason_for_sample_rejection'] > 0)) ? 'Yes' : 'No';
 
 
-	if ($aRow['patient_first_name'] != '') {
-		$patientFname = $aRow['patient_first_name'];
-	} else {
-		$patientFname = '';
-	}
-	if ($aRow['patient_middle_name'] != '') {
-		$patientMname = $aRow['patient_middle_name'];
-	} else {
-		$patientMname = '';
-	}
-	if ($aRow['patient_last_name'] != '') {
-		$patientLname = $aRow['patient_last_name'];
-	} else {
-		$patientLname = '';
-	}
+	$patientFname = $aRow['patient_first_name'] != '' ? $aRow['patient_first_name'] : '';
+	$patientMname = $aRow['patient_middle_name'] != '' ? $aRow['patient_middle_name'] : '';
+	$patientLname = $aRow['patient_last_name'] != '' ? $aRow['patient_last_name'] : '';
 
 	$row[] = $no;
 	$row[] = $aRow["sample_code"];
@@ -126,7 +114,7 @@ $buildRow = function ($aRow, $no) use ($general, $key) {
 // Build filter info for header row
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim($value) != '' && trim($value) != '-- Select --') {
+	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
 	}
 }
@@ -134,7 +122,7 @@ foreach ($_POST as $key => $value) {
 // Prepare headings (with alpha-numeric conversion if requested)
 $processedHeadings = $headings;
 if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-	$processedHeadings = array_map(function ($value) {
+	$processedHeadings = array_map(function ($value): string|array|null {
 		$string = str_replace(' ', '', $value);
 		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
 	}, $headings);

@@ -818,7 +818,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                     </thead>
                                                     <tbody id="testKitNameTable">
                                                         <?php if (!empty($covid19TestInfo)) {
-                                                            $testMethod = array("PCR/RT-PCR", "RdRp-SARS Cov-2", "GeneXpert", "Rapid Antigen Test", "other");
+                                                            $testMethod = ["PCR/RT-PCR", "RdRp-SARS Cov-2", "GeneXpert", "Rapid Antigen Test", "other"];
                                                             foreach ($covid19TestInfo as $indexKey => $rows) { ?>
                                                                 <tr>
                                                                     <td class="text-center"><?= ($indexKey + 1); ?><input type="hidden" name="testId[]" value="<?php echo base64_encode((string) $rows['test_id']); ?>"></td>
@@ -964,7 +964,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                     </table>
                                 </div>
                             </div>
-                        <?php } ?>
+<?php } ?>
 
                     </div>
                     <!-- /.box-body -->
@@ -1178,7 +1178,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
     provinceName = true;
     facilityName = true;
     machineName = true;
-    tableRowId = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
+    tableRowId = <?php echo (empty($covid19TestInfo)) ? (2) : count($covid19TestInfo) + 1; ?>;
     deletedRow = [];
 
     function addFacility() {

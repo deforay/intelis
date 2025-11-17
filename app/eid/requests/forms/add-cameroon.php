@@ -469,7 +469,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row" style="width:15% !important"><?= _translate('Sample Collection Date'); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" value="<?php if (isset($_SESSION['eidData']['sample_collection_date']) && !empty($_SESSION['eidData']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_collection_date'], true); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);" />
+                                            <input class="form-control dateTime isRequired" value="<?php if (isset($_SESSION['eidData']['sample_collection_date']) && !empty($_SESSION['eidData']['sample_collection_date'])) {
+                                                    echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_collection_date'], true);
+                                                } ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);" />
                                             <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
@@ -501,7 +503,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <?php if ($general->isLISInstance()) { ?>
                                             <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Sample Reception Date"); ?>" title="<?= _translate("Please enter Sample Reception Date"); ?>" value="<?php if (isset($_SESSION['eidData']['sample_received_at_lab_datetime']) && !empty($_SESSION['eidData']['sample_received_at_lab_datetime'])) echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_received_at_lab_datetime'], true); ?>" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Sample Reception Date"); ?>" title="<?= _translate("Please enter Sample Reception Date"); ?>" value="<?php if (isset($_SESSION['eidData']['sample_received_at_lab_datetime']) && !empty($_SESSION['eidData']['sample_received_at_lab_datetime'])) {
+                                                    echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_received_at_lab_datetime'], true);
+                                                } ?>" onchange="" style="width:100%;" />
                                             </td>
                                         <?php } ?>
                                     </tr>

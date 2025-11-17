@@ -48,20 +48,20 @@ if (!empty($_POST['sampleCollectionDate'])) {
 
     $sWhere[] = " vl.is_sample_rejected = 'yes' AND vl.sample_collection_date BETWEEN '$start_date' AND '$end_date'";
 
-    if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
+    if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
         $sWhere[] = ' vl.specimen_type = "' . $_POST['sampleType'] . '"';
     }
-    if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
+    if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
         $sWhere[] = ' vl.lab_id = "' . $_POST['labName'] . '"';
     }
-    if (is_array($_POST['clinicName']) && !empty($_POST['clinicName'])) {
+    if (is_array($_POST['clinicName']) && (isset($_POST['clinicName']) && $_POST['clinicName'] !== [])) {
         $sWhere[] = " vl.facility_id IN (" . implode(',', $_POST['clinicName']) . ")";
     }
     if (!empty($_SESSION['facilityMap'])) {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
     }
 
-    if (!empty($sWhere)) {
+    if ($sWhere !== []) {
         $sWhere = implode(' AND ', $sWhere);
     }
     $vlQuery .= " WHERE $sWhere GROUP BY vl.reason_for_sample_rejection, vl.lab_id, vl.facility_id";
@@ -82,7 +82,7 @@ if (!empty($_POST['sampleCollectionDate'])) {
 $totalRejected = array_sum(array_column($tResult, 'total'));
 
 
-if (!empty($tResult)) {
+if ($tResult !== []) {
 ?>
     <div id="container" style="width: 100%; height: 500px; margin: 20px auto;"></div>
     <!-- <div id="rejectedType" style="width: 100%; height: 400px; margin: 20px auto;margin-top:50px;"></div> -->
@@ -158,7 +158,7 @@ if (!empty($tableResult)) { ?>
     });
 
     <?php
-    if (!empty($tResult)) { ?>
+    if ($tResult !== []) { ?>
         $('#container').highcharts({
             chart: {
                 plotBackgroundColor: null,

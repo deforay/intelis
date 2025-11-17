@@ -1,5 +1,6 @@
 <?php
 
+use Slim\Psr7\Request;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
@@ -13,7 +14,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Slim\Psr7\Request $request */
+/** @var Request $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 $_GET = _sanitizeInput($request->getQueryParams());
@@ -52,11 +53,11 @@ $transactionId = MiscUtility::generateULID();
 $authToken = ApiService::extractBearerToken($request);
 $user = $usersService->findUserByApiToken($authToken);
 
-$sampleCode = !empty($_REQUEST['s']) ? explode(",", $db->escape($_REQUEST['s'])) : null;
-$recencyId = !empty($_REQUEST['r']) ? explode(",", $db->escape($_REQUEST['r'])) : null;
-$from = !empty($_REQUEST['f']) ? $db->escape($_REQUEST['f']) : null;
-$to = !empty($_REQUEST['t']) ? $db->escape($_REQUEST['t']) : null;
-$orderSortType = !empty($_REQUEST['orderSortType']) ? $db->escape($_REQUEST['orderSortType']) : null;
+$sampleCode = empty($_REQUEST['s']) ? null : explode(",", $db->escape($_REQUEST['s']));
+$recencyId = empty($_REQUEST['r']) ? null : explode(",", $db->escape($_REQUEST['r']));
+$from = empty($_REQUEST['f']) ? null : $db->escape($_REQUEST['f']);
+$to = empty($_REQUEST['t']) ? null : $db->escape($_REQUEST['t']);
+$orderSortType = empty($_REQUEST['orderSortType']) ? null : $db->escape($_REQUEST['orderSortType']);
 
 if (!$sampleCode && !$recencyId && (!$from || !$to)) {
     http_response_code(400);
@@ -91,12 +92,12 @@ try {
 
 
 
-    if (!empty($recencyId)) {
+    if ($recencyId !== null && $recencyId !== []) {
         $recencyId = implode("','", $recencyId);
         $sQuery .= " AND external_sample_code IN ('$recencyId') ";
     }
 
-    if (!empty($sampleCode)) {
+    if ($sampleCode !== null && $sampleCode !== []) {
         $sampleCode = implode("','", $sampleCode);
         $sQuery .= " AND sample_code IN ('$sampleCode') ";
     }

@@ -381,7 +381,7 @@ $sFormat = '';
 										<td></td>
 										<td></td>
 									</tr>
-									<?php if (isset($arr['sample_type']) && trim((string) $arr['sample_type']) == "enabled") { ?>
+									<?php if (isset($arr['sample_type']) && trim((string) $arr['sample_type']) === "enabled") { ?>
 										<tr>
 											<td><label for="specimenType">Type d'échantillon <span class="mandatory">*</span> </label></td>
 											<td>

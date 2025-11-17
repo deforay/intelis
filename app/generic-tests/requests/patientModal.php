@@ -127,19 +127,7 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 									//if (!in_array($value, $artNoList)) {
 									$artNoList[] = $value;
 									$patientDetails = json_encode(
-										array(
-											"name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'],
-											"gender" => $patient['patient_gender'],
-											"dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']),
-											"age_in_years" => $patient['patient_age_in_years'],
-											"age_in_months" => $patient['patient_age_in_months'],
-											"is_pregnant" => $patient['is_patient_pregnant'],
-											"is_breastfeeding" => $patient['is_patient_breastfeeding'],
-											"mobile" => $patient['patient_mobile_number'],
-											"consent_to_receive_sms" => $patient['consent_to_receive_sms'],
-											"patient_id" => $patient['patient_id'],
-											"sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime'])
-										)
+										["name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'], "gender" => $patient['patient_gender'], "dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']), "age_in_years" => $patient['patient_age_in_years'], "age_in_months" => $patient['patient_age_in_months'], "is_pregnant" => $patient['is_patient_pregnant'], "is_breastfeeding" => $patient['is_patient_breastfeeding'], "mobile" => $patient['patient_mobile_number'], "consent_to_receive_sms" => $patient['consent_to_receive_sms'], "patient_id" => $patient['patient_id'], "sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime'])]
 									); ?>
 
 									<tr>

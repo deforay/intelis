@@ -1,7 +1,8 @@
 <?php
 
 // File gets called in import-file-helper.php based on the selected instrument type
-
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -13,22 +14,20 @@ use App\Registries\ContainerRegistry;
 
 try {
     // Sanitized values from $request object
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
     /** @var TestResultsService $testResultsService */
     $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
-    $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
+    $dateFormat = (empty($_POST['dateFormat'])) ? 'd/m/Y H:i' : $_POST['dateFormat'];
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'vl');
 
     // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
-    $allowedExtensions = array(
-        'txt',
-    );
+    $allowedExtensions = ['txt'];
     if (
         isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
         || $_FILES['resultFile']['size'] <= 0
@@ -108,7 +107,7 @@ try {
                     } elseif (str_contains((string)$sheetData[$resultCol], 'Log')) {
                         $sheetData[$resultCol] = str_replace(",", ".", (string) $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
-                        $absDecimalVal = round(pow(10, $logVal), 2);
+                        $absDecimalVal = round(10 ** $logVal, 2);
                         if (str_contains($sheetData[$resultCol], "<")) {
                             $txtVal = $absVal = "< " . trim($absDecimalVal);
                         } else {
@@ -124,23 +123,21 @@ try {
                         }
                     } elseif (str_contains((string)$sheetData[$resultCol], 'IU/mL')) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
+                    } elseif (str_contains(strtolower((string)$sheetData[$resultCol]), 'not detected') || strtolower((string) $sheetData[$resultCol]) === 'target not detected') {
+                        $txtVal = "Below Detection Level";
+                        $resultFlag = "";
+                        $absVal = "";
+                        $logVal = "";
                     } else {
-                        if (str_contains(strtolower((string)$sheetData[$resultCol]), 'not detected') || strtolower((string) $sheetData[$resultCol]) == 'target not detected') {
-                            $txtVal = "Below Detection Level";
-                            $resultFlag = "";
-                            $absVal = "";
-                            $logVal = "";
-                        } else {
-                            $txtVal = $sheetData[$resultCol + 1];
-                            $resultFlag = "";
-                            $absVal = "";
-                            $logVal = "";
-                        }
+                        $txtVal = $sheetData[$resultCol + 1];
+                        $resultFlag = "";
+                        $absVal = "";
+                        $logVal = "";
                     }
 
 
                     $lotNumberVal = $sheetData[$lotNumberCol];
-                    if (trim((string) $sheetData[$lotExpirationDateCol]) != '') {
+                    if (trim((string) $sheetData[$lotExpirationDateCol]) !== '') {
                         $timestamp = DateTime::createFromFormat("!$dateFormat", $sheetData[$lotExpirationDateCol]);
                         if (!empty($timestamp)) {
                             $timestamp = $timestamp->getTimestamp();
@@ -212,7 +209,7 @@ try {
                 'result_value_text' => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal'],
                 'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
+                'result_status' => RECEIVED_AT_TESTING_LAB,
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag'],
                 'lot_number' => $d['lotNumber'],
@@ -244,7 +241,7 @@ try {
             $scQuery = "SELECT r_sample_control_name FROM r_sample_controls where r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
+                $scData = ['r_sample_control_name' => trim((string) $d['sampleType'])];
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($vlResult) && !empty($sampleCode)) {

@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -10,7 +12,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -65,30 +67,30 @@ try {
 			$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 		}
 	} else {
-		$sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+		$sWhere[] = " vl.result_status != " . RECEIVED_AT_CLINIC;
 	}
 
 	[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '', includeTime: true);
 	[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '', includeTime: true);
 	[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '', includeTime: true);
 
-	if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+	if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
 		$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 	}
 	if (!empty($_POST['sampleCollectionDate'])) {
 		$sWhere[] = " vl.sample_collection_date BETWEEN '$start_date' AND '$end_date'";
 	}
-	if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
+	if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
 		$sWhere[] = " vl.sample_received_at_lab_datetime BETWEEN '$labStartDate' AND '$labEndDate'";
 	}
 
-	if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
+	if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
 		$sWhere[] = " vl.sample_tested_datetime BETWEEN '$start$testedStartDate_date' AND '$testedEndDate'";
 	}
-	if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
+	if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
 		$sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 	}
-	if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+	if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
 		$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 	}
 
@@ -98,7 +100,7 @@ try {
 	}
 
 	if (!empty($sOrder) && $sOrder !== '') {
-		$_SESSION['eidTatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+		$_SESSION['eidTatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
 		$sQuery = $sQuery . " ORDER BY " . $sOrder;
 	}
 

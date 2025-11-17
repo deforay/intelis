@@ -13,7 +13,7 @@ $tableName = "other_config";
 
 try {
     foreach ($_POST as $fieldName => $fieldValue) {
-        if (trim($fieldName) != '') {
+        if (trim($fieldName) !== '') {
             $data = ['value' => $fieldValue];
             $db->where('name', $fieldName);
             $db->update($tableName, $data);

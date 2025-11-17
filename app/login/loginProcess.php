@@ -9,10 +9,11 @@ use App\Services\DatabaseService;
 use App\Services\SecurityService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -127,7 +128,7 @@ try {
 
 
         [$_SESSION['modules'], $_SESSION['privileges']] = $usersService->getAllPrivileges($userRow['role_id']);
-        $redirect = $_SESSION['landingPage'] = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
+        $redirect = $_SESSION['landingPage'] = empty($userRow['landing_page']) ? '/dashboard/index.php' : $userRow['landing_page'];
 
         if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
             $redirect = "/users/edit-profile.php";

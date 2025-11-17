@@ -32,24 +32,24 @@ $testAttr = json_decode((string) $testTypeInfo['test_form_config'], true);
 $testResultAttribute = json_decode((string) $testTypeInfo['test_results_config'], true);
 
 // $stQuery = "SELECT * from r_generic_sample_types where sample_type_status='active'";
-$testMethodInfo = $general->getDataByTableAndFields("r_generic_test_methods", array("test_method_id", "test_method_name"), true, "test_method_status='active'");
-$testMethodId = $general->getDataByTableAndFields("generic_test_methods_map", array("test_method_id", "test_method_id"), true, "test_type_id=$id");
-$categoryInfo = $general->getDataByTableAndFields("r_generic_test_categories", array("test_category_id", "test_category_name"), true, "test_category_status='active'");
+$testMethodInfo = $general->getDataByTableAndFields("r_generic_test_methods", ["test_method_id", "test_method_name"], true, "test_method_status='active'");
+$testMethodId = $general->getDataByTableAndFields("generic_test_methods_map", ["test_method_id", "test_method_id"], true, "test_type_id=$id");
+$categoryInfo = $general->getDataByTableAndFields("r_generic_test_categories", ["test_category_id", "test_category_name"], true, "test_category_status='active'");
 
-$sampleTypeInfo = $general->getDataByTableAndFields("r_generic_sample_types", array("sample_type_id", "sample_type_name"), true, "sample_type_status='active'");
-$testReasonInfo = $general->getDataByTableAndFields("r_generic_test_reasons", array("test_reason_id", "test_reason"), true, "test_reason_status='active'");
-$testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
+$sampleTypeInfo = $general->getDataByTableAndFields("r_generic_sample_types", ["sample_type_id", "sample_type_name"], true, "sample_type_status='active'");
+$testReasonInfo = $general->getDataByTableAndFields("r_generic_test_reasons", ["test_reason_id", "test_reason"], true, "test_reason_status='active'");
+$testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_units", ["unit_id", "unit_name"], true, "unit_status='active'");
 
-$testFailureReasonInfo = $general->getDataByTableAndFields("r_generic_test_failure_reasons", array("test_failure_reason_id", "test_failure_reason"), true, "test_failure_reason_status='active'");
-$sampleRejectionReasonInfo = $general->getDataByTableAndFields("r_generic_sample_rejection_reasons", array("rejection_reason_id", "rejection_reason_name"), true, "rejection_reason_status='active'");
-$symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", array("symptom_id", "symptom_name"), true, "symptom_status='active'");
-$testSampleId = $general->getDataByTableAndFields("generic_test_sample_type_map", array("sample_type_id", "sample_type_id"), true, "test_type_id=$id");
-$testReasonId = $general->getDataByTableAndFields("generic_test_reason_map", array("test_reason_id", "test_reason_id"), true, "test_type_id=$id");
+$testFailureReasonInfo = $general->getDataByTableAndFields("r_generic_test_failure_reasons", ["test_failure_reason_id", "test_failure_reason"], true, "test_failure_reason_status='active'");
+$sampleRejectionReasonInfo = $general->getDataByTableAndFields("r_generic_sample_rejection_reasons", ["rejection_reason_id", "rejection_reason_name"], true, "rejection_reason_status='active'");
+$symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", ["symptom_id", "symptom_name"], true, "symptom_status='active'");
+$testSampleId = $general->getDataByTableAndFields("generic_test_sample_type_map", ["sample_type_id", "sample_type_id"], true, "test_type_id=$id");
+$testReasonId = $general->getDataByTableAndFields("generic_test_reason_map", ["test_reason_id", "test_reason_id"], true, "test_type_id=$id");
 
-$testFailureReasonId = $general->getDataByTableAndFields("generic_test_failure_reason_map", array("test_failure_reason_id", "test_failure_reason_id"), true, "test_type_id=$id");
-$rejectionReasonId = $general->getDataByTableAndFields("generic_sample_rejection_reason_map", array("rejection_reason_id", "rejection_reason_id"), true, "test_type_id=$id");
-$testSymptomsId = $general->getDataByTableAndFields("generic_test_symptoms_map", array("symptom_id", "symptom_id"), true, "test_type_id=$id");
-$testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units_map", array("unit_id", "unit_id"), true, "test_type_id=$id");
+$testFailureReasonId = $general->getDataByTableAndFields("generic_test_failure_reason_map", ["test_failure_reason_id", "test_failure_reason_id"], true, "test_type_id=$id");
+$rejectionReasonId = $general->getDataByTableAndFields("generic_sample_rejection_reason_map", ["rejection_reason_id", "rejection_reason_id"], true, "test_type_id=$id");
+$testSymptomsId = $general->getDataByTableAndFields("generic_test_symptoms_map", ["symptom_id", "symptom_id"], true, "test_type_id=$id");
+$testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units_map", ["unit_id", "unit_id"], true, "test_type_id=$id");
 
 ?>
 <style>
@@ -266,8 +266,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 										$i = 1;
 										foreach ($testAttr as $testAttrkey => $testAttributeDetails) {
 											if (in_array($testAttrkey, $arraySection)) {
-												foreach ($testAttributeDetails as $testAttributeId => $testAttribute) {
-									?>
+												foreach ($testAttributeDetails as $testAttributeId => $testAttribute) { ?>
 													<tr>
 														<td align="center" style="vertical-align:middle;">
 															<input type="text" name="fieldName[]" id="fieldName<?php echo $i ?>" class="form-control fieldName isRequired" placeholder='<?php echo _translate("Field Name"); ?>' title='<?php echo _translate("Please enter field name"); ?>' onblur="checkDuplication(this, 'fieldName');" value="<?php echo $testAttribute['field_name']; ?>" />
@@ -287,7 +286,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 															</select><br>
 															<div class="tag-input dropDown<?php echo $i ?>" style="<?php echo ($testAttribute['field_type'] == 'multiple' || $testAttribute['field_type'] == 'dropdown') ? "" : "display:none;" ?>">
 																<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="Enter options..." />
-																<input type="hidden" value="<?php echo (!empty($testAttribute['dropdown_options'])) ? $testAttribute['dropdown_options'] . ',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown" />
+																<input type="hidden" value="<?php echo (empty($testAttribute['dropdown_options'])) ? "" : $testAttribute['dropdown_options'] . ',' ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown" />
 																<div class="tag-container container<?php echo $i ?>">
 																	<?php
 																	if (!empty($testAttribute['dropdown_options'])) {
@@ -351,7 +350,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 																</select><br>
 																<div class="tag-input dropDown<?php echo $i ?>" style="<?php echo ($testAttribute['field_type'] == 'multiple' || $testAttribute['field_type'] == 'dropdown') ? "" : "display:none;" ?>">
 																	<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>" onkeyup="showTags(event,this,'<?php echo $i ?>')" class="tag-input-field form-control" placeholder="Enter options..." />
-																	<input type="hidden" value="<?php echo (!empty($testAttribute['dropdown_options'])) ? $testAttribute['dropdown_options'] . ',' : "" ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown" />
+																	<input type="hidden" value="<?php echo (empty($testAttribute['dropdown_options'])) ? "" : $testAttribute['dropdown_options'] . ',' ?>" id="fdropDown<?php echo $i ?>" name="fdropDown[]" class="fdropDown" />
 																	<div class="tag-container container<?php echo $i ?>">
 																		<?php
 																		if (!empty($testAttribute['dropdown_options'])) {
@@ -511,7 +510,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									<div class="form-group">
 										<label for="highValue" class="col-lg-4 control-label"><?php echo _translate("High Value"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" value="<?php echo $testResultAttribute['high_value']; ?>" id="highValue" name="resultConfig[high_value]" placeholder='<?php echo _translate("Enter High Value"); ?>' title='<?php echo _translate("Please enter high value"); ?>' value="<?php echo (isset($testResultAttribute['high_value'])) ? $testResultAttribute['high_value'] : "" ?> " />
+											<input type="text" class="form-control forceNumeric quantitativeResult" value="<?php echo $testResultAttribute['high_value']; ?>" id="highValue" name="resultConfig[high_value]" placeholder='<?php echo _translate("Enter High Value"); ?>' title='<?php echo _translate("Please enter high value"); ?>' value="<?php echo $testResultAttribute['high_value'] ?? "" ?> " />
 										</div>
 									</div>
 								</div>
@@ -519,7 +518,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									<div class="form-group">
 										<label for="thresholdValue" class="col-lg-4 control-label"><?php echo _translate("Threshold Value"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" value="<?php echo $testResultAttribute['threshold_value']; ?>" id="thresholdValue" name="resultConfig[threshold_value]" placeholder='<?php echo _translate("Enter Threshold Value"); ?>' title='<?php echo _translate("Please enter threshold value"); ?>' value="<?php echo (isset($testResultAttribute['threshold_value'])) ? $testResultAttribute['threshold_value'] : "" ?>" />
+											<input type="text" class="form-control forceNumeric quantitativeResult" value="<?php echo $testResultAttribute['threshold_value']; ?>" id="thresholdValue" name="resultConfig[threshold_value]" placeholder='<?php echo _translate("Enter Threshold Value"); ?>' title='<?php echo _translate("Please enter threshold value"); ?>' value="<?php echo $testResultAttribute['threshold_value'] ?? "" ?>" />
 										</div>
 									</div>
 								</div>
@@ -527,7 +526,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									<div class="form-group">
 										<label for="lowValue" class="col-lg-4 control-label"><?php echo _translate("Low Value"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult" value="<?php echo $testResultAttribute['low_value']; ?>" id="lowValue" name="resultConfig[low_value]" placeholder='<?php echo _translate("Enter Low Value"); ?>' title='<?php echo _translate("Please enter low value"); ?>' value="<?php echo (isset($testResultAttribute['low_value'])) ? $testResultAttribute['low_value'] : "" ?> " />
+											<input type="text" class="form-control forceNumeric quantitativeResult" value="<?php echo $testResultAttribute['low_value']; ?>" id="lowValue" name="resultConfig[low_value]" placeholder='<?php echo _translate("Enter Low Value"); ?>' title='<?php echo _translate("Please enter low value"); ?>' value="<?php echo $testResultAttribute['low_value'] ?? "" ?> " />
 										</div>
 									</div>
 								</div>
@@ -540,7 +539,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									<div class="form-group">
 										<label for="belowThreshold" class="col-lg-4 control-label"><?php echo _translate("Below Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control quantitativeResult" value="<?php echo $testResultAttribute['below_threshold']; ?>" id="belowThreshold" name="resultConfig[below_threshold]" placeholder='<?php echo _translate("Enter below threshold"); ?>' title='<?php echo _translate("Please enter below threshold"); ?>' value="<?php echo (isset($testResultAttribute['below_threshold'])) ? $testResultAttribute['below_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" value="<?php echo $testResultAttribute['below_threshold']; ?>" id="belowThreshold" name="resultConfig[below_threshold]" placeholder='<?php echo _translate("Enter below threshold"); ?>' title='<?php echo _translate("Please enter below threshold"); ?>' value="<?php echo $testResultAttribute['below_threshold'] ?? "" ?> " />
 										</div>
 									</div>
 								</div>
@@ -548,7 +547,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									<div class="form-group">
 										<label for="atThreshold" class="col-lg-4 control-label"><?php echo _translate("At Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control quantitativeResult" value="<?php echo $testResultAttribute['at_threshold']; ?>" id="atThreshold" name="resultConfig[at_threshold]" placeholder='<?php echo _translate("Enter at threshold"); ?>' title='<?php echo _translate("Please enter at threshold"); ?>' value="<?php echo (isset($testResultAttribute['at_threshold'])) ? $testResultAttribute['at_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" value="<?php echo $testResultAttribute['at_threshold']; ?>" id="atThreshold" name="resultConfig[at_threshold]" placeholder='<?php echo _translate("Enter at threshold"); ?>' title='<?php echo _translate("Please enter at threshold"); ?>' value="<?php echo $testResultAttribute['at_threshold'] ?? "" ?> " />
 										</div>
 									</div>
 								</div>
@@ -556,7 +555,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 									<div class="form-group">
 										<label for="aboveThreshold" class="col-lg-4 control-label"><?php echo _translate("Above Threshold"); ?> <span class="mandatory">*</span></label>
 										<div class="col-lg-7">
-											<input type="text" class="form-control quantitativeResult" value="<?php echo $testResultAttribute['above_threshold']; ?>" id="aboveThreshold" name="resultConfig[above_threshold]" placeholder='<?php echo _translate("Enter above threshold"); ?>' title='<?php echo _translate("Please enter above threshold"); ?>' value="<?php echo (isset($testResultAttribute['above_threshold'])) ? $testResultAttribute['above_threshold'] : "" ?> " />
+											<input type="text" class="form-control quantitativeResult" value="<?php echo $testResultAttribute['above_threshold']; ?>" id="aboveThreshold" name="resultConfig[above_threshold]" placeholder='<?php echo _translate("Enter above threshold"); ?>' title='<?php echo _translate("Please enter above threshold"); ?>' value="<?php echo $testResultAttribute['above_threshold'] ?? "" ?> " />
 										</div>
 									</div>
 								</div>

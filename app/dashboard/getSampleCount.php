@@ -27,31 +27,31 @@ $testType = (string) $_POST['type'];
 $table = TestsService::getTestTableName($testType);
 
 $recencyWhere = "";
-if ($testType == 'eid') {
+if ($testType === 'eid') {
     $requestCountDataTable = "eidRequestCountDataTable";
     $samplesCollectionChart = "eidSamplesCollectionChart";
-} elseif ($testType == 'vl') {
+} elseif ($testType === 'vl') {
     $recencyWhere = " AND IFNULL(reason_for_vl_testing, 0)  != 9999";
     $requestCountDataTable = "vlRequestCountDataTable";
     $samplesCollectionChart = "vlSamplesCollectionChart";
-} elseif ($testType == 'covid19') {
+} elseif ($testType === 'covid19') {
     $samplesCollectionChart = "covid19SamplesCollectionChart";
-} elseif ($testType == 'hepatitis') {
+} elseif ($testType === 'hepatitis') {
     $requestCountDataTable = "hepatitisRequestCountDataTable";
     $samplesCollectionChart = "hepatitisSamplesCollectionChart";
-} elseif ($testType == 'recency') {
+} elseif ($testType === 'recency') {
     $samplesCollectionChart = "recencySamplesCollectionChart";
 
     // For VL Tab we do not want to show Recency Counts
     $recencyWhere = " AND reason_for_vl_testing = 9999";
     $requestCountDataTable = "recencyRequestCountDataTable";
-} elseif ($testType == 'tb') {
+} elseif ($testType === 'tb') {
     $requestCountDataTable = "tbRequestCountDataTable";
     $samplesCollectionChart = "tbSamplesCollectionChart";
-} elseif ($testType == 'generic-tests') {
+} elseif ($testType === 'generic-tests') {
     $requestCountDataTable = "genericRequestCountDataTable";
     $samplesCollectionChart = "genericSamplesCollectionChart";
-} elseif ($testType == 'cd4') {
+} elseif ($testType === 'cd4') {
     $requestCountDataTable = "cd4RequestCountDataTable";
     $samplesCollectionChart = "cd4SamplesCollectionChart";
 }
@@ -60,10 +60,8 @@ $whereConditionArray = [];
 $whereConditionArray[] = " vl.result_status != " . SAMPLE_STATUS\CANCELLED;
 if (!$general->isSTSInstance()) {
     $whereConditionArray[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-} else {
-    if (!empty($_SESSION['facilityMap'])) {
-        $whereConditionArray[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
-    }
+} elseif (!empty($_SESSION['facilityMap'])) {
+    $whereConditionArray[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
 $whereCondition = implode(' AND ', $whereConditionArray);

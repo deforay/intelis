@@ -38,7 +38,7 @@ if ($_SESSION['accessType'] == 'collection-site') {
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
-$microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
+$microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 ?>
 
 <div class="content-wrapper">

@@ -13,7 +13,7 @@ if (!$isCli) {
 // Handle Ctrl+C gracefully (if pcntl extension is available)
 if ($isCli && function_exists('pcntl_signal') && function_exists('pcntl_async_signals')) {
     pcntl_async_signals(true);
-    pcntl_signal(SIGINT, function () {
+    pcntl_signal(SIGINT, function (): void {
         echo PHP_EOL . PHP_EOL;
         echo "⚠️  Migration cancelled by user." . PHP_EOL;
         exit(130); // Standard exit code for SIGINT
@@ -45,7 +45,7 @@ $currentMajorVersion = $general->getAppVersion();
 
 // Ensure the script only runs for VLSM APP VERSION >= 4.4.3
 if (version_compare($currentMajorVersion, '4.4.3', '<')) {
-    $io->error("This script requires VERSION 4.4.3 or higher. Current version: " . htmlspecialchars($currentMajorVersion));
+    $io->error("This script requires VERSION 4.4.3 or higher. Current version: " . htmlspecialchars((string) $currentMajorVersion));
     exit(1);
 }
 
@@ -97,7 +97,7 @@ function _apply_add_primary_key(DatabaseService $db, SymfonyStyle $io, string $t
     $wantedCols = parse_cols_list($colsList);
     $haveCols   = table_primary_key($db, $table);
 
-    if (empty($haveCols)) {
+    if ($haveCols === []) {
         $db->rawQuery($originalSql);
         assert_no_errno($db, $originalSql);
         return MIG_EXECUTED;
@@ -111,7 +111,7 @@ function _apply_add_primary_key(DatabaseService $db, SymfonyStyle $io, string $t
         $db->rawQuery($sql);
         assert_no_errno($db, $sql);
 
-        $colsSql = implode(',', array_map(static fn($c) => "`$c`", $wantedCols));
+        $colsSql = implode(',', array_map(static fn($c): string => "`$c`", $wantedCols));
         $sql = "ALTER TABLE `{$table}` ADD PRIMARY KEY ($colsSql)";
         $db->rawQuery($sql);
         assert_no_errno($db, $sql);
@@ -149,7 +149,9 @@ function table_primary_key(DatabaseService $db, string $table): array
                 AND t.CONSTRAINT_TYPE = 'PRIMARY KEY'
                 ORDER BY k.ORDINAL_POSITION";
     $rows = $db->rawQuery($sql, [current_db($db), $table]) ?? [];
-    if (!$rows) return [];
+    if (!$rows) {
+        return [];
+    }
     return array_map(static fn($r) => strtolower(trim($r['COLUMN_NAME'] ?? '')), $rows);
 }
 
@@ -255,19 +257,19 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
     $q = preg_replace('/NULL\s*AFTER/i', 'NULL AFTER', $q);
 
     // ALTER TABLE ... ADD [COLUMN] `col` ...
-    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+(?:column\s+)?`?([a-z0-9_]+)`?\s+/i', $q, $m)) {
+    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+(?:column\s+)?`?([a-z0-9_]+)`?\s+/i', (string) $q, $m)) {
         return add_column_if_missing($db, $m[1], $m[2], $q);
     }
 
     // CREATE [UNIQUE] INDEX idx ON table (...)
-    if (preg_match('/^create\s+(unique\s+)?index\s+`?([^`]+)`?\s*(?:using\s+btree)?\s+on\s+`?([^`]+)`?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', $q, $m)) {
+    if (preg_match('/^create\s+(unique\s+)?index\s+`?([^`]+)`?\s*(?:using\s+btree)?\s+on\s+`?([^`]+)`?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', (string) $q, $m)) {
         return add_index_if_missing($db, $m[3], $m[2], $q);
     }
 
     // ALTER TABLE ... ADD [UNIQUE] INDEX idx (...)
-    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+(unique\s+)?index\s+`?([a-z0-9_]+)`?\s*\((.+)\)\s*;?$/is', $q, $m)) {
+    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+(unique\s+)?index\s+`?([a-z0-9_]+)`?\s*\((.+)\)\s*;?$/is', (string) $q, $m)) {
         $table = $m[1];
-        $uniqueKw = !empty($m[2]) ? 'UNIQUE ' : '';
+        $uniqueKw = empty($m[2]) ? '' : 'UNIQUE ';
         $index = $m[3];
         $cols  = trim($m[4]);
         $ddl   = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', $uniqueKw, $index, $table, $cols);
@@ -275,9 +277,9 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
     }
 
     // ALTER TABLE ... ADD [UNIQUE] KEY idx (...) (synonym)
-    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+(unique\s+)?key\s+`?([a-z0-9_]+)`?\s*\((.+)\)\s*;?$/is', $q, $m)) {
+    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+(unique\s+)?key\s+`?([a-z0-9_]+)`?\s*\((.+)\)\s*;?$/is', (string) $q, $m)) {
         $table = $m[1];
-        $uniqueKw = !empty($m[2]) ? 'UNIQUE ' : '';
+        $uniqueKw = empty($m[2]) ? '' : 'UNIQUE ';
         $index = $m[3];
         $cols  = trim($m[4]);
         $ddl   = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', $uniqueKw, $index, $table, $cols);
@@ -285,27 +287,27 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
     }
 
     // ALTER TABLE ... DROP COLUMN `col`
-    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+column\s+`?([a-z0-9_]+)`?/i', $q, $m)) {
+    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+column\s+`?([a-z0-9_]+)`?/i', (string) $q, $m)) {
         return drop_column_if_exists($db, $m[1], $m[2]);
     }
 
     // ALTER TABLE ... DROP `col` (shorthand)
-    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+`?([a-z0-9_]+)`?/i', $q, $m)) {
+    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+`?([a-z0-9_]+)`?/i', (string) $q, $m)) {
         return drop_column_if_exists($db, $m[1], $m[2]);
     }
 
     // ALTER TABLE ... DROP INDEX `idx`
-    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+index\s+`?([a-z0-9_]+)`?/i', $q, $m)) {
+    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+index\s+`?([a-z0-9_]+)`?/i', (string) $q, $m)) {
         return drop_index_if_exists($db, $m[1], $m[2]);
     }
 
     // ALTER TABLE ... ADD PRIMARY KEY [USING BTREE] (...) [USING BTREE]
-    if (preg_match('/^alter\s+table\s+`?([^`]+)`?\s+add\s+primary\s+key\s*(?:using\s+btree)?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', $q, $m)) {
+    if (preg_match('/^alter\s+table\s+`?([^`]+)`?\s+add\s+primary\s+key\s*(?:using\s+btree)?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', (string) $q, $m)) {
         return _apply_add_primary_key($db, $io, $m[1], $m[2], $q);
     }
 
     // ALTER TABLE ... ADD CONSTRAINT `name` PRIMARY KEY [USING BTREE] (...) [USING BTREE]
-    if (preg_match('/^alter\s+table\s+`?([^`]+)`?\s+add\s+constraint\s+`?([^`]+)`?\s+primary\s+key\s*(?:using\s+btree)?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', $q, $m)) {
+    if (preg_match('/^alter\s+table\s+`?([^`]+)`?\s+add\s+constraint\s+`?([^`]+)`?\s+primary\s+key\s*(?:using\s+btree)?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', (string) $q, $m)) {
         return _apply_add_primary_key($db, $io, $m[1], $m[3], $q);
     }
 
@@ -319,7 +321,7 @@ $currentVersion = $db->getValue('system_config', 'value');
 $migrationFiles = (array)glob(ROOT_PATH . '/sys/migrations/*.sql');
 
 // Extract version numbers and map them to files
-$versions = array_map(fn($file) => basename($file, '.sql'), $migrationFiles);
+$versions = array_map(fn($file): string => basename((string) $file, '.sql'), $migrationFiles);
 
 // Sort versions
 usort($versions, 'version_compare');
@@ -394,8 +396,8 @@ foreach ($versions as $version) {
                         if ($errno > 0) {
                             if (in_array($errno, [1060, 1061, 1068, 1091], true)) {
                                 if (!$quietMode && getenv('MIG_VERBOSE')) {
-                                    if ($bar) {
-                                        MiscUtility::spinnerPausePrint($bar, function () use ($db) {
+                                    if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
+                                        MiscUtility::spinnerPausePrint($bar, function () use ($db): void {
                                             echo "Benign idempotence (errno={$db->getLastErrno()}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
                                         });
                                     } else {
@@ -407,15 +409,17 @@ foreach ($versions as $version) {
                                 $totalErrors++;
                                 $msg = "Error executing query ({$errno}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
                                 if (!$quietMode) {
-                                    if ($bar) {
+                                    if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
                                         MiscUtility::spinnerPausePrint($bar, fn() => print $msg);
                                     } else {
                                         $io->error($msg);
                                     }
-                                    if ($canLog) LoggerUtility::logError($msg);
+                                    if ($canLog) {
+                                        LoggerUtility::logError($msg);
+                                    }
                                 }
                                 if (!$autoContinueOnError) {
-                                    if ($bar) {
+                                    if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
                                         MiscUtility::spinnerPausePrint($bar, fn() => print "Do you want to continue? (y/n): ");
                                     } else {
                                         echo "Do you want to continue? (y/n): ";
@@ -441,32 +445,36 @@ foreach ($versions as $version) {
                         stripos($msgStr, 'Duplicate column name') !== false ||
                         stripos($msgStr, 'Duplicate key name') !== false   ||
                         (stripos($msgStr, "Can't DROP") !== false && stripos($msgStr, 'check that column/key exists') !== false) ||
-                        stripos($msgStr, 'Multiple primary key defined') !== false || strpos($msgStr, '1068') !== false;
+                        stripos($msgStr, 'Multiple primary key defined') !== false || str_contains($msgStr, '1068');
 
                     if ($isBenign) {
                         if (!$quietMode && getenv('MIG_VERBOSE')) {
                             $toPrint = "Benign idempotence (exception):\n{$sqlInMsg}\n{$msgStr}\n";
-                            if ($bar) {
+                            if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
                                 MiscUtility::spinnerPausePrint($bar, fn() => print $toPrint);
                             } else {
                                 echo $toPrint;
                             }
-                            if ($canLog) LoggerUtility::log('info', $toPrint);
+                            if ($canLog) {
+                                LoggerUtility::log('info', $toPrint);
+                            }
                         }
                         $skippedQueries++;
                     } else {
                         $totalErrors++;
                         if (!$quietMode) {
                             $toPrint = "";
-                            if ($bar) {
+                            if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
                                 MiscUtility::spinnerPausePrint($bar, fn() => print $toPrint);
                             } else {
                                 echo $toPrint;
                             }
-                            if ($canLog) LoggerUtility::logError($toPrint);
+                            if ($canLog) {
+                                LoggerUtility::logError($toPrint);
+                            }
                         }
                         if (!$autoContinueOnError) {
-                            if ($bar) {
+                            if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
                                 MiscUtility::spinnerPausePrint($bar, fn() => print "Do you want to continue? (y/n): ");
                             } else {
                                 echo "Do you want to continue? (y/n): ";
@@ -476,13 +484,13 @@ foreach ($versions as $version) {
                             fclose($handle);
                             if (strtolower($response) !== 'y') {
                                 $aborted = true;
-                                throw new RuntimeException("Migration aborted by user.");
+                                throw new RuntimeException("Migration aborted by user.", $e->getCode(), $e);
                             }
                         }
                     }
                 } finally {
                     $processedForVersion++;
-                    if ($bar) {
+                    if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
                         // Update message with step info and advance
                         MiscUtility::spinnerUpdate($bar, "v{$version}", null, $processedForVersion, $versionTotal);
                         MiscUtility::spinnerAdvance($bar, 1);
@@ -491,7 +499,7 @@ foreach ($versions as $version) {
             }
 
             if (!$quietMode) {
-                if ($bar) {
+                if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
                     MiscUtility::spinnerFinish($bar);
                 }
                 $io->newLine();
@@ -501,7 +509,7 @@ foreach ($versions as $version) {
             $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;");
             if ($aborted) {
                 $db->rollbackTransaction();
-                if ($bar) {
+                if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
                     MiscUtility::spinnerFinish($bar);
                 }
                 exit("Migration aborted by user.\n");

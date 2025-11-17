@@ -20,12 +20,12 @@ $enclosure = $globalConfig['default_csv_enclosure'] ?? '"';
 
 $key = (string) $general->getGlobalConfig('key');
 
-if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) != "") {
+if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralResult']) !== "") {
      error_log($_SESSION['highViralResult']);
 
      $output = [];
 
-     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient's Name", "Patient ART Number", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "CD4 Result");
+     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient's Name", "Patient ART Number", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "CD4 Result"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
@@ -37,20 +37,16 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           //sample collecion date
           $sampleCollectionDate = '';
           $sampleTestDate = '';
-          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $aRow['sample_collection_date']);
                $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
           }
-          if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+          if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) !== '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $aRow['sample_tested_datetime']);
                $sampleTestDate = date("d-m-Y", strtotime($expStr[0]));
           }
 
-          if ($aRow['remote_sample'] == 'yes') {
-               $decrypt = 'remote_sample_code';
-          } else {
-               $decrypt = 'sample_code';
-          }
+          $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
           $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow[$decrypt]));
           $row[] = $aRow['sample_code'];
           if (!$general->isStandaloneInstance()) {

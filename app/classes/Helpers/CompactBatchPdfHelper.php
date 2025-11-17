@@ -2,20 +2,22 @@
 
 namespace App\Helpers;
 
+use Override;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use App\Utilities\DateUtility;
 
 class CompactBatchPdfHelper extends Fpdi
 {
-    public ?string $text;
-    public ?array $batchDetails;
+    public ?string $text = null;
+    public ?array $batchDetails = null;
 
-    public function setHeading($batchDetails): void
+    public function setHeading(?array $batchDetails): void
     {
         $this->batchDetails = $batchDetails;
     }
 
     //Page header
+    #[Override]
     public function Header(): void
     {
         // Position at 15 mm from bottom
@@ -33,6 +35,7 @@ class CompactBatchPdfHelper extends Fpdi
 
 
     // Page footer
+    #[Override]
     public function Footer(): void
     {
         $this->Cell(0, 15, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);

@@ -72,10 +72,10 @@ $riskFactorsInfo = $hepatitisService->getRiskFactorsByHepatitisId($id);
 
 //$id = ($_GET['id']);
 $hepatitisQuery = "SELECT * FROM form_hepatitis where hepatitis_id=?";
-$hepatitisInfo = $db->rawQueryOne($hepatitisQuery, array($id));
+$hepatitisInfo = $db->rawQueryOne($hepatitisQuery, [$id]);
 
 
-if (isset($hepatitisInfo['sample_collection_date']) && trim((string) $hepatitisInfo['sample_collection_date']) != '' && $hepatitisInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
+if (isset($hepatitisInfo['sample_collection_date']) && trim((string) $hepatitisInfo['sample_collection_date']) !== '' && $hepatitisInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $hepatitisInfo['sample_collection_date'];
     $expStr = explode(" ", (string) $hepatitisInfo['sample_collection_date']);
     $hepatitisInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
@@ -128,15 +128,7 @@ if (isset($arr['hepatitis_min_patient_id_length']) && $arr['hepatitis_min_patien
     $minPatientIdLength = $arr['hepatitis_min_patient_id_length'];
 }
 
-$fileArray = array(
-    COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
-    COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
-    COUNTRY\DRC => 'forms/edit-drc.php',
-    COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
-    COUNTRY\PNG => 'forms/edit-png.php',
-    COUNTRY\WHO => 'forms/edit-who.php',
-    COUNTRY\RWANDA => 'forms/edit-rwanda.php'
-);
+$fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php'];
 
 require_once $fileArray[$arr['vl_form']];
 
@@ -233,7 +225,7 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
     function getMachine(value) {
         $.post("/instruments/get-machine-names-by-instrument.php", {
                 instrumentId: value,
-                machine: <?php echo !empty($hepatitisInfo['import_machine_name']) ? $hepatitisInfo['import_machine_name'] : '""'; ?>,
+                machine: <?php echo empty($hepatitisInfo['import_machine_name']) ? '""' : $hepatitisInfo['import_machine_name']; ?>,
                 testType: 'hepatitis'
             },
             function(data) {

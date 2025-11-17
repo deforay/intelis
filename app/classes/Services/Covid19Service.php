@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use Override;
+use const COUNTRY\PNG;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
@@ -15,6 +19,7 @@ final class Covid19Service extends AbstractTestService
 {
     public string $testType = 'covid19';
 
+    #[Override]
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
@@ -66,13 +71,7 @@ final class Covid19Service extends AbstractTestService
 
     public function insertCovid19Tests($covid19SampleId, $testKitName = null, $labId = null, $sampleTestedDatetime = null, $result = null): bool
     {
-        $covid19TestData = array(
-            'covid19_id' => $covid19SampleId,
-            'test_name' => $testKitName,
-            'facility_id' => $labId,
-            'sample_tested_datetime' => $sampleTestedDatetime,
-            'result' => $result
-        );
+        $covid19TestData = ['covid19_id' => $covid19SampleId, 'test_name' => $testKitName, 'facility_id' => $labId, 'sample_tested_datetime' => $sampleTestedDatetime, 'result' => $result];
         return $this->db->insert("covid19_tests", $covid19TestData);
     }
 
@@ -188,8 +187,8 @@ final class Covid19Service extends AbstractTestService
     {
         $response = [];
 
-        $c19Ids = !is_array($c19Ids) ? [$c19Ids] : $c19Ids;
-        if (!empty($c19Ids)) {
+        $c19Ids = is_array($c19Ids) ? $c19Ids : [$c19Ids];
+        if ($c19Ids !== []) {
             $this->db->where('covid19_id', $c19Ids, 'IN');
             $results = $this->db->get('covid19_tests');
 
@@ -329,7 +328,7 @@ final class Covid19Service extends AbstractTestService
         return $response;
     }
 
-    public function getCovid19ReasonsDetailsForTestingByFormId($c19Id, $onlyValues = false)
+    public function getCovid19ReasonsDetailsForTestingByFormId($c19Id, $onlyValues = false): ?array
     {
         if (empty($c19Id)) {
             return null;
@@ -344,11 +343,8 @@ final class Covid19Service extends AbstractTestService
         ", [$c19Id]);
         $response = [];
         if ($result) {
-            foreach (json_decode($result['reason_details'], true) as $row) {
-                $response[] = array(
-                    'reasons_detected' => $result['test_reason_name'],
-                    'reason_details' => $row,
-                );
+            foreach (json_decode((string) $result['reason_details'], true) as $row) {
+                $response[] = ['reasons_detected' => $result['test_reason_name'], 'reason_details' => $row];
             }
         }
         return $response;
@@ -364,6 +360,7 @@ final class Covid19Service extends AbstractTestService
         return $this->db->rawQueryOne($sQuery);
     }
 
+    #[Override]
     public function insertSample($params, $returnSampleData = false)
     {
         try {
@@ -373,11 +370,11 @@ final class Covid19Service extends AbstractTestService
 
             $formId = (int) $this->commonService->getGlobalConfig('vl_form');
             $provinceId = $params['provinceId'] ?? null;
-            $sampleCollectionDate = (!empty($params['sampleCollectionDate'])) ? $params['sampleCollectionDate'] : null;
+            $sampleCollectionDate = (empty($params['sampleCollectionDate'])) ? null : $params['sampleCollectionDate'];
 
             // PNG FORM CANNOT HAVE PROVINCE EMPTY
             // Sample Collection Date Cannot be Empty
-            if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false || ($formId == COUNTRY\PNG && empty($provinceId))) {
+            if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false || ($formId == PNG && empty($provinceId))) {
                 return 0;
             }
 
@@ -416,13 +413,13 @@ final class Covid19Service extends AbstractTestService
 
             if ($this->commonService->isSTSInstance()) {
                 $tesRequestData['remote_sample'] = 'yes';
-                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+                $tesRequestData['result_status'] = RECEIVED_AT_CLINIC;
                 if ($accessType === 'testing-lab') {
-                    $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                    $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
                 }
             } else {
                 $tesRequestData['remote_sample'] = 'no';
-                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
             }
 
             $formAttributes = [
@@ -485,11 +482,7 @@ final class Covid19Service extends AbstractTestService
     {
         $exist = $this->db->rawQueryOne("SELECT DISTINCT qc_code_key
                                             FROM qc_covid19 ORDER BY qc_id desc limit 1");
-        if (empty($exist['qc_code_key'])) {
-            $number = 001;
-        } else {
-            $number = ($exist['qc_code_key'] + 1);
-        }
+        $number = empty($exist['qc_code_key']) ? 001 : $exist['qc_code_key'] + 1;
         $sampleCodeGenerator = "C19QC" . substr(date("Y"), -2) . date("md") . substr(str_repeat(0, 3) . $number, -3);
         return ["code" => $sampleCodeGenerator, "key" => substr(str_repeat(0, 3) . $number, -3)];
     }

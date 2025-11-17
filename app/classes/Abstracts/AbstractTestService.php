@@ -2,6 +2,13 @@
 
 namespace App\Abstracts;
 
+use const COUNTRY\PNG;
+use const SAMPLE_STATUS\CANCELLED;
+use const SAMPLE_STATUS\EXPIRED;
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\TEST_FAILED;
 use COUNTRY;
 use Throwable;
 use DateTimeImmutable;
@@ -17,8 +24,6 @@ use App\Services\TestRequestsService;
 
 abstract class AbstractTestService
 {
-    public DatabaseService $db;
-    public CommonService $commonService;
     public TestRequestsService $testRequestsService;
     public int $maxTries = 5; // Max tries for generating Sample ID
     public string $table;
@@ -26,19 +31,17 @@ abstract class AbstractTestService
     public string $testType;
     public string $shortCode;
 
-    public function __construct(DatabaseService $db, CommonService $commonService)
+    public function __construct(public DatabaseService $db, public CommonService $commonService)
     {
-        $this->db = $db;
-        $this->commonService = $commonService;
         $this->table ??= TestsService::getTestTableName($this->testType);
         $this->primaryKey ??= TestsService::getPrimaryColumn($this->testType);
         $this->shortCode ??= TestsService::getTestShortCode($this->testType);
-        $this->testRequestsService = new TestRequestsService($db, $commonService);
+        $this->testRequestsService = new TestRequestsService($this->db, $this->commonService);
     }
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);
 
-    private function getMaxId($year, $testType, $sampleCodeType, $insertOperation)
+    private function getMaxId($year, $testType, string $sampleCodeType, $insertOperation): int|float
     {
         if (!$insertOperation) {
             // For display only, no need to lock or increment
@@ -161,7 +164,7 @@ abstract class AbstractTestService
                 ];
 
                 // PNG format has an additional R in prefix
-                if ($formId == COUNTRY\PNG) {
+                if ($formId == PNG) {
                     $remotePrefix .= "R";
                 }
 
@@ -219,7 +222,7 @@ abstract class AbstractTestService
                 }
 
                 // For other exceptions, throw after all retries
-                if ($attempt == $this->maxTries - 1) {
+                if ($attempt === $this->maxTries - 1) {
                     throw new SystemException("Error while generating Sample ID for $testTable : " . $exception->getMessage(), $exception->getCode(), $exception);
                 }
             }
@@ -229,7 +232,7 @@ abstract class AbstractTestService
         throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for generating Sample ID");
     }
 
-    private function resetSequenceCounter($testTable, $year, $testType, $sampleCodeType)
+    private function resetSequenceCounter(string $testTable, $year, $testType, $sampleCodeType): void
     {
         LoggerUtility::logInfo("Resetting sequence counter for $testTable, year = $year, testType = $testType, sampleCodeType = $sampleCodeType");
 
@@ -251,8 +254,8 @@ abstract class AbstractTestService
     {
         try {
             $uneditableStatus = [
-                SAMPLE_STATUS\CANCELLED,
-                SAMPLE_STATUS\EXPIRED,
+                CANCELLED,
+                EXPIRED,
             ];
 
             $this->db->where('unique_id', $uniqueId);
@@ -270,12 +273,12 @@ abstract class AbstractTestService
     {
         try {
             $uncancellableStatus = [
-                SAMPLE_STATUS\ACCEPTED,
-                SAMPLE_STATUS\PENDING_APPROVAL,
-                SAMPLE_STATUS\REJECTED,
-                SAMPLE_STATUS\TEST_FAILED,
-                SAMPLE_STATUS\CANCELLED,
-                SAMPLE_STATUS\EXPIRED,
+                ACCEPTED,
+                PENDING_APPROVAL,
+                REJECTED,
+                TEST_FAILED,
+                CANCELLED,
+                EXPIRED,
             ];
 
             $this->db->where('unique_id', $uniqueId);
@@ -287,14 +290,12 @@ abstract class AbstractTestService
             }
 
             $this->db->where('unique_id', $uniqueId);
-            $isQuerySuccessful = $this->db->update($this->table, [
+            return $this->db->update($this->table, [
                 'data_sync' => 0,
-                'result_status' => SAMPLE_STATUS\CANCELLED,
+                'result_status' => CANCELLED,
                 'last_modified_by' => $userId ?? ($_SESSION['userId'] ?? null),
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
             ]);
-
-            return $isQuerySuccessful;
         } catch (Throwable $e) {
             throw new SystemException($e->getMessage(), (int) $e->getCode(), $e);
         }

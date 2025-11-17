@@ -1,6 +1,6 @@
 <?php
 
-include('../admin-header.php');
+include(__DIR__ . '/../admin-header.php');
 $id = $_SESSION['adminUserId'];
 $userQuery = "SELECT * from system_admin where system_admin_id='" . $id . "'";
 $userInfo = $db->query($userQuery);
@@ -99,4 +99,4 @@ $userInfo = $db->query($userQuery);
   }
 </script>
 <?php
-include('../admin-footer.php');
+include(__DIR__ . '/../admin-footer.php');

@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -14,7 +15,8 @@ use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -44,7 +46,7 @@ $activeModulesArr = SystemService::getActiveModules();
 
 $stsURL = $general->getRemoteURL();
 
-function changeModuleWithQuotes($moduleArr)
+function changeModuleWithQuotes($moduleArr): string
 {
     return "'$moduleArr'";
 }
@@ -89,14 +91,14 @@ try {
             'modules.tb' => in_array('tb', $modulesToEnable),
             'modules.cd4' => in_array('cd4', $modulesToEnable),
             'modules.generic-tests' => in_array('generic-tests', $modulesToEnable),
-            'database.host' => (!empty($_POST['dbHostName'])) ? $_POST['dbHostName'] : '127.0.0.1',
-            'database.username' => (!empty($_POST['dbUserName'])) ? $_POST['dbUserName'] : 'root',
-            'database.password' => (!empty($_POST['dbPassword'])) ? $_POST['dbPassword'] : 'zaq12345',
-            'database.db' => (!empty($_POST['dbName'])) ? $_POST['dbName'] : 'vlsm',
-            'database.port' => (!empty($_POST['dbPort'])) ? $_POST['dbPort'] : 3306,
+            'database.host' => (empty($_POST['dbHostName'])) ? '127.0.0.1' : $_POST['dbHostName'],
+            'database.username' => (empty($_POST['dbUserName'])) ? 'root' : $_POST['dbUserName'],
+            'database.password' => (empty($_POST['dbPassword'])) ? 'zaq12345' : $_POST['dbPassword'],
+            'database.db' => (empty($_POST['dbName'])) ? 'vlsm' : $_POST['dbName'],
+            'database.port' => (empty($_POST['dbPort'])) ? 3306 : $_POST['dbPort'],
         ];
 
-        if (isset($instanceType) && trim($instanceType) == 'stsmode') {
+        if (isset($instanceType) && trim((string) $instanceType) === 'stsmode') {
             $updatedConfig['sts.api_key'] = $configService->generateAPIKeyForSTS();
         }
 
@@ -133,8 +135,8 @@ try {
         ];
 
         foreach ($configFields as $field) {
-            if (isset($_POST[$field]) && !empty(trim((string) $_POST[$field]))) {
-                $data = array('value' => trim((string) $_POST[$field]));
+            if (isset($_POST[$field]) && !in_array(trim((string) $_POST[$field]), ['', '0'], true)) {
+                $data = ['value' => trim((string) $_POST[$field])];
                 $db->where('name', $field);
                 $id = $db->update('global_config', $data);
             }
@@ -150,8 +152,8 @@ try {
                             WHERE r.module IN ($activeModules)";
         $privileges = $db->query($privilegesSql);
         foreach ($privileges as $privilege) {
-            $privilegeId = $privilege['privilege_id'];
-            $db->query("INSERT IGNORE INTO roles_privileges_map(role_id,privilege_id) VALUES (1,$privilegeId)");
+            $privilegeId = (int)$privilege['privilege_id'];
+            $db->rawQuery("INSERT IGNORE INTO roles_privileges_map(role_id,privilege_id) VALUES (?, ?)", [1, $privilegeId]);
         }
 
         if (!empty($stsURL) && $general->isLISInstance()) {

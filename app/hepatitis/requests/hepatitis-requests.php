@@ -140,8 +140,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<?php
-									foreach ($fundingSourceList as $fundingSource) {
-									?>
+									foreach ($fundingSourceList as $fundingSource) { ?>
 										<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
 											<?= $fundingSource['funding_source_name']; ?></option>
 									<?php } ?>
@@ -160,8 +159,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<?php
-									foreach ($implementingPartnerList as $implementingPartner) {
-									?>
+									foreach ($implementingPartnerList as $implementingPartner) { ?>
 										<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
 											<?= $implementingPartner['i_partner_name']; ?></option>
 									<?php } ?>
@@ -500,24 +498,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript" src="/assets/js/tooltipster.bundle.min.js"></script>
 
-<?php
-if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
-	if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
-		<script src="/assets/js/DYMO.Label.Framework.js"></script>
-		<script src="/uploads/barcode-formats/dymo-format.js"></script>
-		<script src="/assets/js/dymo-print.js"></script>
-	<?php
-	} else if ($global['bar_code_printing'] == 'zebra-printer') {
-	?>
-		<script src="/assets/js/zebra-browserprint.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-browserprint.js") ?>"></script>
-		<script src="/uploads/barcode-formats/zebra-format.js?v=<?= filemtime(WEB_ROOT . "/uploads/barcode-formats/zebra-format.js") ?>"></script>
-		<script src="/assets/js/zebra-print.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-print.js") ?>"></script>
-<?php
-	}
-}
-?>
-
+<?= CommonService::barcodeScripts(); ?>
 
 
 <script type="text/javascript">
@@ -551,9 +532,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-			$sampleCode = htmlspecialchars($_GET['s']);
-			$facilityCode = htmlspecialchars($_GET['f']);
-			$patientID = htmlspecialchars($_GET['p']);
+			$sampleCode = htmlspecialchars((string) $_GET['s']);
+			$facilityCode = htmlspecialchars((string) $_GET['f']);
+			$patientID = htmlspecialchars((string) $_GET['p']);
 			echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
 		}
 		?>

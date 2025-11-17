@@ -2,7 +2,9 @@
 <?php
 
 $isCli = php_sapi_name() === 'cli';
-if (!$isCli) exit(0);
+if (!$isCli) {
+    exit(0);
+}
 
 require_once __DIR__ . "/../bootstrap.php";
 

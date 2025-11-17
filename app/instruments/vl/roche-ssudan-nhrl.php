@@ -1,5 +1,6 @@
 <?php
 
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -21,11 +22,7 @@ try {
 
     // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
-    $allowedExtensions = array(
-        'xls',
-        'xlsx',
-        'csv'
-    );
+    $allowedExtensions = ['xls', 'xlsx', 'csv'];
     if (
         isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
         || $_FILES['resultFile']['size'] <= 0
@@ -78,11 +75,13 @@ try {
 
 
         foreach ($sheetData as $rowIndex => $row) {
-            if ($rowIndex < $skipTillRow)
+            if ($rowIndex < $skipTillRow) {
                 continue;
+            }
 
-            if (!str_contains(strtolower((string)$row[$testingPlatformCol]), 'viral'))
+            if (!str_contains(strtolower((string)$row[$testingPlatformCol]), 'viral')) {
                 continue;
+            }
 
 
             $sampleCode = "";
@@ -104,12 +103,12 @@ try {
 
             $testingDate = date('Y-m-d H:i', strtotime((string) $row[$testingDateCol]));
 
-            if (trim((string) $row[$absValCol]) != "") {
+            if (trim((string) $row[$absValCol]) !== "") {
                 $resVal = (float) $row[$absValCol];
                 if ($resVal > 0) {
                     $absVal = $resVal;
                     $absDecimalVal = $resVal;
-                    if ($row[$logValCol] != null && trim((string) $row[$logValCol]) != "") {
+                    if ($row[$logValCol] != null && trim((string) $row[$logValCol]) !== "") {
                         $logVal = (float) $row[$logValCol];
                     } else {
                         $logVal = round(log10($absDecimalVal), 4);
@@ -129,19 +128,7 @@ try {
             }
             //   continue;
 
-            $infoFromFile[$sampleCode] = array(
-                "sampleCode" => $sampleCode,
-                "logVal" => $logVal,
-                "absVal" => $absVal,
-                "absDecimalVal" => $absDecimalVal,
-                "txtVal" => $txtVal,
-                "resultFlag" => $resultFlag,
-                "testingDate" => $testingDate,
-                "sampleType" => $sampleType,
-                "lotNumber" => $lotNumberVal,
-                "lotExpirationDate" => $lotExpirationDateVal,
-                "reviewBy" => $reviewBy
-            );
+            $infoFromFile[$sampleCode] = ["sampleCode" => $sampleCode, "logVal" => $logVal, "absVal" => $absVal, "absDecimalVal" => $absDecimalVal, "txtVal" => $txtVal, "resultFlag" => $resultFlag, "testingDate" => $testingDate, "sampleType" => $sampleType, "lotNumber" => $lotNumberVal, "lotExpirationDate" => $lotExpirationDateVal, "reviewBy" => $reviewBy];
 
             $m++;
         }
@@ -157,32 +144,14 @@ try {
             if ($d['sampleType'] == 'S' || $d['sampleType'] == 's') {
                 $refno += 1;
             }
-            $data = array(
-                'module' => 'vl',
-                'lab_id' => base64_decode((string) $_POST['labId']),
-                'vl_test_platform' => $_POST['vltestPlatform'],
-                'import_machine_name' => $_POST['configMachineName'],
-                'result_reviewed_by' => $_SESSION['userId'],
-                'sample_code' => $d['sampleCode'],
-                'result_value_log' => $d['logVal'],
-                'sample_type' => $d['sampleType'],
-                'result_value_absolute' => $d['absVal'],
-                'result_value_text' => $d['txtVal'],
-                'result_value_absolute_decimal' => $d['absDecimalVal'],
-                'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
-                'import_machine_file_name' => $fileName,
-                'lab_tech_comments' => $d['resultFlag'],
-                'lot_number' => $d['lotNumber'],
-                'lot_expiration_date' => $d['lotExpirationDate']
-            );
+            $data = ['module' => 'vl', 'lab_id' => base64_decode((string) $_POST['labId']), 'vl_test_platform' => $_POST['vltestPlatform'], 'import_machine_name' => $_POST['configMachineName'], 'result_reviewed_by' => $_SESSION['userId'], 'sample_code' => $d['sampleCode'], 'result_value_log' => $d['logVal'], 'sample_type' => $d['sampleType'], 'result_value_absolute' => $d['absVal'], 'result_value_text' => $d['txtVal'], 'result_value_absolute_decimal' => $d['absDecimalVal'], 'sample_tested_datetime' => $d['testingDate'], 'result_status' => RECEIVED_AT_TESTING_LAB, 'import_machine_file_name' => $fileName, 'lab_tech_comments' => $d['resultFlag'], 'lot_number' => $d['lotNumber'], 'lot_expiration_date' => $d['lotExpirationDate']];
 
             //echo "<pre>";var_dump($data);continue;
             if ($d['absVal'] != "") {
                 $data['result'] = $d['absVal'];
-            } else if ($d['logVal'] != "") {
+            } elseif ($d['logVal'] != "") {
                 $data['result'] = $d['logVal'];
-            } else if ($d['txtVal'] != "") {
+            } elseif ($d['txtVal'] != "") {
                 $data['result'] = $d['txtVal'];
             } else {
                 $data['result'] = "";
@@ -201,7 +170,7 @@ try {
             $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
+                $scData = ['r_sample_control_name' => trim((string) $d['sampleType'])];
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($vlResult) && !empty($sampleCode)) {

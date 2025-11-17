@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -21,7 +22,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
@@ -29,10 +30,10 @@ $option = '<option value=""> ' . _translate("-- Select --") . ' </option>';
 
 $testType = $_POST['testType'] ?? 'vl';
 
-$facilityIdRequested = !empty($_POST['cName']) ? $_POST['cName'] : null;
-$provinceRequested = !empty($_POST['pName']) ? $_POST['pName'] : null;
-$districtRequested = !empty($_POST['dName']) ? $_POST['dName'] : null;
-$facilityTypeRequested = !empty($_POST['fType']) ? $_POST['fType'] : 1;   // 1 = Health Facilities
+$facilityIdRequested = empty($_POST['cName']) ? null : $_POST['cName'];
+$provinceRequested = empty($_POST['pName']) ? null : $_POST['pName'];
+$districtRequested = empty($_POST['dName']) ? null : $_POST['dName'];
+$facilityTypeRequested = empty($_POST['fType']) ? 1 : $_POST['fType'];   // 1 = Health Facilities
 
 
 if (!empty($facilityIdRequested)) {

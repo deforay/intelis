@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -18,12 +20,13 @@ try {
 
 
     // Sanitized values from $request object
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
     $id = explode(",", (string) $_POST['id']);
-    for ($i = 0; $i < count($id); $i++) {
+    $counter = count($id);
+    for ($i = 0; $i < $counter; $i++) {
         $status = [
             'result_status' => $_POST['status'],
             'result_approved_datetime' => DateUtility::getCurrentDateTime(),
@@ -39,7 +42,7 @@ try {
         if (empty($vlRow['result_approved_by'])) {
             $status['result_approved_by'] = $_SESSION['userId'];
         }
-        if ($_POST['status'] == SAMPLE_STATUS\REJECTED) {
+        if ($_POST['status'] == REJECTED) {
             $status['cd4_result'] = '';
             $status['cd4_result_percentage'] = '';
             $status['is_sample_rejected'] = 'yes';

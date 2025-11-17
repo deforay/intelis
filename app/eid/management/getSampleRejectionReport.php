@@ -25,8 +25,8 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $tableName = "form_eid";
 $primaryKey = "eid_id";
 
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name', 'r_c_a.recommended_corrective_action_name'];
 
 if ($general->isStandaloneInstance()) {
     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
@@ -64,7 +64,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -94,12 +94,12 @@ LEFT JOIN r_eid_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.
 LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action ";
 
 $sWhere[] = " vl.is_sample_rejected='yes' ";
-if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) != '') {
+if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) !== '') {
     $sWhere[] = '  b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
 }
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['rjtSampleTestDate'] ?? '');
-if (isset($_POST['rjtSampleTestDate']) && trim((string) $_POST['rjtSampleTestDate']) != '') {
-    if (trim((string) $start_date) == trim((string) $end_date)) {
+if (isset($_POST['rjtSampleTestDate']) && trim((string) $_POST['rjtSampleTestDate']) !== '') {
+    if (trim((string) $start_date) === trim((string) $end_date)) {
         $sWhere[] =  ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
     } else {
         $sWhere[] =  ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
@@ -108,17 +108,17 @@ if (isset($_POST['rjtSampleTestDate']) && trim((string) $_POST['rjtSampleTestDat
 if (isset($_POST['rjtSampleType']) && $_POST['rjtSampleType'] != '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['rjtSampleType'] . '"';
 }
-if (isset($_POST['rjtState']) && trim((string) $_POST['rjtState']) != '') {
+if (isset($_POST['rjtState']) && trim((string) $_POST['rjtState']) !== '') {
     $sWhere[] = " f.facility_state_id = '" . $_POST['rjtState'] . "' ";
 }
-if (isset($_POST['rjtDistrict']) && trim((string) $_POST['rjtDistrict']) != '') {
+if (isset($_POST['rjtDistrict']) && trim((string) $_POST['rjtDistrict']) !== '') {
     $sWhere[] = " f.facility_district_id = '" . $_POST['rjtDistrict'] . "' ";
 }
 if (isset($_POST['rjtFacilityName']) && $_POST['rjtFacilityName'] != '') {
     $sWhere[] =  ' f.facility_id IN (' . $_POST['rjtFacilityName'] . ')';
 }
 if (isset($_POST['rjtGender']) && $_POST['rjtGender'] != '') {
-    if (trim((string) $_POST['rjtGender']) == "unreported") {
+    if (trim((string) $_POST['rjtGender']) === "unreported") {
         $sWhere[] =  ' (vl.child_gender = "unreported" OR vl.child_gender ="" OR vl.child_gender IS NULL)';
     } else {
         $sWhere[] =  ' (vl.child_gender IS NOT NULL AND vl.child_gender ="' . $_POST['rjtGender'] . '") ';
@@ -134,16 +134,14 @@ if (isset($_POST['sampleRejectionReason']) && $_POST['sampleRejectionReason'] !=
     $sWhere[] = '  vl.reason_for_sample_rejection = "' . $_POST['sampleRejectionReason'] . '"';
 }
 
-if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
-    if (!empty($_SESSION['facilityMap'])) {
-        $sWhere[] =  " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
-    }
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap']) && !empty($_SESSION['facilityMap'])) {
+    $sWhere[] =  " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
-$sQuery = $sQuery . ' group by vl.eid_id ';
+$sQuery .= ' group by vl.eid_id ';
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -162,24 +160,15 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $_SESSION['rejectedViralLoadResultCount'] = $iTotal;
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
-    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     } else {
         $aRow['sample_collection_date'] = '';
     }
-    if ($aRow['remote_sample'] == 'yes') {
-        $decrypt = 'remote_sample_code';
-    } else {
-        $decrypt = 'sample_code';
-    }
+    $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
     $childName = $general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]);
 
     $row = [];

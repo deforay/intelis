@@ -1,5 +1,7 @@
 <?php
 
+use const COUNTRY\CAMEROON;
+use const SAMPLE_STATUS\CANCELLED;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Services\CommonService;
@@ -41,7 +43,7 @@ try {
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
 
-     if ($formId == COUNTRY\CAMEROON) {
+     if ($formId == CAMEROON) {
           $CountrySpecificFields = ['health_insurance_code', 'lab_assigned_code'];
 
           $index = array_search('s.sample_name', $aColumns);
@@ -158,26 +160,26 @@ try {
                LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action";
 
      /* Sample type filter */
-     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
+     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
           $sWhere[] =  ' vl.specimen_type IN (' . $_POST['sampleType'] . ')';
      }
-     if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
           $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
      }
-     if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
           $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
      }
      /* Facility id filter */
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
           $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
      }
      /*Lab id filter */
-     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
+     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
           $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
      }
 
      /* Viral load filter */
-     if (isset($_POST['vLoad']) && trim((string) $_POST['vLoad']) != '') {
+     if (isset($_POST['vLoad']) && trim((string) $_POST['vLoad']) !== '') {
           if ($_POST['vLoad'] === 'suppressed') {
                $sWhere[] = " IFNULL(vl.vl_result_category, '') like 'suppressed' ";
           } else {
@@ -186,15 +188,15 @@ try {
      }
 
      /* Sex filter */
-     if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
-          if (trim((string) $_POST['gender']) == "unreported") {
+     if (isset($_POST['gender']) && trim((string) $_POST['gender']) !== '') {
+          if (trim((string) $_POST['gender']) === "unreported") {
                $sWhere[] =  ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
           } else {
                $sWhere[] =  ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['gender'] . '") ';
           }
      }
 
-     if (isset($_POST['communitySample']) && trim((string) $_POST['communitySample']) != '') {
+     if (isset($_POST['communitySample']) && trim((string) $_POST['communitySample']) !== '') {
           $sWhere[] =  ' (vl.community_sample IS NOT NULL AND vl.community_sample ="' . $_POST['communitySample'] . '") ';
      }
      /* Sample status filter */
@@ -202,27 +204,27 @@ try {
           $sWhere[] = '  (IFNULL(vl.result_status, 0) = ' . $_POST['status'] . ')';
      }
      /* Show only recorded sample filter */
-     if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) == 'yes') {
+     if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) === 'yes') {
           $sWhere[] =  '  (vl.sample_reordered is NOT NULL AND vl.sample_reordered ="yes") ';
      }
      /* Is patient pregnant filter */
-     if (isset($_POST['patientPregnant']) && trim((string) $_POST['patientPregnant']) != '') {
+     if (isset($_POST['patientPregnant']) && trim((string) $_POST['patientPregnant']) !== '') {
           $sWhere[] = '  vl.is_patient_pregnant ="' . $_POST['patientPregnant'] . '"';
      }
      /* Is patient breast feeding filter */
-     if (isset($_POST['breastFeeding']) && trim((string) $_POST['breastFeeding']) != '') {
+     if (isset($_POST['breastFeeding']) && trim((string) $_POST['breastFeeding']) !== '') {
           $sWhere[] = '  vl.is_patient_breastfeeding ="' . $_POST['breastFeeding'] . '"';
      }
      /* Batch code filter */
-     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
           $sWhere[] =  '  b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      /* Funding src filter */
-     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
+     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
           $sWhere[] = '  vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
      }
      /* Implemening partner filter */
-     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
+     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
           $sWhere[] =  '  vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
      }
      if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
@@ -236,20 +238,20 @@ try {
           [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
           $sWhere[] =  " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date' ";
      }
-     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
           [$sTestDate, $eTestDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
           $sWhere[] =  " DATE(vl.sample_tested_datetime) BETWEEN '$sTestDate' AND '$eTestDate' ";
      }
 
-     if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
+     if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) !== '') {
           [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
           $sWhere[] =  "  DATE(vl.result_printed_datetime) BETWEEN '$sPrintDate' AND '$ePrintDate'";
      }
-     if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
+     if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== '') {
           [$sSampleReceivedDate, $eSampleReceivedDate] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
           $sWhere[] =  "  DATE(vl.sample_received_at_lab_datetime) BETWEEN '$sSampleReceivedDate' AND '$eSampleReceivedDate'";
      }
-     if (isset($_POST['requestCreatedDatetime']) && trim((string) $_POST['requestCreatedDatetime']) != '') {
+     if (isset($_POST['requestCreatedDatetime']) && trim((string) $_POST['requestCreatedDatetime']) !== '') {
           [$sRequestCreatedDatetime, $eRequestCreatedDatetime] = DateUtility::convertDateRange($_POST['requestCreatedDatetime'] ?? '');
           $sWhere[] =  "  DATE(vl.request_created_datetime) BETWEEN '$sRequestCreatedDatetime' AND '$eRequestCreatedDatetime'";
      }
@@ -258,16 +260,16 @@ try {
           $sWhere[] =  "  vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
      }
 
-     $sWhere[] = ' vl.result_status != ' . SAMPLE_STATUS\CANCELLED;
+     $sWhere[] = ' vl.result_status != ' . CANCELLED;
 
-     if (!empty($sWhere)) {
+     if ($sWhere !== []) {
           $sWhere = implode(" AND ", $sWhere);
      }
 
      $sQuery = "$sQuery WHERE $sWhere";
 
      if (!empty($sOrder) && $sOrder !== '') {
-          $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+          $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
           $sQuery = "$sQuery ORDER BY $sOrder";
      }
 
@@ -308,12 +310,12 @@ try {
           $row[] = $aRow['batch_code'];
           $row[] = $aRow['patient_art_no'];
           $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-          if ($formId == COUNTRY\CAMEROON) {
+          if ($formId == CAMEROON) {
                $row[] = $aRow['health_insurance_code'] ?? null;
           }
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['lab_name']);
-          if ($formId == COUNTRY\CAMEROON) {
+          if ($formId == CAMEROON) {
                $row[] = $aRow['lab_assigned_code'];
           }
 

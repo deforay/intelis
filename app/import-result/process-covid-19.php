@@ -1,7 +1,9 @@
 <?php
 
 // this file is included in /import-result/processImportedResults.php
-
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\ON_HOLD;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -14,7 +16,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -51,7 +53,8 @@ try {
     $status = explode(",", (string) $_POST['status']);
     $rejectedReasonId = explode(",", (string) $_POST['rejectReasonId']);
     if ($_POST['value'] != '' && !empty($_POST['value'])) {
-        for ($i = 0; $i < count($id); $i++) {
+        $counter = count($id);
+        for ($i = 0; $i < $counter; $i++) {
             $sQuery = "SELECT * FROM temp_sample_import
                         WHERE  imported_by = ? AND temp_sample_id= ?";
             $rResult = $db->rawQueryOne($sQuery, [$importedBy, $id[$i]]);
@@ -68,32 +71,15 @@ try {
 
 
 
-            if (strtolower($rResult['sample_type']) != 's') {
-                $data = array(
-                    'control_code' => $rResult['sample_code'],
-                    'lab_id' => $rResult['lab_id'],
-                    'control_type' => $rResult['sample_type'],
-                    'lot_number' => $rResult['lot_number'],
-                    'lot_expiration_date' => $rResult['lot_expiration_date'],
-                    'sample_tested_datetime' => $rResult['sample_tested_datetime'] ?? DateUtility::getCurrentDateTime(),
-                    'result' => $rResult['result'],
-                    'tested_by' => $_POST['testBy'],
-                    'lab_tech_comments' => $comments,
-                    'result_reviewed_by' => $rResult['result_reviewed_by'],
-                    'result_reviewed_datetime' => DateUtility::getCurrentDateTime(),
-                    'result_approved_by' => $_POST['appBy'],
-                    'result_approved_datetime' => DateUtility::getCurrentDateTime(),
-                    'vlsm_country_id' => $arr['vl_form'],
-                    'file_name' => $rResult['import_machine_file_name'],
-                    'imported_date_time' => $rResult['result_imported_datetime']
-                );
+            if (strtolower((string) $rResult['sample_type']) !== 's') {
+                $data = ['control_code' => $rResult['sample_code'], 'lab_id' => $rResult['lab_id'], 'control_type' => $rResult['sample_type'], 'lot_number' => $rResult['lot_number'], 'lot_expiration_date' => $rResult['lot_expiration_date'], 'sample_tested_datetime' => $rResult['sample_tested_datetime'] ?? DateUtility::getCurrentDateTime(), 'result' => $rResult['result'], 'tested_by' => $_POST['testBy'], 'lab_tech_comments' => $comments, 'result_reviewed_by' => $rResult['result_reviewed_by'], 'result_reviewed_datetime' => DateUtility::getCurrentDateTime(), 'result_approved_by' => $_POST['appBy'], 'result_approved_datetime' => DateUtility::getCurrentDateTime(), 'vlsm_country_id' => $arr['vl_form'], 'file_name' => $rResult['import_machine_file_name'], 'imported_date_time' => $rResult['result_imported_datetime']];
                 if (!empty($data['lab_id'])) {
                     $facility = $facilitiesService->getFacilityById($data['lab_id']);
                     if (isset($facility['contact_person']) && $facility['contact_person'] != "") {
                         $data['lab_manager'] = $facility['contact_person'];
                     }
                 }
-                if ($status[$i] == SAMPLE_STATUS\REJECTED) {
+                if ($status[$i] == REJECTED) {
                     $data['is_sample_rejected'] = 'yes';
                     $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                     $data['result'] = null;
@@ -125,7 +111,7 @@ try {
                         $data['lab_manager'] = $facility['contact_person'];
                     }
                 }
-                if ($status[$i] == SAMPLE_STATUS\ON_HOLD) {
+                if ($status[$i] == ON_HOLD) {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];
@@ -143,7 +129,7 @@ try {
                     $data['result_approved_datetime'] = DateUtility::getCurrentDateTime();
                     $sampleVal = $rResult['sample_code'];
 
-                    if ($status[$i] == SAMPLE_STATUS\REJECTED) {
+                    if ($status[$i] == REJECTED) {
                         $data['is_sample_rejected'] = 'yes';
                         $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                         $data['result'] = null;
@@ -183,17 +169,10 @@ try {
                 }
             }
             if (isset($covid19Id) && $covid19Id != "") {
-                $db->insert('log_result_updates', array(
-                    "user_id" => $_SESSION['userId'],
-                    "vl_sample_id" => $covid19Id,
-                    "test_type" => "vl",
-                    "result_method" => "import",
-                    "file_name" => $rResult['import_machine_file_name'],
-                    "updated_datetime" => DateUtility::getCurrentDateTime()
-                ));
+                $db->insert('log_result_updates', ["user_id" => $_SESSION['userId'], "vl_sample_id" => $covid19Id, "test_type" => "vl", "result_method" => "import", "file_name" => $rResult['import_machine_file_name'], "updated_datetime" => DateUtility::getCurrentDateTime()]);
             }
             $db->where('temp_sample_id', $id[$i]);
-            $result = $db->update($tableName, array('temp_sample_status' => 1));
+            $result = $db->update($tableName, ['temp_sample_status' => 1]);
         }
         if (MiscUtility::fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'])) {
             copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name']);
@@ -206,7 +185,8 @@ try {
                     WHERE imported_by =? AND tsr.result_status=7";
     $accResult = $db->rawQuery($accQuery, [$importedBy]);
     if ($accResult) {
-        for ($i = 0; $i < count($accResult); $i++) {
+        $counter = count($accResult);
+        for ($i = 0; $i < $counter; $i++) {
 
             $data = [
                 'result_reviewed_datetime' => $accResult[$i]['result_reviewed_datetime'],
@@ -234,7 +214,7 @@ try {
                 }
             }
 
-            if ($accResult[$i]['result_status'] == SAMPLE_STATUS\REJECTED) {
+            if ($accResult[$i]['result_status'] == REJECTED) {
                 $data['is_sample_rejected'] = 'yes';
                 $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
                 $data['result'] = null;
@@ -255,7 +235,7 @@ try {
                 copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']);
             }
             $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
-            $result = $db->update($tableName, array('temp_sample_status' => 1));
+            $result = $db->update($tableName, ['temp_sample_status' => 1]);
         }
     }
     $sCode = implode(', ', $printSampleCode);

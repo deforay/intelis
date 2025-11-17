@@ -24,7 +24,7 @@ $formId = (int) $globalConfig['vl_form'];
 
 
 
-if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuery']) != "") {
+if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuery']) !== "") {
 
 	$output = [];
 
@@ -40,7 +40,7 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 	}
 
 
-	$buildRow = function ($aRow, $no) use ($general, $key, $formId) {
+	$buildRow = function ($aRow, $no) use ($general, $key, $formId): array {
 		$row = [];
 
 		$age = _translate('Not Reported');
@@ -54,11 +54,11 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 
 		//set ARV adherecne
 		$arvAdherence = '';
-		if (trim((string) $aRow['arv_adherance_percentage']) == 'good') {
+		if (trim((string) $aRow['arv_adherance_percentage']) === 'good') {
 			$arvAdherence = 'Good >= 95%';
-		} elseif (trim((string) $aRow['arv_adherance_percentage']) == 'fair') {
+		} elseif (trim((string) $aRow['arv_adherance_percentage']) === 'fair') {
 			$arvAdherence = 'Fair 85-94%';
-		} elseif (trim((string) $aRow['arv_adherance_percentage']) == 'poor') {
+		} elseif (trim((string) $aRow['arv_adherance_percentage']) === 'poor') {
 			$arvAdherence = 'Poor <85%';
 		}
 
@@ -71,31 +71,17 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 			$logVal = round($aRow['result_value_log'], 1);
 		}
 
-		if ($aRow['patient_first_name'] != '') {
-			$patientFname = $aRow['patient_first_name'] ?? '';
-		} else {
-			$patientFname = '';
-		}
-		if ($aRow['patient_middle_name'] != '') {
-			$patientMname = $aRow['patient_middle_name'] ?? '';
-		} else {
-			$patientMname = '';
-		}
-		if ($aRow['patient_last_name'] != '') {
-			$patientLname = $aRow['patient_last_name'] ?? '';
-		} else {
-			$patientLname = '';
-		}
+		$patientFname = $aRow['patient_first_name'] != '' ? $aRow['patient_first_name'] ?? '' : '';
+		$patientMname = $aRow['patient_middle_name'] != '' ? $aRow['patient_middle_name'] ?? '' : '';
+		$patientLname = $aRow['patient_last_name'] != '' ? $aRow['patient_last_name'] ?? '' : '';
 
 		$row[] = $no;
-		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-			if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-				$aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
-				$patientFname = $general->crypto('decrypt', $patientFname, $key);
-				$patientMname = $general->crypto('decrypt', $patientMname, $key);
-				$patientLname = $general->crypto('decrypt', $patientLname, $key);
-			}
-		}
+		if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes' && (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes')) {
+      $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+      $patientFname = $general->crypto('decrypt', $patientFname, $key);
+      $patientMname = $general->crypto('decrypt', $patientMname, $key);
+      $patientLname = $general->crypto('decrypt', $patientLname, $key);
+  }
 		$row[] = $aRow["sample_code"];
 
 		if (!$general->isStandaloneInstance()) {

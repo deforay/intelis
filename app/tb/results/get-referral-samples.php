@@ -27,8 +27,9 @@ $patientIdColumn = TestsService::getPatientIdColumn($testType);
 $lisLabId = $general->getSystemConfig('sc_testing_lab_id');
 
 $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '')";
-if (isset($packageCodeId) && !empty($packageCodeId))
+if (isset($packageCodeId) && !empty($packageCodeId)) {
     $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '' OR vl.referred_to_lab_id = '$labId')";
+}
 // Query to get samples that are eligible for referral
 // Samples should be received at lab but not yet referred
 $query = "SELECT 
@@ -59,7 +60,7 @@ foreach ($result as $sample) {
         $displayText .= " - " . $sample['facility_name'];
     }
 ?>
-    <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($packageCodeId) && isset($sample['referral_manifest_code']) && $sample['referral_manifest_code'] == $packageCodeId) ? 'selected="selected"' : ''; ?>><?php echo htmlspecialchars($displayText); ?></option>
+    <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($packageCodeId) && isset($sample['referral_manifest_code']) && $sample['referral_manifest_code'] == $packageCodeId) ? 'selected="selected"' : ''; ?>><?php echo htmlspecialchars((string) $displayText); ?></option>
 <?php
 }
 ?>

@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\BatchService;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
@@ -13,7 +14,7 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -43,10 +44,9 @@ if (!empty($_POST['batchedSamples'])) {
 $tableName1 = "batch_details";
 try {
 
-    if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != "") {
+    if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== "") {
         if (!empty($_POST['batchId'])) {
             $id = intval($_POST['batchId']);
-
             $data = [
                 'batch_code' => $_POST['batchCode'],
                 'position_type' => $_POST['positions'],
@@ -55,7 +55,6 @@ try {
                 'last_modified_by' => $_SESSION['userId'],
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];
-
             $db->where('batch_id', $id);
             $db->update($tableName1, $data);
             if ($id > 0) {
@@ -79,46 +78,40 @@ try {
                 $db->update($testTable, ['sample_batch_id' => $id]);
                 MiscUtility::redirect("edit-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
             }
+        } elseif ($batchService->doesBatchCodeExist($_POST['batchCode'])) {
+            $_SESSION['alertMsg'] = _translate("Something went wrong. Please try again later.", true);
+            MiscUtility::redirect("batches.php?type=" . $_POST['type']);
         } else {
-            if ($batchService->doesBatchCodeExist($_POST['batchCode'])) {
-                $_SESSION['alertMsg'] = _translate("Something went wrong. Please try again later.", true);
-                MiscUtility::redirect("batches.php?type=" . $_POST['type']);
+            $maxSampleBatchId = $general->getMaxSampleBatchId($testTable);
+            $maxBatchId = $general->getMaxBatchId($tableName1);
+            $data = [
+                'machine' => $_POST['platform'],
+                'lab_assigned_batch_code' => $_POST['labAssignedBatchCode'],
+                'batch_code' => $_POST['batchCode'],
+                'batch_code_key' => $_POST['batchCodeKey'],
+                'position_type' => $_POST['positions'],
+                'test_type' => $_POST['type'],
+                'created_by' => $_SESSION['userId'],
+                'last_modified_by' => $_SESSION['userId'],
+                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                'request_created_datetime' => DateUtility::getCurrentDateTime()
+            ];
+
+            if ($maxBatchId < $maxSampleBatchId) {
+                $data['batch_id'] = $maxSampleBatchId + 1;
+            }
+            $db->insert($tableName1, $data);
+
+            $lastId = $maxBatchId < $maxSampleBatchId ? $maxSampleBatchId + 1 : $db->getInsertId();
+
+            $selectedSamples = $_POST['batchedSamples'] ?? [];
+            if ($lastId > 0 && !empty($selectedSamples)) {
+                $uniqueSampleIds = array_unique($selectedSamples);
+                $db->where($testTablePrimaryKey, $uniqueSampleIds, "IN");
+                $db->update($testTable, ['sample_batch_id' => $lastId]);
+                MiscUtility::redirect("add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
             } else {
-                $maxSampleBatchId = $general->getMaxSampleBatchId($testTable);
-                $maxBatchId = $general->getMaxBatchId($tableName1);
-                $data = [
-                    'machine' => $_POST['platform'],
-                    'lab_assigned_batch_code' => $_POST['labAssignedBatchCode'],
-                    'batch_code' => $_POST['batchCode'],
-                    'batch_code_key' => $_POST['batchCodeKey'],
-                    'position_type' => $_POST['positions'],
-                    'test_type' => $_POST['type'],
-                    'created_by' => $_SESSION['userId'],
-                    'last_modified_by' => $_SESSION['userId'],
-                    'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-                    'request_created_datetime' => DateUtility::getCurrentDateTime()
-                ];
-
-                if ($maxBatchId < $maxSampleBatchId) {
-                    $data['batch_id'] = $maxSampleBatchId + 1;
-                }
-                $db->insert($tableName1, $data);
-
-                if ($maxBatchId < $maxSampleBatchId) {
-                    $lastId = $maxSampleBatchId + 1;
-                } else {
-                    $lastId = $db->getInsertId();
-                }
-
-                $selectedSamples = $_POST['batchedSamples'] ?? [];
-                if ($lastId > 0 && !empty($selectedSamples)) {
-                    $uniqueSampleIds = array_unique($selectedSamples);
-                    $db->where($testTablePrimaryKey, $uniqueSampleIds, "IN");
-                    $db->update($testTable, ['sample_batch_id' => $lastId]);
-                    MiscUtility::redirect("add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
-                } else {
-                    MiscUtility::redirect("batches.php?type=" . $_POST['type']);
-                }
+                MiscUtility::redirect("batches.php?type=" . $_POST['type']);
             }
         }
     }

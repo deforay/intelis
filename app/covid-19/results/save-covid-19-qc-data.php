@@ -22,22 +22,9 @@ $primaryKey1 = "qc_test_id";
 //var_dump($_POST);
 
 try {
-    if (isset($_POST['qcCode']) && trim((string) $_POST['qcCode']) != "") {
+    if (isset($_POST['qcCode']) && trim((string) $_POST['qcCode']) !== "") {
 
-        $data = array(
-            'unique_id'             => MiscUtility::generateULID(),
-            'qc_code'               => $_POST['qcCode'],
-            'testkit'               => base64_decode((string) $_POST['testKit']),
-            'lot_no'                => $_POST['lotNo'],
-            'expiry_date'           => DateUtility::isoDateFormat($_POST['expiryDate']),
-            'lab_id'                => $_POST['labName'],
-            'testing_point'                => $_POST['testingPoint'],
-            'tested_by'             => $_POST['testerName'],
-            'qc_received_datetime'    => date("Y-m-d H:s:i", strtotime((string) $_POST['receivedOn'])),
-            'qc_tested_datetime'    => date("Y-m-d H:s:i", strtotime((string) $_POST['testedOn'])),
-            'created_on'            => DateUtility::getCurrentDateTime(),
-            'updated_datetime'            => DateUtility::getCurrentDateTime()
-        );
+        $data = ['unique_id'             => MiscUtility::generateULID(), 'qc_code'               => $_POST['qcCode'], 'testkit'               => base64_decode((string) $_POST['testKit']), 'lot_no'                => $_POST['lotNo'], 'expiry_date'           => DateUtility::isoDateFormat($_POST['expiryDate']), 'lab_id'                => $_POST['labName'], 'testing_point'                => $_POST['testingPoint'], 'tested_by'             => $_POST['testerName'], 'qc_received_datetime'    => date("Y-m-d H:s:i", strtotime((string) $_POST['receivedOn'])), 'qc_tested_datetime'    => date("Y-m-d H:s:i", strtotime((string) $_POST['testedOn'])), 'created_on'            => DateUtility::getCurrentDateTime(), 'updated_datetime'            => DateUtility::getCurrentDateTime()];
         $exist = false;
         if (isset($_POST['qcDataId']) && $_POST['qcDataId'] != "") {
             /* Suppose while edit they can change the testkit means prev data not needed so we can rease it from DB */
@@ -64,11 +51,7 @@ try {
         if ($lastId > 0) {
             foreach ($_POST['testLabel'] as $key => $row) {
                 if (isset($_POST['testResults'][$key]) && $_POST['testResults'][$key] != "") {
-                    $subData = array(
-                        "qc_id"         => $lastId,
-                        "test_label"    => $row,
-                        "test_result"   => $_POST['testResults'][$key],
-                    );
+                    $subData = ["qc_id"         => $lastId, "test_label"    => $row, "test_result"   => $_POST['testResults'][$key]];
 
                     $db->insert($tableName1, $subData);
 

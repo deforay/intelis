@@ -52,7 +52,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['fac
 //facility details
 if (isset($vlQueryInfo['facility_id']) && $vlQueryInfo['facility_id'] > 0) {
      $facilityQuery = "SELECT * FROM facility_details WHERE facility_id= ? AND status='active'";
-     $facilityResult = $db->rawQuery($facilityQuery, array($vlQueryInfo['facility_id']));
+     $facilityResult = $db->rawQuery($facilityQuery, [$vlQueryInfo['facility_id']]);
 }
 
 $facilityCode = $facilityResult[0]['facility_code'] ?? '';
@@ -62,7 +62,7 @@ $facilityEmails = $facilityResult[0]['facility_emails'] ?? '';
 $facilityState = $facilityResult[0]['facility_state'] ?? '';
 $facilityDistrict = $facilityResult[0]['facility_district'] ?? '';
 
-if (trim((string) $facilityResult[0]['facility_state']) != '') {
+if (trim((string) $facilityResult[0]['facility_state']) !== '') {
      $stateQuery = "SELECT * FROM geographical_divisions where geo_name='" . $facilityResult[0]['facility_state'] . "'";
      $stateResult = $db->query($stateQuery);
 }
@@ -71,7 +71,7 @@ if (!isset($stateResult[0]['geo_code'])) {
 }
 //district details
 $districtResult = [];
-if (trim((string) $facilityResult[0]['facility_state']) != '') {
+if (trim((string) $facilityResult[0]['facility_state']) !== '') {
      $districtQuery = "SELECT DISTINCT facility_district from facility_details
                          WHERE facility_state=? AND status='active'";
      $districtResult = $db->rawQuery($districtQuery, [$facilityResult[0]['facility_state']]);
@@ -86,7 +86,8 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
      $rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
      $rch .= '<tbody>';
      $splitChanges = explode('vlsm', (string) $vlQueryInfo['reason_for_result_changes']);
-     for ($c = 0; $c < count($splitChanges); $c++) {
+     $counter = count($splitChanges);
+     for ($c = 0; $c < $counter; $c++) {
           $getData = explode("##", $splitChanges[$c]);
           $changedDate = explode(" ", $getData[2]);
           $changedDate = DateUtility::humanReadableDateFormat($changedDate, true);
@@ -95,7 +96,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
      $rch .= '</tbody>';
      $rch .= '</table>';
 }
-$testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name', 'parent_reason'), false, " test_reason_status like 'active' ");
+$testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", ['test_reason_id', 'test_reason_name', 'parent_reason'], false, " test_reason_status like 'active' ");
 $subTestReasons = $testReasonsResult = [];
 foreach ($testReasonsResultDetails as $row) {
      if ($row['parent_reason'] == 0) {
@@ -109,7 +110,7 @@ if ($general->isLISInstance() && $vlQueryInfo['patient_dob'] == null && $vlQuery
      $ageInfo = "ageUnreported";
 }
 $facilityId = $vlQueryInfo['facility_id'];
-$reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request_clinician_name", "request_clinician_name"), true, "facility_id= $facilityId ");
+$reqClinicianList =  $general->getDataByTableAndFields("form_vl", ["request_clinician_name", "request_clinician_name"], true, "facility_id= $facilityId ");
 
 ?>
 <style>
@@ -306,16 +307,22 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="dob"><?= _translate('Date of Birth'); ?> <span class='mandatory'>*</span></label>
-                                                       <input type="text" name="dob" id="dob" value="<?= $vlQueryInfo['patient_dob'] ?>" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();checkARTInitiationDate();" <?php if ($ageInfo == "ageUnreported") echo "readonly"; ?> />
+                                                       <input type="text" name="dob" id="dob" value="<?= $vlQueryInfo['patient_dob'] ?>" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();checkARTInitiationDate();" <?php if ($ageInfo === "ageUnreported") {
+                                                                                                                                                                                                                                                                                        echo "readonly";
+                                                                                                                                                                                                                                                                                   } ?> />
                                                        <?php if ($general->isLISInstance()) { ?>
-                                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if ($ageInfo == "ageUnreported") echo "checked='checked'"; ?> /> <label for="dob"><?= _translate('Unreported'); ?> </label>
+                                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if ($ageInfo === "ageUnreported") {
+                                                                                                                                                           echo "checked='checked'";
+                                                                                                                                                      } ?> /> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                                        <?php } ?>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="ageInYears"><?= _translate('If DOB unknown, Age in Year(s)'); ?><span class='mandatory'>*</span> </label>
-                                                       <input type="text" name="ageInYears" id="ageInYears" value="<?= $vlQueryInfo['patient_age_in_years'] ?>" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Year(s)'); ?>" title="<?= _translate('Enter age in years'); ?>" <?php if ($ageInfo == "ageUnreported") echo "readonly"; ?> />
+                                                       <input type="text" name="ageInYears" id="ageInYears" value="<?= $vlQueryInfo['patient_age_in_years'] ?>" class="form-control forceNumeric" maxlength="2" placeholder="<?= _translate('Age in Year(s)'); ?>" title="<?= _translate('Enter age in years'); ?>" <?php if ($ageInfo === "ageUnreported") {
+                                                                                                                                                                                                                                                                                                                           echo "readonly";
+                                                                                                                                                                                                                                                                                                                      } ?> />
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -428,10 +435,11 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                                                       $selected = "selected='selected'";
                                                                  }
                                                                  foreach ($sResult as $name) { ?>
-                                                                      <option <?= $selected; ?> <?php if ($name['sample_id'] == $vlQueryInfo['specimen_type'])
+                                                                      <option <?= $selected; ?> <?php if ($name['sample_id'] == $vlQueryInfo['specimen_type']) {
                                                                                                          echo "selected='selected'";
-                                                                                                    else
-                                                                                                         echo ""; ?> value="<?php echo $name['sample_id']; ?>"><?= _translate($name['sample_name']); ?></option>
+                                                                                                    } else {
+                                                                                                         echo "";
+                                                                                                    } ?> value="<?php echo $name['sample_id']; ?>"><?= _translate($name['sample_name']); ?></option>
                                                                  <?php } ?>
                                                             </select>
                                                        </div>
@@ -529,7 +537,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                                             <h3 class="box-title"><?= _translate('Reason for Viral Load Testing'); ?> <span class="mandatory">*</span></h3><small> <?= _translate('(Please pick one): (To be completed by clinician)'); ?></small>
                                                        </div>
                                                        <div class="box-body">
-                                                            <?php if (isset($testReasonsResult) && !empty($testReasonsResult)) {
+                                                            <?php if (isset($testReasonsResult) && $testReasonsResult !== []) {
                                                                  foreach ($testReasonsResult as $key => $title) { ?>
                                                                       <div class="row">
                                                                            <div class="col-md-6">
@@ -553,7 +561,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                                                                 </div>
                                                                            </div>
                                                                       <?php } ?>
-                                                                      <?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) { ?>
+                                                                      <?php if (isset($subTestReasons[$key]) && (isset($subTestReasons[$key]) && $subTestReasons[$key] !== [])) { ?>
                                                                            <div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:<?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "block" : "none"; ?>;">
                                                                                 <div class="col-md-6">
                                                                                      <label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>
@@ -787,26 +795,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                </div>
      </section>
 </div>
-<!-- BARCODESTUFF START -->
-<?php
-if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
-     if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
-          <script src="/assets/js/DYMO.Label.Framework.js"></script>
-          <script src="/uploads/barcode-formats/dymo-format.js"></script>
-          <script src="/assets/js/dymo-print.js"></script>
-     <?php
-     } else if ($global['bar_code_printing'] == 'zebra-printer') {
-     ?>
-          <script src="/assets/js/zebra-browserprint.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-browserprint.js") ?>"></script>
-          <script src="/uploads/barcode-formats/zebra-format.js?v=<?= filemtime(WEB_ROOT . "/uploads/barcode-formats/zebra-format.js") ?>"></script>
-          <script src="/assets/js/zebra-print.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-print.js") ?>"></script>
-<?php
-     }
-}
-?>
-
-<!-- BARCODESTUFF END -->
+<?= CommonService::barcodeScripts(); ?>
 <script>
      provinceName = true;
      facilityName = true;

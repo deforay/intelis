@@ -1,5 +1,9 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\ACCEPTED;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -11,7 +15,7 @@ use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -30,8 +34,8 @@ try {
 
 
      $sampleCode = 'sample_code';
-     $aColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
+     $aColumns = ['vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
+     $orderColumns = ['vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name'];
      if ($general->isSTSInstance()) {
           $sampleCode = 'remote_sample_code';
      } elseif ($general->isStandaloneInstance()) {
@@ -85,7 +89,7 @@ try {
           LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by";
 
 
-     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
@@ -93,31 +97,31 @@ try {
           $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
      }
 
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
           $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
      }
 
-     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
+     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
           $sWhere[] = ' vl.lab_id IN (' . $_POST['vlLab'] . ')';
      }
 
-     if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
+     if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           if ($_POST['status'] == 'no_result') {
-               $statusCondition = ' ((vl.hcv_vl_count is NULL OR vl.hcv_vl_count  = "" OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  = "") AND vl.result_status = ' . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . ')';
+               $statusCondition = ' ((vl.hcv_vl_count is NULL OR vl.hcv_vl_count  = "" OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  = "") AND vl.result_status = ' . RECEIVED_AT_TESTING_LAB . ')';
           } elseif ($_POST['status'] == 'result') {
                $statusCondition = ' vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  != "" OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  != "" ';
           } else {
-               $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
+               $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . REJECTED;
           }
           $sWhere[] = $statusCondition;
      } else {
-          $sWhere[] = " ((vl.result_status = " . SAMPLE_STATUS\ACCEPTED . " AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = " . SAMPLE_STATUS\REJECTED . " AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
+          $sWhere[] = " ((vl.result_status = " . ACCEPTED . " AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = " . REJECTED . " AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
      }
 
-     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
+     if (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
           $sWhere[] = '  vl.funding_source ="' . base64_decode((string) $_POST['fundingSource']) . '"';
      }
-     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') {
+     if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') {
           $sWhere[] = '  vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
      }
 
@@ -125,13 +129,13 @@ try {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
      }
 
-     if (!empty($sWhere)) {
+     if ($sWhere !== []) {
           $sWhere = implode(' AND ', $sWhere);
           $sQuery = "$sQuery WHERE $sWhere";
      }
 
      if (!empty($sOrder) && $sOrder !== '') {
-          $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+          $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
           $sQuery = "$sQuery ORDER BY $sOrder";
      }
 
@@ -154,13 +158,11 @@ try {
      foreach ($rResult as $aRow) {
           $row = [];
           $print = '<a href="/hepatitis/results/hepatitis-update-result.php?id=' . MiscUtility::sqid($aRow['hepatitis_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
-          if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
-               if (!_isAllowed("/hepatitis/requests/edit-locked-hepatitis-samples")) {
-                    $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em> ' . _translate("Locked") . '</a>';
-               }
+          if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/hepatitis/requests/edit-locked-hepatitis-samples")) {
+               $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em> ' . _translate("Locked") . '</a>';
           }
 
-          $row[] = $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '');
+          $row[] = $aRow['sample_code'] . (empty($aRow['external_sample_code']) ? '' : "<br>/" . $aRow['external_sample_code']);
           if (!$general->isStandaloneInstance()) {
                $row[] = $aRow['remote_sample_code'];
           }
@@ -176,7 +178,7 @@ try {
           $row[] = $aRow['hcv_vl_count'];
           $row[] = $aRow['hbv_vl_count'];
 
-          if (isset($aRow['lastModifiedDate']) && trim((string) $aRow['lastModifiedDate']) != '' && $aRow['lastModifiedDate'] != '0000-00-00 00:00:00') {
+          if (isset($aRow['lastModifiedDate']) && trim((string) $aRow['lastModifiedDate']) !== '' && $aRow['lastModifiedDate'] != '0000-00-00 00:00:00') {
                $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['lastModifiedDate'], true);
           } else {
                $aRow['last_modified_datetime'] = '';

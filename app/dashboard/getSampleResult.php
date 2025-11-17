@@ -99,10 +99,8 @@ try {
 
     if (!$general->isSTSInstance()) {
         $whereParts[] = "t.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-    } else {
-        if (!empty($_SESSION['facilityMap'])) {
-            $whereParts[] = "t.facility_id IN (" . $_SESSION['facilityMap'] . ")";
-        }
+    } elseif (!empty($_SESSION['facilityMap'])) {
+        $whereParts[] = "t.facility_id IN (" . $_SESSION['facilityMap'] . ")";
     }
     $baseWhere = implode(' AND ', $whereParts);
 
@@ -141,13 +139,11 @@ try {
     $notRejectedExpr = "LOWER(COALESCE(NULLIF(TRIM(t.is_sample_rejected), ''), 'no')) = 'no'";
 
     // Common builder for WHERE
-    $W = function (array $extra = []) use ($baseWhere, $partitionWhere) {
-        return implode(' AND ', array_values(array_filter([
-            $baseWhere ?: null,
-            $partitionWhere ?: null,
-            ...$extra
-        ])));
-    };
+    $W = fn(array $extra = []): string => implode(' AND ', array_values(array_filter([
+        $baseWhere ?: null,
+        $partitionWhere ?: null,
+        ...$extra
+    ])));
 
     // ======================================================
     // A) Waiting (last 6 months, no result, not rejected)
@@ -529,7 +525,7 @@ try {
         });
     <?php }
     //waiting result
-    if (!empty($waitingTotal) && $waitingTotal > 0) { ?>
+    if ($waitingTotal !== 0 && $waitingTotal > 0) { ?>
 
         $('#<?php echo $samplesWaitingChart; ?>').highcharts({
             chart: {
@@ -551,7 +547,7 @@ try {
                 enabled: false
             },
             xAxis: {
-                categories: [<?= implode(',', array_map(fn($s) => "'" . addslashes($s) . "'", $waitingCategories)); ?>],
+                categories: [<?= implode(',', array_map(fn($s): string => "'" . addslashes((string) $s) . "'", $waitingCategories)); ?>],
                 crosshair: true,
                 scrollbar: {
                     enabled: true
@@ -787,27 +783,27 @@ try {
                 name: 'Sample',
                 showInLegend: false,
                 data: [{
-                        y: <?php echo (isset($aggregateResult['tested'])) ? $aggregateResult['tested'] : 0; ?>,
+                        y: <?php echo $aggregateResult['tested'] ?? 0; ?>,
                         color: '#039BE6'
                     },
                     {
-                        y: <?php echo (isset($aggregateResult['rejected'])) ? $aggregateResult['rejected'] : 0; ?>,
+                        y: <?php echo $aggregateResult['rejected'] ?? 0; ?>,
                         color: '#492828'
                     },
                     {
-                        y: <?php echo (isset($aggregateResult['hold'])) ? $aggregateResult['hold'] : 0; ?>,
+                        y: <?php echo $aggregateResult['hold'] ?? 0; ?>,
                         color: '#60d18f'
                     },
                     {
-                        y: <?php echo (isset($aggregateResult['registeredAtTestingLab'])) ? $aggregateResult['registeredAtTestingLab'] : 0; ?>,
+                        y: <?php echo $aggregateResult['registeredAtTestingLab'] ?? 0; ?>,
                         color: '#ff1900'
                     },
                     {
-                        y: <?php echo (isset($aggregateResult['awaitingApproval'])) ? $aggregateResult['awaitingApproval'] : 0; ?>,
+                        y: <?php echo $aggregateResult['awaitingApproval'] ?? 0; ?>,
                         color: '#395B64'
                     },
                     {
-                        y: <?php echo (isset($aggregateResult['registeredAtCollectionPoint'])) ? $aggregateResult['registeredAtCollectionPoint'] : 0; ?>,
+                        y: <?php echo $aggregateResult['registeredAtCollectionPoint'] ?? 0; ?>,
                         color: '#2C3333'
                     }
                 ],

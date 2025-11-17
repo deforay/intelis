@@ -61,7 +61,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['fac
 
 $sKey = '';
 $sFormat = '';
-$testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", array('test_reason_id', 'test_reason_name', 'parent_reason'), false, " test_reason_status like 'active' ");
+$testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", ['test_reason_id', 'test_reason_name', 'parent_reason'], false, " test_reason_status like 'active' ");
 $subTestReasons = $testReasonsResult = [];
 foreach ($testReasonsResultDetails as $row) {
      if ($row['parent_reason'] == 0) {
@@ -116,9 +116,9 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 
 $isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp((string) $vlQueryInfo['vl_test_platform'], "genexpert") === 0);
 
-if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
+if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
      $vlQueryInfo['result'] = trim(str_ireplace((string) $vlQueryInfo['result_value_hiv_detection'], "", (string) $vlQueryInfo['result']));
-} elseif ($isGeneXpert === true && !empty($vlQueryInfo['result'])) {
+} elseif ($isGeneXpert && !empty($vlQueryInfo['result'])) {
 
      $vlQueryInfo['result_value_hiv_detection'] = null;
 
@@ -210,7 +210,7 @@ $disable = "disabled = 'disabled'";
                                         <div class="col-xs-4 col-md-4">
                                              <div class="form-group" style=" width: 100%; ">
                                                   <label for="sampleReordered">
-                                                       <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) == 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please indicate if this is a reordered sample"> <?= _translate("Sample Reordered") ?>
+                                                       <input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $vlQueryInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please indicate if this is a reordered sample"> <?= _translate("Sample Reordered") ?>
                                                   </label>
                                              </div>
                                         </div>
@@ -247,13 +247,13 @@ $disable = "disabled = 'disabled'";
                                              </div>
                                         </div>
                                    </div>
-                                   <div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) != '' || trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;">
-                                        <div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;"><strong><?= _translate("Clinic Email(s)"); ?></strong></div>
-                                        <div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_emails']; ?></div>
-                                        <div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><strong><?= _translate("Clinic Mobile No.(s)"); ?></strong></div>
-                                        <div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
-                                        <div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><strong><?= _translate("Clinic Contact Person"); ?> -</strong></div>
-                                        <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;"><?php echo ($user); ?></div>
+                                   <div class="row facilityDetails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '' || trim((string) $facilityResult[0]['contact_person']) !== '') ? '' : 'none'; ?>;">
+                                        <div class="col-xs-2 col-md-2 femails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '') ? '' : 'none'; ?>;"><strong><?= _translate("Clinic Email(s)"); ?></strong></div>
+                                        <div class="col-xs-2 col-md-2 femails facilityEmails" style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_emails']; ?></div>
+                                        <div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '') ? '' : 'none'; ?>;"><strong><?= _translate("Clinic Mobile No.(s)"); ?></strong></div>
+                                        <div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
+                                        <div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) !== '') ? '' : 'none'; ?>;"><strong><?= _translate("Clinic Contact Person"); ?> -</strong></div>
+                                        <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) !== '') ? '' : 'none'; ?>;"><?php echo ($user); ?></div>
                                    </div>
                                    <div class="row">
                                         <div class="col-xs-4 col-md-4">
@@ -449,9 +449,9 @@ $disable = "disabled = 'disabled'";
                                                                  <option value=""> -- <?= _translate("Select"); ?> -- </option>
                                                                  <option value="6 Months" <?php echo ($vlQueryInfo['treatment_duration_precise'] == '6 Months') ? "selected='selected'" : "" ?>><?= _translate("6 Months"); ?></option>
                                                                  <option value="12 Months" <?php echo ($vlQueryInfo['treatment_duration_precise'] == '12 Months') ? "selected='selected'" : "" ?>><?= _translate("12 Months"); ?></option>
-                                                                 <option value="More than 12 Months" <?php echo (($vlQueryInfo['treatment_duration_precise'] == 'More than 12 Months') || (!in_array($vlQueryInfo['treatment_duration_precise'], array("6 Months", "12 Months")) && isset($vlQueryInfo['treatment_duration_precise']))) ? "selected='selected'" : "" ?>><?= _translate("More than 12 Months"); ?></option>
+                                                                 <option value="More than 12 Months" <?php echo (($vlQueryInfo['treatment_duration_precise'] == 'More than 12 Months') || (!in_array($vlQueryInfo['treatment_duration_precise'], ["6 Months", "12 Months"]) && isset($vlQueryInfo['treatment_duration_precise']))) ? "selected='selected'" : "" ?>><?= _translate("More than 12 Months"); ?></option>
                                                             </select>
-                                                            <?php $display =  ((!in_array($vlQueryInfo['treatment_duration_precise'], array("6 Months", "12 Months"))) && isset($vlQueryInfo['treatment_duration_precise'])) ? "block" : "none"; ?>
+                                                            <?php $display =  ((!in_array($vlQueryInfo['treatment_duration_precise'], ["6 Months", "12 Months"])) && isset($vlQueryInfo['treatment_duration_precise'])) ? "block" : "none"; ?>
                                                             <input type="text" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['treatment_duration_precise'] ?? null; ?>" class="form-control" name="treatmentDurationPrecise1" id="treatmentDurationPrecise1" placeholder="Enter treatment period" title="Please enter treatment period" style="width:100%;display:<?php echo $display; ?>;margin-top:10px;">
                                                        </div>
                                                   </div>
@@ -497,7 +497,7 @@ $disable = "disabled = 'disabled'";
                                                   <h3 class="box-title"><?= _translate("Indication for Viral Load Testing"); ?> <span class="mandatory">*</span></h3><small> <?= _translate("(Please choose one):(To be completed by clinician)"); ?></small>
                                              </div>
                                              <div class="box-body">
-                                                  <?php if (isset($testReasonsResult) && !empty($testReasonsResult)) {
+                                                  <?php if (isset($testReasonsResult) && $testReasonsResult !== []) {
                                                        foreach ($testReasonsResult as $key => $title) { ?>
                                                             <div class="row">
                                                                  <div class="col-md-6">
@@ -521,7 +521,7 @@ $disable = "disabled = 'disabled'";
                                                                       </div>
                                                                  </div>
                                                             <?php } ?>
-                                                            <?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) { ?>
+                                                            <?php if (isset($subTestReasons[$key]) && (isset($subTestReasons[$key]) && $subTestReasons[$key] !== [])) { ?>
                                                                  <div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:<?php echo ($vlQueryInfo['reason_for_vl_testing'] == $key || in_array($vlQueryInfo['reason_for_vl_testing'], array_keys($subTestReasons[$key]))) ? "block" : "none"; ?>;">
                                                                       <div class="col-md-6">
                                                                            <label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>
@@ -762,26 +762,8 @@ $disable = "disabled = 'disabled'";
           </div>
      </section>
 </div>
-<!-- BARCODESTUFF START -->
-<?php
-if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
-     if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
-?>
-          <script src="/assets/js/DYMO.Label.Framework.js"></script>
-          <script src="/uploads/barcode-formats/dymo-format.js"></script>
-          <script src="/assets/js/dymo-print.js"></script>
-     <?php
-     } else if ($global['bar_code_printing'] == 'zebra-printer') {
-     ?>
-          <script src="/assets/js/zebra-browserprint.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-browserprint.js") ?>"></script>
-          <script src="/uploads/barcode-formats/zebra-format.js?v=<?= filemtime(WEB_ROOT . "/uploads/barcode-formats/zebra-format.js") ?>"></script>
-          <script src="/assets/js/zebra-print.js?v=<?= filemtime(WEB_ROOT . "/assets/js/zebra-print.js") ?>"></script>
-<?php
 
-     }
-}
-?>
-<!-- BARCODESTUFF END -->
+<?= CommonService::barcodeScripts(); ?>
 
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
 <script>

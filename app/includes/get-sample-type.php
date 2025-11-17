@@ -7,7 +7,7 @@ use App\Services\CommonService;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-if (empty($_POST)) {
+if ($_POST === []) {
     exit(0);
 }
 
@@ -17,7 +17,7 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $db->where('facility_id', $_POST['facilityId']);
-$facilityDetails = $db->getOne('facility_details', array('facility_attributes'));
+$facilityDetails = $db->getOne('facility_details', ['facility_attributes']);
 $facilityAttributes = json_decode((string) $facilityDetails['facility_attributes'], true);
 if (!empty($_POST['testType'])) {
     $table = 'r_' . $_POST['testType'] . '_sample_type';

@@ -68,7 +68,7 @@ try {
     }
 
     $lastUpdate = max(array_column($rResult, 'last_modified_datetime'));
-    $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime((string) $instanceUpdateOn) : time();
+    $output['timestamp'] = empty($instanceUpdateOn) ? time() : strtotime((string) $instanceUpdateOn);
     $output['data'] = $rResult;
 
 
@@ -98,12 +98,10 @@ try {
     ];
 
     $response  = $apiService->postFile($url, 'eidFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params, true);
-    $deResult = json_decode($response, true);
+    $deResult = json_decode((string) $response, true);
 
-    if (isset($deResult['status']) && trim((string) $deResult['status']) == 'success') {
-        $data = array(
-            'eid_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : DateUtility::getCurrentDateTime())
-        );
+    if (isset($deResult['status']) && trim((string) $deResult['status']) === 'success') {
+        $data = ['eid_last_dash_sync' => (empty($lastUpdate) ? DateUtility::getCurrentDateTime() : $lastUpdate)];
 
         $db->update('s_vlsm_instance', $data);
     }

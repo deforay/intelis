@@ -61,7 +61,7 @@ if ($_SESSION['accessType'] == 'collection-site') {
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
 
-$microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
+$microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
 $typeOfPatient = json_decode((string) $tbInfo['patient_type']);
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
@@ -276,7 +276,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									</td>
 									<td style="float: left;text-align: center;">
 										<div class="follow-up hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "block" : "none"; ?>;">
-											<input type="text" value=" <?php echo (isset($followup['value']) && $followup['value'] != "" && trim((string) $followup['value']) != "") ? $followup['value'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][followup][value]" placeholder="Enter the follow up" title="Please enter the follow up">
+											<input type="text" value=" <?php echo (isset($followup['value']) && $followup['value'] != "" && trim((string) $followup['value']) !== "") ? $followup['value'] : ""; ?>" class="form-control followup-uncheck reason-checkbox" id="followUp" name="reasonForTbTest[elaboration][followup][value]" placeholder="Enter the follow up" title="Please enter the follow up">
 										</div>
 									</td>
 								</tr>

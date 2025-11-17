@@ -144,12 +144,10 @@ sort($fileList);
 										<select name="configurationFile" id="configurationFile" class="form-control select2">
 											<option value=""><?php echo _translate('Select File'); ?></option>
 											<?php
-											foreach ($fileList as $fileName) {
-											?>
+											foreach ($fileList as $fileName) { ?>
 												<option value="<?= $fileName; ?>"><?= $fileName; ?></option>
 											<?php
-											}
-											?>
+											} ?>
 										</select>
 									</div>
 								</div>
@@ -572,14 +570,13 @@ sort($fileList);
 											// FOR EDIT FORM - existing machines
 											$i = 1;
 											foreach ($configMachineInfo as $machine) {
-												if (trim($machine['poc_device'] == 'yes')) {
+												if (trim($machine['poc_device'] == 'yes') !== '' && trim($machine['poc_device'] == 'yes') !== '0') {
 													$style = "display:block";
 													$check = "checked";
 												} else {
 													$style = "display:none";
 													$check = "";
-												}
-											?>
+												} ?>
 												<tr>
 													<td>
 														<input type="hidden" name="configMachineId[]" value="<?php echo $machine['config_machine_id']; ?>" />
@@ -629,7 +626,9 @@ sort($fileList);
 														<select name="fileName[]" id="fileName<?php echo $i; ?>" class="form-control select2 instrumentFile">
 															<option value=""><?php echo _translate('Select File'); ?></option>
 															<?php foreach ($fileList as $fileName) { ?>
-																<option value="<?= $fileName; ?>" <?php if ($machine['file_name'] == $fileName) echo "selected='selected'"; ?>><?= $fileName; ?></option>
+																<option value="<?= $fileName; ?>" <?php if ($machine['file_name'] == $fileName) {
+																										echo "selected='selected'";
+																									} ?>><?= $fileName; ?></option>
 															<?php } ?>
 														</select>
 													</td>

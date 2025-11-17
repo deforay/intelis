@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\BatchService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -11,7 +12,7 @@ use App\Services\SecurityService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -28,7 +29,7 @@ $batchService = ContainerRegistry::get(BatchService::class);
 $tableName = "batch_details";
 try {
     $labelOrder = '';
-    if (isset($_POST['sortOrders']) && trim((string) $_POST['sortOrders']) != '') {
+    if (isset($_POST['sortOrders']) && trim((string) $_POST['sortOrders']) !== '') {
 
         $namesArr = $_POST['controls'];
 
@@ -49,18 +50,21 @@ try {
                     $alphaNumeric[] = $value . $no;
                 }
             }
-            for ($o = 0; $o < count($xplodSortOrders); $o++) {
+            $counter = count($xplodSortOrders);
+            for ($o = 0; $o < $counter; $o++) {
                 $orderArray[$alphaNumeric[$o]] = $xplodSortOrders[$o];
             }
         } else {
-            for ($o = 0; $o < count($xplodSortOrders); $o++) {
+            $counter = count($xplodSortOrders);
+            for ($o = 0; $o < $counter; $o++) {
                 $orderArray[$o] = $xplodSortOrders[$o];
             }
         }
 
-        if (!empty($orderArray)) {
-            for ($a = 0; $a < count($orderArray); $a++) {
-                if (!empty($_POST) && array_key_exists($orderArray[$a], $_POST)) {
+        if ($orderArray !== []) {
+            $counter = count($orderArray);
+            for ($a = 0; $a < $counter; $a++) {
+                if ($_POST !== [] && array_key_exists($orderArray[$a], $_POST)) {
                     $orderArray[$a] = $_POST[$orderArray[$a]];
                 }
             }
@@ -81,7 +85,7 @@ try {
             $batchAttributes['sort_type'] = $_POST['sortType'];
         }
 
-        if (!empty($batchAttributes)) {
+        if ($batchAttributes !== []) {
             $data['batch_attributes'] = json_encode($batchAttributes, true);
         }
         $db->where('batch_id', $_POST['batchId']);

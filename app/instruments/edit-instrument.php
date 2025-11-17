@@ -79,7 +79,7 @@ foreach ($configControlInfo as $info) {
 	$configControl[$info['test_type']]['noManufacturerCtrl'] = $info['number_of_manufacturer_controls'];
 	$configControl[$info['test_type']]['noCalibrators'] = $info['number_of_calibrators'];
 }
-$sInfo['supported_tests'] = $sInfo['supported_tests'] ?? [];
+$sInfo['supported_tests'] ??= [];
 
 $vl = in_array('vl', $sInfo['supported_tests']) ? "" : "style='display:none;'";
 $eid = in_array('eid', $sInfo['supported_tests']) ? "" : "style='display:none;'";
@@ -206,12 +206,12 @@ $activeTests = TestsService::getActiveTests();
 										<select name="configurationFile" id="configurationFile" class="form-control select2">
 											<option value=""><?php echo _translate('Select File'); ?></option>
 											<?php
-											foreach ($fileList as $fileName) {
-											?>
-												<option value="<?= $fileName; ?>" <?php if ($sInfo['import_machine_file_name'] == $fileName) echo "selected='selected'"; ?>><?= $fileName; ?></option>
+											foreach ($fileList as $fileName) { ?>
+												<option value="<?= $fileName; ?>" <?php if ($sInfo['import_machine_file_name'] == $fileName) {
+																						echo "selected='selected'";
+																					} ?>><?= $fileName; ?></option>
 											<?php
-											}
-											?>
+											} ?>
 										</select>
 									</div>
 								</div>
@@ -274,7 +274,7 @@ $activeTests = TestsService::getActiveTests();
 										<?php echo _translate("Description/Comment to add in Test Result"); ?>
 									</label>
 									<div class="col-lg-7">
-										<textarea class="form-control richtextarea" id="additionalText" name="additionalText" placeholder='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>' title='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>'><?php echo htmlspecialchars_decode($sInfo['additional_text'], ENT_QUOTES); ?></textarea>
+										<textarea class="form-control richtextarea" id="additionalText" name="additionalText" placeholder='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>' title='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>'><?php echo htmlspecialchars_decode((string) $sInfo['additional_text'], ENT_QUOTES); ?></textarea>
 									</div>
 								</div>
 							</div>
@@ -579,14 +579,13 @@ $activeTests = TestsService::getActiveTests();
 									$i = 1;
 									if (count($configMachineInfo) > 0) {
 										foreach ($configMachineInfo as $machine) {
-											if (trim($machine['poc_device'] == 'yes')) {
+											if (trim($machine['poc_device'] == 'yes') !== '' && trim($machine['poc_device'] == 'yes') !== '0') {
 												$style = "display:block";
 												$check = "checked";
 											} else {
 												$style = "display:none";
 												$check = "";
-											}
-									?>
+											} ?>
 											<tr>
 												<td>
 													<input type="hidden" name="configMachineId[]" value="<?php echo $machine['config_machine_id']; ?>" />
@@ -638,7 +637,9 @@ $activeTests = TestsService::getActiveTests();
 														<?php
 														foreach ($fileList as $fileName) {
 														?>
-															<option value="<?= $fileName; ?>" <?php if ($machine['file_name'] == $fileName) echo "selected='selected'"; ?>><?= $fileName; ?></option>
+															<option value="<?= $fileName; ?>" <?php if ($machine['file_name'] == $fileName) {
+																									echo "selected='selected'";
+																								} ?>><?= $fileName; ?></option>
 														<?php
 														}
 														?>

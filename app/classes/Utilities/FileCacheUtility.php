@@ -2,6 +2,9 @@
 
 namespace App\Utilities;
 
+use Exception;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 use App\Utilities\LoggerUtility;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
@@ -9,9 +12,9 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class FileCacheUtility
 {
-    private $prefix = 'app_cache_';
-    private FilesystemAdapter $filesystemAdapter;
-    private TagAwareAdapter $tagAwareAdapter;
+    private string $prefix = 'app_cache_';
+    private readonly FilesystemAdapter $filesystemAdapter;
+    private readonly TagAwareAdapter $tagAwareAdapter;
 
     public function __construct()
     {
@@ -19,7 +22,7 @@ class FileCacheUtility
         $this->tagAwareAdapter = new TagAwareAdapter($this->filesystemAdapter);
     }
 
-    public function setPrefix(string $prefix)
+    public function setPrefix(string $prefix): void
     {
         $this->prefix = $prefix;
     }
@@ -29,7 +32,7 @@ class FileCacheUtility
         return $this->prefix . $key;
     }
 
-    public function get(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600)
+    public function get(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600): mixed
     {
         $prefixedKey = $this->applyPrefix($key);
         return $this->tagAwareAdapter->get($prefixedKey, function (ItemInterface $item) use ($computeValueCallback, $tags, $expiration) {
@@ -37,7 +40,7 @@ class FileCacheUtility
 
             $item->set($value);
             $item->expiresAfter($expiration);
-            if (!empty($tags)) {
+            if ($tags !== null && $tags !== []) {
                 $item->tag($tags);
             }
             return $value;
@@ -53,13 +56,13 @@ class FileCacheUtility
             $this->tagAwareAdapter->get($prefixedKey, function (ItemInterface $item) use ($value, $tags, $expiration) {
                 $item->set($value);
                 $item->expiresAfter($expiration);
-                if (!empty($tags)) {
+                if ($tags !== null && $tags !== []) {
                     $item->tag($tags);
                 }
                 return $value;
             });
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             LoggerUtility::logError('Cache set failed', ['key' => $key, 'exception' => $e]);
             return false;
         }
@@ -116,7 +119,7 @@ class FileCacheUtility
             }
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             LoggerUtility::logError('Cache prune failed', ['exception' => $e]);
             return false;
         }
@@ -140,7 +143,7 @@ class FileCacheUtility
                 $stats['cache_size'] = $this->getDirectorySize($cachePath);
                 $stats['file_count'] = $this->getFileCount($cachePath);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $stats['stats_error'] = $e->getMessage();
         }
 
@@ -150,8 +153,8 @@ class FileCacheUtility
     private function getDirectorySize(string $directory): int
     {
         $size = 0;
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS)
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS)
         );
 
         foreach ($iterator as $file) {
@@ -166,8 +169,8 @@ class FileCacheUtility
     private function getFileCount(string $directory): int
     {
         $count = 0;
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS)
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS)
         );
 
         foreach ($iterator as $file) {

@@ -1,7 +1,8 @@
 <?php
 
 // File gets called in import-file-helper.php based on the selected instrument type
-
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -16,7 +17,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 try {
     // Sanitized values from $request object
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -27,11 +28,9 @@ try {
 
     // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
-    $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
+    $dateFormat = (empty($_POST['dateFormat'])) ? 'd/m/Y H:i' : $_POST['dateFormat'];
 
-    $allowedExtensions = array(
-        'txt',
-    );
+    $allowedExtensions = ['txt'];
     if (
         isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
         || $_FILES['resultFile']['size'] <= 0
@@ -103,11 +102,11 @@ try {
 
                         $sheetData[$resultCol] = str_replace(",", ".", (string) $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
-                        $absDecimalVal = round(pow(10, $logVal), 2);
+                        $absDecimalVal = round(10 ** $logVal, 2);
 
 
                         if (str_contains($sheetData[$resultCol], "<")) {
-                            if ($sheetData[$resultCol] == "< INF") {
+                            if ($sheetData[$resultCol] === "< INF") {
                                 $txtVal = $absVal = $absDecimalVal = 839;
                                 $logVal = round(log10($absDecimalVal), 2);
                             } else {
@@ -139,27 +138,25 @@ try {
                         }
                     } elseif (str_contains((string)$sheetData[$resultCol], 'IU/mL')) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
+                    } elseif (str_contains(strtolower((string)$sheetData[$resultCol]), 'not detected') || strtolower((string) $sheetData[$resultCol]) === 'target not detected') {
+                        $txtVal = "Target Not Detected";
+                        $resultFlag = "";
+                        $absVal = "";
+                        $logVal = "";
+                    } elseif ($sheetData[$resultCol] == "" || $sheetData[$resultCol] == null) {
+                        //$txtVal =  $sheetData[$flagCol];
+                        $txtVal = "Failed";
+                        $resultFlag = $sheetData[$flagCol];
                     } else {
-                        if (str_contains(strtolower((string)$sheetData[$resultCol]), 'not detected') || strtolower((string) $sheetData[$resultCol]) == 'target not detected') {
-                            $txtVal = "Target Not Detected";
-                            $resultFlag = "";
-                            $absVal = "";
-                            $logVal = "";
-                        } elseif ($sheetData[$resultCol] == "" || $sheetData[$resultCol] == null) {
-                            //$txtVal =  $sheetData[$flagCol];
-                            $txtVal = "Failed";
-                            $resultFlag = $sheetData[$flagCol];
-                        } else {
-                            $txtVal = $sheetData[$resultCol + 1];
-                            $resultFlag = "";
-                            $absVal = "";
-                            $logVal = "";
-                        }
+                        $txtVal = $sheetData[$resultCol + 1];
+                        $resultFlag = "";
+                        $absVal = "";
+                        $logVal = "";
                     }
 
 
                     $lotNumberVal = $sheetData[$lotNumberCol];
-                    if (trim((string) $sheetData[$lotExpirationDateCol]) != '') {
+                    if (trim((string) $sheetData[$lotExpirationDateCol]) !== '') {
                         $timestamp = DateTime::createFromFormat("!$dateFormat", $sheetData[$lotExpirationDateCol]);
                         if (!empty($timestamp)) {
                             $timestamp = $timestamp->getTimestamp();
@@ -194,18 +191,7 @@ try {
                     }
 
                     if (!isset($infoFromFile[$sampleCode])) {
-                        $infoFromFile[$sampleCode] = array(
-                            "sampleCode" => $sampleCode,
-                            "logVal" => $logVal,
-                            "absVal" => $absVal,
-                            "absDecimalVal" => $absDecimalVal,
-                            "txtVal" => $txtVal,
-                            "resultFlag" => $resultFlag,
-                            "testingDate" => $testingDate,
-                            "sampleType" => $sampleType,
-                            "lotNumber" => $lotNumberVal,
-                            "lotExpirationDate" => $lotExpirationDateVal,
-                        );
+                        $infoFromFile[$sampleCode] = ["sampleCode" => $sampleCode, "logVal" => $logVal, "absVal" => $absVal, "absDecimalVal" => $absDecimalVal, "txtVal" => $txtVal, "resultFlag" => $resultFlag, "testingDate" => $testingDate, "sampleType" => $sampleType, "lotNumber" => $lotNumberVal, "lotExpirationDate" => $lotExpirationDateVal];
                     }
 
                     $m++;
@@ -218,25 +204,7 @@ try {
             if ($d['sampleCode'] == $d['sampleType'] . $inc) {
                 $d['sampleCode'] = '';
             }
-            $data = array(
-                'module' => 'hepatitis',
-                'lab_id' => base64_decode((string) $_POST['labId']),
-                'vl_test_platform' => $_POST['vltestPlatform'],
-                'import_machine_name' => $_POST['configMachineName'],
-                'result_reviewed_by' => $_SESSION['userId'],
-                'sample_code' => $d['sampleCode'],
-                'result_value_log' => $d['logVal'],
-                'sample_type' => $d['sampleType'],
-                'result_value_absolute' => $d['absVal'],
-                'result_value_text' => $d['txtVal'],
-                'result_value_absolute_decimal' => $d['absDecimalVal'],
-                'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
-                'import_machine_file_name' => $fileName,
-                'lab_tech_comments' => $d['resultFlag'],
-                'lot_number' => $d['lotNumber'],
-                'lot_expiration_date' => $d['lotExpirationDate'],
-            );
+            $data = ['module' => 'hepatitis', 'lab_id' => base64_decode((string) $_POST['labId']), 'vl_test_platform' => $_POST['vltestPlatform'], 'import_machine_name' => $_POST['configMachineName'], 'result_reviewed_by' => $_SESSION['userId'], 'sample_code' => $d['sampleCode'], 'result_value_log' => $d['logVal'], 'sample_type' => $d['sampleType'], 'result_value_absolute' => $d['absVal'], 'result_value_text' => $d['txtVal'], 'result_value_absolute_decimal' => $d['absDecimalVal'], 'sample_tested_datetime' => $d['testingDate'], 'result_status' => RECEIVED_AT_TESTING_LAB, 'import_machine_file_name' => $fileName, 'lab_tech_comments' => $d['resultFlag'], 'lot_number' => $d['lotNumber'], 'lot_expiration_date' => $d['lotExpirationDate']];
 
             //echo "<pre>";var_dump($data);continue;
             if ($d['txtVal'] != "") {
@@ -272,7 +240,7 @@ try {
                         WHERE r_sample_control_name= ?";
             $scResult = $db->rawQueryOne($scQuery, [trim((string) $d['sampleType'])]);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
+                $scData = ['r_sample_control_name' => trim((string) $d['sampleType'])];
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($hepResult) && !empty($sampleCode)) {

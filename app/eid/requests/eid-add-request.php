@@ -101,17 +101,7 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
 $condition = "status ='active' AND test_type='eid'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
-$fileArray = array(
-    COUNTRY\SOUTH_SUDAN => 'forms/add-southsudan.php',
-    COUNTRY\SIERRA_LEONE => 'forms/add-sierraleone.php',
-    COUNTRY\DRC => 'forms/add-drc.php',
-    COUNTRY\CAMEROON => 'forms/add-cameroon.php',
-    COUNTRY\PNG => 'forms/add-png.php',
-    COUNTRY\WHO => 'forms/add-who.php',
-    COUNTRY\RWANDA => 'forms/add-rwanda.php',
-    COUNTRY\BURKINA_FASO => 'forms/add-burkina-faso.php'
-);
-
+$fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/add-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/add-sierraleone.php', COUNTRY\DRC => 'forms/add-drc.php', COUNTRY\CAMEROON => 'forms/add-cameroon.php', COUNTRY\PNG => 'forms/add-png.php', COUNTRY\WHO => 'forms/add-who.php', COUNTRY\RWANDA => 'forms/add-rwanda.php', COUNTRY\BURKINA_FASO => 'forms/add-burkina-faso.php'];
 require_once($fileArray[$arr['vl_form']]);
 
 ?>

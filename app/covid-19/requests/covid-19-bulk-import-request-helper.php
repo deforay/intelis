@@ -63,20 +63,20 @@ try {
 
                 $instanceId = $general->getInstanceId();
 
-                if (trim((string) $rowData['AU']) != '') {
+                if (trim((string) $rowData['AU']) !== '') {
                     $sampleCollectionDate = DateUtility::isoDateFormat($rowData['AU'] ?? '', true);
                 } else {
                     $sampleCollectionDate = null;
                 }
 
-                if (trim((string) $rowData['AX']) != '') {
+                if (trim((string) $rowData['AX']) !== '') {
                     $sampleReceivedDate = DateUtility::isoDateFormat($rowData['AX'] ?? '', true);
                 } else {
                     $sampleReceivedDate = null;
                 }
 
 
-                $data = array(
+                $data = [
                     'vlsm_instance_id'                      => $instanceId,
                     'sample_code'                           => $rowData['A'],
                     'unique_id'                             => MiscUtility::generateULID(),
@@ -141,7 +141,7 @@ try {
                     'sample_condition'                      => strtolower((string) $rowData['BP']),
                     'patient_passport_number'               => $rowData['BQ'],
                     'lab_technician'                        => $labTechnician ?? null,
-                );
+                ];
 
                 if (empty($sampleCode)) {
                     $lastId = $db->insert($tableName, $data);
@@ -165,14 +165,7 @@ try {
                     $db->delete($testTableName);
 
                     foreach ($testData as $testKitName) {
-                        $covid19TestData = array(
-                            'covid19_id'            => $lastId,
-                            'test_name'             => $testKitName['testRequest'],
-                            'facility_id'           => $labName['facility_id'] ?? null,
-                            'testing_platform'      => $testKitName['testingPlatform'],
-                            'sample_tested_datetime' => DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true),
-                            'result'                => strtolower((string) $testKitName['testResult']),
-                        );
+                        $covid19TestData = ['covid19_id'            => $lastId, 'test_name'             => $testKitName['testRequest'], 'facility_id'           => $labName['facility_id'] ?? null, 'testing_platform'      => $testKitName['testingPlatform'], 'sample_tested_datetime' => DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true), 'result'                => strtolower((string) $testKitName['testResult'])];
                         $db->insert($testTableName, $covid19TestData);
                         $covid19Data['sample_tested_datetime'] = DateUtility::isoDateFormat($testKitName['testDate'] ?? '', true);
                     }

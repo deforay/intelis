@@ -2,9 +2,10 @@
 
 namespace App\Utilities;
 
+use DirectoryIterator;
+use RuntimeException;
 use Throwable;
 use Normalizer;
-use ZipArchive;
 use Sqids\Sqids;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
@@ -18,31 +19,26 @@ final class MiscUtility
 
     public static function sanitizeFilename($filename, $regex = '/[^a-zA-Z0-9\-]/', $replace = ''): string
     {
-        return preg_replace($regex, $replace, $filename);
+        return preg_replace($regex, (string) $replace, (string) $filename);
     }
 
-    public static function sqid($data)
+    public static function sqid($data): string
     {
-        $data = !is_array($data) ? [$data] : $data;
+        $data = is_array($data) ? $data : [$data];
         $sqids = new Sqids('', 10);
         return $sqids->encode($data);
     }
 
     public static function desqid(string $data, bool $returnArray = false)
     {
-        if (empty($data) || $data == '' || !is_string($data)) {
+        if ($data === '' || $data === '0' || $data === '' || !is_string($data)) {
             return $returnArray ? [] : null;
         }
 
         $desqid = null;
         $sqids = new Sqids();
         $ids = $sqids->decode($data);
-        if ($returnArray === false && count($ids) == 1) {
-            $desqid = $ids[0];
-        } else {
-            $desqid = $ids;
-        }
-        return $desqid;
+        return $returnArray === false && count($ids) == 1 ? $ids[0] : $ids;
     }
 
     public static function generateRandomString(int $length = 32): string
@@ -77,12 +73,12 @@ final class MiscUtility
 
     public static function randomHexColor(): string
     {
-        $hexColorPart = fn() => str_pad(dechex(random_int(0, 255)), 2, '0', STR_PAD_LEFT);
+        $hexColorPart = fn(): string => str_pad(dechex(random_int(0, 255)), 2, '0', STR_PAD_LEFT);
 
         return strtoupper($hexColorPart() . $hexColorPart() . $hexColorPart());
     }
 
-    public static function makeDirectory($path, $mode = 0755, $recursive = true): bool
+    public static function makeDirectory($path, int $mode = 0755, $recursive = true): bool
     {
         $filesystem = new Filesystem();
 
@@ -93,7 +89,7 @@ final class MiscUtility
         try {
             $filesystem->mkdir($path, $mode); // Handles recursive creation automatically
             return true;
-        } catch (Throwable $exception) {
+        } catch (Throwable) {
             return false; // Directory creation failed
         }
     }
@@ -160,7 +156,7 @@ final class MiscUtility
             // This handles both files and directories recursively
             $filesystem->remove($dirname);
             return true; // Removal was successful
-        } catch (Throwable $exception) {
+        } catch (Throwable) {
             return false; // Removal failed
         }
     }
@@ -176,7 +172,7 @@ final class MiscUtility
         try {
             $filesystem->remove($filePath);
             return true;
-        } catch (Throwable $exception) {
+        } catch (Throwable) {
             // Optionally, you can log the error here
             return false; // Deletion failed
         }
@@ -228,7 +224,7 @@ final class MiscUtility
         return false;
     }
 
-    public static function fileExists($filePath): bool
+    public static function fileExists(string|iterable $filePath): bool
     {
         $filesystem = new Filesystem();
 
@@ -348,8 +344,7 @@ final class MiscUtility
                 return false;
             }
 
-            $isValidXml = @simplexml_load_string($svgContent) !== false;
-            return $isValidXml;
+            return @simplexml_load_string($svgContent) !== false;
         }
 
         // For raster images, use getimagesize() to validate the image data
@@ -423,22 +418,20 @@ final class MiscUtility
         $count = 0;
         $now = time();
 
-        foreach (new \DirectoryIterator($cacheDir) as $fileInfo) {
+        foreach (new DirectoryIterator($cacheDir) as $fileInfo) {
             if ($fileInfo->isDot() || !$fileInfo->isFile() || !str_ends_with($fileInfo->getFilename(), '.cache')) {
                 continue;
             }
 
             // If maxAge is 0, delete all cache files, otherwise check file age
-            if ($maxAge <= 0 || ($now - $fileInfo->getMTime() > $maxAge)) {
-                if (self::deleteFile($fileInfo->getPathname())) {
-                    $count++;
-                }
+            if (($maxAge <= 0 || $now - $fileInfo->getMTime() > $maxAge) && self::deleteFile($fileInfo->getPathname())) {
+                $count++;
             }
         }
 
         return $count;
     }
-    public static function getMimeType($file, $allowedMimeTypes)
+    public static function getMimeType($file, $allowedMimeTypes): false|string
     {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
 
@@ -499,14 +492,14 @@ final class MiscUtility
         $handle = fopen($filename, 'w');
 
         if ($handle === false) {
-            throw new \RuntimeException("Unable to open file: $filename");
+            throw new RuntimeException("Unable to open file: $filename");
         }
 
         // Write UTF-8 BOM
         fwrite($handle, "\xEF\xBB\xBF");
 
         // Write headings
-        if (!empty($headings)) {
+        if ($headings !== []) {
             fputcsv($handle, $headings, $delimiter, $enclosure);
         }
 
@@ -529,24 +522,24 @@ final class MiscUtility
 
         return $filename;
     }
-    public static function getGenderFromString(?string $gender)
+    public static function getGenderFromString(?string $gender): string
     {
-        return match (strtolower($gender)) {
+        return match (strtolower((string) $gender)) {
             'male', 'm' => _translate('Male'),
             'female', 'f' => _translate('Female'),
             default => _translate('Unreported')
         };
     }
-    public static function excludeKeys(array $fullArray, array $unwantedKeys)
+    public static function excludeKeys(array $fullArray, array $unwantedKeys): array
     {
         return array_diff_key($fullArray, array_flip($unwantedKeys));
     }
 
     // Updates entries in targetArray with values from sourceArray where keys exist in targetArray
-    public static function updateMatchingKeysOnly(?array $targetArray, ?array $sourceArray)
+    public static function updateMatchingKeysOnly(?array $targetArray, ?array $sourceArray): ?array
     {
 
-        if (empty($targetArray) || empty($sourceArray)) {
+        if ($targetArray === null || $targetArray === [] || ($sourceArray === null || $sourceArray === [])) {
             return $targetArray;
         }
         return array_merge($targetArray, array_intersect_key($sourceArray, $targetArray));
@@ -557,10 +550,10 @@ final class MiscUtility
     public static function convertToBytes(string $sizeString): int
     {
         return match (substr($sizeString, -1)) {
-            'M', 'm' => (int)$sizeString * 1048576,
-            'K', 'k' => (int)$sizeString * 1024,
-            'G', 'g' => (int)$sizeString * 1073741824,
-            default => (int)$sizeString,
+            'M', 'm' => (int) $sizeString * 1048576,
+            'K', 'k' => (int) $sizeString * 1024,
+            'G', 'g' => (int) $sizeString * 1073741824,
+            default => (int) $sizeString,
         };
     }
 
@@ -592,13 +585,8 @@ final class MiscUtility
 
         $mappedMimeTypes = [];
         foreach ($extensions as $ext) {
-            $ext = strtolower($ext);
-            if (isset($mimeTypesMap[$ext])) {
-                $mappedMimeTypes[$ext] = $mimeTypesMap[$ext];
-            } else {
-                // If it's already a MIME type, just use it
-                $mappedMimeTypes[$ext] = $ext;
-            }
+            $ext = strtolower((string) $ext);
+            $mappedMimeTypes[$ext] = $mimeTypesMap[$ext] ?? $ext;
         }
         return $mappedMimeTypes;
     }
@@ -623,7 +611,7 @@ final class MiscUtility
 
         foreach ($array as &$value) {
             if (is_array($value)) {
-                $value = empty($value) ? null : self::arrayEmptyStringsToNull($value, $convertEmptyJson);
+                $value = $value === [] ? null : self::arrayEmptyStringsToNull($value, $convertEmptyJson);
             } elseif ($value === '' || ($convertEmptyJson && in_array($value, ['{}', '[]'], true))) {
                 $value = null;
             }
@@ -672,7 +660,7 @@ final class MiscUtility
         $ulid = self::generateULID(attachExtraString: false); // Full 26-char ULID
 
         // Truncate the ULID only if total length allows
-        $prefix = strtoupper(preg_replace('/[^A-Z0-9]/', '', $prefix));
+        $prefix = strtoupper((string) preg_replace('/[^A-Z0-9]/', '', $prefix));
         $remaining = max(0, $length - strlen($prefix));
         return $prefix . substr($ulid, 0, $remaining);
     }
@@ -683,7 +671,7 @@ final class MiscUtility
             return '';
         }
 
-        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        $extension = pathinfo((string) $filename, PATHINFO_EXTENSION);
         return strtolower($extension);
     }
 
@@ -797,8 +785,8 @@ final class MiscUtility
 
             // Normalize to use only single hyphens
             $fileName = preg_replace('/[\/\\\\]+/', '-', $fileName); // Convert slashes to hyphen
-            $fileName = preg_replace('/-+/', '-', $fileName); // Collapse multiple hyphens
-            $fileName = strtolower(trim($fileName, '-')); // Remove leading/trailing hyphens
+            $fileName = preg_replace('/-+/', '-', (string) $fileName); // Collapse multiple hyphens
+            $fileName = strtolower(trim((string) $fileName, '-')); // Remove leading/trailing hyphens
 
             $file = rtrim(TEMP_PATH, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $fileName . '.lock';
         }
@@ -823,7 +811,9 @@ final class MiscUtility
     public static function isLockFileExpired(string $file, int $maxAgeInSeconds = 900): bool
     {
         $lockFile = self::getLockFile($file);
-        if (!file_exists($lockFile)) return true;
+        if (!file_exists($lockFile)) {
+            return true;
+        }
 
         return (time() - filemtime($lockFile)) > $maxAgeInSeconds;
     }
@@ -839,20 +829,20 @@ final class MiscUtility
             echo "Note: Garbage collection should be enabled for better signal handling" . PHP_EOL;
         }
 
-        pcntl_signal(SIGINT, function () use ($file) {
+        pcntl_signal(SIGINT, function () use ($file): never {
             echo PHP_EOL . "Interrupted. Cleaning up lock file..." . PHP_EOL;
             self::deleteLockFile($file);
             exit(130);
         });
 
-        pcntl_signal(SIGTERM, function () use ($file) {
+        pcntl_signal(SIGTERM, function () use ($file): never {
             echo PHP_EOL . "Terminated. Cleaning up lock file..." . PHP_EOL;
             self::deleteLockFile($file);
             exit(143);
         });
 
         // Add SIGQUIT handler too
-        pcntl_signal(SIGQUIT, function () use ($file) {
+        pcntl_signal(SIGQUIT, function () use ($file): never {
             echo PHP_EOL . "Quit signal received. Cleaning up lock file..." . PHP_EOL;
             self::deleteLockFile($file);
             exit(131);
@@ -897,7 +887,7 @@ final class MiscUtility
         $cleanComponents = [];
         foreach ($pathComponents as $component) {
             // Remove dangerous characters from user-supplied components
-            $cleanComponent = preg_replace('/[^a-zA-Z0-9-_]/', '', $component);
+            $cleanComponent = preg_replace('/[^a-zA-Z0-9-_]/', '', (string) $component);
             $cleanComponents[] = $cleanComponent;
         }
 
@@ -931,7 +921,7 @@ final class MiscUtility
         $cleanFileName = preg_replace('/[^a-zA-Z0-9-_]/', '', $fileNameWithoutExtension);
 
         // Reconstruct the file name with its extension
-        return $cleanFileName . ($extension ? '.' . $extension : '');
+        return $cleanFileName . ($extension !== '' && $extension !== '0' ? '.' . $extension : '');
     }
 
 
@@ -944,9 +934,9 @@ final class MiscUtility
         return [];
     }
 
-    public static function saveMetadata($metadataPath, $newData)
+    public static function saveMetadata($metadataPath, $newData): void
     {
-        self::makeDirectory(dirname($metadataPath));
+        self::makeDirectory(dirname((string) $metadataPath));
         $existingData = self::loadMetadata($metadataPath);
         $mergedData = array_merge($existingData ?? [], $newData ?? []);
         file_put_contents($metadataPath, json_encode($mergedData, JSON_PRETTY_PRINT));
@@ -1028,7 +1018,7 @@ final class MiscUtility
         }
 
         // Strip raw UTF-8 BOM bytes
-        if (strncmp($s, "\xEF\xBB\xBF", 3) === 0) {
+        if (str_starts_with($s, "\xEF\xBB\xBF")) {
             $s = substr($s, 3);
         }
 
@@ -1060,7 +1050,7 @@ final class MiscUtility
 
 
 
-    public static function cleanString($string)
+    public static function cleanString($string): null|array|string
     {
         if ($string === null || $string === '') {
             return null;
@@ -1071,20 +1061,18 @@ final class MiscUtility
         }
 
         // Remove common invisible Unicode characters
-        $string = preg_replace('/[\x{00A0}\x{200B}\x{FEFF}\x{202F}\x{2060}\x{00AD}]/u', '', $string);
+        $string = preg_replace('/[\x{00A0}\x{200B}\x{FEFF}\x{202F}\x{2060}\x{00AD}]/u', '', (string) $string);
 
         // Remove ASCII control characters (0–31 and 127)
         $string = preg_replace('/[\x00-\x1F\x7F]/u', '', $string);
 
         // Trim Unicode whitespace and control characters from both ends
-        $string = preg_replace('/^[\p{Z}\p{C}]+|[\p{Z}\p{C}]+$/u', '', $string);
-
-        return $string;
+        return preg_replace('/^[\p{Z}\p{C}]+|[\p{Z}\p{C}]+$/u', '', $string);
     }
 
     public static function getFullImagePath(string $imageName, string $basePath): ?string
     {
-        if (empty($imageName)) {
+        if ($imageName === '' || $imageName === '0') {
             return null;
         }
 
@@ -1117,11 +1105,11 @@ final class MiscUtility
         // Trim the other array to only contain keys from the reference
         $otherSubset = array_intersect_key($other, $reference);
 
-        return $reference == $otherSubset;
+        return $reference === $otherSubset;
     }
 
 
-    public static function generateErrorId($prefix = 'ERR'): string
+    public static function generateErrorId(string $prefix = 'ERR'): string
     {
         return $prefix . '-' . date('Ymd-His') . '-' . substr(uniqid(), -6);
     }
@@ -1130,7 +1118,9 @@ final class MiscUtility
     public static function console(): ConsoleOutput
     {
         static $out = null;
-        if (!$out) $out = new ConsoleOutput();
+        if (!$out) {
+            $out = new ConsoleOutput();
+        }
         return $out;
     }
 
@@ -1155,12 +1145,16 @@ final class MiscUtility
         $bar->setEmptyBarCharacter($emptyChar);
         $bar->setProgressCharacter($progressChar);
 
-        if (method_exists($bar, 'setRedrawFrequency')) $bar->setRedrawFrequency(1);
+        if (method_exists($bar, 'setRedrawFrequency')) {
+            $bar->setRedrawFrequency(1);
+        }
         if (method_exists($bar, 'minSecondsBetweenRedraws')) {
             $bar->minSecondsBetweenRedraws(0.0);
             $bar->maxSecondsBetweenRedraws(0.25);
         }
-        if (method_exists($bar, 'setOverwrite')) $bar->setOverwrite(true);
+        if (method_exists($bar, 'setOverwrite')) {
+            $bar->setOverwrite(true);
+        }
 
         $bar->setMessage($message);
         $bar->start();
@@ -1208,4 +1202,17 @@ final class MiscUtility
         $bar->finish();
         self::console()->writeln(""); // newline after the bar
     }
+
+    public static function startTimer(): float
+    {
+        return microtime(true);
+    }
+    public static function elapsedTime(float $startTimer): string
+    {
+        if ($startTimer <= 0) {
+            return '0.00';
+        }
+        return number_format(microtime(true) - $startTimer, 2);
+    }
+
 }

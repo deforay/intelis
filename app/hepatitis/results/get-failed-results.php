@@ -1,5 +1,9 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\ON_HOLD;
+use const SAMPLE_STATUS\LOST_OR_MISSING;
+use const SAMPLE_STATUS\TEST_FAILED;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -10,7 +14,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -31,12 +35,12 @@ try {
 
     $sampleCode = 'sample_code';
 
-    $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-    $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name'];
+    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
 
     if ($general->isSTSInstance()) {
         $sampleCode = 'remote_sample_code';
-    } else if ($general->isStandaloneInstance()) {
+    } elseif ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
     }
@@ -59,9 +63,8 @@ try {
     if (isset($_POST['iSortCol_0'])) {
         $sOrder = "";
         for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                if (!empty($orderColumns[(int) $_POST['iSortCol_' . $i]]))
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
+            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true" && !empty($orderColumns[(int) $_POST['iSortCol_' . $i]])) {
+                $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
                " . ($_POST['sSortDir_' . $i]) . ", ";
             }
         }
@@ -75,7 +78,7 @@ try {
         $searchArray = explode(" ", (string) $_POST['sSearch']);
         $sWhereSub = "";
         foreach ($searchArray as $search) {
-            if ($sWhereSub == "") {
+            if ($sWhereSub === "") {
                 $sWhereSub .= "(";
             } else {
                 $sWhereSub .= " AND (";
@@ -104,9 +107,9 @@ try {
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
     $failedStatusIds = [
-        SAMPLE_STATUS\ON_HOLD,
-        SAMPLE_STATUS\LOST_OR_MISSING,
-        SAMPLE_STATUS\TEST_FAILED
+        ON_HOLD,
+        LOST_OR_MISSING,
+        TEST_FAILED
     ];
     $start_date = '';
     $end_date = '';
@@ -115,7 +118,7 @@ try {
     }
 
     if (!empty($_POST['sampleCollectionDate'])) {
-        if (trim((string) $start_date) == trim((string) $end_date)) {
+        if (trim((string) $start_date) === trim((string) $end_date)) {
             $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
         } else {
             $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -128,13 +131,13 @@ try {
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
         $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
-    if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $sWhere[] =  " f.facility_district_id = '" . $_POST['district'] . "' ";
     }
-    if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
         $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
     }
-    if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
+    if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
         $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
     }
     if (isset($_POST['status']) && !empty($_POST['status'])) {
@@ -153,14 +156,10 @@ try {
     }
 
 
-    if (!empty($sWhere)) {
-        $sWhere = ' where ' . implode(' AND ', $sWhere);
-    } else {
-        $sWhere = "";
-    }
+    $sWhere = $sWhere === [] ? [] : ' where ' . implode(' AND ', $sWhere);
 
-    $sQuery = $sQuery . $sWhere;
-    if (isset($sOrder) && !empty(trim($sOrder))) {
+    $sQuery .= $sWhere;
+    if (isset($sOrder) && !in_array(trim($sOrder), ['', '0'], true)) {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . " ORDER BY " . $sOrder;
     }
@@ -175,16 +174,11 @@ try {
 
     $_SESSION['covid19RequestSearchResultQueryCount'] = $iTotal;
 
-    $output = array(
-        "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $iTotal,
-        "iTotalDisplayRecords" => $iFilteredTotal,
-        "aaData" => []
-    );
+    $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
     foreach ($rResult as $aRow) {
 
-        if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+        if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
             $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
         } else {
             $aRow['sample_collection_date'] = '';

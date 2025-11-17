@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -27,7 +28,7 @@ $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
@@ -65,8 +66,8 @@ $db->rawQuery($sql);
 
 $vlForm = (int) $general->getGlobalConfig('vl_form');
 
-$aColumns = array('p.manifest_code', 'p.module', 'facility_name', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
-$orderColumns = array('p.manifest_code', 'p.module', 'facility_name', 'p.number_of_samples', 'p.request_created_datetime');
+$aColumns = ['p.manifest_code', 'p.module', 'facility_name', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')"];
+$orderColumns = ['p.manifest_code', 'p.module', 'facility_name', 'p.number_of_samples', 'p.request_created_datetime'];
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -92,7 +93,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -123,11 +124,7 @@ if (!empty($_SESSION['facilityMap'])) {
     $sWhere[] = " EXISTS (SELECT 1 FROM $tableName t WHERE t.sample_package_code = p.manifest_code AND t.facility_id IN(" . $_SESSION['facilityMap'] . ")) ";
 }
 
-if (!empty($sWhere)) {
-    $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
-} else {
-    $sWhere = '';
-}
+$sWhere = $sWhere === [] ? [] : ' WHERE ' . implode(' AND ', $sWhere);
 
 $sQuery = $sQuery . ' ' . $sWhere;
 if (!empty($sOrder) && $sOrder !== '') {
@@ -157,7 +154,7 @@ if (_isAllowed($editUrl)) {
 
 foreach ($rResult as $aRow) {
 
-    $packageId = base64_encode($aRow['manifest_id']);
+    $packageId = base64_encode((string) $aRow['manifest_id']);
     //$packageCode = ($aRow['manifest_code']);
     $printManifestPdfText = _translate("Print Manifest PDF");
 

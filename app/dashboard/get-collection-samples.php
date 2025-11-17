@@ -31,16 +31,16 @@ $collectionQuery = "SELECT COUNT(vl.unique_id) as total, facility_name
                     FROM $table as vl
                     JOIN facility_details as f ON f.facility_id=vl.facility_id
                     WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
-if (sizeof($facilities) > 0) {
+if (count($facilities) > 0) {
     $collectionQuery .= " AND f.facility_name IN (" . implode(",", $facilities) . ")";
 }
 $collectionQuery .= "  GROUP BY f.facility_id ORDER BY total DESC";
 // die($collectionQuery);
 $collectionResult = $db->rawQuery($collectionQuery); //collection result
 $collectionTotal = 0;
-if (sizeof($collectionResult) > 0) {
+if (count($collectionResult) > 0) {
     foreach ($collectionResult as $total) {
-        $collectionTotal = $collectionTotal + $total['total'];
+        $collectionTotal += $total['total'];
     }
 }
 ?>

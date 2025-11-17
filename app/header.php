@@ -26,7 +26,7 @@ $sarr = $general->getSystemConfig();
 
 $skin = "skin-blue";
 
-$trainingMode = isset($arr['training_mode']) && trim((string) $arr['training_mode']) == 'yes';
+$trainingMode = isset($arr['training_mode']) && trim((string) $arr['training_mode']) === 'yes';
 
 $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>LIS</span>";
 $smallLogoName = "<img src='/assets/img/flask.png'>";
@@ -63,7 +63,7 @@ $topSide = $displayTopBar ? 'style="top:50px !important;"' : 'style="top:0 !impo
 
 
 $locale = $_SESSION['APP_LOCALE'] ?? 'en_US';
-$langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
+$langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 ?>
 <!DOCTYPE html>
 <html lang="<?= $langCode; ?>" translate="no">
@@ -245,7 +245,7 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 		<!-- Left side column. contains the logo and sidebar -->
 		<aside class="main-sidebar" <?= $topSide; ?>>
 			<section class="sidebar">
-				<?php if (isset($arr['logo']) && trim((string) $arr['logo']) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) { ?>
+				<?php if (isset($arr['logo']) && trim((string) $arr['logo']) !== "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) { ?>
 					<div class="user-panel">
 						<div>
 							<img src="/uploads/logo/<?= $arr['logo']; ?>" alt="Logo" style="max-width:120px;">
@@ -260,7 +260,7 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 							// Continue to next menu. We dont need this one
 							continue;
 						}
-						$classNames = trim($menu['additional_class_names'] ?? '' . ($menu['has_children'] == "yes" ? ' treeview' : ''));
+						$classNames = trim((string) ($menu['additional_class_names'] ?? '' . ($menu['has_children'] == "yes" ? ' treeview' : '')));
 
 						if ($menu['is_header'] == 'yes') {
 							echo '<li class="header">' . $menu['display_text'];
@@ -298,8 +298,7 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 										$dataInnerPages = explode(',', (string) $subMenu['inner_pages']);
 										$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
 										$innerPages = "data-inner-pages='$dataInnerPages'";
-									}
-									?>
+									} ?>
 										<li class="<?= $subMenuHasChildren ? 'treeview' : ''; ?>">
 											<?php $subHref = $subMenuHasChildren ? '#' : $subMenu['link']; ?>
 											<a href="<?= $subHref; ?>" <?= $innerPages; ?>>

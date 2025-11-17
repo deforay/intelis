@@ -45,11 +45,14 @@ function formatDateTime($datetime)
  */
 function asBool(mixed $v): bool
 {
-    if (is_bool($v)) return $v;
-    if (is_int($v))  return $v !== 0;
+    if (is_bool($v)) {
+        return $v;
+    }
+    if (is_int($v)) {
+        return $v !== 0;
+    }
     $s = strtolower(trim((string)$v));
-    if ($s === '' || $s === '0' || $s === 'false' || $s === 'off' || $s === 'no') return false;
-    return true;
+    return !($s === '' || $s === '0' || $s === 'false' || $s === 'off' || $s === 'no');
 }
 
 /**
@@ -70,7 +73,7 @@ function formatStatus(mixed $value, bool $goodWhenFalse = false): string
 /**
  * Function to format boolean values as simple symbol
  */
-function formatSymbol($value)
+function formatSymbol($value): string
 {
     return $value ? '<fg=green>[ON]</>' : '<fg=red>[OFF]</>';
 }
@@ -78,37 +81,41 @@ function formatSymbol($value)
 /**
  * Function to mask sensitive data
  */
-function maskSensitive($value, $showLast = 4)
+function maskSensitive($value, $showLast = 4): string
 {
     if (empty($value)) {
         return 'Not Set';
     }
 
-    $length = strlen($value);
+    $length = strlen((string) $value);
     if ($length <= $showLast) {
         return str_repeat('*', $length);
     }
 
-    return str_repeat('*', $length - $showLast) . substr($value, -$showLast);
+    return str_repeat('*', $length - $showLast) . substr((string) $value, -$showLast);
 }
 
 /**
  * Function to format file sizes
  */
-function formatBytes($size, $precision = 2)
+function formatBytes($size, $precision = 2): string
 {
-    if ($size === 0) return '0 B';
-    if ($size === false) return 'N/A';
+    if ($size === 0) {
+        return '0 B';
+    }
+    if ($size === false) {
+        return 'N/A';
+    }
 
-    $units = array('B', 'KB', 'MB', 'GB', 'TB');
+    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
     $base = log($size, 1024);
-    return round(pow(1024, $base - floor($base)), $precision) . ' ' . $units[floor($base)];
+    return round(1024 ** ($base - floor($base)), $precision) . ' ' . $units[floor($base)];
 }
 
 /**
  * Function to get directory size
  */
-function getDirSize($directory)
+function getDirSize($directory): false|int|float
 {
     if (!is_dir($directory)) {
         return false;
@@ -123,7 +130,7 @@ function getDirSize($directory)
                 $size += $file->getSize();
             }
         }
-    } catch (Exception $e) {
+    } catch (Exception) {
         return false;
     }
 
@@ -133,7 +140,7 @@ function getDirSize($directory)
 /**
  * Function to check if a service is running
  */
-function isServiceRunning($serviceName)
+function isServiceRunning($serviceName): bool
 {
     $output = [];
     $returnCode = 0;
@@ -164,7 +171,7 @@ function isServiceRunning($serviceName)
 /**
  * Function to get OS information
  */
-function getOSInfo()
+function getOSInfo(): array
 {
     $osInfo = [];
 
@@ -255,7 +262,7 @@ if ($isLIS) {
         );
         $overviewRows[] = [
             'Lab Name',
-            $labDetails ? substr($labDetails['facility_name'], 0, 40) : '<fg=yellow>Unknown</>',
+            $labDetails ? substr((string) $labDetails['facility_name'], 0, 40) : '<fg=yellow>Unknown</>',
             'STS API Key',
             maskSensitive(SYSTEM_CONFIG['sts']['api_key'] ?? '')
         ];
@@ -314,7 +321,7 @@ $phpVersion = phpversion();
 $diagRows = [
     [
         'OS Name',
-        substr($osInfo['name'], 0, 30),
+        substr((string) $osInfo['name'], 0, 30),
         'Apache',
         formatStatus($apacheRunning)
     ],
@@ -383,7 +390,7 @@ $configTable->setRows([
         'Username',
         $dbConfig['username'] ?? 'Not Set',
         'Admin Email',
-        substr($adminEmail ?: 'Not Set', 0, 25)
+        substr((string) ($adminEmail ?: 'Not Set'), 0, 25)
     ],
     [
         'Password',
@@ -467,8 +474,9 @@ if ($isLIS && $instanceInfo) {
     $syncRows = [];
     $syncKeys = array_keys($syncData);
     $syncValues = array_values($syncData);
+    $counter = count($syncData);
 
-    for ($i = 0; $i < count($syncData); $i += 2) {
+    for ($i = 0; $i < $counter; $i += 2) {
         $row = [];
 
         // First sync item
@@ -497,8 +505,12 @@ $healthIssues = [];
 $healthWarnings = [];
 
 // Check critical services
-if (!$apacheRunning) $healthIssues[] = 'Apache is not running';
-if (!$mysqlRunning) $healthIssues[] = 'MySQL/MariaDB is not running';
+if (!$apacheRunning) {
+    $healthIssues[] = 'Apache is not running';
+}
+if (!$mysqlRunning) {
+    $healthIssues[] = 'MySQL/MariaDB is not running';
+}
 
 // Check disk space
 if ($diskUsagePercent >= 95) {
@@ -518,24 +530,22 @@ if (is_numeric($logsSize)) {
 }
 
 // Check LIS connection
-if ($isLIS && !empty($remoteURL) && $labId) {
-    if (!CommonService::validateStsUrl($remoteURL, $labId)) {
-        $healthWarnings[] = "STS connection failed";
-    }
+if ($isLIS && !empty($remoteURL) && $labId && !CommonService::validateStsUrl($remoteURL, $labId)) {
+    $healthWarnings[] = "STS connection failed";
 }
 
 // Display health summary
-if (!empty($healthIssues) || !empty($healthWarnings)) {
+if ($healthIssues !== [] || $healthWarnings !== []) {
     $output->writeln(str_repeat("=", 80));
 
-    if (!empty($healthIssues)) {
+    if ($healthIssues !== []) {
         $output->writeln("<fg=red;options=bold>CRITICAL ISSUES:</>");
         foreach ($healthIssues as $issue) {
             $output->writeln("  <fg=red>✗</> {$issue}");
         }
     }
 
-    if (!empty($healthWarnings)) {
+    if ($healthWarnings !== []) {
         $output->writeln("<fg=yellow;options=bold>WARNINGS:</>");
         foreach ($healthWarnings as $warning) {
             $output->writeln("  <fg=yellow>!</> {$warning}");

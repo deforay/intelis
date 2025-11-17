@@ -2,6 +2,7 @@
 
 namespace App\Middlewares\App;
 
+use Override;
 use App\Services\CommonService;
 use App\Services\SecurityService;
 use Psr\Http\Message\ResponseInterface;
@@ -18,6 +19,7 @@ class CSRFMiddleware implements MiddlewareInterface
         '/api/*',
         // Add other routes to exclude from the CSRF check here
     ];
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
@@ -31,7 +33,7 @@ class CSRFMiddleware implements MiddlewareInterface
         $modifyingMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
         if (
-            CommonService::isCliRequest() === true ||
+            CommonService::isCliRequest() ||
             $this->isExcludedUri($currentURI) ||
             !in_array($method, $modifyingMethods) ||
             !isset($_SESSION['csrf_token'])

@@ -33,7 +33,7 @@ $sQuery = "SELECT vl.sample_collection_date,
 				AND vl.hcv_vl_count is not null
 				AND vl.hcv_vl_count != '' ";
 if (!empty($_SESSION['hepatitisTatData']['sWhere'])) {
-	$sQuery = $sQuery . $_SESSION['hepatitisTatData']['sWhere'];
+	$sQuery .= $_SESSION['hepatitisTatData']['sWhere'];
 }
 
 if (!empty($_SESSION['hepatitisTatData']['sOrder'])) {
@@ -45,31 +45,17 @@ $excel = new Spreadsheet();
 $output = [];
 $sheet = $excel->getActiveSheet();
 
-$headings = array("hepatitis Sample ID", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Result Print Date", "Sample Email Date");
+$headings = ["hepatitis Sample ID", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Result Print Date", "Sample Email Date"];
 
 $colNo = 1;
 
-$styleArray = array(
-	'font' => array(
-		'bold' => true,
-		'size' => '13',
-	),
-	'alignment' => array(
-		'horizontal' => Alignment::HORIZONTAL_CENTER,
-		'vertical' => Alignment::VERTICAL_CENTER,
-	),
-	'borders' => array(
-		'outline' => array(
-			'style' => Border::BORDER_THICK,
-		),
-	)
-);
+$styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THICK]]];
 
 
 $sheet->mergeCells('A1:AE1');
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
+	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 	}
 }

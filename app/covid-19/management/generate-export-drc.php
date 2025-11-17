@@ -1,6 +1,7 @@
 <?php
 
 
+use const COUNTRY\SOUTH_SUDAN;
 use App\Services\Covid19Service;
 use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
@@ -30,70 +31,11 @@ $key = (string) $general->getGlobalConfig('key');
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19ResultQuery']) != "") {
+if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19ResultQuery']) !== "") {
 
     $output = [];
 
-    $headings = array(
-        _translate("S. No."),
-        _translate("Sample ID"),
-        _translate("Remote Sample ID"),
-        _translate("Testing Lab Name"),
-        _translate("Tested By"),
-        _translate("Number of Times Tested"),
-        _translate("District"),
-        _translate("State"),
-        _translate("Collection Site"),
-        _translate("EPID Number"),
-        _translate("Patient Name"),
-        _translate("Patient DoB"),
-        _translate("Patient Age"),
-        _translate("Patient Sex"),
-        _translate("Is Patient Pregnant"),
-        _translate("Patient Phone Number"),
-        _translate("Patient Email"),
-        _translate("Patient Address"),
-        _translate("Patient Province"),
-        _translate('Commune'),
-        _translate("Nationality"),
-        _translate("Fever/Temperature"),
-        _translate("Temprature Measurement"),
-        _translate("Respiratory Rate"),
-        _translate("Oxygen Saturation"),
-        _translate("Asymptomatic"),
-        _translate("Symptoms Detected"),
-        _translate("Medical History"),
-        _translate("Comorbidities"),
-        _translate("Recenty Hospitalized?"),
-        _translate("Patient Lives With Children"),
-        _translate("Patient Cares for Children"),
-        _translate("Close Contacts"),
-        _translate("Has Recent Travel History"),
-        _translate("Country Names"),
-        _translate("Travel Return Date"),
-        _translate("Airline"),
-        _translate("Seat No."),
-        _translate("Arrival Date/Time"),
-        _translate("Departure Airport"),
-        _translate("Transit"),
-        _translate("Reason of Visit"),
-        _translate("Number of Days Sick"),
-        _translate("Date of Symptoms Onset"),
-        _translate("Date of Initial Consultation"),
-        _translate("Sample Collection Date"),
-        _translate("Reason for Test Request"),
-        _translate("Reason for Test Request"),
-        _translate("Date specimen received"),
-        _translate("Date specimen registered"),
-        _translate("Specimen Condition"),
-        _translate("Specimen Status"),
-        _translate("Specimen Type"),
-        _translate("Sample Tested Date"),
-        _translate("Testing Platform"),
-        _translate("Test Method"),
-        _translate("Result"),
-        _translate("Date result released")
-    );
+    $headings = [_translate("S. No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab Name"), _translate("Tested By"), _translate("Number of Times Tested"), _translate("District"), _translate("State"), _translate("Collection Site"), _translate("EPID Number"), _translate("Patient Name"), _translate("Patient DoB"), _translate("Patient Age"), _translate("Patient Sex"), _translate("Is Patient Pregnant"), _translate("Patient Phone Number"), _translate("Patient Email"), _translate("Patient Address"), _translate("Patient Province"), _translate('Commune'), _translate("Nationality"), _translate("Fever/Temperature"), _translate("Temprature Measurement"), _translate("Respiratory Rate"), _translate("Oxygen Saturation"), _translate("Asymptomatic"), _translate("Symptoms Detected"), _translate("Medical History"), _translate("Comorbidities"), _translate("Recenty Hospitalized?"), _translate("Patient Lives With Children"), _translate("Patient Cares for Children"), _translate("Close Contacts"), _translate("Has Recent Travel History"), _translate("Country Names"), _translate("Travel Return Date"), _translate("Airline"), _translate("Seat No."), _translate("Arrival Date/Time"), _translate("Departure Airport"), _translate("Transit"), _translate("Reason of Visit"), _translate("Number of Days Sick"), _translate("Date of Symptoms Onset"), _translate("Date of Initial Consultation"), _translate("Sample Collection Date"), _translate("Reason for Test Request"), _translate("Reason for Test Request"), _translate("Date specimen received"), _translate("Date specimen registered"), _translate("Specimen Condition"), _translate("Specimen Status"), _translate("Specimen Type"), _translate("Sample Tested Date"), _translate("Testing Platform"), _translate("Test Method"), _translate("Result"), _translate("Date result released")];
 
     if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
         unset($headings[$key]);
@@ -141,7 +83,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 
 
         $row = [];
-        if ($arr['vl_form'] == COUNTRY\SOUTH_SUDAN) {
+        if ($arr['vl_form'] == SOUTH_SUDAN) {
             // Get testing platform and test method
             $covid19TestQuery = "SELECT * FROM covid19_tests
                                     WHERE covid19_id= ? ORDER BY test_id DESC LIMIT 1";
@@ -164,7 +106,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 
         //set sample rejection
         $sampleRejection = 'No';
-        if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+        if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
             $sampleRejection = 'Yes';
         }
 
@@ -208,7 +150,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
             $row[] = $patientFname . " " . $patientLname;
         }
         $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-        $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+        $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) !== '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
         $row[] = $aRow['patient_gender'];
         $row[] = $aRow['is_patient_pregnant'];
         $row[] = $aRow['patient_phone_number'];

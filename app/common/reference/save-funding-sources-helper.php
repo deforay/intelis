@@ -17,7 +17,7 @@ $tableName = "r_funding_sources";
 $primaryKey = "funding_source_id";
 
 try {
-	if (isset($_POST['fundingSrcName']) && trim((string) $_POST['fundingSrcName']) != "") {
+	if (isset($_POST['fundingSrcName']) && trim((string) $_POST['fundingSrcName']) !== "") {
 
 		$data = [
 			'funding_source_name' => $_POST['fundingSrcName'],

@@ -1,6 +1,6 @@
 <?php
 // get-missing-samples-detail.php
-
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -10,7 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -58,12 +58,12 @@ try {
     $sWhere[] = " (t.is_sample_rejected IS NULL OR t.is_sample_rejected != 'yes') ";
 
     // Date range filter
-    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
+    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
         $sWhere[] = " t.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
     }
 
-    $whereSql = !empty($sWhere) ? (' WHERE ' . implode(' AND ', $sWhere)) : '';
+    $whereSql = $sWhere === [] ? ('') : ' WHERE ' . implode(' AND ', $sWhere);
 
     $fromQuery = "
         FROM $table as t
@@ -105,7 +105,7 @@ try {
     $totalRecords = $totalResult['total'] ?? 0;
 
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
         $sQuery = "$sQuery ORDER BY $sOrder";
     }
 
@@ -124,29 +124,19 @@ try {
 
     foreach ($rResult as $aRow) {
         $sourceReadable = $aRow['source_of_request'];
-        switch ($sourceReadable) {
-            case 'api':
-                $sourceReadable = 'API';
-                break;
-            case 'vlsts':
-                $sourceReadable = 'STS';
-                break;
-            case 'vlsm':
-            case 'manual':
-                $sourceReadable = 'LIS (Manual)';
-                break;
-            case 'app':
-                $sourceReadable = 'Tablet App';
-                break;
-            default:
-                $sourceReadable = ucfirst($sourceReadable);
-        }
+        $sourceReadable = match ($sourceReadable) {
+            'api' => 'API',
+            'vlsts' => 'STS',
+            'vlsm', 'manual' => 'LIS (Manual)',
+            'app' => 'Tablet App',
+            default => ucfirst((string) $sourceReadable),
+        };
 
         $row = [
             'priority' => $aRow['priority'],
-            'sample_code' => $aRow['sample_code'] ?: $aRow['remote_sample_code'] ?: 'N/A',
+            'sample_code' => ($aRow['sample_code'] ?: $aRow['remote_sample_code']) ?: 'N/A',
             'remote_sample_code' => $aRow['remote_sample_code'] ?: 'N/A',
-            'patient_info' => trim($aRow['patient_info']) ?: 'Unknown Patient',
+            'patient_info' => trim((string) $aRow['patient_info']) ?: 'Unknown Patient',
             'facility_name' => $aRow['facility_name'] ?: 'Unknown Facility',
             'request_date' => DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true),
             'days_pending' => $aRow['days_pending'],

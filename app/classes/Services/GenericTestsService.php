@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use Override;
+use const COUNTRY\PNG;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
@@ -18,6 +22,7 @@ final class GenericTestsService extends AbstractTestService
 
 
 
+    #[Override]
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
@@ -56,6 +61,7 @@ final class GenericTestsService extends AbstractTestService
         return $response;
     }
 
+    #[Override]
     public function insertSample($params, $returnSampleData = false): int|array
     {
         try {
@@ -73,7 +79,7 @@ final class GenericTestsService extends AbstractTestService
             // PNG FORM (formId = 5) CANNOT HAVE PROVINCE EMPTY
             // Sample Collection Date Cannot be Empty
             // Test Type cannot be empty
-            if (empty($this->testType) || empty($sampleCollectionDate) || ($formId == COUNTRY\PNG && empty($provinceId))) {
+            if (empty($this->testType) || empty($sampleCollectionDate) || ($formId == PNG && empty($provinceId))) {
                 return 0;
             }
 
@@ -117,13 +123,13 @@ final class GenericTestsService extends AbstractTestService
 
             if ($this->commonService->isSTSInstance()) {
                 $tesRequestData['remote_sample'] = 'yes';
-                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+                $tesRequestData['result_status'] = RECEIVED_AT_CLINIC;
                 if ($accessType === 'testing-lab') {
-                    $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                    $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
                 }
             } else {
                 $tesRequestData['remote_sample'] = 'no';
-                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
             }
 
             $formAttributes = [
@@ -182,7 +188,7 @@ final class GenericTestsService extends AbstractTestService
                     $testTypes['test_results_config']
                 );
             }
-            $return = array('dynamicValue' => $dynamicJson, 'dynamicLabel' => $labelsResponse, 'testDetails' => $testTypes);
+            $return = ['dynamicValue' => $dynamicJson, 'dynamicLabel' => $labelsResponse, 'testDetails' => $testTypes];
         }
         return $return;
     }
@@ -328,7 +334,7 @@ final class GenericTestsService extends AbstractTestService
             }
             // print_r($fcodes);echo "<br>";
             // After that we get the list of available values from following fcodes
-            if (isset($fcodes) && count($fcodes) > 0) {
+            if (isset($fcodes) && $fcodes !== []) {
                 foreach ($fcodes as $value) {
                     $this->db->where("(JSON_SEARCH(test_type_form, 'all', '$value') IS NOT NULL) OR (test_type_form IS NOT NULL)");
                 }

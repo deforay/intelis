@@ -18,9 +18,9 @@ $tableName = "r_eid_results";
 $primaryKey = "result_id";
 
 try {
-	if (isset($_POST['resultName']) && trim((string) $_POST['resultName']) != "") {
+	if (isset($_POST['resultName']) && trim((string) $_POST['resultName']) !== "") {
 		$data = [
-			'result_id' => strtolower($_POST['resultName']),
+			'result_id' => strtolower((string) $_POST['resultName']),
 			'result' => $_POST['resultName'],
 			'status' => $_POST['resultStatus'],
 			'updated_datetime' => DateUtility::getCurrentDateTime(),

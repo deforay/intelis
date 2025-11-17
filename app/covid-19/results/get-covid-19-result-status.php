@@ -66,7 +66,7 @@ $sWhereSub = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -99,19 +99,19 @@ $end_date = '';
 if (!empty($_POST['sampleCollectionDate'])) {
     $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
 
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+    if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+    if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
         $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
 }
 
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
     $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-    if (trim((string) $start_date) == trim((string) $end_date)) {
+    if (trim((string) $start_date) === trim((string) $end_date)) {
         $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
     } else {
         $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -133,7 +133,7 @@ if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
 }
 
 $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
 }
 
@@ -159,12 +159,7 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 $_SESSION['covid19RequestSearchResultQueryCount'] = $iTotal;
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 $vlRequest = false;
 $vlView = false;
 if ((_isAllowed("/covid-19/requests/covid-19-edit-request.php"))) {
@@ -175,7 +170,7 @@ if ((_isAllowed("covid-19-requests.php"))) {
 }
 
 foreach ($rResult as $aRow) {
-    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     } else {
         $aRow['sample_collection_date'] = '';

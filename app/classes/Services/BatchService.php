@@ -41,20 +41,18 @@ final class BatchService
         }
     }
 
-    public function getSortType($sortType)
+    public function getSortType($sortType): string
     {
         return match ($sortType) {
-            'a', 'asc' => 'asc',
             'd', 'desc' => 'desc',
             default => 'asc',
         };
     }
 
-    public function getOrderBy($sortBy, $sortType)
+    public function getOrderBy($sortBy, string $sortType): string
     {
         return match ($sortBy) {
-            'sampleCode' => 'sample_code',
-            'lastModified' => 'last_modified_datetime',
+                'lastModified' => 'last_modified_datetime',
             'requestCreated' => 'request_created_datetime',
             'labAssignedCode' => 'lab_assigned_code',
             default => 'sample_code',
@@ -70,7 +68,7 @@ final class BatchService
         return $this->db->rawQueryOne($batchQuery, [$id]);
     }
 
-    public function generateAlphaNumericRange()
+    public function generateAlphaNumericRange(): array
     {
         $alphaNumeric = [];
         foreach (range('A', 'H') as $value) {
@@ -81,7 +79,7 @@ final class BatchService
         return $alphaNumeric;
     }
 
-    public function formatLabel($value)
+    public function formatLabel($value): string|array
     {
         $str = str_replace("_", " ", (string)$value);
         if (substr_count($str, 'in house') > 0) {
@@ -95,7 +93,10 @@ final class BatchService
         }
     }
 
-    public function getConfigControl($machine)
+    /**
+     * @return array<mixed, array<'noCalibrators'|'noHouseCtrl'|'noManufacturerCtrl', mixed>>
+     */
+    public function getConfigControl($machine): array
     {
         $configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id= ? ";
         $configControlInfo = $this->db->rawQuery($configControlQuery, [$machine]);
@@ -123,14 +124,14 @@ final class BatchService
         return $this->db->rawQuery($samplesQry, [$id]);
     }
 
-    public function getPreviousBatchControlNames($machine)
+    public function getPreviousBatchControlNames($machine): mixed
     {
         $prevMachineControlQuery = "SELECT control_names from batch_details WHERE machine = ? AND control_names IS NOT NULL  ORDER BY batch_id DESC LIMIT 0,1";
         $prevMachineControlInfo = $this->db->rawQuery($prevMachineControlQuery, [$machine]);
         return json_decode((string)$prevMachineControlInfo[0]['control_names'], true);
     }
 
-    public function generateDefaultContent($configControl, $primaryKeyColumn, $patientIdColumn, $orderBy, $id, $table, $testType)
+    public function generateDefaultContent(array $configControl, $primaryKeyColumn, $patientIdColumn, $orderBy, $id, $table, $testType): array
     {
         $content = '';
         $labelNewContent = '';
@@ -165,7 +166,7 @@ final class BatchService
         return ['content' => $content, 'labelNewContent' => $labelNewContent, 'displayOrder' => $displayOrder];
     }
 
-    public function generateLabelOrderContent($batchInfo, $batchControlNames, $samplesResult, $samplesCount, $primaryKeyColumn, $patientIdColumn, $table, $testType)
+    public function generateLabelOrderContent(array $batchInfo, $batchControlNames, $samplesResult, $samplesCount, $primaryKeyColumn, $patientIdColumn, $table, $testType): array
     {
         $labelNewContent = '';
         $displayOrder = [];
@@ -185,7 +186,7 @@ final class BatchService
                     $displayOrder[] = $value;
                     $clabel = str_replace("in house", "In-House", $value);
                     $clabel = str_replace("no of ", " ", $clabel);
-                    $existingValue = $batchControlNames[$key] ?? "";
+                    $existingValue = $value ?? "";
                     $liLabel = $existingValue ?: $clabel;
                     $controls .= '<li class="ui-state-default" id="' . $key . '">' . $liLabel . '</li>';
                     $labelNewContent .= ' <tr><th>' . $liLabel . ' :</th><td> <input class="form-control" type="text" name="controls[' . $key . ']" value="' . $existingValue . '" placeholder="Enter label name"/></td></tr>';
@@ -206,7 +207,7 @@ final class BatchService
                 $displayOrder[] = $jsonValue;
                 $xplodJsonToArray = explode("_", (string)$jsonValue);
 
-                if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
+                if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] === "s") {
                     $sampleQuery = "SELECT sample_code, $patientIdColumn FROM $table WHERE  $primaryKeyColumn = ?";
                     $sampleResult = $this->db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
                     $label = $sampleResult[0]['sample_code'] . " - " . $sampleResult[0][$patientIdColumn];
@@ -225,12 +226,12 @@ final class BatchService
         return ['content' => $content, 'labelNewContent' => $labelNewContent, 'displayOrder' => $displayOrder];
     }
 
-    public function generateContent($samplesResult, $batchInfo, $batchControlNames, $configControl, $samplesCount, $table, $primaryKeyColumn, $patientIdColumn, $testType, $orderBy, $id)
+    public function generateContent($samplesResult, $batchInfo, $batchControlNames, $configControl, $samplesCount, $table, $primaryKeyColumn, $patientIdColumn, $testType, $orderBy, $id): array
     {
         $content = '';
         $labelNewContent = '';
         $displayOrder = [];
-        if (isset($batchInfo['label_order']) && trim((string)$batchInfo['label_order']) != '') {
+        if (isset($batchInfo['label_order']) && trim((string)$batchInfo['label_order']) !== '') {
             $contentData = $this->generateLabelOrderContent($batchInfo, $batchControlNames, $samplesResult, $samplesCount, $primaryKeyColumn, $patientIdColumn, $table, $testType);
             $content = $contentData['content'];
             $labelNewContent = $contentData['labelNewContent'];
@@ -248,7 +249,6 @@ final class BatchService
     {
         $getmachineQuery = "SELECT machine FROM batch_details WHERE test_type= ? ORDER BY `request_created_datetime` DESC limit 1";
         $machineData = $this->db->rawQueryOne($getmachineQuery, [$testType]);
-        $machine = $machineData['machine'];
-        return $machine;
+        return $machineData['machine'];
     }
 }

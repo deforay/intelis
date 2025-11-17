@@ -34,7 +34,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", (string) $eidInfo['mother_treatment']) : [];
 if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
     $facilityQuery = "SELECT * FROM facility_details WHERE facility_id= ? AND status='active'";
-    $facilityResult = $db->rawQuery($facilityQuery, array($eidInfo['facility_id']));
+    $facilityResult = $db->rawQuery($facilityQuery, [$eidInfo['facility_id']]);
 }
 
 $eidInfo['child_dob'] = DateUtility::humanReadableDateFormat($eidInfo['child_dob']);

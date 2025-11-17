@@ -1,7 +1,9 @@
 <?php
 
 // File gets called in import-file-helper.php based on the selected instrument type
-
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\ON_HOLD;
 use League\Csv\Reader;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -24,13 +26,13 @@ $general = ContainerRegistry::get(CommonService::class);
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 try {
 
-    $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'm/d/Y H:i';
+    $dateFormat = (empty($_POST['dateFormat'])) ? 'm/d/Y H:i' : $_POST['dateFormat'];
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'eid');
 
@@ -112,9 +114,9 @@ try {
 
                     $parsedResult = (str_replace("|", "", strtoupper($testResultsService->removeControlCharsAndEncode($record[1]))));
 
-                    if ($general->checkIfStringExists($parsedResult, array('not detected', 'notdetected')) !== false) {
+                    if ($general->checkIfStringExists($parsedResult, ['not detected', 'notdetected']) !== false) {
                         $parsedResult = 'negative';
-                    } elseif ($general->checkIfStringExists($parsedResult, array('detected'))) {
+                    } elseif ($general->checkIfStringExists($parsedResult, ['detected'])) {
                         $parsedResult = 'positive';
                     }
                     $infoFromFile[$sampleCode]['result'] = strtolower($parsedResult);
@@ -134,13 +136,13 @@ try {
                 'sample_code' => $d['sampleCode'],
                 'sample_tested_datetime' => $d['testedOn'],
                 'sample_type' => 'S',
-                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
+                'result_status' => RECEIVED_AT_TESTING_LAB,
                 'import_machine_file_name' => $fileName,
                 'result' => trim($d['result']),
             ];
 
             if (empty($data['result'])) {
-                $data['result_status'] = SAMPLE_STATUS\ON_HOLD; // 1= Hold
+                $data['result_status'] = ON_HOLD; // 1= Hold
             }
             //get username
             if (!empty($d['reviewBy'])) {
@@ -153,9 +155,9 @@ try {
             $query = "SELECT facility_id, eid_id, result
                         FROM form_eid
                         WHERE sample_code= ?";
-            $vlResult = $db->rawQueryOne($query, array($sampleCode));
+            $vlResult = $db->rawQueryOne($query, [$sampleCode]);
 
-            if (!empty($vlResult) && !empty($sampleCode)) {
+            if (!empty($vlResult) && ($sampleCode !== 0 && ($sampleCode !== '' && $sampleCode !== '0'))) {
                 if (!empty($vlResult['result'])) {
                     $data['sample_details'] = 'Result already exists';
                 }
@@ -164,7 +166,7 @@ try {
                 $data['sample_details'] = 'New Sample';
             }
 
-            if (!empty($sampleCode)) {
+            if ($sampleCode !== '' && $sampleCode !== '0' && $sampleCode !== 0) {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);

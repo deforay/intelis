@@ -31,86 +31,74 @@ $userResult = $usersService->getActiveUsers();
 
 $tQuery = "SELECT module, sample_review_by FROM temp_sample_import WHERE imported_by =? limit 1";
 
-$tResult = $db->rawQueryOne($tQuery, array($_SESSION['userId']));
+$tResult = $db->rawQueryOne($tQuery, [$_SESSION['userId']]);
 
 
 
 $module = $_GET['t'];
-$machine = base64_decode($_GET['machine']);
+$machine = base64_decode((string) $_GET['machine']);
 
 
 $condition = " instrument_id = '$machine'";
-$getMachineInfo = $general->getDataByTableAndFields('instruments', array('approved_by', 'reviewed_by'), false, $condition);
+$getMachineInfo = $general->getDataByTableAndFields('instruments', ['approved_by', 'reviewed_by'], false, $condition);
 
-$approvedByAttr = json_decode($getMachineInfo[0]['approved_by']);
-$reviewedByAttr = json_decode($getMachineInfo[0]['reviewed_by']);
+$approvedByAttr = json_decode((string) $getMachineInfo[0]['approved_by']);
+$reviewedByAttr = json_decode((string) $getMachineInfo[0]['reviewed_by']);
 $reviewedBy = $reviewedByAttr->$module;
 $approvedBy = $approvedByAttr->$module;
 
 if (!empty($tResult['sample_review_by'])) {
-	$reviewBy = $tResult['sample_review_by'];
+    $reviewBy = $tResult['sample_review_by'];
+} elseif (!empty($reviewedBy)) {
+    //$reviewBy = $_SESSION['userId'];
+    $reviewBy = $reviewedBy;
 } else {
-	//$reviewBy = $_SESSION['userId'];
-	if (!empty($reviewedBy))
-		$reviewBy = $reviewedBy;
-	else
-		$reviewBy = $_SESSION['userId'];
+    $reviewBy = $_SESSION['userId'];
 }
-if (!empty($approvedBy))
-	$approveBy = $approvedBy;
-else
-	$approveBy = $_SESSION['userId'];
+$approveBy = empty($approvedBy) ? $_SESSION['userId'] : $approvedBy;
 
 $arr = $general->getGlobalConfig();
 $errorInImport = false;
 if ($module == 'vl') {
-
-	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
+    $rejectionTypeQuery = "SELECT DISTINCT rejection_type
 							FROM r_vl_sample_rejection_reasons
 							WHERE rejection_reason_status ='active'";
-	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-
-	//sample rejection reason
-	$rejectionQuery = "SELECT *
+    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+    //sample rejection reason
+    $rejectionQuery = "SELECT *
 							FROM r_vl_sample_rejection_reasons
 							WHERE rejection_reason_status = 'active'";
-	$rejectionResult = $db->rawQuery($rejectionQuery);
-} else if ($module == 'eid') {
-
-	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
+    $rejectionResult = $db->rawQuery($rejectionQuery);
+} elseif ($module == 'eid') {
+    $rejectionTypeQuery = "SELECT DISTINCT rejection_type
 								FROM r_eid_sample_rejection_reasons
 								WHERE rejection_reason_status ='active'";
-	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-
-	//sample rejection reason
-	$rejectionQuery = "SELECT *
+    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+    //sample rejection reason
+    $rejectionQuery = "SELECT *
 						FROM r_eid_sample_rejection_reasons
 						WHERE rejection_reason_status = 'active'";
-	$rejectionResult = $db->rawQuery($rejectionQuery);
-} else if ($module == 'covid19' || $module == 'covid-19') {
-
-	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
+    $rejectionResult = $db->rawQuery($rejectionQuery);
+} elseif ($module == 'covid19' || $module == 'covid-19') {
+    $rejectionTypeQuery = "SELECT DISTINCT rejection_type
 								FROM r_covid19_sample_rejection_reasons
 								WHERE rejection_reason_status ='active'";
-	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-
-	//sample rejection reason
-	$rejectionQuery = "SELECT *
+    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+    //sample rejection reason
+    $rejectionQuery = "SELECT *
 						FROM r_covid19_sample_rejection_reasons
 						WHERE rejection_reason_status = 'active'";
-	$rejectionResult = $db->rawQuery($rejectionQuery);
-} else if ($module == 'hepatitis') {
-
-	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
+    $rejectionResult = $db->rawQuery($rejectionQuery);
+} elseif ($module == 'hepatitis') {
+    $rejectionTypeQuery = "SELECT DISTINCT rejection_type
 								FROM r_hepatitis_sample_rejection_reasons
 								WHERE rejection_reason_status ='active'";
-	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-
-	//sample rejection reason
-	$rejectionQuery = "SELECT *
+    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+    //sample rejection reason
+    $rejectionQuery = "SELECT *
 						FROM r_hepatitis_sample_rejection_reasons
 						WHERE rejection_reason_status = 'active'";
-	$rejectionResult = $db->rawQuery($rejectionQuery);
+    $rejectionResult = $db->rawQuery($rejectionQuery);
 } else {
 	$errorInImport = true;
 }

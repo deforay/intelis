@@ -1,7 +1,7 @@
 <?php
 
 // this file is included in /covid-19/interop/dhis2/covid-19-send.php
-
+use GuzzleHttp\Psr7\Response;
 use App\Interop\Dhis2;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -45,22 +45,9 @@ $eventsDataElementMapping = [
   'ovY6E8BSdto' => 'result'
 ];
 
-$sampleRejection = array('yes' => 'Rejected/Recollect', 'no' => 'Accepted');
-$testTypes = array(
-  'GeneXpert' => 'GeneXpert',
-  'Real Time RT-PCR' => 'RT-PCR',
-  'RDT-Antibody' => 'Antigen RDT',
-  'RDT-Antigen' => 'Antibody RDT'
-);
-$testPlatforms = array(
-  'Abbott d/m/y' => 'Abbott m2000 System',
-  'Abbott m/d/y' => 'Abbott m2000 System',
-  'Abbott' => 'Abbott m2000 System',
-  'ABI7500' => 'ABI7500 System',
-  'BioRad PCR' => 'BioRad PCR System',
-  'GeneXpert' => 'GeneXpert System',
-  'Rotor Gene' => 'Rotor Gene PCR System'
-);
+$sampleRejection = ['yes' => 'Rejected/Recollect', 'no' => 'Accepted'];
+$testTypes = ['GeneXpert' => 'GeneXpert', 'Real Time RT-PCR' => 'RT-PCR', 'RDT-Antibody' => 'Antigen RDT', 'RDT-Antigen' => 'Antibody RDT'];
+$testPlatforms = ['Abbott d/m/y' => 'Abbott m2000 System', 'Abbott m/d/y' => 'Abbott m2000 System', 'Abbott' => 'Abbott m2000 System', 'ABI7500' => 'ABI7500 System', 'BioRad PCR' => 'BioRad PCR System', 'GeneXpert' => 'GeneXpert System', 'Rotor Gene' => 'Rotor Gene PCR System'];
 
 //get facility map id
 $query = "SELECT
@@ -121,13 +108,7 @@ foreach ($formResults as $row) {
   $payload = [];
 
 
-  $dataValues = array(
-    'f48odhAyNtd' => !isset($row['remote_sample_code']) ? $row['remote_sample_code'] : $row['sample_code'],
-    'lHekjJANaNi' => $row['sample_received_at_lab_datetime'],
-    'P61FWjSAjjA' => ($row['sample_condition']),
-    'LbIwAbaSV6r' => $sampleRejection[$row['is_sample_rejected']],
-    'GeR4aHFlc1O' => $labTechnician['user_name'],
-  );
+  $dataValues = ['f48odhAyNtd' => isset($row['remote_sample_code']) ? $row['sample_code'] : $row['remote_sample_code'], 'lHekjJANaNi' => $row['sample_received_at_lab_datetime'], 'P61FWjSAjjA' => ($row['sample_condition']), 'LbIwAbaSV6r' => $sampleRejection[$row['is_sample_rejected']], 'GeR4aHFlc1O' => $labTechnician['user_name']];
 
 
   if ($row['is_sample_rejected'] == 'yes') {
@@ -142,19 +123,19 @@ foreach ($formResults as $row) {
 
   // if ($eventId == null) $eventId = MiscUtility::generateRandomString(11);
 
-  $eventPayload = array(
-    //"event" => $eventId,
-    "eventDate" => date("Y-m-d"),
-    "program" => "uYjxkTbwRNf",
-    "orgUnit" => $facResult['other_id'],
-    "programStage" => $programStages['labReception'],
-    "status" => "ACTIVE",
-    "trackedEntityInstance" => $trackedEntityInstance,
-    "dataValues" => []
-  );
+  $eventPayload = [
+      //"event" => $eventId,
+      "eventDate" => date("Y-m-d"),
+      "program" => "uYjxkTbwRNf",
+      "orgUnit" => $facResult['other_id'],
+      "programStage" => $programStages['labReception'],
+      "status" => "ACTIVE",
+      "trackedEntityInstance" => $trackedEntityInstance,
+      "dataValues" => [],
+  ];
 
 
-  if (!empty($dataValues)) {
+  if ($dataValues !== []) {
     $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
     $payload[] = $eventPayload;
   }
@@ -170,15 +151,15 @@ foreach ($formResults as $row) {
     $testName = $testTypes[$testResult['test_name']] ?? 'Others';
     $testPlatform = $testPlatforms[$testResult['testing_platform']] ?? 'Others';
 
-    $dataValues = array(
-      //'f48odhAyNtd' => !isset($row['remote_sample_code']) ? $row['remote_sample_code'] : $row['sample_code'],
-      'b4PEeF4OOwc' => $testName,
-      'w9R4l7O9Sau' => $testPlatform,
-      'ZLEOP9JHZ5c' => $testResult['sample_tested_datetime'],
-      'ovY6E8BSdto' => ($testResult['result']),
-      'mJFhS108OdO' => $approver['user_name'],
-      'S0dl5jidUnW' => $tester['user_name'],
-    );
+    $dataValues = [
+        //'f48odhAyNtd' => !isset($row['remote_sample_code']) ? $row['remote_sample_code'] : $row['sample_code'],
+        'b4PEeF4OOwc' => $testName,
+        'w9R4l7O9Sau' => $testPlatform,
+        'ZLEOP9JHZ5c' => $testResult['sample_tested_datetime'],
+        'ovY6E8BSdto' => ($testResult['result']),
+        'mJFhS108OdO' => $approver['user_name'],
+        'S0dl5jidUnW' => $tester['user_name'],
+    ];
 
     // $idGeneratorApi = $dhis2->get("/api/system/id.json");
     // $idResponse = (json_decode($idGeneratorApi, true));
@@ -186,17 +167,17 @@ foreach ($formResults as $row) {
 
     // if ($eventId == null) $eventId = MiscUtility::generateRandomString(11);
 
-    $eventPayload = array(
-      //"event" => $eventId,
-      "eventDate" => date("Y-m-d"),
-      "program" => "uYjxkTbwRNf",
-      "orgUnit" => $facResult['other_id'],
-      "programStage" => $programStages['labProcessingAndResults'],
-      "status" => "ACTIVE",
-      "trackedEntityInstance" => $trackedEntityInstance,
-      "dataValues" => []
-    );
-    if (!empty($dataValues)) {
+    $eventPayload = [
+        //"event" => $eventId,
+        "eventDate" => date("Y-m-d"),
+        "program" => "uYjxkTbwRNf",
+        "orgUnit" => $facResult['other_id'],
+        "programStage" => $programStages['labProcessingAndResults'],
+        "status" => "ACTIVE",
+        "trackedEntityInstance" => $trackedEntityInstance,
+        "dataValues" => [],
+    ];
+    if ($dataValues !== []) {
       $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
       $payload[] = $eventPayload;
     }
@@ -210,9 +191,7 @@ foreach ($formResults as $row) {
   $eventDate = date("Y-m-d");
 
 
-  $dataValues = array(
-    'ovY6E8BSdto' => ($row['result'])
-  );
+  $dataValues = ['ovY6E8BSdto' => ($row['result'])];
 
   // $idGeneratorApi = $dhis2->get("/api/system/id.json");
   // $idResponse = (json_decode($idGeneratorApi, true));
@@ -220,19 +199,19 @@ foreach ($formResults as $row) {
 
   // if ($eventId == null) $eventId = MiscUtility::generateRandomString(11);
 
-  $eventPayload = array(
-    //"event" => $eventId,
-    "eventDate" => date("Y-m-d"),
-    "program" => "uYjxkTbwRNf",
-    "orgUnit" => $facResult['other_id'],
-    "programStage" => $programStages['finalTestResult'],
-    "status" => "ACTIVE",
-    "trackedEntityInstance" => $trackedEntityInstance,
-    "dataValues" => []
-  );
+  $eventPayload = [
+      //"event" => $eventId,
+      "eventDate" => date("Y-m-d"),
+      "program" => "uYjxkTbwRNf",
+      "orgUnit" => $facResult['other_id'],
+      "programStage" => $programStages['finalTestResult'],
+      "status" => "ACTIVE",
+      "trackedEntityInstance" => $trackedEntityInstance,
+      "dataValues" => [],
+  ];
 
 
-  if (!empty($dataValues)) {
+  if ($dataValues !== []) {
     $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
     $payload[] = $eventPayload;
   }
@@ -244,23 +223,19 @@ foreach ($formResults as $row) {
   // var_dump($finalPayload);
   // echo "</pre>";
   $response = $dhis2->post("/api/33/events/", $finalPayload);
-  $response = !empty($response) ? (string) $response->getBody() : null;
+  $response = !$response instanceof Response ? null : (string) $response->getBody();
   // echo "<br><br><pre>";
   // var_dump($response);
   // echo "</pre>";
 
 
-  $updateData = array(
-    'result_sent_to_source' => 'sent',
-    'result_dispatched_datetime' => DateUtility::getCurrentDateTime(),
-    'result_sent_to_source_datetime' => DateUtility::getCurrentDateTime()
-  );
+  $updateData = ['result_sent_to_source' => 'sent', 'result_dispatched_datetime' => DateUtility::getCurrentDateTime(), 'result_sent_to_source_datetime' => DateUtility::getCurrentDateTime()];
   $db->where('covid19_id', $row['covid19_id']);
   $db->update('form_covid19', $updateData);
   $counter++;
 }
 
 
-$response = array('processed' => $counter);
+$response = ['processed' => $counter];
 
 echo (json_encode($response));

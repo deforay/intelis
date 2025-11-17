@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -11,7 +12,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -41,9 +42,9 @@ try {
 
     $rejectionTable = "r_{$testType}_sample_rejection_reasons";
     /*
-    * Array of database columns which should be read and sent back to DataTables. Use a space where
-    * you want to insert a non-database field (for example a counter or static image)
-    */
+     * Array of database columns which should be read and sent back to DataTables. Use a space where
+     * you want to insert a non-database field (for example a counter or static image)
+     */
     $orderColumns = $aColumns = [
         'vl.sample_code',
         'vl.remote_sample_code',
@@ -63,8 +64,8 @@ try {
     ];
 
     /*
-    * Paging
-    */
+     * Paging
+     */
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
         $sOffset = $_POST['iDisplayStart'];
@@ -116,10 +117,6 @@ try {
         $joinCond = " LEFT JOIN instruments as ins ON ins.instrument_id=vl.instrument_id";
     }
 
-    /*
-    * SQL queries
-    * Get data to display
-    */
     $aWhere = '';
     $sQuery = '';
 
@@ -146,17 +143,17 @@ try {
 
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
-    if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+    if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
         $sWhere[] = ' DATE(vl.sample_tested_datetime) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
     }
-    if (isset($_POST['sampleBatchCode']) && trim((string) $_POST['sampleBatchCode']) != '') {
+    if (isset($_POST['sampleBatchCode']) && trim((string) $_POST['sampleBatchCode']) !== '') {
         $code = $_POST['sampleBatchCode'];
         $sWhere[] = " vl.sample_code = '$code' OR b.batch_code = '$code' ";
     }
 
 
     /* Implode all the where fields for filtering the data */
-    if (!empty($sWhere)) {
+    if ($sWhere !== []) {
         $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
     }
 
@@ -175,19 +172,13 @@ try {
 
 
     /*
-    * Output
-    */
-    $output = array(
-        "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $resultCount,
-        "iTotalDisplayRecords" => $resultCount,
-        "calculation" => [],
-        "aaData" => []
-    );
+     * Output
+     */
+    $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "calculation" => [], "aaData" => []];
 
     foreach ($rResult as $key => $aRow) {
 
-        $rejectedObj = json_decode($aRow['reason_for_result_changes']);
+        $rejectedObj = json_decode((string) $aRow['reason_for_result_changes']);
         $row = [];
         //$row[] = $aRow['f.facility_name'];
         $row[] = $aRow['sample_code'];

@@ -2,7 +2,8 @@
 
 // For Roche Cobas test results import for EID
 // File gets called in import-file-helper.php based on the selected instrument type
-
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -14,12 +15,12 @@ use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 try {
-    $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
+    $dateFormat = (empty($_POST['dateFormat'])) ? 'd/m/Y H:i' : $_POST['dateFormat'];
 
     /** @var TestResultsService $testResultsService */
     $testResultsService = ContainerRegistry::get(TestResultsService::class);
@@ -116,7 +117,7 @@ try {
 
 
             $lotNumberVal = $rowData[$lotNumberCol];
-            if (trim((string) $rowData[$lotExpirationDateCol]) != '') {
+            if (trim((string) $rowData[$lotExpirationDateCol]) !== '') {
                 $timestamp = DateTime::createFromFormat('!' . $dateFormat, $rowData[$lotExpirationDateCol]);
                 if (!empty($timestamp)) {
                     $timestamp = $timestamp->getTimestamp();
@@ -129,15 +130,14 @@ try {
             $sampleType = $rowData[$sampleTypeCol];
             if ($sampleType == 'Patient') {
                 $sampleType = 'S';
-            } else if ($sampleType == 'Control') {
-
+            } elseif ($sampleType == 'Control') {
                 if ($sampleCode == 'HIV_HIPOS') {
                     $sampleType = 'HPC';
                     $sampleCode = "$sampleCode-$lotNumberVal";
-                } else if ($sampleCode == 'HIV_LOPOS') {
+                } elseif ($sampleCode == 'HIV_LOPOS') {
                     $sampleType = 'LPC';
                     $sampleCode = "$sampleCode-$lotNumberVal";
-                } else if ($sampleCode == 'HIV_NEG') {
+                } elseif ($sampleCode == 'HIV_NEG') {
                     $sampleType = 'NC';
                     $sampleCode = "$sampleCode-$lotNumberVal";
                 }
@@ -159,10 +159,8 @@ try {
                     "result" => $result,
                     "lotExpirationDate" => $lotExpirationDateVal,
                 ];
-            } else {
-                if (isset($logVal) && $logVal != "") {
-                    $infoFromFile[$sampleCode]['logVal'] = $logVal;
-                }
+            } elseif (isset($logVal) && $logVal !== "") {
+                $infoFromFile[$sampleCode]['logVal'] = $logVal;
             }
 
             $m++;
@@ -188,7 +186,7 @@ try {
                 'result_value_text' => null,
                 'result_value_absolute_decimal' => null,
                 'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => SAMPLE_STATUS\PENDING_APPROVAL,
+                'result_status' => PENDING_APPROVAL,
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag'],
                 'lot_number' => $d['lotNumber'],
@@ -212,7 +210,7 @@ try {
                 $scData = ['r_sample_control_name' => trim((string) $d['sampleType'])];
                 $scId = $db->insert("r_sample_controls", $scData);
             }
-            if (!empty($eidResult) && !empty($sampleCode)) {
+            if (!empty($eidResult) && ($sampleCode !== 0 && ($sampleCode !== '' && $sampleCode !== '0'))) {
                 if (!empty($eidResult['result'])) {
                     $data['sample_details'] = 'Result already exists';
                 }

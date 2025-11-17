@@ -7,12 +7,10 @@ use App\Utilities\FileCacheUtility;
 
 final class InstrumentsService
 {
-    protected DatabaseService $db;
     protected string $table = 'instruments';
 
-    public function __construct(DatabaseService $db)
+    public function __construct(protected DatabaseService $db)
     {
-        $this->db = $db;
     }
 
     public function getInstruments($testType = null, $dropDown = false, $withFacility = false)
@@ -45,7 +43,7 @@ final class InstrumentsService
 
     public function getSingleInstrument(string $instrumentId, string|array $columns = '*')
     {
-        if (empty($instrumentId) || $instrumentId === '') {
+        if ($instrumentId === '' || $instrumentId === '0' || $instrumentId === '') {
             return null;
         }
 

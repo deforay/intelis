@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\VlService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -28,7 +29,7 @@ $vlService = ContainerRegistry::get(VlService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -44,7 +45,7 @@ try {
     $ranNumber = "BULK-CONTROLS-" . MiscUtility::generateRandomString(16);
     $extension = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
-    $allowedExtensions = array('xls', 'xlsx', 'csv');
+    $allowedExtensions = ['xls', 'xlsx', 'csv'];
 
     MiscUtility::makeDirectory(TEMP_PATH);
 
@@ -69,7 +70,7 @@ try {
                     $sheetData   = $spreadsheet->getActiveSheet();
                     $sheetData   = $sheetData->toArray(null, true, true, true);
 
-                    $filteredArray = array_filter(array_slice($sheetData, 1), fn($row) => array_filter($row)); // Remove empty rows
+                    $filteredArray = array_filter(array_slice($sheetData, 1), fn($row): array => array_filter($row)); // Remove empty rows
 
                     $total = count($filteredArray);
                     $facilityNotAdded = [];
@@ -93,7 +94,7 @@ try {
                         try {
 
                             $controlCode = MiscUtility::generateULID();
-                            $testedBy = !empty(trim($rowData['E'])) ? ($userMapping[trim($rowData['E'])] ?? null) : null;
+                            $testedBy = in_array(trim((string) $rowData['E']), ['', '0'], true) ? (null) : $userMapping[trim((string) $rowData['E'])] ?? null;
                             $instrumentInfo = $instrumentsService->getSingleInstrument($machineName);
                             $importMachineFileName = $instrumentInfo['import_machine_file_name'] ?? '';
 
@@ -110,13 +111,13 @@ try {
                             $data = [
                                 'control_code' => $controlCode,
                                 'lab_id'       => $labName,
-                                'batch_id'     => trim($rowData['A']) ?? null,
-                                'control_type' => trim($rowData['B']) ?? null,
-                                'lot_number'   => trim($rowData['C']) ?? null,
-                                'lot_expiration_date'    => trim($rowData['D']) ?? null,
+                                'batch_id'     => trim((string) $rowData['A']) ?? null,
+                                'control_type' => trim((string) $rowData['B']) ?? null,
+                                'lot_number'   => trim((string) $rowData['C']) ?? null,
+                                'lot_expiration_date'    => trim((string) $rowData['D']) ?? null,
                                 'tested_by'    => ($testedBy),
-                                'sample_tested_datetime' => !empty($rowData['F']) ? DateUtility::isoDateFormat($rowData['F'], true) : null,
-                                'is_sample_rejected'     => trim($rowData['G']) ?? null,
+                                'sample_tested_datetime' => empty($rowData['F']) ? null : DateUtility::isoDateFormat($rowData['F'], true),
+                                'is_sample_rejected'     => trim((string) $rowData['G']) ?? null,
                                 'result_value_absolute'  => $absVal,
                                 'result_value_log'       => $logVal,
                                 'result_value_text'      => $txtVal,

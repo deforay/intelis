@@ -31,14 +31,14 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 $eidInfo['mother_treatment'] = explode(",", (string) $eidInfo['mother_treatment']);
 $eidInfo['child_treatment'] = explode(",", (string) $eidInfo['child_treatment']);
 $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'active'");
-if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['result_approved_datetime']) != '' && $eidInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
+if (isset($eidInfo['result_approved_datetime']) && trim((string) $eidInfo['result_approved_datetime']) !== '' && $eidInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $eidInfo['result_approved_datetime']);
 	$eidInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$eidInfo['result_approved_datetime'] = '';
 }
 
-$formAttributes = json_decode($eidInfo['form_attributes']);
+$formAttributes = json_decode((string) $eidInfo['form_attributes']);
 
 $storageObj = json_decode($formAttributes->storage);
 $storageInfo = $storageService->getLabStorage();
@@ -120,8 +120,7 @@ $storageInfo = $storageService->getLabStorage();
 										<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
 											<option value=""><?= _translate("-- Select --"); ?> </option>
 											<?php
-											foreach ($implementingPartnerList as $implementingPartner) {
-											?>
+											foreach ($implementingPartnerList as $implementingPartner) { ?>
 												<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($eidInfo['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
 											<?php } ?>
 										</select>
@@ -131,8 +130,7 @@ $storageInfo = $storageService->getLabStorage();
 										<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
 											<option value=""><?= _translate("-- Select --"); ?> </option>
 											<?php
-											foreach ($fundingSourceList as $fundingSource) {
-											?>
+											foreach ($fundingSourceList as $fundingSource) { ?>
 												<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($eidInfo['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
 											<?php } ?>
 										</select>

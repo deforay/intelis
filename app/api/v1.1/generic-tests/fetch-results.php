@@ -1,5 +1,6 @@
 <?php
 
+use Slim\Psr7\Request;
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
@@ -38,7 +39,7 @@ $genericService = ContainerRegistry::get(GenericTestsService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
-/** @var Slim\Psr7\Request $request */
+/** @var Request $request */
 $request = AppRegistry::get('request');
 
 
@@ -249,7 +250,7 @@ try {
         $where[] = " result_status IN ('$sampleStatus') ";
     }
     $whereStr = "";
-    if (!empty($where)) {
+    if ($where !== []) {
         $whereStr = " WHERE " . implode(" AND ", $where);
     }
     $sQuery .= "$whereStr ORDER BY vl.last_modified_datetime DESC limit 100 ";
@@ -263,7 +264,7 @@ try {
 
     $now = DateUtility::getCurrentDateTime();
     $affectedSamples = array_values(array_filter(array_unique(array_column($rowData, 'testRequestId'))));
-    if (!empty($affectedSamples)) {
+    if ($affectedSamples !== []) {
         // 1) result_sent_to_source / result_sent_to_source_datetime — set once
         $db->where($primaryKey, $affectedSamples, 'IN');
         $db->where('result_sent_to_source_datetime IS NULL');

@@ -1,5 +1,6 @@
 <?php
 
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -109,10 +110,10 @@ if (!empty($resultSet)) {
         }
 
         // Calculate days since last sync
-        $daysSinceSync = $latestSync ? floor((time() - $latestSync) / 86400) : 'Never';
+        $daysSinceSync = $latestSync !== 0 ? floor((time() - $latestSync) / 86400) : 'Never';
 
         $row[] = $aRow['facility_name'] ?? '';
-        $row[] = $latestSync ? DateUtility::humanReadableDateFormat(date('Y-m-d H:i:s', $latestSync), true) : 'Never';
+        $row[] = $latestSync !== 0 ? DateUtility::humanReadableDateFormat(date('Y-m-d H:i:s', $latestSync), true) : 'Never';
         $row[] = DateUtility::humanReadableDateFormat($aRow['lastResultsSync'] ?? '', true) ?: 'Never';
         $row[] = DateUtility::humanReadableDateFormat($aRow['lastRequestsSync'] ?? '', true) ?: 'Never';
         $row[] = $aRow['version'] ?? '-';
@@ -144,7 +145,7 @@ foreach ($output as $rowData) {
             break;
     }
 
-    if ($fillColor) {
+    if ($fillColor !== '' && $fillColor !== '0') {
         $sheet->getStyle($rowRange)->applyFromArray([
             'fill' => [
                 'fillType' => Fill::FILL_SOLID,
@@ -190,7 +191,7 @@ foreach (range('A', 'I') as $column) {
 }
 
 // Set page orientation and margins for better printing
-$sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+$sheet->getPageSetup()->setOrientation(PageSetup::ORIENTATION_LANDSCAPE);
 $sheet->getPageMargins()->setTop(0.5);
 $sheet->getPageMargins()->setRight(0.25);
 $sheet->getPageMargins()->setLeft(0.25);

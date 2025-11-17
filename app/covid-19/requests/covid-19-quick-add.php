@@ -85,15 +85,7 @@ foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
-$fileArray = array(
-    COUNTRY\SOUTH_SUDAN => 'forms/quick-add-southsudan.php',
-    COUNTRY\SIERRA_LEONE => 'forms/quick-add-sierraleone.php',
-    COUNTRY\DRC => 'forms/quick-add-drc.php',
-    COUNTRY\CAMEROON => 'forms/quick-add-cameroon.php',
-    COUNTRY\PNG => 'forms/quick-add-png.php',
-    COUNTRY\WHO => 'forms/quick-add-who.php',
-    COUNTRY\RWANDA => 'forms/quick-add-rwanda.php',
-);
+$fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/quick-add-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/quick-add-sierraleone.php', COUNTRY\DRC => 'forms/quick-add-drc.php', COUNTRY\CAMEROON => 'forms/quick-add-cameroon.php', COUNTRY\PNG => 'forms/quick-add-png.php', COUNTRY\WHO => 'forms/quick-add-who.php', COUNTRY\RWANDA => 'forms/quick-add-rwanda.php'];
 
 require_once($fileArray[$arr['vl_form']]);
 

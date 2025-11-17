@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -21,37 +22,18 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 $tableName = "patients";
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 try {
 
-    if (isset($_POST['gender']) && trim((string) $_POST['gender']) == 'male') {
+    if (isset($_POST['gender']) && trim((string) $_POST['gender']) === 'male') {
         $_POST['patientPregnant'] = "N/A";
         $_POST['breastfeeding'] = "N/A";
     }
 
-    $patientData = array(
-        'patient_province' => $_POST['province'] ?? null,
-        'patient_district' => $_POST['district'] ?? null,
-        'patient_code_prefix' => $_POST['patientCodePrefix'] ?? null,
-        'patient_code_key' => $_POST['patientCodeKey'] ?? null,
-        'patient_gender' => $_POST['gender'] ?? null,
-        'patient_dob' => DateUtility::isoDateFormat($_POST['dob'] ?? ''),
-        'patient_first_name' => $_POST['patientFirstName'] ?? null,
-        'patient_middle_name' => $_POST['patientMiddleName'] ?? null,
-        'patient_last_name' => $_POST['patientLastName'] ?? null,
-        'patient_age_in_years' => $_POST['ageInYears'] ?? null,
-        'patient_age_in_months' => $_POST['ageInMonths'] ?? null,
-        'is_patient_pregnant' => $_POST['patientPregnant'] ?? null,
-        'is_patient_breastfeeding' => $_POST['breastfeeding'] ?? null,
-        'patient_code' => $_POST['patientCode'] ?? null,
-        'patient_phone_number' => $_POST['patientPhoneNumber'] ?? null,
-        'patient_address' => $_POST['patientAddress'] ?? null,
-        'patient_registered_on' => DateUtility::getCurrentDateTime(),
-        'status' => $_POST['patientStatus'],
-    );
+    $patientData = ['patient_province' => $_POST['province'] ?? null, 'patient_district' => $_POST['district'] ?? null, 'patient_code_prefix' => $_POST['patientCodePrefix'] ?? null, 'patient_code_key' => $_POST['patientCodeKey'] ?? null, 'patient_gender' => $_POST['gender'] ?? null, 'patient_dob' => DateUtility::isoDateFormat($_POST['dob'] ?? ''), 'patient_first_name' => $_POST['patientFirstName'] ?? null, 'patient_middle_name' => $_POST['patientMiddleName'] ?? null, 'patient_last_name' => $_POST['patientLastName'] ?? null, 'patient_age_in_years' => $_POST['ageInYears'] ?? null, 'patient_age_in_months' => $_POST['ageInMonths'] ?? null, 'is_patient_pregnant' => $_POST['patientPregnant'] ?? null, 'is_patient_breastfeeding' => $_POST['breastfeeding'] ?? null, 'patient_code' => $_POST['patientCode'] ?? null, 'patient_phone_number' => $_POST['patientPhoneNumber'] ?? null, 'patient_address' => $_POST['patientAddress'] ?? null, 'patient_registered_on' => DateUtility::getCurrentDateTime(), 'status' => $_POST['patientStatus']];
 
     $patientData['is_encrypted'] = 'no';
     if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {

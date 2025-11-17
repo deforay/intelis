@@ -2,6 +2,7 @@
 
 namespace App\Middlewares\App;
 
+use Override;
 use App\Services\CommonService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -35,10 +36,11 @@ class AppAuthMiddleware implements MiddlewareInterface
     // Inactivity window (seconds).
     private int $maxIdle = 1800; // 30 minutes
 
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $method = strtoupper($request->getMethod());
-        $path   = $this->normalizePath($request->getUri()->getPath());
+        $path = $this->normalizePath($request->getUri()->getPath());
         $isAjax = $this->isAjax($request);
 
         if ($path === '/__forbidden__') {
@@ -73,7 +75,7 @@ class AppAuthMiddleware implements MiddlewareInterface
             }
         }
 
-        $now  = time();
+        $now = time();
         $last = $_SESSION['last_activity'] ?? $now;
         if (($now - $last) > $this->maxIdle) {
             $this->expireSession();
@@ -87,7 +89,7 @@ class AppAuthMiddleware implements MiddlewareInterface
         }
 
         $response = $handler->handle($request);
-        $origin   = $request->getHeaderLine('Origin');
+        $origin = $request->getHeaderLine('Origin');
         if ($origin !== '') {
             $response = $response
                 ->withHeader('Access-Control-Allow-Origin', $origin)
@@ -101,11 +103,11 @@ class AppAuthMiddleware implements MiddlewareInterface
     private function safeRequestedUri(ServerRequestInterface $req, string $path): string
     {
         $host = strtolower($req->getHeaderLine('Host'));
-        $ref  = $req->getHeaderLine('Referer') ?: $req->getHeaderLine('Origin');
+        $ref = $req->getHeaderLine('Referer') ?: $req->getHeaderLine('Origin');
 
-        if ($ref) {
+        if ($ref !== '' && $ref !== '0') {
             $parts = parse_url($ref);
-            if (!empty($parts['host']) && strtolower($parts['host']) !== $host) {
+            if (isset($parts['host']) && ($parts['host'] !== '' && $parts['host'] !== '0') && strtolower($parts['host']) !== $host) {
                 return $path;
             }
         }
@@ -126,21 +128,21 @@ class AppAuthMiddleware implements MiddlewareInterface
     private function normalizePath(string $p): string
     {
         $p = urldecode($p);
-        if (strpos($p, '..') !== false) {
+        if (str_contains($p, '..')) {
             return '/__forbidden__';
         }
         $p = preg_replace('#/{2,}#', '/', $p);
-        return rtrim($p, '/') ?: '/';
+        return rtrim((string) $p, '/') ?: '/';
     }
 
     private function isPublic(string $path): bool
     {
-        return CommonService::isExcludedUri($path, $this->publicUris) === true;
+        return CommonService::isExcludedUri($path, $this->publicUris);
     }
 
     private function isM2M(string $path): bool
     {
-        return CommonService::isExcludedUri($path, $this->m2mUris) === true;
+        return CommonService::isExcludedUri($path, $this->m2mUris);
     }
 
     private function isAjax(ServerRequestInterface $request): bool
@@ -152,8 +154,8 @@ class AppAuthMiddleware implements MiddlewareInterface
 
         $accept = strtolower($request->getHeaderLine('Accept'));
         if ($accept !== '') {
-            $hasJson = strpos($accept, 'application/json') !== false || strpos($accept, 'text/json') !== false;
-            $hasHtml = strpos($accept, 'text/html') !== false;
+            $hasJson = str_contains($accept, 'application/json') || str_contains($accept, 'text/json');
+            $hasHtml = str_contains($accept, 'text/html');
             if ($hasJson && !$hasHtml) {
                 return true;
             }
@@ -166,7 +168,7 @@ class AppAuthMiddleware implements MiddlewareInterface
     {
         return new JsonResponse(
             [
-                'error'    => 'session_expired',
+                'error' => 'session_expired',
                 'redirect' => '/login/login.php',
             ],
             401,
@@ -184,18 +186,14 @@ class AppAuthMiddleware implements MiddlewareInterface
 
     private function expireSession(): void
     {
-        if (session_status() === PHP_SESSION_ACTIVE) {
+        if (CommonService::isSessionActive()) {
             $_SESSION = [];
             if (ini_get('session.use_cookies')) {
                 $params = session_get_cookie_params();
                 setcookie(
                     session_name(),
                     '',
-                    time() - 42000,
-                    $params['path'],
-                    $params['domain'],
-                    (bool) $params['secure'],
-                    (bool) $params['httponly']
+                    ['expires' => time() - 42000, 'path' => $params['path'], 'domain' => $params['domain'], 'secure' => (bool) $params['secure'], 'httponly' => (bool) $params['httponly']]
                 );
             }
             @session_unset();

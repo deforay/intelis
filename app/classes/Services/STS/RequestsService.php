@@ -15,7 +15,6 @@ use App\Abstracts\AbstractTestService;
 
 final class RequestsService
 {
-    protected CommonService $commonService;
     protected DatabaseService $db;
     protected int $dataSyncInterval;
     protected string $testType;
@@ -25,10 +24,9 @@ final class RequestsService
     /** @var AbstractTestService $testTypeService */
     protected $testTypeService;
 
-    public function __construct(DatabaseService $db, CommonService $commonService)
+    public function __construct(DatabaseService $db, protected CommonService $commonService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
-        $this->commonService = $commonService;
         $this->dataSyncInterval = (int) $this->commonService->getGlobalConfig('data_sync_interval') ?? 30;
     }
 
@@ -42,7 +40,7 @@ final class RequestsService
             $requestData = $this->returnCovid19Requests($rResult, $resultCount);
         } elseif ($testType === 'hepatitis') {
             $requestData = $this->returnHepatitisRequests($rResult, $resultCount);
-        } else if ($testType === 'tb') {
+        } elseif ($testType === 'tb') {
             $requestData = $this->returnTbRequests($rResult, $resultCount);
         } elseif ($testType === 'generic-tests') {
             $this->commonService->updateNullColumnsWithDefaults($this->tableName, [
@@ -59,7 +57,7 @@ final class RequestsService
         return $requestData;
     }
 
-    private function setTestType($testType)
+    private function setTestType(string $testType): void
     {
         $this->testType = $testType;
         $this->tableName = TestsService::getTestTableName($testType);
@@ -68,12 +66,12 @@ final class RequestsService
         $this->testTypeService = ContainerRegistry::get($serviceClass);
     }
 
-    private function runQuery($labId, $facilityMapResult, $manifestCode, $syncSinceDate = null)
+    private function runQuery($labId, $facilityMapResult, $manifestCode, $syncSinceDate = null): array
     {
         // Start with selecting all columns
         $columnSelection = "*";
 
-        if ($this->testType == 'vl') {
+        if ($this->testType === 'vl') {
             // Alias and constant column logic specific to VL
             $aliasColumns = [
                 'sample_type' => 'specimen_type',
@@ -105,12 +103,12 @@ final class RequestsService
     }
     private function buildCondition($labId, $facilityMapResult = [], $manifestCode = null, $syncSinceDate = null): string
     {
-        $condition = !empty($facilityMapResult)
-            ? "(lab_id = $labId OR facility_id IN ($facilityMapResult))"
-            : "lab_id = $labId";
+        $condition = empty($facilityMapResult)
+            ? "lab_id = $labId"
+            : "(lab_id = $labId OR facility_id IN ($facilityMapResult))";
 
         if ($manifestCode) {
-            if ($this->testType == 'tb') {
+            if ($this->testType === 'tb') {
                 $condition .= " AND (sample_package_code like '$manifestCode' OR referral_manifest_code like '$manifestCode')";
             } else {
                 $condition .= " AND sample_package_code like '$manifestCode'";

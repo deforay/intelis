@@ -1,7 +1,7 @@
 <?php
 
 // app/remote/v2/verify-manifest.php
-
+use Slim\Psr7\Request;
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
@@ -38,7 +38,7 @@ $stsTokensService = ContainerRegistry::get(TokensService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-/** @var Slim\Psr7\Request $request */
+/** @var Request $request */
 $request = AppRegistry::get('request');
 $origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
@@ -107,7 +107,7 @@ try {
         $primaryKey = TestsService::getPrimaryColumn($testType);
         $db->reset();
         $db->where('sample_package_code', $manifestCode);
-        if ($testType == 'tb') {
+        if ($testType === 'tb') {
             $db->orWhere('referral_manifest_code', $manifestCode);
         }
         $selectedSamples = $db->getValue($tableName, $primaryKey, null);

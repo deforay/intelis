@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use Override;
+use const COUNTRY\PNG;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
@@ -16,6 +20,7 @@ final class EidService extends AbstractTestService
     public string $testType = 'eid';
 
 
+    #[Override]
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
@@ -68,6 +73,7 @@ final class EidService extends AbstractTestService
         return $response;
     }
 
+    #[Override]
     public function insertSample($params, $returnSampleData = false)
     {
         try {
@@ -84,7 +90,7 @@ final class EidService extends AbstractTestService
 
             // PNG FORM (formId = 5) CANNOT HAVE PROVINCE EMPTY
             // Sample Collection Date Cannot be Empty
-            if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false || ($formId == COUNTRY\PNG && empty($provinceId))) {
+            if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false || ($formId == PNG && empty($provinceId))) {
                 return 0;
             }
 
@@ -121,13 +127,13 @@ final class EidService extends AbstractTestService
 
             if ($this->commonService->isSTSInstance()) {
                 $tesRequestData['remote_sample'] = 'yes';
-                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+                $tesRequestData['result_status'] = RECEIVED_AT_CLINIC;
                 if ($accessType === 'testing-lab') {
-                    $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                    $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
                 }
             } else {
                 $tesRequestData['remote_sample'] = 'no';
-                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
             }
 
             $formAttributes = [

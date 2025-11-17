@@ -1,5 +1,8 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -15,14 +18,14 @@ try {
     $general = ContainerRegistry::get(CommonService::class);
 
     // Sanitized values from $request object
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
     /* Status definition */
-    $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+    $status = RECEIVED_AT_TESTING_LAB;
     if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
-        $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+        $status = RECEIVED_AT_CLINIC;
     }
     $query = "SELECT sample_code,
                     remote_sample_code,

@@ -1,5 +1,8 @@
 <?php
 
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\ACCEPTED;
+
 // This script is used to send results to an external API for e.g. EMR
 
 $cliMode = php_sapi_name() === 'cli';
@@ -83,8 +86,8 @@ try {
     $tableName = TestsService::getTestTableName('vl');
     $primaryKey = TestsService::getPrimaryColumn('vl');
     $resultStatus = [
-        SAMPLE_STATUS\REJECTED,
-        SAMPLE_STATUS\ACCEPTED
+        REJECTED,
+        ACCEPTED
     ];
 
     $db->where("((result IS NOT NULL AND result != '')
@@ -210,7 +213,7 @@ try {
         }
         $general->addApiTracking($transactionId, null, 1, 'external-results', 'vl', EXTERNAL_RESULTS_RECEIVER_URL, $payload ?? [], $apiResponse['body'] ?? [], 'json');
     }
-    if (!empty($resultsSentSuccesfully)) {
+    if ($resultsSentSuccesfully !== []) {
         $numberSent = count($resultsSentSuccesfully);
         $db->where('unique_id', $resultsSentSuccesfully, 'IN');
         $db->update($tableName, [

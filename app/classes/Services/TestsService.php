@@ -34,7 +34,7 @@ final class TestsService
 
     public static function getActiveTests(): array
     {
-        return MemoUtility::remember(function () {
+        return MemoUtility::remember(function (): array {
             $activeModules = SystemService::getActiveModules(onlyTests: true);
             $activeTests = [];
             foreach ($activeModules as $module) {
@@ -47,7 +47,7 @@ final class TestsService
     }
 
 
-    public static function getTestTypes()
+    public static function getTestTypes(): array
     {
         $testTypes = [
             'vl' => [
