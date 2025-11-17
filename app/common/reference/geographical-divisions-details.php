@@ -10,6 +10,9 @@ $title = _translate("Geographical Divisions");
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+$hasAction = _isAllowed("/common/reference/edit-geographical-divisions.php") && $general->isLISInstance() === false;
+$province = $province ?? '';
+$facility = $facility ?? '';
 
 /** @var GeoLocationsService $geoLocationService */
 $geoLocationService = ContainerRegistry::get(GeoLocationsService::class);
@@ -17,6 +20,8 @@ $geoLocationService = ContainerRegistry::get(GeoLocationsService::class);
 $provinceRecords = $geoLocationService->fetchActiveGeolocations(0, 0, "no", false, orderByStatus: true);
 $districtRecords = $geoLocationService->fetchActiveGeolocations(0, 'all', "no", false, orderByStatus: true);
 $identifiedOrphanDistricts = [];
+$duplicateCandidateIds = [];
+$duplicateKeyMap = [];
 if (!empty($districtRecords)) {
 	$districtIds = array_column($districtRecords, 'geo_id');
 	if (!empty($districtIds)) {
@@ -28,6 +33,7 @@ if (!empty($districtRecords)) {
 				LEFT JOIN geographical_divisions p ON p.geo_id = CAST(NULLIF(d.geo_parent, '') AS UNSIGNED)
 				WHERE d.geo_id IN ($placeholders)
 				AND d.geo_parent != 0
+				AND d.geo_status = 'active'
 				AND (p.geo_id IS NULL OR p.geo_status != 'active')";
 		$orphanRows = $db->rawQuery($orphanDistrictQuery, $districtIds);
 		$identifiedOrphanDistricts = array_map(fn($row) => (int) $row['geo_id'], $orphanRows);
@@ -38,6 +44,10 @@ $provinceList = [];
 foreach ($provinceRecords as $province) {
 	$statusLabel = $province['geo_status'] ?? 'active';
 	$provinceList[$province['geo_id']] = sprintf("%s (%s)", $province['geo_name'], _translate(ucwords($statusLabel)));
+	if (($province['geo_status'] ?? '') === 'active') {
+		$key = strtolower(preg_replace('/[\s\-]/', '', trim((string) $province['geo_name'])));
+		$duplicateKeyMap[$key][] = (int) $province['geo_id'];
+	}
 }
 
 $districtList = [];
@@ -51,7 +61,18 @@ foreach ($districtRecords as $district) {
 		'parent' => (int) ($district['geo_parent'] ?? 0),
 		'status' => $statusLabel
 	];
+	if (($district['geo_status'] ?? '') === 'active') {
+		$key = strtolower(preg_replace('/[\s\-]/', '', trim((string) $district['geo_name'])));
+		$duplicateKeyMap[$key][] = (int) $district['geo_id'];
+	}
 }
+
+foreach ($duplicateKeyMap as $idList) {
+	if (count($idList) > 1) {
+		$duplicateCandidateIds = array_merge($duplicateCandidateIds, $idList);
+	}
+}
+$hasDuplicateCandidates = !empty($duplicateCandidateIds);
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -77,17 +98,24 @@ require_once APPLICATION_PATH . '/header.php';
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<div class="box-header with-border">
+					<div class="box-header">
+
 						<?php if (_isAllowed("add-geographical-divisions.php") && $general->isSTSInstance()) { ?>
-							<a href="add-geographical-divisions.php" class="btn btn-primary pull-right"> <em
-									class="fa-solid fa-plus"></em>
-								<?php echo _translate("Add New Geographical Divisions"); ?></a>
+							<div class="pull-right" style="display:flex; gap:8px; flex-wrap:wrap;">
+								<a href="add-geographical-divisions.php" class="btn btn-primary"> <em
+										class="fa-solid fa-plus"></em>
+									<?php echo _translate("Add New Geographical Divisions"); ?></a>
+								<a href="merge-geographical-divisions.php" class="btn btn-warning">
+									<em class="fa-solid fa-layer-group"></em>
+									<?php echo _translate("Merge Geographical Divisions"); ?>
+								</a>
+							</div>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
 						<div class="row" style="margin-bottom:15px;">
-							<div class="col-md-4 col-sm-6">
+							<div class="col-md-3 col-sm-6">
 								<label for="statusFilter"><?php echo _translate("Status"); ?></label>
 								<select class="form-control select2-element" id="statusFilter" name="statusFilter"
 									data-placeholder="<?php echo _translate('-- All --'); ?>">
@@ -96,7 +124,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<option value="all"><?php echo _translate("All"); ?></option>
 								</select>
 							</div>
-							<div class="col-md-4 col-sm-6">
+							<div class="col-md-3 col-sm-6">
 								<label for="provinceFilter"><?php echo _translate("Province/Region"); ?></label>
 								<select class="form-control select2-element" id="provinceFilter" name="provinceFilter"
 									title="<?php echo _translate('Please choose a province/region'); ?>"
@@ -104,7 +132,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<?= $general->generateSelectOptions($provinceList, null, _translate("-- All --")); ?>
 								</select>
 							</div>
-							<div class="col-md-4 col-sm-6">
+							<div class="col-md-3 col-sm-6">
 								<label for="districtFilter"><?php echo _translate("District/County"); ?></label>
 								<select class="form-control select2-element" id="districtFilter" name="districtFilter"
 									title="<?php echo _translate('Please choose a district/county'); ?>"
@@ -112,29 +140,42 @@ require_once APPLICATION_PATH . '/header.php';
 									<?= $general->generateSelectOptions($districtList, null, _translate("-- All --")); ?>
 								</select>
 							</div>
-						</div>
-						<?php if ($general->isSTSInstance()) { ?>
-							<div class="row" style="margin-bottom:15px;">
-								<div class="col-md-12">
-									<a href="merge-geographical-divisions.php" class="btn btn-warning btn-sm">
-										<em class="fa-solid fa-layer-group"></em>
-										<?php echo _translate("Merge Geographical Divisions"); ?>
-									</a>
-								</div>
+							<div class="col-md-3 col-sm-6">
+								<label for="levelFilter"><?php echo _translate("Show"); ?></label>
+								<select class="form-control select2-element" id="levelFilter" name="levelFilter"
+									title="<?php echo _translate('Please choose level'); ?>">
+									<option value="all" selected><?php echo _translate("All"); ?></option>
+									<option value="provinces"><?php echo _translate("Only Provinces"); ?></option>
+									<option value="districts"><?php echo _translate("Only Districts"); ?></option>
+								</select>
 							</div>
-						<?php } ?>
-						<?php if (!empty($identifiedOrphanDistricts)) { ?>
-							<div class="row" style="margin-bottom:15px;">
-								<div class="col-md-4 col-sm-6">
-									<label for="orphanFilter" class="control-label"
-										style="padding-top:0;"><?php echo _translate("Orphaned Districts"); ?></label>
-									<div class="form-check" style="margin-top:5px;">
-										<input type="checkbox" class="form-check-input" id="orphanFilter" value="yes">
-										<label class="form-check-label" for="orphanFilter">
-											<?php echo _translate("Show only districts whose province is inactive or missing"); ?>
-										</label>
+						</div>
+						<?php if ($hasDuplicateCandidates || !empty($identifiedOrphanDistricts)) { ?>
+							<div class="row" style="margin-bottom:15px; align-items:flex-end;">
+								<?php if ($hasDuplicateCandidates) { ?>
+									<div class="col-md-4 col-sm-6">
+										<label for="duplicateFilter" class="control-label"
+											style="padding-top:0;"><?php echo _translate("Duplicate Candidates"); ?></label>
+										<div class="form-check" style="margin-top:5px;">
+											<input type="checkbox" class="form-check-input" id="duplicateFilter" value="yes">
+											<label class="form-check-label" for="duplicateFilter">
+												<?php echo _translate("Show possible duplicate names"); ?>
+											</label>
+										</div>
 									</div>
-								</div>
+								<?php } ?>
+								<?php if (!empty($identifiedOrphanDistricts)) { ?>
+									<div class="col-md-4 col-sm-6">
+										<label for="orphanFilter" class="control-label"
+											style="padding-top:0;"><?php echo _translate("Orphaned Districts"); ?></label>
+										<div class="form-check" style="margin-top:5px;">
+											<input type="checkbox" class="form-check-input" id="orphanFilter" value="yes">
+											<label class="form-check-label" for="orphanFilter">
+												<?php echo _translate("Show only districts whose province is inactive or missing"); ?>
+											</label>
+										</div>
+									</div>
+								<?php } ?>
 							</div>
 						<?php } ?>
 						<table aria-describedby="table" id="samTypDataTable" class="table table-bordered table-striped"
@@ -177,6 +218,7 @@ require_once APPLICATION_PATH . '/header.php';
 	var oTable = null;
 	var $provinceFilter = null;
 	var $districtFilter = null;
+	var $duplicateToggle = null;
 	var $orphanToggle = null;
 	var suppressProvinceChange = false;
 	var suppressDistrictChange = false;
@@ -275,6 +317,11 @@ require_once APPLICATION_PATH . '/header.php';
 	$(document).ready(function () {
 		$provinceFilter = $('#provinceFilter');
 		$districtFilter = $('#districtFilter');
+		$duplicateToggle = $('#duplicateFilter');
+		$('#levelFilter').select2({
+			width: '100%',
+			minimumResultsForSearch: 0
+		});
 		$orphanToggle = $('#orphanFilter');
 
 		$('#statusFilter').select2({
@@ -340,6 +387,12 @@ require_once APPLICATION_PATH . '/header.php';
 					"name": "districtFilter",
 					"value": $("#districtFilter").val()
 				}, {
+					"name": "levelFilter",
+					"value": $("#levelFilter").val()
+				}, {
+					"name": "duplicateOnly",
+					"value": $("#duplicateFilter").is(':checked') ? 'yes' : 'no'
+				}, {
 					"name": "orphanOnly",
 					"value": $("#orphanFilter").is(':checked') ? 'yes' : 'no'
 				});
@@ -394,7 +447,17 @@ require_once APPLICATION_PATH . '/header.php';
 			refreshTable();
 		});
 
+		$duplicateToggle.on('change', function () {
+			if ($(this).is(':checked')) {
+				$('#statusFilter').val('active').trigger('change');
+			}
+			refreshTable();
+		});
+
 		$orphanToggle.on('change', function () {
+			if ($(this).is(':checked')) {
+				$('#statusFilter').val('all').trigger('change');
+			}
 			refreshTable();
 		});
 	});

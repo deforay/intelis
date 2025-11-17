@@ -63,11 +63,55 @@ try {
         $db->beginTransaction();
         $transactionStarted = true;
 
-        $db->where('geo_parent', $otherProvinceIds, 'IN');
-        $db->update('geographical_divisions', [
-            'geo_parent' => $primaryProvince,
-            'updated_datetime' => $currentDateTime
-        ]);
+        $existingTargetDistricts = $db->rawQuery(
+            "SELECT geo_id, LOWER(TRIM(geo_name)) AS name_key
+                FROM geographical_divisions
+                WHERE geo_parent = ?
+                ORDER BY geo_name",
+            [$primaryProvince]
+        );
+        $targetDistrictMap = [];
+        foreach ($existingTargetDistricts as $row) {
+            $targetDistrictMap[$row['name_key']] = (int) $row['geo_id'];
+        }
+
+        foreach ($otherProvinceIds as $otherProvinceId) {
+            $otherDistricts = $db->rawQuery(
+                "SELECT geo_id, geo_name, geo_status
+                    FROM geographical_divisions
+                    WHERE geo_parent = ?",
+                [$otherProvinceId]
+            );
+
+            foreach ($otherDistricts as $district) {
+                $nameKey = strtolower(trim((string) ($district['geo_name'] ?? '')));
+                if (isset($targetDistrictMap[$nameKey])) {
+                    $targetDistrictId = $targetDistrictMap[$nameKey];
+
+                    $db->where('facility_district_id', (int) $district['geo_id']);
+                    $db->update('facility_details', [
+                        'facility_district_id' => $targetDistrictId,
+                        'facility_district' => $district['geo_name'],
+                        'facility_state_id' => $primaryProvince,
+                        'facility_state' => $primaryProvinceInfo['geo_name'],
+                        'updated_datetime' => $currentDateTime
+                    ]);
+
+                    $db->where('geo_id', (int) $district['geo_id']);
+                    $db->update('geographical_divisions', [
+                        'geo_status' => 'inactive',
+                        'updated_datetime' => $currentDateTime
+                    ]);
+                } else {
+                    $db->where('geo_id', (int) $district['geo_id']);
+                    $db->update('geographical_divisions', [
+                        'geo_parent' => $primaryProvince,
+                        'updated_datetime' => $currentDateTime
+                    ]);
+                    $targetDistrictMap[$nameKey] = (int) $district['geo_id'];
+                }
+            }
+        }
 
         $db->where('facility_state_id', $otherProvinceIds, 'IN');
         $db->update('facility_details', [

@@ -27,11 +27,9 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
-$_POST = array_map('trim', $_POST);
-
 $uploadedFiles = $request->getUploadedFiles();
 
-$sanitizedUserSignature = _sanitizeFiles($uploadedFiles['userSignature'], ['png', 'jpg', 'jpeg', 'gif']);
+$sanitizedUserSignature = !empty($uploadedFiles['userSignature']) ? _sanitizeFiles($uploadedFiles['userSignature'], ['png', 'jpg', 'jpeg', 'gif']) : null;
 
 $userId = base64_decode((string) $_POST['userId']);
 
@@ -47,14 +45,14 @@ try {
     if (trim((string) $_POST['userName']) !== '' && trim((string) $_POST['loginId']) !== '' && ($_POST['role']) != '') {
 
         $data = [
-            'user_name'             => $_POST['userName'],
-            'interface_user_name'   => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", (string) $_POST['interfaceUserName']))) : null,
-            'email'                 => $_POST['email'],
-            'phone_number'          => $_POST['phoneNo'],
-            'login_id'              => $_POST['loginId'],
-            'role_id'               => $_POST['role'],
-            'status'                => $_POST['status'],
-            'app_access'            => $_POST['appAccessable'],
+            'user_name' => $_POST['userName'],
+            'interface_user_name' => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", (string) $_POST['interfaceUserName']))) : null,
+            'email' => $_POST['email'],
+            'phone_number' => $_POST['phoneNo'],
+            'login_id' => $_POST['loginId'],
+            'role_id' => $_POST['role'],
+            'status' => $_POST['status'],
+            'app_access' => $_POST['appAccessable'],
             'updated_datetime' => DateUtility::getCurrentDateTime()
         ];
 
@@ -98,7 +96,7 @@ try {
 
             $data['user_signature'] = basename($signatureImagePath);
         } else {
-            $signatureImagePath = isset($userInfo['user_signature']) ? $signatureImagePath . DIRECTORY_SEPARATOR . $userInfo['user_signature'] :  null;
+            $signatureImagePath = isset($userInfo['user_signature']) ? $signatureImagePath . DIRECTORY_SEPARATOR . $userInfo['user_signature'] : null;
         }
 
         if (isset($_POST['password']) && trim((string) $_POST['password']) !== "") {
@@ -134,7 +132,9 @@ try {
 
         if ($userId != '' && trim((string) $_POST['selectedFacility']) !== '') {
             $selectedFacility = MiscUtility::desqid($_POST['selectedFacility'], returnArray: true);
+
             $uniqueFacilityId = array_unique($selectedFacility);
+
             if ($uniqueFacilityId !== []) {
                 $data = [];
                 foreach ($uniqueFacilityId as $facilityId) {
@@ -143,7 +143,6 @@ try {
                         'user_id' => $userId,
                     ];
                 }
-
                 if ($data !== []) {
                     $db->insertMulti("user_facility_map", $data);
                 }

@@ -127,29 +127,22 @@ final class FacilitiesService
         });
     }
 
-    // $facilityType = 1 for getting all mapped health facilities
-    // $facilityType = 2 for getting all mapped testing labs
-    // $facilityType = null for getting all mapped facilities
-    public function getUserFacilityMap($userId, $facilityType = null): mixed
+    public function getUserFacilityMap($userId): mixed
     {
 
-        return MemoUtility::remember(function () use ($userId, $facilityType) {
+        return MemoUtility::remember(function () use ($userId) {
 
             if (empty($userId)) {
                 return null;
             }
             $sessionEnabled = false;
-            if (session_status() !== PHP_SESSION_NONE) {
+            if (session_status() !== PHP_SESSION_NONE && $userId == ($_SESSION['userId'] ?? null)) {
                 if (isset($_SESSION['facilityMap'])) {
                     return $_SESSION['facilityMap'];
                 }
                 $sessionEnabled = true;
             }
 
-            /* if (!empty($facilityType)) {
-            $this->db->join("facility_details f", "map.facility_id=f.facility_id", "INNER");
-            $this->db->joinWhere("facility_details f", "f.facility_type", $facilityType);
-            } */
             $userfacilityMap = null;
             $this->db->where("user_id", $userId);
             $response = $this->db->getValue("user_facility_map", "facility_id", null);
@@ -272,7 +265,7 @@ final class FacilitiesService
             $userId ??= $_SESSION['userId'];
         }
         if (!$byPassFacilityMap && !empty($userId)) {
-            $facilityMap = $this->getUserFacilityMap($userId, 2);
+            $facilityMap = $this->getUserFacilityMap($userId);
             if (!empty($facilityMap)) {
                 $this->db->where("`facility_id` IN ($facilityMap)");
             }

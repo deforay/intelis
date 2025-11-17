@@ -9,6 +9,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
+$hasAction = _isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php") && $general->isSTSInstance();
 $title = _translate("Test Result Units");
 require_once APPLICATION_PATH . '/header.php';
 ?>
@@ -44,7 +45,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Unit Name"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<th scope="row"><?php echo _translate("Updated On"); ?></th>
-									<?php if (_isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php") && $general->isSTSInstance()) { ?>
+									<?php if ($hasAction) { ?>
 										<th scope="row"><?php echo _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -89,7 +90,7 @@ require_once APPLICATION_PATH . '/header.php';
 					"sClass": "center"
 				},
 
-				<?php if (_isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php") && $general->isSTSInstance()) { ?> {
+				<?php if ($hasAction) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					}

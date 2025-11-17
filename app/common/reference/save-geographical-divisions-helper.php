@@ -21,7 +21,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
-try {
+	try {
 	if (!empty($_POST['geoName'])) {
 		$geoId = !empty($_POST['geoId']) ? base64_decode((string) $_POST['geoId']) : null;
 		$existingDivision = null;
@@ -40,6 +40,23 @@ try {
 			'updated_datetime' => $currentDateTime
 		];
 
+		// Guard against duplicate name + parent before attempting save
+		$db->where('geo_name', $data['geo_name']);
+		$db->where('geo_parent', $geoParent);
+		if (!empty($geoId)) {
+			$db->where('geo_id', $geoId, '!=');
+		}
+		$existingDuplicate = $db->getOne('geographical_divisions', 'geo_id');
+		if (!empty($existingDuplicate)) {
+			$_SESSION['alertMsg'] = _translate("A geographical division with this name already exists under the selected parent. Please use a different name.");
+			if (!empty($geoId)) {
+				header("Location:edit-geographical-divisions.php?id=" . base64_encode((string) $geoId));
+			} else {
+				header("Location:add-geographical-divisions.php");
+			}
+			exit;
+		}
+
 		$operationSuccessful = false;
 
 		if (!empty($geoId)) {
@@ -47,6 +64,13 @@ try {
 			$updateResult = $db->update("geographical_divisions", $data);
 			if ($updateResult !== false) {
 				$operationSuccessful = true;
+			} else {
+				$lastError = (string) $db->getLastError();
+				if (stripos($lastError, 'Duplicate entry') !== false) {
+					$_SESSION['alertMsg'] = _translate("A geographical division with this name and parent already exists. Please use a different name.");
+					header("Location:edit-geographical-divisions.php?id=" . base64_encode((string) $geoId));
+					exit;
+				}
 			}
 		} else {
 			$data['created_by'] = $_SESSION['userId'];
@@ -56,6 +80,13 @@ try {
 			$geoId = $db->getInsertId();
 			if (!empty($geoId)) {
 				$operationSuccessful = true;
+			} else {
+				$lastError = (string) $db->getLastError();
+				if (stripos($lastError, 'Duplicate entry') !== false) {
+					$_SESSION['alertMsg'] = _translate("A geographical division with this name and parent already exists. Please use a different name.");
+					header("Location:add-geographical-divisions.php");
+					exit;
+				}
 			}
 		}
 
