@@ -43,7 +43,8 @@ final class GeoLocationsService
             } else {
                 $this->db->where('geo_parent', 0);
             }
-            if (!empty($_SESSION['mappedProvinces'])) {
+            // Province access mapping should only be applied when fetching provinces (geo_parent = 0)
+            if (!empty($_SESSION['mappedProvinces']) && (empty($parent) || $parent === 0 || $parent === "0")) {
                 $this->db->where('geo_id', $_SESSION['mappedProvinces']);
             }
 
