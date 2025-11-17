@@ -11,7 +11,7 @@ $primaryKey = "role_id";
 
 
 
-$aColumns = array('role_name', 'role_code', 'status');
+$aColumns = ['role_name', 'role_code', 'status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -45,7 +45,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -69,7 +69,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM roles";
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $sWhere = ' where ' . implode(' AND ', $sWhere);
 }
 $sQuery = $sQuery . ' ' . $sWhere;
@@ -84,12 +84,7 @@ if (isset($sLimit) && isset($sOffset)) {
 
 [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $resultCount,
-    "iTotalDisplayRecords" => $resultCount,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $row = [];

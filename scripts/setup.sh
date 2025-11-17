@@ -253,7 +253,7 @@ if [[ -n "$intelis_sql_file" ]]; then
     fi
 fi
 
-PHP_VERSION=8.2
+PHP_VERSION=8.4
 
 # Download and install lamp-setup script
 download_file  "lamp-setup.sh" "https://raw.githubusercontent.com/deforay/utility-scripts/master/lamp/lamp-setup.sh" "Downloading lamp-setup.sh..." || {

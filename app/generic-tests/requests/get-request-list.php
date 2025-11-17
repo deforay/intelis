@@ -81,7 +81,7 @@ try {
      }
 
      if (!empty($sOrder) && $sOrder !== '') {
-          $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+          $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
           $sQuery = "$sQuery ORDER BY $sOrder";
      }
 
@@ -141,13 +141,13 @@ try {
                $patientTooltip .= _translate("Patient Sex", true) . " : " . $aRow['patient_gender'] . '<br>';
           }
 
-          if (!empty($sampleCodeTooltip)) {
+          if ($sampleCodeTooltip !== '' && $sampleCodeTooltip !== '0') {
                $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['sample_code'] . '</span>';
           } else {
                $row[] = '<span>' . $aRow['sample_code'] . '</span>';
           }
           if (!$general->isStandaloneInstance()) {
-               if (!empty($sampleCodeTooltip)) {
+               if ($sampleCodeTooltip !== '' && $sampleCodeTooltip !== '0') {
                     $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['remote_sample_code'] . '</span>';
                } else {
                     $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
@@ -156,12 +156,12 @@ try {
           $row[] = $aRow['test_standard_name'];
           $row[] = $aRow['sample_collection_date'];
           $row[] = $aRow['batch_code'];
-          if (!empty($patientTooltip)) {
+          if ($patientTooltip !== '' && $patientTooltip !== '0') {
                $row[] = '<span class="top-tooltip" title="' . $patientTooltip . '">' . $aRow['patient_id'] . '</span>';
           } else {
                $row[] = '<span>' . $aRow['patient_id'] . '</span>';
           }
-          $row[] = trim(implode(" ", array($patientFname, $patientMname, $patientLname)));
+          $row[] = trim(implode(" ", [$patientFname, $patientMname, $patientLname]));
           $row[] = $aRow['lab_name'];
           $row[] = $aRow['facility_name'];
           $row[] = $aRow['facility_state'];

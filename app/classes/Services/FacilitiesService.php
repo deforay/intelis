@@ -4,12 +4,13 @@ namespace App\Services;
 
 use App\Utilities\DateUtility;
 use App\Utilities\MemoUtility;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 final class FacilitiesService
 {
-    protected $db;
-    private $facilityTypeTableList = [
+    private array $facilityTypeTableList = [
         1 => "health_facilities",
         2 => "testing_labs",
         3 => "health_facilities",
@@ -17,12 +18,11 @@ final class FacilitiesService
 
     protected string $table = 'facility_details';
 
-    public function __construct(DatabaseService $db)
+    public function __construct(protected DatabaseService $db)
     {
-        $this->db = $db;
     }
 
-    public function getAllFacilities($facilityType = null, $onlyActive = true)
+    public function getAllFacilities($facilityType = null, $onlyActive = true): mixed
     {
         return MemoUtility::remember(function () use ($facilityType, $onlyActive) {
 
@@ -40,7 +40,7 @@ final class FacilitiesService
         });
     }
 
-    public function getFacilitiesForResultUpload($testType)
+    public function getFacilitiesForResultUpload($testType): mixed
     {
         return MemoUtility::remember(function () use ($testType) {
 
@@ -83,6 +83,14 @@ final class FacilitiesService
         return $this->db->get("facility_details f");
     }
 
+    public function getFacilityName($facilityId)
+    {
+        if (!empty($facilityId)) {
+            $this->db->where("facility_id", $facilityId);
+        }
+        return $this->db->getValue("facility_details", "facility_name");
+    }
+
     public function getFacilityById($facilityId)
     {
         if (!empty($facilityId)) {
@@ -122,7 +130,7 @@ final class FacilitiesService
     // $facilityType = 1 for getting all mapped health facilities
     // $facilityType = 2 for getting all mapped testing labs
     // $facilityType = null for getting all mapped facilities
-    public function getUserFacilityMap($userId, $facilityType = null)
+    public function getUserFacilityMap($userId, $facilityType = null): mixed
     {
 
         return MemoUtility::remember(function () use ($userId, $facilityType) {
@@ -162,7 +170,7 @@ final class FacilitiesService
             return null;
         }
 
-        return MemoUtility::remember(function () use ($labId) {
+        return MemoUtility::remember(function () use ($labId): string|array|null|int|float|false {
             $this->db->where("vl_lab_id", $labId);
             $fMapResult = $this->db->getValue('testing_lab_health_facilities_map', 'facility_id', null);
 
@@ -212,7 +220,7 @@ final class FacilitiesService
         }
 
         if (!empty($condition)) {
-            $condition = !is_array($condition) ? [$condition] : $condition;
+            $condition = is_array($condition) ? $condition : [$condition];
             foreach ($condition as $cond) {
                 $this->db->where($cond);
             }
@@ -237,15 +245,15 @@ final class FacilitiesService
     }
 
 
-    public function updateFacilitySyncTime($facilityIds, $currentDateTime = null)
+    public function updateFacilitySyncTime($facilityIds, $currentDateTime = null): void
     {
-        $currentDateTime = $currentDateTime ?? DateUtility::getCurrentDateTime();
+        $currentDateTime ??= DateUtility::getCurrentDateTime();
         if (!empty($facilityIds)) {
             $facilityIds = array_unique(array_filter($facilityIds));
             $sql = 'UPDATE facility_details
                         SET facility_attributes = JSON_SET(COALESCE(facility_attributes, "{}"), "$.remoteRequestsSync", ?, "$.vlRemoteRequestsSync", ?)
                         WHERE facility_id IN (' . implode(",", $facilityIds) . ')';
-            $this->db->rawQuery($sql, array($currentDateTime, $currentDateTime));
+            $this->db->rawQuery($sql, [$currentDateTime, $currentDateTime]);
         }
     }
 
@@ -285,7 +293,7 @@ final class FacilitiesService
         }
 
         if (!empty($condition)) {
-            $condition = !is_array($condition) ? [$condition] : $condition;
+            $condition = is_array($condition) ? $condition : [$condition];
             foreach ($condition as $cond) {
                 $this->db->where($cond);
             }
@@ -306,98 +314,107 @@ final class FacilitiesService
         }
     }
 
-    public function getOrCreateProvince(string $provinceName, string $provinceCode = null): int
+    public function getOrCreateProvince(string $provinceName, ?string $provinceCode = null): int
     {
-        // check if there is a province matching the input params, if yes then return province id
-        $this->db->where("geo_name ='$provinceName'");
-        if ($provinceCode != "") {
-            $this->db->where("geo_code ='$provinceCode'");
-        }
-        $provinceInfo = $this->db->getOne('geographical_divisions');
+        return MemoUtility::remember(function () use ($provinceName, $provinceCode) {
+            // check if there is a province matching the input params, if yes then return province id
+            $this->db->where("geo_name ='$provinceName'");
+            if ($provinceCode != "") {
+                $this->db->where("geo_code ='$provinceCode'");
+            }
+            $provinceInfo = $this->db->getOne('geographical_divisions');
 
-        if (isset($provinceInfo['geo_id']) && $provinceInfo['geo_id'] != "") {
-            return $provinceInfo['geo_id'];
-        } else {
-            // if not then insert and return the new province id
-            $data = array(
-                'geo_name' => $provinceName,
-                'geo_status' => 'active',
-                'updated_datetime' => DateUtility::getCurrentDateTime(),
-            );
-            $this->db->insert('geographical_divisions', $data);
-            return $this->db->getInsertId();
-        }
+            if (isset($provinceInfo['geo_id']) && $provinceInfo['geo_id'] != "") {
+                return $provinceInfo['geo_id'];
+            } else {
+
+
+                // if not then insert and return the new province id
+                $data = ['geo_name' => $provinceName, 'geo_status' => 'active', 'updated_datetime' => DateUtility::getCurrentDateTime()];
+                $this->db->insert('geographical_divisions', $data);
+
+                /** @var CommonService $general */
+                $general = ContainerRegistry::get(CommonService::class);
+                $general->activityLog('add-province', ($_SESSION['userName'] ?? '') . " added a new province $provinceName", 'geographical-divisions');
+
+                return $this->db->getInsertId();
+            }
+        });
     }
 
     public function getOrCreateDistrict(?string $districtName, ?string $districtCode = null, ?int $provinceId = null): int
     {
-        // check if there is a district matching the input params, if yes then return province id
-        $this->db->where("geo_name ='$districtName' AND geo_parent = $provinceId");
-        if ($districtCode != "") {
-            $this->db->where("geo_code ='$districtCode'");
-        }
-        $districtInfo = $this->db->getOne('geographical_divisions');
+        return MemoUtility::remember(function () use ($districtName, $districtCode, $provinceId) {
+            // check if there is a district matching the input params, if yes then return province id
+            $this->db->where("geo_name ='$districtName' AND geo_parent = $provinceId");
+            if ($districtCode != "") {
+                $this->db->where("geo_code ='$districtCode'");
+            }
+            $districtInfo = $this->db->getOne('geographical_divisions');
 
-        if (isset($districtInfo['geo_id']) && $districtInfo['geo_id'] != "") {
-            return $districtInfo['geo_id'];
-        } else {
-            // if not then insert and return the new province id
-            $data = array(
-                'geo_name' => $districtName,
-                'geo_parent' => $provinceId,
-                'geo_status' => 'active',
-                'updated_datetime' => DateUtility::getCurrentDateTime(),
-            );
-            $this->db->insert('geographical_divisions', $data);
-            return $this->db->getInsertId();
-        }
+            if (isset($districtInfo['geo_id']) && $districtInfo['geo_id'] != "") {
+                return $districtInfo['geo_id'];
+            } else {
+                // if not then insert and return the new province id
+                $data = ['geo_name' => $districtName, 'geo_parent' => $provinceId, 'geo_status' => 'active', 'updated_datetime' => DateUtility::getCurrentDateTime()];
+                $this->db->insert('geographical_divisions', $data);
+
+                /** @var CommonService $general */
+                $general = ContainerRegistry::get(CommonService::class);
+                $general->activityLog('add-district', ($_SESSION['userName'] ?? '') . " added a new district $districtName", 'geographical-divisions');
+
+                return $this->db->getInsertId();
+            }
+        });
     }
+
     public function getFacilitiesDropdown($testType, $facilityType, $provinceName = null, $districtRequested = null, $option = null, $comingFromUser = null): string
     {
+        return MemoUtility::remember(function () use ($testType, $facilityType, $provinceName, $districtRequested, $option, $comingFromUser) {
+            $facilityTypeTable = $this->facilityTypeTableList[$facilityType];
 
-        $facilityTypeTable = $this->facilityTypeTableList[$facilityType];
+            $this->db->where("f.status", 'active');
+            $this->db->orderBy("f.facility_name", "ASC");
 
-        $this->db->where("f.status", 'active');
-        $this->db->orderBy("f.facility_name", "ASC");
-
-        if (!empty($provinceName)) {
-            if (is_numeric($provinceName)) {
-                $this->db->where("f.facility_state_id", $provinceName);
-            } else {
-                $this->db->where("f.facility_state", $provinceName);
+            if (!empty($provinceName)) {
+                if (is_numeric($provinceName)) {
+                    $this->db->where("f.facility_state_id", $provinceName);
+                } else {
+                    $this->db->where("f.facility_state", $provinceName);
+                }
             }
-        }
 
-        if (!empty($districtRequested)) {
-            if (is_numeric($districtRequested)) {
-                $this->db->where("f.facility_district_id", $districtRequested);
-            } else {
-                $this->db->where("f.facility_district", $districtRequested);
+            if (!empty($districtRequested)) {
+                if (is_numeric($districtRequested)) {
+                    $this->db->where("f.facility_district_id", $districtRequested);
+                } else {
+                    $this->db->where("f.facility_district", $districtRequested);
+                }
             }
-        }
-        //$db->where("f.facility_type", $facilityTypeRequested);
-        $this->db->join("user_details u", "u.user_id=f.contact_person", "LEFT");
-        $this->db->join("$facilityTypeTable h", "h.facility_id=f.facility_id", "INNER");
-        $this->db->joinWhere("$facilityTypeTable h", "h.test_type", $testType);
+            //$db->where("f.facility_type", $facilityTypeRequested);
+            $this->db->join("user_details u", "u.user_id=f.contact_person", "LEFT");
+            $this->db->join("$facilityTypeTable h", "h.facility_id=f.facility_id", "INNER");
+            $this->db->joinWhere("$facilityTypeTable h", "h.test_type", $testType);
 
-        if (!empty($_SESSION['facilityMap'])) {
-            $this->db->where("f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
-        }
+            if (!empty($_SESSION['facilityMap'])) {
+                $this->db->where("f.facility_id IN (" . $_SESSION['facilityMap'] . ")");
+            }
 
-        $facilityInfo = $this->db->get('facility_details f', null, 'f.* , u.user_name as contact_person');
-        $facility = '';
-        if ($facilityInfo) {
-            if (!isset($comingFromUser)) {
+            $facilityInfo = $this->db->get('facility_details f', null, 'f.* , u.user_name as contact_person');
+            $facility = '';
+            if ($facilityInfo) {
+                if (!isset($comingFromUser)) {
+                    $facility .= $option;
+                }
+                foreach ($facilityInfo as $fDetails) {
+                    $fcode = (isset($fDetails['facility_code']) && $fDetails['facility_code'] != "") ? ' - ' . $fDetails['facility_code'] : '';
+
+                    $facility .= "<option data-code='" . $fDetails['facility_code'] . "' data-emails='" . $fDetails['facility_emails'] . "' data-mobile-nos='" . $fDetails['facility_mobile_numbers'] . "' data-contact-person='" . ($fDetails['contact_person']) . "' value='" . $fDetails['facility_id'] . "'>" . (htmlspecialchars((string) $fDetails['facility_name'])) . $fcode . "</option>";
+                }
+            } else {
                 $facility .= $option;
             }
-            foreach ($facilityInfo as $fDetails) {
-                $fcode = (isset($fDetails['facility_code']) && $fDetails['facility_code'] != "") ? ' - ' . $fDetails['facility_code'] : '';
-
-                $facility .= "<option data-code='" . $fDetails['facility_code'] . "' data-emails='" . $fDetails['facility_emails'] . "' data-mobile-nos='" . $fDetails['facility_mobile_numbers'] . "' data-contact-person='" . ($fDetails['contact_person']) . "' value='" . $fDetails['facility_id'] . "'>" . (htmlspecialchars((string) $fDetails['facility_name'])) . $fcode . "</option>";
-            }
-        } else {
-            $facility .= $option;
-        }
-        return $facility;
+            return $facility;
+        });
     }
 }

@@ -1,9 +1,15 @@
 <?php
 // imported in tb-add-request.php based on country in global config
 
-use App\Registries\ContainerRegistry;
-use App\Utilities\DateUtility;
 use App\Services\TbService;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
@@ -35,11 +41,10 @@ if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCode = 'sample_code';
     $rKey = '';
 }
-//check user exist in user_facility_map table
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
-$microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
+$microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
 $typeOfPatient = json_decode((string) $tbInfo['patient_type']);
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
@@ -52,7 +57,8 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 <div class="content-wrapper">
     <!-- Content Header -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("TB LABORATORY TEST RESULTS FORM"); ?></h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("TB LABORATORY TEST RESULTS FORM"); ?>
+        </h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
             <li class="active"><?php echo _translate("Update Result"); ?></li>
@@ -77,45 +83,70 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                             </div>
                             <div class="col-md-5" style="display: flex;">
                                 <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                                    <span style="width: 20%;"><label class="label-control" for="sampleCode"><?php echo _translate("Sample ID"); ?></label></span>
-                                    <span style="width: 80%;" id="sampleCodeInText"><?php echo (isset($tbInfo['remote_sample_code']) && $tbInfo['remote_sample_code'] != "") ? $tbInfo['remote_sample_code'] : $tbInfo['sample_code']; ?></span>
+                                    <span style="width: 20%;"><label class="label-control"
+                                            for="sampleCode"><?php echo _translate("Sample ID"); ?></label></span>
+                                    <span style="width: 80%;"
+                                        id="sampleCodeInText"><?php echo (isset($tbInfo['remote_sample_code']) && $tbInfo['remote_sample_code'] != "") ? $tbInfo['remote_sample_code'] : $tbInfo['sample_code']; ?></span>
                                     <input type="hidden" id="sampleCode" name="sampleCode" />
                                 <?php } else { ?>
-                                    <span style="width: 20%;"><label class="label-control" for="sampleCode"><?php echo _translate("Sample ID"); ?><span class="mandatory">*</span></label></span>
-                                    <input style="width: 80%;" value="<?php echo $tbInfo['sample_code']; ?>" type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly placeholder="Sample ID" title="<?php echo _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The Sample ID that you entered already exists. Please try another Sample ID',null)" />
+                                    <span style="width: 20%;"><label class="label-control"
+                                            for="sampleCode"><?php echo _translate("Sample ID"); ?><span
+                                                class="mandatory">*</span></label></span>
+                                    <input style="width: 80%;" value="<?php echo $tbInfo['sample_code']; ?>" type="text"
+                                        class="form-control isRequired" id="sampleCode" name="sampleCode" readonly
+                                        placeholder="Sample ID"
+                                        title="<?php echo _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>"
+                                        onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The Sample ID that you entered already exists. Please try another Sample ID',null)" />
                                 <?php } ?>
                             </div>
                         </div>
 
                         <div class="box-header with-border">
-                            <h3 class="box-title" style="font-size:1em;"><?php echo _translate("To be filled by requesting Clinician/Nurse"); ?></h3>
+                            <h3 class="box-title" style="font-size:1em;">
+                                <?php echo _translate("To be filled by requesting Clinician/Nurse"); ?>
+                            </h3>
                         </div>
 
                         <table class="table" style="width:100%">
                             <tr>
                                 <td style="width: 50%;">
-                                    <label class="label-control" for="facilityId"><?php echo _translate("Health Facility Name"); ?><span class="mandatory">*</span></label>
-                                    <select class="form-control isRequired" name="facilityId" id="facilityId" title="<?php echo _translate("Please choose facility"); ?>" onchange="getfacilityProvinceDetails(this);">
+                                    <label class="label-control"
+                                        for="facilityId"><?php echo _translate("Health Facility Name"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <select class="form-control isRequired" name="facilityId" id="facilityId"
+                                        title="<?php echo _translate("Please choose facility"); ?>"
+                                        onchange="getfacilityProvinceDetails(this);">
                                         <?php echo $facility; ?>
                                     </select>
                                 </td>
                                 <td style="width: 50%;">
-                                    <label class="label-control" for="district"><?php echo _translate("Health Facility County"); ?><span class="mandatory">*</span></label>
-                                    <select class="form-control select2 isRequired" name="district" id="district" title="<?php echo _translate("Please choose County"); ?>" onchange="getfacilityDistrictwise(this);">
+                                    <label class="label-control"
+                                        for="district"><?php echo _translate("Health Facility County"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <select class="form-control select2 isRequired" name="district" id="district"
+                                        title="<?php echo _translate("Please choose County"); ?>"
+                                        onchange="getfacilityDistrictwise(this);">
                                         <option value=""> -- <?php echo _translate("Select"); ?> -- </option>
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width: 50%;">
-                                    <label class="label-control" for="province"><?php echo _translate("Health Facility State"); ?><span class="mandatory">*</span></label>
-                                    <select class="form-control select2 isRequired" name="province" id="province" title="<?php echo _translate("Please choose State"); ?>" onchange="getfacilityDetails(this);">
+                                    <label class="label-control"
+                                        for="province"><?php echo _translate("Health Facility State"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <select class="form-control select2 isRequired" name="province" id="province"
+                                        title="<?php echo _translate("Please choose State"); ?>"
+                                        onchange="getfacilityDetails(this);">
                                         <?php echo $province; ?>
                                     </select>
                                 </td>
                                 <td style="width: 50%;">
-                                    <label class="label-control" for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
-                                    <select name="affiliatedLabId" id="affiliatedLabId" class="form-control select2 isRequired" title="<?php echo _translate("Please select afflicated laboratory"); ?>">
+                                    <label class="label-control"
+                                        for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
+                                    <select name="affiliatedLabId" id="affiliatedLabId"
+                                        class="form-control select2 isRequired"
+                                        title="<?php echo _translate("Please select afflicated laboratory"); ?>">
                                         <?= $general->generateSelectOptions($testingLabs, $tbInfo['affiliated_lab_id'], '-- Select --'); ?>
                                     </select>
                                 </td>
@@ -123,8 +154,11 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                             <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                 <tr>
                                     <td style="width: 50%;">
-                                        <label class="label-control" for="labId"><?php echo _translate("Testing Laboratory"); ?><span class="mandatory">*</span></label>
-                                        <select name="labId" id="labId" class="form-control select2 isRequired" title="<?php echo _translate("Please select Testing Laboratory"); ?>">
+                                        <label class="label-control"
+                                            for="labId"><?php echo _translate("Testing Laboratory"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <select name="labId" id="labId" class="form-control select2 isRequired"
+                                            title="<?php echo _translate("Please select Testing Laboratory"); ?>">
                                             <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
                                         </select>
                                     </td>
@@ -137,17 +171,26 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                             <h3 class="box-title"><?php echo _translate("PATIENT DETAILS"); ?>:</h3>
                         </div>
                         <div class="box-header with-border">
-                            <h3 class="box-title" style="font-size:1em;"><?php echo _translate("Complete full information on patient identification, contact and type of patient by TB program definition"); ?></h3>
-                            <a style="margin-top:-0.35%;margin-left:10px;" href="javascript:void(0);" class="btn btn-default pull-right btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em><?php echo _translate("Search"); ?></a>
-                            <span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?php echo _translate("No Patient Found"); ?></strong></span>
-                            <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo" class="pull-right" placeholder="<?php echo _translate("Enter Patient ID or Patient Name"); ?>" title="<?php echo _translate("Enter art number or patient name"); ?>" />
+                            <h3 class="box-title" style="font-size:1em;">
+                                <?php echo _translate("Complete full information on patient identification, contact and type of patient by TB program definition"); ?>
+                            </h3>
+                            <a style="margin-top:-0.35%;margin-left:10px;" href="javascript:void(0);"
+                                class="btn btn-default pull-right btn-sm" onclick="showPatientList();"><em
+                                    class="fa-solid fa-magnifying-glass"></em><?php echo _translate("Search"); ?></a>
+                            <span id="showEmptyResult"
+                                style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?php echo _translate("No Patient Found"); ?></strong></span>
+                            <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo"
+                                class="pull-right"
+                                placeholder="<?php echo _translate("Enter Patient ID or Patient Name"); ?>"
+                                title="<?php echo _translate("Enter art number or patient name"); ?>" />
                         </div>
 
                         <table class="table" style="width:100%">
                             <tr class="encryptPIIContainer">
                                 <td style="width: 50%;">
                                     <label for="encryptPII"><?= _translate('Encrypt PII'); ?></label>
-                                    <select name="encryptPII" id="encryptPII" class="form-control" title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
+                                    <select name="encryptPII" id="encryptPII" class="form-control"
+                                        title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
                                         <option value=""><?= _translate('--Select--'); ?></option>
                                         <option value="no" <?php echo ($tbInfo['is_encrypted'] == "no") ? "selected='selected'" : ""; ?>><?= _translate('No'); ?></option>
                                         <option value="yes" <?php echo ($tbInfo['is_encrypted'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
@@ -157,101 +200,168 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                             <tr>
                                 <td style="width: 40%;">
                                     <label for="trackerNo"><?= _translate('e-TB tracker No.'); ?></label>
-                                    <input type="text" value="<?php echo $tbInfo['etb_tracker_number']; ?>" class="form-control" id="trackerNo" name="trackerNo" placeholder="<?php echo _translate("Enter the e-TB tracker number"); ?>" title="<?php echo _translate("Please enter the e-TB tracker number"); ?>" />
+                                    <input type="text" value="<?php echo $tbInfo['etb_tracker_number']; ?>"
+                                        class="form-control" id="trackerNo" name="trackerNo"
+                                        placeholder="<?php echo _translate("Enter the e-TB tracker number"); ?>"
+                                        title="<?php echo _translate("Please enter the e-TB tracker number"); ?>" />
                                 </td>
                                 <td style="width: 60%;display: flex;gap: 10px;">
                                     <div style="width:50%">
                                         <label for="dob"><?= _translate('Date of Birth'); ?></label>
-                                        <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>" class="form-control date" id="dob" name="dob" placeholder="<?php echo _translate("Date of Birth"); ?>" title="<?php echo _translate("Please enter Date of birth"); ?>" onchange="calculateAgeInYears('dob', 'patientAge');" />
+                                        <input type="text"
+                                            value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>"
+                                            class="form-control date" id="dob" name="dob"
+                                            placeholder="<?php echo _translate("Date of Birth"); ?>"
+                                            title="<?php echo _translate("Please enter Date of birth"); ?>"
+                                            onchange="calculateAgeInYears('dob', 'patientAge');" />
                                     </div>
                                     <div style="width:50%;">
                                         <label for="patientAge"><?= _translate('Age (years)'); ?></label>
-                                        <input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150" maxlength="3" class="form-control" id="patientAge" name="patientAge" placeholder="<?php echo _translate("Age (in years)"); ?>" title="<?php echo _translate("Patient Age"); ?>" />
+                                        <input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150"
+                                            maxlength="3" class="form-control" id="patientAge" name="patientAge"
+                                            placeholder="<?php echo _translate("Age (in years)"); ?>"
+                                            title="<?php echo _translate("Patient Age"); ?>" />
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width: 50%;">
                                     <label for="patientId"><?php echo _translate("Patient ID"); ?></label>
-                                    <input type="text" value="<?php echo $tbInfo['patient_id']; ?>" class="form-control patientId" id="patientId" name="patientId" placeholder="Patient Identification" title="<?php echo _translate("Please enter Patient ID"); ?>" />
+                                    <input type="text" value="<?php echo $tbInfo['patient_id']; ?>"
+                                        class="form-control patientId" id="patientId" name="patientId"
+                                        placeholder="Patient Identification"
+                                        title="<?php echo _translate("Please enter Patient ID"); ?>" />
                                 </td>
                                 <td style="width: 50%;">
-                                    <label for="patientGender"><?php echo _translate("Sex"); ?><span class="mandatory">*</span></label>
-                                    <select class="form-control isRequired" name="patientGender" id="patientGender" title="<?php echo _translate("Please choose sex"); ?>">
+                                    <label for="patientGender"><?php echo _translate("Sex"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <select class="form-control isRequired" name="patientGender" id="patientGender"
+                                        title="<?php echo _translate("Please choose sex"); ?>">
                                         <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
                                         <option value='male' <?php echo (isset($tbInfo['patient_gender']) && !empty($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'male') ? 'selected="selected"' : ''; ?>> <?php echo _translate("Male"); ?> </option>
-                                        <option value='female' <?php echo (isset($tbInfo['patient_gender']) && !empty($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'female') ? 'selected="selected"' : ''; ?>> <?php echo _translate("Female"); ?> </option>
+                                        <option value='female' <?php echo (isset($tbInfo['patient_gender']) && !empty($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'female') ? 'selected="selected"' : ''; ?>> <?php echo _translate("Female"); ?>
+                                        </option>
                                         <option value='other' <?php echo (isset($tbInfo['patient_gender']) && !empty($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'other') ? 'selected="selected"' : ''; ?>> <?php echo _translate("Other"); ?> </option>
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width: 50%;">
-                                    <label for="firstName"><?php echo _translate("First Name"); ?><span class="mandatory">*</span></label>
-                                    <input type="text" value="<?php echo $tbInfo['patient_name']; ?>" class="form-control isRequired" id="firstName" name="firstName" placeholder="<?php echo _translate("First Name"); ?>" title="<?php echo _translate("Please enter First name"); ?>" />
+                                    <label for="firstName"><?php echo _translate("First Name"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <input type="text" value="<?php echo $tbInfo['patient_name']; ?>"
+                                        class="form-control isRequired" id="firstName" name="firstName"
+                                        placeholder="<?php echo _translate("First Name"); ?>"
+                                        title="<?php echo _translate("Please enter First name"); ?>" />
                                 </td>
                                 <td style="width: 50%;">
                                     <label for="lastName"><?php echo _translate("Surname"); ?></label>
-                                    <input type="text" value="<?php echo $tbInfo['patient_surname']; ?>" class="form-control" id="lastName" name="lastName" placeholder="<?php echo _translate("Last name"); ?>" title="<?php echo _translate("Please enter Last name"); ?>" />
+                                    <input type="text" value="<?php echo $tbInfo['patient_surname']; ?>"
+                                        class="form-control" id="lastName" name="lastName"
+                                        placeholder="<?php echo _translate("Last name"); ?>"
+                                        title="<?php echo _translate("Please enter Last name"); ?>" />
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width: 50%;">
                                     <label for="patientPhoneNumber"><?php echo _translate("Phone contact"); ?>:</label>
-                                    <input type="text" value="<?php echo $tbInfo['patient_phone']; ?>" class="form-control checkNum" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="<?php echo _translate("Phone Number"); ?>" title="<?php echo _translate("Please enter phone number"); ?>" />
+                                    <input type="text" value="<?php echo $tbInfo['patient_phone']; ?>"
+                                        class="form-control checkNum" id="patientPhoneNumber" name="patientPhoneNumber"
+                                        placeholder="<?php echo _translate("Phone Number"); ?>"
+                                        title="<?php echo _translate("Please enter phone number"); ?>" />
                                 </td>
                                 <td style="width: 50%;">
-                                    <label for="typeOfPatient"><?php echo _translate("Type of patient"); ?><span class="mandatory">*</span></label>
-                                    <select class="select2 form-control isRequired" name="typeOfPatient[]" id="typeOfPatient" title="<?php echo _translate("Please select the type of patient"); ?>" multiple onchange="showOther(this.value,'typeOfPatientOther');">
+                                    <label for="typeOfPatient"><?php echo _translate("Type of patient"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <select class="select2 form-control isRequired" name="typeOfPatient[]"
+                                        id="typeOfPatient"
+                                        title="<?php echo _translate("Please select the type of patient"); ?>" multiple
+                                        onchange="showOther(this.value,'typeOfPatientOther');">
                                         <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
                                         <option value='new' <?php echo (is_array($typeOfPatient) && in_array("new", $typeOfPatient)) ? "selected='selected'" : ""; ?>> New </option>
                                         <option value='loss-to-follow-up' <?php echo (is_array($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
                                         <option value='treatment-failure' <?php echo (is_array($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Treatment Failure </option>
-                                        <option value='relapse' <?php echo (is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Relapse </option>
+                                        <option value='relapse' <?php echo (is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) ? "selected='selected'" : ""; ?>>
+                                            Relapse </option>
                                         <option value='other' <?php echo (is_array($typeOfPatient) && in_array("other", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Other </option>
                                     </select>
-                                    <input type="text" class="form-control typeOfPatientOther" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="<?php echo _translate("Enter type of patient if others"); ?>" title="<?php echo _translate("Please enter type of patient if others"); ?>" style="display: none;" />
+                                    <input type="text" class="form-control typeOfPatientOther" id="typeOfPatientOther"
+                                        name="typeOfPatientOther"
+                                        placeholder="<?php echo _translate("Enter type of patient if others"); ?>"
+                                        title="<?php echo _translate("Please enter type of patient if others"); ?>"
+                                        style="display: none;" />
                                 </td>
                             </tr>
                         </table>
 
                         <!-- TREATMENT AND RISK FACTORS INFORMATION -->
                         <div class="box-header with-border sectionHeader">
-                            <h3 class="box-title"><?php echo _translate("TREATMENT AND RISK FACTORS INFORMATION"); ?></h3>
+                            <h3 class="box-title"><?php echo _translate("TREATMENT AND RISK FACTORS INFORMATION"); ?>
+                            </h3>
                         </div>
                         <div class="box-header with-border">
-                            <h3 class="box-title" style="font-size:1em;"><?php echo _translate("Please complete full information on treatment history, TB regimen and risk factors"); ?></h3>
+                            <h3 class="box-title" style="font-size:1em;">
+                                <?php echo _translate("Please complete full information on treatment history, TB regimen and risk factors"); ?>
+                            </h3>
                         </div>
 
                         <table class="table" style="width:100%">
                             <tr>
                                 <td style="width: 50%;">
-                                    <label for="isPatientInitiatedTreatment"><?php echo _translate("Is patient initiated on TB treatment?"); ?>:</label>
-                                    <select name="isPatientInitiatedTreatment" id="isPatientInitiatedTreatment" class="form-control isRequired" title="Please choose treatment status">
+                                    <label
+                                        for="isPatientInitiatedTreatment"><?php echo _translate("Is patient initiated on TB treatment?"); ?>:</label>
+                                    <select name="isPatientInitiatedTreatment" id="isPatientInitiatedTreatment"
+                                        class="form-control isRequired" title="Please choose treatment status">
                                         <option value=''>-- <?php echo _translate("Select"); ?> --</option>
                                         <option value='no' <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] == 'no') ? 'selected="selected"' : ''; ?>><?php echo _translate("No"); ?></option>
                                         <option value='yes' <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] == 'yes') ? 'selected="selected"' : ''; ?>><?php echo _translate("Yes"); ?></option>
                                     </select>
                                 </td>
-                                <td class="treatmentSelected" style="width: 50%; <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
-                                    <label class="label-control" for="treatmentDate"><?php echo _translate("Date of treatment Initiation"); ?><span class="mandatory">*</span></label>
-                                    <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_treatment_initiation']) ?? ''; ?>" name="treatmentDate" id="treatmentDate" class="treatmentSelectedInput form-control date" title="Please choose treatment date" />
+                                <td class="treatmentSelected"
+                                    style="width: 50%; <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
+                                    <label class="label-control"
+                                        for="treatmentDate"><?php echo _translate("Date of treatment Initiation"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <input type="text"
+                                        value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_treatment_initiation']) ?? ''; ?>"
+                                        name="treatmentDate" id="treatmentDate"
+                                        class="treatmentSelectedInput form-control date"
+                                        title="Please choose treatment date" />
                                 </td>
                             </tr>
-                            <tr class="treatmentSelected" style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
+                            <tr class="treatmentSelected"
+                                style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
                                 <td style="width: 50%;">
-                                    <label for="currentRegimen" class="label-control"><?php echo _translate("Current regimen"); ?><span class="mandatory">*</span></label>
-                                    <input type="text" value="<?php echo $tbInfo['current_regimen'] ?? ''; ?>" class="form-control treatmentSelectedInput" id="currentRegimen" name="currentRegimen" placeholder="<?php echo _translate('Enter the current regimen'); ?>" title="<?php echo _translate('Please enter current regimen'); ?>">
+                                    <label for="currentRegimen"
+                                        class="label-control"><?php echo _translate("Current regimen"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <input type="text" value="<?php echo $tbInfo['current_regimen'] ?? ''; ?>"
+                                        class="form-control treatmentSelectedInput" id="currentRegimen"
+                                        name="currentRegimen"
+                                        placeholder="<?php echo _translate('Enter the current regimen'); ?>"
+                                        title="<?php echo _translate('Please enter current regimen'); ?>">
                                 </td>
                                 <td style="width: 50%;">
-                                    <label class="label-control" for="regimenDate"><?php echo _translate("Date of Initiation of Current Regimen"); ?><span class="mandatory">*</span></label>
-                                    <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_initiation_of_current_regimen']) ?? ''; ?>" name="regimenDate" id="regimenDate" class="treatmentSelectedInput form-control date" title="Please choose date of current regimen" />
+                                    <label class="label-control"
+                                        for="regimenDate"><?php echo _translate("Date of Initiation of Current Regimen"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <input type="text"
+                                        value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_initiation_of_current_regimen']) ?? ''; ?>"
+                                        name="regimenDate" id="regimenDate"
+                                        class="treatmentSelectedInput form-control date"
+                                        title="Please choose date of current regimen" />
                                 </td>
                             </tr>
-                            <tr class="treatmentSelected" style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
+                            <tr class="treatmentSelected"
+                                style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
                                 <td style="width: 50%;">
-                                    <label class="label-control" for="riskFactors"><?php echo _translate("Risk Factors"); ?><span class="mandatory">*</span></label>
-                                    <select id="riskFactors" name="riskFactors" class="form-control treatmentSelectedInput" title="Please select the any one of risk factors" onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
+                                    <label class="label-control"
+                                        for="riskFactors"><?php echo _translate("Risk Factors"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <select id="riskFactors" name="riskFactors"
+                                        class="form-control treatmentSelectedInput"
+                                        title="Please select the any one of risk factors"
+                                        onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
                                         <option value="">Select risk factor...</option>
                                         <option value="TB Contact" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'TB Contact') ? 'selected="selected"' : ''; ?>>TB Contact</option>
                                         <option value="PLHIV" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'PLHIV') ? 'selected="selected"' : ''; ?>>PLHIV</option>
@@ -265,24 +375,36 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                         <option value="Refugee camp" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Refugee camp') ? 'selected="selected"' : ''; ?>>Refugee camp</option>
                                         <option value="Others">Others</option>
                                     </select>
-                                    <input style="<?php echo (isset($tbInfo['risk_factor_other']) && !empty($tbInfo['risk_factor_other'])) ? "" : "display: none"; ?>" value="<?php echo $tbInfo['risk_factor_other'] ?? ''; ?>" type="text" id="riskFactorsOther" name="riskFactorsOther" class="form-control" placeholder="Enter the other risk factor" title="Please enter the other risk factor" />
+                                    <input
+                                        style="<?php echo (isset($tbInfo['risk_factor_other']) && !empty($tbInfo['risk_factor_other'])) ? "" : "display: none"; ?>"
+                                        value="<?php echo $tbInfo['risk_factor_other'] ?? ''; ?>" type="text"
+                                        id="riskFactorsOther" name="riskFactorsOther" class="form-control"
+                                        placeholder="Enter the other risk factor"
+                                        title="Please enter the other risk factor" />
                                 </td>
                             </tr>
                         </table>
 
                         <!-- PURPOSE AND TEST(S) REQUESTED -->
                         <div class="box-header with-border sectionHeader">
-                            <h3 class="box-title"><?php echo _translate("PURPOSE AND TEST(S) REQUESTED FOR TB DIAGNOSTICS"); ?></h3>
+                            <h3 class="box-title">
+                                <?php echo _translate("PURPOSE AND TEST(S) REQUESTED FOR TB DIAGNOSTICS"); ?>
+                            </h3>
                         </div>
                         <div class="box-header with-border">
-                            <h3 class="box-title" style="font-size:1em;"><?php echo _translate("Please tick/circle all as applicable below"); ?></h3>
+                            <h3 class="box-title" style="font-size:1em;">
+                                <?php echo _translate("Please tick/circle all as applicable below"); ?>
+                            </h3>
                         </div>
 
                         <table class="table" style="width:100%">
                             <tr style="border: 1px solid #8080804f;">
                                 <td style="width: 50%;">
-                                    <label class="label-control" for="purposeOfTbTest"><?php echo _translate("Purpose of TB test(s)"); ?><span class="mandatory">*</span></label>
-                                    <select id="purposeOfTbTest" name="purposeOfTbTest" class="form-control isRequired" title="Please select the any one of purpose of test">
+                                    <label class="label-control"
+                                        for="purposeOfTbTest"><?php echo _translate("Purpose of TB test(s)"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <select id="purposeOfTbTest" name="purposeOfTbTest" class="form-control isRequired"
+                                        title="Please select the any one of purpose of test">
                                         <option value="">Select purpose of TB test...</option>
                                         <option value="Initial TB diagnosis" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'Initial TB diagnosis') ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
                                         <option value="DS-TB Treatment Follow-Up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'DS-TB Treatment Follow-Up') ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
@@ -301,32 +423,56 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                             <h3 class="box-title"><?php echo _translate("SPECIMEN INFORMATION"); ?></h3>
                         </div>
                         <div class="box-header with-border">
-                            <h3 class="box-title" style="font-size:1em;"><?php echo _translate("Please complete full information and circle/tick as appropriate"); ?></h3>
+                            <h3 class="box-title" style="font-size:1em;">
+                                <?php echo _translate("Please complete full information and circle/tick as appropriate"); ?>
+                            </h3>
                         </div>
 
                         <table class="table">
                             <tr>
                                 <td style="width: 50%;">
-                                    <label class="label-control" for="sampleCollectionDate"><?php echo _translate("Date Specimen Collected"); ?><span class="mandatory">*</span></label>
-                                    <input class="form-control isRequired date-time" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?php echo _translate("Sample Collection Date"); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);" />
+                                    <label class="label-control"
+                                        for="sampleCollectionDate"><?php echo _translate("Date Specimen Collected"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <input class="form-control isRequired date-time"
+                                        value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text"
+                                        name="sampleCollectionDate" id="sampleCollectionDate"
+                                        placeholder="<?php echo _translate("Sample Collection Date"); ?>"
+                                        onchange="generateSampleCode(); checkCollectionDate(this.value);" />
                                     <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                 </td>
                                 <td style="width: 50%;">
-                                    <label class="label-control" for="specimenType"><?php echo _translate("Specimen Type"); ?><span class="mandatory">*</span></label>
-                                    <select name="specimenType" id="specimenType" class="form-control isRequired select2" title="<?php echo _translate("Please choose specimen type"); ?>" multiple onchange="showOther(this.value,'specimenTypeOther')">
+                                    <label class="label-control"
+                                        for="specimenType"><?php echo _translate("Specimen Type"); ?><span
+                                            class="mandatory">*</span></label>
+                                    <select name="specimenType" id="specimenType"
+                                        class="form-control isRequired select2"
+                                        title="<?php echo _translate("Please choose specimen type"); ?>" multiple
+                                        onchange="showOther(this.value,'specimenTypeOther')">
                                         <?php echo $general->generateSelectOptions($specimenTypeResult, $tbInfo['specimen_type'], '-- Select --'); ?>
                                         <option value='other' <?php echo ($tbInfo['specimen_type'] == 'other') ? "selected='selected'" : ""; ?>> <?php echo _translate("Other"); ?> </option>
                                     </select>
-                                    <input type="text" class="form-control specimenTypeOther" id="specimenTypeOther" name="specimenTypeOther" placeholder="<?php echo _translate("Enter specimen type of others"); ?>" title="<?php echo _translate("Please enter the specimen type if others"); ?>" style="display: none;" />
+                                    <input type="text" class="form-control specimenTypeOther" id="specimenTypeOther"
+                                        name="specimenTypeOther"
+                                        placeholder="<?php echo _translate("Enter specimen type of others"); ?>"
+                                        title="<?php echo _translate("Please enter the specimen type if others"); ?>"
+                                        style="display: none;" />
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width: 50%;">
-                                    <label class="label-control" for="reOrderedCorrectiveAction"><?php echo _translate("Is specimen re-ordered as part of corrective action?"); ?></label>
-                                    <select class="form-control" name="reOrderedCorrectiveAction" id="reOrderedCorrectiveAction" title="<?php echo _translate("Is specimen re-ordered as part of corrective action"); ?>">
+                                    <label class="label-control"
+                                        for="reOrderedCorrectiveAction"><?php echo _translate("Is specimen re-ordered as part of corrective action?"); ?></label>
+                                    <select class="form-control" name="reOrderedCorrectiveAction"
+                                        id="reOrderedCorrectiveAction"
+                                        title="<?php echo _translate("Is specimen re-ordered as part of corrective action"); ?>">
                                         <option value="">--<?php echo _translate("Select"); ?>--</option>
-                                        <option value="no" <?php echo (isset($tbInfo['is_specimen_reordered']) && !empty($tbInfo['is_specimen_reordered']) && $tbInfo['is_specimen_reordered'] == 'no') ? 'selected="selected"' : ''; ?>><?php echo _translate("No"); ?></option>
-                                        <option value="yes" <?php echo (isset($tbInfo['is_specimen_reordered']) && !empty($tbInfo['is_specimen_reordered']) && $tbInfo['is_specimen_reordered'] == 'yes') ? 'selected="selected"' : ''; ?>><?php echo _translate("Yes"); ?></option>
+                                        <option value="no" <?php echo (isset($tbInfo['is_specimen_reordered']) && !empty($tbInfo['is_specimen_reordered']) && $tbInfo['is_specimen_reordered'] == 'no') ? 'selected="selected"' : ''; ?>>
+                                            <?php echo _translate("No"); ?>
+                                        </option>
+                                        <option value="yes" <?php echo (isset($tbInfo['is_specimen_reordered']) && !empty($tbInfo['is_specimen_reordered']) && $tbInfo['is_specimen_reordered'] == 'yes') ? 'selected="selected"' : ''; ?>>
+                                            <?php echo _translate("Yes"); ?>
+                                        </option>
                                     </select>
                                 </td>
                             </tr>
@@ -335,7 +481,8 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                 </div>
 
                 <?php if (_isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
-                    <form class="form-horizontal" method="post" name="editTbRequestForm" id="editTbRequestForm" autocomplete="off" action="tb-update-result-helper.php">
+                    <form class="form-horizontal" method="post" name="editTbRequestForm" id="editTbRequestForm"
+                        autocomplete="off" action="tb-update-result-helper.php">
                         <!-- TEST RESULTS INFORMATION -->
                         <div class="box box-primary">
                             <div class="box-body">
@@ -343,7 +490,9 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                     <h3 class="box-title"><?php echo _translate("TEST RESULTS INFORMATION"); ?></h3>
                                 </div>
                                 <div class="box-header with-border">
-                                    <h3 class="box-title" style="font-size:1em;"><?php echo _translate("Please complete full information and appropriate results with reference to TB test(s) requested above"); ?></h3>
+                                    <h3 class="box-title" style="font-size:1em;">
+                                        <?php echo _translate("Please complete full information and appropriate results with reference to TB test(s) requested above"); ?>
+                                    </h3>
                                 </div>
 
                                 <div id="testSections">
@@ -351,41 +500,69 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                         $n = 1;
                                         foreach ($tbTestInfo as $key => $test) { ?>
                                             <div class="test-section" data-count="<?php echo $n; ?>">
-                                                <div class="section-header"><strong>Test #<span class="section-number"><?php echo $n; ?></span></strong></div>
+                                                <div class="section-header"><strong>Test #<span
+                                                            class="section-number"><?php echo $n; ?></span></strong></div>
                                                 <table class="table" style="width:100%; margin-top: 15px;">
                                                     <tr>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="labId<?php echo $n; ?>"><?php echo _translate("Testing Lab"); ?><span class="mandatory">*</span></label>
-                                                            <select name="testResult[labId][]" id="labId<?php echo $n; ?>" class="isRequired form-control" title="<?php echo _translate("Please select testing laboratory"); ?>">
+                                                            <label class="label-control"
+                                                                for="labId<?php echo $n; ?>"><?php echo _translate("Testing Lab"); ?><span
+                                                                    class="mandatory">*</span></label>
+                                                            <select name="testResult[labId][]" id="labId<?php echo $n; ?>"
+                                                                class="isRequired form-control"
+                                                                title="<?php echo _translate("Please select testing laboratory"); ?>">
                                                                 <?= $general->generateSelectOptions($testingLabs, $test['lab_id'], '-- Select lab --'); ?>
                                                             </select>
                                                         </td>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="sampleReceivedDate<?php echo $n; ?>"><?php echo _translate("Date specimen received at TB testing site"); ?><span class="mandatory">*</span></label>
-                                                            <input type="text" class="date-time isRequired form-control" value="<?php echo DateUtility::humanReadableDateFormat($test['sample_received_at_lab_datetime'], true); ?>" id="sampleReceivedDate<?php echo $n; ?>" name="testResult[sampleReceivedDate][]" placeholder="<?= _translate("Please enter date"); ?>" title="<?php echo _translate("Please enter sample receipt date"); ?>" />
+                                                            <label class="label-control"
+                                                                for="sampleReceivedDate<?php echo $n; ?>"><?php echo _translate("Date specimen received at TB testing site"); ?><span
+                                                                    class="mandatory">*</span></label>
+                                                            <input type="text" class="date-time isRequired form-control"
+                                                                value="<?php echo DateUtility::humanReadableDateFormat($test['sample_received_at_lab_datetime'], true); ?>"
+                                                                id="sampleReceivedDate<?php echo $n; ?>"
+                                                                name="testResult[sampleReceivedDate][]"
+                                                                placeholder="<?= _translate("Please enter date"); ?>"
+                                                                title="<?php echo _translate("Please enter sample receipt date"); ?>" />
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="isSampleRejected<?php echo $n; ?>"><?php echo _translate("Is Sample Rejected?"); ?></label>
-                                                            <select class="form-control sample-rejection-select" name="testResult[isSampleRejected][]" id="isSampleRejected<?php echo $n; ?>" title="<?php echo _translate("Please select the Is sample rejected?"); ?>" onchange="$('.reasonForChange').show();>
+                                                            <label class="label-control"
+                                                                for="isSampleRejected<?php echo $n; ?>"><?php echo _translate("Is Sample Rejected?"); ?></label>
+                                                            <select class="form-control sample-rejection-select"
+                                                                name="testResult[isSampleRejected][]"
+                                                                id="isSampleRejected<?php echo $n; ?>"
+                                                                title="<?php echo _translate("Please select the Is sample rejected?"); ?>"
+                                                                onchange="$('.reasonForChange').show();>
                                                                 <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
                                                                 <option value=" yes" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>> <?php echo _translate("Yes"); ?> </option>
                                                                 <option value="no" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>> <?php echo _translate("No"); ?> </option>
                                                             </select>
                                                         </td>
-                                                        <td style="width: 50%;<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>" class="rejection-reason-field">
-                                                            <label class="label-control" for="sampleRejectionReason<?php echo $n; ?>"><?php echo _translate("Reason for Rejection"); ?><span class="mandatory">*</span></label>
-                                                            <select class="form-control rejection-reason-select" name="testResult[sampleRejectionReason][]" id="sampleRejectionReason<?php echo $n; ?>" title="<?php echo _translate("Please select the reason for rejection"); ?>">
-                                                                <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
+                                                        <td style="width: 50%;<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>"
+                                                            class="rejection-reason-field">
+                                                            <label class="label-control"
+                                                                for="sampleRejectionReason<?php echo $n; ?>"><?php echo _translate("Reason for Rejection"); ?><span
+                                                                    class="mandatory">*</span></label>
+                                                            <select class="form-control rejection-reason-select"
+                                                                name="testResult[sampleRejectionReason][]"
+                                                                id="sampleRejectionReason<?php echo $n; ?>"
+                                                                title="<?php echo _translate("Please select the reason for rejection"); ?>">
+                                                                <option value=''> -- <?php echo _translate("Select"); ?> --
+                                                                </option>
                                                                 <option value="">-- Select --</option>
                                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
-                                                                    <optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
+                                                                    <optgroup
+                                                                        label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
                                                                         <?php
                                                                         foreach ($rejectionResult as $reject) {
                                                                             if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-                                                                                <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($test['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>><?= $reject['rejection_reason_name']; ?></option>
-                                                                        <?php }
+                                                                                <option value="<?php echo $reject['rejection_reason_id']; ?>"
+                                                                                    <?php echo ($test['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
+                                                                                    <?= $reject['rejection_reason_name']; ?>
+                                                                                </option>
+                                                                            <?php }
                                                                         } ?>
                                                                     </optgroup>
                                                                 <?php }
@@ -395,221 +572,362 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                             </select>
                                                         </td>
                                                     </tr>
-                                                    <tr class="rejection-date-field" style="<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>">
+                                                    <tr class="rejection-date-field"
+                                                        style="<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>">
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="rejectionDate<?php echo $n; ?>"><?php echo _translate("Rejection Date"); ?><span class="mandatory">*</span></label>
-                                                            <input class="form-control date rejection-date" value="<?php echo DateUtility::humanReadableDateFormat($test['rejection_on']); ?>" type="text" name="testResult[rejectionDate][]" id="rejectionDate<?php echo $n; ?>" placeholder="<?php echo _translate("Select rejection date"); ?>" title="<?php echo _translate("Please select the rejection date"); ?>" />
+                                                            <label class="label-control"
+                                                                for="rejectionDate<?php echo $n; ?>"><?php echo _translate("Rejection Date"); ?><span
+                                                                    class="mandatory">*</span></label>
+                                                            <input class="form-control date rejection-date"
+                                                                value="<?php echo DateUtility::humanReadableDateFormat($test['rejection_on']); ?>"
+                                                                type="text" name="testResult[rejectionDate][]"
+                                                                id="rejectionDate<?php echo $n; ?>"
+                                                                placeholder="<?php echo _translate("Select rejection date"); ?>"
+                                                                title="<?php echo _translate("Please select the rejection date"); ?>" />
                                                         </td>
                                                         <td style="width: 50%;"></td>
                                                     </tr>
                                                     <tr>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="specimenType<?php echo $n; ?>"><?php echo _translate("Specimen Type"); ?></label>
-                                                            <select name="testResult[specimenType][]" id="specimenType<?php echo $n; ?>" class="form-control" title="<?php echo _translate("Please choose specimen type"); ?>">
+                                                            <label class="label-control"
+                                                                for="specimenType<?php echo $n; ?>"><?php echo _translate("Specimen Type"); ?></label>
+                                                            <select name="testResult[specimenType][]"
+                                                                id="specimenType<?php echo $n; ?>" class="form-control"
+                                                                title="<?php echo _translate("Please choose specimen type"); ?>">
                                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $test['specimen_type'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="testType<?php echo $n; ?>"><?php echo _translate("Test Type"); ?></label>
-                                                            <select class="form-control test-type-select" name="testResult[testType][]" id="testType<?php echo $n; ?>" title="<?php echo _translate("Please select the test type"); ?>" onchange="$('.reasonForChange<?php echo $n; ?>').show();>
+                                                            <label class="label-control"
+                                                                for="testType<?php echo $n; ?>"><?php echo _translate("Test Type"); ?></label>
+                                                            <select class="form-control test-type-select"
+                                                                name="testResult[testType][]" id="testType<?php echo $n; ?>"
+                                                                title="<?php echo _translate("Please select the test type"); ?>"
+                                                                onchange="$('.reasonForChange<?php echo $n; ?>').show();>
                                                                 <option value=""><?php echo _translate("Select test type"); ?></option>
                                                                 <option value=" Smear Microscopy" <?php echo ($test['test_type'] == 'Smear Microscopy') ? 'selected="selected"' : ''; ?>>Smear Microscopy</option>
                                                                 <option value="TB LAM test" <?php echo ($test['test_type'] == 'TB LAM test') ? 'selected="selected"' : ''; ?>>TB LAM test</option>
-                                                                <option value="MTB/ RIF Ultra" <?php echo ($test['test_type'] == 'MTB/ RIF Ultra') ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra</option>
-                                                                <option value="MTB/ XDR (if RIF detected)" <?php echo ($test['test_type'] == 'MTB/ XDR (if RIF detected)') ? 'selected="selected"' : ''; ?>>MTB/ XDR (if RIF detected)</option>
-                                                                <option value="TB culture and Drug susceptibility test (DST)" <?php echo ($test['test_type'] == 'TB culture and Drug susceptibility test (DST)') ? 'selected="selected"' : ''; ?>>TB culture and Drug susceptibility test (DST)</option>
+                                                                <option value="MTB/ RIF Ultra" <?php echo ($test['test_type'] == 'MTB/ RIF Ultra') ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra
+                                                                </option>
+                                                                <option value="MTB/ XDR (if RIF detected)" <?php echo ($test['test_type'] == 'MTB/ XDR (if RIF detected)') ? 'selected="selected"' : ''; ?>>MTB/ XDR (if RIF detected)
+                                                                </option>
+                                                                <option value="TB culture and Drug susceptibility test (DST)" <?php echo ($test['test_type'] == 'TB culture and Drug susceptibility test (DST)') ? 'selected="selected"' : ''; ?>>TB culture and
+                                                                    Drug susceptibility test (DST)</option>
                                                             </select>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="testResult<?php echo $n; ?>"><?php echo _translate("Test Result"); ?></label>
-                                                            <select class="form-control test-result-select" name="testResult[testResult][]" id="testResult<?php echo $n; ?>" title="<?php echo _translate("Please select the test result"); ?>" onchange="$('.reasonForChange<?php echo $n; ?>').show();">
-                                                                <option value=""><?php echo _translate("Select test result"); ?></option>
-                                                                <option value="<?php echo $test['test_type']; ?>" selected="selected"><?php echo $test['test_type']; ?></option>
+                                                            <label class="label-control"
+                                                                for="testResult<?php echo $n; ?>"><?php echo _translate("Test Result"); ?></label>
+                                                            <select class="form-control test-result-select"
+                                                                name="testResult[testResult][]" id="testResult<?php echo $n; ?>"
+                                                                title="<?php echo _translate("Please select the test result"); ?>"
+                                                                onchange="$('.reasonForChange<?php echo $n; ?>').show();">
+                                                                <option value=""><?php echo _translate("Select test result"); ?>
+                                                                </option>
+                                                                <option value="<?php echo $test['test_type']; ?>"
+                                                                    selected="selected"><?php echo $test['test_type']; ?></option>
                                                             </select>
                                                         </td>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="comments<?php echo $n; ?>"><?php echo _translate("Comments"); ?></label>
-                                                            <textarea class="form-control" id="comments<?php echo $n; ?>" name="testResult[comments][]" placeholder="<?= _translate("Please enter comments"); ?>" title="<?php echo _translate("Please enter comments"); ?>"><?php echo $test['comments']; ?></textarea>
+                                                            <label class="label-control"
+                                                                for="comments<?php echo $n; ?>"><?php echo _translate("Comments"); ?></label>
+                                                            <textarea class="form-control" id="comments<?php echo $n; ?>"
+                                                                name="testResult[comments][]"
+                                                                placeholder="<?= _translate("Please enter comments"); ?>"
+                                                                title="<?php echo _translate("Please enter comments"); ?>"><?php echo $test['comments']; ?></textarea>
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="testedBy<?php echo $n; ?>"><?php echo _translate("Tested By"); ?></label>
-                                                            <select name="testResult[testedBy][]" id="testedBy<?php echo $n; ?>" class="form-control" title="<?php echo _translate("Please choose tested by"); ?>">
+                                                            <label class="label-control"
+                                                                for="testedBy<?php echo $n; ?>"><?php echo _translate("Tested By"); ?></label>
+                                                            <select name="testResult[testedBy][]" id="testedBy<?php echo $n; ?>"
+                                                                class="form-control"
+                                                                title="<?php echo _translate("Please choose tested by"); ?>">
                                                                 <?= $general->generateSelectOptions($userInfo, $test['tested_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="sampleTestedDateTime<?php echo $n; ?>"><?php echo _translate("Tested On"); ?></label>
-                                                            <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($test['sample_tested_datetime'], true); ?>" class="date-time form-control" id="sampleTestedDateTime<?php echo $n; ?>" name="testResult[sampleTestedDateTime][]" placeholder="<?= _translate("Please enter date"); ?>" title="<?php echo _translate("Please enter sample tested"); ?>" />
+                                                            <label class="label-control"
+                                                                for="sampleTestedDateTime<?php echo $n; ?>"><?php echo _translate("Tested On"); ?></label>
+                                                            <input type="text"
+                                                                value="<?php echo DateUtility::humanReadableDateFormat($test['sample_tested_datetime'], true); ?>"
+                                                                class="date-time form-control"
+                                                                id="sampleTestedDateTime<?php echo $n; ?>"
+                                                                name="testResult[sampleTestedDateTime][]"
+                                                                placeholder="<?= _translate("Please enter date"); ?>"
+                                                                title="<?php echo _translate("Please enter sample tested"); ?>" />
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="reviewedBy<?php echo $n; ?>"><?php echo _translate("Reviewed By"); ?></label>
-                                                            <select name="testResult[reviewedBy][]" id="reviewedBy<?php echo $n; ?>" class="form-control" title="<?php echo _translate("Please choose reviewed by"); ?>">
+                                                            <label class="label-control"
+                                                                for="reviewedBy<?php echo $n; ?>"><?php echo _translate("Reviewed By"); ?></label>
+                                                            <select name="testResult[reviewedBy][]" id="reviewedBy<?php echo $n; ?>"
+                                                                class="form-control"
+                                                                title="<?php echo _translate("Please choose reviewed by"); ?>">
                                                                 <?= $general->generateSelectOptions($userInfo, $test['result_reviewed_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="reviewedOn<?php echo $n; ?>"><?php echo _translate("Reviewed on"); ?></label>
-                                                            <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($test['result_reviewed_datetime'], true); ?>" name="testResult[reviewedOn][]" id="reviewedOn<?php echo $n; ?>" class="date-time disabled-field form-control" placeholder="<?php echo _translate("Reviewed on"); ?>" title="<?php echo _translate("Please enter the Reviewed on"); ?>" />
+                                                            <label class="label-control"
+                                                                for="reviewedOn<?php echo $n; ?>"><?php echo _translate("Reviewed on"); ?></label>
+                                                            <input type="text"
+                                                                value="<?php echo DateUtility::humanReadableDateFormat($test['result_reviewed_datetime'], true); ?>"
+                                                                name="testResult[reviewedOn][]" id="reviewedOn<?php echo $n; ?>"
+                                                                class="date-time disabled-field form-control"
+                                                                placeholder="<?php echo _translate("Reviewed on"); ?>"
+                                                                title="<?php echo _translate("Please enter the Reviewed on"); ?>" />
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="approvedBy<?php echo $n; ?>"><?php echo _translate("Approved By"); ?></label>
-                                                            <select name="testResult[approvedBy][]" id="approvedBy<?php echo $n; ?>" class="form-control" title="<?php echo _translate("Please choose approved by"); ?>">
+                                                            <label class="label-control"
+                                                                for="approvedBy<?php echo $n; ?>"><?php echo _translate("Approved By"); ?></label>
+                                                            <select name="testResult[approvedBy][]" id="approvedBy<?php echo $n; ?>"
+                                                                class="form-control"
+                                                                title="<?php echo _translate("Please choose approved by"); ?>">
                                                                 <?= $general->generateSelectOptions($userInfo, $test['result_reviewed_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="approvedOn<?php echo $n; ?>"><?php echo _translate("Approved on"); ?></label>
-                                                            <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($test['result_approved_datetime'], true); ?>" name="testResult[approvedOn][]" id="approvedOn<?php echo $n; ?>" class="date-time form-control" placeholder="<?php echo _translate("Approved on"); ?>" title="<?php echo _translate("Please enter the approved on date"); ?>" />
+                                                            <label class="label-control"
+                                                                for="approvedOn<?php echo $n; ?>"><?php echo _translate("Approved on"); ?></label>
+                                                            <input type="text"
+                                                                value="<?php echo DateUtility::humanReadableDateFormat($test['result_approved_datetime'], true); ?>"
+                                                                name="testResult[approvedOn][]" id="approvedOn<?php echo $n; ?>"
+                                                                class="date-time form-control"
+                                                                placeholder="<?php echo _translate("Approved on"); ?>"
+                                                                title="<?php echo _translate("Please enter the approved on date"); ?>" />
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="revisedBy<?php echo $n; ?>"><?php echo _translate("Revised By"); ?></label>
-                                                            <select name="testResult[revisedBy][]" id="revisedBy<?php echo $n; ?>" class="form-control" title="<?php echo _translate("Please choose revised by"); ?>">
+                                                            <label class="label-control"
+                                                                for="revisedBy<?php echo $n; ?>"><?php echo _translate("Revised By"); ?></label>
+                                                            <select name="testResult[revisedBy][]" id="revisedBy<?php echo $n; ?>"
+                                                                class="form-control"
+                                                                title="<?php echo _translate("Please choose revised by"); ?>">
                                                                 <?= $general->generateSelectOptions($userInfo, $test['revised_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="revisedOn<?php echo $n; ?>"><?php echo _translate("Revised on"); ?></label>
-                                                            <input value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>" type="text" name="testResult[revisedOn][]" id="revisedOn<?php echo $n; ?>" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on date"); ?>" title="<?php echo _translate("Please enter the revised on date"); ?>" />
+                                                            <label class="label-control"
+                                                                for="revisedOn<?php echo $n; ?>"><?php echo _translate("Revised on"); ?></label>
+                                                            <input
+                                                                value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>"
+                                                                type="text" name="testResult[revisedOn][]"
+                                                                id="revisedOn<?php echo $n; ?>" class="date-time form-control"
+                                                                placeholder="<?php echo _translate("Enter the revised on date"); ?>"
+                                                                title="<?php echo _translate("Please enter the revised on date"); ?>" />
                                                         </td>
                                                     </tr>
                                                     <tr style="display: none;" class="reasonForChange<?php echo $n; ?>">
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="reasonForChange<?php echo $n; ?>"><?php echo _translate('Reason for result change'); ?></label>
-                                                            <textarea class="form-control" name="testResult[reasonForChange][]" id="reasonForChange<?php echo $n; ?>" placeholder="Enter the reason for result change" title="Please enter the reason for result change"></textarea>
+                                                            <label class="label-control"
+                                                                for="reasonForChange<?php echo $n; ?>"><?php echo _translate('Reason for result change'); ?></label>
+                                                            <textarea class="form-control" name="testResult[reasonForChange][]"
+                                                                id="reasonForChange<?php echo $n; ?>"
+                                                                placeholder="Enter the reason for result change"
+                                                                title="Please enter the reason for result change"></textarea>
                                                         </td>
                                                     </tr>
                                                 </table>
                                             </div>
-                                        <?php $n += 1;
+                                            <?php $n += 1;
                                         } ?>
                                     <?php } else { ?>
                                         <!-- Initial test section -->
                                         <div class="test-section" data-count="1">
-                                            <div class="section-header"><strong>Test #<span class="section-number">1</span></strong></div>
+                                            <div class="section-header"><strong>Test #<span
+                                                        class="section-number">1</span></strong></div>
                                             <table class="table" style="width:100%; margin-top: 15px;">
                                                 <tr>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="labId1"><?php echo _translate("Testing Lab"); ?><span class="mandatory">*</span></label>
-                                                        <select name="testResult[labId][]" id="labId1" class="isRequired form-control" title="<?php echo _translate("Please select testing laboratory"); ?>">
+                                                        <label class="label-control"
+                                                            for="labId1"><?php echo _translate("Testing Lab"); ?><span
+                                                                class="mandatory">*</span></label>
+                                                        <select name="testResult[labId][]" id="labId1"
+                                                            class="isRequired form-control"
+                                                            title="<?php echo _translate("Please select testing laboratory"); ?>">
                                                             <?= $general->generateSelectOptions($testingLabs, null, '-- Select lab --'); ?>
                                                         </select>
                                                     </td>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="sampleReceivedDate1"><?php echo _translate("Date specimen received at TB testing site"); ?><span class="mandatory">*</span></label>
-                                                        <input type="text" class="date-time isRequired form-control" id="sampleReceivedDate1" name="testResult[sampleReceivedDate][]" placeholder="<?= _translate("Please enter date"); ?>" title="<?php echo _translate("Please enter sample receipt date"); ?>" />
+                                                        <label class="label-control"
+                                                            for="sampleReceivedDate1"><?php echo _translate("Date specimen received at TB testing site"); ?><span
+                                                                class="mandatory">*</span></label>
+                                                        <input type="text" class="date-time isRequired form-control"
+                                                            id="sampleReceivedDate1" name="testResult[sampleReceivedDate][]"
+                                                            placeholder="<?= _translate("Please enter date"); ?>"
+                                                            title="<?php echo _translate("Please enter sample receipt date"); ?>" />
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="isSampleRejected1"><?php echo _translate("Is Sample Rejected?"); ?></label>
-                                                        <select class="form-control sample-rejection-select" name="testResult[isSampleRejected][]" id="isSampleRejected1" title="<?php echo _translate("Please select the Is sample rejected?"); ?>">
-                                                            <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
+                                                        <label class="label-control"
+                                                            for="isSampleRejected1"><?php echo _translate("Is Sample Rejected?"); ?></label>
+                                                        <select class="form-control sample-rejection-select"
+                                                            name="testResult[isSampleRejected][]" id="isSampleRejected1"
+                                                            title="<?php echo _translate("Please select the Is sample rejected?"); ?>">
+                                                            <option value=''> -- <?php echo _translate("Select"); ?> --
+                                                            </option>
                                                             <option value="yes"> <?php echo _translate("Yes"); ?> </option>
                                                             <option value="no"> <?php echo _translate("No"); ?> </option>
                                                         </select>
                                                     </td>
                                                     <td style="width: 50%;display:none;" class="rejection-reason-field">
-                                                        <label class="label-control" for="sampleRejectionReason1"><?php echo _translate("Reason for Rejection"); ?><span class="mandatory">*</span></label>
-                                                        <select class="form-control rejection-reason-select" name="testResult[sampleRejectionReason][]" id="sampleRejectionReason1" title="<?php echo _translate("Please select the reason for rejection"); ?>">
-                                                            <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
+                                                        <label class="label-control"
+                                                            for="sampleRejectionReason1"><?php echo _translate("Reason for Rejection"); ?><span
+                                                                class="mandatory">*</span></label>
+                                                        <select class="form-control rejection-reason-select"
+                                                            name="testResult[sampleRejectionReason][]"
+                                                            id="sampleRejectionReason1"
+                                                            title="<?php echo _translate("Please select the reason for rejection"); ?>">
+                                                            <option value=''> -- <?php echo _translate("Select"); ?> --
+                                                            </option>
                                                             <?php echo $rejectionReason; ?>
                                                         </select>
                                                     </td>
                                                 </tr>
                                                 <tr class="rejection-date-field" style="display:none;">
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="rejectionDate1"><?php echo _translate("Rejection Date"); ?><span class="mandatory">*</span></label>
-                                                        <input class="form-control date rejection-date" type="text" name="testResult[rejectionDate][]" id="rejectionDate1" placeholder="<?php echo _translate("Select rejection date"); ?>" title="<?php echo _translate("Please select the rejection date"); ?>" />
+                                                        <label class="label-control"
+                                                            for="rejectionDate1"><?php echo _translate("Rejection Date"); ?><span
+                                                                class="mandatory">*</span></label>
+                                                        <input class="form-control date rejection-date" type="text"
+                                                            name="testResult[rejectionDate][]" id="rejectionDate1"
+                                                            placeholder="<?php echo _translate("Select rejection date"); ?>"
+                                                            title="<?php echo _translate("Please select the rejection date"); ?>" />
                                                     </td>
                                                     <td style="width: 50%;"></td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="specimenType1"><?php echo _translate("Specimen Type"); ?></label>
-                                                        <select name="testResult[specimenType][]" id="specimenType1" class="form-control" title="<?php echo _translate("Please choose specimen type"); ?>">
+                                                        <label class="label-control"
+                                                            for="specimenType1"><?php echo _translate("Specimen Type"); ?></label>
+                                                        <select name="testResult[specimenType][]" id="specimenType1"
+                                                            class="form-control"
+                                                            title="<?php echo _translate("Please choose specimen type"); ?>">
                                                             <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="testType1"><?php echo _translate("Test Type"); ?></label>
-                                                        <select class="form-control test-type-select" name="testResult[testType][]" id="testType1" title="<?php echo _translate("Please select the test type"); ?>">
-                                                            <option value=""><?php echo _translate("Select test type"); ?></option>
+                                                        <label class="label-control"
+                                                            for="testType1"><?php echo _translate("Test Type"); ?></label>
+                                                        <select class="form-control test-type-select"
+                                                            name="testResult[testType][]" id="testType1"
+                                                            title="<?php echo _translate("Please select the test type"); ?>">
+                                                            <option value=""><?php echo _translate("Select test type"); ?>
+                                                            </option>
                                                             <option value="Smear Microscopy">Smear Microscopy</option>
                                                             <option value="TB LAM test">TB LAM test</option>
                                                             <option value="MTB/ RIF Ultra">MTB/ RIF Ultra</option>
-                                                            <option value="MTB/ XDR (if RIF detected)">MTB/ XDR (if RIF detected)</option>
-                                                            <option value="TB culture and Drug susceptibility test (DST)">TB culture and Drug susceptibility test (DST)</option>
+                                                            <option value="MTB/ XDR (if RIF detected)">MTB/ XDR (if RIF
+                                                                detected)</option>
+                                                            <option value="TB culture and Drug susceptibility test (DST)">TB
+                                                                culture and Drug susceptibility test (DST)</option>
                                                         </select>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="testResult1"><?php echo _translate("Test Result"); ?></label>
-                                                        <select class="form-control test-result-select" name="testResult[testResult][]" id="testResult1" title="<?php echo _translate("Please select the test result"); ?>">
-                                                            <option value=""><?php echo _translate("Select test result"); ?></option>
+                                                        <label class="label-control"
+                                                            for="testResult1"><?php echo _translate("Test Result"); ?></label>
+                                                        <select class="form-control test-result-select"
+                                                            name="testResult[testResult][]" id="testResult1"
+                                                            title="<?php echo _translate("Please select the test result"); ?>">
+                                                            <option value=""><?php echo _translate("Select test result"); ?>
+                                                            </option>
                                                         </select>
                                                     </td>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="comments1"><?php echo _translate("Comments"); ?></label>
-                                                        <textarea class="form-control" id="comments1" name="testResult[comments][]" placeholder="<?= _translate("Please enter comments"); ?>" title="<?php echo _translate("Please enter comments"); ?>"></textarea>
+                                                        <label class="label-control"
+                                                            for="comments1"><?php echo _translate("Comments"); ?></label>
+                                                        <textarea class="form-control" id="comments1"
+                                                            name="testResult[comments][]"
+                                                            placeholder="<?= _translate("Please enter comments"); ?>"
+                                                            title="<?php echo _translate("Please enter comments"); ?>"></textarea>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="testedBy1"><?php echo _translate("Tested By"); ?></label>
-                                                        <select name="testResult[testedBy][]" id="testedBy1" class="form-control" title="<?php echo _translate("Please choose tested by"); ?>">
+                                                        <label class="label-control"
+                                                            for="testedBy1"><?php echo _translate("Tested By"); ?></label>
+                                                        <select name="testResult[testedBy][]" id="testedBy1"
+                                                            class="form-control"
+                                                            title="<?php echo _translate("Please choose tested by"); ?>">
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="sampleTestedDateTime1"><?php echo _translate("Tested On"); ?></label>
-                                                        <input type="text" class="date-time form-control" id="sampleTestedDateTime1" name="testResult[sampleTestedDateTime][]" placeholder="<?= _translate("Please enter date"); ?>" title="<?php echo _translate("Please enter sample tested"); ?>" />
+                                                        <label class="label-control"
+                                                            for="sampleTestedDateTime1"><?php echo _translate("Tested On"); ?></label>
+                                                        <input type="text" class="date-time form-control"
+                                                            id="sampleTestedDateTime1" name="testResult[sampleTestedDateTime][]"
+                                                            placeholder="<?= _translate("Please enter date"); ?>"
+                                                            title="<?php echo _translate("Please enter sample tested"); ?>" />
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="reviewedBy1"><?php echo _translate("Reviewed By"); ?></label>
-                                                        <select name="testResult[reviewedBy][]" id="reviewedBy1" class="form-control" title="<?php echo _translate("Please choose reviewed by"); ?>">
+                                                        <label class="label-control"
+                                                            for="reviewedBy1"><?php echo _translate("Reviewed By"); ?></label>
+                                                        <select name="testResult[reviewedBy][]" id="reviewedBy1"
+                                                            class="form-control"
+                                                            title="<?php echo _translate("Please choose reviewed by"); ?>">
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="reviewedOn1"><?php echo _translate("Reviewed on"); ?></label>
-                                                        <input type="text" name="testResult[reviewedOn][]" id="reviewedOn1" class="date-time disabled-field form-control" placeholder="<?php echo _translate("Reviewed on"); ?>" title="<?php echo _translate("Please enter the Reviewed on"); ?>" />
+                                                        <label class="label-control"
+                                                            for="reviewedOn1"><?php echo _translate("Reviewed on"); ?></label>
+                                                        <input type="text" name="testResult[reviewedOn][]" id="reviewedOn1"
+                                                            class="date-time disabled-field form-control"
+                                                            placeholder="<?php echo _translate("Reviewed on"); ?>"
+                                                            title="<?php echo _translate("Please enter the Reviewed on"); ?>" />
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="approvedBy1"><?php echo _translate("Approved By"); ?></label>
-                                                        <select name="testResult[approvedBy][]" id="approvedBy1" class="form-control" title="<?php echo _translate("Please choose approved by"); ?>">
+                                                        <label class="label-control"
+                                                            for="approvedBy1"><?php echo _translate("Approved By"); ?></label>
+                                                        <select name="testResult[approvedBy][]" id="approvedBy1"
+                                                            class="form-control"
+                                                            title="<?php echo _translate("Please choose approved by"); ?>">
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="approvedOn1"><?php echo _translate("Approved on"); ?></label>
-                                                        <input type="text" name="testResult[approvedOn][]" id="approvedOn1" class="date-time form-control" placeholder="<?php echo _translate("Approved on"); ?>" title="<?php echo _translate("Please enter the approved on date"); ?>" />
+                                                        <label class="label-control"
+                                                            for="approvedOn1"><?php echo _translate("Approved on"); ?></label>
+                                                        <input type="text" name="testResult[approvedOn][]" id="approvedOn1"
+                                                            class="date-time form-control"
+                                                            placeholder="<?php echo _translate("Approved on"); ?>"
+                                                            title="<?php echo _translate("Please enter the approved on date"); ?>" />
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="revisedBy1"><?php echo _translate("Revised By"); ?></label>
-                                                        <select name="testResult[revisedBy][]" id="revisedBy1" class="form-control" title="<?php echo _translate("Please choose revised by"); ?>">
+                                                        <label class="label-control"
+                                                            for="revisedBy1"><?php echo _translate("Revised By"); ?></label>
+                                                        <select name="testResult[revisedBy][]" id="revisedBy1"
+                                                            class="form-control"
+                                                            title="<?php echo _translate("Please choose revised by"); ?>">
                                                             <?= $general->generateSelectOptions($userInfo, $test['revised_by'], '-- Select --'); ?>
                                                         </select>
                                                     </td>
                                                     <td style="width: 50%;">
-                                                        <label class="label-control" for="revisedOn1"><?php echo _translate("Revised on"); ?></label>
-                                                        <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>" name="testResult[revisedOn][]" id="revisedOn1" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on date"); ?>" title="<?php echo _translate("Please enter the revised on date"); ?>" />
+                                                        <label class="label-control"
+                                                            for="revisedOn1"><?php echo _translate("Revised on"); ?></label>
+                                                        <input type="text"
+                                                            value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>"
+                                                            name="testResult[revisedOn][]" id="revisedOn1"
+                                                            class="date-time form-control"
+                                                            placeholder="<?php echo _translate("Enter the revised on date"); ?>"
+                                                            title="<?php echo _translate("Please enter the revised on date"); ?>" />
                                                     </td>
                                                 </tr>
                                             </table>
@@ -617,14 +935,19 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                     <?php } ?>
                                 </div>
                                 <div class="controls" style="margin-top: 20px;">
-                                    <button type="button" class="btn btn-success" onclick="addTestSection()">+ <?php echo _translate("Add Test"); ?></button>
-                                    <button type="button" class="btn btn-danger" onclick="removeTestSection()">- <?php echo _translate("Remove Test"); ?></button>
+                                    <button type="button" class="btn btn-success" onclick="addTestSection()">+
+                                        <?php echo _translate("Add Test"); ?></button>
+                                    <button type="button" class="btn btn-danger" onclick="removeTestSection()">-
+                                        <?php echo _translate("Remove Test"); ?></button>
                                 </div>
                                 <br>
                                 <div class="row pr-5 fnal-result" <?php echo $referralResultDisplay; ?>>
                                     <div class="col-md-6">
-                                        <label class="label-control" for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
-                                        <select name="finalResult" id="finalResult" class="form-control" title="Please enter the final interpretation" onchange="(this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();">
+                                        <label class="label-control"
+                                            for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
+                                        <select name="finalResult" id="finalResult" class="form-control"
+                                            title="Please enter the final interpretation"
+                                            onchange="(this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();">
                                             <?= $general->generateSelectOptions($tbResults, $tbInfo['result'], '-- Select --'); ?>
                                         </select>
                                     </div>
@@ -635,13 +958,16 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                         <!-- Form Footer -->
                         <div class="box-footer">
                             <?php if ($arr['tb_sample_code'] == 'auto' || $arr['tb_sample_code'] == 'YY' || $arr['tb_sample_code'] == 'MMYY') { ?>
-                                <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat" value="<?php echo $sFormat; ?>" />
+                                <input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat"
+                                    value="<?php echo $sFormat; ?>" />
                                 <input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
                             <?php } ?>
-                            <a class="btn btn-primary btn-disabled" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Save"); ?></a>
+                            <a class="btn btn-primary btn-disabled" href="javascript:void(0);"
+                                onclick="validateNow();return false;"><?php echo _translate("Save"); ?></a>
                             <input type="hidden" name="formId" id="formId" value="7" />
                             <input type="hidden" name="tbSampleId" id="tbSampleId" value="<?php echo $id; ?>" />
-                            <a href="/tb/requests/tb-requests.php" class="btn btn-default"><?php echo _translate("Cancel"); ?></a>
+                            <a href="/tb/requests/tb-requests.php"
+                                class="btn btn-default"><?php echo _translate("Cancel"); ?></a>
                         </div>
                     </form>
                 <?php } ?>
@@ -761,7 +1087,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         const $section = $(section);
 
         // Sample rejection change handler
-        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function() {
+        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function () {
             const $row = $(this).closest('.test-section');
             if ($(this).val() === 'yes') {
                 $row.find('.rejection-reason-field, .rejection-date-field').show();
@@ -773,7 +1099,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         });
 
         // Test type change handler - FIXED: Use proper event delegation
-        $section.find('.test-type-select').off('change.testSection').on('change.testSection', function() {
+        $section.find('.test-type-select').off('change.testSection').on('change.testSection', function () {
             const sectionNum = $(this).closest('.test-section').attr('data-count');
             updateTestResults(sectionNum);
         });
@@ -824,7 +1150,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
     // Update element IDs and names for new section
     function updateElementIds(section, count) {
         // Update labels
-        $(section).find('label[for]').each(function() {
+        $(section).find('label[for]').each(function () {
             const oldFor = $(this).attr('for');
             if (oldFor && /\d+$/.test(oldFor)) {
                 const newFor = oldFor.replace(/\d+$/, count);
@@ -833,7 +1159,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         });
 
         // Update form elements
-        $(section).find('input[id], select[id], textarea[id]').each(function() {
+        $(section).find('input[id], select[id], textarea[id]').each(function () {
             const oldId = $(this).attr('id');
             if (oldId && /\d+$/.test(oldId)) {
                 const newId = oldId.replace(/\d+$/, count);
@@ -850,7 +1176,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
     // Clear all values in a section
     function clearSectionValues(section) {
-        $(section).find('input, select, textarea').each(function() {
+        $(section).find('input, select, textarea').each(function () {
             if (this.type === 'checkbox' || this.type === 'radio') {
                 this.checked = false;
             } else if (this.tagName === 'SELECT') {
@@ -866,13 +1192,13 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         var removeDots = obj.value.replace(/\./g, "").replace(/\,/g, "").replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: removeDots.trim(),
-                fnct: fnct,
-                format: "html"
-            },
-            function(data) {
+            tableName: tableName,
+            fieldName: fieldName,
+            value: removeDots.trim(),
+            fnct: fnct,
+            format: "html"
+        },
+            function (data) {
                 if (data === '1') {
                     alert(alrt);
                     document.getElementById(obj.id).value = "";
@@ -890,10 +1216,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
         if ($.trim(pName) != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    pName: pName,
-                    testType: 'tb'
-                },
-                function(data) {
+                pName: pName,
+                testType: 'tb'
+            },
+                function (data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -919,11 +1245,11 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
         if (dName != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    dName: dName,
-                    cliName: cName,
-                    testType: 'tb'
-                },
-                function(data) {
+                dName: dName,
+                cliName: cName,
+                testType: 'tb'
+            },
+                function (data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -945,10 +1271,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
         if (cName != '' && facilityName) {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    cName: cName,
-                    testType: 'tb'
-                },
-                function(data) {
+                cName: cName,
+                testType: 'tb'
+            },
+                function (data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#province").html(details[0]);
@@ -982,10 +1308,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
         if (pName != '' && sDate != '') {
             $.post("/tb/requests/generate-sample-code.php", {
-                    sampleCollectionDate: sDate,
-                    provinceCode: provinceCode
-                },
-                function(data) {
+                sampleCollectionDate: sDate,
+                provinceCode: provinceCode
+            },
+                function (data) {
                     var sCodeKey = JSON.parse(data);
                     $("#sampleCode").val(sCodeKey.sampleCode);
                     $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
@@ -1035,7 +1361,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
     }
 
     // Document ready function
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Initialize Select2 for main form elements
         $("#facilityId, #province, #district").select2({
             placeholder: "<?php echo _translate('Select option'); ?>",
@@ -1059,7 +1385,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         <?php } ?>
 
         // Initialize all existing test sections
-        $('.test-section').each(function(index) {
+        $('.test-section').each(function (index) {
             const sectionNumber = $(this).attr('data-count') || (index + 1);
             initializeTestSection(this, sectionNumber);
 
@@ -1071,7 +1397,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         });
 
         // Treatment initiation change handler
-        $('#isPatientInitiatedTreatment').on('change', function() {
+        $('#isPatientInitiatedTreatment').on('change', function () {
             if (this.value === 'yes') {
                 $('.treatmentSelected').show();
                 $('.treatmentSelectedInput').addClass('isRequired');
@@ -1082,28 +1408,28 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         });
 
         // Lab and facility change handlers
-        $("#labId, #facilityId, #sampleCollectionDate").on('change', function() {
+        $("#labId, #facilityId, #sampleCollectionDate").on('change', function () {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
         });
 
         <?php if (isset($arr['tb_positive_confirmatory_tests_required_by_central_lab']) && $arr['tb_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
-            $(document).on('change', '.test-result, #result', function(e) {
+            $(document).on('change', '.test-result, #result', function (e) {
                 checkPostive();
             });
         <?php } ?>
 
-        $("#labId").change(function(e) {
+        $("#labId").change(function (e) {
             if ($(this).val() != "") {
                 $.post("/tb/requests/get-attributes-data.php", {
-                        id: this.value,
-                    },
-                    function(data) {
+                    id: this.value,
+                },
+                    function (data) {
                         if (data != "" && data != false) {
                             _data = jQuery.parseJSON(data);
                             $(".platform").hide();
-                            $.each(_data, function(index, value) {
+                            $.each(_data, function (index, value) {
                                 $("." + value).show();
                             });
                         }

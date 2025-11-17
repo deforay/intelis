@@ -9,9 +9,9 @@ use App\Services\CommonService;
 require_once APPLICATION_PATH . '/header.php';
 $general = ContainerRegistry::get(CommonService::class);
 $generic = ContainerRegistry::get(GenericTestsService::class);
-$sampleTypeInfo = $general->getDataByTableAndFields("r_generic_sample_types", array("sample_type_id", "sample_type_name"), true, "sample_type_status='active'");
-$symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", array("symptom_id", "symptom_name"), true, "symptom_status='active'");
-$testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
+$sampleTypeInfo = $general->getDataByTableAndFields("r_generic_sample_types", ["sample_type_id", "sample_type_name"], true, "sample_type_status='active'");
+$symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", ["symptom_id", "symptom_name"], true, "symptom_status='active'");
+$testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_units", ["unit_id", "unit_name"], true, "unit_status='active'");
 ?>
 <style>
 	.tooltip-inner {

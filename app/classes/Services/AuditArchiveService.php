@@ -28,13 +28,13 @@ use App\Utilities\ArchiveUtility;
  *   $svc->run();                // bulk
  *   $svc->run('VL0622018');     // single sample
  */
-final class AuditArchiveService
+final readonly class AuditArchiveService
 {
     private string $archiveRoot;
     private string $metadataPath;
 
     public function __construct(
-        private readonly DatabaseService $db
+        private DatabaseService $db
     ) {
         $this->archiveRoot  = VAR_PATH . '/audit-trail';
         $this->metadataPath = VAR_PATH . '/metadata/archive.mdata.json';
@@ -64,14 +64,16 @@ final class AuditArchiveService
 
             MiscUtility::makeDirectory($this->archiveRoot);
 
-            $metadata = empty($sampleCode) ? MiscUtility::loadMetadata($this->metadataPath) : [];
+            $metadata = $sampleCode === null || $sampleCode === '' || $sampleCode === '0' ? MiscUtility::loadMetadata($this->metadataPath) : [];
 
             // Build audit-table → testKey map using TestsService
             $tests = TestsService::getTestTypes();
             $auditToKey = [];
             foreach ($tests as $key => $meta) {
                 $formTable = $meta['tableName'] ?? null;
-                if (!$formTable) continue;
+                if (!$formTable) {
+                    continue;
+                }
 
                 $auditTable = 'audit_' . $formTable;
 
@@ -87,7 +89,7 @@ final class AuditArchiveService
                 $lastProcessedDate = $sampleCode ? null : ($metadata[$auditTable]['last_processed_date'] ?? null);
 
                 // Folder is the test key, normalized to filesystem-friendly
-                $folderName = preg_replace('/[^\w\-]+/', '-', $testKey);
+                $folderName = preg_replace('/[^\w\-]+/', '-', (string) $testKey);
                 $targetDir  = $this->archiveRoot . DIRECTORY_SEPARATOR . $folderName;
                 MiscUtility::makeDirectory($targetDir);
 
@@ -181,7 +183,7 @@ final class AuditArchiveService
             }
 
             $this->log($progress, 'Archiving process completed.');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->log($progress, 'Archiving error: ' . $e->getMessage());
             /** @var DatabaseService|null $db */
             $db = $this->db ?? null;
@@ -207,7 +209,7 @@ final class AuditArchiveService
     {
         $offset = 0;
         while (true) {
-            if (!empty($sampleCode)) {
+            if ($sampleCode !== null && $sampleCode !== '' && $sampleCode !== '0') {
                 $this->db->connection('default')->where(
                     "sample_code = '$sampleCode' OR remote_sample_code = '$sampleCode' OR external_sample_code = '$sampleCode'"
                 );
@@ -244,7 +246,9 @@ final class AuditArchiveService
         $candidates = ["$base.csv.zst", "$base.csv.gz", "$base.csv.zip", "$base.csv"];
         foreach ($candidates as $rel) {
             $p = rtrim($dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $rel;
-            if (is_file($p)) return $p;
+            if (is_file($p)) {
+                return $p;
+            }
         }
         return null;
     }
@@ -290,7 +294,9 @@ final class AuditArchiveService
      */
     private function reheaderIfNeeded(array $existingHeaders, array $currentHeaders, array $oldRows): array
     {
-        if ($existingHeaders === $currentHeaders) return $oldRows;
+        if ($existingHeaders === $currentHeaders) {
+            return $oldRows;
+        }
 
         $map = [];
         foreach ($currentHeaders as $newIdx => $h) {
@@ -315,7 +321,7 @@ final class AuditArchiveService
         // normalize key (respect aliases in TestsService)
         if (!isset($tests[$testType])) {
             foreach ($tests as $k => $_) {
-                if (strcasecmp($k, $testType) === 0) {
+                if (strcasecmp((string) $k, $testType) === 0) {
                     $testType = $k;
                     break;
                 }
@@ -335,12 +341,12 @@ final class AuditArchiveService
     // factor the core loop so run() and archiveSample() can share it
     private function runForTables(array $auditToKey, ?string $sampleCode, ?callable $progress): void
     {
-        $metadata = empty($sampleCode) ? MiscUtility::loadMetadata($this->metadataPath) : [];
+        $metadata = $sampleCode === null || $sampleCode === '' || $sampleCode === '0' ? MiscUtility::loadMetadata($this->metadataPath) : [];
 
         foreach ($auditToKey as $auditTable => $testKey) {
             $lastProcessedDate = $sampleCode ? null : ($metadata[$auditTable]['last_processed_date'] ?? null);
 
-            $folderName = preg_replace('/[^\w\-]+/', '-', $testKey);
+            $folderName = preg_replace('/[^\w\-]+/', '-', (string) $testKey);
             $targetDir  = $this->archiveRoot . DIRECTORY_SEPARATOR . $folderName;
             MiscUtility::makeDirectory($targetDir);
 
@@ -431,9 +437,20 @@ final class AuditArchiveService
 
 
 
-    /** Build row for current header order from DB record (encode values like original writer). */
-    private function buildRow(array $headers, array $record): array
+    /** 
+     * Build row for current header order from DB record (encode values like original writer).
+     * 
+     * @param array $headers Column names in desired order
+     * @param mixed $record Database record (array, generator yield, or iterable)
+     * @return array Row values matching header order
+     */
+    private function buildRow(array $headers, mixed $record): array
     {
+        // Convert iterable to array if needed (for array access)
+        if (!is_array($record)) {
+            $record = is_iterable($record) ? iterator_to_array($record) : (array)$record;
+        }
+
         $row = [];
         foreach ($headers as $h) {
             $v = $record[$h] ?? null;
@@ -498,7 +515,7 @@ final class AuditArchiveService
             return (string)$d;
         }
         // If it looks like a quoted string, strip quotes and unescape
-        if (strlen($s) >= 2 && $s[0] === '"' && substr($s, -1) === '"') {
+        if (strlen($s) >= 2 && $s[0] === '"' && str_ends_with($s, '"')) {
             return stripcslashes(substr($s, 1, -1));
         }
         return $s;
@@ -509,11 +526,9 @@ final class AuditArchiveService
     {
         if ($progress) {
             $progress($msg);
-        } else {
+        } elseif (php_sapi_name() === 'cli') {
             // default to echo for CLI usage
-            if (php_sapi_name() === 'cli') {
-                echo $msg . PHP_EOL;
-            }
+            MiscUtility::safeCliEcho($msg . PHP_EOL);
         }
     }
 
@@ -541,47 +556,60 @@ final class AuditArchiveService
         // Normalize posted key
         if (!isset($tests[$testType])) {
             foreach ($tests as $k => $_) {
-                if (strcasecmp($k, $testType) === 0) {
+                if (strcasecmp((string) $k, $testType) === 0) {
                     $testType = $k;
                     break;
                 }
             }
         }
-        if (!isset($tests[$testType])) return null;
+        if (!isset($tests[$testType])) {
+            return null;
+        }
 
         $table = $tests[$testType]['tableName'] ?? null;
-        if (!$table) return null;
+        if (!$table) {
+            return null;
+        }
 
         // Find canonical and all aliases for this table
         $canonical = null;
         $aliases = [];
         foreach ($tests as $k => $meta) {
             if (($meta['tableName'] ?? null) === $table) {
-                if ($canonical === null) $canonical = $k; // first key = canonical
-                else $aliases[] = $k;
+                if ($canonical === null) {
+                    $canonical = $k;
+                } else {
+                    $aliases[] = $k;
+                }
             }
         }
 
         $candidates = [];
-        $push = function ($key) use (&$candidates, $uniqueId) {
+        $push = function ($key) use (&$candidates, $uniqueId): void {
             $folder = preg_replace('/[^\w\-]+/', '-', $key);
             $base   = VAR_PATH . "/audit-trail/{$folder}/{$uniqueId}.csv";
             foreach (['.zst', '.gz', '.zip', ''] as $ext) $candidates[] = $base . $ext;
         };
 
-        if ($canonical) $push($canonical);
+        if ($canonical) {
+            $push($canonical);
+        }
         $push($testType);                // whatever user posted
         foreach ($aliases as $a) $push($a);
 
         foreach ($candidates as $path) {
-            if (is_file($path)) return $path;
+            if (is_file($path)) {
+                return $path;
+            }
         }
 
         // Final fallback: scan ALL subfolders for a matching file (legacy layouts)
         foreach (glob(VAR_PATH . '/audit-trail/*', GLOB_ONLYDIR) as $dir) {
             foreach (['.csv.zst', '.csv.gz', '.csv.zip', '.csv'] as $ext) {
                 $p = $dir . '/' . $uniqueId . $ext;
-                if (is_file($p)) return $p;
+                if (is_file($p)) {
+                    return $p;
+                }
             }
         }
         return null;
@@ -589,17 +617,21 @@ final class AuditArchiveService
 
     public function readAuditDataFromCsvFlexible(string $filePath): array
     {
-        if (!is_file($filePath)) return [];
+        if (!is_file($filePath)) {
+            return [];
+        }
 
         // Let ArchiveUtility detect and decompress. For plain CSV it can just read as-is.
         // If your ArchiveUtility expects only compressed files, you can guard with extension
         // and use file_get_contents for plain .csv; below assumes it handles both.
         try {
             $csvString = ArchiveUtility::decompressToString($filePath);
-        } catch (Throwable $e) {
+        } catch (Throwable) {
             // Fallback: plain CSV read
             $csvString = @file_get_contents($filePath);
-            if ($csvString === false) return [];
+            if ($csvString === false) {
+                return [];
+            }
         }
 
         // Parse CSV from a temp stream

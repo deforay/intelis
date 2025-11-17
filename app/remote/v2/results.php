@@ -1,5 +1,6 @@
 <?php
 // /remote/v2/results.php -- receiver for results-sender.php
+use Laminas\Diactoros\ServerRequest;
 use App\Services\ApiService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -29,7 +30,7 @@ $stsResultsService = ContainerRegistry::get(STSResultsService::class);
 $stsTokensService = ContainerRegistry::get(TokensService::class);
 
 try {
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
 
     // Parse JSON (handles gzip/deflate per your ApiService)

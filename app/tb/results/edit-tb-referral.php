@@ -25,8 +25,8 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
-$id = base64_decode($_GET['id']);
-$codeId = base64_decode($_GET['code']);
+$id = base64_decode((string) $_GET['id']);
+$codeId = base64_decode((string) $_GET['code']);
 
 $db->where('referral_manifest_code', $codeId);
 $db->where('reason_for_referral != ""');

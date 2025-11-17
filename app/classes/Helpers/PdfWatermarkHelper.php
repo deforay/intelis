@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Override;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 
@@ -14,17 +15,18 @@ class PdfWatermarkHelper extends Fpdi
     public string $watermarkText = 'DRAFT';
     public int $numPages;
 
-    public function setFullPathToFile($fullPathToFile)
+    public function setFullPathToFile($fullPathToFile): void
     {
         $this->fullPathToFile = $fullPathToFile;
     }
 
-    public function setWatermarkText($watermarkText)
+    public function setWatermarkText(string $watermarkText): void
     {
         $this->watermarkText = $watermarkText;
     }
 
-    public function rotate($angle, $x = -1, $y = -1)
+    #[Override]
+    public function rotate($angle, $x = -1, $y = -1): void
     {
         if ($x == -1) {
             $x = $this->x;
@@ -46,7 +48,8 @@ class PdfWatermarkHelper extends Fpdi
         }
     }
 
-    public function _endpage()
+    #[Override]
+    public function _endpage(): void
     {
         if ($this->angle != 0) {
             $this->angle = 0;
@@ -55,7 +58,8 @@ class PdfWatermarkHelper extends Fpdi
         parent::_endpage();
     }
 
-    public function Header()
+    #[Override]
+    public function Header(): void
     {
 
         //Put the watermark
@@ -71,7 +75,7 @@ class PdfWatermarkHelper extends Fpdi
         $this->useTemplate($this->tplIdx, 0, 0, 200);
     }
 
-    public function rotatedText($x, $y, $txt, $angle)
+    public function rotatedText($x, $y, $txt, $angle): void
     {
         //Text rotated around its origin
         $this->rotate($angle, $x, $y);

@@ -12,11 +12,7 @@ final class CaptchaUtility
     {
         $phrase = null;
         //if it is development environment, then let us keep it simple
-        if (APPLICATION_ENV == "development") {
-            $phrase = "zaq";
-        } else {
-            $phrase = MiscUtility::generateRandomNumber(4);
-        }
+        $phrase = APPLICATION_ENV == "development" ? "zaq" : MiscUtility::generateRandomNumber(4);
 
         $builder = new CaptchaBuilder($phrase);
         $builder->setDistortion(false);

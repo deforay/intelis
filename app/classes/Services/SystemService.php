@@ -2,21 +2,22 @@
 
 namespace App\Services;
 
+use PDO;
+use Throwable;
+use RuntimeException;
 use Gettext\Loader\MoLoader;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 
 final class SystemService
 {
-    protected CommonService $commonService;
     private string $defaultLocale = 'en_US';
-    private static ?\PDO $systemAlertSqlite = null;
-    private const SYSTEM_ALERT_SQLITE_FILE = CACHE_PATH . '/system_alerts.sqlite';
+    private static ?PDO $systemAlertSqlite = null;
+    private const string SYSTEM_ALERT_SQLITE_FILE = CACHE_PATH . '/system_alerts.sqlite';
 
 
-    public function __construct(CommonService $commonService)
+    public function __construct(protected CommonService $commonService)
     {
-        $this->commonService = $commonService;
     }
 
     // Application Bootstrap
@@ -63,7 +64,7 @@ final class SystemService
 
     public static function translate(?string $text)
     {
-        if (empty($text) || empty($_SESSION['translations']) || empty($_SESSION['translations']->find(null, $text))) {
+        if ($text === null || $text === '' || $text === '0' || empty($_SESSION['translations']) || empty($_SESSION['translations']->find(null, $text))) {
             return $text;
         } else {
             return $_SESSION['translations']->find(null, $text)->getTranslation();
@@ -112,7 +113,7 @@ final class SystemService
 
 
 
-    public function setGlobalDateFormat($inputFormat = null)
+    public function setGlobalDateFormat($inputFormat = null): void
     {
         $dateFormatArray = $this->getDateFormat(null, $inputFormat);
         foreach ($dateFormatArray as $key => $value) {
@@ -201,7 +202,7 @@ final class SystemService
             // Try to init/connect; will also auto-create file/schema.
             self::systemAlertSqlite();
             return true;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             if ($log) {
                 $now = time();
                 if ($now - $lastLogAt >= $logEverySec) {
@@ -216,9 +217,9 @@ final class SystemService
         }
     }
 
-    private static function systemAlertSqlite(): \PDO
+    private static function systemAlertSqlite(): PDO
     {
-        if (self::$systemAlertSqlite instanceof \PDO) {
+        if (self::$systemAlertSqlite instanceof PDO) {
             return self::$systemAlertSqlite;
         }
 
@@ -227,21 +228,21 @@ final class SystemService
         }
         if (!is_writable(CACHE_PATH)) {
             LoggerUtility::logError('CACHE_PATH not writable', ['path' => CACHE_PATH]);
-            throw new \RuntimeException('CACHE_PATH not writable: ' . CACHE_PATH);
+            throw new RuntimeException('CACHE_PATH not writable: ' . CACHE_PATH);
         }
 
         // Ensure driver present (clearer error than PDO)
-        if (!in_array('sqlite', \PDO::getAvailableDrivers(), true)) {
+        if (!in_array('sqlite', PDO::getAvailableDrivers(), true)) {
             LoggerUtility::logError('pdo_sqlite driver not available');
-            throw new \RuntimeException('pdo_sqlite driver not available');
+            throw new RuntimeException('pdo_sqlite driver not available');
         }
 
         $dbFile = self::SYSTEM_ALERT_SQLITE_FILE;
         try {
-            $pdo = new \PDO('sqlite:' . $dbFile, null, null, [
-                \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-                \PDO::ATTR_TIMEOUT            => 3,
+            $pdo = new PDO('sqlite:' . $dbFile, null, null, [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_TIMEOUT            => 3,
             ]);
 
             // If we just created it, set perms so web user can RW
@@ -270,8 +271,8 @@ final class SystemService
 
             self::$systemAlertSqlite = $pdo;
             return $pdo;
-        } catch (\Throwable $e) {
-            \App\Utilities\LoggerUtility::logError('SQLite init failed: ' . $e->getMessage(), [
+        } catch (Throwable $e) {
+            LoggerUtility::logError('SQLite init failed: ' . $e->getMessage(), [
                 'path' => $dbFile,
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -301,7 +302,7 @@ final class SystemService
                 ':audience' => $audience,
             ]);
             return (int)$pdo->lastInsertId();
-        } catch (\Throwable $e) {
+        } catch (Throwable) {
             // If SQLite cannot be used, we return null.
             return null;
         }
@@ -329,13 +330,13 @@ final class SystemService
         $stmt->execute($params);
 
         $rows = [];
-        while ($r = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $rows[] = [
                 'id'      => (int)$r['id'],
                 'level'   => $r['level'],
                 'type'    => $r['type'],
                 'message' => $r['message'],
-                'meta'    => isset($r['meta']) ? json_decode($r['meta'], true) : null,
+                'meta'    => isset($r['meta']) ? json_decode((string) $r['meta'], true) : null,
                 'ts'      => $r['created_at'],
                 'audience' => $r['audience'],
             ];

@@ -5,7 +5,7 @@ $tableName = "other_config";
 
 
 
-$aColumns = array('display_name', 'value');
+$aColumns = ['display_name', 'value'];
 
 
 
@@ -40,7 +40,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -64,9 +64,9 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM other_config";
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
-    $sWhere = $sWhere . ' AND type = "result"';
+    $sWhere .= ' AND type = "result"';
     $sQuery = $sQuery . ' ' . $sWhere;
 } else {
     $sWhere = ' WHERE type = "result"';
@@ -96,12 +96,7 @@ $aResultTotal = $db->rawQuery("SELECT * FROM other_config WHERE type ='result'")
 //print_r($aResultTotal);
 $iTotal = count($aResultTotal);
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $row = [];

@@ -1,5 +1,11 @@
 <?php
 
+use const SAMPLE_STATUS\TEST_FAILED;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\REORDERED_FOR_TESTING;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\ACCEPTED;
 use App\Exceptions\SystemException;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -19,21 +25,21 @@ try {
     $db->where("IFNULL(result,'') !=''");
     $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
     $db->update('temp_sample_import', [
-        'result_status' => SAMPLE_STATUS\TEST_FAILED
+        'result_status' => TEST_FAILED
     ]);
 
     // Update eligible rows to ACCEPTED
     $statusCodes = [
-        SAMPLE_STATUS\PENDING_APPROVAL,
-        SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
-        SAMPLE_STATUS\REORDERED_FOR_TESTING,
-        SAMPLE_STATUS\RECEIVED_AT_CLINIC
+        PENDING_APPROVAL,
+        RECEIVED_AT_TESTING_LAB,
+        REORDERED_FOR_TESTING,
+        RECEIVED_AT_CLINIC
     ];
     $statusCodes = implode(",", $statusCodes);
     $db->where('imported_by', $importedBy);
     $db->where("(IFNULL(result_status,'') = '' OR result_status IN ($statusCodes))");
     $id = $db->update('temp_sample_import', [
-        'result_status' => SAMPLE_STATUS\ACCEPTED
+        'result_status' => ACCEPTED
     ]);
 } catch (Throwable $e) {
     LoggerUtility::log("error", $e->getMessage(), [

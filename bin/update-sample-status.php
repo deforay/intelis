@@ -1,5 +1,14 @@
 <?php
 
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\TEST_FAILED;
+use const SAMPLE_STATUS\ON_HOLD;
+use const SAMPLE_STATUS\REORDERED_FOR_TESTING;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\EXPIRED;
+
 $isCli = php_sapi_name() === 'cli';
 
 // only run from command line
@@ -13,6 +22,7 @@ use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
+use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -22,101 +32,60 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
+$lockTargetFile = __FILE__;
 
-    if ($isModuleEnabled === false) {
-        continue;
-    }
-
+if (!MiscUtility::isLockFileExpired($lockTargetFile)) {
+    LoggerUtility::log('warning', 'update-sample-status is already running; exiting.');
     if ($isCli) {
-        echo PHP_EOL . "------------------" . PHP_EOL;
-        echo "PROCESSING " . strtoupper($module) . PHP_EOL;
-        echo "------------------" . PHP_EOL;
+        echo "Another instance is already running. Exiting." . PHP_EOL;
     }
-    $tableName = $isModuleEnabled ? TestsService::getTestTableName($module) : null;
-    if (!empty($tableName)) {
+    exit(0);
+}
 
-        $primaryKey = TestsService::getPrimaryColumn($module);
+MiscUtility::touchLockFile($lockTargetFile);
+MiscUtility::setupSignalHandler($lockTargetFile);
 
-        // BLOCK 1: LOCKING SAMPLES
+$exitCode = 0;
+
+try {
+    foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
+
+        if ($isModuleEnabled === false) {
+            continue;
+        }
 
         if ($isCli) {
-            echo "Processing locking samples for $module" . PHP_EOL;
+            echo PHP_EOL . "------------------" . PHP_EOL;
+            echo "PROCESSING " . strtoupper((string) $module) . PHP_EOL;
+            echo "------------------" . PHP_EOL;
         }
-        $batchSize = 100;
-        $offset = 0;
-        $lockAfterDays = (int) ($general->getGlobalConfig('sample_lock_after_days') ?? 14);
-        $lockAfterDays = $lockAfterDays > 7 ? $lockAfterDays : 14;
+        $tableName = $isModuleEnabled ? TestsService::getTestTableName($module) : null;
+        if ($tableName !== null && $tableName !== '' && $tableName !== '0') {
 
-        $statusCodes = [
-            SAMPLE_STATUS\REJECTED,
-            SAMPLE_STATUS\ACCEPTED
-        ];
-        $batchNumber = 0;
-        while (true) {
-            try {
+            $primaryKey = TestsService::getPrimaryColumn($module);
 
-                $db->reset();
-                $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
-                $db->where("IFNULL(locked, 'no') = 'no'");
-                $db->where("DATEDIFF(CURRENT_DATE, `last_modified_datetime`) > $lockAfterDays");
-                $db->pageLimit = $batchSize;
-                $rows = $db->get($tableName, [$offset, $batchSize], $primaryKey);
+            // BLOCK 1: LOCKING SAMPLES
 
-
-                if (empty($rows)) {
-                    echo "$batchNumber batches of $batchSize samples processed." . PHP_EOL;
-                    break;
-                }
-                $batchNumber++;
-
-                $db->beginTransaction();
-                $ids = array_column($rows, $primaryKey);
-
-                $db->reset();
-                $db->where($primaryKey, $ids, 'IN');
-                $db->update(
-                    $tableName,
-                    [
-                        "locked" => "yes"
-                    ]
-                );
-                $db->commitTransaction();
-
-
-                $offset += $batchSize;
-            } catch (Throwable $e) {
-                $db->rollbackTransaction();
-                LoggerUtility::logError($e->getMessage(), [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'last_db_error' => $db->getLastError(),
-                    'last_db_query' => $db->getLastQuery(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
-                continue;
-            }
-        }
-
-        // BLOCK 2: FAILED SAMPLES (ONLY FOR VL)
-        if ($module === 'vl') {
             if ($isCli) {
-                echo "Processing failed samples for $module" . PHP_EOL;
+                echo "Processing locking samples for $module" . PHP_EOL;
             }
             $batchSize = 100;
             $offset = 0;
+            $lockAfterDays = (int) ($general->getGlobalConfig('sample_lock_after_days') ?? 14);
+            $lockAfterDays = $lockAfterDays > 7 ? $lockAfterDays : 14;
+
             $statusCodes = [
-                SAMPLE_STATUS\REJECTED,
-                SAMPLE_STATUS\TEST_FAILED
+                REJECTED,
+                ACCEPTED
             ];
             $batchNumber = 0;
             while (true) {
                 try {
 
                     $db->reset();
-                    $db->where("result_status NOT IN  (" . implode(",", $statusCodes) . ")");
-                    $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
-                    $db->orderBy($primaryKey, "ASC");
+                    $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
+                    $db->where("IFNULL(locked, 'no') = 'no'");
+                    $db->where("DATEDIFF(CURRENT_DATE, `last_modified_datetime`) > $lockAfterDays");
                     $db->pageLimit = $batchSize;
                     $rows = $db->get($tableName, [$offset, $batchSize], $primaryKey);
 
@@ -125,21 +94,19 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                         echo "$batchNumber batches of $batchSize samples processed." . PHP_EOL;
                         break;
                     }
+                    $batchNumber++;
 
-
-                    $ids = array_column($rows, $primaryKey);
                     $db->beginTransaction();
+                    $ids = array_column($rows, $primaryKey);
+
                     $db->reset();
                     $db->where($primaryKey, $ids, 'IN');
                     $db->update(
                         $tableName,
                         [
-                            "result_status" => SAMPLE_STATUS\TEST_FAILED,
-                            "data_sync" => 0,
-                            "last_modified_datetime" => DateUtility::getCurrentDateTime()
+                            "locked" => "yes"
                         ]
                     );
-
                     $db->commitTransaction();
 
 
@@ -156,69 +123,145 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                     continue;
                 }
             }
-        }
+            MiscUtility::touchLockFile($lockTargetFile);
 
-        // BLOCK 3: EXPIRING SAMPLES
-        if ($isCli) {
-            echo "Processing expired samples for $module" . PHP_EOL;
-        }
-
-        $batchSize = 100;
-        $offset = 0;
-        $expiryDays = (int) ($general->getGlobalConfig('sample_expiry_after_days') ?? 365);
-        $expiryDays = $expiryDays > 0 ? $expiryDays : 365;
-
-        $statusCodes = [
-            SAMPLE_STATUS\ON_HOLD,
-            SAMPLE_STATUS\REORDERED_FOR_TESTING,
-            SAMPLE_STATUS\RECEIVED_AT_CLINIC,
-            SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB
-        ];
-
-        $batchNumber = 0;
-        while (true) {
-            try {
-
-                $db->reset();
-                $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
-                $db->where("DATEDIFF(CURRENT_DATE, `sample_collection_date`) > $expiryDays");
-                $db->pageLimit = $batchSize;
-                $rows = $db->get($tableName, [$offset, $batchSize], $primaryKey);
-
-
-                if (empty($rows)) {
-                    echo "$batchNumber batches of $batchSize samples processed." . PHP_EOL;
-                    break;
+            // BLOCK 2: FAILED SAMPLES (ONLY FOR VL)
+            if ($module === 'vl') {
+                if ($isCli) {
+                    echo "Processing failed samples for $module" . PHP_EOL;
                 }
+                $batchSize = 100;
+                $offset = 0;
+                $statusCodes = [
+                    REJECTED,
+                    TEST_FAILED
+                ];
+                $batchNumber = 0;
+                while (true) {
+                    try {
+
+                        $db->reset();
+                        $db->where("result_status NOT IN  (" . implode(",", $statusCodes) . ")");
+                        $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
+                        $db->orderBy($primaryKey, "ASC");
+                        $db->pageLimit = $batchSize;
+                        $rows = $db->get($tableName, [$offset, $batchSize], $primaryKey);
 
 
-                $ids = array_column($rows, $primaryKey);
-
-                $db->beginTransaction();
-                $db->reset();
-                $db->where($primaryKey, $ids, 'IN');
-                $db->update(
-                    $tableName,
-                    [
-                        "result_status" => SAMPLE_STATUS\EXPIRED,
-                        "locked" => "yes"
-                    ]
-                );
-                $db->commitTransaction();
+                        if (empty($rows)) {
+                            echo "$batchNumber batches of $batchSize samples processed." . PHP_EOL;
+                            break;
+                        }
 
 
-                $offset += $batchSize;
-            } catch (Throwable $e) {
-                $db->rollbackTransaction();
-                LoggerUtility::logError($e->getMessage(), [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'last_db_error' => $db->getLastError(),
-                    'last_db_query' => $db->getLastQuery(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
-                continue;
+                        $ids = array_column($rows, $primaryKey);
+                        $db->beginTransaction();
+                        $db->reset();
+                        $db->where($primaryKey, $ids, 'IN');
+                        $db->update(
+                            $tableName,
+                            [
+                                "result_status" => TEST_FAILED,
+                                "data_sync" => 0,
+                                "last_modified_datetime" => DateUtility::getCurrentDateTime()
+                            ]
+                        );
+
+                        $db->commitTransaction();
+
+
+                        $offset += $batchSize;
+                    } catch (Throwable $e) {
+                        $db->rollbackTransaction();
+                        LoggerUtility::logError($e->getMessage(), [
+                            'file' => $e->getFile(),
+                            'line' => $e->getLine(),
+                            'last_db_error' => $db->getLastError(),
+                            'last_db_query' => $db->getLastQuery(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                        continue;
+                    }
+                }
+                MiscUtility::touchLockFile($lockTargetFile);
             }
+
+            // BLOCK 3: EXPIRING SAMPLES
+            if ($isCli) {
+                echo "Processing expired samples for $module" . PHP_EOL;
+            }
+
+            $batchSize = 100;
+            $offset = 0;
+            $expiryDays = (int) ($general->getGlobalConfig('sample_expiry_after_days') ?? 365);
+            $expiryDays = $expiryDays > 0 ? $expiryDays : 365;
+
+            $statusCodes = [
+                ON_HOLD,
+                REORDERED_FOR_TESTING,
+                RECEIVED_AT_CLINIC,
+                RECEIVED_AT_TESTING_LAB
+            ];
+
+            $batchNumber = 0;
+            while (true) {
+                try {
+
+                    $db->reset();
+                    $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
+                    $db->where("DATEDIFF(CURRENT_DATE, `sample_collection_date`) > $expiryDays");
+                    $db->pageLimit = $batchSize;
+                    $rows = $db->get($tableName, [$offset, $batchSize], $primaryKey);
+
+
+                    if (empty($rows)) {
+                        echo "$batchNumber batches of $batchSize samples processed." . PHP_EOL;
+                        break;
+                    }
+
+
+                    $ids = array_column($rows, $primaryKey);
+
+                    $db->beginTransaction();
+                    $db->reset();
+                    $db->where($primaryKey, $ids, 'IN');
+                    $db->update(
+                        $tableName,
+                        [
+                            "result_status" => EXPIRED,
+                            "locked" => "yes"
+                        ]
+                    );
+                    $db->commitTransaction();
+
+
+                    $offset += $batchSize;
+                } catch (Throwable $e) {
+                    $db->rollbackTransaction();
+                    LoggerUtility::logError($e->getMessage(), [
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'last_db_error' => $db->getLastError(),
+                        'last_db_query' => $db->getLastQuery(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
+                    continue;
+                }
+            }
+            MiscUtility::touchLockFile($lockTargetFile);
         }
     }
+} catch (Throwable $e) {
+    $exitCode = 1;
+    LoggerUtility::logError("Sample status update script failed critically: " . $e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery(),
+        'trace' => $e->getTraceAsString(),
+    ]);
+} finally {
+    MiscUtility::deleteLockFile($lockTargetFile);
 }
+
+exit($exitCode);

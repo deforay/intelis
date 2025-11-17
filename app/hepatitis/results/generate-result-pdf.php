@@ -1,5 +1,12 @@
 <?php
 
+use const COUNTRY\SOUTH_SUDAN;
+use const COUNTRY\SIERRA_LEONE;
+use const COUNTRY\DRC;
+use const COUNTRY\CAMEROON;
+use const COUNTRY\PNG;
+use const COUNTRY\WHO;
+use const COUNTRY\RWANDA;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -30,12 +37,12 @@ $expStr = explode(" ", $printedTime);
 $printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 $printDateTime = $expStr[1];
 $mFieldArray = [];
-if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
+if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) !== '') {
 	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
 }
 //set query
 $allQuery = $_SESSION['hepatitisPrintQuery'];
-if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
+if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 
 	$searchQuery = "SELECT vl.*,f.*,
 				l.facility_name as labName,
@@ -72,11 +79,11 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 
 foreach ($requestResult as $requestRow) {
 	if (($general->isLISInstance()) && empty($requestRow['result_printed_on_lis_datetime'])) {
-		$pData = array('result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+		$pData = ['result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
 		$db->where('hepatitis_id', $requestRow['hepatitis_id']);
 		$id = $db->update('form_hepatitis', $pData);
 	} elseif (($general->isSTSInstance()) && empty($requestRow['result_printed_on_sts_datetime'])) {
-		$pData = array('result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+		$pData = ['result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
 		$db->where('hepatitis_id', $requestRow['hepatitis_id']);
 		$id = $db->update('form_hepatitis', $pData);
 	}
@@ -89,14 +96,6 @@ $_SESSION['aliasPage'] = 1;
 //print_r($requestResult);die;
 
 
-$fileArray = array(
-	COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
-	COUNTRY\SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php',
-	COUNTRY\DRC => 'pdf/result-pdf-drc.php',
-	COUNTRY\CAMEROON => 'pdf/result-pdf-cameroon.php',
-	COUNTRY\PNG => 'pdf/result-pdf-png.php',
-	COUNTRY\WHO => 'pdf/result-pdf-who.php',
-	COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php'
-);
+$fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php', DRC => 'pdf/result-pdf-drc.php', CAMEROON => 'pdf/result-pdf-cameroon.php', PNG => 'pdf/result-pdf-png.php', WHO => 'pdf/result-pdf-who.php', RWANDA => 'pdf/result-pdf-rwanda.php'];
 
 require_once($fileArray[$formId]);

@@ -1,7 +1,7 @@
 <?php
 
 // api/v1.1/vl/fetch-results.php
-
+use Slim\Psr7\Request;
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
@@ -37,7 +37,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
-/** @var Slim\Psr7\Request $request */
+/** @var Request $request */
 $request = AppRegistry::get('request');
 
 
@@ -242,7 +242,7 @@ try {
     }
 
     $whereString = '';
-    if (!empty($where)) {
+    if ($where !== []) {
         $whereString = " WHERE " . implode(" AND ", $where);
     }
     $sQuery .= "$whereString ORDER BY vl.last_modified_datetime DESC LIMIT 100 ";
@@ -251,7 +251,7 @@ try {
 
     $now = DateUtility::getCurrentDateTime();
     $affectedSamples = array_values(array_filter(array_unique(array_column($rowData, 'testRequestId'))));
-    if (!empty($affectedSamples)) {
+    if ($affectedSamples !== []) {
         // 1) result_sent_to_source / result_sent_to_source_datetime — set once
         $db->where($primaryKey, $affectedSamples, 'IN');
         $db->where('result_sent_to_source_datetime IS NULL');

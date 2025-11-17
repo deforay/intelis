@@ -1,7 +1,8 @@
 <?php
 
 // this file is included in /covid-19/interop/dhis2/covid-19-receive.php
-
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use Throwable;
 use App\Interop\Dhis2;
 use JsonMachine\Items;
@@ -91,7 +92,7 @@ try {
     $jsonResponse = $dhis2->get($url, $data);
     $jsonResponse = (string) $jsonResponse->getBody();
 
-    if ($jsonResponse == '' || $jsonResponse == '[]' || empty($jsonResponse)) {
+    if ($jsonResponse === '' || $jsonResponse === '[]' || ($jsonResponse === '' || $jsonResponse === '0')) {
         die('No Response from API');
     }
 
@@ -165,7 +166,7 @@ try {
             $facility = $tracker['orgUnit'];
 
 
-            $formData['sample_collection_date'] = (!empty($formData['sample_collection_date']) ? $formData['sample_collection_date'] : $enrollmentDate);
+            $formData['sample_collection_date'] = (empty($formData['sample_collection_date']) ? $enrollmentDate : $formData['sample_collection_date']);
 
             // Reason for Testing
             if (!empty($formData['reason_for_covid19_test'])) {
@@ -174,11 +175,7 @@ try {
                 if (!empty($reason) && $reason) {
                     $formData['reason_for_covid19_test'] = $reason['test_reason_id'];
                 } else {
-                    $reasonData = array(
-                        'test_reason_name' => $formData['reason_for_covid19_test'],
-                        'test_reason_status' => 'active',
-                        'updated_datetime' => DateUtility::getCurrentDateTime()
-                    );
+                    $reasonData = ['test_reason_name' => $formData['reason_for_covid19_test'], 'test_reason_status' => 'active', 'updated_datetime' => DateUtility::getCurrentDateTime()];
                     $formData['reason_for_covid19_test'] = $db->insert("r_covid19_test_reasons", $reasonData);
                 }
             }
@@ -217,7 +214,7 @@ try {
             $db->where("geo_name", $fac['facility_state']);
             $prov = $db->getOne("geographical_divisions");
 
-            $formData['province_id'] = !empty($prov['geo_id']) ? $prov['geo_id'] : 1;
+            $formData['province_id'] = empty($prov['geo_id']) ? 1 : $prov['geo_id'];
 
 
             //Specimen Type
@@ -228,26 +225,22 @@ try {
                 if (!empty($sampleType) && $sampleType) {
                     $formData['specimen_type'] = $sampleType['sample_id'];
                 } else {
-                    $sampleTypeData = array(
-                        'sample_name' => $formData['specimen_type'],
-                        'status' => 'active',
-                        'updated_datetime' => DateUtility::getCurrentDateTime()
-                    );
+                    $sampleTypeData = ['sample_name' => $formData['specimen_type'], 'status' => 'active', 'updated_datetime' => DateUtility::getCurrentDateTime()];
                     $formData['specimen_type'] = $db->insert("r_covid19_sample_type", $sampleTypeData);
                 }
             }
 
 
-            $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+            $status = RECEIVED_AT_TESTING_LAB;
             if ($general->isSTSInstance()) {
-                $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+                $status = RECEIVED_AT_CLINIC;
             }
 
             $formData['result_status'] = $status;
             $formData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
 
-            $formData['patient_gender'] = (!empty($formData['patient_gender']) ? strtolower((string) $formData['patient_gender']) : null);
+            $formData['patient_gender'] = (empty($formData['patient_gender']) ? null : strtolower((string) $formData['patient_gender']));
             if (!empty($formData['specimen_quality'])) {
                 $formData['specimen_quality'] = strtolower((string) $formData['specimen_quality']);
             }
@@ -299,7 +292,7 @@ try {
         }
     }
 
-    $response = array('received' => $receivedCounter, 'processed' => $processedCounter);
+    $response = ['received' => $receivedCounter, 'processed' => $processedCounter];
 
     echo (json_encode($response));
     $db->commitTransaction();

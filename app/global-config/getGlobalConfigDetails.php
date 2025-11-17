@@ -1,10 +1,11 @@
 <?php
 
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -44,7 +45,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -67,7 +68,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM global_config";
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = "WHERE status = 'active' AND $sWhere";
     $sQuery = "$sQuery $sWhere";
 } else {
@@ -104,7 +105,7 @@ foreach ($rResult as $aRow) {
     } elseif ($aRow['display_name'] == 'Patient ART Number Date' && $aRow['value'] == 'yes') {
         $aRow['value'] = 'Full Date';
     }
-    if ($aRow['name'] == 'vl_form' && trim((string) $aRow['value']) != '') {
+    if ($aRow['name'] == 'vl_form' && trim((string) $aRow['value']) !== '') {
         $query = "SELECT * FROM s_available_country_forms WHERE vlsm_country_id= ?";
         $formResult = $db->rawQuery($query, [$aRow['value']]);
         $aRow['value'] = $formResult[0]['form_name'];

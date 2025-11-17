@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -18,14 +19,14 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 try {
 	// File upload folder
 	$uploadDir = UPLOAD_PATH . DIRECTORY_SEPARATOR . "support";
-	if (isset($_POST['image']) && trim((string) $_POST['image']) != "" && trim((string) $_POST['supportId']) != "") {
+	if (isset($_POST['image']) && trim((string) $_POST['image']) !== "" && trim((string) $_POST['supportId']) !== "") {
 		$supportId = base64_decode((string) $_POST['supportId']);
 
 		MiscUtility::makeDirectory($uploadDir . DIRECTORY_SEPARATOR . $supportId);
@@ -39,13 +40,11 @@ try {
 		// save to file
 		file_put_contents($uploadPath, base64_decode($uri));
 
-		$fData = array(
-			'screenshot_file_name' => $fileName
-		);
+		$fData = ['screenshot_file_name' => $fileName];
 		$db->where('support_id', $supportId);
 		$db->update($tableName, $fData);
 		$response['message'] = _translate("Thank you. Your message has been submitted.");
-	} elseif (trim((string) $_POST['supportId']) != "") {
+	} elseif (trim((string) $_POST['supportId']) !== "") {
 		$supportId = base64_decode((string) $_POST['supportId']);
 		$response['message'] = _translate("Thank you. Your message has been submitted.");
 	}
@@ -55,7 +54,7 @@ try {
 	if (!empty($supportEmail)) {
 		$sQuery = "SELECT * FROM support WHERE support_id = ?";
 		$sResult = $db->rawQuery($sQuery, [$supportId]);
-		if (isset($sResult[0]['support_id']) && trim((string) $sResult[0]['support_id']) != "") {
+		if (isset($sResult[0]['support_id']) && trim((string) $sResult[0]['support_id']) !== "") {
 			$feedback = $sResult[0]['feedback'];
 			$feedbackUrl = $sResult[0]['feedback_url'];
 
@@ -63,7 +62,7 @@ try {
 			$smtpEmail = $general->getSystemConfig('sup_email');
 			$smtpPassword = $general->getSystemConfig('sup_password');
 
-			if (isset($smtpEmail) && trim((string) $smtpEmail) != "" && trim((string) $smtpPassword) != "") {
+			if (isset($smtpEmail) && trim((string) $smtpEmail) !== "" && trim((string) $smtpPassword) !== "") {
 				//Create a new PHPMailer instance
 				$mail = new PHPMailer();
 				//Tell PHPMailer to use SMTP
@@ -95,17 +94,18 @@ try {
 
 				//Set To EmailId(s)
 				$xplodAddress = explode(",", (string) $supportEmail);
-				for ($to = 0; $to < count($xplodAddress); $to++) {
+    $counter = count($xplodAddress);
+				for ($to = 0; $to < $counter; $to++) {
 					$mail->addAddress($xplodAddress[$to]);
 				}
 
-				if (trim((string) $sResult[0]['upload_file_name']) != "") {
+				if (trim((string) $sResult[0]['upload_file_name']) !== "") {
 					$file_to_attach = $uploadDir . DIRECTORY_SEPARATOR . $supportId . DIRECTORY_SEPARATOR . $sResult[0]['upload_file_name'];
 					if (file_exists($file_to_attach)) {
 						$mail->AddAttachment($file_to_attach);
 					}
 				}
-				if (trim((string) $sResult[0]['screenshot_file_name']) != "") {
+				if (trim((string) $sResult[0]['screenshot_file_name']) !== "") {
 					$uploadPath = $uploadDir . DIRECTORY_SEPARATOR . $supportId . DIRECTORY_SEPARATOR . $sResult[0]['screenshot_file_name'];
 					if (file_exists($uploadPath)) {
 						$mail->AddAttachment($uploadPath);
@@ -113,7 +113,7 @@ try {
 				}
 
 				$message = '';
-				if (isset($feedback) && trim((string) $feedback) != "") {
+				if (isset($feedback) && trim((string) $feedback) !== "") {
 					$feedback = (nl2br((string) $feedback));
 					$message = "<table cellpadding='0' cellspacing='0' style='width:95%;' border='1'>";
 					$message .= "<tr>";
@@ -128,16 +128,10 @@ try {
 				}
 
 				$mail->msgHTML($message);
-				$mail->SMTPOptions = array(
-					'ssl' => array(
-						'verify_peer' => false,
-						'verify_peer_name' => false,
-						'allow_self_signed' => true
-					)
-				);
+				$mail->SMTPOptions = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true]];
 				if ($mail->send()) {
 					$db->where('support_id', $supportId);
-					$db->update($tableName, array('status' => 'sent'));
+					$db->update($tableName, ['status' => 'sent']);
 					$response['status'] = 1;
 					$response['message'] = _translate("Thank you. Your message has been submitted.");
 				}

@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const COUNTRY\CAMEROON;
 use App\Utilities\JsonUtility;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -14,19 +16,22 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 // Get the uploaded files from the request object
 $uploadedFiles = $request->getUploadedFiles();
 $sanitizedInstanceLogo = $sanitizedLogo = $sanitizedReportTemplate = null;
-if (isset($_FILES['reportFormat']['name']) && isset($uploadedFiles['reportFormat']['report_template']))
+if (isset($_FILES['reportFormat']['name']) && isset($uploadedFiles['reportFormat']['report_template'])) {
     $sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportFormat']['report_template'], ['pdf']);
-if (isset($_FILES['instanceLogo']) && isset($uploadedFiles['instanceLogo']))
+}
+if (isset($_FILES['instanceLogo']) && isset($uploadedFiles['instanceLogo'])) {
     $sanitizedInstanceLogo = _sanitizeFiles($uploadedFiles['instanceLogo'], ['png', 'jpg', 'jpeg', 'gif']);
-if (isset($_FILES['logo']) && empty($_FILES['logo']) && isset($uploadedFiles['logo']) && !empty($uploadedFiles['logo']))
+}
+if (isset($_FILES['logo']) && empty($_FILES['logo']) && isset($uploadedFiles['logo']) && !empty($uploadedFiles['logo'])) {
     $sanitizedLogo = _sanitizeFiles($uploadedFiles['logo'], ['png', 'jpg', 'jpeg', 'gif']);
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -50,7 +55,7 @@ try {
 
 
     $removedImage = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage']);
-    if (isset($_POST['removedLogoImage']) && trim((string) $_POST['removedLogoImage']) != "" && !empty($removedImage) && file_exists($removedImage)) {
+    if (isset($_POST['removedLogoImage']) && trim((string) $_POST['removedLogoImage']) !== "" && !($removedImage === '' || $removedImage === '0' || $removedImage === false) && file_exists($removedImage)) {
         MiscUtility::deleteFile($removedImage);
         $data = ['value' => null];
         $db->where('name', 'logo');
@@ -78,8 +83,8 @@ try {
 
         // Resize the image
         $resizeObj = new ImageResizeUtility($imagePath);
-        if ($_POST['vl_form'] == COUNTRY\CAMEROON) {
-            list($width, $height) = getimagesize($imagePath);
+        if ($_POST['vl_form'] == CAMEROON) {
+            [$width, $height] = getimagesize($imagePath);
             if ($width > 240) {
                 $resizeObj->resizeToBestFit(240, 80);
             }
@@ -121,7 +126,7 @@ try {
             MiscUtility::makeDirectory($currentPath, 0777); // will just skip if exists
         }
         if (isset($_POST['reportFormat']['deleteTemplate']) && !empty($_POST['reportFormat']['deleteTemplate'])) {
-            foreach (explode(',', $_POST['reportFormat']['deleteTemplate']) as $testToRemove)
+            foreach (explode(',', (string) $_POST['reportFormat']['deleteTemplate']) as $testToRemove)
                 MiscUtility::removeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $testToRemove);
         }
         foreach ($_POST['reportFormat']['test_type'] as $key => $test) {
@@ -156,7 +161,7 @@ try {
             if ($fieldName == 'r_mandatory_fields') {
                 $fieldValue = implode(',', $fieldValue);
             }
-            $data = array('value' => $fieldValue);
+            $data = ['value' => $fieldValue];
             $db->where('name', $fieldName);
             $id = $db->update("global_config", $data);
             if ($id) {
@@ -182,8 +187,9 @@ try {
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
-        if (isset($fileName) && !empty($fileName))
+        if (isset($fileName) && !empty($fileName)) {
             file_put_contents($path . DIRECTORY_SEPARATOR . $fileName, $content);
+        }
     }
 
     $dateFormat = $_POST['gui_date_format'] ?? 'd-M-Y';
@@ -192,27 +198,24 @@ try {
 
     /* For Lock approve sample updates */
 
-    if (isset($_POST['vl_monthly_target']) && trim((string) $_POST['vl_monthly_target']) != "") {
-        $data = array('value' => trim((string) $_POST['vl_monthly_target']));
+    if (isset($_POST['vl_monthly_target']) && trim((string) $_POST['vl_monthly_target']) !== "") {
+        $data = ['value' => trim((string) $_POST['vl_monthly_target'])];
         $db->where('name', 'vl_monthly_target');
         $id = $db->update("global_config", $data);
     }
-    if (isset($_POST['vl_suppression_target']) && trim((string) $_POST['vl_suppression_target']) != "") {
-        $data = array('value' => trim((string) $_POST['vl_suppression_target']));
+    if (isset($_POST['vl_suppression_target']) && trim((string) $_POST['vl_suppression_target']) !== "") {
+        $data = ['value' => trim((string) $_POST['vl_suppression_target'])];
         $db->where('name', 'vl_suppression_target');
         $id = $db->update("global_config", $data);
     }
 
-    if (isset($_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']) && trim((string) $_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']) != "") {
-        $data = array('value' => trim((string) $_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']));
+    if (isset($_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']) && trim((string) $_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']) !== "") {
+        $data = ['value' => trim((string) $_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab'])];
         $db->where('name', 'covid19_positive_confirmatory_tests_required_by_central_lab');
         $id = $db->update("global_config", $data);
         if ($id) {
             $db->where('name', 'logo');
-            $db->update("global_config", array(
-                "updated_datetime" => $currentDateTime,
-                "updated_by" => $_SESSION['userId']
-            ));
+            $db->update("global_config", ["updated_datetime" => $currentDateTime, "updated_by" => $_SESSION['userId']]);
         }
     }
 

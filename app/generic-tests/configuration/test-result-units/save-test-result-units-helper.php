@@ -16,12 +16,8 @@ $unitId = (int) base64_decode((string) $_POST['unitId']);
 try {
     if (!empty($_POST['unitName'])) {
 
-        $data = array(
-            'unit_name' => trim((string) $_POST['unitName']),
-            'unit_status' => $_POST['status'],
-            'updated_datetime' => DateUtility::getCurrentDateTime()
-        );
-        if (!empty($unitId)) {
+        $data = ['unit_name' => trim((string) $_POST['unitName']), 'unit_status' => $_POST['status'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
+        if ($unitId !== 0) {
             $db->where('unit_id', $unitId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {

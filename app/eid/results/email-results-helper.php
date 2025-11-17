@@ -35,7 +35,7 @@ $sourcecode = sprintf("%02d", (count($resultmailSentResult) + 1));
 $sequencenumber = '';
 $instancefacilityCodeQuery = "SELECT instance_facility_code FROM s_vlsm_instance";
 $instancefacilityCodeResult = $db->rawQuery($instancefacilityCodeQuery);
-$instancefacilityCode = (isset($instancefacilityCodeResult[0]['instance_facility_code']) && trim((string) $instancefacilityCodeResult[0]['instance_facility_code']) != '') ? '/' . $instancefacilityCodeResult[0]['instance_facility_code'] : '';
+$instancefacilityCode = (isset($instancefacilityCodeResult[0]['instance_facility_code']) && trim((string) $instancefacilityCodeResult[0]['instance_facility_code']) !== '') ? '/' . $instancefacilityCodeResult[0]['instance_facility_code'] : '';
 $year = date("Y");
 $month = strtolower(date("M"));
 $sequencenumber = 'Ref : vlsm/results/' . $year . '/' . $month . $instancefacilityCode . '/' . $sourcecode;
@@ -47,19 +47,10 @@ foreach ($geResult as $row) {
    $mailconf[$row['name']] = $row['value'];
 }
 
-if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
+if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
    //  $result_file_to_attach = $pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2'];
     // $mail->AddAttachment($result_file_to_attach);
-     $tempMailData = array(
-        "to_mail" => $_POST['toEmail'],
-        "subject" => $_POST['subject'],
-        "text_message" => $_POST['message'],
-        "report_email" => $_POST['reportEmail'],
-        "test_type" => 'eid',
-        "attachment" => $_POST['pdfFile1'],
-        "samples" => $_POST['sample'],
-        "status" => "pending",
-     );
+     $tempMailData = ["to_mail" => $_POST['toEmail'], "subject" => $_POST['subject'], "text_message" => $_POST['message'], "report_email" => $_POST['reportEmail'], "test_type" => 'eid', "attachment" => $_POST['pdfFile1'], "samples" => $_POST['sample'], "status" => "pending"];
 
      $storeMail = $db->insert('temp_mail',$tempMailData);
 

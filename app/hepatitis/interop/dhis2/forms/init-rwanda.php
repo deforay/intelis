@@ -18,14 +18,14 @@ try {
     $instanceId = 'dhis2';
 
 
-    $initOptionSets = array(
+    $initOptionSets = [
         //'province' => 'LqaKTLJFf4H',
         //'district' => 'HGTWO3xvXRX',
         //'socialStatus' => 'cNhaGfDzbUc',
         'vlTestReasons' => 'zgKhu7dBYJm',
         //'gender' => 'CFbcYp2biob',
         'testingLabs' => 'qrroYEzTQd3',
-    );
+    ];
 
     $_SESSION['DHIS2_HEP_PROVINCES'] = [];
     $_SESSION['DHIS2_HEP_DISTRICTS'] = [];
@@ -46,13 +46,13 @@ try {
             $options = Items::fromString($responseBody, ['pointer' => '/options', 'decoder' => new ExtJsonDecoder(true)]);
 
             foreach ($options as $option) {
-                if ($t == 'province') {
+                if ($t === 'province') {
                     $_SESSION['DHIS2_HEP_PROVINCES'][$option['code']] = $option['name'];
-                } elseif ($t == 'district') {
+                } elseif ($t === 'district') {
                     $_SESSION['DHIS2_HEP_DISTRICTS'][$option['code']] = $option['name'];
-                } elseif ($t == 'vlTestReasons') {
+                } elseif ($t === 'vlTestReasons') {
                     $_SESSION['DHIS2_VL_TEST_REASONS'][$option['code']] = $option['name'];
-                } elseif ($t == 'testingLabs') {
+                } elseif ($t === 'testingLabs') {
                     $facilityData = [
                         'facility_name' => $option['name'],
                         'vlsm_instance_id' => $instanceId, // Ensure $instanceId is defined
@@ -111,25 +111,13 @@ try {
             // $db->orWhere("facility_name", $facility['name']);
             // $facilityResult = $db->getOne("facility_details");
 
-            $facilityData = array(
-                'facility_name' => $facility['name'],
-                'vlsm_instance_id' => $instanceId,
-                'other_id' => $facility['id'],
-                'facility_type' => 1,
-                'test_type' => 'hepatitis',
-                'updated_datetime' => DateUtility::getCurrentDateTime(),
-                'status' => 'active'
-            );
-            $updateColumns = array("other_id", "updated_datetime");
+            $facilityData = ['facility_name' => $facility['name'], 'vlsm_instance_id' => $instanceId, 'other_id' => $facility['id'], 'facility_type' => 1, 'test_type' => 'hepatitis', 'updated_datetime' => DateUtility::getCurrentDateTime(), 'status' => 'active'];
+            $updateColumns = ["other_id", "updated_datetime"];
             $db->upsert('facility_details', $facilityData, $updateColumns);
             $id = $db->getInsertId();
 
             if ($id > 0) {
-                $dataTest = array(
-                    'test_type' => 'hepatitis',
-                    'facility_id' => $id,
-                    "updated_datetime" => DateUtility::getCurrentDateTime()
-                );
+                $dataTest = ['test_type' => 'hepatitis', 'facility_id' => $id, "updated_datetime" => DateUtility::getCurrentDateTime()];
                 $db->upsert('health_facilities', $dataTest);
             }
         }

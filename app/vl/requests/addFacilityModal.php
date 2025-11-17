@@ -21,24 +21,9 @@ $_GET = _sanitizeInput($request->getQueryParams());
 
 
 $type = $_GET['type'];
-if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != "" && trim((string) $_POST['facilityCode']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== "" && trim((string) $_POST['facilityCode']) !== '') {
   $tableName = "facility_details";
-  $data = array(
-    'facility_name' => $_POST['facilityName'],
-    'facility_code' => $_POST['facilityCode'],
-    'vlsm_instance_id' => $_SESSION['instanceId'],
-    'other_id' => $_POST['otherId'],
-    'facility_mobile_numbers' => $_POST['phoneNo'],
-    'address' => $_POST['address'],
-    'country' => $_POST['country'],
-    'facility_state' => $_POST['state'],
-    'facility_district' => $_POST['district'],
-    'facility_hub_name' => $_POST['hubName'],
-    'facility_emails' => $_POST['email'],
-    'contact_person' => $_POST['contactPerson'],
-    'facility_type' => $_POST['facilityType'],
-    'status' => 'active'
-  );
+  $data = ['facility_name' => $_POST['facilityName'], 'facility_code' => $_POST['facilityCode'], 'vlsm_instance_id' => $_SESSION['instanceId'], 'other_id' => $_POST['otherId'], 'facility_mobile_numbers' => $_POST['phoneNo'], 'address' => $_POST['address'], 'country' => $_POST['country'], 'facility_state' => $_POST['state'], 'facility_district' => $_POST['district'], 'facility_hub_name' => $_POST['hubName'], 'facility_emails' => $_POST['email'], 'contact_person' => $_POST['contactPerson'], 'facility_type' => $_POST['facilityType'], 'status' => 'active'];
   //print_r($data);die;
   $db->insert($tableName, $data);
 ?>

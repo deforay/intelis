@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -13,12 +14,12 @@ use App\Services\TestRequestsService;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 if (empty($_POST['testingLab']) || 0 === (int) $_POST['testingLab']) {
-    $_SESSION['alertMsg'] = _translate("Please select the Testing lab", true);;
+    $_SESSION['alertMsg'] = _translate("Please select the Testing lab", true);
     header("Location:/specimen-referral-manifest/edit-manifest.php?t=" . ($_POST['module']));
 }
 
@@ -39,7 +40,7 @@ $packageTable = "specimen_manifests";
 try {
     $db->beginTransaction();
     $selectedSamples = MiscUtility::desqid($_POST['selectedSample'], returnArray: true);
-    if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "" && !empty($selectedSamples)) {
+    if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) !== "" && !empty($selectedSamples)) {
 
         // clear out existing samples from this manifest first
         $currentDateTime = DateUtility::getCurrentDateTime();
@@ -70,7 +71,7 @@ try {
         $previousData = $db->getOne($packageTable);
 
         //echo "<pre>"; print_r($previousData); die;
-        $existingChangeReasons = json_decode($previousData['manifest_change_history'], true);
+        $existingChangeReasons = json_decode((string) $previousData['manifest_change_history'], true);
         // echo "<pre>"; print_r($existingChangeReasons); die;
 
 

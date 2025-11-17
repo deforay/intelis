@@ -1,7 +1,8 @@
 <?php
 
 // this file is included in /hepatitis/interop/dhis2/hepatitis-send.php
-
+use GuzzleHttp\Psr7\Response;
+use const SAMPLE_STATUS\ACCEPTED;
 use App\Interop\Dhis2;
 use App\Services\DatabaseService;
 use App\Services\HepatitisService;
@@ -26,7 +27,7 @@ $query = "SELECT hep.*, fd.facility_name, fd.other_id
           LEFT JOIN facility_details as fd ON hep.facility_id = fd.facility_id
           WHERE (hep.source_of_request LIKE 'dhis2' OR hep.unique_id like 'dhis2%')
           AND (hep.result_sent_to_source is null or hep.result_sent_to_source NOT LIKE 'sent')
-          AND hep.result_status = " . SAMPLE_STATUS\ACCEPTED . " LIMIT 100";
+          AND hep.result_status = " . ACCEPTED . " LIMIT 100";
 $formResults = $db->rawQuery($query);
 $counter = 0;
 
@@ -54,11 +55,7 @@ foreach ($formResults as $row) {
     'SVR12 HCV VL - Second Line' => 'PE0MBFfqSSF',
   ];
 
-  if (!empty($row['reason_for_vl_test'])) {
-    $pStage = $programStages[$row['reason_for_vl_test']];
-  } else {
-    $pStage = 'KPBuhvFV5bK';
-  }
+  $pStage = empty($row['reason_for_vl_test']) ? 'KPBuhvFV5bK' : $programStages[$row['reason_for_vl_test']];
 
   $urlData = [];
   $urlData[] = "trackedEntityInstance=$trackedEntityInstance";
@@ -106,7 +103,7 @@ foreach ($formResults as $row) {
 
   $dataValues = [];
 
-  $row['sample_code'] = $row['sample_code'] . (!empty($row['remote_sample_code']) ? '/' . $row['remote_sample_code'] : '');
+  $row['sample_code'] .= empty($row['remote_sample_code']) ? '' : '/' . $row['remote_sample_code'];
 
   if ($row['reason_for_vl_test'] == 'Initial HBV VL') {
     if (
@@ -116,11 +113,7 @@ foreach ($formResults as $row) {
       $row['hbv_vl_count'] = 10;
     }
 
-    if ($row['hbv_vl_count'] > 20) {
-      $interpretaion = 'Detected';
-    } else {
-      $interpretaion = 'Not Detected';
-    }
+    $interpretaion = $row['hbv_vl_count'] > 20 ? 'Detected' : 'Not Detected';
     $dataValues[$programStagesVariables['labResultHbvVlCount']] = $row['hbv_vl_count'];
     $dataValues[$programStagesVariables['dateHbvResultsAvailable']] = $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hbvSampleId']] = $row['sample_code'];
@@ -133,11 +126,7 @@ foreach ($formResults as $row) {
       $row['hcv_vl_count'] = 10;
     }
 
-    if ($row['hcv_vl_count'] > 20) {
-      $interpretaion = 'Detected';
-    } else {
-      $interpretaion = 'Not Detected';
-    }
+    $interpretaion = $row['hcv_vl_count'] > 20 ? 'Detected' : 'Not Detected';
     $dataValues[$programStagesVariables['labResultHcvVlCount']] = $row['hcv_vl_count'];
     $dataValues[$programStagesVariables['dateHcvResultsAvailable']] = $row['sample_tested_datetime'];
     $dataValues[$programStagesVariables['hcvSampleId']] = $row['sample_code'];
@@ -150,11 +139,7 @@ foreach ($formResults as $row) {
       $row['hbv_vl_count'] = 10;
     }
 
-    if ($row['hbv_vl_count'] > 20) {
-      $interpretaion = 'Detected';
-    } else {
-      $interpretaion = 'Not Detected';
-    }
+    $interpretaion = $row['hbv_vl_count'] > 20 ? 'Detected' : 'Not Detected';
 
     $dataValues[$programStagesVariables['followUpHbvVlCount']] = $row['hbv_vl_count'];
     $dataValues[$programStagesVariables['dateHbvResultsAvailable']] = $row['sample_tested_datetime'];
@@ -169,11 +154,7 @@ foreach ($formResults as $row) {
       $row['hcv_vl_count'] = 10;
     }
 
-    if ($row['hcv_vl_count'] > 20) {
-      $interpretaion = 'Detected';
-    } else {
-      $interpretaion = 'Not Detected';
-    }
+    $interpretaion = $row['hcv_vl_count'] > 20 ? 'Detected' : 'Not Detected';
     $dataValues[$programStagesVariables['finalConfirmationHcvVlCount']] = $row['hcv_vl_count'];
     $dataValues[$programStagesVariables['hcvResultInterpretaion']] = $interpretaion;
     $dataValues[$programStagesVariables['sampleCollectionDate']] = $row['sample_collection_date'];
@@ -190,11 +171,7 @@ foreach ($formResults as $row) {
       $row['hcv_vl_count'] = 10;
     }
 
-    if ($row['hcv_vl_count'] > 20) {
-      $interpretaion = 'Detected';
-    } else {
-      $interpretaion = 'Not Detected';
-    }
+    $interpretaion = $row['hcv_vl_count'] > 20 ? 'Detected' : 'Not Detected';
     $dataValues[$programStagesVariables['2LlabResultHcvVlCount']] = $row['hcv_vl_count'];
     $dataValues[$programStagesVariables['2LhcvResultInterpretaion']] = $interpretaion;
     $dataValues[$programStagesVariables['2LsampleTestedDate']] = $row['sample_tested_datetime'];
@@ -202,7 +179,7 @@ foreach ($formResults as $row) {
 
   if (empty($dhis2Response['events']) || count($dhis2Response['events']) == 0) {
     $idGeneratorApi = $dhis2->get("/api/system/id?limit=1");
-    $idGeneratorApi = !empty($idGeneratorApi) ? (string) $idGeneratorApi->getBody() : "";
+    $idGeneratorApi = !$idGeneratorApi instanceof Response ? "" : (string) $idGeneratorApi->getBody();
     $idResponse = (json_decode($idGeneratorApi, true));
     $eventId = $idResponse['codes'][0];
 
@@ -216,15 +193,15 @@ foreach ($formResults as $row) {
       "trackedEntityInstance" => $trackedEntityInstance,
       "dataValues" => []
     ];
-    if (!empty($dataValues)) {
+    if ($dataValues !== []) {
       $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
       $payload = ($eventPayload);
       $response = $dhis2->post("/api/33/events/", $payload);
-      $response = !empty($response) ? (string) $response->getBody() : null;
+      $response = !$response instanceof Response ? null : (string) $response->getBody();
     }
   } else {
     foreach ($dhis2Response['events'] as $eventPayload) {
-      if (!empty($dataValues)) {
+      if ($dataValues !== []) {
         $eventPayload = $dhis2->addDataValuesToEventPayload($eventPayload, $dataValues);
         $payload = ($eventPayload);
         $urlParams = [];
@@ -232,7 +209,7 @@ foreach ($formResults as $row) {
         $urlParams[] = "strategy=UPDATE";
         $urlParams[] = "importStrategy=CREATE_AND_UPDATE";
         $response = $dhis2->post("/api/33/events/", $payload, $urlParams);
-        $response = !empty($response) ? (string) $response->getBody() : null;
+        $response = !$response instanceof Response ? null : (string) $response->getBody();
       }
     }
   }

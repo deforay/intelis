@@ -89,7 +89,7 @@ if ($countryId !== null) {
     generateTranslationFile($countrySpecificTablesToTranslate, APPLICATION_PATH . "/system/translate-strings-country-$countryId.php", $countryId);
 }
 
-function generateTranslationFile($tablesToTranslate, $filePath, $countryId = null)
+function generateTranslationFile($tablesToTranslate, $filePath, $countryId = null): void
 {
     global $db;
 

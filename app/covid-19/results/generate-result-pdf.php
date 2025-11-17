@@ -1,6 +1,14 @@
 <?php
 
 
+use Laminas\Diactoros\ServerRequest;
+use const COUNTRY\SOUTH_SUDAN;
+use const COUNTRY\SIERRA_LEONE;
+use const COUNTRY\DRC;
+use const COUNTRY\CAMEROON;
+use const COUNTRY\PNG;
+use const COUNTRY\WHO;
+use const COUNTRY\RWANDA;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -31,7 +39,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -41,13 +49,13 @@ $systemConfig = array_merge($sc, SYSTEM_CONFIG);
 
 //set mField Array
 $mFieldArray = [];
-if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
+if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) !== '') {
 	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
 }
 
 //set query
 $allQuery = $_SESSION['covid19PrintQuery'];
-if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
+if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 
 	$searchQuery = "SELECT vl.*,f.*,
 				l.facility_name as labName,
@@ -108,22 +116,14 @@ if (isset($_POST['type']) && $_POST['type'] == "qr") {
 
 $countryFormId = (int) $general->getGlobalConfig('vl_form');
 
-$fileArray = array(
-	COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
-	COUNTRY\SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php',
-	COUNTRY\DRC => 'pdf/result-pdf-drc-1.php',
-	COUNTRY\CAMEROON => 'pdf/result-pdf-cameroon.php',
-	COUNTRY\PNG => 'pdf/result-pdf-png.php',
-	COUNTRY\WHO => 'pdf/result-pdf-who.php',
-	COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
-);
+$fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php', DRC => 'pdf/result-pdf-drc-1.php', CAMEROON => 'pdf/result-pdf-cameroon.php', PNG => 'pdf/result-pdf-png.php', WHO => 'pdf/result-pdf-who.php', RWANDA => 'pdf/result-pdf-rwanda.php'];
 
 
 $resultFilename = '';
 if (!empty($requestResult)) {
 
-	$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  time() . '-' . MiscUtility::generateRandomString(6);;
-	MiscUtility::makeDirectory($pathFront);
+	$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  time() . '-' . MiscUtility::generateRandomString(6);
+    MiscUtility::makeDirectory($pathFront);
 	$pages = [];
 	$page = 1;
 	foreach ($requestResult as $result) {
@@ -133,16 +133,16 @@ if (!empty($requestResult)) {
 		} else {
 			$printedTime = DateUtility::getCurrentDateTime();
 		}
-		$expStr = explode(" ", $printedTime);
+		$expStr = explode(" ", (string) $printedTime);
 		$printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
 
 		if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
-			$pData = array('result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+			$pData = ['result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
 			$db->where('covid19_id', $result['covid19_id']);
 			$id = $db->update('form_covid19', $pData);
 		} elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
-			$pData = array('result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+			$pData = ['result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
 			$db->where('covid19_id', $result['covid19_id']);
 			$id = $db->update('form_covid19', $pData);
 		}
@@ -171,16 +171,18 @@ if (!empty($requestResult)) {
 						test_types LIKE '%covid19%' AND
 						signatory_status LIKE 'active'
 						ORDER BY display_order ASC";
-		$signResults = $db->rawQuery($signQuery, array($result['lab_id']));
+		$signResults = $db->rawQuery($signQuery, [$result['lab_id']]);
 		$currentDateTime = DateUtility::getCurrentDateTime();
 		$_SESSION['aliasPage'] = $page;
 		if (!isset($result['labName'])) {
 			$result['labName'] = '';
 		}
 		$draftTextShow = false;
+  //Set watermark text
+  $counter = count($mFieldArray);
 		//Set watermark text
-		for ($m = 0; $m < count($mFieldArray); $m++) {
-			if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) == '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+		for ($m = 0; $m < $counter; $m++) {
+			if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) === '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
 				$draftTextShow = true;
 				break;
 			}
@@ -196,7 +198,7 @@ if (!empty($requestResult)) {
 			require($fileArray[$countryFormId]);
 		}
 	}
-	if (!empty($pages)) {
+	if ($pages !== []) {
 		$resultPdf = new PdfConcatenateHelper();
 		$resultPdf->setFiles($pages);
 		$resultPdf->setPrintHeader(false);

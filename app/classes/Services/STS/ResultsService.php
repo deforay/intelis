@@ -22,7 +22,6 @@ use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 final class ResultsService
 {
-    protected CommonService $commonService;
     protected DatabaseService $db;
     protected string $testType;
     protected string $tableName;
@@ -30,21 +29,16 @@ final class ResultsService
 
     /** @var AbstractTestService $testTypeService */
     protected $testTypeService;
-    protected $usersService;
-    protected $testRequestsService;
     protected $fieldsToRemoveForAcceptedResults = [];
     protected $unwantedColumns = [];
 
-    public function __construct(DatabaseService $db, CommonService $commonService, UsersService $usersService, TestRequestsService $testRequestsService)
+    public function __construct(DatabaseService $db, protected CommonService $commonService, protected UsersService $usersService, protected TestRequestsService $testRequestsService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
-        $this->commonService = $commonService;
-        $this->usersService = $usersService;
-        $this->testRequestsService = $testRequestsService;
     }
 
 
-    private function setTestType($testType)
+    private function setTestType(string $testType): void
     {
         $this->testType = $testType;
         $this->tableName = TestsService::getTestTableName($testType);
@@ -72,7 +66,7 @@ final class ResultsService
     {
         $stats = ['inserted' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => 0];
 
-        if (empty($manifests)) {
+        if ($manifests === []) {
             return $stats;
         }
 
@@ -111,7 +105,7 @@ final class ResultsService
                 $row['test_type']     = $testType; // enforce consistency with the envelope
 
                 // If remote didn't set last_modified_datetime, set now (keeps audit/logical order sane)
-                $row['last_modified_datetime'] = $row['last_modified_datetime'] ?? DateUtility::getCurrentDateTime();
+                $row['last_modified_datetime'] ??= DateUtility::getCurrentDateTime();
 
                 // Keep only columns present locally
                 $incoming = MiscUtility::updateMatchingKeysOnly($localFields, $row);
@@ -250,7 +244,7 @@ final class ResultsService
                         'form_attributes',
                         $resultFromLab['form_attributes'] ?? null
                     );
-                    $resultFromLab['form_attributes'] = !empty($formAttributes) ? $this->db->func($formAttributes) : null;
+                    $resultFromLab['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $this->db->func($formAttributes);
 
 
                     // Now we update/insert the record
@@ -368,8 +362,8 @@ final class ResultsService
                     }
 
                     if ($id !== false && isset($resultFromLab['sample_code'])) {
-                        array_push($sampleCodes, $resultFromLab['sample_code']);
-                        array_push($facilityIds, $resultFromLab['facility_id']);
+                        $sampleCodes[] = $resultFromLab['sample_code'];
+                        $facilityIds[] = $resultFromLab['facility_id'];
                     }
                     $this->db->commitTransaction();
                 } catch (Throwable $e) {

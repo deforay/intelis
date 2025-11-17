@@ -160,8 +160,7 @@ $state = $geolocationService->getProvinces("yes");
 								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _translate('Please choose funding source'); ?>">
 									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 									<?php
-									foreach ($fundingSourceList as $fundingSource) {
-									?>
+									foreach ($fundingSourceList as $fundingSource) { ?>
 										<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
 									<?php } ?>
 								</select>
@@ -171,8 +170,7 @@ $state = $geolocationService->getProvinces("yes");
 								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _translate('Please choose implementing partner'); ?>">
 									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 									<?php
-									foreach ($implementingPartnerList as $implementingPartner) {
-									?>
+									foreach ($implementingPartnerList as $implementingPartner) { ?>
 										<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
 									<?php } ?>
 								</select>
@@ -238,31 +236,31 @@ $state = $geolocationService->getProvinces("yes");
 									</div>
 								<?php } ?>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient ID"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient ID"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient Name"); ?></label> <br>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient Name"); ?></label> <br>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="hcv_vl_count" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("HCV Results"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="hcv_vl_count" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("HCV Results"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="hbv_vl_count" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("HBV Result"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="hbv_vl_count" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("HBV Result"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Status"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Status"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="funding_source" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Funding Source"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="funding_source" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Funding Source"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="implementing_partner" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Implementing Partner"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="implementing_partner" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Implementing Partner"); ?></label>
 								</div>
 							</div>
 						</div>

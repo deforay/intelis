@@ -12,24 +12,19 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $packageTable = "covid19_positive_confirmation_manifest";
 try {
-    if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) != "" && !empty($_POST['sampleCode'])) {
+    if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== "" && !empty($_POST['sampleCode'])) {
         $lastId = $_POST['manifestId'];
         $db->where('manifest_id', $lastId);
-        $db->update($packageTable, array('manifest_status' => $_POST['manifestStatus']));
+        $db->update($packageTable, ['manifest_status' => $_POST['manifestStatus']]);
 
         if ($lastId > 0) {
-            $value = array(
-                'positive_test_manifest_id'   => null,
-                'positive_test_manifest_code' => null
-            );
+            $value = ['positive_test_manifest_id'   => null, 'positive_test_manifest_code' => null];
             $db->where('positive_test_manifest_code', $lastId);
             $db->update('form_covid19', $value);
+            $counter = count($_POST['sampleCode']);
 
-            for ($j = 0; $j < count($_POST['sampleCode']); $j++) {
-                $value = array(
-                    'positive_test_manifest_id'   => $lastId,
-                    'positive_test_manifest_code' => $_POST['manifestCode']
-                );
+            for ($j = 0; $j < $counter; $j++) {
+                $value = ['positive_test_manifest_id'   => $lastId, 'positive_test_manifest_code' => $_POST['manifestCode']];
 
                 $db->where('covid19_id', $_POST['sampleCode'][$j]);
                 $db->update('form_covid19', $value);

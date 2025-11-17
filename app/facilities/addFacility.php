@@ -1,11 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-use App\Services\UsersService;
-
 
 
 require_once APPLICATION_PATH . '/header.php';
@@ -142,12 +141,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												<?php echo _translate("-- Select --"); ?>
 											</option>
 											<?php
-											foreach ($fResult as $type) {
-											?>
+											foreach ($fResult as $type) { ?>
 												<option value="<?php echo $type['facility_type_id']; ?>"><?php echo ($type['facility_type_name']); ?></option>
 											<?php
-											}
-											?>
+											} ?>
 										</select>
 									</div>
 								</div>
@@ -238,7 +235,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										<?php echo _translate("Province/State"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<?php if (sizeof($geoLocationParentArray) > 0) { ?>
+										<?php if (count($geoLocationParentArray) > 0) { ?>
 											<select name="stateId" id="stateId" class="form-control isRequired" title="<?php echo _translate('Please choose province/state'); ?>">
 												<?= $general->generateSelectOptions($geoLocationParentArray, null, _translate("-- Select --")); ?>
 												<option value="other">
@@ -406,7 +403,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							</div>
 							<div class="row labDiv" style="display:none;">
 								<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-									$count = sizeof($reportFormats['vl']); ?>
+									$count = count($reportFormats['vl']); ?>
 									<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 										<div class="form-group">
 											<label for="reportFormat" class="col-lg-4 control-label">
@@ -431,7 +428,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									</div>
 								<?php }
 								if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-									$count = sizeof($reportFormats['eid']); ?>
+									$count = count($reportFormats['eid']); ?>
 									<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 										<div class="form-group">
 											<label for="reportFormat" class="col-lg-4 control-label">
@@ -456,7 +453,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									</div>
 								<?php }
 								if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-									$count = sizeof($reportFormats['covid19']); ?>
+									$count = count($reportFormats['covid19']); ?>
 									<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 										<div class="form-group">
 											<label for="reportFormat" class="col-lg-4 control-label">
@@ -481,7 +478,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									</div>
 								<?php }
 								if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
-									$count = sizeof($reportFormats['hepatitis']); ?>
+									$count = count($reportFormats['hepatitis']); ?>
 									<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 										<div class="form-group">
 											<label for="reportFormat" class="col-lg-4 control-label">
@@ -506,7 +503,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									</div>
 								<?php }
 								if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
-									$count = sizeof($reportFormats['tb']); ?>
+									$count = count($reportFormats['tb']); ?>
 									<div class="col-md-6" style="display:<?php echo ($count > 1) ? 'block' : 'none'; ?>">
 										<div class="form-group">
 											<label for="reportFormat" class="col-lg-4 control-label">

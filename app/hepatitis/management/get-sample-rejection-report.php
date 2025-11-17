@@ -19,8 +19,8 @@ $key = (string) $general->getGlobalConfig('key');
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
 
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'fd.facility_name', 'rsrr.rejection_reason_name'];
 
 if ($general->isStandaloneInstance()) {
     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
@@ -58,7 +58,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -82,20 +82,20 @@ $sQuery = "SELECT vl.*,f.facility_name,s.sample_id,fd.facility_name as labName,r
 $sWhere[] = " vl.is_sample_rejected='yes'";
 $start_date = '';
 $end_date = '';
-if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) != '') {
+if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) !== '') {
     $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
 }
 
-if (isset($_POST['rjtSampleTestDate']) && trim((string) $_POST['rjtSampleTestDate']) != '') {
+if (isset($_POST['rjtSampleTestDate']) && trim((string) $_POST['rjtSampleTestDate']) !== '') {
     $s_c_date = explode("to", (string) $_POST['rjtSampleTestDate']);
 
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+    if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+    if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
         $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
     }
-    if (trim((string) $start_date) == trim((string) $end_date)) {
+    if (trim((string) $start_date) === trim((string) $end_date)) {
         $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
     } else {
         $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
@@ -104,17 +104,17 @@ if (isset($_POST['rjtSampleTestDate']) && trim((string) $_POST['rjtSampleTestDat
 if (isset($_POST['rjtSampleType']) && $_POST['rjtSampleType'] != '') {
     $sWhere[] =  ' s.sample_id = "' . $_POST['rjtSampleType'] . '"';
 }
-if (isset($_POST['rjtState']) && trim((string) $_POST['rjtState']) != '') {
+if (isset($_POST['rjtState']) && trim((string) $_POST['rjtState']) !== '') {
     $sWhere[] = " f.facility_state_id = '" . $_POST['rjtState'] . "' ";
 }
-if (isset($_POST['rjtDistrict']) && trim((string) $_POST['rjtDistrict']) != '') {
+if (isset($_POST['rjtDistrict']) && trim((string) $_POST['rjtDistrict']) !== '') {
     $sWhere[] = " f.facility_district_id = '" . $_POST['rjtDistrict'] . "' ";
 }
 if (isset($_POST['rjtFacilityName']) && $_POST['rjtFacilityName'] != '') {
     $sWhere[] =  ' f.facility_id IN (' . $_POST['rjtFacilityName'] . ')';
 }
 if (isset($_POST['rjtGender']) && $_POST['rjtGender'] != '') {
-    if (trim((string) $_POST['rjtGender']) == "unreported") {
+    if (trim((string) $_POST['rjtGender']) === "unreported") {
         $sWhere[] =  ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
     } else {
         $sWhere[] =  ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['rjtGender'] . '") ';
@@ -134,13 +134,9 @@ if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 
-if (!empty($sWhere)) {
-    $sWhere = ' AND ' . implode(' AND ', $sWhere);
-} else {
-    $sWhere = "";
-}
-$sQuery = $sQuery . $sWhere;
-$sQuery = $sQuery . ' group by vl.hepatitis_id';
+$sWhere = $sWhere === [] ? [] : ' AND ' . implode(' AND ', $sWhere);
+$sQuery .= $sWhere;
+$sQuery .= ' group by vl.hepatitis_id';
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -154,24 +150,15 @@ if (isset($sLimit) && isset($sOffset)) {
 
 $_SESSION['rejectedViralLoadResultCount'] = $resultCount;
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $resultCount,
-    "iTotalDisplayRecords" => $resultCount,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 
 foreach ($rResult as $aRow) {
-    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     } else {
         $aRow['sample_collection_date'] = '';
     }
-    if ($aRow['remote_sample'] == 'yes') {
-        $decrypt = 'remote_sample_code';
-    } else {
-        $decrypt = 'sample_code';
-    }
+    $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
     $patientName = $general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]);
 
     $row = [];

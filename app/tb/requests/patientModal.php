@@ -99,14 +99,7 @@ $pResult = $db->rawQuery($pQuery);
 									$value = $patient['patient_id'] . strtolower((string) $patient['patient_name']) . strtolower((string) $patient['patient_surname']) . $patient['patient_age'] . strtolower((string) $patient['patient_gender']) . strtolower((string) $patient['facility_name']);
 									$artNoList[] = $value;
 									$patientDetails = json_encode(
-										array(
-											"firstname" => ($patient['patient_name']),
-											"lastname" => ($patient['patient_surname']),
-											"gender" => $patient['patient_gender'],
-											"dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']),
-											"age" => $patient['patient_age'],
-											"patient_id" => $patient['patient_id'],
-										)
+										["firstname" => ($patient['patient_name']), "lastname" => ($patient['patient_surname']), "gender" => $patient['patient_gender'], "dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']), "age" => $patient['patient_age'], "patient_id" => $patient['patient_id']]
 									);
 
 								?>

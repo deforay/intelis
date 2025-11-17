@@ -1,7 +1,7 @@
 <?php
 
 // app/specimen-referral-manifest/verify-manifest.php
-
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
@@ -11,7 +11,7 @@ use App\Services\TestRequestsService;
 $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
 
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 

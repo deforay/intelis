@@ -1,5 +1,6 @@
 <?php
 
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -18,8 +19,8 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
-$aColumns = array('vl.sample_tested_datetime', 'f.facility_name');
-$orderColumns = array('vl.sample_tested_datetime', 'f.facility_name');
+$aColumns = ['vl.sample_tested_datetime', 'f.facility_name'];
+$orderColumns = ['vl.sample_tested_datetime', 'f.facility_name'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -52,7 +53,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
+          if ($sWhereSub === "") {
                $sWhereSub .= "(";
           } else {
                $sWhereSub .= " AND (";
@@ -89,45 +90,43 @@ $end_date = '';
 if (!empty($_POST['sampleCollectionDate'])) {
      $s_c_date = explode(" to ", (string) $_POST['sampleCollectionDate']);
 
-     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+     if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
           $start_date = trim($s_c_date[0]) . "-01";
      }
-     if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+     if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
           $end_date = trim($s_c_date[1]) . "-31";
      }
 }
 $sTestDate = '';
 $eTestDate = '';
-if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
      $s_t_date = explode("to", (string) $_POST['sampleTestDate']);
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
+     if (isset($s_t_date[0]) && trim($s_t_date[0]) !== "") {
           $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
      }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
+     if (isset($s_t_date[1]) && trim($s_t_date[1]) !== "") {
           $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
      }
 }
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
      $sWhere = ' WHERE ' . $sWhere;
-     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-          if (trim((string) $sTestDate) == trim((string) $eTestDate)) {
+     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
+          if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
           } else {
                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           }
      }
 } else {
-     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
           $fac = explode(',', (string) $_POST['facilityName']);
           $out = '';
-          for ($s = 0; $s < count($fac); $s++) {
-               if ($out)
-                    $out = $out . ',"' . $fac[$s] . '"';
-               else
-                    $out = '("' . $fac[$s] . '"';
+          $counter = count($fac);
+          for ($s = 0; $s < $counter; $s++) {
+               $out = $out !== '' && $out !== '0' ? $out . ',"' . $fac[$s] . '"' : '("' . $fac[$s] . '"';
           }
-          $out = $out . ')';
+          $out .= ')';
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND vl.lab_id IN ' . $out;
           } else {
@@ -137,7 +136,7 @@ if (!empty($sWhere)) {
           }
      }
 
-     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
           if (isset($setWhr)) {
                $sWhere = $sWhere . ' AND DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
           } else {
@@ -147,10 +146,10 @@ if (!empty($sWhere)) {
           }
      }
 }
-if ($sWhere != '') {
-     $sWhere = $sWhere . ' AND vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+if ($sWhere !== '') {
+     $sWhere = $sWhere . ' AND vl.result!="" AND vl.result_status != ' . RECEIVED_AT_CLINIC;
 } else {
-     $sWhere = $sWhere . ' where vl.result!="" AND vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+     $sWhere = $sWhere . ' where vl.result!="" AND vl.result_status != ' . RECEIVED_AT_CLINIC;
 }
 
 // HAVING COUNT(c2.sid) >= 2)
@@ -159,9 +158,9 @@ $sWhere .= " AND tl.test_type = 'vl'";
 
 $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 if ($_POST['targetType'] == 1) {
-     $sQuery = $sQuery . ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
-} else if ($_POST['targetType'] == 2) {
-     $sQuery = $sQuery . ' HAVING tl.monthly_target < SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
+    $sQuery .= ' HAVING tl.monthly_target > SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
+} elseif ($_POST['targetType'] == 2) {
+    $sQuery .= ' HAVING tl.monthly_target < SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 }
 
 $_SESSION['vlMonitoringThresholdReportQuery'] = $sQuery;
@@ -176,12 +175,12 @@ $aResultTotal = $db->rawQuery($sQuery);
 $iTotal = count($aResultTotal);
 
 
-$output = array(
-     "sEcho" => (int) $_POST['sEcho'],
-     // "iTotalRecords" => $cnt,
-     // "iTotalDisplayRecords" => $iFilteredTotal,
-     "aaData" => []
-);
+$output = [
+    "sEcho" => (int) $_POST['sEcho'],
+    // "iTotalRecords" => $cnt,
+    // "iTotalDisplayRecords" => $iFilteredTotal,
+    "aaData" => [],
+];
 //  print_r($sQuery);die;
 $cnt = 0;
 foreach ($rResult as $rowData) {

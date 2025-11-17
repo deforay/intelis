@@ -30,11 +30,11 @@ $sarr = $general->getSystemConfig();
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery']) != "") {
+if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery']) !== "") {
 
 	$output = [];
 
-	$headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Date specimen Received", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Date specimen collected", "Reason for Test Request", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+	$headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Date specimen Received", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Date specimen collected", "Reason for Test Request", "Date specimen Entered", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released"];
 	if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
 		unset($headings[$key]);
 	}
@@ -68,15 +68,11 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 
 		//set sample rejection
 		$sampleRejection = 'No';
-		if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
 			$sampleRejection = 'Yes';
 		}
 
-		if ($general->isSTSInstance()) {
-			$sampleCode = 'remote_sample_code';
-		} else {
-			$sampleCode = 'sample_code';
-		}
+		$sampleCode = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
 
 		if (!empty($aRow['patient_name'])) {
 			$patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));
@@ -107,7 +103,7 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 			$row[] = $patientFname . " " . $patientLname;
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-		$row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+		$row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) !== '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = ($aRow['patient_gender']);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		$row[] = ($aRow['test_reason_name']);

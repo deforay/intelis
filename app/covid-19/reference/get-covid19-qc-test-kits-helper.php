@@ -5,7 +5,7 @@
 $tableName = "r_covid19_qc_testkits";
 $primaryKey = "testkit_id";
 
-$aColumns = array('testkit_name', 'status');
+$aColumns = ['testkit_name', 'status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -38,7 +38,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -62,7 +62,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM r_covid19_qc_testkits";
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
@@ -91,12 +91,7 @@ $aResultTotal = $db->rawQuery("select COUNT(testkit_id) as total FROM r_covid19_
 $iTotal = $aResultTotal[0]['total'];
 
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $status = '<select class="form-control" name="status[]" id="' . $aRow['testkit_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">

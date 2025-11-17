@@ -3,7 +3,7 @@
 $tableName = "r_eid_test_reasons";
 $primaryKey = "test_reason_id";
 
-$aColumns = array('test_reason_name', 'test_reason_status');
+$aColumns = ['test_reason_name', 'test_reason_status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -36,7 +36,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -59,7 +59,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM $tableName";
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $sWhere = ' where ' . implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }
@@ -90,12 +90,7 @@ $iTotal = $aResultTotal[0]['total'];*/
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $status = '<select class="form-control" name="status[]" id="' . $aRow['test_reason_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['test_reason_status'] . '\')">

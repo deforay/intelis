@@ -1,5 +1,9 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -23,7 +27,7 @@ $tableName = "form_eid";
 $tableName1 = "activity_log";
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
@@ -78,7 +82,7 @@ try {
 	}
 
 
-	if (isset($_POST['newArtRegimen']) && trim((string) $_POST['newArtRegimen']) != "") {
+	if (isset($_POST['newArtRegimen']) && trim((string) $_POST['newArtRegimen']) !== "") {
 		$artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower((string) $_POST['newArtRegimen']) . "' OR art_code='" . (strtolower((string) $_POST['newArtRegimen'])) . "')";
 		$artResult = $db->rawQuery($artQuery);
 		if (!isset($artResult[0]['art_id'])) {
@@ -104,36 +108,36 @@ try {
 
 
 	if (isset($_POST['motherViralLoadCopiesPerMl']) && $_POST['motherViralLoadCopiesPerMl'] != "") {
-		$motherVlResult = $_POST['motherViralLoadCopiesPerMl'];
-	} else if (isset($_POST['motherViralLoadText']) && $_POST['motherViralLoadText'] != "") {
-		$motherVlResult = $_POST['motherViralLoadText'];
-	} else {
+     $motherVlResult = $_POST['motherViralLoadCopiesPerMl'];
+ } elseif (isset($_POST['motherViralLoadText']) && $_POST['motherViralLoadText'] != "") {
+     $motherVlResult = $_POST['motherViralLoadText'];
+ } else {
 		$motherVlResult = null;
 	}
 
 
 
 	if (($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site')) {
-		$status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+		$status = RECEIVED_AT_CLINIC;
 	}
 
 	if (!empty($_POST['oldStatus'])) {
 		$status = $_POST['oldStatus'];
 	}
 
-	if ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
-		$status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+	if ($general->isLISInstance() && $_POST['oldStatus'] == RECEIVED_AT_CLINIC) {
+		$status = RECEIVED_AT_TESTING_LAB;
 	}
 
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
 		$_POST['result'] = null;
-		$status = SAMPLE_STATUS\REJECTED;
+		$status = REJECTED;
 	}
 
-	if ($general->isSTSInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
-		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-	} elseif ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
-		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+	if ($general->isSTSInstance() && $_POST['oldStatus'] == RECEIVED_AT_CLINIC) {
+		$_POST['status'] = RECEIVED_AT_CLINIC;
+	} elseif ($general->isLISInstance() && $_POST['oldStatus'] == RECEIVED_AT_CLINIC) {
+		$_POST['status'] = RECEIVED_AT_TESTING_LAB;
 	}
 	if ($_POST['status'] == '') {
 		$_POST['status'] = $_POST['oldStatus'];
@@ -141,7 +145,7 @@ try {
 
 	$testingPlatform = null;
 	$instrumentId = null;
-	if (isset($_POST['eidPlatform']) && trim((string) $_POST['eidPlatform']) != '') {
+	if (isset($_POST['eidPlatform']) && trim((string) $_POST['eidPlatform']) !== '') {
 		$platForm = explode("##", (string) $_POST['eidPlatform']);
 		$testingPlatform = $platForm[0];
 		$instrumentId = $platForm[1];
@@ -160,8 +164,8 @@ try {
 		'lab_id' => $_POST['labId'] ?? null,
 		'lab_testing_point' => $_POST['labTestingPoint'] ?? null,
 		//'system_patient_code' => $systemPatientCode,
-		'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
-		'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
+		'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') ? base64_decode((string) $_POST['fundingSource']) : null,
+		'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') ? base64_decode((string) $_POST['implementingPartner']) : null,
 		'mother_id' => $_POST['mothersId'] ?? null,
 		'caretaker_contact_consent' => $_POST['caretakerConsentForContact'] ?? null,
 		'caretaker_phone_number' => $_POST['caretakerPhoneNumber'] ?? null,
@@ -299,13 +303,7 @@ try {
 	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
 		$eidData['result_modified'] = "yes";
 
-		$reasonForChangesArr = array(
-			'user' => $_SESSION['userId'] ?? $_POST['userId'],
-			'dateOfChange' => DateUtility::getCurrentDateTime(),
-			'previousResult' => $getPrevResult['result'],
-			'previousResultStatus' => $getPrevResult['result_status'],
-			'reasonForChange' => $_POST['reasonForChanging']
-		);
+		$reasonForChangesArr = ['user' => $_SESSION['userId'] ?? $_POST['userId'], 'dateOfChange' => DateUtility::getCurrentDateTime(), 'previousResult' => $getPrevResult['result'], 'previousResultStatus' => $getPrevResult['result_status'], 'reasonForChange' => $_POST['reasonForChanging']];
 
 		$reasonForChanges = json_encode($reasonForChangesArr);
 	} else {

@@ -14,7 +14,7 @@ final class QueryLoggerUtility
 
     private static function getQueryLogger(): Logger
     {
-        if (self::$queryLogger === null) {
+        if (!self::$queryLogger instanceof Logger) {
             self::$queryLogger = new Logger('query_logger');
 
             try {
@@ -42,7 +42,7 @@ final class QueryLoggerUtility
             $query = substr($query, 0, $maxLength) . '... [truncated]';
         }
         $context = [];
-        if (!empty($bindings)) {
+        if ($bindings !== []) {
             $context['bindings']  = $bindings;
         }
         if ($executionTime !== null) {

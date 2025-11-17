@@ -28,9 +28,7 @@ $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
 
-$fileArray = array(
-    7 => 'forms/send-rwanda.php'
-);
+$fileArray = [7 => 'forms/send-rwanda.php'];
 
 
 require_once($fileArray[$arr['vl_form']]);

@@ -47,10 +47,10 @@ if (!empty($sWhere)) {
     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . ' GROUP BY r.result_id';
+$sQuery .= ' GROUP BY r.result_id';
 
 if (!empty($sOrder) && $sOrder !== '') {
-    $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+    $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
     $sQuery = "$sQuery ORDER BY $sOrder";
 }
 

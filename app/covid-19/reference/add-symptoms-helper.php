@@ -23,14 +23,9 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_covid19_symptoms";
 
 try {
-	if (isset($_POST['symptomsName']) && trim((string) $_POST['symptomsName']) != "") {
+	if (isset($_POST['symptomsName']) && trim((string) $_POST['symptomsName']) !== "") {
 
-		$data = array(
-			'symptom_name' => $_POST['symptomsName'],
-			'parent_symptom' => $_POST['parentSymptom'],
-			'symptom_status' => $_POST['symptomsStatus'],
-			'updated_datetime' => DateUtility::getCurrentDateTime(),
-		);
+		$data = ['symptom_name' => $_POST['symptomsName'], 'parent_symptom' => $_POST['parentSymptom'], 'symptom_status' => $_POST['symptomsStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
 
 		$db->insert($tableName, $data);
 		$lastId = $db->getInsertId();

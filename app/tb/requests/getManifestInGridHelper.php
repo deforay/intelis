@@ -16,8 +16,8 @@ $tableName = "form_tb";
 $primaryKey = "tb_id";
 
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.last_modified_datetime', 'vl.sample_collection_date', 'b.batch_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name'];
+$orderColumns = ['vl.sample_code', 'vl.last_modified_datetime', 'vl.sample_collection_date', 'b.batch_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
 if ($general->isSTSInstance()) {
      $sampleCode = 'remote_sample_code';
 } elseif ($general->isStandaloneInstance()) {
@@ -28,7 +28,7 @@ if ($general->isSTSInstance()) {
 
 
 // Clear the query count cache for this manifest
-if (session_status() === PHP_SESSION_ACTIVE && !empty($_POST['manifestCode'])) {
+if (CommonService::isSessionActive() && !empty($_POST['manifestCode'])) {
      unset($_SESSION['queryCounters']);
 }
 
@@ -91,7 +91,7 @@ if (!empty($sWhere)) {
 }
 
 if (!empty($sOrder) && $sOrder !== '') {
-     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+     $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
      $sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 

@@ -21,10 +21,10 @@ $arr = $general->getGlobalConfig();
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['rejectedViralLoadResult']) != "") {
+if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['rejectedViralLoadResult']) !== "") {
 
      $output = [];
-     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action");
+     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
@@ -34,16 +34,12 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $row = [];
           //sample collecion date
           $sampleCollectionDate = '';
-          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $aRow['sample_collection_date']);
                $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
           }
 
-          if ($aRow['remote_sample'] == 'yes') {
-               $decrypt = 'remote_sample_code';
-          } else {
-               $decrypt = 'sample_code';
-          }
+          $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
 
           $patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]));
 
@@ -75,21 +71,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $excel = new Spreadsheet();
           $sheet = $excel->getActiveSheet();
 
-          $styleArray = array(
-               'font' => array(
-                    'bold' => true,
-                    'size' => '13',
-               ),
-               'alignment' => array(
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-               ),
-               'borders' => array(
-                    'outline' => array(
-                         'style' => Border::BORDER_THIN,
-                    ),
-               )
-          );
+          $styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
 
           $sheet->mergeCells('A1:AE1');
           $sheet->getStyle('A3:I3')->applyFromArray($styleArray);

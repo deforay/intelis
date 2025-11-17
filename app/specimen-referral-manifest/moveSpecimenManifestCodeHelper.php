@@ -6,10 +6,12 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -23,18 +25,21 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 try {
 
     $db->beginTransaction();
 
-    if (isset($_POST['assignLab']) && trim((string) $_POST['assignLab']) != "" && !empty($_POST['packageCode'])) {
+    if (isset($_POST['assignLab']) && trim((string) $_POST['assignLab']) !== "" && !empty($_POST['packageCode'])) {
 
 
         $lastId = $_POST['packageId'];
 
         $db->where('manifest_code', $packageCode);
         $previousData = $db->getOne("specimen_manifests");
-        $oldReason = json_decode($previousData['manifest_change_history']);
+        $oldReason = json_decode((string) $previousData['manifest_change_history']);
 
         $newReason = ['reason' => $_POST['reasonForChange'], 'changedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
         $oldReason[] = $newReason;
@@ -48,7 +53,7 @@ try {
         ];
         /* Update Package details table */
         $db->where('manifest_code IN(' . implode(",", $_POST['packageCode']) . ')');
-        $db->update('specimen_manifests', array("lab_id" => $_POST['assignLab'], "manifest_change_history" => json_encode($oldReason)));
+        $db->update('specimen_manifests', ["lab_id" => $_POST['assignLab'], "manifest_change_history" => json_encode($oldReason)]);
 
         /* Update test types */
         $db->where('sample_package_code IN(' . implode(",", $_POST['packageCode']) . ')');
@@ -59,7 +64,7 @@ try {
 
     //Add event log
     $eventType = 'move-manifest';
-    $action = $_SESSION['userName'] . ' moved Sample Manifest ' . $_POST['packageCode'] . ' to lab ' . $_POST['assignLab'] . ' from lab ' . $_POST['testingLab'];
+    $action = $_SESSION['userName'] . ' moved Sample Manifest(s) ' . implode(", ", $_POST['packageCode']) . ' from ' . $facilitiesService->getFacilityName($_POST['testingLab']) . ' to ' . $facilitiesService->getFacilityName($_POST['assignLab']);
     $resource = 'specimen-manifest';
 
     $general->activityLog($eventType, $action, $resource);

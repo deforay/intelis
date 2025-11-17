@@ -78,7 +78,7 @@ $patienZones["other"] = "Other";
 
 $generateAutomatedPatientCode = $general->getGlobalConfig('covid19_generate_patient_code');
 $generateAutomatedPatientCode = 'yes';
-if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'yes') {
+if ($generateAutomatedPatientCode !== '' && $generateAutomatedPatientCode !== '0' && $generateAutomatedPatientCode === 'yes') {
     $patientCodePrefix = $general->getGlobalConfig('covid19_patient_code_prefix');
     $generateAutomatedPatientCode = true;
 } else {
@@ -731,7 +731,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <tr>
                                             <th scope="row"><label for="">Date de réception de l'échantillon </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Veuillez saisir la date de réception de l'échantillon" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?>onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Veuillez saisir la date de réception de l'échantillon" <?php echo (isset($labFieldDisabled) && trim((string) $labFieldDisabled) !== '') ? $labFieldDisabled : ''; ?>onchange="" style="width:100%;" />
                                             </td>
                                             <th scope="row"><label for="sampleCondition">Condition de l'échantillon</label></th>
                                             <td>

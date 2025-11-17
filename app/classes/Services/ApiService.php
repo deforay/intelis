@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use GuzzleHttp\Promise\PromiseInterface;
+use Psr\Http\Message\ResponseInterface;
 use Exception;
 use Throwable;
 use GuzzleHttp\Client;
@@ -17,23 +19,11 @@ use Psr\Http\Message\ServerRequestInterface;
 final class ApiService
 {
     protected ?Client $client = null;
-    protected int $maxRetries;
-    protected int $delayMultiplier;
-    protected float $jitterFactor;
-    protected int $maxRetryDelay;
     protected ?string $bearerToken = null;
     protected array $headers = [];
 
-    protected CommonService $commonService;
-
-    public function __construct(CommonService $commonService, ?Client $client = null, int $maxRetries = 3, int $delayMultiplier = 1000, float $jitterFactor = 0.2, int $maxRetryDelay = 10000)
+    public function __construct(protected CommonService $commonService, ?Client $client = null, protected int $maxRetries = 3, protected int $delayMultiplier = 1000, protected float $jitterFactor = 0.2, protected int $maxRetryDelay = 10000)
     {
-        $this->maxRetries = $maxRetries;
-        $this->delayMultiplier = $delayMultiplier;
-        $this->jitterFactor = $jitterFactor;
-        $this->maxRetryDelay = $maxRetryDelay;
-        $this->commonService = $commonService;
-
         // Use the injected client if provided, or create a new one
         $this->client = $client ?? $this->createApiClient();
 
@@ -94,7 +84,7 @@ final class ApiService
 
     private function retryDecider()
     {
-        return function ($retries, $request, $response, $exception) {
+        return function ($retries, $request, $response, $exception): bool {
             if ($retries >= $this->maxRetries) {
                 return false;
             }
@@ -127,13 +117,15 @@ final class ApiService
                 'X-Request-ID' => MiscUtility::generateULID(),
                 'X-Timestamp' => time()
             ];
-            $headers = !empty($this->headers) ? array_merge($headers, $this->headers) : $headers;
-            if (!empty($this->bearerToken)) $headers['Authorization'] = "Bearer $this->bearerToken";
+            $headers = $this->headers === [] ? $headers : array_merge($headers, $this->headers);
+            if ($this->bearerToken !== null && $this->bearerToken !== '' && $this->bearerToken !== '0') {
+                $headers['Authorization'] = "Bearer $this->bearerToken";
+            }
 
             try {
                 $res = $this->client->head($url, [RequestOptions::HEADERS => $headers]);
                 return $res->getStatusCode() === 200;
-            } catch (Throwable $e) {
+            } catch (Throwable) {
                 $res = $this->client->get($url, [RequestOptions::HEADERS => $headers]);
                 return $res->getStatusCode() === 200;
             }
@@ -144,7 +136,7 @@ final class ApiService
     }
 
 
-    public function post($url, $payload, $gzip = false, $returnWithStatusCode = false, $async = false): array|string|null|\GuzzleHttp\Promise\PromiseInterface
+    public function post($url, $payload, $gzip = false, $returnWithStatusCode = false, $async = false): array|string|null|PromiseInterface
     {
         $options = [
             RequestOptions::HEADERS => [
@@ -154,12 +146,12 @@ final class ApiService
             ],
         ];
 
-        if (!empty($this->headers)) {
+        if ($this->headers !== []) {
             $options[RequestOptions::HEADERS] = array_merge($options[RequestOptions::HEADERS], $this->headers);
         }
 
         // Add Authorization header if a bearer token is provided
-        if (!empty($this->bearerToken) && $this->bearerToken != '') {
+        if ($this->bearerToken !== null && $this->bearerToken !== '' && $this->bearerToken !== '0' && $this->bearerToken !== '') {
             $options[RequestOptions::HEADERS]['Authorization'] = "Bearer $this->bearerToken";
         }
 
@@ -169,8 +161,8 @@ final class ApiService
             $payload = JsonUtility::isJSON($payload) ? $payload : JsonUtility::encodeUtf8Json($payload);
 
             // 1 KB threshold; can tune if needed
-            if ($gzip && strlen($payload) > 1024 && !str_starts_with($payload, "\x1f\x8b")) {
-                $payload = gzencode($payload);
+            if ($gzip && strlen((string) $payload) > 1024 && !str_starts_with((string) $payload, "\x1f\x8b")) {
+                $payload = gzencode((string) $payload);
                 $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
             }
 
@@ -203,7 +195,7 @@ final class ApiService
 
             if ($returnWithStatusCode) {
                 $returnPayload = [
-                    'httpStatusCode' => $e->getResponse() ? $e->getResponse()->getStatusCode() : 500,
+                    'httpStatusCode' => $e->getResponse() instanceof ResponseInterface ? $e->getResponse()->getStatusCode() : 500,
                     'body'           => $responseBody,
                 ];
             } else {
@@ -226,18 +218,14 @@ final class ApiService
 
         try {
 
-            if ($gzip) {
-                $fileContents = gzencode(file_get_contents($jsonFilePath));
-            } else {
-                $fileContents = fopen($jsonFilePath, 'r');
-            }
+            $fileContents = $gzip ? gzencode(file_get_contents($jsonFilePath)) : fopen($jsonFilePath, 'r');
 
             // Prepare file content for multipart
             $multipartData = [
                 [
                     'name'     => $fileName,
                     'contents' => $fileContents,                          // gzencoded bytes
-                    'filename' => basename($jsonFilePath) . ($gzip ? '.gz' : ''),
+                    'filename' => basename((string) $jsonFilePath) . ($gzip ? '.gz' : ''),
                     'headers'  => [
                         'Content-Type'     => 'application/json',
                         'Content-Encoding' => $gzip ? 'gzip' : 'identity',
@@ -271,12 +259,12 @@ final class ApiService
                 RequestOptions::HEADERS   => $headers
             ];
 
-            if (!empty($this->headers)) {
+            if ($this->headers !== []) {
                 $options[RequestOptions::HEADERS] = array_merge($options[RequestOptions::HEADERS], $this->headers);
             }
 
             // Add Authorization header if a bearer token is provided
-            if (!empty($this->bearerToken) && $this->bearerToken != '') {
+            if ($this->bearerToken !== null && $this->bearerToken !== '' && $this->bearerToken !== '0' && $this->bearerToken !== '') {
                 $options[RequestOptions::HEADERS]['Authorization'] = "Bearer $this->bearerToken";
             }
 
@@ -287,7 +275,7 @@ final class ApiService
         } catch (RequestException $e) {
             // Extract the response body from the exception, if available
             $responseBody = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null;
-            $errorCode = $e->getResponse() ? $e->getResponse()->getStatusCode() : 500;
+            $errorCode = $e->getResponse() instanceof ResponseInterface ? $e->getResponse()->getStatusCode() : 500;
             // Log the error along with the response body
             $this->logError($e, "Unable to post to $url. Server responded with $errorCode : " . ($responseBody ?? 'No response body'));
 
@@ -299,7 +287,7 @@ final class ApiService
         return $apiResponse;
     }
 
-    public function getJsonFromRequest(ServerRequestInterface $request, bool $decode = false)
+    public function getJsonFromRequest(ServerRequestInterface $request, bool $decode = false): string|array
     {
         try {
             $encoding = strtolower(trim($request->getHeaderLine('Content-Encoding')));
@@ -337,78 +325,132 @@ final class ApiService
     /**
      * Download a file from a given URL and save it to a specified path.
      *
-     * @param string $fileUrl The URL of the file to download.
-     * @param string $downloadPath The local path with filename where the file should be saved.
-     * @param array $allowedFileTypes An array of allowed file types.
-     * @param string $safePath The base path to ensure the download path is within the allowed directory.
-     * @return bool Returns true on successful download, false otherwise.
+     * @param string $fileUrl         The URL of the file to download.
+     * @param string $downloadPath    The local path with filename where the file should be saved.
+     * @param array  $allowedFileTypes List of allowed file extensions (e.g. ['png','pdf']).
+     * @param string $safePath        Base directory that $downloadPath must reside under.
+     * @return int|bool               Number of bytes written on success, false on error.
      */
     public function downloadFile(string $fileUrl, string $downloadPath, array $allowedFileTypes = [], $safePath = ROOT_PATH): int|bool
     {
 
-        // Validate the URL
         if (!filter_var($fileUrl, FILTER_VALIDATE_URL)) {
             $this->logError(new Exception("Invalid URL"), "Invalid URL provided for downloading");
             return false;
         }
+
+        $urlParts = parse_url($fileUrl);
+        if (!is_array($urlParts) || empty($urlParts['host']) || empty($urlParts['scheme']) || !in_array(strtolower($urlParts['scheme']), ['http', 'https'], true)) {
+            $this->logError(new Exception("Invalid URL"), "Unsupported or malformed URL provided for downloading");
+            return false;
+        }
+
         $downloadFolder = dirname($downloadPath);
         $fileName = basename($downloadPath);
-        // Check if $fileName is null or empty
-        if (empty($fileName)) {
-            $fileName = basename($fileUrl);
+        if ($fileName === '' || $fileName === '0') {
+            $fileName = basename($urlParts['path'] ?? '');
         }
-        // Normalize the safePath and downloadPath to ensure both are absolute and resolved
-        $resolvedSafePath = realpath($safePath);
-        $resolvedDownloadPath = realpath($downloadFolder);
+        if ($fileName === '' || $fileName === '0') {
+            $this->logError(new Exception("Invalid filename"), "Unable to determine filename for downloaded file");
+            return false;
+        }
 
-        // If realpath returns false, the path does not exist
-        if (!$resolvedDownloadPath) {
-            // Try creating the directory or handling the error as needed
-            if (!MiscUtility::makeDirectory($downloadFolder) && !is_dir($downloadFolder)) {
-                $this->logError(new Exception("Invalid path"), "The download path cannot be created or does not exist");
+        if (!MiscUtility::makeDirectory($downloadFolder) && !is_dir($downloadFolder)) {
+            $this->logError(new Exception("Invalid path"), "The download path cannot be created or does not exist");
+            return false;
+        }
+
+        $resolvedSafePath = realpath($safePath);
+        if ($resolvedSafePath === false) {
+            if (!MiscUtility::makeDirectory($safePath) && !is_dir($safePath)) {
+                $this->logError(new Exception("Invalid path"), "The safe path cannot be resolved");
                 return false;
             }
-            $resolvedDownloadPath = realpath($downloadFolder);
+            $resolvedSafePath = realpath($safePath);
         }
 
-        // Ensure the downloadPath starts with the resolved safePath
-        if ($resolvedDownloadPath === false || !str_starts_with($resolvedDownloadPath, $resolvedSafePath)) {
+        $resolvedDownloadPath = realpath($downloadFolder);
+        if ($resolvedDownloadPath === false) {
+            $this->logError(new Exception("Invalid path"), "Unable to resolve download directory");
+            return false;
+        }
+
+        $normalizedSafePath = rtrim($resolvedSafePath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $normalizedDownloadPath = rtrim($resolvedDownloadPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        if (strncmp($normalizedDownloadPath, $normalizedSafePath, strlen($normalizedSafePath)) !== 0) {
             $this->logError(new Exception("Invalid path"), "The download path is not within the allowed directory");
             return false;
         }
 
-        try {
-            // Use Guzzle to download the file
-            $response = $this->client->request('GET', $fileUrl, ['stream' => true]);
+        $targetFile = $resolvedDownloadPath . DIRECTORY_SEPARATOR . $fileName;
+        $allowedMimeTypes = [];
+        if ($allowedFileTypes !== []) {
+            $extension = strtolower((string) pathinfo($fileName, PATHINFO_EXTENSION));
+            if ($extension === '' || !in_array($extension, $allowedFileTypes, true)) {
+                $this->logError(new Exception("Invalid file type"), "File extension '$extension' is not permitted");
+                return false;
+            }
+            $allowedMimeTypes = MiscUtility::getMimeTypeStrings($allowedFileTypes);
+        }
 
-            // Validate response status
+        $fileResource = null;
+        try {
+            $response = $this->client->request('GET', $fileUrl, ['stream' => true]);
             if ($response->getStatusCode() !== 200) {
                 $this->logError(new Exception("HTTP error " . $response->getStatusCode()), "Failed to download file from $fileUrl");
                 return false;
             }
 
-            // Check MIME type if allowed file types are specified
-            if (!empty($allowedFileTypes)) {
-                $contentType = $response->getHeaderLine('Content-Type');
-                $allowedMimeTypes = MiscUtility::getMimeTypeStrings($allowedFileTypes);
-                if (!in_array($contentType, $allowedMimeTypes)) {
-                    $this->logError(new Exception("Invalid file type"), "The file type '$contentType' is not allowed.");
+            if ($allowedMimeTypes !== []) {
+                $contentType = strtolower((string) $response->getHeaderLine('Content-Type'));
+                if ($contentType !== '' && !in_array($contentType, $allowedMimeTypes, true)) {
+                    $this->logError(new Exception("Invalid file type"), "The reported file type '$contentType' is not allowed.");
                     return false;
                 }
             }
 
-            // Save the file
-            $fileResource = fopen($resolvedDownloadPath . DIRECTORY_SEPARATOR . $fileName, 'wb');
-            if ($fileResource === false || stream_copy_to_stream($response->getBody()->detach(), $fileResource) === false) {
-                if ($fileResource !== false) {
-                    fclose($fileResource);
-                }
-                $this->logError(new Exception("Failed to save file"), "Unable to save the downloaded file.");
+            $fileResource = fopen($targetFile, 'wb');
+            if ($fileResource === false) {
+                $this->logError(new Exception("Failed to open file"), "Unable to create file at $targetFile");
                 return false;
             }
+
+            $bodyStream = $response->getBody();
+            $bytesWritten = 0;
+            while (!$bodyStream->eof()) {
+                $chunk = $bodyStream->read(8192);
+                if ($chunk === '') {
+                    break;
+                }
+                $written = fwrite($fileResource, $chunk);
+                if ($written === false) {
+                    throw new Exception("Failed to write chunk to disk");
+                }
+                $bytesWritten += $written;
+            }
+
             fclose($fileResource);
-            return true;
+            $fileResource = null;
+
+            if ($bytesWritten <= 0) {
+                throw new Exception("No data was written to disk");
+            }
+
+            if ($allowedMimeTypes !== []) {
+                $detectedMimeType = mime_content_type($targetFile) ?: '';
+                if ($detectedMimeType === '' || !in_array(strtolower($detectedMimeType), $allowedMimeTypes, true)) {
+                    throw new Exception("Downloaded file MIME type '$detectedMimeType' is not allowed.");
+                }
+            }
+
+            return $bytesWritten;
         } catch (Throwable $e) {
+            if (is_resource($fileResource)) {
+                fclose($fileResource);
+            }
+            if (is_file($targetFile)) {
+                MiscUtility::deleteFile($targetFile);
+            }
             $this->logError($e, "Unable to download file from $fileUrl");
             return false;
         }
@@ -469,7 +511,7 @@ final class ApiService
     public function getHeader(ServerRequestInterface $request, string $key)
     {
         $headerValues = $request->getHeader($key);
-        if (empty($headerValues)) {
+        if ($headerValues === []) {
             return null;
         } elseif (count($headerValues) === 1) {
             return $headerValues[0];

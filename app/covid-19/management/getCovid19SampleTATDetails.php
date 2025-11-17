@@ -1,5 +1,6 @@
 <?php
 
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -16,13 +17,9 @@ $whereCondition = '';
 $tableName = "form_covid19";
 $primaryKey = "covid19_id";
 
-if ($general->isSTSInstance()) {
-	$sampleCode = 'remote_sample_code';
-} else {
-	$sampleCode = 'sample_code';
-}
-$aColumns = array('vl.' . $sampleCode, "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_mail_datetime,'%d-%b-%Y')");
-$orderColumns = array('vl.' . $sampleCode, 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_mail_datetime');
+$sampleCode = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
+$aColumns = ['vl.' . $sampleCode, "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_mail_datetime,'%d-%b-%Y')"];
+$orderColumns = ['vl.' . $sampleCode, 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_mail_datetime'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -55,7 +52,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 	$searchArray = explode(" ", (string) $_POST['sSearch']);
 	$sWhereSub = "";
 	foreach ($searchArray as $search) {
-		if ($sWhereSub == "") {
+		if ($sWhereSub === "") {
 			$sWhereSub .= "(";
 		} else {
 			$sWhereSub .= " AND (";
@@ -99,7 +96,7 @@ if ($general->isSTSInstance()) {
 		$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 	}
 } else {
-	$sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+	$sWhere[] = " vl.result_status != " . RECEIVED_AT_CLINIC;
 }
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
@@ -107,43 +104,43 @@ if ($general->isSTSInstance()) {
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
 $seWhere = [];
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
 	$seWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-	if (trim((string) $start_date) == trim((string) $end_date)) {
+	if (trim((string) $start_date) === trim((string) $end_date)) {
 		$seWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
 	} else {
 		$seWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
 	}
 }
-if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-	if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
+if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
+	if (trim((string) $labStartDate) === trim((string) $labEndDate)) {
 		$seWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
 	} else {
 		$seWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEndDate . '"';
 	}
 }
 
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-	if (trim((string) $testedStartDate) == trim((string) $testedEndDate)) {
+if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
+	if (trim((string) $testedStartDate) === trim((string) $testedEndDate)) {
 		$seWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
 	} else {
 		$seWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
 	}
 }
-if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
+if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
 	$seWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
-if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
 	$seWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
 
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
 	$sQuery = $sQuery . ' AND ' . implode(' AND ', $sWhere);
 }
-if (!empty($seWhere)) {
+if ($seWhere !== []) {
 	$sQuery = $sQuery . ' AND ' . implode(' AND ', $seWhere);
 }
 $_SESSION['covid19TATQuery'] = $sQuery;
@@ -160,54 +157,49 @@ $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 $rUser = '';
 if ($general->isSTSInstance()) {
-	$rUser = $rUser . $whereCondition;
+	$rUser .= $whereCondition;
 } else {
-	$rUser = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+	$rUser = " vl.result_status != " . RECEIVED_AT_CLINIC;
 }
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 
-$output = array(
-	"sEcho" => (int) $_POST['sEcho'],
-	"iTotalRecords" => $iTotal,
-	"iTotalDisplayRecords" => $iFilteredTotal,
-	"aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
-	if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
 		$aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 	} else {
 		$aRow['sample_collection_date'] = '';
 	}
-	if (isset($aRow['sample_received_at_lab_datetime']) && trim((string) $aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['sample_received_at_lab_datetime']) && trim((string) $aRow['sample_received_at_lab_datetime']) !== '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 	} else {
 		$aRow['sample_received_at_lab_datetime'] = '';
 	}
-	if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) !== '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
 	} else {
 		$aRow['sample_tested_datetime'] = '';
 	}
-	if (isset($aRow['result_printed_datetime']) && trim((string) $aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['result_printed_datetime']) && trim((string) $aRow['result_printed_datetime']) !== '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['result_printed_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
 	} else {
 		$aRow['result_printed_datetime'] = '';
 	}
-	if (isset($aRow['result_mail_datetime']) && trim((string) $aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['result_mail_datetime']) && trim((string) $aRow['result_mail_datetime']) !== '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['result_mail_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_mail_datetime']);
 	} else {
 		$aRow['result_mail_datetime'] = '';
 	}
-	if (isset($aRow['result_printed_on_sts_datetime']) && trim((string) $aRow['result_printed_on_sts_datetime']) != '' && $aRow['result_printed_on_sts_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['result_printed_on_sts_datetime']) && trim((string) $aRow['result_printed_on_sts_datetime']) !== '' && $aRow['result_printed_on_sts_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['result_printed_on_sts_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime']);
 	} else {
 		$aRow['result_printed_on_sts_datetime'] = '';
 	}
-	if (isset($aRow['result_printed_on_lis_datetime']) && trim((string) $aRow['result_printed_on_lis_datetime']) != '' && $aRow['result_printed_on_lis_datetime'] != '0000-00-00 00:00:00') {
+	if (isset($aRow['result_printed_on_lis_datetime']) && trim((string) $aRow['result_printed_on_lis_datetime']) !== '' && $aRow['result_printed_on_lis_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['result_printed_on_lis_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime']);
 	} else {
 		$aRow['result_printed_on_lis_datetime'] = '';

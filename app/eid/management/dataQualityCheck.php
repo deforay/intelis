@@ -22,8 +22,8 @@ $tableName = "form_eid";
 $primaryKey = "eid_id";
 
 
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.child_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name'];
 if ($general->isStandaloneInstance()) {
      $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
      $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
@@ -60,7 +60,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
+          if ($sWhereSub === "") {
                $sWhereSub .= "(";
           } else {
                $sWhereSub .= " AND (";
@@ -87,27 +87,28 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM form_eid as vl LEFT JOIN facility_d
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim((string) $start_date) == trim((string) $end_date)) {
+     if (trim((string) $start_date) === trim((string) $end_date)) {
           $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
      } else {
           $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
      }
 }
-if (isset($_POST['formField']) && trim((string) $_POST['formField']) != '') {
+if (isset($_POST['formField']) && trim((string) $_POST['formField']) !== '') {
      $sWhereSubC = "  (";
      $sWhereSub = '';
      $searchArray = explode(",", (string) $_POST['formField']);
      foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
+          if ($sWhereSub === "") {
                $sWhereSub .= $sWhereSubC;
                $sWhereSub .= "(";
           } else {
                $sWhereSub .= " AND (";
           }
-          if ($search == 'sample_collection_date')
-               $sWhereSub .=  'vl.' . $search . " IS NULL";
-          else
-               $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
+          if ($search === 'sample_collection_date') {
+              $sWhereSub .=  'vl.' . $search . " IS NULL";
+          } else {
+              $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
+          }
           $sWhereSub .= ")";
      }
      $sWhereSub .= ")";
@@ -120,11 +121,7 @@ if (!empty($_SESSION['facilityMap'])) {
      $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
-if (!empty($sWhere)) {
-     $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
-} else {
-     $sWhere = "";
-}
+$sWhere = $sWhere === [] ? "" : ' WHERE ' . implode(' AND ', $sWhere);
 
 $sQuery = $sQuery . ' ' . $sWhere;
 
@@ -152,21 +149,12 @@ $_SESSION['vlIncompleteFormCount'] = $iTotal;
 /*
                                                        * Output
                                                        */
-$output = array(
-     "sEcho" => (int) $_POST['sEcho'],
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
-     "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
      $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 
-     if ($aRow['remote_sample'] == 'yes') {
-          $decrypt = 'remote_sample_code';
-     } else {
-          $decrypt = 'sample_code';
-     }
+     $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
 
      $childName = ($general->crypto('doNothing', $aRow['child_name'], $aRow[$decrypt]));
 

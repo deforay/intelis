@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -10,7 +11,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -30,8 +31,8 @@ try {
      $primaryKey = "vl_sample_id";
 
 
-     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name');
+     $aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name'];
+     $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'ts.status_name'];
      if ($general->isStandaloneInstance()) {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
@@ -68,7 +69,7 @@ try {
           $searchArray = explode(" ", (string) $_POST['sSearch']);
           $sWhereSub = "";
           foreach ($searchArray as $search) {
-               if ($sWhereSub == "") {
+               if ($sWhereSub === "") {
                     $sWhereSub .= "(";
                } else {
                     $sWhereSub .= " AND (";
@@ -94,24 +95,24 @@ try {
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) == trim((string) $end_date)) {
+          if (trim((string) $start_date) === trim((string) $end_date)) {
                $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
           } else {
                $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
      }
-     if (isset($_POST['formField']) && trim((string) $_POST['formField']) != '') {
+     if (isset($_POST['formField']) && trim((string) $_POST['formField']) !== '') {
           $sWhereSubC = "  (";
           $sWhereSub = '';
           $searchArray = explode(",", (string) $_POST['formField']);
           foreach ($searchArray as $search) {
-               if ($sWhereSub == "") {
+               if ($sWhereSub === "") {
                     $sWhereSub .= $sWhereSubC;
                     $sWhereSub .= "(";
                } else {
                     $sWhereSub .= " AND (";
                }
-               if ($search == 'sample_collection_date') {
+               if ($search === 'sample_collection_date') {
                     $sWhereSub .=  'vl.' . $search . " IS NULL";
                } else {
                     $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
@@ -127,7 +128,7 @@ try {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
      }
 
-     if (!empty($sWhere)) {
+     if ($sWhere !== []) {
           $sWhere = ' where ' . implode(" AND ", $sWhere);
      }
 
@@ -145,12 +146,7 @@ try {
 
      [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-     $output = array(
-          "sEcho" => (int) $_POST['sEcho'],
-          "iTotalRecords" => $resultCount,
-          "iTotalDisplayRecords" => $resultCount,
-          "aaData" => []
-     );
+     $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 
      foreach ($rResult as $aRow) {
           $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');

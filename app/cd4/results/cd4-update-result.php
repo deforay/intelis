@@ -79,28 +79,28 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 
 
 $cd4Query = "SELECT * from form_cd4 where cd4_id=?";
-$cd4QueryInfo = $db->rawQueryOne($cd4Query, array($id));
+$cd4QueryInfo = $db->rawQueryOne($cd4Query, [$id]);
 
-if (isset($cd4QueryInfo['patient_dob']) && trim((string) $cd4QueryInfo['patient_dob']) != '' && $cd4QueryInfo['patient_dob'] != '0000-00-00') {
+if (isset($cd4QueryInfo['patient_dob']) && trim((string) $cd4QueryInfo['patient_dob']) !== '' && $cd4QueryInfo['patient_dob'] != '0000-00-00') {
 	$cd4QueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['patient_dob']);
 } else {
 	$cd4QueryInfo['patient_dob'] = '';
 }
 
-if (isset($cd4QueryInfo['sample_collection_date']) && trim((string) $cd4QueryInfo['sample_collection_date']) != '' && $cd4QueryInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
+if (isset($cd4QueryInfo['sample_collection_date']) && trim((string) $cd4QueryInfo['sample_collection_date']) !== '' && $cd4QueryInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $cd4QueryInfo['sample_collection_date']);
 	$cd4QueryInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$cd4QueryInfo['sample_collection_date'] = '';
 }
-if (isset($cd4QueryInfo['sample_dispatched_datetime']) && trim((string) $cd4QueryInfo['sample_dispatched_datetime']) != '' && $cd4QueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+if (isset($cd4QueryInfo['sample_dispatched_datetime']) && trim((string) $cd4QueryInfo['sample_dispatched_datetime']) !== '' && $cd4QueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $cd4QueryInfo['sample_dispatched_datetime']);
 	$cd4QueryInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$cd4QueryInfo['sample_dispatched_datetime'] = '';
 }
 
-if (isset($cd4QueryInfo['result_approved_datetime']) && trim((string) $cd4QueryInfo['result_approved_datetime']) != '' && $cd4QueryInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
+if (isset($cd4QueryInfo['result_approved_datetime']) && trim((string) $cd4QueryInfo['result_approved_datetime']) !== '' && $cd4QueryInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
 	$sampleCollectionDate = $cd4QueryInfo['result_approved_datetime'];
 	$expStr = explode(" ", (string) $cd4QueryInfo['result_approved_datetime']);
 	$cd4QueryInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
@@ -109,26 +109,26 @@ if (isset($cd4QueryInfo['result_approved_datetime']) && trim((string) $cd4QueryI
 	$cd4QueryInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime());
 }
 
-if (isset($cd4QueryInfo['treatment_initiated_date']) && trim((string) $cd4QueryInfo['treatment_initiated_date']) != '' && $cd4QueryInfo['treatment_initiated_date'] != '0000-00-00') {
+if (isset($cd4QueryInfo['treatment_initiated_date']) && trim((string) $cd4QueryInfo['treatment_initiated_date']) !== '' && $cd4QueryInfo['treatment_initiated_date'] != '0000-00-00') {
 	$cd4QueryInfo['treatment_initiated_date'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['treatment_initiated_date']);
 } else {
 	$cd4QueryInfo['treatment_initiated_date'] = '';
 }
 
-if (isset($cd4QueryInfo['date_of_initiation_of_current_regimen']) && trim((string) $cd4QueryInfo['date_of_initiation_of_current_regimen']) != '' && $cd4QueryInfo['date_of_initiation_of_current_regimen'] != '0000-00-00') {
+if (isset($cd4QueryInfo['date_of_initiation_of_current_regimen']) && trim((string) $cd4QueryInfo['date_of_initiation_of_current_regimen']) !== '' && $cd4QueryInfo['date_of_initiation_of_current_regimen'] != '0000-00-00') {
 	$cd4QueryInfo['date_of_initiation_of_current_regimen'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['date_of_initiation_of_current_regimen']);
 } else {
 	$cd4QueryInfo['date_of_initiation_of_current_regimen'] = '';
 }
 
-if (isset($cd4QueryInfo['test_requested_on']) && trim((string) $cd4QueryInfo['test_requested_on']) != '' && $cd4QueryInfo['test_requested_on'] != '0000-00-00') {
+if (isset($cd4QueryInfo['test_requested_on']) && trim((string) $cd4QueryInfo['test_requested_on']) !== '' && $cd4QueryInfo['test_requested_on'] != '0000-00-00') {
 	$cd4QueryInfo['test_requested_on'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['test_requested_on']);
 } else {
 	$cd4QueryInfo['test_requested_on'] = '';
 }
 
 
-if (isset($cd4QueryInfo['sample_received_at_hub_datetime']) && trim((string) $cd4QueryInfo['sample_received_at_hub_datetime']) != '' && $cd4QueryInfo['sample_received_at_hub_datetime'] != '0000-00-00 00:00:00') {
+if (isset($cd4QueryInfo['sample_received_at_hub_datetime']) && trim((string) $cd4QueryInfo['sample_received_at_hub_datetime']) !== '' && $cd4QueryInfo['sample_received_at_hub_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $cd4QueryInfo['sample_received_at_hub_datetime']);
 	$cd4QueryInfo['sample_received_at_hub_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
@@ -136,40 +136,40 @@ if (isset($cd4QueryInfo['sample_received_at_hub_datetime']) && trim((string) $cd
 }
 
 
-if (isset($cd4QueryInfo['sample_received_at_lab_datetime']) && trim((string) $cd4QueryInfo['sample_received_at_lab_datetime']) != '' && $cd4QueryInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+if (isset($cd4QueryInfo['sample_received_at_lab_datetime']) && trim((string) $cd4QueryInfo['sample_received_at_lab_datetime']) !== '' && $cd4QueryInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $cd4QueryInfo['sample_received_at_lab_datetime']);
 	$cd4QueryInfo['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$cd4QueryInfo['sample_received_at_lab_datetime'] = '';
 }
 
-if (isset($cd4QueryInfo['sample_tested_datetime']) && trim((string) $cd4QueryInfo['sample_tested_datetime']) != '' && $cd4QueryInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+if (isset($cd4QueryInfo['sample_tested_datetime']) && trim((string) $cd4QueryInfo['sample_tested_datetime']) !== '' && $cd4QueryInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $cd4QueryInfo['sample_tested_datetime']);
 	$cd4QueryInfo['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$cd4QueryInfo['sample_tested_datetime'] = '';
 }
 
-if (isset($cd4QueryInfo['result_dispatched_datetime']) && trim((string) $cd4QueryInfo['result_dispatched_datetime']) != '' && $cd4QueryInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+if (isset($cd4QueryInfo['result_dispatched_datetime']) && trim((string) $cd4QueryInfo['result_dispatched_datetime']) !== '' && $cd4QueryInfo['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $cd4QueryInfo['result_dispatched_datetime']);
 	$cd4QueryInfo['result_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$cd4QueryInfo['result_dispatched_datetime'] = '';
 }
-if (isset($cd4QueryInfo['last_viral_load_date']) && trim((string) $cd4QueryInfo['last_viral_load_date']) != '' && $cd4QueryInfo['last_viral_load_date'] != '0000-00-00') {
+if (isset($cd4QueryInfo['last_viral_load_date']) && trim((string) $cd4QueryInfo['last_viral_load_date']) !== '' && $cd4QueryInfo['last_viral_load_date'] != '0000-00-00') {
 	$cd4QueryInfo['last_viral_load_date'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['last_viral_load_date']);
 } else {
 	$cd4QueryInfo['last_viral_load_date'] = '';
 }
 //Set Date of demand
-if (isset($cd4QueryInfo['date_test_ordered_by_physician']) && trim((string) $cd4QueryInfo['date_test_ordered_by_physician']) != '' && $cd4QueryInfo['date_test_ordered_by_physician'] != '0000-00-00') {
+if (isset($cd4QueryInfo['date_test_ordered_by_physician']) && trim((string) $cd4QueryInfo['date_test_ordered_by_physician']) !== '' && $cd4QueryInfo['date_test_ordered_by_physician'] != '0000-00-00') {
 	$cd4QueryInfo['date_test_ordered_by_physician'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['date_test_ordered_by_physician']);
 } else {
 	$cd4QueryInfo['date_test_ordered_by_physician'] = '';
 }
 //Has patient changed regimen section
-if (trim((string) $cd4QueryInfo['has_patient_changed_regimen']) == "yes") {
-	if (isset($cd4QueryInfo['regimen_change_date']) && trim((string) $cd4QueryInfo['regimen_change_date']) != '' && $cd4QueryInfo['regimen_change_date'] != '0000-00-00') {
+if (trim((string) $cd4QueryInfo['has_patient_changed_regimen']) === "yes") {
+	if (isset($cd4QueryInfo['regimen_change_date']) && trim((string) $cd4QueryInfo['regimen_change_date']) !== '' && $cd4QueryInfo['regimen_change_date'] != '0000-00-00') {
 		$cd4QueryInfo['regimen_change_date'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['regimen_change_date']);
 	} else {
 		$cd4QueryInfo['regimen_change_date'] = '';
@@ -179,21 +179,21 @@ if (trim((string) $cd4QueryInfo['has_patient_changed_regimen']) == "yes") {
 	$cd4QueryInfo['regimen_change_date'] = '';
 }
 //Set Dispatched From Clinic To Lab Date
-if (isset($cd4QueryInfo['sample_dispatched_datetime']) && trim($cd4QueryInfo['sample_dispatched_datetime']) != '' && $cd4QueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", $cd4QueryInfo['sample_dispatched_datetime']);
+if (isset($cd4QueryInfo['sample_dispatched_datetime']) && trim((string) $cd4QueryInfo['sample_dispatched_datetime']) !== '' && $cd4QueryInfo['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $cd4QueryInfo['sample_dispatched_datetime']);
 	$cd4QueryInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$cd4QueryInfo['sample_dispatched_datetime'] = '';
 }
 //Set Date of result printed datetime
-if (isset($cd4QueryInfo['result_printed_datetime']) && trim((string) $cd4QueryInfo['result_printed_datetime']) != "" && $cd4QueryInfo['result_printed_datetime'] != '0000-00-00 00:00:00') {
+if (isset($cd4QueryInfo['result_printed_datetime']) && trim((string) $cd4QueryInfo['result_printed_datetime']) !== "" && $cd4QueryInfo['result_printed_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $cd4QueryInfo['result_printed_datetime']);
 	$cd4QueryInfo['result_printed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
 	$cd4QueryInfo['result_printed_datetime'] = '';
 }
 //reviewed datetime
-if (isset($cd4QueryInfo['result_reviewed_datetime']) && trim((string) $cd4QueryInfo['result_reviewed_datetime']) != '' && $cd4QueryInfo['result_reviewed_datetime'] != null && $cd4QueryInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
+if (isset($cd4QueryInfo['result_reviewed_datetime']) && trim((string) $cd4QueryInfo['result_reviewed_datetime']) !== '' && $cd4QueryInfo['result_reviewed_datetime'] != null && $cd4QueryInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
 	$expStr = explode(" ", (string) $cd4QueryInfo['result_reviewed_datetime']);
 	$cd4QueryInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
@@ -226,7 +226,7 @@ if (!empty($cd4QueryInfo['is_encrypted']) && $cd4QueryInfo['is_encrypted'] == 'y
 	}
 }
 
-$patientFullName = trim(implode(" ", array($patientFirstName, $patientMiddleName, $patientLastName)));
+$patientFullName = trim(implode(" ", [$patientFirstName, $patientMiddleName, $patientLastName]));
 
 $artRegimenQuery = "SELECT DISTINCT headings FROM r_vl_art_regimen";
 $artRegimenResult = $db->rawQuery($artRegimenQuery);
@@ -277,17 +277,17 @@ $aResult = $db->query($aQuery);
 </style>
 <?php
 if ($formId == COUNTRY\SOUTH_SUDAN) {
-	include('forms/update-southsudan-result.php');
-} else if ($formId == COUNTRY\SIERRA_LEONE) {
-	include('forms/update-sierraleone-result.php');
-} else if ($formId == COUNTRY\DRC) {
-	include('forms/update-drc-result.php');
-} else if ($formId == COUNTRY\CAMEROON) {
-	include('forms/update-cameroon-result.php');
-} else if ($formId == COUNTRY\PNG) {
-	include('forms/update-png-result.php');
-} else if ($formId == COUNTRY\RWANDA) {
-	include('forms/update-rwanda-result.php');
+    include(__DIR__ . '/forms/update-southsudan-result.php');
+} elseif ($formId == COUNTRY\SIERRA_LEONE) {
+    include(__DIR__ . '/forms/update-sierraleone-result.php');
+} elseif ($formId == COUNTRY\DRC) {
+    include(__DIR__ . '/forms/update-drc-result.php');
+} elseif ($formId == COUNTRY\CAMEROON) {
+    include(__DIR__ . '/forms/update-cameroon-result.php');
+} elseif ($formId == COUNTRY\PNG) {
+    include(__DIR__ . '/forms/update-png-result.php');
+} elseif ($formId == COUNTRY\RWANDA) {
+    include(__DIR__ . '/forms/update-rwanda-result.php');
 }
 
 ?>

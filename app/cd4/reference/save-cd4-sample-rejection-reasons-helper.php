@@ -18,15 +18,9 @@ $tableName = "r_cd4_sample_rejection_reasons";
 $primaryKey = "rejection_reason_id";
 
 try {
-	if (isset($_POST['rejectionReasonName']) && trim((string) $_POST['rejectionReasonName']) != "") {
+	if (isset($_POST['rejectionReasonName']) && trim((string) $_POST['rejectionReasonName']) !== "") {
 
-		$data = array(
-			'rejection_reason_name' 	=> $_POST['rejectionReasonName'],
-			'rejection_type' 			=> $_POST['rejectionType'] ?? 'general',
-			'rejection_reason_code'		=> $_POST['rejectionReasonCode'],
-			'rejection_reason_status' 	=> $_POST['rejectionReasonStatus'],
-			'updated_datetime' 			=> DateUtility::getCurrentDateTime()
-		);
+		$data = ['rejection_reason_name' 	=> $_POST['rejectionReasonName'], 'rejection_type' 			=> $_POST['rejectionType'] ?? 'general', 'rejection_reason_code'		=> $_POST['rejectionReasonCode'], 'rejection_reason_status' 	=> $_POST['rejectionReasonStatus'], 'updated_datetime' 			=> DateUtility::getCurrentDateTime()];
 
 		if (isset($_POST['rejectionReasonId']) && $_POST['rejectionReasonId'] != "") {
 			$db->where($primaryKey, base64_decode((string) $_POST['rejectionReasonId']));

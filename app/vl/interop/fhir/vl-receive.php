@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\RWANDA;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -21,8 +22,6 @@ $arr = $general->getGlobalConfig();
 // $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 // $instanceId = $instanceResult['vlsm_instance_id'];
 
-$fileArray = array(
-    COUNTRY\RWANDA => 'forms/rwanda/receive-rwanda.php'
-);
+$fileArray = [RWANDA => 'forms/rwanda/receive-rwanda.php'];
 
 require_once($fileArray[$arr['vl_form']]);

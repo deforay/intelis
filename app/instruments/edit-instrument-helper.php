@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -20,7 +21,7 @@ $importMachineTable = "instrument_machines";
 $importControlTable = "instrument_controls";
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -31,7 +32,7 @@ $configControlQuery = "SELECT * FROM instrument_controls WHERE instrument_id=?";
 $configControlInfo = $db->rawQuery($configControlQuery, [$configId]);
 
 try {
-    if (trim((string) $_POST['configurationName']) != "") {
+    if (trim((string) $_POST['configurationName']) !== "") {
         if (!empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
                 $configDir = APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments";
@@ -48,14 +49,14 @@ try {
         }
 
         $matchedTests = array_diff($_POST['userTestType'] ?? [], $_POST['supportedTests'] ?? []);
-        foreach ($matchedTests as $key => $row) {
+        foreach (array_keys($matchedTests) as $key) {
             $_POST['reviewedBy'][$key] = "";
             $_POST['approvedBy'][$key] = "";
         }
-        $_POST['reviewedBy'] = !empty($_POST['reviewedBy']) ? json_encode(array_combine($_POST['userTestType'], $_POST['reviewedBy'])) : null;
-        $_POST['approvedBy'] = !empty($_POST['approvedBy']) ? json_encode(array_combine($_POST['userTestType'], $_POST['approvedBy'])) : null;
+        $_POST['reviewedBy'] = empty($_POST['reviewedBy']) ? null : json_encode(array_combine($_POST['userTestType'], $_POST['reviewedBy']));
+        $_POST['approvedBy'] = empty($_POST['approvedBy']) ? null : json_encode(array_combine($_POST['userTestType'], $_POST['approvedBy']));
 
-        $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
+        $_POST['supportedTests'] = empty($_POST['supportedTests']) ? null : json_encode($_POST['supportedTests']);
 
         $importConfigData = [
             'machine_name' => $_POST['configurationName'],
@@ -67,26 +68,27 @@ try {
             'max_no_of_samples_in_a_batch' => $_POST['maxNOfSamplesInBatch'] ?? null,
             'low_vl_result_text' => $_POST['lowVlResultText'] ?? null,
             'additional_text' => $_POST['additionalText'] ?? null,
-            'reviewed_by' => !empty($_POST['reviewedBy']) ? $_POST['reviewedBy'] : null,
-            'approved_by' => !empty($_POST['approvedBy']) ? $_POST['approvedBy'] : null,
+            'reviewed_by' => empty($_POST['reviewedBy']) ? null : $_POST['reviewedBy'],
+            'approved_by' => empty($_POST['approvedBy']) ? null : $_POST['approvedBy'],
             'status' => $_POST['status']
         ];
         $db->where('instrument_id', $configId);
 
         $db->update($tableName, $importConfigData);
         if (!empty($_POST['configMachineName'])) {
-            for ($c = 0; $c < count($_POST['configMachineName']); $c++) {
-                if (trim((string) $_POST['configMachineName'][$c]) != '') {
+            $counter = count($_POST['configMachineName']);
+            for ($c = 0; $c < $counter; $c++) {
+                if (trim((string) $_POST['configMachineName'][$c]) !== '') {
                     $pocDev = 'no';
-                    if (trim((string) $_POST['latitude'][$c]) != '' && trim((string) $_POST['longitude'][$c]) != '') {
+                    if (trim((string) $_POST['latitude'][$c]) !== '' && trim((string) $_POST['longitude'][$c]) !== '') {
                         $pocDev = 'yes';
                     }
                     if (isset($_POST['configMachineId'][$c]) && $_POST['configMachineId'][$c] != '') {
-                        $configMachineData = ['config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime()];
+                        $configMachineData = ['config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => empty($_POST['dateFormat'][$c]) ? null : $_POST['dateFormat'][$c], 'file_name' => empty($_POST['fileName'][$c]) ? null : $_POST['fileName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime()];
                         $db->where('config_machine_id', $_POST['configMachineId'][$c]);
                         $db->update($importMachineTable, $configMachineData);
                     } else {
-                        $configMachineData = ['instrument_id' => $configId, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime()];
+                        $configMachineData = ['instrument_id' => $configId, 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => empty($_POST['dateFormat'][$c]) ? null : $_POST['dateFormat'][$c], 'file_name' => empty($_POST['fileName'][$c]) ? null : $_POST['fileName'][$c], 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime()];
                         $db->insert($importMachineTable, $configMachineData);
                     }
                 }
@@ -99,7 +101,7 @@ try {
             $db->delete($importControlTable);
 
             foreach ($_POST['testType'] as $key => $val) {
-                if (trim((string) $val) != '') {
+                if (trim((string) $val) !== '') {
                     $configControlData = [
                         'test_type' => $val,
                         'instrument_id' => $configId,

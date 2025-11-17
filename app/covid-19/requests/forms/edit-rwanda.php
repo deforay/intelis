@@ -10,6 +10,7 @@ use App\Utilities\DateUtility;
 
 
 // Sanitized values from $request object
+
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
@@ -548,8 +549,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 </select>
                                             </td>
                                             <?php
-                                            $disabled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : "";
-                                            ?>
+                                            $disabled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : ""; ?>
                                             <th scope="row">Authorized By</th>
                                             <td>
                                                 <select name="authorizedBy" <?php echo $disabled; ?> id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
@@ -620,7 +620,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     provinceName = true;
     facilityName = true;
     machineName = true;
-    tableRowId = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo) + 1) : 2; ?>;
+    tableRowId = <?php echo (empty($covid19TestInfo)) ? (2) : count($covid19TestInfo) + 1; ?>;
     deletedRow = [];
 
     function getfacilityDetails(obj) {

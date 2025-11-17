@@ -15,7 +15,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim((string) $_SESSION['hepatitisMonitoringThresholdReportQuery']) != "") {
+if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim((string) $_SESSION['hepatitisMonitoringThresholdReportQuery']) !== "") {
     $rResult = $db->rawQuery($_SESSION['hepatitisMonitoringThresholdReportQuery']);
 
     $res = [];
@@ -23,12 +23,12 @@ if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim((string)
         $row = [];
         if (isset($res[$aRow['facility_id']])) {
             if (isset($res[$aRow['facility_id']][$aRow['monthrange']])) {
-                if (trim((string) $aRow['is_sample_rejected'])  == 'yes') {
+                if (trim((string) $aRow['is_sample_rejected']) === 'yes') {
                     $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected']  + 1;
                 } else {
                     $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected'];
                 }
-                if (trim((string) $aRow['sample_tested_datetime'])  == null  && trim((string) $aRow['sample_collection_date']) != '') { {
+                if (trim((string) $aRow['sample_tested_datetime'])  == null  && trim((string) $aRow['sample_collection_date']) !== '') { {
                         $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
                     }
                 } else {
@@ -40,12 +40,12 @@ if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim((string)
                 $row['totalCollected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalCollected']  + 1;
                 $res[$aRow['facility_id']][$aRow['monthrange']] = $row;
             } else {
-                if (trim((string) $aRow['is_sample_rejected'])  == 'yes') {
+                if (trim((string) $aRow['is_sample_rejected']) === 'yes') {
                     $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected']  + 1;
                 } else {
                     $row['totalRejected'] = 0;
                 }
-                if (trim((string) $aRow['sample_tested_datetime'])  == null  && trim((string) $aRow['sample_collection_date']) != '') {
+                if (trim((string) $aRow['sample_tested_datetime'])  == null  && trim((string) $aRow['sample_collection_date']) !== '') {
                     $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
                 } else {
                     $row['totalReceived'] = 0;
@@ -57,12 +57,12 @@ if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim((string)
                 $res[$aRow['facility_id']][$aRow['monthrange']] = $row;
             }
         } else {
-            if (trim((string) $aRow['is_sample_rejected'])  == 'yes') {
+            if (trim((string) $aRow['is_sample_rejected']) === 'yes') {
                 $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected']  + 1;
             } else {
                 $row['totalRejected'] = 0;
             }
-            if (trim((string) $aRow['sample_tested_datetime'])  == null  && trim((string) $aRow['sample_collection_date']) != '') {
+            if (trim((string) $aRow['sample_tested_datetime'])  == null  && trim((string) $aRow['sample_collection_date']) !== '') {
                 $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
             } else {
                 $row['totalReceived'] = 0;

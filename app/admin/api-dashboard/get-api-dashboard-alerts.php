@@ -1,6 +1,7 @@
 <?php
 // get-smart-dashboard-alerts.php
-
+use App\Utilities\MiscUtility;
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -9,7 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -25,20 +26,20 @@ try {
     $duplicatesWhere = [];
 
     // Date range filter
-    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
+    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
         $sWhere[] = " t.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
         $duplicatesWhere[] = " t1.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
     }
 
     // Lab filter
-    if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
+    if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
         $sWhere[] = " t.lab_id IN (" . $_POST['labName'] . ")";
         $duplicatesWhere[] = " t1.lab_id IN (" . $_POST['labName'] . ")";
     }
 
     // Facility filter
-    if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) != '') {
+    if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) !== '') {
         $facilityId = implode(',', $_POST['facilityId']);
         $sWhere[] = " t.facility_id IN ($facilityId)";
         $duplicatesWhere[] = " t1.facility_id IN ($facilityId)";
@@ -51,20 +52,20 @@ try {
         $facilityJoin = ' LEFT JOIN facility_details as f ON t.facility_id = f.facility_id ';
         $duplicatesFacilityJoin = ' LEFT JOIN facility_details as f1 ON t1.facility_id = f1.facility_id ';
 
-        if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+        if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
             $provinceId = implode(',', $_POST['state']);
             $sWhere[] = " f.facility_state_id IN ($provinceId)";
             $duplicatesWhere[] = " f1.facility_state_id IN ($provinceId)";
         }
 
-        if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+        if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
             $districtId = implode(',', $_POST['district']);
             $sWhere[] = " f.facility_district_id IN ($districtId)";
             $duplicatesWhere[] = " f1.facility_district_id IN ($districtId)";
         }
     }
 
-    $whereSql = !empty($sWhere) ? (' WHERE ' . implode(' AND ', $sWhere)) : '';
+    $whereSql = $sWhere === [] ? ('') : ' WHERE ' . implode(' AND ', $sWhere);
 
     $alerts = [];
 
@@ -98,7 +99,7 @@ try {
     // Base conditions for duplicates
     $duplicatesWhere[] = " (t1.$patientFirstNameColumn IS NOT NULL OR t1.$patientIdColumn IS NOT NULL) ";
     $duplicatesWhere[] = " t1.sample_collection_date IS NOT NULL ";
-    $duplicatesWhereSql = !empty($duplicatesWhere) ? (' WHERE ' . implode(' AND ', $duplicatesWhere)) : '';
+    $duplicatesWhereSql = $duplicatesWhere === [] ? ('') : ' WHERE ' . implode(' AND ', $duplicatesWhere);
 
     // Alert 2: High number of potential duplicates - ALIGNED WITH METRICS LOGIC
     $duplicatesQuery = "
@@ -229,7 +230,7 @@ try {
     // Generate HTML output for alerts
     $alertsHtml = '';
 
-    if (empty($alerts)) {
+    if ($alerts === []) {
         $alertsHtml = '<div class="alert-card success">
             <strong><em class="fa-solid fa-check-circle"></em> ' . _translate('All Good!') . '</strong><br>
             ' . _translate('No critical issues detected in the current time period.') . '
@@ -257,8 +258,8 @@ try {
         'last_db_error' => $db->getLastError(),
         'last_db_query' => $db->getLastQuery()
     ]);
-    echo '<div class="alert-card danger">
+    MiscUtility::safeCliEcho('<div class="alert-card danger">
         <strong>' . _translate('Error') . '</strong><br>
         ' . _translate('Failed to load alerts') . $e->getMessage() . '
-    </div>';
+    </div>');
 }

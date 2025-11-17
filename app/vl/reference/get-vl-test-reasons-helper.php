@@ -9,7 +9,7 @@ $primaryKey = "test_reason_id";
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$aColumns = array('test_reason_name', 'test_reason_status');
+$aColumns = ['test_reason_name', 'test_reason_status'];
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -37,7 +37,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -61,7 +61,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM $tableName";
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $sWhere = ' where ' . implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }

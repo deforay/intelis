@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -9,7 +10,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -30,7 +31,7 @@ try {
     $sarr = $general->getSystemConfig();
 
 
-    $aColumns = array('recommended_corrective_action_name', 'status');
+    $aColumns = ['recommended_corrective_action_name', 'status'];
 
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = $primaryKey;
@@ -61,7 +62,7 @@ try {
         $searchArray = explode(" ", (string) $_POST['sSearch']);
         $sWhereSub = "";
         foreach ($searchArray as $search) {
-            if ($sWhereSub == "") {
+            if ($sWhereSub === "") {
                 $sWhereSub .= "(";
             } else {
                 $sWhereSub .= " AND (";
@@ -84,7 +85,7 @@ try {
     if (isset($testType) && $testType != "") {
         $sWhere .= "test_type = '$testType'";
     }
-    if (!empty($sWhere)) {
+    if ($sWhere !== '' && $sWhere !== '0') {
         $sQuery = "$sQuery WHERE $sWhere";
     }
 

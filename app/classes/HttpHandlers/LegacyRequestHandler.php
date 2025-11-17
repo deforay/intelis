@@ -2,6 +2,7 @@
 
 namespace App\HttpHandlers;
 
+use Override;
 use Throwable;
 use App\Services\CommonService;
 use Laminas\Diactoros\Response;
@@ -15,14 +16,10 @@ use Laminas\Diactoros\Response\RedirectResponse;
 
 class LegacyRequestHandler implements RequestHandlerInterface
 {
-    private $dbService;
-    private $commonService;
-
-    public function __construct(DatabaseService $dbService, CommonService $commonService)
+    public function __construct(private readonly DatabaseService $dbService, private readonly CommonService $commonService)
     {
-        $this->dbService = $dbService;
-        $this->commonService = $commonService;
     }
+    #[Override]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         try {
@@ -36,7 +33,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
             $db = $this->dbService;
             $general = $this->commonService;
 
-            (function () use ($filePath, $db, $general) {
+            (function () use ($filePath, $db, $general): void {
                 require_once $filePath;
             })();
 
@@ -78,7 +75,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
     }
 
 
-    private function createResponse($output): ResponseInterface
+    private function createResponse(string|bool $output): ResponseInterface
     {
         $response = new Response();
         $response->getBody()->write($output);

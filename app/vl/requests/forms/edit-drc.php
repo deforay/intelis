@@ -36,8 +36,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['fac
 $stateQuery = "SELECT * FROM facility_details WHERE facility_id=?";
 $stateResult = $db->rawQueryOne($stateQuery, [$vlQueryInfo['facility_id']]);
 
-$stateResult['facility_state'] = $stateResult['facility_state'] ?? "";
-$stateResult['facility_district'] = $stateResult['facility_district'] ?? "";
+$stateResult['facility_state'] ??= "";
+$stateResult['facility_district'] ??= "";
 
 //district details
 $districtQuery = "SELECT DISTINCT facility_district FROM facility_details WHERE facility_state= ?";
@@ -45,25 +45,25 @@ $districtResult = $db->rawQuery($districtQuery, [$stateResult['facility_state']]
 $provinceQuery = "SELECT geo_code FROM geographical_divisions WHERE geo_id= ?";
 $provinceResult = $db->rawQueryOne($provinceQuery, [$stateResult['facility_state_id']]);
 
-$provinceResult['geo_code'] = $provinceResult['geo_code'] ?? '';
+$provinceResult['geo_code'] ??= '';
 
 //get ART list
 $aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER by parent_art ASC, art_code ASC";
 $aResult = $db->query($aQuery);
 
 
-$duVisibility = (trim((string) $vlQueryInfo['is_patient_new']) == "" || trim((string) $vlQueryInfo['is_patient_new']) == "no") ? 'hidden' : 'visible';
-$duRequiredClass = ($duVisibility == 'visible') ? 'isRequired' : '';
-$duMandatoryLabel = ($duVisibility == 'visible') ? '<span class="mandatory">*</span>' : '';
+$duVisibility = (trim((string) $vlQueryInfo['is_patient_new']) === "" || trim((string) $vlQueryInfo['is_patient_new']) === "no") ? 'hidden' : 'visible';
+$duRequiredClass = ($duVisibility === 'visible') ? 'isRequired' : '';
+$duMandatoryLabel = ($duVisibility === 'visible') ? '<span class="mandatory">*</span>' : '';
 
-$displayArvChangedElement = (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes");
+$displayArvChangedElement = (trim((string) $vlQueryInfo['has_patient_changed_regimen']) === "yes");
 $arvRequiredClass = $displayArvChangedElement ? 'isRequired' : '';
 $arvMandatoryLabel = $displayArvChangedElement ? '<span class="mandatory">*</span>' : '';
 
-$femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'none' : 'block';
-$trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || trim((string) $vlQueryInfo['is_patient_pregnant']) == "no") ? 'none' : 'block';
+$femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) === "" || trim((string) $vlQueryInfo['patient_gender']) === "male") ? 'none' : 'block';
+$trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) === "" || trim((string) $vlQueryInfo['is_patient_pregnant']) === "no") ? 'none' : 'block';
 
-$formAttributes = json_decode($vlQueryInfo['form_attributes']);
+$formAttributes = json_decode((string) $vlQueryInfo['form_attributes']);
 if (is_object($formAttributes->storage)) {
 	$formAttributes->storage = json_encode($formAttributes->storage);
 }
@@ -154,7 +154,7 @@ $storageInfo = $storageService->getLabStorage();
 											<select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($pdResult as $provinceName) { ?>
-													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower((string) $stateResult['facility_state']) . "##" . strtolower((string) $provinceResult['geo_code']) == strtolower((string) $provinceName['geo_name']) . "##" . strtolower((string) $provinceName['geo_code'])) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>
+													<option value="<?php echo $provinceName['geo_name'] . "##" . $provinceName['geo_code']; ?>" <?php echo (strtolower((string) $stateResult['facility_state']) . "##" . strtolower((string) $provinceResult['geo_code']) === strtolower((string) $provinceName['geo_name']) . "##" . strtolower((string) $provinceName['geo_code'])) ? "selected='selected'" : "" ?>><?php echo ($provinceName['geo_name']); ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -265,8 +265,8 @@ $storageInfo = $storageService->getLabStorage();
 										<td style="width: 35% !important;">
 
 											<select name="gender" id="gender" class="form-control isRequired" title="Please select sex">
-												<option value="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'selected="selected"' : ''; ?>><?= _translate("M"); ?></option>
-												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option>
+												<option value="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) === "male") ? 'selected="selected"' : ''; ?>><?= _translate("M"); ?></option>
+												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) === "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option>
 											</select>
 										</td>
 										<!-- <td style="width: 15% !important;"><label>KP </label></td>
@@ -281,25 +281,25 @@ $storageInfo = $storageService->getLabStorage();
 											<label for="breastfeeding">Allaitante ?<span class="mandatory" style="display:none;">*</span></label>
 											<select class="form-control" id="breastfeeding" name="breastfeeding" title="Please check Si allaitante">
 												<option value=""> -- Select -- </option>
-												<option id="breastfeedingYes" <?php echo (trim((string) $vlQueryInfo['is_patient_breastfeeding']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
-												<option id="breastfeedingNo" <?php echo (trim((string) $vlQueryInfo['is_patient_breastfeeding']) == "no") ? 'selected="selected"' : ''; ?> value="no">Non</option>
+												<option id="breastfeedingYes" <?php echo (trim((string) $vlQueryInfo['is_patient_breastfeeding']) === "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
+												<option id="breastfeedingNo" <?php echo (trim((string) $vlQueryInfo['is_patient_breastfeeding']) === "no") ? 'selected="selected"' : ''; ?> value="no">Non</option>
 											</select>
 										</td>
 										<td style="width:15% !important;">
 											<label for="pregnant">Ou enceinte ?<span class="mandatory" style="display:none;">*</span></label>
 											<select class="form-control" id="pregnant" name="patientPregnant" title="Please check Si Ou enceinte ">
 												<option value=""> -- Select -- </option>
-												<option id="pregYes" <?php echo (trim((string) $vlQueryInfo['is_patient_pregnant']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
-												<option id="pregNo" <?php echo (trim((string) $vlQueryInfo['is_patient_pregnant']) == "no") ? 'selected="selected"' : ''; ?> value="no">Non</option>
+												<option id="pregYes" <?php echo (trim((string) $vlQueryInfo['is_patient_pregnant']) === "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
+												<option id="pregNo" <?php echo (trim((string) $vlQueryInfo['is_patient_pregnant']) === "no") ? 'selected="selected"' : ''; ?> value="no">Non</option>
 											</select>
 										</td>
 										<td class="trimesterSection" style="width:30% !important;">
 											<label for="trimester">Si Femme enceinte :<span class="mandatory" style="display:none;">*</span></label>
 											<select class="form-control" id="trimester" name="trimester" title="Please check trimestre">
 												<option value=""> -- Select -- </option>
-												<option id="trimester1" <?php echo (trim((string) $vlQueryInfo['pregnancy_trimester']) == "1") ? 'selected="selected"' : ''; ?> value="1">Trimestre 1</option>
-												<option id="trimester2" <?php echo (trim((string) $vlQueryInfo['pregnancy_trimester']) == "2") ? 'selected="selected"' : ''; ?> value="2">Trimestre 2</option>
-												<option id="trimester3" <?php echo (trim((string) $vlQueryInfo['pregnancy_trimester']) == "3") ? 'selected="selected"' : ''; ?> value="3">Trimestre 3</option>
+												<option id="trimester1" <?php echo (trim((string) $vlQueryInfo['pregnancy_trimester']) === "1") ? 'selected="selected"' : ''; ?> value="1">Trimestre 1</option>
+												<option id="trimester2" <?php echo (trim((string) $vlQueryInfo['pregnancy_trimester']) === "2") ? 'selected="selected"' : ''; ?> value="2">Trimestre 2</option>
+												<option id="trimester3" <?php echo (trim((string) $vlQueryInfo['pregnancy_trimester']) === "3") ? 'selected="selected"' : ''; ?> value="3">Trimestre 3</option>
 											</select>
 										</td>
 									</tr>
@@ -350,11 +350,11 @@ $storageInfo = $storageService->getLabStorage();
 											<br>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Oui </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="isRequired" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="<?= _translate("Please choose if ARV Regimen changed"); ?>" <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="isRequired" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="<?= _translate("Please choose if ARV Regimen changed"); ?>" <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) === "yes") ? 'checked="checked"' : ''; ?>>
 											</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Non </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="isRequired" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="<?= _translate("Please choose if ARV Regimen changed"); ?>" <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "no") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="isRequired" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="<?= _translate("Please choose if ARV Regimen changed"); ?>" <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) === "no") ? 'checked="checked"' : ''; ?>>
 											</label>
 										</td>
 									</tr>
@@ -424,8 +424,7 @@ $storageInfo = $storageService->getLabStorage();
 										<td style="width:25%;"></td>
 										<td style="width:25%;"></td>
 									</tr>
-									<?php if (isset($arr['sample_type']) && trim((string) $arr['sample_type']) == "enabled") {
-									?>
+									<?php if (isset($arr['sample_type']) && trim((string) $arr['sample_type']) === "enabled") { ?>
 										<tr>
 											<td><label for="specimenType">Type d'échantillon <span class="mandatory">*</span></label></td>
 											<td>
@@ -439,8 +438,7 @@ $storageInfo = $storageService->getLabStorage();
 											<td></td>
 											<td></td>
 										</tr>
-									<?php }
-									?>
+									<?php } ?>
 									<tr class="plasmaElement" style="display:<?php echo ($vlQueryInfo['specimen_type'] == 2) ? '' : 'none'; ?>;">
 										<td><label for="conservationTemperature">Si
 												plasma,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Température de conservation
@@ -518,7 +516,7 @@ $storageInfo = $storageService->getLabStorage();
 												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
 													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($importResult as $mName) { ?>
-														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] == $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?>
+														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?>
 														</option>
 													<?php } ?>
 												</select>
@@ -571,7 +569,7 @@ $storageInfo = $storageService->getLabStorage();
 											</td>
 										</tr>
 										<?php if (count($reasonForFailure) > 0) { ?>
-											<tr class="reasonForFailure" style="<?php echo (strtolower(trim($vlQueryInfo['result'])) != 'failed') ? 'display: none;' : ''; ?>">
+											<tr class="reasonForFailure" style="<?php echo (strtolower(trim((string) $vlQueryInfo['result'])) !== 'failed') ? 'display: none;' : ''; ?>">
 												<th scope="row" class="reasonForFailure">
 													<?php echo _translate("Reason for Failure"); ?>
 												</th>
@@ -910,10 +908,10 @@ $storageInfo = $storageService->getLabStorage();
 	});
 	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
-			//$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>');
+			//$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) === "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>');
 			showFemaleSection();
 		} else if ($(this).val() == 'male') {
-			//$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option><option value="msm" <?php echo (trim((string) $vlQueryInfo['key_population']) == "msm") ? 'selected="selected"' : ''; ?>><?= _translate("MSM"); ?> </option>');
+			//$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) === "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option><option value="msm" <?php echo (trim((string) $vlQueryInfo['key_population']) === "msm") ? 'selected="selected"' : ''; ?>><?= _translate("MSM"); ?> </option>');
 			hideFemaleSection();
 		}
 	});

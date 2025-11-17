@@ -11,7 +11,7 @@ $primaryKey = "failure_id";
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$aColumns = array('failure_reason', 'status');
+$aColumns = ['failure_reason', 'status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -44,7 +44,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -68,7 +68,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM $tableName";
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
@@ -97,12 +97,7 @@ $aResultTotal = $db->rawQuery("select COUNT($primaryKey) as total FROM $tableNam
 $iTotal = $aResultTotal[0]['total'];
 
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $status = '<select class="form-control" name="status[]" id="' . $aRow['failure_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
@@ -111,11 +106,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['failure_reason']);
-    if (_isAllowed("vl-art-code-details.php") && $general->isLISInstance() === false) {
-        $row[] = $status;
-    } else {
-        $row[] = ($aRow['status']);
-    }
+    $row[] = _isAllowed("vl-art-code-details.php") && $general->isLISInstance() === false ? $status : $aRow['status'];
     $row[] = '<a href="edit-vl-test-failure-reason.php?id=' . base64_encode((string) $aRow['failure_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     $output['aaData'][] = $row;
 }

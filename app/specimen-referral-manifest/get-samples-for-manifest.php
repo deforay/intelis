@@ -9,6 +9,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
+
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
@@ -30,8 +31,8 @@ if ($general->isSTSInstance()) {
 	$sampleCode = 'sample_code';
 }
 
-$module = (!empty($_POST['module'])) ? $_POST['module'] : "";
-$testType = (!empty($_POST['testType'])) ? $_POST['testType'] : "";
+$module = (empty($_POST['module'])) ? "" : $_POST['module'];
+$testType = (empty($_POST['testType'])) ? "" : $_POST['testType'];
 
 
 $testTable = TestsService::getTestTableName($module);
@@ -44,7 +45,7 @@ $query = "SELECT vl.sample_code,vl.remote_sample_code,vl.$testPrimaryKey,vl.$pat
 
 $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) ";
-if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) != '') {
+if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) !== '') {
 
 	[$startDate, $endDate] = DateUtility::convertDateRange($_POST['daterange'], includeTime: true);
 
@@ -77,7 +78,7 @@ if (!empty($_POST['pkgId'])) {
 if (!empty($_POST['sampleType'])) {
 	$where[] = " specimen_type IN(" . $_POST['sampleType'] . ") ";
 }
-if (!empty($where)) {
+if ($where !== []) {
 	$query .= " WHERE " . implode(" AND ", $where);
 }
 $query .= " ORDER BY vl.request_created_datetime ASC";
@@ -94,10 +95,12 @@ $key = (string) $general->getGlobalConfig('key');
 			if ($sample['is_encrypted'] == 'yes') {
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
-			if (!empty($sample[$sampleCode])) {
-				if ((!isset($sample['sample_package_id']) || !isset($sample['manifest_id'])) || ($sample['sample_package_id'] != $sample['manifest_id'])) { ?>
-					<option value="<?php echo $sample[$testPrimaryKey]; ?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
-		<?php }
+			if (!empty($sample[$sampleCode]) && ((!isset($sample['sample_package_id']) || !isset($sample['manifest_id'])) || ($sample['sample_package_id'] != $sample['manifest_id']))) {
+		?>
+				<option value="<?php
+								echo $sample[$testPrimaryKey];
+								?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
+		<?php
 			}
 		} ?>
 	</select>
@@ -117,10 +120,12 @@ $key = (string) $general->getGlobalConfig('key');
 			if ($sample['is_encrypted'] == 'yes') {
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
-			if (!empty($sample[$sampleCode])) {
-				if (isset($sample['manifest_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['manifest_id']) { ?>
-					<option value="<?php echo $sample[$testPrimaryKey]; ?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
-		<?php }
+			if (!empty($sample[$sampleCode]) && (isset($sample['manifest_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['manifest_id'])) {
+		?>
+				<option value="<?php
+								echo $sample[$testPrimaryKey];
+								?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
+		<?php
 			}
 		} ?>
 	</select>

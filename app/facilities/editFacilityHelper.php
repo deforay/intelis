@@ -1,15 +1,16 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
-use App\Utilities\JsonUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Services\STS\TokensService;
 use Laminas\Diactoros\UploadedFile;
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
@@ -32,7 +33,7 @@ $stsTokensService = ContainerRegistry::get(TokensService::class);
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
@@ -43,19 +44,21 @@ $uploadedFiles = $request->getUploadedFiles();
 try {
 	// Sanitize and validate the uploaded files
 	$sanitizedLabLogo = $sanitizedSignature = $sanitizedReportTemplate = "";
-	if (isset($uploadedFiles['reportTemplate']))
+	if (isset($uploadedFiles['reportTemplate'])) {
 		$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'], ['pdf']);
-	if (isset($uploadedFiles['labLogo']))
+	}
+	if (isset($uploadedFiles['labLogo'])) {
 		$sanitizedLabLogo = _sanitizeFiles($uploadedFiles['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
-	if (isset($uploadedFiles['signature']))
+	}
+	if (isset($uploadedFiles['signature'])) {
 		$sanitizedSignature = _sanitizeFiles($uploadedFiles['signature'], ['png', 'jpg', 'jpeg', 'gif']);
+	}
 
 
 	/* For reference we define the table names */
 	$tableName = "facility_details";
 	$facilityId = base64_decode((string) $_POST['facilityId']);
 	$provinceTable = "geographical_divisions";
-	$userFacilityMapTable = "user_facility_map";
 	$testingLabsTable = "testing_labs";
 	$healthFacilityTable = "health_facilities";
 	$signTableName = "lab_report_signatories";
@@ -65,20 +68,17 @@ try {
 
 
 	//Province Table
-	if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != "") {
+	if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== "") {
 		if (isset($_POST['provinceNew']) && $_POST['provinceNew'] != "" && $_POST['stateId'] == 'other') {
 			$_POST['stateId'] = $geolocation->addGeoLocation($_POST['provinceNew']);
 			$_POST['state'] = $_POST['provinceNew'];
-			$provinceName = (isset($_POST['provinceNew']) && trim((string) $_POST['provinceNew']) != '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
+			$provinceName = (isset($_POST['provinceNew']) && trim((string) $_POST['provinceNew']) !== '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
 			$facilityQuery = "SELECT geo_name FROM geographical_divisions WHERE geo_name= ?";
 			$facilityInfo = $db->rawQueryOne($facilityQuery, [$provinceName]);
 			if (isset($facilityInfo['geo_name'])) {
 				$_POST['state'] = $facilityInfo['geo_name'];
 			} else {
-				$geoData = array(
-					'geo_name' => $_POST['provinceNew'],
-					'updated_datetime' => DateUtility::getCurrentDateTime(),
-				);
+				$geoData = ['geo_name' => $_POST['provinceNew'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
 				$db->insert($provinceTable, $geoData);
 				$_POST['state'] = $_POST['provinceNew'];
 			}
@@ -90,13 +90,14 @@ try {
 		}
 
 		$email = '';
-		if (isset($_POST['reportEmail']) && trim((string) $_POST['reportEmail']) != '') {
+		if (isset($_POST['reportEmail']) && trim((string) $_POST['reportEmail']) !== '') {
 			$expEmail = explode(",", (string) $_POST['reportEmail']);
 			if (!empty($_POST['reportEmail'])) {
-				for ($i = 0; $i < count($expEmail); $i++) {
+				$counter = count($expEmail);
+				for ($i = 0; $i < $counter; $i++) {
 					$reportEmail = filter_var($expEmail[$i], FILTER_VALIDATE_EMAIL);
 					if ($reportEmail != '') {
-						if ($email != '') {
+						if ($email !== '') {
 							$email .= "," . $reportEmail;
 						} else {
 							$email .= $reportEmail;
@@ -118,7 +119,7 @@ try {
 		$data = [
 			'facility_name' => $_POST['facilityName'],
 			'facility_code' => $_POST['facilityCode'] ?? null,
-			'other_id' => !empty($_POST['otherId']) ? $_POST['otherId'] : null,
+			'other_id' => empty($_POST['otherId']) ? null : $_POST['otherId'],
 			'facility_mobile_numbers' => $_POST['phoneNo'] ?? null,
 			'address' => $_POST['address'] ?? null,
 			'country' => $_POST['country'] ?? null,
@@ -162,64 +163,57 @@ try {
 		if (!empty($_POST['bottomTextLocation'])) {
 			$facilityAttributes['bottom_text_location'] = $_POST['bottomTextLocation'];
 		}
-		/* echo "<pre>";
-		print_r($_POST);
-		print_r($uploadedFiles['reportTemplate']);
-		die; */
-		if ($data['facility_type'] == 2) {
-			if (isset($_POST['testTypeFile']) && !empty($_POST['testTypeFile'])) {
-				$fileResponse = [];
-				$directories = [UPLOAD_PATH, 'labs', $facilityId, 'report-template'];
-				$currentPath = '';
-				foreach ($directories as $directory) {
-					$currentPath = $currentPath === '' ? $directory : $currentPath . DIRECTORY_SEPARATOR . $directory;
-					MiscUtility::makeDirectory($currentPath, 0777); // will just skip if exists
-				}
-				foreach ($_POST['testTypeFile'] as $key => $test) {
-					$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'][$key], ['pdf']);
-					if (isset($uploadedFiles['reportTemplate'][$key]) && $sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
-						$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $facilityId;
-						MiscUtility::makeDirectory($directoryPath, 0777, true);
-						$string = MiscUtility::generateRandomString(12) . "-" . $test . ".";
-						$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
-						$fileName = "report-template-" . $string . $extension;
-						$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
-						$fileResponse[$test]['file'] = $fileName;
-						$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
 
-						// Move the uploaded file to the desired location
-						$sanitizedReportTemplate->moveTo($filePath);
-					} else {
-						$fileResponse[$test]['file'] = $_POST['oldTemplate'][$key];
-						$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
-					}
-					if (isset($_POST['deleteTemplate'][$key]) && !empty($_POST['deleteTemplate'][$key])) {
-						MiscUtility::deleteFile(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $test . DIRECTORY_SEPARATOR . $facilityId);
-						$fileResponse[$test]['file'] = $_POST['oldTemplate'][$key];
-						$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
-					}
-				}
-				$reportFormatJson = JsonUtility::jsonToSetString(json_encode($fileResponse), 'report_format');
-				$db->where('facility_id', $facilityId);
-				$db->update('facility_details', ['report_format' => $db->func($reportFormatJson)]);
+		if ($data['facility_type'] == 2 && (isset($_POST['testTypeFile']) && !empty($_POST['testTypeFile']))) {
+			$fileResponse = [];
+			$directories = [UPLOAD_PATH, 'labs', $facilityId, 'report-template'];
+			$currentPath = '';
+			foreach ($directories as $directory) {
+				$currentPath = $currentPath === '' ? $directory : $currentPath . DIRECTORY_SEPARATOR . $directory;
+				MiscUtility::makeDirectory($currentPath, 0777); // will just skip if exists
 			}
-		}
+			foreach ($_POST['testTypeFile'] as $key => $test) {
+				$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'][$key], ['pdf']);
+				if (isset($uploadedFiles['reportTemplate'][$key]) && $sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
+					$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $facilityId;
+					MiscUtility::makeDirectory($directoryPath, 0777, true);
+					$string = MiscUtility::generateRandomString(12) . "-" . $test . ".";
+					$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
+					$fileName = "report-template-" . $string . $extension;
+					$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
+					$fileResponse[$test]['file'] = $fileName;
+					$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
 
-		// Mapping facility with users
-		$db->where('facility_id', $facilityId);
-		$delId = $db->delete($userFacilityMapTable);
-		if ($facilityId > 0 && trim((string) $_POST['selectedUser']) != '') {
-			$selectedUser = explode(",", (string) $_POST['selectedUser']);
-			if (!empty($_POST['selectedUser'])) {
-				for ($j = 0; $j < count($selectedUser); $j++) {
-					$uData = array(
-						'user_id' => $selectedUser[$j],
-						'facility_id' => $facilityId,
-					);
-					$db->insert($userFacilityMapTable, $uData);
+					// Move the uploaded file to the desired location
+					$sanitizedReportTemplate->moveTo($filePath);
+				} else {
+					$fileResponse[$test]['file'] = $_POST['oldTemplate'][$key];
+					$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
+				}
+				if (isset($_POST['deleteTemplate'][$key]) && !empty($_POST['deleteTemplate'][$key])) {
+					MiscUtility::deleteFile(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $facilityId);
+					$fileResponse[$test]['file'] = $_POST['oldTemplate'][$key];
+					$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
 				}
 			}
+			$reportFormatJson = JsonUtility::jsonToSetString(json_encode($fileResponse), 'report_format');
+			$db->where('facility_id', $facilityId);
+			$db->update('facility_details', ['report_format' => $db->func($reportFormatJson)]);
 		}
+
+		// // Mapping facility with users
+		// $db->where('facility_id', $facilityId);
+		// $delId = $db->delete('user_facility_map');
+		// if ($facilityId > 0 && trim((string) $_POST['selectedUser']) !== '') {
+		// 	$selectedUser = explode(",", (string) $_POST['selectedUser']);
+		// 	if (!empty($_POST['selectedUser'])) {
+		// 		$counter = count($selectedUser);
+		// 		for ($j = 0; $j < $counter; $j++) {
+		// 			$uData = ['user_id' => $selectedUser[$j], 'facility_id' => $facilityId];
+		// 			$db->insert('user_facility_map', $uData);
+		// 		}
+		// 	}
+		// }
 
 		// Mapping facility as a Testing Lab
 		// if (isset($_POST['testType']) && !empty($_POST['testType'])) {
@@ -247,13 +241,9 @@ try {
 				foreach ($_POST['testType'] as $testType) {
 					// Mapping facility as a Health Facility
 					if (isset($_POST['facilityType']) && $_POST['facilityType'] == 1) {
-						$hid = $db->insert($healthFacilityTable, array(
-							'test_type' => $testType,
-							'facility_id' => $facilityId,
-							'updated_datetime' => DateUtility::getCurrentDateTime()
-						));
+						$hid = $db->insert($healthFacilityTable, ['test_type' => $testType, 'facility_id' => $facilityId, 'updated_datetime' => DateUtility::getCurrentDateTime()]);
 						// Mapping facility as a Testing Lab
-					} else if (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
+					} elseif (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
 						$facilityTypeData = [
 							'test_type' => $testType,
 							'facility_id' => $facilityId,
@@ -271,7 +261,8 @@ try {
 			}
 
 			if (!empty($_POST['testData'])) {
-				for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
+				$counter = count($_POST['testData']);
+				for ($tf = 0; $tf < $counter; $tf++) {
 					$dataTest = [
 						'test_type' => $_POST['testData'][$tf],
 						'facility_id' => $facilityId,
@@ -287,7 +278,7 @@ try {
 			}
 		}
 
-		if (isset($_POST['removedLabLogoImage']) && trim((string) $_POST['removedLabLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage'])) {
+		if (isset($_POST['removedLabLogoImage']) && trim((string) $_POST['removedLabLogoImage']) !== "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage'])) {
 			MiscUtility::deleteFile(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage']);
 			MiscUtility::deleteFile(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']);
 			$data['facility_logo'] = null;
@@ -353,7 +344,7 @@ try {
 					$signData = [
 						'name_of_signatory' => $name,
 						'designation' => $_POST['designation'][$key],
-						'test_types' => implode(",", (array)$_POST['testSignType'][($key + 1)]),
+						'test_types' => implode(",", (array) $_POST['testSignType'][($key + 1)]),
 						'lab_id' => $facilityId,
 						'display_order' => $_POST['sortOrder'][$key],
 						'signatory_status' => $_POST['signStatus'][$key],
@@ -364,7 +355,7 @@ try {
 					$pathname = MiscUtility::buildSafePath(UPLOAD_PATH, ['labs', $facilityId, 'signatures']) . DIRECTORY_SEPARATOR;
 					$extension = MiscUtility::getFileExtension($sanitizedSignature[$key]->getClientFilename());
 					$imageName = MiscUtility::generateRandomString(12) . ".";
-					$imageName = $imageName . $extension;
+					$imageName .= $extension;
 
 					// Move the uploaded file to the desired location
 					$sanitizedSignature[$key]->moveTo($pathname . $imageName);

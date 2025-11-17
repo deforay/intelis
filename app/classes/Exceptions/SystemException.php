@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Override;
 use Exception;
 use Throwable;
 
@@ -13,8 +14,9 @@ class SystemException extends Exception
     }
 
     // custom string representation of object
+    #[Override]
     public function __toString(): string
     {
-        return __CLASS__ ?? __FILE__ . ": [$this->code]: $this->message" . PHP_EOL;
+        return self::class ?? __FILE__ . ": [$this->code]: $this->message" . PHP_EOL;
     }
 }

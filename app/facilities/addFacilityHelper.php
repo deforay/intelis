@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\ApiService;
 use App\Utilities\JsonUtility;
 use App\Utilities\DateUtility;
@@ -15,7 +16,7 @@ use App\Utilities\ImageResizeUtility;
 use App\Services\STS\TokensService;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
@@ -34,7 +35,6 @@ $stsTokensService = ContainerRegistry::get(TokensService::class);
 /* For reference we define the table names */
 $facilityTable = "facility_details";
 $provinceTable = "geographical_divisions";
-$userFacilityMapTable = "user_facility_map";
 $testingLabsTable = "testing_labs";
 $healthFacilityTable = "health_facilities";
 
@@ -46,31 +46,31 @@ $uploadedFiles = $request->getUploadedFiles();
 
 // Sanitize and validate the uploaded files
 $sanitizedLabLogo = $sanitizedSignature = $sanitizedReportTemplate = "";
-if (isset($uploadedFiles['reportTemplate']))
+if (isset($uploadedFiles['reportTemplate'])) {
 	$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'], ['pdf']);
-if (isset($uploadedFiles['labLogo']))
+}
+if (isset($uploadedFiles['labLogo'])) {
 	$sanitizedLabLogo = _sanitizeFiles($uploadedFiles['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
-if (isset($uploadedFiles['signature']))
+}
+if (isset($uploadedFiles['signature'])) {
 	$sanitizedSignature = _sanitizeFiles($uploadedFiles['signature'], ['png', 'jpg', 'jpeg', 'gif']);
+}
 
 try {
 
 	//Province Table
-	if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != "") {
+	if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== "") {
 		if (isset($_POST['provinceNew']) && $_POST['provinceNew'] != "" && $_POST['stateId'] == 'other') {
 			$_POST['stateId'] = $geolocation->addGeoLocation($_POST['provinceNew']);
 			$_POST['state'] = $_POST['provinceNew'];
 			// if (trim($_POST['state']) != "") {
-			$strSearch = (isset($_POST['provinceNew']) && trim((string) $_POST['provinceNew']) != '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
+			$strSearch = (isset($_POST['provinceNew']) && trim((string) $_POST['provinceNew']) !== '' && $_POST['state'] == 'other') ? $_POST['provinceNew'] : $_POST['state'];
 			$facilityQuery = "SELECT geo_name from geographical_divisions where geo_name= ?";
 			$facilityInfo = $db->rawQuery($facilityQuery, [$strSearch]);
 			if (isset($facilityInfo[0]['geo_name'])) {
 				$_POST['state'] = $facilityInfo[0]['geo_name'];
 			} else {
-				$geoData = array(
-					'geo_name' => $_POST['provinceNew'],
-					'updated_datetime' => DateUtility::getCurrentDateTime(),
-				);
+				$geoData = ['geo_name' => $_POST['provinceNew'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
 				$db->insert($provinceTable, $geoData);
 				$_POST['state'] = $_POST['provinceNew'];
 			}
@@ -81,12 +81,13 @@ try {
 			$_POST['instanceId'] = $instanceId;
 		}
 		$email = '';
-		if (isset($_POST['reportEmail']) && trim((string) $_POST['reportEmail']) != '') {
+		if (isset($_POST['reportEmail']) && trim((string) $_POST['reportEmail']) !== '') {
 			$expEmail = explode(",", (string) $_POST['reportEmail']);
-			for ($i = 0; $i < count($expEmail); $i++) {
+			$counter = count($expEmail);
+			for ($i = 0; $i < $counter; $i++) {
 				$reportEmail = filter_var($expEmail[$i], FILTER_VALIDATE_EMAIL);
 				if ($reportEmail != '') {
-					if ($email != '') {
+					if ($email !== '') {
 						$email .= "," . $reportEmail;
 					} else {
 						$email .= $reportEmail;
@@ -110,9 +111,9 @@ try {
 
 		$data = [
 			'facility_name' => $_POST['facilityName'],
-			'facility_code' => !empty($_POST['facilityCode']) ? $_POST['facilityCode'] : null,
+			'facility_code' => empty($_POST['facilityCode']) ? null : $_POST['facilityCode'],
 			'vlsm_instance_id' => $instanceId ?? null,
-			'other_id' => !empty($_POST['otherId']) ? $_POST['otherId'] : null,
+			'other_id' => empty($_POST['otherId']) ? null : $_POST['otherId'],
 			'facility_mobile_numbers' => $_POST['phoneNo'] ?? null,
 			'address' => $_POST['address'] ?? null,
 			'country' => $_POST['country'] ?? null,
@@ -127,7 +128,7 @@ try {
 			'report_email' => $email,
 			'contact_person' => $_POST['contactPerson'],
 			'facility_type' => $_POST['facilityType'],
-			'test_type' => (!empty($_POST['testType'])) ?  implode(', ', $_POST['testType'])  : null,
+			'test_type' => (empty($_POST['testType'])) ? null : implode(', ', $_POST['testType']),
 			'testing_points' => $_POST['testingPoints'],
 			'header_text' => $_POST['headerText'],
 			// 'report_format' => (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) ? json_encode($fileResponse) : null,
@@ -210,7 +211,7 @@ try {
 		}
 
 
-		if (!empty($facilityAttributes)) {
+		if ($facilityAttributes !== []) {
 			$data['facility_attributes'] = json_encode($facilityAttributes, true);
 		}
 
@@ -264,19 +265,22 @@ try {
 			}
 		}
 		// Mapping facility with users
-		if ($lastId > 0 && trim((string) $_POST['selectedUser']) != '') {
-			$selectedUser = explode(",", (string) $_POST['selectedUser']);
-			for ($j = 0; $j < count($selectedUser); $j++) {
-				$uData = [
-					'user_id' => $selectedUser[$j],
-					'facility_id' => $lastId,
-				];
-				$db->insert($userFacilityMapTable, $uData);
-			}
-		}
+		// if ($lastId > 0 && trim((string) $_POST['selectedUser']) !== '') {
+		// 	$selectedUser = explode(",", (string) $_POST['selectedUser']);
+		// 	$counter = count($selectedUser);
+		// 	for ($j = 0; $j < $counter; $j++) {
+		// 		$uData = [
+		// 			'user_id' => $selectedUser[$j],
+		// 			'facility_id' => $lastId,
+		// 		];
+		// 		$db->insert('user_facility_map', $uData);
+		// 	}
+		// }
 		if ($lastId > 0 && !empty($_POST['testData'])) {
 			// Mapping facility as a Testing Lab
-			for ($tf = 0; $tf < count($_POST['testData']); $tf++) {
+			$counter = count($_POST['testData']);
+			// Mapping facility as a Testing Lab
+			for ($tf = 0; $tf < $counter; $tf++) {
 				$dataTest = [
 					'test_type' => $_POST['testData'][$tf],
 					'facility_id' => $lastId,
@@ -295,7 +299,7 @@ try {
 					$signData = [
 						'name_of_signatory' => $name,
 						'designation' => $_POST['designation'][$key],
-						'test_types' => implode(",", (array)$_POST['testSignType'][($key + 1)]),
+						'test_types' => implode(",", (array) $_POST['testSignType'][($key + 1)]),
 						'lab_id' => $lastId,
 						'display_order' => $_POST['sortOrder'][$key],
 						'signatory_status' => $_POST['signStatus'][$key],
@@ -308,7 +312,7 @@ try {
 
 					$extension = MiscUtility::getFileExtension($sanitizedSignature[$key]->getClientFilename());
 					$imageName = MiscUtility::generateRandomString(12) . ".";
-					$imageName = $imageName . $extension;
+					$imageName .= $extension;
 
 					// Move the uploaded file to the desired location
 					$sanitizedSignature[$key]->moveTo($pathname . $imageName);
@@ -333,11 +337,7 @@ try {
 
 	if (isset($_POST['reqForm']) && $_POST['reqForm'] != '') {
 		$currentDateTime = DateUtility::getCurrentDateTime();
-		$healthFacilityData = array(
-			'test_type'     => "covid19",
-			'facility_id'   => $lastId,
-			'updated_datetime'  => $currentDateTime
-		);
+		$healthFacilityData = ['test_type' => "covid19", 'facility_id' => $lastId, 'updated_datetime' => $currentDateTime];
 		$db->insert("health_facilities", $healthFacilityData);
 		return 1;
 	} else {

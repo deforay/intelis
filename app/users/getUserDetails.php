@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -13,7 +14,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -44,14 +45,10 @@ $sQuery = "SELECT ud.user_id,
             FROM user_details as ud
             LEFT JOIN roles as r ON ud.role_id=r.role_id ";
 
-if (!empty($sWhere)) {
-    $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
-} else {
-    $sWhere = "";
-}
+$sWhere = empty($sWhere) ? "" : ' WHERE ' . implode(' AND ', $sWhere);
 $sQuery = "$sQuery $sWhere";
 if (!empty($sOrder) && $sOrder !== '') {
-    $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+    $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
     $sQuery = "$sQuery ORDER BY $sOrder";
 }
 

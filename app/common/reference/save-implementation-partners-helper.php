@@ -17,7 +17,7 @@ $tableName = "r_implementation_partners";
 $primaryKey = "i_partner_id";
 
 try {
-	if (isset($_POST['partnerName']) && trim((string) $_POST['partnerName']) != "") {
+	if (isset($_POST['partnerName']) && trim((string) $_POST['partnerName']) !== "") {
 
 		$data = [
 			'i_partner_name' => $_POST['partnerName'],

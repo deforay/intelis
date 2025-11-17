@@ -24,7 +24,7 @@ $contact = $db->query($contactInfo);
 $vlInfo = "SELECT sample_code,patient_first_name,patient_last_name,patient_art_no,sample_collection_date from form_vl where vl_sample_id=$id";
 $vlResult = $db->query($vlInfo);
 
-if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0]['sample_collection_date']) != '' && $vlResult[0]['sample_collection_date'] != '0000-00-00 00:00:00') {
+if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0]['sample_collection_date']) !== '' && $vlResult[0]['sample_collection_date'] != '0000-00-00 00:00:00') {
   $vlResult[0]['sample_collection_date'] = DateUtility::humanReadableDateFormat($vlResult[0]['sample_collection_date']);
 } else {
   $vlResult[0]['sample_collection_date'] = '';
@@ -63,7 +63,7 @@ if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0][
                   <label for="address" class="col-lg-4 control-label">Contact Notes<span class="mandatory">*</span></label>
                   <div class="col-lg-7">
                     <textarea class="form-control isRequired" name="notes" id="notes" title="Please enter contact notes" placeholder="Enter Contact Notes"></textarea>
-                    <input type="hidden" name="treamentId" id="treamentId" value="<?= htmlspecialchars($id); ?>" />
+                    <input type="hidden" name="treamentId" id="treamentId" value="<?= htmlspecialchars((string) $id); ?>" />
                   </div>
                 </div>
               </div>

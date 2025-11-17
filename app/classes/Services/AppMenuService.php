@@ -10,14 +10,12 @@ use App\Registries\ContainerRegistry;
 
 final class AppMenuService
 {
-    protected $db;
+    protected DatabaseService $db;
     protected string $table = 's_app_menu';
-    protected $commonService;
 
-    public function __construct(DatabaseService $db, CommonService $commonService)
+    public function __construct(DatabaseService $db, protected CommonService $commonService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
-        $this->commonService = $commonService;
     }
 
     public function getMenuDisplayTexts(): array
@@ -58,10 +56,8 @@ final class AppMenuService
         $response = [];
         foreach ($menuData as $key => $menu) {
             $menu['access'] = true;
-            if ($menu['link'] != "" && !empty($menu['link'])) {
-                if (!str_starts_with($menu['link'], '#')) {
-                    $menu['access'] = _isAllowed($menu['link']);
-                }
+            if ($menu['link'] != "" && !empty($menu['link']) && !str_starts_with((string) $menu['link'], '#')) {
+                $menu['access'] = _isAllowed($menu['link']);
             }
 
             if ($menu['has_children'] == 'yes') {

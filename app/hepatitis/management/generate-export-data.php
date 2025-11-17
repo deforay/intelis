@@ -27,9 +27,9 @@ $key = (string) $general->getGlobalConfig('key');
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatitisResultQuery']) != "") {
+if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatitisResultQuery']) !== "") {
 
-	$headings = array("S.No.", "Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
+	$headings = ["S.No.", "Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner"];
 	$output = [];
 
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
@@ -50,11 +50,7 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 
 		$sampleRejection = ($aRow['is_sample_rejected'] == 'yes' || ($aRow['reason_for_sample_rejection'] != null && $aRow['reason_for_sample_rejection'] > 0)) ? 'Yes' : 'No';
 
-		if ($general->isSTSInstance()) {
-			$sampleCode = 'remote_sample_code';
-		} else {
-			$sampleCode = 'sample_code';
-		}
+		$sampleCode = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
 
 		if (!empty($aRow['patient_name'])) {
 			$patientFname = ($general->crypto('doNothing', $aRow['patient_name'], $aRow['patient_id']));

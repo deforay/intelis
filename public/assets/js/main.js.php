@@ -31,8 +31,8 @@
 <?php
 
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use App\Services\SystemService;
+use App\Registries\ContainerRegistry;
 
 
 /** @var CommonService $general */
@@ -715,8 +715,8 @@ $remoteURL = $general->getRemoteURL();
         } else if (pName == '' && cName == '') {
             provinceName = true;
             facilityName = true;
-            $("#province").html("<?= !empty($province) ? $province : ''; ?>");
-            $("#facilityId").html("<?= !empty($facility) ? $facility : ''; ?>");
+            $("#province").html("<?= empty($province) ? '' : $province; ?>");
+            $("#facilityId").html("<?= empty($facility) ? '' : $facility; ?>");
         }
         $.unblockUI();
     }

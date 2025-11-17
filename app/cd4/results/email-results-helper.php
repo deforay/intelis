@@ -31,7 +31,7 @@ $sourcecode = sprintf("%02d", (count($resultmailSentResult) + 1));
 $sequencenumber = '';
 $instancefacilityCodeQuery = "SELECT instance_facility_code FROM s_vlsm_instance";
 $instancefacilityCodeResult = $db->rawQuery($instancefacilityCodeQuery);
-$instancefacilityCode = (isset($instancefacilityCodeResult[0]['instance_facility_code']) && trim((string) $instancefacilityCodeResult[0]['instance_facility_code']) != '') ? '/' . $instancefacilityCodeResult[0]['instance_facility_code'] : '';
+$instancefacilityCode = (isset($instancefacilityCodeResult[0]['instance_facility_code']) && trim((string) $instancefacilityCodeResult[0]['instance_facility_code']) !== '') ? '/' . $instancefacilityCodeResult[0]['instance_facility_code'] : '';
 $year = date("Y");
 $month = strtolower(date("M"));
 $sequencenumber = 'Ref : vlsm/results/' . $year . '/' . $month . $instancefacilityCode . '/' . $sourcecode;
@@ -43,7 +43,7 @@ foreach ($geResult as $row) {
    $mailconf[$row['name']] = $row['value'];
 }
 
-if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
+if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
 
       $tempMailData = [
       "to_mail" => $_POST['toEmail'],

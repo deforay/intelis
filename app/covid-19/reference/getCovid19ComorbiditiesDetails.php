@@ -5,7 +5,7 @@
 $tableName = "r_covid19_comorbidities";
 $primaryKey = "comorbidity_id";
 
-$aColumns = array('comorbidity_name', 'comorbidity_status');
+$aColumns = ['comorbidity_name', 'comorbidity_status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -38,7 +38,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -62,7 +62,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM r_covid19_comorbidities";
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $sWhere = ' where ' . implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }

@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const COUNTRY\SIERRA_LEONE;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -20,7 +22,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -70,14 +72,12 @@ if (!empty($id)) {
 
         $oldPrintData = JsonUtility::decodeJson($bResult['manifest_print_history'], false);
 
-        $newPrintData = array('printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime());
+        $newPrintData = ['printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
         $oldPrintData[] = $newPrintData;
         $db->where('manifest_id', $id);
-        $db->update('specimen_manifests', array(
-            'manifest_print_history' => json_encode($oldPrintData)
-        ));
+        $db->update('specimen_manifests', ['manifest_print_history' => json_encode($oldPrintData)]);
 
-        $reasonHistory = json_decode($bResult['manifest_change_history']);
+        $reasonHistory = json_decode((string) $bResult['manifest_change_history']);
 
         // create new PDF document
         $pdf = new ManifestPdfHelper(_translate('Viral Load Sample Referral Manifest'), PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -95,8 +95,8 @@ if (!empty($id)) {
         $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
         // set header and footer fonts
-        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+        $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
 
         // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -120,7 +120,7 @@ if (!empty($id)) {
 
         // add a page
         $pdf->AddPage();
-        if ($globalConfig['vl_form'] == COUNTRY\SIERRA_LEONE) {
+        if ($globalConfig['vl_form'] == SIERRA_LEONE) {
             //$pdf->writeHTMLCell(0, 20, 10, 10, 'FACILITY RELEASER INFORMATION ', 0, 0, 0, true, 'C', true);
             $pdf->WriteHTML('<strong>FACILITY RELEASER INFORMATION</strong>');
 

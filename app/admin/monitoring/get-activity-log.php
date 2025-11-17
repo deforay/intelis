@@ -6,10 +6,11 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -32,8 +33,8 @@ try {
 
      $sTable = $tableName;
      /*
-     * Paging
-     */
+      * Paging
+      */
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
@@ -76,10 +77,6 @@ try {
           $sWhere[] = $sWhereSub;
      }
 
-     /*
-     * SQL queries
-     * Get data to display
-     */
      $aWhere = '';
      $sQuery = '';
 
@@ -89,20 +86,20 @@ try {
                     LEFT JOIN resources as r ON a.resource = r.resource_id";
 
 
-     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
+     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
 
-     if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
-          $sWhere[] = ' DATE(date_time) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
+     if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
+          $sWhere[] = ' date_time BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
      }
-     if (isset($_POST['userName']) && trim((string) $_POST['userName']) != '') {
+     if (isset($_POST['userName']) && trim((string) $_POST['userName']) !== '') {
           $sWhere[] = ' user_id like "' . $_POST['userName'] . '"';
      }
 
-     if (isset($_POST['typeOfAction']) && trim((string) $_POST['typeOfAction']) != '') {
+     if (isset($_POST['typeOfAction']) && trim((string) $_POST['typeOfAction']) !== '') {
           $sWhere[] = ' event_type like "' . $_POST['typeOfAction'] . '"';
      }
      /* Implode all the where fields for filtering the data */
-     if (!empty($sWhere)) {
+     if ($sWhere !== []) {
           $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
      }
 
@@ -114,14 +111,12 @@ try {
 
 
      if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
+          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
      }
 
      [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-     /*
-     * Output
-     */
+
      $output = [
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,

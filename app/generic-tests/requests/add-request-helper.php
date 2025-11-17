@@ -1,5 +1,9 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -26,7 +30,7 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
@@ -51,39 +55,39 @@ try {
     }
 
 
-    $resultStatus = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+    $resultStatus = RECEIVED_AT_TESTING_LAB;
 
     if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
-        $resultStatus = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+        $resultStatus = RECEIVED_AT_CLINIC;
     }
     $countryFormId = $_POST['countryFormId'] ?? '';
     //add province
     $splitProvince = explode("##", (string) $_POST['province']);
-    if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
+    if (isset($splitProvince[0]) && trim($splitProvince[0]) !== '') {
         $provinceQuery = "SELECT * from geographical_divisions where geo_name=?";
         $provinceInfo = $db->rawQuery($provinceQuery, [$splitProvince[0]]);
         if (empty($provinceInfo)) {
-            $db->insert('geographical_divisions', array('geo_name' => $splitProvince[0], 'geo_code' => $splitProvince[1]));
+            $db->insert('geographical_divisions', ['geo_name' => $splitProvince[0], 'geo_code' => $splitProvince[1]]);
         }
     }
-    if (isset($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) != "") {
+    if (isset($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) !== "") {
         $_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($_POST['sampleCollectionDate'], true);
     } else {
         $_POST['sampleCollectionDate'] = null;
     }
-    if (isset($_POST['sampleDispatchedDate']) && trim((string) $_POST['sampleDispatchedDate']) != "") {
+    if (isset($_POST['sampleDispatchedDate']) && trim((string) $_POST['sampleDispatchedDate']) !== "") {
         $_POST['sampleDispatchedDate'] = DateUtility::isoDateFormat($_POST['sampleDispatchedDate'], true);
     } else {
         $_POST['sampleDispatchedDate'] = null;
     }
-    if (isset($_POST['dob']) && trim((string) $_POST['dob']) != "") {
+    if (isset($_POST['dob']) && trim((string) $_POST['dob']) !== "") {
         $_POST['dob'] = DateUtility::isoDateFormat($_POST['dob']);
     } else {
         $_POST['dob'] = null;
     }
 
     //Sample type section
-    if (isset($_POST['specimenType']) && trim((string) $_POST['specimenType']) != "") {
+    if (isset($_POST['specimenType']) && trim((string) $_POST['specimenType']) !== "") {
         if (trim((string) $_POST['specimenType']) != 2) {
             $_POST['conservationTemperature'] = null;
             $_POST['durationOfConservation'] = null;
@@ -95,8 +99,8 @@ try {
     }
 
     //update facility code
-    if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) != '') {
-        $fData = array('facility_code' => $_POST['facilityCode']);
+    if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) !== '') {
+        $fData = ['facility_code' => $_POST['facilityCode']];
         $db->where('facility_id', $_POST['facilityId']);
         $id = $db->update($fDetails, $fData);
     }
@@ -106,7 +110,7 @@ try {
     //   $db=$db->where('facility_id',$_POST['facilityId']);
     //   $id=$db->update($fDetails,$fData);
     //}
-    if (isset($_POST['gender']) && (trim((string) $_POST['gender']) == 'male' || trim((string) $_POST['gender']) == 'unreported')) {
+    if (isset($_POST['gender']) && (trim((string) $_POST['gender']) === 'male' || trim((string) $_POST['gender']) === 'unreported')) {
         $_POST['patientPregnant'] = "N/A";
         $_POST['breastfeeding'] = "N/A";
     }
@@ -119,49 +123,44 @@ try {
         $instanceId = $_POST['instanceId'];
     }
     $testingPlatform = '';
-    if (isset($_POST['testPlatform']) && trim((string) $_POST['testPlatform']) != '') {
+    if (isset($_POST['testPlatform']) && trim((string) $_POST['testPlatform']) !== '') {
         $platForm = explode("##", (string) $_POST['testPlatform']);
         $testingPlatform = $platForm[0];
     }
-    if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
+    if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== "") {
         $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'], true);
     } else {
         $_POST['sampleReceivedDate'] = null;
     }
-    if (isset($_POST['sampleTestingDateAtLab']) && trim((string) $_POST['sampleTestingDateAtLab']) != "") {
+    if (isset($_POST['sampleTestingDateAtLab']) && trim((string) $_POST['sampleTestingDateAtLab']) !== "") {
         $_POST['sampleTestingDateAtLab'] = DateUtility::isoDateFormat($_POST['sampleTestingDateAtLab'], true);
     } else {
         $_POST['sampleTestingDateAtLab'] = null;
     }
 
-    if (isset($_POST['sampleReceivedAtHubOn']) && trim((string) $_POST['sampleReceivedAtHubOn']) != "") {
+    if (isset($_POST['sampleReceivedAtHubOn']) && trim((string) $_POST['sampleReceivedAtHubOn']) !== "") {
         $_POST['sampleReceivedAtHubOn'] = DateUtility::isoDateFormat($_POST['sampleReceivedAtHubOn'], true);
     } else {
         $_POST['sampleReceivedAtHubOn'] = null;
     }
 
-    if (isset($_POST['approvedOn']) && trim((string) $_POST['approvedOn']) != "") {
+    if (isset($_POST['approvedOn']) && trim((string) $_POST['approvedOn']) !== "") {
         $_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'], true);
     } else {
         $_POST['approvedOn'] = null;
     }
 
-    if (isset($_POST['resultDispatchedOn']) && trim((string) $_POST['resultDispatchedOn']) != "") {
+    if (isset($_POST['resultDispatchedOn']) && trim((string) $_POST['resultDispatchedOn']) !== "") {
         $_POST['resultDispatchedOn'] = DateUtility::isoDateFormat($_POST['resultDispatchedOn'], true);
     } else {
         $_POST['resultDispatchedOn'] = null;
     }
 
-    if (isset($_POST['newRejectionReason']) && trim((string) $_POST['newRejectionReason']) != "") {
+    if (isset($_POST['newRejectionReason']) && trim((string) $_POST['newRejectionReason']) !== "") {
         $rejectionReasonQuery = "SELECT rejection_reason_id FROM r_generic_sample_rejection_reasons where rejection_reason_name='" . $_POST['newRejectionReason'] . "' OR rejection_reason_name='" . strtolower((string) $_POST['newRejectionReason']) . "' OR rejection_reason_name='" . (strtolower((string) $_POST['newRejectionReason'])) . "'";
         $rejectionResult = $db->rawQuery($rejectionReasonQuery);
         if (!isset($rejectionResult[0]['rejection_reason_id'])) {
-            $data = array(
-                'rejection_reason_name' => $_POST['newRejectionReason'],
-                'rejection_type' => 'general',
-                'rejection_reason_status' => 'active',
-                'updated_datetime' => DateUtility::getCurrentDateTime(),
-            );
+            $data = ['rejection_reason_name' => $_POST['newRejectionReason'], 'rejection_type' => 'general', 'rejection_reason_status' => 'active', 'updated_datetime' => DateUtility::getCurrentDateTime()];
             $id = $db->insert('r_generic_sample_rejection_reasons', $data);
             $_POST['rejectionReason'] = $id;
         } else {
@@ -173,7 +172,7 @@ try {
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
         $vl_result_category = 'rejected';
         $isRejected = true;
-        $resultStatus = SAMPLE_STATUS\REJECTED;
+        $resultStatus = REJECTED;
         $_POST['result'] = '';
         $_POST['vlLog'] = '';
     }
@@ -205,7 +204,7 @@ try {
         $_POST['subTestResult'] = 'default';
     }
 
-    $genericData = array(
+    $genericData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $formId,
         'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
@@ -241,7 +240,7 @@ try {
         'result_dispatched_datetime' => $_POST['resultDispatchedOn'],
         'is_sample_rejected' => (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] != '') ? $_POST['isSampleRejected'] : null,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : null,
-        'rejection_on' => (!empty($_POST['rejectionDate'])) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
+        'rejection_on' => (empty($_POST['rejectionDate'])) ? null : DateUtility::isoDateFormat($_POST['rejectionDate']),
         'result' => $_POST['result'] ?? null,
         // 'result_unit' => (isset($_POST['finalTestResultUnit']) && $_POST['finalTestResultUnit'] != "") ? implode("##",$_POST['finalTestResultUnit']) : null,
         'final_result_interpretation' => $interpretationResult,
@@ -251,10 +250,10 @@ try {
         'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : null,
         'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] : null,
         'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
-        'lab_tech_comments' => (isset($_POST['labComments']) && trim((string) $_POST['labComments']) != '') ? trim((string) $_POST['labComments']) : null,
+        'lab_tech_comments' => (isset($_POST['labComments']) && trim((string) $_POST['labComments']) !== '') ? trim((string) $_POST['labComments']) : null,
         'result_status' => $resultStatus,
-        'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
-        'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
+        'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') ? base64_decode((string) $_POST['fundingSource']) : null,
+        'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') ? base64_decode((string) $_POST['implementingPartner']) : null,
         'test_number' => (isset($_POST['viralLoadNo']) && $_POST['viralLoadNo'] != '') ? $_POST['viralLoadNo'] : null,
         'request_created_datetime' => DateUtility::getCurrentDateTime(),
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
@@ -263,8 +262,7 @@ try {
         'test_type' => $_POST['testType'],
         'sub_tests' => (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) ? implode("##", $_POST['subTestResult']) : $_POST['subTestResult'],
         'test_type_form' => json_encode($_POST['dynamicFields']),
-        // 'reason_for_failure'                    => (isset($_POST['reasonForFailure']) && $_POST['reasonForFailure'] != '') ? $_POST['reasonForFailure'] :  null,
-    );
+    ];
 
     if ($general->isLISInstance() || $general->isStandaloneInstance()) {
         $genericData['source_of_request'] = 'vlsm';
@@ -283,27 +281,11 @@ try {
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         if (!empty($_POST['testName'])) {
             $finalResult = "";
-            if (isset($_POST['subTestResult']) && !empty($_POST['subTestResult'])) {
+            if (isset($_POST['subTestResult']) && (isset($_POST['subTestResult']) && ($_POST['subTestResult'] !== '' && $_POST['subTestResult'] !== '0'))) {
                 foreach ($_POST['testName'] as $subTestName => $subTests) {
                     foreach ($subTests as $testKey => $testKitName) {
                         if (!empty($testKitName)) {
-                            $testData = array(
-                                'generic_id' => $_POST['vlSampleId'],
-                                'sub_test_name' => $subTestName,
-                                'result_type' => $_POST['resultType'][$subTestName],
-                                'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName,
-                                'facility_id' => $_POST['labId'] ?? null,
-                                'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? ''),
-                                'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null,
-                                'kit_lot_no' => (str_contains((string)$testKitName, 'RDT')) ? $_POST['lotNo'][$subTestName][$testKey] : null,
-                                'kit_expiry_date' => (str_contains((string)$testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null,
-                                'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey],
-                                'result' => $_POST['testResult'][$subTestName][$testKey],
-
-                                'final_result' => $_POST['finalResult'][$subTestName],
-                                'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName],
-                                'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]
-                            );
+                            $testData = ['generic_id' => $_POST['vlSampleId'], 'sub_test_name' => $subTestName, 'result_type' => $_POST['resultType'][$subTestName], 'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName, 'facility_id' => $_POST['labId'] ?? null, 'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? ''), 'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null, 'kit_lot_no' => (str_contains((string)$testKitName, 'RDT')) ? $_POST['lotNo'][$subTestName][$testKey] : null, 'kit_expiry_date' => (str_contains((string)$testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null, 'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey], 'result' => $_POST['testResult'][$subTestName][$testKey], 'final_result' => $_POST['finalResult'][$subTestName], 'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName], 'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]];
                             $db->insert('generic_test_results', $testData);
                             if (isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName])) {
                                 $finalResult = $_POST['finalResult'][$subTestName];
@@ -314,19 +296,7 @@ try {
             } else {
                 foreach ($_POST['testName'] as $testKey => $testKitName) {
                     if (!empty($_POST['testName'][$testKey][0])) {
-                        $testData = array(
-                            'generic_id' => $_POST['vlSampleId'] ?? null,
-                            'sub_test_name' => null,
-                            'result_type' => $_POST['resultType'][$testKey][0] ?? null,
-                            'test_name' => ($_POST['testName'][$testKey][0] == 'other') ? $_POST['testNameOther'][$testKey][0] : $_POST['testName'][$testKey][0],
-                            'facility_id' => $_POST['labId'] ?? null,
-                            'sample_tested_datetime' => (isset($_POST['testDate'][$testKey][0]) && !empty($_POST['testDate'][$testKey][0])) ? DateUtility::isoDateFormat($_POST['testDate'][$testKey][0]) : null,
-                            'testing_platform' => $_POST['testingPlatform'][$testKey][0] ?? null,
-                            'kit_lot_no' => (str_contains((string)$_POST['testName'][$testKey][0], 'RDT')) ? $_POST['lotNo'][$testKey][0] : null,
-                            'kit_expiry_date' => (str_contains((string)$_POST['testName'][$testKey][0], 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey][0]) : null,
-                            'result_unit' => $_POST['testResultUnit'][$testKey][0] ?? null,
-                            'result' => $_POST['testResult'][$testKey][0] ?? null
-                        );
+                        $testData = ['generic_id' => $_POST['vlSampleId'] ?? null, 'sub_test_name' => null, 'result_type' => $_POST['resultType'][$testKey][0] ?? null, 'test_name' => ($_POST['testName'][$testKey][0] == 'other') ? $_POST['testNameOther'][$testKey][0] : $_POST['testName'][$testKey][0], 'facility_id' => $_POST['labId'] ?? null, 'sample_tested_datetime' => (isset($_POST['testDate'][$testKey][0]) && !empty($_POST['testDate'][$testKey][0])) ? DateUtility::isoDateFormat($_POST['testDate'][$testKey][0]) : null, 'testing_platform' => $_POST['testingPlatform'][$testKey][0] ?? null, 'kit_lot_no' => (str_contains((string)$_POST['testName'][$testKey][0], 'RDT')) ? $_POST['lotNo'][$testKey][0] : null, 'kit_expiry_date' => (str_contains((string)$_POST['testName'][$testKey][0], 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey][0]) : null, 'result_unit' => $_POST['testResultUnit'][$testKey][0] ?? null, 'result' => $_POST['testResult'][$testKey][0] ?? null];
                         foreach ($_POST['finalResult'] as $key => $value) {
                             if (isset($value) && !empty($value)) {
                                 $testData['final_result'] = $value;

@@ -1,6 +1,6 @@
 <?php
 // get-missing-samples-priority-counts.php
-
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -10,7 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -31,12 +31,12 @@ try {
     $sWhere[] = " (t.is_sample_rejected IS NULL OR t.is_sample_rejected != 'yes') ";
 
     // Date range filter
-    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
+    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
         $sWhere[] = " t.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
     }
 
-    $whereSql = !empty($sWhere) ? (' WHERE ' . implode(' AND ', $sWhere)) : '';
+    $whereSql = $sWhere === [] ? ('') : ' WHERE ' . implode(' AND ', $sWhere);
 
     $priorityQuery = "
         SELECT

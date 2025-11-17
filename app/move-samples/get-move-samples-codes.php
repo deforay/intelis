@@ -28,40 +28,40 @@ $scDate = $_POST['scDate'];
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 if ($testType == "vl") {
-	$tableName = "form_vl";
-	$primaryKey = "vl_sample_id";
-} else if ($testType == "eid") {
-	$tableName = "form_eid";
-	$primaryKey = "eid_id";
-} else if ($testType == "covid19") {
-	$tableName = "form_covid19";
-	$primaryKey = "covid19_id";
-} else if ($testType == "hepatitis") {
-	$tableName = "form_hepatitis";
-	$primaryKey = "hepatitis_id";
+    $tableName = "form_vl";
+    $primaryKey = "vl_sample_id";
+} elseif ($testType == "eid") {
+    $tableName = "form_eid";
+    $primaryKey = "eid_id";
+} elseif ($testType == "covid19") {
+    $tableName = "form_covid19";
+    $primaryKey = "covid19_id";
+} elseif ($testType == "hepatitis") {
+    $tableName = "form_hepatitis";
+    $primaryKey = "hepatitis_id";
 }
 
 
 
 $query = "SELECT vl.remote_sample_code,vl.$primaryKey,vl.facility_id FROM $tableName as vl WHERE (vl.result is NULL or vl.result = '') AND (vl.remote_sample_code IS NOT NULL OR vl.remote_sample_code NOT LIKE '')";
 
-if (trim((string) $lName) != '') {
+if (trim((string) $lName) !== '') {
 	$query = $query . " AND vl.lab_id='" . $lName . "'";
 }
 if ($_POST['facilityId'] != '') {
 	$query = $query . " AND vl.facility_id='" . $facilityId . "'";
 }
-if (isset($scDate) && trim((string) $scDate) != '') {
+if (isset($scDate) && trim((string) $scDate) !== '') {
 	$s_c_date = explode("to", (string) $scDate);
 
-	if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
+	if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
 		$start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
 	}
-	if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
+	if (isset($s_c_date[1]) && trim($s_c_date[1]) !== "") {
 		$end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
 	}
 
-	if (trim((string) $start_date) == trim((string) $end_date)) {
+	if (trim((string) $start_date) === trim((string) $end_date)) {
 		$query = $query . ' AND DATE(vl.sample_collection_date) = "' . $start_date . '"';
 	} else {
 		$query = $query . ' AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -69,7 +69,7 @@ if (isset($scDate) && trim((string) $scDate) != '') {
 }
 
 //$query = $query." ORDER BY f.facility_name ASC";
-$query = $query . " ORDER BY vl.request_created_datetime ASC";
+$query .= " ORDER BY vl.request_created_datetime ASC";
 // die($query);
 $result = $db->rawQuery($query);
 ?>

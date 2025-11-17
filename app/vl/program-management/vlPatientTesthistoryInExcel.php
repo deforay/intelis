@@ -23,11 +23,11 @@ $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 
-if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['patientTestHistoryResult']) != "") {
+if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['patientTestHistoryResult']) !== "") {
 
      $output = [];
 
-     $headings = array('Patient ID', 'Patient Name', "Age", "DoB", "Facility Name", "Requesting Clinican", "Sample Collection Date", "Sample Type", "Lab Name", "Sample Tested Date", "Result");
+     $headings = ['Patient ID', 'Patient Name', "Age", "DoB", "Facility Name", "Requesting Clinican", "Sample Collection Date", "Sample Type", "Lab Name", "Sample Tested Date", "Result"];
 
      $resultSet = $db->rawQuery($_SESSION['patientTestHistoryResult']);
      foreach ($resultSet as $aRow) {
@@ -35,30 +35,18 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
           //sample collecion date
           $sampleCollectionDate = '';
           $sampleTestDate = '';
-          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $aRow['sample_collection_date']);
                $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
           }
-          if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+          if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) !== '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $aRow['sample_tested_datetime']);
                $sampleTestDate =  date("d-m-Y", strtotime($expStr[0]));
           }
 
-          if ($aRow['patient_first_name'] != '') {
-               $patientFname = $aRow['patient_first_name'];
-          } else {
-               $patientFname = '';
-          }
-          if ($aRow['patient_middle_name'] != '') {
-               $patientMname = $aRow['patient_middle_name'];
-          } else {
-               $patientMname = '';
-          }
-          if ($aRow['patient_last_name'] != '') {
-               $patientLname = $aRow['patient_last_name'];
-          } else {
-               $patientLname = '';
-          }
+          $patientFname = $aRow['patient_first_name'] != '' ? $aRow['patient_first_name'] : '';
+          $patientMname = $aRow['patient_middle_name'] != '' ? $aRow['patient_middle_name'] : '';
+          $patientLname = $aRow['patient_last_name'] != '' ? $aRow['patient_last_name'] : '';
 
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
                $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
@@ -92,21 +80,7 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
           $sheet = $excel->getActiveSheet();
 
 
-          $styleArray = array(
-               'font' => array(
-                    'bold' => true,
-                    'size' => '13',
-               ),
-               'alignment' => array(
-                    'horizontal' => Alignment::HORIZONTAL_CENTER,
-                    'vertical' => Alignment::VERTICAL_CENTER,
-               ),
-               'borders' => array(
-                    'outline' => array(
-                         'style' => Border::BORDER_THIN,
-                    ),
-               )
-          );
+          $styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
 
 
           $sheet->mergeCells('A1:AE1');

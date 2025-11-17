@@ -697,7 +697,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?= (!$general->isStandaloneInstance()) ? 6 : 5; ?>, "desc"]
+				[<?= ($general->isStandaloneInstance()) ? 5 : 6; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -785,7 +785,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?= (!$general->isStandaloneInstance()) ? 5 : 4; ?>, "desc"]
+				[<?= ($general->isStandaloneInstance()) ? 4 : 5; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -870,7 +870,7 @@ $state = $geolocationService->getProvinces("yes");
 				}
 			],
 			"aaSorting": [
-				[<?= (!$general->isStandaloneInstance()) ? 5 : 4; ?>, "desc"]
+				[<?= ($general->isStandaloneInstance()) ? 4 : 5; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
@@ -960,7 +960,7 @@ $state = $geolocationService->getProvinces("yes");
 				},
 			],
 			"aaSorting": [
-				[<?= (!$general->isStandaloneInstance()) ? 2 : 1; ?>, "desc"]
+				[<?= ($general->isStandaloneInstance()) ? 1 : 2; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

@@ -105,7 +105,7 @@ $cd4QueryInfo['last_viral_load_date'] = DateUtility::humanReadableDateFormat($cd
 $cd4QueryInfo['date_test_ordered_by_physician'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['date_test_ordered_by_physician'] ?? '');
 
 //Has patient changed regimen section
-if (trim((string) $cd4QueryInfo['has_patient_changed_regimen']) == "yes") {
+if (trim((string) $cd4QueryInfo['has_patient_changed_regimen']) === "yes") {
      $cd4QueryInfo['regimen_change_date'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['regimen_change_date'] ?? '');
 } else {
      $cd4QueryInfo['reason_for_regimen_change'] = $cd4QueryInfo['regimen_change_date'] = '';

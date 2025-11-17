@@ -1,7 +1,8 @@
 <?php
 
 // File gets called in import-file-helper.php based on the selected instrument type
-
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -13,14 +14,14 @@ use App\Registries\ContainerRegistry;
 
 try {
     // Sanitized values from $request object
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
     /** @var TestResultsService $testResultsService */
     $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
-    $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
+    $dateFormat = (empty($_POST['dateFormat'])) ? 'd/m/Y H:i' : $_POST['dateFormat'];
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'eid');
 
@@ -100,7 +101,7 @@ try {
 
                     if (str_contains(strtolower((string)$sheetData[$resultCol]), 'not detected')) {
                         $result = 'negative';
-                    } else if ((str_contains(strtolower((string)$sheetData[$resultCol]), 'detected')) || (str_contains(strtolower((string)$sheetData[$resultCol]), 'passed'))) {
+                    } elseif ((str_contains(strtolower((string)$sheetData[$resultCol]), 'detected')) || (str_contains(strtolower((string)$sheetData[$resultCol]), 'passed'))) {
                         $result = 'positive';
                     } else {
                         $result = 'indeterminate';
@@ -108,7 +109,7 @@ try {
 
 
                     $lotNumberVal = $sheetData[$lotNumberCol];
-                    if (trim((string) $sheetData[$lotExpirationDateCol]) != '') {
+                    if (trim((string) $sheetData[$lotExpirationDateCol]) !== '') {
                         $timestamp = DateTime::createFromFormat("!$dateFormat", $sheetData[$lotExpirationDateCol]);
                         if (!empty($timestamp)) {
                             $timestamp = $timestamp->getTimestamp();
@@ -121,15 +122,14 @@ try {
                     $sampleType = $sheetData[$sampleTypeCol];
                     if ($sampleType == 'Patient') {
                         $sampleType = 'S';
-                    } else if ($sampleType == 'Control') {
-
+                    } elseif ($sampleType == 'Control') {
                         if ($sampleCode == 'HIV_HIPOS') {
                             $sampleType = 'HPC';
                             $sampleCode = "$sampleCode-$lotNumberVal";
-                        } else if ($sampleCode == 'HIV_LOPOS') {
+                        } elseif ($sampleCode == 'HIV_LOPOS') {
                             $sampleType = 'LPC';
                             $sampleCode = "$sampleCode-$lotNumberVal";
-                        } else if ($sampleCode == 'HIV_NEG') {
+                        } elseif ($sampleCode == 'HIV_NEG') {
                             $sampleType = 'NC';
                             $sampleCode = "$sampleCode-$lotNumberVal";
                         }
@@ -172,7 +172,7 @@ try {
                 'sample_code' => $d['sampleCode'],
                 'sample_type' => $d['sampleType'],
                 'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
+                'result_status' => RECEIVED_AT_TESTING_LAB,
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag'],
                 'lot_number' => $d['lotNumber'],
@@ -194,7 +194,7 @@ try {
             $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
+                $scData = ['r_sample_control_name' => trim((string) $d['sampleType'])];
                 $scId = $db->insert("r_sample_controls", $scData);
             }
             if (!empty($vlResult) && !empty($sampleCode)) {

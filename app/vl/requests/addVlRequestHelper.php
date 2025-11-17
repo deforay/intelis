@@ -1,5 +1,9 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const COUNTRY\PNG;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -31,7 +35,7 @@ $finalResult = null;
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
@@ -47,19 +51,19 @@ try {
         $_POST['sampleCollectionDate']
     ];
 
-    if (empty($_POST) || ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
+    if ($_POST === [] || ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
         $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
         MiscUtility::redirect("/vl/requests/addVlRequest.php");
     }
 
     if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
-        $resultStatus = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+        $resultStatus = RECEIVED_AT_CLINIC;
     } else {
-        $resultStatus = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+        $resultStatus = RECEIVED_AT_TESTING_LAB;
     }
 
     //add province
-    if (isset($splitProvince[0]) && trim($splitProvince[0]) != '') {
+    if (isset($splitProvince[0]) && trim((string) $splitProvince[0]) !== '') {
         $provinceQuery = "SELECT * from geographical_divisions where geo_name=?";
         $provinceInfo = $db->rawQueryOne($provinceQuery, [$splitProvince[0]]);
         if (empty($provinceInfo)) {
@@ -71,7 +75,7 @@ try {
     }
 
 
-    if (isset($_POST['newArtRegimen']) && trim((string) $_POST['newArtRegimen']) != "") {
+    if (isset($_POST['newArtRegimen']) && trim((string) $_POST['newArtRegimen']) !== "") {
         $artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen
                         WHERE art_code like ?";
         $artResult = $db->rawQueryOne($artQuery);
@@ -90,7 +94,7 @@ try {
 
     try {
         //update facility code
-        if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) != '') {
+        if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) !== '') {
             $fData = ['facility_code' => $_POST['facilityCode']];
             $db->where('facility_id', $_POST['facilityId']);
             $id = $db->update('facility_details', $fData);
@@ -102,7 +106,7 @@ try {
             'line' => $e->getLine()
         ]);
     }
-    if (isset($_POST['gender']) && (trim((string) $_POST['gender']) == 'male' || trim((string) $_POST['gender']) == 'unreported')) {
+    if (isset($_POST['gender']) && (trim((string) $_POST['gender']) === 'male' || trim((string) $_POST['gender']) === 'unreported')) {
         $_POST['patientPregnant'] = "N/A";
         $_POST['breastfeeding'] = "N/A";
     }
@@ -110,7 +114,7 @@ try {
 
     $testingPlatform = null;
     $instrumentId = null;
-    if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) != '') {
+    if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) !== '') {
         $platForm = explode("##", (string) $_POST['testingPlatform']);
         $testingPlatform = $platForm[0];
         $instrumentId = $platForm[3];
@@ -171,10 +175,7 @@ try {
         if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
             $_POST['reasonForVLTesting'] = $reasonResult[0]['test_reason_id'];
         } else {
-            $data = array(
-                'test_reason_name' => $_POST['reasonForVLTesting'],
-                'test_reason_status' => 'active'
-            );
+            $data = ['test_reason_name' => $_POST['reasonForVLTesting'], 'test_reason_status' => 'active'];
             $id = $db->insert('r_vl_test_reasons', $data);
             $_POST['reasonForVLTesting'] = $id;
         }
@@ -275,8 +276,8 @@ try {
         'result_value_hiv_detection' => $hivDetection,
         'reason_for_failure' => $_POST['reasonForFailure'] ?? null,
         'is_sample_rejected' => $isRejected ?? null,
-        'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim((string) $_POST['rejectionReason']) != '') ? $_POST['rejectionReason'] : null,
-        'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
+        'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim((string) $_POST['rejectionReason']) !== '') ? $_POST['rejectionReason'] : null,
+        'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) !== '') ? $_POST['correctiveAction'] : null,
         'rejection_on' => DateUtility::isoDateFormat($_POST['rejectionDate'] ?? ''),
         'result_value_absolute' => $absVal ?? null,
         'result_value_absolute_decimal' => $absDecimalVal ?? null,
@@ -291,8 +292,8 @@ try {
         'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
         'lab_tech_comments' => $_POST['labComments'] ?? null,
         'result_status' => $resultStatus,
-        'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
-        'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
+        'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') ? base64_decode((string) $_POST['fundingSource']) : null,
+        'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) !== '') ? base64_decode((string) $_POST['implementingPartner']) : null,
         'vl_test_number' => $_POST['viralLoadNo'] ?? null,
         'request_created_datetime' => DateUtility::getCurrentDateTime(),
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
@@ -315,7 +316,7 @@ try {
 
 
     //For PNG form
-    if ($formId == COUNTRY\PNG) {
+    if ($formId == PNG) {
 
         $pngSpecificFields = [];
         if (isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') {
@@ -418,7 +419,7 @@ try {
     $id = $db->update($tableName, $vlData);
 
     $db->commitTransaction();
-    $patientId = isset($_POST['artNo']) ? $_POST['artNo'] : '';
+    $patientId = $_POST['artNo'] ?? '';
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("VL request added successfully");
         $eventType = 'add-vl-request';

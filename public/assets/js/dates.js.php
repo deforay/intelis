@@ -22,26 +22,26 @@ $general = ContainerRegistry::get(CommonService::class);
         return dayjs(value, dayjsDateFormat);
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         initDatePicker();
         initDateTimePicker();
 
         $('.expDate').datepicker({
             changeMonth: true,
             changeYear: true,
-            onSelect: function() {
+            onSelect: function () {
                 $(this).change();
             },
             dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
             yearRange: "<?= DateUtility::getYearMinus(100) . ":" . DateUtility::getCurrentYear(); ?>"
-        }).click(function() {
+        }).click(function () {
             $('.ui-datepicker-calendar').show();
         });
 
         if ($("#patientDob").length) {
             $("#patientDob").datepicker('option', {
-                onSelect: function(dateText, inst) {
+                onSelect: function (dateText, inst) {
                     $("#sampleCollectionDate").datetimepicker("option", "minDate", $("#patientDob").datepicker("getDate"));
                     $(this).change();
                 }
@@ -51,7 +51,7 @@ $general = ContainerRegistry::get(CommonService::class);
         if ($("#childDob").length) {
             $("#childDob").datepicker('option', {
                 minDate: "-48m",
-                onSelect: function(dateText, inst) {
+                onSelect: function (dateText, inst) {
                     $("#sampleCollectionDate").datetimepicker("option", "minDate", $("#childDob").datepicker("getDate"));
                     $(this).change();
                 }
@@ -65,10 +65,10 @@ $general = ContainerRegistry::get(CommonService::class);
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 maxDate: "Today",
                 yearRange: "<?= DateUtility::getYearMinus(100) . ":" . DateUtility::getCurrentYear(); ?>",
-                onSelect: function(dateText, inst) {
+                onSelect: function (dateText, inst) {
                     $(this).change();
                 }
-            }).click(function() {
+            }).click(function () {
                 $('.ui-datepicker-calendar').show();
             });
         }
@@ -77,13 +77,13 @@ $general = ContainerRegistry::get(CommonService::class);
             $('#nextAppointmentDate').datepicker({
                 changeMonth: true,
                 changeYear: true,
-                onSelect: function() {
+                onSelect: function () {
                     $(this).change();
                 },
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
                 yearRange: "<?= DateUtility::getYearMinus(100) . ":" . DateUtility::getCurrentYear(); ?>"
-            }).click(function() {
+            }).click(function () {
                 $('.ui-datepicker-calendar').show();
             });
         }
@@ -95,17 +95,17 @@ $general = ContainerRegistry::get(CommonService::class);
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
                 maxDate: "Today",
-                onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
+                onChangeMonthYear: function (year, month, widget) {
+                    setTimeout(function () {
                         $('.ui-datepicker-calendar').show();
                     });
                 },
                 yearRange: "<?= DateUtility::getYearMinus(100) . ":" . DateUtility::getCurrentYear(); ?>"
-            }).click(function() {
+            }).click(function () {
                 $('.ui-datepicker-calendar').show();
             });
 
-            $('#sampleCollectionDate').on('change', function() {
+            $('#sampleCollectionDate').on('change', function () {
                 var selectedDate = $(this).datetimepicker('getDate');
                 var currentReceivedAtHubOn = $('#sampleReceivedAtHubOn').datetimepicker('getDate');
                 var currentReceivedDate = $('#sampleReceivedDate').datetimepicker('getDate');
@@ -138,16 +138,16 @@ $general = ContainerRegistry::get(CommonService::class);
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
                 maxDate: "+7d",
-                onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
+                onChangeMonthYear: function (year, month, widget) {
+                    setTimeout(function () {
                         $('.ui-datepicker-calendar').show();
                     });
                 },
                 yearRange: "<?= DateUtility::getYearMinus(100) . ":" . DateUtility::getCurrentYear(); ?>"
-            }).click(function() {
+            }).click(function () {
                 $('.ui-datepicker-calendar').show();
             });
-            $('#sampleDispatchedDate').on('change', function() {
+            $('#sampleDispatchedDate').on('change', function () {
                 checkSampleDispatchDate();
             });
         }
@@ -159,17 +159,17 @@ $general = ContainerRegistry::get(CommonService::class);
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
                 maxDate: "Today",
-                onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
+                onChangeMonthYear: function (year, month, widget) {
+                    setTimeout(function () {
                         $('.ui-datepicker-calendar').show();
                     });
                 },
                 yearRange: "<?= DateUtility::getYearMinus(100) . ":" . DateUtility::getCurrentYear(); ?>"
-            }).click(function() {
+            }).click(function () {
                 $('.ui-datepicker-calendar').show();
             });
 
-            $('#sampleReceivedDate').on('change', function() {
+            $('#sampleReceivedDate').on('change', function () {
                 var selectedDate = $(this).datetimepicker('getDate');
                 var currentTestingDateAtLab = $('#sampleTestingDateAtLab').datetimepicker('getDate');
 
@@ -188,17 +188,17 @@ $general = ContainerRegistry::get(CommonService::class);
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
                 maxDate: "Today",
-                onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
+                onChangeMonthYear: function (year, month, widget) {
+                    setTimeout(function () {
                         $('.ui-datepicker-calendar').show();
                     });
                 },
                 yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function() {
+            }).click(function () {
                 $('.ui-datepicker-calendar').show();
             });
 
-            $('#sampleTestedDateTime, #sampleTestingDateAtLab').on('change', function() {
+            $('#sampleTestedDateTime, #sampleTestingDateAtLab').on('change', function () {
                 var selectedDate = $(this).datetimepicker('getDate');
                 var currentresultDispatchedOn = $('#resultDispatchedOn').datetimepicker('getDate');
 
@@ -219,16 +219,16 @@ $general = ContainerRegistry::get(CommonService::class);
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
                 maxDate: "Today",
-                onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
+                onChangeMonthYear: function (year, month, widget) {
+                    setTimeout(function () {
                         $('.ui-datepicker-calendar').show();
                     });
                 },
                 yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function() {
+            }).click(function () {
                 $('.ui-datepicker-calendar').show();
             });
-            $('#approvedOnDateTime').on('change', function() {
+            $('#approvedOnDateTime').on('change', function () {
                 var selectedDate = $(this).datetimepicker('getDate');
                 $('#resultDispatchedOn').val('');
                 $('#resultDispatchedOn').datetimepicker('option', 'minDate', selectedDate);
@@ -241,37 +241,37 @@ $general = ContainerRegistry::get(CommonService::class);
     });
 
     function initDatePicker() {
-        $('.date:not(.hasDatePicker)').each(function() {
+        $('.date:not(.hasDatePicker)').each(function () {
             $(this).addClass('hasDatePicker').datepicker({
                 changeMonth: true,
                 changeYear: true,
-                onSelect: function() {
+                onSelect: function () {
                     $(this).change();
                 },
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 maxDate: "Today",
                 yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function() {
+            }).click(function () {
                 $('.ui-datepicker-calendar').show();
             });
         });
     }
 
     function initDateTimePicker() {
-        $('.dateTime:not(.hasDateTimePicker), .date-time:not(.hasDateTimePicker)').each(function() {
+        $('.dateTime:not(.hasDateTimePicker), .date-time:not(.hasDateTimePicker)').each(function () {
             $(this).addClass('hasDateTimePicker').datetimepicker({
                 changeMonth: true,
                 changeYear: true,
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
                 maxDate: "Today",
-                onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
+                onChangeMonthYear: function (year, month, widget) {
+                    setTimeout(function () {
                         $('.ui-datepicker-calendar').show();
                     });
                 },
                 yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function() {
+            }).click(function () {
                 $('.ui-datepicker-calendar').show();
             });
         });

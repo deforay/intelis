@@ -16,14 +16,10 @@ $tableName = "r_generic_test_methods";
 $testMethodId = (int) base64_decode((string) $_POST['testMethodId']);
 $_POST['testMethod'] = trim((string) $_POST['testMethod']);
 try {
-    if (!empty($_POST['testMethod'])) {
+    if (isset($_POST['testMethod']) && ($_POST['testMethod'] !== '' && $_POST['testMethod'] !== '0')) {
 
-        $data = array(
-            'test_method_name' => $_POST['testMethod'],
-            'test_method_status' => $_POST['testMethodStatus'],
-            'updated_datetime' => DateUtility::getCurrentDateTime()
-        );
-        if (!empty($testMethodId)) {
+        $data = ['test_method_name' => $_POST['testMethod'], 'test_method_status' => $_POST['testMethodStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
+        if ($testMethodId !== 0) {
             $db->where('test_method_id', $testMethodId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {

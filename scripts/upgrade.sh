@@ -482,9 +482,9 @@ if ! command -v php &>/dev/null; then
     exit 1
 fi
 
-# Check for PHP version 8.2.x
+# Check for PHP version 8.4.x
 php_version=$(php -v | head -n 1 | grep -oP 'PHP \K([0-9]+\.[0-9]+)')
-desired_php_version="8.2"
+desired_php_version="8.4"
 
 # Download and install switch-php script
 ensure_switch_php
@@ -492,7 +492,7 @@ ensure_switch_php
 if [[ "${php_version}" != "${desired_php_version}" ]]; then
     print info "Current PHP version is ${php_version}. Switching to PHP ${desired_php_version}."
 
-    # Switch to PHP 8.2
+    # Switch to PHP 8.4
     switch-php ${desired_php_version}
 
     if [ $? -ne 0 ]; then

@@ -15,13 +15,8 @@ $symptomId = (int) base64_decode((string) $_POST['symptomId']);
 try {
     if (!empty($_POST['symptomName'])) {
 
-        $data = array(
-            'symptom_name' => trim((string) $_POST['symptomName']),
-            'symptom_code' => trim((string) $_POST['symptomCode']),
-            'symptom_status' => $_POST['status'],
-            'updated_datetime' => DateUtility::getCurrentDateTime()
-        );
-        if (!empty($symptomId)) {
+        $data = ['symptom_name' => trim((string) $_POST['symptomName']), 'symptom_code' => trim((string) $_POST['symptomCode']), 'symptom_status' => $_POST['status'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
+        if ($symptomId !== 0) {
             $db->where('symptom_id', $symptomId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {

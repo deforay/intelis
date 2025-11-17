@@ -1,5 +1,6 @@
 <?php
 
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -24,8 +25,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 $tableName = "form_cd4";
 $primaryKey = "cd4_id";
 
-$aColumns = array('vl.sample_tested_datetime', 'f.facility_name');
-$orderColumns = array('vl.sample_tested_datetime', 'f.facility_name');
+$aColumns = ['vl.sample_tested_datetime', 'f.facility_name'];
+$orderColumns = ['vl.sample_tested_datetime', 'f.facility_name'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -57,7 +58,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
+          if ($sWhereSub === "") {
                $sWhereSub .= "(";
           } else {
                $sWhereSub .= " AND (";
@@ -83,52 +84,48 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS DATE_FORMAT(DATE(vl.sample_tested_datetime
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 $sTestDate = '';
 $eTestDate = '';
-if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
      $s_t_date = explode("to", (string) $_POST['sampleTestDate']);
-     if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
+     if (isset($s_t_date[0]) && trim($s_t_date[0]) !== "") {
           $sTestDate = DateUtility::isoDateFormat(trim($s_t_date[0]));
      }
-     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
+     if (isset($s_t_date[1]) && trim($s_t_date[1]) !== "") {
           $eTestDate = DateUtility::isoDateFormat(trim($s_t_date[1]));
      }
 }
 
 
-if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-     if (trim((string) $sTestDate) == trim((string) $eTestDate)) {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
+     if (trim((string) $sTestDate) === trim((string) $eTestDate)) {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $sTestDate . '"';
      } else {
           $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $sTestDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $eTestDate . '"';
      }
 }
 
-if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
      $fac = explode(',', (string) $_POST['facilityName']);
      $out = '';
      //  print_r($fac);
      /// die;
-     for ($s = 0; $s < count($fac); $s++) {
-          if ($out)
-               $out = $out . ',"' . $fac[$s] . '"';
-          else
-               $out = '("' . $fac[$s] . '"';
+     $counter = count($fac);
+     //  print_r($fac);
+     /// die;
+     for ($s = 0; $s < $counter; $s++) {
+          $out = $out !== '' && $out !== '0' ? $out . ',"' . $fac[$s] . '"' : '("' . $fac[$s] . '"';
      }
-     $out = $out . ')';
+     $out .= ')';
      $sWhere[] = ' vl.lab_id IN ' . $out;
 }
 
-$sWhere[] = '  vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+$sWhere[] = '  vl.result_status != ' . RECEIVED_AT_CLINIC;
 
 
 if (!empty($_SESSION['facilityMap'])) {
      $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 $sWhere[] = " hf.test_type = 'hepatitis'";
-if (!empty($sWhere)) {
-     $sWhere = ' where ' . implode(' AND ', $sWhere);
-} else {
-     $sWhere = "";
-}
+$sWhere = $sWhere === [] ? [] : ' where ' . implode(' AND ', $sWhere);
 $sQuery = $sQuery . ' ' . $sWhere;
 $_SESSION['cd4MonitoringThresholdReportQuery'] = $sQuery;
 // die($sQuery);
@@ -147,10 +144,7 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 
-$output = array(
-     "sEcho" => (int) $_POST['sEcho'],
-     "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "aaData" => []];
 
 $cnt = 0;
 foreach ($rResult as $rowData) {
@@ -158,17 +152,15 @@ foreach ($rResult as $rowData) {
      $targetType2 = false;
      $targetType3 = false;
      if ($_POST['targetType'] == 1) {
-
-          if ($rowData['monthly_target'] > $rowData['totalCollected']) {
-               $targetType1 = true;
-          }
-     } else if ($_POST['targetType'] == 2) {
-
-          if ($rowData['monthly_target'] < $rowData['totalCollected']) {
-               $targetType2 = true;
-          }
-     } else if ($_POST['targetType'] == 3) {
-          $targetType3 = true;
+         if ($rowData['monthly_target'] > $rowData['totalCollected']) {
+              $targetType1 = true;
+         }
+     } elseif ($_POST['targetType'] == 2) {
+         if ($rowData['monthly_target'] < $rowData['totalCollected']) {
+              $targetType2 = true;
+         }
+     } elseif ($_POST['targetType'] == 3) {
+         $targetType3 = true;
      }
      if ($targetType1 || $targetType2 || $targetType3) {
           $cnt++;

@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -9,7 +10,7 @@ use App\Registries\ContainerRegistry;
 $db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -20,7 +21,7 @@ $fnct = $_POST['fnct'];
 $data = 0;
 $multiple = [];
 
-if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
+if ($value !== '' && $value !== '0' && !empty($fieldName) && !empty($tableName)) {
     $isMultiple = !empty($_POST['type']) && $_POST['type'] == "multiple";
     if ($isMultiple) {
         $value = array_map('trim', explode(",", $value));
@@ -43,7 +44,7 @@ if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
                     LIMIT 1";
 
         $result = $db->rawQuery($sQuery, $parameters);
-        $data = !empty($result) ? 1 : 0;
+        $data = empty($result) ? 0 : 1;
     } catch (Throwable $e) {
         LoggerUtility::logError($e->getMessage());
         LoggerUtility::logError($e->getTraceAsString());

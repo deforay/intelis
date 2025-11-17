@@ -2,6 +2,9 @@
 
 namespace App\Utilities;
 
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
+use FilesystemIterator;
 use Throwable;
 use Monolog\Level;
 use Monolog\Logger;
@@ -13,11 +16,11 @@ use Monolog\Handler\RotatingFileHandler;
 final class LoggerUtility
 {
     private static ?Logger $logger = null;
-    private const LOG_FILENAME = 'logfile.log';
-    private const LOG_ROTATIONS = 30;
-    private const MAX_FILE_SIZE_MB = 100; // Maximum size per log file in MB
-    private const MAX_TOTAL_LOG_SIZE_MB = 1000; // Maximum total size for all logs in MB
-    private const MAX_MESSAGE_LENGTH = 10000; // Maximum length for a single log message
+    private const string LOG_FILENAME = 'logfile.log';
+    private const int LOG_ROTATIONS = 30;
+    private const int MAX_FILE_SIZE_MB = 100; // Maximum size per log file in MB
+    private const int MAX_TOTAL_LOG_SIZE_MB = 1000; // Maximum total size for all logs in MB
+    private const int MAX_MESSAGE_LENGTH = 10000; // Maximum length for a single log message
     private static int $logCallCount = 0;
     private static int $maxLogsPerRequest = 10000; // Prevent infinite logging loops
     private static bool $hasLoggedFallback = false; // Prevent recursive fallback logging
@@ -73,7 +76,7 @@ final class LoggerUtility
         }
 
         // CRITICAL: Ensure we always have at least one handler to prevent crashes
-        if (empty(self::$logger->getHandlers())) {
+        if (self::$logger->getHandlers() === []) {
             self::useErrorLogHandler("No handlers were successfully configured - falling back to PHP error_log");
         }
 
@@ -86,9 +89,9 @@ final class LoggerUtility
             $totalSize = 0;
             $maxSize = self::MAX_TOTAL_LOG_SIZE_MB * 1024 * 1024;
 
-            $iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($logDir, \FilesystemIterator::SKIP_DOTS),
-                \RecursiveIteratorIterator::SELF_FIRST
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($logDir, FilesystemIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::SELF_FIRST
             );
 
             foreach ($iterator as $file) {
@@ -115,12 +118,12 @@ final class LoggerUtility
     {
         try {
             $files = [];
-            $iterator = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($logDir, \FilesystemIterator::SKIP_DOTS)
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($logDir, FilesystemIterator::SKIP_DOTS)
             );
 
             foreach ($iterator as $file) {
-                if ($file->isFile() && preg_match('/\.log$/', $file->getFilename())) {
+                if ($file->isFile() && preg_match('/\.log$/', (string) $file->getFilename())) {
                     $files[] = [
                         'path' => $file->getRealPath(),
                         'mtime' => $file->getMTime(),
@@ -130,7 +133,7 @@ final class LoggerUtility
             }
 
             // Sort by modification time (oldest first)
-            usort($files, fn($a, $b) => $a['mtime'] <=> $b['mtime']);
+            usort($files, fn($a, $b): int => $a['mtime'] <=> $b['mtime']);
 
             // Delete oldest files until we're under 80% of the limit
             $targetSize = self::MAX_TOTAL_LOG_SIZE_MB * 1024 * 1024 * 0.8;
@@ -190,7 +193,7 @@ final class LoggerUtility
         @error_log("LoggerUtility: {$message} | PHP error_log: " . self::getPhpErrorLogPath());
 
         // Reset flag after a moment to allow future errors
-        register_shutdown_function(function () {
+        register_shutdown_function(function (): void {
             self::$hasLoggedFallback = false;
         });
     }
@@ -333,7 +336,6 @@ final class LoggerUtility
     private static function parseLogLevel(string $level): Level
     {
         return match (strtoupper($level)) {
-            'DEBUG' => Level::Debug,
             'INFO' => Level::Info,
             'WARNING', 'WARN' => Level::Warning,
             'ERROR' => Level::Error,
@@ -367,8 +369,8 @@ final class LoggerUtility
                 $totalSize = 0;
                 $fileCount = 0;
 
-                $iterator = new \RecursiveIteratorIterator(
-                    new \RecursiveDirectoryIterator($logDir, \FilesystemIterator::SKIP_DOTS)
+                $iterator = new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($logDir, FilesystemIterator::SKIP_DOTS)
                 );
 
                 foreach ($iterator as $file) {

@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -8,7 +9,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -23,14 +24,9 @@ $primaryKey = "recommended_corrective_action_id";
 
 try {
 
-	if (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != "") {
+	if (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) !== "") {
 
-		$data = array(
-			'recommended_corrective_action_name' 	=> $_POST['correctiveAction'],
-			'test_type'							 	=> $_POST['testType'],
-			'status' 								=> $_POST['correctiveActionStatus'],
-			'updated_datetime'						=> DateUtility::getCurrentDateTime()
-		);
+		$data = ['recommended_corrective_action_name' 	=> $_POST['correctiveAction'], 'test_type'							 	=> $_POST['testType'], 'status' 								=> $_POST['correctiveActionStatus'], 'updated_datetime'						=> DateUtility::getCurrentDateTime()];
 
 		if (isset($_POST['correctiveActionId']) && $_POST['correctiveActionId'] != "") {
 			$db->where($primaryKey, base64_decode((string) $_POST['correctiveActionId']));

@@ -1,5 +1,8 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\TEST_FAILED;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -19,18 +22,14 @@ try {
 
 
     // Sanitized values from $request object
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
     $id = explode(",", (string) $_POST['id']);
-    for ($i = 0; $i < count($id); $i++) {
-        $status = array(
-            'result_status' => $_POST['status'],
-            'result_approved_datetime' => DateUtility::getCurrentDateTime(),
-            'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-            'data_sync' => 0
-        );
+    $counter = count($id);
+    for ($i = 0; $i < $counter; $i++) {
+        $status = ['result_status' => $_POST['status'], 'result_approved_datetime' => DateUtility::getCurrentDateTime(), 'last_modified_datetime' => DateUtility::getCurrentDateTime(), 'data_sync' => 0];
         /* Check if already have reviewed and approved by */
         $db->where('vl_sample_id', $id[$i]);
         $vlRow = $db->getOne($tableName);
@@ -40,7 +39,7 @@ try {
         if (empty($vlRow['result_approved_by'])) {
             $status['result_approved_by'] = $_SESSION['userId'];
         }
-        if ($_POST['status'] == SAMPLE_STATUS\REJECTED) {
+        if ($_POST['status'] == REJECTED) {
             $status['result_value_log'] = '';
             $status['result_value_absolute'] = '';
             $status['result_value_text'] = '';
@@ -56,9 +55,9 @@ try {
         $vlService = ContainerRegistry::get(VlService::class);
         $status['vl_result_category'] = $vlService->getVLResultCategory($status['result_status'], $vlRow['result']);
         if ($status['vl_result_category'] == 'failed' || $status['vl_result_category'] == 'invalid') {
-            $status['result_status'] = SAMPLE_STATUS\TEST_FAILED;
+            $status['result_status'] = TEST_FAILED;
         } elseif ($status['vl_result_category'] == 'rejected') {
-            $status['result_status'] = SAMPLE_STATUS\REJECTED;
+            $status['result_status'] = REJECTED;
         }
 
         $db->where('vl_sample_id', $id[$i]);
@@ -75,7 +74,7 @@ try {
             $userData['result_reviewed_by'] = $_POST['reviewer'];
         }
       
-        if (count($userData) > 0) {
+        if ($userData !== []) {
             $db->where('vl_sample_id', $id[$i]);
             $db->update($tableName, $userData);
         }
@@ -86,16 +85,12 @@ try {
         $sampleCode = 'sample_code';
         if ($general->isSTSInstance()) {
             $sampleCode = 'remote_sample_code';
-            if (!empty($vlRow['remote_sample']) && $vlRow['remote_sample'] == 'yes') {
-                $sampleCode = 'remote_sample_code';
-            } else {
-                $sampleCode = 'sample_code';
-            }
+            $sampleCode = !empty($vlRow['remote_sample']) && $vlRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
         }
 
         $sampleId = (isset($vlRow[$sampleCode]) && !empty($vlRow[$sampleCode])) ? ' sample id ' . $vlRow[$sampleCode] : '';
         $patientId = (isset($vlRow['patient_art_no']) && !empty($vlRow['patient_art_no'])) ? ' patient id ' . $vlRow['patient_art_no'] : '';
-        $concat = (!empty($sampleId) && !empty($patientId)) ? ' and' : '';
+        $concat = ($sampleId !== '' && $sampleId !== '0' && ($patientId !== '' && $patientId !== '0')) ? ' and' : '';
         //Add event logs
         $eventType = 'update-sample-status';
         $action = $_SESSION['userName'] . ' updated VL samples status for the ' . $sampleId . $concat .  $patientId;

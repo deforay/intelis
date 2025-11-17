@@ -6,7 +6,7 @@ $tableName = "r_hepatitis_results";
 $primaryKey = "result_id";
 
 
-$aColumns = array('result', 'status');
+$aColumns = ['result', 'status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -39,7 +39,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -63,7 +63,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM r_hepatitis_results";
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
@@ -92,12 +92,7 @@ $aResultTotal = $db->rawQuery("select COUNT(result_id) as total FROM r_hepatitis
 $iTotal = $aResultTotal[0]['total'];
 
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $status = '<select class="form-control" name="status[]" id="' . $aRow['result_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['status'] . '\')">
@@ -106,11 +101,7 @@ foreach ($rResult as $aRow) {
                </select><br><br>';
     $row = [];
     $row[] = ($aRow['result']);
-    if (_isAllowed("hepatitis-sample-type.php") && $general->isLISInstance() === false) {
-        $row[] = $status;
-    } else {
-        $row[] = ($aRow['status']);
-    }
+    $row[] = _isAllowed("hepatitis-sample-type.php") && $general->isLISInstance() === false ? $status : $aRow['status'];
     $output['aaData'][] = $row;
 }
 

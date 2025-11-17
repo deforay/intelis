@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
 use App\Services\UsersService;
@@ -14,7 +15,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -23,7 +24,7 @@ $tableName = "r_generic_test_failure_reasons";
 $primaryKey = "test_failure_reason_id";
 
 
-$aColumns = array('test_failure_reason', 'test_reason_failure_code', 'test_failure_reason_status', 'updated_datetime');
+$aColumns = ['test_failure_reason', 'test_reason_failure_code', 'test_failure_reason_status', 'updated_datetime'];
 
 
 
@@ -55,7 +56,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -79,7 +80,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM r_generic_test_failure_reasons";
 
-if (!empty($sWhere)) {
+if ($sWhere !== '' && $sWhere !== '0') {
     $sWhere = ' WHERE ' . $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
 }
@@ -107,12 +108,7 @@ $aResultTotal = $db->rawQuery("SELECT * FROM r_generic_test_failure_reasons");
 //print_r($aResultTotal);
 $iTotal = count($aResultTotal);
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $row = [];

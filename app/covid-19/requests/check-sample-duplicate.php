@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -15,7 +16,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -24,7 +25,7 @@ $fieldName = $_POST['fieldName'];
 $value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
-if ($value != '') {
+if ($value !== '') {
 
     $tableInfo = [];
     if (!empty($fnct)) {
@@ -35,21 +36,17 @@ if ($value != '') {
         $fieldName = 'remote_sample_code';
     }
 
-    $parameters = array($value);
+    $parameters = [$value];
 
     $sQuery = "SELECT $fieldName FROM $tableName WHERE $fieldName= ?";
 
-    if (!empty($tableInfo)) {
+    if ($tableInfo !== []) {
         $sQuery .= " AND $tableInfo[0] != ?";
         $parameters[] = $tableInfo[1];
     }
     $result = $db->rawQuery($sQuery, $parameters);
 
-    if ($result) {
-        $data = base64_encode((string) $result[0]['covid19_id']) . "##" . $result[0][$fieldName];
-    } else {
-        $data = 0;
-    }
+    $data = $result ? base64_encode((string) $result[0]['covid19_id']) . "##" . $result[0][$fieldName] : 0;
 }
 
 echo $data;

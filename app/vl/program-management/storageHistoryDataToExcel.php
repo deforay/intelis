@@ -19,7 +19,7 @@ $globalConfig = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 
 
-if (isset($_SESSION['storageHistoryDataQuery']) && trim((string) $_SESSION['storageHistoryDataQuery']) != "") {
+if (isset($_SESSION['storageHistoryDataQuery']) && trim((string) $_SESSION['storageHistoryDataQuery']) !== "") {
 
      $output = [];
      $headings = [_translate('Patient ID'), _translate('Sample Collection Date'), _translate("Freezer"), _translate("Volume of Sample(ml)"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Date Out"), _translate("Comments"), _translate("Status"), _translate("Removal Reason")];

@@ -33,7 +33,7 @@ try {
    $sequencenumber = '';
    $instancefacilityCodeQuery = "SELECT instance_facility_code FROM s_vlsm_instance";
    $instancefacilityCodeResult = $db->rawQuery($instancefacilityCodeQuery);
-   $instancefacilityCode = (isset($instancefacilityCodeResult[0]['instance_facility_code']) && trim((string) $instancefacilityCodeResult[0]['instance_facility_code']) != '') ? '/' . $instancefacilityCodeResult[0]['instance_facility_code'] : '';
+   $instancefacilityCode = (isset($instancefacilityCodeResult[0]['instance_facility_code']) && trim((string) $instancefacilityCodeResult[0]['instance_facility_code']) !== '') ? '/' . $instancefacilityCodeResult[0]['instance_facility_code'] : '';
    $year = date("Y");
    $month = strtolower(date("M"));
    $sequencenumber = 'Ref : vlsm/results/' . $year . '/' . $month . $instancefacilityCode . '/' . $sourcecode;
@@ -77,44 +77,40 @@ try {
          $mail->setFrom($mailconf['rs_email']);
 
          $subject = "";
-         if (isset($data['subject']) && trim((string) $data['subject']) != "") {
+         if (isset($data['subject']) && trim((string) $data['subject']) !== "") {
             $subject = $data['subject'];
          }
          $mail->Subject = $subject;
          //Set To EmailId(s)
-         if (isset($data['to_mail']) && trim((string) $data['to_mail']) != '') {
+         if (isset($data['to_mail']) && trim((string) $data['to_mail']) !== '') {
             $xplodAddress = explode(",", (string) $data['to_mail']);
-            for ($to = 0; $to < count($xplodAddress); $to++) {
+            $counter = count($xplodAddress);
+            for ($to = 0; $to < $counter; $to++) {
                $mail->addAddress($xplodAddress[$to]);
             }
          }
          //Set CC EmailId(s)
-         if (isset($data['report_email']) && trim((string) $data['report_email']) != '') {
+         if (isset($data['report_email']) && trim((string) $data['report_email']) !== '') {
             $xplodCc = explode(",", (string) $data['report_email']);
-            for ($cc = 0; $cc < count($xplodCc); $cc++) {
+            $counter = count($xplodCc);
+            for ($cc = 0; $cc < $counter; $cc++) {
                $mail->AddCC($xplodCc[$cc]);
             }
          }
 
          //Pdf file attach
          $pathFront = realpath(UPLOAD_PATH);
-         $file = realpath(urldecode(base64_decode($data['attachment'])));
+         $file = realpath(urldecode(base64_decode((string) $data['attachment'])));
 
          $file_to_attach =  $file;
          $mail->AddAttachment($file_to_attach);
          $message = '';
-         if (isset($data['text_message']) && trim((string) $data['text_message']) != "") {
+         if (isset($data['text_message']) && trim((string) $data['text_message']) !== "") {
             $message = (nl2br((string) $data['text_message']));
          }
          $message = $sequencenumber . '<br><br>' . $message;
          $mail->msgHTML($message);
-         $mail->SMTPOptions = array(
-            'ssl' => array(
-               'verify_peer' => false,
-               'verify_peer_name' => false,
-               'allow_self_signed' => true
-            )
-         );
+         $mail->SMTPOptions = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true]];
 
          if ($data['test_type'] == "vl") {
             $testTable = "form_vl";
@@ -150,7 +146,7 @@ try {
 
             //Update status in temp_mail table
             $db->where('id', $data['id']);
-            $db->update('temp_mail', array('status' => 'completed'));
+            $db->update('temp_mail', ['status' => 'completed']);
             echo "Email sent";
          } else {
             echo $mail->ErrorInfo;

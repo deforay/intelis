@@ -1,5 +1,9 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\ON_HOLD;
+use const SAMPLE_STATUS\LOST_OR_MISSING;
+use const SAMPLE_STATUS\TEST_FAILED;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -10,7 +14,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -58,9 +62,8 @@ try {
     if (isset($_POST['iSortCol_0'])) {
         $sOrder = "";
         for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                if (!empty($orderColumns[(int) $_POST['iSortCol_' . $i]]))
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
+            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true" && !empty($orderColumns[(int) $_POST['iSortCol_' . $i]])) {
+                $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
                " . ($_POST['sSortDir_' . $i]) . ", ";
             }
         }
@@ -74,7 +77,7 @@ try {
         $searchArray = explode(" ", (string) $_POST['sSearch']);
         $sWhereSub = "";
         foreach ($searchArray as $search) {
-            if ($sWhereSub == "") {
+            if ($sWhereSub === "") {
                 $sWhereSub .= "(";
             } else {
                 $sWhereSub .= " AND (";
@@ -104,9 +107,9 @@ try {
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
     $failedStatusIds = [
-        SAMPLE_STATUS\ON_HOLD,
-        SAMPLE_STATUS\LOST_OR_MISSING,
-        SAMPLE_STATUS\TEST_FAILED
+        ON_HOLD,
+        LOST_OR_MISSING,
+        TEST_FAILED
     ];
     $start_date = '';
     $end_date = '';
@@ -115,7 +118,7 @@ try {
     }
 
     if (!empty($_POST['sampleCollectionDate'])) {
-        if (trim((string) $start_date) == trim((string) $end_date)) {
+        if (trim((string) $start_date) === trim((string) $end_date)) {
             $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
         } else {
             $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -127,13 +130,13 @@ try {
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
         $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
-    if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $sWhere[] =  " f.facility_district_id = '" . $_POST['district'] . "' ";
     }
-    if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
         $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
     }
-    if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
+    if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
         $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
     }
     if (isset($_POST['status']) && !empty($_POST['status'])) {
@@ -155,11 +158,7 @@ try {
 
 
     //  $sWhere[] =  ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
-    if (!empty($sWhere)) {
-        $sWhere = ' where ' . implode(" AND ", $sWhere);
-    } else {
-        $sWhere = "";
-    }
+    $sWhere = $sWhere === [] ? [] : ' where ' . implode(" AND ", $sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
@@ -175,12 +174,7 @@ try {
     [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
     $_SESSION['tbRequestSearchResultQueryCount'] = $resultCount;
-    $output = array(
-        "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $resultCount,
-        "iTotalDisplayRecords" => $resultCount,
-        "aaData" => []
-    );
+    $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
     $editRequest = false;
     if ((_isAllowed("tb-edit-request.php"))) {
         $editRequest = true;
@@ -188,7 +182,7 @@ try {
 
     foreach ($rResult as $aRow) {
 
-        if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+        if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
             $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
         } else {
             $aRow['sample_collection_date'] = '';

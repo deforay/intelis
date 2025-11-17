@@ -1,5 +1,6 @@
 <?php
 
+use const COUNTRY\RWANDA;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -23,9 +24,7 @@ $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
 
-$fileArray = array(
-    COUNTRY\RWANDA => 'forms/rwanda/send-rwanda.php'
-);
+$fileArray = [RWANDA => 'forms/rwanda/send-rwanda.php'];
 
 
 require_once($fileArray[$arr['vl_form']]);

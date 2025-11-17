@@ -369,7 +369,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <tr>
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?>onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" <?php echo (isset($labFieldDisabled) && trim((string) $labFieldDisabled) !== '') ? $labFieldDisabled : ''; ?>onchange="" style="width:100%;" />
                                             </td>
                                             <td class="lab-show"><label for="labId">Testing Laboratory </label> </td>
                                             <td class="lab-show">
@@ -654,12 +654,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <select name="state" id="state" class="form-control isRequired" title="Please choose province/region">
                                             <option value=""> -- Select -- </option>
                                             <?php
-                                            foreach ($pResult as $province) {
-                                            ?>
+                                            foreach ($pResult as $province) { ?>
                                                 <option value="<?php echo $province['geo_name']; ?>"><?php echo $province['geo_name']; ?></option>
                                             <?php
-                                            }
-                                            ?>
+                                            } ?>
                                             <option value="other">Other</option>
                                         </select>
                                         <input type="text" class="form-control" name="provinceNew" id="provinceNew" placeholder="Enter Region" title="Please enter province/region" style="margin-top:4px;display:none;" />

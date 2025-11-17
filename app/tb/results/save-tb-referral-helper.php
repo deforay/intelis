@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\REFERRED;
 use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -8,7 +10,7 @@ use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 /** @var DatabaseService $db */
@@ -49,7 +51,7 @@ try {
 
     $errorCount = $updateCount = $manifestId = 0;
     $numberOfSamples = count($referralSamples);
-    if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "") {
+    if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) !== "") {
         $currentDateTime = DateUtility::getCurrentDateTime();
         $data = [
             'module' => 'tb',
@@ -82,7 +84,7 @@ try {
         $updateData = [
             'referral_manifest_code' => $_POST['packageCode'],
             'data_sync' => 0,
-            'result_status' => SAMPLE_STATUS\REFERRED,
+            'result_status' => REFERRED,
             'referred_by_lab_id' => $referralLabId,
             'referred_to_lab_id' => $referralToLabId,
             'reason_for_referral' => $_POST['referralReason'],

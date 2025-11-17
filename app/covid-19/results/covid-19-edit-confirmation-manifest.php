@@ -14,7 +14,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $id = base64_decode((string) $_GET['id']);
 $pQuery = "SELECT * FROM covid19_positive_confirmation_manifest WHERE manifest_id=?";
 // echo $pQuery;die;
-$pResult = $db->rawQueryOne($pQuery, array($id));
+$pResult = $db->rawQueryOne($pQuery, [$id]);
 
 $sCode = 'sample_code';
 $module = 'C19';

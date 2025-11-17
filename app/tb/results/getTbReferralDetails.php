@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -9,7 +10,7 @@ use App\Utilities\JsonUtility;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -52,7 +53,7 @@ if (isset($_POST['iSortCol_0'])) {
             $sOrder .= $aColumns[$sortCol] . " " . ($_POST['sSortDir_' . $i]) . ", ";
         }
     }
-    if (!empty($sOrder)) {
+    if ($sOrder !== '' && $sOrder !== '0') {
         $sOrder = substr_replace($sOrder, "", -2);
     }
 }
@@ -88,10 +89,10 @@ WHERE vl.referred_to_lab_id IS NOT NULL
 GROUP BY vl.referral_manifest_code, f2.facility_name, f2.facility_code";
 
 if (!empty($sOrder)) {
-    $sORderQ = $sOrder ? ', ' . $sOrder : '';
+    $sORderQ = $sOrder !== '' && $sOrder !== '0' ? ', ' . $sOrder : '';
     $sQuery = $sQuery . ' ORDER BY referral_date' . $sORderQ;
 } else {
-    $sQuery = $sQuery . ' ORDER BY referral_date DESC';
+    $sQuery .= ' ORDER BY referral_date DESC';
 }
 
 if (isset($sLimit) && $sLimit != '') {
@@ -119,7 +120,7 @@ foreach ($result as $row) {
     $rowData[] = $row['sample_count'];
 
     // Referral Lab
-    $referralLab = !empty($row['referral_lab_name']) ? $row['referral_lab_name'] : '-';
+    $referralLab = empty($row['referral_lab_name']) ? '-' : $row['referral_lab_name'];
     if (!empty($row['referral_lab_code'])) {
         $referralLab .= '<br><small class="text-muted">(' . $row['referral_lab_code'] . ')</small>';
     }
@@ -135,13 +136,13 @@ foreach ($result as $row) {
     $rowData[] = $row['reason_for_referral'];
 
     // Edit Button
-    $encodedId = base64_encode($row['referred_to_lab_id']);
-    $encodedCode = base64_encode($row['referral_manifest_code']);
+    $encodedId = base64_encode((string) $row['referred_to_lab_id']);
+    $encodedCode = base64_encode((string) $row['referral_manifest_code']);
     $editBtn = '<a href="edit-tb-referral.php?id=' . $encodedId . '&code=' . $encodedCode . '" class="btn btn-sm btn-primary" title="Edit Package">
                     <i class="fa fa-edit"></i>
                 </a>';
 
-    $packageId = base64_encode($row['referral_manifest_code']);
+    $packageId = base64_encode((string) $row['referral_manifest_code']);
     $printManifestPdfText = _translate("Print Manifest Referral PDF");
     if ($row['lab_id'] != $row['referred_to_lab_id'] && !$general->isSTSInstance()) {
         $printBarcode = <<<BARCODEBUTTON

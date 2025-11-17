@@ -19,7 +19,7 @@ $vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.user_id SEPARATOR ',') as userId
                 WHERE fd.facility_id = ?";
 $vlfmResult = $db->rawQueryOne($vlfmQuery, [$facilityId]);
 
-$selectedUserIds = !empty($vlfmResult['userId']) ? explode(",", (string) $vlfmResult['userId']) : [];
+$selectedUserIds = empty($vlfmResult['userId']) ? [] : explode(",", (string) $vlfmResult['userId']);
 
 $uResult = $usersService->getActiveUsers();
 

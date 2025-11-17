@@ -44,7 +44,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 $id = isset($_GET['id']) ? base64_decode((string)$_GET['id']) : null;
 
-if (!isset($id) || trim($id) == '') {
+if (!isset($id) || trim($id) === '') {
 	MiscUtility::redirect("batches.php?type=$testType");
 	exit;
 }
@@ -120,7 +120,7 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 
 			<div class="box-header with-border">
 				<h4><strong><?= _translate("Batch Code"); ?> :
-						<?php echo (isset($batchInfo['batch_code'])) ? $batchInfo['batch_code'] : ''; ?>
+						<?php echo $batchInfo['batch_code'] ?? ''; ?>
 					</strong></h4>
 				<div class="row">
 					<div class="col-lg-3">
@@ -159,8 +159,7 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 							<div class="col-lg-12">
 								<ul id="sortableRow">
 									<?php
-									echo $content['content'];
-									?>
+									echo $content['content']; ?>
 								</ul>
 								<table class="table table-striped" style="width:50%; margin:3em auto;">
 									<caption><strong><?= _translate("Labels for Controls/Calibrators") ?></strong></caption>

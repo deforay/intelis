@@ -15,15 +15,10 @@ $tableName = "r_generic_sample_types";
 $sampleTypeId = (int) base64_decode((string) $_POST['sampleTypeId']);
 $_POST['sampleTypeName'] = trim((string) $_POST['sampleTypeName']);
 try {
-    if (!empty($_POST['sampleTypeName'])) {
+    if (isset($_POST['sampleTypeName']) && ($_POST['sampleTypeName'] !== '' && $_POST['sampleTypeName'] !== '0')) {
 
-        $data = array(
-            'sample_type_name' => $_POST['sampleTypeName'],
-            'sample_type_code' => $_POST['sampleTypeCode'],
-            'sample_type_status' => $_POST['sampleTypeStatus'],
-            'updated_datetime' => DateUtility::getCurrentDateTime()
-        );
-        if (!empty($sampleTypeId)) {
+        $data = ['sample_type_name' => $_POST['sampleTypeName'], 'sample_type_code' => $_POST['sampleTypeCode'], 'sample_type_status' => $_POST['sampleTypeStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
+        if ($sampleTypeId !== 0) {
             $db->where('sample_type_id', $sampleTypeId);
             $lastId = $db->update($tableName, $data);
             $_SESSION['alertMsg'] = _translate("Sample type updated successfully");

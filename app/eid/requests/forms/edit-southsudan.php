@@ -793,7 +793,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
     function getMachine(value) {
         $.post("/instruments/get-machine-names-by-instrument.php", {
                 instrumentId: value,
-                machine: <?php echo !empty($eidInfo['import_machine_name']) ? $eidInfo['import_machine_name'] : '""'; ?>,
+                machine: <?php echo empty($eidInfo['import_machine_name']) ? '""' : $eidInfo['import_machine_name']; ?>,
                 testType: 'eid'
             },
             function(data) {

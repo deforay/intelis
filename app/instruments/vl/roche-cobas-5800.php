@@ -33,7 +33,7 @@ try {
 
 
     foreach ($lines as $line) {
-        if (empty(trim($line))) {
+        if (in_array(trim($line), ['', '0'], true)) {
             continue;
         }
 

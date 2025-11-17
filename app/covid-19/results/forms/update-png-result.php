@@ -162,8 +162,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
                                             <option value=""> -- Select -- </option>
                                             <?php
-                                            foreach ($implementingPartnerList as $implementingPartner) {
-                                            ?>
+                                            foreach ($implementingPartnerList as $implementingPartner) { ?>
                                                 <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $vlQueryInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                             <?php } ?>
                                         </select>
@@ -173,8 +172,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                             <option value=""> -- Select -- </option>
                                             <?php
-                                            foreach ($fundingSourceList as $fundingSource) {
-                                            ?>
+                                            foreach ($fundingSourceList as $fundingSource) { ?>
                                                 <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $vlQueryInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                             <?php } ?>
                                         </select>
@@ -496,7 +494,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <tr>
                                             <th scope="row"><label for="sampleReceivedDate">Date of Sample Received </label></th>
                                             <td>
-                                                <input type="text" class="form-control isRequired" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']); ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter the date of sample was received" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?>style="width:100%;" />
+                                                <input type="text" class="form-control isRequired" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']); ?>" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter the date of sample was received" <?php echo (isset($labFieldDisabled) && trim((string) $labFieldDisabled) !== '') ? $labFieldDisabled : ''; ?>style="width:100%;" />
                                             </td>
 
                                             <td class="lab-show"><label for="labId">Lab ID number (Filled by lab staff)</label> </td>
@@ -650,8 +648,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 </select>
                                             </td>
                                             <?php
-                                            $disabled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : "";
-                                            ?>
+                                            $disabled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : ""; ?>
                                             <th scope="row"><label for="isResultAuthorized">Referred By</label></th>
                                             <td><input type="text" <?php echo $disabled; ?> value="<?php echo $covid19Info['authorized_by']; ?>" name="authorizedBy" id="authorizedBy" class="disabled-field form-control isRequired" placeholder="Referred By" title="Please enter who referred result" /></td>
                                         </tr>
@@ -705,7 +702,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     facilityName = true;
     machineName = true;
     tableRowId = 2;
-    let testCounter = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo)) : 0; ?>;
+    let testCounter = <?php echo (empty($covid19TestInfo)) ? (0) : count($covid19TestInfo); ?>;
     deletedRow = [];
 
     function getfacilityDetails(obj) {

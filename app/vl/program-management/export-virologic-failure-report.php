@@ -74,22 +74,22 @@ $sQuery = "SELECT
 $sWhere[] =  " vl.vl_result_category = 'not suppressed' AND vl.patient_age_in_years IS NOT NULL AND vl.patient_gender IS NOT NULL AND vl.current_regimen IS NOT NULL ";
 
 /* State filter */
-if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
      $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
 }
 
 /* District filters */
-if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
      $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
 }
 /* Facility filter */
-if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
+if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
      $facilityIdsString = implode(',', $_POST['facilityName']);
      $sWhere[] = " f.facility_id IN ($facilityIdsString)";
 }
 
 if (isset($_POST['gender']) && $_POST['gender'] != '') {
-     if (trim((string) $_POST['gender']) == "unreported") {
+     if (trim((string) $_POST['gender']) === "unreported") {
           $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
      } else {
           $sWhere[] = ' vl.patient_gender ="' . $_POST['gender'] . '"';
@@ -97,11 +97,11 @@ if (isset($_POST['gender']) && $_POST['gender'] != '') {
 }
 
 
-if (isset($_POST['pregnancy']) && trim((string) $_POST['pregnancy']) != '') {
+if (isset($_POST['pregnancy']) && trim((string) $_POST['pregnancy']) !== '') {
      $sWhere[] = " vl.is_patient_pregnant = '" . $_POST['pregnancy'] . "' ";
 }
 
-if (isset($_POST['breastfeeding']) && trim((string) $_POST['breastfeeding']) != '') {
+if (isset($_POST['breastfeeding']) && trim((string) $_POST['breastfeeding']) !== '') {
      $sWhere[] = " vl.is_patient_breastfeeding = '" . $_POST['breastfeeding'] . "' ";
 }
 
@@ -114,7 +114,7 @@ if (
 }
 
 /* Sample collection date filter */
-if (!empty(trim((string) $_POST['sampleCollectionDate']))) {
+if (!in_array(trim((string) $_POST['sampleCollectionDate']), ['', '0'], true)) {
      [$sampleCollectionDateStart, $sampleCollectionDateEnd] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
 
      if ($sampleCollectionDateStart == $sampleCollectionDateEnd) {
@@ -125,7 +125,7 @@ if (!empty(trim((string) $_POST['sampleCollectionDate']))) {
 }
 /* Sample test date filter */
 
-if (!empty(trim((string) $_POST['sampleTestDate']))) {
+if (!in_array(trim((string) $_POST['sampleTestDate']), ['', '0'], true)) {
      [$sampleTestDateStart, $sampleTestDateEnd] = DateUtility::convertDateRange($_POST['sampleTestDate']);
 
      if ($sampleTestDateStart == $sampleTestDateEnd) {
@@ -142,7 +142,7 @@ if (!empty($_SESSION['facilityMap'])) {
 if (!empty($sWhere)) {
      $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);
 }
-$sQuery = $sQuery . " ORDER BY f.facility_name asc, patient_art_no asc, sample_collection_date asc";
+$sQuery .= " ORDER BY f.facility_name asc, patient_art_no asc, sample_collection_date asc";
 //die($sQuery);
 $rResult = $db->rawQuery($sQuery);
 
@@ -207,10 +207,10 @@ foreach ($vlnsData as $vlnsKey => $vlnsDataRow) {
           }
      }
 }
-if (!empty($vfData)) {
+if ($vfData !== []) {
      $vfData = array_combine(range(1, count($vfData)), array_values($vfData));
 }
-if (!empty($vlnsData)) {
+if ($vlnsData !== []) {
      $vlnsData = array_combine(range(1, count($vlnsData)), array_values($vlnsData));
 }
 $colNo = 1;

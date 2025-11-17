@@ -5,6 +5,7 @@
 
 
 
+use const COUNTRY\SOUTH_SUDAN;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -35,7 +36,7 @@ $sarr = $general->getSystemConfig();
 $key = (string) $general->getGlobalConfig('key');
 
 // echo "<pre>";print_r($arr);die;
-if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19ResultQuery']) != "") {
+if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19ResultQuery']) !== "") {
 
 	$rResult = $db->rawQuery($_SESSION['covid19ResultQuery']);
 
@@ -43,9 +44,9 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 	$output = [];
 	$sheet = $excel->getActiveSheet();
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+		$headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request", "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released"];
 	} else {
-		$headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Sex", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request",  "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
+		$headings = ["S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Testing Point", "Lab staff Assigned", "Source Of Alert / POE", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Patient DoB", "Patient Age", "Patient Sex", "Nationality", "Patient State", "Patient County", "Patient City/Village", "Date specimen collected", "Reason for Test Request", "Date specimen Received", "Date specimen Entered", "Specimen Condition", "Specimen Status", "Specimen Type", "Is Sample Rejected?", "Rejection Reason", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released"];
 	}
 	if ($general->isStandaloneInstance()) {
 		$headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
@@ -53,27 +54,13 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 
 	$colNo = 1;
 
-	$styleArray = array(
-		'font' => array(
-			'bold' => true,
-			'size' => 12,
-		),
-		'alignment' => array(
-			'horizontal' => Alignment::HORIZONTAL_CENTER,
-			'vertical' => Alignment::VERTICAL_CENTER,
-		),
-		'borders' => array(
-			'outline' => array(
-				'style' => Border::BORDER_THIN,
-			),
-		)
-	);
+	$styleArray = ['font' => ['bold' => true, 'size' => 12], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
 
 
 	$sheet->mergeCells('A1:AG1');
 	$nameValue = '';
 	foreach ($_POST as $key => $value) {
-		if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
+		if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
 			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
 		}
 	}
@@ -91,7 +78,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 	} else {
 		foreach ($headings as $field => $value) {
 			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-				->setValueExplicit(html_entity_decode($value));
+				->setValueExplicit(html_entity_decode((string) $value));
 			$colNo++;
 		}
 	}
@@ -100,7 +87,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 	$no = 1;
 	foreach ($rResult as $aRow) {
 		$row = [];
-		if ($arr['vl_form'] == COUNTRY\SOUTH_SUDAN) {
+		if ($arr['vl_form'] == SOUTH_SUDAN) {
 			// Get testing platform and test method
 			$covid19TestQuery = "SELECT * FROM covid19_tests where covid19_id= ? ORDER BY test_id ASC";
 			$covid19TestInfo = $db->rawQuery($covid19TestQuery, [$aRow['covid19_id']]);
@@ -112,7 +99,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 
 		//date of birth
 		$dob = '';
-		if ($aRow['patient_dob'] != null && trim((string) $aRow['patient_dob']) != '' && $aRow['patient_dob'] != '0000-00-00') {
+		if ($aRow['patient_dob'] != null && trim((string) $aRow['patient_dob']) !== '' && $aRow['patient_dob'] != '0000-00-00') {
 			$dob =  date("d-m-Y", strtotime((string) $aRow['patient_dob']));
 		}
 		//set gender
@@ -124,25 +111,25 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 		};
 		//sample collecion date
 		$sampleCollectionDate = '';
-		if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+		if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
 			$expStr = explode(" ", (string) $aRow['sample_collection_date']);
 			$sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
 
 		$sampleTestedOn = '';
-		if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
+		if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) !== '' && $aRow['sample_tested_datetime'] != '0000-00-00') {
 			$sampleTestedOn =  date("d-m-Y", strtotime((string) $aRow['sample_tested_datetime']));
 		}
 
 
 		//set sample rejection
 		$sampleRejection = 'No';
-		if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+		if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
 			$sampleRejection = 'Yes';
 		}
 		//result dispatched date
 		$resultDispatchedDate = '';
-		if ($aRow['result_printed_datetime'] != null && trim((string) $aRow['result_printed_datetime']) != '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
+		if ($aRow['result_printed_datetime'] != null && trim((string) $aRow['result_printed_datetime']) !== '' && $aRow['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
 			$expStr = explode(" ", (string) $aRow['result_printed_datetime']);
 			$resultDispatchedDate =  date("d-m-Y", strtotime($expStr[0]));
 		}
@@ -190,7 +177,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 			$row[] = $patientFname . " " . $patientLname;
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-		$row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+		$row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) !== '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
 		$row[] = ($aRow['patient_gender']);
 		$row[] = ($aRow['nationality']);
 		$row[] = ($aRow['patient_province']);

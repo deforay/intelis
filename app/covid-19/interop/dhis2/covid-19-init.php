@@ -1,6 +1,7 @@
 <?php
 
 
+use const COUNTRY\SOUTH_SUDAN;
 use App\Interop\Dhis2;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -35,9 +36,7 @@ $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
 
-$fileArray = array(
-    COUNTRY\SOUTH_SUDAN => 'forms/init-southsudan.php'
-);
+$fileArray = [SOUTH_SUDAN => 'forms/init-southsudan.php'];
 
 
 require_once($fileArray[$arr['vl_form']]);

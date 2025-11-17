@@ -93,13 +93,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<?php
-									foreach ($sResult as $type) {
-									?>
+									foreach ($sResult as $type) { ?>
 										<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?>
 										</option>
 									<?php
-									}
-									?>
+									} ?>
 								</select>
 							</td>
 

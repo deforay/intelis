@@ -134,7 +134,7 @@ try {
     }
 
     $dataToSync = [];
-    $dataToSync['timestamp'] = !empty($lastUpdatedOn) ? strtotime((string) $lastUpdatedOn) : time();
+    $dataToSync['timestamp'] = empty($lastUpdatedOn) ? time() : strtotime((string) $lastUpdatedOn);
     $dataToSync['data'] = $data;
 
     $currentDate = DateUtility::getCurrentDateTime();

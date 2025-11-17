@@ -18,12 +18,8 @@ $tableName = "r_hepatitis_risk_factors";
 $primaryKey = "riskfactor_id";
 // print_r($_POST);die;
 try {
-	if (isset($_POST['riskFactorName']) && trim((string) $_POST['riskFactorName']) != "") {
-		$data = array(
-			'riskfactor_name'         => $_POST['riskFactorName'],
-			'riskfactor_status'     => $_POST['riskFactorStatus'],
-			'updated_datetime'     => DateUtility::getCurrentDateTime(),
-		);
+	if (isset($_POST['riskFactorName']) && trim((string) $_POST['riskFactorName']) !== "") {
+		$data = ['riskfactor_name'         => $_POST['riskFactorName'], 'riskfactor_status'     => $_POST['riskFactorStatus'], 'updated_datetime'     => DateUtility::getCurrentDateTime()];
 		if (isset($_POST['riskFactorId']) && $_POST['riskFactorId'] != "") {
 			$db->where($primaryKey, base64_decode((string) $_POST['riskFactorId']));
 			$lastId = $db->update($tableName, $data);

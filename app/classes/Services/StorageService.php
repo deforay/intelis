@@ -14,16 +14,14 @@ use App\Registries\ContainerRegistry;
 final class StorageService
 {
     protected string $table = 'lab_storage';
-    protected CommonService $commonService;
     protected DatabaseService $db;
 
-    public function __construct(DatabaseService $db, CommonService $commonService)
+    public function __construct(DatabaseService $db, protected CommonService $commonService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
-        $this->commonService = $commonService;
     }
 
-    public function getLabStorage($allColumns = false, $condition = null, $onlyActive = true)
+    public function getLabStorage($allColumns = false, $condition = null, $onlyActive = true): mixed
     {
         return MemoUtility::remember(function () use ($allColumns, $condition, $onlyActive) {
 
@@ -59,21 +57,11 @@ final class StorageService
             }
 
             if (isset($params['storageId']) && $params['storageId'] != "" && !empty($params['storageId'])) {
-                $data = array(
-                    'storage_code'     => $params['storageCode'],
-                    'storage_status' => $params['storageStatus'],
-                    'updated_datetime'    => DateUtility::getCurrentDateTime()
-                );
+                $data = ['storage_code'     => $params['storageCode'], 'storage_status' => $params['storageStatus'], 'updated_datetime'    => DateUtility::getCurrentDateTime()];
                 $this->db->where('storage_id', base64_decode((string) $params['storageId']));
                 $save = $this->db->update($this->table, $data);
             } else {
-                $data = array(
-                    'storage_id' => MiscUtility::generateULID(),
-                    'storage_code'     => $params['storageCode'],
-                    'lab_id'     => $_SESSION['instance']['labId'],
-                    'storage_status' => $params['storageStatus'],
-                    'updated_datetime' => DateUtility::getCurrentDateTime()
-                );
+                $data = ['storage_id' => MiscUtility::generateULID(), 'storage_code'     => $params['storageCode'], 'lab_id'     => $_SESSION['instance']['labId'], 'storage_status' => $params['storageStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
                 $save = $this->db->insert($this->table, $data);
             }
 
@@ -88,7 +76,7 @@ final class StorageService
     public function getStorageById(?string $storageId = null): ?array
     {
         return MemoUtility::remember(function () use ($storageId) {
-            if (!empty($storageId)) {
+            if ($storageId !== null && $storageId !== '' && $storageId !== '0') {
                 $this->db->where('storage_id', $storageId);
                 $this->db->where('storage_status', 'active');
                 $return = $this->db->getOne("$this->table");
@@ -102,7 +90,7 @@ final class StorageService
     public function getStorageByCode(?string $storageCode = null): ?array
     {
         return MemoUtility::remember(function () use ($storageCode) {
-            if (!empty($storageCode)) {
+            if ($storageCode !== null && $storageCode !== '' && $storageCode !== '0') {
                 $this->db->where('storage_code', $storageCode);
                 $this->db->where('storage_status', 'active');
                 $return = $this->db->getOne("$this->table");
@@ -113,7 +101,7 @@ final class StorageService
         });
     }
 
-    public function getFreezerHistoryById($historyId)
+    public function getFreezerHistoryById($historyId): mixed
     {
         return MemoUtility::remember(function () use ($historyId) {
             if (!empty($historyId)) {

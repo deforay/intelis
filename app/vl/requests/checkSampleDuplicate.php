@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -13,7 +14,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -22,48 +23,36 @@ $fieldName = $_POST['fieldName'];
 $value = trim((string) $_POST['value']);
 $fnct = $_POST['fnct'];
 $data = 0;
-if ($value != '') {
+if ($value !== '') {
     if ($fnct == '' || $fnct == 'null') {
         $sQuery = "SELECT * FROM $tableName WHERE $fieldName= ?";
-        $parameters = array($value);
+        $parameters = [$value];
         $result = $db->rawQuery($sQuery, $parameters);
         if ($result) {
             $data = base64_encode((string) $result[0]['vl_sample_id']) . "##" . $result[0][$fieldName];
+        } elseif ($general->isLISInstance()) {
+            $sQuery = "SELECT * FROM $tableName WHERE remote_sample_code= ?";
+            $parameters = [$value];
+            $result = $db->rawQuery($sQuery, $parameters);
+            $data = $result ? base64_encode((string) $result[0]['vl_sample_id']) . "##" . $result[0]['remote_sample_code'] : 0;
         } else {
-            if ($general->isLISInstance()) {
-                $sQuery = "SELECT * FROM $tableName WHERE remote_sample_code= ?";
-                $parameters = array($value);
-                $result = $db->rawQuery($sQuery, $parameters);
-                if ($result) {
-                    $data = base64_encode((string) $result[0]['vl_sample_id']) . "##" . $result[0]['remote_sample_code'];
-                } else {
-                    $data = 0;
-                }
-            } else {
-                $data = 0;
-            }
+            $data = 0;
         }
     } else {
         $table = explode("##", (string) $fnct);
         try {
             $sQuery = "SELECT * FROM $tableName WHERE $fieldName= ? AND $table[0]!= ?";
-            $parameters = array($value, $table[1]);
+            $parameters = [$value, $table[1]];
             $result = $db->rawQuery($sQuery, $parameters);
             if ($result) {
                 $data = base64_encode((string) $result[0]['vl_sample_id']) . "##" . $result[0][$fieldName];
+            } elseif ($general->isLISInstance()) {
+                $sQuery = "SELECT * from $tableName where remote_sample_code= ? and $table[0]!= ?";
+                $parameters = [$value, $table[1]];
+                $result = $db->rawQuery($sQuery, $parameters);
+                $data = $result ? base64_encode((string) $result[0]['vl_sample_id']) . "##" . $result[0]['remote_sample_code'] : 0;
             } else {
-                if ($general->isLISInstance()) {
-                    $sQuery = "SELECT * from $tableName where remote_sample_code= ? and $table[0]!= ?";
-                    $parameters = array($value, $table[1]);
-                    $result = $db->rawQuery($sQuery, $parameters);
-                    if ($result) {
-                        $data = base64_encode((string) $result[0]['vl_sample_id']) . "##" . $result[0]['remote_sample_code'];
-                    } else {
-                        $data = 0;
-                    }
-                } else {
-                    $data = 0;
-                }
+                $data = 0;
             }
         } catch (Throwable $e) {
             throw new SystemException($e->getMessage(), $e->getCode(), $e);

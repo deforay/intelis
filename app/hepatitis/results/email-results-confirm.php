@@ -33,8 +33,8 @@ foreach ($geResult as $row) {
 $filename = '';
 $downloadFile1 = '';
 $downloadFile2 = '';
-$selectedSamplesArray = !empty($_POST['selectedSamples']) ? json_decode((string) $_POST['selectedSamples'], true) : [];
-if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty($selectedSamplesArray)) {
+$selectedSamplesArray = empty($_POST['selectedSamples']) ? [] : json_decode((string) $_POST['selectedSamples'], true);
+if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empty($selectedSamplesArray)) {
    //Pdf code start
    // create new PDF document
 
@@ -64,7 +64,8 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
                         <tbody>
                            <?php
                            $resultOlySamples = [];
-                           for ($s = 0; $s < count($selectedSamplesArray); $s++) {
+$counter = count($selectedSamplesArray);
+                           for ($s = 0; $s < $counter; $s++) {
                               $sampleQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.hepatitis_id = '" . $selectedSamplesArray[$s] . "' ORDER BY f.facility_name ASC";
                               $sampleResult = $db->rawQuery($sampleQuery);
                               if (isset($sampleResult[0]['sample_code'])) {
@@ -97,7 +98,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
                   </div>
                </div>
             </form>
-         <?php } ?>
+<?php } ?>
          </div>
       </div>
    </div>

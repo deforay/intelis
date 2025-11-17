@@ -21,12 +21,12 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $sarr = $general->getSystemConfig();
 
-if (isset($_POST['reportedDate']) && trim((string) $_POST['reportedDate']) != '') {
+if (isset($_POST['reportedDate']) && trim((string) $_POST['reportedDate']) !== '') {
     $s_t_date = explode("to", (string) $_POST['reportedDate']);
-    if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
+    if (isset($s_t_date[0]) && trim($s_t_date[0]) !== "") {
         $start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
     }
-    if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
+    if (isset($s_t_date[1]) && trim($s_t_date[1]) !== "") {
         $end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
     }
 }
@@ -36,66 +36,14 @@ if (isset($_POST['reportedDate']) && trim((string) $_POST['reportedDate']) != ''
 //excel code start
 $excel = new Spreadsheet();
 $sheet = $excel->getActiveSheet();
-$headingStyle = array(
-    'font' => array(
-        'bold' => true,
-        'size' => '11',
-    ),
-    'alignment' => array(
-        'horizontal' => Alignment::HORIZONTAL_CENTER,
-    ),
-);
-$backgroundTitleStyle = array(
-    'font' => array(
-        'bold' => true,
-        'size' => '11',
-    ),
-    'alignment' => array(
-        'horizontal' => Alignment::HORIZONTAL_CENTER,
-    ),
-    'fill' => array(
-        'type' => Fill::FILL_SOLID,
-        'color' => array('rgb' => 'FFFF00'),
-    ),
-);
-$backgroundFieldStyle = array(
-    'font' => array(
-        'bold' => false,
-        'size' => '11',
-    ),
-    'alignment' => array(
-        'horizontal' => Alignment::HORIZONTAL_LEFT,
-    ),
-);
-$styleArray = array(
-    'font' => array(
-        'bold' => true,
-        'size' => '13',
-    ),
-    'alignment' => array(
-        'horizontal' => Alignment::HORIZONTAL_CENTER,
-        'vertical' => Alignment::VERTICAL_CENTER,
-        'wrapText' => true,
-    ),
-    'borders' => array(
-        'outline' => array(
-            'style' => Border::BORDER_THIN,
-        ),
-    ),
-);
+$headingStyle = ['font' => ['bold' => true, 'size' => '11'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]];
+$backgroundTitleStyle = ['font' => ['bold' => true, 'size' => '11'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER], 'fill' => ['type' => Fill::FILL_SOLID, 'color' => ['rgb' => 'FFFF00']]];
+$backgroundFieldStyle = ['font' => ['bold' => false, 'size' => '11'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT]];
+$styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
 
-$borderStyle = array(
-    'alignment' => array(
-        //  'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
-    ),
-    'borders' => array(
-        'outline' => array(
-            'style' => Border::BORDER_THIN,
-        ),
-    ),
-);
+$borderStyle = ['alignment' => [], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
 
-if (isset($_POST['lab']) && trim((string) $_POST['lab']) != '') {
+if (isset($_POST['lab']) && trim((string) $_POST['lab']) !== '') {
     $labId = ($_POST['lab']);
 }
 
@@ -188,18 +136,18 @@ $sQuery = "SELECT
         WHERE vl.lab_id is NOT NULL AND IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 
 if (!empty($labId)) {
-    $sQuery = $sQuery . " AND vl.lab_id IN ($labId)";
+    $sQuery .= " AND vl.lab_id IN ($labId)";
 }
 
-if (isset($_POST['reportedDate']) && trim((string) $_POST['reportedDate']) != '') {
-    if (trim((string) $start_date) == trim((string) $end_date)) {
+if (isset($_POST['reportedDate']) && trim((string) $_POST['reportedDate']) !== '') {
+    if (trim((string) $start_date) === trim((string) $end_date)) {
         $sQuery = $sQuery . ' AND DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
     } else {
         $sQuery = $sQuery . ' AND DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
     }
 }
 
-$sQuery = $sQuery . ' GROUP BY lab_name, vl.facility_id';
+$sQuery .= ' GROUP BY lab_name, vl.facility_id';
 
 $resultSet = $db->rawQuery($sQuery);
 
@@ -213,9 +161,9 @@ foreach ($excelResultSet as $vlLab => $labResult) {
     $sheet = new Worksheet($excel, '');
     $excel->addSheet($sheet, $c);
     $vlLab = preg_replace('/\s+/', ' ', ($vlLab));
-    $labInfo = explode('-', $vlLab);
+    $labInfo = explode('-', (string) $vlLab);
 
-    if (isset($labInfo[1]) && $labInfo[1] != '') {
+    if (isset($labInfo[1]) && $labInfo[1] !== '') {
         $sheet->setTitle($labInfo[1]);
     } else {
         $labName = substr($labInfo[1], 0, 31);
@@ -225,7 +173,7 @@ foreach ($excelResultSet as $vlLab => $labResult) {
     $sheet->setCellValue('B1', html_entity_decode('Reported Date ', ENT_QUOTES, 'UTF-8'));
     $sheet->setCellValue('C1', html_entity_decode((string) $_POST['reportedDate'], ENT_QUOTES, 'UTF-8'));
     $sheet->setCellValue('D1', html_entity_decode('Lab Name ', ENT_QUOTES, 'UTF-8'));
-    $sheet->setCellValue('E1', html_entity_decode(($vlLab), ENT_QUOTES, 'UTF-8'));
+    $sheet->setCellValue('E1', html_entity_decode(((string) $vlLab), ENT_QUOTES, 'UTF-8'));
     //$sheet->setCellValue('F1', html_entity_decode('Collection Date ' , ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
     //$sheet->setCellValue('G1', html_entity_decode($_POST['collectionDate'] , ENT_QUOTES, 'UTF-8'), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
     $sheet->setCellValue('B2', html_entity_decode('Province/State ', ENT_QUOTES, 'UTF-8'));
@@ -286,7 +234,7 @@ foreach ($excelResultSet as $vlLab => $labResult) {
 
     $output = [];
     $r = 1;
-    if (count($labResult) > 0) {
+    if ($labResult !== []) {
         foreach ($labResult as $aRow) {
             $row = [];
             $row[] = $r;

@@ -1,5 +1,6 @@
 <?php
 
+use const SAMPLE_STATUS\REJECTED;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -55,7 +56,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -86,17 +87,17 @@ $sQuery = "SELECT vl.*,
             LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-            WHERE vl.result_status != " . SAMPLE_STATUS\REJECTED . "
+            WHERE vl.result_status != " . REJECTED . "
             AND vl.sample_code is NOT NULL
             AND (vl.result IS NULL OR vl.result='')";
 $start_date = '';
 $end_date = '';
-if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) != '') {
+if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) !== '') {
     $sWhere[] = ' b.batch_code LIKE "%' . $_POST['noResultBatchCode'] . '%"';
 }
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['noResultSampleTestDate'] ?? '');
-if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSampleTestDate']) != '') {
-    if (trim((string) $start_date) == trim((string) $end_date)) {
+if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSampleTestDate']) !== '') {
+    if (trim((string) $start_date) === trim((string) $end_date)) {
         $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
     } else {
         $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -105,17 +106,17 @@ if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSam
 if (isset($_POST['noResultSampleType']) && $_POST['noResultSampleType'] != '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['noResultSampleType'] . '"';
 }
-if (isset($_POST['noResultState']) && trim((string) $_POST['noResultState']) != '') {
+if (isset($_POST['noResultState']) && trim((string) $_POST['noResultState']) !== '') {
     $sWhere[] = " f.facility_state_id = '" . $_POST['noResultState'] . "' ";
 }
-if (isset($_POST['noResultDistrict']) && trim((string) $_POST['noResultDistrict']) != '') {
+if (isset($_POST['noResultDistrict']) && trim((string) $_POST['noResultDistrict']) !== '') {
     $sWhere[] = " f.facility_district_id = '" . $_POST['noResultDistrict'] . "' ";
 }
 if (isset($_POST['noResultFacilityName']) && $_POST['noResultFacilityName'] != '') {
     $sWhere[] = ' f.facility_id IN (' . $_POST['noResultFacilityName'] . ')';
 }
 if (isset($_POST['noResultGender']) && $_POST['noResultGender'] != '') {
-    if (trim((string) $_POST['noResultGender']) == "unreported") {
+    if (trim((string) $_POST['noResultGender']) === "unreported") {
         $sWhere[] = ' vl.patient_gender="unreported" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
     } else {
         $sWhere[] = ' vl.patient_gender IN ("' . $_POST['noResultGender'] . '")';
@@ -132,9 +133,9 @@ if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $sWhere = ' AND ' . implode(" AND ", $sWhere);
-    $sQuery = $sQuery . $sWhere;
+    $sQuery .= $sWhere;
 }
 
 if (!empty($sOrder) && $sOrder !== '') {
@@ -152,24 +153,15 @@ if (isset($sLimit) && isset($sOffset)) {
 $_SESSION['resultNotAvailableCount'] = $resultCount;
 
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $resultCount,
-    "iTotalDisplayRecords" => $resultCount,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 
 foreach ($rResult as $aRow) {
-    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
     } else {
         $aRow['sample_collection_date'] = '';
     }
-    if ($aRow['remote_sample'] == 'yes') {
-        $decrypt = 'remote_sample_code';
-    } else {
-        $decrypt = 'sample_code';
-    }
+    $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
     $patientFname = $general->crypto('doNothing', $aRow['patient_name'], $aRow[$decrypt]);
     // $patientMname = $general->crypto('doNothing',$aRow['patient_middle_name'],$aRow[$decrypt]);
     $patientLname = $general->crypto('doNothing', $aRow['patient_surname'], $aRow[$decrypt]);

@@ -23,15 +23,9 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_tb_sample_rejection_reasons";
 
 try {
-	if (isset($_POST['rejectionReasonName']) && trim((string) $_POST['rejectionReasonName']) != "") {
+	if (isset($_POST['rejectionReasonName']) && trim((string) $_POST['rejectionReasonName']) !== "") {
 
-		$data = array(
-			'rejection_reason_name' => $_POST['rejectionReasonName'],
-			'rejection_type' => $_POST['rejectionType'],
-			'rejection_reason_status' => $_POST['rejectionReasonStatus'],
-			'rejection_reason_code' => $_POST['rejectionReasonCode'],
-			'updated_datetime' => DateUtility::getCurrentDateTime(),
-		);
+		$data = ['rejection_reason_name' => $_POST['rejectionReasonName'], 'rejection_type' => $_POST['rejectionType'], 'rejection_reason_status' => $_POST['rejectionReasonStatus'], 'rejection_reason_code' => $_POST['rejectionReasonCode'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
 
 		$db->insert($tableName, $data);
 		$lastId = $db->getInsertId();

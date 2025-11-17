@@ -30,7 +30,7 @@ $arr = $general->getGlobalConfig();
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericResultQuery']) != "") {
+if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericResultQuery']) !== "") {
 
 	/* To get dynamic fields */
 	$labels = [];
@@ -44,15 +44,15 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 	$output = [];
 
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = array("No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Patient ID.",  "Patient Name", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+		$headings = ["No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Patient ID.", "Patient Name", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
 	} else {
-		$headings = array("No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+		$headings = ["No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Testing Lab", "Sample Receipt Date", "Health Facility Code", "District/County", "Province/State", "Date of Birth", "Age", "Sex", "Date of Sample Collection", "Sample Type", "Date of Treatment Initiation", "Is Patient Pregnant?", "Is Patient Breastfeeding?", "Indication for Viral Load Testing", "Requesting Clinican", "Request Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
 	}
 	if ($general->isStandaloneInstance()) {
 		$headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
 	}
 	/* Assign the dynamic labels to the heading */
-	if (!empty($labels)) {
+	if ($labels !== []) {
 		$headings = array_merge($headings, $labels);
 	}
 
@@ -103,11 +103,11 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 
 		//set sample rejection
 		$sampleRejection = null;
-		if (isset($aRow['is_sample_rejected']) && trim((string) $aRow['is_sample_rejected']) == 'yes' || $aRow['result_status'] == 4) {
-			$sampleRejection = 'Yes';
-		} else if (trim((string) $aRow['is_sample_rejected']) == 'no') {
-			$sampleRejection = 'No';
-		}
+		if (isset($aRow['is_sample_rejected']) && trim((string) $aRow['is_sample_rejected']) === 'yes' || $aRow['result_status'] == 4) {
+      $sampleRejection = 'Yes';
+  } elseif (trim((string) $aRow['is_sample_rejected']) === 'no') {
+      $sampleRejection = 'No';
+  }
 		//result dispatched date
 		$lastViralLoadTest = '';
 		if (!empty($aRow['last_viral_load_date'])) {
@@ -171,18 +171,14 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		$row[] = $aRow['result'];
 		$row[] = $resultDispatchedDate;
 		$row[] = ($aRow['lab_tech_comments']);
-		$row[] = (isset($aRow['funding_source_name']) && trim((string) $aRow['funding_source_name']) != '') ? ($aRow['funding_source_name']) : '';
-		$row[] = (isset($aRow['i_partner_name']) && trim((string) $aRow['i_partner_name']) != '') ? ($aRow['i_partner_name']) : '';
+		$row[] = (isset($aRow['funding_source_name']) && trim((string) $aRow['funding_source_name']) !== '') ? ($aRow['funding_source_name']) : '';
+		$row[] = (isset($aRow['i_partner_name']) && trim((string) $aRow['i_partner_name']) !== '') ? ($aRow['i_partner_name']) : '';
 		$row[] = $requestCreatedDatetime;
 
 		/* To assign the dynamic fields values */
-		if (!empty($labels)) {
-			foreach ($labels as $id => $le) {
-				if (!empty($testType[$key]['dynamicValue'][$id])) {
-					$row[] = $testType[$key]['dynamicValue'][$id];
-				} else {
-					$row[] = "";
-				}
+		if ($labels !== []) {
+			foreach (array_keys($labels) as $id) {
+				$row[] = empty($testType[$key]['dynamicValue'][$id]) ? "" : $testType[$key]['dynamicValue'][$id];
 			}
 		}
 		$output[] = $row;
@@ -199,35 +195,12 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();
 
-		$styleArray = array(
-			'font' => array(
-				'bold' => true,
-				'size' => 12,
-			),
-			'alignment' => array(
-				'horizontal' => Alignment::HORIZONTAL_CENTER,
-				'vertical' => Alignment::VERTICAL_CENTER,
-			),
-			'borders' => array(
-				'outline' => array(
-					'style' => Border::BORDER_THIN,
-				),
-			)
-		);
+		$styleArray = ['font' => ['bold' => true, 'size' => 12], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
 
-		$borderStyle = array(
-			'alignment' => array(
-				'horizontal' => Alignment::HORIZONTAL_CENTER,
-			),
-			'borders' => array(
-				'outline' => array(
-					'style' => Border::BORDER_THIN,
-				),
-			)
-		);
+		$borderStyle = ['alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
 		$sheet->setTitle('Generic Results');
 		$sheet->mergeCells('A1:AH1');
-		$sheet->getStyle('A3:' . 'AH3')->applyFromArray($styleArray);
+		$sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
 		$sheet->fromArray($headings, null, 'A3');
 		foreach ($output as $rowNo => $rowData) {
 			$rRowCount = $rowNo + 4;

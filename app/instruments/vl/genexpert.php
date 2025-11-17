@@ -125,7 +125,7 @@ try {
 
 
     // Send parsed data to service for insertion
-    if (!empty($infoFromFile)) {
+    if ($infoFromFile !== []) {
         $importService->insertParsedData($infoFromFile);
         $importService->handleSuccess();
     } else {

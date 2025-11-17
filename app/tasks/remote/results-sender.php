@@ -1,4 +1,6 @@
 <?php
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+
 // tasks/remote/results-sender.php
 $cliMode = php_sapi_name() === 'cli';
 
@@ -34,13 +36,34 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
 
-function t0(): float
-{
-    return microtime(true);
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
+$labId = $general->getSystemConfig('sc_testing_lab_id');
+$isLIS = $general->isLISInstance();
+
+if (false == $isLIS) {
+    LoggerUtility::logError("This instance is not configured as LIS. Exiting.");
+    if ($cliMode) {
+        $io->error("This instance is not configured as LIS. Exiting.");
+    }
+    exit(0);
 }
-function tdone(float $t): string
-{
-    return number_format(microtime(true) - $t, 2);
+
+
+if (null == $labId || '' == $labId) {
+    LoggerUtility::logError("Please check if Testing Lab ID is set");
+    if ($cliMode) {
+        $io->error("Testing Lab ID is not set in System Config. Exiting.");
+    }
+    exit(0);
 }
 
 /**
@@ -110,7 +133,7 @@ function showHelp(SymfonyStyle $io): void
  */
 function buildReferralManifestsPayload(DatabaseService $db, string $testType, ?array $selectedRows): array
 {
-    if (empty($selectedRows) || !is_array($selectedRows)) {
+    if ($selectedRows === null || $selectedRows === [] || !is_array($selectedRows)) {
         return [];
     }
 
@@ -123,8 +146,8 @@ function buildReferralManifestsPayload(DatabaseService $db, string $testType, ?a
         ? array_column(array_column($selectedRows, 'form_data'), 'referral_manifest_code')
         : array_column($selectedRows, 'referral_manifest_code');
 
-    $codes = array_values(array_unique(array_filter($codes, static fn($v) => !empty($v))));
-    if (empty($codes)) {
+    $codes = array_values(array_unique(array_filter($codes, static fn($v): bool => !empty($v))));
+    if ($codes === []) {
         return [];
     }
 
@@ -149,20 +172,22 @@ function decodeAcknowledgedSampleCodes(string $jsonResponse, string $testType): 
 
     if (json_last_error() !== JSON_ERROR_NONE) {
         $message = json_last_error_msg();
-        throw new \RuntimeException("Failed to decode $testType acknowledgement: $message");
+        throw new RuntimeException("Failed to decode $testType acknowledgement: $message");
     }
 
     if (!is_array($decoded)) {
-        throw new \RuntimeException("Unexpected acknowledgement format received for $testType results.");
+        throw new RuntimeException("Unexpected acknowledgement format received for $testType results.");
     }
 
     $filtered = array_filter(
         $decoded,
-        static fn($code) => is_string($code) && $code !== ''
+        static fn($code): bool => is_string($code) && $code !== ''
     );
 
     return array_values(array_unique($filtered));
 }
+
+
 
 // Check for help flag early
 if ($cliMode) {
@@ -172,29 +197,19 @@ if ($cliMode) {
     }
     $io->title("Starting results sending");
 }
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-/** @var ApiService $apiService */
-$apiService = ContainerRegistry::get(ApiService::class);
-
-$labId = $general->getSystemConfig('sc_testing_lab_id');
-$version = VERSION;
-
-// putting this into a variable to make this editable
-$systemConfig = SYSTEM_CONFIG;
-
 $remoteURL = $general->getRemoteURL();
 
 if (empty($remoteURL)) {
     LoggerUtility::logError("Please check if STS URL is set");
+    if ($cliMode) {
+        $io->error("STS URL is not set in System Config. Exiting.");
+    }
     exit(0);
 }
 
+
+$version = VERSION;
+$systemConfig = SYSTEM_CONFIG; // putting this into a variable to make this editable
 $stsBearerToken = $general->getSTSToken();
 $apiService->setBearerToken($stsBearerToken);
 
@@ -206,7 +221,7 @@ $chunkSize = RESULTS_SENDER_DEFAULT_CHUNK_SIZE;
 
 if ($cliMode) {
     $validModules = TestsService::getActiveTests();
-    if (empty($validModules)) {
+    if ($validModules === []) {
         $validModules = array_keys(TestsService::getTestTypes());
     }
     $awaitingTestType = false;
@@ -263,7 +278,7 @@ if ($cliMode) {
         } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
             $syncSinceDate ??= DateUtility::getDateTime($arg, 'Y-m-d');
         } elseif (is_numeric($arg)) {
-            $syncSinceDate ??= DateUtility::daysAgo((int)$arg);
+            $syncSinceDate ??= DateUtility::daysAgo((int) $arg);
         } elseif (in_array(strtolower($arg), $validModules, true)) {
             $forceSyncModule = strtolower($arg);
         } else {
@@ -299,7 +314,7 @@ $forceSyncModule = $forceSyncModule ? strtolower(trim($forceSyncModule)) : null;
 $sampleCode ??= $_GET['sampleCode'] ?? null;
 
 // If module is forced, override modules config
-if (!empty($forceSyncModule)) {
+if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0') {
     unset($systemConfig['modules']);
     $systemConfig['modules'][$forceSyncModule] = true;
 }
@@ -322,15 +337,15 @@ try {
             $io->section("Custom Tests");
             $io->text("Selecting rows...");
         }
-        $t = t0();
+        $t = MiscUtility::startTimer();
 
         $genericQuery = "SELECT generic.*, a.user_name as 'approved_by_name'
                 FROM `form_generic` AS generic
                 LEFT JOIN `user_details` AS a ON generic.result_approved_by = a.user_id
-                WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
+                WHERE result_status != " . RECEIVED_AT_CLINIC . "
                 AND IFNULL(generic.sample_code, '') != ''";
 
-        if (!empty($forceSyncModule) && trim((string)$forceSyncModule) == "generic-tests" && !empty($sampleCode)) {
+        if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "generic-tests" && !empty($sampleCode)) {
             $genericQuery .= " AND generic.sample_code LIKE '$sampleCode'";
         }
 
@@ -354,7 +369,7 @@ try {
         } else {
 
             if ($cliMode) {
-                $io->text("Selected $count row(s) in " . tdone($t) . "s");
+                $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
             /** @var GenericTestsService $genericService */
             $genericService = ContainerRegistry::get(GenericTestsService::class);
@@ -363,7 +378,7 @@ try {
             if ($cliMode) {
                 $io->text("Building payload...");
             }
-            $tBuild = t0();
+            $tBuild = MiscUtility::startTimer();
             $customTestResultData = [];
             foreach ($genericLabResult as $r) {
                 $customTestResultData[$r['unique_id']] = [
@@ -372,7 +387,7 @@ try {
                 ];
             }
             if ($cliMode) {
-                $io->comment("Built payload in " . tdone($tBuild) . "s");
+                $io->comment("Built payload in " . MiscUtility::elapsedTime($tBuild) . "s");
             }
 
             $chunks = array_chunk($customTestResultData, max(1, $chunkSize), true);
@@ -392,7 +407,7 @@ try {
                         $remoteURL
                     ));
                 }
-                $tPost = t0();
+                $tPost = MiscUtility::startTimer();
                 $payload = [
                     "labId" => $labId,
                     "results" => $chunk,
@@ -403,21 +418,21 @@ try {
                 ];
                 $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
                 $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'generic-tests');
                 $acked += count($acknowledgedSamples);
 
-                if (!empty($acknowledgedSamples)) {
+                if ($acknowledgedSamples !== []) {
                     if ($cliMode) {
                         $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
                     }
-                    $tUpd = t0();
+                    $tUpd = MiscUtility::startTimer();
                     $db->where('sample_code', $acknowledgedSamples, 'IN');
                     $db->update('form_generic', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
                     }
                 }
 
@@ -441,7 +456,7 @@ try {
             }
 
             if ($cliMode) {
-                $io->success("Custom Tests: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->success("Custom Tests: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
 
@@ -473,15 +488,15 @@ try {
             $io->section("HIV Viral Load");
             $io->text("Selecting rows...");
         }
-        $t = t0();
+        $t = MiscUtility::startTimer();
 
         $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name'
             FROM `form_vl` AS vl
             LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
-            WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
+            WHERE result_status != " . RECEIVED_AT_CLINIC . "
             AND IFNULL(vl.sample_code, '') != ''";
 
-        if (!empty($forceSyncModule) && trim((string)$forceSyncModule) == "vl" && !empty($sampleCode)) {
+        if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "vl" && !empty($sampleCode)) {
             $vlQuery .= " AND sample_code LIKE '$sampleCode'";
         }
         if (null !== $syncSinceDate) {
@@ -503,7 +518,7 @@ try {
             }
         } else {
             if ($cliMode) {
-                $io->text("Selected $count row(s) in " . tdone($t) . "s");
+                $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
             $chunks = array_chunk($vlLabResult, max(1, $chunkSize), true);
             $totalChunks = count($chunks);
@@ -523,7 +538,7 @@ try {
                     ));
                 }
 
-                $tPost = t0();
+                $tPost = MiscUtility::startTimer();
                 $payload = [
                     "labId" => $labId,
                     "results" => $chunk,
@@ -533,21 +548,21 @@ try {
                 ];
                 $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
                 $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'vl');
                 $acked += count($acknowledgedSamples);
 
-                if (!empty($acknowledgedSamples)) {
+                if ($acknowledgedSamples !== []) {
                     if ($cliMode) {
                         $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
                     }
-                    $tUpd = t0();
+                    $tUpd = MiscUtility::startTimer();
                     $db->where('sample_code', $acknowledgedSamples, 'IN');
                     $db->update('form_vl', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
                     }
                 }
 
@@ -571,7 +586,7 @@ try {
             }
 
             if ($cliMode) {
-                $io->text("VL: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->text("VL: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
 
@@ -603,15 +618,15 @@ try {
             $io->section("EID");
             $io->text("Selecting rows...");
         }
-        $t = t0();
+        $t = MiscUtility::startTimer();
 
         $eidQuery = "SELECT vl.*, a.user_name as 'approved_by_name'
                 FROM `form_eid` AS vl
                 LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
-                WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
+                WHERE result_status != " . RECEIVED_AT_CLINIC . "
                 AND IFNULL(vl.sample_code, '') != ''";
 
-        if (!empty($forceSyncModule) && trim((string)$forceSyncModule) == "eid" && !empty($sampleCode)) {
+        if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "eid" && !empty($sampleCode)) {
             $eidQuery .= " AND sample_code LIKE '$sampleCode'";
         }
         if (null !== $syncSinceDate) {
@@ -634,7 +649,7 @@ try {
         } else {
 
             if ($cliMode) {
-                $io->text("Selected $count row(s) in " . tdone($t) . "s");
+                $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
             $chunks = array_chunk($eidLabResult, max(1, $chunkSize), true);
             $totalChunks = count($chunks);
@@ -653,7 +668,7 @@ try {
                         $remoteURL
                     ));
                 }
-                $tPost = t0();
+                $tPost = MiscUtility::startTimer();
                 $payload = [
                     "labId" => $labId,
                     "results" => $chunk,
@@ -663,21 +678,21 @@ try {
                 ];
                 $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
                 $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'eid');
                 $acked += count($acknowledgedSamples);
 
-                if (!empty($acknowledgedSamples)) {
+                if ($acknowledgedSamples !== []) {
                     if ($cliMode) {
                         $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
                     }
-                    $tUpd = t0();
+                    $tUpd = MiscUtility::startTimer();
                     $db->where('sample_code', $acknowledgedSamples, 'IN');
                     $db->update('form_eid', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
                     }
                 }
 
@@ -701,7 +716,7 @@ try {
             }
 
             if ($cliMode) {
-                $io->text("EID: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->text("EID: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
 
@@ -733,15 +748,15 @@ try {
             $io->section("COVID-19");
             $io->text("Selecting rows...");
         }
-        $t = t0();
+        $t = MiscUtility::startTimer();
 
         $covid19Query = "SELECT c19.*, a.user_name as 'approved_by_name'
                 FROM `form_covid19` AS c19
                 LEFT JOIN `user_details` AS a ON c19.result_approved_by = a.user_id
-                WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
+                WHERE result_status != " . RECEIVED_AT_CLINIC . "
                 AND IFNULL(c19.sample_code, '') != ''";
 
-        if (!empty($forceSyncModule) && trim((string)$forceSyncModule) == "covid19" && !empty($sampleCode)) {
+        if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "covid19" && !empty($sampleCode)) {
             $covid19Query .= " AND sample_code LIKE '$sampleCode'";
         }
         if (null !== $syncSinceDate) {
@@ -764,7 +779,7 @@ try {
         } else {
 
             if ($cliMode) {
-                $io->text("Selected $count row(s) in " . tdone($t) . "s");
+                $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
 
             /** @var Covid19Service $covid19Service */
@@ -774,7 +789,7 @@ try {
             if ($cliMode) {
                 $io->text("Building payload...");
             }
-            $tBuild = t0();
+            $tBuild = MiscUtility::startTimer();
             $c19ResultData = [];
             foreach ($c19LabResult as $r) {
                 $c19ResultData[$r['unique_id']] = [
@@ -783,7 +798,7 @@ try {
                 ];
             }
             if ($cliMode) {
-                $io->comment("Built payload in " . tdone($tBuild) . "s");
+                $io->comment("Built payload in " . MiscUtility::elapsedTime($tBuild) . "s");
             }
 
             $chunks = array_chunk($c19ResultData, max(1, $chunkSize), true);
@@ -803,7 +818,7 @@ try {
                         $remoteURL
                     ));
                 }
-                $tPost = t0();
+                $tPost = MiscUtility::startTimer();
                 $payload = [
                     "labId" => $labId,
                     "results" => $chunk,
@@ -813,21 +828,21 @@ try {
                 ];
                 $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
                 $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'covid19');
                 $acked += count($acknowledgedSamples);
 
-                if (!empty($acknowledgedSamples)) {
+                if ($acknowledgedSamples !== []) {
                     if ($cliMode) {
                         $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
                     }
-                    $tUpd = t0();
+                    $tUpd = MiscUtility::startTimer();
                     $db->where('sample_code', $acknowledgedSamples, 'IN');
                     $db->update('form_covid19', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
                     }
                 }
 
@@ -851,7 +866,7 @@ try {
             }
 
             if ($cliMode) {
-                $io->text("COVID-19: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->text("COVID-19: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
 
@@ -883,15 +898,15 @@ try {
             $io->section("Hepatitis");
             $io->text("Selecting rows...");
         }
-        $t = t0();
+        $t = MiscUtility::startTimer();
 
         $hepQuery = "SELECT hep.*, a.user_name as 'approved_by_name'
                 FROM `form_hepatitis` AS hep
                 LEFT JOIN `user_details` AS a ON hep.result_approved_by = a.user_id
-                WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
+                WHERE result_status != " . RECEIVED_AT_CLINIC . "
                 AND IFNULL(hep.sample_code, '') != ''";
 
-        if (!empty($forceSyncModule) && trim((string)$forceSyncModule) == "hepatitis" && !empty($sampleCode)) {
+        if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "hepatitis" && !empty($sampleCode)) {
             $hepQuery .= " AND sample_code LIKE '$sampleCode'";
         }
         if (null !== $syncSinceDate) {
@@ -913,7 +928,7 @@ try {
             }
         } else {
             if ($cliMode) {
-                $io->text("Selected $count row(s) in " . tdone($t) . "s");
+                $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
             $chunks = array_chunk($hepLabResult, max(1, $chunkSize), true);
             $totalChunks = count($chunks);
@@ -932,7 +947,7 @@ try {
                         $remoteURL
                     ));
                 }
-                $tPost = t0();
+                $tPost = MiscUtility::startTimer();
                 $payload = [
                     "labId" => $labId,
                     "results" => $chunk,
@@ -942,21 +957,21 @@ try {
                 ];
                 $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
                 $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'hepatitis');
                 $acked += count($acknowledgedSamples);
 
-                if (!empty($acknowledgedSamples)) {
+                if ($acknowledgedSamples !== []) {
                     if ($cliMode) {
                         $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
                     }
-                    $tUpd = t0();
+                    $tUpd = MiscUtility::startTimer();
                     $db->where('sample_code', $acknowledgedSamples, 'IN');
                     $db->update('form_hepatitis', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
                     }
                 }
 
@@ -980,7 +995,7 @@ try {
             }
 
             if ($cliMode) {
-                $io->text("Hepatitis: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->text("Hepatitis: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
 
@@ -1012,7 +1027,7 @@ try {
             $io->section("TB");
             $io->text("Selecting rows...");
         }
-        $t = t0();
+        $t = MiscUtility::startTimer();
 
         /** @var TbService $tbService */
         $tbService = ContainerRegistry::get(TbService::class);
@@ -1020,10 +1035,10 @@ try {
         $tbQuery = "SELECT tb.*, a.user_name as 'approved_by_name'
             FROM `form_tb` AS tb
             LEFT JOIN `user_details` AS a ON tb.result_approved_by = a.user_id
-            WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
+            WHERE result_status != " . RECEIVED_AT_CLINIC . "
             AND IFNULL(tb.sample_code, '') != ''";
 
-        if (!empty($forceSyncModule) && trim((string)$forceSyncModule) == "tb" && !empty($sampleCode)) {
+        if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "tb" && !empty($sampleCode)) {
             $tbQuery .= " AND sample_code LIKE '$sampleCode'";
         }
         if (null !== $syncSinceDate) {
@@ -1045,13 +1060,13 @@ try {
             }
         } else {
             if ($cliMode) {
-                $io->text("Selected $count row(s) in " . tdone($t) . "s");
+                $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
             // Build nested payload
             if ($cliMode) {
                 $io->text("Building payload...");
             }
-            $tBuild = t0();
+            $tBuild = MiscUtility::startTimer();
             $tbTestResultData = [];
             foreach ($tbLabResult as $r) {
                 $tbTestResultData[$r['unique_id']] = [
@@ -1060,7 +1075,7 @@ try {
                 ];
             }
             if ($cliMode) {
-                $io->comment("Built payload in " . tdone($tBuild) . "s");
+                $io->comment("Built payload in " . MiscUtility::elapsedTime($tBuild) . "s");
             }
 
             $chunks = array_chunk($tbTestResultData, max(1, $chunkSize), true);
@@ -1082,7 +1097,7 @@ try {
                         $remoteURL
                     ));
                 }
-                $tPost = t0();
+                $tPost = MiscUtility::startTimer();
                 $payload = [
                     "labId" => $labId,
                     "results" => $chunk,
@@ -1093,21 +1108,21 @@ try {
                 ];
                 $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
                 $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'tb');
                 $acked += count($acknowledgedSamples);
 
-                if (!empty($acknowledgedSamples)) {
+                if ($acknowledgedSamples !== []) {
                     if ($cliMode) {
                         $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
                     }
-                    $tUpd = t0();
+                    $tUpd = MiscUtility::startTimer();
                     $db->where('sample_code', $acknowledgedSamples, 'IN');
                     $db->update('form_tb', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
                     }
                 }
 
@@ -1131,7 +1146,7 @@ try {
             }
 
             if ($cliMode) {
-                $io->text("TB: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->text("TB: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
 
@@ -1163,15 +1178,15 @@ try {
             $io->section("CD4");
             $io->text("Selecting rows...");
         }
-        $t = t0();
+        $t = MiscUtility::startTimer();
 
         $cd4Query = "SELECT cd4.*, a.user_name as 'approved_by_name'
             FROM `form_cd4` AS cd4
             LEFT JOIN `user_details` AS a ON cd4.result_approved_by = a.user_id
-            WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
+            WHERE result_status != " . RECEIVED_AT_CLINIC . "
             AND IFNULL(cd4.sample_code, '') != ''";
 
-        if (!empty($forceSyncModule) && trim((string)$forceSyncModule) == "cd4" && !empty($sampleCode)) {
+        if ($forceSyncModule !== null && $forceSyncModule !== '' && $forceSyncModule !== '0' && trim((string) $forceSyncModule) === "cd4" && !empty($sampleCode)) {
             $cd4Query .= " AND sample_code LIKE '$sampleCode'";
         }
         if (null !== $syncSinceDate) {
@@ -1193,7 +1208,7 @@ try {
         } else {
 
             if ($cliMode) {
-                $io->text("Selected $count row(s) in " . tdone($t) . "s");
+                $io->text("Selected $count row(s) in " . MiscUtility::elapsedTime($t) . "s");
             }
 
             $chunks = array_chunk($cd4LabResult, max(1, $chunkSize), true);
@@ -1213,7 +1228,7 @@ try {
                         $remoteURL
                     ));
                 }
-                $tPost = t0();
+                $tPost = MiscUtility::startTimer();
                 $payload = [
                     "labId" => $labId,
                     "results" => $chunk,
@@ -1223,21 +1238,21 @@ try {
                 ];
                 $jsonResponse = $apiService->post($url, $payload, gzip: true);
                 if ($cliMode) {
-                    $io->comment("Chunk $chunkNumber POST completed in " . tdone($tPost) . "s");
+                    $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
 
                 $acknowledgedSamples = decodeAcknowledgedSampleCodes($jsonResponse, 'cd4');
                 $acked += count($acknowledgedSamples);
 
-                if (!empty($acknowledgedSamples)) {
+                if ($acknowledgedSamples !== []) {
                     if ($cliMode) {
                         $io->text("Updating local sync flags for " . count($acknowledgedSamples) . " row(s)...");
                     }
-                    $tUpd = t0();
+                    $tUpd = MiscUtility::startTimer();
                     $db->where('sample_code', $acknowledgedSamples, 'IN');
                     $db->update('form_cd4', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
                     if ($cliMode) {
-                        $io->comment("DB update done in " . tdone($tUpd) . "s");
+                        $io->comment("DB update done in " . MiscUtility::elapsedTime($tUpd) . "s");
                     }
                 }
 
@@ -1261,7 +1276,7 @@ try {
             }
 
             if ($cliMode) {
-                $io->text("CD4: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->text("CD4: acknowledged $acked / $count row(s). Total " . MiscUtility::elapsedTime($t) . "s");
             }
         }
 
@@ -1292,12 +1307,12 @@ try {
         $io->section("Timestamps");
         $io->text("Updating sync timestamps...");
     }
-    $tFinal = t0();
+    $tFinal = MiscUtility::startTimer();
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
     $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
     if ($cliMode) {
-        $io->text("Updated timestamps in " . tdone($tFinal) . "s");
+        $io->text("Updated timestamps in " . MiscUtility::elapsedTime($tFinal) . "s");
     }
 } catch (Exception $e) {
     LoggerUtility::logError($e->getMessage(), [

@@ -36,7 +36,7 @@ function getComposerVersion($composerJsonPath)
 $currentMajorVersion = getComposerVersion($composerJsonPath);
 
 // Function to extract the version number from the version.php file
-function getCurrentVersion($versionFilePath)
+function getCurrentVersion($versionFilePath): ?string
 {
     if (!file_exists($versionFilePath)) {
         return null;
@@ -50,7 +50,7 @@ function getCurrentVersion($versionFilePath)
 }
 
 // Function to update composer.json version
-function updateComposerJson($composerJsonPath, $newVersion)
+function updateComposerJson($composerJsonPath, $newVersion): bool
 {
     if (!file_exists($composerJsonPath)) {
         echo "Warning: composer.json not found at {$composerJsonPath}" . PHP_EOL;
@@ -67,7 +67,7 @@ function updateComposerJson($composerJsonPath, $newVersion)
     }
 
     // Extract just the major.minor.patch part for composer.json
-    $versionParts = explode('.', $newVersion);
+    $versionParts = explode('.', (string) $newVersion);
     $composerVersion = implode('.', array_slice($versionParts, 0, 3));
 
     // Update the version in the composer.json array
@@ -103,7 +103,7 @@ try {
         $newVersion = "{$currentMajorVersion}.1";
     } else {
         // Extract the major.minor.patch part and the build number
-        $currentVersionParts = explode('.', $currentVersion);
+        $currentVersionParts = explode('.', (string) $currentVersion);
 
         // Extract the current major.minor.patch version from the file
         $currentVersionCore = implode('.', array_slice($currentVersionParts, 0, 3));
@@ -128,13 +128,11 @@ try {
             // User wants to change major version
             echo "Enter the new major version (current is {$currentVersionCore}): ";
             $newMajorVersion = trim(fgets(STDIN));
-
             // Validate input (check for x.y.z format)
             while (!preg_match('/^\d+\.\d+\.\d+$/', $newMajorVersion)) {
                 echo "Invalid format. Please enter in format x.y.z (e.g., 2.0.0): ";
                 $newMajorVersion = trim(fgets(STDIN));
             }
-
             // Validate that new version is greater than current version
             while (version_compare($newMajorVersion, $currentVersionCore, '<=')) {
                 echo "New version must be greater than the current version ({$currentVersionCore}). Please enter a higher version: ";
@@ -146,26 +144,21 @@ try {
                     $newMajorVersion = trim(fgets(STDIN));
                 }
             }
-
             // When changing major version, start with .0 for the build number
             $newVersion = "{$newMajorVersion}.0";
-
             // Update composer.json with the new major version
             updateComposerJson($composerJsonPath, $newVersion);
-        } else {
+        } elseif ($currentVersionCore !== $currentMajorVersion) {
             // User wants to increment build number
-            if ($currentVersionCore !== $currentMajorVersion) {
-                // If the major.minor.patch version has changed, reset the build number to 1
-                $newVersion = "{$currentMajorVersion}.1";
+            // If the major.minor.patch version has changed, reset the build number to 1
+            $newVersion = "{$currentMajorVersion}.1";
+            // Update composer.json with the new version
+            updateComposerJson($composerJsonPath, $newVersion);
+        } else {
+            // Otherwise, increment the build number
+            $newVersion = $currentMajorVersion . '.' . ($currentBuildNumber + 1);
 
-                // Update composer.json with the new version
-                updateComposerJson($composerJsonPath, $newVersion);
-            } else {
-                // Otherwise, increment the build number
-                $newVersion = $currentMajorVersion . '.' . ($currentBuildNumber + 1);
-
-                // No need to update composer.json for build number changes
-            }
+            // No need to update composer.json for build number changes
         }
     }
 
@@ -190,7 +183,7 @@ PHP;
     $migrationFileName = $migrationsPath . $migrationVersion . '.sql';
 
     // For the previous version migration file
-    $currentVersionParts = explode('.', $currentVersion);
+    $currentVersionParts = explode('.', (string) $currentVersion);
     $currentMigrationVersion = implode('.', array_slice($currentVersionParts, 0, min(3, count($currentVersionParts))));
     $currentMigrationFileName = $migrationsPath . $currentMigrationVersion . '.sql';
 
@@ -217,7 +210,7 @@ PHP;
         $realMigrationsPath = realpath($migrationsPath);
         $realMigrationFileName = $realMigrationsPath . DIRECTORY_SEPARATOR . basename($migrationFileName);
 
-        if (strpos(realpath(dirname($realMigrationFileName)), $realMigrationsPath) !== 0) {
+        if (!str_starts_with(realpath(dirname($realMigrationFileName)), $realMigrationsPath)) {
             throw new RuntimeException("Invalid migration file path detected.");
         }
 

@@ -8,7 +8,7 @@ use App\Exceptions\SystemException;
 
 final class CryptoUtility
 {
-    private const KEY_FILE = VAR_PATH . '/key.storage'; // File to store the key
+    private const string KEY_FILE = VAR_PATH . '/key.storage'; // File to store the key
 
     private static function getKey(): string
     {
@@ -46,7 +46,7 @@ final class CryptoUtility
                     sodium_crypto_secretbox(
                         $data,
                         $nonce,
-                        $key
+                        (string) $key
                     ),
                 SODIUM_BASE64_VARIANT_URLSAFE
             );
@@ -65,7 +65,7 @@ final class CryptoUtility
         $key ??= self::getKey();
 
         // Validate the encryption key
-        if (empty($key) || strlen($key) !== SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
+        if (empty($key) || strlen((string) $key) !== SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
             throw new InvalidArgumentException('Invalid decryption key provided.');
         }
 
@@ -73,7 +73,7 @@ final class CryptoUtility
             // Decode the base64-encoded encrypted data
             $decoded = sodium_base642bin($encryptedData, SODIUM_BASE64_VARIANT_URLSAFE);
 
-            if (empty($decoded) || $decoded === false) {
+            if ($decoded === '' || $decoded === '0' || $decoded === false) {
                 throw new SystemException('Failed to decode the encrypted message.');
             }
 

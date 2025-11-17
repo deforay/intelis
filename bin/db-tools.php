@@ -62,7 +62,7 @@ $commandArgs = array_slice($arguments, 1);
 $globalFlags = ['--no-fzf'];
 $commandArgs = array_values(array_filter(
     $commandArgs,
-    static fn($arg) => !in_array($arg, $globalFlags, true)
+    static fn($arg): bool => !in_array($arg, $globalFlags, true)
 ));
 
 $intelisDbConfig = SYSTEM_CONFIG['database'];
@@ -210,7 +210,7 @@ function getTempDir(string $backupFolder): string
  */
 function selectFileWithFzf(array $candidates, string $header): ?string
 {
-    if (empty($candidates) || !shouldUseFzf()) {
+    if ($candidates === [] || !shouldUseFzf()) {
         return null;
     }
 
@@ -218,8 +218,12 @@ function selectFileWithFzf(array $candidates, string $header): ?string
     $outputFile = tempnam(sys_get_temp_dir(), 'dbtools_fzf_out_');
 
     if ($inputFile === false || $outputFile === false) {
-        if ($inputFile !== false) MiscUtility::deleteFile($inputFile);
-        if ($outputFile !== false) MiscUtility::deleteFile($outputFile);
+        if ($inputFile !== false) {
+            MiscUtility::deleteFile($inputFile);
+        }
+        if ($outputFile !== false) {
+            MiscUtility::deleteFile($outputFile);
+        }
         return null;
     }
 
@@ -285,7 +289,9 @@ function selectFileWithFzf(array $candidates, string $header): ?string
  */
 function encryptWithGpg(string $gzPath, string $gpgPath, string $passphrase): bool
 {
-    if (!is_file($gzPath)) return false;
+    if (!is_file($gzPath)) {
+        return false;
+    }
     if (!commandExists('gpg')) {
         throw new SystemException('gpg not found. Please install GnuPG or adjust PATH.');
     }
@@ -329,7 +335,7 @@ function encryptWithGpg(string $gzPath, string $gpgPath, string $passphrase): bo
 
     if ($exit !== 0) {
         MiscUtility::deleteFile($gpgPath);
-        $msg = trim($stderr) ?: trim($stdout) ?: 'Unknown GPG error';
+        $msg = (trim($stderr) ?: trim($stdout)) ?: 'Unknown GPG error';
         throw new SystemException("GPG encryption failed: {$msg}");
     }
 
@@ -379,6 +385,8 @@ function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backup
         1 => ['pipe', 'w'],
         2 => ['pipe', 'w'],
     ];
+
+    // @securityreview-ok: command built as argv array, path validated by validateSecureFilePath()
     $proc = proc_open($gpgCmd, $descriptors, $pipes, null, buildSafeProcessEnv());
     if (!is_resource($proc)) {
         throw new SystemException('Failed to start gpg decrypt process.');
@@ -395,7 +403,7 @@ function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backup
 
     if ($exit !== 0 || !is_file($compressedOutput) || filesize($compressedOutput) === 0) {
         MiscUtility::deleteFile($compressedOutput);
-        $msg = trim($stderr) ?: trim($stdout) ?: 'Unknown GPG error';
+        $msg = (trim($stderr) ?: trim($stdout)) ?: 'Unknown GPG error';
         throw new SystemException("Failed to decrypt GPG backup: {$msg}");
     }
 
@@ -431,7 +439,9 @@ function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backup
  */
 function verifyGpgStructure(string $gpgPath, ?string $allowedDirectory = null): bool
 {
-    if (!commandExists('gpg')) return false;
+    if (!commandExists('gpg')) {
+        return false;
+    }
     $realPath = realpath($gpgPath);
     if ($realPath === false) {
         return false;
@@ -457,7 +467,9 @@ function verifyGpgStructure(string $gpgPath, ?string $allowedDirectory = null): 
         2 => ['pipe', 'w'],
     ];
     $proc = proc_open($cmd, $desc, $pipes, null, $safeEnv);
-    if (!is_resource($proc)) return false;
+    if (!is_resource($proc)) {
+        return false;
+    }
 
     fclose($pipes[0]);
     $out = stream_get_contents($pipes[1]) ?: '';
@@ -480,7 +492,9 @@ function verifyGpgStructure(string $gpgPath, ?string $allowedDirectory = null): 
 function console(): ConsoleOutput
 {
     static $out = null;
-    if (!$out) $out = new ConsoleOutput();
+    if (!$out) {
+        $out = new ConsoleOutput();
+    }
     return $out;
 }
 
@@ -494,7 +508,9 @@ function startSpinner(?string $label = null): ProgressBar
     $bar->setBarCharacter("<fg=green>●</>");
     $bar->setEmptyBarCharacter(" ");
     $bar->setProgressCharacter("<fg=green>●</>");
-    if ($label) $bar->setMessage($label);
+    if ($label) {
+        $bar->setMessage($label);
+    }
     // Use unknown steps (indeterminate)
     $bar->start();
     return $bar;
@@ -507,7 +523,7 @@ function getAppTimezone(): string
     $system = ContainerRegistry::get(SystemService::class);
     try {
         return $system->getTimezone() ?: 'UTC';
-    } catch (\Throwable $e) {
+    } catch (\Throwable) {
         return 'UTC';
     }
 }
@@ -555,7 +571,9 @@ function collectBinlogSnapshot(array $config): array
         try {
             $res = runMysqlQuery($config, $sql);
             $res = trim($res);
-            if ($res === '') continue;
+            if ($res === '') {
+                continue;
+            }
 
             if (stripos($sql, 'SHOW VARIABLES LIKE') === 0) {
                 // format: Variable_name\tValue
@@ -564,12 +582,24 @@ function collectBinlogSnapshot(array $config): array
                     if (count($parts) >= 2) {
                         $k = strtolower($parts[0]);
                         $v = $parts[1] ?? null;
-                        if ($k === 'log_bin') $out['server']['log_bin'] = $v;
-                        if ($k === 'log_bin_basename') $out['server']['log_bin_basename'] = $v;
-                        if ($k === 'binlog_format') $out['server']['binlog_format'] = $v;
-                        if ($k === 'binlog_row_image') $out['server']['binlog_row_image'] = $v;
-                        if ($k === 'binlog_expire_logs_seconds') $out['server']['binlog_expire_logs_seconds'] = $v;
-                        if ($k === 'expire_logs_days') $out['server']['expire_logs_days'] = $v;
+                        if ($k === 'log_bin') {
+                            $out['server']['log_bin'] = $v;
+                        }
+                        if ($k === 'log_bin_basename') {
+                            $out['server']['log_bin_basename'] = $v;
+                        }
+                        if ($k === 'binlog_format') {
+                            $out['server']['binlog_format'] = $v;
+                        }
+                        if ($k === 'binlog_row_image') {
+                            $out['server']['binlog_row_image'] = $v;
+                        }
+                        if ($k === 'binlog_expire_logs_seconds') {
+                            $out['server']['binlog_expire_logs_seconds'] = $v;
+                        }
+                        if ($k === 'expire_logs_days') {
+                            $out['server']['expire_logs_days'] = $v;
+                        }
                     }
                 }
             } elseif (stripos($sql, 'SELECT @@server_uuid') === 0) {
@@ -581,7 +611,7 @@ function collectBinlogSnapshot(array $config): array
             } elseif (stripos($sql, 'SELECT @@global.gtid_executed') === 0) {
                 $out['server']['gtid_executed'] = $res;
             }
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             // non-fatal; leave nulls
         }
     }
@@ -590,7 +620,7 @@ function collectBinlogSnapshot(array $config): array
     try {
         $master = runMysqlQuery($config, "SHOW MASTER STATUS");
         $lines = array_filter(array_map('trim', explode("\n", trim($master))));
-        if (!empty($lines)) {
+        if ($lines !== []) {
             // Expect: File\tPosition\t...\tExecuted_Gtid_Set
             $parts = preg_split('/\s+/', $lines[0]);
             // guard
@@ -604,7 +634,7 @@ function collectBinlogSnapshot(array $config): array
                 }
             }
         }
-    } catch (\Throwable $e) {
+    } catch (\Throwable) {
         // leave nulls
     }
 
@@ -716,7 +746,7 @@ function handleBackup(string $backupFolder, array $intelisDbConfig, ?array $inte
 
 function handleExport(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
 {
-    if (empty($args)) {
+    if ($args === []) {
         throw new SystemException('Export target is required. Use: intelis|interfacing');
     }
 
@@ -731,17 +761,17 @@ function handleExport(string $backupFolder, array $intelisDbConfig, ?array $inte
         $outputFile = $backupFolder . DIRECTORY_SEPARATOR . "{$label}-export-{$timestamp}.sql";
     } else {
         // If relative path, make it relative to backup folder
-        if (!str_contains($outputFile, DIRECTORY_SEPARATOR)) {
+        if (!str_contains((string) $outputFile, DIRECTORY_SEPARATOR)) {
             $outputFile = $backupFolder . DIRECTORY_SEPARATOR . $outputFile;
         }
 
         // Security: Validate output path is within backup folder
-        if (!validateSecureFilePath(dirname($outputFile), $backupFolder)) {
+        if (!validateSecureFilePath(dirname((string) $outputFile), $backupFolder)) {
             throw new SystemException('Output file must be within the backups directory for security reasons.');
         }
     }
 
-    $safeOutputBasename = MiscUtility::sanitizeCliString(basename($outputFile));
+    $safeOutputBasename = MiscUtility::sanitizeCliString(basename((string) $outputFile));
     MiscUtility::safeCliEcho(sprintf('Exporting %s database to %s...', $label, $safeOutputBasename));
 
     $dsn = sprintf('mysql:host=%s;dbname=%s', $config['host'], $config['db']);
@@ -808,7 +838,9 @@ function handleImport(string $backupFolder, array $intelisDbConfig, ?array $inte
         } catch (SystemException $e) {
             echo "  Built-in password mechanism failed.\n";
             $userPassword = promptForPassword();
-            if ($userPassword === null) throw $e;
+            if ($userPassword === null) {
+                throw $e;
+            }
             echo "  Trying with user-provided password...\n";
             $extractedSqlPath = decryptGpgToTempSql($sqlPath, $userPassword, $backupFolder);
         }
@@ -846,18 +878,18 @@ function handleList(string $backupFolder): void
     $backups = getSortedBackups($backupFolder);
     $sqlFiles = getSortedSqlFiles($backupFolder);
 
-    if (empty($backups) && empty($sqlFiles)) {
+    if ($backups === [] && $sqlFiles === []) {
         echo 'No backups or SQL files found in ' . $backupFolder . PHP_EOL;
         return;
     }
 
-    if (!empty($backups)) {
+    if ($backups !== []) {
         echo "Encrypted backups:\n";
         showBackupsWithIndex($backups);
         echo "\n";
     }
 
-    if (!empty($sqlFiles)) {
+    if ($sqlFiles !== []) {
         echo "SQL files:\n";
         showBackupsWithIndex($sqlFiles);
     }
@@ -866,7 +898,7 @@ function handleList(string $backupFolder): void
 function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, ?string $requestedFile): void
 {
     $backups = getSortedBackups($backupFolder);
-    if (empty($backups)) {
+    if ($backups === []) {
         echo 'No encrypted backups found to restore.' . PHP_EOL;
         return;
     }
@@ -955,7 +987,9 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
         } catch (SystemException $e) {
             echo "  Built-in password mechanism failed.\n";
             $userPassword = promptForPassword();
-            if ($userPassword === null) throw $e;
+            if ($userPassword === null) {
+                throw $e;
+            }
             echo "  Trying with user-provided password...\n";
             $sqlPath = decryptGpgToTempSql($selectedPath, $userPassword, $backupFolder);
         }
@@ -1070,7 +1104,9 @@ function getBinlogTotalSize(array $dbConfig): int
 
         // Skip header line and parse output
         foreach (array_slice($lines, 1) as $line) {
-            if (empty($line)) continue;
+            if (empty($line)) {
+                continue;
+            }
 
             // Output format: "mysql-bin.000001\t1234567"
             $parts = preg_split('/\s+/', $line);
@@ -1097,7 +1133,7 @@ function promptForImportFileSelection(string $backupFolder): ?string
 
     $allFiles = array_merge($backups, $sqlFiles);
 
-    if (empty($allFiles)) {
+    if ($allFiles === []) {
         echo 'No import files found in ' . $backupFolder . PHP_EOL;
         return null;
     }
@@ -1164,12 +1200,10 @@ function isZipPasswordProtected(string $zipPath, ?string $allowedDirectory = nul
     $isProtected = false;
     for ($i = 0; $i < $zip->numFiles; $i++) {
         $stat = $zip->statIndex($i);
-        if ($stat !== false) {
-            // Check encryption method - if it's not 0 (none), it's encrypted
-            if (isset($stat['encryption_method']) && $stat['encryption_method'] !== 0) {
-                $isProtected = true;
-                break;
-            }
+        // Check encryption method - if it's not 0 (none), it's encrypted
+        if ($stat !== false && (isset($stat['encryption_method']) && $stat['encryption_method'] !== 0)) {
+            $isProtected = true;
+            break;
         }
     }
 
@@ -1342,11 +1376,11 @@ function promptForPassword(): ?string
 
         echo "\n"; // Add newline since echo was disabled
 
-        if ($password === false || trim($password) === '') {
+        if ($password === false || trim((string) $password) === '') {
             return null;
         }
 
-        return trim($password);
+        return trim((string) $password);
     } else {
         // Windows or stty not available - use visible input
         echo "(Note: Password will be visible as you type)\n";
@@ -1493,9 +1527,11 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
 
         if (method_exists($dump, 'setInfoHook')) {
             $lastTick = 0;
-            $dump->setInfoHook(function (string $msg) use ($spinner, &$lastTick) {
+            $dump->setInfoHook(function (string $msg) use ($spinner, &$lastTick): void {
                 $msg = trim($msg);
-                if ($msg !== '') $spinner->setMessage($msg);
+                if ($msg !== '') {
+                    $spinner->setMessage($msg);
+                }
                 $now = microtime(true);
                 if ($now - $lastTick >= 0.1) {
                     MiscUtility::spinnerAdvance($spinner);
@@ -1529,7 +1565,9 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
         }
         MiscUtility::deleteFile($compressedPath);
     } catch (\Throwable $e) {
-        if (isset($spinner)) MiscUtility::spinnerFinish($spinner);
+        if (isset($spinner)) {
+            MiscUtility::spinnerFinish($spinner);
+        }
         MiscUtility::deleteFile($sqlPath);
         if (isset($compressedPath)) {
             MiscUtility::deleteFile($compressedPath);
@@ -1611,7 +1649,7 @@ function getSortedBackups(string $backupFolder): array
         ];
     }
 
-    usort($backups, static fn($a, $b) => $b['mtime'] <=> $a['mtime']);
+    usort($backups, static fn($a, $b): int => $b['mtime'] <=> $a['mtime']);
     return $backups;
 }
 
@@ -1640,7 +1678,7 @@ function getSortedSqlFiles(string $backupFolder): array
         ];
     }
 
-    usort($sqlFiles, static fn($a, $b) => $b['mtime'] <=> $a['mtime']);
+    usort($sqlFiles, static fn($a, $b): int => $b['mtime'] <=> $a['mtime']);
 
     return $sqlFiles;
 }
@@ -1749,7 +1787,7 @@ function promptForBackupSelection(array $backups, bool $groupSafety = false, boo
 
         $selectedPath = $orderedBackups[$index - 1]['path'];
 
-        if ($confirmSafety && isSafetyBackupBasename(basename($selectedPath)) && !confirmSafetyBackupSelection($selectedPath)) {
+        if ($confirmSafety && isSafetyBackupBasename(basename((string) $selectedPath)) && !confirmSafetyBackupSelection($selectedPath)) {
             return null;
         }
 
@@ -1825,13 +1863,15 @@ function executeMysqlCommand(array $config, array $baseCommand, ?string $inputDa
             $lastPercent = 0;
             while (!feof($source)) {
                 $chunk = fread($source, 8192);
-                if ($chunk === false) break;
+                if ($chunk === false) {
+                    break;
+                }
 
                 fwrite($pipes[0], $chunk);
                 $bytesRead += strlen($chunk);
 
                 // Update progress bar based on percentage
-                if ($progressBar !== null && $fileSize > 0) {
+                if ($progressBar instanceof \Symfony\Component\Console\Helper\ProgressBar && $fileSize > 0) {
                     $percent = intval(($bytesRead / $fileSize) * 100);
                     if ($percent > $lastPercent) {
                         $progressBar->setProgress($percent);
@@ -1840,7 +1880,7 @@ function executeMysqlCommand(array $config, array $baseCommand, ?string $inputDa
                 }
             }
 
-            if ($progressBar !== null) {
+            if ($progressBar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
                 $progressBar->finish();
                 echo "\n";
             }
@@ -1893,7 +1933,7 @@ function importSqlDump(array $config, string $sqlFilePath): void
             runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=0;');
             $sqlLogBinDisabled = true;
             echo "  - Binary logging disabled (won't generate binlog during restore)\n";
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             // SQL_LOG_BIN requires SUPER/BINLOG_ADMIN privilege - continue without it
             echo "  - Binary logging still active (requires SUPER privilege to disable)\n";
         }
@@ -1930,7 +1970,7 @@ function importSqlDump(array $config, string $sqlFilePath): void
             try {
                 runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=1;');
                 echo "  - Binary logging re-enabled\n";
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 // Ignore errors re-enabling SQL_LOG_BIN
             }
         }
@@ -1951,12 +1991,12 @@ function importSqlDump(array $config, string $sqlFilePath): void
         }
         try {
             runMysqlQuery($config, 'SET AUTOCOMMIT=1;');
-        } catch (\Throwable $ignored) {
+        } catch (\Throwable) {
         }
         if ($sqlLogBinDisabled) {
             try {
                 runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=1;');
-            } catch (\Throwable $ignored) {
+            } catch (\Throwable) {
             }
         }
 
@@ -2027,11 +2067,7 @@ function runMysqlCheckCommand(array $config): string
         }
 
         $out = trim($stdout);
-        if ($out !== '') {
-            $combined[] = "[{$step['label']}]\n{$out}";
-        } else {
-            $combined[] = "[{$step['label']}] OK";
-        }
+        $combined[] = $out !== '' ? "[{$step['label']}]\n{$out}" : "[{$step['label']}] OK";
     }
 
     return implode("\n", $combined);
@@ -2081,15 +2117,13 @@ function recreateDatabase(array $config): void
     $sanitizedDb = '`' . str_replace('`', '``', $dbName) . '`';
 
     $charset = $config['charset'] ?? 'utf8mb4';
-    if (!preg_match('/^[A-Za-z0-9_]+$/', $charset)) {
+    if (!preg_match('/^\w+$/', (string) $charset)) {
         throw new SystemException('Invalid database charset in configuration.');
     }
 
     $collation = $config['collation'] ?? null;
-    if ($collation !== null && $collation !== '') {
-        if (!preg_match('/^[A-Za-z0-9_]+$/', $collation)) {
-            throw new SystemException('Invalid database collation in configuration.');
-        }
+    if ($collation !== null && $collation !== '' && !preg_match('/^\w+$/', (string) $collation)) {
+        throw new SystemException('Invalid database collation in configuration.');
     }
 
     $clauses = ' CHARACTER SET ' . $charset;
@@ -2245,8 +2279,8 @@ function slugifyForFilename(string $value, int $maxLength = 32): string
 function extractTargetOption(array $args): ?string
 {
     foreach ($args as $arg) {
-        if (str_starts_with($arg, '--target=')) {
-            $value = trim(substr($arg, 9));
+        if (str_starts_with((string) $arg, '--target=')) {
+            $value = trim(substr((string) $arg, 9));
             if ($value !== '') {
                 return strtolower($value);
             }
@@ -2254,7 +2288,7 @@ function extractTargetOption(array $args): ?string
     }
 
     foreach ($args as $arg) {
-        $candidate = strtolower($arg);
+        $candidate = strtolower((string) $arg);
         // Accept legacy names but they'll be normalized
         if (in_array($candidate, ['intelis', 'vlsm', 'primary', 'default', 'interfacing', 'interface', 'both', 'all'], true)) {
             return $candidate;
@@ -2267,7 +2301,7 @@ function extractTargetOption(array $args): ?string
 function extractDaysOption(array $args, int $default): int
 {
     foreach ($args as $arg) {
-        if (preg_match('/^--days=(\d+)$/', $arg, $matches)) {
+        if (preg_match('/^--days=(\d+)$/', (string) $arg, $matches)) {
             $value = (int) $matches[1];
             if ($value < 1) {
                 throw new SystemException('Days value must be greater than zero.');
@@ -2380,11 +2414,9 @@ function buildSafeProcessEnv(array $extra = []): array
     foreach ($extra as $key => $value) {
         if ($value === null) {
             unset($env[$key]);
-        } else {
+        } elseif (is_string($key) && preg_match('/^[A-Z_][A-Z0-9_]*$/', $key)) {
             // Only allow alphanumeric keys with underscores
-            if (is_string($key) && preg_match('/^[A-Z_][A-Z0-9_]*$/', $key)) {
-                $env[$key] = (string) $value;
-            }
+            $env[$key] = (string) $value;
         }
     }
 
@@ -2449,7 +2481,9 @@ function validateSecureFilePath(string $filePath, string $allowedDirectory): boo
 function resolveImportFileSecure(string $sourceFile, string $backupFolder): ?string
 {
     $sourceFile = trim($sourceFile);
-    if ($sourceFile === '') return null;
+    if ($sourceFile === '') {
+        return null;
+    }
 
     $candidates = [];
 
@@ -2487,7 +2521,9 @@ function resolveImportFileSecure(string $sourceFile, string $backupFolder): ?str
 function resolveBackupFileSecure(string $requested, string $backupFolder): ?string
 {
     $requested = trim($requested);
-    if ($requested === '') return null;
+    if ($requested === '') {
+        return null;
+    }
 
     $candidates = [];
 
@@ -2671,7 +2707,7 @@ function handleVerify(string $backupFolder, array $args): void
 
     if ($backupFile === null) {
         $backups = getSortedBackups($backupFolder);
-        if (empty($backups)) {
+        if ($backups === []) {
             echo 'No backups found to verify.' . PHP_EOL;
             return;
         }
@@ -2782,7 +2818,7 @@ function handleClean(string $backupFolder, array $args): void
     }
 
     $backups = getSortedBackups($backupFolder); // returns *.sql.zip and *.sql.{gz|zst}.gpg (sorted DESC by mtime)
-    if (empty($backups)) {
+    if ($backups === []) {
         echo "No backups found to clean.\n";
         return;
     }
@@ -2821,7 +2857,7 @@ function handleClean(string $backupFolder, array $args): void
 
         echo "Retention policy: Keep backups newer than {$keepDays} day(s)\n";
 
-        if (empty($toDelete)) {
+        if ($toDelete === []) {
             echo "Action: Nothing to delete (all backups are within retention period)\n";
             return;
         }
@@ -2831,14 +2867,14 @@ function handleClean(string $backupFolder, array $args): void
         $maxDeletable = max(0, count($backups) - $minKeep);
 
         // Sort candidates oldest->newest so we keep the relatively newer ones if we need to trim
-        usort($toDelete, static fn($a, $b) => $a['mtime'] <=> $b['mtime']);
+        usort($toDelete, static fn($a, $b): int => $a['mtime'] <=> $b['mtime']);
 
         if (count($toDelete) > $maxDeletable) {
             $toDelete = array_slice($toDelete, 0, $maxDeletable);
             echo "(Safety floor applied: retaining at least {$minKeep} newest backups)\n";
         }
 
-        if (empty($toDelete)) {
+        if ($toDelete === []) {
             echo "Action: Nothing to delete after safety floor\n";
             return;
         }
@@ -2853,7 +2889,7 @@ function handleClean(string $backupFolder, array $args): void
         $ageDays = (int) floor((time() - $backup['mtime']) / 86400);
         $size    = (int) $backup['size'];
 
-        $basePath = preg_replace('/\.(sql\.(gz|zst)\.gpg|sql\.zip)$/i', '', $backup['path']);
+        $basePath = preg_replace('/\.(sql\.(gz|zst)\.gpg|sql\.zip)$/i', '', (string) $backup['path']);
         $metaPath = $basePath . '.meta.json';
         if (is_file($metaPath)) {
             $size += (int) @filesize($metaPath);
@@ -2880,7 +2916,7 @@ function handleClean(string $backupFolder, array $args): void
 
     foreach ($toDelete as $backup) {
         $path     = $backup['path'];
-        $basePath = preg_replace('/\.(sql\.(gz|zst)\.gpg|sql\.zip)$/i', '', $path);
+        $basePath = preg_replace('/\.(sql\.(gz|zst)\.gpg|sql\.zip)$/i', '', (string) $path);
         $metaPath = $basePath . '.meta.json';
 
         if (MiscUtility::deleteFile($path)) {
@@ -2902,11 +2938,11 @@ function handleClean(string $backupFolder, array $args): void
     $orphanMeta  = 0;
     $orphanFreed = 0;
 
-    if (!empty($metaFiles)) {
+    if ($metaFiles !== []) {
         // Build a set of basenames for existing archives (after deletions)
         $existing = [];
         foreach (getSortedBackups($backupFolder) as $b) {
-            $existing[preg_replace('/\.(sql\.(gz|zst)\.gpg|sql\.zip)$/i', '', $b['path'])] = true;
+            $existing[preg_replace('/\.(sql\.(gz|zst)\.gpg|sql\.zip)$/i', '', (string) $b['path'])] = true;
         }
 
         foreach ($metaFiles as $m) {
@@ -2946,7 +2982,7 @@ function handleClean(string $backupFolder, array $args): void
 function extractKeepOption(array $args): ?int
 {
     foreach ($args as $arg) {
-        if (preg_match('/^--keep=(\d+)$/', $arg, $matches)) {
+        if (preg_match('/^--keep=(\d+)$/', (string) $arg, $matches)) {
             $value = (int) $matches[1];
             if ($value < 1) {
                 throw new SystemException('Keep value must be greater than zero.');
@@ -3045,7 +3081,9 @@ function getDatabaseSize(array $config): array
 
         $lines = explode("\n", trim($output));
         foreach ($lines as $line) {
-            if (trim($line) === '') continue;
+            if (trim($line) === '') {
+                continue;
+            }
 
             $parts = preg_split('/\s+/', $line);
             if (count($parts) >= 4) {
@@ -3104,7 +3142,7 @@ function handleConfigTest(string $backupFolder, array $intelisDbConfig, ?array $
             }
         }
 
-        if (!empty($missing)) {
+        if ($missing !== []) {
             echo "❌ FAILED\n";
             echo "   Missing: " . implode(', ', $missing) . "\n";
             $allPassed = false;
@@ -3251,7 +3289,7 @@ function testDatabasePermissions(array $config): void
             null,
             $sql
         );
-    } catch (SystemException $e) {
+    } catch (SystemException) {
         throw new SystemException('Cannot list tables');
     }
 }
@@ -3260,7 +3298,7 @@ function parseArgs(array $args): array
 {
     $out = [];
     foreach ($args as $a) {
-        if (preg_match('/^--([^=]+)=(.*)$/', $a, $m)) {
+        if (preg_match('/^--([^=]+)=(.*)$/', (string) $a, $m)) {
             $out[$m[1]] = $m[2];
         }
     }
@@ -3274,7 +3312,9 @@ function getBinlogList(array $config): array
     $files = [];
     foreach (explode("\n", trim($res)) as $line) {
         $parts = preg_split('/\s+/', trim($line));
-        if (!empty($parts[0])) $files[] = $parts[0];
+        if (isset($parts[0]) && ($parts[0] !== '' && $parts[0] !== '0')) {
+            $files[] = $parts[0];
+        }
     }
     return $files;
 }
@@ -3312,7 +3352,9 @@ function runPipeline(array $producer, array $consumer, array $env = []): int
 
     while (!feof($pipes1[1])) {
         $buf = fread($pipes1[1], 8192);
-        if ($buf === false) break;
+        if ($buf === false) {
+            break;
+        }
         fwrite($pipes2[0], $buf);
     }
 
@@ -3356,7 +3398,7 @@ function handlePitrInfo(string $backupFolder, array $intelisDbConfig, ?array $in
     echo "  GTID mode:   " . ($snap['server']['gtid_mode'] ?? 'OFF') . "\n";
 
     $binlogs = getBinlogList($config);
-    if (empty($binlogs)) {
+    if ($binlogs === []) {
         echo "❌ No binary logs listed by server.\n";
         return;
     }
@@ -3365,9 +3407,9 @@ function handlePitrInfo(string $backupFolder, array $intelisDbConfig, ?array $in
     // Find most recent backup meta for this DB
     $pattern = $backupFolder . DIRECTORY_SEPARATOR . ($label === 'interfacing' ? 'interfacing' : 'intelis') . "-*.meta.json";
     $candidates = glob($pattern) ?: [];
-    usort($candidates, static fn($a, $b) => filemtime($b) <=> filemtime($a));
+    usort($candidates, static fn($a, $b): int => filemtime($b) <=> filemtime($a));
 
-    if (empty($candidates)) {
+    if ($candidates === []) {
         echo "\nNo .meta.json found. Run a new backup to enable PITR suggestions.\n";
         return;
     }
@@ -3435,7 +3477,7 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
 
     // Build mysqlbinlog args (remote read; avoids local FS access to binlog dir)
     $binlogs = getBinlogList($config);
-    if (empty($binlogs)) {
+    if ($binlogs === []) {
         throw new SystemException('No binlogs available on the server.');
     }
 
@@ -3443,10 +3485,14 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
     $selected = [];
     $include = false;
     foreach ($binlogs as $f) {
-        if ($f === $startFile) $include = true;
-        if ($include) $selected[] = $f;
+        if ($f === $startFile) {
+            $include = true;
+        }
+        if ($include) {
+            $selected[] = $f;
+        }
     }
-    if (empty($selected)) {
+    if ($selected === []) {
         throw new SystemException("Start binlog {$startFile} not found on server. Retention may have purged it.");
     }
 
@@ -3456,15 +3502,13 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
         '--read-from-remote-server',
         '--host=' . $config['host']
     ];
-    if (!empty($config['port'])) $producer[] = '--port=' . $config['port'];
+    if (!empty($config['port'])) {
+        $producer[] = '--port=' . $config['port'];
+    }
     $producer[] = '--user=' . $config['username'];
     $producer[] = '--stop-datetime=' . $to;
 
-    if ($gtidMode && !empty($executed)) {
-        $producer[] = '--exclude-gtids=' . $executed;
-    } else {
-        $producer[] = '--start-position=' . max(4, $startPos);
-    }
+    $producer[] = $gtidMode && !empty($executed) ? '--exclude-gtids=' . $executed : '--start-position=' . max(4, $startPos);
 
     foreach ($selected as $f) $producer[] = $f;
 
@@ -3473,7 +3517,9 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
         'mysql',
         '--host=' . $config['host']
     ];
-    if (!empty($config['port'])) $consumer[] = '--port=' . $config['port'];
+    if (!empty($config['port'])) {
+        $consumer[] = '--port=' . $config['port'];
+    }
     $consumer[] = '--user=' . $config['username'];
     // no --database : binlog has USE statements
 
@@ -3525,7 +3571,7 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
             try {
                 runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=1;');
                 echo "  - Binary logging re-enabled\n";
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 // Ignore errors re-enabling SQL_LOG_BIN
             }
         }
@@ -3548,12 +3594,12 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
         }
         try {
             runMysqlQuery($config, 'SET AUTOCOMMIT=1;');
-        } catch (\Throwable $ignored) {
+        } catch (\Throwable) {
         }
         if ($sqlLogBinDisabled) {
             try {
                 runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=1;');
-            } catch (\Throwable $ignored) {
+            } catch (\Throwable) {
             }
         }
 

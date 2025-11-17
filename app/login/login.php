@@ -208,7 +208,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 
 
-		if (!empty($logo) && trim((string) $logo) != "" && MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $logo)) {
+		if (!empty($logo) && trim((string) $logo) !== "" && MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $logo)) {
 		?>
 			<div style="margin-top:15px;float:left;">
 				<img src="/uploads/logo/<?= $logo; ?>" alt="Logo image" style="max-width:120px;">
@@ -221,7 +221,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 			$dir = scandir($filePath);
 			$loginLogoFiles = [];
 			foreach ($dir as $fileName) {
-				if ($fileName != '.' && $fileName != '..' && MiscUtility::isImageValid($filePath . DIRECTORY_SEPARATOR . $fileName)) {
+				if ($fileName !== '.' && $fileName !== '..' && MiscUtility::isImageValid($filePath . DIRECTORY_SEPARATOR . $fileName)) {
 					$loginLogoFiles[] = $fileName;
 				}
 			}
@@ -252,8 +252,8 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 					}
 					?>
 					<div id="login-alert"
-						class="alert <?= $initialAlert ? 'alert-warning' : 'alert-danger' ?> col-sm-12"
-						style="<?= $initialAlert ? '' : 'display:none' ?>">
+						class="alert <?= $initialAlert !== '' && $initialAlert !== '0' ? 'alert-warning' : 'alert-danger' ?> col-sm-12"
+						style="<?= $initialAlert !== '' && $initialAlert !== '0' ? '' : 'display:none' ?>">
 						<?= htmlspecialchars($initialAlert ?: '', ENT_QUOTES, 'UTF-8'); ?>
 					</div>
 					<form id="loginForm" name="loginForm" class="form-horizontal" method="post" action="/login/loginProcess.php" onsubmit="validateNow();return false;">
@@ -321,7 +321,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 			headers: window.additionalXHRParams
 		});
 
-		const hasInitialAlert = <?= $initialAlert ? 'true' : 'false'; ?>;
+		const hasInitialAlert = <?= $initialAlert !== '' && $initialAlert !== '0' ? 'true' : 'false'; ?>;
 		let captchaflag = false;
 
 		function getCaptcha(captchaDivId) {
@@ -390,7 +390,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 					$('<iframe src="<?= rtrim((string) SYSTEM_CONFIG['recency']['url'], "/") . '/logout'; ?>" frameborder="0" scrolling="no" id="myFrame" style="display:none;"></iframe>').appendTo('body');
 				}
 			<?php }
-			if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) != "") { ?>
+			if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) !== "") { ?>
 				alert("<?= $_SESSION['alertMsg']; ?>");
 				triggerShake();
 			<?php $_SESSION['alertMsg'] = '';

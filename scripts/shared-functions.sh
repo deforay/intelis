@@ -854,8 +854,7 @@ ensure_composer() {
     echo "Composer not on PATH. Using switch-php to install it…"
     ensure_switch_php
 
-    # use your target PHP version; 8.2 matches your app's composer.json
-    TARGET_PHP="${TARGET_PHP:-8.2}"
+    TARGET_PHP="${TARGET_PHP:-8.4}"
     switch-php "$TARGET_PHP"
 
     # Re-check PATH; some cron envs miss /usr/local/bin, so add a safety symlink
@@ -893,7 +892,7 @@ ensure_composer() {
 
 # --- Ensure OPcache is installed and enabled for Apache (don’t rely on php -m) ---
 ensure_opcache() {
-    local ver="${desired_php_version:-8.2}"
+    local ver="${desired_php_version:-8.4}"
     local pkg="php${ver}-opcache"
     local apache_ini_glob="/etc/php/${ver}/apache2/conf.d/*opcache.ini"
     local installed enabled

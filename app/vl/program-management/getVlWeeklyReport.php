@@ -20,8 +20,8 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
 
-$aColumns = array('f.facility_state', 'f.facility_district', 'f.facility_name', 'f.facility_code', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.lab_tech_comments');
-$orderColumns = array('f.facility_state', 'f.facility_district', 'f.facility_name', 'sample_tested_datetime', null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'vl.lab_tech_comments');
+$aColumns = ['f.facility_state', 'f.facility_district', 'f.facility_name', 'f.facility_code', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.lab_tech_comments'];
+$orderColumns = ['f.facility_state', 'f.facility_district', 'f.facility_name', 'sample_tested_datetime', null, null, null, null, null, null, null, null, null, null, null, null, null, null, 'vl.lab_tech_comments'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -56,7 +56,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
   $searchArray = explode(" ", (string) $_POST['sSearch']);
   $sWhereSub = "";
   foreach ($searchArray as $search) {
-    if ($sWhereSub == "") {
+    if ($sWhereSub === "") {
       $sWhereSub .= "(";
     } else {
       $sWhereSub .= " AND (";
@@ -138,8 +138,8 @@ $sQuery = "SELECT
 
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 
-if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-  if (trim((string) $start_date) == trim((string) $end_date)) {
+if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !== '') {
+  if (trim((string) $start_date) === trim((string) $end_date)) {
     $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
   } else {
     $sWhere[] =  ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
@@ -147,7 +147,7 @@ if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !
 }
 
 
-if (isset($_POST['lab']) && trim((string) $_POST['lab']) != '') {
+if (isset($_POST['lab']) && trim((string) $_POST['lab']) !== '') {
   $sWhere[] =  " vl.lab_id IN (" . $_POST['lab'] . ")";
 }
 
@@ -155,13 +155,13 @@ if (!empty($_SESSION['facilityMap'])) {
   $sWhere[] =  " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
   $sWhere = implode(" AND ", $sWhere);
 }
 
 
 $sQuery = $sQuery . ' WHERE ' . $sWhere;
-$sQuery = $sQuery . ' GROUP BY vl.lab_id, vl.facility_id';
+$sQuery .= ' GROUP BY vl.lab_id, vl.facility_id';
 
 
 if (!empty($sOrder) && $sOrder !== '') {

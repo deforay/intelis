@@ -1,5 +1,7 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -12,7 +14,7 @@ use App\Registries\ContainerRegistry;
 try {
 
     // Sanitized values from $request object
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -21,7 +23,7 @@ try {
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
 
-    $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
+    $dateFormat = (empty($_POST['dateFormat'])) ? 'd/m/Y H:i' : $_POST['dateFormat'];
 
     /** @var TestResultsService $testResultsService */
     $testResultsService = ContainerRegistry::get(TestResultsService::class);
@@ -93,7 +95,7 @@ try {
                 'result_value_text' => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal'],
                 'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
+                'result_status' => RECEIVED_AT_TESTING_LAB,
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag']
             ];

@@ -1,6 +1,6 @@
 <?php
 // get-duplicate-suspects.php - Aggregated by facility
-
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -9,7 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -24,30 +24,30 @@ try {
     $sWhere = [];
 
     // Date range filter
-    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
+    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
         $sWhere[] = " t1.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
     }
 
     // Lab filter
-    if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
+    if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
         $sWhere[] = " t1.lab_id IN (" . $_POST['labName'] . ")";
     }
 
     // State filter
-    if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
         $provinceId = implode(',', $_POST['state']);
         $sWhere[] = " f.facility_state_id IN ($provinceId)";
     }
 
     // District filter
-    if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $districtId = implode(',', $_POST['district']);
         $sWhere[] = " f.facility_district_id IN ($districtId)";
     }
 
     // Facility filter
-    if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) != '') {
+    if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) !== '') {
         $facilityId = implode(',', $_POST['facilityId']);
         $sWhere[] = " t1.facility_id IN ($facilityId)";
     }
@@ -61,7 +61,7 @@ try {
     $sWhere[] = " (t1.$patientFirstNameColumn IS NOT NULL OR t1.$patientIdColumn IS NOT NULL) ";
     $sWhere[] = " t1.sample_collection_date IS NOT NULL ";
 
-    $whereSql = !empty($sWhere) ? ('WHERE ' . implode(' AND ', $sWhere)) : '';
+    $whereSql = $sWhere === [] ? ('') : 'WHERE ' . implode(' AND ', $sWhere);
 
     // Facility join for geographic filters
     $facilityJoin = 'LEFT JOIN facility_details as f ON t1.facility_id = f.facility_id';

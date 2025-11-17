@@ -1,5 +1,8 @@
 <?php
 
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\LOST_OR_MISSING;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -26,8 +29,8 @@ $vlsmFormId = (int) $general->getGlobalConfig('vl_form');
 
 
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.cd4_result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.cd4_result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.cd4_result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.cd4_result', 'vl.last_modified_datetime', 'ts.status_name'];
 if ($general->isSTSInstance()) {
      $sampleCode = 'remote_sample_code';
 } elseif ($general->isStandaloneInstance()) {
@@ -68,7 +71,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
      $searchArray = explode(" ", (string) $_POST['sSearch']);
      $sWhereSub = "";
      foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
+          if ($sWhereSub === "") {
                $sWhereSub .= "(";
           } else {
                $sWhereSub .= " AND (";
@@ -104,11 +107,11 @@ $sQuery = "SELECT vl.*,
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
 
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
      $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim((string) $start_date) == trim((string) $end_date)) {
+     if (trim((string) $start_date) === trim((string) $end_date)) {
           $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
      } else {
           $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
@@ -134,11 +137,11 @@ if (!empty($_SESSION['facilityMap'])) {
 
 $sWhere[] =  ' vl.cd4_result not like "" AND vl.cd4_result is not null ';
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
      $sWhere = ' WHERE ' . implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . $sWhere;
+$sQuery .= $sWhere;
 if (!empty($sOrder) && $sOrder !== '') {
      $sOrder = preg_replace('/\s+/', ' ', $sOrder);
      $sQuery = "$sQuery ORDER BY $sOrder";
@@ -163,9 +166,9 @@ foreach ($rResult as $aRow) {
 
      $status = '<select class="form-control"  name="status[]" id="' . $aRow['cd4_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
                <option value="">' . _translate("-- Select --") . '</option>
-               <option value="' . SAMPLE_STATUS\ACCEPTED . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\ACCEPTED ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
-               <option value="' . SAMPLE_STATUS\REJECTED . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\REJECTED  ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
-               <option value="' . SAMPLE_STATUS\LOST_OR_MISSING . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\LOST_OR_MISSING  ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
+               <option value="' . ACCEPTED . '" ' . ($aRow['status_id'] == ACCEPTED ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
+               <option value="' . REJECTED . '" ' . ($aRow['status_id'] == REJECTED  ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
+               <option value="' . LOST_OR_MISSING . '" ' . ($aRow['status_id'] == LOST_OR_MISSING  ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
                </select><br><br>';
 
      $row = [];

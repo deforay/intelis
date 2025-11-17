@@ -10,7 +10,7 @@ class ContainerRegistry
     /**
      * @var ContainerInterface|null
      */
-    private static ?ContainerInterface $container;
+    private static ?ContainerInterface $container = null;
 
     /**
      * Set the container instance.
@@ -30,7 +30,7 @@ class ContainerRegistry
      */
     public static function get(string $id)
     {
-        if (self::$container === null) {
+        if (!self::$container instanceof ContainerInterface) {
             throw new SystemException('Container is not set.');
         }
 
@@ -38,7 +38,7 @@ class ContainerRegistry
     }
     public static function getContainer(): ContainerInterface
     {
-        if (self::$container === null) {
+        if (!self::$container instanceof ContainerInterface) {
             throw new SystemException('Container is not set.');
         }
         return self::$container;

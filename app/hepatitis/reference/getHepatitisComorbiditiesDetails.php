@@ -4,7 +4,7 @@
 
 $tableName = "r_hepatitis_comorbidities";
 $primaryKey = "comorbidity_id";
-$aColumns = array('comorbidity_name', 'comorbidity_status');
+$aColumns = ['comorbidity_name', 'comorbidity_status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -37,7 +37,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -61,11 +61,11 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM r_hepatitis_comorbidities";
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $sWhere = ' where ' . implode(' AND ', $sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }
-$sQuery = $sQuery . ' GROUP BY comorbidity_name';
+$sQuery .= ' GROUP BY comorbidity_name';
 
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
@@ -85,12 +85,7 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 /*
     * Output
 */
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $status = '<select class="form-control" name="status[]" id="' . $aRow['comorbidity_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['comorbidity_status'] . '\')">

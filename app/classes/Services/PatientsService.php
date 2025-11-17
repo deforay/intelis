@@ -15,12 +15,10 @@ final class PatientsService
 {
     protected ?DatabaseService $db;
     protected string $table = 'patients';
-    protected CommonService $commonService;
 
-    public function __construct(?DatabaseService $db, CommonService $commonService)
+    public function __construct(?DatabaseService $db, protected CommonService $commonService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
-        $this->commonService = $commonService;
     }
 
     public function generatePatientId($prefix = null, $insertMode = false)
@@ -36,13 +34,7 @@ final class PatientsService
                                         FROM $this->table WHERE `patient_code_prefix` = '$prefix' $forUpdate");
 
 
-        if ($res && $res['max_key'] !== null) {
-            // Increment the maximum key by 1
-            $patientCodeKey = $res['max_key'] + 1;
-        } else {
-            // If no existing key is found, start with 1
-            $patientCodeKey = 1;
-        }
+        $patientCodeKey = $res && $res['max_key'] !== null ? $res['max_key'] + 1 : 1;
 
         // Generate the full patient code
         $patientCode = $prefix . str_pad($patientCodeKey, 7, "0", STR_PAD_LEFT);
@@ -81,7 +73,7 @@ final class PatientsService
 
             if ($testTable == "form_vl" || $testTable == "form_generic") {
                 $data['patient_code'] =  $params['patient_art_no'] ?? null;
-                $params['patient_gender'] = $params['patient_gender'] ?? null;
+                $params['patient_gender'] ??= null;
             } elseif ($testTable == "form_eid") {
                 $data['patient_code'] =  $params['child_id'] ?? null;
                 $params['patientFirstName'] = $params['child_name'] ?? null;
@@ -141,7 +133,7 @@ final class PatientsService
             unset($updateColumns['patient_registered_on']);
             unset($updateColumns['patient_registered_by']);
             unset($updateColumns['system_patient_code']);
-            $id = $this->db->insert($this->table, $data, $updateColumns, ['system_patient_code']);
+            $id = $this->db->upsert($this->table, $data, $updateColumns, ['system_patient_code']);
 
             if ($id === false) {
                 // Error handling
@@ -157,6 +149,7 @@ final class PatientsService
                 'trace' => $e->getTraceAsString(),
             ]);
         }
+        return null;
     }
 
     public function getSystemPatientId($patientCode, $patientGender, $patientDob)
@@ -177,6 +170,7 @@ final class PatientsService
                 'trace' => $e->getTraceAsString(),
             ]);
         }
+        return null;
     }
 
     public function getLastRequestForPatientID(string $testType, string $patientId)
@@ -184,7 +178,7 @@ final class PatientsService
         try {
             $tableName = TestsService::getTestTableName($testType);
             $patientIdColumn = TestsService::getPatientIdColumn($testType);
-        } catch (SystemException $e) {
+        } catch (SystemException) {
             return null; // Invalid test type
         }
 

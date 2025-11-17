@@ -43,7 +43,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
 if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
     $facilityQuery = "SELECT * FROM facility_details WHERE facility_id= ? AND status='active'";
-    $facilityResult = $db->rawQuery($facilityQuery, array($eidInfo['facility_id']));
+    $facilityResult = $db->rawQuery($facilityQuery, [$eidInfo['facility_id']]);
 }
 ?>
 
@@ -111,12 +111,10 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose facility" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
                                             <?php //echo $facility;
-                                            foreach ($healthFacilitiesAllColumns as $hFacility) {
-                                            ?>
+                                            foreach ($healthFacilitiesAllColumns as $hFacility) { ?>
                                                 <option value="<?php echo $hFacility['facility_id']; ?>" <?php echo ($eidInfo['facility_id'] == $hFacility['facility_id']) ? "selected='selected'" : ""; ?> data-code="<?php echo $hFacility['facility_code']; ?>"><?php echo $hFacility['facility_name']; ?></option>
                                             <?php
-                                            }
-                                            ?>
+                                            } ?>
                                         </select>
                                     </td>
                                     <td style="width:25%">
@@ -131,8 +129,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose implementing partner" style="width:100%;">
                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
                                             <?php
-                                            foreach ($fundingSourceList as $fundingSource) {
-                                            ?>
+                                            foreach ($fundingSourceList as $fundingSource) { ?>
                                                 <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($fundingSource['funding_source_id'] == $eidInfo['funding_source']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                             <?php } ?>
                                         </select>
@@ -143,8 +140,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <select class="form-control" name="implementingPartner" id="implementingPartner" title="Please choose implementing partner" style="width:100%;">
                                             <option value=""> <?= _translate('-- Select --'); ?> </option>
                                             <?php
-                                            foreach ($implementingPartnerList as $implementingPartner) {
-                                            ?>
+                                            foreach ($implementingPartnerList as $implementingPartner) { ?>
                                                 <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($implementingPartner['i_partner_id'] == $eidInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                             <?php } ?>
                                         </select>
@@ -808,7 +804,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
     function getMachine(value) {
         $.post("/instruments/get-machine-names-by-instrument.php", {
                 instrumentId: value,
-                machine: <?php echo !empty($eidInfo['import_machine_name']) ? $eidInfo['import_machine_name'] : '""'; ?>,
+                machine: <?php echo empty($eidInfo['import_machine_name']) ? '""' : $eidInfo['import_machine_name']; ?>,
                 testType: 'eid'
             },
             function(data) {

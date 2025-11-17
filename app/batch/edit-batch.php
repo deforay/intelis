@@ -26,7 +26,7 @@ $testType = $_GET['type'];
 $genericTestType = null;
 
 if ($testType == 'generic-tests') {
-	$genericTestType = !empty($_GET['testType']) ? base64_decode((string) $_GET['testType']) : null;
+	$genericTestType = empty($_GET['testType']) ? null : base64_decode((string) $_GET['testType']);
 }
 
 $testShortCode = TestsService::getTestShortCode($testType);
@@ -60,7 +60,7 @@ $batchQuery = "SELECT * FROM batch_details as b_d
                     WHERE batch_id=?";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
 if (!empty($batchInfo[0]['batch_attributes'])) {
-	$batchAttribute = json_decode($batchInfo[0]['batch_attributes']);
+	$batchAttribute = json_decode((string) $batchInfo[0]['batch_attributes']);
 	$sortBy = $batchAttribute->sort_by;
 	$sortType = $batchAttribute->sort_type;
 }
@@ -417,16 +417,18 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		<?php
 		$r = 1;
 		foreach ($result as $sample) {
-			if (isset($sample['batch_id']) && trim((string) $sample['batch_id']) == $id) {
-				if (isset($sample['result']) && trim((string) $sample['result']) != '') {
-					if ($r == 1) {
-		?>
-						$("#deselect-all-samplecode").remove();
-					<?php } ?>
-					resultSampleArray.push('<?php echo $sample['eid_id']; ?>');
-		<?php $r++;
-				}
-			}
+			if (isset($sample['batch_id']) && trim((string) $sample['batch_id']) == $id && (isset($sample['result']) && trim((string) $sample['result']) !== '')) {
+       if ($r == 1) {
+  		?>
+  						$("#deselect-all-samplecode").remove();
+  					<?php }
+       ?>
+					resultSampleArray.push('<?php 
+       echo $sample['eid_id'];
+       ?>');
+		<?php 
+       $r++;
+   }
 		}
 		?>
 		getSampleCodeDetails();

@@ -225,12 +225,18 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
                                     <tr>
                                         <th scope="row"><label for="dob"><?= _translate("Date of Birth"); ?> <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input type="text" name="dob" id="dob" value="<?= $covid19Info['patient_dob'] ?>" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();" <?php if ($ageInfo == "ageUnreported") echo "readonly"; ?> />
+                                            <input type="text" name="dob" id="dob" value="<?= $covid19Info['patient_dob'] ?>" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();" <?php if ($ageInfo === "ageUnreported") {
+                                                                                                                                                                                                                                                    echo "readonly";
+                                                                                                                                                                                                                                                } ?> />
 
-                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if ($ageInfo == "ageUnreported") echo "checked='checked'"; ?> /> <label for="dob"><?= _translate('Unreported'); ?> </label>
+                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if ($ageInfo === "ageUnreported") {
+                                                                                                                                            echo "checked='checked'";
+                                                                                                                                        } ?> /> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                         </td>
                                         <th scope="row"><?= _translate("Case Age (years)"); ?></th>
-                                        <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="ageInYears" name="ageInYears" placeholder="<?= _translate("Age (in years)"); ?>" title="<?= _translate("Age"); ?>" style="width:100%;" value="<?php echo $covid19Info['patient_age']; ?>" <?php if ($ageInfo == "ageUnreported") echo "readonly"; ?> /></td>
+                                        <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="ageInYears" name="ageInYears" placeholder="<?= _translate("Age (in years)"); ?>" title="<?= _translate("Age"); ?>" style="width:100%;" value="<?php echo $covid19Info['patient_age']; ?>" <?php if ($ageInfo === "ageUnreported") {
+                                                                                                                                                                                                                                                                                                                                                                                    echo "readonly";
+                                                                                                                                                                                                                                                                                                                                                                                } ?> /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><label for="patientGender"><?= _translate("Sex"); ?> <span class="mandatory">*</span> </label></th>
@@ -467,7 +473,7 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
                                                                     <td>
                                                                         <?php
                                                                         $value = '';
-                                                                        if (!in_array($rows['test_name'], array('Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'ELISA', 'other'))) {
+                                                                        if (!in_array($rows['test_name'], ['Real Time RT-PCR', 'RDT-Antibody', 'RDT-Antigen', 'ELISA', 'other'])) {
                                                                             $value = 'value="' . $rows['test_name'] . '"';
                                                                             $show =  "block";
                                                                         } else {
@@ -479,7 +485,7 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
                                                                             <option value="RDT-Antibody" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antibody') ? "selected='selected'" : ""; ?>><?= _translate("RDT-Antibody"); ?></option>
                                                                             <option value="RDT-Antigen" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'RDT-Antigen') ? "selected='selected'" : ""; ?>><?= _translate("RDT-Antigen"); ?></option>
                                                                             <option value="ELISA" <?php echo (isset($rows['test_name']) && $rows['test_name'] == 'ELISA') ? "selected='selected'" : ""; ?>><?= _translate("ELISA"); ?></option>
-                                                                            <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>><?= _translate("Others"); ?></option>
+                                                                            <option value="other" <?php echo (isset($show) && $show === 'block') ? "selected='selected'" : ""; ?>><?= _translate("Others"); ?></option>
                                                                         </select>
                                                                         <input <?php echo $value; ?> type="text" name="testNameOther[]" id="testNameOther<?= ($indexKey + 1); ?>" class="form-control testNameOther<?= ($indexKey + 1); ?>" title="<?= _translate("Please enter the name of the Testkit (or) Test Method used"); ?>" placeholder="<?= _translate("Enter Test Method used"); ?>" style="display: <?php echo $show; ?>;margin-top: 10px;" />
                                                                     </td>
@@ -496,7 +502,7 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
                                                                                 <option value="STANDARD™ Q COVID-19 Ag Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'STANDARD™ Q COVID-19 Ag Test') ? "selected='selected'" : ""; ?>><?= _translate("STANDARD™ Q COVID-19 Ag Test"); ?></option>
                                                                                 <option value="LumiraDx ™ SARS-CoV-2 Ag Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'LumiraDx ™ SARS-CoV-2 Ag Test') ? "selected='selected'" : ""; ?>><?= _translate("LumiraDx ™ SARS-CoV-2 Ag Test"); ?></option>
                                                                                 <option value="Sure Status® COVID-19 Antigen Card Test" <?php echo (isset($rows['testing_platform']) && $rows['testing_platform'] == 'Sure Status® COVID-19 Antigen Card Test') ? "selected='selected'" : ""; ?>><?= _translate("Sure Status® COVID-19 Antigen Card Test"); ?></option>
-                                                                                <option value="other" <?php echo (isset($show) && $show == 'block') ? "selected='selected'" : ""; ?>><?= _translate("Others"); ?></option>
+                                                                                <option value="other" <?php echo (isset($show) && $show === 'block') ? "selected='selected'" : ""; ?>><?= _translate("Others"); ?></option>
                                                                             <?php } else { ?>
                                                                             <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'] . '##' . $rows['instrument_id'], '-- Select --');
                                                                             } ?>
@@ -567,8 +573,7 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
                                                 </select>
                                             </td>
                                             <?php
-                                            $disabled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : "";
-                                            ?>
+                                            $disabled = (isset($covid19Info['is_result_authorised']) && $covid19Info['is_result_authorised'] == 'no') ? "disabled" : ""; ?>
                                             <th scope="row"><?= _translate("Authorized By"); ?></th>
                                             <td>
                                                 <select name="authorizedBy" <?php echo $disabled; ?> id="authorizedBy" class="disabled-field form-control" title="<?= _translate("Please choose authorized by"); ?>" style="width: 100%;">
@@ -621,7 +626,7 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
     provinceName = true;
     facilityName = true;
     machineName = true;
-    let testCounter = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo)) : 0; ?>;
+    let testCounter = <?php echo (empty($covid19TestInfo)) ? (0) : count($covid19TestInfo); ?>;
     deletedRow = [];
 
 

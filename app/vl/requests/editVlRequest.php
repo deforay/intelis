@@ -106,7 +106,7 @@ $vlQueryInfo['last_viral_load_date'] = DateUtility::humanReadableDateFormat($vlQ
 $vlQueryInfo['date_test_ordered_by_physician'] = DateUtility::humanReadableDateFormat($vlQueryInfo['date_test_ordered_by_physician'] ?? '');
 
 //Has patient changed regimen section
-if (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes") {
+if (trim((string) $vlQueryInfo['has_patient_changed_regimen']) === "yes") {
      $vlQueryInfo['regimen_change_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['regimen_change_date'] ?? '');
 } else {
      $vlQueryInfo['reason_for_regimen_change'] = $vlQueryInfo['regimen_change_date'] = '';

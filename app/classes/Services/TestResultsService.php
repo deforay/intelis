@@ -10,11 +10,8 @@ use App\Services\DatabaseService;
 
 final class TestResultsService
 {
-    protected ?DatabaseService $db;
-
-    public function __construct(?DatabaseService $db)
+    public function __construct(protected ?DatabaseService $db)
     {
-        $this->db = $db;
     }
     public function clearPreviousImportsByUser($userId = null, $module = null)
     {
@@ -39,9 +36,9 @@ final class TestResultsService
     // Also checks UTF-8 encoding and converts if needed
     public function removeControlCharsAndEncode($inputString, $encodeToUTF8 = true): string
     {
-        return MemoUtility::remember(function () use ($inputString, $encodeToUTF8) {
+        return MemoUtility::remember(function () use ($inputString, $encodeToUTF8): string|object|int|float|bool|array|null {
             $inputString = preg_replace('/[[:cntrl:]]/', '', (string) $inputString);
-            if ($encodeToUTF8 === true && mb_detect_encoding($inputString, 'UTF-8', true) === false) {
+            if ($encodeToUTF8 === true && mb_detect_encoding((string) $inputString, 'UTF-8', true) === false) {
                 $inputString = MiscUtility::toUtf8($inputString);
             }
             return $inputString;
@@ -78,7 +75,7 @@ final class TestResultsService
         ];
     }
 
-    public function resultImportStats($numberOfResults, $importMode, $importedBy)
+    public function resultImportStats($numberOfResults, $importMode, $importedBy): void
     {
 
         $data = [
@@ -91,7 +88,7 @@ final class TestResultsService
         $this->db->insert('result_import_stats', $data);
     }
 
-    public function updateEmailTestResultsInfo($testType, $emailInfo)
+    public function updateEmailTestResultsInfo($testType, array $emailInfo): void
     {
         $testName = TestsService::getTestTypes();
         $tableName = $testName[$testType]['tableName'];
@@ -100,16 +97,13 @@ final class TestResultsService
         $result = $this->db->get($tableName, null, "result_dispatched_datetime,form_attributes,is_result_mail_sent");
         foreach ($result as $val) {
             if (!empty($val['form_attributes'])) {
-                $formAttributes = json_decode($val['form_attributes']);
+                $formAttributes = json_decode((string) $val['form_attributes']);
                 $formAttributes->email_sent_to = $emailInfo['to_mail'];
             } else {
-                $formAttributes = array('email_sent_to' => $emailInfo['to_mail']);
+                $formAttributes = ['email_sent_to' => $emailInfo['to_mail']];
             }
 
-            $data = array(
-                'is_result_mail_sent' => 'yes',
-                'form_attributes' => json_encode($formAttributes),
-            );
+            $data = ['is_result_mail_sent' => 'yes', 'form_attributes' => json_encode($formAttributes)];
 
             if ($val['result_dispatched_datetime'] == "") {
                 $data['result_dispatched_datetime'] = DateUtility::getCurrentDateTime();

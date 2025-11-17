@@ -1,5 +1,12 @@
 <?php
 
+use Slim\Psr7\Request;
+use const COUNTRY\PNG;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\EidService;
@@ -44,7 +51,7 @@ try {
 
     $db->beginTransaction();
 
-    /** @var Slim\Psr7\Request $request */
+    /** @var Request $request */
     $request = AppRegistry::get('request');
 
     $noOfFailedRecords = 0;
@@ -64,7 +71,7 @@ try {
         ]);
 
         $appVersion = _getIteratorKey($appVersion, 'appVersion');
-    } catch (PathNotFoundException | Throwable $e) {
+    } catch (PathNotFoundException | Throwable) {
         // If the pointer is not found, appVersion remains null
         $appVersion = null;
     }
@@ -76,7 +83,7 @@ try {
         if (empty($input)) {
             throw new PathNotFoundException();
         }
-    } catch (PathNotFoundException | Throwable $ex) {
+    } catch (PathNotFoundException | Throwable) {
         throw new SystemException("Invalid request");
     }
 
@@ -127,7 +134,7 @@ try {
             'sampleReceivedDate',
         ];
 
-        if ($formId == COUNTRY\PNG) {
+        if ($formId == PNG) {
             $mandatoryFields[] = 'provinceId';
         }
 
@@ -158,7 +165,7 @@ try {
 
         if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", (string) $data['provinceId']);
-            if (!empty($province)) {
+            if ($province !== []) {
                 $data['provinceId'] = $province[0];
             }
             $data['provinceId'] = $general->getValueByName($data['provinceId'], 'geo_name', 'geographical_divisions', 'geo_id');
@@ -172,8 +179,8 @@ try {
 
         $data['api'] = "yes";
 
-        $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
-        $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
+        $provinceCode = (empty($data['provinceCode'])) ? null : $data['provinceCode'];
+        $provinceId = (empty($data['provinceId'])) ? null : $data['provinceId'];
         $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
 
         $update = "no";
@@ -199,7 +206,7 @@ try {
                 $sQueryWhere[] = " (app_sample_code like '" . $data['appSampleCode'] . "' AND lab_id = '" . $data['labId'] . "') ";
             }
 
-            if (!empty($sQueryWhere)) {
+            if ($sQueryWhere !== []) {
                 $sQuery .= " WHERE " . implode(" OR ", $sQueryWhere);
             }
             $rowData = $db->rawQueryOne($sQuery);
@@ -258,68 +265,68 @@ try {
             }
         }
 
-        $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+        $status = RECEIVED_AT_TESTING_LAB;
         if ($roleUser['access_type'] != 'testing-lab') {
-            $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+            $status = RECEIVED_AT_CLINIC;
         }
 
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
-            $status = SAMPLE_STATUS\REJECTED;
+            $status = REJECTED;
         } elseif (
             isset($globalConfig['eid_auto_approve_api_results']) &&
             $globalConfig['eid_auto_approve_api_results'] == "yes" &&
             (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") &&
             (!empty($data['result']))
         ) {
-            $status = SAMPLE_STATUS\ACCEPTED;
+            $status = ACCEPTED;
         } elseif ((isset($data['isSampleRejected']) && $data['isSampleRejected'] == "no") && (!empty($data['result']))) {
-            $status = SAMPLE_STATUS\PENDING_APPROVAL;
+            $status = PENDING_APPROVAL;
         }
 
-        if (isset($data['approvedOn']) && trim((string) $data['approvedOn']) != "") {
+        if (isset($data['approvedOn']) && trim((string) $data['approvedOn']) !== "") {
             $data['approvedOn'] = DateUtility::isoDateFormat($data['approvedOn'], true);
         } else {
             $data['approvedOn'] = null;
         }
 
         //Set sample received date
-        if (!empty($data['sampleReceivedDate']) && trim((string) $data['sampleReceivedDate']) != "") {
+        if (!empty($data['sampleReceivedDate']) && trim((string) $data['sampleReceivedDate']) !== "") {
             $data['sampleReceivedDate'] = DateUtility::isoDateFormat($data['sampleReceivedDate'], true);
         } else {
             $data['sampleReceivedDate'] = null;
         }
-        if (!empty($data['sampleTestedDateTime']) && trim((string) $data['sampleTestedDateTime']) != "") {
+        if (!empty($data['sampleTestedDateTime']) && trim((string) $data['sampleTestedDateTime']) !== "") {
             $data['sampleTestedDateTime'] = DateUtility::isoDateFormat($data['sampleTestedDateTime'], true);
         } else {
             $data['sampleTestedDateTime'] = null;
         }
 
-        if (isset($data['rapidtestDate']) && trim((string) $data['rapidtestDate']) != "") {
+        if (isset($data['rapidtestDate']) && trim((string) $data['rapidtestDate']) !== "") {
             $data['rapidtestDate'] = DateUtility::isoDateFormat($data['rapidtestDate']);
         } else {
             $data['rapidtestDate'] = null;
         }
 
-        if (isset($data['childDob']) && trim((string) $data['childDob']) != "") {
+        if (isset($data['childDob']) && trim((string) $data['childDob']) !== "") {
             $data['childDob'] = DateUtility::isoDateFormat($data['childDob']);
         } else {
             $data['childDob'] = null;
         }
 
-        if (isset($data['mothersDob']) && trim((string) $data['mothersDob']) != "") {
+        if (isset($data['mothersDob']) && trim((string) $data['mothersDob']) !== "") {
             $data['mothersDob'] = DateUtility::isoDateFormat($data['mothersDob']);
         } else {
             $data['mothersDob'] = null;
         }
 
-        if (isset($data['motherTreatmentInitiationDate']) && trim((string) $data['motherTreatmentInitiationDate']) != "") {
+        if (isset($data['motherTreatmentInitiationDate']) && trim((string) $data['motherTreatmentInitiationDate']) !== "") {
             $data['motherTreatmentInitiationDate'] = DateUtility::isoDateFormat($data['motherTreatmentInitiationDate']);
         } else {
             $data['motherTreatmentInitiationDate'] = null;
         }
 
-        if (isset($data['previousPCRTestDate']) && trim((string) $data['previousPCRTestDate']) != "") {
+        if (isset($data['previousPCRTestDate']) && trim((string) $data['previousPCRTestDate']) !== "") {
             $data['previousPCRTestDate'] = DateUtility::isoDateFormat($data['previousPCRTestDate']);
         } else {
             $data['previousPCRTestDate'] = null;
@@ -332,25 +339,25 @@ try {
         } else {
             $motherVlResult = null;
         }
-        if (isset($data['reviewedOn']) && trim((string) $data['reviewedOn']) != "") {
+        if (isset($data['reviewedOn']) && trim((string) $data['reviewedOn']) !== "") {
             $data['reviewedOn'] = DateUtility::isoDateFormat($data['reviewedOn']);
         } else {
             $data['reviewedOn'] = null;
         }
 
-        if (isset($data['resultDispatchedOn']) && trim((string) $data['resultDispatchedOn']) != "") {
+        if (isset($data['resultDispatchedOn']) && trim((string) $data['resultDispatchedOn']) !== "") {
             $data['resultDispatchedOn'] = DateUtility::isoDateFormat($data['resultDispatchedOn'], true);
         } else {
             $data['resultDispatchedOn'] = null;
         }
 
-        if (isset($data['sampleDispatchedOn']) && trim((string) $data['sampleDispatchedOn']) != "") {
+        if (isset($data['sampleDispatchedOn']) && trim((string) $data['sampleDispatchedOn']) !== "") {
             $data['sampleDispatchedOn'] = DateUtility::isoDateFormat($data['sampleDispatchedOn'], true);
         } else {
             $data['sampleDispatchedOn'] = null;
         }
 
-        if (!empty($data['revisedOn']) && trim((string) $data['revisedOn']) != "") {
+        if (!empty($data['revisedOn']) && trim((string) $data['revisedOn']) !== "") {
             $data['revisedOn'] = DateUtility::isoDateFormat($data['revisedOn'], true);
         } else {
             $data['revisedOn'] = null;
@@ -368,26 +375,20 @@ try {
         $allChange = [];
         if (isset($data['reasonForResultChanges']) && !empty($data['reasonForResultChanges'])) {
             foreach ($data['reasonForResultChanges'] as $row) {
-                $allChange[] = array(
-                    'usr' => $row['changed_by'],
-                    'msg' => $row['reason'],
-                    'dtime' => $row['change_datetime']
-                );
+                $allChange[] = ['usr' => $row['changed_by'], 'msg' => $row['reason'], 'dtime' => $row['change_datetime']];
             }
         }
-        if (!empty($allChange)) {
+        if ($allChange !== []) {
             $reasonForChanges = json_encode($allChange);
         }
 
         $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
         /* New API changes start */
-        foreach (array("motherTreatment", "childTreatment", "childTreatmentOther") as $key) {
+        foreach (["motherTreatment", "childTreatment", "childTreatmentOther"] as $key) {
             if (is_array($data[$key])) {
                 $data[$key] = implode(",", $data[$key]);
-            } else {
-                if (str_contains($data[$key], '##')) {
-                    $data[$key] = str_replace("##", ",", $data[$key]);
-                }
+            } elseif (str_contains((string) $data[$key], '##')) {
+                $data[$key] = str_replace("##", ",", $data[$key]);
             }
         }
         /* New API changes end */
@@ -450,7 +451,7 @@ try {
             'tested_by' => (isset($data['testedBy']) && $data['testedBy'] != '') ? $data['testedBy'] : $user['user_id'],
             'result_approved_by' => (isset($data['approvedBy']) && $data['approvedBy'] != '') ? $data['approvedBy'] : null,
             'result_approved_datetime' => (isset($data['approvedOn']) && $data['approvedOn'] != '') ? $data['approvedOn'] : null,
-            'lab_tech_comments' => !empty($data['approverComments']) ? $data['approverComments'] : null,
+            'lab_tech_comments' => empty($data['approverComments']) ? null : $data['approverComments'],
             'result_reviewed_by' => (isset($data['reviewedBy']) && $data['reviewedBy'] != "") ? $data['reviewedBy'] : null,
             'result_reviewed_datetime' => (isset($data['reviewedOn']) && $data['reviewedOn'] != "") ? $data['reviewedOn'] : null,
             'revised_by' => (isset($data['revisedBy']) && $data['revisedBy'] != "") ? $data['revisedBy'] : "",
@@ -462,11 +463,11 @@ try {
             'reason_for_sample_rejection' => $data['sampleRejectionReason'] ?? null,
             'rejection_on' => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
             'source_of_request' => $data['sourceOfRequest'] ?? "API",
-            'form_attributes' => !empty($formAttributes) ? $db->func($formAttributes) : null
+            'form_attributes' => $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes)
         ];
 
         if (!empty($rowData)) {
-            $eidData['last_modified_datetime'] = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
+            $eidData['last_modified_datetime'] = (empty($data['updatedOn'])) ? DateUtility::getCurrentDateTime() : DateUtility::isoDateFormat($data['updatedOn'], true);
             $eidData['last_modified_by'] = $user['user_id'];
         } else {
             $eidData['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
@@ -506,7 +507,7 @@ try {
     $db->commitTransaction();
 
     // For inserted samples, generate sample code
-    if (!empty($uniqueIdsForSampleCodeGeneration)) {
+    if ($uniqueIdsForSampleCodeGeneration !== []) {
         $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
         if (!empty($sampleCodeData)) {
             foreach ($responseData as $rootKey => $currentSampleData) {

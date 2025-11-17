@@ -236,7 +236,7 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
 	function getMachine(value) {
 		$.post("/instruments/get-machine-names-by-instrument.php", {
 				instrumentId: value,
-				machine: <?php echo !empty($hepatitisInfo['import_machine_name']) ? $hepatitisInfo['import_machine_name'] : '""'; ?>,
+				machine: <?php echo empty($hepatitisInfo['import_machine_name']) ? '""' : $hepatitisInfo['import_machine_name']; ?>,
 				testType: 'hepatitis'
 			},
 			function(data) {

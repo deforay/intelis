@@ -148,7 +148,9 @@ $globalConfig = $general->getGlobalConfig();
                           <option value=""><?= _translate("-- Choose Modules to Enable --"); ?></option>
                           <?php foreach ($testName as $key => $val) {
                           ?>
-                            <option value="<?= $key; ?>" <?php if (isset(SYSTEM_CONFIG['modules'][$key]) && SYSTEM_CONFIG['modules'][$key] == true) echo "selected='selected'"; ?>><?= $val['testName']; ?></option>
+                            <option value="<?= $key; ?>" <?php if (isset(SYSTEM_CONFIG['modules'][$key]) && SYSTEM_CONFIG['modules'][$key] == true) {
+                              echo "selected='selected'";
+                          } ?>><?= $val['testName']; ?></option>
                           <?php
                           } ?>
                         </select>

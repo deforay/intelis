@@ -17,14 +17,10 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_covid19_sample_type";
 
 try {
-	if (isset($_POST['sampleName']) && trim((string) $_POST['sampleName']) != "") {
+	if (isset($_POST['sampleName']) && trim((string) $_POST['sampleName']) !== "") {
 
 
-		$data = array(
-			'sample_name' => $_POST['sampleName'],
-			'status' => $_POST['sampleStatus'],
-			'updated_datetime' => DateUtility::getCurrentDateTime(),
-		);
+		$data = ['sample_name' => $_POST['sampleName'], 'status' => $_POST['sampleStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
 
 		$db->insert($tableName, $data);
 		$lastId = $db->getInsertId();

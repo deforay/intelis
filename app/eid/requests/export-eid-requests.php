@@ -1,5 +1,7 @@
 <?php
 
+use const COUNTRY\CAMEROON;
+use const COUNTRY\DRC;
 use App\Services\EidService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
@@ -32,9 +34,9 @@ $key = (string) $general->getGlobalConfig('key');
 
 
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+    $headings = ["S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
 } else {
-    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+    $headings = ["S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
 }
 
 
@@ -42,16 +44,16 @@ if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID",
     unset($headings[$key]);
 }
 
-if ($formId != COUNTRY\CAMEROON) {
+if ($formId != CAMEROON) {
     $headings = MiscUtility::removeMatchingElements($headings, [_translate("Lab Assigned Code")]);
 }
-if ($formId != COUNTRY\DRC) {
+if ($formId != DRC) {
     $headings = MiscUtility::removeMatchingElements($headings, ["Freezer", "Rack", "Box", "Position", "Volume (ml)"]);
 }
 
 
 
-$buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf) {
+$buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf): array {
 
     $row = [];
     //set gender
@@ -66,7 +68,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf) {
 
     //set sample rejection
     $sampleRejection = 'No';
-    if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+    if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
         $sampleRejection = 'Yes';
     }
 
@@ -95,7 +97,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf) {
         $row[] = $aRow['mother_id'];
     }
     $row[] = DateUtility::humanReadableDateFormat($aRow['child_dob']);
-    $row[] = ($aRow['child_age'] != null && trim((string) $aRow['child_age']) != '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
+    $row[] = ($aRow['child_age'] != null && trim((string) $aRow['child_age']) !== '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
     $row[] = $gender;
     $row[] = $aRow['has_infant_stopped_breastfeeding'];
     $row[] = $aRow['request_clinician_phone_number'];
@@ -106,8 +108,8 @@ $buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf) {
     $row[] = $aRow['sample_requestor_phone'];
     $row[] = $aRow['eid_number'];
     $row[] = $sampleRejection;
-    if ($formId == COUNTRY\DRC) {
-        $formAttributes = !empty($aRow['form_attributes']) ? json_decode($aRow['form_attributes']) : null;
+    if ($formId == DRC) {
+        $formAttributes = empty($aRow['form_attributes']) ? null : json_decode((string) $aRow['form_attributes']);
         $storageObj = isset($formAttributes->storage) ? json_decode($formAttributes->storage) : null;
 
         $row[] = $storageObj->storageCode ?? '';
@@ -118,7 +120,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf) {
     }
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
-    if ($formId == COUNTRY\CAMEROON) {
+    if ($formId == CAMEROON) {
         $row[] = ($aRow['lab_assigned_code']);
     }
     $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
@@ -133,7 +135,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf) {
 // Build filter info for header row
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim($value) != '' && trim($value) != '-- Select --') {
+	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
 	}
 }
@@ -141,7 +143,7 @@ foreach ($_POST as $key => $value) {
 // Prepare headings (with alpha-numeric conversion if requested)
 $processedHeadings = $headings;
 if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-	$processedHeadings = array_map(function ($value) {
+	$processedHeadings = array_map(function ($value): string|array|null {
 		$string = str_replace(' ', '', $value);
 		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
 	}, $headings);

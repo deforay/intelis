@@ -32,16 +32,16 @@ $sarr = $general->getSystemConfig();
 
 
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-    $headings = array(_translate("S. No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab Name"), _translate("Date specimen received"), _translate("Testing Point"), _translate("Lab staff Assigned"), _translate("Source Of Alert / POE"), _translate("Health Facility/POE County"), _translate("Health Facility/POE State"), _translate("Health Facility/POE"), _translate("Case ID"), _translate("Patient Name"), _translate("Patient DoB"), _translate("Patient Age"), _translate("Patient Sex"), _translate("Is Patient Pregnant"), _translate("Patient Phone Number"), _translate("Patient Email"), _translate("Patient Address"), _translate("Patient State"), _translate("Patient County"), _translate("Patient City/Village"), _translate("Nationality"), _translate("Fever/Temperature"), _translate("Temprature Measurement"), _translate("Symptoms Detected"), _translate("Medical History"), _translate("Comorbidities"), _translate("Recenty Hospitalized?"), _translate("Patient Lives With Children"), _translate("Patient Cares for Children"), _translate("Close Contacts"), _translate("Has Recent Travel History"), _translate("Country Names"), _translate("Travel Return Date"), _translate("Airline"), _translate("Seat No."), _translate("Arrival Date/Time"), _translate("Departure Airport"), _translate("Transit"), _translate("Reason of Visit"), _translate("Number of Days Sick"), _translate("Date of Symptoms Onset"), _translate("Date of Initial Consultation"), _translate("Sample Collection Date"), _translate("Reason for Test Request"), _translate("Date specimen registered"), _translate("Specimen Condition"), _translate("Specimen Status"), _translate("Specimen Type"), _translate("Sample Tested Date"), _translate("Testing Platform"), _translate("Test Method"), _translate("Result"), _translate("Date result released"));
+    $headings = [_translate("S. No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab Name"), _translate("Date specimen received"), _translate("Testing Point"), _translate("Lab staff Assigned"), _translate("Source Of Alert / POE"), _translate("Health Facility/POE County"), _translate("Health Facility/POE State"), _translate("Health Facility/POE"), _translate("Case ID"), _translate("Patient Name"), _translate("Patient DoB"), _translate("Patient Age"), _translate("Patient Sex"), _translate("Is Patient Pregnant"), _translate("Patient Phone Number"), _translate("Patient Email"), _translate("Patient Address"), _translate("Patient State"), _translate("Patient County"), _translate("Patient City/Village"), _translate("Nationality"), _translate("Fever/Temperature"), _translate("Temprature Measurement"), _translate("Symptoms Detected"), _translate("Medical History"), _translate("Comorbidities"), _translate("Recenty Hospitalized?"), _translate("Patient Lives With Children"), _translate("Patient Cares for Children"), _translate("Close Contacts"), _translate("Has Recent Travel History"), _translate("Country Names"), _translate("Travel Return Date"), _translate("Airline"), _translate("Seat No."), _translate("Arrival Date/Time"), _translate("Departure Airport"), _translate("Transit"), _translate("Reason of Visit"), _translate("Number of Days Sick"), _translate("Date of Symptoms Onset"), _translate("Date of Initial Consultation"), _translate("Sample Collection Date"), _translate("Reason for Test Request"), _translate("Date specimen registered"), _translate("Specimen Condition"), _translate("Specimen Status"), _translate("Specimen Type"), _translate("Sample Tested Date"), _translate("Testing Platform"), _translate("Test Method"), _translate("Result"), _translate("Date result released")];
 } else {
-    $headings = array(_translate("S. No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab Name"), _translate("Date specimen received"), _translate("Testing Point"), _translate("Lab staff Assigned"), _translate("Source Of Alert / POE"), _translate("Health Facility/POE County"), _translate("Health Facility/POE State"), _translate("Health Facility/POE"), _translate("Patient DoB"), _translate("Patient Age"), _translate("Patient Sex"), _translate("Is Patient Pregnant"), _translate("Patient Phone Number"), _translate("Patient Email"), _translate("Patient Address"), _translate("Patient State"), _translate("Patient County"), _translate("Patient City/Village"), _translate("Nationality"), _translate("Fever/Temperature"), _translate("Temprature Measurement"), _translate("Symptoms Detected"), _translate("Medical History"), _translate("Comorbidities"), _translate("Recenty Hospitalized?"), _translate("Patient Lives With Children"), _translate("Patient Cares for Children"), _translate("Close Contacts"), _translate("Has Recent Travel History"), _translate("Country Names"), _translate("Travel Return Date"), _translate("Airline"), _translate("Seat No."), _translate("Arrival Date/Time"), _translate("Departure Airport"), _translate("Transit"), _translate("Reason of Visit"), _translate("Number of Days Sick"), _translate("Date of Symptoms Onset"), _translate("Date of Initial Consultation"), _translate("Sample Collection Date"), _translate("Reason for Test Request"), _translate("Date specimen registered"), _translate("Specimen Condition"), _translate("Specimen Status"), _translate("Specimen Type"), _translate("Sample Tested Date"), _translate("Testing Platform"), _translate("Test Method"), _translate("Result"), _translate("Date result released"));
+    $headings = [_translate("S. No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab Name"), _translate("Date specimen received"), _translate("Testing Point"), _translate("Lab staff Assigned"), _translate("Source Of Alert / POE"), _translate("Health Facility/POE County"), _translate("Health Facility/POE State"), _translate("Health Facility/POE"), _translate("Patient DoB"), _translate("Patient Age"), _translate("Patient Sex"), _translate("Is Patient Pregnant"), _translate("Patient Phone Number"), _translate("Patient Email"), _translate("Patient Address"), _translate("Patient State"), _translate("Patient County"), _translate("Patient City/Village"), _translate("Nationality"), _translate("Fever/Temperature"), _translate("Temprature Measurement"), _translate("Symptoms Detected"), _translate("Medical History"), _translate("Comorbidities"), _translate("Recenty Hospitalized?"), _translate("Patient Lives With Children"), _translate("Patient Cares for Children"), _translate("Close Contacts"), _translate("Has Recent Travel History"), _translate("Country Names"), _translate("Travel Return Date"), _translate("Airline"), _translate("Seat No."), _translate("Arrival Date/Time"), _translate("Departure Airport"), _translate("Transit"), _translate("Reason of Visit"), _translate("Number of Days Sick"), _translate("Date of Symptoms Onset"), _translate("Date of Initial Consultation"), _translate("Sample Collection Date"), _translate("Reason for Test Request"), _translate("Date specimen registered"), _translate("Specimen Condition"), _translate("Specimen Status"), _translate("Specimen Type"), _translate("Sample Tested Date"), _translate("Testing Platform"), _translate("Test Method"), _translate("Result"), _translate("Date result released")];
 }
 if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
     unset($headings[$key]);
 }
 
 
-$buildRow = function ($aRow, $no) use ($general, $key, $covid19Results) {
+$buildRow = function ($aRow, $no) use ($general, $key, $covid19Results): array {
     global $db;
     $symptomList = [];
     $squery = "SELECT s.*, ps.* FROM form_covid19 as c19
@@ -88,7 +88,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $covid19Results) {
 
     //set sample rejection
     $sampleRejection = 'No';
-    if (trim((string) $aRow['is_sample_rejected']) == 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) != '' && $aRow['reason_for_sample_rejection'] > 0)) {
+    if (trim((string) $aRow['is_sample_rejected']) === 'yes' || ($aRow['reason_for_sample_rejection'] != null && trim((string) $aRow['reason_for_sample_rejection']) !== '' && $aRow['reason_for_sample_rejection'] > 0)) {
         $sampleRejection = 'Yes';
     }
 
@@ -130,7 +130,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $covid19Results) {
         $row[] = $patientFname . " " . $patientLname;
     }
     $row[] = DateUtility::humanReadableDateFormat($aRow['patient_dob']);
-    $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) != '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
+    $row[] = ($aRow['patient_age'] != null && trim((string) $aRow['patient_age']) !== '' && $aRow['patient_age'] > 0) ? $aRow['patient_age'] : 0;
     $row[] = ($aRow['patient_gender']);
     $row[] = ($aRow['is_patient_pregnant']);
     $row[] = ($aRow['patient_phone_number']);
@@ -180,7 +180,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $covid19Results) {
 // Build filter info for header row
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim($value) != '' && trim($value) != '-- Select --') {
+	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
 		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
 	}
 }
@@ -188,7 +188,7 @@ foreach ($_POST as $key => $value) {
 // Prepare headings (with alpha-numeric conversion if requested)
 $processedHeadings = $headings;
 if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-	$processedHeadings = array_map(function ($value) {
+	$processedHeadings = array_map(function ($value): string|array|null {
 		$string = str_replace(' ', '', $value);
 		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
 	}, $headings);

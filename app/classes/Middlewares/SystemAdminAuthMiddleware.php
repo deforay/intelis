@@ -2,6 +2,7 @@
 
 namespace App\Middlewares;
 
+use Override;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
@@ -21,6 +22,7 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
         '/system-admin/setup/registerProcess.php',
         // Add other routes to exclude from the authentication check here
     ];
+    #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // Get the requested URI
@@ -51,7 +53,7 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
             $redirect = new RedirectResponse('/system-admin/login/login.php');
         }
 
-        if ($redirect !== null) {
+        if ($redirect instanceof RedirectResponse) {
             return $redirect;
         } else {
             return $handler->handle($request);
@@ -68,11 +70,6 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
         if (CommonService::isAjaxRequest($request) && CommonService::isSameOriginRequest($request) === false) {
             throw new SystemException(_translate('Invalid request origin.'), 403);
         }
-
-        if (CommonService::isExcludedUri($uri, $this->excludedUris ?? []) === true) {
-            return true;
-        }
-
-        return false;
+        return CommonService::isExcludedUri($uri, $this->excludedUris ?? []);
     }
 }

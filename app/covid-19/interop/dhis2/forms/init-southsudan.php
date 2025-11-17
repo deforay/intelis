@@ -10,11 +10,7 @@ $instanceId = 'dhis2';
 
 //tkIsR0Lo23H
 
-$initOptionSets = array(
-    'testingLabs' => 'fsHj2ZG3iHJ',
-    // 'testTypes' => 'tkIsR0Lo23H',
-    // 'testingPlatform' => 'RFqme0EHhdF'
-);
+$initOptionSets = ['testingLabs' => 'fsHj2ZG3iHJ'];
 
 foreach ($initOptionSets as $t => $id) {
     $data = [];
@@ -26,39 +22,25 @@ foreach ($initOptionSets as $t => $id) {
     $response = $dhis2->get($url, $data);
 
     $response = json_decode($response, true);
-    if (!empty($response) && $t == 'testingLabs') {
+    if (!empty($response) && $t === 'testingLabs') {
         foreach ($response['options'] as $lab) {
 
-            $facilityData = array(
-                'facility_name' => $lab['name'],
-                'vlsm_instance_id' => $instanceId,
-                'other_id' => $lab['id'],
-                'facility_type' => 2,
-                'test_type' => 'covid19',
-                'updated_datetime' => DateUtility::getCurrentDateTime(),
-                'status' => 'active'
-            );
-            $updateColumns = array("other_id", "updated_datetime");
+            $facilityData = ['facility_name' => $lab['name'], 'vlsm_instance_id' => $instanceId, 'other_id' => $lab['id'], 'facility_type' => 2, 'test_type' => 'covid19', 'updated_datetime' => DateUtility::getCurrentDateTime(), 'status' => 'active'];
+            $updateColumns = ["other_id", "updated_datetime"];
 
             $db->upsert('facility_details', $facilityData, $updateColumns);
             $id = $db->getInsertId();
             if ($id > 0) {
-                $dataTest = array(
-                    'test_type' => 'covid19',
-                    'facility_id' => $id,
-                    'monthly_target' => null,
-                    'suppressed_monthly_target' => null,
-                    "updated_datetime" => DateUtility::getCurrentDateTime()
-                );
+                $dataTest = ['test_type' => 'covid19', 'facility_id' => $id, 'monthly_target' => null, 'suppressed_monthly_target' => null, "updated_datetime" => DateUtility::getCurrentDateTime()];
                 $db->upsert('testing_labs', $dataTest);
             }
         }
-    } else if (!empty($response) && $t == 'testTypes') {
+    } elseif (!empty($response) && $t === 'testTypes') {
         $_SESSION['DHIS2_TEST_TYPES'] = [];
         foreach ($response['options'] as $opts) {
             $_SESSION['DHIS2_TEST_TYPES'][$opts['code']] = $opts['name'];
         }
-    } else if (!empty($response) && $t == 'testingPlatform') {
+    } elseif (!empty($response) && $t === 'testingPlatform') {
         $_SESSION['DHIS2_TESTING_PLATFORMS'] = [];
         foreach ($response['options'] as $opts) {
             $_SESSION['DHIS2_TESTING_PLATFORMS'][$opts['code']] = $opts['name'];

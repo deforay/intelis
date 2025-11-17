@@ -6,10 +6,10 @@ use Hackzilla\PasswordGenerator\Generator\HumanPasswordGenerator;
 
 class PassphraseHelper
 {
-    private static $consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'w', 'y', 'z'];
-    private static $vowels = ['a', 'e', 'i', 'o', 'u'];
-    private static $separators = ['-', '.', '_', ' '];
-    private static $allowedSeparators = ['-', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+    private static array $consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'w', 'y', 'z'];
+    private static array $vowels = ['a', 'e', 'i', 'o', 'u'];
+    private static array $separators = ['-', '.', '_', ' '];
+    private static array $allowedSeparators = ['-', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 
     /**
      * Generate a passphrase using a word list if available, or a custom method otherwise.
@@ -41,14 +41,14 @@ class PassphraseHelper
             $password = $generator->generatePasswords(1)[0];
 
             // Clean the generated password to ensure it only has alphabets in words
-            $words = explode($separator, $password);
+            $words = explode($separator, (string) $password);
             $cleanWords = [];
 
             foreach ($words as $word) {
                 // Remove any special characters, keep only alphabets
                 $cleanWord = preg_replace('/[^a-z]/i', '', $word);
                 // Convert to lowercase as required
-                $cleanWord = strtolower($cleanWord);
+                $cleanWord = strtolower((string) $cleanWord);
                 $cleanWords[] = $cleanWord;
             }
 
@@ -111,7 +111,7 @@ class PassphraseHelper
     public static function calculateEntropy(int $wordCount = 4, int $wordLength = 5): float
     {
         $pairCombinations = count(self::$consonants) * count(self::$vowels);
-        $wordCombinations = pow($pairCombinations, floor($wordLength / 2));
+        $wordCombinations = $pairCombinations ** floor($wordLength / 2);
 
         if ($wordLength % 2 !== 0) {
             $wordCombinations *= (count(self::$consonants) + count(self::$vowels));

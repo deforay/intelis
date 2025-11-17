@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -10,7 +11,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -80,32 +81,32 @@ try {
 
 
 
-    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
+    if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
         $sWhere[] = " vl.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
     }
-    if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
+    if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
         $sWhere[] = " vl.lab_id IN (" . $_POST['labName'] . ")";
     }
-    if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
+    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
         $provinceId = implode(',', $_POST['state']);
         $sWhere[] = " f.facility_state_id  IN ($provinceId)";
     }
-    if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
+    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $districtId = implode(',', $_POST['district']);
         $sWhere[] = " f.facility_district_id  IN ($districtId)";
     }
-    if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) != '') {
+    if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) !== '') {
         $facilityId = implode(',', $_POST['facilityId']);
         $sWhere[] = " vl.facility_id  IN ($facilityId)";
     }
 
-    if (isset($_POST['originalSourceOfRequest']) && trim((string) $_POST['originalSourceOfRequest']) != '') {
+    if (isset($_POST['originalSourceOfRequest']) && trim((string) $_POST['originalSourceOfRequest']) !== '') {
         $sWhere[] = ' vl.source_of_request = "' . $_POST['originalSourceOfRequest'] . '"';
     }
 
     /* Implode all the where fields for filtering the data */
-    $whereSql = !empty($sWhere) ? (' WHERE ' . implode(' AND ', $sWhere)) : '';
+    $whereSql = empty($sWhere) ? ('') : ' WHERE ' . implode(' AND ', $sWhere);
 
     $sQuery = "SELECT
                     vl.$primaryColumn,
@@ -129,7 +130,7 @@ try {
 
     //$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
         $sQuery = "$sQuery ORDER BY $sOrder";
     }
 

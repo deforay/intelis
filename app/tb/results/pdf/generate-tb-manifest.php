@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -20,15 +21,15 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $id = base64_decode((string) $_POST['id']);
-if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) == 'pk2') {
+if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) === 'pk2') {
     $id = $_POST['ids'];
 }
-if (trim((string) $id) != '') {
+if (trim((string) $id) !== '') {
 
     $sQuery = "SELECT vl.tb_id, remote_sample_code, fd.facility_name as clinic_name, fd.facility_district, 
                 TRIM(CONCAT(COALESCE(vl.patient_name, ''), ' ', COALESCE(vl.patient_surname, ''))) as `patient_fullname`,
@@ -49,15 +50,13 @@ if (trim((string) $id) != '') {
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
 
-        $oldPrintData = json_decode($bResult[0]['manifest_print_history']);
-        $newPrintData = array('printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime());
+        $oldPrintData = json_decode((string) $bResult[0]['manifest_print_history']);
+        $newPrintData = ['printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
         $oldPrintData[] = $newPrintData;
         $db->where('manifest_code', $id);
-        $db->update('specimen_manifests', array(
-            'manifest_print_history' => json_encode($oldPrintData)
-        ));
+        $db->update('specimen_manifests', ['manifest_print_history' => json_encode($oldPrintData)]);
 
-        $reasonHistory = json_decode($bResult[0]['manifest_change_history']);
+        $reasonHistory = json_decode((string) $bResult[0]['manifest_change_history']);
 
         // Fetch previous test results for all samples
         $previousResults = [];
@@ -96,8 +95,8 @@ if (trim((string) $id) != '') {
         $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
         // Set header and footer fonts
-        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+        $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
 
         // Set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);

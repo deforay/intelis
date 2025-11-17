@@ -1,5 +1,6 @@
 <?php
 
+use Laminas\Diactoros\ServerRequest;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -10,7 +11,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -28,8 +29,8 @@ try {
      $primaryKey = "vl_sample_id";
 
 
-     $aColumns = array('vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result');
-     $orderColumns = array('vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result');
+     $aColumns = ['vl.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result'];
+     $orderColumns = ['vl.sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result'];
 
      /* Indexed column (used for fast and accurate table cardinality) */
      $sIndexColumn = $primaryKey;
@@ -64,7 +65,7 @@ try {
           $searchArray = explode(" ", (string) $_POST['sSearch']);
           $sWhereSub = "";
           foreach ($searchArray as $search) {
-               if ($sWhereSub == "") {
+               if ($sWhereSub === "") {
                     $sWhereSub .= " (";
                } else {
                     $sWhereSub .= " AND (";
@@ -91,7 +92,7 @@ try {
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 
-     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
+     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
           $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
@@ -105,13 +106,13 @@ try {
           $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
      }
 
-     if (!empty($sWhere)) {
+     if ($sWhere !== []) {
           $sWhere[] = ' vl.result_status = "' . $_POST['status'] . '"';
      } else {
           $sWhere = ' WHERE vl.result_status = "' . $_POST['status'] . '"';
      }
 
-     if (!empty($sWhere)) {
+     if ($sWhere !== '' && $sWhere !== '0' && $sWhere !== []) {
           $sQuery = "$sQuery WHERE " . implode(' AND ', $sWhere);
      }
 

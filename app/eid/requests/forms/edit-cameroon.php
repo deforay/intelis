@@ -43,7 +43,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", (string) $eidInfo['mother_treatment']) : [];
 if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
     $facilityQuery = "SELECT * FROM facility_details WHERE facility_id= ? AND status='active'";
-    $facilityResult = $db->rawQuery($facilityQuery, array($eidInfo['facility_id']));
+    $facilityResult = $db->rawQuery($facilityQuery, [$eidInfo['facility_id']]);
 }
 
 $specimenTypeResult = $eidService->getEidSampleTypes();
@@ -52,7 +52,7 @@ if (empty($eidInfo['child_dob']) && empty($eidInfo['child_age'])) {
     $ageInfo = "ageUnreported";
 }
 $facilityId = $eidInfo['facility_id'];
-$reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinician_name", "clinician_name"), true, "facility_id= $facilityId ");
+$reqClinicianList =  $general->getDataByTableAndFields("form_eid", ["clinician_name", "clinician_name"], true, "facility_id= $facilityId ");
 
 ?>
 
@@ -198,11 +198,17 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
                                     <tr>
                                         <th scope="row"><label for="childDob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control date" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" <?php if ($ageInfo == "ageUnreported") echo "readonly"; ?> />
-                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if ($ageInfo == "ageUnreported") echo "checked='checked'"; ?> /> <label for="dob"><?= _translate('Unreported'); ?> </label>
+                                            <input type="text" class="form-control date" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" <?php if ($ageInfo === "ageUnreported") {
+                                                    echo "readonly";
+                                                } ?> />
+                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if ($ageInfo === "ageUnreported") {
+                                                    echo "checked='checked'";
+                                                } ?> /> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                         </td>
                                         <th scope="row"><?= _translate('Infant Age (months)'); ?></th>
-                                        <td><input type="number" max=24 maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?= _translate('Age'); ?>" title="<?= _translate('Age'); ?>" style="width:100%;" onchange="" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" <?php if ($ageInfo == "ageUnreported") echo "readonly"; ?> /></td>
+                                        <td><input type="number" max=24 maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?= _translate('Age'); ?>" title="<?= _translate('Age'); ?>" style="width:100%;" onchange="" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" <?php if ($ageInfo === "ageUnreported") {
+                                                    echo "readonly";
+                                                } ?> /></td>
 
                                     </tr>
                                     <tr>

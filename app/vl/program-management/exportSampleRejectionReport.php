@@ -15,7 +15,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $db = ContainerRegistry::get(DatabaseService::class);
 
 
-if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamples']) != "") {
+if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamples']) !== "") {
      $rResult = $db->rawQuery($_SESSION['rejectedSamples']);
 
      $excel = new Spreadsheet();
@@ -29,7 +29,7 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
 
      $nameValue = '';
      foreach ($_POST as $key => $value) {
-          if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
+          if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
                $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
           }
      }

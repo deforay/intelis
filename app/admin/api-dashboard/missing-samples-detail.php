@@ -63,9 +63,9 @@ $dateRange = $_GET['dateRange'] ?? '';
                     <div class="box-header">
                         <h3 class="box-title"><?= _translate('Test Requests Without Sample Receipt'); ?></h3>
                         <div class="box-tools pull-right">
-                            <span class="label label-info">Test Type: <?= strtoupper($testType); ?></span>
+                            <span class="label label-info">Test Type: <?= strtoupper((string) $testType); ?></span>
                             <?php if ($dateRange): ?>
-                                <span class="label label-primary">Period: <?= htmlspecialchars($dateRange); ?></span>
+                                <span class="label label-primary">Period: <?= htmlspecialchars((string) $dateRange); ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -315,7 +315,7 @@ $dateRange = $_GET['dateRange'] ?? '';
     }
 
     function exportMissingSamples() {
-        window.open('/admin/api-dashboard/export-missing-samples.php?testType=<?= $testType; ?>&dateRange=<?= urlencode($dateRange); ?>', '_blank');
+        window.open('/admin/api-dashboard/export-missing-samples.php?testType=<?= $testType; ?>&dateRange=<?= urlencode((string) $dateRange); ?>', '_blank');
     }
 </script>
 

@@ -12,7 +12,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $tableName = "r_tb_test_reasons";
 $primaryKey = "test_reason_id";
 
-$aColumns = array('test_reason_name', 'test_reason_status');
+$aColumns = ['test_reason_name', 'test_reason_status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -45,7 +45,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
     foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
+        if ($sWhereSub === "") {
             $sWhereSub .= "(";
         } else {
             $sWhereSub .= " AND (";
@@ -69,7 +69,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 $sQuery = "SELECT * FROM r_tb_test_reasons";
 
-if (!empty($sWhere)) {
+if ($sWhere !== []) {
     $sWhere = ' where ' . count($sWhere);
     $sQuery = $sQuery . ' ' . $sWhere;
 }
@@ -85,12 +85,7 @@ if (isset($sLimit) && isset($sOffset)) {
 
 [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-$output = array(
-    "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $resultCount,
-    "iTotalDisplayRecords" => $resultCount,
-    "aaData" => []
-);
+$output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 
 foreach ($rResult as $aRow) {
     $status = '<select class="form-control" name="status[]" id="' . $aRow['test_reason_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['test_reason_status'] . '\')">

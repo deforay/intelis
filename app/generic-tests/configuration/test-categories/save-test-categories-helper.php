@@ -16,14 +16,10 @@ $tableName = "r_generic_test_categories";
 $testCategoryId = (int) base64_decode((string) $_POST['testCategoryId']);
 $_POST['testCategory'] = trim((string) $_POST['testCategory']);
 try {
-    if (!empty($_POST['testCategory'])) {
+    if (isset($_POST['testCategory']) && ($_POST['testCategory'] !== '' && $_POST['testCategory'] !== '0')) {
 
-        $data = array(
-            'test_category_name' => $_POST['testCategory'],
-            'test_category_status' => $_POST['testCategoryStatus'],
-            'updated_datetime' => DateUtility::getCurrentDateTime()
-        );
-        if (!empty($testCategoryId)) {
+        $data = ['test_category_name' => $_POST['testCategory'], 'test_category_status' => $_POST['testCategoryStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
+        if ($testCategoryId !== 0) {
             $db->where('test_category_id', $testCategoryId);
             $lastId = $db->update($tableName, $data);
             if ($lastId > 0) {

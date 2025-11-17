@@ -24,15 +24,10 @@ $tableName = "r_tb_test_reasons";
 $testReasonId = base64_decode((string) $_POST['testReasonId']);
 
 try {
-	if (isset($_POST['testReasonName']) && trim((string) $_POST['testReasonName']) != "") {
+	if (isset($_POST['testReasonName']) && trim((string) $_POST['testReasonName']) !== "") {
 
 
-		$data = array(
-			'test_reason_name' => $_POST['testReasonName'],
-			'parent_reason' => $_POST['parentReason'],
-			'test_reason_status' => $_POST['testReasonStatus'],
-			'updated_datetime' => DateUtility::getCurrentDateTime(),
-		);
+		$data = ['test_reason_name' => $_POST['testReasonName'], 'parent_reason' => $_POST['parentReason'], 'test_reason_status' => $_POST['testReasonStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
 
 		$db->where('test_reason_id', $testReasonId);
 		$db->update($tableName, $data);
