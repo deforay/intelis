@@ -7,12 +7,13 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-// only run from command line
-if (php_sapi_name() !== 'cli') {
-    exit(0);
-}
 
 require_once(__DIR__ . '/../../bootstrap.php');
+
+// only run from command line
+if (PHP_SAPI !== 'cli') {
+    exit(CLI\ERROR);
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

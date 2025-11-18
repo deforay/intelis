@@ -26,17 +26,30 @@ final class JsonUtility
             return false;
         }
 
-        json_decode($string);
-
-        if (json_last_error() === JSON_ERROR_NONE) {
-            return true;
-        } else {
-            if ($logError) {
-                LoggerUtility::logError('JSON decoding error (' . json_last_error() . '): ' . json_last_error_msg());
-                LoggerUtility::logError('Invalid JSON: ' . self::previewString($string));
+        if (function_exists('json_validate')) {
+            // Native JSON validation is faster and does not allocate memory for parsed structures
+            $isValid = json_validate($string);
+            if ($isValid === true) {
+                return true;
             }
-            return false;
+            // Fall through to logging below if requested
+            if (!$logError) {
+                return false;
+            }
+            // Trigger json_last_error() population for detailed logging
+            json_decode($string);
+        } else {
+            json_decode($string);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return true;
+            }
         }
+
+        if ($logError) {
+            LoggerUtility::logError('JSON decoding error (' . json_last_error() . '): ' . json_last_error_msg());
+            LoggerUtility::logError('Invalid JSON: ' . self::previewString($string));
+        }
+        return false;
     }
 
     private const int MAX_LOG_PREVIEW = 2000;

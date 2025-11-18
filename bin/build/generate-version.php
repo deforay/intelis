@@ -1,12 +1,13 @@
 #!/usr/bin/env php
 <?php
 
-// only run from command line
-if (php_sapi_name() !== 'cli') {
-    exit(0);
-}
 
 require_once __DIR__ . "/../../bootstrap.php";
+
+// only run from command line
+if (PHP_SAPI !== 'cli') {
+    exit(CLI\ERROR);
+}
 
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;

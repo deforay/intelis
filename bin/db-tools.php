@@ -3,11 +3,11 @@
 
 // bin/db-tools.php - Database management CLI tool for InteLIS
 
-if (php_sapi_name() !== 'cli') {
+require_once __DIR__ . '/../bootstrap.php';
+
+if (PHP_SAPI !== 'cli') {
     exit(0);
 }
-
-require_once __DIR__ . '/../bootstrap.php';
 
 @set_time_limit(0);
 @ignore_user_abort(true);
@@ -129,11 +129,11 @@ try {
             MiscUtility::safeCliEcho("Unknown command: {$safeCommand}");
             echo PHP_EOL;
             printUsage();
-            exit(1);
+            exit(CLI\ERROR);
     }
 } catch (\Throwable $e) {
     handleUserFriendlyError($e);
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 function isGpgBackupFile(string $path): bool
@@ -249,11 +249,11 @@ function selectFileWithFzf(array $candidates, string $header): ?string
 
     $cmd = sprintf(
         'OUT=%s; export OUT; ' .
-            'cat %s | fzf --ansi --height=80%% --reverse --border ' .
-            ' --prompt=%s ' .
-            ' --header=%s ' .
-            ' --delimiter="\t" --with-nth=2.. ' .
-            ' --bind "enter:execute-silent(echo {1} > \"$OUT\")+abort" ',
+        'cat %s | fzf --ansi --height=80%% --reverse --border ' .
+        ' --prompt=%s ' .
+        ' --header=%s ' .
+        ' --delimiter="\t" --with-nth=2.. ' .
+        ' --bind "enter:execute-silent(echo {1} > \"$OUT\")+abort" ',
         escapeshellarg($outputFile),
         escapeshellarg($inputFile),
         escapeshellarg('Select> '),
@@ -626,7 +626,7 @@ function collectBinlogSnapshot(array $config): array
             // guard
             if (count($parts) >= 2) {
                 $out['master_status']['file'] = $parts[0] ?? null;
-                $out['master_status']['position'] = isset($parts[1]) ? (int)$parts[1] : null;
+                $out['master_status']['position'] = isset($parts[1]) ? (int) $parts[1] : null;
                 // try to find a GTID set; it’s often last column or empty
                 $last = end($parts);
                 if ($last && stripos($last, ':') !== false) {
@@ -1111,7 +1111,7 @@ function getBinlogTotalSize(array $dbConfig): int
             // Output format: "mysql-bin.000001\t1234567"
             $parts = preg_split('/\s+/', $line);
             if (isset($parts[1]) && is_numeric($parts[1])) {
-                $totalSize += (int)$parts[1];
+                $totalSize += (int) $parts[1];
             }
         }
 
@@ -1502,10 +1502,10 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
     }
     $parts[] = $randomString;
 
-    $baseName   = implode('-', array_filter($parts));
-    $sqlPath    = $backupFolder . DIRECTORY_SEPARATOR . $baseName . '.sql';
+    $baseName = implode('-', array_filter($parts));
+    $sqlPath = $backupFolder . DIRECTORY_SEPARATOR . $baseName . '.sql';
     $compressedPath = null;
-    $gpgPath    = null;
+    $gpgPath = null;
 
     $dsn = sprintf('mysql:host=%s;dbname=%s', $config['host'], $config['db']);
     if (!empty($config['port'])) {
@@ -1515,7 +1515,7 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
     // Snapshot BEFORE dump (for PITR)
     $startSnap = collectBinlogSnapshot($config);
 
-    $tblCount = (int)trim(runMysqlQuery(
+    $tblCount = (int) trim(runMysqlQuery(
         $config,
         "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = '{$config['db']}'"
     )) ?: null;
@@ -1583,17 +1583,17 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
 
     // Write PITR metadata (same format as before)
     $meta = [
-        'db'          => $config['db'],
+        'db' => $config['db'],
         'backup_base' => $baseName,
         'created_utc' => gmdate('Y-m-d\TH:i:s\Z'),
-        'app_tz'      => getAppTimezone(),
-        'server'      => $endSnap['server'],
-        'snapshot'    => [
+        'app_tz' => getAppTimezone(),
+        'server' => $endSnap['server'],
+        'snapshot' => [
             'start' => $startSnap['master_status'],
-            'end'   => $endSnap['master_status'],
+            'end' => $endSnap['master_status'],
         ],
-        'note'        => $note,
-        'version'     => 1,
+        'note' => $note,
+        'version' => 1,
     ];
     $metaPath = $backupFolder . DIRECTORY_SEPARATOR . $baseName . '.meta.json';
     file_put_contents($metaPath, json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
@@ -1641,10 +1641,10 @@ function getSortedBackups(string $backupFolder): array
     foreach ($files as $file) {
         $basename = basename($file);
         $backups[] = [
-            'path'     => $file,
+            'path' => $file,
             'basename' => $basename,
-            'mtime'    => @filemtime($file) ?: 0,
-            'size'     => @filesize($file) ?: 0,
+            'mtime' => @filemtime($file) ?: 0,
+            'size' => @filesize($file) ?: 0,
             'is_safety' => isSafetyBackupBasename($basename),
         ];
     }
@@ -2016,8 +2016,8 @@ function runMysqlCheckCommand(array $config): string
     // Run one action per invocation (required by mysqlcheck)
     $steps = [
         ['label' => 'REPAIR (auto)', 'args' => ['--auto-repair']],  // no-op on InnoDB, safe on MyISAM
-        ['label' => 'OPTIMIZE',       'args' => ['--optimize']],
-        ['label' => 'ANALYZE',        'args' => ['--analyze']],
+        ['label' => 'OPTIMIZE', 'args' => ['--optimize']],
+        ['label' => 'ANALYZE', 'args' => ['--analyze']],
     ];
 
     $combined = [];
@@ -2738,7 +2738,7 @@ function handleVerify(string $backupFolder, array $args): void
         if (!verifyBackupIntegrity($selectedPath)) {
             echo "❌ FAILED\n";
             echo "  Error: ZIP archive is corrupted or invalid\n";
-            exit(1);
+            exit(CLI\ERROR);
         }
         echo "✅ PASSED\n";
 
@@ -2748,7 +2748,7 @@ function handleVerify(string $backupFolder, array $args): void
         if ($status !== true) {
             echo "❌ FAILED\n";
             MiscUtility::safeCliEcho("  Error: Cannot open archive (code: {$status})\n");
-            exit(1);
+            exit(CLI\ERROR);
         }
         $sqlFound = false;
         for ($i = 0; $i < $zip->numFiles; $i++) {
@@ -2766,7 +2766,7 @@ function handleVerify(string $backupFolder, array $args): void
             echo "❌ FAILED\n";
             echo "  Error: No SQL file found in archive\n";
             $zip->close();
-            exit(1);
+            exit(CLI\ERROR);
         }
         $zip->close();
 
@@ -2779,14 +2779,14 @@ function handleVerify(string $backupFolder, array $args): void
         if (!verifyGpgStructure($selectedPath, $backupFolder)) {
             echo "❌ FAILED\n";
             echo "  Error: GPG packet structure unreadable\n";
-            exit(1);
+            exit(CLI\ERROR);
         }
         echo "✅ PASSED\n";
         echo "Encryption: ✅ GPG symmetric (AES-256 expected)\n";
         $innerExt = strtolower(pathinfo(substr($selectedPath, 0, -4), PATHINFO_EXTENSION));
         $innerLabel = match ($innerExt) {
             'zst' => 'zstd (detected from filename)',
-            'gz'  => 'gzip (detected from filename)',
+            'gz' => 'gzip (detected from filename)',
             'zip' => 'zip (detected from filename)',
             'sql' => 'none (raw SQL)',
             default => 'unknown',
@@ -2794,7 +2794,7 @@ function handleVerify(string $backupFolder, array $args): void
         echo "Inner compression: {$innerLabel}\n";
     } else {
         echo "❌ Unsupported file type for verification\n";
-        exit(1);
+        exit(CLI\ERROR);
     }
 
     echo str_repeat('-', 50) . "\n";
@@ -2811,7 +2811,7 @@ function handleVerify(string $backupFolder, array $args): void
 function handleClean(string $backupFolder, array $args): void
 {
     $keepCount = extractKeepOption($args);
-    $keepDays  = extractDaysOption($args, 0);
+    $keepDays = extractDaysOption($args, 0);
 
     if ($keepCount === null && $keepDays === 0) {
         throw new SystemException('Please specify --keep=N or --days=N for retention policy');
@@ -2825,7 +2825,7 @@ function handleClean(string $backupFolder, array $args): void
 
     // Safety floor: keep at least N newest backups, no matter what
     $minKeepEnv = getenv('INTELIS_DB_BACKUP_MIN_KEEP');
-    $minKeep    = is_numeric($minKeepEnv) ? max((int)$minKeepEnv, 1) : 3;
+    $minKeep = is_numeric($minKeepEnv) ? max((int) $minKeepEnv, 1) : 3;
 
     echo "Backup cleanup (safety floor: keep at least {$minKeep})\n";
     echo str_repeat('-', 50) . "\n";
@@ -2835,7 +2835,7 @@ function handleClean(string $backupFolder, array $args): void
 
     if ($keepCount !== null) {
         // Keep mode: effective keep is max(user keep, safety floor)
-        $effectiveKeep = max((int)$keepCount, $minKeep);
+        $effectiveKeep = max((int) $keepCount, $minKeep);
 
         if (count($backups) <= $effectiveKeep) {
             echo "Retention policy: Keep {$keepCount} most recent (effective {$effectiveKeep} with safety floor)\n";
@@ -2887,7 +2887,7 @@ function handleClean(string $backupFolder, array $args): void
     $totalSize = 0;
     foreach ($toDelete as $backup) {
         $ageDays = (int) floor((time() - $backup['mtime']) / 86400);
-        $size    = (int) $backup['size'];
+        $size = (int) $backup['size'];
 
         $basePath = preg_replace('/\.(sql\.(gz|zst)\.gpg|sql\.zip)$/i', '', (string) $backup['path']);
         $metaPath = $basePath . '.meta.json';
@@ -2910,12 +2910,12 @@ function handleClean(string $backupFolder, array $args): void
     // Delete files immediately (non-interactive)
     echo "Proceeding with deletion...\n";
 
-    $deleted     = 0;
-    $failed      = 0;
+    $deleted = 0;
+    $failed = 0;
     $metaDeleted = 0;
 
     foreach ($toDelete as $backup) {
-        $path     = $backup['path'];
+        $path = $backup['path'];
         $basePath = preg_replace('/\.(sql\.(gz|zst)\.gpg|sql\.zip)$/i', '', (string) $path);
         $metaPath = $basePath . '.meta.json';
 
@@ -2934,8 +2934,8 @@ function handleClean(string $backupFolder, array $args): void
     }
 
     // Sweep orphan meta files (no matching archive)
-    $metaFiles   = glob($backupFolder . DIRECTORY_SEPARATOR . '*.meta.json') ?: [];
-    $orphanMeta  = 0;
+    $metaFiles = glob($backupFolder . DIRECTORY_SEPARATOR . '*.meta.json') ?: [];
+    $orphanMeta = 0;
     $orphanFreed = 0;
 
     if ($metaFiles !== []) {
@@ -3382,13 +3382,13 @@ function handlePitrInfo(string $backupFolder, array $intelisDbConfig, ?array $in
 {
     $targetOption = extractTargetOption($args) ?? 'intelis';
     $config = resolveTargetConfig($targetOption, $intelisDbConfig, $interfacingDbConfig);
-    $label  = normalizeTargetLabel($targetOption);
+    $label = normalizeTargetLabel($targetOption);
 
     echo "PITR readiness for {$label}\n";
     echo str_repeat('-', 50) . "\n";
 
     $snap = collectBinlogSnapshot($config);
-    if (strtoupper((string)$snap['server']['log_bin']) !== 'ON' && $snap['server']['log_bin'] !== '1') {
+    if (strtoupper((string) $snap['server']['log_bin']) !== 'ON' && $snap['server']['log_bin'] !== '1') {
         echo "❌ Binary logging is OFF. Enable log_bin to use PITR.\n";
         return;
     }
@@ -3417,7 +3417,7 @@ function handlePitrInfo(string $backupFolder, array $intelisDbConfig, ?array $in
     $metaPath = $candidates[0];
     $meta = json_decode(file_get_contents($metaPath), true);
     $fromFile = $meta['snapshot']['end']['file'] ?? null;
-    $fromPos  = $meta['snapshot']['end']['position'] ?? null;
+    $fromPos = $meta['snapshot']['end']['position'] ?? null;
 
     echo "\nLatest backup snapshot:\n";
     echo "  Meta:    " . basename($metaPath) . "\n";
@@ -3456,7 +3456,7 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
     }
 
     $config = resolveTargetConfig($targetOption, $intelisDbConfig, $interfacingDbConfig);
-    $label  = normalizeTargetLabel($targetOption);
+    $label = normalizeTargetLabel($targetOption);
 
     $meta = json_decode(file_get_contents($metaFile), true);
     if (!$meta || empty($meta['snapshot']['end']['file'])) {
@@ -3465,9 +3465,9 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
 
     // Starting point
     $startFile = $meta['snapshot']['end']['file'];
-    $startPos  = (int)($meta['snapshot']['end']['position'] ?? 4);
-    $gtidMode  = strtoupper((string)($meta['server']['gtid_mode'] ?? 'OFF')) === 'ON';
-    $executed  = $meta['snapshot']['end']['gtid_executed'] ?? ($meta['server']['gtid_executed'] ?? '');
+    $startPos = (int) ($meta['snapshot']['end']['position'] ?? 4);
+    $gtidMode = strtoupper((string) ($meta['server']['gtid_mode'] ?? 'OFF')) === 'ON';
+    $executed = $meta['snapshot']['end']['gtid_executed'] ?? ($meta['server']['gtid_executed'] ?? '');
 
     echo "PITR replay for {$label}\n";
     echo str_repeat('-', 50) . "\n";
@@ -3510,7 +3510,8 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
 
     $producer[] = $gtidMode && !empty($executed) ? '--exclude-gtids=' . $executed : '--start-position=' . max(4, $startPos);
 
-    foreach ($selected as $f) $producer[] = $f;
+    foreach ($selected as $f)
+        $producer[] = $f;
 
     // Consumer: mysql (apply to target DB)
     $consumer = [

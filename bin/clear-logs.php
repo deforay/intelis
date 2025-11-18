@@ -11,28 +11,28 @@ use App\Utilities\MiscUtility;
 
 require_once __DIR__ . '/../bootstrap.php';
 
-if (PHP_SAPI !== 'cli') {
-    exit(0);
+// only run from command line
+$isCli = PHP_SAPI === 'cli';
+if ($isCli === false) {
+    exit(CLI\ERROR);
 }
 
 $options = getopt('', ['keep::', 'days::']);
-$keepCount = isset($options['keep']) ? max(0, (int)$options['keep']) : 0;
-$keepDays = isset($options['days']) ? max(0, (int)$options['days']) : 0;
+$keepCount = isset($options['keep']) ? max(0, (int) $options['keep']) : 0;
+$keepDays = isset($options['days']) ? max(0, (int) $options['days']) : 0;
 
 $projectRoot = dirname(__DIR__);
 $logDir = $projectRoot . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'logs';
 
 if (!is_dir($logDir)) {
     fwrite(STDERR, "[clear-logs] Log directory not found: {$logDir}" . PHP_EOL);
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 $preserveFiles = ['.hgkeep', '.htaccess'];
 $removedFiles = 0;
-$removedDirs = 0;
 $errors = [];
 $files = [];
-$directories = [];
 
 $iterator = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator(
@@ -45,8 +45,8 @@ $iterator = new RecursiveIteratorIterator(
 foreach ($iterator as $entry) {
     $path = $entry->getPathname();
 
+    // Skip directories - we only process files
     if ($entry->isDir()) {
-        $directories[] = $path;
         continue;
     }
 
@@ -95,18 +95,6 @@ foreach ($files as $fileInfo) {
     }
 }
 
-if ($directories !== []) {
-    usort($directories, fn($a, $b): int => strlen((string) $b) <=> strlen((string) $a)); // deepest first
-    foreach ($directories as $dirPath) {
-        if ($dirPath === $logDir) {
-            continue;
-        }
-        if (@rmdir($dirPath)) {
-            $removedDirs++;
-        }
-    }
-}
-
 $summaryParts = [];
 if ($keepCount > 0) {
     $summaryParts[] = sprintf("kept %d newest file(s)", count($keepByCount));
@@ -116,9 +104,8 @@ if ($keepDays > 0) {
 }
 
 $message = sprintf(
-    "[clear-logs] Removed %d file(s)%s.",
-    $removedFiles,
-    $removedDirs > 0 ? " and pruned {$removedDirs} directories" : ''
+    "[clear-logs] Removed %d file(s).",
+    $removedFiles
 );
 
 if (!empty($summaryParts)) {
@@ -135,4 +122,4 @@ if ($errors !== []) {
     exit(2);
 }
 
-exit(0);
+exit(CLI\OK);

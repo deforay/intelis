@@ -68,26 +68,31 @@ foreach ($fResult as $fDetails) {
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+					<?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
-			<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 90%;">
+			<table aria-describedby="table" class="table" aria-hidden="true"
+				style="margin-left:1%;margin-top:20px;width: 90%;">
 				<tr>
 					<td>&nbsp;<strong>From Lab Name&nbsp;:<span class="mandatory">*</span></strong></td>
 					<td>
-						<select style="width: 100%;" class="form-control" id="labName" name="labName" title="Please select lab name">
+						<select style="width: 100%;" class="form-control" id="labName" name="labName"
+							title="Please select lab name">
 							<option value="">-- select --</option>
 							<?php
 							foreach ($lResult as $name) {
-							?>
-								<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name']); ?></option>
-							<?php
+								?>
+								<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name']); ?>
+								</option>
+								<?php
 							}
 							?>
 						</select>
 					</td>
 					<td>&nbsp;<strong>Test Type&nbsp;:<span class="mandatory">*</span></strong></td>
 					<td>
-						<select style="width: 100%;" class="form-control" id="testType" name="testType" title="Choose at least one test type">
+						<select style="width: 100%;" class="form-control" id="testType" name="testType"
+							title="Choose at least one test type">
 							<option value="">-- select --</option>
 							<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
 								<option value="vl">Viral Load</option>
@@ -107,14 +112,16 @@ foreach ($fResult as $fDetails) {
 				<tr>
 					<td>&nbsp;<strong>Province&nbsp;:</strong></td>
 					<td>
-						<select style="width: 100%;" class="form-control" id="provinceName" name="provinceName" title="Please select province name" onchange="getfacilityDetails(this);">
+						<select style="width: 100%;" class="form-control" id="provinceName" name="provinceName"
+							title="Please select province name" onchange="getfacilityDetails(this);">
 							<option value="">-- select --</option>
 							<?php echo $province; ?>
 						</select>
 					</td>
 					<td>&nbsp;<strong>District&nbsp;:</strong></td>
 					<td>
-						<select style="width: 100%;" class="form-control" id="districtName" name="districtName" title="Please select district name" onchange="getfacilityDistrictwise(this);">
+						<select style="width: 100%;" class="form-control" id="districtName" name="districtName"
+							title="Please select district name" onchange="getfacilityDistrictwise(this);">
 							<option value="">-- select --</option>
 						</select>
 					</td>
@@ -122,36 +129,45 @@ foreach ($fResult as $fDetails) {
 				<tr>
 					<td>&nbsp;<strong>Facility Name&nbsp;:</strong></td>
 					<td>
-						<select style="width: 100%;" class="form-control" id="facilityName" name="facilityName" title="Please select facility name">
+						<select style="width: 100%;" class="form-control" id="facilityName" name="facilityName"
+							title="Please select facility name">
 							<option value="">-- select --</option>
 							<?php echo $facility; ?>
 						</select>
 					</td>
 					<td><strong>Sample Collection Date&nbsp;:</strong></td>
 					<td>
-						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="background:#fff;width: 100%;" />
+						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control"
+							placeholder="Select Collection Date" readonly style="background:#fff;width: 100%;" />
 					</td>
 				</tr>
 				<tr>
-					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="Search" class="btn btn-success btn-sm">
-						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="Search"
+							class="btn btn-success btn-sm">
+						&nbsp;<button class="btn btn-danger btn-sm"
+							onclick="document.location.href = document.location"><span>Reset</span></button>
 					</td>
 				</tr>
 			</table>
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method="post" name="selectSamplesToMove" id="selectSamplesToMove" autocomplete="off" action="select-samples-to-move-helper.php">
+				<form class="form-horizontal" method="post" name="selectSamplesToMove" id="selectSamplesToMove"
+					autocomplete="off" action="select-samples-to-move-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="batchCode" class="col-lg-4 control-label">Move To Lab <span class="mandatory">*</span></label>
+									<label for="batchCode" class="col-lg-4 control-label">Move To Lab <span
+											class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select style="width: 100%;" class="form-control isRequired" id="labNameTo" name="labNameTo" title="Please select lab name">
-											<option value="">-- select --</option>
+										<select style="width: 100%;" class="form-control isRequired" id="labNameTo"
+											name="labNameTo" title="Please select lab name">
+											<option value="">-- Select --</option>
 											<?php foreach ($lResult as $name) { ?>
-												<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name']); ?></option>
+												<option value="<?php echo $name['facility_id']; ?>">
+													<?php echo ($name['facility_name']); ?>
+												</option>
 											<?php } ?>
 										</select>
 									</div>
@@ -163,7 +179,9 @@ foreach ($fResult as $fDetails) {
 								<div class="form-group">
 									<label for="batchCode" class="col-lg-4 control-label">Reason For Moving </label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<textarea style="width: 100%;" class="form-control" name="reasonForMoving" id="reasonForMoving" title="Reason For Moving" placeholder="Reason"></textarea>
+										<textarea style="width: 100%;" class="form-control" name="reasonForMoving"
+											id="reasonForMoving" title="Reason For Moving"
+											placeholder="Reason"></textarea>
 									</div>
 								</div>
 							</div>
@@ -173,7 +191,8 @@ foreach ($fResult as $fDetails) {
 								<div class="form-group">
 									<label for="batchCode" class="col-lg-4 control-label">Approve By </label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input style="width: 100%;" type="text" class="form-control" name="approveBy" id="approveBy" title="Approve by" placeholder="Approve by" />
+										<input style="width: 100%;" type="text" class="form-control" name="approveBy"
+											id="approveBy" title="Approve by" placeholder="Approve by" />
 									</div>
 								</div>
 							</div>
@@ -183,9 +202,15 @@ foreach ($fResult as $fDetails) {
 								<div class="form-group">
 									<div class="col-md-12">
 										<div style="width:60%;margin:0 auto;clear:both;">
-											<a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
+											<a href='#' id='select-all-samplecode' style="float:left"
+												class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em
+													class="fa-solid fa-chevron-right"></em></a> <a href='#'
+												id='deselect-all-samplecode' style="float:right"
+												class="btn btn-danger btn-xs"><em
+													class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
 										</div><br /><br />
-										<select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search"></select>
+										<select id='sampleCode' name="sampleCode[]" multiple='multiple'
+											class="search"></select>
 									</div>
 								</div>
 							</div>
@@ -196,7 +221,9 @@ foreach ($fResult as $fDetails) {
 					<div class="box-footer">
 						<input type="hidden" name="testTypeId" id="testTypeId" />
 						<input type="hidden" name="labId" id="labId" title="Please choose lab from name" />
-						<a id="sampleSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled>Save</a>
+						<a id="sampleSubmit" class="btn btn-primary" href="javascript:void(0);"
+							title="Please select machine" onclick="validateNow();return false;"
+							style="pointer-events:none;" disabled>Save</a>
 						<a href="move-samples.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
@@ -217,7 +244,7 @@ foreach ($fResult as $fDetails) {
 	noOfSamples = 0;
 	provinceName = true;
 	facilityName = true;
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$("#labName").select2({
 			placeholder: "<?= _translate("Select Lab Name", true); ?>"
 		});
@@ -225,30 +252,30 @@ foreach ($fResult as $fDetails) {
 			placeholder: "<?= _translate("Select Facilities", true); ?>"
 		});
 		$("#provinceName").select2({
-			placeholder: <?= _translate("Select Province", true); ?>
+			placeholder: "<?= _translate("Select Province", true); ?>"
 		});
 
 		$('#sampleCollectionDate').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _translate("Clear", true); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-				}
+			locale: {
+				cancelLabel: "<?= _translate("Clear", true); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+			}
+		},
+			function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
@@ -277,11 +304,11 @@ foreach ($fResult as $fDetails) {
 		}
 	}
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
-			afterInit: function(ms) {
+			afterInit: function (ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),
 					$selectionSearch = that.$selectionUl.prev(),
@@ -289,7 +316,7 @@ foreach ($fResult as $fDetails) {
 					selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
 				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-					.on('keydown', function(e) {
+					.on('keydown', function (e) {
 						if (e.which === 40) {
 							that.$selectableUl.focus();
 							return false;
@@ -297,18 +324,18 @@ foreach ($fResult as $fDetails) {
 					});
 
 				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-					.on('keydown', function(e) {
+					.on('keydown', function (e) {
 						if (e.which == 40) {
 							that.$selectionUl.focus();
 							return false;
 						}
 					});
 			},
-			afterSelect: function() {
+			afterSelect: function () {
 				this.qs1.cache();
 				this.qs2.cache();
 			},
-			afterDeselect: function() {
+			afterDeselect: function () {
 				//button disabled/enabled
 				if (this.qs2.cache().matchedResultsCount == 0) {
 					$("#sampleSubmit").attr("disabled", true);
@@ -322,11 +349,11 @@ foreach ($fResult as $fDetails) {
 			}
 		});
 
-		$('#select-all-samplecode').click(function() {
+		$('#select-all-samplecode').click(function () {
 			$('#sampleCode').multiSelect('select_all');
 			return false;
 		});
-		$('#deselect-all-samplecode').click(function() {
+		$('#deselect-all-samplecode').click(function () {
 			$('#sampleCode').multiSelect('deselect_all');
 			$("#sampleSubmit").attr("disabled", true);
 			$("#sampleSubmit").css("pointer-events", "none");
@@ -346,14 +373,14 @@ foreach ($fResult as $fDetails) {
 		var scDate = $("#sampleCollectionDate").val();
 		if (lName != "" && testType != "") {
 			$.post("/move-samples/get-move-samples-codes.php", {
-					lName: lName,
-					testType: testType,
-					pName: pName,
-					dName: dName,
-					facilityId: facilityId,
-					scDate: scDate
-				},
-				function(data) {
+				lName: lName,
+				testType: testType,
+				pName: pName,
+				dName: dName,
+				facilityId: facilityId,
+				scDate: scDate
+			},
+				function (data) {
 					if (data != "") {
 						$("#sampleDetails").html(data);
 						$("#sampleSubmit").attr("disabled", true);
@@ -384,10 +411,10 @@ foreach ($fResult as $fDetails) {
 		if ($.trim(pName) != '') {
 			if (provinceName) {
 				$.post("/includes/siteInformationDropdownOptions.php", {
-						pName: pName,
-						testType: 'vl'
-					},
-					function(data) {
+					pName: pName,
+					testType: 'vl'
+				},
+					function (data) {
 						if (data != "") {
 							details = data.split("###");
 							$("#facilityName").html(details[0]);
@@ -401,7 +428,7 @@ foreach ($fResult as $fDetails) {
 			$("#provinceName").html("<?php echo $province; ?>");
 			$("#facilityName").html("<?php echo $facility; ?>");
 		} else {
-			$("#districtName").html("<option value=''> -- select -- </option>");
+			$("#districtName").html("<option value=''> -- Select -- </option>");
 		}
 		$.unblockUI();
 	}
@@ -412,17 +439,17 @@ foreach ($fResult as $fDetails) {
 		var cName = $("#facilityName").val();
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-					dName: dName,
-					cliName: cName
-				},
-				function(data) {
+				dName: dName,
+				cliName: cName
+			},
+				function (data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#facilityName").html(details[0]);
 					}
 				});
 		} else {
-			$("#facilityName").html("<option value=''> -- select -- </option>");
+			$("#facilityName").html("<option value=''> -- Select -- </option>");
 		}
 		$.unblockUI();
 	}

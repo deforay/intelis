@@ -59,7 +59,7 @@ final class TestRequestsService
             // Handle process locking
             if (!$parallelProcess) {
                 try {
-                    $lockFile = MiscUtility::getLockFile(strtolower(self::class . '-' . __FUNCTION__));
+                    $lockFile = MiscUtility::getLockFile(strtolower(__CLASS__ . '-' . __FUNCTION__));
 
                     if (!MiscUtility::isLockFileExpired($lockFile, 1800)) {
                         if ($isCli) {
@@ -195,7 +195,7 @@ final class TestRequestsService
                         ];
 
                         $sampleJson = $testTypeService->getSampleCode($sampleCodeParams);
-                        $sampleData = json_decode((string)$sampleJson, true);
+                        $sampleData = json_decode((string) $sampleJson, true);
 
                         if (empty($sampleData) || empty($sampleData['sampleCode'])) {
                             throw new SystemException("Sample code generation returned empty result");
@@ -655,11 +655,11 @@ final class TestRequestsService
         }
 
         // Normalize incoming values
-        $remoteSampleCode = trim((string)($recordFromOtherSystem['remote_sample_code'] ?? ''));
-        $sampleCode = trim((string)($recordFromOtherSystem['sample_code'] ?? ''));
+        $remoteSampleCode = trim((string) ($recordFromOtherSystem['remote_sample_code'] ?? ''));
+        $sampleCode = trim((string) ($recordFromOtherSystem['sample_code'] ?? ''));
         $labId = $recordFromOtherSystem['lab_id'] ?? null;
         $facilityId = $recordFromOtherSystem['facility_id'] ?? null;
-        $uniqueId = trim((string)($recordFromOtherSystem['unique_id'] ?? ''));
+        $uniqueId = trim((string) ($recordFromOtherSystem['unique_id'] ?? ''));
 
         // Candidate matching conditions in priority order
         $candidates = [];

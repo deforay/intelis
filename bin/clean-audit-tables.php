@@ -1,15 +1,16 @@
 <?php
 
-// only run from command line
-$isCli = php_sapi_name() === 'cli';
-if ($isCli === false) {
-    exit(0);
-}
-
+declare(ticks=1);
 
 require_once(__DIR__ . "/../bootstrap.php");
 
-declare(ticks=1);
+
+// only run from command line
+$isCli = PHP_SAPI === 'cli';
+if ($isCli === false) {
+    exit(CLI\ERROR);
+}
+
 
 use App\Services\TestsService;
 use App\Utilities\MiscUtility;

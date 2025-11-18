@@ -10,7 +10,7 @@
  * Note: This script should only be run from the command line.
  */
 
-if (php_sapi_name() !== 'cli') {
+if (PHP_SAPI !== 'cli') {
     exit('This script can only be run from the command line.');
 }
 
@@ -25,7 +25,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 // Parse command line arguments
 $options = getopt('dbtsv', ['dry-run', 'batch-size:', 'table:', 'skip-columns', 'verbose']);
 $dryRun = isset($options['dry-run']) || isset($options['d']);
-$batchSize = isset($options['batch-size']) ? (int)$options['batch-size'] : (isset($options['b']) ? (int)$options['b'] : 10);
+$batchSize = isset($options['batch-size']) ? (int) $options['batch-size'] : (isset($options['b']) ? (int) $options['b'] : 10);
 $specificTable = $options['table'] ?? $options['t'] ?? null;
 $skipColumnConversion = isset($options['skip-columns']) || isset($options['s']);
 $verbose = isset($options['verbose']) || isset($options['v']);
@@ -599,7 +599,7 @@ try {
     $results = processBatches(
         $allTables,
         $batchSize,
-        function (array $tableData, $current, $total) use ($db, $dryRun, $skipColumnConversion, $verbose,  $bar): array {
+        function (array $tableData, $current, $total) use ($db, $dryRun, $skipColumnConversion, $verbose, $bar): array {
             $table = $tableData['table'];
 
             // show the table on the spinner

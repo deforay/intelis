@@ -1,6 +1,6 @@
 <?php
 
-$cliMode = php_sapi_name() === 'cli';
+$cliMode = PHP_SAPI === 'cli';
 if ($cliMode) {
     require_once(__DIR__ . "/../../bootstrap.php");
 }
@@ -48,7 +48,7 @@ try {
         LoggerUtility::log("error", "Unable to connect to Smart Connect health endpoint", [
             'file' => __FILE__,
             'line' => __LINE__,
-            'url'  => $healthUrl,
+            'url' => $healthUrl,
         ]);
         exit(0);
     }
@@ -93,7 +93,7 @@ try {
         ]
     ];
 
-    $response  = $apiService->postFile($url, 'vlFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params, true);
+    $response = $apiService->postFile($url, 'vlFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params, true);
 
     $deResult = json_decode((string) $response, true);
 

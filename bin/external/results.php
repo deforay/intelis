@@ -5,7 +5,7 @@ use const SAMPLE_STATUS\ACCEPTED;
 
 // This script is used to send results to an external API for e.g. EMR
 
-$cliMode = php_sapi_name() === 'cli';
+$cliMode = PHP_SAPI === 'cli';
 $forceRun = false;
 
 if ($cliMode) {
@@ -26,14 +26,14 @@ if (file_exists($configFile)) {
     if ($cliMode) {
         echo "Interop config file is missing." . PHP_EOL;
     }
-    exit(0);
+    exit(CLI\ERROR);
 }
 
 if (!defined('EXTERNAL_RESULTS_RECEIVER_URL')) {
     if ($cliMode) {
         echo "EXTERNAL_RESULTS_RECEIVER_URL constant is not defined in $configFile" . PHP_EOL;
     }
-    exit(0);
+    exit(CLI\ERROR);
 }
 
 use App\Services\ApiService;

@@ -3,11 +3,13 @@
 
 // bin/migrate.php
 
+require_once __DIR__ . "/../bootstrap.php";
+
 // only run from command line
-$isCli = php_sapi_name() === 'cli';
+$isCli = PHP_SAPI === 'cli';
 
 if (!$isCli) {
-    exit(0);
+    exit(CLI\ERROR);
 }
 
 // Handle Ctrl+C gracefully (if pcntl extension is available)
@@ -16,11 +18,9 @@ if ($isCli && function_exists('pcntl_signal') && function_exists('pcntl_async_si
     pcntl_signal(SIGINT, function (): void {
         echo PHP_EOL . PHP_EOL;
         echo "⚠️  Migration cancelled by user." . PHP_EOL;
-        exit(130); // Standard exit code for SIGINT
+        exit(CLI\SIGINT); // Standard exit code for SIGINT
     });
 }
-
-require_once __DIR__ . "/../bootstrap.php";
 
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
@@ -46,15 +46,15 @@ $currentMajorVersion = $general->getAppVersion();
 // Ensure the script only runs for VLSM APP VERSION >= 4.4.3
 if (version_compare($currentMajorVersion, '4.4.3', '<')) {
     $io->error("This script requires VERSION 4.4.3 or higher. Current version: " . htmlspecialchars((string) $currentMajorVersion));
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 // Define the logs directory path
 $logsDir = LOG_PATH;
 
 const MIG_NOT_HANDLED = 0;
-const MIG_EXECUTED    = 1;
-const MIG_SKIPPED     = 2;
+const MIG_EXECUTED = 1;
+const MIG_SKIPPED = 2;
 
 // Initialize a flag to determine if logging is possible
 $canLog = false;
@@ -77,7 +77,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 // Check if connection was successful
 if ($db->isConnected() === false) {
     $io->error("Database connection failed. Please check your database settings");
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 /* ---------------------- Local helpers (idempotent DDL) ---------------------- */
@@ -95,7 +95,7 @@ function current_db(DatabaseService $db): string
 function _apply_add_primary_key(DatabaseService $db, SymfonyStyle $io, string $table, string $colsList, string $originalSql): int
 {
     $wantedCols = parse_cols_list($colsList);
-    $haveCols   = table_primary_key($db, $table);
+    $haveCols = table_primary_key($db, $table);
 
     if ($haveCols === []) {
         $db->rawQuery($originalSql);
@@ -173,7 +173,7 @@ function parse_cols_list(string $list): array
 function add_column_if_missing(DatabaseService $db, string $table, string $column, string $ddl): int
 {
     $dbName = current_db($db);
-    $exists = (int)($db->rawQueryOne(
+    $exists = (int) ($db->rawQueryOne(
         "SELECT COUNT(*) c FROM information_schema.COLUMNS
             WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND COLUMN_NAME=?",
         [$dbName, $table, $column]
@@ -196,7 +196,7 @@ function index_exists(DatabaseService $db, string $table, string $index): bool
             WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND INDEX_NAME=? LIMIT 1",
         [$dbName, $table, $index]
     );
-    return (bool)$row;
+    return (bool) $row;
 }
 
 /** Create index only if missing (works on MySQL 5.x/8.x and MariaDB). */
@@ -220,7 +220,7 @@ function column_exists(DatabaseService $db, string $table, string $column): bool
             WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1",
         [$dbName, $table, $column]
     );
-    return (bool)$row;
+    return (bool) $row;
 }
 
 /** DROP COLUMN only if present */
@@ -271,8 +271,8 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
         $table = $m[1];
         $uniqueKw = empty($m[2]) ? '' : 'UNIQUE ';
         $index = $m[3];
-        $cols  = trim($m[4]);
-        $ddl   = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', $uniqueKw, $index, $table, $cols);
+        $cols = trim($m[4]);
+        $ddl = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', $uniqueKw, $index, $table, $cols);
         return add_index_if_missing($db, $table, $index, $ddl);
     }
 
@@ -281,8 +281,8 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
         $table = $m[1];
         $uniqueKw = empty($m[2]) ? '' : 'UNIQUE ';
         $index = $m[3];
-        $cols  = trim($m[4]);
-        $ddl   = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', $uniqueKw, $index, $table, $cols);
+        $cols = trim($m[4]);
+        $ddl = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', $uniqueKw, $index, $table, $cols);
         return add_index_if_missing($db, $table, $index, $ddl);
     }
 
@@ -318,7 +318,7 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
 
 $db->where('name', 'sc_version');
 $currentVersion = $db->getValue('system_config', 'value');
-$migrationFiles = (array)glob(ROOT_PATH . '/sys/migrations/*.sql');
+$migrationFiles = (array) glob(ROOT_PATH . '/sys/migrations/*.sql');
 
 // Extract version numbers and map them to files
 $versions = array_map(fn($file): string => basename((string) $file, '.sql'), $migrationFiles);
@@ -338,7 +338,7 @@ if ($quietMode) {
 $totalMigrations = 0;
 $totalQueries = 0;
 $skippedQueries = $successfulQueries = 0;
-$totalErrors     = 0;
+$totalErrors = 0;
 
 foreach ($versions as $version) {
     $file = APPLICATION_PATH . '/../sys/migrations/' . $version . '.sql';
@@ -438,12 +438,12 @@ foreach ($versions as $version) {
                         }
                     }
                 } catch (Throwable $e) {
-                    $msgStr  = $e->getMessage() ?? '';
+                    $msgStr = $e->getMessage() ?? '';
                     $sqlInMsg = $query ?? '';
 
                     $isBenign =
                         stripos($msgStr, 'Duplicate column name') !== false ||
-                        stripos($msgStr, 'Duplicate key name') !== false   ||
+                        stripos($msgStr, 'Duplicate key name') !== false ||
                         (stripos($msgStr, "Can't DROP") !== false && stripos($msgStr, 'check that column/key exists') !== false) ||
                         stripos($msgStr, 'Multiple primary key defined') !== false || str_contains($msgStr, '1068');
 

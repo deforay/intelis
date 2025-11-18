@@ -12,7 +12,7 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
-$cliMode = php_sapi_name() === 'cli';
+$cliMode = PHP_SAPI === 'cli';
 if ($cliMode) {
     require_once(__DIR__ . "/../../bootstrap.php");
 }
@@ -47,7 +47,7 @@ try {
         LoggerUtility::log("error", "Unable to connect to Smart Connect health endpoint", [
             'file' => __FILE__,
             'line' => __LINE__,
-            'url'  => $healthUrl,
+            'url' => $healthUrl,
         ]);
         exit(0);
     }
@@ -97,7 +97,7 @@ try {
         ]
     ];
 
-    $response  = $apiService->postFile($url, 'eidFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params, true);
+    $response = $apiService->postFile($url, 'eidFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params, true);
     $deResult = json_decode((string) $response, true);
 
     if (isset($deResult['status']) && trim((string) $deResult['status']) === 'success') {

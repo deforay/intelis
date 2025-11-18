@@ -1,12 +1,15 @@
 #!/usr/bin/env php
 <?php
-// bin/cleanup.php
-// only run from command line
-if (php_sapi_name() !== 'cli') {
-    exit(0);
-}
 
+// bin/cleanup.php
 require_once __DIR__ . "/../bootstrap.php";
+
+
+// only run from command line
+$isCli = PHP_SAPI === 'cli';
+if ($isCli === false) {
+    exit(CLI\ERROR);
+}
 
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
@@ -72,9 +75,9 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
 {
     $stats = [
         'files_deleted' => 0,
-        'dirs_deleted'  => 0,   // <-- add this
-        'bytes_freed'   => 0,
-        'errors'        => 0,
+        'dirs_deleted' => 0,   // <-- add this
+        'bytes_freed' => 0,
+        'errors' => 0,
     ];
 
     if (!file_exists($folder) || !is_dir($folder)) {
@@ -85,7 +88,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
     // Get current size with fast du command
     exec("du -sb " . escapeshellarg($folder) . " 2>/dev/null", $duOutput, $exitCode);
     $currentSize = ($exitCode === 0 && (isset($duOutput[0]) && ($duOutput[0] !== '' && $duOutput[0] !== '0')))
-        ? (int)explode("\t", $duOutput[0])[0]
+        ? (int) explode("\t", $duOutput[0])[0]
         : 0;
 
     $output->writeln("\n<info>Processing:</info> " . basename($folder));
@@ -98,7 +101,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
 
     // Determine cleanup strategy
     $needsSizeCleanup = $maxSizeBytes !== null && $currentSize > $maxSizeBytes;
-    $needsAgeCleanup  = $duration !== null;
+    $needsAgeCleanup = $duration !== null;
 
     if (!$needsSizeCleanup && !$needsAgeCleanup) {
         $output->writeln("  <info>ℹ No cleanup needed</info>");
@@ -175,8 +178,8 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
     }
 
     $filesToDelete = [];
-    $bytesToFree   = 0;
-    $targetSize    = $maxSizeBytes ? (int)($maxSizeBytes * 0.8) : 0; // Clean to 80% of limit
+    $bytesToFree = 0;
+    $targetSize = $maxSizeBytes ? (int) ($maxSizeBytes * 0.8) : 0; // Clean to 80% of limit
     $streamingSucceeded = false;
 
     // Try streaming with find + sort to avoid loading everything into memory
@@ -201,10 +204,10 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
                 continue;
             }
 
-            $mtime = (float)$parts[0];
+            $mtime = (float) $parts[0];
             $path = $parts[1];
-            $size = (int)$parts[2];
-            $ageDays = (time() - (int)$mtime) / 86400;
+            $size = (int) $parts[2];
+            $ageDays = (time() - (int) $mtime) / 86400;
 
             $shouldDelete = false;
             if ($needsAgeCleanup && $ageDays > $duration) {
@@ -251,10 +254,10 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
                 }
                 $mtime = $file->getMTime();
                 $files[] = [
-                    'mtime'     => (float)$mtime,
-                    'path'      => $file->getPathname(),
-                    'size'      => (int)$file->getSize(),
-                    'age_days'  => (time() - (int)$mtime) / 86400,
+                    'mtime' => (float) $mtime,
+                    'path' => $file->getPathname(),
+                    'size' => (int) $file->getSize(),
+                    'age_days' => (time() - (int) $mtime) / 86400,
                 ];
             }
         } catch (Throwable $e) {
@@ -275,7 +278,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
                 if ($shouldDelete) {
                     $filesToDelete[] = $file['path'];
                     $bytesToFree += $file['size'];
-                    $currentSize  -= $file['size'];
+                    $currentSize -= $file['size'];
                 }
 
                 if ($needsSizeCleanup && $currentSize <= $targetSize) {
@@ -296,7 +299,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
 
     $startTime = microtime(true);
     $deleted = 0;
-    $errors  = 0;
+    $errors = 0;
 
     foreach ($filesToDelete as $filePath) {
         if (MiscUtility::deleteFile($filePath)) {
@@ -309,8 +312,8 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
     $elapsed = microtime(true) - $startTime;
 
     $stats['files_deleted'] = $deleted;
-    $stats['bytes_freed']   = $bytesToFree;
-    $stats['errors']        = $errors;
+    $stats['bytes_freed'] = $bytesToFree;
+    $stats['errors'] = $errors;
 
     $output->writeln("  <success>✓ Deleted:</success> {$deleted} files in " . round($elapsed, 2) . "s");
     $output->writeln("  <success>✓ Freed:</success> " . formatBytes($bytesToFree));
@@ -323,10 +326,10 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
     $stats['dirs_deleted'] += pruneEmptyDirs($folder);
 
     LoggerUtility::logInfo("Cleanup completed for {$folder}", [
-        'files_deleted'     => $deleted,
-        'dirs_deleted'      => $stats['dirs_deleted'],
-        'bytes_freed'       => $bytesToFree,
-        'duration_seconds'  => round($elapsed, 2),
+        'files_deleted' => $deleted,
+        'dirs_deleted' => $stats['dirs_deleted'],
+        'bytes_freed' => $bytesToFree,
+        'duration_seconds' => round($elapsed, 2),
     ]);
 
     return $stats;
@@ -356,10 +359,10 @@ function runDbToolsClean(?int $keep, ?int $days, ConsoleOutput $output): int
 {
     $args = [];
     if ($keep !== null) {
-        $args[] = '--keep=' . (int)$keep;
+        $args[] = '--keep=' . (int) $keep;
     }
     if ($days !== null) {
-        $args[] = '--days=' . (int)$days;
+        $args[] = '--days=' . (int) $days;
     }
 
     // Fallback: require at least one policy
@@ -409,11 +412,11 @@ function runDbToolsClean(?int $keep, ?int $days, ConsoleOutput $output): int
         }
     }
 
-    return (int)$code;
+    return (int) $code;
 }
 
 
-$defaultDuration = (isset($argv[1]) && is_numeric($argv[1])) ? (int)$argv[1] : 30;
+$defaultDuration = (isset($argv[1]) && is_numeric($argv[1])) ? (int) $argv[1] : 30;
 
 
 // ============================================================================
@@ -436,10 +439,10 @@ $keepEnv = getenv('INTELIS_DB_BACKUP_KEEP');
 $daysEnv = getenv('INTELIS_DB_BACKUP_DAYS');
 
 // Only pass --keep if explicitly provided; otherwise prefer --days
-$keepForDbBackups = is_numeric($keepEnv) ? (int)$keepEnv : null;
+$keepForDbBackups = is_numeric($keepEnv) ? (int) $keepEnv : null;
 $daysForDbBackups = ($keepForDbBackups !== null)
     ? null
-    : (is_numeric($daysEnv) ? (int)$daysEnv : $defaultDuration);
+    : (is_numeric($daysEnv) ? (int) $daysEnv : $defaultDuration);
 
 $exit = runDbToolsClean($keepForDbBackups, $daysForDbBackups, $output);
 
@@ -592,9 +595,13 @@ $table->setRows([
     ['File System', 'Directories Deleted', $totalStats['dirs_deleted']],
     ['File System', 'Space Freed', formatBytes($totalStats['bytes_freed'])],
     ['Database', 'Rows Deleted', $dbStats['rows_deleted']],
-    ['Overall', 'Total Errors', ($totalStats['errors'] + $dbStats['errors']) > 0
+    [
+        'Overall',
+        'Total Errors',
+        ($totalStats['errors'] + $dbStats['errors']) > 0
         ? "<fire>" . ($totalStats['errors'] + $dbStats['errors']) . "</fire>"
-        : "<success>0</success>"],
+        : "<success>0</success>"
+    ],
 ]);
 $table->render();
 $output->writeln('');
@@ -607,4 +614,6 @@ LoggerUtility::logInfo("Cleanup script completed", [
     'total_errors' => $totalStats['errors'] + $dbStats['errors']
 ]);
 
-exit(0);
+
+exit(CLI\OK);
+

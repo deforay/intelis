@@ -7,7 +7,7 @@ use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\TEST_FAILED;
 
 // only run from command line
-$isCli = php_sapi_name() === 'cli';
+$isCli = PHP_SAPI === 'cli';
 
 if (!$isCli) {
     exit(0);
@@ -53,31 +53,31 @@ try {
     // First, fix any ACCEPTED results that have blank/null result values
     // Set status based on whether sample_code is created or not
     // if sample_code is set, it means sample has been registered at lab
-$fixInvalidBatchSize = 500;
-$fixInvalidSelectSql = "SELECT vl_sample_id
+    $fixInvalidBatchSize = 500;
+    $fixInvalidSelectSql = "SELECT vl_sample_id
                         FROM form_vl
                         WHERE IFNULL(result_status, 0) = ?
                         AND (result IS NULL OR result = '')
                         LIMIT ?";
 
-$maxAttempts = 3;
+    $maxAttempts = 3;
 
-do {
-    $affected = 0;
-    $rows = $db->rawQuery($fixInvalidSelectSql, [ACCEPTED, $fixInvalidBatchSize]);
-    if ($rows === false || $rows === []) {
-        break;
-    }
+    do {
+        $affected = 0;
+        $rows = $db->rawQuery($fixInvalidSelectSql, [ACCEPTED, $fixInvalidBatchSize]);
+        if ($rows === false || $rows === []) {
+            break;
+        }
 
-    $ids = array_column($rows, 'vl_sample_id');
-    $affected = count($ids);
+        $ids = array_column($rows, 'vl_sample_id');
+        $affected = count($ids);
 
-    if ($affected === 0) {
-        break;
-    }
+        if ($affected === 0) {
+            break;
+        }
 
-    $placeholders = implode(',', array_fill(0, $affected, '?'));
-    $fixInvalidUpdateSql = "UPDATE form_vl
+        $placeholders = implode(',', array_fill(0, $affected, '?'));
+        $fixInvalidUpdateSql = "UPDATE form_vl
                             SET result_status = CASE 
                                     WHEN sample_code IS NOT NULL THEN ?
                                     ELSE ?
@@ -87,40 +87,40 @@ do {
                             AND IFNULL(result_status, 0) = ?
                             AND (result IS NULL OR result = '')";
 
-    $attempt = 0;
-    while ($attempt < $maxAttempts) {
-        try {
-            $params = array_merge(
-                [
-                    RECEIVED_AT_TESTING_LAB,
-                    RECEIVED_AT_CLINIC
-                ],
-                $ids,
-                [
-                    ACCEPTED
-                ]
-            );
+        $attempt = 0;
+        while ($attempt < $maxAttempts) {
+            try {
+                $params = array_merge(
+                    [
+                        RECEIVED_AT_TESTING_LAB,
+                        RECEIVED_AT_CLINIC
+                    ],
+                    $ids,
+                    [
+                        ACCEPTED
+                    ]
+                );
 
-            $fixResult = $db->rawQuery($fixInvalidUpdateSql, $params);
-            if ($fixResult !== false) {
-                $totalInvalidFixed += $db->count;
-            }
-            break;
-        } catch (Throwable $e) {
-            $attempt++;
-            if (stripos($e->getMessage(), 'Lock wait timeout exceeded') !== false && $attempt < $maxAttempts) {
-                LoggerUtility::log('warning', 'Lock wait detected while fixing invalid VL results; retrying batch ' . $attempt);
-                usleep(200000); // 200ms backoff
-                continue;
-            }
+                $fixResult = $db->rawQuery($fixInvalidUpdateSql, $params);
+                if ($fixResult !== false) {
+                    $totalInvalidFixed += $db->count;
+                }
+                break;
+            } catch (Throwable $e) {
+                $attempt++;
+                if (stripos($e->getMessage(), 'Lock wait timeout exceeded') !== false && $attempt < $maxAttempts) {
+                    LoggerUtility::log('warning', 'Lock wait detected while fixing invalid VL results; retrying batch ' . $attempt);
+                    usleep(200000); // 200ms backoff
+                    continue;
+                }
 
-            throw $e;
+                throw $e;
+            }
         }
-    }
-    MiscUtility::touchLockFile($lockTargetFile);
-} while ($affected >= $fixInvalidBatchSize);
+        MiscUtility::touchLockFile($lockTargetFile);
+    } while ($affected >= $fixInvalidBatchSize);
 
-$sql = "SELECT vl_sample_id, result_status, result
+    $sql = "SELECT vl_sample_id, result_status, result
         FROM form_vl
         WHERE vl_sample_id > ?
             AND vl_result_category IS NULL
@@ -131,20 +131,20 @@ $sql = "SELECT vl_sample_id, result_status, result
         ORDER BY vl_sample_id
         LIMIT ?";
 
-$params = [
-    REJECTED,
-    ACCEPTED,
-];
+    $params = [
+        REJECTED,
+        ACCEPTED,
+    ];
 
-// Process batches in continuous loop
-do {
-    $lastProcessedId = $offset;
-    $batchParams = array_merge([$lastProcessedId], $params, [$batchSize]);
-    $result = $db->rawQuery($sql, $batchParams);
-    $batchCount = count($result);
+    // Process batches in continuous loop
+    do {
+        $lastProcessedId = $offset;
+        $batchParams = array_merge([$lastProcessedId], $params, [$batchSize]);
+        $result = $db->rawQuery($sql, $batchParams);
+        $batchCount = count($result);
 
-    if ($batchCount === 0) {
-        break;
+        if ($batchCount === 0) {
+            break;
         }
 
         $totalProcessed += $batchCount;
@@ -217,10 +217,10 @@ do {
         }
 
         $lastRow = end($result);
-        $offset = (int)($lastRow['vl_sample_id'] ?? $offset);
+        $offset = (int) ($lastRow['vl_sample_id'] ?? $offset);
         reset($result);
         MiscUtility::touchLockFile($lockTargetFile);
-} while ($batchCount > 0);
+    } while ($batchCount > 0);
     if (!$isCli) {
         $duration = round(microtime(true) - $startTime, 2);
         echo "Completed! Invalid fixed: {$totalInvalidFixed}, Processed: {$totalProcessed}, Updated: {$totalUpdated}, Duration: {$duration}s\n";
