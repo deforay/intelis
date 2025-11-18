@@ -493,7 +493,7 @@ if [[ "${php_version}" != "${desired_php_version}" ]]; then
     print info "Current PHP version is ${php_version}. Switching to PHP ${desired_php_version}."
 
     # Switch to PHP 8.4
-    switch-php ${desired_php_version}
+    switch-php ${desired_php_version} --fast
 
     if [ $? -ne 0 ]; then
         print error "Failed to switch to PHP ${desired_php_version}. Please check your setup."
