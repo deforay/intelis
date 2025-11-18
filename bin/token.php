@@ -27,9 +27,14 @@ $apiService = ContainerRegistry::get(ApiService::class);
 $cliMode = PHP_SAPI === 'cli';
 $isLIS = $general->isLISInstance();
 
-if (!$isLIS || !$cliMode) {
+if (!$isLIS) {
     //LoggerUtility::logError("Token not generated. This script is only for LIS instances.");
     exit(CLI\ERROR);
+}
+
+if (!$cliMode) {
+    // LoggerUtility::logError("Token generation script can only be run in CLI mode.");
+    exit(CLI\OK);
 }
 
 

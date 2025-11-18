@@ -42,9 +42,13 @@ try {
     $db = ContainerRegistry::get(DatabaseService::class);
 
     $isLIS = $general->isLISInstance();
-    if (!$isLIS || !$cliMode) {
-        $io->error("STS setup can only be run in CLI mode for LIS instances.");
+    if (!$cliMode) {
+        $io->error("STS setup can only be run in CLI mode.");
         exit(CLI\ERROR);
+    }
+    if (!$isLIS) {
+        $io->error("STS setup can only be run for LIS instances.");
+        exit(CLI\OK);
     }
 
 
