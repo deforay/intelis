@@ -545,14 +545,20 @@ php_version="${desired_php_version}"
 print header "Configuring PHP"
 
 desired_error_reporting="error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE & ~E_WARNING"
+desired_display_errors="display_errors = Off"
+desired_log_errors="log_errors = On"
 desired_post_max_size="post_max_size = 1G"
 desired_upload_max_filesize="upload_max_filesize = 1G"
 desired_strict_mode="session.use_strict_mode = 1"
+desired_sid_length="session.sid_length = 48"
+desired_sid_bits="session.sid_bits_per_character = 6"
+desired_expose_php="expose_php = Off"
 desired_opcache_enable="opcache.enable=1"
 desired_opcache_enable_cli="opcache.enable_cli=0"
 desired_opcache_memory="opcache.memory_consumption=256"
 desired_opcache_max_files="opcache.max_accelerated_files=40000"
 desired_opcache_validate="opcache.validate_timestamps=0"
+desired_opcache_save_comments="opcache.save_comments=1"
 desired_opcache_jit="opcache.jit=disable"
 desired_opcache_interned="opcache.interned_strings_buffer=16"
 desired_opcache_override="opcache.enable_file_override=1"
@@ -568,26 +574,34 @@ update_php_ini() {
     print info "Checking PHP settings in $ini_file..."
 
     # Evaluate which desired lines are already present exactly
-    local er_set pms_set umf_set sm_set
-    local opcache_enable_set opcache_enable_cli_set opcache_memory_set opcache_max_files_set opcache_validate_set opcache_jit_set
+    local er_set de_set le_set pms_set umf_set sm_set sid_len_set sid_bits_set expose_set
+    local opcache_enable_set opcache_enable_cli_set opcache_memory_set opcache_max_files_set opcache_validate_set opcache_save_comments_set opcache_jit_set
 
     er_set=$(grep -q "^${desired_error_reporting}$" "$ini_file" && echo true || echo false)
+    de_set=$(grep -q "^${desired_display_errors}$" "$ini_file" && echo true || echo false)
+    le_set=$(grep -q "^${desired_log_errors}$" "$ini_file" && echo true || echo false)
     pms_set=$(grep -q "^${desired_post_max_size}$" "$ini_file" && echo true || echo false)
     umf_set=$(grep -q "^${desired_upload_max_filesize}$" "$ini_file" && echo true || echo false)
     sm_set=$(grep -q "^${desired_strict_mode}$" "$ini_file" && echo true || echo false)
+    sid_len_set=$(grep -q "^${desired_sid_length}$" "$ini_file" && echo true || echo false)
+    sid_bits_set=$(grep -q "^${desired_sid_bits}$" "$ini_file" && echo true || echo false)
+    expose_set=$(grep -q "^${desired_expose_php}$" "$ini_file" && echo true || echo false)
     opcache_enable_set=$(grep -q "^${desired_opcache_enable}$" "$ini_file" && echo true || echo false)
     opcache_enable_cli_set=$(grep -q "^${desired_opcache_enable_cli}$" "$ini_file" && echo true || echo false)
     opcache_memory_set=$(grep -q "^${desired_opcache_memory}$" "$ini_file" && echo true || echo false)
     opcache_max_files_set=$(grep -q "^${desired_opcache_max_files}$" "$ini_file" && echo true || echo false)
     opcache_validate_set=$(grep -q "^${desired_opcache_validate}$" "$ini_file" && echo true || echo false)
+    opcache_save_comments_set=$(grep -q "^${desired_opcache_save_comments}$" "$ini_file" && echo true || echo false)
     opcache_jit_set=$(grep -q "^${desired_opcache_jit}$" "$ini_file" && echo true || echo false)
     opcache_interned_set=$(grep -q "^${desired_opcache_interned}$" "$ini_file" && echo true || echo false)
     opcache_override_set=$(grep -q "^${desired_opcache_override}$" "$ini_file" && echo true || echo false)
 
     # If ANY are missing, we need to rewrite
-    if [ "$er_set" = false ] || [ "$pms_set" = false ] || [ "$umf_set" = false ] || [ "$sm_set" = false ] \
+    if [ "$er_set" = false ] || [ "$de_set" = false ] || [ "$le_set" = false ] || [ "$pms_set" = false ] || [ "$umf_set" = false ] || [ "$sm_set" = false ] \
+        || [ "$sid_len_set" = false ] || [ "$sid_bits_set" = false ] \
+        || [ "$expose_set" = false ] \
         || [ "$opcache_enable_set" = false ] || [ "$opcache_enable_cli_set" = false ] || [ "$opcache_memory_set" = false ] \
-        || [ "$opcache_max_files_set" = false ] || [ "$opcache_validate_set" = false ] || [ "$opcache_jit_set" = false ] \
+        || [ "$opcache_max_files_set" = false ] || [ "$opcache_validate_set" = false ] || [ "$opcache_save_comments_set" = false ] || [ "$opcache_jit_set" = false ] \
         || [ "$opcache_interned_set" = false ] || [ "$opcache_override_set" = false ]; then
         changes_needed=true
         cp "$ini_file" "$backup_file"
@@ -602,12 +616,22 @@ update_php_ini() {
         while IFS= read -r line; do
             if [[ "$line" =~ ^[[:space:]]*error_reporting[[:space:]]*= ]] && [ "$er_set" = false ]; then
                 echo ";$line" >>"$temp_file"; echo "$desired_error_reporting" >>"$temp_file"; er_set=true
+            elif [[ "$line" =~ ^[[:space:]]*display_errors[[:space:]]*= ]] && [ "$de_set" = false ]; then
+                echo ";$line" >>"$temp_file"; echo "$desired_display_errors" >>"$temp_file"; de_set=true
+            elif [[ "$line" =~ ^[[:space:]]*log_errors[[:space:]]*= ]] && [ "$le_set" = false ]; then
+                echo ";$line" >>"$temp_file"; echo "$desired_log_errors" >>"$temp_file"; le_set=true
             elif [[ "$line" =~ ^[[:space:]]*post_max_size[[:space:]]*= ]] && [ "$pms_set" = false ]; then
                 echo ";$line" >>"$temp_file"; echo "$desired_post_max_size" >>"$temp_file"; pms_set=true
             elif [[ "$line" =~ ^[[:space:]]*upload_max_filesize[[:space:]]*= ]] && [ "$umf_set" = false ]; then
                 echo ";$line" >>"$temp_file"; echo "$desired_upload_max_filesize" >>"$temp_file"; umf_set=true
             elif [[ "$line" =~ ^[[:space:]]*session\.use_strict_mode[[:space:]]*= ]] && [ "$sm_set" = false ]; then
                 echo ";$line" >>"$temp_file"; echo "$desired_strict_mode" >>"$temp_file"; sm_set=true
+            elif [[ "$line" =~ ^[[:space:]]*session\.sid_length[[:space:]]*= ]] && [ "$sid_len_set" = false ]; then
+                echo ";$line" >>"$temp_file"; echo "$desired_sid_length" >>"$temp_file"; sid_len_set=true
+            elif [[ "$line" =~ ^[[:space:]]*session\.sid_bits_per_character[[:space:]]*= ]] && [ "$sid_bits_set" = false ]; then
+                echo ";$line" >>"$temp_file"; echo "$desired_sid_bits" >>"$temp_file"; sid_bits_set=true
+            elif [[ "$line" =~ ^[[:space:]]*expose_php[[:space:]]*= ]] && [ "$expose_set" = false ]; then
+                echo ";$line" >>"$temp_file"; echo "$desired_expose_php" >>"$temp_file"; expose_set=true
             elif [[ "$line" =~ ^[[:space:]]*opcache\.enable[[:space:]]*= ]] && [ "$opcache_enable_set" = false ]; then
                 echo ";$line" >>"$temp_file"; echo "$desired_opcache_enable" >>"$temp_file"; opcache_enable_set=true
             elif [[ "$line" =~ ^[[:space:]]*opcache\.enable_cli[[:space:]]*= ]] && [ "$opcache_enable_cli_set" = false ]; then
@@ -618,6 +642,8 @@ update_php_ini() {
                 echo ";$line" >>"$temp_file"; echo "$desired_opcache_max_files" >>"$temp_file"; opcache_max_files_set=true
             elif [[ "$line" =~ ^[[:space:]]*opcache\.validate_timestamps[[:space:]]*= ]] && [ "$opcache_validate_set" = false ]; then
                 echo ";$line" >>"$temp_file"; echo "$desired_opcache_validate" >>"$temp_file"; opcache_validate_set=true
+            elif [[ "$line" =~ ^[[:space:]]*opcache\.save_comments[[:space:]]*= ]] && [ "$opcache_save_comments_set" = false ]; then
+                echo ";$line" >>"$temp_file"; echo "$desired_opcache_save_comments" >>"$temp_file"; opcache_save_comments_set=true
             elif [[ "$line" =~ ^[[:space:]]*opcache\.jit[[:space:]]*= ]] && [ "$opcache_jit_set" = false ]; then
                 echo ";$line" >>"$temp_file"; echo "$desired_opcache_jit" >>"$temp_file"; opcache_jit_set=true
             elif  [[ "$line" =~ ^[[:space:]]*opcache\.interned_strings_buffer[[:space:]]*= ]] && [ "$opcache_interned_set" = false ]; then
@@ -631,14 +657,20 @@ update_php_ini() {
 
         # Append any directives that were entirely missing
         [ "$er_set" = true ] || echo "$desired_error_reporting" >>"$temp_file"
+        [ "$de_set" = true ] || echo "$desired_display_errors" >>"$temp_file"
+        [ "$le_set" = true ] || echo "$desired_log_errors" >>"$temp_file"
         [ "$pms_set" = true ] || echo "$desired_post_max_size" >>"$temp_file"
         [ "$umf_set" = true ] || echo "$desired_upload_max_filesize" >>"$temp_file"
         [ "$sm_set" = true ] || echo "$desired_strict_mode" >>"$temp_file"
+        [ "$sid_len_set" = true ] || echo "$desired_sid_length" >>"$temp_file"
+        [ "$sid_bits_set" = true ] || echo "$desired_sid_bits" >>"$temp_file"
+        [ "$expose_set" = true ] || echo "$desired_expose_php" >>"$temp_file"
         [ "$opcache_enable_set" = true ] || echo "$desired_opcache_enable" >>"$temp_file"
         [ "$opcache_enable_cli_set" = true ] || echo "$desired_opcache_enable_cli" >>"$temp_file"
         [ "$opcache_memory_set" = true ] || echo "$desired_opcache_memory" >>"$temp_file"
         [ "$opcache_max_files_set" = true ] || echo "$desired_opcache_max_files" >>"$temp_file"
         [ "$opcache_validate_set" = true ] || echo "$desired_opcache_validate" >>"$temp_file"
+        [ "$opcache_save_comments_set" = true ] || echo "$desired_opcache_save_comments" >>"$temp_file"
         [ "$opcache_jit_set" = true ] || echo "$desired_opcache_jit" >>"$temp_file"
         [ "$opcache_interned_set" = true ] || echo "$desired_opcache_interned" >>"$temp_file"
         [ "$opcache_override_set" = true ] || echo "$desired_opcache_override" >>"$temp_file"
@@ -1237,4 +1269,3 @@ apache2ctl -k graceful || systemctl reload apache2 || systemctl restart apache2
 
 print success "LIS update complete."
 log_action "LIS update complete."
-
