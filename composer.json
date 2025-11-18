@@ -3,12 +3,12 @@
     "description": "InteLIS - Open Source LIS",
     "homepage": "https://github.com/deforay/intelis",
     "type": "project",
-    "license": "AGPL-3.0-or-later",
+    "license": "InteLIS-Community-Copyleft-NonCommercial-1.0",
     "version": "5.3.2",
     "authors": [
         {
             "name": "Deforay",
-            "email": "hello@deforay.com",
+            "email": "support@deforay.com",
             "homepage": "https://deforay.com"
         }
     ],
@@ -29,6 +29,7 @@
         "ext-zlib": "*",
         "brick/phonenumber": "^0.6.0",
         "crunzphp/crunz": "^3.8",
+        "ezyang/htmlpurifier": "^4.17",
         "gettext/gettext": "^5.7",
         "gregwar/captcha": "^1.3",
         "guzzlehttp/guzzle": "^7.10",
@@ -59,8 +60,7 @@
         "symfony/string": "^6.4",
         "symfony/uid": "^7.3",
         "tecnickcom/tcpdf": "^6.10",
-        "thingengineer/mysqli-database-class": "dev-master",
-        "ezyang/htmlpurifier": "^4.17"
+        "thingengineer/mysqli-database-class": "dev-master"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing"
@@ -86,44 +86,44 @@
         "symfony/var-dumper": "^7.1"
     },
     "scripts": {
-        "scan": "php bin/scan.php",
-        "cleanup": "php bin/cleanup.php 30",
-        "version": "php bin/build/generate-version.php",
-        "collation": "php bin/db-tools.php collation",
+        "scan": "@php bin/scan.php",
+        "cleanup": "@php bin/cleanup.php 30",
+        "version": "@php bin/build/generate-version.php",
+        "collation": "@php bin/db-tools.php collation",
         "backup": [
-            "php bin/backup-configs.php",
-            "php bin/db-tools.php backup"
+            "@php bin/backup-configs.php",
+            "@php bin/db-tools.php backup"
         ],
-        "interface": "php bin/interface.php",
-        "lock-samples": "php bin/update-sample-status.php",
-        "purge-cache": "php app/includes/clear-cache.php",
-        "clear-logs": "php bin/clear-logs.php",
+        "interface": "@php bin/interface.php",
+        "lock-samples": "@php bin/update-sample-status.php",
+        "purge-cache": "@php app/includes/clear-cache.php",
+        "clear-logs": "@php bin/clear-logs.php",
         "fixes": [
-            "php bin/setup/update-privileges.php",
-            "php bin/setup/fix-app-menu.php"
+            "@php bin/setup/update-privileges.php",
+            "@php bin/setup/fix-app-menu.php"
         ],
-        "audit-tables-fix": "php bin/setup/fix-audit-tables.php",
-        "archive-audit-tables": "php app/tasks/archive-audit-tables.php",
-        "token": "php bin/token.php",
+        "audit-tables-fix": "@php bin/setup/fix-audit-tables.php",
+        "archive-audit-tables": "@php app/tasks/archive-audit-tables.php",
+        "token": "@php bin/token.php",
         "setup-sts": [
-            "php bin/setup/setup-sts.php",
+            "@php bin/setup/setup-sts.php",
             "@token"
         ],
         "sts-setup": [
             "@setup-sts"
         ],
-        "system-admin": "php bin/setup/system-admin.php",
-        "migrate": "php bin/migrate.php -y",
-        "sample-generator": "php bin/sample-code-generator.php",
-        "reset-metadata": "php app/tasks/remote/sts-metadata-receiver.php -ft",
+        "system-admin": "@php bin/setup/system-admin.php",
+        "migrate": "@php bin/migrate.php -y",
+        "sample-generator": "@php bin/sample-code-generator.php",
+        "reset-metadata": "@php app/tasks/remote/sts-metadata-receiver.php -ft",
         "metadata-sync": [
-            "php app/tasks/remote/sts-metadata-receiver.php",
-            "php app/tasks/remote/lab-metadata-sender.php"
+            "@php app/tasks/remote/sts-metadata-receiver.php",
+            "@php app/tasks/remote/lab-metadata-sender.php"
         ],
-        "send-results": "php app/tasks/remote/results-sender.php",
-        "receive-requests": "php app/tasks/remote/requests-receiver.php",
-        "generate-translation-strings": "php app/system/generate-translation-strings.php",
-        "fix-app-menu": "php bin/setup/fix-app-menu.php",
+        "send-results": "@php app/tasks/remote/results-sender.php",
+        "receive-requests": "@php app/tasks/remote/requests-receiver.php",
+        "generate-translation-strings": "@php app/system/generate-translation-strings.php",
+        "fix-app-menu": "@php bin/setup/fix-app-menu.php",
         "sts-sync": [
             "@token",
             "@metadata-sync",

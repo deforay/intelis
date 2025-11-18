@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed03f574c95ccd6d98d69a0db67d6a22",
+    "content-hash": "a5f707c55c9bf736ecaada6d8659569c",
     "packages": [
         {
             "name": "brick/phonenumber",
