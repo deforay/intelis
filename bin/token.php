@@ -29,12 +29,12 @@ $isLIS = $general->isLISInstance();
 
 if (!$isLIS) {
     //LoggerUtility::logError("Token not generated. This script is only for LIS instances.");
-    exit(CLI\ERROR);
+    exit(CLI\OK);
 }
 
 if (!$cliMode) {
     // LoggerUtility::logError("Token generation script can only be run in CLI mode.");
-    exit(CLI\OK);
+    exit(CLI\ERROR);
 }
 
 
