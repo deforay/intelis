@@ -56,8 +56,8 @@ syntax: regexp
 ^\.git/
 
 # Ignore everything except index.php or .htaccess in specific folders
-^public/uploads/(?!index\.php|\.htaccess).*
-^public/temporary/(?!index\.php|\.htaccess).*
+^public/uploads/(?!index\.php|\.htaccess|\.hgkeep).*
+^public/temporary/(?!index\.php|\.htaccess|\.hgkeep).*
 
 # var directory (allow .hgkeep and .htaccess sentinels)
 ^var/(?!.*\.hgkeep$)(?!.*\.htaccess$).*

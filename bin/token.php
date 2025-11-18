@@ -2,6 +2,8 @@
 
 // bin/token.php
 
+require_once __DIR__ . "/../bootstrap.php";
+
 use App\Services\ApiService;
 use App\Utilities\JsonUtility;
 use App\Services\CommonService;
@@ -13,8 +15,6 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-require_once __DIR__ . "/../bootstrap.php";
-
 ini_set('memory_limit', -1);
 set_time_limit(0);
 
@@ -24,12 +24,12 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
-$cliMode = php_sapi_name() === 'cli';
+$cliMode = PHP_SAPI === 'cli';
 $isLIS = $general->isLISInstance();
 
 if (!$isLIS || !$cliMode) {
     //LoggerUtility::logError("Token not generated. This script is only for LIS instances.");
-    exit(0);
+    exit(CLI\ERROR);
 }
 
 
@@ -41,7 +41,7 @@ $remoteURL = rtrim((string) $general->getRemoteURL(), '/');
 // Check connectivity
 if ($remoteURL === '' || $remoteURL === '0' || $remoteURL === '') {
     LoggerUtility::logError("Please check if STS URL is set");
-    exit(0);
+    exit(CLI\ERROR);
 }
 
 // Parse CLI arguments to get the API key using either `-key` or `--key`
@@ -53,8 +53,8 @@ if ($apiKey === '' || $apiKey === '0' || $apiKey === [] || $apiKey === false || 
     $apiKey = ConfigService::generateAPIKeyForSTS($remoteURL);
 }
 if (!$cliMode) {
-    $io->info("Usage: php bin/token.php --key <API_KEY>");
-    exit(1);
+    $io->info("Usage only via CLI: php bin/token.php --key <API_KEY>");
+    exit(CLI\ERROR);
 }
 
 $tokenURL = "$remoteURL/remote/v2/get-token.php";
@@ -83,7 +83,6 @@ try {
         // Handle the response
         if (!empty($response['status']) && $response['status'] === 'success') {
             $io->success("Token generated: {$response['token']}");
-            //echo "STS Token for this lab is {$response['token']}" . PHP_EOL;
             $data['sts_token'] = $response['token'];
             $db->update('s_vlsm_instance', $data);
         } else {

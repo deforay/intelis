@@ -14,17 +14,16 @@ use App\Registries\ContainerRegistry;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 
-$cliMode = php_sapi_name() === 'cli';
+$cliMode = PHP_SAPI === 'cli';
 
 // --- graceful Ctrl+C (if pcntl available)
 if (function_exists('pcntl_signal') && function_exists('pcntl_async_signals')) {
     pcntl_async_signals(true);
     pcntl_signal(SIGINT, function (): void {
         echo PHP_EOL . "⚠️  Setup cancelled by user." . PHP_EOL;
-        exit(130);
+        exit(CLI\SIGINT); // Standard exit code for SIGINT
     });
 }
 
@@ -45,7 +44,7 @@ try {
     $isLIS = $general->isLISInstance();
     if (!$isLIS || !$cliMode) {
         $io->error("STS setup can only be run in CLI mode for LIS instances.");
-        exit(0);
+        exit(CLI\ERROR);
     }
 
 
@@ -128,17 +127,17 @@ try {
 
         if (!$isRoot || !$hasApt) {
             echo "❌ fzf not found. Please install:\n   sudo apt-get update && sudo apt-get install -y fzf\n";
-            exit(1);
+            exit(CLI\ERROR);
         }
         $ans = strtolower((string) (readUserInput("fzf not found. Install now? (y/N): ") ?? ''));
         if ($ans !== 'y' && $ans !== 'yes') {
             echo "❌ fzf required. Aborting." . PHP_EOL;
-            exit(1);
+            exit(CLI\ERROR);
         }
         system('apt-get update -y && apt-get install -y fzf', $rc);
         if ($rc !== 0 || !hasCmd('fzf')) {
             echo "❌ Failed to install fzf." . PHP_EOL;
-            exit(1);
+            exit(CLI\ERROR);
         }
         echo "✅ fzf installed." . PHP_EOL;
     }
@@ -171,7 +170,7 @@ try {
      */
     function pickLabViaFzf(array $labs): ?array
     {
-        $inFile  = tempnam(sys_get_temp_dir(), 'labs_in_');
+        $inFile = tempnam(sys_get_temp_dir(), 'labs_in_');
         $outFile = tempnam(sys_get_temp_dir(), 'labs_out_');
 
         // Keep two clear fields: "ID<TAB>Name"
@@ -182,13 +181,13 @@ try {
         // Optional: a tiny preview to make it clearer.
         $cmd = sprintf(
             'OUT=%s; export OUT; ' .
-                'cat %s | fzf --ansi --height=80%% --reverse --border --cycle ' .
-                ' --prompt="Select lab > " ' .
-                ' --header="Type ID or name • ↑/↓ to move • Enter to select" ' .
-                ' --delimiter="\t" --nth=1,2 ' .        // <-- search by BOTH ID and Name
-                ' --bind "enter:execute-silent(echo {+} > \"$OUT\")+abort" ' .
-                ' --preview \'printf "ID: %%s\nName: %%s\n" "$(echo {} | cut -f1)" "$(echo {} | cut -f2)"\' ' .
-                ' --preview-window=down,3,wrap',
+            'cat %s | fzf --ansi --height=80%% --reverse --border --cycle ' .
+            ' --prompt="Select lab > " ' .
+            ' --header="Type ID or name • ↑/↓ to move • Enter to select" ' .
+            ' --delimiter="\t" --nth=1,2 ' .        // <-- search by BOTH ID and Name
+            ' --bind "enter:execute-silent(echo {+} > \"$OUT\")+abort" ' .
+            ' --preview \'printf "ID: %%s\nName: %%s\n" "$(echo {} | cut -f1)" "$(echo {} | cut -f2)"\' ' .
+            ' --preview-window=down,3,wrap',
             escapeshellarg($outFile),
             escapeshellarg($inFile)
         );
@@ -210,7 +209,7 @@ try {
 
         [$id, $name] = explode("\t", $out, 2);
         return [
-            'facility_id'   => trim($id),
+            'facility_id' => trim($id),
             'facility_name' => trim($name),
         ];
     }
@@ -326,7 +325,7 @@ try {
             . "⚠️  No STS URL configured; skipping metadata refresh and lab configuration." . PHP_EOL
             . "   Login as System Admin → System Config, then run: composer setup-sts" . PHP_EOL
             . PHP_EOL . "✅ Setup complete. Configure STS URL before proceeding." . PHP_EOL;
-        exit(0);
+        exit(CLI\ERROR);
     }
 
     $io->section('Refreshing Database Metadata');
@@ -371,7 +370,8 @@ try {
 
     if ($returnCode !== 0) {
         echo PHP_EOL . "Full output:" . PHP_EOL;
-        foreach ($output as $l) echo $l . PHP_EOL;
+        foreach ($output as $l)
+            echo $l . PHP_EOL;
         $io->text([
             "❌ <error>Metadata refresh failed with return code: $returnCode</error>",
             '<info>Run manually: php app/tasks/remote/sts-metadata-receiver.php -ft</info>',
@@ -442,7 +442,7 @@ try {
             $selectedLab = pickLabViaFzf($testingLabs);
             if ($selectedLab === null) {
                 $io->error('No lab selected. Setup cancelled.');
-                exit(0);
+                exit(CLI\ERROR);
             }
         }
 
@@ -486,7 +486,7 @@ try {
 
     $io->success('STS setup complete!');
 
-    exit(0);
+    exit(CLI\OK);
 } catch (Throwable $e) {
     $io->error("❌ Setup failed: " . $e->getMessage());
     LoggerUtility::logError("STS setup failure: " . $e->getMessage(), [
@@ -495,5 +495,5 @@ try {
         'trace' => $e->getTraceAsString(),
     ]);
     $io->info("<info>Please check logs for details.</info>");
-    exit(1);
+    exit(CLI\ERROR);
 }

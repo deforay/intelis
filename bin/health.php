@@ -9,26 +9,27 @@ use App\Registries\ContainerRegistry;
 
 require_once __DIR__ . '/../bootstrap.php';
 
+// only run from command line
 if (PHP_SAPI !== 'cli') {
-    echo "Run from CLI\n";
-    exit(1);
+    exit(CLI\ERROR);
 }
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 // ---------- config (tweak thresholds/paths here) ----------
 $paths = [
-    'logs'      => LOG_PATH,
-    'cache'     => CACHE_PATH,
-    'uploads'   => UPLOAD_PATH,
+    'logs' => LOG_PATH,
+    'cache' => CACHE_PATH,
+    'uploads' => UPLOAD_PATH,
     'temporary' => TEMP_PATH,
 ];
 
-$diskMount             = '/';
-$warnDiskUsagePct      = 80;   // warn at 80%
-$criticalDiskUsagePct  = 90;   // critical at 90%
-$mysqlDegradedMs       = 800;  // warn if ping slower than this
+$diskMount = '/';
+$warnDiskUsagePct = 80;   // warn at 80%
+$criticalDiskUsagePct = 90;   // critical at 90%
+$mysqlDegradedMs = 800;  // warn if ping slower than this
 
 $stateFile = CACHE_PATH . '/health_state.json'; // persisted last states
 // ---------------------------------------------------------
@@ -82,7 +83,7 @@ $state = loadState($stateFile);
 
 foreach ($paths as $name => $path) {
     $key = "fs_perms:$name";
-    $ok  = assertWritableDir($path);
+    $ok = assertWritableDir($path);
     setStateAndMaybeAlert(
         $state,
         $key,
@@ -111,7 +112,7 @@ foreach ($paths as $name => $path) {
 
 // ---- 2) Disk usage ----
 $total = @disk_total_space($diskMount) ?: 0;
-$free  = @disk_free_space($diskMount)  ?: 0;
+$free = @disk_free_space($diskMount) ?: 0;
 $usedPct = $total ? (1 - ($free / $total)) * 100 : 0.0;
 
 $diskStatus = 'ok';
@@ -153,8 +154,8 @@ setStateAndMaybeAlert(
 
 // ---- 3) MySQL health (stopped or degraded) ----
 $mysqlStatus = 'ok';
-$mysqlLevel  = 'info';
-$latencyMs   = null;
+$mysqlLevel = 'info';
+$latencyMs = null;
 try {
     $start = microtime(true);
     // simple ping
@@ -162,11 +163,11 @@ try {
     $latencyMs = (microtime(true) - $start) * 1000.0;
     if ($latencyMs >= $mysqlDegradedMs) {
         $mysqlStatus = 'warn';
-        $mysqlLevel  = 'warn';
+        $mysqlLevel = 'warn';
     }
 } catch (Throwable) {
     $mysqlStatus = 'critical';
-    $mysqlLevel  = 'critical';
+    $mysqlLevel = 'critical';
 }
 
 setStateAndMaybeAlert(

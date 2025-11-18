@@ -299,7 +299,8 @@ require_once APPLICATION_PATH . '/header.php';
 	<section class="content-header">
 		<h1> <em class="fa-solid fa-file-lines"></em> <?php echo _translate("Log File Viewer"); ?></h1>
 		<ol class="breadcrumb">
-			<li><a href="/system-admin/edit-config/index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li><a href="/system-admin/edit-config/index.php"><em class="fa-solid fa-chart-pie"></em>
+					<?php echo _translate("Home"); ?></a></li>
 			<li class="active"><?php echo _translate("Manage Log File Viewer"); ?></li>
 		</ol>
 	</section>
@@ -317,7 +318,8 @@ require_once APPLICATION_PATH . '/header.php';
 										<td>
 											<input type="text" id="userDate" name="userDate" class="form-control date"
 												placeholder="<?php echo _translate('Select Date'); ?>" readonly
-												value="<?= DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime()); ?>" style="width:220px;background:#fff;" />
+												value="<?= DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime()); ?>"
+												style="width:220px;background:#fff;" />
 										</td>
 										<td>
 											<button id="viewLogButton" class="btn btn-primary btn-sm">
@@ -325,7 +327,8 @@ require_once APPLICATION_PATH . '/header.php';
 											</button>
 										</td>
 										<td>
-											<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location">
+											<button class="btn btn-danger btn-sm"
+												onclick="document.location.href = document.location">
 												<span><?php echo _translate("Clear Search"); ?></span>
 											</button>
 										</td>
@@ -687,7 +690,7 @@ require_once APPLICATION_PATH . '/header.php';
 		const logViewer = document.getElementById('logViewer');
 		let visibleCount = 0;
 
-		document.querySelectorAll('.logLine').forEach(function(logLine) {
+		document.querySelectorAll('.logLine').forEach(function (logLine) {
 			const logLevel = logLine.getAttribute('data-level') || 'info';
 			const logText = logLine.textContent;
 			let shouldShow = true;
@@ -765,7 +768,7 @@ require_once APPLICATION_PATH . '/header.php';
 					search: searchTerm
 				},
 				timeout: 60000, // 60 second timeout
-				success: function(data) {
+				success: function (data) {
 					$('.loading').remove();
 					hideLoadingIndicator();
 
@@ -819,7 +822,7 @@ require_once APPLICATION_PATH . '/header.php';
 					}
 					loading = false;
 				},
-				error: function(xhr, status, error) {
+				error: function (xhr, status, error) {
 					$('.loading').remove();
 					hideLoadingIndicator();
 
@@ -917,7 +920,7 @@ require_once APPLICATION_PATH . '/header.php';
 				search: searchTerm,
 				level: currentFilter
 			},
-			success: function(data) {
+			success: function (data) {
 				const currentDateTime = new Date();
 
 				const formattedDateTime =
@@ -939,25 +942,25 @@ require_once APPLICATION_PATH . '/header.php';
 					const htmlContent = `<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Log Export - ${formattedDate}</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .logLine { margin-bottom: 20px; border-left: 3px solid #4CAF50; padding: 10px; background-color: #f9f9f9; }
-        .log-error { border-left-color: #dc3545; }
-        .log-warning { border-left-color: #ffc107; }
-        .log-info { border-left-color: #17a2b8; }
-        .log-debug { border-left-color: #6c757d; }
-        .lineNumber { color: #999; font-weight: bold; margin-right: 10px; }
-        span[style*="e83e8c"] { background-color: rgba(232, 62, 140, 0.1); padding: 2px 5px; border-radius: 3px; }
-    </style>
+	<meta charset="UTF-8">
+	<title>Log Export - ${formattedDate}</title>
+	<style>
+		body { font-family: Arial, sans-serif; padding: 20px; }
+		.logLine { margin-bottom: 20px; border-left: 3px solid #4CAF50; padding: 10px; background-color: #f9f9f9; }
+		.log-error { border-left-color: #dc3545; }
+		.log-warning { border-left-color: #ffc107; }
+		.log-info { border-left-color: #17a2b8; }
+		.log-debug { border-left-color: #6c757d; }
+		.lineNumber { color: #999; font-weight: bold; margin-right: 10px; }
+		span[style*="e83e8c"] { background-color: rgba(232, 62, 140, 0.1); padding: 2px 5px; border-radius: 3px; }
+	</style>
 </head>
 <body>
-    <h1>Log Export - ${formattedDate}</h1>
-    <p>Exported on: ${currentDateTime.toLocaleString()}</p>
-    <div class="log-container">
-        ${data}
-    </div>
+	<h1>Log Export - ${formattedDate}</h1>
+	<p>Exported on: ${currentDateTime.toLocaleString()}</p>
+	<div class="log-container">
+		${data}
+	</div>
 </body>
 </html>`;
 					downloadFile(htmlContent, filename, contentType);
@@ -965,7 +968,7 @@ require_once APPLICATION_PATH . '/header.php';
 					downloadFile(data, filename, contentType);
 				}
 			},
-			error: function() {
+			error: function () {
 				toast.error("<?= _translate("Error exporting log", true); ?>");
 			}
 		});
@@ -994,36 +997,36 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function addSearchHelp() {
 		const helpIcon = `<i class="fa fa-question-circle search-help-icon"
-                         title="Search Syntax:&#10;• word - partial match&#10;• +word - exact word match&#10;• ^word - word at line start&#10;• word$ - word at line end&#10;• word* - starts with word&#10;• *word - ends with word&#10;• &quot;exact phrase&quot; - exact phrase match&#10;• Mix examples: +request vl* *xml"></i>`;
+						 title="Search Syntax:&#10;• word - partial match&#10;• +word - exact word match&#10;• ^word - word at line start&#10;• word$ - word at line end&#10;• word* - starts with word&#10;• *word - ends with word&#10;• &quot;exact phrase&quot; - exact phrase match&#10;• Mix examples: +request vl* *xml"></i>`;
 
 		$('#logSearchInput').closest('.col-md-8').addClass('search-input-container').append(helpIcon);
 	}
 
 	function addSearchExamples() {
 		const searchExamples = `
-    <div class="search-examples" id="searchExamples">
-        <h6>Search Syntax Examples:</h6>
-        <ul>
-            <li><code>+request</code> - exact word "request" (not "requesthandler")</li>
-            <li><code>^error</code> - lines starting with "error"</li>
-            <li><code>failed$</code> - lines ending with "failed"</li>
-            <li><code>vl*</code> - starts with "vl" (matches "vlsm", "vlan")</li>
+	<div class="search-examples" id="searchExamples">
+		<h6>Search Syntax Examples:</h6>
+		<ul>
+			<li><code>+request</code> - exact word "request" (not "requesthandler")</li>
+			<li><code>^error</code> - lines starting with "error"</li>
+			<li><code>failed$</code> - lines ending with "failed"</li>
+			<li><code>vl*</code> - starts with "vl" (matches "vlsm", "vlan")</li>
 			<li><code>*vl</code> - ends with "vl" (matches "xml", "html")</li>
-            <li><code>"error message"</code> - exact phrase "error message"</li>
-            <li><code>+request ^error vl*</code> - combine multiple patterns</li>
-        </ul>
-    </div>
+			<li><code>"error message"</code> - exact phrase "error message"</li>
+			<li><code>+request ^error vl*</code> - combine multiple patterns</li>
+		</ul>
+	</div>
 `;
 
 		$('#logSearchInput').closest('.input-group').after(searchExamples);
 
-		$(document).on('click', '.search-help-icon', function() {
+		$(document).on('click', '.search-help-icon', function () {
 			$('#searchExamples').toggleClass('show');
 		});
 	}
 
 	// Optimized search with debouncing
-	const optimizedSearch = debounce(function() {
+	const optimizedSearch = debounce(function () {
 		searchTerm = $('#logSearchInput').val();
 
 		if (searchTerm.length > 100) {
@@ -1037,9 +1040,9 @@ require_once APPLICATION_PATH . '/header.php';
 	function initVirtualScrolling() {
 		let ticking = false;
 
-		$(window).on('scroll', function() {
+		$(window).on('scroll', function () {
 			if (!ticking) {
-				requestAnimationFrame(function() {
+				requestAnimationFrame(function () {
 					if ($(window).scrollTop() + $(window).height() > $(document).height() - 200 && hasMoreLogs && !loading) {
 						loadLogs();
 					}
@@ -1050,7 +1053,7 @@ require_once APPLICATION_PATH . '/header.php';
 		});
 	}
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$('#logSearchInput').on('input', optimizedSearch);
 
 		$('.date').datepicker({
@@ -1063,18 +1066,18 @@ require_once APPLICATION_PATH . '/header.php';
 
 		$('[data-toggle="tooltip"]').tooltip();
 
-		$('#viewLogButton').click(function() {
+		$('#viewLogButton').click(function () {
 			showLoadingIndicator();
 			viewApplicationLogs();
 		});
 
-		$('#searchLogsButton').on('click', function() {
+		$('#searchLogsButton').on('click', function () {
 			clearTimeout(searchTimeout);
 			searchTerm = $('#logSearchInput').val();
 			applyFilters();
 		});
 
-		$('#logSearchInput').on('keydown', function(e) {
+		$('#logSearchInput').on('keydown', function (e) {
 			if (e.keyCode === 13) {
 				clearTimeout(searchTimeout);
 				searchTerm = $('#logSearchInput').val();
@@ -1082,7 +1085,7 @@ require_once APPLICATION_PATH . '/header.php';
 			}
 		});
 
-		$('#logLevelFilters button').click(function() {
+		$('#logLevelFilters button').click(function () {
 			$('#logLevelFilters button').removeClass('active');
 			$(this).addClass('active');
 			currentFilter = $(this).data('level');

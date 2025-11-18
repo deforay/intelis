@@ -2,13 +2,11 @@
 
 namespace App\Services\STS;
 
-use App\Utilities\MiscUtility;
+use App\Services\ApiService;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Abstracts\AbstractTestService;
-use App\Services\ApiService;
-use Psr\Http\Message\ServerRequestInterface;
 
 final class TokensService
 {

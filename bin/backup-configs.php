@@ -6,28 +6,31 @@ use App\Utilities\MiscUtility;
 // Recursively tar+gzip CONFIG_PATH plus runtime info into BACKUP_PATH/config.
 // Keeps last BACKUP_KEEP archives (default 7).
 
-if (php_sapi_name() !== 'cli') {
-    exit(0);
+require_once __DIR__ . "/../bootstrap.php";
+
+// only run from command line
+$isCli = PHP_SAPI === 'cli';
+if ($isCli === false) {
+    exit(CLI\ERROR);
 }
 
-require_once __DIR__ . "/../bootstrap.php";
 
 $CONFIG_PATH = rtrim(CONFIG_PATH, '/');
 $BACKUP_PATH = rtrim(BACKUP_PATH, '/');
-$DEST_DIR    = $BACKUP_PATH . '/config';
-$KEEP        = (int) (getenv('CONFIG_BACKUP_KEEP') ?: 7);
-$PREFIX      = 'config-';
-$EXT         = '.tgz';
+$DEST_DIR = "$BACKUP_PATH/config";
+$KEEP = (int) (getenv('CONFIG_BACKUP_KEEP') ?: 7);
+$PREFIX = 'config-';
+$EXT = '.tgz';
 
 if (!is_dir($CONFIG_PATH)) {
     fwrite(STDERR, "Bad CONFIG_PATH: $CONFIG_PATH\n");
-    exit(1);
+    exit(CLI\ERROR);
 }
 @mkdir($DEST_DIR, 0775, true);
 
-$ts   = date('Y-m-d_H-i-s');
+$ts = date('Y-m-d_H-i-s');
 $file = $PREFIX . $ts . $EXT;
-$out  = $DEST_DIR . '/' . $file;
+$out = $DEST_DIR . '/' . $file;
 
 // --- collect runtime info into temp (do NOT touch CONFIG_PATH) ---
 $tmp = sys_get_temp_dir() . "/cfginfo-$ts-" . bin2hex(random_bytes(3));
@@ -36,9 +39,9 @@ $tmp = sys_get_temp_dir() . "/cfginfo-$ts-" . bin2hex(random_bytes(3));
 file_put_contents(
     "$tmp/system-info.txt",
     "### PHP VERSION\n" . (shell_exec('php -v 2>&1') ?: '') .
-        "\n### PHP INI\n"      . (shell_exec('php --ini 2>&1') ?: '') .
-        "\n### MYSQL VERSION\n" . (shell_exec('mysql --version 2>&1') ?: '') .
-        "\n### CRONTAB\n"      . ((shell_exec('crontab -l 2>&1') ?: "no crontab or not permitted\n"))
+    "\n### PHP INI\n" . (shell_exec('php --ini 2>&1') ?: '') .
+    "\n### MYSQL VERSION\n" . (shell_exec('mysql --version 2>&1') ?: '') .
+    "\n### CRONTAB\n" . ((shell_exec('crontab -l 2>&1') ?: "no crontab or not permitted\n"))
 );
 
 // Exclusions (edit as needed)
@@ -75,7 +78,7 @@ foreach ($it as $p) {
 
 if ($code !== 0 || !file_exists($out)) {
     fwrite(STDERR, "Backup failed (code=$code). Command:\n$cmd\n");
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 echo "✅ Config Backed up : $out\n";
@@ -92,4 +95,4 @@ if ($files !== false && count($files) > $KEEP) {
     echo "ℹ️  Retention: kept $KEEP, removed " . count($toDelete) . " older backup(s).\n";
 }
 
-exit(0);
+exit(CLI\OK);
