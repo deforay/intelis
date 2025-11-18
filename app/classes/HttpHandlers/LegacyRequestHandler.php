@@ -22,6 +22,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
     #[Override]
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
+        $filePath = null;
         try {
 
             $filePath = $this->sanitizePath($request);
@@ -33,7 +34,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
             $db = $this->dbService;
             $general = $this->commonService;
 
-            (function () use ($filePath, $db, $general): void {
+            (function () use ($filePath, $db, $general): void{
                 require_once $filePath;
             })();
 
@@ -42,7 +43,8 @@ class LegacyRequestHandler implements RequestHandlerInterface
             return $this->createResponse($output);
         } catch (Throwable $e) {
             ob_end_clean(); // Clean the buffer in case of an error
-            LoggerUtility::logError("Error in $filePath : " . $e->getFile() . ":" .  $e->getLine() . ":" . $e->getMessage(), [
+            $fileContext = $filePath ?? $request->getUri()->getPath();
+            LoggerUtility::logError("Error in $fileContext : " . $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
                 'request' => $request->getUri()->getPath(),
                 'trace' => $e->getTraceAsString(),
                 'code' => $e->getCode(),

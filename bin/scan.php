@@ -22,11 +22,9 @@ set_time_limit(0);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$cliMode = php_sapi_name() === 'cli';
-
-if (!$cliMode) {
+if (PHP_SAPI !== 'cli') {
     echo "This script can only be run from command line." . PHP_EOL;
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 /**
@@ -51,7 +49,7 @@ function asBool(mixed $v): bool
     if (is_int($v)) {
         return $v !== 0;
     }
-    $s = strtolower(trim((string)$v));
+    $s = strtolower(trim((string) $v));
     return !($s === '' || $s === '0' || $s === 'false' || $s === 'off' || $s === 'no');
 }
 
@@ -372,7 +370,7 @@ $configTable->setRows([
         $dbConfig['host'] ?? 'Not Set',
         'Debug Mode',
         // false is good here → invert
-        formatStatus((bool)($systemSettings['debug_mode'] ?? false), true)
+        formatStatus((bool) ($systemSettings['debug_mode'] ?? false), true)
     ],
     [
         'Port',

@@ -6,7 +6,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 
 $parallelProcess = false;
-if (php_sapi_name() === 'cli') {
+if (PHP_SAPI === 'cli') {
     require_once __DIR__ . "/../bootstrap.php";
     $options = getopt("f");
     $parallelProcess = isset($options['f']);

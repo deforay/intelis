@@ -28,7 +28,7 @@ MiscUtility::setupSignalHandler($lockFile);
 
 try {
     // 1. Check if script is running in CLI mode
-    if (php_sapi_name() !== 'cli') {
+    if (PHP_SAPI !== 'cli') {
         echo "This script can only be run from the command line interface (CLI).";
         exit(0);
     }

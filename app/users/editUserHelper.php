@@ -1,6 +1,5 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
 use GuzzleHttp\Client;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -11,6 +10,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use Laminas\Diactoros\UploadedFile;
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 

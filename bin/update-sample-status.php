@@ -1,30 +1,30 @@
 <?php
 
-use const SAMPLE_STATUS\REJECTED;
-use const SAMPLE_STATUS\ACCEPTED;
-use const SAMPLE_STATUS\TEST_FAILED;
-use const SAMPLE_STATUS\ON_HOLD;
-use const SAMPLE_STATUS\REORDERED_FOR_TESTING;
-use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-use const SAMPLE_STATUS\EXPIRED;
-
-$isCli = php_sapi_name() === 'cli';
-
-// only run from command line
-if ($isCli === false) {
-    exit(0);
-}
-
 require_once __DIR__ . "/../bootstrap.php";
 
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
-use App\Utilities\MiscUtility;
+use const SAMPLE_STATUS\EXPIRED;
+use const SAMPLE_STATUS\ON_HOLD;
 use App\Services\DatabaseService;
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\TEST_FAILED;
 use App\Registries\ContainerRegistry;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\REORDERED_FOR_TESTING;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+
+
+// only run from command line
+$isCli = PHP_SAPI === 'cli';
+if ($isCli === false) {
+    exit(CLI\ERROR);
+}
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -39,7 +39,7 @@ if (!MiscUtility::isLockFileExpired($lockTargetFile)) {
     if ($isCli) {
         echo "Another instance is already running. Exiting." . PHP_EOL;
     }
-    exit(0);
+    exit(CLI\ERROR);
 }
 
 MiscUtility::touchLockFile($lockTargetFile);

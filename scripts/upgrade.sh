@@ -1218,6 +1218,10 @@ if [ -f "${lis_path}/var/cache/CompiledContainer.php" ]; then
     sudo rm "${lis_path}/var/cache/CompiledContainer.php"
 fi
 
+if [ -f "${lis_path}/public/test.php" ]; then
+    sudo rm "${lis_path}/public/test.php"
+fi
+
 # Cron job setup
 setup_intelis_cron "${lis_path}"
 

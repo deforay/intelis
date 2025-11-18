@@ -2,12 +2,13 @@
 <?php
 
 // bin/interface.php
+require_once __DIR__ . "/../bootstrap.php";
 
 // only run from command line
-$isCli = php_sapi_name() === 'cli';
+$isCli = PHP_SAPI === 'cli';
 
 if ($isCli === false) {
-    exit(0);
+    exit(CLI\ERROR);
 }
 
 // Handle Ctrl+C gracefully (if pcntl extension is available)
@@ -16,11 +17,11 @@ if ($isCli && function_exists('pcntl_signal') && function_exists('pcntl_async_si
     pcntl_signal(SIGINT, function (): void {
         echo PHP_EOL . PHP_EOL;
         echo "⚠️  Interface sync cancelled by user." . PHP_EOL;
-        exit(130); // Standard exit code for SIGINT
+        exit(CLI\SIGINT); // Standard exit code for SIGINT
     });
 }
 
-require_once __DIR__ . "/../bootstrap.php";
+
 
 declare(ticks=1);
 
@@ -113,7 +114,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 if (empty($labId)) {
     LoggerUtility::logError("No Lab ID set in System Config. Skipping Interfacing Results");
-    exit(0);
+    exit(CLI\ERROR);
 }
 
 $sqliteDb = null;
@@ -236,7 +237,7 @@ try {
         if ($isCli) {
             echo "No results to process" . PHP_EOL;
         }
-        exit(0);
+        exit(CLI\ERROR);
     }
 
     $additionalColumns = [
@@ -410,7 +411,7 @@ try {
                 $testedByUserId = null;
                 $tester = $result['tested_by'];
                 // if ^ exists it means the Operator Name has both tester and releaser name
-                if (str_contains(strtolower((string)$result['tested_by']), '^')) {
+                if (str_contains(strtolower((string) $result['tested_by']), '^')) {
                     $operatorArray = explode("^", (string) $result['tested_by']);
                     $tester = $operatorArray[0];
                 }
@@ -506,12 +507,12 @@ try {
                 //set result in result fields
                 if (trim((string) $result['results']) !== "") {
 
-                    if (str_contains(strtolower((string)$result['results']), 'not detected')) {
+                    if (str_contains(strtolower((string) $result['results']), 'not detected')) {
                         $eidResult = 'negative';
-                    } elseif ((str_contains(strtolower((string)$result['results']), 'detected')) || (str_contains(strtolower((string)$result['results']), 'passed'))) {
+                    } elseif ((str_contains(strtolower((string) $result['results']), 'detected')) || (str_contains(strtolower((string) $result['results']), 'passed'))) {
                         $eidResult = 'positive';
                     } else {
-                        $eidResult = strtolower((string)$result['results']);
+                        $eidResult = strtolower((string) $result['results']);
                     }
                 }
 
@@ -673,7 +674,7 @@ try {
 } catch (Throwable $e) {
     $db->connection('default')->rollbackTransaction();
     $db->connection('interface')->rollbackTransaction();
-    LoggerUtility::logError($e->getMessage(),  [
+    LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'last_interface_db_query' => $db->connection('interface')->getLastQuery(),
@@ -743,7 +744,7 @@ try {
             echo "Error while syncing interface results. Please check error log for more details." . PHP_EOL;
         }
         $db->connection('interface')->rollbackTransaction();
-        LoggerUtility::logError($e->getMessage(),  [
+        LoggerUtility::logError($e->getMessage(), [
             'file' => $e->getFile(),
             'line' => $e->getLine(),
             'last_interface_db_query' => $db->connection('interface')->getLastQuery(),

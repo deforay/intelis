@@ -1,12 +1,12 @@
 #!/usr/bin/env php
 <?php
 
-$isCli = php_sapi_name() === 'cli';
+require_once __DIR__ . "/../bootstrap.php";
+
+$isCli = PHP_SAPI === 'cli';
 if (!$isCli) {
     exit(0);
 }
-
-require_once __DIR__ . "/../bootstrap.php";
 
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -28,19 +28,19 @@ if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CO
 
 if (!$mysqlConnected) {
     echo "❌ MySQL interface connection not configured.\n";
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 // Get SQLite path from config
 if (empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
     echo "❌ SQLite path not set in SYSTEM_CONFIG.\n";
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 $sqlitePath = SYSTEM_CONFIG['interfacing']['sqlite3Path'];
 if (!file_exists($sqlitePath)) {
     echo "❌ SQLite database not found at: $sqlitePath\n";
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 try {
@@ -53,7 +53,7 @@ try {
         'file' => $e->getFile(),
         'trace' => $e->getTraceAsString()
     ]);
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 // Fetch unsynced orders
@@ -67,12 +67,12 @@ try {
         'file' => $e->getFile(),
         'trace' => $e->getTraceAsString()
     ]);
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 if (empty($records)) {
     echo "ℹ️ No records to resync.\n";
-    exit(0);
+    exit(CLI\OK);
 }
 
 // Insert into MySQL and update SQLite

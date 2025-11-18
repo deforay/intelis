@@ -65,9 +65,11 @@ ALTER TABLE `audit_form_cd4` DROP `sample_registered_at_lab`;
 ALTER TABLE `audit_form_generic` DROP `sample_registered_at_lab`;
 
 -- Thana 06-Oct-2025
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES 
+INSERT INTO `privileges` 
+(`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES 
 (NULL, 'tb-results', '/tb/results/tb-referral-list.php', NULL, 'TB Referral Lab', '2', 'always'),
 (NULL, 'tb-results', '/tb/results/add-tb-referral.php', NULL, 'Add TB Referral Lab', '2', 'always');
+
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'tb', NULL, 'no', 'TB Referral Lab', '/tb/results/tb-referral-list.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbFailedResultsMenu', '82', '164', 'active', CURRENT_TIMESTAMP);
 
 -- Thana 10-Oct-2025
@@ -118,4 +120,28 @@ ALTER TABLE `audit_form_vl` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `
 -- Thana 03-Nov-2025
 ALTER TABLE `form_tb` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
 ALTER TABLE `audit_form_tb` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
+
+-- Amit 18-Nov-2025
+DELETE FROM roles_privileges_map WHERE privilege_id in (SELECT privilege_id FROM privileges WHERE `privilege_name` = '/admin/monitoring/sync-history.php');
+DELETE FROM privileges WHERE `privilege_name` = '/admin/monitoring/sync-history.php';
+
+DELETE FROM roles_privileges_map WHERE privilege_id in (SELECT privilege_id FROM privileges WHERE `privilege_name` = 'addVlFacilityMap.php');
+DELETE FROM privileges WHERE `privilege_name` = 'addVlFacilityMap.php';
+
+DELETE FROM roles_privileges_map WHERE privilege_id in (SELECT privilege_id FROM privileges WHERE `privilege_name` = 'editVlFacilityMap.php');
+DELETE FROM privileges WHERE `privilege_name` = 'editVlFacilityMap.php';
+
+INSERT IGNORE INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('monitoring', 'admin', 'Monitoring');
+
+INSERT IGNORE INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'monitoring', '/admin/api-dashboard/api-dashboard.php', NULL, 'API Dashboard', '1', 'always');
+
+UPDATE `privileges` SET `resource_id` = 'monitoring' WHERE `privilege_name` LIKE '/admin/monitoring%';
+
+UPDATE `privileges` SET `resource_id` = 'monitoring', `privilege_name` = '/admin/monitoring/api-sync-history.php' WHERE `privilege_name` = 'api-sync-history.php';
+UPDATE `privileges` SET `resource_id` = 'monitoring', `privilege_name` = '/admin/monitoring/log-files.php' WHERE `privilege_name` = 'log-files.php';
+UPDATE `privileges` SET `resource_id` = 'monitoring', `privilege_name` = '/admin/monitoring/test-results-metadata.php' WHERE `privilege_name` = 'test-results-metadata.php';
+UPDATE `privileges` SET `resource_id` = 'monitoring', `privilege_name` = '/admin/monitoring/sources-of-requests.php' WHERE `privilege_name` = 'sources-of-requests.php';
+UPDATE `privileges` SET  `privilege_name` = '/patients/add-patient.php' WHERE `privilege_name` = 'add-patient.php';
+UPDATE `privileges` SET  `privilege_name` = '/patients/edit-patient.php' WHERE `privilege_name` = 'edit-patient.php';
+UPDATE `privileges` SET  `privilege_name` = '/patients/view-patients.php' WHERE `privilege_name` = 'view-patients.php';
 

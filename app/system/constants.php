@@ -42,3 +42,12 @@ namespace COUNTRY {
     const RWANDA = 7;
     const BURKINA_FASO = 8;
 }
+
+
+namespace CLI {
+    const OK = 0; // Normal/clean exit (includes deliberate early exits)
+    const ERROR = 1; // Application error
+    const INVALID_INPUT = 2; // Invalid input provided
+    const SIGTERM = 143; // SIGTERM stands for "Signal Termination." It is a generic signal used to request the termination of a process.
+    const SIGINT = 130; // SIGINT stands for "Signal for Keyboard Interruption." It is typically generated when a user presses Ctrl+C in the terminal.
+}

@@ -41,7 +41,7 @@ class AclMiddleware implements MiddlewareInterface
             $currentURI = $this->getCurrentRequestUri();
             $user = $_SESSION['userName'] ?? null;
 
-            if ((isset($_SESSION['roleId']) && $_SESSION['roleId'] == 1) || $this->isAccessAllowed($request, $currentURI, $user)) {
+            if ($this->isAccessAllowed($request, $currentURI, $user)) {
                 return $handler->handle($request);
             }
 
@@ -192,7 +192,7 @@ class AclMiddleware implements MiddlewareInterface
         $userName = $user ?? _translate('Guest');
         throw new SystemException(
             _translate("Sorry") . " {$userName}. " .
-                _translate('You do not have permission to access this page or resource.'),
+            _translate('You do not have permission to access this page or resource.'),
             403
         );
     }

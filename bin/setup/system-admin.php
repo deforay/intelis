@@ -3,9 +3,9 @@
 //bin/setup/system-admin.php
 
 use App\Services\UsersService;
+use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 
 require_once __DIR__ . "/../../bootstrap.php";
 
@@ -15,11 +15,11 @@ set_time_limit(0);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-$cliMode = php_sapi_name() === 'cli';
+$cliMode = PHP_SAPI === 'cli';
 
 if (!$cliMode) {
     echo "This script can only be run from command line." . PHP_EOL;
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 /**
@@ -117,7 +117,7 @@ if ($existingAdmin) {
 
     if ($resetPassword !== 'y' && $resetPassword !== 'yes') {
         echo "Operation cancelled." . PHP_EOL;
-        exit(0);
+        exit(CLI\OK);
     }
 
     $isUpdate = true;
@@ -176,7 +176,7 @@ try {
             MiscUtility::safeCliEcho("✓ Admin password updated successfully for: " . $loginId . PHP_EOL);
         } else {
             MiscUtility::safeCliEcho("✗ Failed to update admin password." . PHP_EOL);
-            exit(1);
+            exit(CLI\ERROR);
         }
     } else {
         // Create new admin
@@ -190,7 +190,7 @@ try {
             MiscUtility::safeCliEcho("✓ Admin created successfully: " . $loginId . PHP_EOL);
         } else {
             MiscUtility::safeCliEcho("✗ Failed to create admin account." . PHP_EOL);
-            exit(1);
+            exit(CLI\ERROR);
         }
     }
 } catch (Exception $e) {
@@ -204,7 +204,7 @@ try {
         ]
     );
     echo "✗ Error saving admin credentials. Please check logs for details." . PHP_EOL;
-    exit(1);
+    exit(CLI\ERROR);
 }
 
 echo PHP_EOL;
