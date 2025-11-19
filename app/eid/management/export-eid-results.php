@@ -138,10 +138,10 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 	};
 
 
-	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-EID-Data-' . date('d-M-Y-H-i-s') . '.csv';
+	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-EID-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 
 	$writer = new Writer();
-	$writer->openToFile($filename);
+	$writer->openToFile($fileName);
 
 	// Write headings
 	$writer->addRow(Row::fromValues($headings));
@@ -161,5 +161,5 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 	}
 
 	$writer->close();
-	echo urlencode(basename((string) $filename));
+	echo urlencode(basename($fileName));
 }
