@@ -147,13 +147,13 @@ try {
                     'result_status' => $status,
                     'specimen_type' => $sampleType['sample_id'] ?? null,
                     'data_sync' => 0,
-                    'request_created_by' => $_SESSION['userId'],
                     'request_created_datetime' => DateUtility::getCurrentDateTime(),
                     'last_modified_by' => $_SESSION['userId'],
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 ];
 
                 if (empty($sampleCode)) {
+                    $data['request_created_by'] = $_SESSION['userId'];
                     $lastId = $db->insert($tableName, $eidData);
                 } else {
                     $lastId = $sampleCode['eid_id'];
