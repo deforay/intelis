@@ -143,10 +143,13 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                         <div class="col-xs-6 col-md-6">
                             <div class="form-group" style="margin-left:30px; margin-top:30px;">
                                 <label for="testType">Test Type</label>
-                                <select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getBatchForm(this)">
+                                <select class="form-control" name="testType" id="testType" title="Please choose test type"
+                                    style="width:100%;" onchange="getBatchForm(this)">
                                     <option value=""> -- Select -- </option>
                                     <?php foreach ($testTypeResult as $testType) { ?>
-                                        <option value="<?php echo $testType['test_type_id']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
+                                        <option value="<?php echo $testType['test_type_id']; ?>">
+                                            <?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?>
+                                        </option>
                                     <?php } ?>
                                 </select>
                                 <span class="batchAlert" style="font-size:1.1em;color: red;">Choose test type to add
@@ -175,13 +178,17 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                         <?php echo _translate("Testing Platform"); ?>&nbsp;<span class="mandatory">*</span>
                     </th>
                     <td style="width: 30%;">
-                        <select name="machine" id="machine" class="form-control isRequired" title="<?php echo _translate('Please choose machine'); ?>">
+                        <select name="machine" id="machine" class="form-control isRequired"
+                            title="<?php echo _translate('Please choose machine'); ?>">
                             <option value="">
                                 <?php echo _translate("-- Select --"); ?>
                             </option>
                             <?php foreach ($testPlatformResult as $machine) {
                                 $labelOrder = $machinesLabelOrder[$machine['instrument_id']]; ?>
-                                <option value="<?php echo $machine['instrument_id']; ?>" <?= ($previousMachine == $machine['instrument_id']) ? 'selected' : '' ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>"><?= $machine['machine_name']; ?></option>
+                                <option value="<?php echo $machine['instrument_id']; ?>"
+                                    <?= ($previousMachine == $machine['instrument_id']) ? 'selected' : '' ?>
+                                    data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>">
+                                    <?= $machine['machine_name']; ?></option>
                             <?php } ?>
                         </select>
                     </td>
@@ -191,24 +198,28 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
 
             </table>
 
-            &nbsp;<button class="btn btn-primary btn-sm pull-left" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
+            &nbsp;<button class="btn btn-primary btn-sm pull-left" style="margin-right:5px;"
+                onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
                     <?php echo _translate("Show Advanced Search Options"); ?>
                 </span></button>
 
-            <table aria-describedby="table" id="advanceFilter" class="table batchDiv" aria-hidden="true" style="display: none;margin-top:20px;width: 100%;<?php echo $genericHide; ?>">
+            <table aria-describedby="table" id="advanceFilter" class="table batchDiv" aria-hidden="true"
+                style="display: none;margin-top:20px;width: 100%;<?php echo $genericHide; ?>">
 
                 <tr>
                     <th style="width: 20%;" scope="col">
                         <?php echo _translate("Facility"); ?>
                     </th>
                     <td style="width: 30%;">
-                        <select style="width: 100%;" class="" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
+                        <select style="width: 100%;" class="" id="facilityName" name="facilityName"
+                            title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
                             <?= $facilitiesDropdown; ?>
                         </select>
                     </td>
-                    <td><label for="fundingSource"><?= _translate("Samples Entered By"); ?></label></td>
+                    <td><label for="fundingSource"><?= _translate("Samples Entered or Modified By"); ?></label></td>
                     <td>
-                        <select class="form-control select2" name="userId" id="userId" title="Please choose source de financement" style="width:100%;">
+                        <select class="form-control select2" name="userId" id="userId"
+                            title="Please choose source de financement" style="width:100%;">
                             <?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
                         </select>
                     </td>
@@ -218,13 +229,19 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                         <?php echo _translate("Sample Collection Date"); ?>
                     </th>
                     <td style="width: 30%;">
-                        <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
+                        <input type="text" id="sampleCollectionDate" name="sampleCollectionDate"
+                            class="form-control daterange"
+                            placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly
+                            style="width:100%;background:#fff;" />
                     </td>
                     <th style="width: 20%;" scope="col">
                         <?php echo _translate("Date Sample Receieved at Lab"); ?>
                     </th>
                     <td style="width: 30%;">
-                        <input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _translate('Select Received at Lab Date'); ?>" readonly style="width:100%;background:#fff;" />
+                        <input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab"
+                            class="form-control daterange"
+                            placeholder="<?php echo _translate('Select Received at Lab Date'); ?>" readonly
+                            style="width:100%;background:#fff;" />
                     </td>
                 </tr>
                 <tr>
@@ -232,13 +249,16 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                         <?php echo _translate("Last Modified"); ?>
                     </th>
                     <td style="width: 30%;">
-                        <input type="text" id="lastModifiedDateTime" name="lastModifiedDateTime" class="form-control daterange" placeholder="<?php echo _translate('Last Modified'); ?>" readonly style="width:100%;background:#fff;" />
+                        <input type="text" id="lastModifiedDateTime" name="lastModifiedDateTime"
+                            class="form-control daterange" placeholder="<?php echo _translate('Last Modified'); ?>"
+                            readonly style="width:100%;background:#fff;" />
                     </td>
                     <th style="width: 20%;" scope="col">
                         <?php echo _translate("Positions"); ?>
                     </th>
                     <td style="width: 30%;">
-                        <select id="positions-type" class="form-control" title="<?php echo _translate('Please select the postion'); ?>">
+                        <select id="positions-type" class="form-control"
+                            title="<?php echo _translate('Please select the postion'); ?>">
                             <option value="numeric">
                                 <?php echo _translate("Numeric"); ?>
                             </option>
@@ -251,25 +271,29 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                 <tr>
                     <th scope="col"><?php echo _translate("Sample Type"); ?></th>
                     <td>
-                        <select class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+                        <select class="form-control" id="sampleType" name="sampleType"
+                            title="<?php echo _translate('Please select sample type'); ?>">
                             <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                             <?php
                             foreach ($sResult as $type) {
-                            ?>
-                                <option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
-                            <?php
+                                ?>
+                                <option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?>
+                                </option>
+                                <?php
                             }
                             ?>
                         </select>
                     </td>
                     <th><label for="fundingSource"><?= _translate("Funding Source"); ?></label></th>
                     <td>
-                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+                        <select class="form-control" name="fundingSource" id="fundingSource"
+                            title="Please choose source de financement" style="width:100%;">
                             <option value=""> -- Select -- </option>
                             <?php
                             foreach ($fundingSourceList as $fundingSource) {
-                            ?>
-                                <option value="<?php echo $fundingSource['funding_source_id']; ?>"><?= $fundingSource['funding_source_name']; ?></option>
+                                ?>
+                                <option value="<?php echo $fundingSource['funding_source_id']; ?>">
+                                    <?= $fundingSource['funding_source_name']; ?></option>
                             <?php } ?>
                         </select>
                     </td>
@@ -278,7 +302,8 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                     <td><label for="sortBy"><?= _translate("Sort By"); ?></label></td>
 
                     <td><select class="form-control" id="sortBy" name="sortBy">
-                            <option "selected='selected'" value="requestCreated"><?= _translate("Request Created"); ?></option>
+                            <option "selected='selected'" value="requestCreated"><?= _translate("Request Created"); ?>
+                            </option>
                             <option value="lastModified"><?= _translate("Last Modified"); ?></option>
                             <option value="sampleCode"><?= _translate("Sample ID"); ?></option>
                             <option value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
@@ -293,11 +318,14 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                 </tr>
 
                 <tr>
-                    <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
-                        &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+                    <td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();"
+                            value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
+                        &nbsp;<button class="btn btn-danger btn-sm"
+                            onclick="document.location.href = document.location"><span>
                                 <?php echo _translate("Reset Filters"); ?>
                             </span></button>
-                        &nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
+                        &nbsp;<button class="btn btn-danger btn-sm"
+                            onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
                                 <?php echo _translate("Hide Advanced Search Options"); ?>
                             </span></button>
                     </td>
@@ -307,7 +335,8 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
             <!-- /.box-header -->
             <div class="box-body batchDiv" style="<?php echo $genericHide; ?>">
                 <!-- form start -->
-                <form class="form-horizontal" method="post" style="display:none;" name="addBatchForm" id="addBatchForm" autocomplete="off" action="save-batch-helper.php">
+                <form class="form-horizontal" method="post" style="display:none;" name="addBatchForm" id="addBatchForm"
+                    autocomplete="off" action="save-batch-helper.php">
                     <div class="box-body">
 
                         <div class="row">
@@ -317,8 +346,14 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                                         <?php echo _translate("Batch Code"); ?> <span class="mandatory">*</span>
                                     </label>
                                     <div class="col-lg-7" style="margin-left:3%;">
-                                        <input type="text" readonly="readonly" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _translate('Batch Code'); ?>" title="<?php echo _translate('Please enter batch code'); ?>" value="<?= $batchCode; ?>" onblur='checkNameValidation("batch_details","batch_code",this,null,"<?php echo _translate("This batch code already exists.Try another batch code"); ?>",null)' />
-                                        <input type="hidden" name="batchCodeKey" id="batchCodeKey" value="<?php echo $maxId; ?>" />
+                                        <input type="text" readonly="readonly" class="form-control isRequired"
+                                            id="batchCode" name="batchCode"
+                                            placeholder="<?php echo _translate('Batch Code'); ?>"
+                                            title="<?php echo _translate('Please enter batch code'); ?>"
+                                            value="<?= $batchCode; ?>"
+                                            onblur='checkNameValidation("batch_details","batch_code",this,null,"<?php echo _translate("This batch code already exists.Try another batch code"); ?>",null)' />
+                                        <input type="hidden" name="batchCodeKey" id="batchCodeKey"
+                                            value="<?php echo $maxId; ?>" />
                                         <input type="hidden" name="platform" id="platform" value="" />
                                         <input type="hidden" name="positions" id="positions" value="" />
                                     </div>
@@ -336,11 +371,15 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                                             <?php echo _translate("Lab Assigned Batch Code"); ?>
                                         </label>
                                         <div class="col-lg-7" style="margin-left:3%;">
-                                            <input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode" class="form-control" placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>" />
+                                            <input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode"
+                                                class="form-control"
+                                                placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>" />
                                         </div>
                                     </div>
                                 <?php } ?>
-                                <p><button type='button' class='btn btn-default selectSamples' onclick='autoselectBatchSamples()'><?php echo _translate('Automatically select samples for Batch'); ?></button></p>
+                                <p><button type='button' class='btn btn-default selectSamples'
+                                        onclick='autoselectBatchSamples()'><?php echo _translate('Automatically select samples for Batch'); ?></button>
+                                </p>
 
                             </div>
                         </div>
@@ -355,8 +394,10 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                         <input type="hidden" name="sortBy" class="sortBy" />
                         <input type="hidden" name="sortType" class="sortType" />
                         <input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
-                        <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Save and Next"); ?></a>
-                        <a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
+                        <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);"
+                            onclick="validateNow();return false;"><?php echo _translate("Save and Next"); ?></a>
+                        <a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default">
+                            <?php echo _translate("Cancel"); ?></a>
                     </div>
                     <!-- /.box-footer -->
                 </form>
@@ -379,7 +420,7 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
     noOfSamples = 0;
     sortedTitle = [];
     let batchXhr = null;
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         if ($("#machine").val() !== "") {
             $("#machine").trigger("change");
@@ -400,32 +441,32 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
         });
 
         $('.daterange').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _translate("Clear", true); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
-                showDropdowns: true,
-                alwaysShowCalendars: false,
-                startDate: moment().subtract(28, 'days'),
-                endDate: moment(),
-                maxDate: moment(),
-                ranges: {
-                    'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-                    'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-                    'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-                    'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-                    'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-                    'Current Year To Date': [moment().startOf('year'), moment()]
-                }
+            locale: {
+                cancelLabel: "<?= _translate("Clear", true); ?>",
+                format: 'DD-MMM-YYYY',
+                separator: ' to ',
             },
-            function(start, end) {
+            showDropdowns: true,
+            alwaysShowCalendars: false,
+            startDate: moment().subtract(28, 'days'),
+            endDate: moment(),
+            maxDate: moment(),
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+                'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+                'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+                'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+                'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                'Current Year To Date': [moment().startOf('year'), moment()]
+            }
+        },
+            function (start, end) {
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
             });
@@ -435,7 +476,7 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
     function validateNow() {
 
         var selVal = [];
-        $('#search_to option').each(function(i, selected) {
+        $('#search_to option').each(function (i, selected) {
             selVal[i] = $(selected).val();
         });
         const sqids = new Sqids()
@@ -470,13 +511,13 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
         removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: removeDots.trim(),
-                fnct: fnct,
-                format: "html"
-            },
-            function(data) {
+            tableName: tableName,
+            fieldName: fieldName,
+            value: removeDots.trim(),
+            fnct: fnct,
+            format: "html"
+        },
+            function (data) {
                 if (data === '1') {
                     alert(alrt);
                     duplicateName = false;
@@ -502,19 +543,19 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
         var facilityId = $("#facilityName").val();
 
         batchXhr = $.post("/batch/get-samples-batch.php", {
-                sampleCollectionDate: $("#sampleCollectionDate").val(),
-                sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
-                lastModifiedDateTime: $("#lastModifiedDateTime").val(),
-                type: '<?= $_GET['type']; ?>',
-                testType: $('#testType').val(),
-                facilityId: facilityId,
-                sName: $("#sampleType").val(),
-                fundingSource: $("#fundingSource").val(),
-                userId: $("#userId").val(),
-                sortBy: $("#sortBy").val(),
-                sortType: $("#sortType").val(),
-            },
-            function(data) {
+            sampleCollectionDate: $("#sampleCollectionDate").val(),
+            sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
+            lastModifiedDateTime: $("#lastModifiedDateTime").val(),
+            type: '<?= $_GET['type']; ?>',
+            testType: $('#testType').val(),
+            facilityId: facilityId,
+            sName: $("#sampleType").val(),
+            fundingSource: $("#fundingSource").val(),
+            userId: $("#userId").val(),
+            sortBy: $("#sortBy").val(),
+            sortType: $("#sortType").val(),
+        },
+            function (data) {
                 if (data != "") {
                     $("#sampleDetails").html(data);
                     $("#addBatchForm").show();
@@ -523,7 +564,7 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
         $.unblockUI();
     }
 
-    $("#machine").change(function() {
+    $("#machine").change(function () {
         var selected = $(this).find('option:selected');
         noOfSamples = selected.data('no-of-samples');
 
