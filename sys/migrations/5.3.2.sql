@@ -145,3 +145,16 @@ UPDATE `privileges` SET  `privilege_name` = '/patients/add-patient.php' WHERE `p
 UPDATE `privileges` SET  `privilege_name` = '/patients/edit-patient.php' WHERE `privilege_name` = 'edit-patient.php';
 UPDATE `privileges` SET  `privilege_name` = '/patients/view-patients.php' WHERE `privilege_name` = 'view-patients.php';
 
+
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
