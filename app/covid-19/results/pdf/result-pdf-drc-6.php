@@ -26,7 +26,7 @@ if (!class_exists('DRCCovid19PDF6')) {
                 $inrbImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "inrb.png";
 
                 //left logo
-                if ($this->facilityInfo !== null && $this->facilityInfo !== [] && !empty($this->facilityInfo['facility_logo']) &&   MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
+                if ($this->facilityInfo !== null && $this->facilityInfo !== [] && !empty($this->facilityInfo['facility_logo']) && MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
                     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                 } elseif (MiscUtility::isImageValid($inrbImage)) {
@@ -124,7 +124,7 @@ if (isset($result['result_printed_datetime']) && trim((string) $result['result_p
 }
 $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo, $currentDateTime, $result['dataSync'], $systemConfig);
 // set document information
-$pdf->SetCreator('VLSM');
+$pdf->SetCreator('InteLIS');
 $pdf->SetTitle('Covid-19 Rapport du patient');
 //$pdf->SetSubject('TCPDF Tutorial');
 //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -199,7 +199,7 @@ if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['
     $expStr = explode(" ", (string) $result['sample_received_at_lab_datetime']);
     $sampleReceivedDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $sampleReceivedTime = $expStr[1];
-} 
+}
 
 if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) !== '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", (string) $result['sample_tested_datetime']);
@@ -217,7 +217,7 @@ if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) !== '')
     $resultApprovedBy = ($result['approvedBy']);
     $userRes = $usersService->getUserByID($result['result_approved_by'], 'user_signature');
 } else {
-    $resultApprovedBy  = null;
+    $resultApprovedBy = null;
 }
 $userSignaturePath = null;
 
@@ -289,7 +289,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:10px;font-size:11px;text-align:left;font-weight:bold;">Age<br><span style="font-size:8;font-weight:normal;">(Age)</span></td>';
 $html .= '<td width="5%" style="line-height:10px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' .  (empty($age) ? '' : $age . ' ans') . '</td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' . (empty($age) ? '' : $age . ' ans') . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';

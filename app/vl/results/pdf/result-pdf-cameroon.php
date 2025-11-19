@@ -97,13 +97,13 @@ if (!empty($result)) {
      $draftTextShow = false;
      //Set watermark text
      if (!empty($mFieldArray)) {
-         $counter = count($mFieldArray);
-         for ($m = 0; $m < $counter; $m++) {
-              if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) === '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
-                   $draftTextShow = true;
-                   break;
-              }
-         }
+          $counter = count($mFieldArray);
+          for ($m = 0; $m < $counter; $m++) {
+               if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) === '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+                    $draftTextShow = true;
+                    break;
+               }
+          }
      }
      // create new PDF document
      $pdf = new VLResultPDFHelper(orientation: PDF_PAGE_ORIENTATION, unit: PDF_UNIT, format: PDF_PAGE_FORMAT, unicode: true, encoding: 'UTF-8', diskCache: false, pdfTemplatePath: $reportTemplatePath, enableFooter: $displayPageNoInFooter);
@@ -123,7 +123,7 @@ if (!empty($result)) {
           $pdf->setHeading($logoPrintInPdf, $globalConfig['header'], $result['labName'], $title = 'HIV VIRAL LOAD PATIENT REPORT');
      }
      // set document information
-     $pdf->SetCreator('VLSM');
+     $pdf->SetCreator('InteLIS');
      $pdf->SetTitle('HIV Viral Load Patient Report');
 
      // set header and footer fonts
@@ -208,7 +208,7 @@ if (!empty($result)) {
      $approvedBySignaturePath = null;
 
      if (!empty($result['approvedBySignature'])) {
-          $approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+          $approvedBySignaturePath = MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
 
 
@@ -423,7 +423,7 @@ if (!empty($result)) {
      if (!empty($result['reason_for_sample_rejection']) && $result['reason_for_sample_rejection'] != '') {
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;' . _translate("Rejection Reason") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
      }
-     if (str_contains(strtolower((string)$result['instrument_machine_name']), 'm2000')) {
+     if (str_contains(strtolower((string) $result['instrument_machine_name']), 'm2000')) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="font-size:10px;padding-top:10px;">' . _translate("Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR (Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)") . '</td>';
           $html .= '</tr>';
@@ -496,7 +496,7 @@ if (!empty($result)) {
           $bottomHtml .= '<tr><td colspan="3" style="font-size:11px;text-align:left;color:#808080;">(*)&nbsp;';
           $bottomHtml .= '<u><strong>' . _translate("Detection Limit (DL)") . '</strong></u> : ' . _translate("&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 Log<sub>10</sub>) copies/mL for DBS");
           $bottomHtml .= '<br> &nbsp;&nbsp;&nbsp;&nbsp;';
-          $bottomHtml .= '<u><strong>' . _translate("Quantification Limits (QL)") . '</strong></u> : ' .  _translate("Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for DBS");
+          $bottomHtml .= '<u><strong>' . _translate("Quantification Limits (QL)") . '</strong></u> : ' . _translate("Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for DBS");
           $bottomHtml .= '</td></tr>';
      }
 
@@ -531,25 +531,25 @@ if (!empty($result)) {
 
 
      if ($displaySignatureTable && (!empty($resultApprovedBy) && !empty($result['result_approved_datetime']) && $displaySignatureTable)) {
-         $approvertext = $sameReviewerAndApprover ? _translate("REVIEWED AND APPROVED BY") : _translate("APPROVED BY");
-         $approvedBySignatureExists = $approvedBySignaturePath !== null && $approvedBySignaturePath !== '' && $approvedBySignaturePath !== '0' && MiscUtility::isImageValid($approvedBySignaturePath);
-         $html .= '<tr>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . $approvertext . '</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-         if ($approvedBySignatureExists) {
-              $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:100px;" /></td>';
-         } else {
-              $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-         }
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td colspan="3" style="line-height:2px;"></td>';
-         $html .= '</tr>';
+          $approvertext = $sameReviewerAndApprover ? _translate("REVIEWED AND APPROVED BY") : _translate("APPROVED BY");
+          $approvedBySignatureExists = $approvedBySignaturePath !== null && $approvedBySignaturePath !== '' && $approvedBySignaturePath !== '0' && MiscUtility::isImageValid($approvedBySignaturePath);
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . $approvertext . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
+          if ($approvedBySignatureExists) {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:100px;" /></td>';
+          } else {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+          }
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td colspan="3" style="line-height:2px;"></td>';
+          $html .= '</tr>';
      }
 
      if (!empty($result['lab_tech_comments'])) {

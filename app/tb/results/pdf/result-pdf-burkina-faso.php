@@ -66,28 +66,28 @@ if (!empty($result)) {
 
      $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = null;
      if (!empty($result['testedBySignature'])) {
-          $testedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['testedBySignature'];
+          $testedBySignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['testedBySignature'];
      }
      if (!empty($result['reviewedBySignature'])) {
-          $reviewedBySignaturePath =  MiscUtility::getFullImagePath($result['reviewedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+          $reviewedBySignaturePath = MiscUtility::getFullImagePath($result['reviewedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
      if (!empty($result['approvedBySignature'])) {
-          $approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+          $approvedBySignaturePath = MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
      if (!empty($result['reviewedBySignature'])) {
-          $revisedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['reviewedBySignature'];
+          $revisedBySignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['reviewedBySignature'];
      }
 
 
      //Set watermark text
      if (!empty($mFieldArray)) {
-         $counter = count($mFieldArray);
-         for ($m = 0; $m < $counter; $m++) {
-              if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) === '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
-                   $draftTextShow = true;
-                   break;
-              }
-         }
+          $counter = count($mFieldArray);
+          for ($m = 0; $m < $counter; $m++) {
+               if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) === '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+                    $draftTextShow = true;
+                    break;
+               }
+          }
      }
      // create new PDF document
      $pdf = new SierraLeoneTBResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -99,7 +99,7 @@ if (!empty($result)) {
      $arr['training_mode_text'] = (isset($arr['training_mode']) && $arr['training_mode'] == 'yes') ? $arr['training_mode_text'] : null;
      $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'HIV VIRAL LOAD PATIENT REPORT', null, $arr['training_mode_text']);
      // set document information
-     $pdf->SetCreator('VLSM');
+     $pdf->SetCreator('InteLIS');
      $pdf->SetTitle('BURKINA FASO TB SAMPLES REFERRAL SYSTEM (SS)');
      //$pdf->SetSubject('TCPDF Tutorial');
      //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -220,8 +220,8 @@ if (!empty($result)) {
      }
      if (isset($tbInfo['reason_for_tb_test']) && !empty($tbInfo['reason_for_tb_test'])) {
           $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
-          $diagnosis = (array)$reasonForTbTest->elaboration->diagnosis;
-          $followup = (array)$reasonForTbTest->elaboration->followup;
+          $diagnosis = (array) $reasonForTbTest->elaboration->diagnosis;
+          $followup = (array) $reasonForTbTest->elaboration->followup;
      }
 
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . ' ' . $patientLname . '</td>';
@@ -325,20 +325,20 @@ if (!empty($result)) {
      $html .= '</tr>';
 
      if ($result['is_sample_rejected'] == 'no' && (!empty($testedBy) && !empty($result['sample_tested_datetime']))) {
-         $html .= '<tr>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("TESTED BY") . '</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-         if ($testedBySignaturePath !== null && $testedBySignaturePath !== '' && $testedBySignaturePath !== '0' && MiscUtility::isImageValid(($testedBySignaturePath))) {
-              $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testedBySignaturePath . '" style="width:50px;" /></td>';
-         } else {
-              $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-         }
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-         $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("TESTED BY") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
+          if ($testedBySignaturePath !== null && $testedBySignaturePath !== '' && $testedBySignaturePath !== '0' && MiscUtility::isImageValid(($testedBySignaturePath))) {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testedBySignaturePath . '" style="width:50px;" /></td>';
+          } else {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+          }
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+          $html .= '</tr>';
      }
      if (!empty($reviewedBy)) {
           $html .= '<tr>';

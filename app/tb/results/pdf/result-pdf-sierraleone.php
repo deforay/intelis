@@ -20,7 +20,7 @@ $resultFilename = '';
 
 if (!empty($requestResult)) {
     $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
-    $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
+    $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
     $pages = [];
     $page = 1;
@@ -62,7 +62,7 @@ if (!empty($requestResult)) {
         }
         $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'SOUTH SUDAN TB SAMPLES REFERRAL SYSTEM (SS)', $labFacilityId = null, $formId = (int) $arr['vl_form'], $facilityInfo);
         // set document information
-        $pdf->SetCreator('VLSM');
+        $pdf->SetCreator('InteLIS');
         $pdf->SetTitle('SOUTH SUDAN TB SAMPLES REFERRAL SYSTEM (SS)');
         //$pdf->SetSubject('TCPDF Tutorial');
         //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -188,7 +188,7 @@ if (!empty($requestResult)) {
             $userRes = $usersService->getUserByID($result['authorized_by'], ['user_signature', 'user_name']);
             $resultAuthroizedBy = ($userRes['user_name']);
         } else {
-            $resultAuthroizedBy  = '';
+            $resultAuthroizedBy = '';
         }
         $userSignaturePath = null;
 
@@ -202,7 +202,7 @@ if (!empty($requestResult)) {
             $userApprovedRes = $usersService->getUserByID($result['result_approved_by'], ['user_signature', 'user_name']);
             $resultApprovedBy = ($userApprovedRes['user_name']);
         } else {
-            $resultApprovedBy  = null;
+            $resultApprovedBy = null;
         }
         if (!empty($userApprovedRes['user_signature'])) {
             $userApprovedSignaturePath = $userApprovedRes['user_signature'];
@@ -288,10 +288,10 @@ if (!empty($requestResult)) {
         $valuesOfReasonArr = [];
         if (isset($testReason->reason->followup) && ($testReason->reason->followup == "yes")) {
             $reason = "Follow Up";
-            $valuesOfReasonArr = array_keys((array)$testReason->elaboration->followup);
+            $valuesOfReasonArr = array_keys((array) $testReason->elaboration->followup);
         } elseif (isset($testReason->reason->diagnosis) && $testReason->reason->diagnosis == "yes") {
             $reason = "Diagnosis";
-            $valuesOfReasonArr = array_keys((array)$testReason->elaboration->diagnosis);
+            $valuesOfReasonArr = array_keys((array) $testReason->elaboration->diagnosis);
         }
         $valuesOfReason = implode(',', $valuesOfReasonArr);
 

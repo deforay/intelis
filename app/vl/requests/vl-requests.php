@@ -2,6 +2,9 @@
 
 // vl-requests.php
 
+
+$title = _translate("VL Requests");
+
 require_once APPLICATION_PATH . '/header.php';
 
 use App\Registries\AppRegistry;
@@ -11,7 +14,6 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-$title = _translate("View All Requests");
 $hidesrcofreq = false;
 $dateRange = $labName = $srcOfReq = $srcStatus = null;
 

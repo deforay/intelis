@@ -132,7 +132,7 @@ if (isset($result['result_printed_datetime']) && trim((string) $result['result_p
 }
 $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo, $currentDateTime, $result['dataSync'], $systemConfig);
 // set document information
-$pdf->SetCreator('VLSM');
+$pdf->SetCreator('InteLIS');
 $pdf->SetTitle('Covid-19 Rapport du patient');
 //$pdf->SetSubject('TCPDF Tutorial');
 //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -225,7 +225,7 @@ if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) !== '')
     $resultApprovedBy = ($result['approvedBy']);
     $userRes = $usersService->getUserByID($result['result_approved_by'], 'user_signature');
 } else {
-    $resultApprovedBy  = null;
+    $resultApprovedBy = null;
 }
 $userSignaturePath = null;
 
@@ -297,7 +297,7 @@ $html .= '</tr>';
 $html .= '<tr>';
 $html .= '<td width="20%" style="line-height:10px;font-size:11px;text-align:left;font-weight:bold;">Age<br><span style="font-size:8;font-weight:normal;">(Age)</span></td>';
 $html .= '<td width="5%" style="line-height:10px;font-size:11px;text-align:center;">:</td>';
-$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' .  (empty($age) ? '' : $age . ' ans') . '</td>';
+$html .= '<td width="50%" style="line-height:10px;font-size:11px;text-align:left;">' . (empty($age) ? '' : $age . ' ans') . '</td>';
 $html .= '</tr>';
 
 $html .= '<tr>';

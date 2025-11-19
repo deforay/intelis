@@ -46,7 +46,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 	$buildRow = function ($aRow, $no) use ($general, $key, $covid19Service, $covid19Symptoms, $covid19Comorbidities, $covid19Results, $sysmtomsArr, $comorbiditiesArr): array {
 		$row = [];
 		//set gender
-		$gender = match (strtolower((string)$aRow['patient_gender'])) {
+		$gender = match (strtolower((string) $aRow['patient_gender'])) {
 			'male', 'm' => 'M',
 			'female', 'f' => 'F',
 			'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
@@ -126,8 +126,8 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 		return $row;
 	};
 
-		
-	$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-COVID19-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
+
+	$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-COVID19-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 
 	$writer = new Writer();
 	$writer->openToFile($filename);

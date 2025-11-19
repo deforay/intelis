@@ -11,7 +11,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 
 $countSql = "SELECT COUNT(*) as totalCount FROM system_admin";
-$adminCount =  (int) $db->rawQueryOne($countSql)['totalCount'];
+$adminCount = (int) $db->rawQueryOne($countSql)['totalCount'];
 if ($adminCount > 0) {
   header("Location:/system-admin/login/login.php");
 }
@@ -40,7 +40,7 @@ fclose($myfile);
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title><?php echo _translate("VLSM"); ?> | <?php echo _translate("New User Registration"); ?></title>
+  <title>InteLIS | <?php echo _translate("New User Registration"); ?></title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -76,10 +76,12 @@ fclose($myfile);
 
         <div style="padding-top:10px;" class="panel-body">
           <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-          <form id="registerForm" name="registerForm" class="form-horizontal" autocomplete="no" method="post" action="/system-admin/setup/registerProcess.php" onsubmit="validateNow();return false;">
+          <form id="registerForm" name="registerForm" class="form-horizontal" autocomplete="no" method="post"
+            action="/system-admin/setup/registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-key"></em></span>
-              <input type="text" class="form-control isRequired" id="secretKey" name="secretKey" placeholder="<?= _translate('Secret Key'); ?>" title="" autocomplete="no" />
+              <input type="text" class="form-control isRequired" id="secretKey" name="secretKey"
+                placeholder="<?= _translate('Secret Key'); ?>" title="" autocomplete="no" />
             </div>
             <!-- <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
@@ -87,24 +89,32 @@ fclose($myfile);
             </div> -->
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
-              <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _translate('Email ID'); ?>" title="<?php echo _translate('Please enter the email id'); ?>">
+              <input id="login-email" type="text" class="form-control isRequired" name="email" value=""
+                placeholder="<?= _translate('Email ID'); ?>"
+                title="<?php echo _translate('Please enter the email id'); ?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-right-to-bracket"></em></span>
-              <input id="login-id" type="text" class="form-control isRequired" name="loginid" value="" placeholder="<?= _translate('Login ID'); ?>" title="<?php echo _translate('Please enter the login id'); ?>">
+              <input id="login-id" type="text" class="form-control isRequired" name="loginid" value=""
+                placeholder="<?= _translate('Login ID'); ?>"
+                title="<?php echo _translate('Please enter the login id'); ?>">
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-              <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
+              <input type="password" class="form-control ppwd isRequired" id="confirmPassword" name="password"
+                placeholder="<?php echo _translate('Password'); ?>"
+                title="<?php echo _translate('Please enter the password'); ?>" />
             </div>
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-              <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?php echo _translate('Confirm Password'); ?>" title="" />
+              <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password"
+                placeholder="<?php echo _translate('Confirm Password'); ?>" title="" />
             </div>
             <div style="margin-top:10px" class="form-group">
               <!-- Button -->
               <div class="col-sm-12 controls">
-                <button class="btn btn-lg btn-primary btn-block" onclick="validateNow();return false;"><?= _translate("Submit"); ?></button>
+                <button class="btn btn-lg btn-primary btn-block"
+                  onclick="validateNow();return false;"><?= _translate("Submit"); ?></button>
               </div>
             </div>
           </form>
@@ -142,12 +152,12 @@ fclose($myfile);
       }
       return regex.test(pwd);
     }
-    $(document).ready(function() {
+    $(document).ready(function () {
       <?php
       if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) !== "") {
-      ?>
+        ?>
         alert("<?php echo $_SESSION['alertMsg']; ?>");
-      <?php
+        <?php
         $_SESSION['alertMsg'] = '';
         unset($_SESSION['alertMsg']);
       }

@@ -75,7 +75,7 @@ if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_
 }
 $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', $labFacilityId = null, $formId = (int) $arr['vl_form'], $facilityInfo);
 // set document information
-$pdf->SetCreator('VLSM');
+$pdf->SetCreator('InteLIS');
 $pdf->SetTitle('SARS-CoV-2 Patient Report');
 //$pdf->SetSubject('TCPDF Tutorial');
 //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -188,7 +188,7 @@ if (isset($result['authorized_by']) && trim((string) $result['authorized_by']) !
     $resultApprovedBy = ($result['authorized_by']);
     $userRes = $usersService->getUserByID($result['result_approved_by'], 'user_signature');
 } else {
-    $resultApprovedBy  = null;
+    $resultApprovedBy = null;
 }
 $userSignaturePath = null;
 

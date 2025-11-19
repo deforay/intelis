@@ -72,7 +72,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<title>
-		<?= ($title ?? $shortCode) . " | " . $shortName; ?>
+		<?= ($title ?? $shortCode) . " | " . "InteLIS | " . $shortName; ?>
 	</title>
 	<meta name="google" content="notranslate">
 	<meta name="google-translate-customization" content="0">
@@ -103,16 +103,20 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery.fastconfirm.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/components-rounded.min.css">
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
-	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
-	<link rel="stylesheet" type="text/css" href="/assets/css/toastify.min.css?v=<?= filemtime(WEB_ROOT . "/assets/css/toastify.min.css") ?>">
+	<link rel="stylesheet" media="all" type="text/css"
+		href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
+	<link rel="stylesheet" type="text/css"
+		href="/assets/css/toastify.min.css?v=<?= filemtime(WEB_ROOT . "/assets/css/toastify.min.css") ?>">
 	<link rel="stylesheet" type="text/css" href="/assets/css/summernote.min.css">
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
 	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/assets/js/deforayModal.js?v=<?= filemtime(WEB_ROOT . "/assets/js/deforayModal.js") ?>"></script>
+	<script type="text/javascript"
+		src="/assets/js/deforayModal.js?v=<?= filemtime(WEB_ROOT . "/assets/js/deforayModal.js") ?>"></script>
 	<script type="text/javascript" src="/assets/js/jquery.fastconfirm.js"></script>
-	<script type="text/javascript" src="/assets/js/utils.js?v=<?= filemtime(WEB_ROOT . '/assets/js/utils.js') ?>"></script>
+	<script type="text/javascript"
+		src="/assets/js/utils.js?v=<?= filemtime(WEB_ROOT . '/assets/js/utils.js') ?>"></script>
 </head>
 <style>
 	.topBar {
@@ -147,7 +151,8 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 	}
 </style>
 
-<body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" <?= $margin; ?> translate="no" class="notranslate">
+<body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" <?= $margin; ?> translate="no"
+	class="notranslate">
 
 	<?php if (
 		($general->isLisInstance() && $instrumentsCount == 0) ||
@@ -156,10 +161,14 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 		<div class="topBar">
 			<p class="white text-center">
 				<?php if ($nonAdminUserCount == 0) { ?>
-					<a href="/users/addUser.php" style="font-weight:bold; color: black;"><?= _translate("Please click here to add one or more non-admin users before you can start using the system"); ?> </a>
+					<a href="/users/addUser.php"
+						style="font-weight:bold; color: black;"><?= _translate("Please click here to add one or more non-admin users before you can start using the system"); ?>
+					</a>
 				<?php } ?>
 				<?php if ($general->isLisInstance() && $instrumentsCount == 0) { ?>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="/instruments/add-instrument.php" style="font-weight:bold; color: black;"><?= _translate("Please click here to add one or more instruments before you can start using the LIS"); ?> </a>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="/instruments/add-instrument.php"
+						style="font-weight:bold; color: black;"><?= _translate("Please click here to add one or more instruments before you can start using the LIS"); ?>
+					</a>
 				<?php }
 				?>
 			</p>
@@ -203,9 +212,11 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
 						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
-						?>
+							?>
 							<li class="user-menu">
-								<a onclick="setCrossLogin();" href="<?= rtrim((string) SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode((string) $_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode((string) $_SESSION['userName']); ?>" class="btn btn-link"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+								<a onclick="setCrossLogin();"
+									href="<?= rtrim((string) SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode((string) $_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode((string) $_SESSION['userName']); ?>"
+									class="btn btn-link"><i class="fa-solid fa-arrow-up-right-from-square"></i>
 									<?= _translate('Recency'); ?>
 								</a>
 							</li>
@@ -217,12 +228,13 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 								<span class="hidden-xs">
 									<?= $_SESSION['userName'] ?? ''; ?>
 								</span>
-								<i class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></i>
+								<i class="fa-solid fa-circle is-remote-server-reachable"
+									style="font-size:1em;display:none;"></i>
 							</a>
 							<ul class="dropdown-menu">
 								<?php
 								if (!empty($arr['edit_profile']) && $arr['edit_profile'] == 'yes') {
-								?>
+									?>
 									<li class="user-footer">
 										<a href="/users/edit-profile.php" class="">
 											<?= _translate("Edit Profile"); ?>
@@ -265,7 +277,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 						if ($menu['is_header'] == 'yes') {
 							echo '<li class="header">' . $menu['display_text'];
 						} else {
-					?>
+							?>
 
 							<li class="<?= $classNames; ?>">
 								<?php
@@ -285,7 +297,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 							<?php if ($menu['has_children'] == "yes") {
 								if ($menu['is_header'] == 'no') { ?>
 									<ul class="treeview-menu">
-									<?php
+										<?php
 								}
 
 								foreach ($menu['children'] as $subMenu) {
@@ -322,20 +334,20 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 															$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
 															$innerPages = "data-inner-pages='$dataInnerPages'";
 														}
-													?>
+														?>
 														<li class="<?= $childMenu['additional_class_names'] ?>">
 															<a href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
 																<i class="<?= $childMenu['icon'] ?>"></i>
 																<?= _translate($childMenu['display_text']); ?>
 															</a>
 														</li>
-													<?php
+														<?php
 													}
 													?>
 												</ul>
 											<?php } ?>
 										</li>
-									<?php
+										<?php
 
 								} ?>
 									<?php if ($menu['is_header'] == 'no') { ?>
@@ -343,11 +355,11 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 								<?php } ?>
 							<?php } ?>
 
-							</li>
+						</li>
 
-						<?php }
+					<?php }
 
-						?>
+					?>
 				</ul>
 
 			</section>
@@ -358,7 +370,8 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 		<div id="dDiv" class="dialog" hidden>
 			<div class="dfy-modal" role="dialog" aria-modal="true">
 				<button type="button" class="dfy-modal__close" aria-label="Close" onclick="closeModal()">×</button>
-				<iframe id="dFrame" src="" title="LIS Content" class="dfy-modal__iframe" loading="lazy" referrerpolicy="no-referrer"></iframe>
+				<iframe id="dFrame" src="" title="LIS Content" class="dfy-modal__iframe" loading="lazy"
+					referrerpolicy="no-referrer"></iframe>
 				<div id="dfy-modal-fallback" class="dfy-modal__fallback" hidden>
 					<?= _translate("Unable to load this page or resource"); ?>
 				</div>

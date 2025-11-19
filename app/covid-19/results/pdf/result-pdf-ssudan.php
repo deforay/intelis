@@ -90,7 +90,7 @@ $resultFilename = '';
 
 if (!empty($requestResult)) {
     $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
-    $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
+    $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
     $pages = [];
     $page = 1;
@@ -135,11 +135,11 @@ if (!empty($requestResult)) {
         if (MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
         } else {
-            $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR  . $arr['logo'];
+            $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
         }
         $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', $labFacilityId = null, $formId = (int) $arr['vl_form'], $facilityInfo);
         // set document information
-        $pdf->SetCreator('VLSM');
+        $pdf->SetCreator('InteLIS');
         $pdf->SetTitle('SARS-CoV-2 Patient Report');
         //$pdf->SetSubject('TCPDF Tutorial');
         //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -259,7 +259,7 @@ if (!empty($requestResult)) {
             $resultApprovedBy = ($result['authorized_by']);
             $userRes = $usersService->getUserByID($result['result_approved_by'], 'user_signature');
         } else {
-            $resultApprovedBy  = null;
+            $resultApprovedBy = null;
         }
         $userSignaturePath = null;
 

@@ -226,12 +226,14 @@ final class UsersService
 
     public function getUserName($userId)
     {
-        if (empty($userId)) {
+        if (empty($userId) || $userId == '') {
             return null;
         }
+        return MemoUtility::remember(function () use ($userId) {
 
-        $this->db->where('user_id', $userId);
-        return $this->db->getValue($this->table, 'user_name', 1);
+            $this->db->where('user_id', $userId);
+            return $this->db->getValue($this->table, 'user_name', 1);
+        });
     }
 
     public function getOrCreateUser($name, $status = 'active', $role = 4)
@@ -446,7 +448,7 @@ final class UsersService
             return false;
         }
 
-        $verified =  password_verify((string) $password, (string) $hash);
+        $verified = password_verify((string) $password, (string) $hash);
 
         if ($verified) {
             $options = ['cost' => $this->passwordCost];

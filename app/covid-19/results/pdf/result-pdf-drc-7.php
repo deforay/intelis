@@ -125,7 +125,7 @@ if (isset($result['result_printed_datetime']) && trim((string) $result['result_p
 }
 $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo, $currentDateTime, $result['dataSync'], $systemConfig);
 // set document information
-$pdf->SetCreator('VLSM');
+$pdf->SetCreator('InteLIS');
 $pdf->SetTitle('Covid-19 Rapport du patient');
 //$pdf->SetSubject('TCPDF Tutorial');
 //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');

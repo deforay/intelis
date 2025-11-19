@@ -24,15 +24,15 @@ $errorInfo ??= [];
   <meta name="viewport" content="width=1024">
 
   <?php if (!empty($_SESSION['instance']['type']) && $general->isSTSInstance()) { ?>
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsts-icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsts-icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsts-icons/favicon-16x16.png">
-    <link rel="manifest" href="/assets/vlsts-icons/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/sts-icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/sts-icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/sts-icons/favicon-16x16.png">
+    <link rel="manifest" href="/assets/sts-icons/site.webmanifest">
   <?php } else { ?>
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsm-icons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsm-icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsm-icons/favicon-16x16.png">
-    <link rel="manifest" href="/assets/vlsm-icons/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/lis-icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/lis-icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/lis-icons/favicon-16x16.png">
+    <link rel="manifest" href="/assets/lis-icons/site.webmanifest">
   <?php } ?>
 
   <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
@@ -385,20 +385,21 @@ $errorInfo ??= [];
           <?= htmlspecialchars((string) $errorMessage, ENT_QUOTES, 'UTF-8'); ?>
         </div>
 
-        <?php if (!empty($errorInfo)) : ?>
+        <?php if (!empty($errorInfo)): ?>
           <div class="error-details">
 
-            <?php if (!empty($errorInfo['error_id']) || !empty($errorInfo['timestamp'])) : ?>
+            <?php if (!empty($errorInfo['error_id']) || !empty($errorInfo['timestamp'])): ?>
               <div class="error-meta">
-                <?php if (!empty($errorInfo['error_id'])) : ?>
+                <?php if (!empty($errorInfo['error_id'])): ?>
                   <div class="error-id-section">
                     <div class="error-id">
-                      <?= _translate('Error ID'); ?>: <?= htmlspecialchars((string) $errorInfo['error_id'], ENT_QUOTES, 'UTF-8'); ?>
+                      <?= _translate('Error ID'); ?>:
+                      <?= htmlspecialchars((string) $errorInfo['error_id'], ENT_QUOTES, 'UTF-8'); ?>
                     </div>
                   </div>
                 <?php endif; ?>
 
-                <?php if (!empty($errorInfo['timestamp'])) : ?>
+                <?php if (!empty($errorInfo['timestamp'])): ?>
                   <div class="error-time-section">
                     <div class="error-time">
                       <?= _translate('Time'); ?>: <?= DateUtility::humanReadableDateFormat($errorInfo['timestamp'], true); ?>
@@ -408,11 +409,11 @@ $errorInfo ??= [];
               </div>
             <?php endif; ?>
 
-            <?php if (!empty($errorInfo['suggested_actions'])) : ?>
+            <?php if (!empty($errorInfo['suggested_actions'])): ?>
               <div class="suggested-actions">
                 <h4><?= _translate('What you can try'); ?></h4>
                 <ul>
-                  <?php foreach ($errorInfo['suggested_actions'] as $action) : ?>
+                  <?php foreach ($errorInfo['suggested_actions'] as $action): ?>
                     <li><?= htmlspecialchars((string) $action, ENT_QUOTES, 'UTF-8'); ?></li>
                   <?php endforeach; ?>
                 </ul>
@@ -420,7 +421,7 @@ $errorInfo ??= [];
             <?php endif; ?>
 
             <div class="button-container">
-              <?php if (!empty($errorInfo['can_retry']) && $errorInfo['can_retry']) : ?>
+              <?php if (!empty($errorInfo['can_retry']) && $errorInfo['can_retry']): ?>
                 <a href="javascript:location.reload();" class="action-button">
                   <i class="fa fa-refresh"></i> <?= _translate('Try Again'); ?>
                 </a>
@@ -432,7 +433,7 @@ $errorInfo ??= [];
             </div>
 
           </div>
-        <?php else : ?>
+        <?php else: ?>
           <div class="fallback-message">
             <p><?= _translate("Please contact the System Admin for further support."); ?></p>
             <p><a href="/" class="fallback-link"><?= _translate("Go to Dashboard"); ?></a></p>
