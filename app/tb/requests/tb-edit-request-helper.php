@@ -287,7 +287,6 @@ try {
 
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-        'request_created_by' => $_SESSION['userId'],
         'lab_tech_comments' => empty($_POST['labComments']) ? '' : $_POST['labComments'],
         'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
         'source_of_request' => "web"

@@ -118,7 +118,7 @@ try {
                     $data['hepatitis_test_platform'] = $rResult['vl_test_platform'];
                     $data['tested_by'] = $_POST['testBy'];
                     $data['sample_tested_datetime'] = $rResult['sample_tested_datetime'] ?? DateUtility::getCurrentDateTime();
-                    $data['request_created_by'] = $rResult['result_reviewed_by'];
+                    $data['result_reviewed_by'] = $rResult['result_reviewed_by'];
                     $data['request_created_datetime'] = DateUtility::getCurrentDateTime();
                     $data['last_modified_by'] = $rResult['result_reviewed_by'];
                     $data['last_modified_datetime'] = DateUtility::getCurrentDateTime();
@@ -234,8 +234,7 @@ try {
                 'lot_expiration_date' => $accResult[$i]['lot_expiration_date'],
                 'sample_tested_datetime' => $accResult[$i]['sample_tested_datetime'] ?? DateUtility::getCurrentDateTime(),
                 'lab_id' => $accResult[$i]['lab_id'],
-                'tested_by'                     => $_POST['testBy'],
-                'request_created_by' => $accResult[$i]['result_reviewed_by'],
+                'tested_by' => $_POST['testBy'],
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'result_approved_by' => $_POST['appBy'],

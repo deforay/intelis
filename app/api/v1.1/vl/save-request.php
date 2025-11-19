@@ -409,11 +409,10 @@ try {
             $vlFulldata['last_modified_datetime'] = (empty($data['updatedOn'])) ? DateUtility::getCurrentDateTime() : DateUtility::isoDateFormat($data['updatedOn'], true);
             $vlFulldata['last_modified_by'] = $user['user_id'];
         } else {
-            $tbData['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
+            $vlFulldata['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
             $vlFulldata['request_created_by'] = $user['user_id'];
         }
 
-        $vlFulldata['request_created_by'] = $user['user_id'];
         $vlFulldata['last_modified_by'] = $user['user_id'];
 
         // Process result category

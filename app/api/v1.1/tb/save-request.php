@@ -390,7 +390,6 @@ try {
             $tbData['request_created_by'] = $user['user_id'];
         }
 
-        $tbData['request_created_by'] = $user['user_id'];
         $tbData['last_modified_by'] = $user['user_id'];
 
         if (isset($data['tbSampleId']) && $data['tbSampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {

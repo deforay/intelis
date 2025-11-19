@@ -223,7 +223,6 @@ try {
         'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) !== '') ? $_POST['correctiveAction'] : null,
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-        'request_created_by' => $_SESSION['userId'],
         'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
     ];
     if (isset($_POST['finalResult']) && !empty($_POST['finalResult'])) {
