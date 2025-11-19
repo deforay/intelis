@@ -24,7 +24,7 @@ require_once APPLICATION_PATH . '/header.php';
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-plus"></em>
-			<?php echo _translate("Add Samples from Manifest"); ?>
+			<?php echo _translate("VL | Add Samples from Manifest"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>

@@ -4,7 +4,7 @@ use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
 
-$title = _translate("Add Samples from Manifest");
+$title = _translate("Covid-19 | Add Samples from Manifest");
 
 require_once APPLICATION_PATH . '/header.php';
 /** @var CommonService $general */
@@ -23,7 +23,7 @@ $general = ContainerRegistry::get(CommonService::class);
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-plus"></em>
-			<?php echo _translate("Add Samples from Manifest"); ?>
+			<?php echo _translate("Covid-19 | Add Samples from Manifest"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
@@ -40,17 +40,22 @@ $general = ContainerRegistry::get(CommonService::class);
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
+					<table aria-describedby="table" class="table" aria-hidden="true"
+						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
 							<td style="width:50%;vertical-align:middle;"><strong>
 									<?php echo _translate("Enter Sample Manifest Code"); ?> :
 								</strong></td>
 							<td style="width:50%;vertical-align:middle;">
-								<input type="text" id="manifestCode" name="manifestCode" class="form-control" placeholder="<?php echo _translate('Sample manifest code'); ?>" title="<?php echo _translate('Please enter the sample manifest code'); ?>" style="background:#fff;" />
+								<input type="text" id="manifestCode" name="manifestCode" class="form-control"
+									placeholder="<?php echo _translate('Sample manifest code'); ?>"
+									title="<?php echo _translate('Please enter the sample manifest code'); ?>"
+									style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:20%;vertical-align:middle;">
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="verifyManifest('covid19');return false;"><span>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
+									onclick="verifyManifest('covid19');return false;"><span>
 										<?php echo _translate("Submit"); ?>
 									</span></button>
 							</td>
@@ -59,10 +64,15 @@ $general = ContainerRegistry::get(CommonService::class);
 							<th scope="row" style="width:50%;vertical-align:middle;">
 								<?php echo _translate("Sample Received at Testing Lab"); ?> :
 							</th>
-							<td style="width:50%;vertical-align:middle;"><input type="text" name="sampleReceivedOn" id="sampleReceivedOn" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select when the samples were received at the Testing Lab" readonly />
+							<td style="width:50%;vertical-align:middle;"><input type="text" name="sampleReceivedOn"
+									id="sampleReceivedOn" class="form-control dateTime"
+									placeholder="Sample Received at Testing Lab"
+									title="Please select when the samples were received at the Testing Lab" readonly />
 							</td>
 							<td style="width:20%;" colspan="3">
-								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activateSamplesFromManifest();"><em class="fa-solid fa-check"></em>
+								<a class="btn btn-success btn-sm pull-right activateSample"
+									style="display:none;margin-right:5px;" href="javascript:void(0);"
+									onclick="activateSamplesFromManifest();"><em class="fa-solid fa-check"></em>
 									&nbsp;<?= _translate("Activate Samples"); ?>
 								</a>
 							</td>
@@ -71,7 +81,8 @@ $general = ContainerRegistry::get(CommonService::class);
 
 					<div class="container-fluid">
 						<span class="pull-right sts-server-reachable">
-							<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></span>
+							<span class="fa-solid fa-circle is-remote-server-reachable"
+								style="font-size:1em;display:none;"></span>
 							<span class="sts-server-reachable-span">
 
 							</span>
@@ -79,7 +90,8 @@ $general = ContainerRegistry::get(CommonService::class);
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table aria-describedby="table" id="manifestDataTable" class="table table-bordered table-striped table-vcenter" aria-hidden="true">
+						<table aria-describedby="table" id="manifestDataTable"
+							class="table table-bordered table-striped table-vcenter" aria-hidden="true">
 							<thead>
 								<tr>
 									<th>
@@ -165,41 +177,41 @@ $general = ContainerRegistry::get(CommonService::class);
 			"bStateSave": false,
 			"bRetrieve": false,
 			"aoColumns": [{
+				"sClass": "center"
+			},
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 					"sClass": "center"
 				},
-				<?php if (!$general->isStandaloneInstance()) { ?> {
-						"sClass": "center"
-					},
 				<?php } ?> {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}
 			],
 			"aaSorting": [
 				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 9 : 8 ?>, "desc"]
 			],
-			"fnDrawCallback": function() {},
+			"fnDrawCallback": function () { },
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/covid-19/requests/getManifestInGridHelper.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "manifestCode",
 					"value": $("#manifestCode").val()
@@ -223,12 +235,12 @@ $general = ContainerRegistry::get(CommonService::class);
 		}
 		$.blockUI();
 		$.post("/covid-19/requests/activate-samples-from-manifest.php", {
-				testType: 'covid19',
-				manifestCode: $("#manifestCode").val(),
-				sampleId: $("#sampleId").val(),
-				sampleReceivedOn: $("#sampleReceivedOn").val()
-			},
-			function(data) {
+			testType: 'covid19',
+			manifestCode: $("#manifestCode").val(),
+			sampleId: $("#sampleId").val(),
+			sampleReceivedOn: $("#sampleReceivedOn").val()
+		},
+			function (data) {
 				if (data > 0) {
 					alert("<?php echo _translate("Samples from this Manifest have been activated", true); ?>");
 				}
