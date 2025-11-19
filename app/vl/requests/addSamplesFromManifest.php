@@ -9,7 +9,7 @@ use App\Registries\ContainerRegistry;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$title = _translate("Add Samples from Manifest");
+$title = _translate("VL | Add Samples from Manifest");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -41,17 +41,22 @@ require_once APPLICATION_PATH . '/header.php';
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
+					<table aria-describedby="table" class="table" aria-hidden="true"
+						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: block;">
 						<tr>
 							<td style="width:20%;vertical-align:middle;"><strong>
 									<?php echo _translate("Enter Sample Manifest Code"); ?> :
 								</strong></td>
 							<td style="width:70%;vertical-align:middle;">
-								<input type="text" id="manifestCode" name="manifestCode" class="form-control" placeholder="<?php echo _translate('Sample Manifest Code'); ?>" title="<?php echo _translate('Please enter the sample manifest code'); ?>" style="background:#fff;" />
+								<input type="text" id="manifestCode" name="manifestCode" class="form-control"
+									placeholder="<?php echo _translate('Sample Manifest Code'); ?>"
+									title="<?php echo _translate('Please enter the sample manifest code'); ?>"
+									style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:10%;">
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="verifyManifest('vl');">
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
+									onclick="verifyManifest('vl');">
 									<span>
 										<?php echo _translate("Submit"); ?>
 									</span>
@@ -62,23 +67,30 @@ require_once APPLICATION_PATH . '/header.php';
 							<th scope="row" style="width:20%;vertical-align:middle;">
 								<?php echo _translate("Sample Received at Testing Lab"); ?> :
 							</th>
-							<td style="width:70%;vertical-align:middle;"><input type="text" name="sampleReceivedOn" id="sampleReceivedOn" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select when the samples were received at the Testing Lab" readonly />
+							<td style="width:70%;vertical-align:middle;"><input type="text" name="sampleReceivedOn"
+									id="sampleReceivedOn" class="form-control dateTime"
+									placeholder="Sample Received at Testing Lab"
+									title="Please select when the samples were received at the Testing Lab" readonly />
 							</td>
 
 							<td style="width:10%;">
-								<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="activateSamplesFromManifest();"><em class="fa-solid fa-check"></em>&nbsp;<?= _translate("Activate Samples"); ?></a>
+								<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
+									href="javascript:void(0);" onclick="activateSamplesFromManifest();"><em
+										class="fa-solid fa-check"></em>&nbsp;<?= _translate("Activate Samples"); ?></a>
 							</td>
 						</tr>
 					</table>
 					<div class="container-fluid">
 						<span class="pull-right sts-server-reachable">
-							<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></span>
+							<span class="fa-solid fa-circle is-remote-server-reachable"
+								style="font-size:1em;display:none;"></span>
 							<span class="sts-server-reachable-span"></span>
 						</span>
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table aria-describedby="table" id="manifestDataTable" class="table table-bordered table-striped table-vcenter">
+						<table aria-describedby="table" id="manifestDataTable"
+							class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
 									<th>
@@ -162,37 +174,37 @@ require_once APPLICATION_PATH . '/header.php';
 			"bStateSave": false,
 			"bRetrieve": false,
 			"aoColumns": [{
+				"sClass": "center"
+			},
+				<?php if (!$general->isStandaloneInstance()) { ?> {
 					"sClass": "center"
 				},
-				<?php if (!$general->isStandaloneInstance()) { ?> {
-						"sClass": "center"
-					},
 				<?php } ?> {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}
 			],
 			"aaSorting": [
 				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 11 : 10 ?>, "desc"]
 			],
-			"fnDrawCallback": function() {
+			"fnDrawCallback": function () {
 				var checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
@@ -204,7 +216,7 @@ require_once APPLICATION_PATH . '/header.php';
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/vl/requests/getManifestInGridHelper.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "manifestCode",
 					"value": $("#manifestCode").val()
@@ -228,12 +240,12 @@ require_once APPLICATION_PATH . '/header.php';
 		}
 		$.blockUI();
 		$.post("/vl/requests/activate-samples-from-manifest.php", {
-				testType: 'vl',
-				manifestCode: $("#manifestCode").val(),
-				sampleId: $("#sampleId").val(),
-				sampleReceivedOn: $("#sampleReceivedOn").val()
-			},
-			function(data) {
+			testType: 'vl',
+			manifestCode: $("#manifestCode").val(),
+			sampleId: $("#sampleId").val(),
+			sampleReceivedOn: $("#sampleReceivedOn").val()
+		},
+			function (data) {
 				if (data > 0) {
 					alert("<?php echo _translate("Samples from this Manifest have been activated", true); ?>");
 				}
