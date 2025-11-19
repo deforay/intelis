@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-11-19 16:40+0530\n"
-"PO-Revision-Date: 2025-11-19 16:42+0530\n"
+"POT-Creation-Date: 2025-11-19 22:08+0530\n"
+"PO-Revision-Date: 2025-11-19 22:09+0530\n"
 "Last-Translator: Amit <amit@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -600,7 +600,7 @@ msgstr "Veuiller selectionner le laboratoire de test"
 #: app/cd4/management/cd4-clinic-report.php:467
 #: app/cd4/management/cd4-export-data.php:87
 #: app/cd4/management/export-cd4-results.php:31
-#: app/cd4/requests/add-samples-from-manifest.php:108
+#: app/cd4/requests/add-samples-from-manifest.php:120
 #: app/cd4/requests/cd4-requests.php:363 app/cd4/requests/cd4-requests.php:528
 #: app/cd4/requests/cd4-requests.php:581
 #: app/cd4/requests/export-cd4-requests.php:26
@@ -619,7 +619,7 @@ msgstr "Veuiller selectionner le laboratoire de test"
 #: app/covid-19/management/covid-19-clinic-report.php:445
 #: app/covid-19/management/covid-19-clinic-report.php:463
 #: app/covid-19/management/covid-19-export-data.php:97
-#: app/covid-19/requests/addSamplesFromManifest.php:109
+#: app/covid-19/requests/addSamplesFromManifest.php:121
 #: app/covid-19/requests/covid-19-requests.php:281
 #: app/covid-19/requests/covid-19-requests.php:453
 #: app/covid-19/requests/forms/add-cameroon.php:657
@@ -638,7 +638,7 @@ msgstr "Veuiller selectionner le laboratoire de test"
 #: app/eid/management/eid-clinic-report.php:448
 #: app/eid/management/eid-clinic-report.php:466
 #: app/eid/management/eid-export-data.php:107
-#: app/eid/requests/addSamplesFromManifest.php:119
+#: app/eid/requests/addSamplesFromManifest.php:131
 #: app/eid/requests/eid-requests.php:270 app/eid/requests/eid-requests.php:461
 #: app/eid/results/eid-failed-results.php:81
 #: app/eid/results/eid-failed-results.php:225
@@ -671,7 +671,7 @@ msgstr "Veuiller selectionner le laboratoire de test"
 #: app/hepatitis/management/hepatitis-clinic-report.php:444
 #: app/hepatitis/management/hepatitis-clinic-report.php:463
 #: app/hepatitis/management/hepatitis-export-data.php:88
-#: app/hepatitis/requests/add-samples-from-manifest.php:105
+#: app/hepatitis/requests/add-samples-from-manifest.php:117
 #: app/hepatitis/requests/hepatitis-dhis2.php:122
 #: app/hepatitis/requests/hepatitis-dhis2.php:324
 #: app/hepatitis/requests/hepatitis-requests.php:270
@@ -691,7 +691,7 @@ msgstr "Veuiller selectionner le laboratoire de test"
 #: app/tb/management/tb-clinic-report.php:441
 #: app/tb/management/tb-clinic-report.php:459
 #: app/tb/management/tb-export-data.php:91
-#: app/tb/requests/addSamplesFromManifest.php:74
+#: app/tb/requests/addSamplesFromManifest.php:92
 #: app/tb/requests/tb-requests.php:211 app/tb/requests/tb-requests.php:317
 #: app/tb/results/email-results.php:208 app/tb/results/tb-failed-results.php:80
 #: app/tb/results/tb-failed-results.php:203
@@ -830,8 +830,8 @@ msgstr "Veuillez choisir Région/Etat"
 #: app/admin/monitoring/lab-sync-details.php:118
 #: app/admin/monitoring/sources-of-requests.php:96
 #: app/admin/monitoring/sync-status.php:344
-#: app/admin/monitoring/sync-status.php:360 app/batch/add-batch.php:180
-#: app/batch/add-batch.php:255 app/batch/edit-batch.php:189
+#: app/admin/monitoring/sync-status.php:360 app/batch/add-batch.php:184
+#: app/batch/add-batch.php:276 app/batch/edit-batch.php:189
 #: app/batch/edit-batch.php:268 app/cd4/management/cd4-clinic-report.php:110
 #: app/cd4/management/cd4-clinic-report.php:123
 #: app/cd4/management/cd4-clinic-report.php:138
@@ -1593,7 +1593,7 @@ msgstr "-- Sélectionner --"
 #: app/cd4/management/cd4-clinic-report.php:476
 #: app/cd4/management/cd4-export-data.php:97
 #: app/cd4/management/export-cd4-results.php:31
-#: app/cd4/requests/add-samples-from-manifest.php:111
+#: app/cd4/requests/add-samples-from-manifest.php:123
 #: app/cd4/requests/cd4-requests.php:374 app/cd4/requests/cd4-requests.php:531
 #: app/cd4/requests/cd4-requests.php:584
 #: app/cd4/requests/export-cd4-requests.php:26
@@ -1613,7 +1613,7 @@ msgstr "-- Sélectionner --"
 #: app/covid-19/management/covid-19-clinic-report.php:446
 #: app/covid-19/management/covid-19-clinic-report.php:472
 #: app/covid-19/management/covid-19-export-data.php:107
-#: app/covid-19/requests/addSamplesFromManifest.php:112
+#: app/covid-19/requests/addSamplesFromManifest.php:124
 #: app/covid-19/requests/covid-19-requests.php:293
 #: app/covid-19/requests/covid-19-requests.php:456
 #: app/covid-19/requests/forms/add-cameroon.php:692
@@ -1633,7 +1633,7 @@ msgstr "-- Sélectionner --"
 #: app/eid/management/eid-clinic-report.php:449
 #: app/eid/management/eid-clinic-report.php:475
 #: app/eid/management/eid-export-data.php:114
-#: app/eid/requests/addSamplesFromManifest.php:122
+#: app/eid/requests/addSamplesFromManifest.php:134
 #: app/eid/requests/eid-requests.php:282 app/eid/requests/eid-requests.php:464
 #: app/eid/results/eid-failed-results.php:89
 #: app/eid/results/eid-failed-results.php:228
@@ -1669,7 +1669,7 @@ msgstr "-- Sélectionner --"
 #: app/hepatitis/management/hepatitis-clinic-report.php:445
 #: app/hepatitis/management/hepatitis-clinic-report.php:472
 #: app/hepatitis/management/hepatitis-export-data.php:95
-#: app/hepatitis/requests/add-samples-from-manifest.php:108
+#: app/hepatitis/requests/add-samples-from-manifest.php:120
 #: app/hepatitis/requests/hepatitis-dhis2.php:128
 #: app/hepatitis/requests/hepatitis-dhis2.php:327
 #: app/hepatitis/requests/hepatitis-requests.php:281
@@ -1689,7 +1689,7 @@ msgstr "-- Sélectionner --"
 #: app/tb/management/tb-clinic-report.php:442
 #: app/tb/management/tb-clinic-report.php:468
 #: app/tb/management/tb-export-data.php:101
-#: app/tb/requests/addSamplesFromManifest.php:75
+#: app/tb/requests/addSamplesFromManifest.php:93
 #: app/tb/requests/tb-requests.php:220 app/tb/requests/tb-requests.php:318
 #: app/tb/results/email-results.php:223 app/tb/results/tb-failed-results.php:88
 #: app/tb/results/tb-failed-results.php:206
@@ -1773,7 +1773,7 @@ msgstr "Établissement demandeur"
 msgid "Refresh Dashboard"
 msgstr "Rafraîchir le tableau de bord"
 
-#: app/admin/api-dashboard/api-dashboard.php:303 app/batch/add-batch.php:298
+#: app/admin/api-dashboard/api-dashboard.php:303 app/batch/add-batch.php:325
 #: app/batch/edit-batch.php:240
 msgid "Reset Filters"
 msgstr "Réinitialiser les filtres"
@@ -1950,7 +1950,7 @@ msgstr "Distribution des sources par établissement avec flux de travail DAMA"
 #: app/admin/api-dashboard/api-dashboard.php:510
 #: app/admin/api-dashboard/api-dashboard.php:547
 #: app/admin/api-dashboard/missing-samples-detail.php:129
-#: app/batch/add-batch.php:202 app/batch/edit-batch.php:162
+#: app/batch/add-batch.php:211 app/batch/edit-batch.php:162
 #: app/cd4/management/cd4-clinic-report.php:147
 #: app/cd4/management/cd4-clinic-report.php:255
 #: app/cd4/management/cd4-clinic-report.php:357
@@ -2133,7 +2133,7 @@ msgstr "Résultats envoyés pour les demandes ne provenant pas de la DAMA"
 #: app/admin/api-dashboard/missing-samples-detail.php:126
 #: app/admin/monitoring/export-test-results-report.php:31
 #: app/admin/monitoring/test-results-metadata.php:128
-#: app/batch/add-batch-position.php:103 app/batch/add-batch.php:283
+#: app/batch/add-batch-position.php:103 app/batch/add-batch.php:308
 #: app/batch/edit-batch-position.php:130 app/batch/edit-batch.php:227
 #: app/batch/generate-batch-pdf.php:167 app/batch/generate-batch-pdf.php:178
 #: app/cd4/management/cd4-clinic-report.php:187
@@ -2144,7 +2144,7 @@ msgstr "Résultats envoyés pour les demandes ne provenant pas de la DAMA"
 #: app/cd4/management/cd4-export-data.php:204
 #: app/cd4/management/cd4-export-data.php:249
 #: app/cd4/management/export-cd4-results.php:31
-#: app/cd4/requests/add-samples-from-manifest.php:85
+#: app/cd4/requests/add-samples-from-manifest.php:97
 #: app/cd4/requests/cd4-requests.php:498 app/cd4/requests/cd4-requests.php:555
 #: app/cd4/requests/export-cd4-requests.php:26
 #: app/cd4/results/cd4-failed-results.php:181
@@ -2163,7 +2163,7 @@ msgstr "Résultats envoyés pour les demandes ne provenant pas de la DAMA"
 #: app/covid-19/management/covid-19-export-data.php:224
 #: app/covid-19/management/covid-19-export-data.php:269
 #: app/covid-19/management/generate-export-drc.php:38
-#: app/covid-19/requests/addSamplesFromManifest.php:86
+#: app/covid-19/requests/addSamplesFromManifest.php:98
 #: app/covid-19/requests/covid-19-requests.php:421
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
@@ -2191,7 +2191,7 @@ msgstr "Résultats envoyés pour les demandes ne provenant pas de la DAMA"
 #: app/eid/management/eid-export-data.php:243
 #: app/eid/management/eid-export-data.php:296
 #: app/eid/management/eid-sample-status.php:116
-#: app/eid/requests/addSamplesFromManifest.php:90
+#: app/eid/requests/addSamplesFromManifest.php:102
 #: app/eid/requests/eid-requests.php:429
 #: app/eid/requests/forms/add-burkina-faso.php:70
 #: app/eid/requests/forms/add-burkina-faso.php:76
@@ -2251,7 +2251,7 @@ msgstr "Résultats envoyés pour les demandes ne provenant pas de la DAMA"
 #: app/hepatitis/management/hepatitis-clinic-report.php:436
 #: app/hepatitis/management/hepatitis-export-data.php:229
 #: app/hepatitis/management/hepatitis-export-data.php:274
-#: app/hepatitis/requests/add-samples-from-manifest.php:81
+#: app/hepatitis/requests/add-samples-from-manifest.php:93
 #: app/hepatitis/requests/hepatitis-dhis2.php:301
 #: app/hepatitis/requests/hepatitis-requests.php:398
 #: app/hepatitis/results/hepatitis-failed-results.php:179
@@ -2270,7 +2270,7 @@ msgstr "Résultats envoyés pour les demandes ne provenant pas de la DAMA"
 #: app/tb/management/tb-clinic-report.php:433
 #: app/tb/management/tb-export-data.php:218
 #: app/tb/management/tb-export-data.php:263
-#: app/tb/requests/addSamplesFromManifest.php:65
+#: app/tb/requests/addSamplesFromManifest.php:83
 #: app/tb/requests/forms/add-burkina-faso.php:86
 #: app/tb/requests/forms/add-burkina-faso.php:92
 #: app/tb/requests/forms/add-rwanda.php:75
@@ -2352,7 +2352,7 @@ msgstr "Jours Diff"
 #: app/admin/monitoring/api-sync-history.php:175
 #: app/admin/monitoring/sources-of-requests.php:312
 #: app/admin/monitoring/test-results-metadata.php:206
-#: app/batch/add-batch.php:404 app/batch/edit-batch.php:392
+#: app/batch/add-batch.php:445 app/batch/edit-batch.php:392
 #: app/cd4/management/cd4-clinic-report.php:626
 #: app/cd4/management/cd4-export-data.php:330
 #: app/cd4/management/cd4-sample-rejection-report.php:110
@@ -2824,7 +2824,7 @@ msgid "Enter your comments or notes..."
 msgstr "Saisissez vos commentaires ou notes..."
 
 #: app/admin/api-dashboard/missing-samples-detail.php:352
-#: app/batch/add-batch.php:359 app/batch/edit-batch.php:328
+#: app/batch/add-batch.php:400 app/batch/edit-batch.php:328
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:75
 #: app/cd4/reference/add-cd4-sample-type.php:57
 #: app/cd4/reference/add-cd4-test-reasons.php:71
@@ -3436,7 +3436,7 @@ msgstr "ID de l'échantillon ou ID de l'échantillon à distance"
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:74
 #: app/cd4/reference/add-cd4-sample-type.php:56
 #: app/cd4/reference/add-cd4-test-reasons.php:70
-#: app/cd4/requests/add-samples-from-manifest.php:54
+#: app/cd4/requests/add-samples-from-manifest.php:59
 #: app/common/reference/add-funding-sources.php:56
 #: app/common/reference/add-geographical-divisions.php:97
 #: app/common/reference/add-implementation-partners.php:56
@@ -3453,7 +3453,7 @@ msgstr "ID de l'échantillon ou ID de l'échantillon à distance"
 #: app/covid-19/reference/add-covid19-symptoms.php:75
 #: app/covid-19/reference/add-covid19-test-reasons.php:75
 #: app/covid-19/reference/edit-covid19-qc-test-kit.php:124
-#: app/covid-19/requests/addSamplesFromManifest.php:54
+#: app/covid-19/requests/addSamplesFromManifest.php:59
 #: app/covid-19/requests/forms/add-cameroon.php:753
 #: app/covid-19/results/add-covid-19-qc-data.php:231
 #: app/covid-19/results/edit-covid-19-qc-data.php:268
@@ -3461,7 +3461,7 @@ msgstr "ID de l'échantillon ou ID de l'échantillon à distance"
 #: app/eid/reference/add-eid-sample-rejection-reasons.php:73
 #: app/eid/reference/add-eid-sample-type.php:56
 #: app/eid/reference/add-eid-test-reasons.php:69
-#: app/eid/requests/addSamplesFromManifest.php:57
+#: app/eid/requests/addSamplesFromManifest.php:62
 #: app/facilities/addFacility.php:788 app/facilities/editFacility.php:1090
 #: app/facilities/mapTestType.php:130 app/facilities/upload-facilities.php:145
 #: app/generic-tests/configuration/add-test-type.php:372
@@ -3489,7 +3489,7 @@ msgstr "ID de l'échantillon ou ID de l'échantillon à distance"
 #: app/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php:74
 #: app/hepatitis/reference/add-hepatitis-sample-type.php:56
 #: app/hepatitis/reference/add-hepatitis-test-reasons.php:69
-#: app/hepatitis/requests/add-samples-from-manifest.php:48
+#: app/hepatitis/requests/add-samples-from-manifest.php:53
 #: app/import-result/import-file.php:216 app/instruments/add-instrument.php:669
 #: app/instruments/edit-instrument.php:750 app/patients/add-patient.php:237
 #: app/patients/edit-patient.php:252 app/roles/addRole.php:366
@@ -3500,7 +3500,7 @@ msgstr "ID de l'échantillon ou ID de l'échantillon à distance"
 #: app/tb/reference/add-tb-sample-rejection-reason.php:74
 #: app/tb/reference/add-tb-sample-type.php:56
 #: app/tb/reference/add-tb-test-reasons.php:75
-#: app/tb/requests/addSamplesFromManifest.php:39 app/users/addUser.php:326
+#: app/tb/requests/addSamplesFromManifest.php:46 app/users/addUser.php:326
 #: app/users/edit-profile.php:141 app/users/editUser.php:482
 #: app/vl/program-management/upload-vl-control.php:124
 #: app/vl/reference/add-vl-art-code-details.php:92
@@ -3735,7 +3735,7 @@ msgstr ""
 #: app/cd4/management/cd4-export-data.php:251
 #: app/cd4/management/export-cd4-results.php:31
 #: app/cd4/management/export-cd4-results.php:39
-#: app/cd4/requests/add-samples-from-manifest.php:89
+#: app/cd4/requests/add-samples-from-manifest.php:101
 #: app/cd4/requests/cd4-requests.php:505 app/cd4/requests/cd4-requests.php:559
 #: app/cd4/requests/export-cd4-requests.php:26
 #: app/cd4/requests/export-cd4-requests.php:29
@@ -3754,7 +3754,7 @@ msgstr ""
 #: app/covid-19/management/covid-19-export-data.php:230
 #: app/covid-19/management/covid-19-export-data.php:271
 #: app/covid-19/management/generate-export-drc.php:38
-#: app/covid-19/requests/addSamplesFromManifest.php:90
+#: app/covid-19/requests/addSamplesFromManifest.php:102
 #: app/covid-19/requests/covid-19-requests.php:425
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
@@ -3773,7 +3773,7 @@ msgstr ""
 #: app/eid/management/eid-export-data.php:249
 #: app/eid/management/eid-export-data.php:298
 #: app/eid/management/eid-sample-status.php:119
-#: app/eid/requests/addSamplesFromManifest.php:94
+#: app/eid/requests/addSamplesFromManifest.php:106
 #: app/eid/requests/eid-requests.php:433
 #: app/eid/results/eid-failed-results.php:200
 #: app/eid/results/eid-manual-results.php:139
@@ -3819,7 +3819,7 @@ msgstr ""
 #: app/tb/management/tb-clinic-report.php:435
 #: app/tb/management/tb-export-data.php:224
 #: app/tb/management/tb-export-data.php:265
-#: app/tb/requests/addSamplesFromManifest.php:67
+#: app/tb/requests/addSamplesFromManifest.php:85
 #: app/tb/requests/tb-requests.php:305 app/tb/results/tb-failed-results.php:184
 #: app/tb/results/tb-manual-results.php:135
 #: app/tb/results/tb-manual-results.php:184
@@ -3854,7 +3854,7 @@ msgstr "ID de l'échantillon à distance"
 
 #: app/admin/monitoring/export-test-results-report.php:33
 #: app/admin/monitoring/test-results-metadata.php:134
-#: app/batch/add-batch.php:218 app/batch/edit-batch.php:180
+#: app/batch/add-batch.php:229 app/batch/edit-batch.php:180
 #: app/cd4/management/cd4-clinic-report.php:194
 #: app/cd4/management/cd4-clinic-report.php:298
 #: app/cd4/management/cd4-clinic-report.php:313
@@ -3867,7 +3867,7 @@ msgstr "ID de l'échantillon à distance"
 #: app/cd4/management/cd4-sample-rejection-report.php:53
 #: app/cd4/management/cd4-sample-status.php:62
 #: app/cd4/management/cd4-sample-status.php:117
-#: app/cd4/requests/add-samples-from-manifest.php:93
+#: app/cd4/requests/add-samples-from-manifest.php:105
 #: app/cd4/requests/cd4-requests.php:132 app/cd4/requests/cd4-requests.php:509
 #: app/cd4/requests/cd4-requests.php:563
 #: app/cd4/results/cd4-failed-results.php:75
@@ -3891,7 +3891,7 @@ msgstr "ID de l'échantillon à distance"
 #: app/covid-19/management/covid-19-sample-status.php:57
 #: app/covid-19/management/covid-19-sample-status.php:112
 #: app/covid-19/management/generate-export-drc.php:38
-#: app/covid-19/requests/addSamplesFromManifest.php:94
+#: app/covid-19/requests/addSamplesFromManifest.php:106
 #: app/covid-19/requests/covid-19-requests.php:133
 #: app/covid-19/requests/covid-19-requests.php:429
 #: app/covid-19/requests/export-covid19-requests.php:35
@@ -3922,7 +3922,7 @@ msgstr "ID de l'échantillon à distance"
 #: app/eid/management/eid-sample-rejection-report.php:49
 #: app/eid/management/eid-sample-status.php:61
 #: app/eid/management/eid-sample-status.php:125
-#: app/eid/requests/addSamplesFromManifest.php:98
+#: app/eid/requests/addSamplesFromManifest.php:110
 #: app/eid/requests/eid-requests.php:122 app/eid/requests/eid-requests.php:437
 #: app/eid/requests/forms/add-burkina-faso.php:318
 #: app/eid/requests/forms/add-cameroon.php:470
@@ -3975,7 +3975,7 @@ msgstr "ID de l'échantillon à distance"
 #: app/hepatitis/management/hepatitis-sample-rejection-report.php:50
 #: app/hepatitis/management/hepatitis-sample-status.php:60
 #: app/hepatitis/management/hepatitis-sample-status.php:115
-#: app/hepatitis/requests/add-samples-from-manifest.php:90
+#: app/hepatitis/requests/add-samples-from-manifest.php:102
 #: app/hepatitis/requests/hepatitis-dhis2.php:74
 #: app/hepatitis/requests/hepatitis-dhis2.php:309
 #: app/hepatitis/requests/hepatitis-requests.php:123
@@ -4001,7 +4001,7 @@ msgstr "ID de l'échantillon à distance"
 #: app/tb/management/tb-sample-rejection-report.php:48
 #: app/tb/management/tb-sample-status.php:59
 #: app/tb/management/tb-sample-status.php:114
-#: app/tb/requests/addSamplesFromManifest.php:69
+#: app/tb/requests/addSamplesFromManifest.php:87
 #: app/tb/requests/forms/add-rwanda.php:306
 #: app/tb/requests/forms/edit-rwanda.php:313
 #: app/tb/requests/tb-requests.php:119 app/tb/requests/tb-requests.php:307
@@ -4074,7 +4074,7 @@ msgstr "Echantillon testé le"
 #: app/cd4/management/cd4-clinic-report.php:568
 #: app/cd4/management/cd4-export-data.php:229
 #: app/cd4/management/cd4-export-data.php:258
-#: app/cd4/requests/add-samples-from-manifest.php:117
+#: app/cd4/requests/add-samples-from-manifest.php:129
 #: app/cd4/requests/cd4-requests.php:537 app/cd4/requests/cd4-requests.php:590
 #: app/cd4/results/cd4-failed-results.php:210
 #: app/cd4/results/cd4-manual-results.php:203
@@ -4094,7 +4094,7 @@ msgstr "Echantillon testé le"
 #: app/covid-19/management/covid-19-export-data.php:249
 #: app/covid-19/management/covid-19-export-data.php:278
 #: app/covid-19/management/generate-export-drc.php:38
-#: app/covid-19/requests/addSamplesFromManifest.php:115
+#: app/covid-19/requests/addSamplesFromManifest.php:127
 #: app/covid-19/requests/covid-19-requests.php:459
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
@@ -4114,7 +4114,7 @@ msgstr "Echantillon testé le"
 #: app/eid/management/eid-export-data.php:140
 #: app/eid/management/eid-export-data.php:276
 #: app/eid/management/eid-export-data.php:309
-#: app/eid/requests/addSamplesFromManifest.php:125
+#: app/eid/requests/addSamplesFromManifest.php:137
 #: app/eid/requests/eid-requests.php:467
 #: app/eid/requests/forms/add-burkina-faso.php:404
 #: app/eid/requests/forms/add-cameroon.php:563
@@ -4160,7 +4160,7 @@ msgstr "Echantillon testé le"
 #: app/tb/management/tb-export-data.php:126
 #: app/tb/management/tb-export-data.php:243
 #: app/tb/management/tb-export-data.php:272
-#: app/tb/requests/addSamplesFromManifest.php:76
+#: app/tb/requests/addSamplesFromManifest.php:94
 #: app/tb/requests/forms/add-burkina-faso.php:423
 #: app/tb/requests/forms/edit-burkina-faso.php:456
 #: app/tb/requests/tb-requests.php:319
@@ -4468,7 +4468,7 @@ msgstr "Veuillez choisir la Région/Etat"
 #: app/cd4/management/cd4-export-data.php:256
 #: app/cd4/management/cd4-testing-target-report.php:224
 #: app/cd4/management/get-rejected-samples.php:95
-#: app/cd4/requests/add-samples-from-manifest.php:105
+#: app/cd4/requests/add-samples-from-manifest.php:117
 #: app/cd4/requests/cd4-requests.php:381 app/cd4/requests/cd4-requests.php:525
 #: app/cd4/requests/cd4-requests.php:578 app/cd4/requests/patientModal.php:113
 #: app/cd4/results/cd4-failed-results.php:99
@@ -4500,7 +4500,7 @@ msgstr "Veuillez choisir la Région/Etat"
 #: app/covid-19/management/get-rejected-samples.php:85
 #: app/covid-19/reference/covid19-comorbidities.php:35
 #: app/covid-19/reference/covid19-sample-type.php:35
-#: app/covid-19/requests/addSamplesFromManifest.php:100
+#: app/covid-19/requests/addSamplesFromManifest.php:112
 #: app/covid-19/requests/covid-19-requests.php:300
 #: app/covid-19/requests/covid-19-requests.php:438
 #: app/covid-19/requests/forms/add-cameroon.php:598
@@ -4535,7 +4535,7 @@ msgstr "Veuillez choisir la Région/Etat"
 #: app/eid/management/eid-export-data.php:303
 #: app/eid/management/eidTestingTargetReport.php:226
 #: app/eid/management/get-rejected-samples.php:93
-#: app/eid/requests/addSamplesFromManifest.php:104
+#: app/eid/requests/addSamplesFromManifest.php:116
 #: app/eid/requests/eid-requests.php:289 app/eid/requests/eid-requests.php:446
 #: app/eid/requests/patientModal.php:105
 #: app/eid/results/eid-failed-results.php:99
@@ -4589,7 +4589,7 @@ msgstr "Veuillez choisir la Région/Etat"
 #: app/hepatitis/management/hepatitis-export-data.php:248
 #: app/hepatitis/management/hepatitis-export-data.php:281
 #: app/hepatitis/management/hepatitis-testing-target-report.php:226
-#: app/hepatitis/requests/add-samples-from-manifest.php:96
+#: app/hepatitis/requests/add-samples-from-manifest.php:108
 #: app/hepatitis/requests/hepatitis-dhis2.php:114
 #: app/hepatitis/requests/hepatitis-dhis2.php:315
 #: app/hepatitis/requests/hepatitis-requests.php:288
@@ -4618,7 +4618,7 @@ msgstr "Veuillez choisir la Région/Etat"
 #: app/tb/management/tb-export-data.php:237
 #: app/tb/management/tb-export-data.php:270
 #: app/tb/reference/tb-sample-type.php:35
-#: app/tb/requests/addSamplesFromManifest.php:71
+#: app/tb/requests/addSamplesFromManifest.php:89
 #: app/tb/requests/patientModal.php:88 app/tb/requests/tb-requests.php:225
 #: app/tb/requests/tb-requests.php:310 app/tb/results/email-results.php:165
 #: app/tb/results/tb-failed-results.php:98
@@ -5094,7 +5094,7 @@ msgstr "Résultat Date et heure de retour"
 #: app/cd4/results/cd4-print-results.php:224
 #: app/cd4/results/cd4-print-results.php:367
 #: app/cd4/results/cd4-print-results.php:398
-#: app/covid-19/requests/addSamplesFromManifest.php:118
+#: app/covid-19/requests/addSamplesFromManifest.php:130
 #: app/covid-19/requests/covid-19-requests.php:462
 #: app/covid-19/results/covid-19-failed-results.php:213
 #: app/covid-19/results/covid-19-print-results.php:197
@@ -5102,7 +5102,7 @@ msgstr "Résultat Date et heure de retour"
 #: app/covid-19/results/covid-19-print-results.php:373
 #: app/covid-19/results/covid-19-print-results.php:404
 #: app/covid-19/results/covid-19-qc-data.php:88
-#: app/eid/requests/addSamplesFromManifest.php:128
+#: app/eid/requests/addSamplesFromManifest.php:140
 #: app/eid/requests/eid-requests.php:475
 #: app/eid/results/eid-failed-results.php:234
 #: app/eid/results/eid-print-results.php:190
@@ -5115,7 +5115,7 @@ msgstr "Résultat Date et heure de retour"
 #: app/generic-tests/results/generic-print-result.php:286
 #: app/generic-tests/results/generic-print-result.php:460
 #: app/generic-tests/results/generic-print-result.php:512
-#: app/hepatitis/requests/add-samples-from-manifest.php:117
+#: app/hepatitis/requests/add-samples-from-manifest.php:129
 #: app/hepatitis/requests/hepatitis-dhis2.php:336
 #: app/hepatitis/requests/hepatitis-requests.php:436
 #: app/hepatitis/results/hepatitis-failed-results.php:211
@@ -5123,7 +5123,7 @@ msgstr "Résultat Date et heure de retour"
 #: app/hepatitis/results/hepatitis-print-results.php:223
 #: app/hepatitis/results/hepatitis-print-results.php:366
 #: app/hepatitis/results/hepatitis-print-results.php:397
-#: app/tb/requests/addSamplesFromManifest.php:77
+#: app/tb/requests/addSamplesFromManifest.php:95
 #: app/tb/requests/tb-requests.php:320 app/tb/results/tb-failed-results.php:212
 #: app/tb/results/tb-print-results.php:189
 #: app/tb/results/tb-print-results.php:219
@@ -5591,10 +5591,10 @@ msgstr ""
 #: app/api/v1.1/generic-tests/save-request.php:475 app/api/v1.1/init.php:475
 #: app/api/v1.1/sample-status.php:97 app/api/v1.1/save-facilities.php:226
 #: app/api/v1.1/save-facilities.php:247 app/api/v1.1/tb/fetch-results.php:255
-#: app/api/v1.1/tb/get-request.php:203 app/api/v1.1/tb/save-request.php:437
-#: app/api/v1.1/tb/save-request.php:482 app/api/v1.1/vl/fetch-results.php:292
-#: app/api/v1.1/vl/get-request.php:250 app/api/v1.1/vl/save-request.php:648
-#: app/api/v1.1/vl/save-request.php:719
+#: app/api/v1.1/tb/get-request.php:203 app/api/v1.1/tb/save-request.php:436
+#: app/api/v1.1/tb/save-request.php:481 app/api/v1.1/vl/fetch-results.php:292
+#: app/api/v1.1/vl/get-request.php:250 app/api/v1.1/vl/save-request.php:647
+#: app/api/v1.1/vl/save-request.php:718
 #: app/api/vl/fetch-recency-vl-results.php:126
 msgid ""
 "Failed to process this request. Please contact the system administrator if "
@@ -5642,11 +5642,11 @@ msgstr "Veuillez vérifier les paramètres de votre demande."
 msgid "Something went wrong. Please try again later."
 msgstr "Une erreur s'est produite. Veuillez réessayer plus tard."
 
-#: app/api/v1.1/vl/save-request.php:535
+#: app/api/v1.1/vl/save-request.php:534
 msgid "Potential duplicate sample detected within 1 day"
 msgstr "Échantillon double potentiel détecté dans un délai d'un jour"
 
-#: app/api/v1.1/vl/save-request.php:548
+#: app/api/v1.1/vl/save-request.php:547
 msgid "Medium-risk duplicate detected"
 msgstr "Duplicata à risque moyen détecté"
 
@@ -5669,8 +5669,8 @@ msgstr "Ajouter une position de contrôle de lot"
 msgid "Batch"
 msgstr "Lot"
 
-#: app/batch/add-batch-position.php:97 app/batch/add-batch.php:317
-#: app/batch/add-batch.php:320 app/batch/batches.php:99
+#: app/batch/add-batch-position.php:97 app/batch/add-batch.php:346
+#: app/batch/add-batch.php:351 app/batch/batches.php:99
 #: app/batch/edit-batch-position.php:122 app/batch/edit-batch.php:255
 #: app/batch/edit-batch.php:257 app/cd4/management/cd4-clinic-report.php:107
 #: app/cd4/management/cd4-clinic-report.php:215
@@ -5681,7 +5681,7 @@ msgstr "Lot"
 #: app/cd4/management/cd4-export-data.php:214
 #: app/cd4/management/cd4-export-data.php:253
 #: app/cd4/management/cd4-sample-status.php:66
-#: app/cd4/requests/add-samples-from-manifest.php:96
+#: app/cd4/requests/add-samples-from-manifest.php:108
 #: app/cd4/requests/cd4-requests.php:240 app/cd4/requests/cd4-requests.php:513
 #: app/cd4/requests/cd4-requests.php:566
 #: app/cd4/requests/get-request-list.php:324
@@ -5707,7 +5707,7 @@ msgstr "Lot"
 #: app/covid-19/management/covid-19-export-data.php:234
 #: app/covid-19/management/covid-19-export-data.php:273
 #: app/covid-19/management/covid-19-sample-status.php:61
-#: app/covid-19/requests/addSamplesFromManifest.php:97
+#: app/covid-19/requests/addSamplesFromManifest.php:109
 #: app/covid-19/requests/covid-19-requests.php:172
 #: app/covid-19/requests/covid-19-requests.php:432
 #: app/covid-19/requests/get-request-list.php:309
@@ -5734,7 +5734,7 @@ msgstr "Lot"
 #: app/eid/management/eid-export-data.php:253
 #: app/eid/management/eid-export-data.php:300
 #: app/eid/management/eid-sample-status.php:65
-#: app/eid/requests/addSamplesFromManifest.php:101
+#: app/eid/requests/addSamplesFromManifest.php:113
 #: app/eid/requests/eid-requests.php:152 app/eid/requests/eid-requests.php:440
 #: app/eid/requests/get-request-list.php:276
 #: app/eid/results/eid-failed-results.php:207
@@ -5774,7 +5774,7 @@ msgstr "Lot"
 #: app/hepatitis/management/hepatitis-export-data.php:239
 #: app/hepatitis/management/hepatitis-export-data.php:278
 #: app/hepatitis/management/hepatitis-sample-status.php:64
-#: app/hepatitis/requests/add-samples-from-manifest.php:93
+#: app/hepatitis/requests/add-samples-from-manifest.php:105
 #: app/hepatitis/requests/get-request-list.php:271
 #: app/hepatitis/requests/hepatitis-dhis2.php:80
 #: app/hepatitis/requests/hepatitis-dhis2.php:312
@@ -5804,7 +5804,7 @@ msgstr "Lot"
 #: app/tb/management/tb-export-data.php:228
 #: app/tb/management/tb-export-data.php:267
 #: app/tb/management/tb-sample-status.php:63
-#: app/tb/requests/addSamplesFromManifest.php:70
+#: app/tb/requests/addSamplesFromManifest.php:88
 #: app/tb/requests/get-request-list.php:274 app/tb/requests/tb-requests.php:141
 #: app/tb/requests/tb-requests.php:308 app/tb/results/tb-failed-results.php:191
 #: app/tb/results/tb-manual-results.php:89
@@ -5849,18 +5849,18 @@ msgstr "Lot"
 msgid "Batch Code"
 msgstr "Code du lot"
 
-#: app/batch/add-batch-position.php:101 app/batch/add-batch.php:281
+#: app/batch/add-batch-position.php:101 app/batch/add-batch.php:305
 #: app/batch/edit-batch-position.php:128 app/batch/edit-batch.php:225
 msgid "Request Created"
 msgstr "Demande créée"
 
-#: app/batch/add-batch-position.php:102 app/batch/add-batch.php:232
-#: app/batch/add-batch.php:235 app/batch/add-batch.php:282
+#: app/batch/add-batch-position.php:102 app/batch/add-batch.php:249
+#: app/batch/add-batch.php:253 app/batch/add-batch.php:307
 #: app/batch/edit-batch-position.php:129 app/batch/edit-batch.php:226
 msgid "Last Modified"
 msgstr "Dernière modification"
 
-#: app/batch/add-batch-position.php:104 app/batch/add-batch.php:284
+#: app/batch/add-batch-position.php:104 app/batch/add-batch.php:309
 #: app/batch/edit-batch-position.php:131 app/batch/edit-batch.php:228
 #: app/eid/management/eid-export-data.php:269
 #: app/eid/management/eid-export-data.php:306
@@ -5889,12 +5889,12 @@ msgstr "Dernière modification"
 msgid "Lab Assigned Code"
 msgstr "Code du Labo"
 
-#: app/batch/add-batch-position.php:109 app/batch/add-batch.php:289
+#: app/batch/add-batch-position.php:109 app/batch/add-batch.php:314
 #: app/batch/edit-batch-position.php:136
 msgid "Ascending"
 msgstr "Ascendant"
 
-#: app/batch/add-batch-position.php:110 app/batch/add-batch.php:290
+#: app/batch/add-batch-position.php:110 app/batch/add-batch.php:315
 #: app/batch/edit-batch-position.php:137
 msgid "Descending"
 msgstr "Descendant"
@@ -5919,7 +5919,7 @@ msgstr "Ajouter un lot"
 msgid "Create Batch"
 msgstr "Créer un lot"
 
-#: app/batch/add-batch.php:159 app/batch/add-batch.php:168
+#: app/batch/add-batch.php:162 app/batch/add-batch.php:171
 #: app/batch/edit-batch.php:155
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:22
 #: app/cd4/reference/add-cd4-sample-type.php:22
@@ -6107,7 +6107,7 @@ msgstr "Créer un lot"
 msgid "indicates required fields"
 msgstr "indique les champs obligatoires"
 
-#: app/batch/add-batch.php:175 app/batch/edit-batch.php:265
+#: app/batch/add-batch.php:178 app/batch/edit-batch.php:265
 #: app/covid-19/management/generate-export-drc.php:38
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
@@ -6122,12 +6122,12 @@ msgstr "indique les champs obligatoires"
 msgid "Testing Platform"
 msgstr "Plate-forme d'essai"
 
-#: app/batch/add-batch.php:178 app/batch/edit-batch.php:267
+#: app/batch/add-batch.php:182 app/batch/edit-batch.php:267
 #: app/vl/program-management/upload-vl-control.php:93
 msgid "Please choose machine"
 msgstr "Veuillez choisir la machine"
 
-#: app/batch/add-batch.php:195 app/batch/edit-batch.php:158
+#: app/batch/add-batch.php:203 app/batch/edit-batch.php:158
 #: app/cd4/requests/cd4-requests.php:488
 #: app/covid-19/requests/covid-19-requests.php:408
 #: app/eid/requests/eid-requests.php:416
@@ -6137,7 +6137,7 @@ msgstr "Veuillez choisir la machine"
 msgid "Show Advanced Search Options"
 msgstr "Afficher la recherche avancée"
 
-#: app/batch/add-batch.php:205 app/batch/edit-batch.php:164
+#: app/batch/add-batch.php:215 app/batch/edit-batch.php:164
 #: app/cd4/management/cd4-clinic-report.php:149
 #: app/cd4/management/cd4-clinic-report.php:257
 #: app/cd4/management/cd4-clinic-report.php:359
@@ -6239,11 +6239,11 @@ msgstr "Afficher la recherche avancée"
 msgid "Please select facility name"
 msgstr "Veuillez sélectionner le nom de la FOSA"
 
-#: app/batch/add-batch.php:209 app/batch/edit-batch.php:168
-msgid "Samples Entered By"
-msgstr "Échantillons entrés par"
+#: app/batch/add-batch.php:219
+msgid "Samples Entered or Modified By"
+msgstr "Échantillons saisis ou modifiés par"
 
-#: app/batch/add-batch.php:221 app/batch/edit-batch.php:182
+#: app/batch/add-batch.php:234 app/batch/edit-batch.php:182
 #: app/cd4/management/cd4-export-data.php:81
 #: app/cd4/management/cd4-sample-rejection-report.php:55
 #: app/cd4/management/cd4-sample-status.php:64
@@ -6316,23 +6316,23 @@ msgstr "Échantillons entrés par"
 msgid "Select Collection Date"
 msgstr "Sélectionner la date de collecte"
 
-#: app/batch/add-batch.php:224
+#: app/batch/add-batch.php:238
 msgid "Date Sample Receieved at Lab"
 msgstr "Date de réception de l'échantillon au laboratoire"
 
-#: app/batch/add-batch.php:227 app/batch/edit-batch.php:178
+#: app/batch/add-batch.php:243 app/batch/edit-batch.php:178
 msgid "Select Received at Lab Date"
 msgstr "Sélectionner la date de réception au laboratoire"
 
-#: app/batch/add-batch.php:238 app/batch/edit-batch.php:199
+#: app/batch/add-batch.php:257 app/batch/edit-batch.php:199
 msgid "Positions"
 msgstr "Positions"
 
-#: app/batch/add-batch.php:241 app/batch/edit-batch.php:201
+#: app/batch/add-batch.php:261 app/batch/edit-batch.php:201
 msgid "Please select the postion"
 msgstr "Veuillez sélectionner le poste"
 
-#: app/batch/add-batch.php:243 app/batch/edit-batch.php:202
+#: app/batch/add-batch.php:263 app/batch/edit-batch.php:202
 #: app/global-config/editGlobalConfig.php:1195
 #: app/global-config/editGlobalConfig.php:1472
 #: app/global-config/editGlobalConfig.php:1873
@@ -6342,7 +6342,7 @@ msgstr "Veuillez sélectionner le poste"
 msgid "Numeric"
 msgstr "Numérique"
 
-#: app/batch/add-batch.php:246 app/batch/edit-batch.php:203
+#: app/batch/add-batch.php:266 app/batch/edit-batch.php:203
 #: app/global-config/editGlobalConfig.php:1200
 #: app/global-config/editGlobalConfig.php:1477
 #: app/global-config/editGlobalConfig.php:1877
@@ -6352,7 +6352,7 @@ msgstr "Numérique"
 msgid "Alpha Numeric"
 msgstr "Alphanumérique"
 
-#: app/batch/add-batch.php:252 app/batch/edit-batch.php:186
+#: app/batch/add-batch.php:272 app/batch/edit-batch.php:186
 #: app/cd4/management/cd4-clinic-report.php:120
 #: app/cd4/management/cd4-clinic-report.php:228
 #: app/cd4/management/cd4-clinic-report.php:330
@@ -6360,7 +6360,7 @@ msgstr "Alphanumérique"
 #: app/cd4/management/cd4-clinic-report.php:451
 #: app/cd4/management/cd4-clinic-report.php:559
 #: app/cd4/management/export-cd4-results.php:31
-#: app/cd4/requests/add-samples-from-manifest.php:114
+#: app/cd4/requests/add-samples-from-manifest.php:126
 #: app/cd4/requests/cd4-requests.php:145 app/cd4/requests/cd4-requests.php:224
 #: app/cd4/requests/cd4-requests.php:534 app/cd4/requests/cd4-requests.php:587
 #: app/cd4/requests/export-cd4-requests.php:26
@@ -6496,7 +6496,7 @@ msgstr "Alphanumérique"
 msgid "Sample Type"
 msgstr "Type d'échantillon"
 
-#: app/batch/add-batch.php:254 app/batch/edit-batch.php:188
+#: app/batch/add-batch.php:275 app/batch/edit-batch.php:188
 #: app/cd4/management/cd4-clinic-report.php:122
 #: app/cd4/management/cd4-clinic-report.php:230
 #: app/cd4/management/cd4-clinic-report.php:332
@@ -6550,7 +6550,7 @@ msgstr "Type d'échantillon"
 msgid "Please select sample type"
 msgstr "Veuillez sélectionner le type d'échantillon"
 
-#: app/batch/add-batch.php:265 app/cd4/management/cd4-export-data.php:235
+#: app/batch/add-batch.php:287 app/cd4/management/cd4-export-data.php:235
 #: app/cd4/management/cd4-export-data.php:260
 #: app/cd4/management/export-cd4-results.php:31
 #: app/cd4/requests/export-cd4-requests.php:26
@@ -6583,19 +6583,19 @@ msgstr "Veuillez sélectionner le type d'échantillon"
 msgid "Funding Source"
 msgstr "Source de financement"
 
-#: app/batch/add-batch.php:278 app/batch/edit-batch.php:222
+#: app/batch/add-batch.php:302 app/batch/edit-batch.php:222
 msgid "Sort By"
 msgstr "Trier par"
 
-#: app/batch/add-batch.php:286 app/batch/edit-batch.php:230
+#: app/batch/add-batch.php:311 app/batch/edit-batch.php:230
 msgid "Sort Type"
 msgstr "Type de tri"
 
-#: app/batch/add-batch.php:296 app/batch/edit-batch.php:239
+#: app/batch/add-batch.php:322 app/batch/edit-batch.php:239
 msgid "Filter Samples"
 msgstr "Filtrer les échantillons"
 
-#: app/batch/add-batch.php:301 app/batch/edit-batch.php:242
+#: app/batch/add-batch.php:329 app/batch/edit-batch.php:242
 #: app/cd4/requests/cd4-requests.php:434
 #: app/covid-19/requests/covid-19-requests.php:354
 #: app/eid/requests/eid-requests.php:368
@@ -6605,29 +6605,29 @@ msgstr "Filtrer les échantillons"
 msgid "Hide Advanced Search Options"
 msgstr "Cacher la recherche avancée"
 
-#: app/batch/add-batch.php:320 app/batch/edit-batch.php:257
+#: app/batch/add-batch.php:352 app/batch/edit-batch.php:257
 msgid "Please enter batch code"
 msgstr "Veuillez saisir le code du lot"
 
-#: app/batch/add-batch.php:320
+#: app/batch/add-batch.php:354
 msgid "This batch code already exists.Try another batch code"
 msgstr "Ce code de lot existe déjà. Essayez un autre code"
 
-#: app/batch/add-batch.php:336 app/batch/batches.php:104
+#: app/batch/add-batch.php:371 app/batch/batches.php:104
 #: app/batch/edit-batch.php:282
 #: app/classes/Helpers/CompactBatchPdfHelper.php:30
 msgid "Lab Assigned Batch Code"
 msgstr "Code de lot attribué au laboratoire"
 
-#: app/batch/add-batch.php:339 app/batch/edit-batch.php:284
+#: app/batch/add-batch.php:376 app/batch/edit-batch.php:284
 msgid "Enter Lab Assigned Batch Code"
 msgstr "Saisir le code de lot attribué par le laboratoire"
 
-#: app/batch/add-batch.php:343
+#: app/batch/add-batch.php:381
 msgid "Automatically select samples for Batch"
 msgstr "Sélection automatique des échantillons pour le lot"
 
-#: app/batch/add-batch.php:358 app/eid/requests/forms/add-burkina-faso.php:467
+#: app/batch/add-batch.php:398 app/eid/requests/forms/add-burkina-faso.php:467
 #: app/generic-tests/requests/add-request.php:715
 #: app/tb/requests/forms/add-burkina-faso.php:495
 #: app/tb/requests/forms/add-rwanda.php:491
@@ -6636,7 +6636,7 @@ msgstr "Sélection automatique des échantillons pour le lot"
 msgid "Save and Next"
 msgstr "Sauvegarder et Suivant"
 
-#: app/batch/add-batch.php:390 app/batch/batches.php:137
+#: app/batch/add-batch.php:431 app/batch/batches.php:137
 #: app/facilities/addFacility.php:819 app/facilities/addFacility.php:912
 #: app/facilities/addFacility.php:1087 app/facilities/addFacility.php:1109
 #: app/facilities/addFacility.php:1177 app/facilities/editFacility.php:976
@@ -6655,18 +6655,18 @@ msgstr "Sauvegarder et Suivant"
 msgid "Select Test Type"
 msgstr "Sélectionnez le Type d'essai"
 
-#: app/batch/add-batch.php:399 app/batch/edit-batch.php:387
+#: app/batch/add-batch.php:440 app/batch/edit-batch.php:387
 msgid "Select User"
 msgstr "Sélectionner un utilisateur"
 
-#: app/batch/add-batch.php:446
+#: app/batch/add-batch.php:487
 msgid ""
 "You have selected more than the allowed number of samples for this platform"
 msgstr ""
 "Vous avez sélectionné un nombre d'échantillons supérieur à celui autorisé "
 "pour cette plate-forme"
 
-#: app/batch/add-batch.php:450 app/tb/results/add-tb-referral.php:202
+#: app/batch/add-batch.php:491 app/tb/results/add-tb-referral.php:202
 #: app/tb/results/edit-tb-referral.php:234
 #: app/tb/results/save-tb-referral-helper.php:31
 #: app/tb/results/tb-referral-list.php:213
@@ -6674,11 +6674,11 @@ msgstr ""
 msgid "Please select at least one sample"
 msgstr "Veuillez sélectionner au moins un échantillon"
 
-#: app/batch/add-batch.php:499
+#: app/batch/add-batch.php:540
 msgid "You have to choose a testing platform to proceed"
 msgstr "Vous devez choisir une plateforme d'essaie pour procéder"
 
-#: app/batch/add-batch.php:535 app/batch/edit-batch.php:517
+#: app/batch/add-batch.php:576 app/batch/edit-batch.php:517
 #: app/batch/get-samples-batch.php:249
 msgid "Maximum number of samples allowed for the selected platform"
 msgstr ""
@@ -6755,6 +6755,10 @@ msgstr "Éditer la position des contrôles de lots"
 #: app/system/translate-strings.php:124
 msgid "Edit Batch"
 msgstr "Éditer un lot"
+
+#: app/batch/edit-batch.php:168
+msgid "Samples Entered By"
+msgstr "Échantillons entrés par"
 
 #: app/batch/edit-batch.php:257
 msgid "This batch code already exists.Try another code"
@@ -7611,7 +7615,7 @@ msgstr "Exporter vers Excel"
 #: app/covid-19/management/covid-19-export-data.php:197
 #: app/covid-19/management/covid-19-export-data.php:237
 #: app/covid-19/management/covid-19-export-data.php:274
-#: app/covid-19/requests/addSamplesFromManifest.php:103
+#: app/covid-19/requests/addSamplesFromManifest.php:115
 #: app/covid-19/requests/covid-19-dhis2.php:85
 #: app/covid-19/requests/covid-19-requests.php:333
 #: app/covid-19/requests/covid-19-requests.php:336
@@ -7654,7 +7658,7 @@ msgstr "Exporter vers Excel"
 #: app/hepatitis/management/hepatitis-export-data.php:193
 #: app/hepatitis/management/hepatitis-export-data.php:242
 #: app/hepatitis/management/hepatitis-export-data.php:279
-#: app/hepatitis/requests/add-samples-from-manifest.php:99
+#: app/hepatitis/requests/add-samples-from-manifest.php:111
 #: app/hepatitis/requests/hepatitis-dhis2.php:318
 #: app/hepatitis/requests/hepatitis-requests.php:321
 #: app/hepatitis/requests/hepatitis-requests.php:418
@@ -7675,7 +7679,7 @@ msgstr "Exporter vers Excel"
 #: app/tb/management/tb-export-data.php:189
 #: app/tb/management/tb-export-data.php:231
 #: app/tb/management/tb-export-data.php:268
-#: app/tb/requests/addSamplesFromManifest.php:72
+#: app/tb/requests/addSamplesFromManifest.php:90
 #: app/tb/requests/forms/add-rwanda.php:170
 #: app/tb/requests/forms/edit-rwanda.php:177
 #: app/tb/requests/patientModal.php:76 app/tb/requests/tb-requests.php:248
@@ -7714,7 +7718,7 @@ msgstr "Identifiant du patient"
 #: app/cd4/management/cd4-clinic-report.php:393
 #: app/cd4/management/cd4-clinic-report.php:422
 #: app/cd4/management/cd4-clinic-report.php:447
-#: app/cd4/requests/add-samples-from-manifest.php:102
+#: app/cd4/requests/add-samples-from-manifest.php:114
 #: app/cd4/requests/cd4-requests.php:519 app/cd4/requests/cd4-requests.php:572
 #: app/cd4/results/cd4-manual-results.php:191
 #: app/cd4/results/cd4-manual-results.php:247
@@ -7859,7 +7863,7 @@ msgstr "Résultat CD4"
 #: app/covid-19/reference/covid19-sample-type.php:41
 #: app/covid-19/reference/edit-covid19-qc-test-kit.php:65
 #: app/covid-19/reference/edit-covid19-qc-test-kit.php:67
-#: app/covid-19/requests/addSamplesFromManifest.php:121
+#: app/covid-19/requests/addSamplesFromManifest.php:133
 #: app/covid-19/requests/covid-19-requests.php:258
 #: app/covid-19/requests/covid-19-requests.php:465
 #: app/covid-19/results/covid-19-failed-results.php:216
@@ -7879,7 +7883,7 @@ msgstr "Résultat CD4"
 #: app/eid/reference/eid-sample-rejection-reasons.php:45
 #: app/eid/reference/eid-sample-type.php:42
 #: app/eid/reference/eid-test-reasons.php:43
-#: app/eid/requests/addSamplesFromManifest.php:131
+#: app/eid/requests/addSamplesFromManifest.php:143
 #: app/eid/requests/eid-requests.php:231 app/eid/requests/eid-requests.php:478
 #: app/eid/results/eid-failed-results.php:237
 #: app/eid/results/eid-manual-results.php:164
@@ -7938,7 +7942,7 @@ msgstr "Résultat CD4"
 #: app/hepatitis/reference/hepatitis-sample-rejection-reasons.php:45
 #: app/hepatitis/reference/hepatitis-sample-type.php:42
 #: app/hepatitis/reference/hepatitis-test-reasons.php:43
-#: app/hepatitis/requests/add-samples-from-manifest.php:120
+#: app/hepatitis/requests/add-samples-from-manifest.php:132
 #: app/hepatitis/requests/hepatitis-dhis2.php:339
 #: app/hepatitis/requests/hepatitis-requests.php:219
 #: app/hepatitis/requests/hepatitis-requests.php:439
@@ -7963,7 +7967,7 @@ msgstr "Résultat CD4"
 #: app/tb/management/tb-export-data.php:246
 #: app/tb/management/tb-export-data.php:273 app/tb/reference/tb-results.php:41
 #: app/tb/reference/tb-sample-type.php:41
-#: app/tb/requests/addSamplesFromManifest.php:78
+#: app/tb/requests/addSamplesFromManifest.php:96
 #: app/tb/requests/tb-requests.php:191 app/tb/requests/tb-requests.php:321
 #: app/tb/results/tb-failed-results.php:215
 #: app/tb/results/tb-manual-results.php:160
@@ -8056,7 +8060,7 @@ msgstr "Code TARV du patient"
 #: app/hepatitis/management/hepatitis-clinic-report.php:447
 #: app/hepatitis/management/hepatitis-export-data.php:123
 #: app/hepatitis/management/hepatitis-export-data.php:282
-#: app/hepatitis/requests/add-samples-from-manifest.php:111
+#: app/hepatitis/requests/add-samples-from-manifest.php:123
 #: app/hepatitis/results/hepatitis-manual-results.php:186
 #: app/hepatitis/results/hepatitis-result-status.php:207
 msgid "HCV VL Result"
@@ -8139,7 +8143,7 @@ msgstr "Code TARV du patient"
 #: app/covid-19/management/covid-19-export-data.php:275
 #: app/covid-19/management/generate-export-drc.php:38
 #: app/covid-19/management/generate-export-drc.php:45
-#: app/covid-19/requests/addSamplesFromManifest.php:106
+#: app/covid-19/requests/addSamplesFromManifest.php:118
 #: app/covid-19/requests/covid-19-dhis2.php:89
 #: app/covid-19/requests/covid-19-requests.php:340
 #: app/covid-19/requests/covid-19-requests.php:450
@@ -8165,7 +8169,7 @@ msgstr "Code TARV du patient"
 #: app/hepatitis/management/hepatitis-export-data.php:198
 #: app/hepatitis/management/hepatitis-export-data.php:245
 #: app/hepatitis/management/hepatitis-export-data.php:280
-#: app/hepatitis/requests/add-samples-from-manifest.php:102
+#: app/hepatitis/requests/add-samples-from-manifest.php:114
 #: app/hepatitis/requests/hepatitis-dhis2.php:321
 #: app/hepatitis/requests/hepatitis-requests.php:327
 #: app/hepatitis/requests/hepatitis-requests.php:421
@@ -8180,7 +8184,7 @@ msgstr "Code TARV du patient"
 #: app/tb/management/tb-export-data.php:196
 #: app/tb/management/tb-export-data.php:234
 #: app/tb/management/tb-export-data.php:269
-#: app/tb/requests/addSamplesFromManifest.php:73
+#: app/tb/requests/addSamplesFromManifest.php:91
 #: app/tb/requests/patientModal.php:79 app/tb/requests/tb-requests.php:252
 #: app/tb/requests/tb-requests.php:316 app/tb/results/tb-failed-results.php:152
 #: app/tb/results/tb-failed-results.php:200
@@ -10858,20 +10862,8 @@ msgstr "Les détails du motif du test CD4 ont été enregistrés avec succès"
 
 #: app/cd4/requests/add-samples-from-manifest.php:13
 #: app/cd4/requests/add-samples-from-manifest.php:26
-#: app/covid-19/requests/addSamplesFromManifest.php:7
-#: app/covid-19/requests/addSamplesFromManifest.php:26
-#: app/eid/requests/addSamplesFromManifest.php:2
-#: app/eid/requests/addSamplesFromManifest.php:29
-#: app/generic-tests/requests/add-samples-from-manifest.php:2
-#: app/generic-tests/requests/add-samples-from-manifest.php:17
-#: app/hepatitis/requests/add-samples-from-manifest.php:2
-#: app/hepatitis/requests/add-samples-from-manifest.php:20
-#: app/system/translate-strings.php:58
-#: app/tb/requests/addSamplesFromManifest.php:2
-#: app/tb/requests/addSamplesFromManifest.php:19
-#: app/vl/requests/addSamplesFromManifest.php:27
-msgid "Add Samples from Manifest"
-msgstr "Ajouter des échantillons à partir du manifeste"
+msgid "CD4 | Add Samples from Manifest"
+msgstr "CD4 | Ajouter des échantillons à partir du manifeste"
 
 #: app/cd4/requests/add-samples-from-manifest.php:33
 #: app/cd4/requests/cd4-requests.php:118
@@ -10899,53 +10891,53 @@ msgstr "Ajouter des échantillons à partir du manifeste"
 msgid "Test Request"
 msgstr "Demandes de test"
 
-#: app/cd4/requests/add-samples-from-manifest.php:46
-#: app/covid-19/requests/addSamplesFromManifest.php:46
-#: app/eid/requests/addSamplesFromManifest.php:49
+#: app/cd4/requests/add-samples-from-manifest.php:47
+#: app/covid-19/requests/addSamplesFromManifest.php:47
+#: app/eid/requests/addSamplesFromManifest.php:50
 #: app/generic-tests/requests/add-samples-from-manifest.php:37
-#: app/hepatitis/requests/add-samples-from-manifest.php:40
-#: app/tb/requests/addSamplesFromManifest.php:33
+#: app/hepatitis/requests/add-samples-from-manifest.php:41
+#: app/tb/requests/addSamplesFromManifest.php:35
 #: app/vl/requests/addSamplesFromManifest.php:48
 msgid "Enter Sample Manifest Code"
 msgstr "Entrer le code manifeste d'échantillons"
 
-#: app/cd4/requests/add-samples-from-manifest.php:49
+#: app/cd4/requests/add-samples-from-manifest.php:51
 #: app/generic-tests/requests/add-samples-from-manifest.php:40
 #: app/vl/requests/addSamplesFromManifest.php:52
 msgid "Sample Manifest Code"
 msgstr "Exemple de code du manifeste"
 
-#: app/cd4/requests/add-samples-from-manifest.php:49
-#: app/covid-19/requests/addSamplesFromManifest.php:49
-#: app/eid/requests/addSamplesFromManifest.php:52
+#: app/cd4/requests/add-samples-from-manifest.php:52
+#: app/covid-19/requests/addSamplesFromManifest.php:52
+#: app/eid/requests/addSamplesFromManifest.php:55
 #: app/generic-tests/requests/add-samples-from-manifest.php:40
-#: app/hepatitis/requests/add-samples-from-manifest.php:43
-#: app/tb/requests/addSamplesFromManifest.php:35
+#: app/hepatitis/requests/add-samples-from-manifest.php:46
+#: app/tb/requests/addSamplesFromManifest.php:40
 #: app/vl/requests/addSamplesFromManifest.php:53
 msgid "Please enter the sample manifest code"
 msgstr "Veuillez saisir l'exemple de code du manifeste"
 
-#: app/cd4/requests/add-samples-from-manifest.php:60
-#: app/covid-19/requests/addSamplesFromManifest.php:60
-#: app/eid/requests/addSamplesFromManifest.php:63
+#: app/cd4/requests/add-samples-from-manifest.php:65
+#: app/covid-19/requests/addSamplesFromManifest.php:65
+#: app/eid/requests/addSamplesFromManifest.php:68
 #: app/generic-tests/requests/add-samples-from-manifest.php:51
-#: app/hepatitis/requests/add-samples-from-manifest.php:54
-#: app/tb/requests/addSamplesFromManifest.php:43
+#: app/hepatitis/requests/add-samples-from-manifest.php:59
+#: app/tb/requests/addSamplesFromManifest.php:51
 #: app/vl/requests/addSamplesFromManifest.php:68
 msgid "Sample Received at Testing Lab"
 msgstr "Date de réception au labo"
 
-#: app/cd4/requests/add-samples-from-manifest.php:66
-#: app/covid-19/requests/addSamplesFromManifest.php:66
-#: app/eid/requests/addSamplesFromManifest.php:70
+#: app/cd4/requests/add-samples-from-manifest.php:76
+#: app/covid-19/requests/addSamplesFromManifest.php:76
+#: app/eid/requests/addSamplesFromManifest.php:80
 #: app/generic-tests/requests/add-samples-from-manifest.php:57
-#: app/hepatitis/requests/add-samples-from-manifest.php:61
-#: app/tb/requests/addSamplesFromManifest.php:47
+#: app/hepatitis/requests/add-samples-from-manifest.php:71
+#: app/tb/requests/addSamplesFromManifest.php:63
 #: app/vl/requests/addSamplesFromManifest.php:79
 msgid "Activate Samples"
 msgstr "Echantillons activés"
 
-#: app/cd4/requests/add-samples-from-manifest.php:99
+#: app/cd4/requests/add-samples-from-manifest.php:111
 #: app/cd4/requests/cd4-requests.php:569
 #: app/cd4/results/cd4-manual-results.php:244
 #: app/cd4/results/cd4-result-status.php:274
@@ -10963,7 +10955,7 @@ msgstr "Echantillons activés"
 msgid "Unique ART No"
 msgstr "No. ART Unique"
 
-#: app/cd4/requests/add-samples-from-manifest.php:120
+#: app/cd4/requests/add-samples-from-manifest.php:132
 #: app/cd4/requests/cd4-requests.php:540 app/cd4/requests/cd4-requests.php:593
 #: app/generic-tests/requests/add-samples-from-manifest.php:111
 #: app/generic-tests/requests/view-requests.php:194
@@ -10976,31 +10968,31 @@ msgstr "No. ART Unique"
 msgid "Last Modified Date"
 msgstr "Date de dernière modification"
 
-#: app/cd4/requests/add-samples-from-manifest.php:127
-#: app/covid-19/requests/addSamplesFromManifest.php:128
+#: app/cd4/requests/add-samples-from-manifest.php:139
+#: app/covid-19/requests/addSamplesFromManifest.php:140
 #: app/generic-tests/requests/add-samples-from-manifest.php:118
 #: app/vl/requests/addSamplesFromManifest.php:139
 msgid "Please enter a valid Manifest Code to activate"
 msgstr "Veuillez saisir un code manifeste valide pour l'activation"
 
-#: app/cd4/requests/add-samples-from-manifest.php:226
-#: app/covid-19/requests/addSamplesFromManifest.php:221
-#: app/eid/requests/addSamplesFromManifest.php:234
+#: app/cd4/requests/add-samples-from-manifest.php:238
+#: app/covid-19/requests/addSamplesFromManifest.php:233
+#: app/eid/requests/addSamplesFromManifest.php:246
 #: app/generic-tests/requests/add-samples-from-manifest.php:219
-#: app/hepatitis/requests/add-samples-from-manifest.php:220
-#: app/tb/requests/addSamplesFromManifest.php:173
+#: app/hepatitis/requests/add-samples-from-manifest.php:232
+#: app/tb/requests/addSamplesFromManifest.php:193
 #: app/vl/requests/addSamplesFromManifest.php:238
 msgid "Please select when the samples were received at the Testing Lab"
 msgstr ""
 "Veuillez indiquer la date à laquelle les échantillons ont été reçus par le "
 "laboratoire"
 
-#: app/cd4/requests/add-samples-from-manifest.php:238
-#: app/covid-19/requests/addSamplesFromManifest.php:233
-#: app/eid/requests/addSamplesFromManifest.php:246
+#: app/cd4/requests/add-samples-from-manifest.php:250
+#: app/covid-19/requests/addSamplesFromManifest.php:245
+#: app/eid/requests/addSamplesFromManifest.php:258
 #: app/generic-tests/requests/add-samples-from-manifest.php:231
-#: app/hepatitis/requests/add-samples-from-manifest.php:232
-#: app/tb/requests/addSamplesFromManifest.php:185
+#: app/hepatitis/requests/add-samples-from-manifest.php:244
+#: app/tb/requests/addSamplesFromManifest.php:205
 #: app/vl/requests/addSamplesFromManifest.php:250
 msgid "Samples from this Manifest have been activated"
 msgstr "Des échantillons de ce manifeste ont été activés"
@@ -11025,8 +11017,8 @@ msgstr "Demande de CD4 ajoutée avec succès"
 #: app/cd4/results/cd4-update-result-helper.php:145
 #: app/covid-19/requests/covid-19-edit-request-helper.php:399
 #: app/covid-19/results/covid-19-update-result-helper.php:162
-#: app/eid/requests/eid-add-request-helper.php:366
-#: app/eid/requests/eid-edit-request-helper.php:395
+#: app/eid/requests/eid-add-request-helper.php:364
+#: app/eid/requests/eid-edit-request-helper.php:390
 #: app/generic-tests/requests/add-request-helper.php:389
 #: app/generic-tests/requests/edit-request-helper.php:359
 #: app/generic-tests/results/update-generic-test-result-helper.php:230
@@ -13703,7 +13695,7 @@ msgstr "Nom"
 #: app/common/reference/geographical-divisions-details.php:186
 #: app/eid/reference/eid-sample-rejection-reasons.php:44
 #: app/hepatitis/reference/hepatitis-sample-rejection-reasons.php:44
-#: app/hepatitis/requests/add-samples-from-manifest.php:86
+#: app/hepatitis/requests/add-samples-from-manifest.php:98
 msgid "Code"
 msgstr "Code"
 
@@ -14742,14 +14734,19 @@ msgstr "Le kit de test Covid-19 QC a été sauvegardé avec succès"
 msgid "Covid-19 Results details saved successfully"
 msgstr "Covid-19 Les détails des résultats ont été sauvegardés avec succès"
 
+#: app/covid-19/requests/addSamplesFromManifest.php:7
+#: app/covid-19/requests/addSamplesFromManifest.php:26
+msgid "Covid-19 | Add Samples from Manifest"
+msgstr "Covid-19 | Ajouter des échantillons à partir du manifeste"
+
 #: app/covid-19/requests/addSamplesFromManifest.php:33
 msgid "Covid-19 Test Request"
 msgstr "Covid-19-Demandes de test"
 
-#: app/covid-19/requests/addSamplesFromManifest.php:49
-#: app/eid/requests/addSamplesFromManifest.php:52
-#: app/hepatitis/requests/add-samples-from-manifest.php:43
-#: app/tb/requests/addSamplesFromManifest.php:35
+#: app/covid-19/requests/addSamplesFromManifest.php:51
+#: app/eid/requests/addSamplesFromManifest.php:54
+#: app/hepatitis/requests/add-samples-from-manifest.php:45
+#: app/tb/requests/addSamplesFromManifest.php:39
 msgid "Sample manifest code"
 msgstr "Code manifeste d'échantillons"
 
@@ -16889,7 +16886,7 @@ msgstr "EID Rapport clinique"
 #: app/eid/management/eid-clinic-report.php:537
 #: app/eid/management/eid-export-data.php:256
 #: app/eid/management/eid-export-data.php:301
-#: app/eid/requests/addSamplesFromManifest.php:107
+#: app/eid/requests/addSamplesFromManifest.php:119
 #: app/eid/requests/eid-requests.php:449
 #: app/eid/results/eid-failed-results.php:213
 #: app/eid/results/eid-manual-results.php:204
@@ -16909,7 +16906,7 @@ msgstr "ID Enfant"
 #: app/eid/management/eid-clinic-report.php:540
 #: app/eid/management/eid-export-data.php:259
 #: app/eid/management/eid-export-data.php:302
-#: app/eid/requests/addSamplesFromManifest.php:110
+#: app/eid/requests/addSamplesFromManifest.php:122
 #: app/eid/requests/eid-requests.php:452
 #: app/eid/results/eid-failed-results.php:216
 #: app/eid/results/eid-manual-results.php:207
@@ -17010,7 +17007,7 @@ msgstr "Nom de la mère"
 
 #: app/eid/management/eid-export-data.php:273
 #: app/eid/management/eid-export-data.php:308
-#: app/eid/requests/addSamplesFromManifest.php:113
+#: app/eid/requests/addSamplesFromManifest.php:125
 #: app/eid/requests/eid-requests.php:455
 #: app/eid/results/eid-failed-results.php:219
 #: app/eid/results/eid-manual-results.php:210
@@ -17147,11 +17144,16 @@ msgstr "Les détails de l'échantillon EID ont été enregistrés avec succès"
 msgid "EID Test Reason details saved successfully"
 msgstr "les details des raisons de test EID enregistrés avec succès"
 
+#: app/eid/requests/addSamplesFromManifest.php:2
+#: app/eid/requests/addSamplesFromManifest.php:29
+msgid "EID | Add Samples from Manifest"
+msgstr "EID | Ajouter des échantillons à partir du manifeste"
+
 #: app/eid/requests/addSamplesFromManifest.php:36
 msgid "EID Test Request"
 msgstr "Demande de test EID"
 
-#: app/eid/requests/addSamplesFromManifest.php:116
+#: app/eid/requests/addSamplesFromManifest.php:128
 #: app/eid/requests/eid-requests.php:458
 #: app/eid/results/eid-failed-results.php:222
 #: app/eid/results/eid-manual-results.php:213
@@ -17161,17 +17163,17 @@ msgstr "Demande de test EID"
 msgid "Mother's Name"
 msgstr "Nom de la mère"
 
-#: app/eid/requests/addSamplesFromManifest.php:138
-#: app/hepatitis/requests/add-samples-from-manifest.php:127
-#: app/tb/requests/addSamplesFromManifest.php:83
+#: app/eid/requests/addSamplesFromManifest.php:150
+#: app/hepatitis/requests/add-samples-from-manifest.php:139
+#: app/tb/requests/addSamplesFromManifest.php:102
 msgid "Please enter the manifest code then submit"
 msgstr "Veuillez saisir le code manifeste puis soumettre"
 
-#: app/eid/requests/eid-add-request-helper.php:358
+#: app/eid/requests/eid-add-request-helper.php:356
 msgid "EID request added successfully"
 msgstr "La demande EID a été mise à jour avec succès"
 
-#: app/eid/requests/eid-edit-request-helper.php:387
+#: app/eid/requests/eid-edit-request-helper.php:382
 msgid "EID request updated successfully"
 msgstr "La demande d'EID a été mise à jour avec succès"
 
@@ -19187,7 +19189,7 @@ msgstr "Afficher uniquement les actifs"
 #: app/facilities/facilities.php:134
 msgid "Please choose if you want to show only active"
 msgstr ""
-"Veuillez choisir si vous souhaitez afficher uniquement les éléments actifs."
+"Veuillez choisir si vous souhaitez afficher uniquement les éléments actifs"
 
 #: app/facilities/facilities.php:141
 msgid "Show Orphaned Facilities"
@@ -21157,6 +21159,12 @@ msgstr "Saisir le nom du correspondant de la demande"
 msgid "Select any one of the option"
 msgstr "Sélectionnez l'une des options suivantes"
 
+#: app/generic-tests/requests/add-samples-from-manifest.php:2
+#: app/generic-tests/requests/add-samples-from-manifest.php:17
+#: app/system/translate-strings.php:58
+msgid "Add Samples from Manifest"
+msgstr "Ajouter des échantillons à partir du manifeste"
+
 #: app/generic-tests/requests/edit-request-helper.php:350
 msgid "Request updated successfully"
 msgstr "Demande mise à jour avec succès"
@@ -22283,7 +22291,7 @@ msgstr "Rapport cliniques de l'hépatite"
 #: app/hepatitis/management/hepatitis-clinic-report.php:448
 #: app/hepatitis/management/hepatitis-export-data.php:132
 #: app/hepatitis/management/hepatitis-export-data.php:283
-#: app/hepatitis/requests/add-samples-from-manifest.php:114
+#: app/hepatitis/requests/add-samples-from-manifest.php:126
 #: app/hepatitis/results/hepatitis-manual-results.php:187
 #: app/hepatitis/results/hepatitis-result-status.php:208
 msgid "HBV VL Result"
@@ -22465,11 +22473,16 @@ msgid "Hepatitis Test Reason details saved successfully"
 msgstr ""
 "Les détails de raison du test de l'hépatite ont été sauvegardés avec succès"
 
+#: app/hepatitis/requests/add-samples-from-manifest.php:2
+#: app/hepatitis/requests/add-samples-from-manifest.php:20
+msgid "Hepatitis | Add Samples from Manifest"
+msgstr "Hépatite | Ajouter des échantillons à partir du manifeste"
+
 #: app/hepatitis/requests/add-samples-from-manifest.php:27
 msgid "Hepatitis Test Request"
 msgstr "Demande de test Hépatite"
 
-#: app/hepatitis/requests/add-samples-from-manifest.php:85
+#: app/hepatitis/requests/add-samples-from-manifest.php:97
 msgid "Remote Sample"
 msgstr "Échantillon prélevé à l'extérieur du labo"
 
@@ -25717,11 +25730,11 @@ msgstr "Résultats CV"
 
 #: app/tasks/remote/sts-metadata-receiver.php:81
 msgid "Please check if STS URL is set"
-msgstr "Veuillez vérifier si l'URL STS est configurée."
+msgstr "Veuillez vérifier si l'URL STS est configurée"
 
 #: app/tasks/remote/sts-metadata-receiver.php:91
 msgid "Please check if Testing Lab ID is set"
-msgstr "Veuillez vérifier si l'ID du laboratoire de test est défini."
+msgstr "Veuillez vérifier si l'ID du laboratoire de test est défini"
 
 #: app/tasks/remote/sts-metadata-receiver.php:101
 msgid "No network connectivity while trying STS medatata sync."
@@ -25854,6 +25867,11 @@ msgstr "Les détails des motifs de test ont été ajoutés avec succès"
 msgid "TB Results details saved successfully"
 msgstr ""
 "Les détails des résultats de la tuberculose ont été sauvegardés avec succès"
+
+#: app/tb/requests/addSamplesFromManifest.php:2
+#: app/tb/requests/addSamplesFromManifest.php:19
+msgid "TB | Add Samples from Manifest"
+msgstr "TB | Ajouter des échantillons à partir du manifeste"
 
 #: app/tb/requests/addSamplesFromManifest.php:22
 msgid "TB Test Request"
@@ -26564,14 +26582,14 @@ msgstr "Demande de test TB ajoutée avec succès"
 msgid "Unable to add this TB sample. Please try again later"
 msgstr "Impossible d'ajouter cet échantillon TB. Veuillez réessayer plus tard"
 
-#: app/tb/requests/tb-edit-request-helper.php:381
-#: app/tb/results/tb-update-result-helper.php:302
+#: app/tb/requests/tb-edit-request-helper.php:380
+#: app/tb/results/tb-update-result-helper.php:301
 msgid "TB test request updated successfully"
 msgstr ""
 "Mise à jour réussie de la demande de test de dépistage de la tuberculose"
 
-#: app/tb/requests/tb-edit-request-helper.php:389
-#: app/tb/results/tb-update-result-helper.php:310
+#: app/tb/requests/tb-edit-request-helper.php:388
+#: app/tb/results/tb-update-result-helper.php:309
 msgid "Unable to update this TB sample. Please try again later"
 msgstr ""
 "Impossible de mettre à jour cet échantillon de la tuberculose. Veuillez "
@@ -27976,6 +27994,7 @@ msgid "Failure Reason"
 msgstr "Motif de l'échec"
 
 #: app/vl/requests/addSamplesFromManifest.php:12
+#: app/vl/requests/addSamplesFromManifest.php:27
 msgid "VL | Add Samples from Manifest"
 msgstr "VL | Ajouter des échantillons à partir du manifeste"
 
