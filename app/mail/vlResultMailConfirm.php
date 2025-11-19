@@ -56,8 +56,8 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
          {
 
             if (isset($this->logo) && ($this->logo !== null && $this->logo !== '' && $this->logo !== '0') && trim($this->logo) !== '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
-                $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
-                $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
+               $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
+               $this->Image($imageFilePath, 20, 13, 15, '', '', '', 'T');
             }
             $this->SetFont('helvetica', 'B', 7);
             $this->writeHTMLCell(30, 0, 16, 28, $this->text, 0, 0, 0, true, 'A');
@@ -82,7 +82,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
       $pdf->setHeading($global['logo'], $global['header']);
       $pdf->setPageOrientation('L');
       // set document information
-      $pdf->SetCreator(_translate('VLSM'));
+      $pdf->SetCreator('InteLIS');
       $pdf->SetTitle('VLSM');
       //$pdf->SetSubject('TCPDF Tutorial');
       //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -119,9 +119,9 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
       $counter = count($filedGroup);
       for ($f = 0; $f < $counter; $f++) {
          if ($filedGroup[$f] === 'Province') {
-             $filedGroup[$f] = 'Province/State';
+            $filedGroup[$f] = 'Province/State';
          } elseif ($filedGroup[$f] === 'District Name') {
-             $filedGroup[$f] = 'District/County';
+            $filedGroup[$f] = 'District/County';
          }
          $pdfContent .= '<td style="border:1px solid #333;"><strong>' . $filedGroup[$f] . '</strong></td>';
       }
@@ -281,10 +281,12 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
          </div>
       </div>
       <div class="box-body">
-         <form id="vlResultMailConfirmForm" name="vlResultMailConfirmForm" method="post" action="vlResultMailHelper.php">
+         <form id="vlResultMailConfirmForm" name="vlResultMailConfirmForm" method="post"
+            action="vlResultMailHelper.php">
             <div class="row">
                <div class="col-lg-12" style="text-align:center !important;">
-                  <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" style="width:18%;margin-left:41%;">
+                  <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"
+                     style="width:18%;margin-left:41%;">
                      <thead>
                         <tr>
                            <th style="text-align:center;background-color:#71b9e2;color:#FFFFFF;">Selected Sample(s)</th>
@@ -293,36 +295,46 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
                      <tbody>
                         <?php
                         $resultOlySamples = [];
-$counter = count($selectedSamplesArray);
+                        $counter = count($selectedSamplesArray);
                         for ($s = 0; $s < $counter; $s++) {
                            $sampleQuery = "SELECT vl_sample_id,sample_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.vl_sample_id = '" . $selectedSamplesArray[$s] . "' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
                            $sampleResult = $db->rawQuery($sampleQuery);
                            if (isset($sampleResult[0]['sample_code'])) {
                               $resultOlySamples[] = $sampleResult[0]['vl_sample_id'];
-                        ?>
+                              ?>
                               <tr>
                                  <td style="text-align:left;"><?php echo $sampleResult[0]['sample_code']; ?></td>
                               </tr>
-                        <?php }
+                           <?php }
                         } ?>
                      </tbody>
                   </table>
                </div>
             </div>
             <div class="row">
-               <input type="hidden" id="subject" name="subject" value="<?php echo htmlspecialchars((string) $_POST['subject']); ?>" />
-               <input type="hidden" id="toEmail" name="toEmail" value="<?php echo htmlspecialchars((string) $_POST['toEmail']); ?>" />
-               <input type="hidden" id="reportEmail" name="reportEmail" value="<?php echo htmlspecialchars((string) $_POST['reportEmail']); ?>" />
-               <input type="hidden" id="message" name="message" value="<?php echo htmlspecialchars((string) $_POST['message']); ?>" />
+               <input type="hidden" id="subject" name="subject"
+                  value="<?php echo htmlspecialchars((string) $_POST['subject']); ?>" />
+               <input type="hidden" id="toEmail" name="toEmail"
+                  value="<?php echo htmlspecialchars((string) $_POST['toEmail']); ?>" />
+               <input type="hidden" id="reportEmail" name="reportEmail"
+                  value="<?php echo htmlspecialchars((string) $_POST['reportEmail']); ?>" />
+               <input type="hidden" id="message" name="message"
+                  value="<?php echo htmlspecialchars((string) $_POST['message']); ?>" />
                <input type="hidden" id="sample" name="sample" value="<?php echo implode(',', $resultOlySamples); ?>" />
-               <input type="hidden" id="pdfFile1" name="pdfFile1" value="<?php echo htmlspecialchars((string) $_POST['pdfFile']); ?>" />
+               <input type="hidden" id="pdfFile1" name="pdfFile1"
+                  value="<?php echo htmlspecialchars((string) $_POST['pdfFile']); ?>" />
                <input type="hidden" id="pdfFile2" name="pdfFile2" value="<?php echo $filename; ?>" />
                <input type="hidden" id="storeFile" name="storeFile" value="no" />
                <div class="col-lg-12" style="text-align:center;padding-left:0;">
                   <a href="../mail/vlResultMail.php" class="btn btn-default"> Cancel</a>&nbsp;
-                  <a class="btn btn-primary" href="javascript:void(0);" onclick="confirmResultMail();"><em class="fa-solid fa-paper-plane"></em> Send</a>
-                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo htmlspecialchars($downloadFile1); ?>" target="_blank" rel="noopener" download style="text-decoration:none;">Click here to download the result only pdf</a></p>
-                  <p style="margin-top:10px;"><a class="send-mail" href="<?php echo htmlspecialchars($downloadFile2); ?>" target="_blank" rel="noopener" download style="text-decoration:none;">Click here to download the result pdf </a></p>
+                  <a class="btn btn-primary" href="javascript:void(0);" onclick="confirmResultMail();"><em
+                        class="fa-solid fa-paper-plane"></em> Send</a>
+                  <p style="margin-top:10px;"><a class="send-mail"
+                        href="<?php echo htmlspecialchars($downloadFile1); ?>" target="_blank" rel="noopener" download
+                        style="text-decoration:none;">Click here to download the result only pdf</a></p>
+                  <p style="margin-top:10px;"><a class="send-mail"
+                        href="<?php echo htmlspecialchars($downloadFile2); ?>" target="_blank" rel="noopener" download
+                        style="text-decoration:none;">Click here to download the result pdf </a></p>
                </div>
             </div>
          </form>

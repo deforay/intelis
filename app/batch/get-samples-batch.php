@@ -92,18 +92,18 @@ if (!empty($_POST['testType'])) {
 }
 
 if (!empty($_POST['sampleCollectionDate'])) {
-    [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-    $swhere[] = $where[] = " DATE(sample_collection_date) BETWEEN '$startDate' AND '$endDate' ";
+    [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '', includeTime: true);
+    $swhere[] = $where[] = " sample_collection_date BETWEEN '$startDate' AND '$endDate' ";
 }
 
 if (!empty($_POST['sampleReceivedAtLab']) && trim((string) $_POST['sampleReceivedAtLab']) !== '') {
-    [$sampleReceivedStartDate, $sampleReceivedEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedAtLab'] ?? '');
-    $swhere[] = $where[] = " DATE(sample_received_at_lab_datetime) BETWEEN '$sampleReceivedStartDate' AND '$sampleReceivedEndDate' ";
+    [$sampleReceivedStartDate, $sampleReceivedEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedAtLab'] ?? '', includeTime: true);
+    $swhere[] = $where[] = " sample_received_at_lab_datetime BETWEEN '$sampleReceivedStartDate' AND '$sampleReceivedEndDate' ";
 }
 
 if (!empty($_POST['lastModifiedDateTime']) && trim((string) $_POST['lastModifiedDateTime']) !== '') {
-    [$lastModifiedStartDate, $lastModifiedEndDate] = DateUtility::convertDateRange($_POST['lastModifiedDateTime'] ?? '');
-    $swhere[] = $where[] = " DATE(last_modified_datetime) BETWEEN '$lastModifiedStartDate' AND '$lastModifiedEndDate' ";
+    [$lastModifiedStartDate, $lastModifiedEndDate] = DateUtility::convertDateRange($_POST['lastModifiedDateTime'] ?? '', includeTime: true);
+    $swhere[] = $where[] = " last_modified_datetime BETWEEN '$lastModifiedStartDate' AND '$lastModifiedEndDate' ";
 }
 
 if (!empty($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !== '') {
@@ -156,8 +156,10 @@ if (isset($_POST['batchId'])) {
             $labCode = ' - ' . $sample['lab_assigned_code'];
         }
         if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
-            <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . $labCode; ?></option>
-    <?php }
+            <option value="<?php echo $sample[$primaryKeyColumn]; ?>">
+                <?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . $labCode; ?>
+            </option>
+        <?php }
     }
 } else { ?>
     <div class="col-md-5" id="sampleDetails">
@@ -168,20 +170,27 @@ if (isset($_POST['batchId'])) {
                     $labCode = ' - ' . $sample['lab_assigned_code'];
                 }
                 if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
-                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) ? "selected='selected'" : ""; ?>><?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . ($sample['facility_name']) . $labCode; ?></option>
-            <?php }
+                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) ? "selected='selected'" : ""; ?>>
+                        <?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . ($sample['facility_name']) . $labCode; ?>
+                    </option>
+                <?php }
             } ?>
         </select>
-        <div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
+        <div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span
+                id="unselectedCount"></span></div>
     </div>
 
     <div class="col-md-2">
-        <button type="button" id="search_undo" class="btn btn-block"><em class="fa-solid fa-rotate-left"></em> <?= _translate("Undo"); ?></button>
+        <button type="button" id="search_undo" class="btn btn-block"><em class="fa-solid fa-rotate-left"></em>
+            <?= _translate("Undo"); ?></button>
         <button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-        <button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-        <button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+        <button type="button" id="search_rightSelected" class="btn btn-block"><em
+                class="fa-sharp fa-solid fa-chevron-right"></em></button>
+        <button type="button" id="search_leftSelected" class="btn btn-block"><em
+                class="fa-sharp fa-solid fa-chevron-left"></em></button>
         <button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
-        <button type="button" id="search_redo" class="btn btn-block"><em class="fa-solid fa-rotate-right"></em> <?= _translate("Redo"); ?></button>
+        <button type="button" id="search_redo" class="btn btn-block"><em class="fa-solid fa-rotate-right"></em>
+            <?= _translate("Redo"); ?></button>
     </div>
 
     <div class="col-md-5">
@@ -192,30 +201,33 @@ if (isset($_POST['batchId'])) {
                     $labCode = ' - ' . $sample['lab_assigned_code'];
                 }
                 if (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) { ?>
-                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>"><?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . '-----' . $labCode; ?></option>
-            <?php }
+                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>">
+                        <?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . '-----' . $labCode; ?>
+                    </option>
+                <?php }
             } ?>
         </select>
-        <div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span id="selectedCount"></span></div>
+        <div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span id="selectedCount"></span>
+        </div>
     </div>
 <?php } ?>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         $('#search').deforayDualBox({
             search: {
                 left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
                 right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />'
             },
-            fireSearch: function(value) {
+            fireSearch: function (value) {
                 return value.length > 2;
             },
             autoSelectNext: true,
             keepRenderingSort: true
         });
 
-        $('#search').on('dualbox:updateCounts', function(e, $left, $right) {
+        $('#search').on('dualbox:updateCounts', function (e, $left, $right) {
             updateCounts($left, $right);
         });
     });

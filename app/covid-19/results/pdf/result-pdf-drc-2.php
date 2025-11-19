@@ -97,7 +97,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $pdf = new DRCCovid19PDF2(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 $pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'COVID-19 PATIENT REPORT', null, 3, $labInfo, $currentDateTime, $result['dataSync'], $systemConfig);
 // set document information
-$pdf->SetCreator('VLSM');
+$pdf->SetCreator('InteLIS');
 $pdf->SetTitle('Covid-19 Rapport du patient');
 //$pdf->SetSubject('TCPDF Tutorial');
 //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -201,7 +201,7 @@ if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) !== '')
     $resultApprovedBy = ($result['approvedBy']);
     $userRes = $usersService->getUserByID($result['result_approved_by'], 'user_signature');
 } else {
-    $resultApprovedBy  = null;
+    $resultApprovedBy = null;
 }
 $userSignaturePath = null;
 

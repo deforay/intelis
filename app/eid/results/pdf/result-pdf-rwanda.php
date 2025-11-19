@@ -34,7 +34,7 @@ if (!empty($result)) {
     }
     $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'EARLY INFANT DIAGNOSIS PATIENT REPORT');
     // set document information
-    $pdf->SetCreator('VLSM');
+    $pdf->SetCreator('InteLIS');
     $pdf->SetTitle('Early Infant Diagnosis Patient Report');
     //$pdf->SetSubject('TCPDF Tutorial');
     //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -103,7 +103,7 @@ if (!empty($result)) {
     if (!isset($result['child_gender']) || trim((string) $result['child_gender']) === '') {
         $result['child_gender'] = _translate('Unreported');
     }
-    $resultApprovedBy  = null;
+    $resultApprovedBy = null;
     $userRes = [];
 
 
@@ -122,10 +122,10 @@ if (!empty($result)) {
         $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
     }
 
-    $approvedBySignaturePath= null;
+    $approvedBySignaturePath = null;
 
     if (!empty($result['approvedBySignature'])) {
-        $approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+        $approvedBySignaturePath = MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
     }
     $vlResult = '';
     $smileyContent = '';

@@ -37,11 +37,11 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
           $sampleTestDate = '';
           if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $aRow['sample_collection_date']);
-               $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
+               $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
           }
           if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) !== '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $aRow['sample_tested_datetime']);
-               $sampleTestDate =  date("d-m-Y", strtotime($expStr[0]));
+               $sampleTestDate = date("d-m-Y", strtotime($expStr[0]));
           }
           $patientName = $aRow['patient_name'] ?? '';
           $patientSurname = $aRow['patient_surname'] ?? '';
@@ -66,7 +66,7 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
      }
 
      if (isset($_SESSION['patientTestHistoryResultCount']) && $_SESSION['patientTestHistoryResultCount'] > 50000) {
-          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.csv';
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore
           unset($output);
@@ -90,7 +90,7 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
                $sheet->fromArray($rowData, null, 'A' . $rRowCount);
           }
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-          $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.xlsx';
+          $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);
           echo urlencode(basename($filename));
      }

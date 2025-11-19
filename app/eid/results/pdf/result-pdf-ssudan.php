@@ -55,7 +55,7 @@ if (!empty($result)) {
 
     $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'EARLY INFANT DIAGNOSIS PATIENT REPORT');
     // set document information
-    $pdf->SetCreator('VLSM');
+    $pdf->SetCreator('InteLIS');
     $pdf->SetTitle('Early Infant Diagnosis Patient Report');
     //$pdf->SetSubject('TCPDF Tutorial');
     //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -121,7 +121,7 @@ if (!empty($result)) {
 
 
     $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
-    $result['result_approved_datetime'] =  DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true);
+    $result['result_approved_datetime'] = DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true);
 
     $testedBy = $result['testedBy'] ?? null;
     $revisedBy = $result['revisedBy'] ?? null;
@@ -149,16 +149,16 @@ if (!empty($result)) {
 
     $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = $approvedBySignaturePath = null;
     if (!empty($result['testedBySignature'])) {
-        $testedBySignaturePath =  MiscUtility::getFullImagePath($result['testedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+        $testedBySignaturePath = MiscUtility::getFullImagePath($result['testedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
     }
     if (!empty($result['reviewedBySignature'])) {
-        $reviewedBySignaturePath =  MiscUtility::getFullImagePath($result['reviewedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+        $reviewedBySignaturePath = MiscUtility::getFullImagePath($result['reviewedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
     }
     if (!empty($result['approvedBySignature'])) {
-        $approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+        $approvedBySignaturePath = MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
     }
     if (!empty($result['revisedBySignature'])) {
-        $revisedBySignaturePath =  MiscUtility::getFullImagePath($result['revisedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+        $revisedBySignaturePath = MiscUtility::getFullImagePath($result['revisedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
     }
 
     $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', 'd/M/Y H:i');

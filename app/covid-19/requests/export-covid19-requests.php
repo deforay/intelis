@@ -180,21 +180,21 @@ $buildRow = function ($aRow, $no) use ($general, $key, $covid19Results): array {
 // Build filter info for header row
 $nameValue = '';
 foreach ($_POST as $key => $value) {
-	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
-	}
+    if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
+        $nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
+    }
 }
 
 // Prepare headings (with alpha-numeric conversion if requested)
 $processedHeadings = $headings;
 if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-	$processedHeadings = array_map(function ($value): string|array|null {
-		$string = str_replace(' ', '', $value);
-		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-	}, $headings);
+    $processedHeadings = array_map(function ($value): string|array|null {
+        $string = str_replace(' ', '', $value);
+        return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+    }, $headings);
 }
 
-$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-COVID19-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
+$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-COVID19-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
 
 $writer = new Writer();
 $writer->openToFile($filename);
@@ -213,13 +213,13 @@ $resultSet = $db->rawQueryGenerator($_SESSION['covid19RequestSearchResultQuery']
 $no = 1;
 
 foreach ($resultSet as $aRow) {
-	$row = $buildRow($aRow, $no++);
-	$writer->addRow(Row::fromValues($row));
+    $row = $buildRow($aRow, $no++);
+    $writer->addRow(Row::fromValues($row));
 
-	// Periodic garbage collection
-	if ($no % 5000 === 0) {
-		gc_collect_cycles();
-	}
+    // Periodic garbage collection
+    if ($no % 5000 === 0) {
+        gc_collect_cycles();
+    }
 }
 
 $writer->close();

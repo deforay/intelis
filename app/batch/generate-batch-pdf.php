@@ -106,8 +106,8 @@ if (!empty($id)) {
         $pdf->setHeading($logo, $headerText, $bResult['batch_code'], $resulted, $reviewed, $bResult['user_name'], $worksheetName);
 
         // set document information
-        $pdf->SetCreator(_translate('INTELIS'));
-        $pdf->SetAuthor(_translate('INTELIS'));
+        $pdf->SetCreator('InteLIS');
+        $pdf->SetAuthor('InteLIS');
         $pdf->SetTitle(_translate('LIS BATCH PDF'));
         $pdf->SetSubject(_translate('LIS BATCH'));
         $pdf->SetKeywords(_translate('LIS BATCH'));

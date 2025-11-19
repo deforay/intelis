@@ -33,8 +33,8 @@ if (!empty($result)) {
      }
      $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName']);
      // set document information
-     $pdf->SetCreator(_translate('VLSM'));
-     //$pdf->SetAuthor('Pal');
+     $pdf->SetCreator('InteLIS');
+
      $pdf->SetTitle('Viral Load Test Result');
      //$pdf->SetSubject('TCPDF Tutorial');
      //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -127,7 +127,7 @@ if (!empty($result)) {
 
      $approvedBySignaturePath = null;
      if (!empty($result['approvedBySignature'])) {
-          $approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+          $approvedBySignaturePath = MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
 
      $smileyContent = '';
@@ -138,8 +138,8 @@ if (!empty($result)) {
      if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
           $key = (string) $general->getGlobalConfig('key');
           $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
-          $result['patient_first_name'] = $general->crypto('decrypt',  $result['patient_first_name'], $key);
-          $result['patient_last_name'] = $general->crypto('decrypt',  $result['patient_last_name'], $key);
+          $result['patient_first_name'] = $general->crypto('decrypt', $result['patient_first_name'], $key);
+          $result['patient_last_name'] = $general->crypto('decrypt', $result['patient_last_name'], $key);
      }
 
 
@@ -173,39 +173,39 @@ if (!empty($result)) {
      $html .= '<td colspan="3" style="line-height:10px;"></td>';
      $html .= '</tr>';
      if ($arr['patient_name_pdf'] == 'fullname') {
-         $html .= '<tr>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PATIENT NAME</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">MOBILE NO.</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">AGE</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['patient_first_name'] . " " . $result['patient_last_name']) . '</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_mobile_number'] . '</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td colspan="3" style="line-height:10px;"></td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SEX</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
-         $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PATIENT NAME</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">MOBILE NO.</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">AGE</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['patient_first_name'] . " " . $result['patient_last_name']) . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_mobile_number'] . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td colspan="3" style="line-height:10px;"></td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SEX</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
+          $html .= '</tr>';
      } elseif ($arr['patient_name_pdf'] == 'hidename') {
-         $html .= '<tr>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">MOBILE NO.</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">AGE</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SEX</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_mobile_number'] . '</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td colspan="3" style="line-height:10px;"></td>';
-         $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">MOBILE NO.</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">AGE</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SEX</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_mobile_number'] . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td colspan="3" style="line-height:10px;"></td>';
+          $html .= '</tr>';
      } else {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PATIENT FIRST NAME</td>';

@@ -47,7 +47,7 @@ if (!empty($result)) {
           $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
      }
 
-     $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = $approvedBySignaturePath= null;
+     $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = $approvedBySignaturePath = null;
      if (!empty($testedByRes['user_signature'])) {
           $testedBySignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
      }
@@ -81,7 +81,7 @@ if (!empty($result)) {
      }
      $pdf->setHeading($logoPrintInPdf, $globalConfig['header'], $result['labName'], $title = 'HIV VIRAL LOAD PATIENT REPORT');
      // set document information
-     $pdf->SetCreator('VLSM');
+     $pdf->SetCreator('InteLIS');
      $pdf->SetTitle('HIV Viral Load Patient Report');
      //$pdf->SetSubject('TCPDF Tutorial');
      //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -347,10 +347,10 @@ if (!empty($result)) {
      $html .= '<table style="padding:10px 2px 2px 2px;">';
      $logValue = '';
      if ($result['result_value_log'] != '' && $result['result_value_log'] != null && ($result['reason_for_sample_rejection'] == '' || $result['reason_for_sample_rejection'] == null)) {
-         $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
+          $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
      } elseif ($isResultNumeric) {
-         $logV = round(log10($result['result']), 2);
-         $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logV;
+          $logV = round(log10($result['result']), 2);
+          $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logV;
      } else {
           $logValue = '';
      }
@@ -358,7 +358,7 @@ if (!empty($result)) {
      if ($result['reason_for_sample_rejection'] != '') {
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
      }
-     if (str_contains(strtolower((string)$result['instrument_machine_name']), 'abbott')) {
+     if (str_contains(strtolower((string) $result['instrument_machine_name']), 'abbott')) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/mL - 10 million copies/mL</td>';
           $html .= '</tr>';
@@ -424,20 +424,20 @@ if (!empty($result)) {
      // $html .= '<td colspan="3" style="line-height:8px;"></td>';
      // $html .= '</tr>';
      if ($result['is_sample_rejected'] == 'no' && (!empty($testedBy) && !empty($result['sample_tested_datetime']))) {
-         $html .= '<tr>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-         if ($testedBySignaturePath !== null && $testedBySignaturePath !== '' && $testedBySignaturePath !== '0' && MiscUtility::isImageValid(($testedBySignaturePath))) {
-              $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testedBySignaturePath . '" style="width:50px;" /></td>';
-         } else {
-              $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-         }
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-         $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
+          if ($testedBySignaturePath !== null && $testedBySignaturePath !== '' && $testedBySignaturePath !== '0' && MiscUtility::isImageValid(($testedBySignaturePath))) {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testedBySignaturePath . '" style="width:50px;" /></td>';
+          } else {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+          }
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+          $html .= '</tr>';
      }
      if (!empty($reviewedBy)) {
           $html .= '<tr>';

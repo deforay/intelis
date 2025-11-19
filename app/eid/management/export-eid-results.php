@@ -132,13 +132,13 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$row[] = $aRow['lab_tech_comments'];
 		$row[] = $aRow['funding_source_name'] ?? null;
 		$row[] = $aRow['i_partner_name'] ?? null;
-		
+
 		$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
 		return $row;
 	};
 
-	
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-Data-' . date('d-M-Y-H-i-s') . '.csv';
+
+	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-EID-Data-' . date('d-M-Y-H-i-s') . '.csv';
 
 	$writer = new Writer();
 	$writer->openToFile($filename);

@@ -27,45 +27,45 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim((string) $
         if (isset($res[$aRow['facility_id']])) {
             if (isset($res[$aRow['facility_id']][$aRow['monthrange']])) {
                 if (trim((string) $aRow['is_sample_rejected']) === 'yes') {
-                    $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected']  + 1;
+                    $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected'] + 1;
                 } else {
                     $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected'];
                 }
-                if (trim((string) $aRow['sample_tested_datetime'])  == null  && trim((string) $aRow['sample_collection_date']) !== '') {
-                    $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
+                if (trim((string) $aRow['sample_tested_datetime']) == null && trim((string) $aRow['sample_collection_date']) !== '') {
+                    $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived'] + 1;
                 } else {
                     $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived'];
                 }
                 $row['facility_name'] = ($aRow['facility_name']);
                 $row['monthrange'] = $aRow['monthrange'];
                 $row['monthly_target'] = $aRow['monthly_target'];
-                $row['totalCollected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalCollected']  + 1;
+                $row['totalCollected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalCollected'] + 1;
                 $res[$aRow['facility_id']][$aRow['monthrange']] = $row;
             } else {
                 if (trim((string) $aRow['is_sample_rejected']) === 'yes') {
-                    $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected']  + 1;
+                    $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected'] + 1;
                 } else {
                     $row['totalRejected'] = 0;
                 }
-                if (trim((string) $aRow['sample_tested_datetime'])  == null  && trim((string) $aRow['sample_collection_date']) !== '') {
-                    $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
+                if (trim((string) $aRow['sample_tested_datetime']) == null && trim((string) $aRow['sample_collection_date']) !== '') {
+                    $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived'] + 1;
                 } else {
                     $row['totalReceived'] = 0;
                 }
                 $row['facility_name'] = ($aRow['facility_name']);
                 $row['monthrange'] = $aRow['monthrange'];
                 $row['monthly_target'] = $aRow['monthly_target'];
-                $row['totalCollected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalCollected']  + 1;
+                $row['totalCollected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalCollected'] + 1;
                 $res[$aRow['facility_id']][$aRow['monthrange']] = $row;
             }
         } else {
             if (trim((string) $aRow['is_sample_rejected']) === 'yes') {
-                $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected']  + 1;
+                $row['totalRejected'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalRejected'] + 1;
             } else {
                 $row['totalRejected'] = 0;
             }
-            if (trim((string) $aRow['sample_tested_datetime'])  == null  && trim((string) $aRow['sample_collection_date']) !== '') {
-                $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived']  + 1;
+            if (trim((string) $aRow['sample_tested_datetime']) == null && trim((string) $aRow['sample_collection_date']) !== '') {
+                $row['totalReceived'] = $res[$aRow['facility_id']][$aRow['monthrange']]['totalReceived'] + 1;
             } else {
                 $row['totalReceived'] = 0;
             }
@@ -87,18 +87,30 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim((string) $
 
     $headingStyle = ['font' => ['bold' => true, 'size' => '11'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT]];
     $backgroundStyle = ['font' => ['bold' => true, 'size' => '13', 'color' => ['rgb' => 'FFFFFF']], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER], 'fill' => ['fillType' => Fill::FILL_SOLID, 'color' => ['rgb' => '5c5c5c']]];
-    $questionStyle = ['font' => [
-        //'bold' => true,
-        'size' => '11',
-    ], 'alignment' => [], 'fill' => ['fillType' => Fill::FILL_SOLID, 'color' => ['rgb' => 'A9A9A9']]];
-    $genderquestionStyle = ['font' => [
-        //'bold' => true,
-        'size' => '11',
-    ], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT], 'fill' => ['fillType' => Fill::FILL_SOLID, 'color' => ['rgb' => 'A9A9A9']]];
-    $styleArray = ['font' => [
-        //'bold' => true,
-        'size' => '11',
-    ], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['borderStyle' => Border::BORDER_THIN]]];
+    $questionStyle = [
+        'font' => [
+            //'bold' => true,
+            'size' => '11',
+        ],
+        'alignment' => [],
+        'fill' => ['fillType' => Fill::FILL_SOLID, 'color' => ['rgb' => 'A9A9A9']]
+    ];
+    $genderquestionStyle = [
+        'font' => [
+            //'bold' => true,
+            'size' => '11',
+        ],
+        'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT],
+        'fill' => ['fillType' => Fill::FILL_SOLID, 'color' => ['rgb' => 'A9A9A9']]
+    ];
+    $styleArray = [
+        'font' => [
+            //'bold' => true,
+            'size' => '11',
+        ],
+        'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT, 'vertical' => Alignment::VERTICAL_CENTER],
+        'borders' => ['outline' => ['borderStyle' => Border::BORDER_THIN]]
+    ];
 
     $sheet->setCellValue('A1', html_entity_decode('COVID-19 - Testing Target ', ENT_QUOTES, 'UTF-8'));
     $sheet->setCellValue('A4', html_entity_decode('Facility Name', ENT_QUOTES, 'UTF-8'));
@@ -143,7 +155,7 @@ if (isset($_SESSION['covid19MonitoringThresholdReportQuery']) && trim((string) $
     }
 
     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-    $filename = 'VLSM-covid19-Testing-Target-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
+    $filename = 'InteLIS-Covid19-Testing-Target-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
     echo urlencode(basename($filename));
 }

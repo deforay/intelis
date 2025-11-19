@@ -56,8 +56,8 @@ if (!empty($result)) {
 
     $pdf->setHeading($logoPrintInPdf, $headerText, $result['labName'], '', $result['lab_id'], $arr['vl_form']);
     // set document information
-    $pdf->SetCreator(_translate('VLSM'));
-    //$pdf->SetAuthor('Pal');
+    $pdf->SetCreator('InteLIS');
+
     $pdf->SetTitle('PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST');
     //$pdf->SetSubject('TCPDF Tutorial');
     //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -153,7 +153,7 @@ if (!empty($result)) {
     }
 
     if (!empty($result['approvedBySignature'])) {
-        $approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+        $approvedBySignaturePath = MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
     }
 
 
@@ -228,7 +228,7 @@ if (!empty($result)) {
     $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $age . '</td>';
-    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' .  _translate(_capitalizeFirstLetter($result['child_gender'])) . '</td>';
+    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['child_gender'])) . '</td>';
     $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . $result['i_partner_name'] . '</td>';
     $html .= '</tr>';
     $html .= '<tr>';
