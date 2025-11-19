@@ -60,7 +60,7 @@ class AppAuthMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        if (empty($_SESSION['userId'])) {
+        if (empty($_SESSION['userId']) && empty($_SESSION['adminUserId'])) {
             if ($method === 'GET' && !$isAjax) {
                 $_SESSION['requestedURI'] ??= $this->safeRequestedUri($request, $path);
                 return new RedirectResponse('/login/login.php');
