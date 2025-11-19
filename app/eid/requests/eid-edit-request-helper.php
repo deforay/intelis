@@ -108,10 +108,10 @@ try {
 
 
 	if (isset($_POST['motherViralLoadCopiesPerMl']) && $_POST['motherViralLoadCopiesPerMl'] != "") {
-     $motherVlResult = $_POST['motherViralLoadCopiesPerMl'];
- } elseif (isset($_POST['motherViralLoadText']) && $_POST['motherViralLoadText'] != "") {
-     $motherVlResult = $_POST['motherViralLoadText'];
- } else {
+		$motherVlResult = $_POST['motherViralLoadCopiesPerMl'];
+	} elseif (isset($_POST['motherViralLoadText']) && $_POST['motherViralLoadText'] != "") {
+		$motherVlResult = $_POST['motherViralLoadText'];
+	} else {
 		$motherVlResult = null;
 	}
 
@@ -292,9 +292,7 @@ try {
 		'data_sync' => 0,
 		'reason_for_sample_rejection' => $_POST['sampleRejectionReason'] ?? null,
 		'rejection_on' => isset($_POST['rejectionDate']) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-		// 'request_created_by'								=> $_SESSION['userId'],
 		'request_created_datetime' => DateUtility::getCurrentDateTime(),
-		// 'last_modified_by' 									=> $_SESSION['userId'],
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
 	];
 
@@ -311,9 +309,6 @@ try {
 	}
 
 	$eidData['reason_for_changing'] = $reasonForChanges ?? null;
-
-
-	$eidData['request_created_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 	$eidData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
 
