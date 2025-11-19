@@ -29,7 +29,7 @@ if (!empty($userRes['user_signature'])) {
 
 if (!empty($requestResult)) {
     $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
-    $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
+    $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
     $pages = [];
     $page = 1;
@@ -53,7 +53,7 @@ if (!empty($requestResult)) {
         $pdf = new HepatitisResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         $pdf->setHeading($arr['logo'], $arr['header'], $result['labName'], $title = 'HEPATATIS - VIRAL LOAD PATIENT REPORT');
         // set document information
-        $pdf->setCreator('VLSM');
+        $pdf->SetCreator('InteLIS');
         $pdf->setTitle('Hepatitis Patient Report');
         //$pdf->SetSubject('TCPDF Tutorial');
         //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -154,7 +154,7 @@ if (!empty($requestResult)) {
         if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) !== '') {
             $resultApprovedBy = ($result['approvedBy']);
         } else {
-            $resultApprovedBy  = null;
+            $resultApprovedBy = null;
         }
         $vlResult = '';
         $showMessage = '';

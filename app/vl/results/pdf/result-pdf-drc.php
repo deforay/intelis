@@ -42,7 +42,7 @@ try {
 
 		$pdf->setHeading($logoPrintInPdf, $headerText, $result['labName'], '', $result['lab_id']);
 		// set document information
-		$pdf->SetCreator(_translate('VLSM'));
+		$pdf->SetCreator('InteLIS');
 		$pdf->SetTitle('PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST');
 
 		// set default header data
@@ -124,7 +124,7 @@ try {
 		$approvedBySignaturePath = null;
 
 		if (!empty($result['approvedBySignature'])) {
-			$approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+			$approvedBySignaturePath = MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
 		}
 
 		$smileyContent = '';

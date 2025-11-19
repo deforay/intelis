@@ -128,15 +128,15 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 
 	<?php if (!empty($_SESSION['instance']['type']) && $general->isSTSInstance()) { ?>
-		<link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsts-icons/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsts-icons/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsts-icons/favicon-16x16.png">
-		<link rel="manifest" href="/assets/vlsts-icons/site.webmanifest">
+		<link rel="apple-touch-icon" sizes="180x180" href="/assets/sts-icons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/assets/sts-icons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/assets/sts-icons/favicon-16x16.png">
+		<link rel="manifest" href="/assets/sts-icons/site.webmanifest">
 	<?php } else { ?>
-		<link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsm-icons/apple-touch-icon.png">
-		<link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsm-icons/favicon-32x32.png">
-		<link rel="icon" type="image/png" sizes="16x16" href="/assets/vlsm-icons/favicon-16x16.png">
-		<link rel="manifest" href="/assets/vlsm-icons/site.webmanifest">
+		<link rel="apple-touch-icon" sizes="180x180" href="/assets/lis-icons/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/assets/lis-icons/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/assets/lis-icons/favicon-16x16.png">
+		<link rel="manifest" href="/assets/lis-icons/site.webmanifest">
 	<?php } ?>
 
 
@@ -209,11 +209,11 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 
 		if (!empty($logo) && trim((string) $logo) !== "" && MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $logo)) {
-		?>
+			?>
 			<div style="margin-top:15px;float:left;">
 				<img src="/uploads/logo/<?= $logo; ?>" alt="Logo image" style="max-width:120px;">
 			</div>
-		<?php
+			<?php
 		}
 
 		$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'login-logos';
@@ -225,17 +225,18 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 					$loginLogoFiles[] = $fileName;
 				}
 			}
-		?>
+			?>
 			<div style="margin-top:15px;float:left;">
 				<?php foreach ($loginLogoFiles as $fileName) { ?>
 					&nbsp;<img src="/uploads/login-logos/<?= $fileName; ?>" alt="Logo image" style="max-width:80px;">
-				<?php }  ?>
+				<?php } ?>
 			</div>
-		<?php
+			<?php
 		}
 
 		?>
-		<div id="loginbox" style="margin-top:20px;margin-bottom:70px;float:right;margin-right:10px;" class="mainbox col-md-3 col-sm-8 ">
+		<div id="loginbox" style="margin-top:20px;margin-bottom:70px;float:right;margin-right:10px;"
+			class="mainbox col-md-3 col-sm-8 ">
 			<div class="panel panel-default" id="loginPanel" style="opacity: 0.93;">
 				<div class="panel-heading">
 					<div class="panel-title"><?= $systemDisplayName; ?></div>
@@ -256,37 +257,51 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 						style="<?= $initialAlert !== '' && $initialAlert !== '0' ? '' : 'display:none' ?>">
 						<?= htmlspecialchars($initialAlert ?: '', ENT_QUOTES, 'UTF-8'); ?>
 					</div>
-					<form id="loginForm" name="loginForm" class="form-horizontal" method="post" action="/login/loginProcess.php" onsubmit="validateNow();return false;">
+					<form id="loginForm" name="loginForm" class="form-horizontal" method="post"
+						action="/login/loginProcess.php" onsubmit="validateNow();return false;">
 						<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
 						<div style="margin-bottom: 5px" class="input-group hpot">
 							<span class="input-group-addon"><em class="fa-solid fa-x"></em></span>
-							<input id="labname_<?= MiscUtility::generateRandomNumber(4) ?>" type="text" class="form-control" name="labname" value="" placeholder="<?= _translate('Lab Name'); ?>" title="<?= _translate('Please enter your lab name'); ?>" onchange="$('#captcha').show();">
+							<input id="labname_<?= MiscUtility::generateRandomNumber(4) ?>" type="text"
+								class="form-control" name="labname" value=""
+								placeholder="<?= _translate('Lab Name'); ?>"
+								title="<?= _translate('Please enter your lab name'); ?>"
+								onchange="$('#captcha').show();">
 						</div>
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
-							<input id="username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?= _translate('User Name'); ?>" title="<?= _translate('Please enter your user name'); ?>" onblur="checkLoginAttempts()">
+							<input id="username" type="text" class="form-control isRequired" name="username" value=""
+								placeholder="<?= _translate('User Name'); ?>"
+								title="<?= _translate('Please enter your user name'); ?>" onblur="checkLoginAttempts()">
 						</div>
 
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-							<input id="password" type="password" class="form-control isRequired" name="password" placeholder="<?= _translate('Password'); ?>" title="<?= _translate('Please enter your password'); ?>">
+							<input id="password" type="password" class="form-control isRequired" name="password"
+								placeholder="<?= _translate('Password'); ?>"
+								title="<?= _translate('Please enter your password'); ?>">
 						</div>
 						<div style="margin-bottom: 5px;display:none" id="captcha">
 							<div>
 								<img id="capChaw" width="180px" alt="verification" src="/includes/captcha.php" />
-								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><em class="fa-solid fa-arrows-rotate"></em> <?= _translate("Get New Image"); ?></a>
+								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><em
+										class="fa-solid fa-arrows-rotate"></em> <?= _translate("Get New Image"); ?></a>
 							</div>
 
 							<div style="margin-bottom: 5px" class="input-group">
 								<span class="input-group-addon"><em class="fa-solid fa-shield-halved"></em></span>
-								<input type="text" id="challengeResponse" name="captcha" placeholder="<?= _translate('Please enter the text from the image'); ?>" class="form-control" title="<?= _translate('Please enter the text from the image'); ?>." maxlength="40">
+								<input type="text" id="challengeResponse" name="captcha"
+									placeholder="<?= _translate('Please enter the text from the image'); ?>"
+									class="form-control"
+									title="<?= _translate('Please enter the text from the image'); ?>." maxlength="40">
 							</div>
 						</div>
 
 						<div style="margin-top:10px" class="form-group">
 							<!-- Button -->
 							<div class="col-sm-12 controls">
-								<button class="btn btn-lg btn-success btn-block" onclick="validateNow();return false;"><?= _translate("Login"); ?></button>
+								<button class="btn btn-lg btn-success btn-block"
+									onclick="validateNow();return false;"><?= _translate("Login"); ?></button>
 							</div>
 						</div>
 					</form>
@@ -326,7 +341,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 		function getCaptcha(captchaDivId) {
 			$("#" + captchaDivId).attr("src", '/includes/captcha.php?x=' + Math.random());
-			$("#" + captchaDivId).load(function() {
+			$("#" + captchaDivId).load(function () {
 				$.blockUI();
 			});
 		}
@@ -351,10 +366,10 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 				if (captchaflag === true) {
 					if (challenge_field !== "") {
 						$.post('/login/check-captcha.php', {
-								challenge_field: challenge_field,
-								format: "html"
-							},
-							function(data) {
+							challenge_field: challenge_field,
+							format: "html"
+						},
+							function (data) {
 								if (data == 'fail') {
 									alert("<?= _translate("Text you entered from the image is incorrect. Please try again", true); ?>");
 									getCaptcha('capChaw');
@@ -375,7 +390,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 			}
 		}
 
-		$(document).ready(function() {
+		$(document).ready(function () {
 			// Increment the idle time counter every minute.
 			setInterval(refreshIfIdle, 60000); // 1 minute
 
@@ -393,7 +408,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 			if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) !== "") { ?>
 				alert("<?= $_SESSION['alertMsg']; ?>");
 				triggerShake();
-			<?php $_SESSION['alertMsg'] = '';
+				<?php $_SESSION['alertMsg'] = '';
 				unset($_SESSION['alertMsg']);
 			} ?>
 
@@ -412,10 +427,10 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 			if ($.trim($("#username").val()) != '') {
 				$.post("/login/check-login-attempts.php", {
-						loginId: $("#username").val(),
-						format: "html"
-					})
-					.done(function(data) {
+					loginId: $("#username").val(),
+					format: "html"
+				})
+					.done(function (data) {
 						// jQuery auto-parses JSON when the response header is JSON,
 						// so support both string and object responses.
 						let response = data;
@@ -443,7 +458,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 							alert(response.error); // Show an error message if any
 						}
 					})
-					.fail(function(jqXHR, textStatus, errorThrown) {
+					.fail(function (jqXHR, textStatus, errorThrown) {
 						// Handle AJAX errors
 						console.error("Error details:", errorThrown);
 					});

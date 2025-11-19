@@ -51,7 +51,7 @@ EOF
 done
 
 # --- Logging ---
-LOGFILE="/var/log/vlsm-log-cleanup.log"
+LOGFILE="/var/log/intelis-log-cleanup.log"
 mkdir -p "$(dirname "$LOGFILE")"
 exec >>"$LOGFILE" 2>&1
 ts() { date +'%F %T'; }
@@ -61,7 +61,7 @@ vlog() { [[ $VERBOSE -eq 1 ]] && log "$@"; }
 log "--- Run start: dir=$LOG_DIR pattern=$PATTERN dry_run=$DRY_RUN ---"
 
 # --- Lock (avoid concurrent runs) ---
-LOCKFILE="/var/lock/vlsm-log-cleanup.lock"
+LOCKFILE="/var/lock/intelis-log-cleanup.lock"
 exec 9>"$LOCKFILE" || { log "Cannot open lock $LOCKFILE"; exit 1; }
 if ! flock -n 9; then
   log "Another cleanup is running. Exiting."

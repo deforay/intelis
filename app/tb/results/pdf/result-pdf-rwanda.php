@@ -24,7 +24,7 @@ $resultFilename = '';
 try {
     if (!empty($requestResult)) {
         $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
-        $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
+        $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR . $_SESSION['rVal'];
         MiscUtility::makeDirectory($pathFront);
         $pages = [];
         $page = 1;
@@ -67,9 +67,9 @@ try {
             }
             $pdfTemplatePath = null;
             $margintop = 15;
-            $facilityReportFormat = (array)json_decode((string) $arr['report_format']);
-            if (isset($selectedReportFormats['tb']['file']) && !empty($selectedReportFormats['tb']['file']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" .  DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['tb']['file'])) {
-                $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" .  DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['tb']['file'];
+            $facilityReportFormat = (array) json_decode((string) $arr['report_format']);
+            if (isset($selectedReportFormats['tb']['file']) && !empty($selectedReportFormats['tb']['file']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['tb']['file'])) {
+                $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['tb']['file'];
                 $margintop = $selectedReportFormats['tb']['mtop'];
             } elseif (isset($selectedReportFormats['default']['file']) && !empty($selectedReportFormats['default']['file']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['default']['file'])) {
                 $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['default']['file'];
@@ -87,7 +87,7 @@ try {
             }
             $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'RWANDA TB SAMPLES REFERRAL SYSTEM', $labFacilityId = null, $formId = (int) $arr['vl_form'], $facilityInfo, $pdfTemplatePath);
             // set document information
-            $pdf->SetCreator('VLSM');
+            $pdf->SetCreator('InteLIS');
             $pdf->SetTitle('RWANDA TB SAMPLES REFERRAL SYSTEM');
             //$pdf->SetSubject('TCPDF Tutorial');
             //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -219,7 +219,7 @@ try {
                 $userRes = $usersService->getUserByID($result['authorized_by'], ['user_signature', 'user_name']);
                 $resultAuthroizedBy = ($userRes['user_name']);
             } else {
-                $resultAuthroizedBy  = '';
+                $resultAuthroizedBy = '';
             }
             $userSignaturePath = null;
 
@@ -232,7 +232,7 @@ try {
                 $userApprovedRes = $usersService->getUserByID($result['result_approved_by'], ['user_signature', 'user_name']);
                 $resultApprovedBy = ($userApprovedRes['user_name']);
             } else {
-                $resultApprovedBy  = null;
+                $resultApprovedBy = null;
             }
             $userApprovedSignaturePath = null;
             if (!empty($userApprovedRes['user_signature'])) {
@@ -411,7 +411,7 @@ try {
                 }
                 $html .= '<table border="1" style="padding:3px;">';
                 $html .= '<tr style="font-size:13px;font-weight:bolt;border-radius:20%;width:100%;background-color:#c0c0c0;border:2px;">';
-                $html .= '<td colspan="4">Final Interpretation : ' .  $tbResults[$result['result']] . '</td>';
+                $html .= '<td colspan="4">Final Interpretation : ' . $tbResults[$result['result']] . '</td>';
                 $html .= '</tr>';
                 $html .= '</table>';
             }

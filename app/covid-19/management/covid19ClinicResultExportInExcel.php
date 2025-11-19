@@ -86,7 +86,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
      }
 
      if (isset($_SESSION['highViralResultCount']) && $_SESSION['highViralResultCount'] > 50000) {
-          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Covid-19-Report' . date('d-M-Y-H-i-s') . '.csv';
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Covid-19-Report' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore
           unset($output);
@@ -124,7 +124,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
                $sheet->fromArray($rowData, null, 'A' . $rRowCount);
           }
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-          $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Covid-19-Report' . date('d-M-Y-H-i-s') . '.xlsx';
+          $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Covid-19-Report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);
           echo urlencode(basename($filename));
      }

@@ -49,16 +49,16 @@ if (!empty($result)) {
 
      $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = $approvedBySignaturePath = null;
      if (!empty($result['testedBySignature'])) {
-          $testedBySignaturePath =  MiscUtility::getFullImagePath($result['testedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+          $testedBySignaturePath = MiscUtility::getFullImagePath($result['testedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
      if (!empty($result['reviewedBySignature'])) {
-          $reviewedBySignaturePath =  MiscUtility::getFullImagePath($result['reviewedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+          $reviewedBySignaturePath = MiscUtility::getFullImagePath($result['reviewedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
      if (!empty($result['approvedBySignature'])) {
-          $approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+          $approvedBySignaturePath = MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
      if (!empty($result['revisedBySignature'])) {
-          $revisedBySignaturePath =  MiscUtility::getFullImagePath($result['revisedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+          $revisedBySignaturePath = MiscUtility::getFullImagePath($result['revisedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
 
 
@@ -85,7 +85,7 @@ if (!empty($result)) {
      }
      $pdf->setHeading($logoPrintInPdf, $globalConfig['header'], $result['labName'], $title = 'HIV VIRAL LOAD PATIENT REPORT');
      // set document information
-     $pdf->SetCreator('VLSM');
+     $pdf->SetCreator('InteLIS');
      $pdf->SetTitle('HIV Viral Load Patient Report');
      //$pdf->SetSubject('TCPDF Tutorial');
      //$pdf->SetKeywords('TCPDF, PDF, example, test, guide');
@@ -137,7 +137,7 @@ if (!empty($result)) {
      // echo $stamp; die;
      if (MiscUtility::isImageValid($stamp)) {
           $pdf->SetAlpha(0.6);
-          $pdf->Image($stamp, 63, 202, 40, null);
+          $pdf->Image($stamp, 63, 202, 40, 0);
      }
      //Set Age
      $age = 'Unknown';
@@ -313,7 +313,6 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:10px 2px 2px 2px;">';
      $logValue = '';
-
      if ($result['result_value_log'] != '' && $result['result_value_log'] != null && ($result['reason_for_sample_rejection'] == '' || $result['reason_for_sample_rejection'] == null)) {
           $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
      } else {
@@ -326,20 +325,29 @@ if (!empty($result)) {
                $logValue = '';
           }
      }
-     
-     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Viral Load Result (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']) . '<br>' . $logValue . '<br>' . $clinicalInterpretation . '</td><td >' . $smileyContent . '</td></tr>';
+
+     $resultSection = '&nbsp;&nbsp;Viral Load Result (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']);
+     if (!empty($logValue)) {
+          $resultSection .= '<br>' . $logValue;
+     }
+     $resultSection .= '<br>' . $clinicalInterpretation;
+
+     $html .= '<tr style="background-color:#dbdbdb;">'
+          . '<td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">' . $resultSection . '</td>'
+          . '<td>' . $smileyContent . '</td>'
+          . '</tr>';
      if ($result['reason_for_sample_rejection'] != '' && $result['is_sample_rejected'] == 'yes') {
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
      }
-    /* if (str_contains(strtolower((string)$result['instrument_machine_name']), 'abbott m2000')) {
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott m2000 Linear Detection range: 839 copies/mL - 10 million copies/mL</td>';
-          $html .= '</tr>';
-     }elseif (str_contains(strtolower((string)$result['instrument_machine_name']), 'alinity')) {
-          $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Alinity M Linear Detection range: 400 copies/mL - 10,000,000 copies/mL</td>';
-          $html .= '</tr>';
-     }*/
+     /* if (str_contains(strtolower((string)$result['instrument_machine_name']), 'abbott m2000')) {
+           $html .= '<tr>';
+           $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott m2000 Linear Detection range: 839 copies/mL - 10 million copies/mL</td>';
+           $html .= '</tr>';
+      }elseif (str_contains(strtolower((string)$result['instrument_machine_name']), 'alinity')) {
+           $html .= '<tr>';
+           $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Alinity M Linear Detection range: 400 copies/mL - 10,000,000 copies/mL</td>';
+           $html .= '</tr>';
+      }*/
      //$html .= '<tr><td colspan="3"></td></tr>';
      $html .= '</table>';
      $html .= '</td>';
@@ -362,8 +370,8 @@ if (!empty($result)) {
      }
 
      $linearDetection = "";
-     if($result['instrument_lower_limit'] != '0' && $result['instrument_higher_limit'] != '0'){
-          $linearDetection = $result['instrument_lower_limit']." - ".$result['instrument_higher_limit'].' copies/mL ';
+     if ($result['instrument_lower_limit'] != '0' && $result['instrument_higher_limit'] != '0') {
+          $linearDetection = $result['instrument_lower_limit'] . " - " . $result['instrument_higher_limit'] . ' copies/mL ';
      }
 
 
@@ -385,17 +393,17 @@ if (!empty($result)) {
 
      $html .= '<tr>';
      $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">TEST PLATFORM</td>';
-    // $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-    if($linearDetection !== ""){
-     $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">LINEAR DETECTION RANGE</td>';
-    }
+     // $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;"></td>';
+     if ($linearDetection !== "") {
+          $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">LINEAR DETECTION RANGE</td>';
+     }
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['instrument_machine_name'] . '</td>';
      //$html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
-      if($linearDetection !== ""){
+     if ($linearDetection !== "") {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $linearDetection . '</td>';
-      }
+     }
      $html .= '</tr>';
 
 
@@ -424,20 +432,20 @@ if (!empty($result)) {
      // $html .= '<td colspan="3" style="line-height:8px;"></td>';
      // $html .= '</tr>';
      if ($result['is_sample_rejected'] == 'no' && (!empty($testedBy) && !empty($result['sample_tested_datetime']))) {
-         $html .= '<tr>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-         if ($testedBySignaturePath !== null && $testedBySignaturePath !== '' && $testedBySignaturePath !== '0' && MiscUtility::isImageValid(($testedBySignaturePath))) {
-              $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testedBySignaturePath . '" style="width:50px;" /></td>';
-         } else {
-              $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-         }
-         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-         $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+          $html .= '</tr>';
+          $html .= '<tr>';
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
+          if ($testedBySignaturePath !== null && $testedBySignaturePath !== '' && $testedBySignaturePath !== '0' && MiscUtility::isImageValid(($testedBySignaturePath))) {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testedBySignaturePath . '" style="width:50px;" /></td>';
+          } else {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+          }
+          $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+          $html .= '</tr>';
      }
      if (!empty($reviewedBy)) {
           $reviewedBySignatureExists = $reviewedBySignaturePath !== null && $reviewedBySignaturePath !== '' && $reviewedBySignaturePath !== '0' && MiscUtility::isImageValid($reviewedBySignaturePath);

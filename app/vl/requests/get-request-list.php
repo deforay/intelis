@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\UsersService;
 use Laminas\Diactoros\ServerRequest;
 use const COUNTRY\CAMEROON;
 use const SAMPLE_STATUS\REJECTED;
@@ -39,6 +40,9 @@ try {
 
      /** @var FacilitiesService $facilitiesService */
      $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+     /** @var UsersService $usersService */
+     $usersService = ContainerRegistry::get(UsersService::class);
 
      $barCodePrinting = (string) $general->getGlobalConfig('bar_code_printing');
      $key = (string) $general->getGlobalConfig('key');
@@ -121,8 +125,10 @@ try {
                vl.sample_received_at_lab_datetime,
                vl.result_dispatched_datetime,
                vl.request_created_datetime,
+               vl.request_created_by,
                vl.result_printed_datetime,
                vl.last_modified_datetime,
+               vl.last_modified_by,
                vl.result_status,
                vl.locked,
                vl.data_sync,
@@ -139,8 +145,6 @@ try {
                f.facility_code,
                f.facility_state,
                f.facility_district,
-               u_d.user_name as reviewedBy,
-               a_u_d.user_name as approvedBy,
                rs.rejection_reason_name,
                tr.test_reason_name,
                r_f_s.funding_source_name,
@@ -154,8 +158,6 @@ try {
                LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
                LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-               LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
-               LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
                LEFT JOIN r_vl_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
                LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing
                LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
@@ -322,7 +324,7 @@ try {
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
      ];
-     $editRequest =  $syncRequest = false;
+     $editRequest = $syncRequest = false;
      if (_isAllowed("/vl/requests/editVlRequest.php")) {
           $editRequest = $syncRequest = true;
      }
@@ -354,6 +356,13 @@ try {
                $patientMname = CommonService::crypto('decrypt', $patientMname, $key);
                $patientLname = CommonService::crypto('decrypt', $patientLname, $key);
           }
+
+          $sampleCodeTooltip[] = _translate("Request Created On") . " : " . DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
+          $sampleCodeTooltip[] = _translate("Request Created By") . " : " . $usersService->getUserName($aRow['request_created_by'] ?? '');
+          if (!empty($aRow['last_modified_by']) && $aRow['last_modified_by'] != '') {
+               $sampleCodeTooltip[] = _translate("Last Modified By") . " : " . $usersService->getUserName($aRow['last_modified_by'] ?? '');
+          }
+
           if (!empty($aRow['sample_package_code'])) {
                $sampleCodeTooltip[] = _translate("Manifest Code") . " : " . $aRow['sample_package_code'];
           }
@@ -371,11 +380,9 @@ try {
                     $box = $storageObj->box;
                     $position = $storageObj->position;
 
-                    $sampleCodeTooltip[] =  _translate("Freezer") . ' - ' . $freezer . ', ' . _translate("Rack") . ' - ' . $rack . ', ' . _translate("Box") . ' - ' . $box . ', ' . _translate("Position") . ' - ' . $position;
+                    $sampleCodeTooltip[] = _translate("Freezer") . ' - ' . $freezer . ', ' . _translate("Rack") . ' - ' . $rack . ', ' . _translate("Box") . ' - ' . $box . ', ' . _translate("Position") . ' - ' . $position;
                }
           }
-          $sampleCodeTooltip[] = _translate("Request Created On") . " : " . DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
-
 
           if (!empty($aRow['patient_dob'])) {
                $patientTooltip[] = _translate("Patient Date of Birth") . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']);
@@ -426,7 +433,7 @@ try {
                if ($general->isLISInstance() && $aRow['result_status'] == RECEIVED_AT_CLINIC) {
                     $edit = '';
                } else {
-                    $edit = '<a href="editVlRequest.php?id=' . MiscUtility::sqid((int)$aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+                    $edit = '<a href="editVlRequest.php?id=' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
                }
                if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/vl/requests/edit-locked-vl-samples")) {
                     $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';

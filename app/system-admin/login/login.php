@@ -37,7 +37,7 @@ $bgColor = $general->isSTSInstance() ? 'red' : 'blue';
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title><?php echo _translate("VLSM"); ?> | <?php echo _translate("Viral Load LIS"); ?> | <?php echo _translate("Admin Login"); ?></title>
+    <title>InteLIS | <?php echo _translate("Viral Load LIS"); ?> | <?php echo _translate("Admin Login"); ?></title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
@@ -53,7 +53,9 @@ $bgColor = $general->isSTSInstance() ? 'red' : 'blue';
 
     <style>
         body {
-            background: <?= bgGradient($bgColor); ?> !important;
+            background:
+                <?= bgGradient($bgColor); ?>
+                !important;
         }
     </style>
 
@@ -62,7 +64,8 @@ $bgColor = $general->isSTSInstance() ? 'red' : 'blue';
 
 <body class="">
     <div class="container-fluid">
-        <div id="loginbox" style="margin-top:20px;margin-bottom:70px;float:right;margin-right:10px;" class="mainbox col-md-3 col-sm-8 ">
+        <div id="loginbox" style="margin-top:20px;margin-bottom:70px;float:right;margin-right:10px;"
+            class="mainbox col-md-3 col-sm-8 ">
             <div class="panel panel-default" style="opacity: 0.93;">
                 <div class="panel-heading">
                     <div class="panel-title"><?php echo _translate("System Administrator"); ?></div>
@@ -70,19 +73,25 @@ $bgColor = $general->isSTSInstance() ? 'red' : 'blue';
 
                 <div style="padding-top:10px;" class="panel-body">
                     <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-                    <form id="loginForm" name="loginForm" class="form-horizontal" method="post" action="adminLoginProcess.php" onsubmit="validateNow();return false;">
+                    <form id="loginForm" name="loginForm" class="form-horizontal" method="post"
+                        action="adminLoginProcess.php" onsubmit="validateNow();return false;">
                         <div style="margin-bottom: 5px" class="input-group">
                             <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
-                            <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _translate('User Name'); ?>" title="<?php echo _translate('Please enter the user name'); ?>">
+                            <input id="login-username" type="text" class="form-control isRequired" name="username"
+                                value="" placeholder="<?php echo _translate('User Name'); ?>"
+                                title="<?php echo _translate('Please enter the user name'); ?>">
                         </div>
                         <div style="margin-bottom: 5px" class="input-group">
                             <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-                            <input id="login-password" type="password" class="form-control isRequired" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>">
+                            <input id="login-password" type="password" class="form-control isRequired" name="password"
+                                placeholder="<?php echo _translate('Password'); ?>"
+                                title="<?php echo _translate('Please enter the password'); ?>">
                         </div>
                         <div style="margin-top:10px" class="form-group">
                             <!-- Button -->
                             <div class="col-sm-12 controls">
-                                <button class="btn btn-lg btn-success btn-block" onclick="validateNow();return false;"><?php echo _translate("Login"); ?></button>
+                                <button class="btn btn-lg btn-success btn-block"
+                                    onclick="validateNow();return false;"><?php echo _translate("Login"); ?></button>
                             </div>
                         </div>
                     </form>
@@ -102,12 +111,12 @@ $bgColor = $general->isSTSInstance() ? 'red' : 'blue';
                 document.getElementById('loginForm').submit();
             }
         }
-        $(document).ready(function() {
+        $(document).ready(function () {
             <?php
             if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) !== "") {
-            ?>
+                ?>
                 alert("<?php echo $_SESSION['alertMsg']; ?>");
-            <?php
+                <?php
                 $_SESSION['alertMsg'] = '';
                 unset($_SESSION['alertMsg']);
             }
