@@ -10,7 +10,7 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-$title = "VL | Add New Request";
+$title = _translate("VL | Add New Request");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -141,7 +141,8 @@ require_once($fileArray[$formId]);
 
 ?>
 
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script type="text/javascript"
+    src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 
 <?php
 // Common JS functions in a PHP file
@@ -159,7 +160,7 @@ require_once WEB_ROOT . "/assets/js/test-specific/vl.js.php";
         formData += "&countryId=" + encodeURIComponent(countryId);
 
         $.post("/vl/requests/insert-sample.php", formData,
-            function(data) {
+            function (data) {
                 if (data > 0) {
                     $.unblockUI();
                     document.getElementById("vlSampleId").value = data;

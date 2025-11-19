@@ -10,6 +10,8 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
+$title = _translate("VL | Edit Request");
+
 require_once APPLICATION_PATH . '/header.php';
 
 $sCode = $labFieldDisabled = '';
@@ -148,7 +150,7 @@ if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_opti
      }
 
      if ($patientLastName != '') {
-          $vlQueryInfo['patient_last_name']  = $patientLastName = $general->crypto('decrypt', $patientLastName, $key);
+          $vlQueryInfo['patient_last_name'] = $patientLastName = $general->crypto('decrypt', $patientLastName, $key);
      }
      $patientFullName = $patientFirstName . " " . $patientMiddleName . " " . $patientLastName;
 } else {
@@ -215,7 +217,8 @@ require_once($fileArray[$formId]);
 
 ?>
 
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script type="text/javascript"
+     src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 
 <?php
 // Common JS functions in a PHP file
