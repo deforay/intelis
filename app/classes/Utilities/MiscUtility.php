@@ -161,21 +161,33 @@ final class MiscUtility
         }
     }
 
-    public static function deleteFile(string $filePath): bool
+    /**
+     * Delete one or more files.
+     *
+     * @param string|array<int,string> $filePath Single path or list of paths
+     * @return bool True only if every provided file was deleted successfully
+     */
+    public static function deleteFile(string|array $filePath): bool
     {
         $filesystem = new Filesystem();
+        $paths = is_array($filePath) ? array_values($filePath) : [$filePath];
 
-        if (!$filesystem->exists($filePath) || !is_file($filePath)) {
-            return false; // File doesn't exist or is not a file
+        $allDeleted = true;
+
+        foreach ($paths as $path) {
+            if (!$filesystem->exists($path) || !is_file($path)) {
+                $allDeleted = false;
+                continue;
+            }
+
+            try {
+                $filesystem->remove($path);
+            } catch (Throwable) {
+                $allDeleted = false;
+            }
         }
 
-        try {
-            $filesystem->remove($filePath);
-            return true;
-        } catch (Throwable) {
-            // Optionally, you can log the error here
-            return false; // Deletion failed
-        }
+        return $allDeleted;
     }
 
 

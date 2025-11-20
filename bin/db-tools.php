@@ -38,6 +38,8 @@ use Ifsnop\Mysqldump as IMysqldump;
 use App\Registries\ContainerRegistry;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Process\InputStream;
+use Symfony\Component\Process\Process;
 
 
 const DEFAULT_OPERATION = 'backup';
@@ -260,21 +262,20 @@ function selectFileWithFzf(array $candidates, string $header): ?string
         escapeshellarg($header)
     );
 
-    $descriptors = [
-        0 => STDIN,
-        1 => STDOUT,
-        2 => STDERR,
-    ];
-
-    $process = proc_open($cmd, $descriptors, $pipes, null, buildSafeProcessEnv());
-    if (is_resource($process)) {
-        proc_close($process);
+    $process = Process::fromShellCommandline($cmd, null, buildSafeProcessEnv());
+    $process->setTimeout(null);
+    if (Process::isTtySupported()) {
+        try {
+            $process->setTty(true);
+        } catch (\RuntimeException) {
+            // If TTY cannot be attached, fall back to default pipes.
+        }
     }
+    $process->run();
 
     $selection = @file_get_contents($outputFile);
 
-    MiscUtility::deleteFile($inputFile);
-    MiscUtility::deleteFile($outputFile);
+    MiscUtility::deleteFile([$inputFile, $outputFile]);
 
     $selection = $selection === false ? '' : trim($selection);
     if ($selection === '') {
@@ -314,26 +315,15 @@ function encryptWithGpg(string $gzPath, string $gpgPath, string $passphrase): bo
         $gzPath
     ];
 
-    $descriptors = [
-        0 => ['pipe', 'r'],
-        1 => ['pipe', 'w'],
-        2 => ['pipe', 'w'],
-    ];
+    $process = new Process($cmd, null, buildSafeProcessEnv());
+    $process->setTimeout(null);
+    $process->setInput($cleanPassphrase . PHP_EOL);
+    $process->run();
 
-    $proc = proc_open($cmd, $descriptors, $pipes, null, buildSafeProcessEnv());
-    if (!is_resource($proc)) {
-        throw new SystemException('Failed to start gpg process.');
-    }
+    $stdout = $process->getOutput();
+    $stderr = $process->getErrorOutput();
 
-    fwrite($pipes[0], $cleanPassphrase . PHP_EOL);
-    fclose($pipes[0]);
-    $stdout = stream_get_contents($pipes[1]) ?: '';
-    $stderr = stream_get_contents($pipes[2]) ?: '';
-    fclose($pipes[1]);
-    fclose($pipes[2]);
-    $exit = proc_close($proc);
-
-    if ($exit !== 0) {
+    if (!$process->isSuccessful()) {
         MiscUtility::deleteFile($gpgPath);
         $msg = (trim($stderr) ?: trim($stdout)) ?: 'Unknown GPG error';
         throw new SystemException("GPG encryption failed: {$msg}");
@@ -380,28 +370,15 @@ function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backup
         $realGpgPath
     ];
 
-    $descriptors = [
-        0 => ['pipe', 'r'],
-        1 => ['pipe', 'w'],
-        2 => ['pipe', 'w'],
-    ];
+    $process = new Process($gpgCmd, null, buildSafeProcessEnv());
+    $process->setTimeout(null);
+    $process->setInput($cleanPassphrase . PHP_EOL);
+    $process->run();
 
-    // @securityreview-ok: command built as argv array, path validated by validateSecureFilePath()
-    $proc = proc_open($gpgCmd, $descriptors, $pipes, null, buildSafeProcessEnv());
-    if (!is_resource($proc)) {
-        throw new SystemException('Failed to start gpg decrypt process.');
-    }
+    $stdout = $process->getOutput();
+    $stderr = $process->getErrorOutput();
 
-    fwrite($pipes[0], $cleanPassphrase . PHP_EOL);
-    fclose($pipes[0]);
-    $stdout = stream_get_contents($pipes[1]) ?: '';
-    $stderr = stream_get_contents($pipes[2]) ?: '';
-    fclose($pipes[1]);
-    fclose($pipes[2]);
-
-    $exit = proc_close($proc);
-
-    if ($exit !== 0 || !is_file($compressedOutput) || filesize($compressedOutput) === 0) {
+    if (!$process->isSuccessful() || !is_file($compressedOutput) || filesize($compressedOutput) === 0) {
         MiscUtility::deleteFile($compressedOutput);
         $msg = (trim($stderr) ?: trim($stdout)) ?: 'Unknown GPG error';
         throw new SystemException("Failed to decrypt GPG backup: {$msg}");
@@ -461,25 +438,12 @@ function verifyGpgStructure(string $gpgPath, ?string $allowedDirectory = null): 
 
     $cmd = ['gpg', '--batch', '--list-packets', $realPath];
 
-    $desc = [
-        0 => ['pipe', 'r'],
-        1 => ['pipe', 'w'],
-        2 => ['pipe', 'w'],
-    ];
-    $proc = proc_open($cmd, $desc, $pipes, null, $safeEnv);
-    if (!is_resource($proc)) {
-        return false;
-    }
-
-    fclose($pipes[0]);
-    $out = stream_get_contents($pipes[1]) ?: '';
-    $err = stream_get_contents($pipes[2]) ?: '';
-    fclose($pipes[1]);
-    fclose($pipes[2]);
-    $exit = proc_close($proc);
+    $process = new Process($cmd, null, $safeEnv);
+    $process->setTimeout(null);
+    $process->run();
 
     // Many gpg 2.4 builds emit non-zero exit even for readable packets.
-    $text = strtolower($out . "\n" . $err);
+    $text = strtolower($process->getOutput() . "\n" . $process->getErrorOutput());
     return (
         str_contains($text, 'encrypted data packet') ||
         str_contains($text, 'symkey enc packet') ||
@@ -1819,90 +1783,82 @@ function executeMysqlCommand(array $config, array $baseCommand, ?string $inputDa
         $command[] = '--execute=' . $sql;
     }
 
-    $descriptorSpec = [
-        0 => ['pipe', 'r'],
-        1 => ['pipe', 'w'],
-        2 => ['pipe', 'w'],
-    ];
-
     $env = buildProcessEnv([
         'MYSQL_PWD' => $config['password'] ?? '',
     ]);
 
-    $process = proc_open($command, $descriptorSpec, $pipes, null, $env);
-    if (!is_resource($process)) {
-        throw new SystemException('Could not connect to the database. Please check your configuration and network connection.');
-    }
+    $process = new Process($command, null, $env);
+    $process->setTimeout(null);
 
-    // Handle input data (for imports)
-    if ($inputData !== null) {
-        if (is_file($inputData)) {
-            // Input is a file path
-            $source = fopen($inputData, 'rb');
-            if (!$source) {
-                fclose($pipes[0]);
-                proc_close($process);
-                throw new SystemException('Could not read the SQL file. Please check file permissions.');
-            }
+    $progressBar = null;
+    $inputStream = null;
+    $progressFinished = false;
 
-            $fileSize = filesize($inputData);
-            $bytesRead = 0;
+    if ($inputData !== null && is_file($inputData)) {
+        $source = fopen($inputData, 'rb');
+        if ($source === false) {
+            throw new SystemException('Could not read the SQL file. Please check file permissions.');
+        }
 
-            // Use ProgressBar for files larger than 1MB
-            $progressBar = null;
-            if ($fileSize > 1048576) {
-                $out = console();
-                $progressBar = new ProgressBar($out, 100); // 100 steps for percentage
-                $progressBar->setFormat(" Importing SQL … %current%/%max%  [%bar%]  %elapsed:6s%  %memory:6s%");
-                $progressBar->setBarCharacter("<fg=green>█</>");
-                $progressBar->setEmptyBarCharacter("░");
-                $progressBar->setProgressCharacter("<fg=green>█</>");
-                $progressBar->start();
-            }
+        $fileSize = filesize($inputData) ?: 0;
+        $bytesRead = 0;
+        if ($fileSize > 1048576) {
+            $out = console();
+            $progressBar = new ProgressBar($out, 100); // 100 steps for percentage
+            $progressBar->setFormat(" Importing SQL … %current%/%max%  [%bar%]  %elapsed:6s%  %memory:6s%");
+            $progressBar->setBarCharacter("<fg=green>█</>");
+            $progressBar->setEmptyBarCharacter("░");
+            $progressBar->setProgressCharacter("<fg=green>█</>");
+            $progressBar->start();
+        }
 
-            $lastPercent = 0;
+        $lastPercent = 0;
+        $inputStream = new InputStream();
+        $process->setInput($inputStream);
+        $process->start();
+
+        try {
             while (!feof($source)) {
                 $chunk = fread($source, 8192);
-                if ($chunk === false) {
+                if ($chunk === false || $chunk === '') {
                     break;
                 }
 
-                fwrite($pipes[0], $chunk);
+                $inputStream->write($chunk);
                 $bytesRead += strlen($chunk);
 
-                // Update progress bar based on percentage
-                if ($progressBar instanceof \Symfony\Component\Console\Helper\ProgressBar && $fileSize > 0) {
-                    $percent = intval(($bytesRead / $fileSize) * 100);
+                if ($progressBar instanceof ProgressBar && $fileSize > 0) {
+                    $percent = (int) (($bytesRead / $fileSize) * 100);
                     if ($percent > $lastPercent) {
                         $progressBar->setProgress($percent);
                         $lastPercent = $percent;
                     }
                 }
             }
-
-            if ($progressBar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
+        } finally {
+            fclose($source);
+            if ($inputStream !== null) {
+                $inputStream->close();
+            }
+            if ($progressBar instanceof ProgressBar && !$progressFinished) {
                 $progressBar->finish();
                 echo "\n";
+                $progressFinished = true;
             }
-
-            fclose($source);
-        } else {
-            // Input is raw data
-            fwrite($pipes[0], $inputData);
         }
+
+        $process->wait();
+    } else {
+        if ($inputData !== null) {
+            $process->setInput($inputData);
+        }
+        $process->run();
     }
 
-    fclose($pipes[0]);
+    $stdout = $process->getOutput();
+    $stderr = $process->getErrorOutput();
 
-    $stdout = stream_get_contents($pipes[1]) ?: '';
-    fclose($pipes[1]);
-
-    $stderr = stream_get_contents($pipes[2]) ?: '';
-    fclose($pipes[2]);
-
-    $exitCode = proc_close($process);
-
-    if ($exitCode !== 0) {
+    if (!$process->isSuccessful()) {
         $errorMessage = trim($stderr) !== '' ? trim($stderr) : trim($stdout);
         throw new SystemException("Database operation failed: {$errorMessage}");
     }
@@ -2039,29 +1995,18 @@ function runMysqlCheckCommand(array $config): string
         // database last
         $command[] = $config['db'];
 
-        $descriptorSpec = [
-            0 => ['pipe', 'r'],
-            1 => ['pipe', 'w'],
-            2 => ['pipe', 'w'],
-        ];
-
         $env = buildProcessEnv([
             'MYSQL_PWD' => $config['password'] ?? '',
         ]);
 
-        $proc = proc_open($command, $descriptorSpec, $pipes, null, $env);
-        if (!is_resource($proc)) {
-            throw new SystemException('Could not run database maintenance. Please verify MySQL tools are installed.');
-        }
+        $process = new Process($command, null, $env);
+        $process->setTimeout(null);
+        $process->run();
 
-        fclose($pipes[0]);
-        $stdout = stream_get_contents($pipes[1]) ?: '';
-        fclose($pipes[1]);
-        $stderr = stream_get_contents($pipes[2]) ?: '';
-        fclose($pipes[2]);
+        $stdout = $process->getOutput() ?: '';
+        $stderr = $process->getErrorOutput() ?: '';
 
-        $exit = proc_close($proc);
-        if ($exit !== 0) {
+        if (!$process->isSuccessful()) {
             $msg = trim($stderr) !== '' ? trim($stderr) : trim($stdout);
             throw new SystemException("Database maintenance failed during {$step['label']}: {$msg}");
         }
@@ -3321,58 +3266,17 @@ function getBinlogList(array $config): array
 
 function runPipeline(array $producer, array $consumer, array $env = []): int
 {
-    $descriptors = [
-        0 => ['pipe', 'r'],
-        1 => ['pipe', 'w'],
-        2 => ['pipe', 'w'],
-    ];
     $env = buildProcessEnv($env);
+    $producerCmd = implode(' ', array_map('escapeshellarg', $producer));
+    $consumerCmd = implode(' ', array_map('escapeshellarg', $consumer));
+    $pipeline = $producerCmd . ' | ' . $consumerCmd;
 
-    // Start producer
-    $proc1 = proc_open($producer, $descriptors, $pipes1, null, $env);
-    if (!is_resource($proc1)) {
-        throw new SystemException('Failed to start mysqlbinlog process.');
-    }
+    $process = Process::fromShellCommandline($pipeline, null, $env);
+    $process->setTimeout(null);
+    $process->run();
 
-    // Start consumer
-    $descriptors2 = [
-        0 => ['pipe', 'r'],
-        1 => ['pipe', 'w'],
-        2 => ['pipe', 'w'],
-    ];
-    $proc2 = proc_open($consumer, $descriptors2, $pipes2, null, $env);
-    if (!is_resource($proc2)) {
-        proc_close($proc1);
-        throw new SystemException('Failed to start mysql (consumer) process.');
-    }
-
-    // Pipe producer stdout -> consumer stdin
-    stream_set_blocking($pipes1[1], true);
-    stream_set_blocking($pipes2[0], true);
-
-    while (!feof($pipes1[1])) {
-        $buf = fread($pipes1[1], 8192);
-        if ($buf === false) {
-            break;
-        }
-        fwrite($pipes2[0], $buf);
-    }
-
-    fclose($pipes1[1]);
-    fclose($pipes1[0]);
-    fclose($pipes1[2]);
-    fclose($pipes2[0]);
-
-    $out = stream_get_contents($pipes2[1]) ?: '';
-    $err = stream_get_contents($pipes2[2]) ?: '';
-    fclose($pipes2[1]);
-    fclose($pipes2[2]);
-
-    $code1 = proc_close($proc1);
-    $code2 = proc_close($proc2);
-
-    if ($code1 !== 0 || $code2 !== 0) {
-        $msg = trim($err) !== '' ? $err : $out;
+    if (!$process->isSuccessful()) {
+        $msg = trim($process->getErrorOutput()) !== '' ? $process->getErrorOutput() : $process->getOutput();
         throw new SystemException("PITR pipeline failed: {$msg}");
     }
     return 0;
