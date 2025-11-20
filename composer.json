@@ -55,6 +55,7 @@
         "slim/slim": "^4.15",
         "sqids/sqids": "^0.4.1",
         "symfony/cache": "^7.3",
+        "symfony/process": "^7.3",
         "symfony/console": "^7.2",
         "symfony/filesystem": "^7.3",
         "symfony/string": "^6.4",
@@ -75,8 +76,7 @@
         "sort-packages": true,
         "secure-http": true,
         "platform": {
-            "php": "8.4.0",
-            "php-64bit": "8.4.0"
+            "php": "8.4"
         }
     },
     "require-dev": {

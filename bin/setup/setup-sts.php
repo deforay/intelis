@@ -14,6 +14,7 @@ use App\Registries\ContainerRegistry;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Process\Process;
 
 
 $cliMode = PHP_SAPI === 'cli';
@@ -196,11 +197,16 @@ try {
             escapeshellarg($inFile)
         );
 
-        $descriptors = [0 => STDIN, 1 => STDOUT, 2 => STDERR];
-        $proc = proc_open($cmd, $descriptors, $pipes);
-        if (is_resource($proc)) {
-            proc_close($proc);
+        $process = Process::fromShellCommandline($cmd);
+        $process->setTimeout(null);
+        if (Process::isTtySupported()) {
+            try {
+                $process->setTty(true);
+            } catch (\RuntimeException) {
+                // Fallback when TTY cannot be enabled (e.g., running detached).
+            }
         }
+        $process->run();
 
         $out = @file_get_contents($outFile);
         MiscUtility::deleteFile($inFile);
