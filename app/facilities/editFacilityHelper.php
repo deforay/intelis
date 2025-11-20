@@ -279,8 +279,11 @@ try {
 		}
 
 		if (isset($_POST['removedLabLogoImage']) && trim((string) $_POST['removedLabLogoImage']) !== "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage'])) {
-			MiscUtility::deleteFile(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage']);
-			MiscUtility::deleteFile(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']);
+			$filesToDelete = [
+				UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage'],
+				UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']
+			];
+			MiscUtility::deleteFile($filesToDelete);
 			$data['facility_logo'] = null;
 			// $db->where('facility_id', $facilityId);
 			// $db->update('facility_details',  $data);

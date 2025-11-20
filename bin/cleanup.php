@@ -18,6 +18,7 @@ use App\Registries\ContainerRegistry;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Process\Process;
 
 // Create output instance
 $output = new ConsoleOutput();
@@ -188,54 +189,86 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
         escapeshellarg($folder)
     );
 
-    $descriptorSpec = [
-        0 => ['pipe', 'r'],
-        1 => ['pipe', 'w'],
-        2 => ['pipe', 'w'],
-    ];
+    $process = Process::fromShellCommandline($findCmd);
+    $process->setTimeout(null);
 
-    $process = proc_open($findCmd, $descriptorSpec, $pipes);
-    if (is_resource($process)) {
-        fclose($pipes[0]);
-        $streamingSucceeded = true;
-        while (($line = fgets($pipes[1])) !== false) {
-            $parts = explode('|', trim($line));
-            if (count($parts) !== 3) {
-                continue;
-            }
+    $streamingSucceeded = false;
+    $errorOutput = '';
+    $stopStreaming = false;
+    $buffer = '';
 
-            $mtime = (float) $parts[0];
-            $path = $parts[1];
-            $size = (int) $parts[2];
-            $ageDays = (time() - (int) $mtime) / 86400;
+    $handleLine = function (string $line) use (&$filesToDelete, &$bytesToFree, &$currentSize, $needsAgeCleanup, $duration, $needsSizeCleanup, $targetSize, &$stopStreaming): void {
+        $parts = explode('|', trim($line));
+        if (count($parts) !== 3) {
+            return;
+        }
 
-            $shouldDelete = false;
-            if ($needsAgeCleanup && $ageDays > $duration) {
-                $shouldDelete = true;
-            }
-            if ($needsSizeCleanup && $currentSize > $targetSize) {
-                $shouldDelete = true;
-            }
+        $mtime = (float) $parts[0];
+        $path = $parts[1];
+        $size = (int) $parts[2];
+        $ageDays = (time() - (int) $mtime) / 86400;
 
-            if ($shouldDelete) {
-                $filesToDelete[] = $path;
-                $bytesToFree += $size;
-                $currentSize -= $size;
-            }
+        $shouldDelete = false;
+        if ($needsAgeCleanup && $duration !== null && $ageDays > $duration) {
+            $shouldDelete = true;
+        }
+        if ($needsSizeCleanup && $currentSize > $targetSize) {
+            $shouldDelete = true;
+        }
 
-            if ($needsSizeCleanup && $currentSize <= $targetSize) {
+        if ($shouldDelete) {
+            $filesToDelete[] = $path;
+            $bytesToFree += $size;
+            $currentSize -= $size;
+        }
+
+        if ($needsSizeCleanup && $currentSize <= $targetSize) {
+            $stopStreaming = true;
+        }
+    };
+
+    $process->start();
+    while ($process->isRunning() && !$stopStreaming) {
+        $buffer .= $process->getIncrementalOutput();
+        while (($pos = strpos($buffer, "\n")) !== false) {
+            $line = substr($buffer, 0, $pos);
+            $buffer = substr($buffer, $pos + 1);
+            $handleLine($line);
+            if ($stopStreaming) {
                 break;
             }
         }
 
-        fclose($pipes[1]);
-        $errorOutput = stream_get_contents($pipes[2]);
-        fclose($pipes[2]);
-        proc_close($process);
-
-        if ($errorOutput !== '') {
-            $streamingSucceeded = false;
+        $errorChunk = $process->getIncrementalErrorOutput();
+        if ($errorChunk !== '') {
+            $errorOutput .= $errorChunk;
         }
+
+        usleep(10000);
+    }
+
+    $buffer .= $process->getIncrementalOutput();
+    if ($buffer !== '' && !$stopStreaming) {
+        foreach (explode("\n", trim($buffer)) as $line) {
+            if ($line === '') {
+                continue;
+            }
+            $handleLine($line);
+            if ($stopStreaming) {
+                break;
+            }
+        }
+    }
+
+    if ($stopStreaming && $process->isRunning()) {
+        $process->stop(1);
+    } else {
+        $process->wait();
+    }
+
+    $errorOutput .= $process->getErrorOutput();
+    if ($process->isSuccessful() && trim($errorOutput) === '') {
+        $streamingSucceeded = true;
     }
 
     if (!$streamingSucceeded) {
@@ -385,21 +418,13 @@ function runDbToolsClean(?int $keep, ?int $days, ConsoleOutput $output): int
         2 => ['pipe', 'w'], // stderr
     ];
 
-    $proc = proc_open($cmd, $descriptorSpec, $pipes, ROOT_PATH, []);
-    if (!is_resource($proc)) {
-        $output->writeln("<fire>✗ Failed to start db-tools.php clean</fire>");
-        return 1;
-    }
+    $process = new Process($cmd, ROOT_PATH);
+    $process->setTimeout(null);
+    $process->run();
 
-    // Nothing to send to stdin — cleanup is non-interactive now
-    fclose($pipes[0]);
-
-    $stdout = stream_get_contents($pipes[1]) ?: '';
-    $stderr = stream_get_contents($pipes[2]) ?: '';
-    fclose($pipes[1]);
-    fclose($pipes[2]);
-
-    $code = proc_close($proc);
+    $stdout = $process->getOutput() ?: '';
+    $stderr = $process->getErrorOutput() ?: '';
+    $code = $process->getExitCode() ?? 1;
 
     if ($stdout !== '') {
         foreach (explode("\n", rtrim($stdout)) as $line) {
@@ -616,4 +641,3 @@ LoggerUtility::logInfo("Cleanup script completed", [
 
 
 exit(CLI\OK);
-

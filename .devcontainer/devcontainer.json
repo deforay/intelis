@@ -3,12 +3,16 @@
 	"dockerComposeFile": "../docker-compose.yml",
 	"service": "web",
 	"workspaceFolder": "/var/www/html",
-	"settings": {
-		"terminal.integrated.shell.linux": "/bin/bash"
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.shell.linux": "/bin/bash"
+			},
+			"extensions": [
+				"felixfbecker.php-debug"
+			]
+		}
 	},
-	"extensions": [
-		"felixfbecker.php-debug"
-	],
 	"forwardPorts": [
 		80,
 		3306

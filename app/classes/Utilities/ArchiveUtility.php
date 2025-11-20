@@ -8,6 +8,7 @@ use ZipArchive;
 use RuntimeException;
 use InvalidArgumentException;
 use App\Utilities\MiscUtility;
+use Symfony\Component\Process\Process;
 
 /**
  * Smart single-file compressor/decompressor with fallback support.
@@ -531,29 +532,17 @@ final class ArchiveUtility
      */
     private static function runCommand(array $args): void
     {
-        $descriptors = [
-            1 => ['pipe', 'w'],
-            2 => ['pipe', 'w']
-        ];
+        $process = new Process($args);
+        $process->setTimeout(null);
+        $process->run();
 
-        $process = proc_open($args, $descriptors, $pipes);
-
-        if (!is_resource($process)) {
-            throw new RuntimeException("Failed to start command: " . implode(' ', $args));
-        }
-
-        $stdout = stream_get_contents($pipes[1]);
-        $stderr = stream_get_contents($pipes[2]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-
-        $exitCode = proc_close($process);
-
-        if ($exitCode !== 0) {
+        if (!$process->isSuccessful()) {
+            $stdout = $process->getOutput();
+            $stderr = $process->getErrorOutput();
             throw new RuntimeException(
                 sprintf(
                     "Command failed with exit code %d: %s\nOutput: %s\nError: %s",
-                    $exitCode,
+                    $process->getExitCode(),
                     implode(' ', $args),
                     $stdout,
                     $stderr
@@ -571,36 +560,22 @@ final class ArchiveUtility
      */
     private static function runCommandCapture(array $args): string
     {
-        $descriptors = [
-            1 => ['pipe', 'w'],
-            2 => ['pipe', 'w']
-        ];
+        $process = new Process($args);
+        $process->setTimeout(null);
+        $process->run();
 
-        $process = proc_open($args, $descriptors, $pipes);
-
-        if (!is_resource($process)) {
-            throw new RuntimeException("Failed to start command: " . implode(' ', $args));
-        }
-
-        $stdout = stream_get_contents($pipes[1]);
-        $stderr = stream_get_contents($pipes[2]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-
-        $exitCode = proc_close($process);
-
-        if ($exitCode !== 0) {
+        if (!$process->isSuccessful()) {
             throw new RuntimeException(
                 sprintf(
                     "Command failed with exit code %d: %s\nError: %s",
-                    $exitCode,
+                    $process->getExitCode(),
                     implode(' ', $args),
-                    $stderr
+                    $process->getErrorOutput()
                 )
             );
         }
 
-        return $stdout;
+        return $process->getOutput();
     }
 
     /* ========== Internal: Compression Methods ========== */
@@ -639,33 +614,16 @@ final class ArchiveUtility
             throw new RuntimeException("Failed to read source file: $src");
         }
 
-        $descriptors = [
-            0 => ['pipe', 'r'],
-            1 => ['pipe', 'w'],
-            2 => ['pipe', 'w']
-        ];
+        $process = new Process(['pigz', '-c']);
+        $process->setTimeout(null);
+        $process->setInput($content);
+        $process->run();
 
-        $process = proc_open(['pigz', '-c'], $descriptors, $pipes);
-
-        if (!is_resource($process)) {
-            throw new RuntimeException("Failed to start pigz");
+        if (!$process->isSuccessful()) {
+            throw new RuntimeException("Pigz compression failed: " . $process->getErrorOutput());
         }
 
-        fwrite($pipes[0], $content);
-        fclose($pipes[0]);
-
-        $compressed = stream_get_contents($pipes[1]);
-        $stderr = stream_get_contents($pipes[2]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-
-        $exitCode = proc_close($process);
-
-        if ($exitCode !== 0) {
-            throw new RuntimeException("Pigz compression failed: $stderr");
-        }
-
-        if (@file_put_contents($dst, $compressed) === false) {
+        if (@file_put_contents($dst, $process->getOutput()) === false) {
             throw new RuntimeException("Failed to write compressed output: $dst");
         }
     }
@@ -682,33 +640,16 @@ final class ArchiveUtility
             throw new RuntimeException("Failed to read source file: $src");
         }
 
-        $descriptors = [
-            0 => ['pipe', 'r'],
-            1 => ['pipe', 'w'],
-            2 => ['pipe', 'w']
-        ];
+        $process = new Process(['gzip', '-c']);
+        $process->setTimeout(null);
+        $process->setInput($content);
+        $process->run();
 
-        $process = proc_open(['gzip', '-c'], $descriptors, $pipes);
-
-        if (!is_resource($process)) {
-            throw new RuntimeException("Failed to start gzip");
+        if (!$process->isSuccessful()) {
+            throw new RuntimeException("Gzip compression failed: " . $process->getErrorOutput());
         }
 
-        fwrite($pipes[0], $content);
-        fclose($pipes[0]);
-
-        $compressed = stream_get_contents($pipes[1]);
-        $stderr = stream_get_contents($pipes[2]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-
-        $exitCode = proc_close($process);
-
-        if ($exitCode !== 0) {
-            throw new RuntimeException("Gzip compression failed: $stderr");
-        }
-
-        if (@file_put_contents($dst, $compressed) === false) {
+        if (@file_put_contents($dst, $process->getOutput()) === false) {
             throw new RuntimeException("Failed to write compressed output: $dst");
         }
     }

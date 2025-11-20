@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d70dd5a3495edc456e0d31756283d05f",
+    "content-hash": "e8608041a98b42b21912f3da04c6f8f4",
     "packages": [
         {
             "name": "brick/phonenumber",
@@ -6777,8 +6777,7 @@
     },
     "platform-dev": {},
     "platform-overrides": {
-        "php": "8.4.0",
-        "php-64bit": "8.4.0"
+        "php": "8.4"
     },
     "plugin-api-version": "2.6.0"
 }
