@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -18,14 +18,14 @@ $tableName = "lab_storage";
 try {
 
     // Sanitized values from $request object
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
     $id = explode(",", (string) $_POST['id']);
     $counter = count($id);
     for ($i = 0; $i < $counter; $i++) {
-        $status = ['storage_status' => $_POST['status'], 'updated_datetime'     =>  DateUtility::getCurrentDateTime()];
+        $status = ['storage_status' => $_POST['status'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
         $db->where('storage_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];

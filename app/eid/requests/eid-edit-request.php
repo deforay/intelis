@@ -84,7 +84,7 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? MiscUtility::desqid($_GET['id']) : null;
@@ -237,15 +237,15 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
     }
 
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         updateSampleResult();
-        $("#isSampleRejected,#result").on("change", function() {
+        $("#isSampleRejected,#result").on("change", function () {
             updateSampleResult();
         });
 
-        $('.result-focus').change(function(e) {
+        $('.result-focus').change(function (e) {
             var status = false;
-            $(".result-focus").each(function(index) {
+            $(".result-focus").each(function (index) {
                 if ($(this).val() != "") {
                     status = true;
                 }

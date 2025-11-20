@@ -13,7 +13,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -296,7 +296,7 @@ foreach ($tatResult as $sRow) {
     <?php
     if (!empty($tResult)) {
         $total = 0;
-    ?>
+        ?>
         var _value = [
             <?php foreach ($tResult as $tRow) {
                 $total += $tRow['total']; ?> {
@@ -347,7 +347,7 @@ foreach ($tatResult as $sRow) {
                 colorByPoint: false,
                 point: {
                     events: {
-                        click: function(e) {
+                        click: function (e) {
                             //console.log(e.point.url);
                             window.open(e.point.url, '_blank');
                             e.preventDefault();
@@ -358,13 +358,13 @@ foreach ($tatResult as $sRow) {
             }]
         });
 
-    <?php
+        <?php
 
     }
 
     if (isset($vlSuppressionResult) && (isset($vlSuppressionResult['highVL']) || isset($vlSuppressionResult['lowVL']))) {
 
-    ?>
+        ?>
         Highcharts.setOptions({
             colors: ['#FF0000', '#50B432']
         });
@@ -404,22 +404,22 @@ foreach ($tatResult as $sRow) {
             series: [{
                 colorByPoint: true,
                 data: [{
-                        name: '<?php echo $highVL; ?>',
-                        y: <?php echo (isset($vlSuppressionResult['highVL']) && $vlSuppressionResult['highVL'] > 0) > 0 ? $vlSuppressionResult['highVL'] : 0; ?>
-                    },
-                    {
-                        name: '<?php echo $lowVL; ?>',
-                        y: <?php echo (isset($vlSuppressionResult['lowVL']) && $vlSuppressionResult['lowVL'] > 0) > 0 ? $vlSuppressionResult['lowVL'] : 0; ?>
-                    },
+                    name: '<?php echo $highVL; ?>',
+                    y: <?php echo (isset($vlSuppressionResult['highVL']) && $vlSuppressionResult['highVL'] > 0) > 0 ? $vlSuppressionResult['highVL'] : 0; ?>
+                },
+                {
+                    name: '<?php echo $lowVL; ?>',
+                    y: <?php echo (isset($vlSuppressionResult['lowVL']) && $vlSuppressionResult['lowVL'] > 0) > 0 ? $vlSuppressionResult['lowVL'] : 0; ?>
+                },
                 ]
             }]
         });
-    <?php
+        <?php
     }
 
     /* For new pie chart for not blank results */
     if (!empty($sampleResultQueryResult) && ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue']) > 0) {
-    ?>
+        ?>
         Highcharts.setOptions({
             colors: ['#7CB5ED', '#808080']
         });
@@ -459,22 +459,22 @@ foreach ($tatResult as $sRow) {
             series: [{
                 colorByPoint: true,
                 data: [{
-                        name: '<?php echo "Viral Load Detected"; ?>',
-                        y: <?php echo (isset($sampleResultQueryResult['numberValue']) && $sampleResultQueryResult['numberValue'] > 0) > 0 ? $sampleResultQueryResult['numberValue'] : 0; ?>
-                    },
-                    {
-                        name: '<?php echo "Viral Load Not Detected"; ?>',
-                        y: <?php echo (isset($sampleResultQueryResult['charValue']) && $sampleResultQueryResult['charValue'] > 0) > 0 ? $sampleResultQueryResult['charValue'] : 0; ?>
-                    },
+                    name: '<?php echo "Viral Load Detected"; ?>',
+                    y: <?php echo (isset($sampleResultQueryResult['numberValue']) && $sampleResultQueryResult['numberValue'] > 0) > 0 ? $sampleResultQueryResult['numberValue'] : 0; ?>
+                },
+                {
+                    name: '<?php echo "Viral Load Not Detected"; ?>',
+                    y: <?php echo (isset($sampleResultQueryResult['charValue']) && $sampleResultQueryResult['charValue'] > 0) > 0 ? $sampleResultQueryResult['charValue'] : 0; ?>
+                },
                 ]
             }]
         });
-    <?php
+        <?php
     } else { ?>
         $('#<?php echo $samplesResultview; ?>').hide();
     <?php }
     if (!empty($result)) {
-    ?>
+        ?>
         $('#<?php echo $labAverageTat; ?>').highcharts({
             chart: {
                 type: 'line'
@@ -496,19 +496,19 @@ foreach ($tatResult as $sRow) {
             },
             xAxis: {
                 categories: [<?php
-                                if (!empty($result['date'])) {
-                                    foreach ($result['date'] as $date) {
-                                        echo "'" . $date . "',";
-                                    }
-                                }
-                                ?>]
+                if (!empty($result['date'])) {
+                    foreach ($result['date'] as $date) {
+                        echo "'" . $date . "',";
+                    }
+                }
+                ?>]
             },
             yAxis: [{
                 title: {
                     text: "<?php echo _translate("Average TAT in Days", escapeTextOrContext: true); ?>"
                 },
                 labels: {
-                    formatter: function() {
+                    formatter: function () {
                         return this.value;
                     }
                 }
@@ -530,7 +530,7 @@ foreach ($tatResult as $sRow) {
                     cursor: 'pointer',
                     point: {
                         events: {
-                            click: function(e) {
+                            click: function (e) {
                                 //doLabTATRedirect(e.point.category);
                             }
                         }
@@ -544,72 +544,72 @@ foreach ($tatResult as $sRow) {
             },
 
             series: [{
-                    type: 'column',
-                    name: "<?php echo _translate("No. of Samples Tested", escapeTextOrContext: true); ?>",
-                    data: [<?php echo implode(",", $result['totalSamples']); ?>],
-                    color: '#7CB5ED',
-                    yAxis: 1
-                },
+                type: 'column',
+                name: "<?php echo _translate("No. of Samples Tested", escapeTextOrContext: true); ?>",
+                data: [<?php echo implode(",", $result['totalSamples']); ?>],
+                color: '#7CB5ED',
+                yAxis: 1
+            },
                 <?php
                 if (isset($result['AvgTestedPrinted'])) {
-                ?> {
-                        connectNulls: false,
-                        showInLegend: true,
-                        name: "<?php echo _translate("Tested - Printed", escapeTextOrContext: true); ?>",
-                        data: [<?php echo implode(",", $result['AvgTestedPrinted']); ?>],
-                        color: '#0f3f6e',
-                    },
-                <?php
+                    ?> {
+                    connectNulls: false,
+                    showInLegend: true,
+                    name: "<?php echo _translate("Tested - Printed", escapeTextOrContext: true); ?>",
+                    data: [<?php echo implode(",", $result['AvgTestedPrinted']); ?>],
+                    color: '#0f3f6e',
+                },
+                    <?php
                 }
                 if (isset($result['sampleReceivedDiff'])) {
-                ?> {
-                        connectNulls: false,
-                        showInLegend: true,
-                        name: "<?php echo _translate("Collected - Received at Lab", escapeTextOrContext: true); ?>",
-                        data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
-                        color: '#edb47c',
-                    },
-                <?php
+                    ?> {
+                    connectNulls: false,
+                    showInLegend: true,
+                    name: "<?php echo _translate("Collected - Received at Lab", escapeTextOrContext: true); ?>",
+                    data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
+                    color: '#edb47c',
+                },
+                    <?php
                 }
                 if (isset($result['sampleReceivedTested'])) {
-                ?> {
-                        connectNulls: false,
-                        showInLegend: true,
-                        name: "<?php echo _translate("Received - Tested", escapeTextOrContext: true); ?>",
-                        data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
-                        color: '#0f3f6e',
-                    },
-                <?php
+                    ?> {
+                    connectNulls: false,
+                    showInLegend: true,
+                    name: "<?php echo _translate("Received - Tested", escapeTextOrContext: true); ?>",
+                    data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
+                    color: '#0f3f6e',
+                },
+                    <?php
                 }
                 if (isset($result['sampleTestedDiff'])) {
-                ?> {
-                        connectNulls: false,
-                        showInLegend: true,
-                        name: "<?php echo _translate("Collected - Tested", escapeTextOrContext: true); ?>",
-                        data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
-                        color: '#ed7c7d',
-                    },
-                <?php
+                    ?> {
+                    connectNulls: false,
+                    showInLegend: true,
+                    name: "<?php echo _translate("Collected - Tested", escapeTextOrContext: true); ?>",
+                    data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
+                    color: '#ed7c7d',
+                },
+                    <?php
                 }
                 if (isset($result['sampleReceivedPrinted'])) {
-                ?> {
-                        connectNulls: false,
-                        showInLegend: true,
-                        name: "<?php echo _translate("Collected - Printed", escapeTextOrContext: true); ?>",
-                        data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
-                        color: '#000',
-                    },
-                <?php
+                    ?> {
+                    connectNulls: false,
+                    showInLegend: true,
+                    name: "<?php echo _translate("Collected - Printed", escapeTextOrContext: true); ?>",
+                    data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
+                    color: '#000',
+                },
+                    <?php
                 }
                 if (isset($result['AvgTestedPrintedFirstTime'])) {
-                ?> {
-                        connectNulls: false,
-                        showInLegend: true,
-                        name: "<?php echo _translate("Collected - Printed First Time", escapeTextOrContext: true); ?>",
-                        data: [<?php echo implode(",", $result['AvgTestedPrintedFirstTime']); ?>],
-                        color: '#000',
-                    },
-                <?php
+                    ?> {
+                    connectNulls: false,
+                    showInLegend: true,
+                    name: "<?php echo _translate("Collected - Printed First Time", escapeTextOrContext: true); ?>",
+                    data: [<?php echo implode(",", $result['AvgTestedPrintedFirstTime']); ?>],
+                    color: '#000',
+                },
+                    <?php
                 }
                 ?>
             ],

@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -22,7 +22,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $geoLocationsService = ContainerRegistry::get(GeoLocationsService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
@@ -70,7 +70,7 @@ if (!empty($facilityIdRequested)) {
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 } elseif (!empty($facilityTypeRequested)) {
 	$facilityOptions = $facilitiesService->getFacilitiesDropdown($testType, $facilityTypeRequested, null, $districtRequested, $option, $_POST['comingFromUser'] ?? null);
-    $testingLabsList = $facilitiesService->getTestingLabs($GLOBALS['testType']);
-    $testingLabsOptions = $general->generateSelectOptions($testingLabsList, null, '-- Select --');
+	$testingLabsList = $facilitiesService->getTestingLabs($GLOBALS['testType']);
+	$testingLabsOptions = $general->generateSelectOptions($testingLabsList, null, '-- Select --');
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 }

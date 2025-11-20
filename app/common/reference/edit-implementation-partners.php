@@ -12,7 +12,7 @@ $title = "Implementation Partners";
 require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -41,30 +41,40 @@ $partnerInfo = $db->rawQuery($query, [$id]);
 
         <div class="box box-default">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+                    <?= _translate("indicates required fields"); ?> &nbsp;</div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
                 <!-- form start -->
-                <form class="form-horizontal" method='post' name='partnerDetails' id='partnerDetails' autocomplete="off" enctype="multipart/form-data" action="save-implementation-partners-helper.php">
+                <form class="form-horizontal" method='post' name='partnerDetails' id='partnerDetails' autocomplete="off"
+                    enctype="multipart/form-data" action="save-implementation-partners-helper.php">
                     <div class="box-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="partnerName" class="col-lg-4 control-label">Province Name <span class="mandatory">*</span></label>
+                                    <label for="partnerName" class="col-lg-4 control-label">Province Name <span
+                                            class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo $partnerInfo[0]['i_partner_name']; ?>" class="form-control isRequired" id="partnerName" name="partnerName" placeholder="Partner Name" title="Please enter Partner name" onblur="checkNameValidation('r_implementation_partners','i_partner_name',this,'<?php echo "i_partner_id##" . $id; ?>','The partner name that you entered already exists.Enter another name',null)" />
+                                        <input type="text" value="<?php echo $partnerInfo[0]['i_partner_name']; ?>"
+                                            class="form-control isRequired" id="partnerName" name="partnerName"
+                                            placeholder="Partner Name" title="Please enter Partner name"
+                                            onblur="checkNameValidation('r_implementation_partners','i_partner_name',this,'<?php echo "i_partner_id##" . $id; ?>','The partner name that you entered already exists.Enter another name',null)" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="partnerStatus" class="col-lg-4 control-label">Partner Status<span class="mandatory">*</span></label>
+                                    <label for="partnerStatus" class="col-lg-4 control-label">Partner Status<span
+                                            class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control isRequired" id="partnerStatus" name="partnerStatus" title="Please select partner status">
+                                        <select class="form-control isRequired" id="partnerStatus" name="partnerStatus"
+                                            title="Please select partner status">
                                             <option value="">--Select--</option>
-                                            <option value="active" <?php echo ($partnerInfo[0]['i_partner_status'] == "active" ? 'selected' : ''); ?>>Active</option>
-                                            <option value="inactive" <?php echo ($partnerInfo[0]['i_partner_status'] == "inactive" ? 'selected' : ''); ?>>Inactive</option>
+                                            <option value="active" <?php echo ($partnerInfo[0]['i_partner_status'] == "active" ? 'selected' : ''); ?>>
+                                                Active</option>
+                                            <option value="inactive" <?php echo ($partnerInfo[0]['i_partner_status'] == "inactive" ? 'selected' : ''); ?>>
+                                                Inactive</option>
                                         </select>
                                     </div>
                                 </div>
@@ -75,7 +85,8 @@ $partnerInfo = $db->rawQuery($query, [$id]);
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <input type="hidden" name="partnerId" name="partnerId" value="<?php echo $_GET['id']; ?>">
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
+                        <a class="btn btn-primary" href="javascript:void(0);"
+                            onclick="validateNow();return false;">Submit</a>
                         <a href="implementation-partners.php" class="btn btn-default"> Cancel</a>
                     </div>
                     <!-- /.box-footer -->
@@ -109,13 +120,13 @@ $partnerInfo = $db->rawQuery($query, [$id]);
         removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: removeDots.trim(),
-                fnct: fnct,
-                format: "html"
-            },
-            function(data) {
+            tableName: tableName,
+            fieldName: fieldName,
+            value: removeDots.trim(),
+            fnct: fnct,
+            format: "html"
+        },
+            function (data) {
                 if (data === '1') {
                     alert(alrt);
                     document.getElementById(obj.id).value = "";

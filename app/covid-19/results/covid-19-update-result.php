@@ -42,7 +42,7 @@ foreach ($userResult as $user) {
 }
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -156,11 +156,11 @@ require_once($fileArray[$formId]);
 ?>
 
 <script>
-	$(document).ready(function() {
-		$('#isSampleRejected').change(function(e) {
+	$(document).ready(function () {
+		$('#isSampleRejected').change(function (e) {
 			changeReject(this.value);
 		});
-		$('#hasRecentTravelHistory').change(function(e) {
+		$('#hasRecentTravelHistory').change(function (e) {
 			changeHistory(this.value);
 		});
 		changeReject($('#isSampleRejected').val());
@@ -176,17 +176,17 @@ require_once($fileArray[$formId]);
 			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			onChangeMonthYear: function(year, month, widget) {
-				setTimeout(function() {
+			onChangeMonthYear: function (year, month, widget) {
+				setTimeout(function () {
 					$('.ui-datepicker-calendar').show();
 				});
 			},
-			onSelect: function(e) {
+			onSelect: function (e) {
 				$('#sampleTestedDateTime').val('');
 				$('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
 			},
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
+		}).click(function () {
 			$('.ui-datepicker-calendar').show();
 		});
 
@@ -195,9 +195,9 @@ require_once($fileArray[$formId]);
 		//$('.date').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?>');
 		//$('.dateTime').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?> 99:99');
 		<?php if (isset($covid19Info['result']) && $covid19Info['result'] != "") { ?>
-			$('.result-focus').change(function(e) {
+			$('.result-focus').change(function (e) {
 				var status = false;
-				$(".result-focus").each(function(index) {
+				$(".result-focus").each(function (index) {
 					if ($(this).val() != "") {
 						status = true;
 					}

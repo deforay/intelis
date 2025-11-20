@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -12,7 +12,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -43,8 +43,8 @@ try {
      $sIndexColumn = $primaryKey;
      $sTable = $tableName;
      /*
-     * Paging
-     */
+      * Paging
+      */
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
@@ -66,11 +66,11 @@ try {
      }
 
      /*
-     * Filtering
-     * NOTE this does not match the built-in DataTables filtering which does it
-     * word by word on any field. It's possible to do here, but concerned about efficiency
-     * on very large tables, and MySQL's regex functionality is very limited
-     */
+      * Filtering
+      * NOTE this does not match the built-in DataTables filtering which does it
+      * word by word on any field. It's possible to do here, but concerned about efficiency
+      * on very large tables, and MySQL's regex functionality is very limited
+      */
 
      $sWhere = [];
      if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -99,9 +99,9 @@ try {
 
 
      /*
-     * SQL queries
-     * Get data to display
-     */
+      * SQL queries
+      * Get data to display
+      */
      $sQuery = "SELECT
                     vl.*,
                     b.batch_code,

@@ -17,7 +17,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -65,7 +65,8 @@ $dateRange = $_GET['dateRange'] ?? '';
                         <div class="box-tools pull-right">
                             <span class="label label-info">Test Type: <?= strtoupper((string) $testType); ?></span>
                             <?php if ($dateRange): ?>
-                                <span class="label label-primary">Period: <?= htmlspecialchars((string) $dateRange); ?></span>
+                                <span class="label label-primary">Period:
+                                    <?= htmlspecialchars((string) $dateRange); ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -74,8 +75,10 @@ $dateRange = $_GET['dateRange'] ?? '';
                             <div class="col-md-12">
                                 <div class="alert alert-info">
                                     <strong><em class="fa-solid fa-info-circle"></em> About This Report:</strong><br>
-                                    This report shows test requests that have been created but no corresponding sample receipt has been recorded in the lab.
-                                    This could indicate delays in sample transport, missing samples, or data entry issues.
+                                    This report shows test requests that have been created but no corresponding sample
+                                    receipt has been recorded in the lab.
+                                    This could indicate delays in sample transport, missing samples, or data entry
+                                    issues.
                                     <ul style="margin-top: 10px;">
                                         <li><strong>High Priority:</strong> Requests older than 7 days</li>
                                         <li><strong>Medium Priority:</strong> Requests 3-7 days old</li>
@@ -88,7 +91,8 @@ $dateRange = $_GET['dateRange'] ?? '';
                         <div class="row" style="margin-bottom: 15px;">
                             <div class="col-md-6">
                                 <div class="info-box">
-                                    <span class="info-box-icon bg-red"><em class="fa-solid fa-exclamation-triangle"></em></span>
+                                    <span class="info-box-icon bg-red"><em
+                                            class="fa-solid fa-exclamation-triangle"></em></span>
                                     <div class="info-box-content">
                                         <span class="info-box-text"><?= _translate('High Priority'); ?></span>
                                         <span class="info-box-number" id="highPriorityCount">-</span>
@@ -110,7 +114,8 @@ $dateRange = $_GET['dateRange'] ?? '';
 
                         <div class="row" style="margin-bottom: 15px;">
                             <div class="col-md-12">
-                                <button class="btn btn-success btn-sm pull-right" onclick="exportMissingSamples();" style="margin-left: 5px;">
+                                <button class="btn btn-success btn-sm pull-right" onclick="exportMissingSamples();"
+                                    style="margin-left: 5px;">
                                     <em class="fa-solid fa-file-excel"></em> <?= _translate('Export to Excel'); ?>
                                 </button>
                                 <button class="btn btn-primary btn-sm pull-right" onclick="refreshData();">
@@ -147,7 +152,7 @@ $dateRange = $_GET['dateRange'] ?? '';
 <script type="text/javascript">
     var dataTable;
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Load priority counts
         loadPriorityCounts();
 
@@ -158,72 +163,72 @@ $dateRange = $_GET['dateRange'] ?? '';
             "ajax": {
                 "url": "/admin/api-dashboard/get-missing-samples-detail.php",
                 "type": "POST",
-                "data": function(d) {
+                "data": function (d) {
                     d.testType = "<?= $testType; ?>";
                     d.dateRange = "<?= $dateRange; ?>";
                 }
             },
             "columns": [{
-                    "data": "priority",
-                    "render": function(data, type, row) {
-                        let className = '';
-                        let icon = '';
-                        if (data === 'High') {
-                            className = 'label-danger';
-                            icon = 'fa-solid fa-exclamation-circle';
-                        } else if (data === 'Medium') {
-                            className = 'label-warning';
-                            icon = 'fa-solid fa-clock';
-                        } else {
-                            className = 'label-info';
-                            icon = 'fa-solid fa-info-circle';
-                        }
-                        return '<span class="label ' + className + '"><em class="' + icon + '"></em> ' + data + '</span>';
+                "data": "priority",
+                "render": function (data, type, row) {
+                    let className = '';
+                    let icon = '';
+                    if (data === 'High') {
+                        className = 'label-danger';
+                        icon = 'fa-solid fa-exclamation-circle';
+                    } else if (data === 'Medium') {
+                        className = 'label-warning';
+                        icon = 'fa-solid fa-clock';
+                    } else {
+                        className = 'label-info';
+                        icon = 'fa-solid fa-info-circle';
                     }
-                },
-                {
-                    "data": "sample_code"
-                },
-                {
-                    "data": "remote_sample_code"
-                },
-                {
-                    "data": "patient_info"
-                },
-                {
-                    "data": "facility_name"
-                },
-                {
-                    "data": "request_date"
-                },
-                {
-                    "data": "days_pending",
-                    "render": function(data, type, row) {
-                        let className = data > 7 ? 'label-danger' : (data > 3 ? 'label-warning' : 'label-info');
-                        return '<span class="label ' + className + '">' + data + ' days</span>';
-                    }
-                },
-                {
-                    "data": "source_of_request",
-                    "render": function(data, type, row) {
-                        let className = data.includes('API') ? 'label-primary' : 'label-default';
-                        return '<span class="label ' + className + '">' + data + '</span>';
-                    }
-                },
-                {
-                    "data": null,
-                    "orderable": false,
-                    "render": function(data, type, row) {
-                        return '<div class="btn-group">' +
-                            '<button class="btn btn-xs btn-primary" onclick="followUpSample(\'' + row.sample_code + '\');" title="Follow Up">' +
-                            '<em class="fa-solid fa-search"></em></button>' +
-                            '<button class="btn btn-xs btn-info" onclick="addNote(\'' + row.sample_code + '\');" title="Add Note">' +
-                            '<em class="fa-solid fa-sticky-note"></em></button>' +
-                            '<button class="btn btn-xs btn-warning" onclick="sendAlert(\'' + row.sample_code + '\');" title="Send Alert">' +
-                            '<em class="fa-solid fa-bell"></em></button>' +
-                            '</div>';
-                    }
+                    return '<span class="label ' + className + '"><em class="' + icon + '"></em> ' + data + '</span>';
                 }
+            },
+            {
+                "data": "sample_code"
+            },
+            {
+                "data": "remote_sample_code"
+            },
+            {
+                "data": "patient_info"
+            },
+            {
+                "data": "facility_name"
+            },
+            {
+                "data": "request_date"
+            },
+            {
+                "data": "days_pending",
+                "render": function (data, type, row) {
+                    let className = data > 7 ? 'label-danger' : (data > 3 ? 'label-warning' : 'label-info');
+                    return '<span class="label ' + className + '">' + data + ' days</span>';
+                }
+            },
+            {
+                "data": "source_of_request",
+                "render": function (data, type, row) {
+                    let className = data.includes('API') ? 'label-primary' : 'label-default';
+                    return '<span class="label ' + className + '">' + data + '</span>';
+                }
+            },
+            {
+                "data": null,
+                "orderable": false,
+                "render": function (data, type, row) {
+                    return '<div class="btn-group">' +
+                        '<button class="btn btn-xs btn-primary" onclick="followUpSample(\'' + row.sample_code + '\');" title="Follow Up">' +
+                        '<em class="fa-solid fa-search"></em></button>' +
+                        '<button class="btn btn-xs btn-info" onclick="addNote(\'' + row.sample_code + '\');" title="Add Note">' +
+                        '<em class="fa-solid fa-sticky-note"></em></button>' +
+                        '<button class="btn btn-xs btn-warning" onclick="sendAlert(\'' + row.sample_code + '\');" title="Send Alert">' +
+                        '<em class="fa-solid fa-bell"></em></button>' +
+                        '</div>';
+                }
+            }
             ],
             "order": [
                 [6, "desc"]
@@ -232,21 +237,21 @@ $dateRange = $_GET['dateRange'] ?? '';
             "responsive": true,
             "dom": 'Bfrtip',
             "buttons": [{
-                    extend: 'excel',
-                    text: '<em class="fa-solid fa-file-excel"></em> Export Excel',
-                    className: 'btn btn-success btn-sm',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7] // Exclude actions column
-                    }
-                },
-                {
-                    extend: 'pdf',
-                    text: '<em class="fa-solid fa-file-pdf"></em> Export PDF',
-                    className: 'btn btn-danger btn-sm',
-                    exportOptions: {
-                        columns: [0, 1, 2, 3, 4, 5, 6, 7] // Exclude actions column
-                    }
+                extend: 'excel',
+                text: '<em class="fa-solid fa-file-excel"></em> Export Excel',
+                className: 'btn btn-success btn-sm',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7] // Exclude actions column
                 }
+            },
+            {
+                extend: 'pdf',
+                text: '<em class="fa-solid fa-file-pdf"></em> Export PDF',
+                className: 'btn btn-danger btn-sm',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7] // Exclude actions column
+                }
+            }
             ]
         });
     });
@@ -255,11 +260,11 @@ $dateRange = $_GET['dateRange'] ?? '';
         $.post("/admin/api-dashboard/get-missing-samples-priority-counts.php", {
             testType: "<?= $testType; ?>",
             dateRange: "<?= $dateRange; ?>"
-        }, function(data) {
+        }, function (data) {
             const counts = JSON.parse(data);
             $("#highPriorityCount").text(counts.high || 0);
             $("#mediumPriorityCount").text(counts.medium || 0);
-        }).fail(function() {
+        }).fail(function () {
             $("#highPriorityCount").text("Error");
             $("#mediumPriorityCount").text("Error");
         });
@@ -283,14 +288,14 @@ $dateRange = $_GET['dateRange'] ?? '';
                 sampleCode: sampleCode,
                 testType: "<?= $testType; ?>",
                 note: note.trim()
-            }, function(response) {
+            }, function (response) {
                 const result = typeof response === 'string' ? JSON.parse(response) : response;
                 if (result.success) {
                     alert('Note added successfully');
                 } else {
                     alert('Failed to add note: ' + (result.error || 'Unknown error'));
                 }
-            }).fail(function() {
+            }).fail(function () {
                 alert('Failed to add note due to connection error');
             });
         }
@@ -301,14 +306,14 @@ $dateRange = $_GET['dateRange'] ?? '';
             $.post("/admin/api-dashboard/send-missing-sample-alert.php", {
                 sampleCode: sampleCode,
                 testType: "<?= $testType; ?>"
-            }, function(response) {
+            }, function (response) {
                 const result = typeof response === 'string' ? JSON.parse(response) : response;
                 if (result.success) {
                     alert('Alert sent successfully');
                 } else {
                     alert('Failed to send alert: ' + (result.error || 'Unknown error'));
                 }
-            }).fail(function() {
+            }).fail(function () {
                 alert('Failed to send alert due to connection error');
             });
         }
@@ -345,12 +350,14 @@ $dateRange = $_GET['dateRange'] ?? '';
                 </div>
                 <div class="form-group">
                     <label><?= _translate('Comments'); ?>:</label>
-                    <textarea id="actionComments" class="form-control" rows="4" placeholder="<?= _translate('Enter your comments or notes...'); ?>"></textarea>
+                    <textarea id="actionComments" class="form-control" rows="4"
+                        placeholder="<?= _translate('Enter your comments or notes...'); ?>"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><?= _translate('Cancel'); ?></button>
-                <button type="button" class="btn btn-primary" onclick="executeFollowUp();"><?= _translate('Execute Action'); ?></button>
+                <button type="button" class="btn btn-primary"
+                    onclick="executeFollowUp();"><?= _translate('Execute Action'); ?></button>
             </div>
         </div>
     </div>

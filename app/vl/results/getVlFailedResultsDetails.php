@@ -1,7 +1,7 @@
 <?php
 
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\ON_HOLD;
 use const SAMPLE_STATUS\LOST_OR_MISSING;
 use const SAMPLE_STATUS\TEST_FAILED;
@@ -16,7 +16,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -137,28 +137,28 @@ try {
         if (trim((string) $start_date) === trim((string) $end_date)) {
             $sWhere[] = " DATE(vl.sample_collection_date) like '$start_date'";
         } else {
-            $sWhere[] =  " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
+            $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
         }
     }
     if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
-        $sWhere[] =  ' s.sample_id = "' . $_POST['sampleType'] . '"';
+        $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
     }
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+        $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $sWhere[] =  " f.facility_district_id = '" . $_POST['district'] . "' ";
+        $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
     }
     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
         $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
     }
     if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) !== '') {
-        $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
+        $sWhere[] = '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
     }
     if (isset($_POST['status']) && !empty($_POST['status'])) {
-        $sWhere[] =  ' vl.result_status IN (' . $_POST['status'] . ')';
+        $sWhere[] = ' vl.result_status IN (' . $_POST['status'] . ')';
     } else {
-        $sWhere[] =  ' vl.result_status IN (' . implode(',', $failedStatusIds) . ')';
+        $sWhere[] = ' vl.result_status IN (' . implode(',', $failedStatusIds) . ')';
     }
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
         $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';

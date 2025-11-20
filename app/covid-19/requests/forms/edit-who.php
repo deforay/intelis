@@ -9,7 +9,7 @@ use App\Utilities\DateUtility;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -146,7 +146,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                     <option
                                                         value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"
                                                         <?php echo ($covid19Info['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>>
-                                                        <?= $implementingPartner['i_partner_name']; ?></option>
+                                                        <?= $implementingPartner['i_partner_name']; ?>
+                                                    </option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -161,7 +162,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                     <option
                                                         value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"
                                                         <?php echo ($covid19Info['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>>
-                                                        <?= $fundingSource['funding_source_name']; ?></option>
+                                                        <?= $fundingSource['funding_source_name']; ?>
+                                                    </option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -456,7 +458,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                             foreach ($rejectionResult as $reject) {
                                                                 if ($type['rejection_type'] == $reject['rejection_type']) { ?>
                                                                     <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($covid19Info['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
-                                                                        <?= $reject['rejection_reason_name']; ?></option>
+                                                                        <?= $reject['rejection_reason_name']; ?>
+                                                                    </option>
                                                                 <?php }
                                                             } ?>
                                                         </optgroup>
@@ -516,7 +519,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                             <option value=''> -- Select -- </option>
                                                                             <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                                 <option value="<?php echo $c19ResultKey; ?>" <?php echo ($rows['result'] == $c19ResultKey) ? "selected='selected'" : ""; ?>>
-                                                                                    <?php echo $c19ResultValue; ?> </option>
+                                                                                    <?php echo $c19ResultValue; ?>
+                                                                                </option>
                                                                             <?php } ?>
                                                                         </select>
                                                                     </td>
@@ -549,7 +553,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                         <option value=''> -- Select -- </option>
                                                                         <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                             <option value="<?php echo $c19ResultKey; ?>">
-                                                                                <?php echo $c19ResultValue; ?> </option>
+                                                                                <?php echo $c19ResultValue; ?>
+                                                                            </option>
                                                                         <?php } ?>
                                                                     </select>
                                                                 </td>
@@ -574,7 +579,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     <option value=''> -- Select -- </option>
                                                                     <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                         <option value="<?php echo $c19ResultKey; ?>" <?php echo ($covid19Info['result'] == $c19ResultKey) ? "selected='selected'" : ""; ?>>
-                                                                            <?php echo $c19ResultValue; ?> </option>
+                                                                            <?php echo $c19ResultValue; ?>
+                                                                        </option>
                                                                     <?php } ?>
                                                                 </select>
                                                             </td>

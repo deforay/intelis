@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -14,7 +14,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -117,7 +117,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['test_method_name']);
     $row[] = ucwords((string) $aRow['test_method_status']);
     $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
-    if (_isAllowed("/generic-tests/configuration/test-methods/generic-edit-test-methods.php") && $general->isSTSInstance() ) {
+    if (_isAllowed("/generic-tests/configuration/test-methods/generic-edit-test-methods.php") && $general->isSTSInstance()) {
         $row[] = '<a href="generic-edit-test-methods.php?id=' . base64_encode((string) $aRow['test_method_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;

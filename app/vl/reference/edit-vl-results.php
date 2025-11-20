@@ -10,7 +10,7 @@ use App\Services\InstrumentsService;
 
 require_once APPLICATION_PATH . '/header.php';
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -51,21 +51,29 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+					<?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='editresult' id='editresult' autocomplete="off" enctype="multipart/form-data" action="save-vl-results-helper.php">
+				<form class="form-horizontal" method='post' name='editresult' id='editresult' autocomplete="off"
+					enctype="multipart/form-data" action="save-vl-results-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="viralLoadResult" class="col-lg-4 control-label">Viral Load Result<span class="mandatory">*</span></label>
+									<label for="viralLoadResult" class="col-lg-4 control-label">Viral Load Result<span
+											class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultName" name="resultName" value="<?php echo $resultInfo[0]['result']; ?>" placeholder="Viral Load Result" title="Please enter Result name" readonly onblur="checkNameValidation('r_vl_results','result',this,'<?php echo "result_id##" . htmlspecialchars((string) $id); ?>','The Result name that you entered already exists.Enter another name',null)" />
-										<input type="hidden" class="form-control" id="resultId" name="resultId" value="<?php echo base64_encode((string) $id); ?>" />
-										<input type="hidden" class="form-control" id="oldResultName" name="oldResultName" value="<?php echo $resultInfo[0]['result']; ?>" />
+										<input type="text" class="form-control isRequired" id="resultName"
+											name="resultName" value="<?php echo $resultInfo[0]['result']; ?>"
+											placeholder="Viral Load Result" title="Please enter Result name" readonly
+											onblur="checkNameValidation('r_vl_results','result',this,'<?php echo "result_id##" . htmlspecialchars((string) $id); ?>','The Result name that you entered already exists.Enter another name',null)" />
+										<input type="hidden" class="form-control" id="resultId" name="resultId"
+											value="<?php echo base64_encode((string) $id); ?>" />
+										<input type="hidden" class="form-control" id="oldResultName"
+											name="oldResultName" value="<?php echo $resultInfo[0]['result']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -73,7 +81,8 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 								<div class="form-group">
 									<label for="resultStatus" class="col-lg-4 control-label">Result Status</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="resultStatus" name="resultStatus" placeholder="Result Status" title="Please select Result Status">
+										<select class="form-control isRequired" id="resultStatus" name="resultStatus"
+											placeholder="Result Status" title="Please select Result Status">
 											<option value="active" <?php echo ($resultInfo[0]['status'] == "active" ? 'selected' : ''); ?>>Active</option>
 											<option value="inactive" <?php echo ($resultInfo[0]['status'] == "inactive" ? 'selected' : ''); ?>>Inactive</option>
 										</select>
@@ -88,23 +97,24 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 										<?php echo _translate("Interpretation"); ?><span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name="interpretation" id="interpretation">
+										<select class="form-control isRequired" name="interpretation"
+											id="interpretation">
 											<option value="">--Select--</option>
 											<option value="suppressed" <?php if ($resultInfo[0]['interpretation'] == "suppressed") {
-    echo "selected='selected'";
-} ?>>Suppressed</option>
+												echo "selected='selected'";
+											} ?>>Suppressed</option>
 											<option value="not suppressed" <?php if ($resultInfo[0]['interpretation'] == "not suppressed") {
-                       echo "selected='selected'";
-                   } ?>>Not Suppressed</option>
+												echo "selected='selected'";
+											} ?>>Not Suppressed</option>
 											<option value="error" <?php if ($resultInfo[0]['interpretation'] == "error") {
-                        echo "selected='selected'";
-                    } ?>>Error</option>
+												echo "selected='selected'";
+											} ?>>Error</option>
 											<option value="failed" <?php if ($resultInfo[0]['interpretation'] == "failed") {
-                      echo "selected='selected'";
-                  } ?>>Failed</option>
+												echo "selected='selected'";
+											} ?>>Failed</option>
 											<option value="no result" <?php if ($resultInfo[0]['interpretation'] == "no result") {
-                      echo "selected='selected'";
-                  } ?>>No Result</option>
+												echo "selected='selected'";
+											} ?>>No Result</option>
 										</select>
 									</div>
 								</div>
@@ -113,39 +123,49 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 						</div>
 						<div class="row">
 							<div class="col-md-12">
-								<h4 style="font-weight:bold;"> <?php echo _translate("Available For Instrument"); ?></h4>
+								<h4 style="font-weight:bold;"> <?php echo _translate("Available For Instrument"); ?>
+								</h4>
 
 								<div class="col-md-5">
-									<select name="instruments[]" id="search" class="form-control" size="8" multiple="multiple">
+									<select name="instruments[]" id="search" class="form-control" size="8"
+										multiple="multiple">
 										<?php foreach ($activeInstruments as $key => $ins) {
 											if (!empty($selectedInstruments) && in_array($key, $selectedInstruments)) {
 												echo "";
 											} else {
-										?>
+												?>
 												<option value="<?php echo $key; ?>"><?php echo $ins; ?> </option>
-										<?php
+												<?php
 											}
 										} ?>
 									</select>
-									<div class="sampleCounterDiv"><?= _translate("Number of unselected instruments"); ?> : <span id="unselectedCount"></span></div>
+									<div class="sampleCounterDiv"><?= _translate("Number of unselected instruments"); ?>
+										: <span id="unselectedCount"></span></div>
 								</div>
 
 								<div class="col-md-2">
-									<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-									<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-									<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-									<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+									<button type="button" id="search_rightAll" class="btn btn-block"><em
+											class="fa-solid fa-forward"></em></button>
+									<button type="button" id="search_rightSelected" class="btn btn-block"><em
+											class="fa-sharp fa-solid fa-chevron-right"></em></button>
+									<button type="button" id="search_leftSelected" class="btn btn-block"><em
+											class="fa-sharp fa-solid fa-chevron-left"></em></button>
+									<button type="button" id="search_leftAll" class="btn btn-block"><em
+											class="fa-solid fa-backward"></em></button>
 								</div>
 
 								<div class="col-md-5">
-									<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
+									<select name="to[]" id="search_to" class="form-control" size="8"
+										multiple="multiple">
 										<?php foreach ($selectedInstruments as $value) {
 											if (!empty($activeInstruments) && array_key_exists($value, $activeInstruments)) { ?>
-												<option value="<?php echo $value; ?>"><?php echo $activeInstruments[$value]; ?> </option>
-										<?php }
+												<option value="<?php echo $value; ?>"><?php echo $activeInstruments[$value]; ?>
+												</option>
+											<?php }
 										} ?>
 									</select>
-									<div class="sampleCounterDiv"><?= _translate("Number of selected instruments"); ?> : <span id="selectedCount"></span></div>
+									<div class="sampleCounterDiv"><?= _translate("Number of selected instruments"); ?> :
+										<span id="selectedCount"></span></div>
 								</div>
 							</div>
 						</div>
@@ -155,7 +175,8 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 					<div class="box-footer">
 						<input type="hidden" name="selectedInstruments" id="selectedInstruments" />
 
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
+						<a class="btn btn-primary" href="javascript:void(0);"
+							onclick="validateNow();return false;">Submit</a>
 						<a href="vl-results.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
@@ -173,14 +194,14 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
 <script type="text/javascript">
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 		$('#search').deforayDualBox({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
 				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />'
 			},
-			fireSearch: function(value) {
+			fireSearch: function (value) {
 				return value.length > 2;
 			},
 			autoSelectNext: true,
@@ -193,7 +214,7 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 	function validateNow() {
 		$("#search").val(""); // THIS IS IMPORTANT. TO REDUCE NUMBER OF PHP VARIABLES
 		var selVal = [];
-		$('#search_to option').each(function(i, selected) {
+		$('#search_to option').each(function (i, selected) {
 			selVal[i] = $(selected).val();
 		});
 		$("#selectedInstruments").val(selVal);
@@ -215,13 +236,13 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
+			tableName: tableName,
+			fieldName: fieldName,
+			value: removeDots.trim(),
+			fnct: fnct,
+			format: "html"
+		},
+			function (data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";

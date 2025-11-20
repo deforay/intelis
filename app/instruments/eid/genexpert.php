@@ -1,7 +1,7 @@
 <?php
 
 // File gets called in import-file-helper.php based on the selected instrument type
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\ON_HOLD;
 use League\Csv\Reader;
@@ -26,7 +26,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 

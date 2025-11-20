@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -96,14 +96,22 @@ if (isset($_GET['total'])) {
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='uploadFacilityForm' id='uploadFacilityForm' autocomplete="off" enctype="multipart/form-data" action="upload-facilities-helper.php">
+				<form class="form-horizontal" method='post' name='uploadFacilityForm' id='uploadFacilityForm'
+					autocomplete="off" enctype="multipart/form-data" action="upload-facilities-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-12">
 								<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
-									<h3 style="margin-left:100px; color:green;"><?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?> | <?= _translate("Number of Facilities added"); ?> : <?= $addedRecords; ?> | <?= _translate("Number of Facilities not added"); ?> : <?= $_GET['notAdded']; ?></h3>
+									<h3 style="margin-left:100px; color:green;">
+										<?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?> |
+										<?= _translate("Number of Facilities added"); ?> : <?= $addedRecords; ?> |
+										<?= _translate("Number of Facilities not added"); ?> : <?= $_GET['notAdded']; ?>
+									</h3>
 									<?php if ($_GET['notAdded'] > 0) { ?>
-										<a class="text-danger" style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;" href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download>Download the Excel Sheet with not uploaded facilities</a><br><br>
+										<a class="text-danger"
+											style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;"
+											href="/temporary/INCORRECT-FACILITY-ROWS.xlsx" download>Download the Excel Sheet
+											with not uploaded facilities</a><br><br>
 									<?php } ?>
 								<?php } ?>
 
@@ -113,10 +121,13 @@ if (isset($_GET['total'])) {
 									</label>
 									<div class="col-lg-5">
 										<select name="uploadOption" id="uploadOption" class="form-control">
-											<option value="default" <?php echo ($_GET['option'] == 'default') ? 'selected="selected"' : ''; ?>><?= _translate("Don't update duplicates (default)"); ?></option>
+											<option value="default" <?php echo ($_GET['option'] == 'default') ? 'selected="selected"' : ''; ?>>
+												<?= _translate("Don't update duplicates (default)"); ?></option>
 											<option value="facility_name_match" <?php echo ($_GET['option'] == 'facility_name_match') ? 'selected="selected"' : ''; ?>><?= _translate("Update if Facility Name matches"); ?></option>
 											<option value="facility_code_match" <?php echo ($_GET['option'] == 'facility_code_match') ? 'selected="selected"' : ''; ?>><?= _translate("Update if Facility Code matches"); ?></option>
-											<option value="facility_name_code_match" <?php echo ($_GET['option'] == 'facility_name_code_match') ? 'selected="selected"' : ''; ?>><?= _translate("Update if Facility Name and Facility Code match"); ?></option>
+											<option value="facility_name_code_match" <?php echo ($_GET['option'] == 'facility_name_code_match') ? 'selected="selected"' : ''; ?>>
+												<?= _translate("Update if Facility Name and Facility Code match"); ?>
+											</option>
 										</select>
 									</div>
 								</div>
@@ -126,8 +137,13 @@ if (isset($_GET['total'])) {
 										<?= _translate("Upload File"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-8">
-										<input type="file" class="form-control isRequired" id="facilitiesInfo" name="facilitiesInfo" placeholder="<?php echo _translate('Facility Name'); ?>" title="<?= _translate('Click to upload file'); ?>" />
-										<a class="text-primary" style="text-decoration:underline;" href="/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx" download><?= _translate("Click here to download the Excel format for uploading facilities in bulk"); ?></a>
+										<input type="file" class="form-control isRequired" id="facilitiesInfo"
+											name="facilitiesInfo"
+											placeholder="<?php echo _translate('Facility Name'); ?>"
+											title="<?= _translate('Click to upload file'); ?>" />
+										<a class="text-primary" style="text-decoration:underline;"
+											href="/files/facilities/Facilities_Bulk_Upload_Excel_Format.xlsx"
+											download><?= _translate("Click here to download the Excel format for uploading facilities in bulk"); ?></a>
 									</div>
 								</div>
 							</div>
@@ -141,7 +157,8 @@ if (isset($_GET['total'])) {
 			<!-- /.box-body -->
 			<div class="box-footer">
 				<input type="hidden" name="selectedUser" id="selectedUser" />
-				<a class="btn btn-primary" href="javascript:void(0);" onclick="document.getElementById('uploadFacilityForm').submit();return false;">
+				<a class="btn btn-primary" href="javascript:void(0);"
+					onclick="document.getElementById('uploadFacilityForm').submit();return false;">
 					<?php echo _translate("Submit"); ?>
 				</a>
 				<a href="facilities.php" class="btn btn-default">

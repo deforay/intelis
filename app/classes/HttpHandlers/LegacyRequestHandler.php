@@ -5,14 +5,13 @@ namespace App\HttpHandlers;
 use Override;
 use Throwable;
 use App\Services\CommonService;
-use Laminas\Diactoros\Response;
+use Slim\Psr7\Response;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\RedirectResponse;
 
 class LegacyRequestHandler implements RequestHandlerInterface
 {
@@ -91,7 +90,7 @@ class LegacyRequestHandler implements RequestHandlerInterface
             if (stripos($header, 'Location:') === 0) {
                 $location = trim(substr($header, strlen('Location:')));
                 header_remove('Location');
-                return new RedirectResponse($location);
+                return (new Response(302))->withHeader('Location', $location);
             }
         }
 

@@ -14,7 +14,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $artId = base64_decode((string) $_GET['id']);
@@ -51,19 +51,25 @@ foreach ($categoryInfo as $category) {
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+					<?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='referenceForm' id='referenceForm' autocomplete="off" enctype="multipart/form-data" action="save-vl-art-code-details-helper.php">
+				<form class="form-horizontal" method='post' name='referenceForm' id='referenceForm' autocomplete="off"
+					enctype="multipart/form-data" action="save-vl-art-code-details-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="artCode" class="col-lg-4 control-label">ART Code <span class="mandatory">*</span></label>
+									<label for="artCode" class="col-lg-4 control-label">ART Code <span
+											class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" value="<?php echo $artResult['art_code']; ?>" class="form-control isRequired" id="artCode" name="artCode" placeholder="Enter art code" title="Please enter art code" onblur="checkNameValidation('r_vl_art_regimen','art_code',this,'<?php echo "art_id##" . $artId; ?>','This art code that you entered already exists.Try another art code',null)" />
+										<input type="text" value="<?php echo $artResult['art_code']; ?>"
+											class="form-control isRequired" id="artCode" name="artCode"
+											placeholder="Enter art code" title="Please enter art code"
+											onblur="checkNameValidation('r_vl_art_regimen','art_code',this,'<?php echo "art_id##" . $artId; ?>','This art code that you entered already exists.Try another art code',null)" />
 									</div>
 								</div>
 							</div>
@@ -71,7 +77,8 @@ foreach ($categoryInfo as $category) {
 								<div class="form-group">
 									<label for="category" class="col-lg-4 control-label">Category</label>
 									<div class="col-lg-7">
-										<select class="form-control select2" id="category" name="category" placeholder="Select category" title="Please select category">
+										<select class="form-control select2" id="category" name="category"
+											placeholder="Select category" title="Please select category">
 											<?= $general->generateSelectOptions($categoryData, $artResult['headings'], '-- Select --'); ?>
 										</select>
 									</div>
@@ -84,7 +91,8 @@ foreach ($categoryInfo as $category) {
 							<div class="form-group">
 								<label for="parentArtCode" class="col-lg-4 control-label">Parent ART Code</label>
 								<div class="col-lg-7">
-									<select class="form-control select2" id="parentArtCode" name="parentArtCode" placeholder="Select parent art code" title="Please select parent art code">
+									<select class="form-control select2" id="parentArtCode" name="parentArtCode"
+										placeholder="Select parent art code" title="Please select parent art code">
 										<?= $general->generateSelectOptions($artParent, $artResult['parent_art'], '-- Select --'); ?>
 									</select>
 								</div>
@@ -92,12 +100,16 @@ foreach ($categoryInfo as $category) {
 						</div>
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="artStatus" class="col-lg-4 control-label">Status <span class="mandatory">*</span></label>
+								<label for="artStatus" class="col-lg-4 control-label">Status <span
+										class="mandatory">*</span></label>
 								<div class="col-lg-7">
-									<select class="form-control isRequired" id="artStatus" name="artStatus" placeholder="Select art status" title="Please select art status">
+									<select class="form-control isRequired" id="artStatus" name="artStatus"
+										placeholder="Select art status" title="Please select art status">
 										<option value="">--Select--</option>
-										<option value="active" <?php echo (isset($artResult['art_status']) && $artResult['art_status'] == 'active') ? "selected='selected'" : ""; ?>>Active</option>
-										<option value="inactive" <?php echo (isset($artResult['art_status']) && $artResult['art_status'] == 'inactive') ? "selected='selected'" : ""; ?>>Inactive</option>
+										<option value="active" <?php echo (isset($artResult['art_status']) && $artResult['art_status'] == 'active') ? "selected='selected'" : ""; ?>>Active
+										</option>
+										<option value="inactive" <?php echo (isset($artResult['art_status']) && $artResult['art_status'] == 'inactive') ? "selected='selected'" : ""; ?>>
+											Inactive</option>
 									</select>
 								</div>
 							</div>
@@ -122,7 +134,7 @@ foreach ($categoryInfo as $category) {
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$(".select2").select2();
 		$(".select2").select2({
 			tags: true
@@ -148,13 +160,13 @@ foreach ($categoryInfo as $category) {
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
+			tableName: tableName,
+			fieldName: fieldName,
+			value: removeDots.trim(),
+			fnct: fnct,
+			format: "html"
+		},
+			function (data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";

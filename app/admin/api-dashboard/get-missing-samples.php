@@ -1,6 +1,6 @@
 <?php
 // get-missing-samples.php - Aggregated by facility version
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -10,7 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -103,12 +103,12 @@ try {
         $formattedResults[] = [
             'facility_name' => $row['facility_name'] ?: 'Unknown Facility #' . $row['facility_id'],
             'facility_id' => $row['facility_id'],
-            'missing_count' => (int)$row['missing_count'],
-            'min_days_pending' => (int)$row['min_days_pending'],
-            'max_days_pending' => (int)$row['max_days_pending'],
+            'missing_count' => (int) $row['missing_count'],
+            'min_days_pending' => (int) $row['min_days_pending'],
+            'max_days_pending' => (int) $row['max_days_pending'],
             'avg_days_pending' => round($row['avg_days_pending'], 1),
-            'over_7_days' => (int)$row['over_7_days'],
-            'within_7_days' => (int)$row['within_7_days'],
+            'over_7_days' => (int) $row['over_7_days'],
+            'within_7_days' => (int) $row['within_7_days'],
             'oldest_request' => DateUtility::humanReadableDateFormat($row['oldest_request'], true),
             'newest_request' => DateUtility::humanReadableDateFormat($row['newest_request'], true),
             'priority' => $priority,

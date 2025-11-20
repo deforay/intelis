@@ -4,7 +4,7 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
 //this file gets the requests from the remote server and updates the local database
@@ -318,7 +318,7 @@ if ($cliMode) {
 }
 
 if ($_POST !== []) {
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $postParams = $request->getParsedBody();
 

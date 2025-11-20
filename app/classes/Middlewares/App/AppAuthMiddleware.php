@@ -6,10 +6,9 @@ use Override;
 use App\Services\CommonService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\RedirectResponse;
+use Slim\Psr7\Response;
 
 class AppAuthMiddleware implements MiddlewareInterface
 {
@@ -63,7 +62,7 @@ class AppAuthMiddleware implements MiddlewareInterface
         if (empty($_SESSION['userId']) && empty($_SESSION['adminUserId'])) {
             if ($method === 'GET' && !$isAjax) {
                 $_SESSION['requestedURI'] ??= $this->safeRequestedUri($request, $path);
-                return new RedirectResponse('/login/login.php');
+                return $this->redirect('/login/login.php');
             }
             return $this->jsonExpired();
         }
@@ -71,7 +70,7 @@ class AppAuthMiddleware implements MiddlewareInterface
         if (!empty($_SESSION['forcePasswordReset']) && (int) $_SESSION['forcePasswordReset'] === 1) {
             $_SESSION['alertMsg'] = _translate("Please change your password to proceed.", true);
             if (basename((string) $path) !== 'edit-profile.php') {
-                return new RedirectResponse('/users/edit-profile.php');
+                return $this->redirect('/users/edit-profile.php');
             }
         }
 
@@ -81,7 +80,7 @@ class AppAuthMiddleware implements MiddlewareInterface
             $this->expireSession();
             return $isAjax
                 ? $this->jsonExpired()
-                : new RedirectResponse('/login/login.php?e=timeout');
+                : $this->redirect('/login/login.php?e=timeout');
         }
 
         if (!$isAjax && ($method === 'GET' || $method === 'HEAD')) {
@@ -164,24 +163,35 @@ class AppAuthMiddleware implements MiddlewareInterface
         return (bool) CommonService::isAjaxRequest($request);
     }
 
-    private function jsonExpired(): JsonResponse
+    private function jsonExpired(): ResponseInterface
     {
-        return new JsonResponse(
-            [
-                'error' => 'session_expired',
-                'redirect' => '/login/login.php',
-            ],
-            401,
-            ['Cache-Control' => 'no-store, no-cache, must-revalidate']
-        );
+        $response = new Response(401);
+        $payload = [
+            'error' => 'session_expired',
+            'redirect' => '/login/login.php',
+        ];
+
+        $response->getBody()->write(json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     }
 
     private function forbiddenJsonOrRedirect(bool $ajax): ResponseInterface
     {
         if ($ajax) {
-            return new JsonResponse(['error' => 'forbidden'], 403);
+            $response = new Response(403);
+            $response->getBody()->write(json_encode(['error' => 'forbidden'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+            return $response->withHeader('Content-Type', 'application/json');
         }
-        return new RedirectResponse('/login/login.php?e=forbidden');
+        return $this->redirect('/login/login.php?e=forbidden');
+    }
+
+    private function redirect(string $location, int $status = 302): ResponseInterface
+    {
+        $response = new Response($status);
+        return $response->withHeader('Location', $location);
     }
 
     private function expireSession(): void

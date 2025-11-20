@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 try {
 
     // Sanitized values from $request object
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -30,7 +30,7 @@ try {
 
     $db->where("(result_approved_by IS NULL OR result_approved_by = '')");
     if ($_POST['testType'] == 'cd4') {
-        $db->where('cd4_result',  null, 'IS NOT');
+        $db->where('cd4_result', null, 'IS NOT');
     } else {
         $db->where('result', null, 'IS NOT');
     }

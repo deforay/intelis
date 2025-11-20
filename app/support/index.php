@@ -1,7 +1,7 @@
 <?php
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 
 use App\Registries\AppRegistry;
 
@@ -59,18 +59,22 @@ $_GET = _sanitizeInput($request->getQueryParams());
 					<div class="box-body">
 						<!-- Status message -->
 						<div class="statusMsg"></div>
-						<form class="form-horizontal" method='post' name='supportForm' id='supportForm' enctype="multipart/form-data" autocomplete="off">
+						<form class="form-horizontal" method='post' name='supportForm' id='supportForm'
+							enctype="multipart/form-data" autocomplete="off">
 							<div class="form-group">
 								<label for="first_name" class="col-xs-2 control-label">Support</label>
 								<div class="col-xs-9">
-									<textarea rows="6" class="form-control isRequired" name="feedback" id="feedback" title="Please enter the feedback" placeholder="Enter Feedback"></textarea>
-									<input type="hidden" class="form-control isRequired" name="feedbackUrl" id="feedbackUrl" value="<?php echo $_GET['fUrl']; ?>">
+									<textarea rows="6" class="form-control isRequired" name="feedback" id="feedback"
+										title="Please enter the feedback" placeholder="Enter Feedback"></textarea>
+									<input type="hidden" class="form-control isRequired" name="feedbackUrl"
+										id="feedbackUrl" value="<?php echo $_GET['fUrl']; ?>">
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="last_name" class="col-xs-2 control-label">Upload Image</label>
 								<div class="col-xs-9">
-									<input type="file" class="form-control" name="supportFile" id="supportFile" title="Please select a file to upload">
+									<input type="file" class="form-control" name="supportFile" id="supportFile"
+										title="Please select a file to upload">
 									(Upload jpg,jpeg,png format)
 								</div>
 							</div>
@@ -78,7 +82,8 @@ $_GET = _sanitizeInput($request->getQueryParams());
 							<div class="form-group">
 								<label class="col-xs-2 control-label"></label>
 								<div class="col-xs-9">
-									<input type="checkbox" name="attach_screenshot" id="attach_screenshot"> Attach current page screenshot
+									<input type="checkbox" name="attach_screenshot" id="attach_screenshot"> Attach
+									current page screenshot
 								</div>
 							</div>
 
@@ -104,7 +109,8 @@ $_GET = _sanitizeInput($request->getQueryParams());
 <div id="dDiv" class="dialog" hidden>
 	<div class="dfy-modal" role="dialog" aria-modal="true">
 		<button type="button" class="dfy-modal__close" aria-label="Close" onclick="closeModal()">×</button>
-		<iframe id="dFrame" src="" title="LIS Content" class="dfy-modal__iframe" loading="lazy" referrerpolicy="no-referrer"></iframe>
+		<iframe id="dFrame" src="" title="LIS Content" class="dfy-modal__iframe" loading="lazy"
+			referrerpolicy="no-referrer"></iframe>
 		<div id="dfy-modal-fallback" class="dfy-modal__fallback" hidden>
 			<?= _translate("Unable to load this page or resource"); ?>
 		</div>
@@ -119,9 +125,9 @@ $_GET = _sanitizeInput($request->getQueryParams());
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script src="/assets/js/deforayValidation.js"></script>
 <script type="text/javascript">
-	$(document).ready(function(e) {
+	$(document).ready(function (e) {
 		// Submit form data via Ajax
-		$("#supportForm").on('submit', function(e) {
+		$("#supportForm").on('submit', function (e) {
 			e.preventDefault();
 			flag = deforayValidator.init({
 				formId: 'supportForm'
@@ -135,11 +141,11 @@ $_GET = _sanitizeInput($request->getQueryParams());
 					contentType: false,
 					cache: false,
 					processData: false,
-					beforeSend: function() {
+					beforeSend: function () {
 						$('.submitBtn').attr("disabled", "disabled");
 						$('#supportForm').css("opacity", ".5");
 					},
-					success: function(response) {
+					success: function (response) {
 						//$('.statusMsg').html('');
 						if (response.status == 1) {
 							if (response.attached == 'yes') {

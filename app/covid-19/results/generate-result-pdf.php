@@ -1,7 +1,7 @@
 <?php
 
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const COUNTRY\SOUTH_SUDAN;
 use const COUNTRY\SIERRA_LEONE;
 use const COUNTRY\DRC;
@@ -39,7 +39,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -122,8 +122,8 @@ $fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/r
 $resultFilename = '';
 if (!empty($requestResult)) {
 
-	$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  time() . '-' . MiscUtility::generateRandomString(6);
-    MiscUtility::makeDirectory($pathFront);
+	$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR . time() . '-' . MiscUtility::generateRandomString(6);
+	MiscUtility::makeDirectory($pathFront);
 	$pages = [];
 	$page = 1;
 	foreach ($requestResult as $result) {
@@ -164,7 +164,7 @@ if (!empty($requestResult)) {
 		// echo "<pre>";print_r($covid19TestInfo);die;
 
 		$patientFname = $result['patient_name'] ?? null;
-		$patientLname =  $result['patient_surname'] ?? null;
+		$patientLname = $result['patient_surname'] ?? null;
 
 		$signQuery = "SELECT * FROM lab_report_signatories
 						WHERE lab_id=? AND
@@ -178,8 +178,8 @@ if (!empty($requestResult)) {
 			$result['labName'] = '';
 		}
 		$draftTextShow = false;
-  //Set watermark text
-  $counter = count($mFieldArray);
+		//Set watermark text
+		$counter = count($mFieldArray);
 		//Set watermark text
 		for ($m = 0; $m < $counter; $m++) {
 			if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) === '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {

@@ -1,7 +1,7 @@
 <?php
 
 use App\Utilities\JsonUtility;
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const COUNTRY\SOUTH_SUDAN;
 use const COUNTRY\SIERRA_LEONE;
 use const COUNTRY\DRC;
@@ -27,7 +27,7 @@ ini_set('max_execution_time', 300000);
 
 try {
     // Sanitized values from $request object
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 

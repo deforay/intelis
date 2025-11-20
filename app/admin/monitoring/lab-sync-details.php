@@ -24,7 +24,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -108,13 +108,17 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table aria-describedby="table" class="table" aria-hidden="true"
+                        style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                             <td><strong>
                                     <?php echo _translate("Province/State"); ?>&nbsp;:
                                 </strong></td>
                             <td>
-                                <select name="province" id="province" onchange="getDistrictByProvince(this.value)" class="form-control" title="<?php echo _translate('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+                                <select name="province" id="province" onchange="getDistrictByProvince(this.value)"
+                                    class="form-control"
+                                    title="<?php echo _translate('Please choose Province/State/Region'); ?>"
+                                    onkeyup="searchVlRequestData()">
                                     <?= $general->generateSelectOptions($stateNameList, null, _translate("-- Select --")); ?>
                                 </select>
                             </td>
@@ -122,7 +126,8 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                                     <?php echo _translate("District/County"); ?> :
                                 </strong></td>
                             <td>
-                                <select class="form-control" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>">
+                                <select class="form-control" id="district" name="district"
+                                    title="<?php echo _translate('Please select Province/State'); ?>">
                                 </select>
                             </td>
                         </tr>
@@ -131,7 +136,8 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                                     <?php echo _translate("Facility Name"); ?>&nbsp;:
                                 </strong></td>
                             <td>
-                                <select class="form-control select2" id="facilityName" name="facilityName" title="<?php echo _translate('Please select the Lab name'); ?>">
+                                <select class="form-control select2" id="facilityName" name="facilityName"
+                                    title="<?php echo _translate('Please select the Lab name'); ?>">
                                     <?php echo $general->generateSelectOptions($facilityNameList, null, '--Select--'); ?>
                                 </select>
                             </td>
@@ -141,7 +147,8 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                                 </strong>
                             </td>
                             <td>
-                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>">
+                                <select id="testType" name="testType" class="form-control"
+                                    placeholder="<?php echo _translate('Please select the Test types'); ?>">
                                     <?php if ($activeTests !== [] && in_array('vl', $activeTests)) { ?>
                                         <option value="vl">
                                             <?php echo _translate("Viral Load"); ?>
@@ -177,13 +184,17 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                         </tr>
                         <tr>
                             <td colspan="4">
-                                &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportSyncStatus();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
+                                &nbsp;<a class="btn btn-success pull-right" style="margin-right:5px;"
+                                    href="javascript:void(0);" onclick="exportSyncStatus();"><em
+                                        class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
                                     <?php echo _translate("Export Excel"); ?>
                                 </a>
-                                &nbsp;<button class="btn btn-danger pull-right" onclick="document.location.href = document.location"><span>
+                                &nbsp;<button class="btn btn-danger pull-right"
+                                    onclick="document.location.href = document.location"><span>
                                         <?= _translate('Reset'); ?>
                                     </span></button>
-                                <input type="button" onclick="loadData();" value="<?= _translate('Search'); ?>" class="btn btn-default pull-right">
+                                <input type="button" onclick="loadData();" value="<?= _translate('Search'); ?>"
+                                    class="btn btn-default pull-right">
                             </td>
                         </tr>
                     </table>
@@ -202,7 +213,8 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
                             </tr>
                         </table>
                         <hr>
-                        <table aria-describedby="table" id="syncStatusDataTable" class="table table-bordered table-striped table-hover" aria-hidden="true">
+                        <table aria-describedby="table" id="syncStatusDataTable"
+                            class="table table-bordered table-striped table-hover" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th class="center" scope="col">
@@ -247,7 +259,7 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
     var oTable = 0;
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#facilityName').select2({
             width: '100%',
             placeholder: "Select Facility Name"
@@ -263,7 +275,7 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
             placeholder: "Select District"
         });
         loadData();
-        $('#syncStatusDataTable tbody').on('click', 'tr', function() {
+        $('#syncStatusDataTable tbody').on('click', 'tr', function () {
             let url = $(this).attr('data-url');
             let facilityId = $(this).attr('data-facilityId');
             let labId = $(this).attr('data-labId');
@@ -275,13 +287,13 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
     function loadData() {
         $.blockUI();
         $.post("/admin/monitoring/get-sync-status-details.php", {
-                labId: '<?php echo $_GET['labId']; ?>',
-                testType: $('#testType').val(),
-                province: $('#province').val(),
-                district: $('#district').val(),
-                facilityName: $('#facilityName').val()
-            },
-            function(data) {
+            labId: '<?php echo $_GET['labId']; ?>',
+            testType: $('#testType').val(),
+            province: $('#province').val(),
+            district: $('#district').val(),
+            facilityName: $('#facilityName').val()
+        },
+            function (data) {
                 $("#syncStatusTable").html(data);
                 if (oTable == 0) {
                     $('#syncStatusDataTable').dataTable({
@@ -296,10 +308,10 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
     function getDistrictByProvince(provinceId) {
         $("#district").html('');
         $.post("/common/get-by-province-id.php", {
-                provinceId: provinceId,
-                districts: true,
-            },
-            function(data) {
+            provinceId: provinceId,
+            districts: true,
+        },
+            function (data) {
                 Obj = $.parseJSON(data);
                 $("#district").html(Obj['districts']);
             });
@@ -308,7 +320,7 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
     function exportSyncStatus() {
         // $.blockUI();
         $.post("generate-lab-sync-status-details-report.php", {},
-            function(data) {
+            function (data) {
                 $.unblockUI();
                 if (data === "" || data === null || data === undefined) {
                     alert("<?= _translate("Unable to generate the excel file", true); ?>");

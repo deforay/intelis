@@ -12,7 +12,7 @@ $hidesrcofreq = false;
 $dateRange = $labName = $srcOfReq = $srcStatus = null;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -81,17 +81,18 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		color: black !important;
 	}
 
-	<?php if (!empty($_GET['id'])) { ?>header {
-		display: none;
-	}
+	<?php if (!empty($_GET['id'])) { ?>
+		header {
+			display: none;
+		}
 
-	.main-sidebar {
-		z-index: -9;
-	}
+		.main-sidebar {
+			z-index: -9;
+		}
 
-	.content-wrapper {
-		margin-left: 0px;
-	}
+		.content-wrapper {
+			margin-left: 0px;
+		}
 
 	<?php } ?>
 </style>
@@ -120,32 +121,44 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:100%;margin-bottom: 0px;">
+					<table aria-describedby="table" class="table" aria-hidden="true"
+						style="margin-left:1%;margin-top:20px;width:100%;margin-bottom: 0px;">
 						<tr>
 							<td style="width: 10%;"><strong>
 									<?php echo _translate("Test Type"); ?>&nbsp;:
 								</strong></td>
 							<td style="width: 50%;">
-								<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;">
+								<select class="form-control" name="testType" id="testType"
+									title="Please choose test type" style="width:100%;">
 									<option value=""> -- Select -- </option>
 									<?php foreach ($testTypeResult as $testType) { ?>
-										<option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
+										<option value="<?php echo $testType['test_type_id'] ?>"
+											data-short="<?php echo $testType['test_short_code']; ?>">
+											<?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?>
+										</option>
 									<?php } ?>
 								</select>
 							</td>
-							<td style="width: 15%;">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-default btn-sm">
+							<td style="width: 15%;">&nbsp;<input type="button" onclick="searchVlRequestData();"
+									value="<?= _translate('Search'); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="reset();"><span>
 										<?= _translate('Reset'); ?>
 									</span></button>
 							</td>
-							<td style="width: 25%;"><a class="btn btn-success btn-sm" href="/generic-tests/requests/add-request.php"><em class="fa-solid fa-add"></em>&nbsp;&nbsp;Add Request</a><a class="btn btn-success btn-sm" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-cloud-arrow-down"></em>&nbsp;&nbsp;Export Requests</a></td>
+							<td style="width: 25%;"><a class="btn btn-success btn-sm"
+									href="/generic-tests/requests/add-request.php"><em
+										class="fa-solid fa-add"></em>&nbsp;&nbsp;Add Request</a><a
+									class="btn btn-success btn-sm" href="javascript:void(0);"
+									onclick="exportTestRequests();"><em
+										class="fa-solid fa-cloud-arrow-down"></em>&nbsp;&nbsp;Export Requests</a></td>
 						</tr>
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body">
 						<table class="table pull-right" aria-hidden="true" style="margin-right:5px;">
 						</table>
-						<table aria-describedby="table" id="RequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="RequestDataTable" class="table table-bordered table-striped"
+							aria-hidden="true">
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -211,13 +224,14 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						</table>
 						<?php
 						if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') {
-						?>
+							?>
 
 							<div id="printer_data_loading" style="display:none"><span id="loading_message">
 									<?php echo _translate("Loading Printer Details"); ?>...
 								</span><br />
 								<div class="progress" style="width:100%">
-									<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+									<div class="progress-bar progress-bar-striped active" role="progressbar"
+										aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 									</div>
 								</div>
 							</div> <!-- /printer_data_loading -->
@@ -234,7 +248,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								<?php echo _translate("Printer"); ?>: <select id="printers"></select>
 							</div> <!-- /printer_select -->
 
-						<?php
+							<?php
 						}
 						?>
 
@@ -263,7 +277,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	var selectedTests = [];
 	var selectedTestsId = [];
 	var oTable = null;
-	$(document).ready(function() {
+	$(document).ready(function () {
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
 			$sampleCode = htmlspecialchars((string) $_GET['s']);
@@ -287,32 +301,32 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		});
 		loadRequestData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _translate("Clear", true); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-					'Current Year To Date': [moment().startOf('year'), moment()]
-				}
+			locale: {
+				cancelLabel: "<?= _translate("Clear", true); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+				'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+				'Current Year To Date': [moment().startOf('year'), moment()]
+			}
+		},
+			function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
@@ -334,58 +348,58 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			//"bStateSave" : true,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": "center"
-				},
+				"sClass": "center"
+			},
 				<?php if (!$general->isStandaloneInstance()) { ?> {
-						"sClass": "center"
-					},
+					"sClass": "center"
+				},
 				<?php } ?> {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
 			],
 			"aaSorting": [
 				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>, "desc"]
 			],
-			"fnDrawCallback": function() {
+			"fnDrawCallback": function () {
 				var checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
@@ -400,7 +414,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/generic-tests/requests/get-request-list.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "testType",
 					"value": $("#testType").val()
@@ -449,21 +463,21 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 	function toggleAllVisible() {
 		//alert(tabStatus);
-		$(".checkTests").each(function() {
+		$(".checkTests").each(function () {
 			$(this).prop('checked', false);
 			selectedTests.splice($.inArray(this.value, selectedTests), 1);
 			selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
 			$("#status").prop('disabled', true);
 		});
 		if ($("#checkTestsData").is(':checked')) {
-			$(".checkTests").each(function() {
+			$(".checkTests").each(function () {
 				$(this).prop('checked', true);
 				selectedTests.push(this.value);
 				selectedTestsId.push(this.id);
 			});
 			$("#status").prop('disabled', false);
 		} else {
-			$(".checkTests").each(function() {
+			$(".checkTests").each(function () {
 				$(this).prop('checked', false);
 				selectedTests.splice($.inArray(this.value, selectedTests), 1);
 				selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
@@ -480,11 +494,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 			conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
 			if (conf) {
 				$.post("/generic-tests/results/update-test-status.php", {
-						status: stValue,
-						id: testIds,
-						format: "html"
-					},
-					function(data) {
+					status: stValue,
+					id: testIds,
+					format: "html"
+				},
+					function (data) {
 						if (data != "") {
 							$("#checkedTests").val('');
 							selectedTests = [];
@@ -508,9 +522,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		}
 		$.blockUI();
 		$.post("/generic-tests/requests/export-generic-tests-requests.php", {
-				patientInfo: $('#patientInfo').val(),
-			},
-			function(data) {
+			patientInfo: $('#patientInfo').val(),
+		},
+			function (data) {
 				$.unblockUI();
 				if (data === "" || data === null || data === undefined) {
 					alert("<?php echo _translate("Unable to generate the export"); ?>");
@@ -536,16 +550,16 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 			if (remoteSync && remoteURL != null && remoteURL != '') {
 				var jqxhr = $.ajax({
-						url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=vl",
-					})
-					.done(function(data) {
+					url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=vl",
+				})
+					.done(function (data) {
 						////console.log(data);
 						//alert( "success" );
 					})
-					.fail(function() {
+					.fail(function () {
 						$.unblockUI();
 					})
-					.always(function() {
+					.always(function () {
 						oTable.fnDraw();
 						$.unblockUI();
 					});
@@ -560,12 +574,12 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		$("#facilityName").html('');
 		$("#vlLab").html('');
 		$.post("/common/get-by-province-id.php", {
-				provinceId: provinceId,
-				districts: true,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			provinceId: provinceId,
+			districts: true,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#district").html(Obj['districts']);
 				$("#facilityName").html(Obj['facilities']);
@@ -577,11 +591,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		$("#facilityName").html('');
 		$("#vlLab").html('');
 		$.post("/common/get-by-district-id.php", {
-				districtId: districtId,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			districtId: districtId,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#facilityName").html(Obj['facilities']);
 				$("#vlLab").html(Obj['labs']);

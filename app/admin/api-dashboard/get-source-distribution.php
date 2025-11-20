@@ -1,6 +1,6 @@
 <?php
 // get-source-distribution.php
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -10,7 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -101,18 +101,18 @@ try {
             'facility_name' => $facilityName,
             'facility_id' => $row['facility_id'],
             'location' => $locationInfo,
-            'api_count' => (int)$row['api_count'],
-            'sts_count' => (int)$row['sts_count'],
-            'lis_count' => (int)$row['lis_count'],
-            'total_count' => (int)$row['total_count'],
-            'api_percentage' => (float)$row['api_percentage'],
+            'api_count' => (int) $row['api_count'],
+            'sts_count' => (int) $row['sts_count'],
+            'lis_count' => (int) $row['lis_count'],
+            'total_count' => (int) $row['total_count'],
+            'api_percentage' => (float) $row['api_percentage'],
 
             // API/EMR Workflow Metrics
-            'api_not_received' => (int)$row['api_not_received'],
-            'api_received' => (int)$row['api_received'],
-            'api_tested' => (int)$row['api_tested'],
-            'api_not_tested' => (int)$row['api_not_tested'],
-            'api_results_sent' => (int)$row['api_results_sent']
+            'api_not_received' => (int) $row['api_not_received'],
+            'api_received' => (int) $row['api_received'],
+            'api_tested' => (int) $row['api_tested'],
+            'api_not_tested' => (int) $row['api_not_tested'],
+            'api_results_sent' => (int) $row['api_results_sent']
         ];
     }
 

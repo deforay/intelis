@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\PENDING_APPROVAL;
 use App\Services\CD4Service;
 use App\Utilities\DateUtility;
@@ -21,7 +21,7 @@ $cd4Service = ContainerRegistry::get(CD4Service::class);
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -117,7 +117,7 @@ try {
         'result_status' => PENDING_APPROVAL,
         'request_created_datetime' => DateUtility::getCurrentDateTime(),
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-        'result_modified'  => 'no',
+        'result_modified' => 'no',
         'manual_result_entry' => 'yes',
     ];
 

@@ -10,7 +10,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
@@ -77,7 +77,7 @@ if (empty($resultSet)) {
 } else {
     foreach ($resultSet as $aRow) {
         // Determine sync status color
-        $latestSync = (int)$aRow['latest_timestamp'];
+        $latestSync = (int) $aRow['latest_timestamp'];
         if ($latestSync > $twoWeeksAgo) {
             $color = 'green';
         } elseif ($latestSync > $fourWeeksAgo) {
@@ -102,7 +102,7 @@ if (empty($resultSet)) {
         }
 
 
-?>
+        ?>
         <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode((string) $aRow['facility_id']); ?>">
             <td>
                 <?= htmlspecialchars((string) $aRow['facility_name']); ?>
@@ -124,6 +124,6 @@ if (empty($resultSet)) {
                 <?= htmlspecialchars($aRow['version'] ?? '-'); ?>
             </td>
         </tr>
-<?php
+        <?php
     }
 }

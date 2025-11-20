@@ -9,7 +9,7 @@ $testType = 'eid';
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -35,12 +35,15 @@ if (!empty($_GET['testType'])) {
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (_isAllowed("recommended-corrective-actions.php") && $general->isLISInstance() === false) { ?>
-							<a href="add-recommended-corrective-action.php?testType=vl" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Recommended Corrective Actions"); ?></a>
+							<a href="add-recommended-corrective-action.php?testType=vl" class="btn btn-primary pull-right">
+								<em class="fa-solid fa-plus"></em>
+								<?php echo _translate("Add Recommended Corrective Actions"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="correctiveActionTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="correctiveActionTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th scope="row"><?php echo _translate("Recommended Corrective Action Name"); ?></th>
@@ -52,7 +55,8 @@ if (!empty($_GET['testType'])) {
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="3" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
+									<td colspan="3" class="dataTables_empty">
+										<?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 
@@ -71,7 +75,7 @@ if (!empty($_GET['testType'])) {
 <script>
 	var oTable = null;
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$.blockUI();
 		oTable = $('#correctiveActionTable').dataTable({
 			"bJQueryUI": false,
@@ -81,14 +85,14 @@ if (!empty($_GET['testType'])) {
 			"bStateSave": true,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
 			],
 			"aaSorting": [
 				[0, "asc"]
@@ -96,7 +100,7 @@ if (!empty($_GET['testType'])) {
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "get-corrective-actions-helper.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "testType",
 					"value": '<?= $testType; ?>'

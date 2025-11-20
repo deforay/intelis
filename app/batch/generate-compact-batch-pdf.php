@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\BatchService;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
@@ -24,7 +24,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $batchService = ContainerRegistry::get(BatchService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 

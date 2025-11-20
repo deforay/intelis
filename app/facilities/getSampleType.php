@@ -14,7 +14,7 @@ use App\Registries\ContainerRegistry;
 $db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -77,7 +77,8 @@ if (!empty($sampleType)) { ?>
                 <tr>
                     <td style="text-align:center;"><?= strtoupper(htmlspecialchars((string) $test)); ?></td>
                     <td>
-                        <select name="sampleType[<?php echo $test; ?>][]" id="sampleType<?php echo $test; ?>" title="Please select the sample type for <?= htmlspecialchars((string) $test); ?>" multiple>
+                        <select name="sampleType[<?php echo $test; ?>][]" id="sampleType<?php echo $test; ?>"
+                            title="Please select the sample type for <?= htmlspecialchars((string) $test); ?>" multiple>
                             <?php foreach ($sampleType[$test] as $id => $type) { ?>
                                 <option value="<?php echo $id; ?>" <?php echo (in_array($id, $selectedType[$test])) ? "selected='selected'" : ""; ?>><?php echo $type; ?></option>
                             <?php } ?>
@@ -89,7 +90,7 @@ if (!empty($sampleType)) { ?>
     </table>
 <?php } ?>
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         <?php foreach ($_POST['testType'] as $test) { ?>
             $("#sampleType<?= htmlspecialchars((string) $test); ?>").multipleSelect({
                 placeholder: 'Select <?= strtoupper(htmlspecialchars((string) $test)); ?> Sample Type',

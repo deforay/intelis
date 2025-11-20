@@ -17,7 +17,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $global = $general->getGlobalConfig();
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -36,7 +36,7 @@ $downloadFile2 = '';
 $selectedSamplesArray = empty($_POST['selectedSamples']) ? [] : json_decode((string) $_POST['selectedSamples'], true);
 if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empty($selectedSamplesArray)) {
 
-?>
+   ?>
    <style>
       .send-mail:hover {
          text-decoration: underline !important;
@@ -50,10 +50,12 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
             </div>
          </div>
          <div class="box-body">
-            <form id="emailResultConfirmForm" name="emailResultConfirmForm" method="post" action="email-results-helper.php">
+            <form id="emailResultConfirmForm" name="emailResultConfirmForm" method="post"
+               action="email-results-helper.php">
                <div class="row">
                   <div class="col-lg-12" style="text-align:center !important;">
-                     <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true" style="width:18%;margin-left:41%;">
+                     <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true"
+                        style="width:18%;margin-left:41%;">
                         <thead>
                            <tr>
                               <th style="text-align:center;background-color:#71b9e2;color:#FFFFFF;">Selected Sample(s)</th>
@@ -70,11 +72,11 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
 
                               if (isset($sampleResult[0]['sample_code'])) {
                                  $resultOlySamples[] = $sampleResult[0]['covid19_id'];
-                           ?>
+                                 ?>
                                  <tr>
                                     <td style="text-align:left;"><?php echo $sampleResult[0]['sample_code']; ?></td>
                                  </tr>
-                           <?php }
+                              <?php }
                            }
                            $sampleIds = implode(',', $selectedSamplesArray);
                            ?>
@@ -83,60 +85,68 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== "" && !empt
                   </div>
                </div>
                <div class="row">
-                  <input type="hidden" id="subject" name="subject" value="<?php echo htmlspecialchars((string) $_POST['subject']); ?>" />
-                  <input type="hidden" id="toEmail" name="toEmail" value="<?php echo htmlspecialchars((string) $_POST['toEmail']); ?>" />
-                  <input type="hidden" id="reportEmail" name="reportEmail" value="<?php echo htmlspecialchars((string) $_POST['reportEmail']); ?>" />
-                  <input type="hidden" id="message" name="message" value="<?php echo htmlspecialchars((string) $_POST['message']); ?>" />
+                  <input type="hidden" id="subject" name="subject"
+                     value="<?php echo htmlspecialchars((string) $_POST['subject']); ?>" />
+                  <input type="hidden" id="toEmail" name="toEmail"
+                     value="<?php echo htmlspecialchars((string) $_POST['toEmail']); ?>" />
+                  <input type="hidden" id="reportEmail" name="reportEmail"
+                     value="<?php echo htmlspecialchars((string) $_POST['reportEmail']); ?>" />
+                  <input type="hidden" id="message" name="message"
+                     value="<?php echo htmlspecialchars((string) $_POST['message']); ?>" />
                   <input type="hidden" id="sample" name="sample" value="<?php echo implode(',', $resultOlySamples); ?>" />
-                  <input type="hidden" id="pdfFile1" name="pdfFile1" value="<?php echo htmlspecialchars((string) $_POST['pdfFile']); ?>" />
+                  <input type="hidden" id="pdfFile1" name="pdfFile1"
+                     value="<?php echo htmlspecialchars((string) $_POST['pdfFile']); ?>" />
                   <input type="hidden" id="pdfFile2" name="pdfFile2" value="<?php echo $filename; ?>" />
                   <input type="hidden" id="storeFile" name="storeFile" value="no" />
                   <div class="col-lg-12" style="text-align:center;padding-left:0;">
                      <a href="/covid-19/results/email-results.php" class="btn btn-default"> Cancel</a>&nbsp;
-                     <a class="btn btn-primary" href="javascript:void(0);" onclick="confirmResultMail();"><em class="fa-solid fa-paper-plane"></em> Send</a>
-                     <p style="margin-top:10px;"><a class="send-mail" href="#" onclick="resultPDF('<?php echo $sampleIds; ?>','printData')" style="text-decoration:none;">Click here to download the result only pdf</a></p>
+                     <a class="btn btn-primary" href="javascript:void(0);" onclick="confirmResultMail();"><em
+                           class="fa-solid fa-paper-plane"></em> Send</a>
+                     <p style="margin-top:10px;"><a class="send-mail" href="#"
+                           onclick="resultPDF('<?php echo $sampleIds; ?>','printData')" style="text-decoration:none;">Click
+                           here to download the result only pdf</a></p>
                   </div>
                </div>
             </form>
          <?php } ?>
-         </div>
       </div>
    </div>
-   <script>
-      function confirmResultMail() {
-         $.blockUI();
-         document.getElementById('emailResultConfirmForm').submit();
-      }
+</div>
+<script>
+   function confirmResultMail() {
+      $.blockUI();
+      document.getElementById('emailResultConfirmForm').submit();
+   }
 
-      function resultPDF(id, newData) {
-         $.blockUI();
-         <?php
-         $path = '';
-         $path = '/covid-19/results/generate-result-pdf.php';
-         ?>
-         $.post("<?php echo $path; ?>", {
-               source: 'print',
-               id: id,
-               newData: newData
-            },
-            function(data) {
-               if (data == "" || data == null || data == undefined) {
-                  $.unblockUI();
-                  alert("<?php echo _translate("Unable to generate download"); ?>");
-               } else {
-                  $.unblockUI();
-                  const link = document.createElement('a');
-                  link.href = '/download.php?f=' + data;
-                  // link.target = '_blank';
-                  link.download = data;
+   function resultPDF(id, newData) {
+      $.blockUI();
+      <?php
+      $path = '';
+      $path = '/covid-19/results/generate-result-pdf.php';
+      ?>
+      $.post("<?php echo $path; ?>", {
+         source: 'print',
+         id: id,
+         newData: newData
+      },
+         function (data) {
+            if (data == "" || data == null || data == undefined) {
+               $.unblockUI();
+               alert("<?php echo _translate("Unable to generate download"); ?>");
+            } else {
+               $.unblockUI();
+               const link = document.createElement('a');
+               link.href = '/download.php?f=' + data;
+               // link.target = '_blank';
+               link.download = data;
 
-                  // Simulate a click on the element <a>
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
-               }
-            });
-      }
-   </script>
-   <?php
-   require_once APPLICATION_PATH . '/footer.php';
+               // Simulate a click on the element <a>
+               document.body.appendChild(link);
+               link.click();
+               document.body.removeChild(link);
+            }
+         });
+   }
+</script>
+<?php
+require_once APPLICATION_PATH . '/footer.php';

@@ -17,12 +17,12 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
 // ---------- Resolve and validate the track row ----------
-$id = isset($_GET['id']) && $_GET['id'] !== '' ? MiscUtility::desqid((string)$_GET['id']) : null;
+$id = isset($_GET['id']) && $_GET['id'] !== '' ? MiscUtility::desqid((string) $_GET['id']) : null;
 if ($id === null) {
     http_response_code(400);
     throw new SystemException('Invalid or missing id', 400);
@@ -36,7 +36,7 @@ if (empty($result)) {
     throw new SystemException('Transaction not found', 404);
 }
 
-$transactionId = (string)($result['transaction_id'] ?? '');
+$transactionId = (string) ($result['transaction_id'] ?? '');
 if ($transactionId === '') {
     http_response_code(500);
     throw new SystemException('Transaction row is corrupt: missing transaction_id', 500);
@@ -44,10 +44,10 @@ if ($transactionId === '') {
 
 // ---------- Locate archives ----------
 $baseFolder = realpath(VAR_PATH . DIRECTORY_SEPARATOR . 'track-api') ?: (VAR_PATH . DIRECTORY_SEPARATOR . 'track-api');
-$reqDir     = $baseFolder . DIRECTORY_SEPARATOR . 'requests';
-$resDir     = $baseFolder . DIRECTORY_SEPARATOR . 'responses';
-$reqName    = "$transactionId.json";
-$resName    = "$transactionId.json";
+$reqDir = $baseFolder . DIRECTORY_SEPARATOR . 'requests';
+$resDir = $baseFolder . DIRECTORY_SEPARATOR . 'responses';
+$reqName = "$transactionId.json";
+$resName = "$transactionId.json";
 
 // ---------- Load & decode helpers ----------
 /**
@@ -66,7 +66,7 @@ $load = function (string $dir, string $filename): array {
             throw new RuntimeException('JSON decode returned null');
         }
         $out['decoded'] = $decoded;
-        $out['raw']     = $raw;
+        $out['raw'] = $raw;
     } catch (Throwable $e) {
         $out['error'] = $e->getMessage();
         LoggerUtility::logError("Viewer load error for {$filename}: " . $e->getMessage());
@@ -78,15 +78,15 @@ $load = function (string $dir, string $filename): array {
 $req = $load($reqDir, $reqName);
 $res = $load($resDir, $resName);
 
-$isParamsOnly  = !empty($result['api_params']);
-$bothMissing   = ($req['decoded'] === null && $res['decoded'] === null);
+$isParamsOnly = !empty($result['api_params']);
+$bothMissing = ($req['decoded'] === null && $res['decoded'] === null);
 
 // Clean values for header
-$apiUrl        = (string)($result['api_url'] ?? 'N/A');
-$method        = strtoupper((string)($result['request_method'] ?? 'POST'));
-$requestedOn   = isset($result['requested_on']) ? date('Y-m-d H:i:s', strtotime((string)$result['requested_on'])) : 'N/A';
-$statusCode    = $result['status_code'] ?? null;
-$responseTime  = $result['response_time'] ?? null;
+$apiUrl = (string) ($result['api_url'] ?? 'N/A');
+$method = strtoupper((string) ($result['request_method'] ?? 'POST'));
+$requestedOn = isset($result['requested_on']) ? date('Y-m-d H:i:s', strtotime((string) $result['requested_on'])) : 'N/A';
+$statusCode = $result['status_code'] ?? null;
+$responseTime = $result['response_time'] ?? null;
 
 // Precompute status class
 $statusClass = null;
@@ -95,7 +95,7 @@ if ($statusCode !== null) {
 }
 
 // Safe JS embedding (objects or null)
-$jsRequest  = JsonUtility::encodeUtf8Json($req['decoded']);
+$jsRequest = JsonUtility::encodeUtf8Json($req['decoded']);
 $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
 
 ?>
@@ -507,19 +507,27 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
                 <span><?= htmlspecialchars($apiUrl, ENT_QUOTES, 'UTF-8') ?></span>
             </div>
             <div class="meta-info">
-                <div class="meta-item"><i class="fa fa-clock-o"></i><span><?= htmlspecialchars($requestedOn, ENT_QUOTES, 'UTF-8') ?></span></div>
-                <div class="meta-item"><i class="fa fa-hashtag"></i><span><?= htmlspecialchars($transactionId, ENT_QUOTES, 'UTF-8') ?></span></div>
+                <div class="meta-item"><i
+                        class="fa fa-clock-o"></i><span><?= htmlspecialchars($requestedOn, ENT_QUOTES, 'UTF-8') ?></span>
+                </div>
+                <div class="meta-item"><i
+                        class="fa fa-hashtag"></i><span><?= htmlspecialchars($transactionId, ENT_QUOTES, 'UTF-8') ?></span>
+                </div>
                 <?php if ($responseTime !== null): ?>
-                    <div class="meta-item"><i class="fa fa-tachometer"></i><span><?= number_format((float)$responseTime, 2) ?>ms</span></div>
+                    <div class="meta-item"><i
+                            class="fa fa-tachometer"></i><span><?= number_format((float) $responseTime, 2) ?>ms</span></div>
                 <?php endif; ?>
                 <?php if ($statusCode !== null): ?>
-                    <div class="meta-item"><span class="status-badge <?= $statusClass ?>"><?= (int)$statusCode ?></span></div>
+                    <div class="meta-item"><span class="status-badge <?= $statusClass ?>"><?= (int) $statusCode ?></span>
+                    </div>
                 <?php endif; ?>
                 <?php if ($req['error']): ?>
-                    <div class="meta-item"><i class="fa fa-exclamation-triangle error-icon"></i><span>Request file missing/corrupt</span></div>
+                    <div class="meta-item"><i class="fa fa-exclamation-triangle error-icon"></i><span>Request file
+                            missing/corrupt</span></div>
                 <?php endif; ?>
                 <?php if ($res['error']): ?>
-                    <div class="meta-item"><i class="fa fa-exclamation-triangle error-icon"></i><span>Response file missing/corrupt</span></div>
+                    <div class="meta-item"><i class="fa fa-exclamation-triangle error-icon"></i><span>Response file
+                            missing/corrupt</span></div>
                 <?php endif; ?>
             </div>
         </div>
@@ -531,8 +539,10 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
                     <h2><?= _translate('Data Available'); ?></h2>
                     <p><?= _translate('Both request and response data files are missing or could not be loaded.'); ?></p>
                     <div class="error-detail">
-                        <div><strong><?= _translate('Request Error'); ?>:</strong> <?= _translate('File could not be loaded or is invalid'); ?></div>
-                        <div style="margin-top:10px;"><strong><?= _translate('Response Error'); ?>:</strong> <?= _translate('File could not be loaded or is invalid'); ?></div>
+                        <div><strong><?= _translate('Request Error'); ?>:</strong>
+                            <?= _translate('File could not be loaded or is invalid'); ?></div>
+                        <div style="margin-top:10px;"><strong><?= _translate('Response Error'); ?>:</strong>
+                            <?= _translate('File could not be loaded or is invalid'); ?></div>
                     </div>
                     <p style="margin-top:20px;font-size:12px;">
                         Transaction: <?= htmlspecialchars($transactionId, ENT_QUOTES, 'UTF-8') ?><br>
@@ -545,16 +555,21 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
             <!-- Toolbar -->
             <div class="toolbar">
                 <div class="toolbar-group">
-                    <button class="toolbar-btn active" onclick="setViewMode('tree')" id="btn-tree"><i class="fa fa-sitemap"></i> Tree</button>
-                    <button class="toolbar-btn" onclick="setViewMode('raw')" id="btn-raw"><i class="fa fa-code"></i> Raw</button>
+                    <button class="toolbar-btn active" onclick="setViewMode('tree')" id="btn-tree"><i
+                            class="fa fa-sitemap"></i> Tree</button>
+                    <button class="toolbar-btn" onclick="setViewMode('raw')" id="btn-raw"><i class="fa fa-code"></i>
+                        Raw</button>
                     <?php if (!$isParamsOnly && $req['decoded'] !== null && $res['decoded'] !== null): ?>
-                        <button class="toolbar-btn" onclick="toggleLayout()" id="btn-layout"><i class="fa fa-columns"></i> Split View</button>
+                        <button class="toolbar-btn" onclick="toggleLayout()" id="btn-layout"><i class="fa fa-columns"></i> Split
+                            View</button>
                     <?php endif; ?>
                 </div>
                 <div class="toolbar-group">
-                    <input type="text" class="search-box" placeholder="Search…" id="search-input" oninput="searchJSON(this.value)">
+                    <input type="text" class="search-box" placeholder="Search…" id="search-input"
+                        oninput="searchJSON(this.value)">
                     <button class="toolbar-btn" onclick="expandAll()"><i class="fa fa-plus-square-o"></i> Expand</button>
-                    <button class="toolbar-btn" onclick="collapseAll()"><i class="fa fa-minus-square-o"></i> Collapse</button>
+                    <button class="toolbar-btn" onclick="collapseAll()"><i class="fa fa-minus-square-o"></i>
+                        Collapse</button>
                     <button class="toolbar-btn" onclick="beautify()"><i class="fa fa-magic"></i> Beautify</button>
                 </div>
             </div>
@@ -566,12 +581,15 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
                 <div class="panel <?= $req['decoded'] === null ? 'panel-missing' : '' ?>">
                     <div class="panel-header <?= $req['decoded'] === null ? 'has-error' : '' ?>">
                         <div class="panel-title">
-                            <i class="fa fa-arrow-circle-up <?= $req['decoded'] === null ? 'error-icon' : 'request-icon' ?>"></i>
+                            <i
+                                class="fa fa-arrow-circle-up <?= $req['decoded'] === null ? 'error-icon' : 'request-icon' ?>"></i>
                             <span>Request <?= $req['decoded'] === null ? '(Missing)' : '' ?></span>
                         </div>
                         <div class="panel-actions">
                             <button class="action-btn" onclick="copyJSON('request')" <?= $req['decoded'] === null ? 'disabled' : '' ?>><i class="fa fa-copy"></i> Copy</button>
-                            <button class="action-btn" onclick="downloadJSON('request','request.json')" <?= $req['decoded'] === null ? 'disabled' : '' ?>><i class="fa fa-download"></i> Download</button>
+                            <button class="action-btn" onclick="downloadJSON('request','request.json')"
+                                <?= $req['decoded'] === null ? 'disabled' : '' ?>><i class="fa fa-download"></i>
+                                Download</button>
                         </div>
                     </div>
                     <div class="panel-content" id="request-panel">
@@ -579,11 +597,13 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
                             <div class="error-message">
                                 <i class="fa fa-file-o error-icon-large"></i>
                                 <div class="error-title"><?= _translate('Request Not Available'); ?></div>
-                                <p><?= _translate("Couldn't load"); ?> <code><?= htmlspecialchars($reqName, ENT_QUOTES, 'UTF-8') ?></code>.</p>
-                                <div class="error-detail"><?= htmlspecialchars((string)$req['error'], ENT_QUOTES, 'UTF-8') ?></div>
+                                <p><?= _translate("Couldn't load"); ?>
+                                    <code><?= htmlspecialchars($reqName, ENT_QUOTES, 'UTF-8') ?></code>.</p>
+                                <div class="error-detail"><?= htmlspecialchars((string) $req['error'], ENT_QUOTES, 'UTF-8') ?>
+                                </div>
                             </div>
                         <?php else: ?>
-                            <div><?= _translate('Loading…');?></div>
+                            <div><?= _translate('Loading…'); ?></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -593,12 +613,15 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
                     <div class="panel <?= $res['decoded'] === null ? 'panel-missing' : '' ?>">
                         <div class="panel-header <?= $res['decoded'] === null ? 'has-error' : '' ?>">
                             <div class="panel-title">
-                                <i class="fa fa-arrow-circle-down <?= $res['decoded'] === null ? 'error-icon' : 'response-icon' ?>"></i>
-                                <span><?= _translate('Response'); ?> <?= $res['decoded'] === null ? '(Missing)' : '' ?></span>
+                                <i
+                                    class="fa fa-arrow-circle-down <?= $res['decoded'] === null ? 'error-icon' : 'response-icon' ?>"></i>
+                                <span><?= _translate('Response'); ?>         <?= $res['decoded'] === null ? '(Missing)' : '' ?></span>
                             </div>
                             <div class="panel-actions">
                                 <button class="action-btn" onclick="copyJSON('response')" <?= $res['decoded'] === null ? 'disabled' : '' ?>><i class="fa fa-copy"></i> Copy</button>
-                                <button class="action-btn" onclick="downloadJSON('response','response.json')" <?= $res['decoded'] === null ? 'disabled' : '' ?>><i class="fa fa-download"></i> Download</button>
+                                <button class="action-btn" onclick="downloadJSON('response','response.json')"
+                                    <?= $res['decoded'] === null ? 'disabled' : '' ?>><i class="fa fa-download"></i>
+                                    Download</button>
                             </div>
                         </div>
                         <div class="panel-content" id="response-panel">
@@ -606,8 +629,10 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
                                 <div class="error-message">
                                     <i class="fa fa-file-o error-icon-large"></i>
                                     <div class="error-title"><?= _translate('Response Not Available'); ?></div>
-                                    <p><?= _translate("Couldn't load");?> <code><?= htmlspecialchars($resName, ENT_QUOTES, 'UTF-8') ?></code>.</p>
-                                    <div class="error-detail"><?= htmlspecialchars((string)$res['error'], ENT_QUOTES, 'UTF-8') ?></div>
+                                    <p><?= _translate("Couldn't load"); ?>
+                                        <code><?= htmlspecialchars($resName, ENT_QUOTES, 'UTF-8') ?></code>.</p>
+                                    <div class="error-detail"><?= htmlspecialchars((string) $res['error'], ENT_QUOTES, 'UTF-8') ?>
+                                    </div>
                                 </div>
                             <?php else: ?>
                                 <div>Loading…</div>
@@ -630,7 +655,7 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
         let viewMode = 'tree';
         let layout = 'split';
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             renderContent();
         });
 
@@ -639,12 +664,12 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
             if (requestData !== null) {
                 document.getElementById('request-panel').innerHTML =
                     viewMode === 'tree' ? renderJSONTree(requestData, 'request') :
-                    '<pre class="raw-json">' + highlightJson(JSON.stringify(requestData, null, 2)) + '</pre>';
+                        '<pre class="raw-json">' + highlightJson(JSON.stringify(requestData, null, 2)) + '</pre>';
             }
             if (!isParamsOnly && responseData !== null) {
                 document.getElementById('response-panel').innerHTML =
                     viewMode === 'tree' ? renderJSONTree(responseData, 'response') :
-                    '<pre class="raw-json">' + highlightJson(JSON.stringify(responseData, null, 2)) + '</pre>';
+                        '<pre class="raw-json">' + highlightJson(JSON.stringify(responseData, null, 2)) + '</pre>';
             }
         }
 
@@ -830,7 +855,7 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
                 .replace(/(>)/g, '&gt;')
                 .replace(/(<)/g, '&lt;')
                 .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+\-]?\d+)?)/g,
-                    function(match) {
+                    function (match) {
                         let cls = 'json-number';
                         if (/^"/.test(match)) {
                             cls = /:$/.test(match) ? 'json-key' : 'json-string';

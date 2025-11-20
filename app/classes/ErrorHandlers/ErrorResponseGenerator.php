@@ -5,7 +5,7 @@ namespace App\ErrorHandlers;
 use Throwable;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
-use Laminas\Diactoros\Response;
+use Slim\Psr7\Response;
 use App\Utilities\LoggerUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

@@ -2,7 +2,7 @@
 
 // For Roche Cobas test results import for EID
 // File gets called in import-file-helper.php based on the selected instrument type
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\PENDING_APPROVAL;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -15,7 +15,7 @@ use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -106,10 +106,10 @@ try {
             //$reviewBy = $rowData[$reviewByCol];
 
             $result = $absVal = $logVal = $absDecimalVal = $txtVal = '';
-            $resultInLowerCase = strtolower((string)$rowData[$resultCol]);
+            $resultInLowerCase = strtolower((string) $rowData[$resultCol]);
             if (str_contains($resultInLowerCase, 'not detected')) {
                 $result = 'negative';
-            } elseif ((str_contains($resultInLowerCase, 'detected')) || (str_contains(strtolower((string)$rowData[$resultCol]), 'passed'))) {
+            } elseif ((str_contains($resultInLowerCase, 'detected')) || (str_contains(strtolower((string) $rowData[$resultCol]), 'passed'))) {
                 $result = 'positive';
             } else {
                 $result = $resultInLowerCase;
@@ -219,7 +219,7 @@ try {
                 $data['sample_details'] = 'New Sample';
             }
 
-            if ($sampleCode != ''  || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
+            if ($sampleCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);

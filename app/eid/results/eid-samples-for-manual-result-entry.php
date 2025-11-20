@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\ACCEPTED;
@@ -15,7 +15,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -43,10 +43,10 @@ try {
      $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
      $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'vl.mother_name', 'f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
      if ($general->isSTSInstance()) {
-         $sampleCode = 'remote_sample_code';
+          $sampleCode = 'remote_sample_code';
      } elseif ($general->isStandaloneInstance()) {
-         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
-         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+          $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+          $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
      if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
           array_unshift($orderColumns, "vl.eid_id");
@@ -153,9 +153,9 @@ try {
      }
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           if ($_POST['status'] == 'no_result') {
-              $statusCondition = '  (vl.result is NULL OR vl.result = "") AND vl.result_status = ' . RECEIVED_AT_TESTING_LAB;
+               $statusCondition = '  (vl.result is NULL OR vl.result = "") AND vl.result_status = ' . RECEIVED_AT_TESTING_LAB;
           } elseif ($_POST['status'] == 'result') {
-              $statusCondition = ' (vl.result is NOT NULL AND vl.result != "") ';
+               $statusCondition = ' (vl.result is NOT NULL AND vl.result != "") ';
           } else {
                $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . REJECTED;
           }

@@ -42,7 +42,7 @@ foreach ($userResult as $user) {
 }
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = $_GET['id'] ?? null;
@@ -180,24 +180,24 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
 <script>
 	changeReject($('#isSampleRejected').val());
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 
 
 
-		$('#isSampleRejected').change(function(e) {
+		$('#isSampleRejected').change(function (e) {
 			changeReject(this.value);
 		});
 
-		$("#hepatitisPlatform").on("change", function() {
+		$("#hepatitisPlatform").on("change", function () {
 			if (this.value != "") {
 				getMachine(this.value);
 			}
 		});
 		getMachine($("#hepatitisPlatform").val());
-		$('.result-focus').change(function(e) {
+		$('.result-focus').change(function (e) {
 			var status = false;
-			$(".result-focus").each(function(index) {
+			$(".result-focus").each(function (index) {
 				if ($(this).val() != "") {
 					status = true;
 				}
@@ -235,11 +235,11 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
 
 	function getMachine(value) {
 		$.post("/instruments/get-machine-names-by-instrument.php", {
-				instrumentId: value,
-				machine: <?php echo empty($hepatitisInfo['import_machine_name']) ? '""' : $hepatitisInfo['import_machine_name']; ?>,
-				testType: 'hepatitis'
-			},
-			function(data) {
+			instrumentId: value,
+			machine: <?php echo empty($hepatitisInfo['import_machine_name']) ? '""' : $hepatitisInfo['import_machine_name']; ?>,
+			testType: 'hepatitis'
+		},
+			function (data) {
 				$('#machineName').html('');
 				if (data != "") {
 					$('#machineName').append(data);

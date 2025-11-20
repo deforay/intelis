@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -12,7 +12,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -78,14 +78,14 @@ try {
     }
     if (!empty($_POST['sampleCollectionDate'])) {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
-        $sWhere[] =  " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
+        $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
     }
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
         $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
     if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
         if ($_POST['statusFilter'] == 'approvedOrRejected') {
-            $sWhere[] =  ' vl.result_status IN (4,7)';
+            $sWhere[] = ' vl.result_status IN (4,7)';
         } elseif ($_POST['statusFilter'] == 'notApprovedOrRejected') {
             $sWhere[] = ' vl.result_status IN (6,8)';
         }
@@ -142,8 +142,8 @@ try {
         $status = '<select class="form-control"  name="status[]" id="' . $aRow['hepatitis_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
                <option value="">' . _translate("-- Select --") . '</option>
                <option value="7" ' . ($aRow['status_id'] == "7" ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
-               <option value="4" ' . ($aRow['status_id'] == "4"  ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
-               <option value="2" ' . ($aRow['status_id'] == "2"  ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
+               <option value="4" ' . ($aRow['status_id'] == "4" ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
+               <option value="2" ' . ($aRow['status_id'] == "2" ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
                </select><br><br>';
 
         $row = [];

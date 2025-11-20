@@ -9,7 +9,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -142,7 +142,7 @@ if (isset($_POST['batchId'])) {
             AND vl.result_status IN (" . SAMPLE_STATUS\REORDERED_FOR_TESTING . ", " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . "))";
 
     if (!empty($swhere)) {
-        $squery = $squery . ' WHERE ' . implode(" AND ", $swhere);
+        $squery = $squery . ' WHERE ' . implode(" AND ", array_map(fn($condition) => "($condition)", $swhere));
     }
     $query .= "$squery ORDER BY vl.$orderBy)";
 }
