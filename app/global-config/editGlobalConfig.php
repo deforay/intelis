@@ -5,7 +5,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\ContainerRegistry;
 
 $title = _translate("System Configuration");
@@ -23,7 +23,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -1208,20 +1208,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="auto-sample-code" class="autoSample"
 													style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-														</code>
+																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																</code>
 												<code id="auto-sample-code2" class="autoSample"
 													style="display:<?php echo ($arr['sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. R+Year+Province Code+VL+Increment Counter (R18NCDVL0001)"); ?>
-														</code>
+																	<?php echo _translate("eg. R+Year+Province Code+VL+Increment Counter (R18NCDVL0001)"); ?>
+																</code>
 												<code id="auto-sample-code-MMYY" class="autoSample"
 													style="display:<?php echo ($arr['sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (VL0517999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (VL0517999)"); ?>
+																</code>
 												<code id="auto-sample-code-YY" class="autoSample"
 													style="display:<?php echo ($arr['sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Year+Increment Counter (VL17999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Year+Increment Counter (VL17999)"); ?>
+																</code>
 											</div>
 										</div><br />
 										<div class="row">
@@ -1485,20 +1485,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="eid_auto-sample-code" class="eid_autoSample"
 													style="display:<?php echo ($arr['eid_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-														</code>
+																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																</code>
 												<code id="eid_auto-sample-code2" class="eid_autoSample"
 													style="display:<?php echo ($arr['eid_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. R+Year+Province Code+EID+Increment Counter (R18NCDEID0001)"); ?>
-														</code>
+																	<?php echo _translate("eg. R+Year+Province Code+EID+Increment Counter (R18NCDEID0001)"); ?>
+																</code>
 												<code id="eid_auto-sample-code-MMYY" class="eid_autoSample"
 													style="display:<?php echo ($arr['eid_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (EID0517999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (EID0517999)"); ?>
+																</code>
 												<code id="eid_auto-sample-code-YY" class="eid_autoSample"
 													style="display:<?php echo ($arr['eid_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Year+Increment Counter (EID17999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Year+Increment Counter (EID17999)"); ?>
+																</code>
 											</div>
 										</div><br />
 										<div class="row">
@@ -1695,20 +1695,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="covid19_auto-sample-code" class="covid19_autoSample"
 													style="display:<?php echo ($arr['covid19_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-														</code>
+																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																</code>
 												<code id="covid19_auto-sample-code2" class="covid19_autoSample"
 													style="display:<?php echo ($arr['covid19_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. R+Year+Province Code+covid19+Increment Counter (R18NCDC190001)"); ?>
-														</code>
+																	<?php echo _translate("eg. R+Year+Province Code+covid19+Increment Counter (R18NCDC190001)"); ?>
+																</code>
 												<code id="covid19_auto-sample-code-MMYY" class="covid19_autoSample"
 													style="display:<?php echo ($arr['covid19_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
+																</code>
 												<code id="covid19_auto-sample-code-YY" class="covid19_autoSample"
 													style="display:<?php echo ($arr['covid19_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
+																</code>
 											</div>
 										</div><br />
 
@@ -1885,20 +1885,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="hepatitis_auto-sample-code" class="hepatitis_autoSample"
 													style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-														</code>
+																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																</code>
 												<code id="hepatitis_auto-sample-code2" class="hepatitis_autoSample"
 													style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. R+Year+Province Code+hepatitis+Increment Counter (R18NCDC190001)"); ?>
-														</code>
+																	<?php echo _translate("eg. R+Year+Province Code+hepatitis+Increment Counter (R18NCDC190001)"); ?>
+																</code>
 												<code id="hepatitis_auto-sample-code-MMYY" class="hepatitis_autoSample"
 													style="display:<?php echo ($arr['hepatitis_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (HEP0517999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (HEP0517999)"); ?>
+																</code>
 												<code id="hepatitis_auto-sample-code-YY" class="hepatitis_autoSample"
 													style="display:<?php echo ($arr['hepatitis_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Year+Increment Counter (HEP17999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Year+Increment Counter (HEP17999)"); ?>
+																</code>
 											</div>
 										</div><br />
 
@@ -2049,20 +2049,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="tb_auto-sample-code" class="tb_autoSample"
 													style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-														</code>
+																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																</code>
 												<code id="tb_auto-sample-code2" class="tb_autoSample"
 													style="display:<?php echo ($arr['tb_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. R+Year+Province Code+tb+Increment Counter (R18NCDC190001)"); ?>
-														</code>
+																	<?php echo _translate("eg. R+Year+Province Code+tb+Increment Counter (R18NCDC190001)"); ?>
+																</code>
 												<code id="tb_auto-sample-code-MMYY" class="tb_autoSample"
 													style="display:<?php echo ($arr['tb_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
+																</code>
 												<code id="tb_auto-sample-code-YY" class="tb_autoSample"
 													style="display:<?php echo ($arr['tb_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
+																</code>
 											</div>
 										</div><br />
 
@@ -2235,20 +2235,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="cd4_auto-sample-code" class="cd4_autoSample"
 													style="display:<?php echo ($arr['cd4_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-														</code>
+																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																</code>
 												<code id="cd4_auto-sample-code2" class="cd4_autoSample"
 													style="display:<?php echo ($arr['cd4_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. R+Year+Province Code+cd4+Increment Counter (R18NCDC190001)"); ?>
-														</code>
+																	<?php echo _translate("eg. R+Year+Province Code+cd4+Increment Counter (R18NCDC190001)"); ?>
+																</code>
 												<code id="cd4_auto-sample-code-MMYY" class="cd4_autoSample"
 													style="display:<?php echo ($arr['cd4_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
+																</code>
 												<code id="cd4_auto-sample-code-YY" class="cd4_autoSample"
 													style="display:<?php echo ($arr['cd4_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
+																</code>
 											</div>
 										</div><br />
 										<div class="row">
@@ -2402,20 +2402,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="generic_auto-sample-code" class="generic_autoSample"
 													style="display:<?php echo ($arr['generic_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-														</code>
+																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																</code>
 												<code id="generic_auto-sample-code2" class="generic_autoSample"
 													style="display:<?php echo ($arr['generic_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. R+Year+Province Code+tb+Increment Counter (R18NCDLAB0001)"); ?>
-														</code>
+																	<?php echo _translate("eg. R+Year+Province Code+tb+Increment Counter (R18NCDLAB0001)"); ?>
+																</code>
 												<code id="generic_auto-sample-code-MMYY" class="generic_autoSample"
 													style="display:<?php echo ($arr['generic_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (LAB0517999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (LAB0517999)"); ?>
+																</code>
 												<code id="generic_auto-sample-code-YY" class="generic_autoSample"
 													style="display:<?php echo ($arr['generic_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-															<?php echo _translate("eg. Prefix+Year+Increment Counter (LAB17999)"); ?>
-														</code>
+																	<?php echo _translate("eg. Prefix+Year+Increment Counter (LAB17999)"); ?>
+																</code>
 											</div>
 										</div><br />
 

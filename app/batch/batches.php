@@ -16,7 +16,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -66,10 +66,14 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 								<div class="col-xs-6 col-md-6">
 									<div class="form-group" style="margin-left:30px; margin-top:30px;">
 										<label for="testType">Test Type</label>
-										<select class="form-control" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getBatchForm(this)">
+										<select class="form-control" name="testType" id="testType"
+											title="Please choose test type" style="width:100%;"
+											onchange="getBatchForm(this)">
 											<option value=""> -- Select -- </option>
 											<?php foreach ($testTypeResult as $testType) { ?>
-												<option value="<?php echo $testType['test_type_id']; ?>"><?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?></option>
+												<option value="<?php echo $testType['test_type_id']; ?>">
+													<?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?>
+												</option>
 											<?php } ?>
 										</select>
 
@@ -78,7 +82,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 								<div class="col-xs-6 col-md-6">
 									<div class="box-header with-border">
 										<?php if (_isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
-											<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Create New Batch"); ?></a>
+											<a href="add-batch.php?type=<?php echo $_GET['type']; ?>"
+												class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em>
+												<?php echo _translate("Create New Batch"); ?></a>
 										<?php } ?>
 									</div>
 								</div>
@@ -87,13 +93,15 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					<?php } else { ?>
 						<div class="box-header with-border">
 							<?php if (_isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
-								<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Create New Batch"); ?></a>
+								<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right">
+									<em class="fa-solid fa-plus"></em> <?php echo _translate("Create New Batch"); ?></a>
 							<?php } ?>
 						</div>
 					<?php } ?>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="batchCodeDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="batchCodeDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th scope="col"><?= _translate("Batch Code"); ?></th>
@@ -114,7 +122,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="5" class="dataTables_empty"><?= _translate("Loading data from server"); ?></td>
+									<td colspan="5" class="dataTables_empty">
+										<?= _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -131,7 +140,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 </div>
 <script>
 	var oTable = null;
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$("#testType").select2({
 			width: '100%',
 			placeholder: "<?php echo _translate("Select Test Type"); ?>"
@@ -145,33 +154,33 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			//"bStateSave" : true,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": "center"
-				},
+				"sClass": "center"
+			},
 				<?php if (!empty($_GET['type']) && $_GET['type'] == 'generic-tests') { ?> {
-						"sClass": "center",
-						"bSortable": false
-					},
+					"sClass": "center",
+					"bSortable": false
+				},
 				<?php } ?> <?php
-							if ($formId == COUNTRY\CAMEROON) {
-								echo '{
+				   if ($formId == COUNTRY\CAMEROON) {
+					   echo '{
 						"sClass": "center",
 					},';
-							}
-							?> {
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center"
-				}
+				   }
+				   ?> {
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center"
+			}
 				<?php
 				if (_isAllowed("/batch/edit-batch.php?type=" . $_GET['type'])) {
 					echo ',{"sClass": "center", "bSortable": false}';
@@ -183,7 +192,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/batch/get-batches.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "type",
 					"value": "<?php echo $_GET['type']; ?>"
@@ -211,10 +220,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		var conf = confirm("<?php echo _translate("Are you sure you want to delete Batch"); ?> : " + batchCode + "?\n<?php echo _translate("This action cannot be undone."); ?>");
 		if (conf) {
 			$.post("/batch/delete-batch.php", {
-					id: bId,
-					type: '<?php echo $_GET['type']; ?>'
-				},
-				function(data) {
+				id: bId,
+				type: '<?php echo $_GET['type']; ?>'
+			},
+				function (data) {
 					let toastMessage = "";
 					let toastColor = "";
 					if (data == 1) {

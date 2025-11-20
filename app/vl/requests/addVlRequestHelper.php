@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const COUNTRY\PNG;
@@ -35,7 +35,7 @@ $finalResult = null;
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
@@ -220,7 +220,7 @@ try {
         'treatment_duration' => $_POST['treatmentDuration'] ?? null,
         'treatment_indication' => $_POST['treatmentIndication'] ?? null,
         'treatment_initiated_date' => DateUtility::isoDateFormat($_POST['dateOfArtInitiation'] ?? ''),
-        'treatment_duration_precise' => (isset($_POST['treatmentDurationPrecise']) && $_POST['treatmentDurationPrecise'] != "More than 12 Months") ?  $_POST['treatmentDurationPrecise'] : ($_POST['treatmentDurationPrecise1'] ?? ''),
+        'treatment_duration_precise' => (isset($_POST['treatmentDurationPrecise']) && $_POST['treatmentDurationPrecise'] != "More than 12 Months") ? $_POST['treatmentDurationPrecise'] : ($_POST['treatmentDurationPrecise1'] ?? ''),
         'last_cd4_result' => $_POST['cd4Result'] ?? null,
         'last_cd4_percentage' => $_POST['cd4Percentage'] ?? null,
         'last_cd4_date' => DateUtility::isoDateFormat($_POST['cd4Date'] ?? ''),
@@ -297,7 +297,7 @@ try {
         'vl_test_number' => $_POST['viralLoadNo'] ?? null,
         'request_created_datetime' => DateUtility::getCurrentDateTime(),
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-        'result_modified'  => 'no',
+        'result_modified' => 'no',
         'manual_result_entry' => 'yes',
     ];
 
@@ -461,7 +461,7 @@ try {
 } catch (Throwable $e) {
     $db->rollbackTransaction();
     LoggerUtility::logError($e->getMessage(), [
-        'code'  => $e->getCode(),
+        'code' => $e->getCode(),
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'last_db_query' => $db->getLastQuery(),

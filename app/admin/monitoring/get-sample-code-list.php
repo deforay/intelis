@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -9,12 +9,11 @@ use App\Registries\ContainerRegistry;
 $db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
-if(isset($_GET['code']))
-{
+if (isset($_GET['code'])) {
     $table = $_GET['testType'];
     $sampleCode = $_GET['code'];
     $sql = "SELECT DISTINCT sample_code FROM $table WHERE sample_code like '$sampleCode%' OR remote_sample_code like '$sampleCode%'";

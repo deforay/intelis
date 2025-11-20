@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -13,7 +13,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
@@ -44,14 +44,14 @@ try {
     if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) !== "") {
         $currentDateTime = DateUtility::getCurrentDateTime();
         $data = [
-            'manifest_code'              => $_POST['packageCode'],
-            'module'                    => $_POST['module'],
-            'added_by'                  => $_SESSION['userId'],
-            'lab_id'                    => $_POST['testingLab'],
-            'number_of_samples'         => $numberOfSamples,
-            'manifest_status'            => 'pending',
-            'request_created_datetime'  => $currentDateTime,
-            'last_modified_datetime'    => $currentDateTime
+            'manifest_code' => $_POST['packageCode'],
+            'module' => $_POST['module'],
+            'added_by' => $_SESSION['userId'],
+            'lab_id' => $_POST['testingLab'],
+            'number_of_samples' => $numberOfSamples,
+            'manifest_status' => 'pending',
+            'request_created_datetime' => $currentDateTime,
+            'last_modified_datetime' => $currentDateTime
         ];
 
         $db->insert('specimen_manifests', $data);
@@ -60,7 +60,7 @@ try {
             $dataToUpdate = [
                 'sample_package_id' => $lastId,
                 'sample_package_code' => $_POST['packageCode'],
-                'lab_id'    => $_POST['testingLab'],
+                'lab_id' => $_POST['testingLab'],
                 'last_modified_datetime' => $currentDateTime,
                 'data_sync' => 0
             ];

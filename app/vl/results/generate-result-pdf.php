@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const COUNTRY\SOUTH_SUDAN;
 use const COUNTRY\SIERRA_LEONE;
 use const COUNTRY\DRC;
@@ -24,7 +24,7 @@ use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -132,7 +132,7 @@ $fileArray = [
 	BURKINA_FASO => 'pdf/result-pdf-burkina-faso.php'
 ];
 
-$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  time() . '-' . MiscUtility::generateRandomString(6);
+$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR . time() . '-' . MiscUtility::generateRandomString(6);
 MiscUtility::makeDirectory($pathFront);
 
 $resultFilename = '';

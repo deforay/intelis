@@ -1,13 +1,13 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -15,8 +15,8 @@ $_POST = _sanitizeInput($request->getParsedBody());
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-$mappingType     = $_POST['mappingType'];
-$testType   = $_POST['testType'];
+$mappingType = $_POST['mappingType'];
+$testType = $_POST['testType'];
 
 $isTestingLab = $mappingType == "testing-labs";
 

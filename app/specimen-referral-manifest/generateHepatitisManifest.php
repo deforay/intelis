@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -21,7 +21,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -94,7 +94,7 @@ if (trim((string) $id) !== '') {
         $pdf->AddPage();
         $tbl = '<span style="font-size:1.7em;"> ' . $result[0]['manifest_code'];
         $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['manifest_code']) . '">';
-        $tbl .=  '</span><br>';
+        $tbl .= '</span><br>';
 
         if (!empty($result)) {
             $tbl .= '<table style="width:100%;border:1px solid #333;">

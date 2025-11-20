@@ -1,5 +1,6 @@
 <?php
 
+use Slim\Psr7\UploadedFile;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -9,11 +10,10 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Services\STS\TokensService;
-use Laminas\Diactoros\UploadedFile;
-use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
+use Psr\Http\Message\ServerRequestInterface;
 
 
 /** @var DatabaseService $db */
@@ -33,7 +33,7 @@ $stsTokensService = ContainerRegistry::get(TokensService::class);
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 

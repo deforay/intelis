@@ -11,7 +11,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -69,7 +69,8 @@ $facilityId = $_GET['facilityId'] ?? '';
                         <div class="box-tools pull-right">
                             <span class="label label-info">Test Type: <?= strtoupper((string) $testType); ?></span>
                             <?php if ($dateRange): ?>
-                                <span class="label label-primary">Period: <?= htmlspecialchars((string) $dateRange); ?></span>
+                                <span class="label label-primary">Period:
+                                    <?= htmlspecialchars((string) $dateRange); ?></span>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -78,12 +79,16 @@ $facilityId = $_GET['facilityId'] ?? '';
                             <div class="col-md-12">
                                 <div class="alert alert-info">
                                     <strong><em class="fa-solid fa-info-circle"></em> About This Report:</strong><br>
-                                    This report identifies potential duplicate test requests based on patient identifiers (name and/or ART number)
+                                    This report identifies potential duplicate test requests based on patient
+                                    identifiers (name and/or ART number)
                                     and collection dates within a 7-day window. This helps identify:
                                     <ul style="margin-top: 10px;">
-                                        <li><strong>High Risk:</strong> Same patient, samples collected within 1 day (likely data entry error)</li>
-                                        <li><strong>Medium Risk:</strong> Same patient, samples collected within 2-3 days</li>
-                                        <li><strong>Low Risk:</strong> Same patient, samples collected within 4-7 days (may be legitimate follow-up)</li>
+                                        <li><strong>High Risk:</strong> Same patient, samples collected within 1 day
+                                            (likely data entry error)</li>
+                                        <li><strong>Medium Risk:</strong> Same patient, samples collected within 2-3
+                                            days</li>
+                                        <li><strong>Low Risk:</strong> Same patient, samples collected within 4-7 days
+                                            (may be legitimate follow-up)</li>
                                     </ul>
                                 </div>
                             </div>
@@ -91,7 +96,8 @@ $facilityId = $_GET['facilityId'] ?? '';
 
                         <div class="row" style="margin-bottom: 15px;">
                             <div class="col-md-12">
-                                <button class="btn btn-success btn-sm pull-right" onclick="exportDuplicates();" style="margin-left: 5px;">
+                                <button class="btn btn-success btn-sm pull-right" onclick="exportDuplicates();"
+                                    style="margin-left: 5px;">
                                     <em class="fa-solid fa-file-excel"></em> <?= _translate('Export to Excel'); ?>
                                 </button>
                                 <button class="btn btn-primary btn-sm pull-right" onclick="refreshData();">
@@ -128,7 +134,7 @@ $facilityId = $_GET['facilityId'] ?? '';
 <script type="text/javascript">
     var dataTable;
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Initialize DataTable
         dataTable = $('#duplicatesDetailTable').DataTable({
             "processing": true,
@@ -136,7 +142,7 @@ $facilityId = $_GET['facilityId'] ?? '';
             "ajax": {
                 "url": "/admin/api-dashboard/get-duplicates-detail.php",
                 "type": "POST",
-                "data": function(d) {
+                "data": function (d) {
                     d.testType = "<?= $testType; ?>";
                     d.dateRange = "<?= $dateRange; ?>";
                     d.labName = "<?= $labName; ?>";
@@ -146,49 +152,49 @@ $facilityId = $_GET['facilityId'] ?? '';
                 }
             },
             "columns": [{
-                    "data": 0,
-                    "name": "risk_sort_value",
-                    "visible": false,
-                    "searchable": false
-                }, // Hidden sort column
-                {
-                    "data": 1,
-                    "name": "risk_level",
-                    "orderData": [0] // Sort by the hidden column
-                },
-                {
-                    "data": 2,
-                    "name": "patient_info",
-                    "orderable": false
-                },
-                {
-                    "data": 3,
-                    "name": "sample_ids",
-                    "orderable": false
-                },
-                {
-                    "data": 4,
-                    "name": "collection_dates",
-                    "orderable": false
-                },
-                {
-                    "data": 5,
-                    "name": "sources",
-                    "orderable": false
-                },
-                {
-                    "data": 6,
-                    "name": "duplicate_count"
-                },
-                {
-                    "data": 7,
-                    "name": "days_span"
-                },
-                {
-                    "data": 8,
-                    "name": "facility_names",
-                    "orderable": false
-                }
+                "data": 0,
+                "name": "risk_sort_value",
+                "visible": false,
+                "searchable": false
+            }, // Hidden sort column
+            {
+                "data": 1,
+                "name": "risk_level",
+                "orderData": [0] // Sort by the hidden column
+            },
+            {
+                "data": 2,
+                "name": "patient_info",
+                "orderable": false
+            },
+            {
+                "data": 3,
+                "name": "sample_ids",
+                "orderable": false
+            },
+            {
+                "data": 4,
+                "name": "collection_dates",
+                "orderable": false
+            },
+            {
+                "data": 5,
+                "name": "sources",
+                "orderable": false
+            },
+            {
+                "data": 6,
+                "name": "duplicate_count"
+            },
+            {
+                "data": 7,
+                "name": "days_span"
+            },
+            {
+                "data": 8,
+                "name": "facility_names",
+                "orderable": false
+            }
             ],
             "order": [
                 [0, "desc"]
@@ -197,23 +203,23 @@ $facilityId = $_GET['facilityId'] ?? '';
             "responsive": true,
             "dom": 'Bfrtip',
             "buttons": [{
-                    extend: 'excel',
-                    text: '<em class="fa-solid fa-file-excel"></em> Export Excel',
-                    className: 'btn btn-success btn-sm',
-                    exportOptions: {
-                        columns: [1, 2, 3, 4, 5, 6, 7, 8] // Exclude the hidden sort column
-                    }
-                },
-                {
-                    extend: 'pdf',
-                    text: '<em class="fa-solid fa-file-pdf"></em> Export PDF',
-                    className: 'btn btn-danger btn-sm',
-                    exportOptions: {
-                        columns: [1, 2, 3, 4, 5, 6, 7, 8] // Exclude the hidden sort column
-                    }
+                extend: 'excel',
+                text: '<em class="fa-solid fa-file-excel"></em> Export Excel',
+                className: 'btn btn-success btn-sm',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8] // Exclude the hidden sort column
                 }
+            },
+            {
+                extend: 'pdf',
+                text: '<em class="fa-solid fa-file-pdf"></em> Export PDF',
+                className: 'btn btn-danger btn-sm',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8] // Exclude the hidden sort column
+                }
+            }
             ],
-            "createdRow": function(row, data, dataIndex) {
+            "createdRow": function (row, data, dataIndex) {
                 // Add CSS classes based on risk level (using the visible column)
                 const riskLevel = $(data[1]).text().trim();
                 if (riskLevel === 'High') {

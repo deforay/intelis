@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -12,7 +12,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -121,9 +121,9 @@ try {
     }
     if (isset($_POST['rjtGender']) && $_POST['rjtGender'] != '') {
         if (trim((string) $_POST['rjtGender']) === "unreported") {
-            $sWhere[] =  ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+            $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
         } else {
-            $sWhere[] =  ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['rjtGender'] . '") ';
+            $sWhere[] = ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['rjtGender'] . '") ';
         }
     }
     if (isset($_POST['rjtPatientPregnant']) && $_POST['rjtPatientPregnant'] != '') {
@@ -160,8 +160,8 @@ try {
     $_SESSION['rejectedViralLoadResultCount'] = $iTotal;
 
     /*
-         * Output
-        */
+     * Output
+     */
     $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
     foreach ($rResult as $aRow) {

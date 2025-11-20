@@ -14,7 +14,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -90,7 +90,8 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="patientModalDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th style="width:10%;">
@@ -131,7 +132,9 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 									); ?>
 
 									<tr>
-										<td><input type="radio" id="patient<?php echo $patient['sample_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
+										<td><input type="radio" id="patient<?php echo $patient['sample_id']; ?>"
+												name="patient" value='<?php echo $patientDetails; ?>'
+												onclick="getPatientDetails(this.value);"></td>
 										<td>
 											<?= $patient['patient_id']; ?>
 										</td>
@@ -154,7 +157,7 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 											<?php echo DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']); ?>
 										</td>
 									</tr>
-								<?php
+									<?php
 									//}
 								}
 								?>
@@ -176,7 +179,7 @@ $pResult = $db->get("form_generic vl", 25, "fd.facility_id,
 <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$('#patientModalDataTable').DataTable({
 			"aaSorting": [
 				[1, 'asc'],

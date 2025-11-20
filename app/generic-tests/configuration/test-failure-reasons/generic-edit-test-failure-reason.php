@@ -7,7 +7,7 @@ $title = _translate("Test Failure Reason");
 require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -31,39 +31,62 @@ $testFailureReasonInfo = $db->query($tQuery);
 
         <div class="box box-default">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+                    <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
                 <!-- form start -->
-                <form class="form-horizontal" method='post' name='addSampleTypeForm' id='addSampleTypeForm' autocomplete="off" action="save-test-failure-reason-helper.php">
+                <form class="form-horizontal" method='post' name='addSampleTypeForm' id='addSampleTypeForm'
+                    autocomplete="off" action="save-test-failure-reason-helper.php">
                     <div class="box-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testFailureReason" class="col-lg-4 control-label"><?php echo _translate("Test Failure Reason"); ?><span class="mandatory">*</span></label>
+                                    <label for="testFailureReason"
+                                        class="col-lg-4 control-label"><?php echo _translate("Test Failure Reason"); ?><span
+                                            class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="testFailureReason" name="testFailureReason" placeholder="<?php echo _translate('Test Failure Reason'); ?>" title="<?php echo _translate('Please enter test reason'); ?>" onblur="checkNameValidation('r_generic_test_failure_reasons','test_failure_reason',this,'<?php echo "test_failure_reason_id##" . $testFailureReasonInfo[0]['test_failure_reason']; ?>','<?php echo _translate("This test reason that you entered already exists.Try another name"); ?>',null)" value="<?php echo $testFailureReasonInfo[0]['test_failure_reason']; ?>" />
-                                        <input type="hidden" name="testFailureReasonId" id="testFailureReasonId" value="<?php echo base64_encode((string) $testFailureReasonInfo[0]['test_failure_reason_id']); ?>" />
+                                        <input type="text" class="form-control isRequired" id="testFailureReason"
+                                            name="testFailureReason"
+                                            placeholder="<?php echo _translate('Test Failure Reason'); ?>"
+                                            title="<?php echo _translate('Please enter test reason'); ?>"
+                                            onblur="checkNameValidation('r_generic_test_failure_reasons','test_failure_reason',this,'<?php echo "test_failure_reason_id##" . $testFailureReasonInfo[0]['test_failure_reason']; ?>','<?php echo _translate("This test reason that you entered already exists.Try another name"); ?>',null)"
+                                            value="<?php echo $testFailureReasonInfo[0]['test_failure_reason']; ?>" />
+                                        <input type="hidden" name="testFailureReasonId" id="testFailureReasonId"
+                                            value="<?php echo base64_encode((string) $testFailureReasonInfo[0]['test_failure_reason_id']); ?>" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testFailureReasonCode" class="col-lg-4 control-label"><?php echo _translate("Test Failure Reason Code"); ?><span class="mandatory">*</span></label>
+                                    <label for="testFailureReasonCode"
+                                        class="col-lg-4 control-label"><?php echo _translate("Test Failure Reason Code"); ?><span
+                                            class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="testFailureReasonCode" name="testFailureReasonCode" placeholder="<?php echo _translate('Test Reason Code'); ?>" title="<?php echo _translate('Please enter test failure reason code'); ?>" onblur="checkNameValidation('r_generic_test_failure_reasons','test_failure_reason_code',this,'<?php echo "test_failure_reason_code##" . $testFailureReasonInfo[0]['test_failure_reason_code']; ?>','<?php echo _translate("This test reason code that you entered already exists.Try another code"); ?>',null)" value="<?php echo $testFailureReasonInfo[0]['test_failure_reason_code']; ?>" />
+                                        <input type="text" class="form-control isRequired" id="testFailureReasonCode"
+                                            name="testFailureReasonCode"
+                                            placeholder="<?php echo _translate('Test Reason Code'); ?>"
+                                            title="<?php echo _translate('Please enter test failure reason code'); ?>"
+                                            onblur="checkNameValidation('r_generic_test_failure_reasons','test_failure_reason_code',this,'<?php echo "test_failure_reason_code##" . $testFailureReasonInfo[0]['test_failure_reason_code']; ?>','<?php echo _translate("This test reason code that you entered already exists.Try another code"); ?>',null)"
+                                            value="<?php echo $testFailureReasonInfo[0]['test_failure_reason_code']; ?>" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="testFailureReasonStatus" class="col-lg-4 control-label"><?php echo _translate("Status"); ?><span class="mandatory">*</span></label>
+                                    <label for="testFailureReasonStatus"
+                                        class="col-lg-4 control-label"><?php echo _translate("Status"); ?><span
+                                            class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control isRequired" id="testFailureReasonStatus" name="testFailureReasonStatus" title="<?php echo _translate('Please select status'); ?>">
+                                        <select class="form-control isRequired" id="testFailureReasonStatus"
+                                            name="testFailureReasonStatus"
+                                            title="<?php echo _translate('Please select status'); ?>">
                                             <option value=""><?php echo _translate("--Select--"); ?></option>
-                                            <option value="active" <?php echo ($testFailureReasonInfo[0]['test_failure_reason_status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _translate("Active"); ?></option>
-                                            <option value="inactive" <?php echo ($testFailureReasonInfo[0]['test_failure_reason_status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _translate("Inactive"); ?></option>
+                                            <option value="active" <?php echo ($testFailureReasonInfo[0]['test_failure_reason_status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _translate("Active"); ?>
+                                            </option>
+                                            <option value="inactive" <?php echo ($testFailureReasonInfo[0]['test_failure_reason_status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _translate("Inactive"); ?>
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
@@ -73,8 +96,10 @@ $testFailureReasonInfo = $db->query($tQuery);
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-                        <a href="generic-test-failure-reason.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
+                        <a class="btn btn-primary" href="javascript:void(0);"
+                            onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+                        <a href="generic-test-failure-reason.php" class="btn btn-default">
+                            <?php echo _translate("Cancel"); ?></a>
                     </div>
                     <!-- /.box-footer -->
                 </form>
@@ -107,13 +132,13 @@ $testFailureReasonInfo = $db->query($tQuery);
         removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: removeDots.trim(),
-                fnct: fnct,
-                format: "html"
-            },
-            function(data) {
+            tableName: tableName,
+            fieldName: fieldName,
+            value: removeDots.trim(),
+            fnct: fnct,
+            format: "html"
+        },
+            function (data) {
                 if (data === '1') {
                     alert(alrt);
                     document.getElementById(obj.id).value = "";

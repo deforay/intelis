@@ -1,13 +1,13 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 $_GET = _sanitizeInput($request->getQueryParams());

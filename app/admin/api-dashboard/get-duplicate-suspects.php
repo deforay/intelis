@@ -1,6 +1,6 @@
 <?php
 // get-duplicate-suspects.php - Aggregated by facility
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -9,7 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -129,11 +129,11 @@ try {
         $formattedResults[] = [
             'facility_name' => $row['facility_name'] ?: 'Unknown Facility #' . $row['facility_id'],
             'facility_id' => $row['facility_id'],
-            'duplicate_groups_count' => (int)$row['duplicate_groups_count'],
-            'total_duplicate_samples' => (int)$row['total_duplicate_samples'],
-            'high_risk_groups' => (int)$row['high_risk_groups'],
-            'medium_risk_groups' => (int)$row['medium_risk_groups'],
-            'low_risk_groups' => (int)$row['low_risk_groups'],
+            'duplicate_groups_count' => (int) $row['duplicate_groups_count'],
+            'total_duplicate_samples' => (int) $row['total_duplicate_samples'],
+            'high_risk_groups' => (int) $row['high_risk_groups'],
+            'medium_risk_groups' => (int) $row['medium_risk_groups'],
+            'low_risk_groups' => (int) $row['low_risk_groups'],
             'earliest_duplicate' => DateUtility::humanReadableDateFormat($row['earliest_duplicate'], true),
             'latest_duplicate' => DateUtility::humanReadableDateFormat($row['latest_duplicate'], true),
             'risk_level' => $riskLevel

@@ -1,7 +1,7 @@
 <?php
 
 // File gets called in import-file-helper.php based on the selected instrument type
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -17,7 +17,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 try {
     // Sanitized values from $request object
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -98,7 +98,7 @@ try {
 
                     $resultFlag = $sheetData[$flagCol];
 
-                    if (str_contains((string)$sheetData[$resultCol], 'Log')) {
+                    if (str_contains((string) $sheetData[$resultCol], 'Log')) {
 
                         $sheetData[$resultCol] = str_replace(",", ".", (string) $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
@@ -119,9 +119,9 @@ try {
                             $txtVal = null;
                             $absVal = $absDecimalVal;
                         }
-                    } elseif (str_contains((string)$sheetData[$resultCol], 'Copies')) {
+                    } elseif (str_contains((string) $sheetData[$resultCol], 'Copies')) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
-                        if (str_contains((string)$sheetData[$resultCol], '<')) {
+                        if (str_contains((string) $sheetData[$resultCol], '<')) {
                             if ($sheetData[$resultCol] == "< INF") {
                                 $txtVal = $absVal = $absDecimalVal = 839;
                                 $logVal = round(log10($absDecimalVal), 2);
@@ -129,16 +129,16 @@ try {
                                 $txtVal = $absVal = "< " . trim($absDecimalVal);
                                 $logVal = $absDecimalVal = $resultFlag = "";
                             }
-                        } elseif (str_contains((string)$sheetData[$resultCol], '>')) {
+                        } elseif (str_contains((string) $sheetData[$resultCol], '>')) {
                             $txtVal = $absVal = "> " . trim($absDecimalVal);
                             $logVal = $absDecimalVal = $resultFlag = "";
                         } else {
                             $logVal = round(log10($absDecimalVal), 2);
                             $absVal = $absDecimalVal;
                         }
-                    } elseif (str_contains((string)$sheetData[$resultCol], 'IU/mL')) {
+                    } elseif (str_contains((string) $sheetData[$resultCol], 'IU/mL')) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
-                    } elseif (str_contains(strtolower((string)$sheetData[$resultCol]), 'not detected') || strtolower((string) $sheetData[$resultCol]) === 'target not detected') {
+                    } elseif (str_contains(strtolower((string) $sheetData[$resultCol]), 'not detected') || strtolower((string) $sheetData[$resultCol]) === 'target not detected') {
                         $txtVal = "Target Not Detected";
                         $resultFlag = "";
                         $absVal = "";
@@ -252,7 +252,7 @@ try {
                 $data['sample_details'] = 'New Sample';
             }
 
-            if ($sampleCode != ''  || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
+            if ($sampleCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);

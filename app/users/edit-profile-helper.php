@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -22,7 +22,7 @@ $systemService = ContainerRegistry::get(SystemService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -75,7 +75,7 @@ try {
                 }
 
                 if (SYSTEM_CONFIG['recency']['crosslogin']) {
-                    $_SESSION['crossLoginPass']  = $newCrossLoginPassword = CommonService::encrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
+                    $_SESSION['crossLoginPass'] = $newCrossLoginPassword = CommonService::encrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
                     $client = new Client();
                     $url = rtrim((string) SYSTEM_CONFIG['recency']['url'], "/");
                     $result = $client->post("$url/api/update-password", [

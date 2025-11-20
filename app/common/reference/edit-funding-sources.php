@@ -7,7 +7,7 @@ $title = "Implementation Partners";
 require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -35,27 +35,35 @@ $partnerInfo = $db->rawQuery($query, [$id]);
 
         <div class="box box-default">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+                    <?= _translate("indicates required fields"); ?> &nbsp;</div>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
                 <!-- form start -->
-                <form class="form-horizontal" method='post' name='fundingSrcNameForm' id='fundingSrcNameForm' autocomplete="off" enctype="multipart/form-data" action="save-funding-sources-helper.php">
+                <form class="form-horizontal" method='post' name='fundingSrcNameForm' id='fundingSrcNameForm'
+                    autocomplete="off" enctype="multipart/form-data" action="save-funding-sources-helper.php">
                     <div class="box-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="fundingSrcName" class="col-lg-4 control-label">Funding Source Name <span class="mandatory">*</span></label>
+                                    <label for="fundingSrcName" class="col-lg-4 control-label">Funding Source Name <span
+                                            class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo $partnerInfo[0]['funding_source_name']; ?>" class="form-control isRequired" id="fundingSrcName" name="fundingSrcName" placeholder="Funding Source" title="Please enter Funding Source" onblur="checkNameValidation('r_funding_sources','funding_source_name',this,'<?php echo "funding_source_id##" . $id; ?>','The Funding Source that you entered already exists.Enter another Funding Source',null)" />
+                                        <input type="text" value="<?php echo $partnerInfo[0]['funding_source_name']; ?>"
+                                            class="form-control isRequired" id="fundingSrcName" name="fundingSrcName"
+                                            placeholder="Funding Source" title="Please enter Funding Source"
+                                            onblur="checkNameValidation('r_funding_sources','funding_source_name',this,'<?php echo "funding_source_id##" . $id; ?>','The Funding Source that you entered already exists.Enter another Funding Source',null)" />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="fundingStatus" class="col-lg-4 control-label">Funding Source Status<span class="mandatory">*</span></label>
+                                    <label for="fundingStatus" class="col-lg-4 control-label">Funding Source Status<span
+                                            class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control isRequired" id="fundingStatus" name="fundingStatus" title="Please select Funding Source status">
+                                        <select class="form-control isRequired" id="fundingStatus" name="fundingStatus"
+                                            title="Please select Funding Source status">
                                             <option value="">--Select--</option>
                                             <option value="active" <?php echo ($partnerInfo[0]['funding_source_status'] == "active" ? 'selected' : ''); ?>>Active</option>
                                             <option value="inactive" <?php echo ($partnerInfo[0]['funding_source_status'] == "inactive" ? 'selected' : ''); ?>>Inactive</option>
@@ -69,7 +77,8 @@ $partnerInfo = $db->rawQuery($query, [$id]);
                     <!-- /.box-body -->
                     <div class="box-footer">
                         <input type="hidden" name="fundingId" name="fundingId" value="<?php echo $_GET['id']; ?>">
-                        <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
+                        <a class="btn btn-primary" href="javascript:void(0);"
+                            onclick="validateNow();return false;">Submit</a>
                         <a href="funding-sources.php" class="btn btn-default"> Cancel</a>
                     </div>
                     <!-- /.box-footer -->
@@ -103,13 +112,13 @@ $partnerInfo = $db->rawQuery($query, [$id]);
         removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: removeDots.trim(),
-                fnct: fnct,
-                format: "html"
-            },
-            function(data) {
+            tableName: tableName,
+            fieldName: fieldName,
+            value: removeDots.trim(),
+            fnct: fnct,
+            format: "html"
+        },
+            function (data) {
                 if (data === '1') {
                     alert(alrt);
                     document.getElementById(obj.id).value = "";

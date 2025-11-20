@@ -4,12 +4,14 @@ namespace App\Services;
 
 use App\Utilities\MiscUtility;
 use App\Exceptions\SystemException;
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 
 final class SecurityService
 {
     //public static $expiryTime = 3600; // 60 minutes
-    public function __construct() {}
+    public function __construct()
+    {
+    }
 
     public static function resetSession(): void
     {
@@ -57,7 +59,7 @@ final class SecurityService
         }
     }
 
-    public static function checkContentLength(ServerRequest $request): void
+    public static function checkContentLength(ServerRequestInterface $request): void
     {
         // Only check Content-Length for POST, PUT, and PATCH requests
         $method = strtoupper($request->getMethod());
@@ -77,13 +79,13 @@ final class SecurityService
         if (
             !str_contains($contentType, 'multipart/form-data') &&
             $contentLength &&
-            strlen($bodyContents) !== (int)$contentLength
+            strlen($bodyContents) !== (int) $contentLength
         ) {
             throw new SystemException(_translate('Invalid Request. Please try again.'));
         }
     }
 
-    public static function checkCSRF(ServerRequest $request, bool $rotateCSRF = false): void
+    public static function checkCSRF(ServerRequestInterface $request, bool $rotateCSRF = false): void
     {
         // Retrieve CSRF token from header or body
         $csrfToken = $request->getHeaderLine('X-CSRF-Token')
@@ -154,7 +156,7 @@ final class SecurityService
                     // User is still within the lockout period
                     throw new SystemException(
                         "Too many failed login attempts. Please try again after " .
-                            ceil(($lockoutPeriod - $timeSinceLastFail) / 60) . " minutes.",
+                        ceil(($lockoutPeriod - $timeSinceLastFail) / 60) . " minutes.",
                         403
                     );
                 } else {

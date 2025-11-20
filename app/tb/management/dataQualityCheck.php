@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -11,7 +11,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -103,7 +103,7 @@ try {
 
      if (!empty($_POST['sampleCollectionDate'])) {
           if (trim((string) $start_date) === trim((string) $end_date)) {
-               $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+               $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
           } else {
                $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
@@ -120,9 +120,9 @@ try {
                     $sWhereSub .= " AND (";
                }
                if ($search === 'sample_collection_date') {
-                   $sWhereSub .=  'vl.' . $search . " IS NULL";
+                    $sWhereSub .= 'vl.' . $search . " IS NULL";
                } else {
-                   $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
+                    $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
                }
                $sWhereSub .= ")";
           }
@@ -152,8 +152,8 @@ try {
      $_SESSION['vlIncompleteFormCount'] = $resultCount;
 
      /*
-                                                       * Output
-                                                       */
+      * Output
+      */
      $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 
      foreach ($rResult as $aRow) {

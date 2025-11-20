@@ -9,7 +9,7 @@ use App\Registries\ContainerRegistry;
 $db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -91,7 +91,8 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="patientModalDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th style="width:10%;">
@@ -134,11 +135,13 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 										["name" => $patient['patient_first_name'] . " " . $patient['patient_last_name'], "gender" => $patient['patient_gender'], "dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']), "age_in_years" => $patient['patient_age_in_years'], "age_in_months" => $patient['patient_age_in_months'], "is_pregnant" => $patient['is_patient_pregnant'], "is_breastfeeding" => $patient['is_patient_breastfeeding'], "trimester" => $patient['pregnancy_trimester'], "mobile" => $patient['patient_mobile_number'], "consent_to_receive_sms" => $patient['consent_to_receive_sms'], "treatment_initiated_date" => DateUtility::humanReadableDateFormat($patient['treatment_initiated_date']), "current_regimen" => $patient['current_regimen'], "last_viral_load_date" => DateUtility::humanReadableDateFormat($patient['last_viral_load_date']), "last_viral_load_result" => $patient['last_viral_load_result'], "patient_art_no" => $patient['patient_art_no'], "is_encrypted" => $patient['is_encrypted'], "is_patient_new" => $patient['is_patient_new'], "sample_tested_datetime" => DateUtility::humanReadableDateFormat($patient['sample_tested_datetime']), "result" => $patient['result']]
 									);
 
-								?>
+									?>
 
 									<tr>
 										<td>
-											<input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>" name="patient" value='<?= $patientDetails; ?>' onclick="getPatientDetails(this.value);">
+											<input type="radio" id="patient<?php echo $patient['vl_sample_id']; ?>"
+												name="patient" value='<?= $patientDetails; ?>'
+												onclick="getPatientDetails(this.value);">
 										</td>
 										<td>
 											<?php echo $patient['patient_art_no']; ?>
@@ -165,7 +168,7 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 											<?php echo $patient['result']; ?>
 										</td>
 									</tr>
-								<?php
+									<?php
 									//}
 								}
 								?>
@@ -187,7 +190,7 @@ $pResult = $db->get("form_vl vl", 25, "fd.facility_id,
 <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$('#patientModalDataTable').DataTable({
 			"aaSorting": [
 				[1, 'asc'],

@@ -1,8 +1,7 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
 use const COUNTRY\CAMEROON;
-use App\Utilities\JsonUtility;
+use Slim\Psr7\UploadedFile;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -11,12 +10,12 @@ use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
-use Laminas\Diactoros\UploadedFile;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
+use Psr\Http\Message\ServerRequestInterface;
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -114,7 +113,8 @@ try {
     //         ]);
     //     }
     // }
-    if ((isset($_POST['reportFormat']['test_type']) && !empty($_POST['reportFormat']['test_type'])) ||
+    if (
+        (isset($_POST['reportFormat']['test_type']) && !empty($_POST['reportFormat']['test_type'])) ||
         (isset($_POST['reportFormat']['old_template']) && !empty($_POST['reportFormat']['old_template']))
         || isset($_FILES['reportFormat']['name'])
     ) {
@@ -127,7 +127,7 @@ try {
         }
         if (isset($_POST['reportFormat']['deleteTemplate']) && !empty($_POST['reportFormat']['deleteTemplate'])) {
             foreach (explode(',', (string) $_POST['reportFormat']['deleteTemplate']) as $testToRemove)
-                MiscUtility::removeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $testToRemove);
+                MiscUtility::removeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $testToRemove);
         }
         foreach ($_POST['reportFormat']['test_type'] as $key => $test) {
             $sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportFormat']['report_template'][$key], ['pdf']);

@@ -1,8 +1,8 @@
 <?php
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
-use Laminas\Diactoros\ServerRequest;
+/** @var ServerRequestInterface $request */
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;

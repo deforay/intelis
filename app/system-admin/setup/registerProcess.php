@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const CORE\SYSADMIN_SECRET_KEY_FILE;
 use App\Services\UsersService;
 use App\Utilities\MiscUtility;
@@ -9,7 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -22,8 +22,8 @@ try {
     if ($_POST['secretKey'] == trim($secretKey)) {
         if (!empty($_POST['password'])) {
             $insertData = [
-                'system_admin_email'    => $_POST['email'] ?? null,
-                'system_admin_login'    => $_POST['loginid'],
+                'system_admin_email' => $_POST['email'] ?? null,
+                'system_admin_login' => $_POST['loginid'],
                 'system_admin_password' => $usersService->passwordHash($_POST['password'])
             ];
             $db->insert("system_admin", $insertData);
@@ -40,7 +40,7 @@ try {
     header("Location:/system-admin/setup/index.php");
     LoggerUtility::logError($exc->getMessage(), [
         'trace' => $exc->getTraceAsString(),
-        'file'  => $exc->getFile(),
-        'line'  => $exc->getLine()
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine()
     ]);
 }

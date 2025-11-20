@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -19,7 +19,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -36,7 +36,7 @@ try {
 		$uploadPath = realpath($uploadDir . DIRECTORY_SEPARATOR . $supportId . DIRECTORY_SEPARATOR . $fileName);
 
 		// remove "data:image/png;base64,"
-		$uri =  substr((string) $data, strpos((string) $data, ",", 1));
+		$uri = substr((string) $data, strpos((string) $data, ",", 1));
 		// save to file
 		file_put_contents($uploadPath, base64_decode($uri));
 
@@ -94,7 +94,7 @@ try {
 
 				//Set To EmailId(s)
 				$xplodAddress = explode(",", (string) $supportEmail);
-    $counter = count($xplodAddress);
+				$counter = count($xplodAddress);
 				for ($to = 0; $to < $counter; $to++) {
 					$mail->addAddress($xplodAddress[$to]);
 				}

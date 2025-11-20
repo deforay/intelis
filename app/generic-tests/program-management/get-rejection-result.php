@@ -8,7 +8,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -70,12 +70,13 @@ if (!empty($_POST['sampleCollectionDate'])) {
 }
 
 if (isset($tResult) && $tResult !== []) {
-?>
+    ?>
     <div id="container" style="width: 100%; height: 500px; margin: 20px auto;"></div>
 <?php }
 if (isset($tableResult) && count($tableResult) > 0) { ?>
     <div class="pull-right">
-        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em
+                class="fa-solid fa-cloud-arrow-down"></em>
             <?php echo _translate("Export Excel"); ?>
         </button>
     </div>
@@ -103,7 +104,9 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
     <tbody>
         <?php if (isset($tableResult) && count($tableResult) > 0) {
             foreach ($tableResult as $tableRow) { ?>
-                <tr data-lab="<?php echo base64_encode((string) $_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'] ?? [])); ?>" data-daterange="<?= htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>" data-type="rejection">
+                <tr data-lab="<?php echo base64_encode((string) $_POST['labName']); ?>"
+                    data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'] ?? [])); ?>"
+                    data-daterange="<?= htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>" data-type="rejection">
                     <td>
                         <?php echo ($tableRow['labname']); ?>
                     </td>
@@ -120,16 +123,16 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                         <?php echo $tableRow['total']; ?>
                     </td>
                 </tr>
-        <?php }
+            <?php }
         } ?>
     </tbody>
 </table>
 <script>
-    $(function() {
+    $(function () {
         $("#vlRequestDataTable").DataTable();
     });
-    $(document).ready(function() {
-        $('#vlRequestDataTable tbody').on('click', 'tr', function() {
+    $(document).ready(function () {
+        $('#vlRequestDataTable tbody').on('click', 'tr', function () {
             let facilityId = $(this).attr('data-facility');
             let lab = $(this).attr('data-lab');
             let daterange = $(this).attr('data-daterange');
@@ -174,7 +177,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 colorByPoint: true,
                 point: {
                     events: {
-                        click: function(e) {
+                        click: function (e) {
                             e.preventDefault();
                         }
                     }
@@ -182,12 +185,12 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 data: [
                     <?php
                     foreach ($tResult as $reasonName => $values) {
-                    ?> {
+                        ?> {
                             name: '<?php echo $reasonName; ?>',
                             y: <?php echo ($values['total']); ?>,
                             number: '<?php echo ($values['category']); ?>'
                         },
-                    <?php
+                        <?php
                     }
                     ?>
                 ]
@@ -229,7 +232,7 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 colorByPoint: true,
                 point: {
                     events: {
-                        click: function(e) {
+                        click: function (e) {
                             e.preventDefault();
                         }
                     }
@@ -237,11 +240,11 @@ if (isset($tableResult) && count($tableResult) > 0) { ?>
                 data: [
                     <?php
                     foreach ($rjResult as $key => $total) {
-                    ?> {
+                        ?> {
                             name: '<?php echo ($key); ?>',
                             y: <?php echo ($total); ?>
                         },
-                    <?php
+                        <?php
                     }
                     ?>
                 ]

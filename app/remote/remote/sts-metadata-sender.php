@@ -1,6 +1,6 @@
 <?php
 //get data from STS send to requesting LIS instance
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use function iter\toArray;
 use function iter\map;
 use App\Services\ApiService;
@@ -31,7 +31,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 $payload = [];
 
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $data = $apiService->getJsonFromRequest($request, decode: true);
 

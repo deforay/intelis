@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -13,7 +13,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -132,9 +132,9 @@ try {
     }
     if (isset($_POST['noResultGender']) && $_POST['noResultGender'] != '') {
         if (trim((string) $_POST['noResultGender']) === "unreported") {
-            $sWhere[] =  ' (vl.child_gender = "unreported" OR vl.child_gender ="" OR vl.child_gender IS NULL)';
+            $sWhere[] = ' (vl.child_gender = "unreported" OR vl.child_gender ="" OR vl.child_gender IS NULL)';
         } else {
-            $sWhere[] =  ' (vl.child_gender IS NOT NULL AND vl.child_gender ="' . $_POST['noResultGender'] . '") ';
+            $sWhere[] = ' (vl.child_gender IS NOT NULL AND vl.child_gender ="' . $_POST['noResultGender'] . '") ';
         }
     }
     if (isset($_POST['noResultPatientPregnant']) && $_POST['noResultPatientPregnant'] != '') {

@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -13,7 +13,7 @@ $eidService = ContainerRegistry::get(EidService::class);
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 

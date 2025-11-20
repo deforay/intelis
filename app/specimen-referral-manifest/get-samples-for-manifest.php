@@ -10,7 +10,7 @@ use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 $_COOKIE = _sanitizeInput($request->getCookieParams());
@@ -96,21 +96,24 @@ $key = (string) $general->getGlobalConfig('key');
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
 			if (!empty($sample[$sampleCode]) && ((!isset($sample['sample_package_id']) || !isset($sample['manifest_id'])) || ($sample['sample_package_id'] != $sample['manifest_id']))) {
-		?>
+				?>
 				<option value="<?php
-								echo $sample[$testPrimaryKey];
-								?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
-		<?php
+				echo $sample[$testPrimaryKey];
+				?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
+				<?php
 			}
 		} ?>
 	</select>
-	<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
+	<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span
+			id="unselectedCount"></span></div>
 </div>
 
 <div class="col-md-2">
 	<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-	<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-	<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
+	<button type="button" id="search_rightSelected" class="btn btn-block"><em
+			class="fa-sharp fa-solid fa-chevron-right"></em></button>
+	<button type="button" id="search_leftSelected" class="btn btn-block"><em
+			class="fa-sharp fa-solid fa-chevron-left"></em></button>
 	<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
 </div>
 
@@ -121,25 +124,26 @@ $key = (string) $general->getGlobalConfig('key');
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
 			if (!empty($sample[$sampleCode]) && (isset($sample['manifest_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['manifest_id'])) {
-		?>
+				?>
 				<option value="<?php
-								echo $sample[$testPrimaryKey];
-								?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
-		<?php
+				echo $sample[$testPrimaryKey];
+				?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
+				<?php
 			}
 		} ?>
 	</select>
-	<div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span id="selectedCount"></span></div>
+	<div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span id="selectedCount"></span>
+	</div>
 </div>
 <script>
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 		$('#search').deforayDualBox({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
 				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
 			},
-			fireSearch: function(value) {
+			fireSearch: function (value) {
 				return value.length > 2;
 			},
 			autoSelectNext: true,
@@ -147,15 +151,15 @@ $key = (string) $general->getGlobalConfig('key');
 		});
 
 		// Automatically called after init and each move
-		$('#search').on('dualbox:updateCounts', function(e, $left, $right) {
+		$('#search').on('dualbox:updateCounts', function (e, $left, $right) {
 			updateCounts($left, $right);
 		});
 
-		$('#select-all-samplecode').click(function() {
+		$('#select-all-samplecode').click(function () {
 			$('#sampleCode').multiSelect('select_all');
 			return false;
 		});
-		$('#deselect-all-samplecode').click(function() {
+		$('#deselect-all-samplecode').click(function () {
 			$('#sampleCode').multiSelect('deselect_all');
 			$("#packageSubmit").attr("disabled", true);
 			$("#packageSubmit").css("pointer-events", "none");

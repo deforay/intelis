@@ -5,7 +5,7 @@ use App\Registries\AppRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -29,20 +29,27 @@ $sampleInfo = $db->query($sampleQuery);
 
     <div class="box box-default">
       <div class="box-header with-border">
-        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+          <?= _translate("indicates required fields"); ?> &nbsp;</div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
         <!-- form start -->
-        <form class="form-horizontal" method='post' name='editSampleForm' id='editSampleForm' autocomplete="off" enctype="multipart/form-data" action="save-eid-sample-type-helper.php">
+        <form class="form-horizontal" method='post' name='editSampleForm' id='editSampleForm' autocomplete="off"
+          enctype="multipart/form-data" action="save-eid-sample-type-helper.php">
           <div class="box-body">
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="sampleName" class="col-lg-4 control-label">Sample Name <span class="mandatory">*</span></label>
+                  <label for="sampleName" class="col-lg-4 control-label">Sample Name <span
+                      class="mandatory">*</span></label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control isRequired" id="sampleName" name="sampleName" placeholder="sample Name" title="Please enter Sample name" value="<?php echo $sampleInfo[0]['sample_name']; ?>" onblur="checkNameValidation('r_eid_sample_type','sample_name',this,'<?php echo "sample_id##" . $sampleInfo[0]['sample_id']; ?>','The sample name that you entered already exists.Enter another name',null)" />
-                    <input type="hidden" class="form-control isRequired" id="sampleId" name="sampleId" value="<?php echo $_GET['id']; ?>" />
+                    <input type="text" class="form-control isRequired" id="sampleName" name="sampleName"
+                      placeholder="sample Name" title="Please enter Sample name"
+                      value="<?php echo $sampleInfo[0]['sample_name']; ?>"
+                      onblur="checkNameValidation('r_eid_sample_type','sample_name',this,'<?php echo "sample_id##" . $sampleInfo[0]['sample_id']; ?>','The sample name that you entered already exists.Enter another name',null)" />
+                    <input type="hidden" class="form-control isRequired" id="sampleId" name="sampleId"
+                      value="<?php echo $_GET['id']; ?>" />
                   </div>
                 </div>
               </div>
@@ -50,10 +57,13 @@ $sampleInfo = $db->query($sampleQuery);
                 <div class="form-group">
                   <label for="sampleStatus" class="col-lg-4 control-label">Sample Status</label>
                   <div class="col-lg-7">
-                    <select class="form-control isRequired" id="sampleStatus" name="sampleStatus" placeholder="Sample Status" title="Please enter Sample Status">
+                    <select class="form-control isRequired" id="sampleStatus" name="sampleStatus"
+                      placeholder="Sample Status" title="Please enter Sample Status">
                       <option value="">--Select--</option>
-                      <option value="active" <?php echo ($sampleInfo[0]['status'] == "active" ? 'selected' : ''); ?>>Active</option>
-                      <option value="inactive" <?php echo ($sampleInfo[0]['status'] == "inactive" ? 'selected' : ''); ?>>Inactive</option>
+                      <option value="active" <?php echo ($sampleInfo[0]['status'] == "active" ? 'selected' : ''); ?>>
+                        Active</option>
+                      <option value="inactive" <?php echo ($sampleInfo[0]['status'] == "inactive" ? 'selected' : ''); ?>>
+                        Inactive</option>
                     </select>
                   </div>
                 </div>
@@ -99,13 +109,13 @@ $sampleInfo = $db->query($sampleQuery);
     removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
     $.post("/includes/checkDuplicate.php", {
-        tableName: tableName,
-        fieldName: fieldName,
-        value: removeDots.trim(),
-        fnct: fnct,
-        format: "html"
-      },
-      function(data) {
+      tableName: tableName,
+      fieldName: fieldName,
+      value: removeDots.trim(),
+      fnct: fnct,
+      format: "html"
+    },
+      function (data) {
         if (data === '1') {
           alert(alrt);
           document.getElementById(obj.id).value = "";

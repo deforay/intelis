@@ -8,7 +8,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -76,7 +76,7 @@ try {
 ?>
 <div id="container" style="height: 400px"></div>
 <script>
-    $(function() {
+    $(function () {
         Highcharts.chart('container', {
             title: {
                 text: "<?php echo _translate("Control Result", true); ?>"
@@ -86,10 +86,10 @@ try {
             },
             xAxis: {
                 categories: [<?php
-                                foreach ($totalControlResult as $category) {
-                                    echo "'" . $category['sample_tested_datetime'] . "',";
-                                }
-                                ?>]
+                foreach ($totalControlResult as $category) {
+                    echo "'" . $category['sample_tested_datetime'] . "',";
+                }
+                ?>]
             },
 
             yAxis: {
@@ -100,74 +100,74 @@ try {
                 },
 
                 plotLines: [{
-                        value: <?= round($mean + ($sd * 3), 2); ?>,
-                        color: 'green',
-                        dashStyle: 'shortdash',
-                        width: 2,
-                        label: {
-                            text: <?= round($mean + ($sd * 3), 2); ?>
-                        }
-                    },
-                    {
-                        value: <?= round($mean + ($sd * 2), 2); ?>,
-                        color: 'orange',
-                        dashStyle: 'shortdash',
-                        width: 2,
-                        label: {
-                            text: <?= round($mean + ($sd * 2), 2); ?>
-                        }
-                    },
-                    {
-                        value: <?= round($mean + ($sd), 2); ?>,
-                        color: 'red',
-                        dashStyle: 'shortdash',
-                        width: 2,
-                        label: {
-                            text: <?php echo round($mean + ($sd), 2); ?>
-                        }
-                    }, {
-                        value: '<?= round($mean); ?>',
-                        color: 'yellow',
-                        dashStyle: 'shortdash',
-                        width: 2,
-                        label: {
-                            text: <?= round($mean); ?>
-                        }
-                    }, {
-                        value: '<?= round($mean - ($sd), 2); ?>',
-                        color: 'red',
-                        dashStyle: 'shortdash',
-                        width: 2,
-                        label: {
-                            text: <?= round($mean - ($sd), 2); ?>
-                        }
-                    }, {
-                        value: '<?= round($mean - ($sd * 2), 2); ?>',
-                        color: 'orange',
-                        dashStyle: 'shortdash',
-                        width: 2,
-                        label: {
-                            text: <?= round($mean - ($sd * 2), 2); ?>
-                        }
-                    }, {
-                        value: '<?= round($mean - ($sd * 3), 2); ?>',
-                        color: 'green',
-                        dashStyle: 'shortdash',
-                        width: 2,
-                        label: {
-                            text: <?= round($mean - ($sd * 3), 2); ?>
-                        }
+                    value: <?= round($mean + ($sd * 3), 2); ?>,
+                    color: 'green',
+                    dashStyle: 'shortdash',
+                    width: 2,
+                    label: {
+                        text: <?= round($mean + ($sd * 3), 2); ?>
                     }
+                },
+                {
+                    value: <?= round($mean + ($sd * 2), 2); ?>,
+                    color: 'orange',
+                    dashStyle: 'shortdash',
+                    width: 2,
+                    label: {
+                        text: <?= round($mean + ($sd * 2), 2); ?>
+                    }
+                },
+                {
+                    value: <?= round($mean + ($sd), 2); ?>,
+                    color: 'red',
+                    dashStyle: 'shortdash',
+                    width: 2,
+                    label: {
+                        text: <?php echo round($mean + ($sd), 2); ?>
+                    }
+                }, {
+                    value: '<?= round($mean); ?>',
+                    color: 'yellow',
+                    dashStyle: 'shortdash',
+                    width: 2,
+                    label: {
+                        text: <?= round($mean); ?>
+                    }
+                }, {
+                    value: '<?= round($mean - ($sd), 2); ?>',
+                    color: 'red',
+                    dashStyle: 'shortdash',
+                    width: 2,
+                    label: {
+                        text: <?= round($mean - ($sd), 2); ?>
+                    }
+                }, {
+                    value: '<?= round($mean - ($sd * 2), 2); ?>',
+                    color: 'orange',
+                    dashStyle: 'shortdash',
+                    width: 2,
+                    label: {
+                        text: <?= round($mean - ($sd * 2), 2); ?>
+                    }
+                }, {
+                    value: '<?= round($mean - ($sd * 3), 2); ?>',
+                    color: 'green',
+                    dashStyle: 'shortdash',
+                    width: 2,
+                    label: {
+                        text: <?= round($mean - ($sd * 3), 2); ?>
+                    }
+                }
                 ]
             },
 
 
             series: [{
                 data: [<?php
-                        foreach ($totalControlResult as $total) {
-                            echo round($total['sumTotal'] / $total['countTotal'], 2) . ",";
-                        }
-                        ?>]
+                foreach ($totalControlResult as $total) {
+                    echo round($total['sumTotal'] / $total['countTotal'], 2) . ",";
+                }
+                ?>]
             }]
         });
     });

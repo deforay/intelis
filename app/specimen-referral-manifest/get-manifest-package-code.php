@@ -8,7 +8,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -61,11 +61,16 @@ if (empty($manifestResults)) {
 		<div class="col-md-12">
 			<div class="col-md-12">
 				<div style="width:60%;margin:0 auto;clear:both;">
-					<a href="#" id="select-all-packageCode" style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
+					<a href="#" id="select-all-packageCode" style="float:left" class="btn btn-info btn-xs">Select
+						All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#'
+						id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em
+							class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
 				</div><br /><br />
 				<select id="packageCode" name="packageCode[]" multiple="multiple" class="search">
 					<?php foreach ($manifestResults as $manifest) { ?>
-						<option value="'<?= $manifest['manifest_code']; ?>'"><?= $manifest["manifest_code"] . " (" . DateUtility::humanReadableDateFormat($manifest["request_created_datetime"]) . ")"; ?></option>
+						<option value="'<?= $manifest['manifest_code']; ?>'">
+							<?= $manifest["manifest_code"] . " (" . DateUtility::humanReadableDateFormat($manifest["request_created_datetime"]) . ")"; ?>
+						</option>
 					<?php } ?>
 				</select>
 			</div>
@@ -73,11 +78,11 @@ if (empty($manifestResults)) {
 	</div>
 </div>
 <script>
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Manifest Code'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Manifest Code'>",
-			afterInit: function(ms) {
+			afterInit: function (ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),
 					$selectionSearch = that.$selectionUl.prev(),
@@ -85,7 +90,7 @@ if (empty($manifestResults)) {
 					selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
 				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-					.on('keydown', function(e) {
+					.on('keydown', function (e) {
 						if (e.which === 40) {
 							that.$selectableUl.focus();
 							return false;
@@ -93,14 +98,14 @@ if (empty($manifestResults)) {
 					});
 
 				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-					.on('keydown', function(e) {
+					.on('keydown', function (e) {
 						if (e.which == 40) {
 							that.$selectionUl.focus();
 							return false;
 						}
 					});
 			},
-			afterSelect: function() {
+			afterSelect: function () {
 				//button disabled/enabled
 				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
 					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
@@ -117,7 +122,7 @@ if (empty($manifestResults)) {
 				this.qs1.cache();
 				this.qs2.cache();
 			},
-			afterDeselect: function() {
+			afterDeselect: function () {
 				//button disabled/enabled
 				if (this.qs2.cache().matchedResultsCount == 0) {
 					$("#packageSubmit").attr("disabled", true);
@@ -137,11 +142,11 @@ if (empty($manifestResults)) {
 				this.qs2.cache();
 			}
 		});
-		$('#select-all-packageCode').click(function() {
+		$('#select-all-packageCode').click(function () {
 			$('#packageCode').multiSelect('select_all');
 			return false;
 		});
-		$('#deselect-all-packageCode').click(function() {
+		$('#deselect-all-packageCode').click(function () {
 			$('#packageCode').multiSelect('deselect_all');
 			$("#packageSubmit").attr("disabled", true);
 			$("#packageSubmit").css("pointer-events", "none");

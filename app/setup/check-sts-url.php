@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\ApiService;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
@@ -11,7 +11,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 

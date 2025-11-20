@@ -8,7 +8,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -83,13 +83,14 @@ $totalRejected = array_sum(array_column($tResult, 'total'));
 
 
 if ($tResult !== []) {
-?>
+    ?>
     <div id="container" style="width: 100%; height: 500px; margin: 20px auto;"></div>
     <!-- <div id="rejectedType" style="width: 100%; height: 400px; margin: 20px auto;margin-top:50px;"></div> -->
 <?php }
 if (!empty($tableResult)) { ?>
     <div class="pull-right">
-        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em
+                class="fa-solid fa-cloud-arrow-down"></em>
             <?php echo _translate("Export Excel"); ?>
         </button>
     </div>
@@ -118,8 +119,10 @@ if (!empty($tableResult)) { ?>
         <?php
         if (!empty($tableResult)) {
             foreach ($tableResult as $tableRow) {
-        ?>
-                <tr data-lab="<?php echo base64_encode((string) $_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'] ?? [])); ?>" data-daterange="<?= htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>" data-type="rejection">
+                ?>
+                <tr data-lab="<?php echo base64_encode((string) $_POST['labName']); ?>"
+                    data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'] ?? [])); ?>"
+                    data-daterange="<?= htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>" data-type="rejection">
                     <td>
                         <?php echo $tableRow['labname']; ?>
                     </td>
@@ -136,18 +139,18 @@ if (!empty($tableResult)) { ?>
                         <?php echo $tableRow['total']; ?>
                     </td>
                 </tr>
-        <?php
+                <?php
             }
         }
         ?>
     </tbody>
 </table>
 <script>
-    $(function() {
+    $(function () {
         $("#vlRequestDataTable").DataTable();
     });
-    $(document).ready(function() {
-        $('#vlRequestDataTable tbody').on('click', 'tr', function() {
+    $(document).ready(function () {
+        $('#vlRequestDataTable tbody').on('click', 'tr', function () {
             let facilityId = $(this).attr('data-facility');
             let lab = $(this).attr('data-lab');
             let daterange = $(this).attr('data-daterange');
@@ -192,7 +195,7 @@ if (!empty($tableResult)) { ?>
                 colorByPoint: true,
                 point: {
                     events: {
-                        click: function(e) {
+                        click: function (e) {
                             e.preventDefault();
                         }
                     }
@@ -200,12 +203,12 @@ if (!empty($tableResult)) { ?>
                 data: [
                     <?php
                     foreach ($tResult as $reasonName => $values) {
-                    ?> {
+                        ?> {
                             name: '<?php echo $reasonName; ?>',
                             y: <?php echo ($values['total']); ?>,
                             number: '<?php echo ($values['category']); ?>'
                         },
-                    <?php
+                        <?php
                     }
                     ?>
                 ]

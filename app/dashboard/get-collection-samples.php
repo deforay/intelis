@@ -9,7 +9,7 @@ use App\Registries\ContainerRegistry;
 $db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -65,10 +65,10 @@ if (count($collectionResult) > 0) {
             },
             xAxis: {
                 categories: [<?php
-                                foreach ($collectionResult as $tRow) {
-                                    echo "'" . htmlspecialchars((string) $tRow['facility_name']) . "',";
-                                }
-                                ?>],
+                foreach ($collectionResult as $tRow) {
+                    echo "'" . htmlspecialchars((string) $tRow['facility_name']) . "',";
+                }
+                ?>],
                 crosshair: true,
                 scrollbar: {
                     enabled: true
@@ -99,10 +99,10 @@ if (count($collectionResult) > 0) {
                 showInLegend: false,
                 name: 'Samples',
                 data: [<?php
-                        foreach ($collectionResult as $tRow) {
-                            echo htmlspecialchars((string) $tRow['total']) . ",";
-                        }
-                        ?>]
+                foreach ($collectionResult as $tRow) {
+                    echo htmlspecialchars((string) $tRow['total']) . ",";
+                }
+                ?>]
 
             }],
             colors: ['#f36a5a']

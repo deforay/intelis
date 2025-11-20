@@ -18,7 +18,7 @@ $title = _translate("Geographical Divisions");
 require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = isset($_GET['id']) ? base64_decode((string) $_GET['id']) : null;
@@ -206,12 +206,17 @@ if (!$isProvince) {
                             <div class="row" id="provinceMoveWrapper" style="display:none;">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="moveToProvince" class="col-lg-4 control-label"><?php echo _translate("Move Active Districts and Facilities To"); ?></label>
+                                        <label for="moveToProvince"
+                                            class="col-lg-4 control-label"><?php echo _translate("Move Active Districts and Facilities To"); ?></label>
                                         <div class="col-lg-7">
-                                            <select class="form-control select2-element" id="moveToProvince" name="moveToProvince" title="<?php echo _translate('Select a province to move active records'); ?>">
+                                            <select class="form-control select2-element" id="moveToProvince"
+                                                name="moveToProvince"
+                                                title="<?php echo _translate('Select a province to move active records'); ?>">
                                                 <?= $general->generateSelectOptions($provinceMoveOptions, null, _translate("-- Select --")); ?>
                                             </select>
-                                            <p class="help-block"><?php echo _translate("Choose an active province to receive all active districts and facilities before deactivating this province."); ?></p>
+                                            <p class="help-block">
+                                                <?php echo _translate("Choose an active province to receive all active districts and facilities before deactivating this province."); ?>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -220,12 +225,17 @@ if (!$isProvince) {
                             <div class="row" id="districtMoveWrapper" style="display:none;">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="moveToDistrict" class="col-lg-4 control-label"><?php echo _translate("Move Active Facilities To"); ?></label>
+                                        <label for="moveToDistrict"
+                                            class="col-lg-4 control-label"><?php echo _translate("Move Active Facilities To"); ?></label>
                                         <div class="col-lg-7">
-                                            <select class="form-control select2-element" id="moveToDistrict" name="moveToDistrict" title="<?php echo _translate('Select a district to move active facilities'); ?>">
+                                            <select class="form-control select2-element" id="moveToDistrict"
+                                                name="moveToDistrict"
+                                                title="<?php echo _translate('Select a district to move active facilities'); ?>">
                                                 <?php echo $districtMoveOptionsHtml; ?>
                                             </select>
-                                            <p class="help-block"><?php echo _translate("Choose an active district to receive all active facilities before deactivating this district."); ?></p>
+                                            <p class="help-block">
+                                                <?php echo _translate("Choose an active district to receive all active facilities before deactivating this district."); ?>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -347,7 +357,7 @@ if (!$isProvince) {
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#geoParent').select2({
             width: '100%',
             allowClear: true,
@@ -420,7 +430,7 @@ if (!$isProvince) {
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         if ($('.select2-element').length > 0 && $.isFunction($.fn.select2)) {
             $('.select2-element').select2({
                 width: '100%',

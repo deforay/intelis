@@ -24,7 +24,7 @@ $storageService = ContainerRegistry::get(StorageService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -81,7 +81,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="notPrintedData">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+											<table aria-describedby="table" class="table" aria-hidden="true"
+												style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
 													<?php if ($general->isSTSInstance()) { ?>
 
@@ -89,7 +90,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 																<?php echo _translate("Testing Lab"); ?> :
 															</strong></td>
 														<td>
-															<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;" onchange="getFreezers(this.value);">
+															<select class="form-control" id="vlLab" name="vlLab"
+																title="<?php echo _translate('Please select Testing Lab'); ?>"
+																style="width:220px;" onchange="getFreezers(this.value);">
 																<?= $testingLabsDropdown; ?>
 															</select>
 														</td>
@@ -98,27 +101,38 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 															<?php echo _translate("Freezer/Storage"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select type="text" name="freezerId" id="freezerId" class="form-control freezerSelect" style="width:250px;">
+														<select type="text" name="freezerId" id="freezerId"
+															class="form-control freezerSelect" style="width:250px;">
 															<?= $general->generateSelectOptions($storageInfo, null, '-- Select --') ?>
 														</select>
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+													<td colspan="6">&nbsp;<input type="button"
+															onclick="searchVlRequestData();"
+															value="<?= _translate('Search'); ?>"
+															class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm"
+															onclick="document.location.href = document.location"><span>
 																<?= _translate('Reset'); ?>
 															</span></button>
-														&nbsp;<button class="btn btn-primary btn-sm" type="button" onclick="exportStorageData('storage');">
+														&nbsp;<button class="btn btn-primary btn-sm" type="button"
+															onclick="exportStorageData('storage');">
 															<span><?php echo _translate("Export to excel"); ?></span></button>
 
 													</td>
 												</tr>
 											</table>
-											<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="showhide" class="">
-												<div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
+											<span
+												style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;"
+												id="showhide" class="">
+												<div class="row"
+													style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
 													<div class="col-md-12">
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol1">
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="1" id="iCol1" data-showhide="sample_code"
+																class="showhideCheckBox" /> <label for="iCol1">
 																<?php echo _translate("Sample ID"); ?>
 															</label>
 														</div>
@@ -127,7 +141,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 												</div>
 											</span>
 
-											<table aria-describedby="table" id="storageDataTable" class="table table-bordered table-striped" aria-hidden="true">
+											<table aria-describedby="table" id="storageDataTable"
+												class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th>
@@ -165,14 +180,17 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 											<input type="hidden" name="totalSamplesList" id="totalSamplesList" />
 										</div>
 										<div class="tab-pane fade" id="printedData">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+											<table aria-describedby="table" class="table" aria-hidden="true"
+												style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
 													<?php if ($general->isSTSInstance()) { ?>
 														<td><strong>
 																<?php echo _translate("Testing Lab"); ?> :
 															</strong></td>
 														<td>
-															<select class="form-control" id="testingLab" name="testingLab" title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;">
+															<select class="form-control" id="testingLab" name="testingLab"
+																title="<?php echo _translate('Please select Testing Lab'); ?>"
+																style="width:220px;">
 																<?= $testingLabsDropdown; ?>
 															</select>
 														</td>
@@ -183,35 +201,50 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 														</strong>
 													</td>
 													<td>
-														<input type="text" id="sampleCode" name="sampleCode" class="form-control" placeholder="Please select sample code" style="width:220px;" />
+														<input type="text" id="sampleCode" name="sampleCode"
+															class="form-control" placeholder="Please select sample code"
+															style="width:220px;" />
 
 													</td>
 												</tr>
 
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+													<td colspan="6">&nbsp;<input type="button"
+															onclick="searchPrintedVlRequestData();"
+															value="<?= _translate('Search'); ?>"
+															class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm"
+															onclick="document.location.href = document.location"><span>
 																<?= _translate('Reset'); ?>
 															</span></button>
-														&nbsp;<button class="btn btn-primary btn-sm" type="button" onclick="exportStorageData('history');">
+														&nbsp;<button class="btn btn-primary btn-sm" type="button"
+															onclick="exportStorageData('history');">
 															<span><?php echo _translate("Export to excel"); ?></span></button>
 
 													</td>
 												</tr>
 
 											</table>
-											<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="printShowhide" class="">
-												<div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
+											<span
+												style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;"
+												id="printShowhide" class="">
+												<div class="row"
+													style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
 													<div class="col-md-12">
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="1" id="printiCol1" data-showhide="sample_code" class="printShowhideCheckBox" /> <label for="printiCol1">
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);" value="1"
+																id="printiCol1" data-showhide="sample_code"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol1">
 																<?php echo _translate("Sample ID"); ?>
 															</label>
 														</div>
 													</div>
 												</div>
 											</span>
-											<table aria-describedby="table" id="storageHistoryDataTable" class="table table-bordered table-striped" aria-hidden="true">
+											<table aria-describedby="table" id="storageHistoryDataTable"
+												class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th>
@@ -258,7 +291,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 												</tbody>
 											</table>
 											<input type="hidden" name="checkedPrintedRows" id="checkedPrintedRows" />
-											<input type="hidden" name="totalSamplesPrintedList" id="totalSamplesPrintedList" />
+											<input type="hidden" name="totalSamplesPrintedList"
+												id="totalSamplesPrintedList" />
 										</div>
 									</div>
 								</div>
@@ -283,7 +317,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 	var oTable = null;
 	var opTable = null;
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 		$(".freezerSelect").select2({
 			placeholder: "<?php echo _translate("Select Freezer"); ?>"
@@ -296,7 +330,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 
 
 		loadStorageData();
-		$(".printedData").click(function() {
+		$(".printedData").click(function () {
 			loadStorageHistoryData();
 
 		});
@@ -313,31 +347,31 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 			"iDisplayLength": 100,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": "center",
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				}
+				"sClass": "center",
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			}
 			],
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/vl/program-management/getStorageReportDetails.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "reportType",
 					"value": 'storageData'
@@ -352,7 +386,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 					"type": "POST",
 					"url": sSource,
 					"data": aoData,
-					"success": function(json) {
+					"success": function (json) {
 						$("#totalSamplesList").val(json.iTotalDisplayRecords);
 						fnCallback(json);
 					}
@@ -373,44 +407,44 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 			"iDisplayLength": 100,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
 			],
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/vl/program-management/getStorageReportDetails.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "reportType",
 					"value": 'historyData'
@@ -429,7 +463,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 					"type": "POST",
 					"url": sSource,
 					"data": aoData,
-					"success": function(json) {
+					"success": function (json) {
 						$("#totalSamplesPrintedList").val(json.iTotalDisplayRecords);
 						fnCallback(json);
 					}
@@ -457,12 +491,12 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 		$("#facility").html('');
 		$("#labId").html('');
 		$.post("/common/get-by-province-id.php", {
-				provinceId: provinceId,
-				districts: true,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			provinceId: provinceId,
+			districts: true,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#district").html(Obj['districts']);
 				$("#facility").html(Obj['facilities']);
@@ -476,12 +510,12 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 		$("#printFacility").html('');
 		$("#printLabId").html('');
 		$.post("/common/get-by-province-id.php", {
-				provinceId: provinceId,
-				districts: true,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			provinceId: provinceId,
+			districts: true,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#printDistrict").html(Obj['districts']);
 				$("#printFacility").html(Obj['facilities']);
@@ -494,11 +528,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 		$("#facility").html('');
 		$("#labId").html('');
 		$.post("/common/get-by-district-id.php", {
-				districtId: districtId,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			districtId: districtId,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#facility").html(Obj['facilities']);
 				$("#labId").html(Obj['labs']);
@@ -510,11 +544,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 		$("#printFacility").html('');
 		$("#printLabId").html('');
 		$.post("/common/get-by-district-id.php", {
-				districtId: districtId,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			districtId: districtId,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#printFacility").html(Obj['facilities']);
 				$("#printLabId").html(Obj['labs']);
@@ -527,10 +561,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 		$.blockUI();
 		if ($data == "storage") {
 			$.post("/vl/program-management/storageDataToExcel.php", {
-					reqSampleType: $('#requestSampleType').val(),
-					patientInfo: $('#patientInfo').val(),
-				},
-				function(data) {
+				reqSampleType: $('#requestSampleType').val(),
+				patientInfo: $('#patientInfo').val(),
+			},
+				function (data) {
 					$.unblockUI();
 					if (data === "" || data === null || data === undefined) {
 						alert("<?php echo _translate("Unable to generate the excel file"); ?>");
@@ -540,10 +574,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 				});
 		} else {
 			$.post("/vl/program-management/storageHistoryDataToExcel.php", {
-					reqSampleType: $('#requestSampleType').val(),
-					patientInfo: $('#patientInfo').val(),
-				},
-				function(data) {
+				reqSampleType: $('#requestSampleType').val(),
+				patientInfo: $('#patientInfo').val(),
+			},
+				function (data) {
 					$.unblockUI();
 					if (data === "" || data === null || data === undefined) {
 						alert("<?php echo _translate("Unable to generate the excel file"); ?>");
@@ -558,9 +592,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 		$.blockUI();
 		$("#srcRequest").html("");
 		$.post("/vl/program-management/get-freezer-list-by-lab.php", {
-				labId: labId,
-			},
-			function(data) {
+			labId: labId,
+		},
+			function (data) {
 				$.unblockUI();
 				$("#freezerId").html(data);
 			});

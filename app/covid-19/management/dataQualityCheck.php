@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -12,7 +12,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -103,7 +103,7 @@ try {
           if (trim((string) $start_date) === trim((string) $end_date)) {
                $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
           } else {
-               $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
           }
      }
      if (isset($_POST['formField']) && trim((string) $_POST['formField']) !== '') {
@@ -118,9 +118,9 @@ try {
                     $sWhereSub .= " AND (";
                }
                if ($search === 'sample_collection_date') {
-                   $sWhereSub .=  'vl.' . $search . " IS NULL";
+                    $sWhereSub .= 'vl.' . $search . " IS NULL";
                } else {
-                   $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
+                    $sWhereSub .= 'vl.' . $search . " ='' OR " . 'vl.' . $search . " IS NULL";
                }
                $sWhereSub .= ")";
           }
@@ -132,8 +132,8 @@ try {
 
      //$dWhere = '';
      if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
-         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
-         // $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
+          $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
+          // $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
      }
 
      $sWhere = $sWhere === [] ? "" : ' WHERE ' . implode(' AND ', $sWhere);
@@ -157,8 +157,8 @@ try {
      $_SESSION['vlIncompleteFormCount'] = $iTotal;
 
      /*
-                                                       * Output
-                                                       */
+      * Output
+      */
      $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
      foreach ($rResult as $aRow) {

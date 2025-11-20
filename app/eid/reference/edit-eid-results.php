@@ -5,7 +5,7 @@ use App\Registries\AppRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -29,20 +29,27 @@ $resultInfo = $db->query($resultQuery);
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+					<?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='editresult' id='editresult' autocomplete="off" enctype="multipart/form-data" action="save-eid-results-helper.php">
+				<form class="form-horizontal" method='post' name='editresult' id='editresult' autocomplete="off"
+					enctype="multipart/form-data" action="save-eid-results-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="resultName" class="col-lg-4 control-label">Result Name<span class="mandatory">*</span></label>
+									<label for="resultName" class="col-lg-4 control-label">Result Name<span
+											class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="resultName" name="resultName" value="<?php echo $resultInfo[0]['result']; ?>" placeholder="Result Name" title="Please enter Result name" onblur="checkNameValidation('r_eid_results','result',this,'<?php echo "result_id##" . htmlspecialchars((string) $id); ?>','The Result name that you entered already exists.Enter another name',null)" />
-										<input type="hidden" class="form-control" id="resultId" name="resultId" value="<?php echo base64_encode((string) $id); ?>" />
+										<input type="text" class="form-control isRequired" id="resultName"
+											name="resultName" value="<?php echo $resultInfo[0]['result']; ?>"
+											placeholder="Result Name" title="Please enter Result name"
+											onblur="checkNameValidation('r_eid_results','result',this,'<?php echo "result_id##" . htmlspecialchars((string) $id); ?>','The Result name that you entered already exists.Enter another name',null)" />
+										<input type="hidden" class="form-control" id="resultId" name="resultId"
+											value="<?php echo base64_encode((string) $id); ?>" />
 									</div>
 								</div>
 							</div>
@@ -50,7 +57,8 @@ $resultInfo = $db->query($resultQuery);
 								<div class="form-group">
 									<label for="resultStatus" class="col-lg-4 control-label">Result Status</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="resultStatus" name="resultStatus" placeholder="Result Status" title="Please select Result Status">
+										<select class="form-control isRequired" id="resultStatus" name="resultStatus"
+											placeholder="Result Status" title="Please select Result Status">
 											<option value="active" <?php echo ($resultInfo[0]['status'] == "active" ? 'selected' : ''); ?>>Active</option>
 											<option value="inactive" <?php echo ($resultInfo[0]['status'] == "inactive" ? 'selected' : ''); ?>>Inactive</option>
 										</select>
@@ -62,7 +70,8 @@ $resultInfo = $db->query($resultQuery);
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
+						<a class="btn btn-primary" href="javascript:void(0);"
+							onclick="validateNow();return false;">Submit</a>
 						<a href="eid-results.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
@@ -77,7 +86,7 @@ $resultInfo = $db->query($resultQuery);
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$(".select2").select2();
 		$(".select2").select2({
 			tags: true
@@ -103,13 +112,13 @@ $resultInfo = $db->query($resultQuery);
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
+			tableName: tableName,
+			fieldName: fieldName,
+			value: removeDots.trim(),
+			fnct: fnct,
+			format: "html"
+		},
+			function (data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";

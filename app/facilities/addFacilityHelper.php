@@ -1,22 +1,22 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Slim\Psr7\UploadedFile;
 use App\Services\ApiService;
-use App\Utilities\JsonUtility;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use Laminas\Diactoros\UploadedFile;
+use App\Services\STS\TokensService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
-use App\Services\STS\TokensService;
+use Psr\Http\Message\ServerRequestInterface;
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 

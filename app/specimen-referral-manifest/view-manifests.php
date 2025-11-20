@@ -15,7 +15,7 @@ require_once APPLICATION_PATH . '/header.php';
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $_COOKIE = _sanitizeInput($request->getCookieParams());
@@ -43,15 +43,20 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (_isAllowed("/specimen-referral-manifest/move-manifest.php?t=" . $_GET['t'])) { ?>
-							<a href="move-manifest.php?t=<?php echo ($_GET['t']); ?>" class="btn btn-primary pull-right" style=" margin-left: 10px; "> <em class="fa-solid fa-angles-right"></em> <?= _translate("Move Manifest"); ?></a>
+							<a href="move-manifest.php?t=<?php echo ($_GET['t']); ?>" class="btn btn-primary pull-right"
+								style=" margin-left: 10px; "> <em class="fa-solid fa-angles-right"></em>
+								<?= _translate("Move Manifest"); ?></a>
 						<?php }
 						if (_isAllowed("/specimen-referral-manifest/add-manifest.php?t=" . $_GET['t'])) { ?>
-							<a href="/specimen-referral-manifest/add-manifest.php?t=<?php echo ($_GET['t']); ?>" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Specimen Referral Manifest"); ?></a>
+							<a href="/specimen-referral-manifest/add-manifest.php?t=<?php echo ($_GET['t']); ?>"
+								class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em>
+								<?php echo _translate("Add Specimen Referral Manifest"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="specimenReferralManifestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="specimenReferralManifestDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?= _translate("Manifest Code"); ?></th>
@@ -83,8 +88,8 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 </div>
 <script>
 	var oTable = null;
-	$(function() {});
-	$(document).ready(function() {
+	$(function () { });
+	$(document).ready(function () {
 
 		oTable = $('#specimenReferralManifestDataTable').dataTable({
 			"bJQueryUI": false,
@@ -95,30 +100,30 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 			// "bStateSave": true,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": ""
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "left"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
+				"sClass": ""
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "left"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
 				<?php if (_isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_GET['t']) || _isAllowed("/specimen-referral-manifest/add-manifest.php?t=" . $_GET['t'])) { ?> {
-						"sClass": "center",
-						"bSortable": false
-					},
+					"sClass": "center",
+					"bSortable": false
+				},
 				<?php } ?>
 			],
 			"aaSorting": [
 				[4, "desc"]
 			],
-			"fnDrawCallback": function() {
+			"fnDrawCallback": function () {
 				// var checkBoxes = document.getElementsByName("chkPackage[]");
 				// len = checkBoxes.length;
 				// for (c = 0; c < len; c++) {
@@ -130,7 +135,7 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/specimen-referral-manifest/get-manifests.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "module",
 					"value": "<?= $_GET['t']; ?>"
@@ -166,9 +171,9 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 		}
 		//alert(manifestFileName);
 		$.post(manifestFileName, {
-				id: pId
-			},
-			function(data) {
+			id: pId
+		},
+			function (data) {
 				if (data == "" || data == null || data == undefined) {
 					alert('Unable to generate manifest PDF');
 				} else {

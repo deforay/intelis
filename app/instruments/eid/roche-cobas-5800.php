@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -14,7 +14,7 @@ use App\Registries\ContainerRegistry;
 try {
 
     // Sanitized values from $request object
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -40,9 +40,9 @@ try {
     }
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
-    $fileName          = str_replace(" ", "-", $fileName) . "-" . MiscUtility::generateRandomString(12);
-    $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $fileName          = $_POST['fileName'] . "." . $extension;
+    $fileName = str_replace(" ", "-", $fileName) . "-" . MiscUtility::generateRandomString(12);
+    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $fileName = $_POST['fileName'] . "." . $extension;
 
 
 
@@ -59,7 +59,7 @@ try {
             $resultInLowerCase = strtolower($result);
             if (str_contains($resultInLowerCase, 'not detected')) {
                 $result = 'negative';
-            } elseif ((str_contains($resultInLowerCase, 'detected')) || (str_contains(strtolower((string)$rowData[$resultCol]), 'passed'))) {
+            } elseif ((str_contains($resultInLowerCase, 'detected')) || (str_contains(strtolower((string) $rowData[$resultCol]), 'passed'))) {
                 $result = 'positive';
             } else {
                 $result = $resultInLowerCase;
@@ -101,7 +101,7 @@ try {
             ];
 
 
-            $query    = "SELECT facility_id,
+            $query = "SELECT facility_id,
                                 eid_id,
                                 result
                         FROM form_eid
@@ -129,7 +129,7 @@ try {
 
     $eventType = 'result-import';
     $action = $_SESSION['userName'] . ' imported test results for Roche EID';
-    $resource  = 'import-result';
+    $resource = 'import-result';
     $general->activityLog($eventType, $action, $resource);
 
 

@@ -15,7 +15,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -102,19 +102,23 @@ $tableResult = $db->rawQuery($sQuery);
 ?>
 
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-    <table aria-describedby="table" class="table collectionTable" cellpadding="1" cellspacing="3" style="margin-top:0px;width: 98%;margin-bottom: 0px;">
+    <table aria-describedby="table" class="table collectionTable" cellpadding="1" cellspacing="3"
+        style="margin-top:0px;width: 98%;margin-bottom: 0px;">
         <tr>
             <th style="vertical-align:middle;padding-left: 0px;"><strong>
                     <?php echo _translate("Collection Point"); ?>&nbsp;:
                 </strong>
-                <select id="facilityId<?php echo $testType; ?>" name="facilityId" class="form-control" multiple title="<?php echo _translate('Select facility name to filter'); ?>" style="width:220px;background:#fff;">
+                <select id="facilityId<?php echo $testType; ?>" name="facilityId" class="form-control" multiple
+                    title="<?php echo _translate('Select facility name to filter'); ?>"
+                    style="width:220px;background:#fff;">
                     <?php foreach ($facilityInfo as $facility) { ?>
                         <option vlaue="<?php echo $facility['facility_id']; ?>"><?php echo $facility['facility_name']; ?>
                         </option>
                     <?php } ?>
                 </select>
             </th>
-            <td colspan="3" style=" display: grid; ">&nbsp;<input type="button" onclick="fetchByFacility();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
+            <td colspan="3" style=" display: grid; ">&nbsp;<input type="button" onclick="fetchByFacility();"
+                    value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
             </td>
         </tr>
     </table>
@@ -142,7 +146,8 @@ $tableResult = $db->rawQuery($sQuery);
 <div class="col-xs-12">
     <div class="box">
         <div class="box-body">
-            <table aria-describedby="table" id="<?php echo $requestCountDataTable; ?>" class="table table-bordered table-striped table-hover requestCountDataTable">
+            <table aria-describedby="table" id="<?php echo $requestCountDataTable; ?>"
+                class="table table-bordered table-striped table-hover requestCountDataTable">
                 <thead>
                     <tr>
                         <th scope="row">
@@ -209,7 +214,7 @@ $tableResult = $db->rawQuery($sQuery);
                                     <?= $tableRow['printCount'] ?? 0; ?>
                                 </td>
                             </tr>
-                    <?php
+                            <?php
                         }
                     } ?>
                 </tbody>
@@ -234,29 +239,29 @@ $tableResult = $db->rawQuery($sQuery);
     function fetchByFacility() {
         $.blockUI();
         $.post("/dashboard/get-collection-samples.php", {
-                table: '<?php echo $table; ?>',
-                facilityId: $('#facilityId<?php echo $testType; ?>').val(),
-                sampleCollectionDate: '<?php echo htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>',
-            },
-            function(data) {
+            table: '<?php echo $table; ?>',
+            facilityId: $('#facilityId<?php echo $testType; ?>').val(),
+            sampleCollectionDate: '<?php echo htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>',
+        },
+            function (data) {
                 $("#collectionSite<?php echo $testType; ?>").html(data);
             });
         $.unblockUI();
     }
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#facilityId<?php echo $testType; ?>').select2({
             width: '100%',
             placeholder: "<?= _translate("Select Collection Point(s)"); ?>"
         });
     });
-    $(function() {
+    $(function () {
         var table = $("#<?php echo $requestCountDataTable; ?>").DataTable({
-            "initComplete": function(settings, json) {
+            "initComplete": function (settings, json) {
                 let api = this.api();
                 calculateTableSummary(this, 'all');
             },
             "sorting": [1, "desc"],
-            "footerCallback": function(row, data, start, end, display) {
+            "footerCallback": function (row, data, start, end, display) {
                 let filter = $("#<?php echo $requestCountDataTable; ?>_filter .input-sm").val();
                 let page = 'all';
                 if (filter != '') {
@@ -274,23 +279,23 @@ $tableResult = $db->rawQuery($sQuery);
     function calculateTableSummary(table, page) {
         try {
 
-            var intVal = function(i) {
+            var intVal = function (i) {
                 return typeof i === 'string' ?
                     i.replace(/[\$,]/g, '') * 1 :
                     typeof i === 'number' ?
-                    i : 0;
+                        i : 0;
             };
 
 
             var api = table.api();
-            api.columns(".sum").eq(0).each(function(index) {
+            api.columns(".sum").eq(0).each(function (index) {
                 var column = api.column(index, {
                     page: page
                 });
 
                 var sum = column
                     .data()
-                    .reduce(function(a, b) {
+                    .reduce(function (a, b) {
                         return intVal(a) + intVal(b);
                     }, 0);
 

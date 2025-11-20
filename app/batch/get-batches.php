@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const COUNTRY\CAMEROON;
 use App\Services\TestsService;
 use App\Services\UsersService;
@@ -19,7 +19,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 try {
 
     // Sanitized values from $request object
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 

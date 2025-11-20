@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Utilities\JsonUtility;
@@ -42,7 +42,7 @@ $payload = [];
 try {
     $db->beginTransaction();
 
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
 
     $authToken = ApiService::extractBearerToken($request);

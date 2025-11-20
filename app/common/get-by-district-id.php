@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
@@ -11,7 +11,7 @@ use App\Services\GeoLocationsService;
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 

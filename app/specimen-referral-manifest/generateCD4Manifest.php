@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const COUNTRY\RWANDA;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -21,7 +21,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -194,12 +194,12 @@ if (!empty($id)) {
 
         $tbl = '<p></p><span style="font-size:1.7em;"> ' . $result[0]['manifest_code'];
         $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['manifest_code']) . '">';
-        $tbl .=  '</span><br>';
+        $tbl .= '</span><br>';
 
         if (!empty($result)) {
 
             $tbl .= '<br><table nobr="true" style="width:100%;" border="1" cellpadding="2">';
-            $tbl .=     '<tr nobr="true">
+            $tbl .= '<tr nobr="true">
                         <td  style="font-size:11px;width:5%;"><strong>S/N</strong></td>
                         <td  style="font-size:11px;width:12%;"><strong>SAMPLE ID</strong></td>
                         <td  style="font-size:11px;width:15%;"><strong>HEALTH FACILITY, DISTRICT</strong></td>

@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -11,7 +11,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -97,7 +97,7 @@ try {
      }
      if (!empty($_POST['sampleCollectionDate'])) {
           [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-          $sWhere[] =  " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
+          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
      }
      if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
           $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';

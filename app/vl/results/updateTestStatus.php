@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\TEST_FAILED;
 use App\Services\VlService;
@@ -22,7 +22,7 @@ try {
 
 
     // Sanitized values from $request object
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -62,18 +62,18 @@ try {
 
         $db->where('vl_sample_id', $id[$i]);
         $db->update($tableName, $status);
-    
+
         $userData = [];
-        if($_POST['approver'] != ''){
-           $userData['result_approved_by'] = $_POST['approver'];
+        if ($_POST['approver'] != '') {
+            $userData['result_approved_by'] = $_POST['approver'];
         }
-        if($_POST['tester'] != ''){
-           $userData['tested_by'] = $_POST['tester'];
+        if ($_POST['tester'] != '') {
+            $userData['tested_by'] = $_POST['tester'];
         }
-        if($_POST['reviewer'] != ''){
+        if ($_POST['reviewer'] != '') {
             $userData['result_reviewed_by'] = $_POST['reviewer'];
         }
-      
+
         if ($userData !== []) {
             $db->where('vl_sample_id', $id[$i]);
             $db->update($tableName, $userData);
@@ -93,7 +93,7 @@ try {
         $concat = ($sampleId !== '' && $sampleId !== '0' && ($patientId !== '' && $patientId !== '0')) ? ' and' : '';
         //Add event logs
         $eventType = 'update-sample-status';
-        $action = $_SESSION['userName'] . ' updated VL samples status for the ' . $sampleId . $concat .  $patientId;
+        $action = $_SESSION['userName'] . ' updated VL samples status for the ' . $sampleId . $concat . $patientId;
         $resource = 'vl-results';
         $general->activityLog($eventType, $action, $resource);
         echo $result;

@@ -11,7 +11,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -188,7 +188,8 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                                 <option value="<?php echo $machine['instrument_id']; ?>"
                                     <?= ($previousMachine == $machine['instrument_id']) ? 'selected' : '' ?>
                                     data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>">
-                                    <?= $machine['machine_name']; ?></option>
+                                    <?= $machine['machine_name']; ?>
+                                </option>
                             <?php } ?>
                         </select>
                     </td>
@@ -293,7 +294,8 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                             foreach ($fundingSourceList as $fundingSource) {
                                 ?>
                                 <option value="<?php echo $fundingSource['funding_source_id']; ?>">
-                                    <?= $fundingSource['funding_source_name']; ?></option>
+                                    <?= $fundingSource['funding_source_name']; ?>
+                                </option>
                             <?php } ?>
                         </select>
                     </td>

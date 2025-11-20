@@ -8,7 +8,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -42,7 +42,8 @@ if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0][
 
     <div class="box box-default">
       <div class="box-header with-border">
-        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+          <?= _translate("indicates required fields"); ?> &nbsp;</div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
@@ -52,26 +53,34 @@ if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0][
             <table aria-describedby="table" class="table" aria-hidden="true">
               <tr>
                 <td><strong>Sample ID:<small><?php echo $vlResult[0]['sample_code']; ?></small></strong></td>
-                <td><strong>Contacted Date:<small><?php echo $vlResult[0]['sample_collection_date']; ?></small></strong></td>
-                <td><strong>Patient Name:<small><?php echo $vlResult[0]['patient_first_name'] . " " . $vlResult[0]['patient_last_name']; ?></small></strong></td>
+                <td><strong>Contacted Date:<small><?php echo $vlResult[0]['sample_collection_date']; ?></small></strong>
+                </td>
+                <td><strong>Patient
+                    Name:<small><?php echo $vlResult[0]['patient_first_name'] . " " . $vlResult[0]['patient_last_name']; ?></small></strong>
+                </td>
                 <td><strong>Patient Code:<small><?php echo $vlResult[0]['patient_art_no']; ?></small></strong></td>
               </tr>
             </table>
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="address" class="col-lg-4 control-label">Contact Notes<span class="mandatory">*</span></label>
+                  <label for="address" class="col-lg-4 control-label">Contact Notes<span
+                      class="mandatory">*</span></label>
                   <div class="col-lg-7">
-                    <textarea class="form-control isRequired" name="notes" id="notes" title="Please enter contact notes" placeholder="Enter Contact Notes"></textarea>
-                    <input type="hidden" name="treamentId" id="treamentId" value="<?= htmlspecialchars((string) $id); ?>" />
+                    <textarea class="form-control isRequired" name="notes" id="notes" title="Please enter contact notes"
+                      placeholder="Enter Contact Notes"></textarea>
+                    <input type="hidden" name="treamentId" id="treamentId"
+                      value="<?= htmlspecialchars((string) $id); ?>" />
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="address" class="col-lg-4 control-label">Contacted On<span class="mandatory">*</span></label>
+                  <label for="address" class="col-lg-4 control-label">Contacted On<span
+                      class="mandatory">*</span></label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control date readonly" readonly='readonly' id="date" name="date" placeholder="Contacted On" title="Enter Contacted on" />
+                    <input type="text" class="form-control date readonly" readonly='readonly' id="date" name="date"
+                      placeholder="Contacted On" title="Enter Contacted on" />
                   </div>
                 </div>
               </div>
@@ -86,7 +95,8 @@ if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0][
 
         <!--histroy of contact notes-->
         <div class="col-md-12">
-          <h4><a id="history" href="javascript:void(0);" style="text-decoration: none;" onclick="formToggler('+');">Show History <em class="fa-solid fa-plus"></em></a></h4>
+          <h4><a id="history" href="javascript:void(0);" style="text-decoration: none;" onclick="formToggler('+');">Show
+              History <em class="fa-solid fa-plus"></em></a></h4>
         </div>
         <div class="row" id="showHistory" style="display: none;">
           <div class="col-xs-12">
@@ -94,7 +104,8 @@ if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0][
               <!-- /.box-header -->
               <div class="box-body">
                 <h3>Contact Notes History</h3>
-                <table aria-describedby="table" id="contactNotesDetails" class="table table-bordered table-striped" aria-hidden="true">
+                <table aria-describedby="table" id="contactNotesDetails" class="table table-bordered table-striped"
+                  aria-hidden="true">
                   <thead>
                     <tr>
                       <th>Contact Notes</th>
@@ -109,13 +120,13 @@ if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0][
                         $date = explode(" ", (string) $notes['added_on']);
                         $collectDate = DateUtility::humanReadableDateFormat($notes['collected_on']);
                         $humanDate = DateUtility::humanReadableDateFormat($date[0]);
-                    ?>
+                        ?>
                         <tr>
                           <td><?php echo $notes['contact_notes']; ?></td>
                           <td><?php echo $collectDate; ?></td>
                           <td><?php echo $humanDate . " " . $date[1]; ?></td>
                         </tr>
-                      <?php
+                        <?php
                       }
                     } else {
                       ?>
@@ -142,7 +153,7 @@ if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0][
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script type="text/javascript">
   var oTable = null;
-  $(document).ready(function() {
+  $(document).ready(function () {
     $('.date').datepicker({
       changeMonth: true,
       changeYear: true,
@@ -164,11 +175,11 @@ if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0][
     dateVal = $("#date").val();
     if (notes != '' && dateVal != '') {
       $.post("/vl/program-management/addContactNotesHelper.php", {
-          notes: $("#notes").val(),
-          dateVal: $("#date").val(),
-          treamentId: $("#treamentId").val(),
-        },
-        function(data) {
+        notes: $("#notes").val(),
+        dateVal: $("#date").val(),
+        treamentId: $("#treamentId").val(),
+      },
+        function (data) {
           if (data > 0) {
             alert("Notes Added Successfully");
             $("#notes").val("");
