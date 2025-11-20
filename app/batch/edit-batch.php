@@ -11,7 +11,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = isset($_GET['id']) ? base64_decode((string) $_GET['id']) : null;
@@ -152,22 +152,27 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+					<?php echo _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
-			&nbsp;<button class="btn btn-primary btn-sm pull-left" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
+			&nbsp;<button class="btn btn-primary btn-sm pull-left" style="margin-right:5px;"
+				onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
 					<?php echo _translate("Show Advanced Search Options"); ?>
 				</span></button>
-			<table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-top:20px;width: 100%; display:none;">
+			<table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true"
+				style="margin-top:20px;width: 100%; display:none;">
 				<tr>
 					<th style="width: 20%;" scope="col"><?php echo _translate("Facility"); ?></th>
 					<td style="width: 30%;">
-						<select style="width: 100%;" class="" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
+						<select style="width: 100%;" class="" id="facilityName" name="facilityName"
+							title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
 							<?= $facilitiesDropdown; ?>
 						</select>
 					</td>
 					<td><label for="fundingSource"><?= _translate("Samples Entered By"); ?></label></td>
 					<td>
-						<select class="form-control" name="userId" id="userId" title="Please choose source de financement" style="width:100%;">
+						<select class="form-control" name="userId" id="userId"
+							title="Please choose source de financement" style="width:100%;">
 							<?php echo $general->generateSelectOptions($userNameList, null, '--Select--'); ?>
 						</select>
 					</td>
@@ -175,30 +180,39 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				<tr>
 					<th style="width: 20%;" scope="col">Date Sample Receieved at Lab</th>
 					<td style="width: 30%;">
-						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab" class="form-control daterange" placeholder="<?php echo _translate('Select Received at Lab Date'); ?>" readonly style="width:100%;background:#fff;" />
+						<input type="text" id="sampleReceivedAtLab" name="sampleReceivedAtLab"
+							class="form-control daterange"
+							placeholder="<?php echo _translate('Select Received at Lab Date'); ?>" readonly
+							style="width:100%;background:#fff;" />
 					</td>
 					<th style="width: 20%;" scope="col"><?php echo _translate("Sample Collection Date"); ?></th>
 					<td style="width: 30%;">
-						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterange" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
+						<input type="text" id="sampleCollectionDate" name="sampleCollectionDate"
+							class="form-control daterange"
+							placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly
+							style="width:100%;background:#fff;" />
 					</td>
 				</tr>
 				<tr>
 					<th scope="col"><?php echo _translate("Sample Type"); ?></th>
 					<td>
-						<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+						<select class="form-control" id="sampleType" name="sampleType"
+							title="<?php echo _translate('Please select sample type'); ?>">
 							<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 							<?php
 							foreach ($sResult as $type) {
-							?>
-								<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?></option>
-							<?php
+								?>
+								<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?>
+								</option>
+								<?php
 							}
 							?>
 						</select>
 					</td>
 					<th style="width: 20%;" scope="col"><?php echo _translate("Positions"); ?></th>
 					<td style="width: 30%;">
-						<select id="positions-type" class="form-control" title="<?php echo _translate('Please select the postion'); ?>">
+						<select id="positions-type" class="form-control"
+							title="<?php echo _translate('Please select the postion'); ?>">
 							<option value="numeric" <?php echo ($batchInfo[0]['position_type'] == "numeric") ? 'selected="selected"' : ''; ?>><?php echo _translate("Numeric"); ?></option>
 							<option value="alpha-numeric" <?php echo ($batchInfo[0]['position_type'] == "alpha-numeric") ? 'selected="selected"' : ''; ?>><?php echo _translate("Alpha Numeric"); ?></option>
 						</select>
@@ -207,12 +221,14 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				<tr>
 					<td><label for="fundingSource">Funding Partner</label></td>
 					<td>
-						<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+						<select class="form-control" name="fundingSource" id="fundingSource"
+							title="Please choose source de financement" style="width:100%;">
 							<option value=""> -- Select -- </option>
 							<?php
 							foreach ($fundingSourceList as $fundingSource) {
-							?>
-								<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+								?>
+								<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
+									<?= $fundingSource['funding_source_name']; ?></option>
 							<?php } ?>
 						</select>
 					</td>
@@ -222,23 +238,31 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					<td><label for="sortBy"><?= _translate("Sort By"); ?></label></td>
 
 					<td><select class="form-control" id="sortBy" name="sortBy" onchange="">
-							<option <?= $sortBy == 'requestCreated' ? "selected='selected'" : '' ?> value="requestCreated"><?= _translate("Request Created"); ?></option>
-							<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
-							<option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode"><?= _translate("Sample ID"); ?></option>
-							<option <?= $sortBy == 'labAssignedCode' ? "selected='selected'" : '' ?> value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
+							<option <?= $sortBy == 'requestCreated' ? "selected='selected'" : '' ?> value="requestCreated">
+								<?= _translate("Request Created"); ?></option>
+							<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified">
+								<?= _translate("Last Modified"); ?></option>
+							<option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode">
+								<?= _translate("Sample ID"); ?></option>
+							<option <?= $sortBy == 'labAssignedCode' ? "selected='selected'" : '' ?>
+								value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
 						</select></td>
 					<td><label for="sortType"><?= _translate("Sort Type"); ?></label></td>
 					<td>
 						<select class="form-control" id="sortType" onchange="">
 							<option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc">Ascending</option>
-							<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc">Descending</option>
+							<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc">Descending
+							</option>
 						</select>
 					</td>
 				</tr>
 				<tr>
-					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
-						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Reset Filters"); ?></span></button>
-						&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
+					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();"
+							value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
+						&nbsp;<button class="btn btn-danger btn-sm"
+							onclick="document.location.href = document.location"><span><?php echo _translate("Reset Filters"); ?></span></button>
+						&nbsp;<button class="btn btn-danger btn-sm"
+							onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
 								<?php echo _translate("Hide Advanced Search Options"); ?>
 							</span></button>
 					</td>
@@ -247,14 +271,22 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='editBatchForm' id='editBatchForm' autocomplete="off" action="save-batch-helper.php">
+				<form class="form-horizontal" method='post' name='editBatchForm' id='editBatchForm' autocomplete="off"
+					action="save-batch-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="batchCode" class="col-lg-4 control-label"><?php echo _translate("Batch Code"); ?> <span class="mandatory">*</span></label>
+									<label for="batchCode"
+										class="col-lg-4 control-label"><?php echo _translate("Batch Code"); ?> <span
+											class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" readonly="readonly" placeholder="<?php echo _translate('Batch Code'); ?>" title="<?php echo _translate('Please enter batch code'); ?>" value="<?php echo $batchInfo[0]['batch_code']; ?>" onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','<?php echo _translate("This batch code already exists.Try another code"); ?>',null)" />
+										<input type="text" class="form-control isRequired" id="batchCode"
+											name="batchCode" readonly="readonly"
+											placeholder="<?php echo _translate('Batch Code'); ?>"
+											title="<?php echo _translate('Please enter batch code'); ?>"
+											value="<?php echo $batchInfo[0]['batch_code']; ?>"
+											onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','<?php echo _translate("This batch code already exists.Try another code"); ?>',null)" />
 									</div>
 								</div>
 							</div>
@@ -262,12 +294,18 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="machine" class="col-lg-4 control-label"><?php echo _translate("Testing Platform"); ?> <span class="mandatory">*</span></label>
+									<label for="machine"
+										class="col-lg-4 control-label"><?php echo _translate("Testing Platform"); ?>
+										<span class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select name="machine" id="machine" class="form-control isRequired" title="<?php echo _translate('Please choose machine'); ?>">
+										<select name="machine" id="machine" class="form-control isRequired"
+											title="<?php echo _translate('Please choose machine'); ?>">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<?php foreach ($testPlatformResult as $machine) { ?>
-												<option value="<?= $machine['instrument_id'] ?>" <?= ($batchInfo[0]['machine'] == $machine['instrument_id']) ? 'selected' : '' ?> data-no-of-samples="<?= $machine['max_no_of_samples_in_a_batch'] ?>"><?= $machine['machine_name'] ?></option>
+												<option value="<?= $machine['instrument_id'] ?>"
+													<?= ($batchInfo[0]['machine'] == $machine['instrument_id']) ? 'selected' : '' ?>
+													data-no-of-samples="<?= $machine['max_no_of_samples_in_a_batch'] ?>">
+													<?= $machine['machine_name'] ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -279,9 +317,13 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<div class="row">
 								<div class="col-md-6">
 									<div class="form-group">
-										<label for="machine" class="col-lg-4 control-label"><?php echo _translate("Lab Assigned Batch Code"); ?></label>
+										<label for="machine"
+											class="col-lg-4 control-label"><?php echo _translate("Lab Assigned Batch Code"); ?></label>
 										<div class="col-lg-7" style="margin-left:3%;">
-											<input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode" class="form-control" placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>" value="<?php echo $batchInfo[0]['lab_assigned_batch_code'] ?>" />
+											<input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode"
+												class="form-control"
+												placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>"
+												value="<?php echo $batchInfo[0]['lab_assigned_batch_code'] ?>" />
 										</div>
 									</div>
 								</div>
@@ -289,16 +331,22 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<?php } ?>
 						<div class="row" id="sampleDetails">
 							<div class="col-md-5">
-								<select name="unbatchedSamples[]" id="search" class="form-control" size="8" multiple="multiple">
+								<select name="unbatchedSamples[]" id="search" class="form-control" size="8"
+									multiple="multiple">
 
 								</select>
-								<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span id="unselectedCount"></span></div>
+								<div class="sampleCounterDiv"><?= _translate("Number of unselected samples"); ?> : <span
+										id="unselectedCount"></span></div>
 							</div>
 							<div class="col-md-2">
-								<button type="button" id="search_rightAll" class="btn btn-block"><em class="fa-solid fa-forward"></em></button>
-								<button type="button" id="search_rightSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-right"></em></button>
-								<button type="button" id="search_leftSelected" class="btn btn-block"><em class="fa-sharp fa-solid fa-chevron-left"></em></button>
-								<button type="button" id="search_leftAll" class="btn btn-block"><em class="fa-solid fa-backward"></em></button>
+								<button type="button" id="search_rightAll" class="btn btn-block"><em
+										class="fa-solid fa-forward"></em></button>
+								<button type="button" id="search_rightSelected" class="btn btn-block"><em
+										class="fa-sharp fa-solid fa-chevron-right"></em></button>
+								<button type="button" id="search_leftSelected" class="btn btn-block"><em
+										class="fa-sharp fa-solid fa-chevron-left"></em></button>
+								<button type="button" id="search_leftAll" class="btn btn-block"><em
+										class="fa-solid fa-backward"></em></button>
 							</div>
 
 							<div class="col-md-5">
@@ -309,11 +357,14 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											$labCode = ' - ' . $sample['lab_assigned_code'];
 										}
 										if (trim((string) $sample['sample_batch_id']) == $id) { ?>
-											<option value="<?php echo $sample[$refPrimaryColumn]; ?>"><?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " .  ($sample['facility_name']) . $labCode; ?></option>
-									<?php }
+											<option value="<?php echo $sample[$refPrimaryColumn]; ?>">
+												<?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . ($sample['facility_name']) . $labCode; ?>
+											</option>
+										<?php }
 									} ?>
 								</select>
-								<div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span id="selectedCount"></span></div>
+								<div class="sampleCounterDiv"><?= _translate("Number of selected samples"); ?> : <span
+										id="selectedCount"></span></div>
 							</div>
 						</div>
 						<div class="row" id="alertText"></div>
@@ -321,11 +372,15 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<input type="hidden" name="type" id="type" value="<?php echo $testType; ?>" />
-						<input type="hidden" name="batchId" id="batchId" value="<?php echo $batchInfo[0]['batch_id']; ?>" />
+						<input type="hidden" name="batchId" id="batchId"
+							value="<?php echo $batchInfo[0]['batch_id']; ?>" />
 						<input type="hidden" name="batchedSamples" id="batchedSamples" />
-						<input type="hidden" name="positions" id="positions" value="<?php echo $batchInfo[0]['position_type']; ?>" />
-						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-						<a href="/batch/batches.php?type=<?php echo $testType; ?>" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
+						<input type="hidden" name="positions" id="positions"
+							value="<?php echo $batchInfo[0]['position_type']; ?>" />
+						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);"
+							onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+						<a href="/batch/batches.php?type=<?php echo $testType; ?>" class="btn btn-default">
+							<?php echo _translate("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -349,7 +404,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 	function validateNow() {
 		var selVal = [];
-		$('#search_to option').each(function(i, selected) {
+		$('#search_to option').each(function (i, selected) {
 			selVal[i] = $(selected).val();
 		});
 		const sqids = new Sqids()
@@ -375,11 +430,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			document.getElementById('editBatchForm').submit();
 		}
 	}
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$("#facilityName").selectize({
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
-		setTimeout(function() {
+		setTimeout(function () {
 			$("#search_rightSelected").trigger('click');
 		}, 10);
 
@@ -388,26 +443,26 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		});
 
 		$('#sampleCollectionDate').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _translate("Clear", true); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-				}
+			locale: {
+				cancelLabel: "<?= _translate("Clear", true); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+			}
+		},
+			function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
@@ -418,17 +473,17 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		$r = 1;
 		foreach ($result as $sample) {
 			if (isset($sample['batch_id']) && trim((string) $sample['batch_id']) == $id && (isset($sample['result']) && trim((string) $sample['result']) !== '')) {
-       if ($r == 1) {
-  		?>
-  						$("#deselect-all-samplecode").remove();
-  					<?php }
-       ?>
-					resultSampleArray.push('<?php 
-       echo $sample['eid_id'];
-       ?>');
-		<?php 
-       $r++;
-   }
+				if ($r == 1) {
+					?>
+					$("#deselect-all-samplecode").remove();
+				<?php }
+				?>
+				resultSampleArray.push('<?php
+				echo $sample['eid_id'];
+				?>');
+				<?php
+				$r++;
+			}
 		}
 		?>
 		getSampleCodeDetails();
@@ -441,13 +496,13 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
+			tableName: tableName,
+			fieldName: fieldName,
+			value: removeDots.trim(),
+			fnct: fnct,
+			format: "html"
+		},
+			function (data) {
 				if (data === '1') {
 					alert(alrt);
 					duplicateName = false;
@@ -465,19 +520,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		var facilityId = $("#facilityName").val();
 
 		$.post("/batch/get-samples-batch.php", {
-				sampleCollectionDate: $("#sampleCollectionDate").val(),
-				sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
-				type: '<?php echo $testType; ?>',
-				batchId: $("#batchId").val(),
-				genericTestType: '<?php echo $genericTestType; ?>',
-				facilityId: facilityId,
-				sName: $("#sampleType").val(),
-				fundingSource: $("#fundingSource").val(),
-				userId: $("#userId").val(),
-				sortBy: $("#sortBy").val(),
-				sortType: $("#sortType").val(),
-			},
-			function(data) {
+			sampleCollectionDate: $("#sampleCollectionDate").val(),
+			sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
+			type: '<?php echo $testType; ?>',
+			batchId: $("#batchId").val(),
+			genericTestType: '<?php echo $genericTestType; ?>',
+			facilityId: facilityId,
+			sName: $("#sampleType").val(),
+			fundingSource: $("#fundingSource").val(),
+			userId: $("#userId").val(),
+			sortBy: $("#sortBy").val(),
+			sortType: $("#sortType").val(),
+		},
+			function (data) {
 				if (data != "") {
 					if ($("#batchId").val() > 0) {
 						$("#search").html(data);
@@ -508,7 +563,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		$("#" + showId).show();
 	}
 
-	$("#machine").change(function() {
+	$("#machine").change(function () {
 		var self = this.value;
 		if (self != '') {
 			getSampleCodeDetails();

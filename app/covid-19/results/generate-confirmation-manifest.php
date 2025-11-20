@@ -1,7 +1,7 @@
 <?php
 
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
@@ -16,7 +16,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -72,7 +72,7 @@ class Covid19ConfirmationManifestPDF extends Fpdi
         // Set font
         $this->SetFont('helvetica', '', 8);
         // Page number
-        $this->Cell(0, 10,  'Confirmation Manifest Generated On : ' . date('d/m/Y H:i:s') . ' | Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
+        $this->Cell(0, 10, 'Confirmation Manifest Generated On : ' . date('d/m/Y H:i:s') . ' | Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
     }
 }
 

@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -11,7 +11,7 @@ use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -34,9 +34,9 @@ try {
     }
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
-    $fileName          = str_replace(" ", "-", $fileName) . "-" . MiscUtility::generateRandomString(12);
-    $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $fileName          = $_POST['fileName'] . "." . $extension;
+    $fileName = str_replace(" ", "-", $fileName) . "-" . MiscUtility::generateRandomString(12);
+    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $fileName = $_POST['fileName'] . "." . $extension;
 
     // $fileName          = $ranNumber . "." . $extension;
 
@@ -48,12 +48,12 @@ try {
         //$mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
 
         $objPHPExcel = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
-        $sheetData   = $objPHPExcel->getActiveSheet();
+        $sheetData = $objPHPExcel->getActiveSheet();
 
-        $sheetData   = $sheetData->toArray(null, true, true, true);
+        $sheetData = $sheetData->toArray(null, true, true, true);
 
 
-        $m           = 0;
+        $m = 0;
         $skipTillRow = 19;
 
 
@@ -75,27 +75,27 @@ try {
                 continue;
             }
 
-            $sampleCode    = "";
-            $sampleType    = "";
+            $sampleCode = "";
+            $sampleType = "";
             $absDecimalVal = "";
-            $absVal        = "";
-            $logVal        = "";
-            $txtVal        = "";
-            $resultFlag    = "";
-            $testingDate   = "";
+            $absVal = "";
+            $logVal = "";
+            $txtVal = "";
+            $resultFlag = "";
+            $testingDate = "";
 
 
             $sampleCode = $row[$sampleIdCol];
 
-            $sampleType = !stripos((string) $sampleCode, 'control') && (int)$sampleCode > 0 ? "S" : $sampleCode;
+            $sampleType = !stripos((string) $sampleCode, 'control') && (int) $sampleCode > 0 ? "S" : $sampleCode;
 
 
             if (trim((string) $row[$absValCol]) === "<") {
                 $absDecimalVal = $absVal = "";
                 $logVal = "";
                 $txtVal = "< 100";
-            } elseif ((int)$row[$absValCol] > 0) {
-                $absDecimalVal = $absVal = (int)$row[$absValCol];
+            } elseif ((int) $row[$absValCol] > 0) {
+                $absDecimalVal = $absVal = (int) $row[$absValCol];
                 $logVal = round(log10($absVal), 4);
                 $txtVal = null;
             } else {
@@ -132,7 +132,7 @@ try {
                 $data['result'] = "";
             }
 
-            $query    = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from form_vl where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
+            $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from form_vl where result_printed_datetime is null AND sample_code='" . $sampleCode . "'";
             $vlResult = $db->rawQueryOne($query);
             if (!empty($vlResult) && !empty($sampleCode)) {
                 if (!empty($vlResult['result'])) {
@@ -143,7 +143,7 @@ try {
                 $data['sample_details'] = 'New Sample';
             }
 
-            if ($sampleCode != ''  || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
+            if ($sampleCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);
@@ -153,9 +153,9 @@ try {
 
     $_SESSION['alertMsg'] = "Results imported successfully";
     //Add event log
-    $eventType            = 'import';
-    $action               = $_SESSION['userName'] . ' imported a new test result with the sample id ' . $sampleCode;
-    $resource             = 'import-result';
+    $eventType = 'import';
+    $action = $_SESSION['userName'] . ' imported a new test result with the sample id ' . $sampleCode;
+    $resource = 'import-result';
     $general->activityLog($eventType, $action, $resource);
 
 

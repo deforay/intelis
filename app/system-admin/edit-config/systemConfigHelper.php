@@ -1,6 +1,6 @@
 <?php
 // system-admin/edit-config/systemConfigHelper.php
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -15,7 +15,7 @@ $configService = ContainerRegistry::get(ConfigService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -69,7 +69,7 @@ try {
         'database.port' => (isset($_POST['dbPort']) && !empty($_POST['dbPort'])) ? $_POST['dbPort'] : 3306,
     ];
     $stsKey = SYSTEM_CONFIG['sts']['api_key'];
-    if ($stsKey == '' || empty($stsKey)  && trim((string) $_POST['sc_user_type']) === 'stsmode') {
+    if ($stsKey == '' || empty($stsKey) && trim((string) $_POST['sc_user_type']) === 'stsmode') {
         $updatedConfig['sts.api_key'] = $configService->generateAPIKeyForSTS();
     }
 

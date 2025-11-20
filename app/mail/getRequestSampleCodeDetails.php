@@ -14,7 +14,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -89,18 +89,25 @@ $result = $db->rawQuery($query);
 ?>
 <div class="col-md-9">
   <div class="form-group">
-    <label for="sample" class="col-lg-3 control-label"><?php echo _translate("Choose Sample(s)"); ?> <span class="mandatory">*</span></label>
+    <label for="sample" class="col-lg-3 control-label"><?php echo _translate("Choose Sample(s)"); ?> <span
+        class="mandatory">*</span></label>
     <div class="col-lg-9">
       <div style="width:100%;margin:0 auto;clear:both;">
-        <a href="#" id="select-all-sample" style="float:left" class="btn btn-info btn-xs"><?php echo _translate("Select All"); ?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href="#" id="deselect-all-sample" style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _translate("Deselect All"); ?></a>
+        <a href="#" id="select-all-sample" style="float:left"
+          class="btn btn-info btn-xs"><?php echo _translate("Select All"); ?>&nbsp;&nbsp;<em
+            class="fa-solid fa-chevron-right"></em></a> <a href="#" id="deselect-all-sample" style="float:right"
+          class="btn btn-danger btn-xs"><em
+            class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _translate("Deselect All"); ?></a>
       </div><br /><br />
-      <select id="sample" name="sample[]" multiple="multiple" class="search isRequired" title="<?php echo _translate('Please select sample(s)'); ?>">
+      <select id="sample" name="sample[]" multiple="multiple" class="search isRequired"
+        title="<?php echo _translate('Please select sample(s)'); ?>">
         <?php
         foreach ($result as $sample) {
           if (trim((string) $sample['sample_code']) !== '') {
-        ?>
-            <option value="<?php echo $sample['vl_sample_id']; ?>"><?= ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
-        <?php
+            ?>
+            <option value="<?php echo $sample['vl_sample_id']; ?>">
+              <?= ($sample['sample_code']) . " - " . ($sample['facility_name']); ?></option>
+            <?php
           }
         }
         ?>
@@ -109,11 +116,11 @@ $result = $db->rawQuery($query);
   </div>
 </div>
 <script>
-  $(document).ready(function() {
+  $(document).ready(function () {
     $('.search').multiSelect({
       selectableHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _translate("Enter Sample ID", true); ?>">',
       selectionHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _translate("Enter Sample ID", true); ?>">',
-      afterInit: function(ms) {
+      afterInit: function (ms) {
         var that = this,
           $selectableSearch = that.$selectableUl.prev(),
           $selectionSearch = that.$selectionUl.prev(),
@@ -121,7 +128,7 @@ $result = $db->rawQuery($query);
           selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
         that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-          .on('keydown', function(e) {
+          .on('keydown', function (e) {
             if (e.which === 40) {
               that.$selectableUl.focus();
               return false;
@@ -129,14 +136,14 @@ $result = $db->rawQuery($query);
           });
 
         that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-          .on('keydown', function(e) {
+          .on('keydown', function (e) {
             if (e.which == 40) {
               that.$selectionUl.focus();
               return false;
             }
           });
       },
-      afterSelect: function() {
+      afterSelect: function () {
         if (this.qs2.cache().matchedResultsCount > noOfAllowedSamples) {
           $("#errorMsg").html("<strong><?php echo _translate("You have selected"); ?> " + this.qs2.cache().matchedResultsCount + " <?php echo _translate("Samples out of the maximum allowed"); ?> " + noOfAllowedSamples + " <?php echo _translate("samples"); ?></strong>");
           $("#requestSubmit").attr("disabled", true);
@@ -145,7 +152,7 @@ $result = $db->rawQuery($query);
         this.qs1.cache();
         this.qs2.cache();
       },
-      afterDeselect: function() {
+      afterDeselect: function () {
         if (this.qs2.cache().matchedResultsCount > noOfAllowedSamples) {
           $("#errorMsg").html("<strong><?php echo _translate("You have selected"); ?> " + this.qs2.cache().matchedResultsCount + " <?php echo _translate("Samples out of the maximum allowed"); ?> " + noOfAllowedSamples + " <?php echo _translate("samples"); ?></strong>");
           $("#requestSubmit").attr("disabled", true);
@@ -159,11 +166,11 @@ $result = $db->rawQuery($query);
         this.qs2.cache();
       }
     });
-    $('#select-all-sample').click(function() {
+    $('#select-all-sample').click(function () {
       $('#sample').multiSelect('select_all');
       return false;
     });
-    $('#deselect-all-sample').click(function() {
+    $('#deselect-all-sample').click(function () {
       $('#sample').multiSelect('deselect_all');
       return false;
     });

@@ -1,7 +1,7 @@
 <?php
 
 // File gets called in import-file-helper.php based on the selected instrument type
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -14,7 +14,7 @@ use App\Registries\ContainerRegistry;
 
 try {
     // Sanitized values from $request object
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -99,9 +99,9 @@ try {
 
                     $result = '';
 
-                    if (str_contains(strtolower((string)$sheetData[$resultCol]), 'not detected')) {
+                    if (str_contains(strtolower((string) $sheetData[$resultCol]), 'not detected')) {
                         $result = 'negative';
-                    } elseif ((str_contains(strtolower((string)$sheetData[$resultCol]), 'detected')) || (str_contains(strtolower((string)$sheetData[$resultCol]), 'passed'))) {
+                    } elseif ((str_contains(strtolower((string) $sheetData[$resultCol]), 'detected')) || (str_contains(strtolower((string) $sheetData[$resultCol]), 'passed'))) {
                         $result = 'positive';
                     } else {
                         $result = 'indeterminate';
@@ -206,7 +206,7 @@ try {
                 $data['sample_details'] = 'New Sample';
             }
 
-            if ($sampleCode != ''  || $sampleType != '') {
+            if ($sampleCode != '' || $sampleType != '') {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
                 $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);

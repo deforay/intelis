@@ -56,7 +56,7 @@ $specimenTypeResult = $db->query($sQuery);
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -135,11 +135,11 @@ if (isset($forms[$arr['vl_form']])) {
 ?>
 
 <script>
-	$(document).ready(function() {
-		$('#isSampleRejected').change(function(e) {
+	$(document).ready(function () {
+		$('#isSampleRejected').change(function (e) {
 			changeReject(this.value);
 		});
-		$('#hasRecentTravelHistory').change(function(e) {
+		$('#hasRecentTravelHistory').change(function (e) {
 			changeHistory(this.value);
 		});
 
@@ -153,17 +153,17 @@ if (isset($forms[$arr['vl_form']])) {
 			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			onChangeMonthYear: function(year, month, widget) {
-				setTimeout(function() {
+			onChangeMonthYear: function (year, month, widget) {
+				setTimeout(function () {
 					$('.ui-datepicker-calendar').show();
 				});
 			},
-			onSelect: function(e) {
+			onSelect: function (e) {
 				$('#sampleTestedDateTime').val('');
 				$('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
 			},
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function() {
+		}).click(function () {
 			$('.ui-datepicker-calendar').show();
 		});
 

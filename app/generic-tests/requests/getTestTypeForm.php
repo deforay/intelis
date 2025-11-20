@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
@@ -15,7 +15,7 @@ $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 

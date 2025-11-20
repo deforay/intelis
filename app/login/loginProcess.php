@@ -9,11 +9,11 @@ use App\Services\DatabaseService;
 use App\Services\SecurityService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -148,7 +148,7 @@ try {
     LoggerUtility::logError($e->getMessage() . " | " . $ipAddress . " | " . $_POST['username'], [
         'errorType' => 'login',
         'exception' => $e,
-        'code'  => $e->getCode(), // Error code
+        'code' => $e->getCode(), // Error code
         'last_db_error' => $db->getLastError(), // Last database error
         'last_db_query' => $db->getLastQuery(), // Last executed query
         'file' => $e->getFile(), // File where the error occurred

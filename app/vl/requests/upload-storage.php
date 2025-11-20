@@ -20,7 +20,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -84,31 +84,39 @@ $filePath = '/files/storage/storage-bulk-upload.xlsx';
 									<?= _translate("Batch Code (or) Manifest Code"); ?>
 								</label>
 								<div class="col-lg-7">
-									<input type="text" class="form-control isRequired" id="batchOrManifestCode" name="batchOrManifestCode" placeholder="<?php echo _translate('Batch or Manifest Code'); ?>" title="<?= _translate('Enter Batch or Manifest code'); ?>" />
+									<input type="text" class="form-control isRequired" id="batchOrManifestCode"
+										name="batchOrManifestCode"
+										placeholder="<?php echo _translate('Batch or Manifest Code'); ?>"
+										title="<?= _translate('Enter Batch or Manifest code'); ?>" />
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-lg-offset-4 col-lg-5" style="float:left;">
-									<button class="btn btn-primary" onclick="getExcelFormatTemplate();" title="<?= _translate("Click here to download the Excel format for uploading storages in bulk"); ?>"><?= _translate("Download Excel Format"); ?></button>
+									<button class="btn btn-primary" onclick="getExcelFormatTemplate();"
+										title="<?= _translate("Click here to download the Excel format for uploading storages in bulk"); ?>"><?= _translate("Download Excel Format"); ?></button>
 								</div>
 							</div>
 						</div>
 						<!-- Right side -->
 						<div class="col-md-6">
 							<!-- form start -->
-							<form class="form-horizontal" method='post' name='uploadStorageForm' id='uploadStorageForm' autocomplete="off" enctype="multipart/form-data" action="upload-storage-helper.php">
+							<form class="form-horizontal" method='post' name='uploadStorageForm' id='uploadStorageForm'
+								autocomplete="off" enctype="multipart/form-data" action="upload-storage-helper.php">
 								<div class="form-group">
 									<label for="StorageInfo" class="col-lg-4">
 										<?= _translate("Upload File"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="file" class="form-control isRequired" id="storageInfo" name="storageInfo" placeholder="<?php echo _translate('Storage Name'); ?>" title="<?= _translate('Click to upload file'); ?>" />
+										<input type="file" class="form-control isRequired" id="storageInfo"
+											name="storageInfo" placeholder="<?php echo _translate('Storage Name'); ?>"
+											title="<?= _translate('Click to upload file'); ?>" />
 									</div>
 								</div>
 								<div class="form-group">
 									<input type="hidden" name="selectedUser" id="selectedUser" />
 									<div class="col-lg-7">
-										<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
+										<a class="btn btn-primary" href="javascript:void(0);"
+											onclick="validateNow();return false;">
 											<?php echo _translate("Submit"); ?>
 										</a>
 										<a href="/vl/requests/vl-requests.php" class="btn btn-default">
@@ -124,14 +132,19 @@ $filePath = '/files/storage/storage-bulk-upload.xlsx';
 			</div>
 			<div class="box-body">
 				<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
-					<h3 style="color:green;"><?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?> | <?= _translate("Number of Lab Storage added"); ?> : <?= $addedRecords; ?> | <?= _translate("Number of Storages not added"); ?> : <?= $_GET['notAdded']; ?></h3>
+					<h3 style="color:green;"><?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?>
+						| <?= _translate("Number of Lab Storage added"); ?> : <?= $addedRecords; ?> |
+						<?= _translate("Number of Storages not added"); ?> : <?= $_GET['notAdded']; ?></h3>
 					<?php if ($_GET['notAdded'] > 0) { ?>
-						<a class="text-danger" style="text-decoration:underline;margin-bottom:10px; font-weight: bold;" href="/temporary/INCORRECT-STORAGE-ROWS.xlsx" download>Download the Excel Sheet with not uploaded storages</a><br><br>
+						<a class="text-danger" style="text-decoration:underline;margin-bottom:10px; font-weight: bold;"
+							href="/temporary/INCORRECT-STORAGE-ROWS.xlsx" download>Download the Excel Sheet with not uploaded
+							storages</a><br><br>
 					<?php }
 				}
 				if (isset($_GET['failedRowCount']) && ($_GET['failedRowCount']) > 0) { ?>
 					<h2><?php echo _translate('Unable to Upload following Samples'); ?></h2>
-					<table aria-describedby="table" id="failedSamples" class="table table-bordered table-striped" aria-hidden="true">
+					<table aria-describedby="table" id="failedSamples" class="table table-bordered table-striped"
+						aria-hidden="true">
 						<thead>
 							<tr>
 								<th><?php echo _translate("Sample ID"); ?></th>
@@ -147,7 +160,7 @@ $filePath = '/files/storage/storage-bulk-upload.xlsx';
 								echo '<tr>';
 								foreach ($_GET[$i] as $sample) { ?>
 									<td><?php echo $sample; ?></td>
-							<?php }
+								<?php }
 								echo '</tr>';
 							} ?>
 						</tbody>
@@ -176,9 +189,9 @@ $filePath = '/files/storage/storage-bulk-upload.xlsx';
 		var batchOrManifestCodeValue = $("#batchOrManifestCode").val();
 		if (batchOrManifestCodeValue != "") {
 			$.post("/includes/write-samples-storage-template.php", {
-					batchOrManifestCodeValue: batchOrManifestCodeValue
-				},
-				function(data) {
+				batchOrManifestCodeValue: batchOrManifestCodeValue
+			},
+				function (data) {
 					if (data !== '' && data !== false) {
 						window.location.href = data;
 					} else {

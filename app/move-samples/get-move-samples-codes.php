@@ -14,7 +14,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -28,17 +28,17 @@ $scDate = $_POST['scDate'];
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 if ($testType == "vl") {
-    $tableName = "form_vl";
-    $primaryKey = "vl_sample_id";
+	$tableName = "form_vl";
+	$primaryKey = "vl_sample_id";
 } elseif ($testType == "eid") {
-    $tableName = "form_eid";
-    $primaryKey = "eid_id";
+	$tableName = "form_eid";
+	$primaryKey = "eid_id";
 } elseif ($testType == "covid19") {
-    $tableName = "form_covid19";
-    $primaryKey = "covid19_id";
+	$tableName = "form_covid19";
+	$primaryKey = "covid19_id";
 } elseif ($testType == "hepatitis") {
-    $tableName = "form_hepatitis";
-    $primaryKey = "hepatitis_id";
+	$tableName = "form_hepatitis";
+	$primaryKey = "hepatitis_id";
 }
 
 
@@ -78,14 +78,18 @@ $result = $db->rawQuery($query);
 		<div class="col-md-12">
 			<div class="col-md-12">
 				<div style="width:60%;margin:0 auto;clear:both;">
-					<a href="#" id="select-all-samplecode" style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
+					<a href="#" id="select-all-samplecode" style="float:left" class="btn btn-info btn-xs">Select
+						All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#'
+						id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em
+							class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
 				</div><br /><br />
 				<select id="sampleCode" name="sampleCode[]" multiple="multiple" class="search">
 					<?php
 					foreach ($result as $sample) {
-					?>
-						<option value="<?php echo $sample[$primaryKey]; ?>"><?php echo ($sample['remote_sample_code']); ?></option>
-					<?php
+						?>
+						<option value="<?php echo $sample[$primaryKey]; ?>"><?php echo ($sample['remote_sample_code']); ?>
+						</option>
+						<?php
 					}
 					?>
 				</select>
@@ -94,13 +98,13 @@ $result = $db->rawQuery($query);
 	</div>
 </div>
 <script>
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
 			selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'>Available samples(<?php echo count($result); ?>)</div>",
 			selectionFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='selectableCount'>Selected samples(0)</div>",
-			afterInit: function(ms) {
+			afterInit: function (ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),
 					$selectionSearch = that.$selectionUl.prev(),
@@ -108,7 +112,7 @@ $result = $db->rawQuery($query);
 					selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
 				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-					.on('keydown', function(e) {
+					.on('keydown', function (e) {
 						if (e.which === 40) {
 							that.$selectableUl.focus();
 							return false;
@@ -116,14 +120,14 @@ $result = $db->rawQuery($query);
 					});
 
 				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-					.on('keydown', function(e) {
+					.on('keydown', function (e) {
 						if (e.which == 40) {
 							that.$selectionUl.focus();
 							return false;
 						}
 					});
 			},
-			afterSelect: function() {
+			afterSelect: function () {
 				if (this.qs2.cache().matchedResultsCount == 0) {
 					$("#sampleSubmit").attr("disabled", true);
 					$("#sampleSubmit").css("pointer-events", "none");
@@ -136,7 +140,7 @@ $result = $db->rawQuery($query);
 				$("#unselectableCount").html("Available samples(" + this.qs1.cache().matchedResultsCount + ")");
 				$("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
 			},
-			afterDeselect: function() {
+			afterDeselect: function () {
 				//button disabled/enabled
 				if (this.qs2.cache().matchedResultsCount == 0) {
 					$("#sampleSubmit").attr("disabled", true);
@@ -151,11 +155,11 @@ $result = $db->rawQuery($query);
 				$("#selectableCount").html("Selected samples(" + this.qs2.cache().matchedResultsCount + ")");
 			}
 		});
-		$('#select-all-samplecode').click(function() {
+		$('#select-all-samplecode').click(function () {
 			$('#sampleCode').multiSelect('select_all');
 			return false;
 		});
-		$('#deselect-all-samplecode').click(function() {
+		$('#deselect-all-samplecode').click(function () {
 			$('#sampleCode').multiSelect('deselect_all');
 			$("#sampleSubmit").attr("disabled", true);
 			$("#sampleSubmit").css("pointer-events", "none");

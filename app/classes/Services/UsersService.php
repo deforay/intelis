@@ -10,7 +10,7 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 
 final class UsersService
 {
@@ -54,7 +54,7 @@ final class UsersService
 
     private function getRequestArray($currentRequest): array
     {
-        if ($currentRequest instanceof ServerRequest) {
+        if ($currentRequest instanceof ServerRequestInterface) {
             $currentRequest = AppRegistry::get('currentRequestURI');
             $baseFileName = AppRegistry::get('currentRequestBaseName');
         } else {
@@ -414,7 +414,7 @@ final class UsersService
 
     public function recordLoginAttempt($loginId, $loginStatus, $userId = null): void
     {
-        /** @var ServerRequest $request */
+        /** @var ServerRequestInterface $request */
         $request = AppRegistry::get('request');
 
         $data = [

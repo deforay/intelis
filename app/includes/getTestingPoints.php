@@ -4,7 +4,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -17,7 +17,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 

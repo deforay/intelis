@@ -11,7 +11,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -64,7 +64,8 @@ $pResult = $db->rawQuery($pQuery);
 				<div class="box">
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="patientModalDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="patientModalDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th style="width:10%;">
@@ -101,10 +102,12 @@ $pResult = $db->rawQuery($pQuery);
 									$patientDetails = json_encode(
 										["firstname" => ($patient['patient_name']), "lastname" => ($patient['patient_surname']), "gender" => $patient['patient_gender'], "dob" => DateUtility::humanReadableDateFormat($patient['patient_dob']), "age" => $patient['patient_age'], "is_patient_pregnant" => $patient['is_patient_pregnant'], "is_patient_breastfeeding" => $patient['is_patient_breastfeeding'], "patient_phone_number" => $patient['patient_phone_number'], "patient_id" => $patient['patient_id'], "patient_passport_number" => $patient['patient_passport_number'], "patient_address" => $patient['patient_address'], "patient_nationality" => $patient['patient_nationality'], "patient_city" => $patient['patient_city'], "patient_province" => $patient['patient_province'], "patient_district" => $patient['patient_district'], "geo_code" => $patient['geo_code'], "geo_name" => $patient['geo_name'], "province_id" => $patient['province_id'], "patient_zone" => $patient['patient_zone'], "external_sample_code" => $patient['external_sample_code']]
 									);
-								?>
+									?>
 
 									<tr>
-										<td><input type="radio" id="patient<?php echo $patient['covid19_id']; ?>" name="patient" value='<?php echo $patientDetails; ?>' onclick="getPatientDetails(this.value);"></td>
+										<td><input type="radio" id="patient<?php echo $patient['covid19_id']; ?>"
+												name="patient" value='<?php echo $patientDetails; ?>'
+												onclick="getPatientDetails(this.value);"></td>
 										<td>
 											<?= $patient['patient_id']; ?>
 										</td>
@@ -126,7 +129,7 @@ $pResult = $db->rawQuery($pQuery);
 
 
 									</tr>
-								<?php
+									<?php
 									//}
 								}
 								?>
@@ -147,7 +150,7 @@ $pResult = $db->rawQuery($pQuery);
 <script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$('#patientModalDataTable').DataTable({
 			"aaSorting": [
 				[1, 'asc'],

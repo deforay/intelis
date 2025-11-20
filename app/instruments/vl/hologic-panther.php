@@ -2,7 +2,7 @@
 
 // For Hologic Panther test results import
 // File gets called in import-file-helper.php based on the selected instrument type
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -12,7 +12,7 @@ use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 

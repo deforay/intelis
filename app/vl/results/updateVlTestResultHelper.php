@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -24,7 +24,7 @@ $vlService = ContainerRegistry::get(VlService::class);
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);

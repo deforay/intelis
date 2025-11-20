@@ -15,7 +15,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $rejectionReasons = $general->getRejectionReasons('cd4');
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -39,20 +39,30 @@ $rsnInfo = $db->query($rsnQuery);
 
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+					<?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='addSampleRejcForm' id='addSampleRejcForm' autocomplete="off" enctype="multipart/form-data" action="save-cd4-sample-rejection-reasons-helper.php">
+				<form class="form-horizontal" method='post' name='addSampleRejcForm' id='addSampleRejcForm'
+					autocomplete="off" enctype="multipart/form-data"
+					action="save-cd4-sample-rejection-reasons-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="rejectionReasonName" class="col-lg-4 control-label">Rejection Reason Name <span class="mandatory">*</span></label>
+									<label for="rejectionReasonName" class="col-lg-4 control-label">Rejection Reason
+										Name <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="rejectionReasonName" name="rejectionReasonName" value="<?php echo $rsnInfo[0]['rejection_reason_name']; ?>" placeholder="Rejection Reason Name" title="Please enter Rejection Reason name" onblur="checkNameValidation('r_cd4_sample_rejection_reasons','rejection_reason_name',this,'<?php echo "rejection_reason_id##" . htmlspecialchars((string) $id); ?>','This Rejection reason name that you entered already exists.Try another Rejection reason name',null)" />
-										<input type="hidden" class="form-control isRequired" id="rejectionReasonId" name="rejectionReasonId" value="<?php echo $_GET['id']; ?>" />
+										<input type="text" class="form-control isRequired" id="rejectionReasonName"
+											name="rejectionReasonName"
+											value="<?php echo $rsnInfo[0]['rejection_reason_name']; ?>"
+											placeholder="Rejection Reason Name"
+											title="Please enter Rejection Reason name"
+											onblur="checkNameValidation('r_cd4_sample_rejection_reasons','rejection_reason_name',this,'<?php echo "rejection_reason_id##" . htmlspecialchars((string) $id); ?>','This Rejection reason name that you entered already exists.Try another Rejection reason name',null)" />
+										<input type="hidden" class="form-control isRequired" id="rejectionReasonId"
+											name="rejectionReasonId" value="<?php echo $_GET['id']; ?>" />
 									</div>
 								</div>
 							</div>
@@ -60,7 +70,9 @@ $rsnInfo = $db->query($rsnQuery);
 								<div class="form-group">
 									<label for="rejectionType" class="col-lg-4 control-label">Rejection Type</label>
 									<div class="col-lg-7">
-										<select class="form-control select2 isRequired" id="rejectionType" name="rejectionType" placeholder="Rejection Type" title="Please enter Rejection Type">
+										<select class="form-control select2 isRequired" id="rejectionType"
+											name="rejectionType" placeholder="Rejection Type"
+											title="Please enter Rejection Type">
 											<?= $general->generateSelectOptions($rejectionReasons, strtolower((string) $rsnInfo[0]['rejection_type']), '-- Select --'); ?>
 										</select>
 									</div>
@@ -70,17 +82,26 @@ $rsnInfo = $db->query($rsnQuery);
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="rejectionReasonCode" class="col-lg-4 control-label">Rejection Reason Code <span class="mandatory">*</span></label>
+									<label for="rejectionReasonCode" class="col-lg-4 control-label">Rejection Reason
+										Code <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" value="<?php echo $rsnInfo[0]['rejection_reason_code']; ?>" id="rejectionReasonCode" name="rejectionReasonCode" placeholder="Rejection Reason Code" title="Please enter Rejection Reason Code" onblur="checkNameValidation('r_cd4_sample_rejection_reasons','rejection_reason_code',this,'<?php echo "rejection_reason_id##" . htmlspecialchars((string) $id); ?>','This Rejection reason code that you entered already exists.Try another Rejection reason code',null)" />
+										<input type="text" class="form-control isRequired"
+											value="<?php echo $rsnInfo[0]['rejection_reason_code']; ?>"
+											id="rejectionReasonCode" name="rejectionReasonCode"
+											placeholder="Rejection Reason Code"
+											title="Please enter Rejection Reason Code"
+											onblur="checkNameValidation('r_cd4_sample_rejection_reasons','rejection_reason_code',this,'<?php echo "rejection_reason_id##" . htmlspecialchars((string) $id); ?>','This Rejection reason code that you entered already exists.Try another Rejection reason code',null)" />
 									</div>
 								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="rejectionReasonStatus" class="col-lg-4 control-label">Rejection Reason Status</label>
+									<label for="rejectionReasonStatus" class="col-lg-4 control-label">Rejection Reason
+										Status</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="rejectionReasonStatus" name="rejectionReasonStatus" placeholder="Rejection Reason Status" title="Please enter Rejection Reason Status">
+										<select class="form-control isRequired" id="rejectionReasonStatus"
+											name="rejectionReasonStatus" placeholder="Rejection Reason Status"
+											title="Please enter Rejection Reason Status">
 											<option value="active" <?php echo ($rsnInfo[0]['rejection_reason_status'] == "active" ? 'selected' : ''); ?>>Active</option>
 											<option value="inactive" <?php echo ($rsnInfo[0]['rejection_reason_status'] == "inactive" ? 'selected' : ''); ?>>Inactive</option>
 										</select>
@@ -93,7 +114,8 @@ $rsnInfo = $db->query($rsnQuery);
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
+						<a class="btn btn-primary" href="javascript:void(0);"
+							onclick="validateNow();return false;">Submit</a>
 						<a href="/cd4/reference/cd4-sample-rejection-reasons.php" class="btn btn-default"> Cancel</a>
 					</div>
 					<!-- /.box-footer -->
@@ -108,7 +130,7 @@ $rsnInfo = $db->query($rsnQuery);
 </div>
 
 <script type="text/javascript">
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$(".select2").select2();
 		$(".select2").select2({
 			tags: true
@@ -134,13 +156,13 @@ $rsnInfo = $db->query($rsnQuery);
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
+			tableName: tableName,
+			fieldName: fieldName,
+			value: removeDots.trim(),
+			fnct: fnct,
+			format: "html"
+		},
+			function (data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";
@@ -152,10 +174,10 @@ $rsnInfo = $db->query($rsnQuery);
 		checkValue = $("#" + id + " option:selected").html();
 		if (checkValue != '') {
 			$.post("/includes/addNewField.php", {
-					value: checkValue,
-					mode: 'addNewRejectionType'
-				},
-				function(data) {
+				value: checkValue,
+				mode: 'addNewRejectionType'
+			},
+				function (data) {
 					console.log(data)
 				});
 		}

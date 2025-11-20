@@ -1,6 +1,6 @@
 <?php
 // Allow from any origin
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
@@ -43,7 +43,7 @@ try {
     /** @var ApiService $apiService */
     $apiService = ContainerRegistry::get(ApiService::class);
 
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $jsonData = $apiService->getJsonFromRequest($request, true);
     $result = explode('&', (string) $jsonData);

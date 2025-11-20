@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
@@ -14,7 +14,7 @@ use App\Services\TestRequestsService;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -45,10 +45,10 @@ try {
      $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'lab_name', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
 
      if ($general->isSTSInstance()) {
-         $sampleCode = 'remote_sample_code';
+          $sampleCode = 'remote_sample_code';
      } elseif ($general->isStandaloneInstance()) {
-         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
-         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+          $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+          $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
 
 
@@ -207,9 +207,9 @@ try {
      }
 
      if (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) === 'result') {
-         $sWhere[] = ' vl.result != ""  ';
+          $sWhere[] = ' vl.result != ""  ';
      } elseif (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) === 'noresult') {
-         $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
+          $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
      }
      if (isset($_POST['patientId']) && trim((string) $_POST['patientId']) !== '') {
           $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";

@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 use App\Services\CD4Service;
 use App\Registries\AppRegistry;
@@ -16,7 +16,7 @@ $cd4Service = ContainerRegistry::get(CD4Service::class);
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 $response = "0";
@@ -24,7 +24,7 @@ try {
     // Start transaction
     $db->beginTransaction();
     $_POST['insertOperation'] = true;
-    $response =  $cd4Service->insertSample($_POST);
+    $response = $cd4Service->insertSample($_POST);
     // Commit transaction
     $db->commitTransaction();
 } catch (Throwable $exception) {
@@ -35,7 +35,7 @@ try {
         error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
         error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
     }
-    LoggerUtility::logError($exception->getFile() . ':' . $exception->getLine()  . ':' .  $exception->getMessage(), [
+    LoggerUtility::logError($exception->getFile() . ':' . $exception->getLine() . ':' . $exception->getMessage(), [
         'exception' => $exception,
         'file' => $exception->getFile(), // File where the error occurred
         'line' => $exception->getLine(), // Line number of the error

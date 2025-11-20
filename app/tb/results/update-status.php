@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\REJECTED;
 use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
@@ -18,14 +18,14 @@ $tableName = "form_tb";
 try {
 
     // Sanitized values from $request object
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
     $id = explode(",", (string) $_POST['id']);
     $counter = count($id);
     for ($i = 0; $i < $counter; $i++) {
-        $status = ['result_status'             => $_POST['status'], 'result_approved_datetime'  =>  DateUtility::getCurrentDateTime(), 'last_modified_datetime'     =>  DateUtility::getCurrentDateTime(), 'data_sync'                 => 0];
+        $status = ['result_status' => $_POST['status'], 'result_approved_datetime' => DateUtility::getCurrentDateTime(), 'last_modified_datetime' => DateUtility::getCurrentDateTime(), 'data_sync' => 0];
         /* Check if already have reviewed and approved by 
         $db->where('tb_id', $id[$i]);
         $reviewd = $db->getOne($tableName, array("result_reviewed_by", "result_approved_by"));
@@ -48,16 +48,16 @@ try {
         $result = $id[$i];
 
         $userData = [];
-        if($_POST['approver'] != ''){
-           $userData['result_approved_by'] = $_POST['approver'];
+        if ($_POST['approver'] != '') {
+            $userData['result_approved_by'] = $_POST['approver'];
         }
-        if($_POST['tester'] != ''){
-           $userData['tested_by'] = $_POST['tester'];
+        if ($_POST['tester'] != '') {
+            $userData['tested_by'] = $_POST['tester'];
         }
-        if($_POST['reviewer'] != ''){
+        if ($_POST['reviewer'] != '') {
             $userData['result_reviewed_by'] = $_POST['reviewer'];
         }
-      
+
         if ($userData !== []) {
             $db->where('tb_id', $id[$i]);
             $db->update($tableName, $userData);

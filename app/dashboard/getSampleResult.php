@@ -10,7 +10,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -29,66 +29,66 @@ $testType = (string) ($_POST['type'] ?? '');
 $table = TestsService::getTestTableName($testType);
 $primaryKey = TestsService::getPrimaryColumn($testType);
 
-$waitingTotal  = 0;
+$waitingTotal = 0;
 $rejectedTotal = 0;
 $receivedTotal = 0;
 $acceptedTotal = 0;
 
-$waitingDate  = '';
+$waitingDate = '';
 $rejectedDate = '';
 
 if ($testType === 'eid') {
     $samplesReceivedChart = "eidSamplesReceivedChart";
-    $samplesTestedChart   = "eidSamplesTestedChart";
+    $samplesTestedChart = "eidSamplesTestedChart";
     $samplesRejectedChart = "eidSamplesRejectedChart";
-    $samplesWaitingChart  = "eidSamplesWaitingChart";
+    $samplesWaitingChart = "eidSamplesWaitingChart";
     $samplesOverviewChart = "eidSamplesOverviewChart";
 } elseif ($testType === 'covid19') {
     $samplesReceivedChart = "covid19SamplesReceivedChart";
-    $samplesTestedChart   = "covid19SamplesTestedChart";
+    $samplesTestedChart = "covid19SamplesTestedChart";
     $samplesNotTestedChart = "covid19SamplesNotTestedChart";
     $samplesRejectedChart = "covid19SamplesRejectedChart";
-    $samplesWaitingChart  = "covid19SamplesWaitingChart";
+    $samplesWaitingChart = "covid19SamplesWaitingChart";
     $samplesOverviewChart = "covid19SamplesOverviewChart";
 } elseif ($testType === 'hepatitis') {
     $samplesReceivedChart = "hepatitisSamplesReceivedChart";
-    $samplesTestedChart   = "hepatitisSamplesTestedChart";
+    $samplesTestedChart = "hepatitisSamplesTestedChart";
     $samplesRejectedChart = "hepatitisSamplesRejectedChart";
-    $samplesWaitingChart  = "hepatitisSamplesWaitingChart";
+    $samplesWaitingChart = "hepatitisSamplesWaitingChart";
     $samplesOverviewChart = "hepatitisSamplesOverviewChart";
 } elseif ($testType === 'vl') {
     // Partition VL from Recency
     $recencyWhere = " IFNULL(reason_for_vl_testing, 0) != 9999 ";
     $samplesReceivedChart = "vlSamplesReceivedChart";
-    $samplesTestedChart   = "vlSamplesTestedChart";
+    $samplesTestedChart = "vlSamplesTestedChart";
     $samplesRejectedChart = "vlSamplesRejectedChart";
-    $samplesWaitingChart  = "vlSamplesWaitingChart";
+    $samplesWaitingChart = "vlSamplesWaitingChart";
     $samplesOverviewChart = "vlSamplesOverviewChart";
 } elseif ($testType === 'cd4') {
     $samplesReceivedChart = "cd4SamplesReceivedChart";
-    $samplesTestedChart   = "cd4SamplesTestedChart";
+    $samplesTestedChart = "cd4SamplesTestedChart";
     $samplesRejectedChart = "cd4SamplesRejectedChart";
-    $samplesWaitingChart  = "cd4SamplesWaitingChart";
+    $samplesWaitingChart = "cd4SamplesWaitingChart";
     $samplesOverviewChart = "cd4SamplesOverviewChart";
 } elseif ($testType === 'recency') {
     // The “Recency” view is driven from the VL table but only for reason 9999
     $recencyWhere = " reason_for_vl_testing = 9999 ";
     $samplesReceivedChart = "recencySamplesReceivedChart";
-    $samplesTestedChart   = "recencySamplesTestedChart";
+    $samplesTestedChart = "recencySamplesTestedChart";
     $samplesRejectedChart = "recencySamplesRejectedChart";
-    $samplesWaitingChart  = "recencySamplesWaitingChart";
+    $samplesWaitingChart = "recencySamplesWaitingChart";
     $samplesOverviewChart = "recencySamplesOverviewChart";
 } elseif ($testType === 'tb') {
     $samplesReceivedChart = "tbSamplesReceivedChart";
-    $samplesTestedChart   = "tbSamplesTestedChart";
+    $samplesTestedChart = "tbSamplesTestedChart";
     $samplesRejectedChart = "tbSamplesRejectedChart";
-    $samplesWaitingChart  = "tbSamplesWaitingChart";
+    $samplesWaitingChart = "tbSamplesWaitingChart";
     $samplesOverviewChart = "tbSamplesOverviewChart";
 } elseif ($testType === 'generic-tests') {
     $samplesReceivedChart = "genericTestsSamplesReceivedChart";
-    $samplesTestedChart   = "genericTestsSamplesTestedChart";
+    $samplesTestedChart = "genericTestsSamplesTestedChart";
     $samplesRejectedChart = "genericTestsSamplesRejectedChart";
-    $samplesWaitingChart  = "genericTestsSamplesWaitingChart";
+    $samplesWaitingChart = "genericTestsSamplesWaitingChart";
     $samplesOverviewChart = "genericTestsSamplesOverviewChart";
 }
 
@@ -110,7 +110,7 @@ try {
         [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'], includeTime: true);
     } else {
         $startDate = date('Y-m-d H:i:s', strtotime('-7 days'));
-        $endDate   = date('Y-m-d H:i:s');
+        $endDate = date('Y-m-d H:i:s');
         // human fallback for label
         $selectedRange = date('d-M-Y', strtotime($startDate)) . ' to ' . date('d-M-Y', strtotime($endDate));
     }
@@ -120,16 +120,16 @@ try {
     // ---------- Table-specific fields/predicates ----------
     // Result field per table (null means “special case”)
     $resultField = match ($table) {
-        'form_cd4'       => 'cd4_result',
+        'form_cd4' => 'cd4_result',
         'form_hepatitis' => null,
-        default          => 'result',
+        default => 'result',
     };
 
     // “No result yet” per table
     $noResultExpr = match ($table) {
         'form_hepatitis' => "(NULLIF(TRIM(t.hcv_vl_count), '') IS NULL AND NULLIF(TRIM(t.hbv_vl_count), '') IS NULL)",
-        'form_cd4'       => "NULLIF(TRIM(t.cd4_result), '') IS NULL",
-        default          => "NULLIF(TRIM(t.result), '') IS NULL",
+        'form_cd4' => "NULLIF(TRIM(t.cd4_result), '') IS NULL",
+        default => "NULLIF(TRIM(t.result), '') IS NULL",
     };
 
     // Partition for VL/Recency if applicable
@@ -170,15 +170,15 @@ try {
     $waitingByStatusRows = $db->rawQuery($waitingByStatusQuery);
 
     $waitingCategories = [];
-    $waitingCounts     = [];
-    $waitingTotal      = 0;
+    $waitingCounts = [];
+    $waitingTotal = 0;
 
     foreach ($waitingByStatusRows as $r) {
         $label = (string) ($r['status_name'] ?? 'Unknown');
         $count = (int) $r['cnt'];
         $waitingCategories[] = $label;
-        $waitingCounts[]     = $count;
-        $waitingTotal       += $count;
+        $waitingCounts[] = $count;
+        $waitingTotal += $count;
     }
     // ======================================================
     // B) Aggregate (within selected range)
@@ -291,7 +291,7 @@ try {
         ";
         $statusQueryResult = $db->rawQuery($statusQuery);
 
-        $statusTotal  = 0;
+        $statusTotal = 0;
         $statusResult = ['date' => [], 'status' => []];
 
         $statusResult = ['date' => [], 'status' => []];
@@ -306,8 +306,8 @@ try {
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
     LoggerUtility::logError($e->getMessage(), [
-        'file'  => $e->getFile(),
-        'line'  => $e->getLine(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),
     ]);
 }
@@ -348,7 +348,8 @@ try {
         <div class="display">
             <div class="number">
                 <h3 class="font-green-sharp">
-                    <span data-counter="counterup" data-value="<?= $receivedTotal; ?>"><?php echo $receivedTotal; ?></span>
+                    <span data-counter="counterup"
+                        data-value="<?= $receivedTotal; ?>"><?php echo $receivedTotal; ?></span>
                 </h3>
                 <small class="font-green-sharp">
                     <?= _translate("SAMPLES COLLECTED"); ?>
@@ -369,7 +370,8 @@ try {
         <div class="display font-blue-sharp">
             <div class="number">
                 <h3 class="font-blue-sharp">
-                    <span data-counter="counterup" data-value="<?php echo $acceptedTotal; ?>"><?php echo $acceptedTotal; ?></span>
+                    <span data-counter="counterup"
+                        data-value="<?php echo $acceptedTotal; ?>"><?php echo $acceptedTotal; ?></span>
                 </h3>
                 <small class="font-blue-sharp">
                     <?php echo _translate("SAMPLES TESTED"); ?>
@@ -391,7 +393,8 @@ try {
         <div class="display font-red-haze">
             <div class="number">
                 <h3 class="font-red-haze">
-                    <span data-counter="counterup" data-value="<?php echo $rejectedTotal; ?>"><?php echo $rejectedTotal; ?></span>
+                    <span data-counter="counterup"
+                        data-value="<?php echo $rejectedTotal; ?>"><?php echo $rejectedTotal; ?></span>
                 </h3>
                 <small class="font-red-haze">
                     <?php echo _translate("SAMPLES REJECTED"); ?>
@@ -413,7 +416,8 @@ try {
         <div class="display font-purple-soft">
             <div class="number">
                 <h3 class="font-purple-soft">
-                    <span data-counter="counterup" data-value="<?php echo $waitingTotal; ?>"><?php echo $waitingTotal; ?></span>
+                    <span data-counter="counterup"
+                        data-value="<?php echo $waitingTotal; ?>"><?php echo $waitingTotal; ?></span>
                 </h3>
                 <small class="font-purple-soft">
                     <?php echo _translate("SAMPLES WITH NO RESULTS"); ?>
@@ -515,10 +519,10 @@ try {
                 showInLegend: false,
                 name: '<?= _translate("Samples", escapeTextOrContext: true); ?>',
                 data: [<?php
-                        foreach ($tResult as $tRow) {
-                            echo ($tRow['total']) . ",";
-                        }
-                        ?>]
+                foreach ($tResult as $tRow) {
+                    echo ($tRow['total']) . ",";
+                }
+                ?>]
 
             }],
             colors: ['#2ab4c0']
@@ -588,7 +592,7 @@ try {
 
     <?php }
     if ($acceptedTotal > 0) {
-    ?>
+        ?>
 
         $('#<?php echo $samplesTestedChart; ?>').highcharts({
             chart: {
@@ -611,10 +615,10 @@ try {
             },
             xAxis: {
                 categories: [<?php
-                                foreach ($acceptedResult as $tRow) {
-                                    echo "'" . ($tRow['date']) . "',";
-                                }
-                                ?>],
+                foreach ($acceptedResult as $tRow) {
+                    echo "'" . ($tRow['date']) . "',";
+                }
+                ?>],
                 crosshair: true,
                 scrollbar: {
                     enabled: true
@@ -645,10 +649,10 @@ try {
                 showInLegend: false,
                 name: '<?= _translate("Samples", escapeTextOrContext: true); ?>',
                 data: [<?php
-                        foreach ($acceptedResult as $tRow) {
-                            echo ($tRow['total']) . ",";
-                        }
-                        ?>]
+                foreach ($acceptedResult as $tRow) {
+                    echo ($tRow['total']) . ",";
+                }
+                ?>]
 
             }],
             colors: ['#7cb72a']
@@ -677,10 +681,10 @@ try {
             },
             xAxis: {
                 categories: [<?php
-                                foreach ($rejectedResult as $tRow) {
-                                    echo "'" . ($tRow['date']) . "',";
-                                }
-                                ?>],
+                foreach ($rejectedResult as $tRow) {
+                    echo "'" . ($tRow['date']) . "',";
+                }
+                ?>],
                 crosshair: true,
                 scrollbar: {
                     enabled: true
@@ -712,10 +716,10 @@ try {
                 showInLegend: false,
                 name: "<?php echo _translate("Samples", escapeTextOrContext: true); ?>",
                 data: [<?php
-                        foreach ($rejectedResult as $tRow) {
-                            echo ($tRow['total']) . ",";
-                        }
-                        ?>]
+                foreach ($rejectedResult as $tRow) {
+                    echo ($tRow['total']) . ",";
+                }
+                ?>]
 
             }],
             colors: ['#5C9BD1']
@@ -762,7 +766,7 @@ try {
             },
 
             tooltip: {
-                formatter: function() {
+                formatter: function () {
                     return '<strong>' + this.x + '</strong><br/>' +
                         this.series.name + ': ' + this.y + '<br/>' +
                         "<?= _translate("Total", escapeTextOrContext: true); ?>" + ': ' + this.point.stackTotal;
@@ -783,29 +787,29 @@ try {
                 name: 'Sample',
                 showInLegend: false,
                 data: [{
-                        y: <?php echo $aggregateResult['tested'] ?? 0; ?>,
-                        color: '#039BE6'
-                    },
-                    {
-                        y: <?php echo $aggregateResult['rejected'] ?? 0; ?>,
-                        color: '#492828'
-                    },
-                    {
-                        y: <?php echo $aggregateResult['hold'] ?? 0; ?>,
-                        color: '#60d18f'
-                    },
-                    {
-                        y: <?php echo $aggregateResult['registeredAtTestingLab'] ?? 0; ?>,
-                        color: '#ff1900'
-                    },
-                    {
-                        y: <?php echo $aggregateResult['awaitingApproval'] ?? 0; ?>,
-                        color: '#395B64'
-                    },
-                    {
-                        y: <?php echo $aggregateResult['registeredAtCollectionPoint'] ?? 0; ?>,
-                        color: '#2C3333'
-                    }
+                    y: <?php echo $aggregateResult['tested'] ?? 0; ?>,
+                    color: '#039BE6'
+                },
+                {
+                    y: <?php echo $aggregateResult['rejected'] ?? 0; ?>,
+                    color: '#492828'
+                },
+                {
+                    y: <?php echo $aggregateResult['hold'] ?? 0; ?>,
+                    color: '#60d18f'
+                },
+                {
+                    y: <?php echo $aggregateResult['registeredAtTestingLab'] ?? 0; ?>,
+                    color: '#ff1900'
+                },
+                {
+                    y: <?php echo $aggregateResult['awaitingApproval'] ?? 0; ?>,
+                    color: '#395B64'
+                },
+                {
+                    y: <?php echo $aggregateResult['registeredAtCollectionPoint'] ?? 0; ?>,
+                    color: '#2C3333'
+                }
                 ],
                 stack: 'total',
                 color: 'red',

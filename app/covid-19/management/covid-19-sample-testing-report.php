@@ -10,7 +10,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -48,7 +48,7 @@ try {
     }
     /* Facility filter */
     if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-        $whereCondition .=  ' AND f.facility_id IN (' . $_POST['facilityName'] . ') ';
+        $whereCondition .= ' AND f.facility_id IN (' . $_POST['facilityName'] . ') ';
     }
 
     $sQuery = "SELECT

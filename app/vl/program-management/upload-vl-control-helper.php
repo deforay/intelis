@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\VlService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -29,7 +29,7 @@ $vlService = ContainerRegistry::get(VlService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -67,8 +67,8 @@ try {
                 if ($validate) {
 
                     $spreadsheet = IOFactory::load($targetPath);
-                    $sheetData   = $spreadsheet->getActiveSheet();
-                    $sheetData   = $sheetData->toArray(null, true, true, true);
+                    $sheetData = $spreadsheet->getActiveSheet();
+                    $sheetData = $sheetData->toArray(null, true, true, true);
 
                     $filteredArray = array_filter(array_slice($sheetData, 1), fn($row): array => array_filter($row)); // Remove empty rows
 
@@ -110,19 +110,19 @@ try {
 
                             $data = [
                                 'control_code' => $controlCode,
-                                'lab_id'       => $labName,
-                                'batch_id'     => trim((string) $rowData['A']) ?? null,
+                                'lab_id' => $labName,
+                                'batch_id' => trim((string) $rowData['A']) ?? null,
                                 'control_type' => trim((string) $rowData['B']) ?? null,
-                                'lot_number'   => trim((string) $rowData['C']) ?? null,
-                                'lot_expiration_date'    => trim((string) $rowData['D']) ?? null,
-                                'tested_by'    => ($testedBy),
+                                'lot_number' => trim((string) $rowData['C']) ?? null,
+                                'lot_expiration_date' => trim((string) $rowData['D']) ?? null,
+                                'tested_by' => ($testedBy),
                                 'sample_tested_datetime' => empty($rowData['F']) ? null : DateUtility::isoDateFormat($rowData['F'], true),
-                                'is_sample_rejected'     => trim((string) $rowData['G']) ?? null,
-                                'result_value_absolute'  => $absVal,
-                                'result_value_log'       => $logVal,
-                                'result_value_text'      => $txtVal,
+                                'is_sample_rejected' => trim((string) $rowData['G']) ?? null,
+                                'result_value_absolute' => $absVal,
+                                'result_value_log' => $logVal,
+                                'result_value_text' => $txtVal,
                                 'result_value_absolute_decimal' => $absDecimalVal,
-                                'result'                 => $result,
+                                'result' => $result,
                                 'import_machine_file_name' => $importMachineFileName
                             ];
 

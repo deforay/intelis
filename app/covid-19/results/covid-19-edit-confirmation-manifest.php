@@ -7,7 +7,7 @@ $title = "Covid-19 | Add Batch";
 require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -85,27 +85,34 @@ $result = $db->rawQuery($query, [$id]);
 
     <div class="box box-default">
       <div class="box-header with-border">
-        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+          <?= _translate("indicates required fields"); ?> &nbsp;</div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
         <!-- form start -->
-        <form class="form-horizontal" method="post" name="editConfirmationManifestForm" id="editConfirmationManifestForm" autocomplete="off" action="covid-19-edit-confirmation-manifest-helper.php">
+        <form class="form-horizontal" method="post" name="editConfirmationManifestForm"
+          id="editConfirmationManifestForm" autocomplete="off" action="covid-19-edit-confirmation-manifest-helper.php">
           <div class="box-body">
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="manifestCode" class="col-lg-4 control-label">Manifest Code <span class="mandatory">*</span></label>
+                  <label for="manifestCode" class="col-lg-4 control-label">Manifest Code <span
+                      class="mandatory">*</span></label>
                   <div class="col-lg-7" style="margin-left:3%;">
-                    <input type="text" class="form-control isRequired" id="manifestCode" name="manifestCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper((string) $pResult['manifest_code']); ?>" />
+                    <input type="text" class="form-control isRequired" id="manifestCode" name="manifestCode"
+                      placeholder="Manifest Code" title="Please enter manifest code" readonly
+                      value="<?php echo strtoupper((string) $pResult['manifest_code']); ?>" />
                   </div>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="manifestStatus" class="col-lg-4 control-label">Manifest Status <span class="mandatory">*</span></label>
+                  <label for="manifestStatus" class="col-lg-4 control-label">Manifest Status <span
+                      class="mandatory">*</span></label>
                   <div class="col-lg-7" style="margin-left:3%;">
-                    <select class="form-control isRequired" name="manifestStatus" id="manifestStatus" title="Please select manifest status">
+                    <select class="form-control isRequired" name="manifestStatus" id="manifestStatus"
+                      title="Please select manifest status">
                       <option value="">-- Select --</option>
                       <option value="pending" <?php echo ($pResult['manifest_status'] == 'pending') ? "selected='selected'" : ''; ?>>Pending</option>
                       <option value="dispatch" <?php echo ($pResult['manifest_status'] == 'dispatch') ? "selected='selected'" : ''; ?>>Dispatch</option>
@@ -120,13 +127,17 @@ $result = $db->rawQuery($query, [$id]);
                 <div class="form-group">
                   <div class="col-md-12">
                     <div style="width:60%;margin:0 auto;clear:both;">
-                      <a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
+                      <a href='#' id='select-all-samplecode' style="float:left" class="btn btn-info btn-xs">Select
+                        All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#'
+                        id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em
+                          class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
                     </div><br /><br />
                     <select id='sampleCode' name="sampleCode[]" multiple='multiple' class="search">
                       <?php foreach ($result as $sample) {
                         if (!empty($sample[$sCode])) { ?>
-                          <option value="<?php echo $sample['covid19_id']; ?>" <?php echo ($sample['positive_test_manifest_id'] == $id) ? 'selected="selected"' : ''; ?>><?php echo $sample[$sCode]; ?></option>
-                      <?php }
+                          <option value="<?php echo $sample['covid19_id']; ?>" <?php echo ($sample['positive_test_manifest_id'] == $id) ? 'selected="selected"' : ''; ?>>
+                            <?php echo $sample[$sCode]; ?></option>
+                        <?php }
                       } ?>
                     </select>
                   </div>
@@ -138,8 +149,10 @@ $result = $db->rawQuery($query, [$id]);
           <!-- /.box-body -->
           <div class="box-footer">
             <input type="hidden" name="manifestId" value="<?php echo $pResult['manifest_id']; ?>" />
-            <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars($module); ?>" />
-            <a id="manifestSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
+            <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title=""
+              readonly value="<?= htmlspecialchars($module); ?>" />
+            <a id="manifestSubmit" class="btn btn-primary" href="javascript:void(0);"
+              onclick="validateNow();return false;">Submit</a>
             <a href="/covid-19/results/covid-19-confirmation-manifest.php" class="btn btn-default"> Cancel</a>
           </div>
           <!-- /.box-footer -->
@@ -155,7 +168,7 @@ $result = $db->rawQuery($query, [$id]);
 <script src="/assets/js/jquery.quicksearch.js"></script>
 <script type="text/javascript">
   noOfSamples = 100;
-  $(document).ready(function() {
+  $(document).ready(function () {
     //getSampleCodeDetails();
   });
 
@@ -170,11 +183,11 @@ $result = $db->rawQuery($query, [$id]);
     }
   }
 
-  $(document).ready(function() {
+  $(document).ready(function () {
     $('.search').multiSelect({
       selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
       selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
-      afterInit: function(ms) {
+      afterInit: function (ms) {
         var that = this,
           $selectableSearch = that.$selectableUl.prev(),
           $selectionSearch = that.$selectionUl.prev(),
@@ -182,7 +195,7 @@ $result = $db->rawQuery($query, [$id]);
           selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
         that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-          .on('keydown', function(e) {
+          .on('keydown', function (e) {
             if (e.which === 40) {
               that.$selectableUl.focus();
               return false;
@@ -190,14 +203,14 @@ $result = $db->rawQuery($query, [$id]);
           });
 
         that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-          .on('keydown', function(e) {
+          .on('keydown', function (e) {
             if (e.which == 40) {
               that.$selectionUl.focus();
               return false;
             }
           });
       },
-      afterSelect: function() {
+      afterSelect: function () {
         //button disabled/enabled
         if (this.qs2.cache().matchedResultsCount == noOfSamples) {
           alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
@@ -214,7 +227,7 @@ $result = $db->rawQuery($query, [$id]);
         this.qs1.cache();
         this.qs2.cache();
       },
-      afterDeselect: function() {
+      afterDeselect: function () {
         //button disabled/enabled
         if (this.qs2.cache().matchedResultsCount == 0) {
           $("#manifestSubmit").attr("disabled", true);
@@ -234,11 +247,11 @@ $result = $db->rawQuery($query, [$id]);
         this.qs2.cache();
       }
     });
-    $('#select-all-samplecode').click(function() {
+    $('#select-all-samplecode').click(function () {
       $('#sampleCode').multiSelect('select_all');
       return false;
     });
-    $('#deselect-all-samplecode').click(function() {
+    $('#deselect-all-samplecode').click(function () {
       $('#sampleCode').multiSelect('deselect_all');
       $("#manifestSubmit").attr("disabled", true);
       $("#manifestSubmit").css("pointer-events", "none");
@@ -251,13 +264,13 @@ $result = $db->rawQuery($query, [$id]);
     removeDots = removeDots.replace(/\,/g, "");
     removeDots = removeDots.replace(/\s{2,}/g, ' ');
     $.post("/includes/checkDuplicate.php", {
-        tableName: tableName,
-        fieldName: fieldName,
-        value: removeDots.trim(),
-        fnct: fnct,
-        format: "html"
-      },
-      function(data) {
+      tableName: tableName,
+      fieldName: fieldName,
+      value: removeDots.trim(),
+      fnct: fnct,
+      format: "html"
+    },
+      function (data) {
         if (data === '1') {
           alert(alrt);
           duplicateName = false;
@@ -270,9 +283,9 @@ $result = $db->rawQuery($query, [$id]);
     $.blockUI();
 
     $.post("/specimen-referral-manifest/get-samples-for-manifest.php", {
-        module: $("#module").val()
-      },
-      function(data) {
+      module: $("#module").val()
+    },
+      function (data) {
         if (data != "") {
           $("#sampleDetails").html(data);
           $("#manifestSubmit").attr("disabled", true);

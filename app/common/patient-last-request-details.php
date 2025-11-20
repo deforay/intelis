@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\AppRegistry;
 use App\Services\PatientsService;
 use App\Registries\ContainerRegistry;
@@ -9,10 +9,10 @@ use App\Registries\ContainerRegistry;
 $patientsService = ContainerRegistry::get(PatientsService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$result = $patientsService->getLastRequestForPatientID($_POST['testType'] ?? '',  $_POST['patientId']);
+$result = $patientsService->getLastRequestForPatientID($_POST['testType'] ?? '', $_POST['patientId']);
 
 echo empty($result) ? "0" : json_encode($result);

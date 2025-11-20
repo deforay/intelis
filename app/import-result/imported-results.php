@@ -10,7 +10,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -48,57 +48,57 @@ $reviewedBy = $reviewedByAttr->$module;
 $approvedBy = $approvedByAttr->$module;
 
 if (!empty($tResult['sample_review_by'])) {
-    $reviewBy = $tResult['sample_review_by'];
+	$reviewBy = $tResult['sample_review_by'];
 } elseif (!empty($reviewedBy)) {
-    //$reviewBy = $_SESSION['userId'];
-    $reviewBy = $reviewedBy;
+	//$reviewBy = $_SESSION['userId'];
+	$reviewBy = $reviewedBy;
 } else {
-    $reviewBy = $_SESSION['userId'];
+	$reviewBy = $_SESSION['userId'];
 }
 $approveBy = empty($approvedBy) ? $_SESSION['userId'] : $approvedBy;
 
 $arr = $general->getGlobalConfig();
 $errorInImport = false;
 if ($module == 'vl') {
-    $rejectionTypeQuery = "SELECT DISTINCT rejection_type
+	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
 							FROM r_vl_sample_rejection_reasons
 							WHERE rejection_reason_status ='active'";
-    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-    //sample rejection reason
-    $rejectionQuery = "SELECT *
+	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+	//sample rejection reason
+	$rejectionQuery = "SELECT *
 							FROM r_vl_sample_rejection_reasons
 							WHERE rejection_reason_status = 'active'";
-    $rejectionResult = $db->rawQuery($rejectionQuery);
+	$rejectionResult = $db->rawQuery($rejectionQuery);
 } elseif ($module == 'eid') {
-    $rejectionTypeQuery = "SELECT DISTINCT rejection_type
+	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
 								FROM r_eid_sample_rejection_reasons
 								WHERE rejection_reason_status ='active'";
-    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-    //sample rejection reason
-    $rejectionQuery = "SELECT *
+	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+	//sample rejection reason
+	$rejectionQuery = "SELECT *
 						FROM r_eid_sample_rejection_reasons
 						WHERE rejection_reason_status = 'active'";
-    $rejectionResult = $db->rawQuery($rejectionQuery);
+	$rejectionResult = $db->rawQuery($rejectionQuery);
 } elseif ($module == 'covid19' || $module == 'covid-19') {
-    $rejectionTypeQuery = "SELECT DISTINCT rejection_type
+	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
 								FROM r_covid19_sample_rejection_reasons
 								WHERE rejection_reason_status ='active'";
-    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-    //sample rejection reason
-    $rejectionQuery = "SELECT *
+	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+	//sample rejection reason
+	$rejectionQuery = "SELECT *
 						FROM r_covid19_sample_rejection_reasons
 						WHERE rejection_reason_status = 'active'";
-    $rejectionResult = $db->rawQuery($rejectionQuery);
+	$rejectionResult = $db->rawQuery($rejectionQuery);
 } elseif ($module == 'hepatitis') {
-    $rejectionTypeQuery = "SELECT DISTINCT rejection_type
+	$rejectionTypeQuery = "SELECT DISTINCT rejection_type
 								FROM r_hepatitis_sample_rejection_reasons
 								WHERE rejection_reason_status ='active'";
-    $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
-    //sample rejection reason
-    $rejectionQuery = "SELECT *
+	$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+	//sample rejection reason
+	$rejectionQuery = "SELECT *
 						FROM r_hepatitis_sample_rejection_reasons
 						WHERE rejection_reason_status = 'active'";
-    $rejectionResult = $db->rawQuery($rejectionQuery);
+	$rejectionResult = $db->rawQuery($rejectionQuery);
 } else {
 	$errorInImport = true;
 }
@@ -330,13 +330,15 @@ foreach ($rejectionTypeResult as $type) {
 	</section>
 	<!-- for sample rejection -->
 	<div id="rejectReasonDiv">
-		<a href="javascript:void(0)" style="float:right;color:red;" title="close" onclick="hideReasonDiv('rejectReasonDiv')"><em class="fa-solid fa-xmark"></em></a>
+		<a href="javascript:void(0)" style="float:right;color:red;" title="close"
+			onclick="hideReasonDiv('rejectReasonDiv')"><em class="fa-solid fa-xmark"></em></a>
 		<div class="arrow-right"></div>
 		<input type="hidden" name="statusDropDownId" id="statusDropDownId" />
 		<h3 style="color:red;">
 			<?= _translate("Choose Rejection Reason"); ?>
 		</h3>
-		<select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason" onchange="updateRejectionReasonStatus(this);">
+		<select name="rejectionReason" id="rejectionReason" class="form-control" title="Please choose reason"
+			onchange="updateRejectionReasonStatus(this);">
 			<?php echo $rejectionReason; ?>
 		</select>
 
@@ -352,16 +354,20 @@ foreach ($rejectionTypeResult as $type) {
 						<div class="box-header without-border">
 							<div class="box-header with-border">
 								<ul style="list-style: none;float: right;">
-									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation-circle" style="color:#e8000b;"></em>
+									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation-circle"
+											style="color:#e8000b;"></em>
 										<?= _translate("Sample ID not from VLSM"); ?>
 									</li>
-									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation-circle" style="color:#FFC300;"></em>
+									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation-circle"
+											style="color:#FFC300;"></em>
 										<?= _translate("Result already exists for this sample"); ?>
 									</li>
-									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation-circle" style="color:#337ab7;"></em>
+									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation-circle"
+											style="color:#337ab7;"></em>
 										<?= _translate("Result for Sample ID from VLSM"); ?>
 									</li>
-									<li style="float:left;margin-right:20px;"><em class="fa-solid fa-exclamation-circle" style="color:#E0B0FF;"></em>
+									<li style="float:left;margin-right:20px;"><em class="fa-solid fa-exclamation-circle"
+											style="color:#E0B0FF;"></em>
 										<?= _translate("Control/Calibrator"); ?>
 									</li>
 								</ul>
@@ -370,12 +376,14 @@ foreach ($rejectionTypeResult as $type) {
 						<!-- /.box-header -->
 						<div class="box-body">
 							<div class="col-md-6 col-sm-6">
-								<input type="button" onclick="acceptAllSamples();" value="<?= _translate("Accept All Samples"); ?>" class="btn btn-success btn-sm">
+								<input type="button" onclick="acceptAllSamples();"
+									value="<?= _translate("Accept All Samples"); ?>" class="btn btn-success btn-sm">
 								<br><strong class="text-danger">
 									<?= _translate("Only accepts samples that do not have status field already selected"); ?>
 								</strong>
 							</div>
-							<table aria-describedby="table" id="importedResultsTable" class="table table-bordered table-striped" aria-hidden="true">
+							<table aria-describedby="table" id="importedResultsTable"
+								class="table table-bordered table-striped" aria-hidden="true">
 								<thead>
 									<tr>
 										<th style="width: 23%;">
@@ -420,7 +428,8 @@ foreach ($rejectionTypeResult as $type) {
 								</tbody>
 							</table>
 						</div>
-						<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:30px;width: 100%;">
+						<table aria-describedby="table" class="table" aria-hidden="true"
+							style="margin-left:1%;margin-top:30px;width: 100%;">
 							<tr>
 								<input type="hidden" name="checkedTests" id="checkedTests" />
 								<input type="hidden" name="checkedTestsIdValue" id="checkedTestsIdValue" />
@@ -428,19 +437,22 @@ foreach ($rejectionTypeResult as $type) {
 									<strong>
 										<?= _translate("Comments") ?>&nbsp;
 									</strong>
-									<textarea style="height: 34px;width: 100%;" class="form-control" id="comments" name="comments" placeholder="Comments"></textarea>
+									<textarea style="height: 34px;width: 100%;" class="form-control" id="comments"
+										name="comments" placeholder="Comments"></textarea>
 								</td>
 								<td style=" width: 20%; ">
 									<strong>
 										<?= _translate("Tested By"); ?><span class="mandatory">*</span>&nbsp;
 									</strong>
-									<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose tested by" style="width: 100%;">
+									<select name="testedBy" id="testedBy" class="select2 form-control"
+										title="Please choose tested by" style="width: 100%;">
 										<option value="">-- Select --</option>
 										<?php
 										foreach ($userResult as $uName) {
-										?>
-											<option value="<?php echo $uName['user_id']; ?>"><?= $uName['user_name']; ?></option>
-										<?php
+											?>
+											<option value="<?php echo $uName['user_id']; ?>"><?= $uName['user_name']; ?>
+											</option>
+											<?php
 										}
 										?>
 									</select>
@@ -450,13 +462,15 @@ foreach ($rejectionTypeResult as $type) {
 										<?= _translate("Reviewed By"); ?><span class="mandatory">*</span>&nbsp;
 									</strong>
 									<!--<input type="text" name="reviewedBy" id="reviewedBy" class="form-control" title="Please enter Reviewed By" placeholder ="Reviewed By"/>-->
-									<select name="reviewedBy" id="reviewedBy" class="form-control" title="Please choose reviewed by" style="width: 100%;">
+									<select name="reviewedBy" id="reviewedBy" class="form-control"
+										title="Please choose reviewed by" style="width: 100%;">
 										<option value="">-- Select --</option>
 										<?php
 										foreach ($userResult as $uName) {
-										?>
-											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $reviewBy) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
-										<?php
+											?>
+											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $reviewBy) ? "selected=selected" : ""; ?>>
+												<?php echo ($uName['user_name']); ?></option>
+											<?php
 										}
 										?>
 									</select>
@@ -466,13 +480,15 @@ foreach ($rejectionTypeResult as $type) {
 										<?= _translate("Approved By"); ?><span class="mandatory">*</span>&nbsp;
 									</strong>
 									<!--<input type="text" name="approvedBy" id="approvedBy" class="form-control" title="Please enter Approved By" placeholder ="Approved By"/>-->
-									<select name="approvedBy" id="approvedBy" class="form-control" title="Please choose approved by" style="width: 100%;">
+									<select name="approvedBy" id="approvedBy" class="form-control"
+										title="Please choose approved by" style="width: 100%;">
 										<option value="">-- Select --</option>
 										<?php
 										foreach ($userResult as $uName) {
-										?>
-											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $approveBy) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
-										<?php
+											?>
+											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $approveBy) ? "selected=selected" : ""; ?>>
+												<?php echo ($uName['user_name']); ?></option>
+											<?php
 										}
 										?>
 									</select>
@@ -481,7 +497,8 @@ foreach ($rejectionTypeResult as $type) {
 									<br>
 									<input type="hidden" name="print" id="print" />
 									<input type="hidden" name="module" id="module" value="<?= ($module); ?>" />
-									<input type="button" onclick="submitTestStatus();" value="<?= _translate("Save"); ?>" class="btn btn-success btn-sm">
+									<input type="button" onclick="submitTestStatus();" value="<?= _translate("Save"); ?>"
+										class="btn btn-success btn-sm">
 								</td>
 							</tr>
 
@@ -499,7 +516,8 @@ foreach ($rejectionTypeResult as $type) {
 									<?= _translate("Please contact technical support if you need assistance."); ?>
 								</h3>
 								<br>
-								<input type="button" onclick="history.go(-1);" value="<?= _translate("Back"); ?>" class="btn btn-danger btn-sm">
+								<input type="button" onclick="history.go(-1);" value="<?= _translate("Back"); ?>"
+									class="btn btn-danger btn-sm">
 							</div>
 						</div>
 
@@ -524,7 +542,7 @@ foreach ($rejectionTypeResult as $type) {
 		const systemDateFormat = '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>';
 		const systemDateTimeFormat = systemDateFormat + ' HH:mm';
 
-		$('.test-date-picker').each(function() {
+		$('.test-date-picker').each(function () {
 			const $input = $(this);
 			const tempSampleId = $input.data('temp-sample-id');
 			const customFormat = $input.data('date-format') || systemDateTimeFormat;
@@ -575,7 +593,7 @@ foreach ($rejectionTypeResult as $type) {
 			});
 
 			// Handle successful date selection
-			$input.on('apply.daterangepicker', function(ev, picker) {
+			$input.on('apply.daterangepicker', function (ev, picker) {
 				const $this = $(this);
 				const formattedDate = picker.startDate.format('YYYY-MM-DD HH:mm:ss');
 				const displayDate = picker.startDate.format(customFormat);
@@ -592,7 +610,7 @@ foreach ($rejectionTypeResult as $type) {
 				$this.siblings('.clear-date-btn').show();
 
 				// Update server
-				updateSampleTestDate(tempSampleId, formattedDate, $this, function() {
+				updateSampleTestDate(tempSampleId, formattedDate, $this, function () {
 					// Remove loading state on completion
 					$this.removeClass('loading');
 				});
@@ -604,7 +622,7 @@ foreach ($rejectionTypeResult as $type) {
 			});
 
 			// Handle cancel/clear from daterangepicker
-			$input.on('cancel.daterangepicker', function(ev, picker) {
+			$input.on('cancel.daterangepicker', function (ev, picker) {
 				const $this = $(this);
 
 				$this.addClass('loading');
@@ -614,13 +632,13 @@ foreach ($rejectionTypeResult as $type) {
 				$('#missingTestDateFlag' + tempSampleId).val('1');
 				$this.siblings('.clear-date-btn').hide();
 
-				clearSampleTestDate(tempSampleId, $this, function() {
+				clearSampleTestDate(tempSampleId, $this, function () {
 					$this.removeClass('loading');
 				});
 			});
 
 			// Handle manual clear button click
-			$input.siblings('.clear-date-btn').on('click', function(e) {
+			$input.siblings('.clear-date-btn').on('click', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
 
@@ -633,7 +651,7 @@ foreach ($rejectionTypeResult as $type) {
 				$('#missingTestDateFlag' + tempSampleId).val('1');
 				$(this).hide();
 
-				clearSampleTestDate(tempSampleId, $dateInput, function() {
+				clearSampleTestDate(tempSampleId, $dateInput, function () {
 					$dateInput.removeClass('loading');
 				});
 			});
@@ -646,7 +664,7 @@ foreach ($rejectionTypeResult as $type) {
 		let missingDatesCount = 0;
 		let missingDateElements = [];
 
-		$('.test-date-picker').each(function() {
+		$('.test-date-picker').each(function () {
 			const tempSampleId = $(this).data('temp-sample-id');
 			if (tempSampleId != excludeTempSampleId && $(this).val() === '') {
 				missingDatesCount++;
@@ -668,7 +686,7 @@ foreach ($rejectionTypeResult as $type) {
 
 	function bulkUpdateSampleTestDates(elements, displayDate, formattedDate) {
 		const tempSampleIds = [];
-		elements.forEach(function($element) {
+		elements.forEach(function ($element) {
 			tempSampleIds.push($element.data('temp-sample-id'));
 		});
 
@@ -681,17 +699,17 @@ foreach ($rejectionTypeResult as $type) {
 		$.post("/import-result/updateImportedSample.php", {
 			bulkSampleTestDate: formattedDate,
 			tempSampleIds: tempSampleIds.join(',')
-		}, function(data) {
+		}, function (data) {
 			$.unblockUI();
 
 			if (data == "1") {
-				elements.forEach(function($element) {
+				elements.forEach(function ($element) {
 					const tempSampleId = $element.data('temp-sample-id');
 					$element.val(displayDate);
 					$('#missingTestDateFlag' + tempSampleId).val('0');
 
 					$element.css('border-color', '#5cb85c');
-					setTimeout(function() {
+					setTimeout(function () {
 						$element.css('border-color', '#ddd');
 					}, 2000);
 				});
@@ -702,7 +720,7 @@ foreach ($rejectionTypeResult as $type) {
 				alert("<?= _translate('Something went wrong! Please try again', true); ?>");
 				oTable.fnDraw();
 			}
-		}).fail(function() {
+		}).fail(function () {
 			$.unblockUI();
 			alert("<?= _translate('Network error. Please try again', true); ?>");
 			oTable.fnDraw();
@@ -717,8 +735,8 @@ foreach ($rejectionTypeResult as $type) {
 
 		$('body').append($alert);
 
-		setTimeout(function() {
-			$alert.fadeOut(500, function() {
+		setTimeout(function () {
+			$alert.fadeOut(500, function () {
 				$(this).remove();
 			});
 		}, 3000);
@@ -728,13 +746,13 @@ foreach ($rejectionTypeResult as $type) {
 		$.post("/import-result/updateImportedSample.php", {
 			sampleTestDate: testDate,
 			tempsampleId: tempSampleId
-		}, function(data) {
+		}, function (data) {
 			if (data == "1") {
 				$('#missingTestDateFlag' + tempSampleId).val('0');
 
 				// Success visual feedback
 				$input.css('border-color', '#28a745');
-				setTimeout(function() {
+				setTimeout(function () {
 					$input.css('border-color', '');
 				}, 1500);
 			} else {
@@ -745,7 +763,7 @@ foreach ($rejectionTypeResult as $type) {
 			}
 
 			if (callback) callback();
-		}).fail(function() {
+		}).fail(function () {
 			alert("<?= _translate('Network error. Please try again', true); ?>");
 			$input.val('');
 			$input.attr('data-missing', 'true');
@@ -760,11 +778,11 @@ foreach ($rejectionTypeResult as $type) {
 		$.post("/import-result/updateImportedSample.php", {
 			clearSampleTestDate: true,
 			tempsampleId: tempSampleId
-		}, function(data) {
+		}, function (data) {
 			if (data == "1") {
 				// Success visual feedback
 				$input.css('border-color', '#ffc107');
-				setTimeout(function() {
+				setTimeout(function () {
 					$input.css('border-color', '');
 				}, 1500);
 
@@ -774,7 +792,7 @@ foreach ($rejectionTypeResult as $type) {
 			}
 
 			if (callback) callback();
-		}).fail(function() {
+		}).fail(function () {
 			alert("<?= _translate('Network error. Could not clear test date', true); ?>");
 
 			if (callback) callback();
@@ -785,7 +803,7 @@ foreach ($rejectionTypeResult as $type) {
 	function checkMissingSampleTestDate() {
 		var missingTestDateFound = false;
 
-		$('.missing-test-date-flag').each(function() {
+		$('.missing-test-date-flag').each(function () {
 			if ($(this).val() === '1') {
 				missingTestDateFound = true;
 				return false; // break loop
@@ -812,52 +830,52 @@ foreach ($rejectionTypeResult as $type) {
 			"bScrollCollapse": true,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center sampleType",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center sampleType",
-					"bSortable": false
-				},
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center sampleType",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center sampleType",
+				"bSortable": false
+			},
 			],
 			"iDisplayLength": 100,
-			"fnDrawCallback": function() {
+			"fnDrawCallback": function () {
 				var oSettings = this.fnSettings();
 				var iTotalRecords = oSettings.fnRecordsTotal();
 				if (iTotalRecords == 0) {
@@ -865,14 +883,14 @@ foreach ($rejectionTypeResult as $type) {
 				}
 
 				// Initialize datetime pickers after table draw
-				setTimeout(function() {
+				setTimeout(function () {
 					initializeDateTimePickers();
 				}, 100);
 			},
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/import-result/getImportedResults.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "module",
 					"value": '<?= $module; ?>'
@@ -893,7 +911,7 @@ foreach ($rejectionTypeResult as $type) {
 	var endDate = "";
 	var selectedTests = [];
 	var selectedTestsIdValue = [];
-	$(document).ready(function() {
+	$(document).ready(function () {
 		initializeDateTimePickers();
 		$('#testedBy').select2({
 			width: '100%',
@@ -979,7 +997,7 @@ foreach ($rejectionTypeResult as $type) {
 		var rejectReasonArray = [];
 		var somethingmissing = false;
 
-		$('[name="status[]"]').each(function() {
+		$('[name="status[]"]').each(function () {
 			if ($(this).val() == null || $(this).val() == '') {
 				//console.log($(this));
 				somethingmissing = true;
@@ -1000,7 +1018,7 @@ foreach ($rejectionTypeResult as $type) {
 		globalValue = '<?= $arr["user_review_approve"]; ?>';
 		if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'yes') {
 			conf = confirm("<?= _translate("Same person is reviewing and approving result! Do you want to continue?", true); ?>");
-			if (conf) {} else {
+			if (conf) { } else {
 				return false;
 			}
 		} else if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'no') {
@@ -1019,17 +1037,17 @@ foreach ($rejectionTypeResult as $type) {
 			if (conf) {
 				$.blockUI();
 				$.post("/import-result/processImportedResults.php", {
-						rejectReasonId: rejectReasonId,
-						value: id,
-						status: status,
-						comments: comments,
-						testBy: testBy,
-						appBy: appBy,
-						module: moduleName,
-						reviewedBy: reviewedBy,
-						format: "html"
-					},
-					function(data) {
+					rejectReasonId: rejectReasonId,
+					value: id,
+					status: status,
+					comments: comments,
+					testBy: testBy,
+					appBy: appBy,
+					module: moduleName,
+					reviewedBy: reviewedBy,
+					format: "html"
+				},
+					function (data) {
 						$.unblockUI();
 						if ($("#print").val() == 'print') {
 							convertSearchResultToPdf('');
@@ -1065,11 +1083,11 @@ foreach ($rejectionTypeResult as $type) {
 			if (conf) {
 				$.blockUI();
 				$.post("/import-result/processImportedResults.php", {
-						value: value,
-						status: status,
-						format: "html"
-					},
-					function(data) {
+					value: value,
+					status: status,
+					format: "html"
+				},
+					function (data) {
 						convertSearchResultToPdf('');
 						oTable.fnDraw();
 						selectedTests = [];
@@ -1093,29 +1111,29 @@ foreach ($rejectionTypeResult as $type) {
 		$input.css('border-color', '#f39c12');
 
 		$.post("/import-result/updateImportedSample.php", {
-					sampleCode: obj.value,
-					tempsampleId: tempsampleId
-				},
-				function(data) {
-					if (data == "1") {
-						$input.css('border-color', '#5cb85c');
-						setTimeout(function() {
-							$input.css('border-color', originalBorderColor);
-						}, 2000);
-					} else {
-						$input.css('border-color', '#e74c3c');
-						$input.val(oldSampleCode);
-						showTemporaryMessage("<?= _translate('Failed to update sample code', true); ?>", 'error');
-						setTimeout(function() {
-							$input.css('border-color', originalBorderColor);
-						}, 3000);
-					}
-				})
-			.fail(function() {
+			sampleCode: obj.value,
+			tempsampleId: tempsampleId
+		},
+			function (data) {
+				if (data == "1") {
+					$input.css('border-color', '#5cb85c');
+					setTimeout(function () {
+						$input.css('border-color', originalBorderColor);
+					}, 2000);
+				} else {
+					$input.css('border-color', '#e74c3c');
+					$input.val(oldSampleCode);
+					showTemporaryMessage("<?= _translate('Failed to update sample code', true); ?>", 'error');
+					setTimeout(function () {
+						$input.css('border-color', originalBorderColor);
+					}, 3000);
+				}
+			})
+			.fail(function () {
 				$input.css('border-color', '#e74c3c');
 				$input.val(oldSampleCode);
 				showTemporaryMessage("<?= _translate('Network error. Changes not saved', true); ?>", 'error');
-				setTimeout(function() {
+				setTimeout(function () {
 					$input.css('border-color', originalBorderColor);
 				}, 3000);
 			});
@@ -1128,29 +1146,29 @@ foreach ($rejectionTypeResult as $type) {
 		$input.css('border-color', '#f39c12');
 
 		$.post("/import-result/updateImportedSample.php", {
-					batchCode: obj.value,
-					tempsampleId: tempsampleId
-				},
-				function(data) {
-					if (data == "1") {
-						$input.css('border-color', '#5cb85c');
-						setTimeout(function() {
-							$input.css('border-color', originalBorderColor);
-						}, 2000);
-					} else {
-						$input.css('border-color', '#e74c3c');
-						$input.val(oldBatchCode);
-						showTemporaryMessage("<?= _translate('Failed to update batch code', true); ?>", 'error');
-						setTimeout(function() {
-							$input.css('border-color', originalBorderColor);
-						}, 3000);
-					}
-				})
-			.fail(function() {
+			batchCode: obj.value,
+			tempsampleId: tempsampleId
+		},
+			function (data) {
+				if (data == "1") {
+					$input.css('border-color', '#5cb85c');
+					setTimeout(function () {
+						$input.css('border-color', originalBorderColor);
+					}, 2000);
+				} else {
+					$input.css('border-color', '#e74c3c');
+					$input.val(oldBatchCode);
+					showTemporaryMessage("<?= _translate('Failed to update batch code', true); ?>", 'error');
+					setTimeout(function () {
+						$input.css('border-color', originalBorderColor);
+					}, 3000);
+				}
+			})
+			.fail(function () {
 				$input.css('border-color', '#e74c3c');
 				$input.val(oldBatchCode);
 				showTemporaryMessage("<?= _translate('Network error. Changes not saved', true); ?>", 'error');
-				setTimeout(function() {
+				setTimeout(function () {
 					$input.css('border-color', originalBorderColor);
 				}, 3000);
 			});
@@ -1163,29 +1181,29 @@ foreach ($rejectionTypeResult as $type) {
 		$select.css('border-color', '#f39c12');
 
 		$.post("/import-result/updateImportedSample.php", {
-					sampleType: obj.value,
-					tempsampleId: tempsampleId
-				},
-				function(data) {
-					if (data == "1") {
-						$select.css('border-color', '#5cb85c');
-						setTimeout(function() {
-							$select.css('border-color', originalBorderColor);
-						}, 2000);
-					} else {
-						$select.css('border-color', '#e74c3c');
-						$select.val(oldValue);
-						showTemporaryMessage("<?= _translate('Failed to update sample type', true); ?>", 'error');
-						setTimeout(function() {
-							$select.css('border-color', originalBorderColor);
-						}, 3000);
-					}
-				})
-			.fail(function() {
+			sampleType: obj.value,
+			tempsampleId: tempsampleId
+		},
+			function (data) {
+				if (data == "1") {
+					$select.css('border-color', '#5cb85c');
+					setTimeout(function () {
+						$select.css('border-color', originalBorderColor);
+					}, 2000);
+				} else {
+					$select.css('border-color', '#e74c3c');
+					$select.val(oldValue);
+					showTemporaryMessage("<?= _translate('Failed to update sample type', true); ?>", 'error');
+					setTimeout(function () {
+						$select.css('border-color', originalBorderColor);
+					}, 3000);
+				}
+			})
+			.fail(function () {
 				$select.css('border-color', '#e74c3c');
 				$select.val(oldValue);
 				showTemporaryMessage("<?= _translate('Network error. Changes not saved', true); ?>", 'error');
-				setTimeout(function() {
+				setTimeout(function () {
 					$select.css('border-color', originalBorderColor);
 				}, 3000);
 			});
@@ -1207,7 +1225,7 @@ foreach ($rejectionTypeResult as $type) {
 	function checkMissingSampleTestDate() {
 		var missingTestDateFound = false;
 
-		$('.missing-test-date-flag').each(function() {
+		$('.missing-test-date-flag').each(function () {
 			if ($(this).val() === '1') {
 				missingTestDateFound = true;
 				return false; // break loop
@@ -1232,7 +1250,7 @@ foreach ($rejectionTypeResult as $type) {
 		if (conf) {
 			$.blockUI();
 			$.post("/import-result/updateAllSampleStatus.php", {},
-				function(data) {
+				function (data) {
 					oTable.fnDraw();
 					$.unblockUI();
 				});

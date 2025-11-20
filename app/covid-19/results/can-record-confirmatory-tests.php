@@ -13,7 +13,7 @@ require_once APPLICATION_PATH . '/header.php';
 $db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_COOKIE = _sanitizeInput($request->getCookieParams());
 
@@ -68,20 +68,25 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;margin-bottom: 0px;">
+					<table aria-describedby="table" class="table" aria-hidden="true"
+						style="margin-left:1%;margin-top:20px;width:98%;margin-bottom: 0px;">
 						<tr>
 							<td><strong>Sample Collection Date&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" value="<?php echo $collectionDate; ?>" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate"
+									class="form-control" placeholder="Select Collection Date" readonly
+									style="width:220px;background:#fff;" value="<?php echo $collectionDate; ?>" />
 							</td>
 							<td>&nbsp;<strong>Batch Code&nbsp;:</strong></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="Please select batch code" style="width:220px;">
+								<select class="form-control" id="batchCode" name="batchCode"
+									title="Please select batch code" style="width:220px;">
 									<option value=""> -- Select -- </option>
 									<?php
 									foreach ($batResult as $code) { ?>
-										<option value="<?php echo $code['batch_code']; ?>" <?php echo ($batchCode == $code['batch_code']) ? "selected='selected'" : "" ?>><?php echo $code['batch_code']; ?></option>
-									<?php
+										<option value="<?php echo $code['batch_code']; ?>" <?php echo ($batchCode == $code['batch_code']) ? "selected='selected'" : "" ?>>
+											<?php echo $code['batch_code']; ?></option>
+										<?php
 									} ?>
 								</select>
 							</td>
@@ -89,62 +94,95 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 
 							<td><strong>Facility Name :</strong></td>
 							<td>
-								<select class="form-control" id="facilityName" name="facilityName" title="Please select facility name" multiple="multiple" style="width:220px;">
+								<select class="form-control" id="facilityName" name="facilityName"
+									title="Please select facility name" multiple="multiple" style="width:220px;">
 									<option value=""> -- Select -- </option>
 									<?php
 									foreach ($fResult as $name) { ?>
 										<option value="<?php echo $name['facility_id']; ?>" <?php echo (in_array($name['facility_id'], $facilityName)) ? "selected='selected'" : "" ?>>
-											<?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
-									<?php
+											<?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?>
+										</option>
+										<?php
 									} ?>
 								</select>
 							</td>
 						</tr>
 						<tr>
-							<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search" class="btn btn-default btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="reset();"><span>Reset</span></button>
-								&nbsp;<button class="btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;"><span>Manage
+							<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="Search"
+									class="btn btn-default btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm"
+									onclick="reset();"><span>Reset</span></button>
+								&nbsp;<button class="btn btn-primary btn-sm"
+									onclick="$('#showhide').fadeToggle();return false;"><span>Manage
 										Columns</span></button>
 							</td>
 						</tr>
 					</table>
-					<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="showhide" class="">
+					<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;"
+						id="showhide" class="">
 						<div class="row" style="background:#e0e0e0;padding: 15px;margin-top: -5px;">
 							<div class="col-md-12">
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol0">Sample ID</label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0"
+										data-showhide="sample_code" class="showhideCheckBox" /> <label
+										for="iCol0">Sample ID</label>
 								</div>
 								<?php $i = 0;
 								if (!$general->isStandaloneInstance()) {
 									$i = 1; ?>
 									<div class="col-md-3">
-										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Remote Sample
+										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>"
+											id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code"
+											class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Remote Sample
 											Code</label>
 									</div>
 								<?php } ?>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Batch Code</label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="batch_code" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>">Batch Code</label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Art No</label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="patient_art_no" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>">Art No</label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Patient's Name</label> <br>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="patient_first_name" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>">Patient's Name</label> <br>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Facility Name</label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="facility_name" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>">Facility Name</label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Sample Type</label> <br>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="sample_name" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>">Sample Type</label> <br>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Result</label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result"
+										class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Result</label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="modified_on" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Modified On</label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="modified_on" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>">Modified On</label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>">Status</label>
+									<input type="checkbox" onclick="fnShowHide(this.value);"
+										value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>"
+										data-showhide="status_name" class="showhideCheckBox" /> <label
+										for="iCol<?php echo $i; ?>">Status</label>
 								</div>
 
 							</div>
@@ -153,7 +191,8 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 					<!-- /.box-header -->
 					<div class="box-body">
 						<div>
-							<select name="status" id="status" class="form-control" title="Please choose result status" style="width:220px;margin-top:30px;" onchange="searchVlRequestData();">
+							<select name="status" id="status" class="form-control" title="Please choose result status"
+								style="width:220px;margin-top:30px;" onchange="searchVlRequestData();">
 								<option value=""> -- Select -- </option>
 								<option value="no_result" <?php echo ($status == 'no_result') ? "selected='selected'" : "" ?>>Results Not Recorded</option>
 								<option value="result" <?php echo ($status == 'result') ? "selected='selected'" : "" ?>>
@@ -162,7 +201,8 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									Rejected Samples</option>
 							</select>
 						</div><br>
-						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="vlRequestDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th>Sample ID</th>
@@ -210,45 +250,45 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	var selectedTests = [];
 	var selectedTestsId = [];
 	var oTable = null;
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$("#facilityName").select2({
 			placeholder: "Select Facilities"
 		});
 		$('#sampleCollectionDate').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _translate("Clear", true); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-				}
+			locale: {
+				cancelLabel: "<?= _translate("Clear", true); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+			}
+		},
+			function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
 		<?php
 		if (!isset($_COOKIE['collectionDate']) || $_COOKIE['collectionDate'] == '') {
-		?>
+			?>
 			$('#sampleCollectionDate').val("");
-		<?php
+			<?php
 		} elseif (($lastUrl1 != '' || $lastUrl2 != '') && isset($_COOKIE['collectionDate'])) { ?>
 			$('#sampleCollectionDate').val("<?= ($_COOKIE['collectionDate']); ?>");
 		<?php } ?>
 
 		loadVlRequestData();
-		$(".showhideCheckBox").change(function() {
+		$(".showhideCheckBox").change(function () {
 			if ($(this).attr('checked')) {
 				idpart = $(this).attr('data-showhide');
 				$("#" + idpart + "-sort").show();
@@ -258,7 +298,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			}
 		});
 
-		$("#showhide").hover(function() {}, function() {
+		$("#showhide").hover(function () { }, function () {
 			$(this).fadeOut('slow')
 		});
 		var i = '<?php echo $i; ?>';
@@ -288,37 +328,37 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			"iDisplayLength": 100,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": "center"
-				},
+				"sClass": "center"
+			},
 				<?php if (!$general->isStandaloneInstance()) { ?> {
-						"sClass": "center"
-					},
+					"sClass": "center"
+				},
 				<?php } ?> {
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				}
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			}
 			],
 			"aaSorting": [
 				[<?= ($general->isStandaloneInstance()) ? 5 : 6; ?>, "desc"]
@@ -326,7 +366,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "get-record-confirmatory-tests.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "batchCode",
 					"value": $("#batchCode").val()

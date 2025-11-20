@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
@@ -22,7 +22,7 @@ ini_set('max_execution_time', 300000);
 try {
 
     // Sanitized values from $request object
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -51,9 +51,9 @@ try {
     }
 
     $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
-    $fileName          = str_replace(" ", "-", $fileName) . "-" . MiscUtility::generateRandomString(12);
-    $extension         = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    $fileName          = $_POST['fileName'] . "." . $extension;
+    $fileName = str_replace(" ", "-", $fileName) . "-" . MiscUtility::generateRandomString(12);
+    $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $fileName = $_POST['fileName'] . "." . $extension;
 
 
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
@@ -68,10 +68,10 @@ try {
 
         $testingSheet = $spreadsheet->getSheetByName('Liste des échantillons');
         $testedDate = $testingSheet->getCell('F6')->getValue();
-        $testedBy =  $testingSheet->getCell('F7')->getValue();
+        $testedBy = $testingSheet->getCell('F7')->getValue();
         $dateObj = Date::excelToDateTimeObject($testedDate);
         $testDate = $dateObj->format('Y-m-d');
-        $sheetData   = $sheet->toArray(null, true, true, true);
+        $sheetData = $sheet->toArray(null, true, true, true);
 
         $resultArray = array_slice($sheetData, 7);
 
@@ -119,7 +119,7 @@ try {
 
     $eventType = 'result-import';
     $action = $_SESSION['userName'] . ' imported test results for Roche VL';
-    $resource  = 'import-result';
+    $resource = 'import-result';
     $general->activityLog($eventType, $action, $resource);
 
 

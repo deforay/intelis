@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -10,7 +10,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -27,7 +27,7 @@ try {
     $tableName = "geographical_divisions";
     $primaryKey = "geo_id";
 
-    $aColumns     = ['g.geo_name', 'g.geo_code', 'g.geo_status', 'p.geo_name'];
+    $aColumns = ['g.geo_name', 'g.geo_code', 'g.geo_status', 'p.geo_name'];
     $orderColumns = ['g.geo_name', 'g.geo_code', 'p.geo_name', 'g.geo_status'];
 
 
@@ -121,14 +121,14 @@ try {
     ];
 
     foreach ($rResult as $aRow) {
-        $row   = [];
-        $row[] = '<span class="geo-division-name" data-district-id="' . (int)$aRow['geo_id'] . '">' . htmlspecialchars((string)$aRow['geo_name']) . '</span>';
+        $row = [];
+        $row[] = '<span class="geo-division-name" data-district-id="' . (int) $aRow['geo_id'] . '">' . htmlspecialchars((string) $aRow['geo_name']) . '</span>';
         $row[] = $aRow['geo_code'];
         $row[] = $aRow['parent_name'] ?? '';
         $row[] = $aRow['geo_status'];
         if (_isAllowed("/common/reference/edit-geographical-divisions.php") && $general->isLISInstance() === false) {
             $row[] = '<a href="/common/reference/edit-geographical-divisions.php?id=' .
-                base64_encode((string)$aRow['geo_id']) .
+                base64_encode((string) $aRow['geo_id']) .
                 '" class="btn btn-primary btn-xs" style="margin-right:2px;" title="' . _translate("Edit") .
                 '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</a>';
         }

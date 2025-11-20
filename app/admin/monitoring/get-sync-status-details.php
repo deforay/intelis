@@ -13,7 +13,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -86,7 +86,8 @@ $_SESSION['labSyncStatusDetails'] = $sQuery;
 
 $rResult = $db->rawQuery($sQuery);
 foreach ($rResult as $key => $aRow) { ?>
-    <tr data-facilityId="<?= base64_encode((string) $aRow['facility_id']); ?>" data-labId="<?= htmlspecialchars((string) $_POST['labId']); ?>" data-url="<?php echo urlencode((string) $url); ?>">
+    <tr data-facilityId="<?= base64_encode((string) $aRow['facility_id']); ?>"
+        data-labId="<?= htmlspecialchars((string) $_POST['labId']); ?>" data-url="<?php echo urlencode((string) $url); ?>">
         <td>
             <?= htmlspecialchars((string) $aRow['facility_name']); ?>
         </td>

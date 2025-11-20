@@ -42,7 +42,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 $reasonForFailure = $vlService->getReasonForFailure();
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = isset($_GET['id']) ? MiscUtility::desqid($_GET['id']) : null;

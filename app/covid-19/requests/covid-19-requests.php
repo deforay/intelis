@@ -11,7 +11,7 @@ use App\Services\UsersService;
 $title = _translate("Covid-19 | View All Requests");
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -89,17 +89,18 @@ foreach ($sourceOfRequests as $value => $displayText) {
 		display: revert !important;
 	}
 
-	<?php if (!empty($_GET['id'])) { ?>header {
-		display: none;
-	}
+	<?php if (!empty($_GET['id'])) { ?>
+		header {
+			display: none;
+		}
 
-	.main-sidebar {
-		z-index: -9;
-	}
+		.main-sidebar {
+			z-index: -9;
+		}
 
-	.content-wrapper {
-		margin-left: 0px;
-	}
+		.content-wrapper {
+			margin-left: 0px;
+		}
 
 	<?php } ?>
 </style>
@@ -127,25 +128,33 @@ foreach ($sourceOfRequests as $value => $displayText) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" id="advanceFilter" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
+					<table aria-describedby="table" id="advanceFilter" class="table pageFilters" aria-hidden="true"
+						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
 						<tr>
 							<td><strong>
 									<?php echo _translate("Sample Collection Date"); ?> :
 								</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate"
+									class="form-control"
+									placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly
+									style="background:#fff;" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Select Sample Received Date At Lab"); ?> :
 								</strong></td>
 							<td>
-								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab"
+									class="form-control"
+									placeholder="<?php echo _translate('Select Sample Received Date At Lab'); ?>"
+									readonly style="background:#fff;" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Show only Reordered Samples"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="showReordSample" id="showReordSample" class="form-control" title="<?php echo _translate('Please choose record sample'); ?>">
+								<select name="showReordSample" id="showReordSample" class="form-control"
+									title="<?php echo _translate('Please choose record sample'); ?>">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
@@ -166,27 +175,34 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?php echo _translate("Sample Tested Date"); ?> :
 								</strong></td>
 							<td>
-								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _translate('Select Tested Date'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control"
+									placeholder="<?php echo _translate('Select Tested Date'); ?>" readonly
+									style="background:#fff;" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Batch Code"); ?> :
 								</strong></td>
 							<td>
-								<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+								<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete"
+									placeholder="<?php echo _translate('Enter Batch Code'); ?>"
+									style="background:#fff;" />
 
 							</td>
 							<td><strong>
 									<?php echo _translate("Funding Sources"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select class="form-control" name="fundingSource" id="fundingSource" title="<?php echo _translate('Please choose funding source'); ?>">
+								<select class="form-control" name="fundingSource" id="fundingSource"
+									title="<?php echo _translate('Please choose funding source'); ?>">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<?php
 									foreach ($fundingSourceList as $fundingSource) { ?>
-										<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
-											<?= $fundingSource['funding_source_name']; ?></option>
+										<option
+											value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
+											<?= $fundingSource['funding_source_name']; ?>
+										</option>
 									<?php } ?>
 								</select>
 							</td>
@@ -197,14 +213,17 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?php echo _translate("Implementing Partners"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select class="form-control" name="implementingPartner" id="implementingPartner" title="<?php echo _translate('Please choose implementing partner'); ?>">
+								<select class="form-control" name="implementingPartner" id="implementingPartner"
+									title="<?php echo _translate('Please choose implementing partner'); ?>">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<?php
 									foreach ($implementingPartnerList as $implementingPartner) { ?>
-										<option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
-											<?= $implementingPartner['i_partner_name']; ?></option>
+										<option
+											value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+											<?= $implementingPartner['i_partner_name']; ?>
+										</option>
 									<?php } ?>
 								</select>
 							</td>
@@ -212,7 +231,8 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?php echo _translate("Req. Sample Type"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="requestSampleType" name="requestSampleType" title="<?php echo _translate('Please select request sample type'); ?>">
+								<select class="form-control" id="requestSampleType" name="requestSampleType"
+									title="<?php echo _translate('Please select request sample type'); ?>">
 									<option value="">
 										<?php echo _translate("All"); ?>
 									</option>
@@ -228,7 +248,8 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?php echo _translate("Source of Request"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="srcOfReq" name="srcOfReq" title="<?php echo _translate('Please select source of request'); ?>">
+								<select class="form-control" id="srcOfReq" name="srcOfReq"
+									title="<?php echo _translate('Please select source of request'); ?>">
 									<?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
 								</select>
 							</td>
@@ -239,7 +260,8 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?php echo _translate("Sex"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;">
+								<select name="gender" id="gender" class="form-control"
+									title="<?php echo _translate('Please select sex'); ?>" style="width:220px;">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
@@ -258,7 +280,9 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?php echo _translate("Status"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
+								<select name="status" id="status" class="form-control"
+									title="<?php echo _translate('Please choose status'); ?>"
+									onchange="checkSampleCollectionDate();">
 									<option value="" selected=selected><?php echo _translate("All Status"); ?></option>
 									<option value="7">
 										<?php echo _translate("Accepted"); ?>
@@ -281,7 +305,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?php echo _translate("Province/State"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="state" id="state" onchange="getByProvince(this.value)" class="form-control" title="<?php echo _translate('Please choose Province/State/Region'); ?>" onkeyup="searchVlRequestData()">
+								<select name="state" id="state" onchange="getByProvince(this.value)"
+									class="form-control"
+									title="<?php echo _translate('Please choose Province/State/Region'); ?>"
+									onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 								</select>
 							</td>
@@ -293,14 +320,17 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?php echo _translate("District/County"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="district" onchange="getByDistrict(this.value)" name="district" title="<?php echo _translate('Please select Province/State'); ?>">
+								<select class="form-control" id="district" onchange="getByDistrict(this.value)"
+									name="district" title="<?php echo _translate('Please select Province/State'); ?>">
 								</select>
 							</td>
 							<td><strong>
 									<?php echo _translate("Facility Name"); ?>:
 								</strong></td>
 							<td>
-								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _translate('Please select facility name'); ?>" style="width:100%;">
+								<select class="form-control" id="facilityName" name="facilityName" multiple="multiple"
+									title="<?php echo _translate('Please select facility name'); ?>"
+									style="width:100%;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
@@ -308,7 +338,8 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?php echo _translate("Testing Lab"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;">
+								<select class="form-control" id="vlLab" name="vlLab"
+									title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
@@ -319,7 +350,9 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?php echo _translate("Export with Patient ID and Name"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="patientInfo" id="patientInfo" class="form-control" title="<?php echo _translate('Please choose community sample'); ?>" style="width:100%;">
+								<select name="patientInfo" id="patientInfo" class="form-control"
+									title="<?php echo _translate('Please choose community sample'); ?>"
+									style="width:100%;">
 									<option value="yes">
 										<?php echo _translate("Yes"); ?>
 									</option>
@@ -333,78 +366,96 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									<?php echo _translate("Patient ID"); ?>
 								</strong></td>
 							<td>
-								<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _translate('Patient ID'); ?>" title="<?php echo _translate('Please enter the patient ID to search'); ?>" />
+								<input type="text" id="patientId" name="patientId" class="form-control"
+									placeholder="<?php echo _translate('Patient ID'); ?>"
+									title="<?php echo _translate('Please enter the patient ID to search'); ?>" />
 							</td>
 
 							<td><strong>
 									<?php echo _translate("Patient Name"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
+								<input type="text" id="patientName" name="patientName" class="form-control"
+									placeholder="<?php echo _translate('Enter Patient Name'); ?>"
+									style="background:#fff;" />
 							</td>
 
 						</tr>
 
 						<tr>
-							<td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-default btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+							<td colspan="2"><input type="button" onclick="searchVlRequestData();"
+									value="<?php echo _translate("Search"); ?>" class="btn btn-default btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm"
+									onclick="document.location.href = document.location"><span>
 										<?= _translate('Reset'); ?>
 									</span></button>
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
+								&nbsp;<button class="btn btn-danger btn-sm"
+									onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
 										<?php echo _translate("Hide Advanced Search Options"); ?>
 									</span></button>
 							</td>
 							<td colspan="4">
 								<?php if (_isAllowed("/covid-19/requests/covid-19-add-request.php") && !$hidesrcofreq) { ?>
-									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
+									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php"
+										class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?php echo _translate("Add new Covid-19 Request"); ?>
 									</a>
 									<?php if ($global['vl_form'] == 1 && !$general->isSTSInstance() && !$hidesrcofreq) { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php"
+											class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?php echo _translate("Bulk Import Covid-19 Request"); ?>
 										</a>
 									<?php }
 									if ($formId == COUNTRY\SOUTH_SUDAN && !$general->isSTSInstance() && !$hidesrcofreq) { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php"
+											class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?php echo _translate("Quick Add Covid-19 Request"); ?>
 										</a>
 									<?php }
 								}
 								if (_isAllowed("/covid-19/requests/export-covid19-requests.php")) { ?>
-									<a class="btn btn-success btn-sm" href="javascript:void(0);" style=" float: right; " onclick="exportAllCovid19Requests();"><span>
+									<a class="btn btn-success btn-sm" href="javascript:void(0);" style=" float: right; "
+										onclick="exportAllCovid19Requests();"><span>
 											<?php echo _translate("Export Requests"); ?>
 										</span></a>
 								<?php } ?>
 							</td>
 						</tr>
 					</table>
-					<table aria-describedby="table" id="filter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
+					<table aria-describedby="table" id="filter" class="table" aria-hidden="true"
+						style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;">
 						<tr id="">
 							<td>
 
 								<?php
 								if (_isAllowed("/covid-19/requests/covid-19-add-request.php") && !$hidesrcofreq) { ?>
 									<?php if ($formId == COUNTRY\SOUTH_SUDAN && !$general->isSTSInstance()) { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-quick-add.php"
+											class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?= _translate("Quick Add Covid-19 Request"); ?>
 										</a>
 									<?php } ?>
 
-									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
+									<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-add-request.php"
+										class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 										<?= _translate("Add new Covid-19 Request"); ?>
 									</a>
 									<?php if ($global['vl_form'] == 1 && !$general->isSTSInstance()) { ?>
-										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php" class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
+										<a style=" margin: 0px 5px; " href="/covid-19/requests/covid-19-bulk-import-request.php"
+											class="btn btn-primary btn-sm pull-right"> <em class="fa-solid fa-plus"></em>
 											<?= _translate("Bulk Import Covid-19 Requests"); ?>
 										</a>
 									<?php }
 								}
 								if (_isAllowed("/covid-19/requests/export-covid19-requests.php")) { ?>
-									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right" style="margin-right:5px;" onclick="exportAllCovid19Requests();"><span>
+									<button style=" margin: 0px 5px; " class="btn btn-success btn-sm pull-right"
+										style="margin-right:5px;" onclick="exportAllCovid19Requests();"><span>
 											<?= _translate("Export Requests"); ?>
 										</span></button>
 								<?php } ?>
-								<button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
+								<button style=" margin: 0px 5px; " class="btn btn-primary btn-sm pull-right"
+									style="margin-right:5px;"
+									onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
 										<?= _translate("Show Advanced Search Options"); ?>
 									</span></button>
 							</td>
@@ -413,7 +464,8 @@ foreach ($sourceOfRequests as $value => $displayText) {
 
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="vlRequestDataTable"
+							class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<!--<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()"/></th>-->
@@ -481,12 +533,13 @@ foreach ($sourceOfRequests as $value => $displayText) {
 						</table>
 						<?php
 						if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') {
-						?>
+							?>
 
 							<div id="printer_data_loading" style="display:none"><span id="loading_message">Loading Printer
 									Details...</span><br />
 								<div class="progress" style="width:100%">
-									<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+									<div class="progress-bar progress-bar-striped active" role="progressbar"
+										aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 									</div>
 								</div>
 							</div> <!-- /printer_data_loading -->
@@ -503,7 +556,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 								<?php echo _translate("Printer:"); ?> <select id="printers"></select>
 							</div> <!-- /printer_select -->
 
-						<?php
+							<?php
 						}
 						?>
 
@@ -532,10 +585,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 	var selectedTests = [];
 	var selectedTestsId = [];
 	var oTable = null;
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 		$("#batchCode").autocomplete({
-			source: function(request, response) {
+			source: function (request, response) {
 				// Fetch data
 				$.ajax({
 					url: "/batch/getBatchCodeHelper.php",
@@ -545,7 +598,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 						search: request.term,
 						type: 'covid19'
 					},
-					success: function(data) {
+					success: function (data) {
 						response(data);
 					}
 
@@ -569,38 +622,38 @@ foreach ($sourceOfRequests as $value => $displayText) {
 		});
 		loadVlRequestData();
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _translate("Clear", true); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-					'Current Year To Date': [moment().startOf('year'), moment()]
-				}
+			locale: {
+				cancelLabel: "<?= _translate("Clear", true); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+				'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+				'Current Year To Date': [moment().startOf('year'), moment()]
+			}
+		},
+			function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').val("");
 
-		$(".showhideCheckBox").change(function() {
+		$(".showhideCheckBox").change(function () {
 			if ($(this).attr('checked')) {
 				idpart = $(this).attr('data-showhide');
 				$("#" + idpart + "-sort").show();
@@ -610,11 +663,11 @@ foreach ($sourceOfRequests as $value => $displayText) {
 			}
 		});
 
-		$("#showhide").hover(function() {}, function() {
+		$("#showhide").hover(function () { }, function () {
 			$(this).fadeOut('slow')
 		});
 
-		$("#advanceFilter input, #advanceFilter select").on("change", function() {
+		$("#advanceFilter input, #advanceFilter select").on("change", function () {
 			searchExecuted = false;
 		});
 
@@ -635,44 +688,44 @@ foreach ($sourceOfRequests as $value => $displayText) {
 			//"bStateSave" : true,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": "center"
-				},
+				"sClass": "center"
+			},
 				<?php if (!$general->isStandaloneInstance()) { ?> {
-						"sClass": "center"
-					},
-				<?php } ?> {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
-					"sClass": "center"
-				}, {
 					"sClass": "center"
 				},
+				<?php } ?> {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			}, {
+				"sClass": "center"
+			},
 				<?php if (((_isAllowed("/covid-19/requests/covid-19-edit-request.php")) || (_isAllowed("covid-19-view-request.php"))) && !$hidesrcofreq) { ?> {
-						"sClass": "center action",
-						"bSortable": false
-					},
+					"sClass": "center action",
+					"bSortable": false
+				},
 				<?php } ?>
 			],
 			"aaSorting": [
 				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 11 : 10 ?>, "desc"]
 			],
-			"fnDrawCallback": function() {
+			"fnDrawCallback": function () {
 				var checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
@@ -687,7 +740,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/covid-19/requests/get-request-list.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "batchCode",
 					"value": $("#batchCode").val()
@@ -805,21 +858,21 @@ foreach ($sourceOfRequests as $value => $displayText) {
 
 	function toggleAllVisible() {
 		//alert(tabStatus);
-		$(".checkTests").each(function() {
+		$(".checkTests").each(function () {
 			$(this).prop('checked', false);
 			selectedTests.splice($.inArray(this.value, selectedTests), 1);
 			selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
 			$("#status").prop('disabled', true);
 		});
 		if ($("#checkTestsData").is(':checked')) {
-			$(".checkTests").each(function() {
+			$(".checkTests").each(function () {
 				$(this).prop('checked', true);
 				selectedTests.push(this.value);
 				selectedTestsId.push(this.id);
 			});
 			$("#status").prop('disabled', false);
 		} else {
-			$(".checkTests").each(function() {
+			$(".checkTests").each(function () {
 				$(this).prop('checked', false);
 				selectedTests.splice($.inArray(this.value, selectedTests), 1);
 				selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
@@ -845,16 +898,16 @@ foreach ($sourceOfRequests as $value => $displayText) {
 
 			if (remoteSync && remoteURL != null && remoteURL != '') {
 				var jqxhr = $.ajax({
-						url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=covid19",
-					})
-					.done(function(data) {
+					url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=covid19",
+				})
+					.done(function (data) {
 						////console.log(data);
 						//alert( "success" );
 					})
-					.fail(function() {
+					.fail(function () {
 						$.unblockUI();
 					})
-					.always(function() {
+					.always(function () {
 						oTable.fnDraw();
 						$.unblockUI();
 					});
@@ -869,10 +922,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 		$.blockUI();
 		var requestSampleType = $('#requestSampleType').val();
 		$.post("/covid-19/requests/export-covid19-requests.php", {
-				reqSampleType: requestSampleType,
-				patientInfo: $('#patientInfo').val(),
-			},
-			function(data) {
+			reqSampleType: requestSampleType,
+			patientInfo: $('#patientInfo').val(),
+		},
+			function (data) {
 				$.unblockUI();
 				if (data === "" || data === null || data === undefined) {
 					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
@@ -887,12 +940,12 @@ foreach ($sourceOfRequests as $value => $displayText) {
 		$("#facilityName").html('');
 		$("#vlLab").html('');
 		$.post("/common/get-by-province-id.php", {
-				provinceId: provinceId,
-				districts: true,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			provinceId: provinceId,
+			districts: true,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#district").html(Obj['districts']);
 				$("#facilityName").html(Obj['facilities']);
@@ -904,11 +957,11 @@ foreach ($sourceOfRequests as $value => $displayText) {
 		$("#facilityName").html('');
 		$("#vlLab").html('');
 		$.post("/common/get-by-district-id.php", {
-				districtId: districtId,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			districtId: districtId,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#facilityName").html(Obj['facilities']);
 				$("#vlLab").html(Obj['labs']);

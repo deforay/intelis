@@ -8,7 +8,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -82,13 +82,14 @@ foreach ($tableResult as $tableRow) {
 
 
 if ($tResult !== []) {
-?>
+    ?>
     <div id="container" style="width: 100%; height: 500px; margin: 20px auto;"></div>
     <!-- <div id="rejectedType" style="width: 100%; height: 400px; margin: 20px auto;margin-top:50px;"></div> -->
 <?php }
 if (!empty($tableResult)) { ?>
     <div class="pull-right">
-        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export Excel"); ?></button>
+        <button class="btn btn-success" type="button" onclick="exportInexcel()"><em
+                class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export Excel"); ?></button>
     </div>
 <?php } ?>
 <table aria-describedby="table" id="tbRequestDataTable" class="table table-bordered table-striped table-hover">
@@ -106,7 +107,7 @@ if (!empty($tableResult)) { ?>
         <?php
         if (!empty($tableResult)) {
             foreach ($tableResult as $tableRow) {
-        ?>
+                ?>
                 <tr>
                     <td><?php echo ($tableRow['labname']); ?></td>
                     <td><?php echo ($tableRow['facility_name']); ?></td>
@@ -115,14 +116,14 @@ if (!empty($tableResult)) { ?>
                     <td><?php echo ($tableRow['recommended_corrective_action_name']); ?></td>
                     <td><?php echo $tableRow['total']; ?></td>
                 </tr>
-        <?php
+                <?php
             }
         }
         ?>
     </tbody>
 </table>
 <script>
-    $(function() {
+    $(function () {
         $("#tbRequestDataTable").DataTable();
     });
     <?php
@@ -160,7 +161,7 @@ if (!empty($tableResult)) { ?>
                 colorByPoint: true,
                 point: {
                     events: {
-                        click: function(e) {
+                        click: function (e) {
                             e.preventDefault();
                         }
                     }
@@ -168,12 +169,12 @@ if (!empty($tableResult)) { ?>
                 data: [
                     <?php
                     foreach ($tResult as $reasonName => $values) {
-                    ?> {
+                        ?> {
                             name: '<?php echo $reasonName; ?>',
                             y: <?php echo ($values['total']); ?>,
                             number: '<?php echo ($values['category']); ?>'
                         },
-                    <?php
+                        <?php
                     }
                     ?>
                 ]
@@ -215,7 +216,7 @@ if (!empty($tableResult)) { ?>
                 colorByPoint: true,
                 point: {
                     events: {
-                        click: function(e) {
+                        click: function (e) {
                             e.preventDefault();
                         }
                     }
@@ -223,11 +224,11 @@ if (!empty($tableResult)) { ?>
                 data: [
                     <?php
                     foreach ($rjResult as $key => $total) {
-                    ?> {
+                        ?> {
                             name: '<?php echo ($key); ?>',
                             y: <?php echo ($total); ?>
                         },
-                    <?php
+                        <?php
                     }
                     ?>
                 ]

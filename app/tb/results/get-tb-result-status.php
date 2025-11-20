@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TbService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -12,7 +12,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -121,13 +121,13 @@ try {
     }
     if (!empty($_POST['sampleCollectionDate'])) {
         if (trim((string) $start_date) === trim((string) $end_date)) {
-            $sWhere[] =  ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
+            $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
-            $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+            $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
         }
     }
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-        $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+        $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
     if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
         if ($_POST['statusFilter'] == 'approvedOrRejected') {
@@ -141,7 +141,7 @@ try {
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
     }
-    $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
+    $sWhere[] = ' vl.result not like "" AND vl.result is not null ';
     $sWhere = $sWhere === [] ? [] : ' where ' . implode(' AND ', $sWhere);
     $sQuery .= $sWhere;
 
@@ -187,8 +187,8 @@ try {
         $status = '<select class="form-control"  name="status[]" id="' . $aRow['tb_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
                <option value="">' . _translate("-- Select --") . '</option>
                <option value="7" ' . ($aRow['status_id'] == "7" ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
-               <option value="4" ' . ($aRow['status_id'] == "4"  ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
-               <option value="2" ' . ($aRow['status_id'] == "2"  ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
+               <option value="4" ' . ($aRow['status_id'] == "4" ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
+               <option value="2" ' . ($aRow['status_id'] == "2" ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
                </select><br><br>';
 
         $row = [];
@@ -209,7 +209,7 @@ try {
         $row[] = ($aRow['facility_name']);
         $row[] = $tbResults[$aRow['result']];
         $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
-       // $row[] = $status;
+        // $row[] = $status;
 
         $output['aaData'][] = $row;
     }

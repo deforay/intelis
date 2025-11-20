@@ -9,7 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\STS\TokensService;
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\ContainerRegistry;
 
 header('Content-Type: application/json');
@@ -29,7 +29,7 @@ $stsTokensService = ContainerRegistry::get(TokensService::class);
 $payload = [];
 
 try {
-    /** @var ServerRequest $request */
+    /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
 
     // Retrieve the API key from the request header

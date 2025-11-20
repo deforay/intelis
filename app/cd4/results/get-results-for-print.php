@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
@@ -14,7 +14,7 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -165,9 +165,9 @@ try {
 
      if (isset($_POST['status']) && trim((string) $_POST['status']) !== '') {
           if ($_POST['status'] == 'no_result') {
-              $statusCondition = '  (vl.cd4_result is NULL OR vl.cd4_result ="")  AND vl.result_status = ' . REJECTED;
+               $statusCondition = '  (vl.cd4_result is NULL OR vl.cd4_result ="")  AND vl.result_status = ' . REJECTED;
           } elseif ($_POST['status'] == 'result') {
-              $statusCondition = ' (vl.cd4_result is NOT NULL AND vl.cd4_result !=""  AND vl.result_status = ' . REJECTED;
+               $statusCondition = ' (vl.cd4_result is NOT NULL AND vl.cd4_result !=""  AND vl.result_status = ' . REJECTED;
           } else {
                $statusCondition = ' vl.result_status=4 ';
           }

@@ -6,7 +6,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -59,8 +59,8 @@ foreach ($result as $sample) {
     if (!empty($sample['facility_name'])) {
         $displayText .= " - " . $sample['facility_name'];
     }
-?>
+    ?>
     <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($packageCodeId) && isset($sample['referral_manifest_code']) && $sample['referral_manifest_code'] == $packageCodeId) ? 'selected="selected"' : ''; ?>><?php echo htmlspecialchars((string) $displayText); ?></option>
-<?php
+    <?php
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -14,7 +14,7 @@ use App\Services\TestRequestsService;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
@@ -96,7 +96,7 @@ try {
         if ($lastId > 0) {
             //for ($j = 0; $j < count($selectedSamples); $j++) {
             $dataToUpdate = [
-                'sample_package_id'   => $lastId,
+                'sample_package_id' => $lastId,
                 'sample_package_code' => $_POST['packageCode'],
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'data_sync' => 0

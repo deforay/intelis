@@ -17,7 +17,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $testResult = ContainerRegistry::get(TestResultsService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -45,7 +45,7 @@ foreach ($geResult as $row) {
 
 if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
 
-      $tempMailData = [
+   $tempMailData = [
       "to_mail" => $_POST['toEmail'],
       "subject" => $_POST['subject'],
       "text_message" => $_POST['message'],
@@ -56,19 +56,17 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
       "status" => "pending",
    ];
 
-      $storeMail = $db->insert('temp_mail',$tempMailData);
+   $storeMail = $db->insert('temp_mail', $tempMailData);
 
-      if($storeMail)
-      {
-         $testResult->updateEmailTestResultsInfo('cd4',$tempMailData);
+   if ($storeMail) {
+      $testResult->updateEmailTestResultsInfo('cd4', $tempMailData);
 
-         $_SESSION['alertMsg'] = 'Email will be sent shortly';
-         header('location:email-results.php');
-      }
-      else{
-         $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
-         header('location:email-results.php');
-      }
+      $_SESSION['alertMsg'] = 'Email will be sent shortly';
+      header('location:email-results.php');
+   } else {
+      $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
+      header('location:email-results.php');
+   }
 
 } else {
    $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';

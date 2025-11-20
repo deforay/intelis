@@ -4,7 +4,7 @@ namespace App\Middlewares\Api;
 
 use Override;
 use Throwable;
-use Laminas\Diactoros\Response;
+use Slim\Psr7\Response;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use Psr\Http\Message\ResponseInterface;
@@ -39,7 +39,7 @@ class ApiLegacyFallbackMiddleware implements MiddlewareInterface
 
         ob_start();
         try {
-            (function () use ($filePath): void {
+            (function () use ($filePath): void{
                 require_once $filePath;
             })();
             $output = ob_get_clean();

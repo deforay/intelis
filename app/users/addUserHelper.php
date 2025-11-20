@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use GuzzleHttp\Client;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -10,7 +10,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use Laminas\Diactoros\UploadedFile;
+use Slim\Psr7\UploadedFile;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
@@ -24,7 +24,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 $_POST = array_map('trim', $_POST);

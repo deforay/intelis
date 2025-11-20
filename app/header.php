@@ -45,7 +45,7 @@ if ($general->isSTSInstance()) {
 $systemDisplayName = (SYSTEM_CONFIG['instance-name'] != null || SYSTEM_CONFIG['instance-name'] != '') ? SYSTEM_CONFIG['instance-name'] : $systemDisplayName;
 
 
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 
 $countryCode = $arr['default_phone_prefix'] ?? '';

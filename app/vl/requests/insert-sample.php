@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\VlService;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
@@ -14,7 +14,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $vlService = ContainerRegistry::get(VlService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 $response = "0";
@@ -32,7 +32,7 @@ try {
         LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastErrno() . ":" . $db->getLastError());
         LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
     }
-    LoggerUtility::logError($e->getFile() . ':' . $e->getLine()  . ':' .  $e->getMessage(), [
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ':' . $e->getMessage(), [
         'exception' => $e,
         'file' => $e->getFile(), // File where the error occurred
         'line' => $e->getLine(), // Line number of the error

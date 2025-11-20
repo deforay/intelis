@@ -12,7 +12,7 @@ if ($_POST === []) {
 }
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -40,6 +40,6 @@ $sampleTypes = $db->get($table);
     <option value="">
         <?php echo _translate("-- Select --"); ?>
     </option>
-<?php
+    <?php
 }
 ?>

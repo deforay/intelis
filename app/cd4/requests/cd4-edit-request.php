@@ -40,7 +40,7 @@ $testingLabs = $facilitiesService->getTestingLabs('cd4');
 $reasonForFailure = $vlService->getReasonForFailure();
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -146,7 +146,7 @@ if (!empty($cd4QueryInfo['is_encrypted']) && $cd4QueryInfo['is_encrypted'] == 'y
      }
 
      if ($patientLastName != '') {
-          $cd4QueryInfo['patient_last_name']  = $patientLastName = $general->crypto('decrypt', $patientLastName, $key);
+          $cd4QueryInfo['patient_last_name'] = $patientLastName = $general->crypto('decrypt', $patientLastName, $key);
      }
      $patientFullName = $patientFirstName . " " . $patientMiddleName . " " . $patientLastName;
 } else {
@@ -211,7 +211,8 @@ require_once($fileArray[$formId]);
 
 ?>
 
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script type="text/javascript"
+     src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 
 <?php
 

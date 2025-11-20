@@ -21,7 +21,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -59,12 +59,14 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
     <pre><?php print_r($tbResult['referral_manifest_code']); ?></pre>
     <section class="content">
         <div class="box box-default">
-            <form class="form-horizontal" method="post" name="referralForm" id="referralForm" autocomplete="off" action="save-tb-referral-helper.php">
+            <form class="form-horizontal" method="post" name="referralForm" id="referralForm" autocomplete="off"
+                action="save-tb-referral-helper.php">
                 <div class="box-body" style="margin-top:20px;">
                     <div class="row">
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
-                                <label for="referralLabId" class="control-label"> <?php echo _translate("Referral Lab"); ?> <span class="mandatory">*</span></label>
+                                <label for="referralLabId" class="control-label">
+                                    <?php echo _translate("Referral Lab"); ?> <span class="mandatory">*</span></label>
                                 <select name="referralLabId" id="referralLabId" class="form-control select2 isRequired"
                                     title="<?php echo _translate("Please select referral Laboratory"); ?>" required>
                                     <?= $general->generateSelectOptions($testingLabs, $id, '-- Select --'); ?>
@@ -73,10 +75,17 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
                         </div>
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
-                                <label for="packageCode" class="control-label"> <?php echo _translate("Referral Manifest Code"); ?> <span class="mandatory">*</span></label>
-                                <input type="hidden" id="manifestId" name="manifestId" value="<?php echo $tbResult['referral_manifest_id']; ?>" />
-                                <input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo $tbResult['referral_manifest_code']; ?>" />
-                                <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
+                                <label for="packageCode" class="control-label">
+                                    <?php echo _translate("Referral Manifest Code"); ?> <span
+                                        class="mandatory">*</span></label>
+                                <input type="hidden" id="manifestId" name="manifestId"
+                                    value="<?php echo $tbResult['referral_manifest_id']; ?>" />
+                                <input type="text" class="form-control isRequired" id="packageCode" name="packageCode"
+                                    placeholder="Manifest Code" title="Please enter manifest code" readonly
+                                    value="<?php echo $tbResult['referral_manifest_code']; ?>" />
+                                <input type="hidden" class="form-control isRequired" id="module" name="module"
+                                    placeholder="" title="" readonly
+                                    value="<?= htmlspecialchars((string) $module); ?>" />
                             </div>
                         </div>
                     </div>
@@ -91,7 +100,8 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
                     <div class="row sampleSelectionArea" style="margin-top: 20px;">
                         <div class="col-md-5">
                             <label><?php echo _translate("Available Samples"); ?></label>
-                            <select name="availableSamples" id="search" class="form-control" size="10" multiple="multiple">
+                            <select name="availableSamples" id="search" class="form-control" size="10"
+                                multiple="multiple">
                             </select>
                             <div class="sampleCounterDiv">
                                 <?= _translate("Available samples"); ?> : <span id="unselectedCount">0</span>
@@ -115,7 +125,8 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
 
                         <div class="col-md-5">
                             <label><?php echo _translate("Selected Samples for Referral"); ?></label>
-                            <select name="referralSamples[]" id="search_to" class="form-control" size="10" multiple="multiple">
+                            <select name="referralSamples[]" id="search_to" class="form-control" size="10"
+                                multiple="multiple">
                             </select>
                             <div class="sampleCounterDiv">
                                 <?= _translate("Selected samples"); ?> : <span id="selectedCount">0</span>
@@ -125,16 +136,23 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
                     <div class="row sampleSelectionArea" style="margin-top: 30px;display:none;">
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
-                                <label for="referralToLabId" class="control-label"> <?php echo _translate("Referral To Lab"); ?> <span class="mandatory">*</span></label>
-                                <select name="referralToLabId" id="referralToLabId" class="form-control select2 isRequired"
+                                <label for="referralToLabId" class="control-label">
+                                    <?php echo _translate("Referral To Lab"); ?> <span
+                                        class="mandatory">*</span></label>
+                                <select name="referralToLabId" id="referralToLabId"
+                                    class="form-control select2 isRequired"
                                     title="<?php echo _translate("Please select referral To Laboratory"); ?>" required>
                                     <?= $general->generateSelectOptions($testingLabs, $tbResult['referred_to_lab_id'], '-- Select --'); ?>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="referralReason" class="control-label"> <?php echo _translate("Reason for Referral"); ?> <span class="mandatory">*</span></label>
-                            <textarea type="text" class="form-control isRequired" id="referralReason" name="referralReason" placeholder="Enter referral reason" title="Please enter reerral reason"><?php echo $tbResult['reason_for_referral']; ?></textarea>
+                            <label for="referralReason" class="control-label">
+                                <?php echo _translate("Reason for Referral"); ?> <span
+                                    class="mandatory">*</span></label>
+                            <textarea type="text" class="form-control isRequired" id="referralReason"
+                                name="referralReason" placeholder="Enter referral reason"
+                                title="Please enter reerral reason"><?php echo $tbResult['reason_for_referral']; ?></textarea>
                         </div>
                     </div>
                     <div class="box-footer sampleSelectionArea" style="margin-top: 20px;display:none;">
@@ -154,7 +172,7 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
 
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         $("#referralLabId").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Referral Lab"); ?>"
@@ -177,13 +195,13 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
             labId: '<?php echo $id; ?>',
             packageCode: '<?php echo $codeId; ?>',
             referralLabId: referralLabId
-        }, function(data) {
+        }, function (data) {
             if (data && data.trim() !== "") {
                 $("#search").html(data);
                 $(".sampleSelectionArea").show();
 
                 // Move pre-selected items to the right box BEFORE initializing the plugin
-                $("#search option[selected='selected']").each(function() {
+                $("#search option[selected='selected']").each(function () {
                     $(this).prop('selected', false).removeAttr('selected');
                     $("#search_to").append($(this));
                 });
@@ -203,12 +221,12 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
                 left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
                 right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
             },
-            fireSearch: function(value) {
+            fireSearch: function (value) {
                 return value.length > 2;
             },
             autoSelectNext: true,
             keepRenderingSort: true,
-            moveCallback: function() {
+            moveCallback: function () {
                 updateCounters();
             }
         });

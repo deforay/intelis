@@ -1,7 +1,7 @@
 <?php
 
 use PHPMailer\PHPMailer\PHPMailer;
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
@@ -18,7 +18,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -79,7 +79,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
 		//Set To EmailId(s)
 		if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
 			$xplodAddress = explode(",", (string) $_POST['toEmail']);
-   $counter = count($xplodAddress);
+			$counter = count($xplodAddress);
 			for ($to = 0; $to < $counter; $to++) {
 				$mail->addAddress($xplodAddress[$to]);
 			}
@@ -87,7 +87,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
 		//Set CC EmailId(s)
 		if (isset($_POST['reportEmail']) && trim((string) $_POST['reportEmail']) !== '') {
 			$xplodCc = explode(",", (string) $_POST['reportEmail']);
-   $counter = count($xplodCc);
+			$counter = count($xplodCc);
 			for ($cc = 0; $cc < $counter; $cc++) {
 				$mail->AddCC($xplodCc[$cc]);
 			}
@@ -108,7 +108,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) !== '') {
 		if ($mail->send()) {
 			//update result mail sent flag
 			$_POST['sample'] = explode(',', (string) $_POST['sample']);
-   $counter = count($_POST['sample']);
+			$counter = count($_POST['sample']);
 			for ($s = 0; $s < $counter; $s++) {
 				$sampleQuery = "SELECT sample_id FROM form_generic as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id where vl.sample_id = '" . $_POST['sample'][$s] . "'";
 				$sampleResult = $db->rawQuery($sampleQuery);

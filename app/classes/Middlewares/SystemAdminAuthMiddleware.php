@@ -3,6 +3,7 @@
 namespace App\Middlewares;
 
 use Override;
+use Slim\Psr7\Response;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
@@ -10,8 +11,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\JsonResponse;
-use Laminas\Diactoros\Response\RedirectResponse;
 
 class SystemAdminAuthMiddleware implements MiddlewareInterface
 {
@@ -47,13 +46,15 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         } elseif (empty($_SESSION['adminUserId'])) {
             if (CommonService::isAjaxRequest($request)) {
-                return new JsonResponse(['error' => 'session_expired'], 401);
+                $response = new Response(401);
+                $response->getBody()->write(json_encode(['error' => 'session_expired'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+                return $response->withHeader('Content-Type', 'application/json');
             }
             // Redirect to the login page if the system user is not logged in
-            $redirect = new RedirectResponse('/system-admin/login/login.php');
+            $redirect = $this->redirect('/system-admin/login/login.php');
         }
 
-        if ($redirect instanceof RedirectResponse) {
+        if ($redirect instanceof ResponseInterface) {
             return $redirect;
         } else {
             return $handler->handle($request);
@@ -71,5 +72,11 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
             throw new SystemException(_translate('Invalid request origin.'), 403);
         }
         return CommonService::isExcludedUri($uri, $this->excludedUris ?? []);
+    }
+
+    private function redirect(string $location, int $status = 302): ResponseInterface
+    {
+        $response = new Response($status);
+        return $response->withHeader('Location', $location);
     }
 }

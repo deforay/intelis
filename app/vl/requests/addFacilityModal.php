@@ -14,7 +14,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 $_GET = _sanitizeInput($request->getQueryParams());
@@ -26,11 +26,11 @@ if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== "
   $data = ['facility_name' => $_POST['facilityName'], 'facility_code' => $_POST['facilityCode'], 'vlsm_instance_id' => $_SESSION['instanceId'], 'other_id' => $_POST['otherId'], 'facility_mobile_numbers' => $_POST['phoneNo'], 'address' => $_POST['address'], 'country' => $_POST['country'], 'facility_state' => $_POST['state'], 'facility_district' => $_POST['district'], 'facility_hub_name' => $_POST['hubName'], 'facility_emails' => $_POST['email'], 'contact_person' => $_POST['contactPerson'], 'facility_type' => $_POST['facilityType'], 'status' => 'active'];
   //print_r($data);die;
   $db->insert($tableName, $data);
-?>
+  ?>
   <script>
     window.parent.location = window.parent.location.href;
   </script>
-<?php
+  <?php
 }
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
@@ -64,19 +64,23 @@ $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 
 
     <div class="box box-default">
       <div class="box-header with-border">
-        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+        <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+          <?= _translate("indicates required fields"); ?> &nbsp;</div>
       </div>
       <!-- /.box-header -->
       <div class="box-body">
         <!-- form start -->
-        <form class="form-vertical" method='post' name='addFacilityModalForm' id='addFacilityModalForm' autocomplete="off" action="#">
+        <form class="form-vertical" method='post' name='addFacilityModalForm' id='addFacilityModalForm'
+          autocomplete="off" action="#">
           <div class="box-body">
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="facilityName" class="col-lg-4 control-label">Facility Name <span class="mandatory">*</span></label>
+                  <label for="facilityName" class="col-lg-4 control-label">Facility Name <span
+                      class="mandatory">*</span></label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control isRequired" id="facilityName" name="facilityName" placeholder="Facility Name" title="Please enter facility name" />
+                    <input type="text" class="form-control isRequired" id="facilityName" name="facilityName"
+                      placeholder="Facility Name" title="Please enter facility name" />
                   </div>
                 </div>
               </div>
@@ -84,7 +88,9 @@ $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 
                 <div class="form-group">
                   <label for="facilityCode" class="col-lg-4 control-label">Facility Code</label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="Facility Code" title="Please enter facility code" onblur="checkNameValidation('facility_details','facility_code',this,null,'This code already exists.Try another code',null)" />
+                    <input type="text" class="form-control" id="facilityCode" name="facilityCode"
+                      placeholder="Facility Code" title="Please enter facility code"
+                      onblur="checkNameValidation('facility_details','facility_code',this,null,'This code already exists.Try another code',null)" />
                   </div>
                 </div>
               </div>
@@ -101,22 +107,26 @@ $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 
               </div>
               <div class="col-md-6">
                 <div class="form-group">
-                  <label for="facilityType" class="col-lg-4 control-label">Clinic Type <span class="mandatory">*</span> </label>
+                  <label for="facilityType" class="col-lg-4 control-label">Clinic Type <span class="mandatory">*</span>
+                  </label>
                   <div class="col-lg-7">
                     <?php if ($type == 'all') { ?>
-                      <select class="form-control isRequired" id="facilityType" name="facilityType" title="Please select clinic type">
+                      <select class="form-control isRequired" id="facilityType" name="facilityType"
+                        title="Please select clinic type">
                         <option value=""> -- Select -- </option>
                         <?php
                         foreach ($fResult as $type) {
-                        ?>
-                          <option value="<?php echo $type['facility_type_id']; ?>"><?php echo ($type['facility_type_name']); ?></option>
-                        <?php
+                          ?>
+                          <option value="<?php echo $type['facility_type_id']; ?>">
+                            <?php echo ($type['facility_type_name']); ?></option>
+                          <?php
                         }
                         ?>
                       </select>
                     <?php } else { ?>
                       <input type="hidden" class="form-control" id="facilityType" name="facilityType" value="2" />
-                      <input type="text" class="form-control readonly" id="facilityTypeName" name="facilityTypeName" value="Lab" readonly="readonly" style="background-color: #fff;" />
+                      <input type="text" class="form-control readonly" id="facilityTypeName" name="facilityTypeName"
+                        value="Lab" readonly="readonly" style="background-color: #fff;" />
                     <?php } ?>
                   </div>
                 </div>
@@ -137,7 +147,8 @@ $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 
                 <div class="form-group">
                   <label for="contactPerson" class="col-lg-4 control-label">Contact Person</label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control" id="contactPerson" name="contactPerson" placeholder="Contact Person" />
+                    <input type="text" class="form-control" id="contactPerson" name="contactPerson"
+                      placeholder="Contact Person" />
                   </div>
                 </div>
               </div>
@@ -145,7 +156,8 @@ $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 
                 <div class="form-group">
                   <label for="phoneNo" class="col-lg-4 control-label">Phone Number</label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo" placeholder="Phone Number" />
+                    <input type="text" class="form-control phone-number" id="phoneNo" name="phoneNo"
+                      placeholder="Phone Number" />
                   </div>
                 </div>
               </div>
@@ -157,13 +169,14 @@ $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 
                 <div class="form-group">
                   <label for="state" class="col-lg-4 control-label">State/Province</label>
                   <div class="col-lg-7">
-                    <select name="state" id="state" class="form-control isRequired" title="Please choose state/province">
+                    <select name="state" id="state" class="form-control isRequired"
+                      title="Please choose state/province">
                       <option value=""> -- Select -- </option>
                       <?php
                       foreach ($pResult as $province) {
-                      ?>
+                        ?>
                         <option value="<?php echo $province['geo_name']; ?>"><?php echo $province['geo_name']; ?></option>
-                      <?php
+                        <?php
                       }
                       ?>
                     </select>
@@ -185,7 +198,8 @@ $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 
                 <div class="form-group">
                   <label for="hubName" class="col-lg-4 control-label">Linked Hub Name (If Applicable)</label>
                   <div class="col-lg-7">
-                    <input type="text" class="form-control" id="hubName" name="hubName" placeholder="Hub Name" title="Please enter hub name" />
+                    <input type="text" class="form-control" id="hubName" name="hubName" placeholder="Hub Name"
+                      title="Please enter hub name" />
                   </div>
                 </div>
               </div>
@@ -250,13 +264,13 @@ $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 
     removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
     $.post("/includes/checkDuplicate.php", {
-        tableName: tableName,
-        fieldName: fieldName,
-        value: removeDots.trim(),
-        fnct: fnct,
-        format: "html"
-      },
-      function(data) {
+      tableName: tableName,
+      fieldName: fieldName,
+      value: removeDots.trim(),
+      fnct: fnct,
+      format: "html"
+    },
+      function (data) {
         if (data === '1') {
           alert(alrt);
           document.getElementById(obj.id).value = "";

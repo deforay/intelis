@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use GuzzleHttp\Client;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -16,7 +16,7 @@ use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -152,7 +152,7 @@ try {
                             WHERE r.module IN ($activeModules)";
         $privileges = $db->query($privilegesSql);
         foreach ($privileges as $privilege) {
-            $privilegeId = (int)$privilege['privilege_id'];
+            $privilegeId = (int) $privilege['privilege_id'];
             $db->rawQuery("INSERT IGNORE INTO roles_privileges_map(role_id,privilege_id) VALUES (?, ?)", [1, $privilegeId]);
         }
 
@@ -183,7 +183,7 @@ try {
     }
     header("Location:/login/login.php");
 } catch (Throwable $exc) {
-    LoggerUtility::logError($exc->getFile() . ':' . $exc->getLine()  . ':' .  $exc->getMessage(), [
+    LoggerUtility::logError($exc->getFile() . ':' . $exc->getLine() . ':' . $exc->getMessage(), [
         'exception' => $exc->getMessage(),
         'line' => __LINE__,
         'file' => __FILE__

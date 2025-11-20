@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
@@ -11,7 +11,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -50,8 +50,8 @@ try {
     }
 
     /*
-         * Ordering
-        */
+     * Ordering
+     */
 
     $sOrder = "";
     if (isset($_POST['iSortCol_0'])) {
@@ -94,13 +94,13 @@ try {
 
 
     /*
-         * SQL queries.
-         * Get data to display
-        */
+     * SQL queries.
+     * Get data to display
+     */
     $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_covid19 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_covid19_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 ";
 
     if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) !== '') {
-        $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
+        $sWhere[] = ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
     }
 
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['hvlSampleTestDate'] ?? '');
@@ -108,7 +108,7 @@ try {
         if (trim((string) $start_date) === trim((string) $end_date)) {
             $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $start_date . '"';
         } else {
-            $sWhere[] =  ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
+            $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
         }
     }
     if (isset($_POST['hvlSampleType']) && $_POST['hvlSampleType'] != '') {
@@ -125,9 +125,9 @@ try {
     }
     if (isset($_POST['hvlGender']) && $_POST['hvlGender'] != '') {
         if (trim((string) $_POST['hvlGender']) === "unreported") {
-            $sWhere[] =  ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
+            $sWhere[] = ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';
         } else {
-            $sWhere[] =  ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['hvlGender'] . '") ';
+            $sWhere[] = ' (vl.patient_gender IS NOT NULL AND vl.patient_gender ="' . $_POST['hvlGender'] . '") ';
         }
     }
     if (isset($_POST['hvlPatientPregnant']) && $_POST['hvlPatientPregnant'] != '') {
@@ -166,8 +166,8 @@ try {
     $_SESSION['highViralResultCount'] = $iTotal;
 
     /*
-         * Output
-        */
+     * Output
+     */
     $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iFilteredTotal, "aaData" => []];
 
     foreach ($rResult as $aRow) {

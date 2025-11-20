@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const COUNTRY\CAMEROON;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
@@ -13,7 +13,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -53,8 +53,8 @@ try {
      $sIndexColumn = $primaryKey;
      $sTable = $tableName;
      /*
-     * Paging
-     */
+      * Paging
+      */
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
@@ -149,7 +149,7 @@ try {
      [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
      /* Sample type filter */
      if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-          $sWhere[] =  ' vl.specimen_type IN (' . $_POST['sampleType'] . ')';
+          $sWhere[] = ' vl.specimen_type IN (' . $_POST['sampleType'] . ')';
      }
      if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
           $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";

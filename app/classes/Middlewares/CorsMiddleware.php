@@ -3,11 +3,11 @@
 namespace App\Middlewares;
 
 use Override;
+use Slim\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Laminas\Diactoros\Response\EmptyResponse;
 
 class CorsMiddleware implements MiddlewareInterface
 {
@@ -30,9 +30,9 @@ class CorsMiddleware implements MiddlewareInterface
     {
         // Figure out who is asking so we can decide whether to include CORS headers.
         $originHeader = $request->getHeaderLine('Origin');
-        $origin       = $originHeader !== '' ? $originHeader : '*';
+        $origin = $originHeader !== '' ? $originHeader : '*';
 
-        $allowOrigin   = null;
+        $allowOrigin = null;
         $allowedOrigin = in_array('*', $this->options['origin'], true) || in_array($origin, $this->options['origin'], true);
         if ($allowedOrigin) {
             // When "*" is configured we reflect the caller’s origin, otherwise we honour the allowlist entry.
@@ -43,20 +43,24 @@ class CorsMiddleware implements MiddlewareInterface
         if ($allowOrigin !== null) {
             // Build the common header set once so we can reuse it for preflight and the actual response.
             $baseHeaders = [
-                'Access-Control-Allow-Origin'      => $allowOrigin,
-                'Access-Control-Allow-Methods'     => implode(', ', $this->options['methods']),
-                'Access-Control-Allow-Headers'     => implode(', ', $this->options['headers.allow']),
-                'Access-Control-Expose-Headers'    => implode(', ', $this->options['headers.expose']),
+                'Access-Control-Allow-Origin' => $allowOrigin,
+                'Access-Control-Allow-Methods' => implode(', ', $this->options['methods']),
+                'Access-Control-Allow-Headers' => implode(', ', $this->options['headers.allow']),
+                'Access-Control-Expose-Headers' => implode(', ', $this->options['headers.expose']),
                 'Access-Control-Allow-Credentials' => $this->options['credentials'] ? 'true' : 'false',
-                'Access-Control-Max-Age'           => (string) $this->options['cache'],
-                'Vary'                              => 'Origin',
+                'Access-Control-Max-Age' => (string) $this->options['cache'],
+                'Vary' => 'Origin',
             ];
         }
 
         if (strtoupper($request->getMethod()) === 'OPTIONS') {
             // Browser preflight (OPTIONS) checks if cross-origin request would be permitted.
             // We answer it directly so the real request only runs when the policy allows it.
-            return new EmptyResponse(204, $baseHeaders);
+            $response = new Response(204);
+            foreach ($baseHeaders as $name => $value) {
+                $response = $response->withHeader($name, $value);
+            }
+            return $response;
         }
 
         $response = $handler->handle($request);

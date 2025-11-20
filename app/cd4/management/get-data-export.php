@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Services\CD4Service;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -12,7 +12,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -39,17 +39,17 @@ try {
      $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'l_f.facility_name', 'vl.cd4_result', 'ts.status_name', 'funding_source_name', 'i_partner_name'];
      $sampleCode = 'sample_code';
      if ($general->isSTSInstance()) {
-         $sampleCode = 'remote_sample_code';
+          $sampleCode = 'remote_sample_code';
      } elseif ($general->isStandaloneInstance()) {
-         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
-         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+          $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+          $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
      /* Indexed column (used for fast and accurate table cardinality) */
      $sIndexColumn = $primaryKey;
      $sTable = $tableName;
      /*
-     * Paging
-     */
+      * Paging
+      */
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
@@ -238,8 +238,8 @@ try {
      $_SESSION['cd4ResultQueryCount'] = $resultCount;
 
      /*
-     * Output
-     */
+      * Output
+      */
      $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
 
      foreach ($rResult as $aRow) {

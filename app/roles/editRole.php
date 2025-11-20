@@ -9,7 +9,7 @@ use App\Registries\ContainerRegistry;
 require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
@@ -157,7 +157,8 @@ if ($priInfo) {
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='roleEditForm' id='roleEditForm' autocomplete="off" action="editRolesHelper.php">
+				<form class="form-horizontal" method='post' name='roleEditForm' id='roleEditForm' autocomplete="off"
+					action="editRolesHelper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
@@ -166,8 +167,14 @@ if ($priInfo) {
 										<?php echo _translate("Role Name"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="roleName" name="roleName" placeholder="<?php echo _translate('Role Name'); ?>" title="<?php echo _translate('Please enter a name for this role'); ?>" value="<?php echo $roleInfo['role_name']; ?>" onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" . $roleInfo['role_id']; ?>','<?php echo _translate("This role name that you entered already exists.Try another role name"); ?>',null)" <?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?> />
-										<input type="hidden" name="roleId" id="roleId" value="<?php echo base64_encode((string) $roleInfo['role_id']); ?>" />
+										<input type="text" class="form-control isRequired" id="roleName" name="roleName"
+											placeholder="<?php echo _translate('Role Name'); ?>"
+											title="<?php echo _translate('Please enter a name for this role'); ?>"
+											value="<?php echo $roleInfo['role_name']; ?>"
+											onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" . $roleInfo['role_id']; ?>','<?php echo _translate("This role name that you entered already exists.Try another role name"); ?>',null)"
+											<?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?> />
+										<input type="hidden" name="roleId" id="roleId"
+											value="<?php echo base64_encode((string) $roleInfo['role_id']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -177,7 +184,12 @@ if ($priInfo) {
 										<?php echo _translate("Role Code"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="roleCode" name="roleCode" placeholder="<?php echo _translate('Role Code'); ?>" title="<?php echo _translate('Please enter role code'); ?>" value="<?php echo $roleInfo['role_code']; ?>" onblur="checkNameValidation('roles','role_code',this,'<?php echo "role_id##" . $roleInfo['role_id']; ?>','<?php echo _translate("This role code that you entered already exists.Try another role code"); ?>',null)" <?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?> />
+										<input type="text" class="form-control isRequired" id="roleCode" name="roleCode"
+											placeholder="<?php echo _translate('Role Code'); ?>"
+											title="<?php echo _translate('Please enter role code'); ?>"
+											value="<?php echo $roleInfo['role_code']; ?>"
+											onblur="checkNameValidation('roles','role_code',this,'<?php echo "role_id##" . $roleInfo['role_id']; ?>','<?php echo _translate("This role code that you entered already exists.Try another role code"); ?>',null)"
+											<?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?> />
 									</div>
 								</div>
 							</div>
@@ -189,14 +201,19 @@ if ($priInfo) {
 										<?php echo _translate("Landing Page"); ?>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control " name='landingPage' id='landingPage' title="<?php echo _translate('Please select landing page'); ?>" <?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?>>
+										<select class="form-control " name='landingPage' id='landingPage'
+											title="<?php echo _translate('Please select landing page'); ?>"
+											<?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?>>
 											<option value="">
 												<?php echo _translate("-- Select --"); ?>
 											</option>
-											<option value="/dashboard/index.php" <?php echo ($roleInfo['landing_page'] == '/dashboard/index.php') ? "selected='selected'" : "" ?>><?php echo _translate("Dashboard"); ?></option>
-											<option value="/vl/requests/addVlRequest.php" <?php echo ($roleInfo['landing_page'] == '/vl/requests/addVlRequest.php') ? "selected='selected'" : "" ?>><?php echo _translate("Add New VL Request"); ?>
+											<option value="/dashboard/index.php" <?php echo ($roleInfo['landing_page'] == '/dashboard/index.php') ? "selected='selected'" : "" ?>><?php echo _translate("Dashboard"); ?>
 											</option>
-											<option value="/import-result/import-file.php?t=vl" <?php echo ($roleInfo['landing_page'] == 'import-result/import-file.php?t=vl') ? "selected='selected'" : "" ?>><?php echo _translate("Import VL Result"); ?>
+											<option value="/vl/requests/addVlRequest.php" <?php echo ($roleInfo['landing_page'] == '/vl/requests/addVlRequest.php') ? "selected='selected'" : "" ?>>
+												<?php echo _translate("Add New VL Request"); ?>
+											</option>
+											<option value="/import-result/import-file.php?t=vl" <?php echo ($roleInfo['landing_page'] == 'import-result/import-file.php?t=vl') ? "selected='selected'" : "" ?>>
+												<?php echo _translate("Import VL Result"); ?>
 											</option>
 										</select>
 									</div>
@@ -208,12 +225,16 @@ if ($priInfo) {
 										<?php echo _translate("Status"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='status' id='status' title="<?php echo _translate('Please select the status'); ?>" <?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?>>
+										<select class="form-control isRequired" name='status' id='status'
+											title="<?php echo _translate('Please select the status'); ?>"
+											<?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?>>
 											<option value="">
 												<?php echo _translate("-- Select --"); ?>
 											</option>
-											<option value="active" <?php echo ($roleInfo['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _translate("Active"); ?></option>
-											<option value="inactive" <?php echo ($roleInfo['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _translate("Inactive"); ?></option>
+											<option value="active" <?php echo ($roleInfo['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _translate("Active"); ?>
+											</option>
+											<option value="inactive" <?php echo ($roleInfo['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _translate("Inactive"); ?>
+											</option>
 										</select>
 									</div>
 								</div>
@@ -226,7 +247,8 @@ if ($priInfo) {
 										<?php echo _translate("Access Type"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='accessType' id='accessType' title="<?php echo _translate('Please select access type'); ?>">
+										<select class="form-control isRequired" name='accessType' id='accessType'
+											title="<?php echo _translate('Please select access type'); ?>">
 											<option value="">
 												<?php echo _translate("-- Select --"); ?>
 											</option>
@@ -251,11 +273,13 @@ if ($priInfo) {
 							<div class="form-group" style="padding-left:138px;">
 								<div class="privilege-switch super-switch">
 
-									<input type="radio" class='' id="allowAllPrivileges" name="allPrivilegesRadio" value="yes" /></a>
+									<input type="radio" class='' id="allowAllPrivileges" name="allPrivilegesRadio"
+										value="yes" /></a>
 									<label for="allowAllPrivileges">
 										<?php echo _translate("Select All"); ?>
 									</label>
-									<input type="radio" class='' name="allPrivilegesRadio" id="denyAllPrivileges" name="switch-one" value="no" <?= ($isSuperAdmin) ? 'disabled' : ''; ?> /></a>
+									<input type="radio" class='' name="allPrivilegesRadio" id="denyAllPrivileges"
+										name="switch-one" value="no" <?= ($isSuperAdmin) ? 'disabled' : ''; ?> /></a>
 									<label for="denyAllPrivileges">
 										<?php echo _translate("Unselect All"); ?>
 									</label>
@@ -264,7 +288,8 @@ if ($priInfo) {
 
 							<div class="row">
 								<div class="col-md-12 col-lg-12">
-									<input type="text" class="form-control " id="searchInput" placeholder="Search Permissions..." onkeyup="searchPermissions()">
+									<input type="text" class="form-control " id="searchInput"
+										placeholder="Search Permissions..." onkeyup="searchPermissions()">
 								</div>
 							</div>
 							<br>
@@ -276,8 +301,10 @@ if ($priInfo) {
 									foreach ($rInfo as $moduleRow) {
 										$moduleName = ($moduleRow['module'] == 'generic-tests') ? "Other Lab Tests" : $moduleRow['module'];
 										$liClass = $a == 0 ? "active" : ""; ?>
-										<li class="<?= $liClass; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper((string) $moduleName); ?> </a></li>
-									<?php
+										<li class="<?= $liClass; ?>"><a href="#<?= $moduleRow['module']; ?>"
+												data-toggle="tab"
+												class="bg-primary"><?php echo strtoupper((string) $moduleName); ?> </a></li>
+										<?php
 										$a++;
 									} ?>
 								</ul>
@@ -299,19 +326,24 @@ if ($priInfo) {
 
 											echo "<tr class ='togglerTr'>";
 											echo "<th>";
-									?>
+											?>
 											<small class="toggler">
 												<h4 style="font-weight: bold;">
 													<?= $mRes[1]; ?>
 												</h4>
 												<div class="super-switch privilege-switch pull-right">
-													<input type='radio' class='' id='all<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'>
+													<input type='radio' class='' id='all<?= $mRes[0]; ?>'
+														name='<?= $mRes[1]; ?>'
+														onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'>
 													<label for='all<?= $mRes[0]; ?>'><?php echo _translate("All"); ?></label>
-													<input type='radio' class='' id='none<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);' <?= ($isSuperAdmin) ? 'disabled' : ''; ?>>
+													<input type='radio' class='' id='none<?= $mRes[0]; ?>'
+														name='<?= $mRes[1]; ?>'
+														onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'
+														<?= ($isSuperAdmin) ? 'disabled' : ''; ?>>
 													<label for='none<?= $mRes[0]; ?>'><?php echo _translate("None"); ?></label>
 												</div>
 											</small>
-									<?php
+											<?php
 											echo "</th>";
 											echo "</tr>";
 
@@ -398,7 +430,7 @@ if ($priInfo) {
 		}
 	}
 
-	$("#allowAllPrivileges").click(function() {
+	$("#allowAllPrivileges").click(function () {
 		$('.unselectPrivilege').prop('checked', false);
 		$('.selectPrivilege').prop('checked', true);
 		$('.unselectPrivilege').next('label').addClass('normal-label');
@@ -412,7 +444,7 @@ if ($priInfo) {
 		$("#allowAllPrivileges").next('label').removeClass('normal-label');
 	});
 
-	$("#denyAllPrivileges").click(function() {
+	$("#denyAllPrivileges").click(function () {
 		$('.selectPrivilege').prop('checked', false);
 		$('.unselectPrivilege').prop('checked', true);
 		$('.unselectPrivilege').next('label').addClass('deny-label');
@@ -428,7 +460,7 @@ if ($priInfo) {
 	});
 
 
-	$('.privilege-switch input').click(function() {
+	$('.privilege-switch input').click(function () {
 		val = $(this).val();
 		if (val == "deny") {
 			$(this).closest('.privilege-switch').find('.unselectPrivilege').next('label').addClass('deny-label');
@@ -485,13 +517,13 @@ if ($priInfo) {
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
+			tableName: tableName,
+			fieldName: fieldName,
+			value: removeDots.trim(),
+			fnct: fnct,
+			format: "html"
+		},
+			function (data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";
@@ -511,7 +543,7 @@ if ($priInfo) {
 		}
 
 		// Iterate through each tab
-		$('#myTabContent .tab-pane').each(function() {
+		$('#myTabContent .tab-pane').each(function () {
 			let $tab = $(this);
 			let $tabLink = $('#myTab a[href="#' + $tab.attr('id') + '"]').closest('li');
 
@@ -519,7 +551,7 @@ if ($priInfo) {
 			$tab.find('.hiddenTr').removeClass('hiddenTr');
 
 			// Iterate through each togglerTr in the current tab
-			$tab.find('.togglerTr').each(function() {
+			$tab.find('.togglerTr').each(function () {
 				let $togglerTr = $(this);
 				let $nextPermissionTr = $togglerTr.next('tr');
 				let togglerText = $togglerTr.find('h4').text().toUpperCase();
@@ -532,7 +564,7 @@ if ($priInfo) {
 				} else {
 					let hasVisiblePrivilege = false;
 
-					$nextPermissionTr.find('.privilege-label').each(function() {
+					$nextPermissionTr.find('.privilege-label').each(function () {
 						let $label = $(this);
 						let labelText = $label.text().toUpperCase();
 						let $parentDiv = $label.closest('div.privilege-div');

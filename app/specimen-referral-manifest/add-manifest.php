@@ -29,7 +29,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $module = $_GET['t'];
@@ -78,7 +78,7 @@ if ($module == 'vl') {
 	$sampleTypes = $genService->getGenericSampleTypes();
 }
 
-$sampleManifestCode = strtoupper($shortCode . date('ymdH') .  MiscUtility::generateRandomString(4));
+$sampleManifestCode = strtoupper($shortCode . date('ymdH') . MiscUtility::generateRandomString(4));
 $hide = "";
 if ($module == 'generic-tests') {
 	$hide = "hide ";
@@ -135,25 +135,32 @@ if ($module == 'generic-tests') {
 	<section class="content">
 		<div class="box box-default">
 			<div class="box-header with-border">
-				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
+				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+					<?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 			<!-- form start -->
-			<form class="form-horizontal" method="post" name="addManifestForm" id="addManifestForm" autocomplete="off" action="add-manifest-helper.php">
+			<form class="form-horizontal" method="post" name="addManifestForm" id="addManifestForm" autocomplete="off"
+				action="add-manifest-helper.php">
 
 				<!-- /.box-header -->
 				<div class="box-body">
 					<?php
 					if ($module == 'generic-tests') {
-					?>
+						?>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label class="col-lg-4 control-label" for="testType">Test Type<span class="mandatory">*</span></label>
+									<label class="col-lg-4 control-label" for="testType">Test Type<span
+											class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<select class="form-control select2 isRequired" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
+										<select class="form-control select2 isRequired" name="testType" id="testType"
+											title="Please choose test type" style="width:100%;"
+											onchange="getManifestCodeForm(this.value)">
 											<option value=""> -- Select -- </option>
 											<?php foreach ($testTypeResult as $testType) { ?>
-												<option value="<?php echo $testType['test_type_id'] ?>" data-short="<?php echo $testType['test_short_code']; ?>"><?php echo $testType['test_standard_name'] ?></option>
+												<option value="<?php echo $testType['test_type_id'] ?>"
+													data-short="<?php echo $testType['test_short_code']; ?>">
+													<?php echo $testType['test_standard_name'] ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -164,19 +171,27 @@ if ($module == 'generic-tests') {
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="packageCode" class="col-lg-4 control-label">Manifest Code <span class="mandatory">*</span></label>
+								<label for="packageCode" class="col-lg-4 control-label">Manifest Code <span
+										class="mandatory">*</span></label>
 								<div class="col-lg-7" style="margin-left:3%;">
-									<input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper(htmlspecialchars($sampleManifestCode)); ?>" />
-									<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
+									<input type="text" class="form-control isRequired" id="packageCode"
+										name="packageCode" placeholder="Manifest Code"
+										title="Please enter manifest code" readonly
+										value="<?php echo strtoupper(htmlspecialchars($sampleManifestCode)); ?>" />
+									<input type="hidden" class="form-control isRequired" id="module" name="module"
+										placeholder="" title="" readonly
+										value="<?= htmlspecialchars((string) $module); ?>" />
 								</div>
 							</div>
 						</div>
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="packageCode" class="col-lg-4 control-label">Testing Lab <span class="mandatory">*</span> :</label>
+								<label for="packageCode" class="col-lg-4 control-label">Testing Lab <span
+										class="mandatory">*</span> :</label>
 								<div class="col-lg-7" style="margin-left:3%;">
-									<select class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Choose one test lab">
+									<select class="form-control select2 isRequired" id="testingLab" name="testingLab"
+										title="Choose one test lab">
 										<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
 									</select>
 								</div>
@@ -186,9 +201,12 @@ if ($module == 'generic-tests') {
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="operator" class="col-lg-4 control-label"><?php echo _translate("Operator/Technician"); ?> </label>
+								<label for="operator"
+									class="col-lg-4 control-label"><?php echo _translate("Operator/Technician"); ?>
+								</label>
 								<div class="col-lg-7" style="margin-left:3%;">
-									<select class="form-control select2" id="operator" name="operator" title="Choose one Operator/Technician">
+									<select class="form-control select2" id="operator" name="operator"
+										title="Choose one Operator/Technician">
 										<?= $general->generateSelectOptions($usersList, null, '-- Select --'); ?>
 									</select>
 								</div>
@@ -197,9 +215,11 @@ if ($module == 'generic-tests') {
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="facility" class="col-lg-4 control-label"><?php echo _translate("Sample Collection Point"); ?></label>
+								<label for="facility"
+									class="col-lg-4 control-label"><?php echo _translate("Sample Collection Point"); ?></label>
 								<div class="col-lg-7" style="margin-left:3%;">
-									<select class="form-control select2" id="facility" name="facility" title="Choose one sample collection point">
+									<select class="form-control select2" id="facility" name="facility"
+										title="Choose one sample collection point">
 										<?= $general->generateSelectOptions($facilities, null, '-- Select --'); ?>
 									</select>
 								</div>
@@ -209,9 +229,11 @@ if ($module == 'generic-tests') {
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="sampleType" class="col-lg-4 control-label"><?php echo _translate("Sample Type"); ?></label>
+								<label for="sampleType"
+									class="col-lg-4 control-label"><?php echo _translate("Sample Type"); ?></label>
 								<div class="col-lg-7" style="margin-left:3%;">
-									<select class="form-control select2" id="sampleType" name="sampleType" title="Choose Sample Type">
+									<select class="form-control select2" id="sampleType" name="sampleType"
+										title="Choose Sample Type">
 										<?= $general->generateSelectOptions($sampleTypes, null, '-- Select --'); ?>
 									</select>
 								</div>
@@ -220,9 +242,12 @@ if ($module == 'generic-tests') {
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="daterange" class="col-lg-4 control-label"><?php echo _translate("Sample Collection Date Range"); ?></label>
+								<label for="daterange"
+									class="col-lg-4 control-label"><?php echo _translate("Sample Collection Date Range"); ?></label>
 								<div class="col-lg-7" style="margin-left:3%;">
-									<input type="text" class="form-control" id="daterange" name="daterange" placeholder="<?php echo _translate('Sample Collection Date Range'); ?>" title="Choose one sample collection date range">
+									<input type="text" class="form-control" id="daterange" name="daterange"
+										placeholder="<?php echo _translate('Sample Collection Date Range'); ?>"
+										title="Choose one sample collection date range">
 								</div>
 							</div>
 						</div>
@@ -230,8 +255,11 @@ if ($module == 'generic-tests') {
 					<div class="row">
 						<div class="col-md-12 text-center">
 							<div class="form-group">
-								<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSamplesForManifest();return false;"><?= _translate("Search"); ?> </a>
-								<a href="javascript:void(0);" class="btn btn-default" onclick="document.location.href = document.location"> <?= _translate("Clear"); ?></a>
+								<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab"
+									onclick="getSamplesForManifest();return false;"><?= _translate("Search"); ?> </a>
+								<a href="javascript:void(0);" class="btn btn-default"
+									onclick="document.location.href = document.location">
+									<?= _translate("Clear"); ?></a>
 							</div>
 						</div>
 					</div>
@@ -247,8 +275,11 @@ if ($module == 'generic-tests') {
 		<div class="box-footer">
 			<input type="hidden" name="selectedSample" id="selectedSample" />
 			<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
-			<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled><?= _translate("Save"); ?> </a>
-			<a href="view-manifests.php?t=<?= ($_GET['t']); ?>" class="btn btn-default"> <?= _translate(text: "Cancel"); ?></a>
+			<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine"
+				onclick="validateNow();return false;" style="pointer-events:none;" disabled><?= _translate("Save"); ?>
+			</a>
+			<a href="view-manifests.php?t=<?= ($_GET['t']); ?>" class="btn btn-default">
+				<?= _translate(text: "Cancel"); ?></a>
 		</div>
 		<!-- /.box-footer -->
 		</form>
@@ -267,7 +298,7 @@ if ($module == 'generic-tests') {
 
 	function validateNow() {
 		var selVal = [];
-		$('#search_to option').each(function(i, selected) {
+		$('#search_to option').each(function (i, selected) {
 			selVal[i] = $(selected).val();
 		});
 		const sqids = new Sqids()
@@ -285,36 +316,36 @@ if ($module == 'generic-tests') {
 		}
 	}
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 		$('#daterange').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _translate("Clear", true); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-					'Current Year To Date': [moment().startOf('year'), moment()]
-				}
+			locale: {
+				cancelLabel: "<?= _translate("Clear", true); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+				'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+				'Current Year To Date': [moment().startOf('year'), moment()]
+			}
+		},
+			function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
@@ -326,7 +357,7 @@ if ($module == 'generic-tests') {
 		$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
-			afterInit: function(ms) {
+			afterInit: function (ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),
 					$selectionSearch = that.$selectionUl.prev(),
@@ -334,7 +365,7 @@ if ($module == 'generic-tests') {
 					selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
 				that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-					.on('keydown', function(e) {
+					.on('keydown', function (e) {
 						if (e.which === 40) {
 							that.$selectableUl.focus();
 							return false;
@@ -342,14 +373,14 @@ if ($module == 'generic-tests') {
 					});
 
 				that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-					.on('keydown', function(e) {
+					.on('keydown', function (e) {
 						if (e.which == 40) {
 							that.$selectionUl.focus();
 							return false;
 						}
 					});
 			},
-			afterSelect: function() {
+			afterSelect: function () {
 				//button disabled/enabled
 				if (this.qs2.cache().matchedResultsCount == noOfSamples) {
 					alert("You have selected maximum number of samples - " + this.qs2.cache().matchedResultsCount);
@@ -366,7 +397,7 @@ if ($module == 'generic-tests') {
 				this.qs1.cache();
 				this.qs2.cache();
 			},
-			afterDeselect: function() {
+			afterDeselect: function () {
 				//button disabled/enabled
 				if (this.qs2.cache().matchedResultsCount == 0) {
 					$("#packageSubmit").attr("disabled", true);
@@ -406,13 +437,13 @@ if ($module == 'generic-tests') {
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
+			tableName: tableName,
+			fieldName: fieldName,
+			value: removeDots.trim(),
+			fnct: fnct,
+			format: "html"
+		},
+			function (data) {
 				if (data === '1') {
 					alert(alrt);
 					duplicateName = false;
@@ -430,15 +461,15 @@ if ($module == 'generic-tests') {
 			$.blockUI();
 
 			$.post("/specimen-referral-manifest/get-samples-for-manifest.php", {
-					module: $("#module").val(),
-					testType: $("#testType").val(),
-					testingLab: $('#testingLab').val(),
-					facility: $('#facility').val(),
-					daterange: $('#daterange').val(),
-					sampleType: $('#sampleType').val(),
-					operator: $('#operator').val()
-				},
-				function(data) {
+				module: $("#module").val(),
+				testType: $("#testType").val(),
+				testingLab: $('#testingLab').val(),
+				facility: $('#facility').val(),
+				daterange: $('#daterange').val(),
+				sampleType: $('#sampleType').val(),
+				operator: $('#operator').val()
+			},
+				function (data) {
 					if (data != "") {
 						$("#sampleDetails").html(data);
 						$("#packageSubmit").attr("disabled", true);
@@ -459,7 +490,7 @@ if ($module == 'generic-tests') {
 	function getManifestCodeForm(value) {
 		if (value != "") {
 			shortCode = $("#testType").find(":selected").attr("data-short");
-			var code = shortCode.toUpperCase() + '<?php echo strtoupper(date('ymd') .  MiscUtility::generateRandomString(6)); ?>';
+			var code = shortCode.toUpperCase() + '<?php echo strtoupper(date('ymd') . MiscUtility::generateRandomString(6)); ?>';
 			$('#packageCode').val(code);
 			$("#addManifestForm").removeClass("hide");
 		}

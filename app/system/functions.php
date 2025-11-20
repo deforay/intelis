@@ -1,18 +1,19 @@
 <?php
 
+use Slim\Psr7\UploadedFile;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
-use App\Exceptions\SystemException;
-use Laminas\Diactoros\UploadedFile;
-use App\Utilities\FileCacheUtility;
 use App\Utilities\InputSanitizer;
+use App\Exceptions\SystemException;
+use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 use function iter\count as iterCount;
 use function iter\toArray as iterToArray;
+use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Component\String\UnicodeString;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
@@ -107,9 +108,9 @@ function _sanitizeInput(mixed $input, bool $nullifyEmptyStrings = false): mixed
  * @param array $allowedTypes Allowed file extensions
  * @param bool $sanitizeFileName Whether to sanitize filenames
  * @param int|null $maxSize Maximum file size in bytes
- * @return UploadedFile|array|null The sanitized file(s)
+ * @return UploadedFileInterface|array|null The sanitized file(s)
  */
-function _sanitizeFiles($files, array $allowedTypes = [], bool $sanitizeFileName = true, ?int $maxSize = null): UploadedFile|array|null
+function _sanitizeFiles($files, array $allowedTypes = [], bool $sanitizeFileName = true, ?int $maxSize = null): UploadedFileInterface|array|null
 {
     if ($maxSize === null) {
         $uploadMaxSize = ini_get('upload_max_filesize');
@@ -128,7 +129,7 @@ function _sanitizeFiles($files, array $allowedTypes = [], bool $sanitizeFileName
 
     $slugger = new AsciiSlugger();
     foreach ($files as $file) {
-        if ($file instanceof UploadedFile) {
+        if ($file instanceof UploadedFileInterface) {
             try {
                 if ($file->getError() === UPLOAD_ERR_NO_FILE) {
                     throw new SystemException("No file was uploaded");

@@ -13,7 +13,7 @@ use App\Registries\ContainerRegistry;
 $db = ContainerRegistry::get(DatabaseService::class);
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
@@ -39,9 +39,12 @@ foreach ($geoParentInfo as $type) {
 
         <div class="box box-default">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
+                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
+                    <?php echo _translate("indicates required fields"); ?> &nbsp;</div>
             </div>
-            <form class="form-horizontal" method='post' name='geographicalDivisionsDetails' id='geographicalDivisionsDetails' autocomplete="off" enctype="multipart/form-data" action="save-geographical-divisions-helper.php">
+            <form class="form-horizontal" method='post' name='geographicalDivisionsDetails'
+                id='geographicalDivisionsDetails' autocomplete="off" enctype="multipart/form-data"
+                action="save-geographical-divisions-helper.php">
                 <!-- /.box-header -->
                 <div class="box-body">
                     <!-- form start -->
@@ -49,17 +52,27 @@ foreach ($geoParentInfo as $type) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="geoName" class="col-lg-4 control-label"><?php echo _translate("Geographical Division Name"); ?> <span class="mandatory">*</span></label>
+                                    <label for="geoName"
+                                        class="col-lg-4 control-label"><?php echo _translate("Geographical Division Name"); ?>
+                                        <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="geoName" name="geoName" placeholder="<?php echo _translate('Geographical Division Name'); ?>" title="<?php echo _translate('Please enter Geographical Division name'); ?>" onblur='checkNameValidation("geographical_divisions","geo_name",this,null,"<?php echo _translate("The Geographical Division name that you entered already exists. Please enter another name"); ?>",null)' />
+                                        <input type="text" class="form-control isRequired" id="geoName" name="geoName"
+                                            placeholder="<?php echo _translate('Geographical Division Name'); ?>"
+                                            title="<?php echo _translate('Please enter Geographical Division name'); ?>"
+                                            onblur='checkNameValidation("geographical_divisions","geo_name",this,null,"<?php echo _translate("The Geographical Division name that you entered already exists. Please enter another name"); ?>",null)' />
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="geoCode" class="col-lg-4 control-label"><?php echo _translate("Geographical Division Code"); ?> <span class="mandatory">*</span></label>
+                                    <label for="geoCode"
+                                        class="col-lg-4 control-label"><?php echo _translate("Geographical Division Code"); ?>
+                                        <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="geoCode" name="geoCode" placeholder="<?php echo _translate('Geographical Division code'); ?>" title="<?php echo _translate('Please enter Geographical Division code'); ?>" onblur='checkNameValidation("geographical_divisions","geo_code",this,null,"<?php echo _translate("The Geographical Division code that you entered already exists. Please enter another code"); ?>",null)' />
+                                        <input type="text" class="form-control isRequired" id="geoCode" name="geoCode"
+                                            placeholder="<?php echo _translate('Geographical Division code'); ?>"
+                                            title="<?php echo _translate('Please enter Geographical Division code'); ?>"
+                                            onblur='checkNameValidation("geographical_divisions","geo_code",this,null,"<?php echo _translate("The Geographical Division code that you entered already exists. Please enter another code"); ?>",null)' />
                                     </div>
                                 </div>
                             </div>
@@ -67,9 +80,12 @@ foreach ($geoParentInfo as $type) {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="geoParent" class="col-lg-4 control-label"><?php echo _translate("Parent Geographical Division"); ?></label>
+                                    <label for="geoParent"
+                                        class="col-lg-4 control-label"><?php echo _translate("Parent Geographical Division"); ?></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control select2-element" id="geoParent" name="geoParent" placeholder="<?php echo _translate('Parent Division'); ?>" title="<?php echo _translate('Please select Parent Division'); ?>">
+                                        <select class="form-control select2-element" id="geoParent" name="geoParent"
+                                            placeholder="<?php echo _translate('Parent Division'); ?>"
+                                            title="<?php echo _translate('Please select Parent Division'); ?>">
                                             <?= $general->generateSelectOptions($geoArray, null, _translate("-- Select --")); ?>
                                         </select>
                                     </div>
@@ -77,9 +93,12 @@ foreach ($geoParentInfo as $type) {
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="geoStatus" class="col-lg-4 control-label"><?php echo _translate("Status"); ?><span class="mandatory">*</span></label>
+                                    <label for="geoStatus"
+                                        class="col-lg-4 control-label"><?php echo _translate("Status"); ?><span
+                                            class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <select class="form-control isRequired" id="geoStatus" name="geoStatus" title="<?php echo _translate('Please select status'); ?>">
+                                        <select class="form-control isRequired" id="geoStatus" name="geoStatus"
+                                            title="<?php echo _translate('Please select status'); ?>">
                                             <option value=""><?php echo _translate("--Select--"); ?></option>
                                             <option value="active"><?php echo _translate("Active"); ?></option>
                                             <option value="inactive"><?php echo _translate("Inactive"); ?></option>
@@ -94,8 +113,10 @@ foreach ($geoParentInfo as $type) {
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <input type="hidden" name="provinceId" name="provinceId" value="<?php echo $_GET['id']; ?>">
-                    <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-                    <a href="geographical-divisions-details.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
+                    <a class="btn btn-primary" href="javascript:void(0);"
+                        onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+                    <a href="geographical-divisions-details.php" class="btn btn-default">
+                        <?php echo _translate("Cancel"); ?></a>
                 </div>
                 <!-- /.box-footer -->
             </form>
@@ -109,7 +130,7 @@ foreach ($geoParentInfo as $type) {
 <!--</div>-->
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#geoParent').select2({
             width: '100%',
             allowClear: true,
@@ -136,13 +157,13 @@ foreach ($geoParentInfo as $type) {
         removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: removeDots.trim(),
-                fnct: fnct,
-                format: "html"
-            },
-            function(data) {
+            tableName: tableName,
+            fieldName: fieldName,
+            value: removeDots.trim(),
+            fnct: fnct,
+            format: "html"
+        },
+            function (data) {
                 if (data === '1') {
                     alert(alrt);
                     document.getElementById(obj.id).value = "";

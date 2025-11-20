@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -20,7 +20,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -51,11 +51,11 @@ try {
         if (0 == $uploadedFile->getError()) {
 
             $spreadsheet = IOFactory::load($targetPath);
-            $sheetData   = $spreadsheet->getActiveSheet();
-            $sheetData   = $sheetData->toArray(null, true, true, true);
+            $sheetData = $spreadsheet->getActiveSheet();
+            $sheetData = $sheetData->toArray(null, true, true, true);
             $returnArray = [];
             $resultArray = array_slice($sheetData, 1);
-            $filteredArray = array_filter((array)$resultArray, function ($row): array {
+            $filteredArray = array_filter((array) $resultArray, function ($row): array {
                 return array_filter($row); // Remove empty rows
             });
             $total = count($filteredArray);
@@ -89,7 +89,7 @@ try {
                     $freezerCheck = $general->fetchDataFromTable('lab_storage', $condition1);
 
                     if (empty($freezerCheck)) {
-                        $data = ['storage_id' => MiscUtility::generateULID(), 'storage_code'     => $rowData['C'], 'lab_id'     => $getSample[0]['lab_id'], 'storage_status' => "active", 'updated_datetime'    => DateUtility::getCurrentDateTime()];
+                        $data = ['storage_id' => MiscUtility::generateULID(), 'storage_code' => $rowData['C'], 'lab_id' => $getSample[0]['lab_id'], 'storage_status' => "active", 'updated_datetime' => DateUtility::getCurrentDateTime()];
                         $db->insert('lab_storage', $data);
                         $storageId = $data['storage_id'];
                     } else {

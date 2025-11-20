@@ -9,8 +9,8 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use Laminas\Diactoros\UploadedFile;
-use Laminas\Diactoros\ServerRequest;
+use Slim\Psr7\UploadedFile;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
 
@@ -24,7 +24,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 $uploadedFiles = $request->getUploadedFiles();

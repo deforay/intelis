@@ -20,11 +20,10 @@ use App\Utilities\ArchiveUtility;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use Psr\Http\Message\ServerRequestInterface;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -576,7 +575,7 @@ final class CommonService
     public function trackQRPageViews($type, $typeId, $sampleCode): void
     {
 
-        /** @var ServerRequest $request */
+        /** @var ServerRequestInterface $request */
         $request = AppRegistry::get('request');
 
         $data = [
@@ -592,9 +591,9 @@ final class CommonService
         $this->db->insert('track_qr_code_page', $data);
     }
 
-    public function getClientOS(?ServerRequest $request = null): string
+    public function getClientOS(?ServerRequestInterface $request = null): string
     {
-        if (!$request instanceof ServerRequest) {
+        if (!$request instanceof ServerRequestInterface) {
             $request = AppRegistry::get('request');
         }
 
@@ -650,9 +649,9 @@ final class CommonService
 
 
 
-    public function getClientBrowser(?ServerRequest $request = null): string
+    public function getClientBrowser(?ServerRequestInterface $request = null): string
     {
-        if (!$request instanceof ServerRequest) {
+        if (!$request instanceof ServerRequestInterface) {
             $request = AppRegistry::get('request');
         }
 
@@ -686,12 +685,12 @@ final class CommonService
         return "Unknown Browser";
     }
 
-    public static function isAjaxRequest(ServerRequestInterface|ServerRequest $request): bool
+    public static function isAjaxRequest(ServerRequestInterface $request): bool
     {
         return strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest';
     }
 
-    public static function isSameOriginRequest(ServerRequestInterface|ServerRequest $request): bool
+    public static function isSameOriginRequest(ServerRequestInterface $request): bool
     {
         $hostHeader = strtolower($request->getHeaderLine('Host'));
         if ($hostHeader === '') {
@@ -754,7 +753,7 @@ final class CommonService
         return [trim($host), $port];
     }
 
-    private static function inferRequestPort(ServerRequestInterface|ServerRequest $request, ?int $portFromHost): ?int
+    private static function inferRequestPort(ServerRequestInterface $request, ?int $portFromHost): ?int
     {
         if ($portFromHost !== null) {
             return $portFromHost;

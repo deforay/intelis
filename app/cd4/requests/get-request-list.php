@@ -1,6 +1,6 @@
 <?php
 
-use Laminas\Diactoros\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
@@ -15,7 +15,7 @@ use App\Services\TestRequestsService;
 
 
 // Sanitized values from $request object
-/** @var ServerRequest $request */
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -286,7 +286,7 @@ try {
      $_SESSION['cd4RequestQueryCount'] = $resultCount;
 
      $output = ["sEcho" => (int) $_POST['sEcho'], "iTotalRecords" => $resultCount, "iTotalDisplayRecords" => $resultCount, "aaData" => []];
-     $editRequest =  $syncRequest = false;
+     $editRequest = $syncRequest = false;
      if (_isAllowed("/cd4/requests/cd4-edit-request.php")) {
           $editRequest = $syncRequest = true;
      }

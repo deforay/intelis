@@ -18,7 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $global = $general->getGlobalConfig();
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
