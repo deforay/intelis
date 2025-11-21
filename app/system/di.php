@@ -52,6 +52,14 @@ $classesDir = APPLICATION_PATH . '/classes';
 $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($classesDir));
 $regex = new RegexIterator($iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
 
+// Classes to skip during auto-registration
+$excludeClasses = [
+    'App\\Interop\\Dhis2',
+    'App\\Interop\\Fhir',
+    'App\\Utilities\\ImageResizeUtility',
+    // Add other classes to skip here
+];
+
 foreach ($regex as $file) {
     $filePath = $file[0];
 
@@ -60,8 +68,14 @@ foreach ($regex as $file) {
     $className = 'App\\' . str_replace(['/', '.php'], ['\\', ''], $relativePath);
 
     if (class_exists($className)) {
+        // Skip if in exclusion list
+        if (in_array($className, $excludeClasses)) {
+            continue;
+        }
+
         // Only register instantiable classes (skips Interfaces, Traits, Abstract classes)
         $reflection = new ReflectionClass($className);
+
         if ($reflection->isInstantiable()) {
             $builder->addDefinitions([$className => autowire()]);
         }
