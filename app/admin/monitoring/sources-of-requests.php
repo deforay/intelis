@@ -343,7 +343,7 @@ $state = $geolocationService->getProvinces("yes");
 
     function getSourcesOfRequestReport() {
 
-        $.blockUI();
+
         oTable = $('#sampleWiseReport').dataTable({
             "bJQueryUI": false,
             "bAutoWidth": false,
@@ -455,7 +455,6 @@ $state = $geolocationService->getProvinces("yes");
                 });
             }
         });
-        $.unblockUI();
     }
 
 
@@ -480,20 +479,16 @@ $state = $geolocationService->getProvinces("yes");
     }
 
     function searchRequestData() {
-        $.blockUI();
         oTable.fnDraw();
-        $.unblockUI();
     }
 
     function exportTestRequests() {
 
-        $.blockUI();
         $.post("/admin/monitoring/export-samplewise-reports.php", {
             reqSampleType: $('#requestSampleType').val(),
             patientInfo: $('#patientInfo').val(),
         },
             function (data) {
-                $.unblockUI();
                 if (data === "" || data === null || data === undefined) {
                     alert("<?= _translate("Unable to generate the excel file", true); ?>");
                 } else {
@@ -503,14 +498,12 @@ $state = $geolocationService->getProvinces("yes");
     }
 
     function getSourceRequest(testType) {
-        $.blockUI();
         $("#originalSourceOfRequest").empty();
         $.post("/admin/monitoring/get-source-request-list.php", {
             testType
         }, function (data) {
             $("#originalSourceOfRequest").html(data).val('api');
             getSourcesOfRequestReport();
-            $.unblockUI();
         });
     }
 </script>

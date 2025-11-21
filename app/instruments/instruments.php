@@ -32,7 +32,8 @@ require_once APPLICATION_PATH . '/header.php';
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="importConfigDataTable" class="table table-bordered table-striped" aria-hidden="true">
+            <table aria-describedby="table" id="importConfigDataTable" class="table table-bordered table-striped"
+              aria-hidden="true">
               <thead>
                 <tr>
                   <th>
@@ -67,8 +68,7 @@ require_once APPLICATION_PATH . '/header.php';
 </div>
 <script type="text/javascript">
   var oTable = null;
-  $(document).ready(function() {
-    $.blockUI();
+  $(document).ready(function () {
     oTable = $('#importConfigDataTable').dataTable({
       "bJQueryUI": false,
       "bAutoWidth": false,
@@ -77,15 +77,15 @@ require_once APPLICATION_PATH . '/header.php';
 
       "bRetrieve": true,
       "aoColumns": [{
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center",
-          "bSortable": false
-        }
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center",
+        "bSortable": false
+      }
       ],
       "aaSorting": [
         [0, "asc"]
@@ -93,7 +93,7 @@ require_once APPLICATION_PATH . '/header.php';
       "bProcessing": true,
       "bServerSide": true,
       "sAjaxSource": "get-instruments.php",
-      "fnServerData": function(sSource, aoData, fnCallback) {
+      "fnServerData": function (sSource, aoData, fnCallback) {
         $.ajax({
           "dataType": 'json',
           "type": "POST",
@@ -103,7 +103,6 @@ require_once APPLICATION_PATH . '/header.php';
         });
       }
     });
-    $.unblockUI();
   });
 </script>
 <?php
