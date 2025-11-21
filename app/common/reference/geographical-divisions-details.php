@@ -225,7 +225,6 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function refreshTable() {
 		if (oTable) {
-			$.blockUI();
 			oTable.fnDraw();
 		}
 	}
@@ -343,7 +342,6 @@ require_once APPLICATION_PATH . '/header.php';
 
 		populateDistricts($provinceFilter.val(), $districtFilter.val());
 
-		$.blockUI();
 		oTable = $('#samTypDataTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -404,10 +402,8 @@ require_once APPLICATION_PATH . '/header.php';
 					"success": function (data) {
 						fnCallback(data);
 						highlightOrphanRows();
-						$.unblockUI();
 					},
 					"error": function () {
-						$.unblockUI();
 					}
 				});
 			}

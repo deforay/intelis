@@ -22,12 +22,14 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (_isAllowed("/common/reference/add-funding-sources.php") && $general->isLISInstance() === false) { ?>
-							<a href="/common/reference/add-funding-sources.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Funding Sources"); ?></a>
+							<a href="/common/reference/add-funding-sources.php" class="btn btn-primary pull-right"> <em
+									class="fa-solid fa-plus"></em> <?php echo _translate("Add Funding Sources"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped"
+							aria-hidden="true">
 							<thead>
 								<tr>
 									<th scope="row"><?php echo _translate("Funding Source Name"); ?></th>
@@ -36,7 +38,8 @@ require_once APPLICATION_PATH . '/header.php';
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="2" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
+									<td colspan="2" class="dataTables_empty">
+										<?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 
@@ -55,8 +58,7 @@ require_once APPLICATION_PATH . '/header.php';
 <script>
 	var oTable = null;
 
-	$(document).ready(function() {
-		$.blockUI();
+	$(document).ready(function () {
 		oTable = $('#partnerTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -65,11 +67,11 @@ require_once APPLICATION_PATH . '/header.php';
 			"bStateSave": true,
 			"bRetrieve": true,
 			"aoColumns": [{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
 			],
 			"aaSorting": [
 				[0, "asc"]
@@ -77,7 +79,7 @@ require_once APPLICATION_PATH . '/header.php';
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/common/reference/get-funding-sources-helper.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',
 					"type": "POST",
@@ -87,7 +89,6 @@ require_once APPLICATION_PATH . '/header.php';
 				});
 			}
 		});
-		$.unblockUI();
 	});
 
 	function updateStatus(obj, optVal) {
@@ -95,10 +96,10 @@ require_once APPLICATION_PATH . '/header.php';
 			conf = confirm('<?php echo _translate("Are you sure you want to change the status"); ?>?');
 			if (conf) {
 				$.post("update-funding-source-status.php", {
-						status: obj.value,
-						id: obj.id
-					},
-					function(data) {
+					status: obj.value,
+					id: obj.id
+				},
+					function (data) {
 						if (data != "") {
 							oTable.fnDraw();
 							alert("<?php echo _translate("Updated successfully", true); ?>");
