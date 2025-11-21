@@ -49,7 +49,7 @@ if (!$isCli && !empty($systemConfig['system']['cache_di']) && true === $systemCo
 // Configuration and DB
 $builder->addDefinitions([
     'applicationConfig' => $systemConfig,
-    'db' => factory(new DatabaseFactory()),
+    'db' => factory(DatabaseFactory::class),
     DatabaseService::class => get('db')
 ]);
 
