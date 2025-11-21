@@ -106,7 +106,8 @@ if (str_contains((string) $httpReferer, "updateVlTestResult.php") || str_contain
 									<?php
 									foreach ($batResult as $code) { ?>
 										<option value="<?php echo $code['batch_code']; ?>" <?php echo ($batchCode == $code['batch_code']) ? "selected='selected'" : "" ?>>
-											<?php echo $code['batch_code']; ?></option>
+											<?php echo $code['batch_code']; ?>
+										</option>
 										<?php
 									} ?>
 								</select>
@@ -124,7 +125,8 @@ if (str_contains((string) $httpReferer, "updateVlTestResult.php") || str_contain
 									<?php
 									foreach ($sResult as $type) { ?>
 										<option value="<?php echo $type['sample_id']; ?>" <?php echo ($sampleType == $type['sample_id']) ? "selected='selected'" : "" ?>>
-											<?= $type['sample_name']; ?></option>
+											<?= $type['sample_name']; ?>
+										</option>
 										<?php
 									} ?>
 								</select>
@@ -420,7 +422,6 @@ if (str_contains((string) $httpReferer, "updateVlTestResult.php") || str_contain
 	}
 
 	function loadVlRequestData() {
-		$.blockUI();
 		oTable = $('#vlRequestDataTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -430,7 +431,6 @@ if (str_contains((string) $httpReferer, "updateVlTestResult.php") || str_contain
 			"iDisplayLength": 100,
 			"bRetrieve": true,
 			"drawCallback": function (settings) {
-				$.unblockUI();
 			},
 			"aoColumns": [{
 				"sClass": "center"
@@ -525,7 +525,6 @@ if (str_contains((string) $httpReferer, "updateVlTestResult.php") || str_contain
 	}
 
 	function searchVlRequestData() {
-		$.blockUI();
 		oTable.fnDraw();
 		document.cookie = "collectionDate=" + $("#sampleCollectionDate").val();
 		document.cookie = "batchCode=" + $("#batchCode").val();
@@ -533,7 +532,6 @@ if (str_contains((string) $httpReferer, "updateVlTestResult.php") || str_contain
 		document.cookie = "facilityName=" + $("#facilityName").val();
 		document.cookie = "gender=" + $("#gender").val();
 		document.cookie = "status=" + $("#status").val();
-		$.unblockUI();
 	}
 
 

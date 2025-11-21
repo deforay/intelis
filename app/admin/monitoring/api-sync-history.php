@@ -200,7 +200,6 @@ foreach ($syncedTypeResults as $synced) {
 	});
 
 	function loadVlRequestData() {
-		$.blockUI();
 		oTable = $('#vlRequestDataTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -250,7 +249,6 @@ foreach ($syncedTypeResults as $synced) {
 				});
 			}
 		});
-		$.unblockUI();
 	}
 </script>
 <?php

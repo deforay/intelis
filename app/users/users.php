@@ -23,20 +23,28 @@ require_once APPLICATION_PATH . '/header.php';
 
         <div class="box">
 
-          <span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;margin-left: 450px;" id="showhide" class="">
+          <span
+            style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;margin-left: 450px;"
+            id="showhide" class="">
             <div class="row" style="background:#e0e0e0;padding: 15px;">
               <div class="col-md-12">
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0" data-showhide="user_name" class="showhideCheckBox" /> <label for="iCol0"><?php echo _translate("User Name"); ?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="0" id="iCol0"
+                    data-showhide="user_name" class="showhideCheckBox" /> <label
+                    for="iCol0"><?php echo _translate("User Name"); ?></label>
                 </div>
                 <div class="col-md-3">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="email" class="showhideCheckBox" /> <label for="iCol1"><?php echo _translate("Email"); ?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="email"
+                    class="showhideCheckBox" /> <label for="iCol1"><?php echo _translate("Email"); ?></label>
                 </div>
                 <div class="col-md-3">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="2" id="iCol2" data-showhide="role_name" class="showhideCheckBox" /> <label for="iCol2"><?php echo _translate("Role"); ?></label>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="2" id="iCol2"
+                    data-showhide="role_name" class="showhideCheckBox" /> <label
+                    for="iCol2"><?php echo _translate("Role"); ?></label>
                 </div>
                 <div class="col-md-3">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status" class="showhideCheckBox" /> <label for="iCol3"><?php echo _translate("Status"); ?></label> <br>
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status"
+                    class="showhideCheckBox" /> <label for="iCol3"><?php echo _translate("Status"); ?></label> <br>
                 </div>
               </div>
             </div>
@@ -44,14 +52,16 @@ require_once APPLICATION_PATH . '/header.php';
           <div class="box-header with-border">
 
             <?php if (_isAllowed("/users/addUser.php")) { ?>
-              <a href="addUser.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add User"); ?></a>
+              <a href="addUser.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em>
+                <?php echo _translate("Add User"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
 
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="userDataTable" class="table table-bordered table-striped" aria-hidden="true">
+            <table aria-describedby="table" id="userDataTable" class="table table-bordered table-striped"
+              aria-hidden="true">
               <thead>
                 <tr>
                   <th><?php echo _translate("User Name"); ?></th>
@@ -84,12 +94,11 @@ require_once APPLICATION_PATH . '/header.php';
 </div>
 <script>
   var oTable = null;
-  $(function() {
+  $(function () {
 
   });
 
-  $(document).ready(function() {
-    $.blockUI();
+  $(document).ready(function () {
     oTable = $('#userDataTable').dataTable({
       "bJQueryUI": false,
       "bAutoWidth": false,
@@ -98,24 +107,24 @@ require_once APPLICATION_PATH . '/header.php';
       "bStateSave": true,
       "bRetrieve": true,
       "aoColumns": [{
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
         <?php if (_isAllowed("/users/editUser.php")) { ?> {
-            "sClass": "center",
-            "bSortable": false
-          },
+          "sClass": "center",
+          "bSortable": false
+        },
         <?php } ?>
       ],
       "aaSorting": [
@@ -125,7 +134,7 @@ require_once APPLICATION_PATH . '/header.php';
       "bProcessing": true,
       "bServerSide": true,
       "sAjaxSource": "/users/getUserDetails.php",
-      "fnServerData": function(sSource, aoData, fnCallback) {
+      "fnServerData": function (sSource, aoData, fnCallback) {
         $.ajax({
           "dataType": 'json',
           "type": "POST",
@@ -135,7 +144,6 @@ require_once APPLICATION_PATH . '/header.php';
         });
       }
     });
-    $.unblockUI();
   });
 </script>
 <?php

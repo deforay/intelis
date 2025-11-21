@@ -24,12 +24,14 @@ require_once APPLICATION_PATH . '/header.php';
         <div class="box">
           <div class="box-header with-border">
             <?php if (_isAllowed("/roles/addRole.php")) { ?>
-              <a href="addRole.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Role"); ?></a>
+              <a href="addRole.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em>
+                <?php echo _translate("Add Role"); ?></a>
             <?php } ?>
           </div>
           <!-- /.box-header -->
           <div class="box-body">
-            <table aria-describedby="table" id="roleDataTable" class="table table-bordered table-striped" aria-hidden="true">
+            <table aria-describedby="table" id="roleDataTable" class="table table-bordered table-striped"
+              aria-hidden="true">
               <thead>
                 <tr>
                   <th><?php echo _translate("Role Name"); ?></th>
@@ -61,8 +63,7 @@ require_once APPLICATION_PATH . '/header.php';
 <script>
   var oTable = null;
 
-  $(document).ready(function() {
-    $.blockUI();
+  $(document).ready(function () {
     oTable = $('#roleDataTable').dataTable({
       "bJQueryUI": false,
       "bAutoWidth": false,
@@ -71,18 +72,18 @@ require_once APPLICATION_PATH . '/header.php';
 
       "bRetrieve": true,
       "aoColumns": [{
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
+      {
+        "sClass": "center"
+      },
         <?php if (_isAllowed("editRole.php")) { ?> {
-            "sClass": "center",
-            "bSortable": false
-          },
+          "sClass": "center",
+          "bSortable": false
+        },
         <?php } ?>
       ],
       "aaSorting": [
@@ -91,7 +92,7 @@ require_once APPLICATION_PATH . '/header.php';
       "bProcessing": true,
       "bServerSide": true,
       "sAjaxSource": "/roles/getRoleDetails.php",
-      "fnServerData": function(sSource, aoData, fnCallback) {
+      "fnServerData": function (sSource, aoData, fnCallback) {
         $.ajax({
           "dataType": 'json',
           "type": "POST",
@@ -101,7 +102,6 @@ require_once APPLICATION_PATH . '/header.php';
         });
       }
     });
-    $.unblockUI();
   });
 </script>
 <?php
