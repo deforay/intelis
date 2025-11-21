@@ -3,6 +3,7 @@
 // app/system/di.php
 use function DI\factory;
 use function DI\get;
+use function DI\autowire;
 use function DI\create;
 use DI\ContainerBuilder;
 use App\Factories\DatabaseFactory;
@@ -46,6 +47,27 @@ if (!$isCli && !empty($systemConfig['system']['cache_di']) && true === $systemCo
     }
 }
 
+// Auto-register all classes in app/classes to ensure they are compiled
+$classesDir = APPLICATION_PATH . '/classes';
+$iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($classesDir));
+$regex = new RegexIterator($iterator, '/^.+\.php$/i', RecursiveRegexIterator::GET_MATCH);
+
+foreach ($regex as $file) {
+    $filePath = $file[0];
+
+    // Convert file path to namespace
+    $relativePath = str_replace($classesDir . '/', '', $filePath);
+    $className = 'App\\' . str_replace(['/', '.php'], ['\\', ''], $relativePath);
+
+    if (class_exists($className)) {
+        // Only register instantiable classes (skips Interfaces, Traits, Abstract classes)
+        $reflection = new ReflectionClass($className);
+        if ($reflection->isInstantiable()) {
+            $builder->addDefinitions([$className => autowire()]);
+        }
+    }
+}
+
 // Configuration and DB
 $builder->addDefinitions([
     'applicationConfig' => $systemConfig,
@@ -54,10 +76,9 @@ $builder->addDefinitions([
 ]);
 
 // Services
-// Since useAutowiring(true) is enabled, we don't need to list every service here
-// unless it needs specific configuration.
 $builder->addDefinitions([
-    // Add any services that need custom configuration here
+    // If you need to manually wire a service, add it here.
+    // The manual definition will automatically override the auto-registered one.
 ]);
 
 // Utilities, Helpers and Other Classes
