@@ -188,10 +188,10 @@ function _sanitizeFiles($files, array $allowedTypes = [], bool $sanitizeFileName
 
                     $file = new UploadedFile(
                         $file->getStream(),
-                        $file->getSize(),
-                        $file->getError(),
                         $sanitizedFilename,
-                        $file->getClientMediaType()
+                        $file->getClientMediaType(),
+                        (int) $file->getSize(),
+                        $file->getError()
                     );
                 }
 
