@@ -802,6 +802,27 @@ fi
 # Set ACLs
 set_permissions "${lis_path}" "quick"
 
+# Make intelis command globally accessible
+print info "Setting up intelis command..."
+
+TARGET="/usr/local/bin/intelis"
+SOURCE="${lis_path}/intelis"
+
+if [ -f "${SOURCE}" ]; then
+    # Remove any existing version
+    rm -f "${TARGET}" /usr/bin/intelis 2>/dev/null || true
+
+    # Create symlink and make source executable
+    chmod 755 "${SOURCE}"
+    ln -sf "${SOURCE}" "${TARGET}"
+
+    print success "intelis command installed globally at ${TARGET}"
+    log_action "intelis command installed at ${TARGET}"
+else
+    print warning "intelis script not found at ${SOURCE}, skipping setup"
+    log_action "intelis setup skipped — source missing"
+fi
+
 php bin/db-tools.php config-test
 
 print header "Running database migrations and other post-install tasks"
@@ -851,26 +872,6 @@ if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
 fi
 
 
-# Make intelis command globally accessible
-print info "Setting up intelis command..."
-
-TARGET="/usr/local/bin/intelis"
-SOURCE="${lis_path}/intelis"
-
-if [ -f "${SOURCE}" ]; then
-    # Remove any existing version
-    rm -f "${TARGET}" /usr/bin/intelis 2>/dev/null || true
-
-    # Create symlink and make source executable
-    chmod 755 "${SOURCE}"
-    ln -sf "${SOURCE}" "${TARGET}"
-
-    print success "intelis command installed globally at ${TARGET}"
-    log_action "intelis command installed at ${TARGET}"
-else
-    print warning "intelis script not found at ${SOURCE}, skipping setup"
-    log_action "intelis setup skipped — source missing"
-fi
 
 
 if [ -f "${lis_path}/var/cache/CompiledContainer.php" ]; then

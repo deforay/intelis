@@ -46,6 +46,7 @@ $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 $activeFacilities = [];
 $display = 'display:none';
 $facilityMap = '';
+$preselectedFacilities = [];
 if ($general->isSTSInstance()) {
 
      $facilityMap = $facilitiesService->getUserFacilityMap($id);
