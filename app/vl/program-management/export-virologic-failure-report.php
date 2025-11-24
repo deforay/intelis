@@ -71,7 +71,7 @@ $sQuery = "SELECT
           LEFT JOIN instruments as i ON vl.instrument_id=i.instrument_id
           INNER JOIN facility_details as l ON vl.lab_id=l.facility_id";
 
-$sWhere[] =  " vl.vl_result_category = 'not suppressed' AND vl.patient_age_in_years IS NOT NULL AND vl.patient_gender IS NOT NULL AND vl.current_regimen IS NOT NULL ";
+$sWhere[] = " vl.vl_result_category = 'not suppressed' AND vl.patient_age_in_years IS NOT NULL AND vl.patient_gender IS NOT NULL AND vl.current_regimen IS NOT NULL ";
 
 /* State filter */
 if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
@@ -118,9 +118,9 @@ if (!in_array(trim((string) $_POST['sampleCollectionDate']), ['', '0'], true)) {
      [$sampleCollectionDateStart, $sampleCollectionDateEnd] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
 
      if ($sampleCollectionDateStart == $sampleCollectionDateEnd) {
-          $sWhere[] =  "DATE(vl.sample_collection_date) = '$sampleCollectionDateStart'";
+          $sWhere[] = "DATE(vl.sample_collection_date) = '$sampleCollectionDateStart'";
      } else {
-          $sWhere[] =  "DATE(vl.sample_collection_date) BETWEEN '$sampleCollectionDateStart' AND '$sampleCollectionDateEnd'";
+          $sWhere[] = "DATE(vl.sample_collection_date) BETWEEN '$sampleCollectionDateStart' AND '$sampleCollectionDateEnd'";
      }
 }
 /* Sample test date filter */
@@ -129,9 +129,9 @@ if (!in_array(trim((string) $_POST['sampleTestDate']), ['', '0'], true)) {
      [$sampleTestDateStart, $sampleTestDateEnd] = DateUtility::convertDateRange($_POST['sampleTestDate']);
 
      if ($sampleTestDateStart == $sampleTestDateEnd) {
-          $sWhere[] =  "DATE(vl.sample_tested_datetime) = '$sampleTestDateStart'";
+          $sWhere[] = "DATE(vl.sample_tested_datetime) = '$sampleTestDateStart'";
      } else {
-          $sWhere[] =  "DATE(vl.sample_tested_datetime) BETWEEN '$sampleTestDateStart' AND '$sampleTestDateEnd'";
+          $sWhere[] = "DATE(vl.sample_tested_datetime) BETWEEN '$sampleTestDateStart' AND '$sampleTestDateEnd'";
      }
 }
 
@@ -185,7 +185,7 @@ foreach ($rResult as $aRow) {
      }
      unset($aRow['is_encrypted']);
      $patientId = trim((string) $aRow['patient_art_no']);
-     $aRow['result'] = $vlService->extractViralLoadValue($aRow['result']);
+     //$aRow['result'] = $vlService->extractViralLoadValue($aRow['result']);
      $vfData[] = $aRow;
      $vlnsData[] = $aRow;
      // Check if patient id already there in array
