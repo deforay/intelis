@@ -339,57 +339,61 @@ try {
     }
 
     $io->section('Refreshing Database Metadata');
-    $io->text('Executing metadata sync…');
+    if ($io->confirm('Do you want to refresh the metadata?', true)) {
+        $io->text('Executing metadata sync…');
 
-    $metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
-    if (!file_exists($metadataScriptPath)) {
-        echo "❌ Metadata script not found at: $metadataScriptPath" . PHP_EOL;
-        echo "Run: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-        echo "Or:  ./intelis reset-metadata" . PHP_EOL;
-        throw new RuntimeException("Metadata script missing");
-    }
+        $metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
+        if (!file_exists($metadataScriptPath)) {
+            echo "❌ Metadata script not found at: $metadataScriptPath" . PHP_EOL;
+            echo "Run: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+            echo "Or:  ./intelis reset-metadata" . PHP_EOL;
+            throw new RuntimeException("Metadata script missing");
+        }
 
-    $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
-    echo "Executing: $metadataCommand" . PHP_EOL . PHP_EOL;
+        $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
+        echo "Executing: $metadataCommand" . PHP_EOL . PHP_EOL;
 
-    $bar = MiscUtility::spinnerStart(1, 'Refreshing metadata…', '█', '░', '█', 'cyan');
-    $output = [];
-    $returnCode = 0;
+        $bar = MiscUtility::spinnerStart(1, 'Refreshing metadata…', '█', '░', '█', 'cyan');
+        $output = [];
+        $returnCode = 0;
 
-    $handle = popen($metadataCommand . " 2>&1", 'r');
-    if ($handle) {
-        while (!feof($handle)) {
-            $line = fgets($handle);
-            if ($line !== false) {
-                $trim = trim($line);
-                $output[] = $trim;
-                if (stripos($trim, 'error') !== false || stripos($trim, 'warning') !== false) {
-                    MiscUtility::spinnerPausePrint($bar, function () use ($trim): void {
-                        echo $trim . PHP_EOL;
-                    });
+        $handle = popen($metadataCommand . " 2>&1", 'r');
+        if ($handle) {
+            while (!feof($handle)) {
+                $line = fgets($handle);
+                if ($line !== false) {
+                    $trim = trim($line);
+                    $output[] = $trim;
+                    if (stripos($trim, 'error') !== false || stripos($trim, 'warning') !== false) {
+                        MiscUtility::spinnerPausePrint($bar, function () use ($trim): void {
+                            echo $trim . PHP_EOL;
+                        });
+                    }
                 }
             }
+            $returnCode = pclose($handle);
+        } else {
+            exec("$metadataCommand 2>&1", $output, $returnCode);
         }
-        $returnCode = pclose($handle);
+
+        MiscUtility::spinnerAdvance($bar, 1);
+        MiscUtility::spinnerFinish($bar);
+
+        if ($returnCode !== 0) {
+            echo PHP_EOL . "Full output:" . PHP_EOL;
+            foreach ($output as $l)
+                echo $l . PHP_EOL;
+            $io->text([
+                "❌ <error>Metadata refresh failed with return code: $returnCode</error>",
+                '<info>Run manually: php app/tasks/remote/sts-metadata-receiver.php -ft</info>',
+            ]);
+            throw new RuntimeException("Metadata refresh failed");
+        }
+
+        $io->text("✅ <success>Metadata refresh completed successfully.</success>");
     } else {
-        exec("$metadataCommand 2>&1", $output, $returnCode);
+        $io->text("Skipping metadata refresh.");
     }
-
-    MiscUtility::spinnerAdvance($bar, 1);
-    MiscUtility::spinnerFinish($bar);
-
-    if ($returnCode !== 0) {
-        echo PHP_EOL . "Full output:" . PHP_EOL;
-        foreach ($output as $l)
-            echo $l . PHP_EOL;
-        $io->text([
-            "❌ <error>Metadata refresh failed with return code: $returnCode</error>",
-            '<info>Run manually: php app/tasks/remote/sts-metadata-receiver.php -ft</info>',
-        ]);
-        throw new RuntimeException("Metadata refresh failed");
-    }
-
-    $io->text("✅ <success>Metadata refresh completed successfully.</success>");
 
     // ---- Step 3: Lab Configuration ------------------------------------------
     $io->section('Lab Configuration');
@@ -428,7 +432,7 @@ try {
         $io->section('Selecting Lab');
         maybeInstallFzf();
 
-        $labFetchBar = MiscUtility::spinnerStart(1, 'Fetching available labs…', '█', '░', '█', 'cyan');
+        $labFetchBar = MiscUtility::spinnerStart(1, 'Fetching available labs…');
         $testingLabs = fetchActiveLabs($db);
         MiscUtility::spinnerAdvance($labFetchBar, 1);
         MiscUtility::spinnerFinish($labFetchBar);
