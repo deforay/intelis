@@ -997,6 +997,29 @@ print success "Directory migration completed"
 # Set proper permissions
 set_permissions "${lis_path}" "quick"
 
+
+# Make intelis command globally accessible
+print info "Setting up intelis command..."
+
+TARGET="/usr/local/bin/intelis"
+SOURCE="${lis_path}/intelis"
+
+if [ -f "${SOURCE}" ]; then
+    # Remove any existing version
+    rm -f "${TARGET}" /usr/bin/intelis 2>/dev/null || true
+
+    # Create symlink and make source executable
+    chmod 755 "${SOURCE}"
+    ln -sf "${SOURCE}" "${TARGET}"
+
+    print success "intelis command installed globally at ${TARGET}"
+    log_action "intelis command installed at ${TARGET}"
+else
+    print warning "intelis script not found at ${SOURCE}, skipping setup"
+    log_action "intelis setup skipped — source missing"
+fi
+
+
 # Check for config.production.php and its content
 config_file="${lis_path}/configs/config.production.php"
 dist_config_file="${lis_path}/configs/config.production.dist.php"
@@ -1161,27 +1184,6 @@ wait $pid
 
 print success "Database migrations and post-update tasks completed."
 log_action "Database migrations and post-update tasks completed."
-
-# Make intelis command globally accessible
-print info "Setting up intelis command..."
-
-TARGET="/usr/local/bin/intelis"
-SOURCE="${lis_path}/intelis"
-
-if [ -f "${SOURCE}" ]; then
-    # Remove any existing version
-    rm -f "${TARGET}" /usr/bin/intelis 2>/dev/null || true
-
-    # Create symlink and make source executable
-    chmod 755 "${SOURCE}"
-    ln -sf "${SOURCE}" "${TARGET}"
-
-    print success "intelis command installed globally at ${TARGET}"
-    log_action "intelis command installed at ${TARGET}"
-else
-    print warning "intelis script not found at ${SOURCE}, skipping setup"
-    log_action "intelis setup skipped — source missing"
-fi
 
 
 if [ -d "${lis_path}/run-once" ]; then

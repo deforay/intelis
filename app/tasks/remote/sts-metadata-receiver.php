@@ -86,14 +86,6 @@ if (empty($remoteURL) || $remoteURL == '') {
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
-if (null == $labId || '' == $labId) {
-    if ($cliMode) {
-        $io->warning(_translate("Please check if Testing Lab ID is set"));
-    }
-    LoggerUtility::logWarning("Please check if Testing Lab ID is set");
-    exit(0);
-}
-
 $version = VERSION;
 
 if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
