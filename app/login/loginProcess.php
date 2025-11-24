@@ -60,6 +60,11 @@ try {
 
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
 
+        if (_isPotentiallyMalicious($_POST['username'])) {
+            LoggerUtility::logError("Potential malicious login attempt blocked for user: " . $_POST['username']);
+            throw new SystemException(_translate("Invalid Login Credentials"));
+        }
+
 
         if (
             ($usersService->continuousFailedLogins($_POST['username']) >= 3) &&
@@ -83,7 +88,10 @@ try {
         }
 
         // regenerate session id
+        $appLocale = $_SESSION['APP_LOCALE'] ?? 'en_US';
         session_regenerate_id(true);
+        $_SESSION = [];
+        $_SESSION['APP_LOCALE'] = $appLocale;
         $usersService->recordLoginAttempt($_POST['username'], 'successful', $userRow['user_id']);
         $instanceResult = $db->rawQueryOne("SELECT vlsm_instance_id, instance_facility_name FROM s_vlsm_instance");
 
@@ -148,11 +156,11 @@ try {
     LoggerUtility::logError($e->getMessage() . " | " . $ipAddress . " | " . $_POST['username'], [
         'errorType' => 'login',
         'exception' => $e,
-        'code' => $e->getCode(), // Error code
-        'last_db_error' => $db->getLastError(), // Last database error
-        'last_db_query' => $db->getLastQuery(), // Last executed query
-        'file' => $e->getFile(), // File where the error occurred
-        'line' => $e->getLine(), // Line number of the error
+        'code' => $e->getCode(),
+        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
     ]);
     $redirect = "/login/login.php";
 }

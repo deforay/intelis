@@ -42,15 +42,11 @@ function _translate(?string $text, bool|string $escapeTextOrContext = false): st
         };
 
         return match ($context) {
-            'js' => str_replace(
-                ['\\', "'", '"'],
-                ['\\\\', "\\'", '\\"'],
-                substr(json_encode($translated, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1)
-            ),
+            'js' => substr(json_encode($translated, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), 1, -1),
             'html' => htmlspecialchars($translated, ENT_QUOTES, 'UTF-8'), // HTML attribute-safe
             default => $translated, // Plain, unescaped
         };
-    });
+    }, 300);
 }
 
 
@@ -136,16 +132,15 @@ function _sanitizeFiles($files, array $allowedTypes = [], bool $sanitizeFileName
                 }
 
                 if ($file->getError() !== UPLOAD_ERR_OK) {
-                    $errorMessages = [
+                    $errorMessage = match ($file->getError()) {
                         UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize directive in php.ini',
                         UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE directive specified in the HTML form',
                         UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
                         UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
                         UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
-                        UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload'
-                    ];
-
-                    $errorMessage = $errorMessages[$file->getError()] ?? 'Unknown upload error';
+                        UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload',
+                        default => 'Unknown upload error',
+                    };
                     throw new SystemException("File upload error: $errorMessage");
                 }
 
@@ -284,6 +279,9 @@ function _serveSecureFile(
 
     // Set security headers
     header('Content-Security-Policy: default-src \'none\'; img-src \'self\'; script-src \'self\'; style-src \'self\'');
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('X-XSS-Protection: 1; mode=block');
 
     // Set appropriate headers
     header("Content-Type: $contentType");
