@@ -328,18 +328,58 @@ try {
         }
     }
 
-    // ---- Step 2: Refresh Metadata -----------------------------------------
-    $effectiveRemoteURL = $newRemoteURL !== '' ? $newRemoteURL : rtrim((string) $general->getRemoteURL(), '/');
-    if ($effectiveRemoteURL === '') {
-        echo PHP_EOL
-            . "⚠️  No STS URL configured; skipping metadata refresh and lab configuration." . PHP_EOL
-            . "   Login as System Admin → System Config, then run: composer setup-sts" . PHP_EOL
-            . PHP_EOL . "✅ Setup complete. Configure STS URL before proceeding." . PHP_EOL;
-        exit(CLI\ERROR);
+    // ---- Step 2: Lab & Metadata Setup -----------------------------------------
+    $io->section('Lab & Metadata Setup');
+
+    $currentLabId = (int) ($general->getSystemConfig('sc_testing_lab_id') ?? 0);
+    $labDetails = null;
+    $isCorrectLab = false;
+
+    if ($currentLabId > 0) {
+        $labDetails = $db->rawQueryOne(
+            "SELECT facility_name
+            FROM facility_details
+            WHERE facility_id = ?
+            AND facility_type = 2
+            AND status = 'active'",
+            [$currentLabId]
+        );
     }
 
-    $io->section('Refreshing Database Metadata');
-    if ($io->confirm('Do you want to refresh the metadata?', true)) {
+    if ($labDetails) {
+        $io->text([
+            "Current InteLIS Lab ID: <info>$currentLabId</info>",
+            "Lab Name: <info>{$labDetails['facility_name']}</info>",
+        ]);
+        $isCorrectLab = $io->confirm('Is this the correct lab?', true);
+    } else {
+        if ($currentLabId > 0) {
+            $io->warning("Current lab ID ($currentLabId) not found in active facilities.");
+        } else {
+            $io->warning('No lab is currently configured.');
+        }
+    }
+
+    $shouldRefreshMetadata = true;
+    $needLabSelection = true;
+
+    if ($isCorrectLab) {
+        $needLabSelection = false;
+        $shouldRefreshMetadata = $io->confirm('Do you want to refresh the metadata?', true);
+    }
+
+    // Metadata Refresh Logic
+    if ($shouldRefreshMetadata) {
+        $effectiveRemoteURL = $newRemoteURL !== '' ? $newRemoteURL : rtrim((string) $general->getRemoteURL(), '/');
+        if ($effectiveRemoteURL === '') {
+            echo PHP_EOL
+                . "⚠️  No STS URL configured; skipping metadata refresh and lab configuration." . PHP_EOL
+                . "   Login as System Admin → System Config, then run: composer setup-sts" . PHP_EOL
+                . PHP_EOL . "✅ Setup complete. Configure STS URL before proceeding." . PHP_EOL;
+            exit(CLI\ERROR);
+        }
+
+        $io->section('Refreshing Database Metadata');
         $io->text('Executing metadata sync…');
 
         $metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
@@ -395,39 +435,7 @@ try {
         $io->text("Skipping metadata refresh.");
     }
 
-    // ---- Step 3: Lab Configuration ------------------------------------------
-    $io->section('Lab Configuration');
-
-    $currentLabId = (int) ($general->getSystemConfig('sc_testing_lab_id') ?? 0);
-    $needLabSelection = false;
-
-    if ($currentLabId > 0) {
-        $labDetails = $db->rawQueryOne(
-            "SELECT facility_name
-            FROM facility_details
-            WHERE facility_id = ?
-            AND facility_type = 2
-            AND status = 'active'",
-            [$currentLabId]
-        );
-
-        if ($labDetails) {
-            $io->text([
-                "Current InteLIS Lab ID: <info>$currentLabId</info>",
-                "Lab Name: <info>{$labDetails['facility_name']}</info>",
-            ]);
-
-            $ok = $io->confirm('Is this the correct lab?', true);
-            $needLabSelection = !$ok;
-        } else {
-            $io->warning("Current lab ID ($currentLabId) not found in active facilities.");
-            $needLabSelection = true;
-        }
-    } else {
-        $io->warning('No lab is currently configured.');
-        $needLabSelection = true;
-    }
-
+    // Lab Selection Logic
     if ($needLabSelection) {
         $io->section('Selecting Lab');
         maybeInstallFzf();
@@ -482,21 +490,8 @@ try {
             throw $e;
         }
     } else {
-        $selectedLab = $db->rawQueryOne(
-            "SELECT facility_id, facility_name
-            FROM facility_details 
-            WHERE facility_id = ?
-            AND facility_type = 2
-            AND status = 'active'",
-            [$currentLabId]
-        );
-        if ($selectedLab) {
-            $io->text("Keeping lab: <info>[ID: {$selectedLab['facility_id']}] {$selectedLab['facility_name']}</info>");
-        }
+        $io->text("Keeping lab: <info>[ID: {$currentLabId}] {$labDetails['facility_name']}</info>");
     }
-
-    // Final cache clear
-    (ContainerRegistry::get(FileCacheUtility::class))->clear();
 
     $io->success('STS setup complete!');
 
