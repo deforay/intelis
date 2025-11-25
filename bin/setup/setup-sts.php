@@ -262,7 +262,7 @@ try {
                 $io->warning('Invalid URL. Try again or press Enter to skip.');
                 continue;
             }
-            if (!CommonService::validateStsUrl($candidate, $currentLabId)) {
+            if (false == CommonService::validateStsUrl($candidate, $currentLabId)) {
                 $io->error('Cannot connect to STS at this URL. Try again or press Enter to skip.');
                 continue;
             }
@@ -393,7 +393,7 @@ try {
         $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
         echo "Executing: $metadataCommand" . PHP_EOL . PHP_EOL;
 
-        $bar = MiscUtility::spinnerStart(1, 'Refreshing metadata…', '█', '░', '█', 'cyan');
+        $bar = MiscUtility::spinnerStart(1, 'Refreshing metadata…');
         $output = [];
         $returnCode = 0;
 

@@ -13,6 +13,7 @@ use App\Exceptions\SystemException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use function strlen;
 
 final class MiscUtility
 {

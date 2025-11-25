@@ -88,7 +88,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
 $version = VERSION;
 
-if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
+if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
     if ($cliMode) {
         $io->error(_translate("No network connectivity while trying STS medatata sync."));
     }

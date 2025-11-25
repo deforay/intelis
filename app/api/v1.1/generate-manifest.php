@@ -63,7 +63,7 @@ $user = $usersService->findUserByApiToken($authToken);
 $testTable = TestsService::getTestTableName($input['testType']);
 $testPrimaryKey = TestsService::getPrimaryColumn($input['testType']);
 
-$sampleManifestCode = strtoupper(str_replace("-", "", $input['testType']) . date('ymdH') .  MiscUtility::generateRandomString(4));
+$sampleManifestCode = strtoupper(str_replace("-", "", $input['testType']) . date('ymd') . MiscUtility::generateRandomString(4));
 
 try {
     // Modified query to include sample_package_id and sample_package_code
@@ -84,7 +84,7 @@ try {
     $response = [];
 
     if (!empty($facilityMap)) {
-        $arrFacility =  explode(",", (string) $facilityMap);
+        $arrFacility = explode(",", (string) $facilityMap);
         if (in_array($input['labId'], $arrFacility) == false) {
             $response = [
                 'status' => 'Failed',
