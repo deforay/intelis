@@ -72,7 +72,7 @@ try {
         if (
             !empty($interpretedResults['result']) &&
             (in_array(strtolower((string) $interpretedResults['result']), $bdl) ||
-                ($interpretedResults['absDecimalVal'] < 400))
+                $interpretedResults['absDecimalVal'] < 400)
         ) {
             $interpretedResults['txtVal'] =
                 $interpretedResults['result'] = 'Below Detection Level';

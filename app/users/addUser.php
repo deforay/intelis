@@ -105,17 +105,16 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                    </div>
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="role"
-                                                  class="col-lg-4 control-label"><?php echo _translate("Role"); ?> <span
-                                                       class="mandatory">*</span></label>
+                                             <label for="role" class="col-lg-4 control-label"><?= _translate("Role"); ?>
+                                                  <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
                                                   <select class="form-control isRequired" name='role' id='role'
-                                                       title="<?php echo _translate('Please select the role'); ?>">
-                                                       <option value=""><?php echo _translate("--Select--"); ?></option>
+                                                       title="<?= _translate("Please select this user's role"); ?>">
+                                                       <option value=""><?= _translate("--Select--"); ?></option>
                                                        <?php foreach ($result as $row) { ?>
-                                                            <option value="<?php echo $row['role_id']; ?>"
-                                                                 data-code="<?php echo $row['role_code']; ?>">
-                                                                 <?php echo (($row['role_name'])); ?>
+                                                            <option value="<?= $row['role_id']; ?>"
+                                                                 data-code="<?= $row['role_code']; ?>">
+                                                                 <?= $row['role_name']; ?>
                                                             </option>
                                                        <?php } ?>
                                                   </select>
@@ -127,17 +126,16 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                    <div class="col-md-12 col-lg-12">
                                         <div class="form-group">
                                              <label for="authToken"
-                                                  class="col-lg-2 control-label"><?php echo _translate("AuthToken"); ?>
+                                                  class="col-lg-2 control-label"><?= _translate("AuthToken"); ?>
                                                   <span class="mandatory">*</span></label>
                                              <div class="col-lg-9">
                                                   <input type="text" class="form-control" id="authToken"
-                                                       name="authToken"
-                                                       placeholder="<?php echo _translate('Auth Token'); ?>"
-                                                       title="<?php echo _translate('Please Generate the auth token'); ?>"
+                                                       name="authToken" placeholder="<?= _translate('Auth Token'); ?>"
+                                                       title="<?= _translate('Please generate the auth token'); ?>"
                                                        readonly>
                                                   <a style="display:block; margin-top:1em; width:30%;"
                                                        href="javascript:void(0);" class="btn btn-sm btn-primary"
-                                                       onclick="generateToken('authToken');"><?php echo _translate("Generate Another Token"); ?></a>
+                                                       onclick="generateToken('authToken');"><?= _translate("Generate Another Token"); ?></a>
                                              </div>
                                         </div>
                                    </div>
@@ -146,25 +144,25 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                    <div class="col-md-6">
                                         <div class="form-group">
                                              <label for="interfaceUserName"
-                                                  class="col-lg-4 control-label"><?php echo _translate("Interface User Name (from your Molecular testing machine)"); ?></label>
+                                                  class="col-lg-4 control-label"><?= _translate("Interface User Name (from your Molecular testing machine)"); ?></label>
                                              <div class="col-lg-7">
                                                   <input type="text" class="form-control" id="interfaceUserName"
                                                        name="interfaceUserName"
-                                                       placeholder="<?php echo _translate('Interface User Name'); ?>"
-                                                       title="<?php echo _translate('Please enter interface user name'); ?>" />
+                                                       placeholder="<?= _translate('Interface User Name'); ?>"
+                                                       title="<?= _translate('Please enter interface user name'); ?>" />
                                              </div>
                                         </div>
                                    </div>
                                    <div class="col-md-6">
                                         <div class="form-group">
                                              <label for="appAccessable"
-                                                  class="col-lg-4 control-label"><?php echo _translate("Mobile App Access"); ?></label>
+                                                  class="col-lg-4 control-label"><?= _translate("Mobile App Access"); ?></label>
                                              <div class="col-lg-7">
                                                   <select class="form-control" name='appAccessable' id='appAccessable'
-                                                       title="<?php echo _translate('Please select the mobile App access or not'); ?>?">
-                                                       <option value=""><?php echo _translate("--Select--"); ?></option>
-                                                       <option value="yes"><?php echo _translate("Yes"); ?></option>
-                                                       <option value="no"><?php echo _translate("No"); ?></option>
+                                                       title="<?= _translate('Does this user have Mobile app access?'); ?>">
+                                                       <option value=""><?= _translate("--Select--"); ?></option>
+                                                       <option value="yes"><?= _translate("Yes"); ?></option>
+                                                       <option value="no"><?= _translate("No"); ?></option>
                                                   </select>
                                              </div>
                                         </div>

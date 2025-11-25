@@ -115,24 +115,14 @@ if (
 
 /* Sample collection date filter */
 if (!in_array(trim((string) $_POST['sampleCollectionDate']), ['', '0'], true)) {
-     [$sampleCollectionDateStart, $sampleCollectionDateEnd] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
-
-     if ($sampleCollectionDateStart == $sampleCollectionDateEnd) {
-          $sWhere[] = "DATE(vl.sample_collection_date) = '$sampleCollectionDateStart'";
-     } else {
-          $sWhere[] = "DATE(vl.sample_collection_date) BETWEEN '$sampleCollectionDateStart' AND '$sampleCollectionDateEnd'";
-     }
+     [$sampleCollectionDateStart, $sampleCollectionDateEnd] = DateUtility::convertDateRange($_POST['sampleCollectionDate'], includeTime: true);
+     $sWhere[] = "vl.sample_collection_date BETWEEN '$sampleCollectionDateStart' AND '$sampleCollectionDateEnd'";
 }
 /* Sample test date filter */
 
 if (!in_array(trim((string) $_POST['sampleTestDate']), ['', '0'], true)) {
-     [$sampleTestDateStart, $sampleTestDateEnd] = DateUtility::convertDateRange($_POST['sampleTestDate']);
-
-     if ($sampleTestDateStart == $sampleTestDateEnd) {
-          $sWhere[] = "DATE(vl.sample_tested_datetime) = '$sampleTestDateStart'";
-     } else {
-          $sWhere[] = "DATE(vl.sample_tested_datetime) BETWEEN '$sampleTestDateStart' AND '$sampleTestDateEnd'";
-     }
+     [$sampleTestDateStart, $sampleTestDateEnd] = DateUtility::convertDateRange($_POST['sampleTestDate'], includeTime: true);
+     $sWhere[] = "vl.sample_tested_datetime BETWEEN '$sampleTestDateStart' AND '$sampleTestDateEnd'";
 }
 
 if (!empty($_SESSION['facilityMap'])) {
