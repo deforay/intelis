@@ -123,12 +123,12 @@ final class VlService extends AbstractTestService
 
         // Replace common text patterns
         $textPatterns = [
-            'hiv-1'      => 'hiv1',
-            'hiv-2'      => 'hiv2',
-            'hiv-'       => 'hiv',
-            'not-'       => 'not',
-            'hcv-'       => 'hcv',
-            'hcv-rna'    => 'hcv'
+            'hiv-1' => 'hiv1',
+            'hiv-2' => 'hiv2',
+            'hiv-' => 'hiv',
+            'not-' => 'not',
+            'hcv-' => 'hcv',
+            'hcv-rna' => 'hcv'
         ];
         $input = str_ireplace(array_keys($textPatterns), array_values($textPatterns), $input);
 
@@ -227,10 +227,10 @@ final class VlService extends AbstractTestService
                 $vlResultCategory = null;
             } else {
                 if (is_numeric($finalResult)) {
-                    $interpretedResult =  $this->parseNumericValue($finalResult);
+                    $interpretedResult = $this->parseNumericValue($finalResult);
                 } elseif (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $finalResult, $matches)) {
                     if (isset($matches[2]) && is_numeric($matches[2])) {
-                        $interpretedResult =  $this->parseNumericValue($matches[2]);
+                        $interpretedResult = $this->parseNumericValue($matches[2]);
                     }
                 } elseif (in_array(strtolower((string) $orignalResultValue), $this->suppressedArray)) {
                     $interpretedResult = 10;
@@ -343,7 +343,7 @@ final class VlService extends AbstractTestService
 
             // Check for failure cases
             if (in_array(strtolower($originalResult), $this->failureCases, true)) {
-                $interpretedData =  [
+                $interpretedData = [
                     'logVal' => null,
                     'result' => $originalResult,
                     'absDecimalVal' => null,
@@ -354,9 +354,9 @@ final class VlService extends AbstractTestService
                     'resultStatus' => TEST_FAILED
                 ];
             } elseif ($vlResultType == 'numeric') {
-                $interpretedData =  $this->interpretViralLoadNumericResult($result, $unit);
+                $interpretedData = $this->interpretViralLoadNumericResult($result, $unit);
             } else {
-                $interpretedData =  $this->interpretViralLoadTextResult($result, $unit, $defaultLowVlResultText);
+                $interpretedData = $this->interpretViralLoadTextResult($result, $unit, $defaultLowVlResultText);
             }
 
             return $interpretedData;
@@ -527,8 +527,8 @@ final class VlService extends AbstractTestService
             // Extract the scientific notation part (e.g., "10*-1" or "E-1")
             if (preg_match('/10\*\s*(-?\d+)|E([+-]?\d+)/i', $unit, $matches)) {
                 $exponent = isset($matches[1]) && $matches[1] !== ''
-                    ? (float)$matches[1]
-                    : (float)$matches[2];
+                    ? (float) $matches[1]
+                    : (float) $matches[2];
 
                 $processedResult *= 10 ** $exponent; // Apply the multiplier
                 $processedUnit = preg_replace('/10\*\s*-?\d+|E[+-]?\d+/i', '', $unit); // Clean the unit
@@ -546,7 +546,7 @@ final class VlService extends AbstractTestService
 
 
     #[Override]
-    public function insertSample($params, $returnSampleData = false): int | array
+    public function insertSample($params, $returnSampleData = false): int|array
     {
         try {
             // Start a new transaction (this starts a new transaction if not already started)
@@ -600,8 +600,8 @@ final class VlService extends AbstractTestService
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-                'result_modified'  => 'no',
-                'is_result_sms_sent'  => 'no',
+                'result_modified' => 'no',
+                'is_result_sms_sent' => 'no',
                 'manual_result_entry' => 'yes',
                 'locked' => 'no'
             ];
@@ -627,7 +627,7 @@ final class VlService extends AbstractTestService
 
             $id = $this->db->getInsertId();
             if ($this->db->getLastErrno() > 0) {
-                throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
+                throw new SystemException($this->db->getLastErrno() . " | " . $this->db->getLastError());
             }
             // Commit the transaction after the successful insert
             $this->db->commitTransaction();
@@ -771,8 +771,13 @@ final class VlService extends AbstractTestService
                 return $this->parseNumericValue($processed);
             }
 
-            // More lenient: allows trailing units or (Ct ...)
-            if (preg_match('/([<>])\s*(\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?)/i', $processed, $matches)) {
+            // Check for numbers with comma separators (e.g., "1,116" or "1,234.56")
+            if (preg_match('/^(\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?)$/i', $processed, $matches)) {
+                return $this->parseNumericValue($matches[1]);
+            }
+
+            // More lenient: allows trailing units or (Ct ...) with < or > operators
+            if (preg_match('/([\<\>])\s*(\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?)/i', $processed, $matches)) {
                 $operator = $returnWithOperator ? $matches[1] : '';
                 return trim("$operator " . $this->parseNumericValue($matches[2]));
             }
