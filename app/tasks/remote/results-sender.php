@@ -324,7 +324,7 @@ $url = "$remoteURL/remote/v2/results.php";
 
 try {
     // Check network
-    if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
+    if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
         LoggerUtility::logError("No network connectivity while trying remote sync.");
         return false;
     }

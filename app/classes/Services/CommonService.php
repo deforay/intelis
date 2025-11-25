@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use function defined;
 use const COUNTRY\CAMEROON;
 use COUNTRY;
 use Exception;
@@ -1556,8 +1557,8 @@ final class CommonService
         // Get VERSION constant or default
         $version = defined('VERSION') ? VERSION : '1.0';
 
-        // Use current lab ID if available, or a default test value
-        $testLabId = $labId ?: '1';
+        // Use current lab ID if available
+        $testLabId = $labId ?: 'unset';
 
         $apiUrl = rtrim((string) $url, '/') . "/api/version.php?labId=" . $testLabId . "&version=" . $version;
 

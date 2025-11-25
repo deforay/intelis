@@ -349,18 +349,6 @@ if (empty($remoteURL)) {
     exit(0);
 }
 
-if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
-    LoggerUtility::logError("No internet connectivity while trying remote sync.", [
-        'line' => __LINE__,
-        'file' => __FILE__,
-        'remoteURL' => $remoteURL
-    ]);
-    if ($cliMode) {
-        echo "No internet connectivity while trying remote sync." . PHP_EOL;
-    }
-    exit(0);
-}
-
 if (empty($labId)) {
     if ($cliMode) {
         $io->error("No Lab ID set in System Config");
@@ -370,6 +358,18 @@ if (empty($labId)) {
         'file' => __FILE__,
         'remoteURL' => $remoteURL
     ]);
+    exit(0);
+}
+
+if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
+    LoggerUtility::logError("No internet connectivity while trying remote sync.", [
+        'line' => __LINE__,
+        'file' => __FILE__,
+        'remoteURL' => $remoteURL
+    ]);
+    if ($cliMode) {
+        echo "No internet connectivity while trying remote sync." . PHP_EOL;
+    }
     exit(0);
 }
 
