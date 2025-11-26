@@ -186,57 +186,53 @@ final class FacilitiesService
     // $onlyActive = true/false
     public function getHealthFacilities($testType = null, $byPassFacilityMap = false, $allColumns = false, $condition = [], $onlyActive = true, $userId = null)
     {
-
-        return MemoUtility::remember(function () use ($testType, $byPassFacilityMap, $allColumns, $condition, $onlyActive, $userId): string|array|null|int|float|false {
-            $userId ??= null;
-            if (isset($_SESSION['userId']) && $userId === null) {
-                $userId ??= $_SESSION['userId'];
+        $userId ??= null;
+        if (isset($_SESSION['userId']) && $userId === null) {
+            $userId ??= $_SESSION['userId'];
+        }
+        if (!$byPassFacilityMap && !empty($userId)) {
+            $facilityMap = $this->getUserFacilityMap($userId);
+            if (!empty($facilityMap)) {
+                $this->db->where("`facility_id` IN ($facilityMap)");
             }
-            if (!$byPassFacilityMap && !empty($userId)) {
-                $facilityMap = $this->getUserFacilityMap($userId);
-                if (!empty($facilityMap)) {
-                    $this->db->where("`facility_id` IN ($facilityMap)");
-                }
+        }
+
+        if (!empty($testType)) {
+            // subquery
+            $healthFacilities = $this->db->subQuery();
+            // we want to fetch facilities that have test type is not specified as well as this specific test type
+            $healthFacilities->where("test_type is null or test_type like '$testType'");
+            $healthFacilities->get("health_facilities", null, "facility_id");
+
+            $this->db->where("facility_id", $healthFacilities, 'IN');
+        }
+
+        if ($onlyActive) {
+            $this->db->where('status', 'active');
+        }
+
+        if (!empty($condition)) {
+            $condition = is_array($condition) ? $condition : [$condition];
+            foreach ($condition as $cond) {
+                $this->db->where($cond);
             }
+        }
 
-            if (!empty($testType)) {
-                // subquery
-                $healthFacilities = $this->db->subQuery();
-                // we want to fetch facilities that have test type is not specified as well as this specific test type
-                $healthFacilities->where("test_type is null or test_type like '$testType'");
-                $healthFacilities->get("health_facilities", null, "facility_id");
+        $this->db->orderBy("facility_name", "asc");
 
-                $this->db->where("facility_id", $healthFacilities, 'IN');
+        if ($allColumns) {
+            return $this->db->get("facility_details");
+        } else {
+
+            $response = [];
+
+            $results = $this->db->get("facility_details", null, "facility_id,facility_name");
+
+            foreach ($results as $row) {
+                $response[$row['facility_id']] = $row['facility_name'];
             }
-
-            if ($onlyActive) {
-                $this->db->where('status', 'active');
-            }
-
-            if (!empty($condition)) {
-                $condition = is_array($condition) ? $condition : [$condition];
-                foreach ($condition as $cond) {
-                    $this->db->where($cond);
-                }
-            }
-
-
-            $this->db->orderBy("facility_name", "asc");
-
-            if ($allColumns) {
-                return $this->db->get("facility_details");
-            } else {
-
-                $response = [];
-
-                $results = $this->db->get("facility_details", null, "facility_id,facility_name");
-
-                foreach ($results as $row) {
-                    $response[$row['facility_id']] = $row['facility_name'];
-                }
-                return $response;
-            }
-        }, 300);
+            return $response;
+        }
     }
 
 

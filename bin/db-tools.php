@@ -34,7 +34,6 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\SystemService;
-use Ifsnop\Mysqldump as IMysqldump;
 use App\Registries\ContainerRegistry;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -50,7 +49,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 // Database dumps routinely exceed the default 25MB safety limit; lift it for this CLI.
 ArchiveUtility::setMaxFileSize(null);
 
-$backupFolder = APPLICATION_PATH . '/../backups/db';
+$backupFolder = BACKUP_PATH . DIRECTORY_SEPARATOR . 'db';
 if (!is_dir($backupFolder)) {
     MiscUtility::makeDirectory($backupFolder);
 }
