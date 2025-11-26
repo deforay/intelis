@@ -61,7 +61,7 @@ $arguments = $_SERVER['argv'] ?? [];
 array_shift($arguments); // remove script name
 $command = strtolower($arguments[0] ?? DEFAULT_OPERATION);
 $commandArgs = array_slice($arguments, 1);
-$globalFlags = ['--no-fzf'];
+$globalFlags = ['--no-fzf', '--skip-safety-backup'];
 $commandArgs = array_values(array_filter(
     $commandArgs,
     static fn($arg): bool => !in_array($arg, $globalFlags, true)
@@ -1143,7 +1143,6 @@ function promptForImportFileSelection(string $backupFolder): ?string
 
 function isZipPasswordProtected(string $zipPath, ?string $allowedDirectory = null): bool
 {
-    $zip = new ZipArchive();
     $realPath = realpath($zipPath);
     if ($realPath === false) {
         return true;
@@ -1153,81 +1152,18 @@ function isZipPasswordProtected(string $zipPath, ?string $allowedDirectory = nul
         return true;
     }
 
-    $status = $zip->open($realPath);
-
-    if ($status !== true) {
-        // If we can't open it, assume it might be password protected
-        return true;
-    }
-
-    // Check if any files in the archive are encrypted
-    $isProtected = false;
-    for ($i = 0; $i < $zip->numFiles; $i++) {
-        $stat = $zip->statIndex($i);
-        // Check encryption method - if it's not 0 (none), it's encrypted
-        if ($stat !== false && (isset($stat['encryption_method']) && $stat['encryption_method'] !== 0)) {
-            $isProtected = true;
-            break;
-        }
-    }
-
-    $zip->close();
-    return $isProtected;
+    return ArchiveUtility::isPasswordProtected($realPath);
 }
 
 function extractUnprotectedZip(string $zipPath, string $backupFolder): string
 {
-    $zip = new ZipArchive();
-    $status = $zip->open($zipPath);
+    $tempDir = getTempDir($backupFolder);
 
-    if ($status !== true) {
-        throw new SystemException(sprintf('Failed to open archive. (Status code: %s)', $status));
+    try {
+        return ArchiveUtility::decompressToFile($zipPath, $tempDir);
+    } catch (\RuntimeException $e) {
+        throw new SystemException('Failed to extract ZIP archive: ' . $e->getMessage());
     }
-
-    if ($zip->numFiles < 1) {
-        $zip->close();
-        throw new SystemException('Archive is empty.');
-    }
-
-    // Find the first .sql file in the archive
-    $sqlEntryName = null;
-    for ($i = 0; $i < $zip->numFiles; $i++) {
-        $name = $zip->getNameIndex($i);
-        if ($name !== false && str_ends_with(strtolower($name), '.sql')) {
-            $sqlEntryName = $name;
-            break;
-        }
-    }
-
-    if ($sqlEntryName === null) {
-        $zip->close();
-        throw new SystemException('No SQL file found in archive.');
-    }
-
-    $tempDir = $backupFolder . DIRECTORY_SEPARATOR . '.tmp';
-    if (!is_dir($tempDir)) {
-        MiscUtility::makeDirectory($tempDir);
-    }
-
-    $destination = $tempDir . DIRECTORY_SEPARATOR . basename($sqlEntryName);
-    if (is_file($destination) && !MiscUtility::deleteFile($destination)) {
-        $zip->close();
-        throw new SystemException('Unable to clear previous temporary file.');
-    }
-
-    if (!$zip->extractTo($tempDir, [$sqlEntryName])) {
-        $zip->close();
-        throw new SystemException('Failed to extract archive.');
-    }
-
-    $zip->close();
-
-    $sqlPath = $tempDir . DIRECTORY_SEPARATOR . basename($sqlEntryName);
-    if (!is_file($sqlPath)) {
-        throw new SystemException('Extracted SQL file not found.');
-    }
-
-    return $sqlPath;
 }
 
 function extractSqlFromBackupWithFallback(string $zipPath, string $dbPassword, string $backupFolder): string
@@ -1257,61 +1193,13 @@ function extractSqlFromBackupWithFallback(string $zipPath, string $dbPassword, s
 
 function extractSqlFromBackupWithPassword(string $zipPath, string $password, string $backupFolder): string
 {
-    $zip = new ZipArchive();
-    $status = $zip->open($zipPath);
-    if ($status !== true) {
-        throw new SystemException(sprintf('Failed to open backup archive. (Status code: %s)', $status));
+    $tempDir = getTempDir($backupFolder);
+
+    try {
+        return ArchiveUtility::extractPasswordProtectedZip($zipPath, $password, $tempDir);
+    } catch (\RuntimeException $e) {
+        throw new SystemException('Failed to extract password-protected ZIP: ' . $e->getMessage());
     }
-
-    if (!$zip->setPassword($password)) {
-        $zip->close();
-        throw new SystemException('Failed to set password for archive. Password may be incorrect.');
-    }
-
-    if ($zip->numFiles < 1) {
-        $zip->close();
-        throw new SystemException('Backup archive is empty.');
-    }
-
-    // Find the first .sql file in the archive
-    $sqlEntryName = null;
-    for ($i = 0; $i < $zip->numFiles; $i++) {
-        $name = $zip->getNameIndex($i);
-        if ($name !== false && str_ends_with(strtolower($name), '.sql')) {
-            $sqlEntryName = $name;
-            break;
-        }
-    }
-
-    if ($sqlEntryName === null) {
-        $zip->close();
-        throw new SystemException('No SQL file found in backup archive.');
-    }
-
-    $tempDir = $backupFolder . DIRECTORY_SEPARATOR . '.tmp';
-    if (!is_dir($tempDir)) {
-        MiscUtility::makeDirectory($tempDir);
-    }
-
-    $destination = $tempDir . DIRECTORY_SEPARATOR . basename($sqlEntryName);
-    if (is_file($destination) && !MiscUtility::deleteFile($destination)) {
-        $zip->close();
-        throw new SystemException('Unable to clear previous temporary file.');
-    }
-
-    if (!$zip->extractTo($tempDir, [$sqlEntryName])) {
-        $zip->close();
-        throw new SystemException('Failed to extract backup archive. Password may be incorrect.');
-    }
-
-    $zip->close();
-
-    $sqlPath = $tempDir . DIRECTORY_SEPARATOR . basename($sqlEntryName);
-    if (!is_file($sqlPath)) {
-        throw new SystemException('Extracted SQL file not found.');
-    }
-
-    return $sqlPath;
 }
 
 function promptForPassword(): ?string
@@ -1376,55 +1264,15 @@ function confirmSafetyBackupSelection(string $path): bool
 
 function extractSqlFromBackup(string $zipPath, string $dbPassword, string $backupFolder): string
 {
-    $zip = new ZipArchive();
-    $status = $zip->open($zipPath);
-    if ($status !== true) {
-        throw new SystemException(sprintf('Failed to open backup archive. (Status code: %s)', $status));
-    }
-
     $token = extractRandomTokenFromBackup($zipPath);
     $zipPassword = $dbPassword . $token;
+    $tempDir = getTempDir($backupFolder);
 
-    if (!$zip->setPassword($zipPassword)) {
-        $zip->close();
-        throw new SystemException('Failed to set password for archive.');
+    try {
+        return ArchiveUtility::extractPasswordProtectedZip($zipPath, $zipPassword, $tempDir);
+    } catch (\RuntimeException $e) {
+        throw new SystemException('Failed to extract backup: ' . $e->getMessage());
     }
-
-    if ($zip->numFiles < 1) {
-        $zip->close();
-        throw new SystemException('Backup archive is empty.');
-    }
-
-    $entryName = $zip->getNameIndex(0);
-    if ($entryName === false) {
-        $zip->close();
-        throw new SystemException('Failed to read backup archive contents.');
-    }
-
-    $tempDir = $backupFolder . DIRECTORY_SEPARATOR . '.tmp';
-    if (!is_dir($tempDir)) {
-        MiscUtility::makeDirectory($tempDir);
-    }
-
-    $destination = $tempDir . DIRECTORY_SEPARATOR . basename($entryName);
-    if (is_file($destination) && !MiscUtility::deleteFile($destination)) {
-        $zip->close();
-        throw new SystemException('Unable to clear previous temporary file.');
-    }
-
-    if (!$zip->extractTo($tempDir, [$entryName])) {
-        $zip->close();
-        throw new SystemException('Failed to extract backup archive.');
-    }
-
-    $zip->close();
-
-    $sqlPath = $tempDir . DIRECTORY_SEPARATOR . basename($entryName);
-    if (!is_file($sqlPath)) {
-        throw new SystemException('Extracted SQL file not found.');
-    }
-
-    return $sqlPath;
 }
 
 function extractRandomTokenFromBackup(string $path): string
@@ -1879,83 +1727,160 @@ function importSqlDump(array $config, string $sqlFilePath): void
         throw new SystemException('Invalid file path provided for security reasons.');
     }
 
+    if (!is_file($sqlFilePath)) {
+        throw new SystemException("SQL file not found: $sqlFilePath");
+    }
+
+    echo "  Optimizing settings for fast import...\n";
+
+    // Build all SQL to run in a SINGLE session
+    $preSQL = [];
+    $postSQL = [];
+
+    // Try to disable binary logging (requires SUPER privilege)
+    // We'll attempt this and note if it fails
+    $preSQL[] = 'SET @original_sql_log_bin = @@SESSION.SQL_LOG_BIN;';
+    $preSQL[] = 'SET SESSION SQL_LOG_BIN = IF(@original_sql_log_bin IS NOT NULL, 0, @@SESSION.SQL_LOG_BIN);';
+
+    // Standard optimizations
+    $preSQL[] = 'SET @original_foreign_key_checks = @@SESSION.FOREIGN_KEY_CHECKS;';
+    $preSQL[] = 'SET @original_unique_checks = @@SESSION.UNIQUE_CHECKS;';
+    $preSQL[] = 'SET @original_autocommit = @@SESSION.AUTOCOMMIT;';
+    $preSQL[] = 'SET FOREIGN_KEY_CHECKS=0;';
+    $preSQL[] = 'SET UNIQUE_CHECKS=0;';
+    $preSQL[] = 'SET AUTOCOMMIT=0;';
+
+    echo "  - Foreign key checks: disabled\n";
+    echo "  - Unique checks: disabled\n";
+    echo "  - Autocommit: disabled\n";
+    echo "  - Attempting to disable binary logging...\n";
+
+    // Post-import: COMMIT and restore settings
+    $postSQL[] = 'COMMIT;';
+    $postSQL[] = 'SET FOREIGN_KEY_CHECKS = @original_foreign_key_checks;';
+    $postSQL[] = 'SET UNIQUE_CHECKS = @original_unique_checks;';
+    $postSQL[] = 'SET AUTOCOMMIT = @original_autocommit;';
+    $postSQL[] = 'SET SESSION SQL_LOG_BIN = @original_sql_log_bin;';
+
+    // Build the complete SQL input
+    $command = ['mysql'];
+    $command[] = '--host=' . $config['host'];
+    if (!empty($config['port'])) {
+        $command[] = '--port=' . $config['port'];
+    }
+    $command[] = '--user=' . $config['username'];
+    $command[] = '--database=' . $config['db'];
+    $charset = $config['charset'] ?? 'utf8mb4';
+    $command[] = '--default-character-set=' . $charset;
+
+    $env = buildProcessEnv([
+        'MYSQL_PWD' => $config['password'] ?? '',
+    ]);
+
+    $process = new Process($command, null, $env);
+    $process->setTimeout(null);
+
+    $inputStream = new InputStream();
+    $process->setInput($inputStream);
+    $process->start();
+
     try {
-        // Apply bulk import optimizations
-        echo "  Optimizing settings for fast import...\n";
-
-        // Try to disable binary logging first (requires SUPER or BINLOG_ADMIN privilege)
-        $sqlLogBinDisabled = false;
-        try {
-            runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=0;');
-            $sqlLogBinDisabled = true;
-            echo "  - Binary logging disabled (won't generate binlog during restore)\n";
-        } catch (\Throwable) {
-            // SQL_LOG_BIN requires SUPER/BINLOG_ADMIN privilege - continue without it
-            echo "  - Binary logging still active (requires SUPER privilege to disable)\n";
+        // Send pre-SQL
+        foreach ($preSQL as $sql) {
+            $inputStream->write($sql . "\n");
         }
 
-        // Apply other optimizations
-        $optimizations = [
-            'SET FOREIGN_KEY_CHECKS=0',
-            'SET UNIQUE_CHECKS=0',
-            'SET AUTOCOMMIT=0',
-        ];
-
-        foreach ($optimizations as $sql) {
-            runMysqlQuery($config, $sql . ';');
+        // Stream the SQL file
+        $source = fopen($sqlFilePath, 'rb');
+        if ($source === false) {
+            throw new SystemException('Could not read the SQL file.');
         }
 
-        echo "  - Foreign key checks: disabled\n";
-        echo "  - Unique checks: disabled\n";
-        echo "  - Autocommit: disabled\n";
+        $fileSize = filesize($sqlFilePath) ?: 0;
+        $bytesRead = 0;
+        $progressBar = null;
 
-        // Pass database name in base command for import
-        executeMysqlCommand($config, ['mysql', $config['db']], $sqlFilePath);
+        if ($fileSize > 1048576) {
+            $out = console();
+            $progressBar = new ProgressBar($out, 100);
+            $progressBar->setFormat(" Importing SQL … %current%/%max%  [%bar%]  %elapsed:6s%  %memory:6s%");
+            $progressBar->setBarCharacter("<fg=green>█</>");
+            $progressBar->setEmptyBarCharacter("░");
+            $progressBar->setProgressCharacter("<fg=green>█</>");
+            $progressBar->start();
+        }
 
-        // Commit any pending transactions
-        echo "  Committing transactions...\n";
-        runMysqlQuery($config, 'COMMIT;');
-
-        // Restore normal settings
-        echo "  Restoring normal database settings...\n";
-        runMysqlQuery($config, 'SET FOREIGN_KEY_CHECKS=1;');
-        runMysqlQuery($config, 'SET UNIQUE_CHECKS=1;');
-        runMysqlQuery($config, 'SET AUTOCOMMIT=1;');
-
-        if ($sqlLogBinDisabled) {
-            try {
-                runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=1;');
-                echo "  - Binary logging re-enabled\n";
-            } catch (\Throwable) {
-                // Ignore errors re-enabling SQL_LOG_BIN
+        $lastPercent = 0;
+        while (!feof($source)) {
+            $chunk = fread($source, 262144); // 256KB chunks for optimal performance
+            if ($chunk === false || $chunk === '') {
+                break;
             }
-        }
-    } catch (SystemException $e) {
-        // Attempt to restore settings even if import fails
-        echo "  Import failed, attempting to restore database settings...\n";
-        try {
-            runMysqlQuery($config, 'COMMIT;');
-        } catch (\Throwable $ignored) {
-        }
-        try {
-            runMysqlQuery($config, 'SET FOREIGN_KEY_CHECKS=1;');
-        } catch (\Throwable $ignored) {
-        }
-        try {
-            runMysqlQuery($config, 'SET UNIQUE_CHECKS=1;');
-        } catch (\Throwable $ignored) {
-        }
-        try {
-            runMysqlQuery($config, 'SET AUTOCOMMIT=1;');
-        } catch (\Throwable) {
-        }
-        if ($sqlLogBinDisabled) {
-            try {
-                runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=1;');
-            } catch (\Throwable) {
+
+            $inputStream->write($chunk);
+            $bytesRead += strlen($chunk);
+
+            if ($progressBar instanceof ProgressBar && $fileSize > 0) {
+                $percent = (int) (($bytesRead / $fileSize) * 100);
+                if ($percent > $lastPercent) {
+                    $progressBar->setProgress($percent);
+                    $lastPercent = $percent;
+                }
             }
         }
 
+        fclose($source);
+
+        if ($progressBar instanceof ProgressBar) {
+            $progressBar->finish();
+            echo "\n";
+        }
+
+        // Now send post-SQL (COMMIT + restore settings)
+        // This is where the delay happens - show a spinner with elapsed time
+        echo "\n";
+
+        foreach ($postSQL as $sql) {
+            $inputStream->write($sql . "\n");
+        }
+
+        $inputStream->close();
+
+        // Wait for process to complete (this is where COMMIT actually runs)
+        // Show a spinner during this time
+        $out = console();
+        $spinner = new ProgressBar($out);
+        $spinner->setFormat("  Waiting for database to apply changes and finish processing... %elapsed:6s%  [<fg=yellow>%message%</>]");
+        $spinner->setMessage('⠋');
+        $spinner->start();
+
+        // Poll the process while it's running
+        while ($process->isRunning()) {
+            usleep(100000); // 100ms
+            $spinner->advance();
+            // Braille spinner (corner-spinning dots)
+            $chars = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+            $spinner->setMessage($chars[(int) ($spinner->getProgress() % count($chars))]);
+        }
+
+        $spinner->finish();
+        echo "\n";
+
+        $stdout = $process->getOutput();
+        $stderr = $process->getErrorOutput();
+
+        if (!$process->isSuccessful()) {
+            $errorMessage = trim($stderr) !== '' ? trim($stderr) : trim($stdout);
+            throw new SystemException("Database import failed: {$errorMessage}");
+        }
+
+        echo "  ✅ Import completed successfully\n";
+        echo "  ✅ Database settings restored\n";
+
+    } catch (\Throwable $e) {
+        if (isset($inputStream)) {
+            $inputStream->close();
+        }
         throw new SystemException('Database import failed: ' . $e->getMessage());
     }
 }

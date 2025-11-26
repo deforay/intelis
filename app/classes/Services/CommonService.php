@@ -1054,7 +1054,7 @@ final class CommonService
         return MemoUtility::remember(function () use ($code, $type, $width, $height, $color): string {
             $barcodeobj = new TCPDFBarcode($code, $type);
             return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
-        });
+        }, 3600);
     }
 
     public function get2DBarcodeImageContent($code, $type = 'QRCODE', $width = 2, $height = 30, $color = [0, 0, 0]): mixed
@@ -1062,7 +1062,7 @@ final class CommonService
         return MemoUtility::remember(function () use ($code, $type, $width, $height, $color): string {
             $barcodeobj = new TCPDF2DBarcode($code, $type);
             return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
-        });
+        }, 3600);
     }
 
     public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false): ?string
