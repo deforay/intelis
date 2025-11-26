@@ -79,7 +79,7 @@ install_packages() {
 }
 prepare_system() {
     install_packages
-    check_ubuntu_version "20.04"
+    check_ubuntu_version "22.04"
 
     if ! command -v needrestart &>/dev/null; then
         print info "Installing needrestart..."
