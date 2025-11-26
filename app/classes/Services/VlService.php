@@ -249,7 +249,7 @@ final class VlService extends AbstractTestService
             }
 
             return $vlResultCategory;
-        });
+        }, 3600);
     }
 
     public function processViralLoadResultFromForm(array $params): array
@@ -360,7 +360,7 @@ final class VlService extends AbstractTestService
             }
 
             return $interpretedData;
-        });
+        }, 3600);
     }
 
     public function countrySpecificInterpretations($vlResult): mixed
@@ -374,7 +374,7 @@ final class VlService extends AbstractTestService
                 };
             }
             return $vlResult;
-        });
+        }, 3600);
     }
 
     public function interpretViralLoadTextResult($result, ?string $unit = null, $defaultLowVlResultText = null): ?array
@@ -694,10 +694,12 @@ final class VlService extends AbstractTestService
 
     public function getVlReasonsForTesting(): array
     {
-        return $this->db->rawQuery("SELECT test_reason_id,test_reason_name
+        return MemoUtility::remember(function () {
+            return $this->db->rawQuery("SELECT test_reason_id,test_reason_name
                                             FROM r_vl_test_reasons
                                                 WHERE `test_reason_status` LIKE 'active'
                                                 AND (parent_reason IS NULL OR parent_reason = 0)");
+        }, 3600);
     }
 
     /**
@@ -759,7 +761,7 @@ final class VlService extends AbstractTestService
             }
 
             return 'text';
-        });
+        }, 3600);
     }
 
     public function extractViralLoadValue(string $input, $returnWithOperator = true): ?string
@@ -783,7 +785,7 @@ final class VlService extends AbstractTestService
             }
 
             return null;
-        });
+        }, 3600);
     }
 
     /**

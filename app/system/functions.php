@@ -497,6 +497,22 @@ function _invalidateFileCacheByTags($tags): void
     $fileCache->invalidateTags($tags);
 }
 
+/**
+ * Memoizes the result of a callable function
+ * 
+ * Shorthand for MemoUtility::remember(). Caches the result of the callable
+ * based on its arguments and returns the cached value on subsequent calls
+ * with the same arguments.
+ *
+ * @param callable $callback The function to memoize
+ * @param int $ttl Time to live in seconds (default: 3600 = 1 hour)
+ * @return mixed The result of the callable (cached or fresh)
+ */
+function _memoize(callable $callback, int $ttl = 3600): mixed
+{
+    return MemoUtility::remember($callback, $ttl);
+}
+
 function _logdump($data, $useVardump = true): void
 {
     MiscUtility::dumpToErrorLog($data, $useVardump);

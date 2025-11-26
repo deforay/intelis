@@ -36,7 +36,7 @@ final class ArchiveUtility
     public const string BACKEND_ZSTD = 'zstd';
     public const string BACKEND_PIGZ = 'pigz';
     public const string BACKEND_GZIP = 'gzip';
-    public const string BACKEND_ZIP  = 'zip';
+    public const string BACKEND_ZIP = 'zip';
 
     /** @var array<string, bool> Cache for command availability checks */
     private static array $cmdCache = [];
@@ -71,7 +71,7 @@ final class ArchiveUtility
         self::ensureDestinationDirectory($dst);
 
         $backend ??= self::pickBestBackend();
-        $dst     = self::ensureExtension($dst, $backend);
+        $dst = self::ensureExtension($dst, $backend);
 
         match ($backend) {
             self::BACKEND_ZSTD => self::compressWithZstd($src, $dst),
@@ -147,7 +147,7 @@ final class ArchiveUtility
         // Decompress based on extension
         $extracted = match ($ext) {
             'zst' => self::decompressZstd($src, $dstDir),
-            'gz'  => self::decompressGzip($src, $dstDir),
+            'gz' => self::decompressGzip($src, $dstDir),
             'zip' => self::decompressZip($src, $dstDir),
             default => throw new RuntimeException("Unsupported archive format: .$ext")
         };
@@ -181,7 +181,7 @@ final class ArchiveUtility
         return match ($ext) {
             'csv' => self::readPlainFile($src),
             'zst' => self::decompressZstdToString($src),
-            'gz'  => self::decompressGzipToString($src),
+            'gz' => self::decompressGzipToString($src),
             'zip' => self::decompressZipToString($src),
             default => throw new RuntimeException("Unsupported archive format: .$ext")
         };
@@ -304,6 +304,129 @@ final class ArchiveUtility
     }
 
     /**
+     * Check if a ZIP archive is password-protected.
+     *
+     * @param string $path Path to ZIP file
+     * @return bool True if password-protected
+     */
+    public static function isPasswordProtected(string $path): bool
+    {
+        if (!is_file($path) || !is_readable($path)) {
+            return false;
+        }
+
+        if (!class_exists(ZipArchive::class)) {
+            return false;
+        }
+
+        $zip = new ZipArchive();
+        $status = $zip->open($path);
+
+        if ($status !== true) {
+            // If we can't open it, assume it might be password protected
+            return true;
+        }
+
+        // Check if any files in the archive are encrypted
+        $isProtected = false;
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $stat = $zip->statIndex($i);
+            // Check encryption method - if it's not 0 (none), it's encrypted
+            if ($stat !== false && (isset($stat['encryption_method']) && $stat['encryption_method'] !== 0)) {
+                $isProtected = true;
+                break;
+            }
+        }
+
+        $zip->close();
+        return $isProtected;
+    }
+
+    /**
+     * Extract a password-protected ZIP archive.
+     *
+     * @param string $zipPath Path to password-protected ZIP file
+     * @param string $password Archive password
+     * @param string $dstDir Destination directory for extracted files
+     * @return string Path to the extracted SQL file
+     * @throws RuntimeException If extraction fails or no SQL file found
+     */
+    public static function extractPasswordProtectedZip(string $zipPath, string $password, string $dstDir): string
+    {
+        if (!is_file($zipPath)) {
+            throw new RuntimeException("ZIP file not found: $zipPath");
+        }
+
+        if (!is_readable($zipPath)) {
+            throw new RuntimeException("ZIP file not readable: $zipPath");
+        }
+
+        if (!class_exists(ZipArchive::class)) {
+            throw new RuntimeException("ZipArchive extension not available");
+        }
+
+        if (!is_dir($dstDir) && !@mkdir($dstDir, self::$dirPermissions, true)) {
+            throw new RuntimeException("Failed to create destination directory: $dstDir");
+        }
+
+        $zip = new ZipArchive();
+        $status = $zip->open($zipPath);
+
+        if ($status !== true) {
+            throw new RuntimeException("Failed to open ZIP archive (error code: $status)");
+        }
+
+        if (!$zip->setPassword($password)) {
+            $zip->close();
+            throw new RuntimeException("Failed to set password for archive. Password may be incorrect.");
+        }
+
+        if ($zip->numFiles < 1) {
+            $zip->close();
+            throw new RuntimeException("ZIP archive is empty");
+        }
+
+        // Find the first .sql file in the archive
+        $sqlEntryName = null;
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $name = $zip->getNameIndex($i);
+            if ($name !== false && str_ends_with(strtolower($name), '.sql')) {
+                $sqlEntryName = $name;
+                break;
+            }
+        }
+
+        if ($sqlEntryName === null) {
+            $zip->close();
+            throw new RuntimeException("No SQL file found in ZIP archive");
+        }
+
+        $dstDir = rtrim($dstDir, DIRECTORY_SEPARATOR);
+        $destination = $dstDir . DIRECTORY_SEPARATOR . basename($sqlEntryName);
+
+        // Clear any existing file
+        if (is_file($destination) && !@unlink($destination)) {
+            $zip->close();
+            throw new RuntimeException("Unable to clear previous temporary file: $destination");
+        }
+
+        if (!$zip->extractTo($dstDir, [$sqlEntryName])) {
+            $zip->close();
+            throw new RuntimeException("Failed to extract ZIP archive. Password may be incorrect.");
+        }
+
+        $zip->close();
+
+        $sqlPath = $dstDir . DIRECTORY_SEPARATOR . basename($sqlEntryName);
+        if (!is_file($sqlPath)) {
+            throw new RuntimeException("Extracted SQL file not found: $sqlPath");
+        }
+
+        return $sqlPath;
+    }
+
+
+    /**
      * Pick the best available compression backend.
      *
      * Priority: zstd > pigz > gzip > zip
@@ -341,8 +464,8 @@ final class ArchiveUtility
             self::BACKEND_ZSTD => '.zst',
             self::BACKEND_PIGZ,
             self::BACKEND_GZIP => '.gz',
-            self::BACKEND_ZIP  => '.zip',
-            default            => '',
+            self::BACKEND_ZIP => '.zip',
+            default => '',
         };
     }
 
