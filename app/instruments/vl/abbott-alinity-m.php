@@ -67,19 +67,10 @@ try {
 
         $bdl = [
             '< 400',
+            'bdl',
+            'below detection limit',
         ];
 
-        if (
-            !empty($interpretedResults['result']) &&
-            (in_array(strtolower((string) $interpretedResults['result']), $bdl) ||
-                $interpretedResults['absDecimalVal'] < 400)
-        ) {
-            $interpretedResults['txtVal'] =
-                $interpretedResults['result'] = 'Below Detection Level';
-            $interpretedResults['absVal'] = null;
-            $interpretedResults['absDecimalVal'] = null;
-            $interpretedResults['logVal'] = null;
-        }
 
         $tnd = [
             'not detected',
@@ -89,10 +80,20 @@ try {
 
         if (
             !empty($interpretedResults['result']) &&
-            in_array(strtolower((string) $interpretedResults['result']), $bdl)
+            in_array(strtolower((string) $interpretedResults['result']), $tnd)
         ) {
             $interpretedResults['txtVal'] =
                 $interpretedResults['result'] = 'Target Not Detected';
+            $interpretedResults['absVal'] = null;
+            $interpretedResults['absDecimalVal'] = null;
+            $interpretedResults['logVal'] = null;
+        } elseif (
+            !empty($interpretedResults['result']) &&
+            (in_array(strtolower((string) $interpretedResults['result']), $bdl) ||
+                $interpretedResults['absDecimalVal'] < 400)
+        ) {
+            $interpretedResults['txtVal'] =
+                $interpretedResults['result'] = 'Below Detection Level';
             $interpretedResults['absVal'] = null;
             $interpretedResults['absDecimalVal'] = null;
             $interpretedResults['logVal'] = null;

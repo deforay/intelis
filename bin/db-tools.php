@@ -61,11 +61,9 @@ $arguments = $_SERVER['argv'] ?? [];
 array_shift($arguments); // remove script name
 $command = strtolower($arguments[0] ?? DEFAULT_OPERATION);
 $commandArgs = array_slice($arguments, 1);
-$globalFlags = ['--no-fzf', '--skip-safety-backup'];
-$commandArgs = array_values(array_filter(
-    $commandArgs,
-    static fn($arg): bool => !in_array($arg, $globalFlags, true)
-));
+
+// Parse arguments properly
+$parsed = parseArguments($commandArgs);
 
 $intelisDbConfig = SYSTEM_CONFIG['database'];
 $interfacingEnabled = SYSTEM_CONFIG['interfacing']['enabled'] ?? false;
@@ -74,48 +72,48 @@ validateConfiguration($intelisDbConfig, $interfacingDbConfig);
 try {
     switch ($command) {
         case 'backup':
-            handleBackup($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            handleBackup($backupFolder, $intelisDbConfig, $interfacingDbConfig, $parsed);
             exit(0);
         case 'export':
-            handleExport($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            handleExport($backupFolder, $intelisDbConfig, $interfacingDbConfig, $parsed);
             exit(0);
         case 'import':
-            handleImport($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            handleImport($backupFolder, $intelisDbConfig, $interfacingDbConfig, $parsed);
             exit(0);
         case 'list':
             handleList($backupFolder);
             exit(0);
         case 'restore':
-            handleRestore($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs[0] ?? null);
+            handleRestore($backupFolder, $intelisDbConfig, $interfacingDbConfig, $parsed);
             exit(0);
         case 'verify':
-            handleVerify($backupFolder, $commandArgs);
+            handleVerify($backupFolder, $parsed);
             exit(0);
         case 'clean':
-            handleClean($backupFolder, $commandArgs);
-            handlePurgeBinlogs($intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            handleClean($backupFolder, $parsed);
+            handlePurgeBinlogs($intelisDbConfig, $interfacingDbConfig, $parsed);
             exit(0);
         case 'size':
-            handleSize($intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            handleSize($intelisDbConfig, $interfacingDbConfig, $parsed);
             exit(0);
         case 'config-test':
             handleConfigTest($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs);
             exit(0);
         case 'mysqlcheck':
-            handleMysqlCheck($intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            handleMysqlCheck($intelisDbConfig, $interfacingDbConfig, $parsed);
             exit(0);
         case 'purge-binlogs':
         case 'purge-binlog':
-            handlePurgeBinlogs($intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            handlePurgeBinlogs($intelisDbConfig, $interfacingDbConfig, $parsed);
             exit(0);
         case 'pitr-info':
-            handlePitrInfo($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            handlePitrInfo($backupFolder, $intelisDbConfig, $interfacingDbConfig, $parsed);
             exit(0);
         case 'pitr-restore':
-            handlePitrRestore($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            handlePitrRestore($backupFolder, $intelisDbConfig, $interfacingDbConfig, $parsed);
             exit(0);
         case 'maintain':
-            handleMaintain($intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            handleMaintain($intelisDbConfig, $interfacingDbConfig, $parsed);
             exit(0);
         case 'collation':
             $cmd = sprintf('%s %s/setup/change-db-collation.php', PHP_BINARY, BIN_PATH);
@@ -138,6 +136,66 @@ try {
     exit(CLI\ERROR);
 }
 
+/**
+ * Parse command-line arguments into flags, options, and positional args.
+ * 
+ * Supports:
+ *   - Flags: --skip-safety-backup, --no-fzf
+ *   - Options with =: --target=intelis, --keep=7
+ *   - Options with space: --target intelis, --keep 7
+ *   - Positional args: backup, file.sql
+ * 
+ * @param array $args Raw arguments (without script name)
+ * @return array ['flags' => [...], 'options' => [...], 'positional' => [...]]
+ */
+function parseArguments(array $args): array
+{
+    $flags = [];
+    $options = [];
+    $positional = [];
+
+    for ($i = 0; $i < count($args); $i++) {
+        $arg = $args[$i];
+
+        // Option with value: --key=value
+        if (str_starts_with($arg, '--') && str_contains($arg, '=')) {
+            [$key, $value] = explode('=', $arg, 2);
+            $options[$key] = $value;
+        }
+        // Option with value: --key value (next arg doesn't start with --)
+        elseif (str_starts_with($arg, '--') && isset($args[$i + 1]) && !str_starts_with($args[$i + 1], '-')) {
+            $options[$arg] = $args[$i + 1];
+            $i++; // skip next arg since we consumed it
+        }
+        // Flag: --flag
+        elseif (str_starts_with($arg, '--')) {
+            $flags[] = $arg;
+        }
+        // Positional argument
+        else {
+            $positional[] = $arg;
+        }
+    }
+
+    return compact('flags', 'options', 'positional');
+}
+
+/**
+ * Check if a flag is present in parsed arguments.
+ */
+function hasFlag(array $parsed, string $flag): bool
+{
+    return in_array($flag, $parsed['flags'], true);
+}
+
+/**
+ * Get an option value from parsed arguments.
+ */
+function getOption(array $parsed, string $key, mixed $default = null): mixed
+{
+    return $parsed['options'][$key] ?? $default;
+}
+
 function isGpgBackupFile(string $path): bool
 {
     return str_ends_with(strtolower($path), '.gpg');
@@ -156,8 +214,8 @@ function shouldUseFzf(): bool
         return $cached;
     }
 
-    $args = $_SERVER['argv'] ?? [];
-    if (in_array('--no-fzf', $args, true)) {
+    global $parsed;
+    if (hasFlag($parsed, '--no-fzf')) {
         return $cached = false;
     }
 
@@ -180,16 +238,7 @@ function shouldUseFzf(): bool
         return $cached = false;
     }
 
-    if (function_exists('stream_isatty')) {
-        if (!@stream_isatty($stdin) || !@stream_isatty($stdout)) {
-            return $cached = false;
-        }
-    } elseif (function_exists('posix_isatty')) {
-        if (!@posix_isatty($stdin) || !@posix_isatty($stdout)) {
-            return $cached = false;
-        }
-    } else {
-        // No reliable TTY detection; fall back to classic prompt
+    if (!stream_isatty($stdin) || !stream_isatty($stdout)) {
         return $cached = false;
     }
 
@@ -689,9 +738,9 @@ function verifyBackupIntegrity(string $zipPath): bool
 
 // Command Handlers
 
-function handleBackup(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+function handleBackup(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $parsed): void
 {
-    $targetOption = extractTargetOption($args);
+    $targetOption = extractTargetOption($parsed);
     $targets = resolveBackupTargets($targetOption, $intelisDbConfig, $interfacingDbConfig);
 
     foreach ($targets as $target) {
@@ -708,13 +757,13 @@ function handleBackup(string $backupFolder, array $intelisDbConfig, ?array $inte
     }
 }
 
-function handleExport(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+function handleExport(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $parsed): void
 {
-    if ($args === []) {
+    if ($parsed["positional"] === []) {
         throw new SystemException('Export target is required. Use: intelis|interfacing');
     }
 
-    $targetOption = $args[0];
+    $targetOption = $parsed["positional"][0];
     $outputFile = $args[1] ?? null;
 
     $config = resolveTargetConfig($targetOption, $intelisDbConfig, $interfacingDbConfig);
@@ -738,27 +787,49 @@ function handleExport(string $backupFolder, array $intelisDbConfig, ?array $inte
     $safeOutputBasename = MiscUtility::sanitizeCliString(basename((string) $outputFile));
     MiscUtility::safeCliEcho(sprintf('Exporting %s database to %s...', $label, $safeOutputBasename));
 
-    $dsn = sprintf('mysql:host=%s;dbname=%s', $config['host'], $config['db']);
-    if (!empty($config['port'])) {
-        $dsn .= ';port=' . $config['port'];
+    if (!commandExists('mysqldump')) {
+        throw new SystemException('mysqldump not found. Please install MySQL client tools.');
     }
 
-    try {
-        $dump = new IMysqldump\Mysqldump($dsn, $config['username'], $config['password'] ?? '');
-        $dump->start($outputFile);
-        MiscUtility::safeCliEcho('Export completed: ' . MiscUtility::sanitizeCliString($outputFile));
-    } catch (\Exception $e) {
-        throw new SystemException('Database export failed: ' . $e->getMessage());
+    $command = ['mysqldump'];
+    $command[] = '--host=' . $config['host'];
+    if (!empty($config['port'])) {
+        $command[] = '--port=' . $config['port'];
     }
+    $command[] = '--user=' . $config['username'];
+    $command[] = '--single-transaction';
+    $command[] = '--skip-lock-tables';
+    $command[] = '--skip-add-locks';      // Don't add LOCK TABLES to output
+    $command[] = '--routines';
+    $command[] = '--triggers';
+    $command[] = '--events';
+    $command[] = '--add-drop-table';
+    $command[] = '--result-file=' . $outputFile;
+    $command[] = $config['db'];
+
+    $env = buildProcessEnv([
+        'MYSQL_PWD' => $config['password'] ?? '',
+    ]);
+
+    $process = new Process($command, null, $env);
+    $process->setTimeout(null);
+    $process->run();
+
+    if (!$process->isSuccessful()) {
+        $error = trim($process->getErrorOutput()) ?: trim($process->getOutput());
+        throw new SystemException("Export failed: {$error}");
+    }
+
+    MiscUtility::safeCliEcho('Export completed: ' . MiscUtility::sanitizeCliString($outputFile));
 }
 
-function handleImport(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+function handleImport(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $parsed): void
 {
-    if (count($args) < 1) {
+    if (count($parsed["positional"]) < 1) {
         throw new SystemException('Import target is required. Use: intelis|interfacing [file]');
     }
 
-    $targetOption = $args[0];
+    $targetOption = $parsed["positional"][0];
     $sourceFile = $args[1] ?? null;
 
     $config = resolveTargetConfig($targetOption, $intelisDbConfig, $interfacingDbConfig);
@@ -859,17 +930,16 @@ function handleList(string $backupFolder): void
     }
 }
 
-function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, ?string $requestedFile): void
+function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $parsed): void
 {
+    $requestedFile = $parsed['positional'][0] ?? null;
+    $skipSafetyBackup = hasFlag($parsed, '--skip-safety-backup');
+
     $backups = getSortedBackups($backupFolder);
-    if ($backups === []) {
+    if (empty($backups)) {
         echo 'No encrypted backups found to restore.' . PHP_EOL;
         return;
     }
-
-    // Check for --skip-safety-backup flag
-    global $argv;
-    $skipSafetyBackup = in_array('--skip-safety-backup', $argv ?? [], true);
 
     $selectedPath = null;
     if ($requestedFile) {
@@ -998,9 +1068,9 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
 }
 
 
-function handleMysqlCheck(array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+function handleMysqlCheck(array $intelisDbConfig, ?array $interfacingDbConfig, array $parsed): void
 {
-    $targetOption = extractTargetOption($args);
+    $targetOption = extractTargetOption($parsed);
     $targets = resolveMaintenanceTargets($targetOption, $intelisDbConfig, $interfacingDbConfig);
 
     foreach ($targets as $target) {
@@ -1017,10 +1087,10 @@ function handleMysqlCheck(array $intelisDbConfig, ?array $interfacingDbConfig, a
     }
 }
 
-function handlePurgeBinlogs(array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+function handlePurgeBinlogs(array $intelisDbConfig, ?array $interfacingDbConfig, array $parsed): void
 {
-    $targetOption = extractTargetOption($args);
-    $days = extractDaysOption($args, 7);
+    $targetOption = extractTargetOption($parsed);
+    $days = extractDaysOption($parsed, 7);
     $targets = resolveMaintenanceTargets($targetOption, $intelisDbConfig, $interfacingDbConfig);
 
     $sql = sprintf('PURGE BINARY LOGS BEFORE DATE(NOW() - INTERVAL %d DAY);', $days);
@@ -1335,25 +1405,63 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
     $spinner = MiscUtility::spinnerStart($tblCount ?: null, "Dumping database `{$config['db']}` … this can take a while on large datasets");
 
     try {
-        $dump = new Ifsnop\Mysqldump\Mysqldump($dsn, $config['username'], $config['password'] ?? '');
-
-        if (method_exists($dump, 'setInfoHook')) {
-            $lastTick = 0;
-            $dump->setInfoHook(function (string $msg) use ($spinner, &$lastTick): void {
-                $msg = trim($msg);
-                if ($msg !== '') {
-                    $spinner->setMessage($msg);
-                }
-                $now = microtime(true);
-                if ($now - $lastTick >= 0.1) {
-                    MiscUtility::spinnerAdvance($spinner);
-                    $lastTick = $now;
-                }
-            });
+        // Check if mysqldump is available
+        if (!commandExists('mysqldump')) {
+            throw new SystemException('mysqldump not found. Please install MySQL client tools.');
         }
 
-        // Write plain SQL first
-        $dump->start($sqlPath);
+        // Build mysqldump command
+        $command = ['mysqldump'];
+        $command[] = '--host=' . $config['host'];
+        if (!empty($config['port'])) {
+            $command[] = '--port=' . $config['port'];
+        }
+        $command[] = '--user=' . $config['username'];
+        $command[] = '--single-transaction';  // Use InnoDB transactions instead of table locks
+        $command[] = '--skip-lock-tables';    // Don't lock tables during backup
+        $command[] = '--skip-add-locks';      // Don't add LOCK TABLES statements to SQL output
+        $command[] = '--routines';            // Include stored procedures and functions
+        $command[] = '--triggers';            // Include triggers
+        $command[] = '--events';              // Include events
+        $command[] = '--add-drop-table';      // Add DROP TABLE IF EXISTS
+        $command[] = '--result-file=' . $sqlPath;
+        $command[] = $config['db'];
+
+        $env = buildProcessEnv([
+            'MYSQL_PWD' => $config['password'] ?? '',
+        ]);
+
+        $process = new Process($command, null, $env);
+        $process->setTimeout(null);
+        $process->start();
+
+        // Poll process and update spinner
+        $lastTick = microtime(true);
+        while ($process->isRunning()) {
+            usleep(100000); // 100ms
+            $now = microtime(true);
+            if ($now - $lastTick >= 0.5) {
+                MiscUtility::spinnerAdvance($spinner);
+                $lastTick = $now;
+
+                // Update message based on file size
+                if (file_exists($sqlPath)) {
+                    $size = filesize($sqlPath);
+                    $spinner->setMessage(sprintf('Dumping… %s', formatFileSize($size)));
+                }
+            }
+        }
+
+        $process->wait();
+
+        if (!$process->isSuccessful()) {
+            $error = trim($process->getErrorOutput()) ?: trim($process->getOutput());
+            throw new SystemException("mysqldump failed: {$error}");
+        }
+
+        if (!file_exists($sqlPath) || filesize($sqlPath) === 0) {
+            throw new SystemException('mysqldump produced an empty file');
+        }
 
         // Compress using the best available backend
         $backend = ArchiveUtility::pickBestBackend();
@@ -1755,22 +1863,29 @@ function importSqlDump(array $config, string $sqlFilePath): void
     // Standard optimizations
     $preSQL[] = 'SET @original_foreign_key_checks = @@SESSION.FOREIGN_KEY_CHECKS;';
     $preSQL[] = 'SET @original_unique_checks = @@SESSION.UNIQUE_CHECKS;';
-    $preSQL[] = 'SET @original_autocommit = @@SESSION.AUTOCOMMIT;';
     $preSQL[] = 'SET FOREIGN_KEY_CHECKS=0;';
     $preSQL[] = 'SET UNIQUE_CHECKS=0;';
-    $preSQL[] = 'SET AUTOCOMMIT=0;';
+
+    // InnoDB performance tuning for imports
+    $preSQL[] = 'SET @original_innodb_lock_wait_timeout = @@SESSION.INNODB_LOCK_WAIT_TIMEOUT;';
+    $preSQL[] = 'SET SESSION INNODB_LOCK_WAIT_TIMEOUT = 300;';  // Increase lock timeout to 5 minutes
 
     echo "  - Foreign key checks: disabled\n";
     echo "  - Unique checks: disabled\n";
-    echo "  - Autocommit: disabled\n";
+    echo "  - Lock wait timeout: 5 minutes\n";
     echo "  - Attempting to disable binary logging...\n";
 
-    // Post-import: COMMIT and restore settings
-    $postSQL[] = 'COMMIT;';
+    // Try to set GLOBAL InnoDB optimizations (requires SUPER privilege)
+    // These dramatically speed up bulk imports by reducing disk I/O
+    $preSQL[] = 'SET @original_innodb_flush_log = @@GLOBAL.INNODB_FLUSH_LOG_AT_TRX_COMMIT;';
+    $preSQL[] = 'SET GLOBAL INNODB_FLUSH_LOG_AT_TRX_COMMIT = 0;';  // Don't flush to disk on every commit
+
+    // Post-import: restore settings
     $postSQL[] = 'SET FOREIGN_KEY_CHECKS = @original_foreign_key_checks;';
     $postSQL[] = 'SET UNIQUE_CHECKS = @original_unique_checks;';
-    $postSQL[] = 'SET AUTOCOMMIT = @original_autocommit;';
     $postSQL[] = 'SET SESSION SQL_LOG_BIN = @original_sql_log_bin;';
+    $postSQL[] = 'SET SESSION INNODB_LOCK_WAIT_TIMEOUT = @original_innodb_lock_wait_timeout;';
+    $postSQL[] = 'SET GLOBAL INNODB_FLUSH_LOG_AT_TRX_COMMIT = @original_innodb_flush_log;';  // Restore original
 
     // Build the complete SQL input
     $command = ['mysql'];
@@ -1856,21 +1971,47 @@ function importSqlDump(array $config, string $sqlFilePath): void
 
         $inputStream->close();
 
-        // Wait for process to complete (this is where COMMIT actually runs)
-        // Show a spinner during this time
+        // Wait for process to complete and restore settings
+        // Show progress feedback
         $out = console();
         $spinner = new ProgressBar($out);
-        $spinner->setFormat("  Waiting for database to apply changes and finish processing... %elapsed:6s%  [<fg=yellow>%message%</>]");
+        $spinner->setFormat("  Finalizing import... %elapsed:6s%  [<fg=yellow>%message%</>]");
         $spinner->setMessage('⠋');
         $spinner->start();
+
+        $startTime = microtime(true);
+        $lastUpdate = $startTime;
+        $currentPhase = '';
 
         // Poll the process while it's running
         while ($process->isRunning()) {
             usleep(100000); // 100ms
             $spinner->advance();
-            // Braille spinner (corner-spinning dots)
+
+            $elapsed = microtime(true) - $startTime;
+
+            // Update spinner character
             $chars = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
             $spinner->setMessage($chars[(int) ($spinner->getProgress() % count($chars))]);
+
+            // Every 5 seconds, update the phase message
+            if (microtime(true) - $lastUpdate > 5.0) {
+                $lastUpdate = microtime(true);
+                $newPhase = '';
+
+                if ($elapsed < 10) {
+                    $newPhase = 'Restoring settings...';
+                } elseif ($elapsed < 30) {
+                    $newPhase = 'Completing...';
+                } else {
+                    $newPhase = 'Almost done...';
+                }
+
+                if ($newPhase !== $currentPhase) {
+                    $currentPhase = $newPhase;
+                    $spinner->setFormat("  Committing changes to database... %elapsed:6s%  [<fg=yellow>%message%</>] <fg=cyan>({$currentPhase})</>");
+                }
+            }
         }
 
         $spinner->finish();
@@ -2156,20 +2297,21 @@ function slugifyForFilename(string $value, int $maxLength = 32): string
 /**
  * Target option extraction
  */
-function extractTargetOption(array $args): ?string
+function extractTargetOption(array $parsed): ?string
 {
-    foreach ($args as $arg) {
-        if (str_starts_with((string) $arg, '--target=')) {
-            $value = trim(substr((string) $arg, 9));
-            if ($value !== '') {
-                return strtolower($value);
-            }
+    // Check positional arguments first
+    foreach ($parsed['positional'] as $arg) {
+        $candidate = strtolower($arg);
+        // Accept legacy names but they'll be normalized
+        if (in_array($candidate, ['intelis', 'vlsm', 'primary', 'default', 'interfacing', 'interface', 'both', 'all'], true)) {
+            return $candidate;
         }
     }
 
-    foreach ($args as $arg) {
-        $candidate = strtolower((string) $arg);
-        // Accept legacy names but they'll be normalized
+    // Check --target option
+    $target = getOption($parsed, '--target');
+    if ($target !== null) {
+        $candidate = strtolower($target);
         if (in_array($candidate, ['intelis', 'vlsm', 'primary', 'default', 'interfacing', 'interface', 'both', 'all'], true)) {
             return $candidate;
         }
@@ -2178,16 +2320,15 @@ function extractTargetOption(array $args): ?string
     return null;
 }
 
-function extractDaysOption(array $args, int $default): int
+function extractDaysOption(array $parsed, int $default): int
 {
-    foreach ($args as $arg) {
-        if (preg_match('/^--days=(\d+)$/', (string) $arg, $matches)) {
-            $value = (int) $matches[1];
-            if ($value < 1) {
-                throw new SystemException('Days value must be greater than zero.');
-            }
-            return $value;
+    $days = getOption($parsed, '--days');
+    if ($days !== null) {
+        $value = (int) $days;
+        if ($value < 1 && $default !== 0) {
+            throw new SystemException('Days value must be greater than zero.');
         }
+        return $value;
     }
 
     return $default;
@@ -2516,10 +2657,10 @@ function translateErrorMessage(string $technicalMessage): string
  * - mysqlcheck (optimize, repair, analyze)
  * - purge old binary logs
  */
-function handleMaintain(array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+function handleMaintain(array $intelisDbConfig, ?array $interfacingDbConfig, array $parsed): void
 {
-    $targetOption = extractTargetOption($args);
-    $days = extractDaysOption($args, 7);
+    $targetOption = extractTargetOption($parsed);
+    $days = extractDaysOption($parsed, 7);
     $targets = resolveMaintenanceTargets($targetOption, $intelisDbConfig, $interfacingDbConfig);
 
     echo "===========================================\n";
@@ -2581,9 +2722,9 @@ function handleMaintain(array $intelisDbConfig, ?array $interfacingDbConfig, arr
 /**
  * Verify backup integrity
  */
-function handleVerify(string $backupFolder, array $args): void
+function handleVerify(string $backupFolder, array $parsed): void
 {
-    $backupFile = $args[0] ?? null;
+    $backupFile = $parsed["positional"][0] ?? null;
 
     if ($backupFile === null) {
         $backups = getSortedBackups($backupFolder);
@@ -2688,10 +2829,10 @@ function handleVerify(string $backupFolder, array $args): void
  * - Deletes matching *.meta.json alongside each removed backup
  * - Sweeps orphan *.meta.json files that no longer have a corresponding archive
  */
-function handleClean(string $backupFolder, array $args): void
+function handleClean(string $backupFolder, array $parsed): void
 {
-    $keepCount = extractKeepOption($args);
-    $keepDays = extractDaysOption($args, 0);
+    $keepCount = extractKeepOption($parsed);
+    $keepDays = extractDaysOption($parsed, 0);
 
     if ($keepCount === null && $keepDays === 0) {
         throw new SystemException('Please specify --keep=N or --days=N for retention policy');
@@ -2859,16 +3000,15 @@ function handleClean(string $backupFolder, array $args): void
 /**
  * Extract --keep option from arguments
  */
-function extractKeepOption(array $args): ?int
+function extractKeepOption(array $parsed): ?int
 {
-    foreach ($args as $arg) {
-        if (preg_match('/^--keep=(\d+)$/', (string) $arg, $matches)) {
-            $value = (int) $matches[1];
-            if ($value < 1) {
-                throw new SystemException('Keep value must be greater than zero.');
-            }
-            return $value;
+    $keep = getOption($parsed, '--keep');
+    if ($keep !== null) {
+        $value = (int) $keep;
+        if ($value < 1) {
+            throw new SystemException('Keep value must be greater than zero.');
         }
+        return $value;
     }
 
     return null;
@@ -2878,9 +3018,9 @@ function extractKeepOption(array $args): ?int
 /**
  * Show database size information
  */
-function handleSize(array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+function handleSize(array $intelisDbConfig, ?array $interfacingDbConfig, array $parsed): void
 {
-    $targetOption = extractTargetOption($args);
+    $targetOption = extractTargetOption($parsed);
     $targets = resolveMaintenanceTargets($targetOption, $intelisDbConfig, $interfacingDbConfig);
 
     foreach ($targets as $target) {
@@ -3217,9 +3357,9 @@ function runPipeline(array $producer, array $consumer, array $env = []): int
     return 0;
 }
 
-function handlePitrInfo(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+function handlePitrInfo(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $parsed): void
 {
-    $targetOption = extractTargetOption($args) ?? 'intelis';
+    $targetOption = extractTargetOption($parsed) ?? 'intelis';
     $config = resolveTargetConfig($targetOption, $intelisDbConfig, $interfacingDbConfig);
     $label = normalizeTargetLabel($targetOption);
 
@@ -3274,9 +3414,9 @@ function handlePitrInfo(string $backupFolder, array $intelisDbConfig, ?array $in
     echo "\nSample PITR command:\n  {$cmd}\n";
 }
 
-function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $parsed): void
 {
-    $opts = parseArgs($args);
+    $opts = parseArgs($parsed);
     $metaFile = $opts['from-meta'] ?? null;
     $to = $opts['to'] ?? null;
     $targetOption = $opts['target'] ?? 'intelis';
