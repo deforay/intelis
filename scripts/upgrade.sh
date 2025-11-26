@@ -975,24 +975,33 @@ declare -A dir_migrations=(
     ["${lis_path}/public/uploads/track-api"]="track-api"
 )
 
+declare -a dir_migration_pids=()
+declare -A dir_migration_labels=()
+
 # Migrate each directory with progress indication
 for src_dir in "${!dir_migrations[@]}"; do
     dest_name="${dir_migrations[$src_dir]}"
     dest_dir="${lis_path}/var/${dest_name}"
     
     if [ -d "$src_dir" ]; then
-        print info "Moving ${dest_name}/ to var/${dest_name}/"
-        move_dir_fully "$src_dir" "$dest_dir" &
+        print info "Moving ${dest_name}/ to var/${dest_name}/ in background"
+        (
+            move_dir_fully "$src_dir" "$dest_dir"
+        ) &
         migration_pid=$!
-        spinner "${migration_pid}"
-        wait ${migration_pid}
-        print success "✓ ${dest_name}/ migrated successfully"
+        dir_migration_pids+=("${migration_pid}")
+        dir_migration_labels["${migration_pid}"]="${dest_name}"
+        log_action "Started migration of ${dest_name} (pid: ${migration_pid})"
     else
         print info "Skipping ${dest_name}/ (not found)"
     fi
 done
 
-print success "Directory migration completed"
+if [ "${#dir_migration_pids[@]}" -gt 0 ]; then
+    print info "Directory migrations running in background; continuing with upgrade..."
+else
+    print success "Directory migration completed (nothing to move)"
+fi
 
 # Set proper permissions
 set_permissions "${lis_path}" "quick"
@@ -1184,6 +1193,18 @@ wait $pid
 
 print success "Database migrations and post-update tasks completed."
 log_action "Database migrations and post-update tasks completed."
+
+# Ensure background directory migrations are finished before any run-once/maintenance scripts
+if [ "${#dir_migration_pids[@]}" -gt 0 ]; then
+    print info "Waiting for background directory migrations to finish..."
+    for pid in "${dir_migration_pids[@]}"; do
+        migration_name="${dir_migration_labels[$pid]}"
+        spinner "$pid" "Finalizing migration for ${migration_name}/"
+    done
+    print success "All directory migrations completed."
+else
+    print info "No directory migrations were started."
+fi
 
 
 if [ -d "${lis_path}/run-once" ]; then
