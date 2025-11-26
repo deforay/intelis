@@ -65,38 +65,24 @@ try {
             }
         }
 
-        $bdl = [
-            '< 400',
-            'bdl',
-            'below detection limit',
-        ];
+        $bdl = ['< 400', 'bdl', 'below detection limit'];
+        $tnd = ['not detected', 'tnd', 'undetected'];
 
+        $setNoDetection = function (string $label) use (&$interpretedResults): void {
+            $interpretedResults['txtVal'] = $interpretedResults['result'] = $label;
+            $interpretedResults['absVal'] = $interpretedResults['absDecimalVal'] = $interpretedResults['logVal'] = null;
+        };
 
-        $tnd = [
-            'not detected',
-            'tnd',
-            'undetected',
-        ];
-
-        if (
-            !empty($interpretedResults['result']) &&
-            in_array(strtolower((string) $interpretedResults['result']), $tnd)
-        ) {
-            $interpretedResults['txtVal'] =
-                $interpretedResults['result'] = 'Target Not Detected';
-            $interpretedResults['absVal'] = null;
-            $interpretedResults['absDecimalVal'] = null;
-            $interpretedResults['logVal'] = null;
-        } elseif (
-            !empty($interpretedResults['result']) &&
-            (in_array(strtolower((string) $interpretedResults['result']), $bdl) ||
-                $interpretedResults['absDecimalVal'] < 400)
-        ) {
-            $interpretedResults['txtVal'] =
-                $interpretedResults['result'] = 'Below Detection Level';
-            $interpretedResults['absVal'] = null;
-            $interpretedResults['absDecimalVal'] = null;
-            $interpretedResults['logVal'] = null;
+        $resultText = strtolower((string) ($interpretedResults['result'] ?? ''));
+        if ($resultText !== '') {
+            if (in_array($resultText, $tnd, true)) {
+                $setNoDetection('Target Not Detected');
+            } elseif (
+                in_array($resultText, $bdl, true) ||
+                (($interpretedResults['absDecimalVal'] ?? PHP_INT_MAX) < 400)
+            ) {
+                $setNoDetection('Below Detection Level');
+            }
         }
 
 
