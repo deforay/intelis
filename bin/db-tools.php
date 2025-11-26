@@ -1849,193 +1849,141 @@ function importSqlDump(array $config, string $sqlFilePath): void
         throw new SystemException("SQL file not found: $sqlFilePath");
     }
 
-    echo "  Optimizing settings for fast import...\n";
+    echo "  Optimizing import settings...\n";
 
-    // Try to set GLOBAL InnoDB optimizations (requires SUPER privilege)
-    // We do this OUTSIDE the main pipeline so we can catch errors if the user isn't root
     $originalFlushLog = null;
     $hasSuperPrivilege = false;
     try {
-        // Check if we can read the global variable
         $res = runMysqlQuery($config, "SELECT @@GLOBAL.INNODB_FLUSH_LOG_AT_TRX_COMMIT");
         $originalFlushLog = trim($res);
-
-        // Try to set it to 0 (fastest)
         runMysqlQuery($config, "SET GLOBAL INNODB_FLUSH_LOG_AT_TRX_COMMIT = 0");
-        echo "  - Global InnoDB flush log: disabled (fast import)\n";
+        echo "  - InnoDB flush log disabled\n";
         $hasSuperPrivilege = true;
     } catch (\Throwable $e) {
-        // Permission denied or other error - skip this optimization
-        echo "  - Optimization skipped: " . $e->getMessage() . "\n";
         $originalFlushLog = null;
     }
 
-    // Build all SQL to run in a SINGLE session
-    $preSQL = [];
-    $postSQL = [];
-
-    // Try to disable binary logging (requires SUPER privilege)
-    if ($hasSuperPrivilege) {
-        $preSQL[] = 'SET @original_sql_log_bin = @@SESSION.SQL_LOG_BIN;';
-        $preSQL[] = 'SET SESSION SQL_LOG_BIN = 0;';
-        echo "  - Binary logging: disabled\n";
-    } else {
-        echo "  - Binary logging: unchanged (requires SUPER privilege)\n";
-    }
-
-    // Standard optimizations
-    $preSQL[] = 'SET @original_foreign_key_checks = @@SESSION.FOREIGN_KEY_CHECKS;';
-    $preSQL[] = 'SET @original_unique_checks = @@SESSION.UNIQUE_CHECKS;';
-    $preSQL[] = 'SET FOREIGN_KEY_CHECKS=0;';
-    $preSQL[] = 'SET UNIQUE_CHECKS=0;';
-
-    // InnoDB performance tuning for imports
-    $preSQL[] = 'SET @original_innodb_lock_wait_timeout = @@SESSION.INNODB_LOCK_WAIT_TIMEOUT;';
-    $preSQL[] = 'SET SESSION INNODB_LOCK_WAIT_TIMEOUT = 300;';  // Increase lock timeout to 5 minutes
-
-    echo "  - Foreign key checks: disabled\n";
-    echo "  - Unique checks: disabled\n";
-    echo "  - Lock wait timeout: 5 minutes\n";
-
-    // Post-import: restore settings
-    $postSQL[] = 'SET FOREIGN_KEY_CHECKS = @original_foreign_key_checks;';
-    $postSQL[] = 'SET UNIQUE_CHECKS = @original_unique_checks;';
-    if ($hasSuperPrivilege) {
-        $postSQL[] = 'SET SESSION SQL_LOG_BIN = @original_sql_log_bin;';
-    }
-    $postSQL[] = 'SET SESSION INNODB_LOCK_WAIT_TIMEOUT = @original_innodb_lock_wait_timeout;';
-
-    if ($originalFlushLog !== null) {
-        $postSQL[] = "SET GLOBAL INNODB_FLUSH_LOG_AT_TRX_COMMIT = {$originalFlushLog};";
-    }
-
-    // Build the complete SQL input
-    $command = ['mysql'];
-    $command[] = '--host=' . $config['host'];
-    if (!empty($config['port'])) {
-        $command[] = '--port=' . $config['port'];
-    }
-    $command[] = '--user=' . $config['username'];
-    $command[] = '--database=' . $config['db'];
-    $charset = $config['charset'] ?? 'utf8mb4';
-    $command[] = '--default-character-set=' . $charset;
-
-    $env = buildProcessEnv([
-        'MYSQL_PWD' => $config['password'] ?? '',
-    ]);
-
-    $process = new Process($command, null, $env);
-    $process->setTimeout(null);
-
-    $inputStream = new InputStream();
-    $process->setInput($inputStream);
-    $process->start();
+    $tempSqlFile = tempnam(sys_get_temp_dir(), 'dbimport_') . '.sql';
 
     try {
-        // Send pre-SQL
-        foreach ($preSQL as $sql) {
-            $inputStream->write($sql . "\n");
+        $tempHandle = fopen($tempSqlFile, 'wb');
+        if ($tempHandle === false) {
+            throw new SystemException('Could not create temporary SQL file');
         }
 
-        // Stream the SQL file
-        $source = fopen($sqlFilePath, 'rb');
-        if ($source === false) {
-            throw new SystemException('Could not read the SQL file.');
+        // Build pre-import SQL
+        $preSQL = [];
+        if ($hasSuperPrivilege) {
+            $preSQL[] = 'SET @original_sql_log_bin = @@SESSION.SQL_LOG_BIN;';
+            $preSQL[] = 'SET SESSION SQL_LOG_BIN = 0;';
+            echo "  - Binary logging: disabled\n";
+        }
+        $preSQL[] = 'SET @original_foreign_key_checks = @@SESSION.FOREIGN_KEY_CHECKS;';
+        $preSQL[] = 'SET @original_unique_checks = @@SESSION.UNIQUE_CHECKS;';
+        $preSQL[] = 'SET FOREIGN_KEY_CHECKS=0;';
+        $preSQL[] = 'SET UNIQUE_CHECKS=0;';
+        $preSQL[] = 'SET @original_innodb_lock_wait_timeout = @@SESSION.INNODB_LOCK_WAIT_TIMEOUT;';
+        $preSQL[] = 'SET SESSION INNODB_LOCK_WAIT_TIMEOUT = 300;';
+
+        echo "  - Foreign key checks: disabled\n";
+        echo "  - Unique checks: disabled\n";
+        echo "  - Lock wait timeout: 5 minutes\n";
+
+        fwrite($tempHandle, implode("\n", $preSQL) . "\n\n");
+
+        // Copy dump file
+        $sourceHandle = fopen($sqlFilePath, 'rb');
+        if ($sourceHandle === false) {
+            throw new SystemException('Could not read SQL dump file');
         }
 
-        $fileSize = filesize($sqlFilePath) ?: 0;
-        $bytesRead = 0;
-        $progressBar = null;
-
-        if ($fileSize > 1048576) {
-            $out = console();
-            $progressBar = new ProgressBar($out, 100);
-            $progressBar->setFormat(" Importing SQL … %current%/%max%  [%bar%]  %elapsed:6s%  %memory:6s%");
-            $progressBar->setBarCharacter("<fg=green>█</>");
-            $progressBar->setEmptyBarCharacter("░");
-            $progressBar->setProgressCharacter("<fg=green>█</>");
-            $progressBar->start();
-        }
-
-        $lastPercent = 0;
-        while (!feof($source)) {
-            $chunk = fread($source, 262144); // 256KB chunks for optimal performance
+        while (!feof($sourceHandle)) {
+            $chunk = fread($sourceHandle, 1048576);
             if ($chunk === false || $chunk === '') {
                 break;
             }
-
-            $inputStream->write($chunk);
-            $bytesRead += strlen($chunk);
-
-            if ($progressBar instanceof ProgressBar && $fileSize > 0) {
-                $percent = (int) (($bytesRead / $fileSize) * 100);
-                if ($percent > $lastPercent) {
-                    $progressBar->setProgress($percent);
-                    $lastPercent = $percent;
-                }
-            }
+            fwrite($tempHandle, $chunk);
         }
+        fclose($sourceHandle);
 
-        fclose($source);
-
-        if ($progressBar instanceof ProgressBar) {
-            $progressBar->finish();
-            echo "\n";
+        // Append restoration SQL
+        $postSQL = [];
+        $postSQL[] = "\n\n-- Restore settings";
+        $postSQL[] = 'SET FOREIGN_KEY_CHECKS = @original_foreign_key_checks;';
+        $postSQL[] = 'SET UNIQUE_CHECKS = @original_unique_checks;';
+        if ($hasSuperPrivilege) {
+            $postSQL[] = 'SET SESSION SQL_LOG_BIN = @original_sql_log_bin;';
         }
+        $postSQL[] = 'SET SESSION INNODB_LOCK_WAIT_TIMEOUT = @original_innodb_lock_wait_timeout;';
+        fwrite($tempHandle, implode("\n", $postSQL) . "\n");
 
-        // Now send post-SQL (COMMIT + restore settings)
-        // This is where the delay happens - show a spinner with elapsed time
-        echo "\n";
+        fclose($tempHandle);
 
-        foreach ($postSQL as $sql) {
-            $inputStream->write($sql . "\n");
-        }
+        echo "\n Importing SQL...\n";
 
-        $inputStream->close();
+        $host = escapeshellarg($config['host']);
+        $port = !empty($config['port']) ? escapeshellarg((string) $config['port']) : '3306';
+        $user = escapeshellarg($config['username']);
+        $db = escapeshellarg($config['db']);
+        $charset = escapeshellarg($config['charset'] ?? 'utf8mb4');
+        $sqlFile = escapeshellarg($tempSqlFile);
 
-        // Wait for process to complete and restore settings
-        // Show progress feedback
+        $cmd = sprintf(
+            'mysql --host=%s --port=%s --user=%s --database=%s --default-character-set=%s < %s',
+            $host,
+            $port,
+            $user,
+            $db,
+            $charset,
+            $sqlFile
+        );
+
+        $env = buildProcessEnv([
+            'MYSQL_PWD' => $config['password'] ?? '',
+        ]);
+
+        $process = Process::fromShellCommandline($cmd, null, $env, null, null);
+        $process->start();
+
         $out = console();
         $spinner = new ProgressBar($out);
-        $spinner->setFormat("  Finalizing import... %elapsed:6s%  [<fg=yellow>%message%</>]");
+        $spinner->setFormat("  Importing… %elapsed:6s%  [<fg=yellow>%message%</>]");
         $spinner->setMessage('⠋');
         $spinner->start();
 
-        $startTime = microtime(true);
-        $lastUpdate = $startTime;
-        $currentPhase = '';
+        $chars = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+        $charIndex = 0;
 
-        // Poll the process while it's running
         while ($process->isRunning()) {
-            usleep(100000); // 100ms
+            usleep(100000);
             $spinner->advance();
-
-            $elapsed = microtime(true) - $startTime;
-
-            // Update spinner character
-            $chars = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
-            $spinner->setMessage($chars[(int) ($spinner->getProgress() % count($chars))]);
+            $spinner->setMessage($chars[$charIndex % count($chars)]);
+            $charIndex++;
         }
 
         $spinner->finish();
         echo "\n";
 
-        $stdout = $process->getOutput();
-        $stderr = $process->getErrorOutput();
-
         if (!$process->isSuccessful()) {
-            $errorMessage = trim($stderr) !== '' ? trim($stderr) : trim($stdout);
-            throw new SystemException("Database import failed: {$errorMessage}");
+            $errorMsg = trim($process->getErrorOutput()) ?: trim($process->getOutput());
+            throw new SystemException("Database import failed: {$errorMsg}");
         }
 
-        echo "  ✅ Import completed successfully\n";
-        echo "  ✅ Database settings restored\n";
+        echo "  ✅ Import completed\n";
 
-    } catch (\Throwable $e) {
-        if (isset($inputStream)) {
-            $inputStream->close();
+        if ($originalFlushLog !== null) {
+            try {
+                runMysqlQuery($config, "SET GLOBAL INNODB_FLUSH_LOG_AT_TRX_COMMIT = {$originalFlushLog}");
+                echo "  ✅ Settings restored\n";
+            } catch (\Throwable $e) {
+                echo "  ⚠️  Could not restore InnoDB setting\n";
+            }
         }
-        throw new SystemException('Database import failed: ' . $e->getMessage());
+
+    } finally {
+        if (isset($tempSqlFile) && file_exists($tempSqlFile)) {
+            @unlink($tempSqlFile);
+        }
     }
 }
 
