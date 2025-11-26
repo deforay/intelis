@@ -1410,6 +1410,16 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
     $metaPath = $backupFolder . DIRECTORY_SEPARATOR . $baseName . '.meta.json';
     file_put_contents($metaPath, json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
+    // Warn if PITR won't be available
+    if (empty($meta['snapshot']['end']['file'])) {
+        $logBinStatus = $meta['server']['log_bin'] ?? 'OFF';
+        if ($logBinStatus === 'ON') {
+            echo "\n⚠️  Warning: Point-in-Time Recovery (PITR) will not be available for this backup.\n";
+            echo "   Binary logging is enabled but no binlog position was captured.\n";
+            echo "   This usually means no transactions have been logged yet.\n";
+        }
+    }
+
     $spinner->finish();
     return $gpgPath; // returns *.sql.<compression>.gpg
 }
@@ -3289,7 +3299,30 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
 
     $meta = json_decode(file_get_contents($metaFile), true);
     if (!$meta || empty($meta['snapshot']['end']['file'])) {
-        throw new SystemException('Invalid or incomplete meta file (missing snapshot.end).');
+        $logBinStatus = $meta['server']['log_bin'] ?? 'UNKNOWN';
+
+        echo "❌ Point-in-Time Recovery is not available for this backup.\n\n";
+        echo "Reason: Binary log position was not captured during backup creation.\n";
+        echo "Binary logging status: {$logBinStatus}\n\n";
+
+        if ($logBinStatus === 'ON') {
+            echo "This can happen when:\n";
+            echo "  • Binary logging was just enabled but no transactions have been logged yet\n";
+            echo "  • All binary log files were purged before the backup\n";
+            echo "  • MySQL couldn't provide SHOW MASTER STATUS output\n\n";
+            echo "To enable PITR for future backups:\n";
+            echo "  1. Ensure binary logging is enabled (it is)\n";
+            echo "  2. Perform some database operations to generate binlog entries\n";
+            echo "  3. Create a new backup - it will capture binlog positions\n";
+        } else {
+            echo "Binary logging is not enabled on this MySQL server.\n";
+            echo "To enable PITR, you need to:\n";
+            echo "  1. Enable binary logging in MySQL configuration\n";
+            echo "  2. Restart MySQL\n";
+            echo "  3. Create a new backup\n";
+        }
+
+        exit(1);
     }
 
     // Starting point
