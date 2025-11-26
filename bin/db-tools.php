@@ -1851,14 +1851,37 @@ function importSqlDump(array $config, string $sqlFilePath): void
 
     echo "  Optimizing settings for fast import...\n";
 
+    // Try to set GLOBAL InnoDB optimizations (requires SUPER privilege)
+    // We do this OUTSIDE the main pipeline so we can catch errors if the user isn't root
+    $originalFlushLog = null;
+    $hasSuperPrivilege = false;
+    try {
+        // Check if we can read the global variable
+        $res = runMysqlQuery($config, "SELECT @@GLOBAL.INNODB_FLUSH_LOG_AT_TRX_COMMIT");
+        $originalFlushLog = trim($res);
+
+        // Try to set it to 0 (fastest)
+        runMysqlQuery($config, "SET GLOBAL INNODB_FLUSH_LOG_AT_TRX_COMMIT = 0");
+        echo "  - Global InnoDB flush log: disabled (fast import)\n";
+        $hasSuperPrivilege = true;
+    } catch (\Throwable $e) {
+        // Permission denied or other error - skip this optimization
+        echo "  - Optimization skipped: " . $e->getMessage() . "\n";
+        $originalFlushLog = null;
+    }
+
     // Build all SQL to run in a SINGLE session
     $preSQL = [];
     $postSQL = [];
 
     // Try to disable binary logging (requires SUPER privilege)
-    // We'll attempt this and note if it fails
-    $preSQL[] = 'SET @original_sql_log_bin = @@SESSION.SQL_LOG_BIN;';
-    $preSQL[] = 'SET SESSION SQL_LOG_BIN = IF(@original_sql_log_bin IS NOT NULL, 0, @@SESSION.SQL_LOG_BIN);';
+    if ($hasSuperPrivilege) {
+        $preSQL[] = 'SET @original_sql_log_bin = @@SESSION.SQL_LOG_BIN;';
+        $preSQL[] = 'SET SESSION SQL_LOG_BIN = 0;';
+        echo "  - Binary logging: disabled\n";
+    } else {
+        echo "  - Binary logging: unchanged (requires SUPER privilege)\n";
+    }
 
     // Standard optimizations
     $preSQL[] = 'SET @original_foreign_key_checks = @@SESSION.FOREIGN_KEY_CHECKS;';
@@ -1873,19 +1896,18 @@ function importSqlDump(array $config, string $sqlFilePath): void
     echo "  - Foreign key checks: disabled\n";
     echo "  - Unique checks: disabled\n";
     echo "  - Lock wait timeout: 5 minutes\n";
-    echo "  - Attempting to disable binary logging...\n";
-
-    // Try to set GLOBAL InnoDB optimizations (requires SUPER privilege)
-    // These dramatically speed up bulk imports by reducing disk I/O
-    $preSQL[] = 'SET @original_innodb_flush_log = @@GLOBAL.INNODB_FLUSH_LOG_AT_TRX_COMMIT;';
-    $preSQL[] = 'SET GLOBAL INNODB_FLUSH_LOG_AT_TRX_COMMIT = 0;';  // Don't flush to disk on every commit
 
     // Post-import: restore settings
     $postSQL[] = 'SET FOREIGN_KEY_CHECKS = @original_foreign_key_checks;';
     $postSQL[] = 'SET UNIQUE_CHECKS = @original_unique_checks;';
-    $postSQL[] = 'SET SESSION SQL_LOG_BIN = @original_sql_log_bin;';
+    if ($hasSuperPrivilege) {
+        $postSQL[] = 'SET SESSION SQL_LOG_BIN = @original_sql_log_bin;';
+    }
     $postSQL[] = 'SET SESSION INNODB_LOCK_WAIT_TIMEOUT = @original_innodb_lock_wait_timeout;';
-    $postSQL[] = 'SET GLOBAL INNODB_FLUSH_LOG_AT_TRX_COMMIT = @original_innodb_flush_log;';  // Restore original
+
+    if ($originalFlushLog !== null) {
+        $postSQL[] = "SET GLOBAL INNODB_FLUSH_LOG_AT_TRX_COMMIT = {$originalFlushLog};";
+    }
 
     // Build the complete SQL input
     $command = ['mysql'];
@@ -1993,25 +2015,6 @@ function importSqlDump(array $config, string $sqlFilePath): void
             // Update spinner character
             $chars = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
             $spinner->setMessage($chars[(int) ($spinner->getProgress() % count($chars))]);
-
-            // Every 5 seconds, update the phase message
-            if (microtime(true) - $lastUpdate > 5.0) {
-                $lastUpdate = microtime(true);
-                $newPhase = '';
-
-                if ($elapsed < 10) {
-                    $newPhase = 'Restoring settings...';
-                } elseif ($elapsed < 30) {
-                    $newPhase = 'Completing...';
-                } else {
-                    $newPhase = 'Almost done...';
-                }
-
-                if ($newPhase !== $currentPhase) {
-                    $currentPhase = $newPhase;
-                    $spinner->setFormat("  Committing changes to database... %elapsed:6s%  [<fg=yellow>%message%</>] <fg=cyan>({$currentPhase})</>");
-                }
-            }
         }
 
         $spinner->finish();
