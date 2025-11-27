@@ -827,10 +827,7 @@ php bin/db-tools.php config-test
 
 print header "Running database migrations and other post-install tasks"
 cd "${lis_path}"
-sudo -u www-data composer post-install &
-pid=$!
-spinner "$pid"
-wait $pid
+sudo -u www-data composer post-install
 
 if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
     # List the files in maintenance directory
