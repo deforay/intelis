@@ -103,6 +103,7 @@
         "token": "@php bin/token.php",
         "sts-setup": [
             "@php bin/setup/setup-sts.php",
+            "@purge-cache",
             "@token"
         ],
         "setup-sts": [
