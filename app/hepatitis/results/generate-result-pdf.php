@@ -1,16 +1,18 @@
 <?php
 
-use const COUNTRY\SOUTH_SUDAN;
-use const COUNTRY\SIERRA_LEONE;
 use const COUNTRY\DRC;
-use const COUNTRY\CAMEROON;
 use const COUNTRY\PNG;
 use const COUNTRY\WHO;
 use const COUNTRY\RWANDA;
+use const COUNTRY\CAMEROON;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use const COUNTRY\SOUTH_SUDAN;
 use App\Services\CommonService;
+use const COUNTRY\SIERRA_LEONE;
 use App\Services\DatabaseService;
+use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 
 ini_set('memory_limit', -1);
@@ -92,10 +94,19 @@ foreach ($requestResult as $requestRow) {
 
 
 /* Test Results */
-$_SESSION['aliasPage'] = 1;
+$pages = [];
+$page = 1;
+$_SESSION['aliasPage'] = $page;
 //print_r($requestResult);die;
 
 
 $fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php', DRC => 'pdf/result-pdf-drc.php', CAMEROON => 'pdf/result-pdf-cameroon.php', PNG => 'pdf/result-pdf-png.php', WHO => 'pdf/result-pdf-who.php', RWANDA => 'pdf/result-pdf-rwanda.php'];
 
 require_once($fileArray[$formId]);
+
+
+if ($pages !== []) {
+	$resultFilename = 'InteLIS-Hepatitis-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
+	$resultPdf = new PdfConcatenateHelper();
+	$resultPdf->mergeFiles($pages, TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, 50);
+}

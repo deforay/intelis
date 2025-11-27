@@ -146,13 +146,9 @@ foreach ($requestResult as $result) {
 
 
 if ($pages !== []) {
-	$resultPdf = new PdfConcatenateHelper();
-	$resultPdf->setFiles($pages);
-	$resultPdf->setPrintHeader(false);
-	$resultPdf->setPrintFooter(false);
-	$resultPdf->concat();
 	$resultFilename = 'InteLIS-CD4-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
-	$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
+	$resultPdf = new PdfConcatenateHelper();
+	$resultPdf->mergeFiles($pages, TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, 50);
 }
 
 MiscUtility::removeDirectory($pathFront);

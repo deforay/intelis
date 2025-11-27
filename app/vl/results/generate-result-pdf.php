@@ -1,5 +1,11 @@
 <?php
 
+
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
+
+
 use Psr\Http\Message\ServerRequestInterface;
 use const COUNTRY\SOUTH_SUDAN;
 use const COUNTRY\SIERRA_LEONE;
@@ -9,11 +15,6 @@ use const COUNTRY\PNG;
 use const COUNTRY\WHO;
 use const COUNTRY\RWANDA;
 use const COUNTRY\BURKINA_FASO;
-
-ini_set('memory_limit', -1);
-set_time_limit(0);
-ini_set('max_execution_time', 300000);
-
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -177,15 +178,11 @@ foreach ($requestResult as $result) {
 	require $fileToInclude;
 }
 
+$resultFilename = 'HIV-VL-Test-Result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
 
 if ($pages !== []) {
-	$resultPdf = new PdfConcatenateHelper();
-	$resultPdf->setFiles($pages);
-	$resultPdf->setPrintHeader(false);
-	$resultPdf->setPrintFooter(false);
-	$resultPdf->concat();
-	$resultFilename = 'HIV-VL-Test-Result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
-	$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
+	$finalMerger = new PdfConcatenateHelper();
+	$finalMerger->mergeFiles($pages, TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, 50);
 }
 
 MiscUtility::removeDirectory($pathFront);
