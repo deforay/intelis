@@ -4,11 +4,19 @@
 // File gets called in import-file-helper.php based on the selected instrument type
 
 use App\Services\VlService;
+use const COUNTRY\SOUTH_SUDAN;
+use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestResultImportService;
 
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$formId = (int) $general->getGlobalConfig('vl_form');
+
 
 try {
     $testType = 'vl';
@@ -74,7 +82,7 @@ try {
         };
 
         $resultText = strtolower((string) ($interpretedResults['result'] ?? ''));
-        if ($resultText !== '') {
+        if ($formId == SOUTH_SUDAN && $resultText !== '') {
             if (in_array($resultText, $tnd, true)) {
                 $setNoDetection('Target Not Detected');
             } elseif (
