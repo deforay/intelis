@@ -1186,7 +1186,7 @@ php "${lis_path}/bin/db-tools.php" config-test
 
 # Run the database migrations and other post-update tasks
 print header "Running database migrations and other post-update tasks"
-sudo -u www-data composer post-update &
+sudo -u www-data composer post-update
 pid=$!
 spinner "$pid"
 wait $pid
