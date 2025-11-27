@@ -141,20 +141,17 @@ foreach ($requestResult as $result) {
     if (!empty($result['reportFormat'])) {
         $selectedReportFormats = json_decode((string) $result['reportFormat'], true);
     }
-    if (!empty($selectedReportFormats) && !empty($selectedReportFormats['eid']) && file_exists(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['eid'])) {
-        require $selectedReportFormats['eid'];
-    } else {
-        require $fileArray[$arr['vl_form']];
-    }
+if (!empty($selectedReportFormats) && !empty($selectedReportFormats['eid']) && file_exists(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['eid'])) {
+    require $selectedReportFormats['eid'];
+} else {
+    require $fileArray[$arr['vl_form']];
+}
 }
 if ($pages !== []) {
-    $resultPdf = new PdfConcatenateHelper();
-    $resultPdf->setFiles($pages);
-    $resultPdf->setPrintHeader(false);
-    $resultPdf->setPrintFooter(false);
-    $resultPdf->concat();
     $resultFilename = 'InteLIS-EID-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
-    $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
+    $outputPath = TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename;
+    $resultPdf = new PdfConcatenateHelper();
+    $resultPdf->mergeFiles($pages, $outputPath, 50);
 }
 MiscUtility::removeDirectory($pathFront);
 echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);

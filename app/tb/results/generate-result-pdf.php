@@ -331,14 +331,9 @@ try {
         // Concatenate all pages into final PDF
         if ($pages !== []) {
             try {
-                $resultPdf = new PdfConcatenateHelper();
-                $resultPdf->setFiles($pages);
-                $resultPdf->setPrintHeader(false);
-                $resultPdf->setPrintFooter(false);
-                $resultPdf->concat();
-
                 $resultFilename = 'InteLIS-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
-                $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
+                $resultPdf = new PdfConcatenateHelper();
+                $resultPdf->mergeFiles($pages, TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, 50);
 
                 error_log("TB PDF report successfully generated: " . $resultFilename);
             } catch (Exception $e) {
