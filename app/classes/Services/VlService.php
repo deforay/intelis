@@ -3,24 +3,25 @@
 namespace App\Services;
 
 use Override;
-use const SAMPLE_STATUS\REJECTED;
-use const SAMPLE_STATUS\PENDING_APPROVAL;
-use const SAMPLE_STATUS\TEST_FAILED;
-use const SAMPLE_STATUS\NO_RESULT;
-use const SAMPLE_STATUS\ACCEPTED;
-use const COUNTRY\SOUTH_SUDAN;
-use const COUNTRY\PNG;
-use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-use COUNTRY;
 use Throwable;
-use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
 use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
+
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
+
+use const COUNTRY\PNG;
+use const COUNTRY\SOUTH_SUDAN;
+
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\NO_RESULT;
+use const SAMPLE_STATUS\TEST_FAILED;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
 final class VlService extends AbstractTestService
 {

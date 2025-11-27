@@ -73,28 +73,37 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<div class="widget-content">
 								<div class="bs bs-tabs">
 									<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
-										<li class="active"><a href="#notPrintedData" id="notPrintedDataTabHeading" data-toggle="tab" onclick="loadUnPrintedData();">
+										<li class="active"><a href="#notPrintedData" id="notPrintedDataTabHeading"
+												data-toggle="tab" onclick="loadUnPrintedData();">
 												<?php echo _translate("Results not yet Printed"); ?>
 											</a></li>
-										<li><a href="#printedData" id="printedDataTabHeading" data-toggle="tab" onclick="loadPrintedResults();">
+										<li><a href="#printedData" id="printedDataTabHeading" data-toggle="tab"
+												onclick="loadPrintedResults();">
 												<?php echo _translate("Results already Printed"); ?>
 											</a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="notPrintedData">
-											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
+												style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
 													<td><strong>
 															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" />
+														<input type="text" id="sampleCollectionDate"
+															name="sampleCollectionDate"
+															class="form-control daterangefield"
+															placeholder="<?php echo _translate('Select Collection Date'); ?>"
+															readonly style="background:#fff;" />
 													</td>
 													<td><strong>
 															<?php echo _translate("Province/State"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+														<select class="form-control select2-element" id="state"
+															onchange="getByProvince(this.value)" name="state"
+															title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
@@ -103,7 +112,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("District/County"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict(this.value)">
+														<select class="form-control select2-element" id="district"
+															name="district"
+															title="<?php echo _translate('Please select Province/State'); ?>"
+															onchange="getByDistrict(this.value)">
 														</select>
 													</td>
 
@@ -113,15 +125,18 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Sample Type"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+														<select class="form-control" id="sampleType" name="sampleType"
+															title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($sResult as $type) {
-															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
-															<?php
+																?>
+																<option value="<?php echo $type['sample_id']; ?>">
+																	<?= $type['sample_name']; ?>
+																</option>
+																<?php
 															}
 															?>
 														</select>
@@ -130,7 +145,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Facility Name"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control" id="facility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
+														<select class="form-control" id="facility" name="facility"
+															title="<?php echo _translate('Please select facility name'); ?>"
+															multiple="multiple">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
@@ -138,7 +155,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Testing Labs"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control" id="labId" name="labId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple">
+														<select class="form-control" id="labId" name="labId"
+															title="<?php echo _translate('Please select testing labs'); ?>"
+															multiple="multiple">
 															<?= $labsDropdown; ?>
 														</select>
 													</td>
@@ -149,7 +168,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Sex"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please select sex'); ?>">
+														<select name="gender" id="gender" class="form-control"
+															title="<?php echo _translate('Please select sex'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -169,13 +189,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
+														<input type="text" id="sampleTestDate" name="sampleTestDate"
+															class="form-control"
+															placeholder="<?php echo _translate('Select Sample Test Date'); ?>"
+															readonly style="background:#fff;" />
 													</td>
 													<td><strong>
 															<?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
+														<input type="text" id="sampleReceivedDate"
+															name="sampleReceivedDate" class="form-control"
+															placeholder="<?php echo _translate('Select Sample Received Date'); ?>"
+															readonly style="background:#fff;" />
 													</td>
 
 												</tr>
@@ -184,38 +210,57 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Patient ID"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
+														<input type="text" id="patientId" name="patientId"
+															class="form-control"
+															placeholder="<?php echo _translate('Enter Patient ID'); ?>"
+															style="background:#fff;" />
 													</td>
 													<td><strong>
 															<?php echo _translate("Patient Name"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
+														<input type="text" id="patientName" name="patientName"
+															class="form-control"
+															placeholder="<?php echo _translate('Enter Patient Name'); ?>"
+															style="background:#fff;" />
 													</td>
 													<td><strong>
 															<?php echo _translate("Batch Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+														<input type="text" id="batchCode" name="batchCode"
+															class="form-control autocomplete"
+															placeholder="<?php echo _translate('Enter Batch Code'); ?>"
+															style="background:#fff;" />
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+													<td colspan="6">&nbsp;<input type="button"
+															onclick="searchVlRequestData();"
+															value="<?= _translate('Search'); ?>"
+															class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm"
+															onclick="document.location.href = document.location"><span>
 																<?= _translate('Reset'); ?>
 															</span></button>
 
-														&nbsp;<button class="btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;"><span>
+														&nbsp;<button class="btn btn-primary btn-sm"
+															onclick="$('#showhide').fadeToggle();return false;"><span>
 																<?php echo _translate("Manage Columns"); ?>
 															</span></button>
 													</td>
 												</tr>
 											</table>
-											<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="showhide" class="">
-												<div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
+											<span
+												style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;"
+												id="showhide" class="">
+												<div class="row"
+													style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
 													<div class="col-md-12">
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="1" id="iCol1" data-showhide="sample_code" class="showhideCheckBox" /> <label for="iCol1">
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="1" id="iCol1" data-showhide="sample_code"
+																class="showhideCheckBox" /> <label for="iCol1">
 																<?php echo _translate("Sample ID"); ?>
 															</label>
 														</div>
@@ -223,61 +268,122 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 														if (!$general->isStandaloneInstance()) {
 															$i = 2; ?>
 															<div class="col-md-3">
-																<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
+																<input type="checkbox" onclick="fnShowHide(this.value);"
+																	value="<?php echo $i; ?>" id="iCol<?php echo $i; ?>"
+																	data-showhide="remote_sample_code"
+																	class="showhideCheckBox" /> <label
+																	for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
 															</div>
 														<?php } ?>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="batch_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="iCol<?php echo $i; ?>" data-showhide="batch_code"
+																class="showhideCheckBox" /> <label
+																for="iCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_art_no" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label>
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="iCol<?php echo $i; ?>"
+																data-showhide="patient_art_no"
+																class="showhideCheckBox" /> <label
+																for="iCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="patient_first_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label> <br>
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="iCol<?php echo $i; ?>"
+																data-showhide="patient_first_name"
+																class="showhideCheckBox" /> <label
+																for="iCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label>
+															<br>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="iCol<?php echo $i; ?>" data-showhide="facility_name"
+																class="showhideCheckBox" /> <label
+																for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_id" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="iCol<?php echo $i; ?>" data-showhide="lab_id"
+																class="showhideCheckBox" /> <label
+																for="iCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
 														</div>
 														<?php if ($formId == COUNTRY\CAMEROON) { ?>
 															<div class="col-md-3">
-																<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="lab_assigned_code" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
+																<input type="checkbox" onclick="fnShowHide(this.value);"
+																	value="<?php echo $i += 1; ?>"
+																	id="iCol<?php echo $i; ?>"
+																	data-showhide="lab_assigned_code"
+																	class="showhideCheckBox" /> <label
+																	for="iCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
 															</div>
 														<?php } ?>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="province" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="iCol<?php echo $i; ?>" data-showhide="province"
+																class="showhideCheckBox" /> <label
+																for="iCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="district" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("District/County"); ?></label>
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="iCol<?php echo $i; ?>" data-showhide="district"
+																class="showhideCheckBox" /> <label
+																for="iCol<?php echo $i; ?>"><?php echo _translate("District/County"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="sample_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label> <br>
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="iCol<?php echo $i; ?>" data-showhide="sample_name"
+																class="showhideCheckBox" /> <label
+																for="iCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label>
+															<br>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="iCol<?php echo $i; ?>" data-showhide="result"
+																class="showhideCheckBox" /> <label
+																for="iCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="last_modified_datetime" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Last Modified On"); ?></label>
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="iCol<?php echo $i; ?>"
+																data-showhide="last_modified_datetime"
+																class="showhideCheckBox" /> <label
+																for="iCol<?php echo $i; ?>"><?php echo _translate("Last Modified On"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Status"); ?></label>
+															<input type="checkbox" onclick="fnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="iCol<?php echo $i; ?>" data-showhide="status_name"
+																class="showhideCheckBox" /> <label
+																for="iCol<?php echo $i; ?>"><?php echo _translate("Status"); ?></label>
 														</div>
 
 													</div>
 												</div>
 											</span><br>
 											<div id="notPrintedResult" style="display:none;">
-												&nbsp;<button class="btn btn-primary btn-sm" onclick="printInBulk('');"><span><em class="fa-solid fa-print"></em>
+												&nbsp;<button class="btn btn-primary btn-sm"
+													onclick="printInBulk('');"><span><em class="fa-solid fa-print"></em>
 														<?php echo _translate("Print Selected Results PDF"); ?>
 													</span></button></div>
 
 
-											<table aria-describedby="table" id="unprintedDataTable" class="table table-bordered table-striped" aria-hidden="true">
+											<table aria-describedby="table" id="unprintedDataTable"
+												class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
-														<th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
+														<th><input type="checkbox" id="checkRowsData"
+																onclick="toggleAllVisible()" /></th>
 														<th>
 															<?php echo _translate("Sample ID"); ?>
 														</th>
@@ -339,20 +445,27 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											<input type="hidden" name="totalSamplesList" id="totalSamplesList" />
 										</div>
 										<div class="tab-pane fade" id="printedData">
-											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
+												style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
 													<td><strong>
 															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" />
+														<input type="text" id="printSampleCollectionDate"
+															name="sampleCollectionDate"
+															class="form-control daterangefield"
+															placeholder="<?php echo _translate('Select Collection Date'); ?>"
+															readonly style="background:#fff;" />
 													</td>
 
 													<td><strong>
 															<?php echo _translate("Province/State"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control select2-element" id="printState" onchange="getByPrintProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+														<select class="form-control select2-element" id="printState"
+															onchange="getByPrintProvince(this.value)" name="state"
+															title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
@@ -361,7 +474,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("District/County"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control select2-element" id="printDistrict" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByPrintDistrict(this.value)">
+														<select class="form-control select2-element" id="printDistrict"
+															name="district"
+															title="<?php echo _translate('Please select Province/State'); ?>"
+															onchange="getByPrintDistrict(this.value)">
 														</select>
 													</td>
 												</tr>
@@ -370,15 +486,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Sample Type"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control" id="printSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+														<select class="form-control" id="printSampleType"
+															name="sampleType"
+															title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
 															<?php
 															foreach ($sResult as $type) {
-															?>
-																<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?></option>
-															<?php
+																?>
+																<option value="<?php echo $type['sample_id']; ?>">
+																	<?= $type['sample_name']; ?>
+																</option>
+																<?php
 															}
 															?>
 														</select>
@@ -387,7 +507,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Facility Name"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control" id="printFacility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
+														<select class="form-control" id="printFacility" name="facility"
+															title="<?php echo _translate('Please select facility name'); ?>"
+															multiple="multiple">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
@@ -395,7 +517,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Testing Labs"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control" id="printLabId" name="printLabId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple">
+														<select class="form-control" id="printLabId" name="printLabId"
+															title="<?php echo _translate('Please select testing labs'); ?>"
+															multiple="multiple">
 															<?= $labsDropdown; ?>
 														</select>
 													</td>
@@ -406,7 +530,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Sex"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="gender" id="printGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>">
+														<select name="gender" id="printGender" class="form-control"
+															title="<?php echo _translate('Please select sex'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -426,13 +551,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="printSampleTestDate" name="printSampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
+														<input type="text" id="printSampleTestDate"
+															name="printSampleTestDate" class="form-control"
+															placeholder="<?php echo _translate('Select Sample Test Date'); ?>"
+															readonly style="background:#fff;" />
 													</td>
 													<td><strong>
 															<?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="printSampleReceivedDate" name="printSampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
+														<input type="text" id="printSampleReceivedDate"
+															name="printSampleReceivedDate" class="form-control"
+															placeholder="<?php echo _translate('Select Sample Received Date'); ?>"
+															readonly style="background:#fff;" />
 													</td>
 
 												</tr>
@@ -441,38 +572,59 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Patient ID"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="printPatientId" name="patientId" class="form-control" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
+														<input type="text" id="printPatientId" name="patientId"
+															class="form-control"
+															placeholder="<?php echo _translate('Enter Patient ID'); ?>"
+															style="background:#fff;" />
 													</td>
 													<td><strong>
 															<?php echo _translate("Patient Name"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="printPatientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
+														<input type="text" id="printPatientName" name="patientName"
+															class="form-control"
+															placeholder="<?php echo _translate('Enter Patient Name'); ?>"
+															style="background:#fff;" />
 													</td>
 													<td><strong>
 															<?php echo _translate("Batch Code"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="printBatchCode" name="printBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+														<input type="text" id="printBatchCode" name="printBatchCode"
+															class="form-control autocomplete"
+															placeholder="<?php echo _translate('Enter Batch Code'); ?>"
+															style="background:#fff;" />
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchPrintedVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
+													<td colspan="6">&nbsp;<input type="button"
+															onclick="searchPrintedVlRequestData();"
+															value="<?= _translate('Search'); ?>"
+															class="btn btn-success btn-sm">
+														&nbsp;<button class="btn btn-danger btn-sm"
+															onclick="document.location.href = document.location"><span>
 																<?= _translate('Reset'); ?>
 															</span></button>
-														&nbsp;<button class="btn btn-primary btn-sm" onclick="$('#printShowhide').fadeToggle();return false;"><span>
+														&nbsp;<button class="btn btn-primary btn-sm"
+															onclick="$('#printShowhide').fadeToggle();return false;"><span>
 																<?php echo _translate("Manage Columns"); ?>
 															</span></button>
 													</td>
 												</tr>
 
 											</table>
-											<span style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;" id="printShowhide" class="">
-												<div class="row" style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
+											<span
+												style="display: none;position:absolute;z-index: 9999 !important;color:#000;padding:5px;"
+												id="printShowhide" class="">
+												<div class="row"
+													style="background:#e0e0e0;float: right !important;padding: 15px;margin-top: -30px;">
 													<div class="col-md-12">
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="1" id="printiCol1" data-showhide="sample_code" class="printShowhideCheckBox" /> <label for="printiCol1">
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);" value="1"
+																id="printiCol1" data-showhide="sample_code"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol1">
 																<?php echo _translate("Sample ID"); ?>
 															</label>
 														</div>
@@ -480,46 +632,122 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 														if (!$general->isStandaloneInstance()) {
 															$i = 2; ?>
 															<div class="col-md-3">
-																<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i; ?>" id="printiCol<?php echo $i; ?>" data-showhide="remote_sample_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
+																<input type="checkbox"
+																	onclick="printfnShowHide(this.value);"
+																	value="<?php echo $i; ?>"
+																	id="printiCol<?php echo $i; ?>"
+																	data-showhide="remote_sample_code"
+																	class="printShowhideCheckBox" /> <label
+																	for="printiCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
 															</div>
 														<?php } ?>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="batch_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="printiCol<?php echo $i; ?>"
+																data-showhide="batch_code"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol<?php echo $i; ?>"><?php echo _translate("Batch Code"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_art_no" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label>
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="printiCol<?php echo $i; ?>"
+																data-showhide="patient_art_no"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol<?php echo $i; ?>"><?php echo _translate("Art No"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="patient_first_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label> <br>
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="printiCol<?php echo $i; ?>"
+																data-showhide="patient_first_name"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol<?php echo $i; ?>"><?php echo _translate("Patient's Name"); ?></label>
+															<br>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="facility_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="printiCol<?php echo $i; ?>"
+																data-showhide="facility_name"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="lab_id" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="printiCol<?php echo $i; ?>" data-showhide="lab_id"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol<?php echo $i; ?>"><?php echo _translate("Testing Lab"); ?></label>
 														</div>
 														<?php if ($formId == COUNTRY\CAMEROON) { ?>
 															<div class="col-md-3">
-																<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="lab_assigned_code" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
+																<input type="checkbox"
+																	onclick="printfnShowHide(this.value);"
+																	value="<?php echo $i += 1; ?>"
+																	id="printiCol<?php echo $i; ?>"
+																	data-showhide="lab_assigned_code"
+																	class="printShowhideCheckBox" /> <label
+																	for="printiCol<?php echo $i; ?>"><?php echo _translate("Lab Assigned Code"); ?></label>
 															</div>
 														<?php } ?>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="province" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="printiCol<?php echo $i; ?>" data-showhide="province"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol<?php echo $i; ?>"><?php echo _translate("Province/State"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="district" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("District/County"); ?></label>
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="printiCol<?php echo $i; ?>" data-showhide="district"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol<?php echo $i; ?>"><?php echo _translate("District/County"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="sample_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label> <br>
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="printiCol<?php echo $i; ?>"
+																data-showhide="sample_name"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol<?php echo $i; ?>"><?php echo _translate("Sample Type"); ?></label>
+															<br>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="result" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="printiCol<?php echo $i; ?>" data-showhide="result"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol<?php echo $i; ?>"><?php echo _translate("Result"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="last_modified_datetime" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Last Modified On"); ?></label>
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="printiCol<?php echo $i; ?>"
+																data-showhide="last_modified_datetime"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol<?php echo $i; ?>"><?php echo _translate("Last Modified On"); ?></label>
 														</div>
 														<div class="col-md-3">
-															<input type="checkbox" onclick="printfnShowHide(this.value);" value="<?php echo $i += 1; ?>" id="printiCol<?php echo $i; ?>" data-showhide="status_name" class="printShowhideCheckBox" /> <label for="printiCol<?php echo $i; ?>"><?php echo _translate("Status"); ?></label>
+															<input type="checkbox"
+																onclick="printfnShowHide(this.value);"
+																value="<?php echo $i += 1; ?>"
+																id="printiCol<?php echo $i; ?>"
+																data-showhide="status_name"
+																class="printShowhideCheckBox" /> <label
+																for="printiCol<?php echo $i; ?>"><?php echo _translate("Status"); ?></label>
 														</div>
 
 													</div>
@@ -527,13 +755,17 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											</span>
 											<br>
 											<div id="printedResult" style="display:none;">
-												&nbsp;<button class="btn btn-primary btn-sm" onclick="printInBulk('','printData');"><em class="fa-solid fa-print"></em><span>
+												&nbsp;<button class="btn btn-primary btn-sm"
+													onclick="printInBulk('','printData');"><em
+														class="fa-solid fa-print"></em><span>
 														<?php echo _translate("Print selected Results PDF"); ?>
 													</span></button></div>
-											<table aria-describedby="table" id="printedDataTable" class="table table-bordered table-striped" aria-hidden="true">
+											<table aria-describedby="table" id="printedDataTable"
+												class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
-														<th><input type="checkbox" id="checkPrintedRowsData" onclick="toggleAllPrintedVisible()" /></th>
+														<th><input type="checkbox" id="checkPrintedRowsData"
+																onclick="toggleAllPrintedVisible()" /></th>
 														<th>
 															<?php echo _translate("Sample ID"); ?>
 														</th>
@@ -592,7 +824,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												</tbody>
 											</table>
 											<input type="hidden" name="checkedPrintedRows" id="checkedPrintedRows" />
-											<input type="hidden" name="totalSamplesPrintedList" id="totalSamplesPrintedList" />
+											<input type="hidden" name="totalSamplesPrintedList"
+												id="totalSamplesPrintedList" />
 										</div>
 									</div>
 								</div>
@@ -618,7 +851,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	let printedTable = null;
 	let i = '<?php echo $i; ?>';
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 		// Check if there's a hash in the URL
 		if (window.location.hash) {
@@ -635,12 +868,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 
 		// Update URL hash when switching tabs
-		$('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 			window.location.hash = e.target.hash;
 		});
 
 		$("#batchCode, #printBatchCode").autocomplete({
-			source: function(request, response) {
+			source: function (request, response) {
 				// Fetch data
 				$.ajax({
 					url: "/batch/getBatchCodeHelper.php",
@@ -650,7 +883,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						search: request.term,
 						type: 'vl'
 					},
-					success: function(data) {
+					success: function (data) {
 						response(data);
 					}
 				});
@@ -670,32 +903,32 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			width: '100%',
 		});
 		$('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _translate("Clear", true); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-					'Current Year To Date': [moment().startOf('year'), moment()]
-				}
+			locale: {
+				cancelLabel: "<?= _translate("Clear", true); ?>",
+				format: 'DD-MMM-YYYY',
+				separator: ' to ',
 			},
-			function(start, end) {
+			showDropdowns: true,
+			alwaysShowCalendars: false,
+			startDate: moment().subtract(28, 'days'),
+			endDate: moment(),
+			maxDate: moment(),
+			ranges: {
+				'Today': [moment(), moment()],
+				'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+				'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+				'This Month': [moment().startOf('month'), moment().endOf('month')],
+				'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+				'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+				'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+				'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+				'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+				'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+				'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+				'Current Year To Date': [moment().startOf('year'), moment()]
+			}
+		},
+			function (start, end) {
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
@@ -703,7 +936,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 
 		//printedResults();
-		$(".showhideCheckBox").change(function() {
+		$(".showhideCheckBox").change(function () {
 			if ($(this).attr('checked')) {
 				idpart = $(this).attr('data-showhide');
 				$("#" + idpart + "-sort").show();
@@ -712,7 +945,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				$("#" + idpart + "-sort").hide();
 			}
 		});
-		$(".printShowhideCheckBox").change(function() {
+		$(".printShowhideCheckBox").change(function () {
 			if ($(this).attr('checked')) {
 				idpart = $(this).attr('data-showhide');
 				$("#" + idpart + "-sort").show();
@@ -722,10 +955,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			}
 		});
 
-		$("#showhide").hover(function() {}, function() {
+		$("#showhide").hover(function () { }, function () {
 			$(this).fadeOut('slow')
 		});
-		$("#printShowhide").hover(function() {}, function() {
+		$("#printShowhide").hover(function () { }, function () {
 			$(this).fadeOut('slow')
 		});
 
@@ -793,31 +1026,31 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			//"bRetrieve": true,
 			"bDestroy": true,
 			"aoColumns": [{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center"
-				},
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center"
+			},
 				<?php if (!$general->isStandaloneInstance()) { ?> {
-						"sClass": "center"
-					},
+					"sClass": "center"
+				},
 				<?php } ?> {
-					"sClass": "center",
-					"bVisible": false
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
+				"sClass": "center",
+				"bVisible": false
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
 				<?php
 				if ($formId == COUNTRY\CAMEROON) {
 					echo '{
@@ -826,34 +1059,34 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					},';
 				}
 				?> {
-					"sClass": "center",
-					"bVisible": false
-				},
-				{
-					"sClass": "center",
-					"bVisible": false
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
+				"sClass": "center",
+				"bVisible": false
+			},
+			{
+				"sClass": "center",
+				"bVisible": false
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
 			],
 			"aaSorting": [
 				[sort, "desc"]
 			],
-			"fnDrawCallback": function() {
+			"fnDrawCallback": function () {
 				let checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
@@ -865,7 +1098,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/vl/results/get-results-for-print.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "state",
 					"value": $("#state").val()
@@ -931,7 +1164,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					"type": "POST",
 					"url": sSource,
 					"data": aoData,
-					"success": function(json) {
+					"success": function (json) {
 						$("#totalSamplesList").val(json.iTotalDisplayRecords);
 						fnCallback(json);
 					}
@@ -958,31 +1191,31 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			//"bRetrieve": true,
 			"bDestroy": true,
 			"aoColumns": [{
-					"sClass": "center",
-					"bSortable": false
-				},
-				{
-					"sClass": "center"
-				},
+				"sClass": "center",
+				"bSortable": false
+			},
+			{
+				"sClass": "center"
+			},
 				<?php if (!$general->isStandaloneInstance()) { ?> {
-						"sClass": "center"
-					},
+					"sClass": "center"
+				},
 				<?php } ?> {
-					"sClass": "center",
-					"bVisible": false
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
+				"sClass": "center",
+				"bVisible": false
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
 				<?php
 				if ($formId == COUNTRY\CAMEROON) {
 					echo '{
@@ -991,34 +1224,34 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					},';
 				}
 				?> {
-					"sClass": "center",
-					"bVisible": false
-				},
-				{
-					"sClass": "center",
-					"bVisible": false
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center"
-				},
-				{
-					"sClass": "center",
-					"bSortable": false
-				},
+				"sClass": "center",
+				"bVisible": false
+			},
+			{
+				"sClass": "center",
+				"bVisible": false
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center"
+			},
+			{
+				"sClass": "center",
+				"bSortable": false
+			},
 			],
 			"aaSorting": [
 				[sort, "desc"]
 			],
-			"fnDrawCallback": function() {
+			"fnDrawCallback": function () {
 				let checkBoxes = document.getElementsByName("chkPrinted[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
@@ -1030,7 +1263,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			"bProcessing": true,
 			"bServerSide": true,
 			"sAjaxSource": "/vl/results/get-results-for-print.php",
-			"fnServerData": function(sSource, aoData, fnCallback) {
+			"fnServerData": function (sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "state",
 					"value": $("#printState").val()
@@ -1096,7 +1329,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					"type": "POST",
 					"url": sSource,
 					"data": aoData,
-					"success": function(json) {
+					"success": function (json) {
 						$("#totalSamplesPrintedList").val(json.iTotalDisplayRecords);
 						fnCallback(json);
 					}
@@ -1124,11 +1357,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		$path = '/vl/results/generate-result-pdf.php';
 		?>
 		$.post("<?php echo $path; ?>", {
-				source: 'print',
-				id: id,
-				newData: newData
-			},
-			function(data) {
+			source: 'print',
+			id: id,
+			newData: newData
+		},
+			function (data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
 					alert("<?= _translate("Unable to generate result PDF", true); ?>");
@@ -1163,23 +1396,23 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			totalCount = $("#totalSamplesPrintedList").val();
 			checkedRow = $("#checkedPrintedRows").val();
 		}
-		if (rowsLength && rowsLength != 0 && rowsLength > 100) {
+		if (rowsLength && rowsLength != 0 && rowsLength > 1000) {
 			$.unblockUI();
-			alert("<?= _translate("You have selected", true); ?> " + rowsLength + " <?php echo _translate("results out of the maximum allowed 100 at a time", true); ?>");
+			alert("<?= _translate("You have selected", true); ?> " + rowsLength + " <?php echo _translate("results out of the maximum allowed 1000 at a time", true); ?>");
 			return false;
-		} else if (totalCount != 0 && totalCount > 100 && rowsLength == 0) {
+		} else if (totalCount != 0 && totalCount > 1000 && rowsLength == 0) {
 			$.unblockUI();
-			alert("<?= _translate("Maximum of 100 results allowed to print at a time", true); ?>");
+			alert("<?= _translate("Maximum of 1000 results allowed to print at a time", true); ?>");
 			return false;
 		} else {
 			id = checkedRow;
 		}
 		$.post("<?php echo $path; ?>", {
-				source: 'print',
-				id: id,
-				newData: newData
-			},
-			function(data) {
+			source: 'print',
+			id: id,
+			newData: newData
+		},
+			function (data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
 					alert("<?= _translate("Unable to generate download", true); ?>");
@@ -1257,19 +1490,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	}
 
 	function toggleAllVisible() {
-		$(".checkRows").each(function() {
+		$(".checkRows").each(function () {
 			$(this).prop('checked', false);
 			selectedRows.splice($.inArray(this.value, selectedRows), 1);
 			selectedRowsId.splice($.inArray(this.id, selectedRowsId), 1);
 		});
 		if ($("#checkRowsData").is(':checked')) {
-			$(".checkRows").each(function() {
+			$(".checkRows").each(function () {
 				$(this).prop('checked', true);
 				selectedRows.push(this.value);
 				selectedRowsId.push(this.id);
 			});
 		} else {
-			$(".checkRows").each(function() {
+			$(".checkRows").each(function () {
 				$(this).prop('checked', false);
 				selectedRows.splice($.inArray(this.value, selectedRows), 1);
 				selectedRowsId.splice($.inArray(this.id, selectedRowsId), 1);
@@ -1286,19 +1519,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 	function toggleAllPrintedVisible() {
 		//alert(tabStatus);
-		$(".checkPrintedRows").each(function() {
+		$(".checkPrintedRows").each(function () {
 			$(this).prop('checked', false);
 			selectedPrintedRows.splice($.inArray(this.value, selectedPrintedRows), 1);
 			selectedPrintedRowsId.splice($.inArray(this.id, selectedPrintedRowsId), 1);
 		});
 		if ($("#checkPrintedRowsData").is(':checked')) {
-			$(".checkPrintedRows").each(function() {
+			$(".checkPrintedRows").each(function () {
 				$(this).prop('checked', true);
 				selectedPrintedRows.push(this.value);
 				selectedPrintedRowsId.push(this.id);
 			});
 		} else {
-			$(".checkPrintedRows").each(function() {
+			$(".checkPrintedRows").each(function () {
 				$(this).prop('checked', false);
 				selectedPrintedRows.splice($.inArray(this.value, selectedPrintedRows), 1);
 				selectedPrintedRowsId.splice($.inArray(this.id, selectedPrintedRowsId), 1);
@@ -1318,12 +1551,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		$("#facility").html('');
 		$("#labId").html('');
 		$.post("/common/get-by-province-id.php", {
-				provinceId: provinceId,
-				districts: true,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			provinceId: provinceId,
+			districts: true,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#district").html(Obj['districts']);
 				$("#facility").html(Obj['facilities']);
@@ -1337,12 +1570,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		$("#printFacility").html('');
 		$("#printLabId").html('');
 		$.post("/common/get-by-province-id.php", {
-				provinceId: provinceId,
-				districts: true,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			provinceId: provinceId,
+			districts: true,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#printDistrict").html(Obj['districts']);
 				$("#printFacility").html(Obj['facilities']);
@@ -1355,11 +1588,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		$("#facility").html('');
 		$("#labId").html('');
 		$.post("/common/get-by-district-id.php", {
-				districtId: districtId,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			districtId: districtId,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#facility").html(Obj['facilities']);
 				$("#labId").html(Obj['labs']);
@@ -1371,11 +1604,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		$("#printFacility").html('');
 		$("#printLabId").html('');
 		$.post("/common/get-by-district-id.php", {
-				districtId: districtId,
-				facilities: true,
-				labs: true,
-			},
-			function(data) {
+			districtId: districtId,
+			facilities: true,
+			labs: true,
+		},
+			function (data) {
 				Obj = $.parseJSON(data);
 				$("#printFacility").html(Obj['facilities']);
 				$("#printLabId").html(Obj['labs']);
