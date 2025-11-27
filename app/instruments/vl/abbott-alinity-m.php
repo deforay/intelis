@@ -73,16 +73,17 @@ try {
             }
         }
 
-        $bdl = ['< 400', 'bdl', 'below detection limit'];
-        $tnd = ['not detected', 'tnd', 'undetected'];
+        $resultText = trim(strtolower((string) ($interpretedResults['result'] ?? '')));
 
-        $setNoDetection = function (string $label) use (&$interpretedResults): void {
-            $interpretedResults['txtVal'] = $interpretedResults['result'] = $label;
-            $interpretedResults['absVal'] = $interpretedResults['absDecimalVal'] = $interpretedResults['logVal'] = null;
-        };
-
-        $resultText = strtolower((string) ($interpretedResults['result'] ?? ''));
         if ($formId == SOUTH_SUDAN && $resultText !== '') {
+
+            $bdl = ['< 400', 'bdl', 'below detection limit'];
+            $tnd = ['not detected', 'tnd', 'undetected'];
+
+            $setNoDetection = function (string $label) use (&$interpretedResults): void {
+                $interpretedResults['txtVal'] = $interpretedResults['result'] = $label;
+                $interpretedResults['absVal'] = $interpretedResults['absDecimalVal'] = $interpretedResults['logVal'] = null;
+            };
             if (in_array($resultText, $tnd, true)) {
                 $setNoDetection('Target Not Detected');
             } elseif (
