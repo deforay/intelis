@@ -101,12 +101,12 @@
         "audit-tables-fix": "@php bin/setup/fix-audit-tables.php",
         "archive-audit-tables": "@php app/tasks/archive-audit-tables.php",
         "token": "@php bin/token.php",
-        "setup-sts": [
+        "sts-setup": [
             "@php bin/setup/setup-sts.php",
             "@token"
         ],
-        "sts-setup": [
-            "@setup-sts"
+        "setup-sts": [
+            "@sts-setup"
         ],
         "system-admin": "@php bin/setup/system-admin.php",
         "migrate": "@php bin/migrate.php -y",
@@ -120,7 +120,7 @@
         "receive-requests": "@php app/tasks/remote/requests-receiver.php",
         "generate-translation-strings": "@php app/system/generate-translation-strings.php",
         "fix-app-menu": "@php bin/setup/fix-app-menu.php",
-        "sts-sync": [
+        "sync-sts": [
             "@token",
             "@metadata-sync",
             "@send-results",
@@ -129,16 +129,16 @@
         "post-install": [
             "@migrate",
             "@fixes",
-            "@setup-sts",
             "@purge-cache",
-            "@collation"
+            "@collation",
+            "@sts-setup"
         ],
         "post-update": [
             "@migrate",
             "@fixes",
-            "@token",
             "@purge-cache",
             "@collation",
+            "@token",
             "@metadata-sync",
             "@cleanup"
         ]
