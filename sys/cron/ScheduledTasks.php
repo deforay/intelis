@@ -114,7 +114,7 @@ $schedule->run(PHP_BINARY . " " . BIN_PATH . "/update-vl-suppression.php")
 
 // REMOTE SYNC JOBS START
 if (!empty($general->getRemoteURL()) && $general->isLISInstance() === true) {
-    $schedule->run('COMPOSER_ALLOW_SUPERUSER=1 composer -d ' . ROOT_PATH . ' run sts-sync -n')
+    $schedule->run('COMPOSER_ALLOW_SUPERUSER=1 composer -d ' . ROOT_PATH . ' run sync-sts -n')
         ->everyFiveMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
