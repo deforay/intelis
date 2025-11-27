@@ -514,12 +514,12 @@ try {
                                 $labLogoFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
                                 MiscUtility::makeDirectory($labLogoFolder);
 
-                                $remoteFileUrl = $general->getRemoteURL() . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . "actual-" . $tableData['facility_logo'];
+                                $remoteFileUrl = $remoteURL . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . "actual-" . $tableData['facility_logo'];
                                 $localFilePath = $labLogoFolder . "/" . "actual-" . $tableData['facility_logo'];
 
                                 $apiService->downloadFile($remoteFileUrl, $localFilePath);
 
-                                $remoteFileUrl = $general->getRemoteURL() . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . $tableData['facility_logo'];
+                                $remoteFileUrl = $remoteURL . '/uploads/facility-logo/' . $tableData['facility_id'] . '/' . $tableData['facility_logo'];
                                 $localFilePath = $labLogoFolder . "/" . $tableData['facility_logo'];
                                 $apiService->downloadFile($remoteFileUrl, $localFilePath);
                             }
@@ -530,7 +530,8 @@ try {
                                 $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
                                 MiscUtility::makeDirectory($labDataFolder);
 
-                                $remoteFileUrl = $general->getRemoteURL() . "/uploads/labs/report-template/{$tableData['facility_id']}/{$facilityAttributes['report_template']}";
+                                $remoteFileUrl = $remoteURL . "/uploads/labs/{$tableData['facility_id']}/report-template/{$facilityAttributes['report_template']}";
+
                                 _logdump($remoteFileUrl);
                                 $localFilePath = $labDataFolder . "/" . $facilityAttributes['report_template'];
                                 _logdump($localFilePath);
@@ -646,7 +647,7 @@ try {
     ]);
 } finally {
     if ($cliMode) {
-        echo "Finishing metadata Sync" . PHP_EOL;
+        $io->success("Metadata Synced");
     }
     $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;"); // Enable foreign key checks
 }
