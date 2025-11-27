@@ -182,19 +182,17 @@ try {
         $lines = array_map(fn($l): string => $l['facility_id'] . "\t" . $l['facility_name'], $labs);
         file_put_contents($inFile, implode(PHP_EOL, $lines));
 
-        // Show both fields and filter on both (nth=1,2). Keep attached to TTY and write selection via keybind.
-        // Optional: a tiny preview to make it clearer.
+        // Use output redirection to file since TTY mode prevents output capture
         $cmd = sprintf(
-            'OUT=%s; export OUT; ' .
             'cat %s | fzf --ansi --height=80%% --reverse --border --cycle ' .
             ' --prompt="Select lab > " ' .
             ' --header="Type ID or name • ↑/↓ to move • Enter to select" ' .
             ' --delimiter="\t" --nth=1,2 ' .        // <-- search by BOTH ID and Name
-            ' --bind "enter:execute-silent(echo {+} > \"$OUT\")+abort" ' .
             ' --preview \'printf "ID: %%s\nName: %%s\n" "$(echo {} | cut -f1)" "$(echo {} | cut -f2)"\' ' .
-            ' --preview-window=down,3,wrap',
-            escapeshellarg($outFile),
-            escapeshellarg($inFile)
+            ' --preview-window=down,3,wrap ' .
+            ' > %s',
+            escapeshellarg($inFile),
+            escapeshellarg($outFile)
         );
 
         $process = Process::fromShellCommandline($cmd);
@@ -208,8 +206,9 @@ try {
         }
         $process->run();
 
-        $out = @file_get_contents($outFile);
         MiscUtility::deleteFile($inFile);
+
+        $out = @file_get_contents($outFile);
         MiscUtility::deleteFile($outFile);
 
         $out = $out === false ? '' : trim($out);
