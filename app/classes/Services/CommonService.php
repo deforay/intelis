@@ -1150,8 +1150,6 @@ final class CommonService
             return $response;
         }, 3600);
     }
-
-    // Function to get -> SELECT r_sample_control_name from r_sample_controls ORDER BY r_sample_control_name DESC
     public function getSampleControls()
     {
         return MemoUtility::remember(function () {
