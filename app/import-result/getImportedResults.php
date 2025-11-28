@@ -1,21 +1,29 @@
 <?php
 
-use const SAMPLE_STATUS\ACCEPTED;
-use const SAMPLE_STATUS\ON_HOLD;
-use const SAMPLE_STATUS\REJECTED;
-use const SAMPLE_STATUS\TEST_FAILED;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Utilities\JsonUtility;
+use const SAMPLE_STATUS\ON_HOLD;
 use App\Services\DatabaseService;
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\TEST_FAILED;
 use App\Registries\ContainerRegistry;
+use Psr\Http\Message\ServerRequestInterface;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $dateFormat = $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY';
 $dateTimeFormat = "$dateFormat HH:mm";
@@ -113,12 +121,16 @@ if (isset($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSample
 // $rejectionQuery = "SELECT * FROM $rejectionTableName where rejection_reason_status = 'active'";
 // $rejectionResult = $db->rawQuery($rejectionQuery);
 
-$tsResult = $general->getSampleStatus();
+//$tsResult = $general->getSampleStatus();
 
-$scQuery = "SELECT r_sample_control_name from r_sample_controls ORDER BY r_sample_control_name DESC";
-$scResult = $db->rawQuery($scQuery);
+$scResult = $general->getSampleControls();
 //in-house control limit
-$inQuery = "SELECT ic.number_of_in_house_controls,ic.number_of_manufacturer_controls,i.machine_name from temp_sample_import as ts INNER JOIN instruments as i ON i.machine_name=ts.vl_test_platform INNER JOIN instrument_controls as ic ON ic.instrument_id=i.instrument_id WHERE ic.test_type = '" . $module . "' limit 0,1";
+$inQuery = "SELECT ic.number_of_in_house_controls,ic.number_of_manufacturer_controls,i.machine_name
+            FROM temp_sample_import as ts
+            INNER JOIN instruments as i ON i.machine_name=ts.vl_test_platform
+            INNER JOIN instrument_controls as ic ON ic.instrument_id=i.instrument_id
+            WHERE ic.test_type = '$module' limit 0,1";
+
 $inResult = $db->rawQuery($inQuery);
 
 $sampleTypeTotal = 0;
@@ -147,7 +159,6 @@ if (!empty($columnSearch) && $columnSearch != '') {
 }
 
 
-$sOrder = 'temp_sample_id ASC';
 $sWhere[] = "temp_sample_status=0 AND imported_by ='$importedBy' ";
 $whereCondition = "";
 if ($sWhere !== []) {
@@ -270,4 +281,4 @@ foreach ($rResult as $aRow) {
     $output['aaData'][] = $row;
 }
 
-echo json_encode($output);
+echo JsonUtility::encodeUtf8Json($output);

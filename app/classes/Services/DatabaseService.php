@@ -529,10 +529,6 @@ final class DatabaseService extends MysqliDb
         bool $appliedLimitToQuery,
         bool $limitOffsetSet
     ): int {
-        if (!$limitOffsetSet && !$returnGenerator) {
-            return is_array($queryResult) ? count($queryResult) : 0;
-        }
-
         $count = 0;
         $countResolved = false;
 

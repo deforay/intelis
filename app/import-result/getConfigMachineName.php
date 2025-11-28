@@ -3,10 +3,14 @@
 use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use Psr\Http\Message\ServerRequestInterface;
 
 $db = ContainerRegistry::get(DatabaseService::class);
 
 $importMachineTable = "instrument_machines";
+
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -34,12 +38,14 @@ $output = _getFromFileCache($cacheKey, function () use ($db, $importMachineTable
         ]);
         $deviceId = $db->getInsertId();
 
-        $configMachineInfo = [[
-            'config_machine_id' => $deviceId,
-            'config_machine_name' => $deviceName,
-            'file_name' => $iResult['import_machine_file_name'],
-            'date_format' => ''
-        ]];
+        $configMachineInfo = [
+            [
+                'config_machine_id' => $deviceId,
+                'config_machine_name' => $deviceName,
+                'file_name' => $iResult['import_machine_file_name'],
+                'date_format' => ''
+            ]
+        ];
     }
 
     $options = '<option value="">' . _translate('-- Select --', true) . '</option>';
