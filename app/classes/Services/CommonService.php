@@ -1135,18 +1135,20 @@ final class CommonService
 
     public function getSampleStatus($api = false)
     {
-        $this->db->where("status", "active");
-        $this->db->orderBy('status_name', "ASC");
-        $result = $this->db->get('r_sample_status');
-        $response = [];
-        if ($api) {
-            foreach ($result as $row) {
-                $response[$row['status_id']] = $row['status_name'];
+        return MemoUtility::remember(function () use ($api) {
+            $this->db->where("status", "active");
+            $this->db->orderBy('status_name', "ASC");
+            $result = $this->db->get('r_sample_status');
+            $response = [];
+            if ($api) {
+                foreach ($result as $row) {
+                    $response[$row['status_id']] = $row['status_name'];
+                }
+            } else {
+                $response = $result;
             }
-        } else {
-            $response = $result;
-        }
-        return $response;
+            return $response;
+        }, 3600);
     }
     public function multipleColumnSearch(?string $searchText, ?array $allColumns, bool $splitSearch = false): ?string
     {
