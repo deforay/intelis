@@ -60,7 +60,7 @@ class MemoUtility
             ];
 
             if ($crossRequest) {
-                $fileCache->set($key, $value, $effectiveTtl);
+                $fileCache->set($key, $value, expiration: $effectiveTtl);
             }
         }
 
