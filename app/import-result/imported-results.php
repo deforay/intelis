@@ -876,7 +876,7 @@ foreach ($rejectionTypeResult as $type) {
 				"bSortable": false
 			},
 			],
-			"iDisplayLength": 5000,
+			"iDisplayLength": 50,
 			"fnDrawCallback": function () {
 				var oSettings = this.fnSettings();
 				var iTotalRecords = oSettings.fnRecordsTotal();
