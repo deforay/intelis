@@ -206,6 +206,30 @@ fi
 
 log_action "LIS installation path is set to ${lis_path}."
 
+# Check if InteLIS is already installed at this path
+if [ -d "${lis_path}" ] && [ -n "$(ls -A ${lis_path} 2>/dev/null)" ]; then
+    # Check for key InteLIS files to confirm it's an existing installation
+    if [ -f "${lis_path}/composer.json" ] || [ -f "${lis_path}/bootstrap.php" ]; then
+        print warning "InteLIS installation detected at ${lis_path}"
+        
+        # Save the current trap settings
+        current_trap_temp=$(trap -p ERR)
+        trap - ERR
+        
+        if ask_yes_no "An existing InteLIS installation was found. Do you want to proceed with setup (this will update/overwrite the installation)?" "yes"; then
+            print info "Proceeding with setup. Existing installation will be backed up."
+            log_action "User chose to proceed with setup over existing installation"
+        else
+            print info "Setup cancelled by user."
+            log_action "Setup cancelled - existing installation found"
+            exit 0
+        fi
+        
+        # Restore the error trap
+        eval "$current_trap_temp"
+    fi
+fi
+
 # Restore the previous error trap
 eval "$current_trap"
 
@@ -302,11 +326,23 @@ wait ${tar_pid}      # Wait for extraction to finish
 
 log_action "LIS downloaded."
 
-# backup old code if it exists
-if [ -d "${lis_path}" ]; then
-    cp -R "${lis_path}" "${lis_path}"-$(date +%Y%m%d-%H%M%S)
-else
+# Create installation directory or backup existing installation
+if [ ! -d "${lis_path}" ]; then
     mkdir -p "${lis_path}"
+    log_action "Created fresh installation directory: ${lis_path}"
+elif [ -n "$(ls -A ${lis_path} 2>/dev/null)" ]; then
+    # Only backup if directory exists AND has content
+    print info "Existing installation detected. Creating selective backup..."
+    backup_dir="${lis_path}-$(date +%Y%m%d-%H%M%S)"
+    rsync -a \
+        --exclude 'vendor/' \
+        --exclude 'var/cache/' \
+        --exclude 'var/logs/' \
+        --exclude 'var/audit-trail/' \
+        --exclude 'public/temporary/' \
+        --exclude 'public/uploads/' \
+        "${lis_path}/" "${backup_dir}/"
+    log_action "Selective backup created: ${backup_dir}"
 fi
 
 # Copy the unzipped content to the LIS PATH, overwriting any existing files
