@@ -106,15 +106,15 @@ if (isset($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSample
     }
 }
 
-$rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM $rejectionTableName WHERE rejection_reason_status ='active'";
-$rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+// $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM $rejectionTableName WHERE rejection_reason_status ='active'";
+// $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 
-//sample rejection reason
-$rejectionQuery = "SELECT * FROM $rejectionTableName where rejection_reason_status = 'active'";
-$rejectionResult = $db->rawQuery($rejectionQuery);
+// //sample rejection reason
+// $rejectionQuery = "SELECT * FROM $rejectionTableName where rejection_reason_status = 'active'";
+// $rejectionResult = $db->rawQuery($rejectionQuery);
 
-$tsQuery = "SELECT * FROM r_sample_status";
-$tsResult = $db->rawQuery($tsQuery);
+$tsResult = $general->getSampleStatus();
+
 $scQuery = "SELECT r_sample_control_name from r_sample_controls ORDER BY r_sample_control_name DESC";
 $scResult = $db->rawQuery($scQuery);
 //in-house control limit
@@ -228,8 +228,8 @@ foreach ($rResult as $aRow) {
 			<option value="">-- Select --</option>
 			<option value="' . ACCEPTED . '" ' . ($aRow['result_status'] == ACCEPTED ? "selected=selected" : "") . '>Accepted</option>
 			<option value="' . ON_HOLD . '" ' . ($aRow['result_status'] == ON_HOLD ? "selected=selected" : "") . '>Hold</option>
-			<option value="' . REJECTED . '" ' . ($aRow['result_status'] == REJECTED  ? "selected=selected" : "") . '>Rejected</option>
-			<option value="' . TEST_FAILED . '" ' . ($aRow['result_status'] == TEST_FAILED  ? "selected=selected" : "") . '>Failed</option>
+			<option value="' . REJECTED . '" ' . ($aRow['result_status'] == REJECTED ? "selected=selected" : "") . '>Rejected</option>
+			<option value="' . TEST_FAILED . '" ' . ($aRow['result_status'] == TEST_FAILED ? "selected=selected" : "") . '>Failed</option>
 			</select><br><br>';
     //}
     //sample to control & control to sample

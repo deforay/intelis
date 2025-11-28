@@ -469,7 +469,8 @@ foreach ($rejectionTypeResult as $type) {
 										foreach ($userResult as $uName) {
 											?>
 											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $reviewBy) ? "selected=selected" : ""; ?>>
-												<?php echo ($uName['user_name']); ?></option>
+												<?php echo ($uName['user_name']); ?>
+											</option>
 											<?php
 										}
 										?>
@@ -487,7 +488,8 @@ foreach ($rejectionTypeResult as $type) {
 										foreach ($userResult as $uName) {
 											?>
 											<option value="<?php echo $uName['user_id']; ?>" <?php echo ($uName['user_id'] == $approveBy) ? "selected=selected" : ""; ?>>
-												<?php echo ($uName['user_name']); ?></option>
+												<?php echo ($uName['user_name']); ?>
+											</option>
 											<?php
 										}
 										?>
@@ -874,7 +876,7 @@ foreach ($rejectionTypeResult as $type) {
 				"bSortable": false
 			},
 			],
-			"iDisplayLength": 100,
+			"iDisplayLength": 5000,
 			"fnDrawCallback": function () {
 				var oSettings = this.fnSettings();
 				var iTotalRecords = oSettings.fnRecordsTotal();
