@@ -38,7 +38,7 @@ $data = $apiService->getJsonFromRequest($request, decode: true);
 $counter = 0;
 
 
-$apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+$apiRequestId = $apiService->getHeader($request, 'X-Request-ID');
 $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
 
@@ -301,7 +301,10 @@ $condition = [];
 $signatureCondition = [];
 // Using same facilityLastModified to check if any signatures were added
 if (!empty($data['facilityLastModified'])) {
-    $condition = "updated_datetime > '" . $data['facilityLastModified'] . "'";
+    $condition = "(updated_datetime > '" . $data['facilityLastModified'] . "')";
+    if (!empty($labId)) {
+        $condition .= " OR (facility_id = $labId)";
+    }
     $signatureCondition = "added_on > '" . $data['facilityLastModified'] . "'";
 }
 
