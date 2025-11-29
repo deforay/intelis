@@ -396,8 +396,21 @@ final class ApiService
         $fileResource = null;
         try {
             $response = $this->client->request('GET', $fileUrl, ['stream' => true]);
-            if ($response->getStatusCode() !== 200) {
-                $this->logError(new Exception("HTTP error " . $response->getStatusCode()), "Failed to download file from $fileUrl");
+            $statusCode = $response->getStatusCode();
+            if ($statusCode === 404) {
+                LoggerUtility::logInfo('downloadFile: Remote file not found', [
+                    'url' => $fileUrl,
+                    'destination' => $targetFile
+                ]);
+                return false;
+            }
+            if ($statusCode !== 200) {
+                LoggerUtility::logError('downloadFile: HTTP error while downloading', [
+                    'url' => $fileUrl,
+                    'destination' => $targetFile,
+                    'status_code' => $statusCode,
+                    'reason' => $response->getReasonPhrase(),
+                ]);
                 return false;
             }
 
@@ -451,7 +464,11 @@ final class ApiService
             if (is_file($targetFile)) {
                 MiscUtility::deleteFile($targetFile);
             }
-            $this->logError($e, "Unable to download file from $fileUrl");
+            LoggerUtility::logError('downloadFile exception: ' . $e->getMessage(), [
+                'url' => $fileUrl,
+                'destination' => $targetFile ?? $downloadPath,
+                'trace' => $e->getTraceAsString(),
+            ]);
             return false;
         }
     }

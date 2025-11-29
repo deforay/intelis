@@ -20,9 +20,11 @@ use App\Services\DatabaseService;
 use App\Utilities\ArchiveUtility;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
+use GuzzleHttp\Client;
 use App\Utilities\FileCacheUtility;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\ContainerRegistry;
+use GuzzleHttp\Exception\GuzzleException;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -1574,20 +1576,48 @@ final class CommonService
 
         $apiUrl = rtrim((string) $url, '/') . "/api/version.php?labId=" . $testLabId . "&version=" . $version;
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $apiUrl);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        try {
+            $client = new Client([
+                'timeout' => 5,
+                'connect_timeout' => 3,
+                'allow_redirects' => true,
+                'verify' => false, // match previous cURL behaviour
+                'http_errors' => false,
+            ]);
 
-        $result = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+            $response = $client->get($apiUrl);
+            $httpCode = $response->getStatusCode();
+            $body = $response->getBody()->getContents();
 
-        return $httpCode === 200;
+            if ($httpCode !== 200) {
+                LoggerUtility::logError('Error while Validating STS URL : unexpected status code', [
+                    'url' => $apiUrl,
+                    'labId' => $testLabId,
+                    'version' => $version,
+                    'http_code' => $httpCode,
+                    'response_snippet' => substr((string) $body, 0, 500),
+                ]);
+                return false;
+            }
+
+            return true;
+        } catch (GuzzleException $e) {
+            LoggerUtility::logError('Error while Validating STS URL : HTTP failure: ' . $e->getMessage(), [
+                'url' => $apiUrl ?? $url,
+                'labId' => $testLabId ?? $labId,
+                'version' => $version,
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return false;
+        } catch (Throwable $e) {
+            LoggerUtility::logError('Error while Validating STS URL : Exception: ' . $e->getMessage(), [
+                'url' => $apiUrl ?? $url,
+                'labId' => $testLabId ?? $labId,
+                'version' => $version,
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return false;
+        }
     }
 
     public static function encryptViewQRCode(string $uniqueId): string
