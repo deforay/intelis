@@ -111,7 +111,7 @@ if (!empty($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) !=
 }
 
 if (!empty($_POST['userId']) && trim((string) $_POST['userId']) !== '') {
-    $swhere[] = $where[] = ' vl.request_created_by = "' . $_POST['userId'] . '" OR vl.last_modified_by = "' . $_POST['userId'] . '"';
+    $swhere[] = $where[] = ' (vl.request_created_by = "' . $_POST['userId'] . '" OR vl.last_modified_by = "' . $_POST['userId'] . '") ';
 }
 
 if (!empty($where)) {
