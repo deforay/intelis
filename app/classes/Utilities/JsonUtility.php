@@ -225,16 +225,32 @@ final class JsonUtility
         $jsonData = [];
         if (is_array($json)) {
             $jsonData = $json;
-        } elseif (is_string($json) && trim($json) !== '' && self::isJSON($json)) {
-            $decoded = json_decode($json, true);
-            if (is_array($decoded)) {
-                $jsonData = $decoded;
+        } elseif (is_string($json) && trim($json) !== '') {
+            if (self::isJSON($json)) {
+                $decoded = json_decode($json, true);
+                if (is_array($decoded)) {
+                    $jsonData = $decoded;
+                }
+            } else {
+                // Stored value is not valid JSON; drop it so we don't break the column
+                LoggerUtility::logWarning('Dropping invalid existing JSON while building JSON_SET', [
+                    'payload_preview' => self::previewString($json, 200),
+                ]);
             }
         }
 
         // Normalize new data
-        if (is_string($newData) && trim($newData) !== '' && self::isJSON($newData)) {
-            $newData = json_decode($newData, true);
+        if (is_string($newData) && trim($newData) !== '') {
+            $newData = trim($newData);
+            if (self::isJSON($newData)) {
+                $newData = json_decode($newData, true);
+            } else {
+                // Preserve the raw text by wrapping it so the JSON column still accepts it
+                LoggerUtility::logWarning('Wrapping invalid JSON payload into raw wrapper', [
+                    'payload_preview' => self::previewString($newData, 200),
+                ]);
+                $newData = ['raw' => $newData];
+            }
         }
         if (!is_array($newData)) {
             $newData = [];
