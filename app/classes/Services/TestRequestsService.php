@@ -183,86 +183,125 @@ final class TestRequestsService
                         ]);
                     }
 
-                    // Generate sample code
-                    try {
-                        $sampleCodeParams = [
-                            'sampleCollectionDate' => $item['sample_collection_date'],
-                            'provinceCode' => $item['province_code'] ?? null,
-                            'testType' => $item['test_type'],
-                            'sampleCodeFormat' => $item['sample_code_format'] ?? 'MMYY',
-                            'prefix' => $item['prefix'] ?? $testTypeService->shortCode ?? 'T',
-                            'insertOperation' => true,
-                        ];
+                    // Attempt sample code generation + update with retries for duplicate/locking issues
+                    $attempt = 0;
+                    $updated = false;
 
-                        $sampleJson = $testTypeService->getSampleCode($sampleCodeParams);
-                        $sampleData = json_decode((string) $sampleJson, true);
+                    while ($attempt < $maxTries && !$updated) {
+                        $attempt++;
 
-                        if (empty($sampleData) || empty($sampleData['sampleCode'])) {
-                            throw new SystemException("Sample code generation returned empty result");
-                        }
-                    } catch (Throwable $e) {
-                        throw new SystemException("Sample code generation failed: " . $e->getMessage(), 0, $e);
-                    }
-
-                    // Build test request data
-                    try {
-                        $accessType = $item['access_type'] ?? null;
-                        $tesRequestData = [];
-
-                        if ($this->commonService->isSTSInstance()) {
-                            $tesRequestData = [
-                                'remote_sample' => 'yes',
-                                'remote_sample_code' => $sampleData['sampleCode'],
-                                'remote_sample_code_format' => $sampleData['sampleCodeFormat'],
-                                'remote_sample_code_key' => $sampleData['sampleCodeKey'],
-                                'result_status' => $presetStatus ?? RECEIVED_AT_CLINIC
+                        // Generate sample code
+                        try {
+                            $sampleCodeParams = [
+                                'sampleCollectionDate' => $item['sample_collection_date'],
+                                'provinceCode' => $item['province_code'] ?? null,
+                                'testType' => $item['test_type'],
+                                'sampleCodeFormat' => $item['sample_code_format'] ?? 'MMYY',
+                                'prefix' => $item['prefix'] ?? $testTypeService->shortCode ?? 'T',
+                                'insertOperation' => true,
                             ];
 
-                            if ($accessType === 'testing-lab') {
-                                $tesRequestData['sample_code'] = $sampleData['sampleCode'];
+                            $sampleJson = $testTypeService->getSampleCode($sampleCodeParams);
+                            $sampleData = json_decode((string) $sampleJson, true);
+
+                            if (empty($sampleData) || empty($sampleData['sampleCode'])) {
+                                throw new SystemException("Sample code generation returned empty result");
                             }
-                        } else {
-                            $tesRequestData = [
-                                'remote_sample' => 'no',
-                                'result_status' => $presetStatus ?? RECEIVED_AT_TESTING_LAB,
-                                'sample_code' => $sampleData['sampleCode'],
-                                'sample_code_format' => $sampleData['sampleCodeFormat'],
-                                'sample_code_key' => $sampleData['sampleCodeKey']
-                            ];
+                        } catch (Throwable $e) {
+                            throw new SystemException("Sample code generation failed: " . $e->getMessage(), 0, $e);
                         }
-                    } catch (Throwable $e) {
-                        throw new SystemException("Error building test request data: " . $e->getMessage(), 0, $e);
-                    }
 
-                    // Update test record with race condition handling
-                    try {
-                        $this->db->reset();
-                        $this->db->where('unique_id', $item['unique_id']);
-                        $this->db->where("({$sampleCodeColumn} IS NULL OR {$sampleCodeColumn} = '' OR {$sampleCodeColumn} = 'null')");
+                        // Build test request data for this attempt
+                        try {
+                            $accessType = $item['access_type'] ?? null;
+                            $tesRequestData = [];
 
-                        $success = $this->db->update($formTable, $tesRequestData);
+                            if ($this->commonService->isSTSInstance()) {
+                                $tesRequestData = [
+                                    'remote_sample' => 'yes',
+                                    'remote_sample_code' => $sampleData['sampleCode'],
+                                    'remote_sample_code_format' => $sampleData['sampleCodeFormat'],
+                                    'remote_sample_code_key' => $sampleData['sampleCodeKey'],
+                                    'result_status' => $presetStatus ?? RECEIVED_AT_CLINIC
+                                ];
 
-                        if ($success && $this->db->count > 0) {
-                            $response[$item['unique_id']] = $tesRequestData;
-                            $this->updateQueueItem($item['id'], 1);
-                        } else {
-                            // Check if another process updated the record
-                            try {
-                                $checkQuery = "SELECT {$sampleCodeColumn} FROM {$formTable} WHERE unique_id = ?";
-                                $checkData = $this->db->rawQueryOne($checkQuery, [$item['unique_id']]);
-
-                                if (!empty($checkData) && !empty($checkData[$sampleCodeColumn])) {
-                                    LoggerUtility::logInfo("Sample ID for {$item['unique_id']} was set by another process: {$checkData[$sampleCodeColumn]}");
-                                    $this->updateQueueItem($item['id'], 1);
-                                } else {
-                                    throw new SystemException("Failed to update record and no concurrent update detected");
+                                if ($accessType === 'testing-lab') {
+                                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                                 }
-                            } catch (Throwable $e) {
-                                throw new SystemException("Error handling concurrent update: " . $e->getMessage(), 0, $e);
+                            } else {
+                                $tesRequestData = [
+                                    'remote_sample' => 'no',
+                                    'result_status' => $presetStatus ?? RECEIVED_AT_TESTING_LAB,
+                                    'sample_code' => $sampleData['sampleCode'],
+                                    'sample_code_format' => $sampleData['sampleCodeFormat'],
+                                    'sample_code_key' => $sampleData['sampleCodeKey']
+                                ];
                             }
+                        } catch (Throwable $e) {
+                            throw new SystemException("Error building test request data: " . $e->getMessage(), 0, $e);
                         }
-                    } catch (Throwable $e) {
-                        throw new SystemException("Database update failed: " . $e->getMessage(), 0, $e);
+
+                        // Update test record with race condition handling
+                        try {
+                            $this->db->reset();
+                            $this->db->where('unique_id', $item['unique_id']);
+                            $this->db->where("({$sampleCodeColumn} IS NULL OR {$sampleCodeColumn} = '' OR {$sampleCodeColumn} = 'null')");
+
+                            $success = $this->db->update($formTable, $tesRequestData);
+                            $errno = $this->db->getLastErrno();
+                            $lastDbError = $this->db->getLastError();
+
+                            if ($success && $this->db->count > 0) {
+                                $response[$item['unique_id']] = $tesRequestData;
+                                $this->updateQueueItem($item['id'], 1);
+                                $updated = true;
+                                break;
+                            }
+
+                            // Check if another process updated the record
+                            $checkQuery = "SELECT {$sampleCodeColumn} FROM {$formTable} WHERE unique_id = ?";
+                            $checkData = $this->db->rawQueryOne($checkQuery, [$item['unique_id']]);
+
+                            if (!empty($checkData) && !empty($checkData[$sampleCodeColumn])) {
+                                LoggerUtility::logInfo("Sample ID for {$item['unique_id']} was set by another process: {$checkData[$sampleCodeColumn]}");
+                                $this->updateQueueItem($item['id'], 1);
+                                $updated = true;
+                                break;
+                            }
+
+                            // Retry on duplicate key or lock wait/deadlock
+                            if (in_array($errno, [1062, 1205, 1213], true)) {
+                                $retryReason = $errno === 1062 ? 'duplicate sample code' : 'lock wait/deadlock';
+                                LoggerUtility::logWarning("Retrying sample code update for {$item['unique_id']} ({$sampleData['sampleCode']}) due to {$retryReason} (attempt {$attempt}/{$maxTries})", [
+                                    'last_db_errno' => $errno,
+                                    'last_db_error' => $lastDbError,
+                                    'formTable' => $formTable,
+                                    'unique_id' => $item['unique_id']
+                                ]);
+
+                                usleep($attempt * 100000); // backoff: 100ms, 200ms, etc.
+                                continue;
+                            }
+
+                            $errorMessage = $lastDbError ?: 'Unknown database error during sample code update';
+                            throw new SystemException("Database update failed: {$errorMessage}");
+                        } catch (Throwable $e) {
+                            if ($attempt >= $maxTries) {
+                                throw new SystemException($e->getMessage(), 0, $e);
+                            }
+
+                            // Retry for transient database errors
+                            if (in_array($this->db->getLastErrno(), [1062, 1205, 1213], true)) {
+                                usleep($attempt * 100000);
+                                continue;
+                            }
+
+                            throw $e;
+                        }
+                    }
+
+                    if (!$updated) {
+                        throw new SystemException("Failed to set sample code for {$item['unique_id']} after {$maxTries} attempts");
                     }
                 } catch (Throwable $e) {
                     // Handle individual item errors
@@ -293,10 +332,12 @@ final class TestRequestsService
 
             return $response;
         } catch (Throwable $e) {
-            LoggerUtility::logError("Critical error in processSampleCodeQueue: " . $e->getMessage(), [
+            LoggerUtility::logError("Critical error in TestRequestsService::processSampleCodeQueue: " . $e->getMessage(), [
                 'exception' => $e,
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
+                'last_db_query' => $this->db->getLastQuery(),
+                'last_db_error' => $this->db->getLastError(),
                 'stacktrace' => $e->getTraceAsString()
             ]);
 
@@ -309,7 +350,10 @@ final class TestRequestsService
                 }
             } catch (Throwable $e) {
                 LoggerUtility::logError("Error cleaning up lock file: " . $e->getMessage(), [
-                    'exception' => $e
+                    'exception' => $e,
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'stacktrace' => $e->getTraceAsString()
                 ]);
             }
         }
