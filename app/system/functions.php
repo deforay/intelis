@@ -49,6 +49,16 @@ function _translate(?string $text, bool|string $escapeTextOrContext = false): st
     }, 300);
 }
 
+function __jsTranslate(?string $text): string
+{
+    return _translate($text, 'js');
+}
+
+function __htmlTranslate(?string $text): string
+{
+    return _translate($text, 'html');
+}
+
 
 function _isAllowed($currentRequest, $privileges = null): bool
 {

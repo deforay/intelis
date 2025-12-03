@@ -121,6 +121,7 @@ $db->rawQuery("SET SESSION wait_timeout=28800"); // 8 hours
  */
 function syncTestRequest(
     array $incoming,
+    string $testType,
     string $tableName,
     string $primaryKeyName,
     array $excludeKeysForUpdate,
@@ -169,8 +170,10 @@ function syncTestRequest(
             if ($isSilent) {
                 unset($updatePayload['last_modified_datetime']);
             }
-            if (($updatePayload['lab_id'] == $updatePayload['referred_to_lab_id']) && ($updatePayload['referred_to_lab_id'] != $updatePayload['referred_by_lab_id'])) {
-                $updatePayload['result_status'] = RECEIVED_AT_TESTING_LAB;
+            if ($testType == 'tb' && isset($updatePayload['referred_to_lab_id'])) {
+                if (($updatePayload['lab_id'] == $updatePayload['referred_to_lab_id']) && ($updatePayload['referred_to_lab_id'] != $updatePayload['referred_by_lab_id'])) {
+                    $updatePayload['result_status'] = RECEIVED_AT_TESTING_LAB;
+                }
             }
             $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
             $res = $db->update($tableName, $updatePayload);
@@ -822,6 +825,7 @@ try {
                 $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, (array) $remoteData);
                 $syncResult = syncTestRequest(
                     $request,
+                    $module,
                     $tableName,
                     $primaryKeyName,
                     $cfg['excludeUpdateKeys'],
