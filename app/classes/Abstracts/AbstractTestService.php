@@ -9,10 +9,8 @@ use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\PENDING_APPROVAL;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\TEST_FAILED;
-use COUNTRY;
 use Throwable;
 use DateTimeImmutable;
-use SAMPLE_STATUS;
 use App\Services\TestsService;
 
 use App\Utilities\DateUtility;
