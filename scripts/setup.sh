@@ -88,6 +88,16 @@ prompt_db_strategy() {
 mysql_exec() { mysql -e "$*"; }
 
 
+escape_php_string_for_sed() {
+    local value="$1"
+    value=${value//\\/\\\\}   # escape backslashes for PHP single-quoted strings
+    value=${value//\'/\\\'}   # escape single quotes
+    value=${value//|/\\|}     # escape sed delimiter
+    value=${value//&/\\&}     # escape sed replacement backreference
+    printf '%s' "$value"
+}
+
+
 handle_database_setup_and_import() {
     local sql_file="${1:-${lis_path}/sql/init.sql}"
 
@@ -675,9 +685,8 @@ EOF
     echo "MySQL credentials saved in secure file."
 fi
 
-# Escape special characters in password for sed
-# This uses Perl's quotemeta which is more reliable when dealing with many special characters
-escaped_mysql_root_password=$(perl -e 'print quotemeta $ARGV[0]' -- "${mysql_root_password}")
+# Escape password for sed replacement and PHP single-quoted strings
+escaped_mysql_root_password=$(escape_php_string_for_sed "${mysql_root_password}")
 
 # Use sed to update database configurations, using | as a delimiter instead of /
 sed -i "s|\$systemConfig\['database'\]\['host'\]\s*=.*|\$systemConfig['database']['host'] = 'localhost';|" "${config_file}"
