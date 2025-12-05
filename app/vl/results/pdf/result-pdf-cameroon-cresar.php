@@ -257,8 +257,11 @@ if (!empty($result)) {
      $html .= '<tr><td></td></tr>';
      $html .= '<tr>';
      $html .= '<td width="15%" style="line-height:15px;font-size:10px;text-align:left;">' . _translate('Result (copies/mL)') . ' : </td>';
+     $resultValue = $result['result'] ?? '';
+     $decodedResult = is_numeric($resultValue) ? $resultValue : html_entity_decode((string) $resultValue, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+     $displayResult = is_numeric($decodedResult) ? round((float) $decodedResult) : $decodedResult;
      $html .= '<td width="25%" style="line-height:15px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' .
-          htmlspecialchars((string) (is_numeric($result['result']) ? round($result['result']) : $result['result'])) . '</td>';
+          htmlspecialchars((string) $displayResult, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</td>';
      $html .= '<td width="12%" style="line-height:15px;font-size:10px;text-align:right;">' . _translate('Results (log)') . ' : &nbsp;</td>';
      $html .= '<td width="10%" style="line-height:15px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . $logValue . '</td>';
      $html .= '<td width="13%" style="line-height:15px;font-size:10px;text-align:right;">' . _translate('Tested By') . ' : &nbsp;</td>';

@@ -417,8 +417,12 @@ if (!empty($result)) {
                $logValue = '';
           }
      }
+     $resultValue = $result['result'] ?? '';
+     $decodedResult = is_numeric($resultValue) ? $resultValue : html_entity_decode((string) $resultValue, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+     $displayResult = is_numeric($decodedResult) ? round((float) $decodedResult) : $decodedResult;
+
      $vlFinalResult = '&nbsp;&nbsp;' . _translate("Viral Load Result") . ' (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' .
-          htmlspecialchars((string) (is_numeric($result['result']) ? round($result['result']) : $result['result']));
+          htmlspecialchars((string) $displayResult, ENT_QUOTES | ENT_HTML5, 'UTF-8');
      $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">' . $vlFinalResult . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
      if (!empty($result['reason_for_sample_rejection']) && $result['reason_for_sample_rejection'] != '') {
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;' . _translate("Rejection Reason") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
