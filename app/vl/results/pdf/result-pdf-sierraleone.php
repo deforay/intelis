@@ -331,7 +331,11 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:10px 2px 2px 2px;">';
 
-     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Viral Load Result (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']) . '</td><td >' . $smileyContent . '</td></tr>';
+     $resultValue = $result['result'] ?? '';
+     $decodedResult = is_numeric($resultValue) ? $resultValue : html_entity_decode((string) $resultValue, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+     $displayResult = is_numeric($decodedResult) ? round((float) $decodedResult) : $decodedResult;
+
+     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Viral Load Result (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $displayResult, ENT_QUOTES | ENT_HTML5, 'UTF-8') . '</td><td >' . $smileyContent . '</td></tr>';
      if ($result['reason_for_sample_rejection'] != '') {
           $corrective = '';
           if ($result["recommended_corrective_action_name"] != "") {
