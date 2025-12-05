@@ -40,6 +40,16 @@ print() {
     esac
 }
 
+escape_php_string_for_sed() {
+    # Escape for PHP single-quoted strings and sed replacement
+    local value="$1"
+    value=${value//\\/\\\\}   # escape backslashes for PHP single-quoted strings
+    value=${value//\'/\\\'}   # escape single quotes
+    value=${value//|/\\|}     # escape sed delimiter
+    value=${value//&/\\&}     # escape sed replacement backreference
+    printf '%s' "$value"
+}
+
 # Install required packages
 install_packages() {
     local required_pkgs=(aria2 wget lsb-release bc pigz gpg fzf zstd)
