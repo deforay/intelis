@@ -88,16 +88,6 @@ prompt_db_strategy() {
 mysql_exec() { mysql -e "$*"; }
 
 
-escape_php_string_for_sed() {
-    local value="$1"
-    value=${value//\\/\\\\}   # escape backslashes for PHP single-quoted strings
-    value=${value//\'/\\\'}   # escape single quotes
-    value=${value//|/\\|}     # escape sed delimiter
-    value=${value//&/\\&}     # escape sed replacement backreference
-    printf '%s' "$value"
-}
-
-
 handle_database_setup_and_import() {
     local sql_file="${1:-${lis_path}/sql/init.sql}"
 

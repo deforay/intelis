@@ -96,8 +96,8 @@ update_configuration() {
         fi
     done
 
-    # Escape special characters in password for sed
-    escaped_mysql_root_password=$(perl -e 'print quotemeta $ARGV[0]' -- "${mysql_root_password}")
+    # Escape password for sed replacement and PHP single-quoted strings
+    escaped_mysql_root_password=$(escape_php_string_for_sed "${mysql_root_password}")
 
     # Update database configurations in config.production.php
     sed -i "s|\$systemConfig\['database'\]\['host'\]\s*=.*|\$systemConfig['database']['host'] = 'localhost';|" "${config_file}"

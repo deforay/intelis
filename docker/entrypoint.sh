@@ -28,8 +28,8 @@ fi
 # Read MySQL password from environment variable
 mysql_root_password=${MYSQL_ROOT_PASSWORD:-default_password}
 
-# Escape special characters in password for sed
-escaped_mysql_root_password=$(perl -e 'print quotemeta $ARGV[0]' -- "$mysql_root_password")
+# Escape password for sed replacement and PHP single-quoted strings
+escaped_mysql_root_password=$(escape_php_string_for_sed "$mysql_root_password")
 
 # Use sed to update database configurations
 sed -i "s|\$systemConfig\['database'\]\['host'\]\s*=.*|\$systemConfig['database']['host'] = 'db';|" "$config_file"
