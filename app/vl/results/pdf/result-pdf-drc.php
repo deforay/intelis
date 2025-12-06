@@ -255,7 +255,11 @@ try {
 			$logValue = '<br/>&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logResult;
 		}
 
-		$html .= '<tr style="background-color:#dbdbdb;"><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Résultat(copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp; ' . htmlspecialchars((string) $result['result']) . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
+		$resultValue = $result['result'] ?? '';
+		$decodedResult = is_numeric($resultValue) ? $resultValue : html_entity_decode((string) $resultValue, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+		$displayResult = is_numeric($decodedResult) ? round((float) $decodedResult) : $decodedResult;
+
+		$html .= '<tr style="background-color:#dbdbdb;"><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Résultat(copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp; ' . htmlspecialchars((string) $displayResult, ENT_QUOTES | ENT_HTML5, 'UTF-8') . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
 		$html .= '<tr><td colspan="3"></td></tr>';
 		$html .= '</table>';
 		$html .= '</td>';
