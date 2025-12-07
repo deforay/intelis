@@ -93,7 +93,7 @@ function showHelp(SymfonyStyle $io): void
 /**
  * Display server hint headers (proc time / bytes) when running via CLI.
  */
-function showServerHints(?SymfonyStyle $io, array $headers): void
+function showServerHints(?SymfonyStyle $io, array $headers, ?string $label = null): void
 {
     if ($io === null) {
         return;
@@ -104,14 +104,15 @@ function showServerHints(?SymfonyStyle $io, array $headers): void
 
     $messages = [];
     if (is_numeric($procMs)) {
-        $messages[] = sprintf('STS proc-time: %d ms', (int) $procMs);
+        $messages[] = sprintf('proc-time: %d ms', (int) $procMs);
     }
     if (is_numeric($bytes)) {
-        $messages[] = sprintf('STS bytes-processed: %s', number_format((int) $bytes));
+        $messages[] = sprintf('bytes-processed: %s', number_format((int) $bytes));
     }
 
     if ($messages !== []) {
-        $io->text(implode(' | ', $messages));
+        $prefix = $label ? strtoupper($label) . ' ' : '';
+        $io->text($prefix . 'STS ' . implode(' | ', $messages));
     }
 }
 
@@ -483,7 +484,7 @@ foreach ($systemConfig['modules'] as $module => $status) {
                 foreach ($response->getHeaders() as $name => $values) {
                     $headers[strtolower($name)] = implode(', ', $values);
                 }
-                showServerHints($io, $headers);
+                showServerHints($io, $headers, $module);
                 $io->text("Received server response for $module");
             }
         })->otherwise(function (string $reason) use ($module, $cliMode, $io): void {
