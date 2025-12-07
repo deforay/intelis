@@ -38,12 +38,14 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
 $payload = [];
+$procStart = microtime(true);
 
 try {
     $db->beginTransaction();
 
     /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
+    $contentLength = (int) ($request->getHeaderLine('Content-Length') ?: 0);
 
     $authToken = ApiService::extractBearerToken($request);
     $data      = $apiService->getJsonFromRequest($request, true);
@@ -160,7 +162,15 @@ try {
     $db->commitTransaction();
 
     // Success path: produce JSON; Apache adds br/gzip
-    echo ApiService::generateJsonResponse($payload, $request);
+    $procTimeMs = (int) round((microtime(true) - $procStart) * 1000);
+    $responseHeaders = [
+        'x-proc-time' => $procTimeMs,
+    ];
+    if ($contentLength > 0) {
+        $responseHeaders['x-bytes-processed'] = $contentLength;
+    }
+
+    echo ApiService::generateJsonResponse($payload, $request, $responseHeaders);
 } catch (Throwable $e) {
     $db->rollbackTransaction();
 
