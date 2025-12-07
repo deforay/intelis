@@ -72,10 +72,10 @@ final class ApiService
         ));
 
         return new Client([
-            'handler'        => $handlerStack,
+            'handler' => $handlerStack,
             'connect_timeout' => 10,
-            'read_timeout'   => 120,
-            'timeout'        => 120,
+            'read_timeout' => 120,
+            'timeout' => 120,
             'decode_content' => true, // auto-decodes gzip/br when libcurl supports it
             // 'http_errors'  => false, // enable for no exceptions on 4xx/5xx
         ]);
@@ -104,7 +104,7 @@ final class ApiService
     {
         return function ($retries) {
             $delay = $this->delayMultiplier * (2 ** $retries);
-            $jitter = random_int(0, (int)($this->jitterFactor * 1000)) / 1000;
+            $jitter = random_int(0, (int) ($this->jitterFactor * 1000)) / 1000;
             return min($this->maxRetryDelay, $delay * (1 + $jitter));
         };
     }
@@ -140,9 +140,9 @@ final class ApiService
     {
         $options = [
             RequestOptions::HEADERS => [
-                'X-Request-ID'        => MiscUtility::generateULID(),
-                'X-Timestamp'         => time(),
-                'Content-Type'        => 'application/json; charset=utf-8',
+                'X-Request-ID' => MiscUtility::generateULID(),
+                'X-Timestamp' => time(),
+                'Content-Type' => 'application/json; charset=utf-8',
             ],
         ];
 
@@ -177,12 +177,17 @@ final class ApiService
                 $returnPayload = $this->client->postAsync($url, $options);
             } else {
                 // Synchronous request
-                $response     = $this->client->post($url, $options);
+                $response = $this->client->post($url, $options);
                 $responseBody = $response->getBody()->getContents();
                 if ($returnWithStatusCode) {
+                    $headers = [];
+                    foreach ($response->getHeaders() as $name => $values) {
+                        $headers[strtolower($name)] = implode(', ', $values);
+                    }
                     $returnPayload = [
                         'httpStatusCode' => $response->getStatusCode(),
                         'body'           => $responseBody,
+                        'headers'        => $headers,
                     ];
                 } else {
                     $returnPayload = $responseBody;
@@ -194,9 +199,16 @@ final class ApiService
             $this->logError($e, "Unable to post to $url. Server responded with: " . ($responseBody ?? 'No response body'));
 
             if ($returnWithStatusCode) {
+                $headers = [];
+                if ($e->getResponse() instanceof ResponseInterface) {
+                    foreach ($e->getResponse()->getHeaders() as $name => $values) {
+                        $headers[strtolower($name)] = implode(', ', $values);
+                    }
+                }
                 $returnPayload = [
                     'httpStatusCode' => $e->getResponse() instanceof ResponseInterface ? $e->getResponse()->getStatusCode() : 500,
                     'body'           => $responseBody,
+                    'headers'        => $headers,
                 ];
             } else {
                 $returnPayload = $responseBody;
@@ -223,11 +235,11 @@ final class ApiService
             // Prepare file content for multipart
             $multipartData = [
                 [
-                    'name'     => $fileName,
+                    'name' => $fileName,
                     'contents' => $fileContents,                          // gzencoded bytes
                     'filename' => basename((string) $jsonFilePath) . ($gzip ? '.gz' : ''),
-                    'headers'  => [
-                        'Content-Type'     => 'application/json',
+                    'headers' => [
+                        'Content-Type' => 'application/json',
                         'Content-Encoding' => $gzip ? 'gzip' : 'identity',
                     ],
                 ],
@@ -249,14 +261,14 @@ final class ApiService
             }
             // Prepare headers
             $headers = [
-                'X-Timestamp'    => time(),
-                'X-Request-ID'    => MiscUtility::generateULID()
+                'X-Timestamp' => time(),
+                'X-Request-ID' => MiscUtility::generateULID()
             ];
 
             // Initialize the options array for multipart form data
             $options = [
                 RequestOptions::MULTIPART => $multipartData,
-                RequestOptions::HEADERS   => $headers
+                RequestOptions::HEADERS => $headers
             ];
 
             if ($this->headers !== []) {
@@ -291,7 +303,7 @@ final class ApiService
     {
         try {
             $encoding = strtolower(trim($request->getHeaderLine('Content-Encoding')));
-            $body     = (string)$request->getBody(); // reads full stream; OK for your sizes
+            $body = (string) $request->getBody(); // reads full stream; OK for your sizes
 
             // normalize common tokens
             if (str_contains($encoding, 'gzip') || str_contains($encoding, 'application/gzip')) {
@@ -473,7 +485,7 @@ final class ApiService
         }
     }
 
-    public static function generateJsonResponse(mixed $payload, ServerRequestInterface $request): string
+    public static function generateJsonResponse(mixed $payload, ServerRequestInterface $request, array $extraHeaders = []): string
     {
         // Always go through JsonUtility so UTF-8 normalization and validation apply
         $jsonPayload = JsonUtility::encodeUtf8Json($payload);
@@ -489,6 +501,14 @@ final class ApiService
         $reqId = $request->getHeaderLine('X-Request-ID');
         if ($reqId !== '') {
             header("X-Request-ID: $reqId");
+        }
+
+        // Optional extra response headers (e.g., hints/metrics)
+        foreach ($extraHeaders as $headerName => $headerValue) {
+            if ($headerName === '' || $headerName === null) {
+                continue;
+            }
+            header("$headerName: $headerValue");
         }
 
         header('Content-Type: application/json; charset=utf-8');

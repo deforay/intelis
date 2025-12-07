@@ -30,18 +30,21 @@ $stsResultsService = ContainerRegistry::get(STSResultsService::class);
 $stsTokensService = ContainerRegistry::get(TokensService::class);
 
 try {
+    $procStart = microtime(true);
+
     /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
+    $contentLength = (int) ($request->getHeaderLine('Content-Length') ?: 0);
 
     // Parse JSON (handles gzip/deflate per your ApiService)
     $data = $apiService->getJsonFromRequest($request, true);
-    $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+    $apiRequestId = $apiService->getHeader($request, 'X-Request-ID');
     $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
     $authToken = ApiService::extractBearerToken($request);
 
     $labId = $data['labId'] ?? null;
-    $isSilent = (bool)($data['silent'] ?? false);
+    $isSilent = (bool) ($data['silent'] ?? false);
     $testType = $data['testType'] ?? null;
 
     if (empty($labId)) {
@@ -93,20 +96,34 @@ try {
         $general->updateResultSyncDateTime($testType, $data['facilityIds'], $labId);
     }
 
-    echo ApiService::generateJsonResponse($payload, $request);
+    // Emit response hints for clients that want to adapt chunking; safe to ignore.
+    $procTimeMs = (int) round((microtime(true) - $procStart) * 1000);
+    $suggestedChunk = ($procTimeMs > 60000) ? 500 : 1000;
+
+    // keep header casing consistent with client-side lookups (lowercase)
+    $responseHeaders = [
+        'x-proc-time' => $procTimeMs,
+        'x-chunk-next' => $suggestedChunk,
+        'x-chunk-bounds' => 'min=100; max=1000',
+    ];
+    if ($contentLength > 0) {
+        $responseHeaders['x-bytes-processed'] = $contentLength;
+    }
+
+    echo ApiService::generateJsonResponse($payload, $request, $responseHeaders);
 } catch (Throwable $e) {
     // Optional user-facing safe message, read by ErrorResponseGenerator in prod
     $_SESSION['errorDisplayMessage'] = _translate('Unable to process the results');
 
     // Log with context (guard undefineds)
     LoggerUtility::logError($e->getMessage(), [
-        'lab'           => $labId ?? null,
+        'lab' => $labId ?? null,
         'transactionId' => $transactionId ?? null,
         'last_db_error' => isset($db) ? $db->getLastError() : null,
         'last_db_query' => isset($db) ? $db->getLastQuery() : null,
-        'file'          => $e->getFile(),
-        'line'          => $e->getLine(),
-        'trace'         => $e->getTraceAsString(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
     ]);
 
     // Rethrow so ErrorResponseGenerator returns structured JSON + status
