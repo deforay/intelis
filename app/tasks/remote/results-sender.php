@@ -218,9 +218,24 @@ function applyChunkHint(array $headers, int $currentChunkSize): int
 }
 
 /**
+ * Unpack an API response, show hints in CLI, and return body + next chunk size.
+ *
+ * @return array{0:string,1:int}
+ */
+function handleApiResponse(array|string|null $apiResponse, bool $cliMode, ?SymfonyStyle $io, int $currentChunkSize, ?string $label = null): array
+{
+    $unpackedResponse = unpackApiResponse($apiResponse);
+    if ($cliMode) {
+        showServerHints($io, $unpackedResponse['headers'], $label);
+    }
+    $nextChunkSize = applyChunkHint($unpackedResponse['headers'], $currentChunkSize);
+    return [$unpackedResponse['body'], $nextChunkSize];
+}
+
+/**
  * Display server hint headers when running via CLI for operator awareness.
  */
-function showServerHints(?SymfonyStyle $io, array $headers): void
+function showServerHints(?SymfonyStyle $io, array $headers, ?string $label = null): void
 {
     if ($io === null) {
         return;
@@ -231,14 +246,15 @@ function showServerHints(?SymfonyStyle $io, array $headers): void
 
     $messages = [];
     if (is_numeric($procMs)) {
-        $messages[] = sprintf('STS proc-time: %d ms', (int) $procMs);
+        $messages[] = sprintf('proc-time: %d ms', (int) $procMs);
     }
     if (is_numeric($bytes)) {
-        $messages[] = sprintf('STS bytes-processed: %s', number_format((int) $bytes));
+        $messages[] = sprintf('bytes-processed: %s', number_format((int) $bytes));
     }
 
     if ($messages !== []) {
-        $io->text(implode(' | ', $messages));
+        $prefix = $label ? strtoupper($label) . ' ' : '';
+        $io->text($prefix . 'STS ' . implode(' | ', $messages));
     }
 }
 
@@ -472,24 +488,7 @@ try {
                     "silent" => $isSilent
                 ];
                 $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                $unpackedResponse = unpackApiResponse($apiResponse);
-                if ($cliMode) {
-                    showServerHints($io, $unpackedResponse['headers']);
-                }
-                if ($cliMode) {
-                    showServerHints($io, $unpackedResponse['headers']);
-                }
-                if ($cliMode) {
-                    showServerHints($io, $unpackedResponse['headers']);
-                }
-                if ($cliMode) {
-                    showServerHints($io, $unpackedResponse['headers']);
-                }
-                if ($cliMode) {
-                    showServerHints($io, $unpackedResponse['headers']);
-                }
-                $chunkSize = applyChunkHint($unpackedResponse['headers'], $chunkSize);
-                $jsonResponse = $unpackedResponse['body'];
+                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'generic-tests');
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
@@ -620,9 +619,7 @@ try {
                     "instanceId" => $general->getInstanceId()
                 ];
                 $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                $unpackedResponse = unpackApiResponse($apiResponse);
-                $chunkSize = applyChunkHint($unpackedResponse['headers'], $chunkSize);
-                $jsonResponse = $unpackedResponse['body'];
+                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'vl');
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
@@ -753,9 +750,7 @@ try {
                     "instanceId" => $general->getInstanceId()
                 ];
                 $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                $unpackedResponse = unpackApiResponse($apiResponse);
-                $chunkSize = applyChunkHint($unpackedResponse['headers'], $chunkSize);
-                $jsonResponse = $unpackedResponse['body'];
+                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'eid');
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
@@ -906,9 +901,7 @@ try {
                     "instanceId" => $general->getInstanceId()
                 ];
                 $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                $unpackedResponse = unpackApiResponse($apiResponse);
-                $chunkSize = applyChunkHint($unpackedResponse['headers'], $chunkSize);
-                $jsonResponse = $unpackedResponse['body'];
+                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'covid19');
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
@@ -1038,9 +1031,7 @@ try {
                     "instanceId" => $general->getInstanceId()
                 ];
                 $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                $unpackedResponse = unpackApiResponse($apiResponse);
-                $chunkSize = applyChunkHint($unpackedResponse['headers'], $chunkSize);
-                $jsonResponse = $unpackedResponse['body'];
+                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'hepatitis');
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
@@ -1192,9 +1183,7 @@ try {
                     "instanceId" => $general->getInstanceId()
                 ];
                 $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                $unpackedResponse = unpackApiResponse($apiResponse);
-                $chunkSize = applyChunkHint($unpackedResponse['headers'], $chunkSize);
-                $jsonResponse = $unpackedResponse['body'];
+                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'tb');
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
@@ -1325,9 +1314,7 @@ try {
                     "instanceId" => $general->getInstanceId()
                 ];
                 $apiResponse = $apiService->post($url, $payload, gzip: true, returnWithStatusCode: true);
-                $unpackedResponse = unpackApiResponse($apiResponse);
-                $chunkSize = applyChunkHint($unpackedResponse['headers'], $chunkSize);
-                $jsonResponse = $unpackedResponse['body'];
+                [$jsonResponse, $chunkSize] = handleApiResponse($apiResponse, $cliMode, $io, $chunkSize, 'cd4');
                 if ($cliMode) {
                     $io->comment("Chunk $chunkNumber POST completed in " . MiscUtility::elapsedTime($tPost) . "s");
                 }
