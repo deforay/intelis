@@ -3,18 +3,14 @@
 //bin/scan.php
 
 use App\Utilities\DateUtility;
-use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Helper\TableSeparator;
 
 require_once __DIR__ . "/../bootstrap.php";
-
-// Capture original PHP settings before we modify them
-$originalMemoryLimit = ini_get('memory_limit');
-$originalMaxExecutionTime = ini_get('max_execution_time');
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -69,14 +65,6 @@ function formatStatus(mixed $value, bool $goodWhenFalse = false): string
 
 
 /**
- * Function to format boolean values as simple symbol
- */
-function formatSymbol($value): string
-{
-    return $value ? '<fg=green>[ON]</>' : '<fg=red>[OFF]</>';
-}
-
-/**
  * Function to mask sensitive data
  */
 function maskSensitive($value, $showLast = 4): string
@@ -91,103 +79,6 @@ function maskSensitive($value, $showLast = 4): string
     }
 
     return str_repeat('*', $length - $showLast) . substr((string) $value, -$showLast);
-}
-
-/**
- * Function to format file sizes
- */
-function formatBytes($size, $precision = 2): string
-{
-    if ($size === 0) {
-        return '0 B';
-    }
-    if ($size === false) {
-        return 'N/A';
-    }
-
-    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-    $base = log($size, 1024);
-    return round(1024 ** ($base - floor($base)), $precision) . ' ' . $units[floor($base)];
-}
-
-/**
- * Function to get directory size
- */
-function getDirSize($directory): false|int|float
-{
-    if (!is_dir($directory)) {
-        return false;
-    }
-
-    $size = 0;
-    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
-
-    try {
-        foreach ($iterator as $file) {
-            if ($file->isFile()) {
-                $size += $file->getSize();
-            }
-        }
-    } catch (Exception) {
-        return false;
-    }
-
-    return $size;
-}
-
-/**
- * Function to check if a service is running
- */
-function isServiceRunning($serviceName): bool
-{
-    $output = [];
-    $returnCode = 0;
-
-    // Try different methods to check service status
-    exec("systemctl is-active $serviceName 2>/dev/null", $output, $returnCode);
-    if ($returnCode === 0 && trim($output[0] ?? '') === 'active') {
-        return true;
-    }
-
-    // Fallback: check if process is running
-    exec("pgrep -x $serviceName 2>/dev/null", $output, $returnCode);
-    if ($returnCode === 0) {
-        return true;
-    }
-
-    // Another fallback for MySQL variations
-    if ($serviceName === 'mysql') {
-        exec("pgrep -x mysqld 2>/dev/null", $output, $returnCode);
-        if ($returnCode === 0) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-/**
- * Function to get OS information
- */
-function getOSInfo(): array
-{
-    $osInfo = [];
-
-    // Try to get OS name and version
-    if (file_exists('/etc/os-release')) {
-        $osRelease = parse_ini_file('/etc/os-release');
-        $osInfo['name'] = $osRelease['PRETTY_NAME'] ?? $osRelease['NAME'] ?? 'Unknown';
-        $osInfo['version'] = $osRelease['VERSION'] ?? 'Unknown';
-    } elseif (file_exists('/etc/lsb-release')) {
-        $lsbRelease = parse_ini_file('/etc/lsb-release');
-        $osInfo['name'] = $lsbRelease['DISTRIB_DESCRIPTION'] ?? 'Unknown';
-        $osInfo['version'] = $lsbRelease['DISTRIB_RELEASE'] ?? 'Unknown';
-    } else {
-        $osInfo['name'] = php_uname('s') . ' ' . php_uname('r');
-        $osInfo['version'] = php_uname('v');
-    }
-
-    return $osInfo;
 }
 
 $output = new ConsoleOutput();
@@ -269,89 +160,6 @@ if ($isLIS) {
 
 $overviewTable->setRows($overviewRows);
 $overviewTable->render();
-echo PHP_EOL;
-
-// System Diagnostics Table
-$diagTable = new Table($output);
-$diagTable->setHeaderTitle('SYSTEM DIAGNOSTICS');
-$diagTable->setHeaders(['System Info', 'Value', 'Services', 'Status']);
-
-$osInfo = getOSInfo();
-$diskTotal = disk_total_space('/');
-$diskFree = disk_free_space('/');
-$diskUsed = $diskTotal - $diskFree;
-$diskUsagePercent = round(($diskUsed / $diskTotal) * 100, 1);
-
-// Color code disk usage if high
-$diskUsageDisplay = formatBytes($diskUsed) . " / " . formatBytes($diskTotal) . " ({$diskUsagePercent}%)";
-if ($diskUsagePercent >= 90) {
-    $diskUsageDisplay = "<fg=red;options=bold>{$diskUsageDisplay}</>";
-} elseif ($diskUsagePercent >= 80) {
-    $diskUsageDisplay = "<fg=yellow>{$diskUsageDisplay}</>";
-} else {
-    $diskUsageDisplay = "<fg=green>{$diskUsageDisplay}</>";
-}
-
-// Get log statistics
-$logStats = LoggerUtility::getLogStats();
-$logsSize = isset($logStats['total_size_mb']) ? $logStats['total_size_mb'] * 1024 * 1024 : getDirSize(LOG_PATH);
-$logFileCount = $logStats['file_count'] ?? 'N/A';
-
-// Color code logs size if high (warning at 500MB, danger at 800MB)
-$logsSizeDisplay = formatBytes($logsSize);
-if (is_numeric($logsSize)) {
-    $logsSizeMB = $logsSize / (1024 * 1024);
-    if ($logsSizeMB >= 800) {
-        $logsSizeDisplay = "<fg=red;options=bold>{$logsSizeDisplay}</>";
-    } elseif ($logsSizeMB >= 500) {
-        $logsSizeDisplay = "<fg=yellow>{$logsSizeDisplay}</>";
-    }
-}
-$logsSizeDisplay .= " ({$logFileCount} files)";
-
-$backupsSize = getDirSize(BACKUP_PATH);
-
-$apacheRunning = isServiceRunning('apache2') || isServiceRunning('httpd');
-$mysqlRunning = isServiceRunning('mysql') || isServiceRunning('mysqld') || isServiceRunning('mariadb');
-$phpVersion = phpversion();
-
-
-$diagRows = [
-    [
-        'OS Name',
-        substr((string) $osInfo['name'], 0, 30),
-        'Apache',
-        formatStatus($apacheRunning)
-    ],
-    [
-        'PHP Version',
-        $phpVersion,
-        'MySQL/MariaDB',
-        formatStatus($mysqlRunning)
-    ],
-    [
-        'Memory Limit',
-        $originalMemoryLimit,
-        'Max Exec Time',
-        "{$originalMaxExecutionTime}s"
-    ],
-    new TableSeparator(),
-    [
-        'Disk Usage',
-        $diskUsageDisplay,
-        'Logs',
-        $logsSizeDisplay
-    ],
-    [
-        'Backups',
-        formatBytes($backupsSize),
-        'Root Path',
-        substr(ROOT_PATH, 0, 35)
-    ]
-];
-
-$diagTable->setRows($diagRows);
-$diagTable->render();
 echo PHP_EOL;
 
 // Combined Configuration Table
@@ -498,60 +306,11 @@ if ($isLIS && $instanceInfo) {
     echo PHP_EOL;
 }
 
-// System Health Summary
-$healthIssues = [];
-$healthWarnings = [];
-
-// Check critical services
-if (!$apacheRunning) {
-    $healthIssues[] = 'Apache is not running';
-}
-if (!$mysqlRunning) {
-    $healthIssues[] = 'MySQL/MariaDB is not running';
-}
-
-// Check disk space
-if ($diskUsagePercent >= 95) {
-    $healthIssues[] = "Critical: Disk usage at {$diskUsagePercent}%";
-} elseif ($diskUsagePercent >= 85) {
-    $healthWarnings[] = "Warning: Disk usage at {$diskUsagePercent}%";
-}
-
-// Check logs size
-if (is_numeric($logsSize)) {
-    $logsSizeMB = $logsSize / (1024 * 1024);
-    if ($logsSizeMB >= 900) {
-        $healthIssues[] = "Critical: Logs size at " . round($logsSizeMB) . "MB (approaching 1GB limit)";
-    } elseif ($logsSizeMB >= 700) {
-        $healthWarnings[] = "Warning: Logs size at " . round($logsSizeMB) . "MB";
-    }
-}
-
-// Check LIS connection
-if ($isLIS && !empty($remoteURL) && $labId && !CommonService::validateStsUrl($remoteURL, $labId)) {
-    $healthWarnings[] = "STS connection failed";
-}
-
-// Display health summary
-if ($healthIssues !== [] || $healthWarnings !== []) {
-    $output->writeln(str_repeat("=", 80));
-
-    if ($healthIssues !== []) {
-        $output->writeln("<fg=red;options=bold>CRITICAL ISSUES:</>");
-        foreach ($healthIssues as $issue) {
-            $output->writeln("  <fg=red>✗</> {$issue}");
-        }
-    }
-
-    if ($healthWarnings !== []) {
-        $output->writeln("<fg=yellow;options=bold>WARNINGS:</>");
-        foreach ($healthWarnings as $warning) {
-            $output->writeln("  <fg=yellow>!</> {$warning}");
-        }
-    }
-    $output->writeln(str_repeat("=", 80));
-} else {
-    $output->writeln(str_repeat("=", 80));
-    $output->writeln("<fg=green;options=bold>✓ System Health: All checks passed</>");
-    $output->writeln(str_repeat("=", 80));
+// Run health.php for system health checks
+$healthScript = __DIR__ . '/health.php';
+if (file_exists($healthScript)) {
+    $process = new Process([PHP_BINARY, $healthScript]);
+    $process->setTty(Process::isTtySupported());
+    $process->run();
+    echo $process->getOutput();
 }
