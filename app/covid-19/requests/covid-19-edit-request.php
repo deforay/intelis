@@ -7,6 +7,8 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Exceptions\SystemException;
+
 
 $title = _translate("COVID-19 | Edit Request");
 
@@ -79,6 +81,9 @@ $covid19TestInfo = $db->rawQuery($covid19TestQuery, [$id]);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+$userId =  $_SESSION['userId'];
+$checkNonAdminUser = $general->isNonAdmin($userId);
+
 //Funding source list
 $fundingSourceList = $general->getFundingSources();
 
@@ -130,9 +135,29 @@ foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
-$fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php'];
+if ($covid19Info['locked'] == 'yes') {
+    if($checkNonAdminUser == 1){
+        $fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php'];
+        require_once($fileArray[$arr['vl_form']]);
+    }
+    else{
+        http_response_code(403);
+        throw new SystemException('Invalid URL', 403);
+    }
+}
+else{
+        if(_isAllowed("/covid-19/requests/covid-19-edit-request.php"))
+        {
+            $fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php'];
+            require_once($fileArray[$arr['vl_form']]);
 
-require_once($fileArray[$arr['vl_form']]);
+        }
+        else{
+            http_response_code(403);
+            throw new SystemException('Invalid URL', 403);
+        }
+
+}
 
 ?>
 
