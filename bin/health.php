@@ -6,6 +6,9 @@ use App\Utilities\MiscUtility;
 use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Helper\TableSeparator;
 
 require_once __DIR__ . '/../bootstrap.php';
 
@@ -13,7 +16,6 @@ require_once __DIR__ . '/../bootstrap.php';
 if (PHP_SAPI !== 'cli') {
     exit(CLI\ERROR);
 }
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -27,12 +29,14 @@ $paths = [
 ];
 
 $diskMount = '/';
-$warnDiskUsagePct = 80;   // warn at 80%
-$criticalDiskUsagePct = 90;   // critical at 90%
-$mysqlDegradedMs = 800;  // warn if ping slower than this
+$warnDiskUsagePct = 80;
+$criticalDiskUsagePct = 90;
+$mysqlDegradedMs = 800;
 
-$stateFile = CACHE_PATH . '/health_state.json'; // persisted last states
+$stateFile = CACHE_PATH . '/health_state.json';
 // ---------------------------------------------------------
+
+$output = new ConsoleOutput();
 
 function loadState(string $path): array
 {
@@ -47,6 +51,7 @@ function loadState(string $path): array
     }
     return [];
 }
+
 function saveState(string $path, array $state): void
 {
     @file_put_contents($path, json_encode($state, JSON_UNESCAPED_SLASHES));
@@ -55,8 +60,8 @@ function saveState(string $path, array $state): void
 function setStateAndMaybeAlert(
     array &$state,
     string $key,
-    string $newStatus,                   // e.g. ok|warn|critical
-    callable $onChange                   // function($oldStatus, $newStatus): void
+    string $newStatus,
+    callable $onChange
 ): void {
     $old = $state[$key] ?? 'unknown';
     if ($old !== $newStatus) {
@@ -78,16 +83,58 @@ function assertWritableDir(string $dir): bool
     return $ok;
 }
 
-// ---- 1) Folder permissions (apache/web user) ----
-$state = loadState($stateFile);
+function formatStatus(string $status): string
+{
+    return match ($status) {
+        'ok' => '<fg=green>OK</>',
+        'warn' => '<fg=yellow>WARN</>',
+        'critical' => '<fg=red>CRITICAL</>',
+        default => '<fg=gray>UNKNOWN</>',
+    };
+}
 
+function isServiceRunning(string $serviceName): bool
+{
+    $output = [];
+    $returnCode = 0;
+
+    exec("systemctl is-active $serviceName 2>/dev/null", $output, $returnCode);
+    if ($returnCode === 0 && trim($output[0] ?? '') === 'active') {
+        return true;
+    }
+
+    exec("pgrep -x $serviceName 2>/dev/null", $output, $returnCode);
+    if ($returnCode === 0) {
+        return true;
+    }
+
+    if ($serviceName === 'mysql') {
+        exec("pgrep -x mysqld 2>/dev/null", $output, $returnCode);
+        if ($returnCode === 0) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// ---- Load persisted state ----
+$state = loadState($stateFile);
+$criticalCount = 0;
+$warnCount = 0;
+$okCount = 0;
+
+// ---- 1) Directory Permissions ----
+$dirResults = [];
 foreach ($paths as $name => $path) {
     $key = "fs_perms:$name";
     $ok = assertWritableDir($path);
+    $status = $ok ? 'ok' : 'critical';
+
     setStateAndMaybeAlert(
         $state,
         $key,
-        $ok ? 'ok' : 'critical',
+        $status,
         function ($old, $new) use ($name, $path): void {
             if ($new === 'critical') {
                 SystemService::insertSystemAlert(
@@ -108,9 +155,34 @@ foreach ($paths as $name => $path) {
             }
         }
     );
+
+    $dirResults[$name] = ['path' => $path, 'status' => $status];
+    if ($status === 'ok') {
+        $okCount++;
+    } else {
+        $criticalCount++;
+    }
 }
 
-// ---- 2) Disk usage ----
+// ---- 2) Services Check ----
+$apacheRunning = isServiceRunning('apache2') || isServiceRunning('httpd');
+$mysqlRunning = isServiceRunning('mysql') || isServiceRunning('mysqld') || isServiceRunning('mariadb');
+
+$apacheStatus = $apacheRunning ? 'ok' : 'critical';
+$mysqlServiceStatus = $mysqlRunning ? 'ok' : 'critical';
+
+if ($apacheRunning) {
+    $okCount++;
+} else {
+    $criticalCount++;
+}
+if ($mysqlRunning) {
+    $okCount++;
+} else {
+    $criticalCount++;
+}
+
+// ---- 3) Disk usage ----
 $total = @disk_total_space($diskMount) ?: 0;
 $free = @disk_free_space($diskMount) ?: 0;
 $usedPct = $total ? (1 - ($free / $total)) * 100 : 0.0;
@@ -136,7 +208,7 @@ setStateAndMaybeAlert(
             SystemService::insertSystemAlert(
                 $level,
                 'disk',
-                sprintf(_translate('Disk usage high:') . ' %.1f%%', $usedPct, $diskMount),
+                sprintf(_translate('Disk usage high:') . ' %.1f%%', $usedPct),
                 ['used_pct' => round($usedPct, 1), 'mount' => $diskMount],
                 'admin'
             );
@@ -144,7 +216,7 @@ setStateAndMaybeAlert(
             SystemService::insertSystemAlert(
                 'info',
                 'disk',
-                sprintf(_translate('Disk usage recovered:') . ' %.1f%%', $usedPct, $diskMount),
+                sprintf(_translate('Disk usage recovered:') . ' %.1f%%', $usedPct),
                 ['used_pct' => round($usedPct, 1), 'mount' => $diskMount],
                 'admin'
             );
@@ -152,28 +224,35 @@ setStateAndMaybeAlert(
     }
 );
 
-// ---- 3) MySQL health (stopped or degraded) ----
-$mysqlStatus = 'ok';
+if ($diskStatus === 'ok') {
+    $okCount++;
+} elseif ($diskStatus === 'warn') {
+    $warnCount++;
+} else {
+    $criticalCount++;
+}
+
+// ---- 4) MySQL health (latency check) ----
+$mysqlLatencyStatus = 'ok';
 $mysqlLevel = 'info';
 $latencyMs = null;
 try {
     $start = microtime(true);
-    // simple ping
     $db->rawQueryOne('SELECT 1');
     $latencyMs = (microtime(true) - $start) * 1000.0;
     if ($latencyMs >= $mysqlDegradedMs) {
-        $mysqlStatus = 'warn';
+        $mysqlLatencyStatus = 'warn';
         $mysqlLevel = 'warn';
     }
 } catch (Throwable) {
-    $mysqlStatus = 'critical';
+    $mysqlLatencyStatus = 'critical';
     $mysqlLevel = 'critical';
 }
 
 setStateAndMaybeAlert(
     $state,
     'mysql',
-    $mysqlStatus,
+    $mysqlLatencyStatus,
     function ($old, $new) use ($mysqlLevel, $latencyMs): void {
         if ($new === 'critical') {
             SystemService::insertSystemAlert(
@@ -203,18 +282,77 @@ setStateAndMaybeAlert(
     }
 );
 
-// persist last seen states
+if ($mysqlLatencyStatus === 'ok') {
+    $okCount++;
+} elseif ($mysqlLatencyStatus === 'warn') {
+    $warnCount++;
+} else {
+    $criticalCount++;
+}
+
+// persist state
 saveState($stateFile, $state);
 
-// optional: echo summary for CLI
-printf(
-    "health: fs_perms ok=%s, disk=%.1f%% (%s), mysql=%s%s\n",
-    json_encode(array_map(
-        fn($k) => ($state["fs_perms:$k"] ?? 'unknown'),
-        array_keys($paths)
-    )),
-    $usedPct,
-    $state['disk'] ?? 'unknown',
-    $state['mysql'] ?? 'unknown',
-    isset($latencyMs) ? sprintf(" (~%.0fms)", $latencyMs) : ''
-);
+// ---- Display Results ----
+$output->writeln('');
+
+// Services & Disk Table
+$servicesTable = new Table($output);
+$servicesTable->setHeaderTitle('SERVICES & RESOURCES');
+$servicesTable->setHeaders(['Service/Resource', 'Status', 'Details']);
+
+$servicesTable->setRows([
+    ['Apache', formatStatus($apacheStatus), $apacheRunning ? 'Running' : 'Not detected'],
+    ['MySQL/MariaDB', formatStatus($mysqlServiceStatus), $mysqlRunning ? 'Running' : 'Not detected'],
+    [
+        'MySQL Latency',
+        formatStatus($mysqlLatencyStatus),
+        $latencyMs !== null ? sprintf('%.0f ms (threshold: %d ms)', $latencyMs, $mysqlDegradedMs) : 'N/A'
+    ],
+    new TableSeparator(),
+    [
+        'Disk Usage',
+        formatStatus($diskStatus),
+        sprintf('%.1f%% used (warn: %d%%, critical: %d%%)', $usedPct, $warnDiskUsagePct, $criticalDiskUsagePct)
+    ],
+]);
+
+$servicesTable->render();
+$output->writeln('');
+
+// Directory Permissions Table
+$dirTable = new Table($output);
+$dirTable->setHeaderTitle('DIRECTORY PERMISSIONS');
+$dirTable->setHeaders(['Directory', 'Path', 'Status']);
+
+$dirRows = [];
+foreach ($dirResults as $name => $info) {
+    $dirRows[] = [ucfirst($name), $info['path'], formatStatus($info['status'])];
+}
+
+$dirTable->setRows($dirRows);
+$dirTable->render();
+$output->writeln('');
+
+// Summary
+$output->writeln(str_repeat('=', 60));
+if ($criticalCount > 0) {
+    $output->writeln(sprintf(
+        '<fg=red;options=bold>HEALTH STATUS: %d CRITICAL</> | <fg=yellow>%d warnings</> | <fg=green>%d ok</>',
+        $criticalCount,
+        $warnCount,
+        $okCount
+    ));
+} elseif ($warnCount > 0) {
+    $output->writeln(sprintf(
+        '<fg=yellow;options=bold>HEALTH STATUS: %d WARNINGS</> | <fg=green>%d ok</>',
+        $warnCount,
+        $okCount
+    ));
+} else {
+    $output->writeln(sprintf(
+        '<fg=green;options=bold>HEALTH STATUS: ALL %d CHECKS PASSED</>',
+        $okCount
+    ));
+}
+$output->writeln(str_repeat('=', 60));
