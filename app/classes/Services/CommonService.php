@@ -164,6 +164,17 @@ final class CommonService
         }, ['users_count']);
     }
 
+    public function isNonAdmin($userId){
+        if(isset($userId) && !empty($userId))
+        {
+            $this->db->where("status = 'active' and user_id = '$userId'");
+            return $this->db->getValue("user_details","role_id");
+        }
+        else{
+            return false;
+        }
+    }
+
 
     // get data from the system_config table from database
     public function getSystemConfig(?string $name = null): null|array|string

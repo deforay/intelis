@@ -8,6 +8,8 @@ use App\Utilities\DateUtility;
 use App\Services\FacilitiesService;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+use App\Exceptions\SystemException;
+
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -28,7 +30,8 @@ $vlService = ContainerRegistry::get(VlService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-
+$userId =  $_SESSION['userId'];
+$checkNonAdminUser = $general->isNonAdmin($userId);
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 $healthFacilities = $facilitiesService->getHealthFacilities('cd4');
@@ -196,18 +199,44 @@ if (isset($arr['cd4_min_patient_id_length']) && $arr['cd4_min_patient_id_length'
 </style>
 <?php
 
-$fileArray = [
-     COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
-     COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
-     COUNTRY\DRC => 'forms/edit-drc.php',
-     COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
-     COUNTRY\PNG => 'forms/edit-png.php',
-     COUNTRY\WHO => 'forms/edit-who.php',
-     COUNTRY\RWANDA => 'forms/edit-rwanda.php'
-];
+if ($cd4QueryInfo['locked'] == 'yes') {
+    if($checkNonAdminUser == 1){
+          $fileArray = [
+               COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
+               COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
+               COUNTRY\DRC => 'forms/edit-drc.php',
+               COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
+               COUNTRY\PNG => 'forms/edit-png.php',
+               COUNTRY\WHO => 'forms/edit-who.php',
+               COUNTRY\RWANDA => 'forms/edit-rwanda.php'
+          ];
 
-require_once($fileArray[$formId]);
+          require_once($fileArray[$formId]);
+    }
+    else{
+        http_response_code(403);
+        throw new SystemException('Invalid URL', 403);
+    }
+}
+else{
+     if(_isAllowed("/cd4/requests/cd4-edit-request.php")){
+          $fileArray = [
+               COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
+               COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
+               COUNTRY\DRC => 'forms/edit-drc.php',
+               COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
+               COUNTRY\PNG => 'forms/edit-png.php',
+               COUNTRY\WHO => 'forms/edit-who.php',
+               COUNTRY\RWANDA => 'forms/edit-rwanda.php'
+          ];
 
+          require_once($fileArray[$formId]);
+     }
+     else{
+        http_response_code(403);
+        throw new SystemException('Invalid URL', 403);
+     }
+}
 
 ?>
 
