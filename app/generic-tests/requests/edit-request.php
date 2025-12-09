@@ -7,6 +7,7 @@ use App\Services\UsersService;
 use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Exceptions\SystemException;
 
 
 
@@ -296,6 +297,16 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	$minPatientIdLength = $arr['generic_min_patient_id_length'];
 }
 
+$userId =  $_SESSION['userId'];
+$checkNonAdminUser = $general->isNonAdmin($userId);
+
+if($checkNonAdminUser != 1 && $genericResultInfo['locked'] == 'yes')
+{
+	http_response_code(403);
+    throw new SystemException('Invalid URL', 403);
+}
+elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/requests/edit-request.php") || $checkNonAdminUser == 1 && $genericResultInfo['locked'] == 'yes')
+{
 ?><!-- Content Wrapper. Contains page content -->
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
 <style>
@@ -2071,4 +2082,4 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		}
 	}
 </script>
-<?php require_once APPLICATION_PATH . '/footer.php';
+<?php } require_once APPLICATION_PATH . '/footer.php';

@@ -7,6 +7,7 @@ use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
+use App\Exceptions\SystemException;
 
 
 $title = "EID | Edit Request";
@@ -48,6 +49,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+$userId =  $_SESSION['userId'];
+$checkNonAdminUser = $general->isNonAdmin($userId);
 //Funding source list
 $fundingSourceList = $general->getFundingSources();
 
@@ -195,10 +198,28 @@ if (isset($arr['eid_min_patient_id_length']) && $arr['eid_min_patient_id_length'
 }
 
 
-$fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php', COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'];
 
-require_once($fileArray[$arr['vl_form']]);
-
+if ($eidInfo['locked'] == 'yes') {
+    if($checkNonAdminUser == 1){
+        $fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php', COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'];
+        require_once($fileArray[$arr['vl_form']]);
+    }
+    else{
+        http_response_code(403);
+        throw new SystemException('Invalid URL', 403);
+    }
+}
+else{
+    if(_isAllowed("/eid/requests/eid-edit-request.php"))
+    {
+        $fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php', COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'];
+        require_once($fileArray[$arr['vl_form']]);
+    }
+    else{
+        http_response_code(403);
+        throw new SystemException('Invalid URL', 403);
+    }
+}
 ?>
 <?php
 // Common JS functions in a PHP file

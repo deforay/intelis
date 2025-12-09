@@ -4,7 +4,9 @@ use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
+use App\Services\CommonService;
 use App\Utilities\DateUtility;
+use App\Exceptions\SystemException;
 
 
 $title = "TB | Edit Request";
@@ -45,6 +47,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $healthFacilities = $facilitiesService->getHealthFacilities('tb');
 $testingLabs = $facilitiesService->getTestingLabs('tb');
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 /* Get Active users for approved / reviewed / examined by */
 $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $userInfo = [];
@@ -80,6 +85,8 @@ $testQuery = "SELECT * from tb_tests where tb_id=? ORDER BY tb_test_id ASC";
 $tbTestInfo = $db->rawQuery($testQuery, [$id]);
 $specimenTypeResult = $general->fetchDataFromTable('r_tb_sample_type', "status = 'active'");
 
+$userId =  $_SESSION['userId'];
+$checkNonAdminUser = $general->isNonAdmin($userId);
 
 if (isset($tbInfo['request_created_datetime']) && trim((string) $tbInfo['request_created_datetime']) !== '' && $tbInfo['request_created_datetime'] != '0000-00-00 00:00:00') {
     $requestedDate = $tbInfo['request_created_datetime'];
@@ -209,19 +216,48 @@ $testPlatformList = [];
 foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
-$fileArray = [
-    COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
-    COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
-    COUNTRY\DRC => 'forms/edit-drc.php',
-    COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
-    COUNTRY\PNG => 'forms/edit-png.php',
-    COUNTRY\WHO => 'forms/edit-who.php',
-    COUNTRY\RWANDA => 'forms/edit-rwanda.php',
-    COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'
-];
 
-require_once($fileArray[$arr['vl_form']]);
+if ($tbInfo['locked'] == 'yes') {
+    if($checkNonAdminUser == 1){
+        $fileArray = [
+            COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
+            COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
+            COUNTRY\DRC => 'forms/edit-drc.php',
+            COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
+            COUNTRY\PNG => 'forms/edit-png.php',
+            COUNTRY\WHO => 'forms/edit-who.php',
+            COUNTRY\RWANDA => 'forms/edit-rwanda.php',
+            COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'
+        ];
 
+        require_once($fileArray[$arr['vl_form']]);
+    }
+    else{
+        http_response_code(403);
+        throw new SystemException('Invalid URL', 403);
+    }
+}
+else{
+    if(_isAllowed("/eid/requests/eid-edit-request.php"))
+    {
+        $fileArray = [
+            COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
+            COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
+            COUNTRY\DRC => 'forms/edit-drc.php',
+            COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
+            COUNTRY\PNG => 'forms/edit-png.php',
+            COUNTRY\WHO => 'forms/edit-who.php',
+            COUNTRY\RWANDA => 'forms/edit-rwanda.php',
+            COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'
+        ];
+
+        require_once($fileArray[$arr['vl_form']]);
+    }
+    else{
+        http_response_code(403);
+        throw new SystemException('Invalid URL', 403);
+    }
+}
 ?>
 
 <script>
