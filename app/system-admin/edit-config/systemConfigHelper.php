@@ -33,6 +33,7 @@ $globalConfigFields = [
     'app_locale'
 ];
 
+
 $tableName = "system_config";
 try {
     $currentDateTime = DateUtility::getCurrentDateTime();
