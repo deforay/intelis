@@ -117,7 +117,9 @@ if (!empty($requestResult)) {
 
         if (MiscUtility::isImageValid($stamp)) {
             $pdf->SetAlpha(0.6);
-            $pdf->Image($stamp, 90, 205, 40, null);
+           // $pdf->Image($stamp, 90, 205, 40, null);
+                      $pdf->Image($stamp, 90, 200, 60, 0);
+
         }
         //Set Age
         $ageCalc = 0;

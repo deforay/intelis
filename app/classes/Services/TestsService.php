@@ -168,7 +168,9 @@ final class TestsService
         // Resolve aliases
         foreach ($aliases as $alias => $original) {
             if (isset($testTypes[$original])) {
-                $testTypes[$alias] = $testTypes[$original];
+                if(array_key_exists($original, $testTypes)){
+                    $testTypes[$original] = $testTypes[$original];
+                }
             }
         }
 
