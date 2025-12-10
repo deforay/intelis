@@ -20,6 +20,10 @@ use App\Registries\ContainerRegistry;
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
+$_POST['loginId'] = strtolower(trim((string) $_POST['loginId']));
+$_POST['loginId'] = str_replace(' ', '', $_POST['loginId']);
+
+
 $userName = $_POST['userName'];
 $emailId = $_POST['email'];
 $loginId = $_POST['loginId'];

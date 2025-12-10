@@ -49,6 +49,7 @@ if ($general->isSTSInstance()) {
 }
 
 $testName = TestsService::getTestTypes();
+
 ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
