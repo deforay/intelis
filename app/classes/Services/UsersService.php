@@ -150,7 +150,7 @@ final class UsersService
             if (is_array($columns)) {
                 $columns = implode(",", $columns);
             }
-            $uQuery = "SELECT $columns FROM $this->table WHERE user_id= ?";
+            $uQuery = "SELECT $columns,roles.role_name FROM $this->table INNER JOIN roles ON roles.role_id=$this->table.role_id WHERE user_id= ?";
             return $this->db->rawQueryOne($uQuery, [$userId]);
         });
     }

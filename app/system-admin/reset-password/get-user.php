@@ -27,6 +27,36 @@ $userInfo = $usersService->getUserByID($userId);
     <div class="row">
       <div class="col-md-6">
         <div class="form-group">
+          <label for="status" class="col-lg-4 control-label"><?php echo _translate("User Name"); ?> </label>
+          <div class="col-lg-7">
+           <span class="info-box-text"><?= $userInfo['user_name']; ?></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="status" class="col-lg-4 control-label"><?php echo _translate("Login ID"); ?> </label>
+          <div class="col-lg-7">
+           <span class="info-box-text"><?= $userInfo['login_id']; ?></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="status" class="col-lg-4 control-label"><?php echo _translate("Role Name"); ?> </label>
+          <div class="col-lg-7">
+           <span class="info-box-text"><?= $userInfo['role_name']; ?></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
           <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?> <span
               class="mandatory">*</span></label>
           <div class="col-lg-7">
