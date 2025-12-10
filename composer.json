@@ -135,13 +135,14 @@
             "@sts-setup"
         ],
         "post-update": [
+            "@purge-cache",
             "@migrate",
             "@fixes",
-            "@purge-cache",
             "@collation",
             "@token",
             "@metadata-sync",
-            "@cleanup"
+            "@cleanup",
+            "@purge-cache"
         ]
     }
 }

@@ -720,8 +720,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										</span>
 									<?php } ?>
 									<input <?php echo $showreportTemplate; ?>
-										class="showreportTemplateFile form-control" type="file" name="reportTemplate"
-										id="reportTemplate" placeholder="' . _translate('Upload Report Template') . '"
+										class="showreportTemplateFile form-control" type="file" name="labReportTemplate"
+										id="labReportTemplate" placeholder="' . _translate('Upload Report Template') . '"
 										accept=".pdf" title="' . _translate('Please Upload Report Template') . '">
 								</div>
 							</div>
