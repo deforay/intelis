@@ -747,6 +747,21 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<div class="row" id="userDetails"></div>
 							<div class="row" id="testDetails" style="display:none;"></div>
 
+							<div class="row labDiv" style="display:none;">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="labReportTemplate" class="col-lg-4 control-label">
+											<?php echo _translate("Upload Report Template"); ?>
+										</label>
+										<div class="col-lg-7">
+											<input class="form-control" type="file" name="labReportTemplate"
+												id="labReportTemplate" accept=".pdf"
+												title="<?php echo _translate('Please Upload Report Template'); ?>">
+										</div>
+									</div>
+								</div>
+							</div>
+
 							<div class="row testTypeFileSection" style="display:none;">
 								<div class="col-md-12">
 									<hr>

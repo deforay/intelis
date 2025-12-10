@@ -40,18 +40,32 @@ $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 // Get the uploaded files from the request object
 $uploadedFiles = $request->getUploadedFiles();
 
-
 try {
 	// Sanitize and validate the uploaded files
-	$sanitizedLabLogo = $sanitizedSignature = $sanitizedReportTemplate = "";
-	if (isset($uploadedFiles['reportTemplate'])) {
-		$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'], ['pdf']);
+	$sanitizedLabLogo = $sanitizedSignature = $sanitizedReportTemplate = null;
+
+	// Handle labReportTemplate (single file for lab's main report template)
+	$labReportTemplateFile = $uploadedFiles['labReportTemplate'] ?? null;
+	if ($labReportTemplateFile instanceof UploadedFile && $labReportTemplateFile->getError() === UPLOAD_ERR_OK) {
+		$sanitizedReportTemplate = _sanitizeFiles($labReportTemplateFile, ['pdf']);
 	}
-	if (isset($uploadedFiles['labLogo'])) {
-		$sanitizedLabLogo = _sanitizeFiles($uploadedFiles['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
+
+	// Handle labLogo - can be single file or array
+	$labLogoFile = $uploadedFiles['labLogo'] ?? null;
+	if (is_array($labLogoFile)) {
+		$labLogoFile = $labLogoFile[0] ?? null;
 	}
-	if (isset($uploadedFiles['signature'])) {
-		$sanitizedSignature = _sanitizeFiles($uploadedFiles['signature'], ['png', 'jpg', 'jpeg', 'gif']);
+	if ($labLogoFile instanceof UploadedFile && $labLogoFile->getError() === UPLOAD_ERR_OK) {
+		$sanitizedLabLogo = _sanitizeFiles($labLogoFile, ['png', 'jpg', 'jpeg', 'gif']);
+	}
+
+	// Handle signature - can be single file or array
+	$signatureFile = $uploadedFiles['signature'] ?? null;
+	if (is_array($signatureFile)) {
+		$signatureFile = $signatureFile[0] ?? null;
+	}
+	if ($signatureFile instanceof UploadedFile && $signatureFile->getError() === UPLOAD_ERR_OK) {
+		$sanitizedSignature = _sanitizeFiles($signatureFile, ['png', 'jpg', 'jpeg', 'gif']);
 	}
 
 
@@ -173,19 +187,24 @@ try {
 				MiscUtility::makeDirectory($currentPath, 0777); // will just skip if exists
 			}
 			foreach ($_POST['testTypeFile'] as $key => $test) {
-				$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'][$key], ['pdf']);
-				if (isset($uploadedFiles['reportTemplate'][$key]) && $sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
+				$uploadedFile = $uploadedFiles['reportTemplate'][$key] ?? null;
+				// Only sanitize if a file was actually uploaded
+				$sanitizedTestTypeTemplate = null;
+				if ($uploadedFile instanceof UploadedFile && $uploadedFile->getError() === UPLOAD_ERR_OK) {
+					$sanitizedTestTypeTemplate = _sanitizeFiles($uploadedFile, ['pdf']);
+				}
+				if ($sanitizedTestTypeTemplate instanceof UploadedFile && $sanitizedTestTypeTemplate->getError() === UPLOAD_ERR_OK) {
 					$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $facilityId;
 					MiscUtility::makeDirectory($directoryPath, 0777, true);
 					$string = MiscUtility::generateRandomString(12) . "-" . $test . ".";
-					$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
+					$extension = MiscUtility::getFileExtension($sanitizedTestTypeTemplate->getClientFilename());
 					$fileName = "report-template-" . $string . $extension;
 					$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
 					$fileResponse[$test]['file'] = $fileName;
 					$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
 
 					// Move the uploaded file to the desired location
-					$sanitizedReportTemplate->moveTo($filePath);
+					$sanitizedTestTypeTemplate->moveTo($filePath);
 				} else {
 					$fileResponse[$test]['file'] = $_POST['oldTemplate'][$key];
 					$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
@@ -291,7 +310,6 @@ try {
 
 
 		if ($sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
-
 			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template";
 			MiscUtility::makeDirectory($directoryPath, 0777, true);
 			$string = MiscUtility::generateRandomString(12) . ".";
