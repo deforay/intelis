@@ -1187,9 +1187,6 @@ php "${lis_path}/vendor/bin/db-tools" db:test --all
 # Run the database migrations and other post-update tasks
 print header "Running database migrations and other post-update tasks"
 sudo -u www-data composer post-update
-pid=$!
-spinner "$pid"
-wait $pid
 
 print success "Database migrations and post-update tasks completed."
 log_action "Database migrations and post-update tasks completed."
