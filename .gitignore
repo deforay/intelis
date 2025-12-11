@@ -1,0 +1,101 @@
+##################################
+# .gitignore — Project Ignore List
+##################################
+
+# Configs (except distribution templates)
+configs/config.*.php
+!configs/config.*.dist.php
+configs/*.png
+configs/*.jpg
+secret-key.txt
+rector.php
+temp.ini
+key.storage
+.env
+
+# System & OS files
+*.DS_Store
+*.DS_Store.orig
+.user.ini
+*.swp
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# Logs, DBs, runtime state
+*.log
+*error_log
+*.pid
+*.orig
+*.db
+*.lock
+.cron_heartbeat
+
+# Node & Composer dependencies
+vendor/
+**/node_modules/
+
+# Dont track these directories
+/cache/
+/logs/
+/audit-trail/
+/metadata/
+
+# Mercurial files
+.hgignore
+.hg/
+
+# Public Uploads
+public/uploads/*
+!public/uploads/index.php
+!public/uploads/.htaccess
+!public/uploads/.gitkeep
+
+# Public Temporary
+public/temporary/*
+!public/temporary/index.php
+!public/temporary/.htaccess
+!public/temporary/.gitkeep
+
+# Var directory (Recursive ignore with exceptions)
+var/**
+!var/**/
+!var/**/.gitkeep
+!var/**/.htaccess
+
+# Docker MySQL Data
+docker/mysql/data/*
+!docker/mysql/data/.htaccess
+
+# Interop Examples
+interop/dhis2/examples/*
+!interop/dhis2/examples/index.php
+
+# Backups
+backups/*
+!backups/db/
+!backups/config/
+!backups/index.php
+
+# Backups DB
+backups/db/*
+!backups/db/.gitkeep
+
+# Backups Config
+backups/config/*
+!backups/config/.gitkeep
+
+# Backup (singular)
+backup/*
+!backup/index.php
+
+# DDEV-specific
+.ddev/db_snapshots/
+.ddev/sequelpro/
+.ddev/commands/*.log
+.ddev/import-db/
+.ddev/import-files/
+
+# Snyk Security Extension - AI Rules (auto-generated)
+.github/instructions/snyk_rules.instructions.md
