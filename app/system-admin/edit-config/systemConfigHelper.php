@@ -1,12 +1,12 @@
 <?php
 // system-admin/edit-config/systemConfigHelper.php
-use Psr\Http\Message\ServerRequestInterface;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\ConfigService;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
+use Psr\Http\Message\ServerRequestInterface;
 
 /** @var ConfigService $configService */
 $configService = ContainerRegistry::get(ConfigService::class);
@@ -78,7 +78,7 @@ try {
     $configService->updateConfig($updatedConfig);
 
     // Clear file cache
-    (ContainerRegistry::get(FileCacheUtility::class))->delete('app_global_config');
+    (ContainerRegistry::get(FileCacheUtility::class))->clear();
     unset($_SESSION['instance']);
 
     $_SESSION['alertMsg'] = _translate("System Configuration updated successfully.");
