@@ -1182,7 +1182,7 @@ log_action "Composer operations completed."
 
 apache2ctl -k graceful || systemctl reload apache2
 
-php "${lis_path}/vendor/bin/db-tools" config-test
+php "${lis_path}/vendor/bin/db-tools" db:test --all
 
 # Run the database migrations and other post-update tasks
 print header "Running database migrations and other post-update tasks"
