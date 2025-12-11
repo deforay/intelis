@@ -56,6 +56,7 @@ define('APPLICATION_PATH', ROOT_PATH . '/app');
 define('BIN_PATH', ROOT_PATH . '/bin');
 define('UPLOAD_PATH', WEB_ROOT . '/uploads');
 define('TEMP_PATH', WEB_ROOT . '/temporary');
+define('VENDOR_BIN', ROOT_PATH . '/vendor/bin');
 
 // Set up autoloading
 require_once ROOT_PATH . '/vendor/autoload.php';
