@@ -11,7 +11,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/bootstrap.php';
 
 // Backup directory
-$backupDir = BACKUP_PATH;
+$backupDir = BACKUP_PATH . '/db';
 if (!is_dir($backupDir)) {
     @mkdir($backupDir, 0755, true);
 }
