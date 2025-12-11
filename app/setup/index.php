@@ -86,12 +86,14 @@ $testName = TestsService::getTestTypes();
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/jquery.fastconfirm.css" />
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/components-rounded.min.css">
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
-  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
+  <link rel="stylesheet" media="all" type="text/css"
+    href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
   <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
   <script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
-  <script type="text/javascript" src="/assets/js/utils.js?v=<?= filemtime(WEB_ROOT . '/assets/js/utils.js') ?>"></script>
+  <script type="text/javascript"
+    src="/assets/js/utils.js?v=<?= filemtime(WEB_ROOT . '/assets/js/utils.js') ?>"></script>
 
   <!-- iCheck -->
   <style>
@@ -198,7 +200,8 @@ $testName = TestsService::getTestTypes();
                 <tr>
                   <th scope="col"><?= _translate("Memory Limit"); ?></th>
                   <td>
-                    <?php echo $serverSettings['memory_limit']; ?></td>
+                    <?php echo $serverSettings['memory_limit']; ?>
+                  </td>
                   <th scope="col"><?= _translate("Maximum Upload Filesize"); ?></th>
                   <td><?php echo $serverSettings['upload_max_filesize']; ?></td>
                 </tr>
@@ -296,7 +299,8 @@ $testName = TestsService::getTestTypes();
               </div>
             </div>
 
-            <form id="registerForm" name="registerForm" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
+            <form id="registerForm" name="registerForm" method="post" action="/setup/registerProcess.php"
+              onsubmit="validateNow();return false;">
               <div class="panel panel-primary setup-content" id="step-1">
                 <div class="panel-heading">
                   <h3 class="panel-title"><?= _translate("Database Setup"); ?></h3>
@@ -304,23 +308,39 @@ $testName = TestsService::getTestTypes();
                 <div class="panel-body">
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-server"></em></span>
-                    <input id="dbHostName" type="text" class="form-control" name="dbHostName" placeholder="<?= _translate("Please enter database host name"); ?>" title="<?= _translate("Please enter database host name"); ?>" value="<?= SYSTEM_CONFIG['database']['host'] ?? ''; ?>">
+                    <input id="dbHostName" type="text" class="form-control" name="dbHostName"
+                      placeholder="<?= _translate("Please enter database host name"); ?>"
+                      title="<?= _translate("Please enter database host name"); ?>"
+                      value="<?= SYSTEM_CONFIG['database']['host'] ?? ''; ?>">
                   </div>
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
-                    <input id="dbUserName" type="text" class="form-control" name="dbUserName" placeholder="<?= _translate("Please enter database user name"); ?>" title="<?= _translate("Please enter database user name"); ?>" value="<?= SYSTEM_CONFIG['database']['username'] ?? ''; ?>">
+                    <input id="dbUserName" type="text" class="form-control" name="dbUserName"
+                      placeholder="<?= _translate("Please enter database user name"); ?>"
+                      title="<?= _translate("Please enter database user name"); ?>"
+                      value="<?= SYSTEM_CONFIG['database']['username'] ?? ''; ?>">
                   </div>
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-key"></em></span>
-                    <input id="dbPassword" type="text" class="form-control" name="dbPassword" placeholder="<?= _translate("Please enter database password"); ?>" title="<?= _translate("Please enter database password"); ?>" value="<?= SYSTEM_CONFIG['database']['password'] ?? ''; ?>">
+                    <input id="dbPassword" type="text" class="form-control" name="dbPassword"
+                      placeholder="<?= _translate("Please enter database password"); ?>"
+                      title="<?= _translate("Please enter database password"); ?>"
+                      value="<?= SYSTEM_CONFIG['database']['password'] ?? ''; ?>">
                   </div>
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-database"></em></span>
-                    <input id="dbName" type="text" class="form-control" name="dbName" placeholder="<?= _translate("Please enter database name"); ?>" title="<?= _translate("Please enter database name"); ?>" value="<?= SYSTEM_CONFIG['database']['db'] ?? ''; ?>">
+                    <input id="dbName" type="text" class="form-control" name="dbName"
+                      placeholder="<?= _translate("Please enter database name"); ?>"
+                      title="<?= _translate("Please enter database name"); ?>"
+                      value="<?= SYSTEM_CONFIG['database']['db'] ?? ''; ?>">
                   </div>
                   <div style="margin-bottom: 5px" class="input-group">
-                    <span class="input-group-addon"><em class="fa-solid fa-network-wired" style="font-size:12px;"></em></span>
-                    <input id="dbPort" type="text" class="form-control" name="dbPort" placeholder="<?= _translate("Please enter database port"); ?>" title="<?= _translate("Please enter database port"); ?>" value="<?= SYSTEM_CONFIG['database']['port'] ?? ''; ?>">
+                    <span class="input-group-addon"><em class="fa-solid fa-network-wired"
+                        style="font-size:12px;"></em></span>
+                    <input id="dbPort" type="text" class="form-control" name="dbPort"
+                      placeholder="<?= _translate("Please enter database port"); ?>"
+                      title="<?= _translate("Please enter database port"); ?>"
+                      value="<?= SYSTEM_CONFIG['database']['port'] ?? ''; ?>">
                   </div>
                   <button class="btn btn-primary nextBtn pull-right" type="button"><?= _translate("Next"); ?></button>
                 </div>
@@ -333,9 +353,11 @@ $testName = TestsService::getTestTypes();
                 <div class="panel-body">
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-circle-nodes"></em></span>
-                    <select name="instanceType" id="instanceType" title="Please select the user type" class="form-control" onchange="changeLabType(this.value);" style=" background: aliceblue; ">
+                    <select name="instanceType" id="instanceType" title="Please select the user type"
+                      class="form-control" onchange="changeLabType(this.value);" style=" background: aliceblue; ">
                       <option value=""><?= _translate("-- Select Instance Type --"); ?></option>
-                      <option value="lismode" selected="selected"><?= _translate("LIS with Remote Ordering Enabled"); ?></option>
+                      <option value="lismode" selected="selected"><?= _translate("LIS with Remote Ordering Enabled"); ?>
+                      </option>
                       <option value="stsmode"><?= _translate("Sample Tracking System(STS)"); ?></option>
                       <option value="standalone"><?= _translate("Standalone (no Remote Ordering)"); ?></option>
                     </select>
@@ -343,55 +365,66 @@ $testName = TestsService::getTestTypes();
                   <div style="margin-bottom: 5px" class="input-group lis">
                     <span class="input-group-addon"><em class="fa-solid fa-link"></em></span>
                     <div class="input-group">
-                      <input id="remoteURL" type="text" class="form-control lis-input" name="remoteURL" value="<?= $general->getRemoteUrl(); ?>" placeholder="<?= _translate("STS URL"); ?>" title="<?= _translate("Please enter the STS URL"); ?>" onchange="checkSTSUrl(this.value);" value="<?= $general->getRemoteURL() ?? ''; ?>">
+                      <input id="remoteURL" type="text" class="form-control lis-input" name="remoteURL"
+                        value="<?= $general->getRemoteUrl(); ?>" placeholder="<?= _translate("STS URL"); ?>"
+                        title="<?= _translate("Please enter the STS URL"); ?>" onchange="checkSTSUrl(this.value);"
+                        value="<?= $general->getRemoteURL() ?? ''; ?>">
                       <span class="input-group-btn">
-                        <button class="btn btn-default" type="button" onclick="getTestingLabs();return false;"><i class="glyphicon glyphicon-refresh"></i></button>
+                        <button class="btn btn-default" type="button" onclick="getTestingLabs();return false;"><i
+                            class="glyphicon glyphicon-refresh"></i></button>
                       </span>
                     </div>
                   </div>
                   <div style="margin-bottom: 5px" class="input-group lis">
                     <span class="input-group-addon"><em class="fa-solid fa-flask-vial"></em></span>
-                    <select class="form-control select2" id="testingLab" name="testingLab" title="<?php echo _translate('Please select Testing Lab'); ?>">
+                    <select class="form-control select2" id="testingLab" name="testingLab"
+                      title="<?php echo _translate('Please select Testing Lab'); ?>">
                       <?= $testingLabsDropdown; ?>
                     </select>
                   </div>
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-flask"></em></span>
-                    <select class="" name="enabledModules[]" id="enabledModules" title="<?php echo _translate('Please select the tests'); ?>" multiple="multiple">
+                    <select class="" name="enabledModules[]" id="enabledModules"
+                      title="<?php echo _translate('Please select the tests'); ?>" multiple="multiple">
                       <option value=""><?= _translate("-- Choose Modules to Enable --"); ?></option>
                       <?php foreach ($testName as $key => $val) {
-                      ?>
+                        ?>
                         <option value="<?= $key; ?>"><?= $val['testName']; ?></option>
-                      <?php
+                        <?php
                       } ?>
                     </select>
                   </div>
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-flag"></em></span>
-                    <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the country of installation'); ?>">
+                    <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form"
+                      title="<?php echo _translate('Please select the country of installation'); ?>">
                       <option value=""></option>
                       <?php
                       foreach ($formResult as $val) {
-                      ?>
-                        <option value="<?php echo $val['vlsm_country_id']; ?>" <?php echo ($val['vlsm_country_id'] == $globalConfig['vl_form']) ? "selected='selected'" : "" ?>><?php echo $val['form_name']; ?></option>
-                      <?php
+                        ?>
+                        <option value="<?php echo $val['vlsm_country_id']; ?>" <?php echo ($val['vlsm_country_id'] == $globalConfig['vl_form']) ? "selected='selected'" : "" ?>>
+                          <?php echo $val['form_name']; ?>
+                        </option>
+                        <?php
                       }
                       ?>
                     </select>
                   </div>
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-clock"></em></span>
-                    <select class="form-control readPage select2 isRequired" id="default_time_zone" name="default_time_zone" placeholder="<?php echo _translate('Timezone'); ?>" title="<?php echo _translate('Please choose Timezone'); ?>">
+                    <select class="form-control readPage select2 isRequired" id="default_time_zone"
+                      name="default_time_zone" placeholder="<?php echo _translate('Timezone'); ?>"
+                      title="<?php echo _translate('Please choose Timezone'); ?>">
                       <option value=""></option>
                       <?php
 
                       $timezone_identifiers = DateTimeZone::listIdentifiers();
                       //$systemTimezone = $systemService->getTimezone();
-
+                      
                       foreach ($timezone_identifiers as $value) {
-                      ?>
+                        ?>
                         <option value='<?= $value; ?>'> <?= $value; ?></option>;
-                      <?php
+                        <?php
                       }
                       ?>
                     </select>
@@ -399,10 +432,12 @@ $testName = TestsService::getTestTypes();
 
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-language"></em></span>
-                    <select class="form-control isRequired readPage" name="app_locale" id="app_locale" title="<?php echo _translate('Please select the System Locale'); ?>">
+                    <select class="form-control isRequired readPage" name="app_locale" id="app_locale"
+                      title="<?php echo _translate('Please select the System Locale'); ?>">
                       <option value=""><?= _translate("-- Choose System Language --"); ?></option>
                       <?php foreach ($localeLists as $locale => $localeName) { ?>
-                        <option value="<?php echo $locale; ?>" <?php echo (isset($globalConfig['app_locale']) && $globalConfig['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?= $localeName; ?></option>
+                        <option value="<?php echo $locale; ?>" <?php echo (isset($globalConfig['app_locale']) && $globalConfig['app_locale'] == $locale) ? 'selected="selected"' : ''; ?>><?= $localeName; ?>
+                        </option>
                       <?php } ?>
                     </select>
                   </div>
@@ -417,23 +452,28 @@ $testName = TestsService::getTestTypes();
                 <div class="panel-body">
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-envelope"></em></span>
-                    <input id="login-email" type="text" class="form-control isRequired" name="email" value="" placeholder="<?= _translate("Email ID"); ?>" title="Please enter your email id">
+                    <input id="login-email" type="text" class="form-control isRequired" name="email" value=""
+                      placeholder="<?= _translate("Email ID"); ?>" title="Please enter your email id">
                   </div>
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
-                    <input id="login-username" type="text" class="form-control isRequired" name="userName" value="" placeholder="<?= _translate("Full Name"); ?>" title="Please enter your name">
+                    <input id="login-username" type="text" class="form-control isRequired" name="userName" value=""
+                      placeholder="<?= _translate("Full Name"); ?>" title="Please enter your name">
                   </div>
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-right-to-bracket"></em></span>
-                    <input id="login-id" type="text" class="form-control isRequired" name="loginId" value="" placeholder="<?= _translate("Login ID"); ?>" title="Please enter your login id">
+                    <input id="login-id" type="text" class="form-control isRequired" name="loginId" value=""
+                      placeholder="<?= _translate("Login ID"); ?>" title="Please enter your login id">
                   </div>
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-                    <input type="password" class="form-control ppwd isRequired" id="password" name="password" placeholder="<?= _translate("Password"); ?>" title="Please enter your password" />
+                    <input type="password" class="form-control ppwd isRequired" id="password" name="password"
+                      placeholder="<?= _translate("Password"); ?>" title="Please enter your password" />
                   </div>
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-                    <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword" name="password" placeholder="<?= _translate("Confirm Password"); ?>" title="" />
+                    <input type="password" class="form-control cpwd confirmPassword" id="confirmPassword"
+                      name="password" placeholder="<?= _translate("Confirm Password"); ?>" title="" />
                   </div>
                   <button class="btn btn-success pull-right" type="submit"><?= _translate("Finish"); ?></button>
 
@@ -493,9 +533,9 @@ $testName = TestsService::getTestTypes();
           return false;
         }
         $.post("/setup/check-sts-url.php", {
-            remoteURL: url,
-          },
-          function(data) {
+          remoteURL: url,
+        },
+          function (data) {
             if (data == 0 || data == '0' || data == 'false') {
               alert("<?= _translate("This STS URL appears to be invalid. Please check and enter a valid STS URL.", true); ?>");
               $('#remoteURL').focus();
@@ -528,11 +568,11 @@ $testName = TestsService::getTestTypes();
         if ($('#instanceType').val() == 'lismode' && $('#remoteURL').val() != "") {
           $.blockUI();
           $.post("/tasks/remote/sts-metadata-receiver.php", {
-              remoteURL: $('#remoteURL').val()
-            },
-            function(data) {
+            remoteURL: $('#remoteURL').val()
+          },
+            function (data) {
               $.post("/setup/getTestingLabOptions.php",
-                function(data) {
+                function (data) {
                   if (data != 0) {
                     $("#testingLab").html(data);
                   }
@@ -542,11 +582,19 @@ $testName = TestsService::getTestTypes();
         }
       }
 
-      $(document).ready(function() {
+      $(document).ready(function () {
 
         $(".lis").hide();
 
         changeLabType($('#instanceType').val());
+
+        $('#login-id').on('input', function () {
+          let val = $(this).val();
+          val = val.toLowerCase(); // convert to lowercase
+          val = val.replace(/\s+/g, ''); // remove all spaces
+          val = val.replace(/[^a-z0-9_-]/g, ''); // allow only a-z, 0-9, _ and -
+          $(this).val(val); // set sanitized value back
+        });
 
         /** For Step form */
         var navListItems = $('div.setup-panel div a'),
@@ -555,7 +603,7 @@ $testName = TestsService::getTestTypes();
 
         allWells.hide();
 
-        navListItems.click(function(e) {
+        navListItems.click(function (e) {
           e.preventDefault();
           var $target = $($(this).attr('href')),
             $item = $(this);
@@ -569,7 +617,7 @@ $testName = TestsService::getTestTypes();
           }
         });
 
-        allNextBtn.click(function() {
+        allNextBtn.click(function () {
           var curStep = $(this).closest(".setup-content"),
             curStepBtn = curStep.attr("id"),
             nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
@@ -592,9 +640,9 @@ $testName = TestsService::getTestTypes();
         /** Step form script end */
         <?php
         if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) !== "") {
-        ?>
+          ?>
           alert("<?php echo $_SESSION['alertMsg']; ?>");
-        <?php
+          <?php
           $_SESSION['alertMsg'] = '';
           unset($_SESSION['alertMsg']);
         }

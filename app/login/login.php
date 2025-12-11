@@ -244,6 +244,14 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 				<div style="padding-top:10px;" class="panel-body">
 					<?php
+					// Check if setup credentials need to be flashed
+					$setupCredentials = null;
+					if (!empty($_SESSION['setup_credentials'])) {
+						$setupCredentials = $_SESSION['setup_credentials'];
+						// Clear immediately so it only shows once
+						unset($_SESSION['setup_credentials']);
+					}
+
 					$initialAlert = '';
 					if (!empty($_SESSION['alertMsg'])) {
 						$initialAlert = trim((string) $_SESSION['alertMsg']);
@@ -251,6 +259,19 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 						$_SESSION['alertMsg'] = '';
 						unset($_SESSION['alertMsg']);
 					}
+
+					// Display setup credentials if available
+					if ($setupCredentials !== null) { ?>
+						<div class="alert alert-success col-sm-12" style="background-color: #dff0d8; border-color: #d6e9c6; padding: 15px; margin-bottom: 15px;">
+							<h4 style="margin-top: 0; color: #3c763d;"><em class="fa-solid fa-check-circle"></em> <?= _translate("Setup Complete!"); ?></h4>
+							<p style="margin-bottom: 10px; color: #3c763d;"><?= _translate("Please save your login credentials:"); ?></p>
+							<div style="background: #fff; padding: 10px; border-radius: 4px; border: 1px solid #d6e9c6;">
+								<p style="margin: 5px 0; font-size: 14px;"><strong><?= _translate("Login ID:"); ?></strong> <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;"><?= htmlspecialchars($setupCredentials['loginId'], ENT_QUOTES, 'UTF-8'); ?></code></p>
+								<p style="margin: 5px 0; font-size: 14px;"><strong><?= _translate("Password:"); ?></strong> <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 3px;"><?= htmlspecialchars($setupCredentials['password'], ENT_QUOTES, 'UTF-8'); ?></code></p>
+							</div>
+							<p style="margin-top: 10px; margin-bottom: 0; font-size: 12px; color: #8a6d3b;"><em class="fa-solid fa-warning"></em> <?= _translate("This message will only be shown once. Please note down your credentials."); ?></p>
+						</div>
+					<?php }
 					?>
 					<div id="login-alert"
 						class="alert <?= $initialAlert !== '' && $initialAlert !== '0' ? 'alert-warning' : 'alert-danger' ?> col-sm-12"

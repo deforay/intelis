@@ -184,6 +184,12 @@ try {
         }
 
         $_SESSION['alertMsg'] = "New admin user added successfully";
+
+        // Store credentials to flash on login page one time
+        $_SESSION['setup_credentials'] = [
+            'loginId' => $loginId,
+            'password' => $password
+        ];
     }
     header("Location:/login/login.php");
 } catch (Throwable $exc) {
