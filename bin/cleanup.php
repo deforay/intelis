@@ -383,14 +383,13 @@ function pruneEmptyDirs(string $folder): int
     return $count;
 }
 
-
 /**
- * Run db-tools.php clean with retention args and pretty-print its output.
+ * Run db-tools clean with retention args and pretty-print its output.
  * Returns the process exit code.
  */
 function runDbToolsClean(?int $keep, ?int $days, ConsoleOutput $output): int
 {
-    $args = [];
+    $args = ['--all'];
     if ($keep !== null) {
         $args[] = '--keep=' . (int) $keep;
     }
@@ -399,24 +398,18 @@ function runDbToolsClean(?int $keep, ?int $days, ConsoleOutput $output): int
     }
 
     // Fallback: require at least one policy
-    if ($args === []) {
+    if ($keep === null && $days === null) {
         $args[] = '--days=30';
     }
 
-    $script = BIN_PATH . DIRECTORY_SEPARATOR . 'db-tools.php';
+    $script = VENDOR_BIN . '/db-tools';
     if (!is_file($script)) {
-        $output->writeln("<fire>✗ db-tools.php not found at: {$script}</fire>");
+        $output->writeln("<fire>✗ db-tools not found at: {$script}</fire>");
         return 1;
     }
 
-    // Build: /usr/bin/php bin/db-tools.php clean --days=30 ...
+    // Build: /usr/bin/php vendor/bin/db-tools clean --all --days=30 ...
     $cmd = array_merge([PHP_BINARY, $script, 'clean'], $args);
-
-    $descriptorSpec = [
-        0 => ['pipe', 'r'], // stdin
-        1 => ['pipe', 'w'], // stdout
-        2 => ['pipe', 'w'], // stderr
-    ];
 
     $process = new Process($cmd, ROOT_PATH);
     $process->setTimeout(null);
@@ -440,7 +433,6 @@ function runDbToolsClean(?int $keep, ?int $days, ConsoleOutput $output): int
     return (int) $code;
 }
 
-
 $defaultDuration = (isset($argv[1]) && is_numeric($argv[1])) ? (int) $argv[1] : 30;
 
 
@@ -455,7 +447,7 @@ $output->writeln('');
 
 $output->writeln("<info>Default retention:</info> <comment>{$defaultDuration} days</comment>\n");
 
-// DB BACKUP CLEANUP (PITR-aware via db-tools.php)
+// DB BACKUP CLEANUP
 $output->writeln('<info>DB BACKUP CLEANUP</info>');
 $output->writeln(str_repeat('-', 80));
 
@@ -472,9 +464,9 @@ $daysForDbBackups = ($keepForDbBackups !== null)
 $exit = runDbToolsClean($keepForDbBackups, $daysForDbBackups, $output);
 
 if ($exit === 0) {
-    $output->writeln("<success>✓ db-tools.php clean completed</success>\n");
+    $output->writeln("<success>✓ db-tools clean completed</success>\n");
 } else {
-    $output->writeln("<fire>✗ db-tools.php clean exited with code {$exit}</fire>\n");
+    $output->writeln("<fire>✗ db-tools clean exited with code {$exit}</fire>\n");
 }
 
 
