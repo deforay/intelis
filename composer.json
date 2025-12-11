@@ -27,6 +27,7 @@
         "ext-sodium": "*",
         "ext-zip": "*",
         "ext-zlib": "*",
+        "amitdugar/db-tools": "^0.2.1",
         "brick/phonenumber": "^0.6.0",
         "crunzphp/crunz": "^3.8",
         "ezyang/htmlpurifier": "^4.17",
@@ -51,9 +52,9 @@
         "slim/slim": "^4.15",
         "sqids/sqids": "^0.4.1",
         "symfony/cache": "^7.3",
-        "symfony/process": "^7.3",
         "symfony/console": "^7.2",
         "symfony/filesystem": "^7.3",
+        "symfony/process": "^7.3",
         "symfony/string": "^6.4",
         "symfony/uid": "^7.3",
         "tecnickcom/tcpdf": "^6.10",
@@ -85,10 +86,10 @@
         "scan": "@php bin/scan.php",
         "cleanup": "@php bin/cleanup.php 30",
         "version": "@php bin/build/generate-version.php",
-        "collation": "@php bin/db-tools.php collation",
+        "collation": "@php vendor/bin/db-tools collation --all",
         "backup": [
             "@php bin/backup-configs.php",
-            "@php bin/db-tools.php backup"
+            "@php vendor/bin/db-tools backup --all"
         ],
         "interface": "@php bin/interface.php",
         "lock-samples": "@php bin/update-sample-status.php",
