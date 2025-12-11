@@ -15,14 +15,14 @@ $backupDir = BACKUP_PATH;
 if (!is_dir($backupDir)) {
     @mkdir($backupDir, 0755, true);
 }
-$profiles = [];
+
 // Main database profile (default)
 $profiles = [
     'intelis' => [
         'host' => SYSTEM_CONFIG['database']['host'] ?? 'localhost',
         'port' => (int) (SYSTEM_CONFIG['database']['port'] ?? 3306),
-        'database' => SYSTEM_CONFIG['database']['db'] ?? null,
-        'user' => SYSTEM_CONFIG['database']['username'] ?? null,
+        'database' => SYSTEM_CONFIG['database']['db'] ?? 'vlsm',
+        'user' => SYSTEM_CONFIG['database']['username'] ?? 'root',
         'password' => SYSTEM_CONFIG['database']['password'] ?? null,
         'output_dir' => $backupDir,
         'retention' => 7,
@@ -34,8 +34,8 @@ if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && !empty(SYSTEM_CONFIG['int
     $profiles['interfacing'] = [
         'host' => SYSTEM_CONFIG['interfacing']['database']['host'] ?? 'localhost',
         'port' => (int) (SYSTEM_CONFIG['interfacing']['database']['port'] ?? 3306),
-        'database' => SYSTEM_CONFIG['interfacing']['database']['db'],
-        'user' => SYSTEM_CONFIG['interfacing']['database']['username'] ?? null,
+        'database' => SYSTEM_CONFIG['interfacing']['database']['db'] ?? 'interfacing',
+        'user' => SYSTEM_CONFIG['interfacing']['database']['username'] ?? 'root',
         'password' => SYSTEM_CONFIG['interfacing']['database']['password'] ?? null,
         'output_dir' => $backupDir,
         'retention' => 7,

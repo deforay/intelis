@@ -858,7 +858,7 @@ else
     log_action "intelis setup skipped — source missing"
 fi
 
-php bin/db-tools.php config-test
+php "${lis_path}/vendor/bin/db-tools" config-test
 
 print header "Running database migrations and other post-install tasks"
 cd "${lis_path}"
