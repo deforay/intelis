@@ -27,7 +27,7 @@
         "ext-sodium": "*",
         "ext-zip": "*",
         "ext-zlib": "*",
-        "amitdugar/db-tools": "^0.2.7",
+        "amitdugar/db-tools": "^1.0",
         "brick/phonenumber": "^0.6.0",
         "crunzphp/crunz": "^3.8",
         "ezyang/htmlpurifier": "^4.17",
