@@ -192,8 +192,8 @@ if (!empty($requestResult)) {
         $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
 
         if (MiscUtility::isImageValid($stamp)) {
-            $pdf->SetAlpha(0.6);
-            $pdf->Image($stamp, 85, 165, 60, 0);
+            //$pdf->SetAlpha(0.6);
+            $pdf->Image($stamp, 85, 165, 0, 0);
         }
         //Set Age
         $age = 'Unknown';
