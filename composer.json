@@ -86,10 +86,11 @@
         "scan": "@php bin/scan.php",
         "cleanup": "@php bin/cleanup.php 30",
         "version": "@php bin/build/generate-version.php",
-        "collation": "@php vendor/bin/db-tools collation --all",
+        "db:collation": "@php vendor/bin/db-tools collation --all",
+        "db:backup": "@php vendor/bin/db-tools backup --all",
         "backup": [
             "@php bin/backup-configs.php",
-            "@php vendor/bin/db-tools backup --all"
+            "@db:backup"
         ],
         "interface": "@php bin/interface.php",
         "lock-samples": "@php bin/update-sample-status.php",
@@ -112,7 +113,6 @@
         ],
         "system-admin": "@php bin/setup/system-admin.php",
         "migrate": "@php bin/migrate.php -y",
-        "sample-generator": "@php bin/sample-code-generator.php",
         "reset-metadata": "@php app/tasks/remote/sts-metadata-receiver.php -ft",
         "metadata-sync": [
             "@php app/tasks/remote/sts-metadata-receiver.php",
@@ -132,14 +132,14 @@
             "@migrate",
             "@fixes",
             "@purge-cache",
-            "@collation",
+            "@db:collation",
             "@sts-setup"
         ],
         "post-update": [
             "@purge-cache",
             "@migrate",
             "@fixes",
-            "@collation",
+            "@db:collation",
             "@token",
             "@metadata-sync",
             "@cleanup",
