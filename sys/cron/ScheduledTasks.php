@@ -19,7 +19,7 @@ $smartConnectURL = $general->getGlobalConfig('vldashboard_url');
 
 $remoteURL = $general->getRemoteURL();
 
-$timeZone = $_SESSION['APP_TIMEZONE'] ?? date_default_timezone_get();
+$timezone = $_SESSION['APP_TIMEZONE'] ?? date_default_timezone_get();
 
 $schedule = new Schedule();
 
@@ -29,14 +29,14 @@ touch(VAR_PATH . DIRECTORY_SEPARATOR . ".cron_heartbeat");
 // Archive Data from Audit Tables
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/archive-audit-tables.php")
     ->everySixHours()
-    ->timezone($timeZone)
+    ->timezone($timezone)
     ->preventOverlapping()
     ->description('Archiving Audit Tables');
 
 // Generate Sample IDs
 $schedule->run(PHP_BINARY . " " . BIN_PATH . "/sample-code-generator.php")
     ->everyMinute()
-    ->timezone($timeZone)
+    ->timezone($timezone)
     ->preventOverlapping()
     ->description('Generating sample codes');
 
@@ -46,23 +46,30 @@ $schedule->run(PHP_BINARY . " " . BIN_PATH . "/sample-code-generator.php")
 // DB Backup
 $schedule->run(PHP_BINARY . " " . VENDOR_BIN . "/db-tools backup --all")
     ->everySixHours()
-    ->timezone($timeZone)
+    ->timezone($timezone)
     ->preventOverlapping()
     ->description('DB Tools: backup of both databases every 6 hours');
 
 // Daily binlog purge
 $schedule->run(PHP_BINARY . " " . VENDOR_BIN . "/db-tools purge-binlogs --days=7")
     ->cron('5 4 * * *') // 04:05 am daily
-    ->timezone($timeZone)
+    ->timezone($timezone)
     ->preventOverlapping()
     ->description('DB Tools: purge MySQL binary logs older than 7 days');
 
 // Weekly maintenance
 $schedule->run(PHP_BINARY . " " . VENDOR_BIN . "/db-tools maintain --all --days=7")
     ->cron('0 3 * * 0') // 03:00 am Sundays
-    ->timezone($timeZone)
+    ->timezone($timezone)
     ->preventOverlapping()
     ->description('DB Tools: weekly mysqlcheck (repair/optimize/analyze) + binlog purge');
+
+// Monthly deep maintenance (analyze + optimize + purge binlogs)
+$schedule->run(PHP_BINARY . " " . VENDOR_BIN . "/db-tools maintain --all --optimize --days=7")
+    ->cron('0 4 1 * *') // 04:00 am on 1st of each month
+    ->timezone($timezone)
+    ->preventOverlapping()
+    ->description('DB Tools: monthly optimize + analyze + binlog purge');
 
 
 // Weekly config backup    
@@ -70,20 +77,20 @@ $schedule->run(PHP_BINARY . ' ' . BIN_PATH . '/backup-configs.php')
     ->weeklyOn(0, '03:00') // Sundays 3:00 AM
     ->description('Weekly config backup')
     ->preventOverlapping()
-    ->timezone($timeZone);
+    ->timezone($timezone);
 
 
 // Cleanup Old Files
-$schedule->run('COMPOSER_ALLOW_SUPERUSER=1 composer -d ' . ROOT_PATH . ' run cleanup -n')
+$schedule->run(PHP_BINARY . ' ' . BIN_PATH . '/cleanup.php 30')
     ->cron('45 0 * * *')
-    ->timezone($timeZone)
+    ->timezone($timezone)
     ->preventOverlapping()
     ->description('Cleaning Up Old Backups and Temporary files');
 
 // Expiring/Locking Samples
 $schedule->run(PHP_BINARY . " " . BIN_PATH . "/update-sample-status.php")
     ->cron('5 0 * * *')
-    ->timezone($timeZone)
+    ->timezone($timezone)
     ->preventOverlapping()
     ->description('Updating sample status to Expired or Locking samples');
 
@@ -92,14 +99,14 @@ if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacin
     // Syncing data from SQLite to MySQL
     $schedule->run(PHP_BINARY . " " . BIN_PATH . "/sync-interface-sqlite-mysql.php")
         ->everyFiveMinutes()
-        ->timezone($timeZone)
+        ->timezone($timezone)
         ->preventOverlapping()
         ->description('Importing data from sqlite db into mysql db');
 
     // Importing data from interface db into lis db`
     $schedule->run(PHP_BINARY . " " . BIN_PATH . "/interface.php")
         ->everyMinute()
-        ->timezone($timeZone)
+        ->timezone($timezone)
         ->preventOverlapping()
         ->description('Importing data from interface db into local db');
 }
@@ -107,7 +114,7 @@ if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacin
 // UPDATE VL RESULT INTERPRETATION
 $schedule->run(PHP_BINARY . " " . BIN_PATH . "/update-vl-suppression.php")
     ->everyMinute()
-    ->timezone($timeZone)
+    ->timezone($timezone)
     ->preventOverlapping()
     ->description('Updating VL Result Interpretation');
 
@@ -116,7 +123,7 @@ $schedule->run(PHP_BINARY . " " . BIN_PATH . "/update-vl-suppression.php")
 if (!empty($general->getRemoteURL()) && $general->isLISInstance() === true) {
     $schedule->run('COMPOSER_ALLOW_SUPERUSER=1 composer -d ' . ROOT_PATH . ' run sync-sts -n')
         ->everyFiveMinutes()
-        ->timezone($timeZone)
+        ->timezone($timezone)
         ->preventOverlapping()
         ->description('Syncing data to and from STS');
 }
@@ -129,7 +136,7 @@ if (!empty($general->getRemoteURL()) && $general->isLISInstance() === true) {
 if (!empty($smartConnectURL)) {
     $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/metadata.php")
         ->cron('*/20 * * * *')
-        ->timezone($timeZone)
+        ->timezone($timezone)
         ->preventOverlapping()
         ->description('Syncing VLSM Reference data from local database to Dashboard');
 }
@@ -138,7 +145,7 @@ if (!empty($smartConnectURL)) {
 if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
     $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/vl.php")
         ->cron('*/25 * * * *')
-        ->timezone($timeZone)
+        ->timezone($timezone)
         ->preventOverlapping()
         ->description('Syncing VL data from local database to Dashboard');
 }
@@ -146,14 +153,14 @@ if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['vl']) && SYSTEM
 if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
     $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/eid.php")
         ->cron('*/30 * * * *')
-        ->timezone($timeZone)
+        ->timezone($timezone)
         ->preventOverlapping()
         ->description('Syncing EID data from local database to Dashboard');
 }
 if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
     $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/covid19.php")
         ->cron('*/35 * * * *')
-        ->timezone($timeZone)
+        ->timezone($timezone)
         ->preventOverlapping()
         ->description('Syncing Covid-19 data from local database to Dashboard');
 }
@@ -164,7 +171,7 @@ if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['covid19']) && S
 if (TestsService::isTestActive('tb')) {
     $schedule->run(PHP_BINARY . " " . BIN_PATH . "/tb/tb-referrals.php")
         ->everyMinute()
-        ->timezone($timeZone)
+        ->timezone($timezone)
         ->preventOverlapping()
         ->description('Updating TB referrals and referral history');
 }
