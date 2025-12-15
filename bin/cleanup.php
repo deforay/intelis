@@ -127,6 +127,9 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
             );
 
             foreach ($iterator as $fileInfo) {
+                if ($fileInfo->getFilename() === '.gitkeep') {
+                    continue; // keep marker files
+                }
                 if (!$fileInfo->isFile()) {
                     continue;
                 }
@@ -185,7 +188,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
 
     // Try streaming with find + sort to avoid loading everything into memory
     $findCmd = sprintf(
-        'find %s -type f ! -name \'.htaccess\' ! -name \'index.php\' -printf \'%%T@|%%p|%%s\n\' 2>/dev/null | sort -n',
+        'find %s -type f ! -name \'.htaccess\' ! -name \'index.php\' ! -name \'.gitkeep\' -printf \'%%T@|%%p|%%s\n\' 2>/dev/null | sort -n',
         escapeshellarg($folder)
     );
 
@@ -285,6 +288,9 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
                 if (in_array($basename, ['.htaccess', 'index.php'], true)) {
                     continue;
                 }
+                if ($basename === '.gitkeep') {
+                    continue; // keep marker files
+                }
                 $mtime = $file->getMTime();
                 $files[] = [
                     'mtime' => (float) $mtime,
@@ -374,11 +380,11 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
 function pruneEmptyDirs(string $folder): int
 {
     $toDelete = [];
-    exec("find " . escapeshellarg($folder) . " -type d -empty -print 2>/dev/null", $toDelete);
+    exec("find " . escapeshellarg($folder) . " -mindepth 1 -type d -empty -print 2>/dev/null", $toDelete);
     $count = is_array($toDelete) ? count($toDelete) : 0;
     if ($count > 0) {
         // Do the actual deletion
-        exec("find " . escapeshellarg($folder) . " -type d -empty -delete 2>/dev/null");
+        exec("find " . escapeshellarg($folder) . " -mindepth 1 -type d -empty -delete 2>/dev/null");
     }
     return $count;
 }

@@ -120,7 +120,7 @@ if (empty($labId)) {
 $sqliteDb = null;
 $syncedIds = [];
 $unsyncedIds = [];
-$addedOnValues = []; // Array to store added_on values
+$latestAddedOn = null; // Track the latest added_on value
 
 
 if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
@@ -658,7 +658,10 @@ try {
             }
 
             if (!empty($result['added_on'])) {
-                $addedOnValues[] = strtotime((string) $result['added_on']);
+                $addedOn = DateUtility::getDateTime((string) $result['added_on']);
+                if ($addedOn !== null && ($latestAddedOn === null || $addedOn > $latestAddedOn)) {
+                    $latestAddedOn = $addedOn;
+                }
             }
 
             $db->connection('default')->commitTransaction();
@@ -759,12 +762,9 @@ try {
         $sqliteDb = null;
     }
 
-    if ($addedOnValues !== []) {
-
-        $maxAddedOn = DateUtility::getDateTime(max($addedOnValues));
-
+    if ($latestAddedOn !== null) {
         // Update s_vlsm_instance with the maximum added_on
-        $db->connection('default')->update('s_vlsm_instance', ['last_interface_sync' => $maxAddedOn]);
+        $db->connection('default')->update('s_vlsm_instance', ['last_interface_sync' => $latestAddedOn]);
     }
 
     // Delete the lock file after execution completes
