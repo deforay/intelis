@@ -136,7 +136,7 @@ if (!empty($result)) {
      $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
      if (MiscUtility::isImageValid($stamp)) {
           //$pdf->SetAlpha(0.6);
-          $pdf->Image($stamp, 95, 170, 0, 0);
+          $pdf->Image($stamp, 95, 155, 0, 0);
      }
      //Set Age
      $age = 'Unknown';

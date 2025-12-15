@@ -171,7 +171,7 @@ if (!empty($result)) {
     if (MiscUtility::isImageValid($stamp)) {
         //$pdf->SetAlpha(0.6);
         // $pdf->Image($stamp, 65, 155, 40);
-        $pdf->Image($stamp, 90, 150, 0, 0);
+        $pdf->Image($stamp, 95, 155, 0, 0);
     }
 
     $vlResult = '';
