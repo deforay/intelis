@@ -30,7 +30,7 @@ try {
             $lastId = $db->getInsertId();
             if ($lastId > 0) {
                 $_SESSION['alertMsg'] = _translate("Sample type added successfully");
-                $general->activityLog('Sample Type', $_SESSION['userName'] . ' added new sample type for ' . $_POST['sampleTypeName'], 'generic-sample-types');
+                $general->activityLog('Sample Type', $_SESSION['userName'] . ' added new Custom Tests sample type : ' . $_POST['sampleTypeName'], 'generic-sample-types');
             }
         }
     }

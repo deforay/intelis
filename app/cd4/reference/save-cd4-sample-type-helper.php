@@ -33,7 +33,7 @@ try {
 		}
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("CD4 Sample details saved successfully");
-			$general->activityLog('CD4 Sample Type details', $_SESSION['userName'] . ' added new sample type for ' . $_POST['sampleName'], 'cd4-reference');
+			$general->activityLog('CD4 Sample Type details', $_SESSION['userName'] . ' added new CD4 sample type : ' . $_POST['sampleName'], 'cd4-reference');
 		}
 	}
 	header("Location:cd4-sample-type.php");

@@ -14,20 +14,20 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
-
-$tableName = "r_tb_sample_type";
-
 try {
 	if (isset($_POST['sampleName']) && trim((string) $_POST['sampleName']) !== "") {
 
 
-		$data = ['sample_name' => $_POST['sampleName'], 'status' => $_POST['sampleStatus'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
+		$data = [
+			'sample_name' => $_POST['sampleName'],
+			'status' => $_POST['sampleStatus'],
+			'updated_datetime' => DateUtility::getCurrentDateTime()
+		];
 
-		$db->insert($tableName, $data);
-		$lastId = $db->getInsertId();
+		$db->insert('r_tb_sample_type', $data);
 
 		$_SESSION['alertMsg'] = _translate("Sample Type details added successfully");
-		$general->activityLog('add-sample-type', $_SESSION['userName'] . ' added new reference sample type' . $_POST['sampleName'], 'reference-tb-sample-type');
+		$general->activityLog('add-sample-type', $_SESSION['userName'] . ' added new TB sample type : ' . $_POST['sampleName'], 'reference-tb-sample-type');
 	}
 	header("Location:tb-sample-type.php");
 } catch (Exception $e) {

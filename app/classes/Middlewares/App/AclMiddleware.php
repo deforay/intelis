@@ -51,7 +51,7 @@ class AclMiddleware implements MiddlewareInterface
 
             // Access denied - handleAccessDenied always throws, but IDE needs explicit indication
             $this->handleAccessDenied($currentURI, $user, $request);
-            throw new RuntimeException('This line should is never reached'); // Satisfies static analysis
+            throw new RuntimeException('This line is never reached'); // Satisfies static analysis
         } catch (SystemException $e) {
             throw $e;
         } catch (Throwable $e) {
@@ -85,7 +85,7 @@ class AclMiddleware implements MiddlewareInterface
 
         $refererPath = $this->getRefererPath($referer);
 
-        if (!$this->isSameDomain($request, $referer) || ($refererPath === '' || $refererPath === '0')) {
+        if (!CommonService::isSameOriginRequest($request) || ($refererPath === '' || $refererPath === '0')) {
             return false;
         }
 
@@ -143,14 +143,6 @@ class AclMiddleware implements MiddlewareInterface
         }
 
         return $path;
-    }
-
-    private function isSameDomain(ServerRequestInterface $request, string $referer): bool
-    {
-        $currentHost = strtolower($request->getUri()->getHost());
-        $refererHost = strtolower(parse_url($referer, PHP_URL_HOST) ?? '');
-
-        return $currentHost !== '' && $currentHost !== '0' && ($refererHost !== '' && $refererHost !== '0') && $currentHost === $refererHost;
     }
 
     private function shouldExcludeFromAclCheck(ServerRequestInterface $request): bool
