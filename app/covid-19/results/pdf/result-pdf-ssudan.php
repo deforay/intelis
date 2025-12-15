@@ -189,7 +189,7 @@ if (!empty($requestResult)) {
             $result['labName'] = '';
         }
 
-        $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
+        $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
 
         if (MiscUtility::isImageValid($stamp)) {
             //$pdf->SetAlpha(0.6);
