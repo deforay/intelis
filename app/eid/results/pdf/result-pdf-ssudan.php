@@ -167,7 +167,7 @@ if (!empty($result)) {
         $result['child_gender'] = _translate('Unreported');
     }
 
-    $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
+    $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
     if (MiscUtility::isImageValid($stamp)) {
         //$pdf->SetAlpha(0.6);
         // $pdf->Image($stamp, 65, 155, 40);
