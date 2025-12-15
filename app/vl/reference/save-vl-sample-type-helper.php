@@ -31,7 +31,7 @@ try {
 		}
 		if ($lastId > 0) {
 			$_SESSION['alertMsg'] = _translate("VL Sample details saved successfully");
-			$general->activityLog('VL Sample Type details', $_SESSION['userName'] . ' added new sample type for ' . $_POST['sampleName'], 'vl-reference');
+			$general->activityLog('VL Sample Type details', $_SESSION['userName'] . ' added new VL sample type : ' . $_POST['sampleName'], 'vl-reference');
 		}
 	}
 	MiscUtility::redirect("/vl/reference/vl-sample-type.php");
