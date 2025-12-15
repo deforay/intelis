@@ -189,12 +189,12 @@ if (!empty($requestResult)) {
             $result['labName'] = '';
         }
 
-        $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
+        // $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
 
-        if (MiscUtility::isImageValid($stamp)) {
-            //$pdf->SetAlpha(0.6);
-            $pdf->Image($stamp, 85, 165, 0, 0);
-        }
+        // if (MiscUtility::isImageValid($stamp)) {
+        //     //$pdf->SetAlpha(0.6);
+        //     $pdf->Image($stamp, 95, 155, 0, 0);
+        // }
         //Set Age
         $age = 'Unknown';
         if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) !== '' && $result['patient_dob'] != '0000-00-00') {

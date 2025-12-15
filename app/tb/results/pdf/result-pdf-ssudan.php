@@ -113,13 +113,13 @@ if (!empty($requestResult)) {
         if (!isset($result['labName']) || trim((string) $result['labName']) === '') {
             $result['labName'] = '';
         }
-        $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
+        // $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
 
-        if (MiscUtility::isImageValid($stamp)) {
-            //$pdf->SetAlpha(0.6);
-            // $pdf->Image($stamp, 90, 205, 40, null);
-            $pdf->Image($stamp, 90, 200, 0, 0);
-        }
+        // if (MiscUtility::isImageValid($stamp)) {
+        //     //$pdf->SetAlpha(0.6);
+        //     // $pdf->Image($stamp, 90, 205, 40, null);
+        //     $pdf->Image($stamp, 95, 155, 0, 0);
+        // }
         //Set Age
         $ageCalc = 0;
         $age = 'Unknown';
