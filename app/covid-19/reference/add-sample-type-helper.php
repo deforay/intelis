@@ -26,7 +26,7 @@ try {
 		$lastId = $db->getInsertId();
 
 		$_SESSION['alertMsg'] = _translate("Sample Type details added successfully");
-		$general->activityLog('add-sample-type', $_SESSION['userName'] . ' added new reference sample type' . $_POST['sampleName'], 'reference-covid19-sample-type');
+		$general->activityLog('add-sample-type', $_SESSION['userName'] . ' added new Covid-19 sample type : ' . $_POST['sampleName'], 'reference-covid19-sample-type');
 	}
 	header("Location:covid19-sample-type.php");
 } catch (Exception $e) {

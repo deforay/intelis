@@ -216,13 +216,13 @@ $sharedTbPrivileges = [
     '/tb/results/tb-update-result.php' => '/tb/results/tb-manual-results.php',
     '/tb/results/tb-failed-results.php' => '/tb/results/tb-manual-results.php',
     '/tb/results/email-results-confirm.php' => '/tb/results/email-results.php',
-    '/tb/reference/add-tb-sample-type.php' => 'tb-sample-type.php',
-    '/tb/reference/tb-sample-rejection-reasons.php' => 'tb-sample-type.php',
-    '/tb/reference/add-tb-sample-rejection-reason.php' => 'tb-sample-type.php',
-    '/tb/reference/tb-test-reasons.php' => 'tb-sample-type.php',
-    '/tb/reference/add-tb-test-reasons.php' => 'tb-sample-type.php',
-    '/tb/reference/tb-results.php' => 'tb-sample-type.php',
-    '/tb/reference/add-tb-results.php' => 'tb-sample-type.php',
+    '/tb/reference/add-tb-sample-type.php' => '/tb/reference/tb-sample-type.php',
+    '/tb/reference/tb-sample-rejection-reasons.php' => '/tb/reference/tb-sample-type.php',
+    '/tb/reference/add-tb-sample-rejection-reason.php' => '/tb/reference/tb-sample-type.php',
+    '/tb/reference/tb-test-reasons.php' => '/tb/reference/tb-sample-type.php',
+    '/tb/reference/add-tb-test-reasons.php' => '/tb/reference/tb-sample-type.php',
+    '/tb/reference/tb-results.php' => '/tb/reference/tb-sample-type.php',
+    '/tb/reference/add-tb-results.php' => '/tb/reference/tb-sample-type.php',
 ];
 $sharedPrivileges = array_merge($sharedPrivileges, $sharedTbPrivileges);
 

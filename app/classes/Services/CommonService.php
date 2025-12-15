@@ -701,7 +701,14 @@ final class CommonService
 
     public static function isAjaxRequest(ServerRequestInterface $request): bool
     {
-        return strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest';
+        // Treat as AJAX only when explicitly marked and coming from same origin
+        $xrw = strtolower($request->getHeaderLine('X-Requested-With'));
+        if ($xrw !== 'xmlhttprequest') {
+            return false;
+        }
+
+        // Same-origin guard to avoid easy bypass with forged header
+        return self::isSameOriginRequest($request);
     }
 
     public static function isSameOriginRequest(ServerRequestInterface $request): bool
