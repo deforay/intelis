@@ -59,7 +59,7 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 
 
 		//set gender
-		$gender = match (strtolower((string)$aRow['patient_gender'])) {
+		$gender = match (strtolower((string) $aRow['patient_gender'])) {
 			'male', 'm' => 'M',
 			'female', 'f' => 'F',
 			'not_recorded', 'notrecorded', 'unreported' => 'Unreported',
@@ -116,7 +116,7 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 		$row[] = ($testPlatform);
 		$row[] = ($testMethod);
-		$row[] = $tbResults[$aRow['result']];
+		$row[] = $tbResults[$aRow['result']] ?? $aRow['result'] ?? null;
 		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 
 		$output[] = $row;

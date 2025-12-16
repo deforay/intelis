@@ -207,7 +207,7 @@ try {
         $row[] = $aRow['patient_id'];
         $row[] = $patientFname . " " . $patientLname;
         $row[] = ($aRow['facility_name']);
-        $row[] = $tbResults[$aRow['result']];
+        $row[] = $tbResults[$aRow['result']] ?? $aRow['result'] ?? null;
         $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
         // $row[] = $status;
 
