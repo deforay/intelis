@@ -257,6 +257,8 @@ try {
         'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
         'is_sample_rejected' => empty($_POST['isSampleRejected']) ? '' : $_POST['isSampleRejected'],
         'recommended_corrective_action' => empty($_POST['correctiveAction']) ? '' : $_POST['correctiveAction'],
+        'result' => $_POST['finalResult'] ?? null,
+        'tb_lam_result' => $_POST['tbLamResult'] ?? null,
         'xpert_mtb_result' => empty($_POST['xPertMTMResult']) ? null : $_POST['xPertMTMResult'],
         'culture_result' => empty($_POST['cultureResult']) ? null : $_POST['cultureResult'],
         'identification_result' => empty($_POST['identicationResult']) ? null : $_POST['identicationResult'],

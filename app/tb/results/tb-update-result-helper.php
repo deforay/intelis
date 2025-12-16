@@ -56,7 +56,7 @@ try {
     $resultSentToSource = null;
 
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
-        $_POST['result'] = null;
+        $_POST['finalResult'] = null;
         $status = REJECTED;
         $resultSentToSource = 'pending';
     }
@@ -64,7 +64,7 @@ try {
         $_POST['dob'] = DateUtility::isoDateFormat($_POST['dob'] ?? '');
     }
 
-    if (!empty($_POST['result'])) {
+    if (!empty($_POST['finalResult'])) {
         $resultSentToSource = 'pending';
     }
 
@@ -113,6 +113,8 @@ try {
         'result_date' => empty($_POST['resultDate']) ? null : $_POST['resultDate'],
         'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
         'is_sample_rejected' => empty($_POST['isSampleRejected']) ? null : $_POST['isSampleRejected'],
+        'result' => $_POST['finalResult'] ?? null,
+        'tb_lam_result' => $_POST['tbLamResult'] ?? null,
         'xpert_mtb_result' => empty($_POST['xPertMTMResult']) ? null : $_POST['xPertMTMResult'],
         'culture_result' => empty($_POST['cultureResult']) ? null : $_POST['cultureResult'],
         'identification_result' => empty($_POST['identicationResult']) ? null : $_POST['identicationResult'],
