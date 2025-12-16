@@ -197,11 +197,10 @@ foreach ($rResult as $aRow) {
             $aRow['batch_code'] = $batchCodeResult['batch_code'];
         }
     }
-    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-        $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-    } else {
-        $aRow['sample_collection_date'] = '';
-    }
+    $collectionDateIso = DateUtility::isoDateFormat($aRow['sample_collection_date'] ?? null, true) ?? '';
+    $sampleCollectionDate = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
+
+    $testDateIso = DateUtility::isoDateFormat($aRow['sample_tested_datetime'] ?? null, true) ?? '';
     // Always show datepicker for test dates
     if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) !== '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
         // Has existing date - show datepicker with the date pre-filled
@@ -209,6 +208,8 @@ foreach ($rResult as $aRow) {
         $aRow['sample_tested_datetime'] = '<input type="text" class="test-date-picker form-control" id="testDate' . $aRow['temp_sample_id'] . '"
            data-temp-sample-id="' . $aRow['temp_sample_id'] . '"
            data-date-format="' . $dateTimeFormat . '"
+           data-collection-date="' . $collectionDateIso . '"
+           data-test-date="' . $testDateIso . '"
            value="' . $existingDate . '"
            placeholder="' . _translate('Click to select date') . '" readonly />' .
             '<input type="hidden" class="missing-test-date-flag" id="missingTestDateFlag' . $aRow['temp_sample_id'] . '" value="0">';
@@ -217,23 +218,23 @@ foreach ($rResult as $aRow) {
         $aRow['sample_tested_datetime'] = '<input type="text" class="test-date-picker form-control" id="testDate' . $aRow['temp_sample_id'] . '"
            data-temp-sample-id="' . $aRow['temp_sample_id'] . '"
            data-date-format="' . $dateTimeFormat . '"
+           data-collection-date="' . $collectionDateIso . '"
+           data-test-date=""
            placeholder="' . _translate('Click to select date') . '" readonly />' .
             '<input type="hidden" class="missing-test-date-flag" id="missingTestDateFlag' . $aRow['temp_sample_id'] . '" value="1">';
     }
 
+    $sampleSourceClass = 'source-existing';
     if ($aRow['sample_details'] == _translate('Result already exists')) {
         $rsDetails = _translate('Existing Result');
-        $color = '<span style="color:#FFC300;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';
+        $sampleSourceClass = 'source-existing';
     } elseif ($aRow['sample_details'] == _translate('New Sample')) {
         $rsDetails = _translate('Unknown Sample');
-        $color = '<span style="color:#e8000b;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';
-    }
-    //if($aRow['sample_details']==''){
-    else {
+        $sampleSourceClass = 'source-new';
+    } else {
         $rsDetails = _translate('Result for Sample');
-        $color = '<span style="color:#337ab7;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';
+        $sampleSourceClass = 'source-known';
     }
-    //}
     //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['temp_sample_id'] . '"  value="' . $aRow['temp_sample_id'] . '" onclick="toggleTest(this);"  />';
     $status = '<select class="form-control"  name="status[]" id="' . $aRow['temp_sample_id'] . '" title="Please select status" onchange="toggleTest(this,' . $sampleCode . ')">
 			<option value="">-- Select --</option>
@@ -258,8 +259,8 @@ foreach ($rResult as $aRow) {
         }
     }
     $controlName .= '</select><br><br>';
-    $row[] = '<input style="width:90%;" type="text" name="sampleCode" id="sampleCode' . $aRow['temp_sample_id'] . '" title="' . $rsDetails . '" value="' . $aRow['sample_code'] . '" onchange="updateSampleCode(this,' . $sampleCode . ',' . $aRow['temp_sample_id'] . ');"/> ' . $color;
-    $row[] = $aRow['sample_collection_date'];
+    $row[] = '<div class="sample-source-block ' . $sampleSourceClass . '" title="' . $rsDetails . '"><input style="width:90%;" type="text" name="sampleCode" id="sampleCode' . $aRow['temp_sample_id'] . '" title="' . $rsDetails . '" value="' . $aRow['sample_code'] . '" onchange="updateSampleCode(this,' . $sampleCode . ',' . $aRow['temp_sample_id'] . ');"/></div>';
+    $row[] = '<span class="collection-date-text">' . $sampleCollectionDate . '</span>';
     $row[] = $aRow['sample_tested_datetime'];
     $row[] = $aRow['facility_name'];
     $row[] = '<input style="width:90%;" type="text" name="batchCode" id="batchCode' . $aRow['temp_sample_id'] . '" value="' . $aRow['batch_code'] . '" onchange="updateBatchCode(this,' . $batchCode . ',' . $aRow['temp_sample_id'] . ');"/>';

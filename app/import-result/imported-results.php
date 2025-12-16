@@ -240,6 +240,89 @@ foreach ($rejectionTypeResult as $type) {
 		color: #495057;
 	}
 
+	td.date-gap-warning,
+	.test-date-picker.date-gap-warning {
+		background-color: #fff7e6;
+		border-color: #f0ad4e;
+	}
+
+	td.date-gap-danger,
+	.test-date-picker.date-gap-danger {
+		background-color: #fdecec;
+		border-color: #d9534f;
+	}
+
+	.date-gap-chip {
+		display: inline-block;
+		width: 14px;
+		height: 14px;
+		border-radius: 3px;
+		border: 1px solid #bbb;
+		margin-right: 6px;
+		vertical-align: middle;
+	}
+
+	.date-gap-chip.warning {
+		background-color: #fff7e6;
+		border-color: #f0ad4e;
+	}
+
+	.date-gap-chip.danger {
+		background-color: #fdecec;
+		border-color: #d9534f;
+	}
+
+	.legend-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 18px;
+		align-items: center;
+		margin-top: 6px;
+	}
+
+	.legend-group {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.legend-title {
+		font-weight: 600;
+		color: #444;
+		margin-right: 4px;
+	}
+
+	.legend-item {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		font-size: 12px;
+		color: #444;
+		white-space: nowrap;
+	}
+
+	.sample-source-block {
+		display: block;
+		padding: 10px;
+		border: 1px solid transparent;
+		background-color: #f9fafb;
+	}
+
+	.sample-source-block.source-new {
+		background-color: #fdecec;
+	}
+
+	.sample-source-block.source-existing {
+		background-color: #fff7e6;
+	}
+
+	.sample-source-block.source-known {
+		background-color: #eaf3fb;
+	}
+
+
+
 	/* Table cell alignment */
 	td .date-picker-wrapper {
 		margin: 0 auto;
@@ -353,24 +436,27 @@ foreach ($rejectionTypeResult as $type) {
 
 						<div class="box-header without-border">
 							<div class="box-header with-border">
-								<ul style="list-style: none;float: right;">
-									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation-circle"
-											style="color:#e8000b;"></em>
-										<?= _translate("Sample ID not from VLSM"); ?>
-									</li>
-									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation-circle"
-											style="color:#FFC300;"></em>
-										<?= _translate("Result already exists for this sample"); ?>
-									</li>
-									<li style="float:left;margin-right:40px;"><em class="fa-solid fa-exclamation-circle"
-											style="color:#337ab7;"></em>
-										<?= _translate("Result for Sample ID from VLSM"); ?>
-									</li>
-									<li style="float:left;margin-right:20px;"><em class="fa-solid fa-exclamation-circle"
-											style="color:#E0B0FF;"></em>
-										<?= _translate("Control/Calibrator"); ?>
-									</li>
-								</ul>
+								<div class="legend-row">
+									<div class="legend-group">
+										<span class="legend-title"><?= _translate("Sample source"); ?>:</span>
+										<span class="legend-item"><span class="sample-source-block source-new"
+												style="width:18px;height:14px;padding:0;border-radius:4px;display:inline-block;"></span>
+											<?= _translate("Sample ID not from VLSM"); ?></span>
+										<span class="legend-item"><span class="sample-source-block source-existing"
+												style="width:18px;height:14px;padding:0;border-radius:4px;display:inline-block;"></span>
+											<?= _translate("Result already exists for this sample"); ?></span>
+										<span class="legend-item"><span class="sample-source-block source-known"
+												style="width:18px;height:14px;padding:0;border-radius:4px;display:inline-block;"></span>
+											<?= _translate("Result for Sample ID from VLSM"); ?></span>
+									</div>
+									<div class="legend-group">
+										<span class="legend-title"><?= _translate("Date gap"); ?>:</span>
+										<span class="legend-item"><span class="date-gap-chip warning"></span>
+											<?= _translate("Test date ~1+ month from collection"); ?></span>
+										<span class="legend-item"><span class="date-gap-chip danger"></span>
+											<?= _translate("Test date ~1+ year from collection"); ?></span>
+									</div>
+								</div>
 							</div>
 						</div>
 						<!-- /.box-header -->
@@ -606,6 +692,7 @@ foreach ($rejectionTypeResult as $type) {
 				$this.val(displayDate);
 				$this.attr('data-missing', 'false');
 				$this.attr('data-has-date', 'true');
+				$this.attr('data-test-date', formattedDate);
 				$('#missingTestDateFlag' + tempSampleId).val('0');
 
 				// Show clear button
@@ -616,6 +703,8 @@ foreach ($rejectionTypeResult as $type) {
 					// Remove loading state on completion
 					$this.removeClass('loading');
 				});
+
+				updateDateGapIndicator(tempSampleId, formattedDate, $this.attr('data-collection-date'));
 
 				// Only offer bulk update if this was previously empty
 				if (!hasExistingDate) {
@@ -631,12 +720,15 @@ foreach ($rejectionTypeResult as $type) {
 				$this.val('');
 				$this.attr('data-missing', 'true');
 				$this.attr('data-has-date', 'false');
+				$this.attr('data-test-date', '');
 				$('#missingTestDateFlag' + tempSampleId).val('1');
 				$this.siblings('.clear-date-btn').hide();
 
 				clearSampleTestDate(tempSampleId, $this, function () {
 					$this.removeClass('loading');
 				});
+
+				updateDateGapIndicator(tempSampleId, '', $this.attr('data-collection-date'));
 			});
 
 			// Handle manual clear button click
@@ -650,14 +742,18 @@ foreach ($rejectionTypeResult as $type) {
 				$dateInput.val('');
 				$dateInput.attr('data-missing', 'true');
 				$dateInput.attr('data-has-date', 'false');
+				$dateInput.attr('data-test-date', '');
 				$('#missingTestDateFlag' + tempSampleId).val('1');
 				$(this).hide();
 
 				clearSampleTestDate(tempSampleId, $dateInput, function () {
 					$dateInput.removeClass('loading');
 				});
+
+				updateDateGapIndicator(tempSampleId, '', $dateInput.attr('data-collection-date'));
 			});
 
+			updateDateGapIndicator(tempSampleId, $input.attr('data-test-date'), $input.attr('data-collection-date'));
 			$input.addClass('daterangepicker-initialized');
 		});
 	}
@@ -709,6 +805,8 @@ foreach ($rejectionTypeResult as $type) {
 					const tempSampleId = $element.data('temp-sample-id');
 					$element.val(displayDate);
 					$('#missingTestDateFlag' + tempSampleId).val('0');
+					$element.attr('data-test-date', formattedDate);
+					updateDateGapIndicator(tempSampleId, formattedDate, $element.attr('data-collection-date'));
 
 					$element.css('border-color', '#5cb85c');
 					setTimeout(function () {
@@ -742,6 +840,66 @@ foreach ($rejectionTypeResult as $type) {
 				$(this).remove();
 			});
 		}, 3000);
+	}
+
+	const DATE_GAP_WARNING_DAYS = 30; // ~1 month
+	const DATE_GAP_DANGER_DAYS = 365; // 1 year
+
+	function describeDateGap(collectionDate, testDate) {
+		if (!collectionDate || !testDate) return null;
+
+		const collection = moment(collectionDate);
+		const test = moment(testDate);
+
+		if (!collection.isValid() || !test.isValid()) return null;
+
+		const diffDays = Math.abs(test.diff(collection, 'days'));
+		const relation = test.isSameOrAfter(collection) ? 'after' : 'before';
+		const humanGap = collection.from(test, true);
+
+		let severity = 'ok';
+		if (diffDays >= DATE_GAP_DANGER_DAYS) {
+			severity = 'danger';
+		} else if (diffDays >= DATE_GAP_WARNING_DAYS) {
+			severity = 'warning';
+		}
+
+		return {
+			severity: severity,
+			message: 'Sample test date is ' + humanGap + ' ' + relation + ' the collection date.'
+		};
+	}
+
+	function updateDateGapIndicator(tempSampleId, testDateIso, collectionDateIso) {
+		const $input = $('#testDate' + tempSampleId);
+		if (!$input.length) return;
+
+		const collectionDate = collectionDateIso || $input.attr('data-collection-date') || '';
+		const testDate = testDateIso || $input.attr('data-test-date') || '';
+		const gapDetails = describeDateGap(collectionDate, testDate);
+		const $cell = $input.closest('td');
+
+		$cell.removeClass('date-gap-warning date-gap-danger');
+		$input.removeClass('date-gap-warning date-gap-danger');
+		$input.attr('title', '');
+
+		if (gapDetails && gapDetails.severity !== 'ok') {
+			const className = gapDetails.severity === 'danger' ? 'date-gap-danger' : 'date-gap-warning';
+			$cell.addClass(className);
+			$input.addClass(className);
+			$input.attr('title', gapDetails.message);
+		}
+
+		$input.attr('data-collection-date', collectionDate);
+		$input.attr('data-test-date', testDate);
+	}
+
+	function refreshAllDateGapIndicators() {
+		$('.test-date-picker').each(function () {
+			const $input = $(this);
+			const tempSampleId = $input.data('temp-sample-id');
+			updateDateGapIndicator(tempSampleId, $input.attr('data-test-date'), $input.attr('data-collection-date'));
+		});
 	}
 
 	function updateSampleTestDate(tempSampleId, testDate, $input, callback) {
@@ -891,6 +1049,7 @@ foreach ($rejectionTypeResult as $type) {
 				// Initialize datetime pickers after table draw
 				setTimeout(function () {
 					initializeDateTimePickers();
+					refreshAllDateGapIndicators();
 				}, 100);
 			},
 			"bProcessing": true,
