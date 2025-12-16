@@ -806,11 +806,12 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<tr>
 										<th>
 											<label class="label-control" for="finalInterpretation">Final
-												Interpretation</label>
+												Interpretation<span class="mandatory">*</span></label>
 										</th>
 										<td>
 											<input type="text" class="form-control isRequired" name="finalResult"
-												placeholder="Final Interpretation" id="finalResult"
+												placeholder="Final Interpretation"
+												title="Please enter the final interpretation" id="finalResult"
 												value="<?= $tbInfo['result'] ?? ''; ?>" />
 										</td>
 										<td></td>
