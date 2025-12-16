@@ -25,12 +25,6 @@ $request = AppRegistry::get('request');
 $_COOKIE = _sanitizeInput($request->getCookieParams());
 
 
-$tsQuery = "SELECT * FROM r_sample_status";
-$tsResult = $db->rawQuery($tsQuery);
-
-$sQuery = "SELECT * FROM r_tb_sample_type where status='active'";
-$sResult = $db->rawQuery($sQuery);
-
 $fQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
 $fResult = $db->rawQuery($fQuery);
 
@@ -98,7 +92,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                                     <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                                     <?php foreach ($batResult as $code) { ?>
                                         <option value="<?php echo $code['batch_code']; ?>" <?php echo ($batchCode == $code['batch_code']) ? "selected='selected'" : "" ?>>
-                                            <?php echo $code['batch_code']; ?></option>
+                                            <?php echo $code['batch_code']; ?>
+                                        </option>
                                     <?php } ?>
                                 </select>
                             </td>
@@ -112,7 +107,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                                     <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                                     <?php foreach ($fResult as $name) { ?>
                                         <option value="<?php echo $name['facility_id']; ?>" <?php echo (in_array($name['facility_id'], $facilityName)) ? "selected='selected'" : "" ?>>
-                                            <?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+                                            <?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?>
+                                        </option>
                                     <?php } ?>
                                 </select>
                             </td>
@@ -218,9 +214,11 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                                 <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                                 <option value="no_result" <?php echo ($status == 'no_result') ? "selected='selected'" : "" ?>><?php echo _translate("Results Not Recorded"); ?></option>
                                 <option value="result" <?php echo ($status == 'result') ? "selected='selected'" : "" ?>>
-                                    <?php echo _translate("Results Recorded"); ?></option>
+                                    <?php echo _translate("Results Recorded"); ?>
+                                </option>
                                 <option value="reject" <?php echo ($status == 'reject') ? "selected='selected'" : "" ?>>
-                                    <?php echo _translate("Rejected Samples"); ?></option>
+                                    <?php echo _translate("Rejected Samples"); ?>
+                                </option>
                             </select>
                         </div>
 
@@ -247,7 +245,8 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                             <tbody>
                                 <tr>
                                     <td colspan="10" class="dataTables_empty">
-                                        <?php echo _translate("Loading data from server"); ?></td>
+                                        <?php echo _translate("Loading data from server"); ?>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -395,7 +394,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             ],
             "bProcessing": true,
             "bServerSide": true,
-            "sAjaxSource": "tb-samples-for-manual-result-entry.php",
+            "sAjaxSource": "/tb/results/tb-samples-for-manual-result-entry.php",
             "fnServerData": function (sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "batchCode",

@@ -26,7 +26,7 @@ $sarr = $general->getSystemConfig();
 
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
-$tbResults = $tbService->getTbResults();
+$tbResults = $tbService->getTbResults() ?? [];
 
 $tableName = "form_tb";
 $primaryKey = "tb_id";
@@ -230,16 +230,10 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['facility_name']);
     $row[] = $aRow['patient_id'];
     $row[] = $aRow['patient_name'] . " " . $aRow['patient_surname'];
-    $row[] = $tbResults[$aRow['result']];
+    $row[] = $tbResults[$aRow['result']] ?? $aRow['result'] ?? null;
 
-    if (isset($aRow['lastModifiedDate']) && trim((string) $aRow['lastModifiedDate']) !== '' && $aRow['lastModifiedDate'] != '0000-00-00 00:00:00') {
-        $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['lastModifiedDate'], true);
-    } else {
-        $aRow['last_modified_datetime'] = '';
-    }
-
-    $row[] = $aRow['last_modified_datetime'];
-    $row[] = ($aRow['status_name']);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['lastModifiedDate'] ?? '', true);
+    $row[] = $aRow['status_name'];
     $row[] = $print;
     $output['aaData'][] = $row;
 }
