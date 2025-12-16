@@ -1182,6 +1182,7 @@ log_action "Composer operations completed."
 
 apache2ctl -k graceful || systemctl reload apache2
 
+print header "Checking database connectivity"
 php "${lis_path}/vendor/bin/db-tools" db:test --all
 
 # Run the database migrations and other post-update tasks
