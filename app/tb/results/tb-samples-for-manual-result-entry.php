@@ -185,7 +185,7 @@ if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
 }
 
 if ($sWhere !== []) {
-    $sWhere = ' where ' . implode(' AND ', $sWhere);
+    $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
 } else {
     $sWhere = []; // Bcz using $swhere in line 212 & 215 or It prints Array in query
 }
