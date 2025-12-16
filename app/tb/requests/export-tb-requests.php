@@ -113,7 +113,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $tbResults, $db): array {
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
     $row[] = $testPlatform;
     $row[] = $testMethod;
-    $row[] = $tbResults[$aRow['result']];
+    $row[] = $tbResults[$aRow['result']] ?? $aRow['result'] ?? null;
     $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 
     return $row;

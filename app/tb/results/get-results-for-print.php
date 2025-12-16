@@ -252,7 +252,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['labName']);
     $row[] = ($aRow['facility_state']);
     $row[] = ($aRow['facility_district']);
-    $row[] = $tbResults[$aRow['result']];
+    $row[] = $tbResults[$aRow['result']] ?? $aRow['result'] ?? null;
     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
     $row[] = ($aRow['status_name']);
     $row[] = $print;
