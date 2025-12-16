@@ -527,7 +527,7 @@ try {
                             $facilityAttributes = empty($tableData['facility_attributes']) ? [] : json_decode((string) $tableData['facility_attributes'], true);
 
                             if (!empty($facilityAttributes['report_template'])) {
-                                $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
+                                $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $tableData['facility_id'] . DIRECTORY_SEPARATOR . "report-template";
                                 MiscUtility::makeDirectory($labDataFolder);
 
                                 $remoteFileUrl = $remoteURL . "/uploads/labs/{$tableData['facility_id']}/report-template/{$facilityAttributes['report_template']}";
@@ -538,6 +538,7 @@ try {
                                 $x = $apiService->downloadFile($remoteFileUrl, $localFilePath);
                                 _logdump($x);
                             }
+
                         }
                     }
                 }
