@@ -1,17 +1,18 @@
 <?php
 
-use Psr\Http\Message\ServerRequestInterface;
-use const SAMPLE_STATUS\ACCEPTED;
-use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-use const SAMPLE_STATUS\REFERRED;
+use App\Services\TbService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\REFERRED;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use Psr\Http\Message\ServerRequestInterface;
 
 
 // Sanitized values from $request object
@@ -31,6 +32,10 @@ try {
      /** @var TestRequestsService $testRequestsService */
      $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
      $testRequestsService->processSampleCodeQueue();
+
+     /** @var TbService $tbService */
+     $tbService = ContainerRegistry::get(TbService::class);
+     $tbResults = $tbService->getTbResults() ?? [];
 
      // Global config
      $gconfig = $general->getGlobalConfig();
@@ -308,7 +313,7 @@ try {
           $row[] = $aRow['patient_name'] . " " . $aRow['patient_surname'];
           $row[] = ($aRow['facility_state']);
           $row[] = ($aRow['facility_district']);
-          $row[] = ($aRow['lamResult']);
+          $row[] = $tbResults[$aRow['result']] ?? $aRow['result'] ?? null;
           $row[] = $aRow['last_modified_datetime'];
           $row[] = ($aRow['status_name']);
 

@@ -275,7 +275,7 @@ try {
           $row[] = ($patientFname . " " . $patientLname);
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['lab_name']);
-          $row[] = $tbResults[$aRow['result']];
+          $row[] = $tbResults[$aRow['result']] ?? $aRow['result'] ?? null;
           $row[] = ($aRow['status_name']);
           $row[] = $aRow['funding_source_name'] ?? null;
           $row[] = $aRow['i_partner_name'] ?? null;
