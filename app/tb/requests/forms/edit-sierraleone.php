@@ -839,9 +839,10 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 														<tr>
 															<td class="text-center">TB LAM Result</td>
 															<td>
-																<select class="form-control" name="result" id="result"
+																<select class="form-control" name="tbLamResult"
+																	id="tbLamResult"
 																	title="Please select the TB LAM result">
-																	<?= $general->generateSelectOptions($tbLamResults, $tbInfo['result'], '-- Select --'); ?>
+																	<?= $general->generateSelectOptions($tbLamResults, $tbInfo['tb_lam_result'], '-- Select --'); ?>
 																</select>
 															</td>
 															<td>
