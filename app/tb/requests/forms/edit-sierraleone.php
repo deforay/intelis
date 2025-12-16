@@ -947,8 +947,9 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 												Interpretation</label>
 										</th>
 										<td>
-											<input type="text" class="form-control isRequired" name="finalResult"
-												placeholder="Final Interpretation" id="finalResult"
+											<input type="text" class="form-control" name="finalResult"
+												placeholder="Final Interpretation"
+												title="Please enter the final interpretation" id="finalResult"
 												value="<?= $tbInfo['result'] ?? ''; ?>" />
 										</td>
 										<td></td>
