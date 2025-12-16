@@ -315,11 +315,11 @@ if (!empty($result)) {
      $html .= '<table style="padding:8px 2px 2px 2px;">';
      $html .= '<tr>';
 
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT'S CONTACT", true) . '</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SEX", true) . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PATIENT'S CONTACT") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SEX") . '</td>';
      if ($result['patient_gender'] == 'female') {
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("BREASTFEEDING?", true) . '</td>';
-          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PREGNANT?", true) . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("BREASTFEEDING?") . '</td>';
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("PREGNANT?") . '</td>';
      } else {
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -328,10 +328,10 @@ if (!empty($result)) {
      $html .= '<tr>';
 
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['patient_mobile_number'] ?? '-') . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['patient_gender']), true) . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . _translate(_capitalizeFirstLetter($result['patient_gender'])) . '</td>';
      if ($result['patient_gender'] == 'female') {
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (_translate(_capitalizeFirstLetter($result['is_patient_breastfeeding']), true) ?? '-') . '</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (_translate(_capitalizeFirstLetter($result['is_patient_pregnant']), true) ?? '-') . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (_translate(_capitalizeFirstLetter($result['is_patient_breastfeeding'])) ?? '-') . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (_translate(_capitalizeFirstLetter($result['is_patient_pregnant'])) ?? '-') . '</td>';
      } else {
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
