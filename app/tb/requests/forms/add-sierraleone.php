@@ -644,7 +644,8 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													<?php foreach ($correctiveActions as $action) { ?>
 														<option
 															value="<?php echo $action['recommended_corrective_action_id']; ?>">
-															<?= $action['recommended_corrective_action_name']; ?></option>
+															<?= $action['recommended_corrective_action_name']; ?>
+														</option>
 													<?php } ?>
 												</select>
 											</td>
@@ -819,6 +820,19 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 									</table>
 
 									</td>
+									</tr>
+
+									<tr>
+										<th>
+											<label class="label-control" for="finalInterpretation">Final
+												Interpretation</label>
+										</th>
+										<td>
+											<input type="text" class="form-control isRequired" name="finalResult"
+												placeholder="Final Interpretation" id="finalResult" value="" />
+										</td>
+										<td></td>
+										<td></td>
 									</tr>
 
 									<tr>

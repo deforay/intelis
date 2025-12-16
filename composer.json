@@ -145,5 +145,27 @@
             "@cleanup",
             "@purge-cache"
         ]
+    },
+    "scripts-descriptions": {
+        "post-install": "Tasks to run after InteLIS install",
+        "post-update": "Tasks to run after InteLIS update",
+        "sync-sts": "Sync data with a connected STS server",
+        "sts-setup": "Setup connection with a STS server",
+        "setup-sts": "Setup connection with a STS server",
+        "migrate": "Run database migrations",
+        "purge-cache": "Clear application cache",
+        "fixes": "Run application fixes",
+        "db:collation": "Ensure database tables use correct collation",
+        "db:backup": "Backup all databases",
+        "backup": "Backup application configurations and databases",
+        "system-admin": "Create or update system administrator account",
+        "reset-metadata": "Reset STS metadata to force full sync",
+        "metadata-sync": "Sync metadata with connected STS server",
+        "send-results": "Send test results to connected STS server",
+        "receive-requests": "Receive test requests from connected STS server",
+        "generate-translation-strings": "Generate translation strings from source code",
+        "fix-app-menu": "Fix application menu entries",
+        "lock-samples": "Lock sample records that have been completed",
+        "cleanup": "Cleanup old temporary files and logs"
     }
 }
