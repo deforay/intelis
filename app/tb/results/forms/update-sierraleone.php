@@ -104,7 +104,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 			<div class="box-body">
 				<!-- form start -->
 				<form class="form-horizontal" method="post" name="editTbRequestForm" id="editTbRequestForm"
-					autocomplete="off" action="tb-update-result-helper.php">
+					autocomplete="off" action="/tb/results/tb-update-result-helper.php">
 					<div class="box-body">
 						<div class="box box-default disabledForm">
 							<div class="box-body">
@@ -872,7 +872,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 							<input type="hidden" name="sampleCodeFormat" id="sampleCodeFormat"
 								value="<?php echo $sFormat; ?>" />
 							<input type="hidden" name="sampleCodeKey" id="sampleCodeKey" value="<?php echo $sKey; ?>" />
-							<input type="hidden" name="saveNext" id="saveNext" />
 						<?php } ?>
 						<a class="btn btn-primary" href="javascript:void(0);"
 							onclick="validateNow();return false;">Save</a>
