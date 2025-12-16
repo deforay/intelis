@@ -828,8 +828,9 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 												Interpretation</label>
 										</th>
 										<td>
-											<input type="text" class="form-control isRequired" name="finalResult"
-												placeholder="Final Interpretation" id="finalResult" value="" />
+											<input type="text" class="form-control" name="finalResult"
+												placeholder="Final Interpretation"
+												title="Please enter the final interpretation" id="finalResult" value="" />
 										</td>
 										<td></td>
 										<td></td>
