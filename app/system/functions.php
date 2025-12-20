@@ -49,12 +49,12 @@ function _translate(?string $text, bool|string $escapeTextOrContext = false): st
     }, 300);
 }
 
-function __jsTranslate(?string $text): string
+function _jsTranslate(?string $text): string
 {
     return _translate($text, 'js');
 }
 
-function __htmlTranslate(?string $text): string
+function _htmlTranslate(?string $text): string
 {
     return _translate($text, 'html');
 }

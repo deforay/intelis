@@ -341,7 +341,7 @@ try {
           $patientLname = $aRow['patient_last_name'];
 
           if (empty($aRow[$sampleCodeColumn]) && empty($aRow['sample_code'])) {
-               $aRow[$sampleCodeColumn] = _translate("Generating...");
+               $aRow[$sampleCodeColumn] = _htmlTranslate("Generating...");
           }
 
 
@@ -355,17 +355,17 @@ try {
                $patientLname = CommonService::crypto('decrypt', $patientLname, $key);
           }
 
-          $sampleCodeTooltip[] = _translate("Request Created On") . " : " . DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
-          $sampleCodeTooltip[] = _translate("Request Created By") . " : " . $usersService->getUserName($aRow['request_created_by'] ?? '');
+          $sampleCodeTooltip[] = _htmlTranslate("Request Created On") . " : " . DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
+          $sampleCodeTooltip[] = _htmlTranslate("Request Created By") . " : " . $usersService->getUserName($aRow['request_created_by'] ?? '');
           if (!empty($aRow['last_modified_by']) && $aRow['last_modified_by'] != '') {
-               $sampleCodeTooltip[] = _translate("Last Modified By") . " : " . $usersService->getUserName($aRow['last_modified_by'] ?? '');
+               $sampleCodeTooltip[] = _htmlTranslate("Last Modified By") . " : " . $usersService->getUserName($aRow['last_modified_by'] ?? '');
           }
 
           if (!empty($aRow['sample_package_code'])) {
-               $sampleCodeTooltip[] = _translate("Manifest Code") . " : " . $aRow['sample_package_code'];
+               $sampleCodeTooltip[] = _htmlTranslate("Manifest Code") . " : " . $aRow['sample_package_code'];
           }
           if (!empty($aRow['batch_code'])) {
-               $sampleCodeTooltip[] = _translate("Batch Code") . " : " . $aRow['batch_code'];
+               $sampleCodeTooltip[] = _htmlTranslate("Batch Code") . " : " . $aRow['batch_code'];
           }
           if ($aRow['form_attributes'] != "") {
                $formAttributes = json_decode((string) $aRow['form_attributes']);
@@ -378,21 +378,21 @@ try {
                     $box = $storageObj->box;
                     $position = $storageObj->position;
 
-                    $sampleCodeTooltip[] = _translate("Freezer") . ' - ' . $freezer . ', ' . _translate("Rack") . ' - ' . $rack . ', ' . _translate("Box") . ' - ' . $box . ', ' . _translate("Position") . ' - ' . $position;
+                    $sampleCodeTooltip[] = _htmlTranslate("Freezer") . ' - ' . $freezer . ', ' . _htmlTranslate("Rack") . ' - ' . $rack . ', ' . _htmlTranslate("Box") . ' - ' . $box . ', ' . _htmlTranslate("Position") . ' - ' . $position;
                }
           }
 
           if (!empty($aRow['patient_dob'])) {
-               $patientTooltip[] = _translate("Patient Date of Birth") . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']);
+               $patientTooltip[] = _htmlTranslate("Patient Date of Birth") . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']);
           }
           if (!empty($aRow['patient_age_in_years'])) {
-               $patientTooltip[] = _translate("Patient Age") . " : " . $aRow['patient_age_in_years'];
+               $patientTooltip[] = _htmlTranslate("Patient Age") . " : " . $aRow['patient_age_in_years'];
           }
           if (!empty($aRow['patient_gender'])) {
-               $patientTooltip[] = _translate("Patient Sex") . " : " . $aRow['patient_gender'];
+               $patientTooltip[] = _htmlTranslate("Patient Sex") . " : " . $aRow['patient_gender'];
           }
           if (!empty($aRow['current_regimen'])) {
-               $patientTooltip[] = _translate("Current Regimen") . " : " . $aRow['current_regimen'];
+               $patientTooltip[] = _htmlTranslate("Current Regimen") . " : " . $aRow['current_regimen'];
           }
 
           $patientTooltip = $patientTooltip === [] ? '' : 'class="top-tooltip" title="' . implode('<br>', $patientTooltip) . '"';
@@ -430,25 +430,26 @@ try {
 
           // BUTTONS
           if ($canEditRequest) {
-               $editButtonText = $isLocked ? _translate("Locked") : _translate("Edit");
+               $editButtonText = $isLocked ? _htmlTranslate("Locked") : _htmlTranslate("Edit");
+               $editButtonTitle = $isLocked ? _htmlTranslate("Locked Request") : _htmlTranslate("Edit Sample Request");
                if ($general->isLISInstance() && $aRow['result_status'] == RECEIVED_AT_CLINIC) {
                     $edit = '';
                } else {
-                    $edit = '<a href="/vl/requests/editVlRequest.php?id=' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . $editButtonText . '"><em class="fa-solid fa-pen-to-square"></em> ' . $editButtonText . '</em></a>';
+                    $edit = '<a href="/vl/requests/editVlRequest.php?id=' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . $editButtonTitle . '"><em class="fa-solid fa-pen-to-square"></em> ' . $editButtonText . '</em></a>';
                }
                if ($aRow['result_status'] == 7 && $isLocked && !_isAllowed("/vl/requests/edit-locked-vl-samples")) {
-                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Cannot Edit Locked Sample") . '" disabled><em class="fa-solid fa-lock"></em>' . $editButtonText . '</a>';
+                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _htmlTranslate("Cannot Edit Locked Sample") . '" disabled><em class="fa-solid fa-lock"></em>' . $editButtonText . '</a>';
                }
           }
 
           if (isset($barCodePrinting) && $barCodePrinting !== "off") {
                $fac = ($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
-               $barcode = "<br><a href='javascript:void(0)' onclick=\"printBarcodeLabel('{$aRow[$sampleCode]}', '{$fac}', '{$aRow['patient_art_no']}')\" class='btn btn-default btn-xs' style='margin-right: 2px;' title='" . _translate("Barcode") . "'><em class='fa-solid fa-barcode'></em> " . _translate("Barcode") . " </a>";
+               $barcode = "<br><a href='javascript:void(0)' onclick=\"printBarcodeLabel('{$aRow[$sampleCode]}', '{$fac}', '{$aRow['patient_art_no']}')\" class='btn btn-default btn-xs' style='margin-right: 2px;' title='" . _htmlTranslate("Barcode") . "'><em class='fa-solid fa-barcode'></em> " . _htmlTranslate("Barcode") . " </a>";
           }
 
           $sync = "";
           if ($canSyncRequest && $general->isLISInstance() && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4) && $aRow['data_sync'] == 0) {
-               $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Sync Sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> ' . _translate("Sync") . '</a>';
+               $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _htmlTranslate("Sync Sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> ' . _htmlTranslate("Sync") . '</a>';
           }
 
           $actions = "";
