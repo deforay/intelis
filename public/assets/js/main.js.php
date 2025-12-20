@@ -1,4 +1,5 @@
-<script type="text/javascript" src="/assets/js/toastify.js?v=<?= filemtime(WEB_ROOT . "/assets/js/toastify.js") ?>"></script>
+<script type="text/javascript"
+    src="/assets/js/toastify.js?v=<?= filemtime(WEB_ROOT . "/assets/js/toastify.js") ?>"></script>
 <script type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="/assets/js/js.cookie.js"></script>
 <script type="text/javascript" src="/assets/js/select2.min.js"></script>
@@ -74,21 +75,21 @@ $remoteURL = $general->getRemoteURL();
     // Global DataTables defaults
     $.extend(true, $.fn.dataTable.defaults, {
         "language": {
-            "lengthMenu": "_MENU_ <?= _translate("records per page", true); ?>",
-            "zeroRecords": "<?= _translate("No records found", true); ?>",
-            "sEmptyTable": "<?= _translate("No data available in table", true); ?>",
-            "info": "<?= _translate("Showing _START_ to _END_ of _TOTAL_ entries", true); ?>",
-            "infoEmpty": "<?= _translate("Showing 0 to 0 of 0 entries", true); ?>",
-            "infoFiltered": "(<?= _translate("filtered from _MAX_ total entries", true); ?>)",
-            "search": "<?= _translate("Search", true); ?>:",
+            "lengthMenu": "_MENU_ <?= _jsTranslate("records per page"); ?>",
+            "zeroRecords": "<?= _jsTranslate("No records found"); ?>",
+            "sEmptyTable": "<?= _jsTranslate("No data available in table"); ?>",
+            "info": "<?= _jsTranslate("Showing _START_ to _END_ of _TOTAL_ entries"); ?>",
+            "infoEmpty": "<?= _jsTranslate("Showing 0 to 0 of 0 entries"); ?>",
+            "infoFiltered": "(<?= _jsTranslate("filtered from _MAX_ total entries"); ?>)",
+            "search": "<?= _jsTranslate("Search"); ?>:",
             "paginate": {
-                "first": "<?= _translate("First", true); ?>",
-                "last": "<?= _translate("Last", true); ?>",
-                "next": "<?= _translate("Next", true); ?>",
-                "previous": "<?= _translate("Previous", true); ?>"
+                "first": "<?= _jsTranslate("First"); ?>",
+                "last": "<?= _jsTranslate("Last"); ?>",
+                "next": "<?= _jsTranslate("Next"); ?>",
+                "previous": "<?= _jsTranslate("Previous"); ?>"
             },
-            "sProcessing": "<?= _translate("Loading Table Data...", true); ?>",
-            "loadingRecords": "<?= _translate("Loading...", true); ?>"
+            "sProcessing": "<?= _jsTranslate("Loading Table Data..."); ?>",
+            "loadingRecords": "<?= _jsTranslate("Loading..."); ?>"
         },
         "lengthMenu": [
             [10, 25, 50, 100, 200, 250, 500],
@@ -99,16 +100,16 @@ $remoteURL = $general->getRemoteURL();
 
     // Global BlockUI defaults
     if (typeof $.blockUI !== 'undefined') {
-        $.blockUI.defaults.message = '<h3><?= _translate("Please wait...", true); ?></h3>';
+        $.blockUI.defaults.message = '<h3><?= _jsTranslate("Please wait..."); ?></h3>';
     }
 
     $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
+        beforeSend: function (xhr, settings) {
             if (settings.type === 'POST' || settings.type === 'PUT' || settings.type === 'DELETE') {
                 xhr.setRequestHeader('X-CSRF-Token', window.csrf_token);
             }
         },
-        complete: function(xhr) {
+        complete: function (xhr) {
             const redirectUrl = '/login/login.php?e=timeout';
             // Fast path: standard status codes
             if (xhr && (xhr.status === 401 || xhr.status === 440)) {
@@ -136,23 +137,23 @@ $remoteURL = $general->getRemoteURL();
     function verifyManifest(testType) {
         let manifestCode = $("#manifestCode").val().trim();
         if (!manifestCode) {
-            alert("<?= _translate('Please enter the Sample Manifest Code', true); ?>");
+            alert("<?= _jsTranslate('Please enter the Sample Manifest Code'); ?>");
             return;
         }
 
         $.blockUI();
         $.post(
             "/specimen-referral-manifest/verify-manifest.php", {
-                manifestCode: manifestCode,
-                testType: testType
-            },
-            function(data) {
+            manifestCode: manifestCode,
+            testType: testType
+        },
+            function (data) {
                 $.unblockUI();
 
                 try {
                     if (typeof data === 'string') data = data.trim();
                     if (!data) {
-                        toast.error("<?= _translate('Unable to verify manifest', true); ?>");
+                        toast.error("<?= _jsTranslate('Unable to verify manifest'); ?>");
                         return;
                     }
 
@@ -168,14 +169,14 @@ $remoteURL = $general->getRemoteURL();
                     // Object response with status
                     if (typeof response === 'object' && response !== null) {
                         if (response.status === 'not-found') {
-                            toast.error("<?= _translate('Unable to find manifest', true); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _jsTranslate('Unable to find manifest'); ?>" + ' ' + manifestCode);
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                             return;
                         }
                         if (response.status === 'match') {
                             $('.activateSample').show();
-                            toast.success("<?= _translate('Samples loaded successfully for manifest', true); ?>" + ' ' + manifestCode);
+                            toast.success("<?= _jsTranslate('Samples loaded successfully for manifest'); ?>" + ' ' + manifestCode);
                             loadRequestData(); // init once or reload
                             return;
                         }
@@ -189,7 +190,7 @@ $remoteURL = $general->getRemoteURL();
                     }
                 } catch (e) {
                     console.error(e);
-                    toast.error("<?= _translate('Some error occurred while processing the manifest', true); ?>");
+                    toast.error("<?= _jsTranslate('Some error occurred while processing the manifest'); ?>");
                     $('.activateSample').hide();
                     $('#sampleId').val('');
                 }
@@ -203,16 +204,16 @@ $remoteURL = $general->getRemoteURL();
             $.blockUI();
 
             $.post("/tasks/remote/requests-receiver.php", {
-                    manifestCode: manifestCode,
-                    testType: testType
-                },
-                function(data) {
+                manifestCode: manifestCode,
+                testType: testType
+            },
+                function (data) {
                     $.unblockUI();
                     let parsed;
                     try {
 
                         if (!data) {
-                            toast.error("<?= _translate('Unable to sync manifest', true); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _jsTranslate('Unable to sync manifest'); ?>" + ' ' + manifestCode);
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                             return;
@@ -221,7 +222,7 @@ $remoteURL = $general->getRemoteURL();
                         try {
                             parsed = JSON.parse(data);
                         } catch (err) {
-                            toast.error("<?= _translate('Invalid server response while processing manifest', true); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _jsTranslate('Invalid server response while processing manifest'); ?>" + ' ' + manifestCode);
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                             return;
@@ -230,23 +231,23 @@ $remoteURL = $general->getRemoteURL();
                             parsed == null ||
                             (typeof parsed === 'object' && Object.keys(parsed).length === 0)
                         ) {
-                            toast.error("<?= _translate('Unable to find or sync samples from manifest', true); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _jsTranslate('Unable to find or sync samples from manifest'); ?>" + ' ' + manifestCode);
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                         } else {
-                            toast.success("<?= _translate('Samples synced successfully from STS for manifest', true); ?>" + ' ' + manifestCode);
+                            toast.success("<?= _jsTranslate('Samples synced successfully from STS for manifest'); ?>" + ' ' + manifestCode);
                             $('.activateSample').show();
                             $('#sampleId').val(data);
                         }
                         loadRequestData();
                     } catch (e) {
-                        toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>" + ' ' + manifestCode);
+                        toast.error("<?= _jsTranslate("Some error occurred while processing the manifest"); ?>" + ' ' + manifestCode);
                         $('.activateSample').hide();
                         $('#sampleId').val('');
                     }
                 });
         } else {
-            alert("<?php echo _translate("Please enter a valid Sample Manifest Code", true); ?>");
+            alert("<?= _jsTranslate("Please enter a valid Sample Manifest Code"); ?>");
         }
     }
 
@@ -259,26 +260,26 @@ $remoteURL = $general->getRemoteURL();
 
         function receiveMetaData() {
             if (!navigator.onLine) {
-                alert("<?= _translate("Please connect to internet to sync with STS", escapeTextOrContext: true); ?>");
+                alert("<?= _jsTranslate("Please connect to internet to sync with STS"); ?>");
                 return false;
             }
 
             if (remoteSync) {
                 $.blockUI({
-                    message: "<h3><?= _translate("Receiving Metadata from STS", escapeTextOrContext: true); ?><br><?= _translate("Please wait...", escapeTextOrContext: true); ?></h3>"
+                    message: "<h3><?= _jsTranslate("Receiving Metadata from STS"); ?><br><?= _jsTranslate("Please wait..."); ?></h3>"
                 });
                 $.ajax({
-                        url: "/tasks/remote/sts-metadata-receiver.php",
-                    })
-                    .done(function(data) {
+                    url: "/tasks/remote/sts-metadata-receiver.php",
+                })
+                    .done(function (data) {
                         console.log("Metadata Synced | STS -> LIS");
                         $.unblockUI();
                     })
-                    .fail(function() {
+                    .fail(function () {
                         $.unblockUI();
-                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeTextOrContext: true); ?>");
+                        alert("<?= _jsTranslate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
                     })
-                    .always(function() {
+                    .always(function () {
                         sendLabMetaData();
                     });
             }
@@ -286,26 +287,26 @@ $remoteURL = $general->getRemoteURL();
 
         function sendLabMetaData() {
             if (!navigator.onLine) {
-                alert("<?= _translate("Please connect to internet to sync with STS", escapeTextOrContext: true); ?>");
+                alert("<?= _jsTranslate("Please connect to internet to sync with STS"); ?>");
                 return false;
             }
 
             if (remoteSync) {
                 $.blockUI({
-                    message: "<h3><?= _translate("Sending Lab Metadata", escapeTextOrContext: true); ?><br><?= _translate("Please wait...", escapeTextOrContext: true); ?></h3>"
+                    message: "<h3><?= _jsTranslate("Sending Lab Metadata"); ?><br><?= _jsTranslate("Please wait..."); ?></h3>"
                 });
                 $.ajax({
-                        url: "/tasks/remote/lab-metadata-sender.php",
-                    })
-                    .done(function(data) {
+                    url: "/tasks/remote/lab-metadata-sender.php",
+                })
+                    .done(function (data) {
                         console.log("Lab Metadata Synced | LIS -> STS");
                         $.unblockUI();
                     })
-                    .fail(function() {
+                    .fail(function () {
                         $.unblockUI();
-                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeTextOrContext: true); ?>");
+                        alert("<?= _jsTranslate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
                     })
-                    .always(function() {
+                    .always(function () {
                         sendTestResults();
                     });
             }
@@ -314,22 +315,22 @@ $remoteURL = $general->getRemoteURL();
         function sendTestResults() {
 
             $.blockUI({
-                message: "<h3><?= _translate("Sending Test Results", escapeTextOrContext: true); ?><br><?= _translate("Please wait...", escapeTextOrContext: true); ?></h3>"
+                message: "<h3><?= _jsTranslate("Sending Test Results"); ?><br><?= _jsTranslate("Please wait..."); ?></h3>"
             });
 
             if (remoteSync) {
                 $.ajax({
-                        url: "/tasks/remote/results-sender.php",
-                    })
-                    .done(function(data) {
+                    url: "/tasks/remote/results-sender.php",
+                })
+                    .done(function (data) {
                         console.log("Results Synced | LIS -> STS");
                         $.unblockUI();
                     })
-                    .fail(function() {
+                    .fail(function () {
                         $.unblockUI();
-                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeTextOrContext: true); ?>");
+                        alert("<?= _jsTranslate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
                     })
-                    .always(function() {
+                    .always(function () {
                         receiveTestRequests();
                     });
             }
@@ -338,20 +339,20 @@ $remoteURL = $general->getRemoteURL();
 
         function receiveTestRequests() {
             $.blockUI({
-                message: "<h3><?= _translate("Receiving Test Requests", escapeTextOrContext: true); ?><br><?= _translate("Please wait...", escapeTextOrContext: true); ?></h3>"
+                message: "<h3><?= _jsTranslate("Receiving Test Requests"); ?><br><?= _jsTranslate("Please wait..."); ?></h3>"
             });
 
             if (remoteSync) {
                 $.ajax({
-                        url: "/tasks/remote/requests-receiver.php",
-                    })
-                    .done(function(data) {
+                    url: "/tasks/remote/requests-receiver.php",
+                })
+                    .done(function (data) {
                         console.log("Requests Synced | STS -> LIS");
                         $.unblockUI();
                     })
-                    .fail(function() {
+                    .fail(function () {
                         $.unblockUI();
-                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeTextOrContext: true); ?>");
+                        alert("<?= _jsTranslate("Unable to do STS Sync. Please contact technical team for assistance."); ?>");
                     });
             }
         }
@@ -362,13 +363,13 @@ $remoteURL = $general->getRemoteURL();
                 $.ajax({
                     url: '/tasks/remote/get-last-sts-sync-datetime.php',
                     cache: false,
-                    success: function(lastSyncDateString) {
+                    success: function (lastSyncDateString) {
                         if (lastSyncDateString != null && lastSyncDateString != undefined) {
                             $('.lastSyncDateTime').html(lastSyncDateString);
                             $('.syncHistoryDiv').show();
                         }
                     },
-                    error: function(data) {}
+                    error: function (data) { }
                 });
                 setTimeout(getLastSTSSyncDateTime, 15 * 60 * 1000);
             })();
@@ -381,20 +382,20 @@ $remoteURL = $general->getRemoteURL();
                     $.ajax({
                         url: stsURL + '/api/version.php',
                         cache: false,
-                        success: function(data) {
+                        success: function (data) {
                             $('.is-remote-server-reachable').fadeIn(1000);
                             $('.is-remote-server-reachable').css('color', '#4dbc3c');
                             if ($('.sts-server-reachable').length > 0) {
                                 $('.sts-server-reachable').show();
-                                $('.sts-server-reachable-span').html("<strong class='text-info'><?= _translate("STS server is reachable", escapeTextOrContext: true); ?></strong>");
+                                $('.sts-server-reachable-span').html("<strong class='text-info'><?= _jsTranslate("STS server is reachable"); ?></strong>");
                             }
                         },
-                        error: function() {
+                        error: function () {
                             $('.is-remote-server-reachable').fadeIn(1000);
                             $('.is-remote-server-reachable').css('color', 'red');
                             if ($('.sts-server-reachable').length > 0) {
                                 $('.sts-server-reachable').show();
-                                $('.sts-server-reachable-span').html("<strong class='mandatory'><?= _translate("STS server is unreachable", escapeTextOrContext: true); ?></strong>");
+                                $('.sts-server-reachable-span').html("<strong class='mandatory'><?= _jsTranslate("STS server is unreachable"); ?></strong>");
                             }
                         }
                     });
@@ -413,23 +414,23 @@ $remoteURL = $general->getRemoteURL();
                 dataURL = canvas.toDataURL();
                 $.blockUI();
                 $.post("/support/saveScreenshot.php", {
-                        image: dataURL,
-                        supportId: supportId
-                    },
-                    function(data) {
+                    image: dataURL,
+                    supportId: supportId
+                },
+                    function (data) {
                         $.unblockUI();
-                        alert("<?= _translate("Thank you.Your message has been submitted.", escapeTextOrContext: true); ?>");
+                        alert("<?= _jsTranslate("Thank you.Your message has been submitted."); ?>");
                     });
             });
         } else {
             closeModal();
             $.blockUI();
             $.post("/support/saveScreenshot.php", {
-                    supportId: supportId
-                },
-                function(data) {
+                supportId: supportId
+            },
+                function (data) {
                     $.unblockUI();
-                    alert("<?= _translate("Thank you.Your message has been submitted.", escapeTextOrContext: true); ?>");
+                    alert("<?= _jsTranslate("Thank you.Your message has been submitted."); ?>");
                 });
         }
     }
@@ -437,7 +438,7 @@ $remoteURL = $general->getRemoteURL();
 
     $(document).on('select2:open', (e) => {
         const selectId = e.target.id
-        $(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
+        $(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (
             key,
             value,
         ) {
@@ -447,16 +448,16 @@ $remoteURL = $general->getRemoteURL();
 
 
     jQuery('.daterange,#daterange,#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate,#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#hvlSampleTestDate,#printDate,#hvlSampleTestDate')
-        .on('cancel.daterangepicker', function(ev, picker) {
+        .on('cancel.daterangepicker', function (ev, picker) {
             $(this).val('');
         });
 
 
-    jQuery('.forceNumeric').on('input', function() {
+    jQuery('.forceNumeric').on('input', function () {
         this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
     });
 
-    jQuery('#ageInYears').on('input', function() {
+    jQuery('#ageInYears').on('input', function () {
         let age = Math.round(parseFloat(this.value));
         if (Number.isNaN(age)) {
             this.value = '';
@@ -508,15 +509,15 @@ $remoteURL = $general->getRemoteURL();
             minimumInputLength: 0,
             width: '100%',
             allowClear: true,
-            id: function(bond) {
+            id: function (bond) {
                 return bond._id;
             },
             ajax: {
-                placeholder: "<?= _translate("Type one or more character to search", escapeTextOrContext: true); ?>",
+                placeholder: "<?= _jsTranslate("Type one or more character to search"); ?>",
                 url: "/includes/get-data-list-for-generic.php",
                 dataType: 'json',
                 delay: 250,
-                data: function(params) {
+                data: function (params) {
                     return {
                         fieldName: _fieldName,
                         tableName: table,
@@ -524,7 +525,7 @@ $remoteURL = $general->getRemoteURL();
                         page: params.page
                     };
                 },
-                processResults: function(data, params) {
+                processResults: function (data, params) {
                     params.page = params.page || 1;
                     return {
                         results: data.result,
@@ -535,7 +536,7 @@ $remoteURL = $general->getRemoteURL();
                 },
                 //cache: true
             },
-            escapeMarkup: function(markup) {
+            escapeMarkup: function (markup) {
                 return markup;
             }
         });
@@ -546,10 +547,10 @@ $remoteURL = $general->getRemoteURL();
         $.ajax({
             url: '/includes/clear-cache.php',
             cache: false,
-            success: function(data) {
-                toast.success("<?= _translate("Cache cleared successfully", true); ?>");
+            success: function (data) {
+                toast.success("<?= _jsTranslate("Cache cleared successfully"); ?>");
             },
-            error: function() {
+            error: function () {
                 console.error("An error occurred while clearing the cache.");
             }
         });
@@ -559,11 +560,11 @@ $remoteURL = $general->getRemoteURL();
         if (tbl != "") {
             $.blockUI();
             $.post("/common/force-metadata-sync.php", {
-                    table: tbl
-                },
-                function(data) {
+                table: tbl
+            },
+                function (data) {
                     $.unblockUI();
-                    toast.success("<?= _translate("Synced successfully", true); ?>");
+                    toast.success("<?= _jsTranslate("Synced successfully"); ?>");
                 });
         }
         $.unblockUI();
@@ -576,19 +577,19 @@ $remoteURL = $general->getRemoteURL();
             f = dt.split("-");
             cDate = f[2] + '-' + f[1] + '-' + f[0];
             $.post("/common/date-validation.php", {
-                    sampleCollectionDate: collectionDate,
-                    allowFutureDates: allowFutureDate
-                },
-                function(data) {
+                sampleCollectionDate: collectionDate,
+                allowFutureDates: allowFutureDate
+            },
+                function (data) {
                     if (data == "1") {
-                        alert("<?= _translate("Sample Collection date cannot be in the future"); ?>")
+                        alert("<?= _jsTranslate("Sample Collection date cannot be in the future"); ?>")
                         return false;
                     } else {
                         var diff = (new Date(cDate).getTime() - new Date().getTime()) / 1000;
                         diff = diff / (60 * 60 * 24 * 10 * 3);
                         var diffMonths = Math.abs(Math.round(diff));
                         if (diffMonths > 6) {
-                            $('.expiredCollectionDate').html("<?= _translate("Sample Collection Date is over 6 months old", escapeTextOrContext: true); ?>");
+                            $('.expiredCollectionDate').html("<?= _jsTranslate("Sample Collection Date is over 6 months old"); ?>");
                             $('.expiredCollectionDate').show();
                         } else {
                             $('.expiredCollectionDate').hide();
@@ -617,10 +618,10 @@ $remoteURL = $general->getRemoteURL();
             url: scriptUrl,
             method: 'GET',
             cache: false,
-            success: function(data) {
+            success: function (data) {
                 console.log(`Script ${scriptUrl} executed successfully`);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error(`Failed to execute script ${scriptUrl}: ${status} - ${error}`);
             }
         });
@@ -663,12 +664,12 @@ $remoteURL = $general->getRemoteURL();
             var artInitiationDate = dayjs(artInitiationDateInput, globalDayjsDateFormat);
 
             if (!dob.isValid() || !artInitiationDate.isValid()) {
-                alert("<?= _translate('Invalid date format. Please check the input dates.'); ?>");
+                alert("<?= _jsTranslate('Invalid date format. Please check the input dates.'); ?>");
                 return;
             }
 
             if (artInitiationDate.isBefore(dob)) {
-                alert("<?= _translate('ART Initiation Date cannot be earlier than Patient Date of Birth'); ?>");
+                alert("<?= _jsTranslate('ART Initiation Date cannot be earlier than Patient Date of Birth'); ?>");
                 $("#dateOfArtInitiation").val("");
             }
         }
@@ -680,7 +681,7 @@ $remoteURL = $general->getRemoteURL();
      * @returns {void}
      */
     function clearDatePlaceholderValues(selector) {
-        $(selector).each(function() {
+        $(selector).each(function () {
             var value = $(this).val();
             // Check if the value contains placeholder characters (* or _ or --)
             if (value && (/[*_]|--/.test(value))) {
@@ -701,10 +702,10 @@ $remoteURL = $general->getRemoteURL();
         }
         if (cName != '' && facilityName) {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    cName: cName,
-                    testType: 'vl'
-                },
-                function(data) {
+                cName: cName,
+                testType: 'vl'
+            },
+                function (data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#province").html(details[0]);
@@ -725,13 +726,13 @@ $remoteURL = $general->getRemoteURL();
         //if ($.trim(obj.value).length == 10) {
         if ($.trim(obj.value) != '') {
             $.post("/includes/checkDuplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: obj.value,
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: obj.value,
+                fnct: fnct,
+                format: "html"
+            },
+                function (data) {
                     if (data === '1') {
                         showModal('patientModal.php?artNo=' + obj.value, 900, 520);
                     }
@@ -740,7 +741,7 @@ $remoteURL = $general->getRemoteURL();
     }
 
 
-    $(document).ready(function() {
+    $(document).ready(function () {
 
 
 
@@ -757,7 +758,7 @@ $remoteURL = $general->getRemoteURL();
         }
 
         // Automatically inject CSRF token into any form (static or dynamically added)
-        $(document).on('submit', 'form', function() {
+        $(document).on('submit', 'form', function () {
             const $form = $(this);
             if (!$form.find('input[name="csrf_token"]').length) {
                 $('<input>', {
@@ -790,7 +791,7 @@ $remoteURL = $general->getRemoteURL();
 
         if (!currentMenuItem.length) {
             let currentPaths = Utilities.splitPath(url).map(path => btoa(path));
-            currentMenuItem = $('a[data-inner-pages]').filter(function() {
+            currentMenuItem = $('a[data-inner-pages]').filter(function () {
                 return currentPaths.some(path => $(this).data('inner-pages').split(';').includes(path));
             });
         }
@@ -819,7 +820,7 @@ $remoteURL = $general->getRemoteURL();
 
         // Phone number validation
         const countryCode = "<?= $countryCode ?? ''; ?>";
-        $('.phone-number').on('input', Utilities.debounce(function() {
+        $('.phone-number').on('input', Utilities.debounce(function () {
             let inputElement = $(this);
             let phoneNumber = inputElement.val().trim();
 
@@ -837,32 +838,32 @@ $remoteURL = $general->getRemoteURL();
                 data: {
                     phoneNumber: phoneNumber
                 },
-                success: function(response) {
+                success: function (response) {
                     if (!response.isValid) {
-                        toast.error("<?= _translate("Invalid phone number. Please enter full phone number with the proper country code", true); ?>");
+                        toast.error("<?= _jsTranslate("Invalid phone number. Please enter full phone number with the proper country code"); ?>");
                     }
                 },
-                error: function() {
+                error: function () {
                     console.error("An error occurred while validating the phone number.");
                 }
             });
         }, 700));
 
-        $('.phone-number').on('focus', function() {
+        $('.phone-number').on('focus', function () {
             let phoneNumber = $(this).val().trim();
             if (phoneNumber === "") {
                 $(this).val(countryCode);
             }
         });
 
-        $('.phone-number').on('blur', function() {
+        $('.phone-number').on('blur', function () {
             let phoneNumber = $(this).val().trim();
             if (phoneNumber === countryCode || phoneNumber === "") {
                 $(this).val("");
             }
         });
 
-        $('.patientId').on('change', function() {
+        $('.patientId').on('change', function () {
 
 
             var patientId = $(this).val();
@@ -880,7 +881,7 @@ $remoteURL = $general->getRemoteURL();
 
             if (patientId.length < minLength) {
                 $(".lengthErr").remove();
-                var txt = "<?= _translate('Please enter minimum length for Patient Id : ', escapeTextOrContext: true); ?>" + minLength;
+                var txt = "<?= _jsTranslate('Please enter minimum length for Patient Id : '); ?>" + minLength;
                 $(this).parent().append('<span class="lengthErr" style="color:red;">' + txt + '</span>');
             } else {
                 $(".lengthErr").remove();
