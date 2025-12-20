@@ -324,10 +324,8 @@ try {
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
      ];
-     $editRequest = $syncRequest = false;
-     if (_isAllowed("/vl/requests/editVlRequest.php")) {
-          $editRequest = $syncRequest = true;
-     }
+
+     $canEditRequest = $canSyncRequest = _isAllowed("/vl/requests/editVlRequest.php");
 
      $sampleCodeColumn = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
 
@@ -428,15 +426,18 @@ try {
           $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
           $row[] = $aRow['status_name'];
 
+          $isLocked = $aRow['locked'] == 'yes';
+
           // BUTTONS
-          if ($editRequest) {
+          if ($canEditRequest) {
+               $editButtonText = $isLocked ? _translate("Locked") : _translate("Edit");
                if ($general->isLISInstance() && $aRow['result_status'] == RECEIVED_AT_CLINIC) {
                     $edit = '';
                } else {
-                    $edit = '<a href="editVlRequest.php?id=' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+                    $edit = '<a href="/vl/requests/editVlRequest.php?id=' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . $editButtonText . '"><em class="fa-solid fa-pen-to-square"></em> ' . $editButtonText . '</em></a>';
                }
-               if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/vl/requests/edit-locked-vl-samples")) {
-                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em>' . _translate("Locked") . '</a>';
+               if ($aRow['result_status'] == 7 && $isLocked && !_isAllowed("/vl/requests/edit-locked-vl-samples")) {
+                    $edit = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Cannot Edit Locked Sample") . '" disabled><em class="fa-solid fa-lock"></em>' . $editButtonText . '</a>';
                }
           }
 
@@ -446,15 +447,15 @@ try {
           }
 
           $sync = "";
-          if ($syncRequest && $general->isLISInstance() && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4) && $aRow['data_sync'] == 0) {
+          if ($canSyncRequest && $general->isLISInstance() && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4) && $aRow['data_sync'] == 0) {
                $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Sync Sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> ' . _translate("Sync") . '</a>';
           }
 
           $actions = "";
-          if ($editRequest) {
+          if ($canEditRequest) {
                $actions .= $edit;
           }
-          if ($syncRequest) {
+          if ($canSyncRequest) {
                $actions .= $sync;
           }
           if (!$_POST['hidesrcofreq']) {
