@@ -454,8 +454,11 @@ if [ -z "$mysql_pw" ]; then
     echo
 fi
 
-persist_result=$(MYSQL_PWD="${mysql_pw}" mysql -u root -e "SET PERSIST sql_mode = '';" 2>&1)
-persist_status=$?
+if persist_result=$(MYSQL_PWD="${mysql_pw}" mysql -u root -e "SET PERSIST sql_mode = '';" 2>&1); then
+    persist_status=0
+else
+    persist_status=$?
+fi
 
 if [ $persist_status -eq 0 ]; then
     print success "Successfully persisted sql_mode=''"
