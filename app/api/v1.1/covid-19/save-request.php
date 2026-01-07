@@ -382,6 +382,7 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'external_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
             'app_sample_code' => $data['appSampleCode'] ?? $data['externalSampleCode'] ?? null,
+            'lab_sample_code' => $data['labSampleCode'] ?? null,
             'facility_id' => empty($data['facilityId']) ? null : $data['facilityId'],
             'investigator_name' => empty($data['investigatorName']) ? null : $data['investigatorName'],
             'investigator_phone' => empty($data['investigatorPhone']) ? null : $data['investigatorPhone'],
@@ -516,9 +517,9 @@ try {
 
         if (isset($data['reasonDetails']) && !empty($data['reasonDetails'])) {
             /* For Rest API service data came as multiple index so rechange and remove unwanted index */
-            if (array_key_exists('reason_details', (array)$data['reasonDetails'][0])) {
+            if (array_key_exists('reason_details', (array) $data['reasonDetails'][0])) {
                 $res = [];
-                foreach ((array)$data['reasonDetails'] as $row) {
+                foreach ((array) $data['reasonDetails'] as $row) {
                     $res[] = $row['reason_details'];
                 }
                 $data['reasonDetails'] = $res;
@@ -563,8 +564,8 @@ try {
                             'facility_id' => $data['labId'] ?? null,
                             'sample_tested_datetime' => DateUtility::isoDateFormat($test['testDate'], true),
                             'testing_platform' => $test['testingPlatform'] ?? null,
-                            'kit_lot_no' => (str_contains((string)$test['testName'], 'RDT')) ? $test['kitLotNo'] : null,
-                            'kit_expiry_date' => (str_contains((string)$test['testName'], 'RDT')) ? DateUtility::isoDateFormat($test['kitExpiryDate']) : null,
+                            'kit_lot_no' => (str_contains((string) $test['testName'], 'RDT')) ? $test['kitLotNo'] : null,
+                            'kit_expiry_date' => (str_contains((string) $test['testName'], 'RDT')) ? DateUtility::isoDateFormat($test['kitExpiryDate']) : null,
                             'result' => $test['testResult'],
                         ];
                         $db->insert($testTableName, $covid19TestData);
@@ -587,7 +588,7 @@ try {
             $responseData[$rootKey] = [
                 'status' => 'success',
                 'action' => $currentSampleData['action'] ?? null,
-                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ??  null,
+                'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
                 'transactionId' => $transactionId,
                 'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
