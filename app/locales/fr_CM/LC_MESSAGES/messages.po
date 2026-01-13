@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-12-20 16:10+0530\n"
-"PO-Revision-Date: 2025-12-20 16:11+0530\n"
+"POT-Creation-Date: 2026-01-13 14:17+0530\n"
+"PO-Revision-Date: 2026-01-13 14:17+0530\n"
 "Last-Translator: Amit <amit@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -2804,6 +2804,7 @@ msgstr "Escalade du problème"
 #: app/cd4/management/export-cd4-results.php:31
 #: app/cd4/requests/export-cd4-requests.php:26
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:431
+#: app/eid/results/pdf/result-pdf-cameroon.php:524
 #: app/import-result/imported-results.php:524
 #: app/tb/requests/forms/add-rwanda.php:410
 #: app/tb/requests/forms/edit-rwanda.php:434
@@ -4134,6 +4135,7 @@ msgstr "Echantillon testé le"
 #: app/eid/results/forms/update-burkina-faso-result.php:419
 #: app/eid/results/forms/update-cameroon-result.php:562
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:310
+#: app/eid/results/pdf/result-pdf-cameroon.php:351
 #: app/generic-tests/program-management/generic-export-data.php:293
 #: app/generic-tests/program-management/generic-export-data.php:331
 #: app/generic-tests/program-management/generic-tests-clinic-report.php:159
@@ -4286,6 +4288,7 @@ msgstr "L'échantillon est-il rejeté"
 #: app/eid/management/get-rejected-samples.php:95
 #: app/eid/reference/eid-sample-rejection-reasons.php:42
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:313
+#: app/eid/results/pdf/result-pdf-cameroon.php:354
 #: app/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:44
 #: app/generic-tests/mail/mail-generic-tests-results.php:248
 #: app/generic-tests/program-management/get-rejection-result.php:94
@@ -5582,21 +5585,21 @@ msgstr ""
 #: app/api/v1.1/cancel-requests.php:114
 #: app/api/v1.1/covid-19/fetch-results.php:326
 #: app/api/v1.1/covid-19/get-request.php:277
-#: app/api/v1.1/covid-19/save-request.php:602
-#: app/api/v1.1/covid-19/save-request.php:650
+#: app/api/v1.1/covid-19/save-request.php:603
+#: app/api/v1.1/covid-19/save-request.php:651
 #: app/api/v1.1/eid/fetch-results.php:267 app/api/v1.1/eid/get-request.php:230
-#: app/api/v1.1/eid/save-request.php:500 app/api/v1.1/eid/save-request.php:547
+#: app/api/v1.1/eid/save-request.php:501 app/api/v1.1/eid/save-request.php:548
 #: app/api/v1.1/generate-manifest.php:236
 #: app/api/v1.1/generic-tests/fetch-results.php:303
 #: app/api/v1.1/generic-tests/get-request.php:136
-#: app/api/v1.1/generic-tests/save-request.php:428
-#: app/api/v1.1/generic-tests/save-request.php:475 app/api/v1.1/init.php:475
+#: app/api/v1.1/generic-tests/save-request.php:429
+#: app/api/v1.1/generic-tests/save-request.php:476 app/api/v1.1/init.php:475
 #: app/api/v1.1/sample-status.php:97 app/api/v1.1/save-facilities.php:226
 #: app/api/v1.1/save-facilities.php:247 app/api/v1.1/tb/fetch-results.php:255
-#: app/api/v1.1/tb/get-request.php:203 app/api/v1.1/tb/save-request.php:436
-#: app/api/v1.1/tb/save-request.php:481 app/api/v1.1/vl/fetch-results.php:292
-#: app/api/v1.1/vl/get-request.php:250 app/api/v1.1/vl/save-request.php:647
-#: app/api/v1.1/vl/save-request.php:718
+#: app/api/v1.1/tb/get-request.php:203 app/api/v1.1/tb/save-request.php:437
+#: app/api/v1.1/tb/save-request.php:482 app/api/v1.1/vl/fetch-results.php:292
+#: app/api/v1.1/vl/get-request.php:250 app/api/v1.1/vl/save-request.php:648
+#: app/api/v1.1/vl/save-request.php:719
 #: app/api/vl/fetch-recency-vl-results.php:126
 msgid ""
 "Failed to process this request. Please contact the system administrator if "
@@ -5644,11 +5647,11 @@ msgstr "Veuillez vérifier les paramètres de votre demande."
 msgid "Something went wrong. Please try again later."
 msgstr "Une erreur s'est produite. Veuillez réessayer plus tard."
 
-#: app/api/v1.1/vl/save-request.php:534
+#: app/api/v1.1/vl/save-request.php:535
 msgid "Potential duplicate sample detected within 1 day"
 msgstr "Échantillon double potentiel détecté dans un délai d'un jour"
 
-#: app/api/v1.1/vl/save-request.php:547
+#: app/api/v1.1/vl/save-request.php:548
 msgid "Medium-risk duplicate detected"
 msgstr "Duplicata à risque moyen détecté"
 
@@ -7508,6 +7511,7 @@ msgstr "Femme"
 #: app/eid/results/forms/update-cameroon-result.php:189
 #: app/eid/results/forms/update-drc-result.php:218
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:149
+#: app/eid/results/pdf/result-pdf-cameroon.php:176
 #: app/eid/results/pdf/result-pdf-drc.php:136
 #: app/eid/results/pdf/result-pdf-rwanda.php:104
 #: app/eid/results/pdf/result-pdf-sierraleone.php:145
@@ -14943,6 +14947,7 @@ msgstr "FOSA/POE État"
 #: app/eid/requests/forms/add-burkina-faso.php:96
 #: app/eid/requests/forms/edit-burkina-faso.php:103
 #: app/eid/results/forms/update-burkina-faso-result.php:102
+#: app/eid/results/pdf/result-pdf-cameroon.php:212
 #: app/tb/requests/forms/add-burkina-faso.php:111
 #: app/tb/requests/forms/edit-burkina-faso.php:131
 #: app/tb/results/forms/update-burkina-faso.php:130
@@ -18163,6 +18168,7 @@ msgstr "Veuillez saisir la date de réception de l'échantillon"
 #: app/eid/requests/forms/add-cameroon.php:524
 #: app/eid/requests/forms/edit-cameroon.php:806
 #: app/eid/results/forms/update-cameroon-result.php:501
+#: app/eid/results/pdf/result-pdf-cameroon.php:393
 msgid "EID Number"
 msgstr "Numéro EID"
 
@@ -18584,6 +18590,7 @@ msgid "TESTING LAB NAME"
 msgstr "Nom du laboratoire"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:206
+#: app/eid/results/pdf/result-pdf-cameroon.php:233
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:208
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:230
 #: app/vl/results/pdf/result-pdf-cameroon.php:276
@@ -18595,14 +18602,17 @@ msgid "MOTHER ART NUMBER"
 msgstr "NUMÉRO DE L'ART MATERNEL"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:208
+#: app/eid/results/pdf/result-pdf-cameroon.php:235
 msgid "CHILD ID"
 msgstr "ID DE L'ENFANT"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:235
+#: app/eid/results/pdf/result-pdf-cameroon.php:264
 msgid "AGE IN MONTHS"
 msgstr "Âge en mois"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:236
+#: app/eid/results/pdf/result-pdf-cameroon.php:265
 #: app/specimen-referral-manifest/generateVLManifest.php:209
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:240
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:262
@@ -18611,11 +18621,13 @@ msgid "SEX"
 msgstr "SEXE"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:237
+#: app/eid/results/pdf/result-pdf-cameroon.php:277
 #: app/vl/results/pdf/result-pdf-cameroon.php:259
 msgid "REQUESTING CLINICIAN NAME"
 msgstr "NOM DU PRESCRITEUR"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:271
+#: app/eid/results/pdf/result-pdf-cameroon.php:312
 #: app/specimen-referral-manifest/generateVLManifest.php:204
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:259
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:297
@@ -18624,6 +18636,7 @@ msgid "SAMPLE ID"
 msgstr "ID DE L'ÉCHANTILLON"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:272
+#: app/eid/results/pdf/result-pdf-cameroon.php:313
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:260
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:298
 #: app/vl/results/pdf/result-pdf-cameroon.php:371
@@ -18631,6 +18644,7 @@ msgid "SAMPLE COLLECTION DATE"
 msgstr "DATE DE PRÉLÈVEMENT DE L'ÉCHANTILLON"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:273
+#: app/eid/results/pdf/result-pdf-cameroon.php:314
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:261
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:299
 #: app/vl/results/pdf/result-pdf-cameroon.php:372
@@ -18638,6 +18652,7 @@ msgid "SAMPLE RECEIPT DATE"
 msgstr "DATE DE RÉCEPTION DE L'ÉCHANTILLON"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:287
+#: app/eid/results/pdf/result-pdf-cameroon.php:328
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:281
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:319
 #: app/vl/results/pdf/result-pdf-cameroon.php:392
@@ -18645,6 +18660,7 @@ msgid "SAMPLE TYPE"
 msgstr "TYPE D’ÉCHANTILLON"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:288
+#: app/eid/results/pdf/result-pdf-cameroon.php:329
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:270
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:308
 #: app/vl/results/pdf/result-pdf-cameroon.php:381
@@ -18652,6 +18668,7 @@ msgid "SAMPLE TEST DATE"
 msgstr "DATE DU TEST DE L’ÉCHANTILLON"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:289
+#: app/eid/results/pdf/result-pdf-cameroon.php:330
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:271
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:309
 #: app/vl/results/pdf/result-pdf-cameroon.php:382
@@ -18659,12 +18676,14 @@ msgid "RESULT RELEASE DATE"
 msgstr "DATE DE PUBLICATION DES RÉSULTATS"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:325
+#: app/eid/results/pdf/result-pdf-cameroon.php:391
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:425
 #: app/vl/results/pdf/result-pdf-cameroon.php:477
 msgid "TEST PLATFORM"
 msgstr "PLATE-FORME DE TEST"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:339
+#: app/eid/results/pdf/result-pdf-cameroon.php:414
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:329
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:452
 #: app/vl/results/pdf/result-pdf-cameroon.php:393
@@ -18675,6 +18694,11 @@ msgstr "TESTÉ PAR"
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:362
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:384
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:412
+#: app/eid/results/pdf/result-pdf-cameroon.php:415
+#: app/eid/results/pdf/result-pdf-cameroon.php:435
+#: app/eid/results/pdf/result-pdf-cameroon.php:457
+#: app/eid/results/pdf/result-pdf-cameroon.php:477
+#: app/eid/results/pdf/result-pdf-cameroon.php:497
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:330
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:350
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:369
@@ -18691,6 +18715,11 @@ msgstr "SIGNATURE"
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:363
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:385
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:413
+#: app/eid/results/pdf/result-pdf-cameroon.php:416
+#: app/eid/results/pdf/result-pdf-cameroon.php:436
+#: app/eid/results/pdf/result-pdf-cameroon.php:458
+#: app/eid/results/pdf/result-pdf-cameroon.php:478
+#: app/eid/results/pdf/result-pdf-cameroon.php:498
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:331
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:351
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:370
@@ -18704,6 +18733,7 @@ msgid "DATE"
 msgstr "DATE"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:361
+#: app/eid/results/pdf/result-pdf-cameroon.php:456
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:349
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:472
 #: app/vl/results/pdf/result-pdf-cameroon.php:394
@@ -18711,6 +18741,7 @@ msgid "REVIEWED BY"
 msgstr "REVUE PAR"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:383
+#: app/eid/results/pdf/result-pdf-cameroon.php:476
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:389
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:512
 #: app/vl/results/pdf/result-pdf-cameroon.php:538
@@ -18718,12 +18749,14 @@ msgid "APPROVED BY"
 msgstr "APPROUVÉ PAR"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:411
+#: app/eid/results/pdf/result-pdf-cameroon.php:434
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:368
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:491
 msgid "REPORT REVISED BY"
 msgstr "RAPPORT RÉVISÉ PAR"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:445
+#: app/eid/results/pdf/result-pdf-cameroon.php:538
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:412
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:549
 #: app/vl/results/pdf/result-pdf-cameroon.php:561
@@ -18731,11 +18764,47 @@ msgid "Lab Comments"
 msgstr "Commentaires du laboratoire"
 
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:462
+#: app/eid/results/pdf/result-pdf-cameroon.php:555
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:427
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:567
 #: app/vl/results/pdf/result-pdf-cameroon.php:517
 msgid "Printed on"
 msgstr "Imprimé le"
+
+#: app/eid/results/pdf/result-pdf-cameroon.php:213
+msgid "Health Facility/POE CODE"
+msgstr "Établissement de santé/CODE POE"
+
+#: app/eid/results/pdf/result-pdf-cameroon.php:214
+msgid "Health Facility/POE STATE"
+msgstr "Établissement de santé/POE ÉTAT"
+
+#: app/eid/results/pdf/result-pdf-cameroon.php:215
+msgid "Health Facility/POE COUNTY"
+msgstr "Établissement de santé/COMTÉ DE POE"
+
+#: app/eid/results/pdf/result-pdf-cameroon.php:232
+msgid "LAB NAME"
+msgstr "Les réponses, le nom et le numéro de téléphone sont obligatoires"
+
+#: app/eid/results/pdf/result-pdf-cameroon.php:234
+msgid "ARV PROTOCOL FOLLOWED BY MOTHER"
+msgstr "PROTOCOLE ARV SUIVI PAR LA MÈRE"
+
+#: app/eid/results/pdf/result-pdf-cameroon.php:278
+#: app/vl/results/pdf/result-pdf-cameroon.php:260
+msgid "TEL"
+msgstr "TEL"
+
+#: app/eid/results/pdf/result-pdf-cameroon.php:279
+#: app/vl/results/pdf/result-pdf-cameroon.php:261
+msgid "EMAIL"
+msgstr "EMAIL"
+
+#: app/eid/results/pdf/result-pdf-cameroon.php:496
+#: app/vl/results/pdf/result-pdf-cameroon.php:538
+msgid "REVIEWED AND APPROVED BY"
+msgstr "REVU ET APPROUVÉ PAR"
 
 #: app/error/401.php:22 app/error/404.php:22 app/error/error.php:438
 msgid "Please contact the System Admin for further support."
@@ -26970,7 +27039,7 @@ msgstr "Résultat du test TB mis à jour avec succès"
 #: app/tb/results/tb-update-result-helper.php:227
 msgid "Unable to update this TB result. Please try again later"
 msgstr ""
-"Impossible de mettre à jour ce résultat TB. Veuillez réessayer plus tard."
+"Impossible de mettre à jour ce résultat TB. Veuillez réessayer plus tard"
 
 #: app/tb/results/update-tb-referral-helper.php:95
 msgid "Successfully updated"
@@ -27024,7 +27093,7 @@ msgstr "Rôle"
 
 #: app/users/addUser.php:112 app/users/editUser.php:161
 msgid "Please select this user's role"
-msgstr "Veuillez sélectionner le rôle de cet utilisateur."
+msgstr "Veuillez sélectionner le rôle de cet utilisateur"
 
 #: app/users/addUser.php:129 app/users/editUser.php:182
 msgid "AuthToken"
@@ -27036,7 +27105,7 @@ msgstr "Jeton d'authentification"
 
 #: app/users/addUser.php:134 app/users/editUser.php:191
 msgid "Please generate the auth token"
-msgstr "Veuillez générer le jeton d'authentification."
+msgstr "Veuillez générer le jeton d'authentification"
 
 #: app/users/addUser.php:138 app/users/editUser.php:198
 msgid "Generate Another Token"
@@ -29012,14 +29081,6 @@ msgstr "CODE DE LA FOSA"
 msgid "PROJECT"
 msgstr "PROJET"
 
-#: app/vl/results/pdf/result-pdf-cameroon.php:260
-msgid "TEL"
-msgstr "TEL"
-
-#: app/vl/results/pdf/result-pdf-cameroon.php:261
-msgid "EMAIL"
-msgstr "EMAIL"
-
 #: app/vl/results/pdf/result-pdf-cameroon.php:277
 msgid "PATIENT IDENTIFIER"
 msgstr "CODE TARV"
@@ -29096,10 +29157,6 @@ msgstr ""
 "Entre 40 et 10 000 000 (1,60 et 7,0 <sub>Log10</sub>) copies/mL pour le "
 "plasma et 839 et 10 000 000 (2,92 et 7,0 <sub>Log10</sub>) copies/mL pour le "
 "DBS"
-
-#: app/vl/results/pdf/result-pdf-cameroon.php:538
-msgid "REVIEWED AND APPROVED BY"
-msgstr "REVU ET APPROUVÉ PAR"
 
 #: app/vl/results/updateVlTestResultHelper.php:266
 msgid "VL result updated successfully"
