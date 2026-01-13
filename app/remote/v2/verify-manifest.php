@@ -143,6 +143,6 @@ try {
     $encodedPayload = JsonUtility::encodeUtf8Json($payload ?? []);
     $userId = $user['user_id'] ?? null;
     $recordsCount = $payload['status'] === 'match' ? 1 : 0;
-    $general->addApiTracking($transactionId, $userId, $recordsCount, 'manifest-verify', $testType, $requestUrl, $origJson, $encodedPayload, 'json', $labId);
+    $general->addApiTracking($transactionId, $userId, $recordsCount, 'manifest-verify', $testType, $requestUrl, $origJson, $encodedPayload, 'json', $labId, null, $authToken);
     echo ApiService::generateJsonResponse($encodedPayload, $request);
 }

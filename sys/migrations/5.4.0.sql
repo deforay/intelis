@@ -12,3 +12,7 @@ ALTER TABLE `form_tb` CHANGE `is_specimen_reordered` `is_specimen_reordered` ENU
 ALTER TABLE `form_tb` CHANGE `is_patient_initiated_on_tb_treatment` `is_patient_initiated_on_tb_treatment` ENUM('yes','no','') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL;
 
 ALTER TABLE `form_tb` ADD `tb_lam_result` VARCHAR(64) NULL DEFAULT NULL AFTER `xpert_mtb_result`;
+
+-- Add api_token column to track_api_requests for bearer token search
+ALTER TABLE `track_api_requests` ADD `api_token` VARCHAR(255) NULL DEFAULT NULL AFTER `data_format`;
+ALTER TABLE `track_api_requests` ADD INDEX `api_token` (`api_token`);

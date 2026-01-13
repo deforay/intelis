@@ -936,7 +936,7 @@ final class CommonService
         return $dateTime['dateTime'] ?? null;
     }
 
-    public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null)
+    public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null, $apiToken = null)
     {
         try {
             $requestData = JsonUtility::encodeUtf8Json($requestData ?? '{}');
@@ -980,7 +980,8 @@ final class CommonService
                 'test_type' => $testType ?? null,
                 'api_url' => $url ?? null,
                 'facility_id' => $labId ?? null,
-                'data_format' => $format ?? null
+                'data_format' => $format ?? null,
+                'api_token' => $apiToken ?? null
             ];
 
             return $this->db->insert("track_api_requests", $data);

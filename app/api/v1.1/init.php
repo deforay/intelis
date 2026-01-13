@@ -483,7 +483,7 @@ try {
 }
 
 $payload = JsonUtility::encodeUtf8Json($payload);
-$trackId = $general->addApiTracking($transactionId, $user['user_id'], 1, 'init', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
+$trackId = $general->addApiTracking($transactionId, $user['user_id'], 1, 'init', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json', null, null, $authToken);
 
 //echo $payload
 echo ApiService::generateJsonResponse($payload, $request);

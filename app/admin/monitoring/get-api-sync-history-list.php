@@ -65,6 +65,9 @@ try {
      if (isset($_POST['testType']) && trim((string) $_POST['testType']) !== '') {
           $sWhere[] = ' a.test_type like "' . $_POST['testType'] . '"';
      }
+     if (isset($_POST['apiToken']) && trim((string) $_POST['apiToken']) !== '') {
+          $sWhere[] = ' a.api_token like "%' . $db->escape($_POST['apiToken']) . '%"';
+     }
 
      /* Implode all the where fields for filtering the data */
      if (!empty($sWhere)) {

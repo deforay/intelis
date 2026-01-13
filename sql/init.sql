@@ -4702,8 +4702,10 @@ CREATE TABLE `track_api_requests` (
   `response_data` text,
   `facility_id` varchar(256) DEFAULT NULL,
   `data_format` varchar(255) DEFAULT NULL,
+  `api_token` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`api_track_id`),
-  KEY `requested_on` (`requested_on`)
+  KEY `requested_on` (`requested_on`),
+  KEY `api_token` (`api_token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
