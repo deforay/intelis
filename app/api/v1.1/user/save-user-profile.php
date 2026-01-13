@@ -208,7 +208,7 @@ try {
     ]);
 }
 
-$trackId = $general->addApiTracking($transactionId, $data['user_id'], count($data ?? []), 'save-user', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
+$trackId = $general->addApiTracking($transactionId, $data['user_id'], count($data ?? []), 'save-user', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json', null, null, $authToken);
 
 //echo $payload
 echo ApiService::generateJsonResponse($payload, $request);

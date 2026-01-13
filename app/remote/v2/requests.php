@@ -113,7 +113,9 @@ try {
         JsonUtility::encodeUtf8Json($data),
         $payload,
         'json',
-        $labId
+        $labId,
+        null,
+        $authToken
     );
 
     if ($facilityIds) {

@@ -35,6 +35,7 @@ $sharedPrivileges = [
     '/facilities/mapTestType.php' => '/facilities/addFacility.php',
     '/facilities/upload-facilities.php' => '/facilities/addFacility.php',
     '/admin/monitoring/lab-sync-details.php' => '/admin/monitoring/sync-status.php',
+    '/admin/monitoring/show-params.php' => '/admin/monitoring/api-sync-history.php',
     '/common/reference/implementation-partners.php' => '/common/reference/geographical-divisions-details.php',
     '/common/reference/add-implementation-partners.php' => '/common/reference/geographical-divisions-details.php',
     '/common/reference/edit-implementation-partners.php' => '/common/reference/geographical-divisions-details.php',

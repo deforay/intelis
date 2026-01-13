@@ -113,6 +113,16 @@ foreach ($syncedTypeResults as $synced) {
 							</td>
 						</tr>
 						<tr>
+							<td><strong>
+									<?php echo _translate("Bearer Token"); ?>&nbsp;:
+								</strong></td>
+							<td colspan="5">
+								<input type="text" id="apiToken" name="apiToken" class="form-control"
+									placeholder="<?php echo _translate('Enter bearer token to search'); ?>"
+									style="width:400px;" />
+							</td>
+						</tr>
+						<tr>
 							<td><button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span>
 										<?php echo _translate("Search"); ?>
 									</span></button></td>
@@ -239,6 +249,10 @@ foreach ($syncedTypeResults as $synced) {
 				aoData.push({
 					"name": "syncedType",
 					"value": $("#syncedType").val()
+				});
+				aoData.push({
+					"name": "apiToken",
+					"value": $("#apiToken").val()
 				});
 				$.ajax({
 					"dataType": 'json',
