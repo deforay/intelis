@@ -720,6 +720,7 @@ try {
         'data' => []
     ];
     LoggerUtility::logError($e->getMessage(), [
+        'transactionId' => $transactionId,
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),

@@ -98,6 +98,7 @@ try {
         'data' => []
     ];
     LoggerUtility::logError($exc->getMessage(), [
+        'transactionId' => $transactionId,
         'file' => $exc->getFile(),
         'line' => $exc->getLine(),
         'requestUrl' => $requestUrl,

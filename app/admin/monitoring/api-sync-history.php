@@ -116,16 +116,20 @@ foreach ($syncedTypeResults as $synced) {
 							<td><strong>
 									<?php echo _translate("Bearer Token"); ?>&nbsp;:
 								</strong></td>
-							<td colspan="5">
+							<td colspan="3">
 								<input type="text" id="apiToken" name="apiToken" class="form-control"
 									placeholder="<?php echo _translate('Enter bearer token to search'); ?>"
-									style="width:400px;" />
+									style="width:100%;max-width:400px;" />
 							</td>
-						</tr>
-						<tr>
-							<td><button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span>
-										<?php echo _translate("Search"); ?>
-									</span></button></td>
+							<td></td>
+							<td>
+								<button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm">
+									<span><?php echo _translate("Search"); ?></span>
+								</button>
+								<button onclick="$('#dateRange,#apiToken').val('');$('#testType,#syncedType').val('').trigger('change');oTable.fnDraw();" class="btn btn-default btn-sm">
+									<span><?php echo _translate("Reset"); ?></span>
+								</button>
+							</td>
 						</tr>
 					</table>
 					<!-- /.box-header -->

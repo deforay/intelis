@@ -654,6 +654,7 @@ try {
     LoggerUtility::logError($exc->getMessage(), [
         'file' => $exc->getFile(),
         'line' => $exc->getLine(),
+        'transactionId' => $transactionId,
         'trace' => $exc->getTraceAsString(),
     ]);
 }

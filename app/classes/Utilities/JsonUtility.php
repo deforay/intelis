@@ -270,18 +270,53 @@ final class JsonUtility
 
         // Build the set string
         $setString = '';
+        $rawDataFallback = [];
+
         foreach ($data as $key => $value) {
             $encoded = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
             if ($encoded === false) {
+                // Failed to encode - save the raw value as string under fallback key
+                LoggerUtility::logWarning('JSON encoding failed, saving to raw_data fallback', [
+                    'key' => $key,
+                    'value_type' => gettype($value),
+                ]);
+                $rawDataFallback[$key] = is_string($value) ? $value : serialize($value);
                 continue;
             }
+
+            // Validate that the encoded value is valid JSON before using in CAST
+            // This catches edge cases where PHP accepts JSON that MySQL rejects
+            if (!self::isJSON($encoded)) {
+                LoggerUtility::logWarning('Invalid JSON after encoding, saving to raw_data fallback', [
+                    'key' => $key,
+                    'encoded_preview' => self::previewString($encoded, 200),
+                ]);
+                $rawDataFallback[$key] = $encoded;
+                continue;
+            }
+
             // Escape single quotes for SQL literal (standard MySQL escaping)
             $encoded = str_replace("'", "''", $encoded);
 
             $setString .= ', "$.' . $key . '", CAST(\'' . $encoded . '\' AS JSON)';
         }
 
+        // Add fallback raw data if any values failed validation
+        if (!empty($rawDataFallback)) {
+            $rawEncoded = json_encode($rawDataFallback, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+            if ($rawEncoded !== false) {
+                $rawEncoded = str_replace("'", "''", $rawEncoded);
+                $setString .= ', "$.raw_data", CAST(\'' . $rawEncoded . '\' AS JSON)';
+            }
+        }
+
+        // Return null if no valid data to set (JSON_SET requires path-value pairs)
+        if ($setString === '') {
+            return null;
+        }
+
         // Construct and return the JSON_SET query
-        return 'JSON_SET(COALESCE(' . $column . ', "{}")' . $setString . ')';
+        // Use single quotes for the empty object fallback to ensure it's treated as a string literal
+        return 'JSON_SET(COALESCE(' . $column . ', \'{}\')' . $setString . ')';
     }
 }

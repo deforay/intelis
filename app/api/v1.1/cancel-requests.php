@@ -97,7 +97,7 @@ try {
             $response[$key]['message'] = 'Unable to Cancel Sample';
         }
         $response[$key]['sampleCode'] = $row['sample_code'] ?? null;
-        $response[$key]['remoteSampleCode'] = $row['remote_sample_code'] ??  null;
+        $response[$key]['remoteSampleCode'] = $row['remote_sample_code'] ?? null;
     }
     $payload = [
         'status' => 'success',
@@ -115,8 +115,9 @@ try {
         'data' => []
     ];
     LoggerUtility::logError($e->getMessage(), [
-        'code' => $e->getCode(),
+        'transactionId' => $transactionId,
         'file' => $e->getFile(),
+        'code' => $e->getCode(),
         'line' => $e->getLine(),
         'requestUrl' => $requestUrl,
         'stacktrace' => $e->getTraceAsString()

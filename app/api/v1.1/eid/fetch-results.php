@@ -272,6 +272,7 @@ try {
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
+        'transactionId' => $transactionId,
         'requestUrl' => $requestUrl,
         'stacktrace' => $e->getTraceAsString()
     ]);
