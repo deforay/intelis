@@ -87,7 +87,9 @@ try {
         $dataInJsonFormat,
         JsonUtility::encodeUtf8Json($payload),
         'json',
-        $labId
+        $labId,
+        null,
+        $authToken
     );
 
     // If you have facility IDs to bump sync time for, pass them here.

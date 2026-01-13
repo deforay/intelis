@@ -730,7 +730,7 @@ try {
 
 $payload = JsonUtility::encodeUtf8Json($payload);
 
-$general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json', null, null, $authToken);
 
 $general->updateResultSyncDateTime('vl', null, $updatedLabs);
 

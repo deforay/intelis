@@ -660,7 +660,7 @@ try {
 
 
 $payload = JsonUtility::encodeUtf8Json($payload);
-$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'covid19', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'covid19', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json', null, null, $authToken);
 
 $general->updateResultSyncDateTime('covid19', null, $updatedLabs);
 

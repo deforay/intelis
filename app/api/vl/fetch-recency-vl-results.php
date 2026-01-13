@@ -136,7 +136,7 @@ try {
 }
 
 $payload = JsonUtility::encodeUtf8Json($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-recency-vl-result', 'vl', $requestUrl, $_REQUEST, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-recency-vl-result', 'vl', $requestUrl, $_REQUEST, $payload, 'json', null, null, $authToken);
 
 //echo $payload
 echo ApiService::generateJsonResponse($payload, $request);

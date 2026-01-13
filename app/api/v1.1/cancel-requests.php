@@ -124,7 +124,7 @@ try {
 }
 
 $payload = JsonUtility::encodeUtf8Json($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'cancel-requests', $input['testType'], $requestUrl, $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'cancel-requests', $input['testType'], $requestUrl, $origJson, $payload, 'json', null, null, $authToken);
 
 //echo $payload
 echo ApiService::generateJsonResponse($payload, $request);
