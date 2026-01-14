@@ -305,7 +305,7 @@ try {
             'sample_collection_date' => $sampleCollectionDate,
             'external_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
             'app_sample_code' => $data['appSampleCode'] ?? $data['externalSampleCode'] ?? null,
-            'lab_sample_code' => $data['labSampleCode'] ?? null,
+            'lab_assigned_code' => $data['labSampleCode'] ?? null,
             'sample_reordered' => $data['sampleReordered'] ?? 'no',
             'facility_id' => $data['facilityId'] ?? null,
             'patient_gender' => $data['patientGender'] ?? null,
