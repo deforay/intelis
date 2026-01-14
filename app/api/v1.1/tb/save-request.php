@@ -329,7 +329,7 @@ try {
             'unique_id' => $uniqueId,
             'external_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
             'app_sample_code' => $data['appSampleCode'] ?? $data['externalSampleCode'] ?? null,
-            'lab_sample_code' => $data['labSampleCode'] ?? null,
+            'lab_assigned_code' => $data['labSampleCode'] ?? null,
             'sample_reordered' => empty($data['sampleReordered']) ? 'no' : $data['sampleReordered'],
             'facility_id' => empty($data['facilityId']) ? null : $data['facilityId'],
             'province_id' => empty($data['provinceId']) ? null : $data['provinceId'],
