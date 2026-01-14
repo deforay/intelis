@@ -382,7 +382,7 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'external_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
             'app_sample_code' => $data['appSampleCode'] ?? $data['externalSampleCode'] ?? null,
-            'lab_sample_code' => $data['labSampleCode'] ?? null,
+            'lab_assigned_code' => $data['labSampleCode'] ?? null,
             'facility_id' => empty($data['facilityId']) ? null : $data['facilityId'],
             'investigator_name' => empty($data['investigatorName']) ? null : $data['investigatorName'],
             'investigator_phone' => empty($data['investigatorPhone']) ? null : $data['investigatorPhone'],
