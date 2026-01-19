@@ -33,10 +33,11 @@ final class DateUtility
         return MemoUtility::remember(function () use ($date, $format, $inputFormat): ?string {
 
             $trimmedDate = trim($date);
+            $normalizedDate = self::normalizeDateString($trimmedDate);
 
             // Perform preliminary checks for obviously invalid date strings
-            if (($inputFormat !== null && $inputFormat !== '' && $inputFormat !== '0' && self::isDateFormatValid($trimmedDate, $inputFormat, true) === false)
-                || (($inputFormat === null || $inputFormat === '' || $inputFormat === '0') && self::isDateValid($trimmedDate) === false)
+            if (($inputFormat !== null && $inputFormat !== '' && $inputFormat !== '0' && self::isDateFormatValid($normalizedDate, $inputFormat, true) === false)
+                || (($inputFormat === null || $inputFormat === '' || $inputFormat === '0') && self::isDateValid($normalizedDate) === false)
             ) {
                 return null;
             }
@@ -45,13 +46,13 @@ final class DateUtility
                 $carbonDate = null;
 
                 // Handle Unix timestamps first (when no specific input format is provided)
-                if (null === $inputFormat && ctype_digit($trimmedDate) && strlen($trimmedDate) >= 10) {
+                if (null === $inputFormat && ctype_digit($normalizedDate) && strlen($normalizedDate) >= 10) {
                     // This is likely a Unix timestamp
-                    $timestamp = (int)$trimmedDate;
+                    $timestamp = (int)$normalizedDate;
                     $carbonDate = Carbon::createFromTimestamp($timestamp);
                 } elseif (null !== $inputFormat) {
                     // If a specific input format is provided, use createFromFormat
-                    $carbonDate = Carbon::createFromFormat($inputFormat, $trimmedDate);
+                    $carbonDate = Carbon::createFromFormat($inputFormat, $normalizedDate);
                     // createFromFormat returns false on failure
                     if ($carbonDate === false) {
                         LoggerUtility::logWarning("DateUtility::getDateTime: Failed to parse date '$trimmedDate' with format '$inputFormat'.");
@@ -60,7 +61,7 @@ final class DateUtility
                 } else {
                     // Original behavior: use Carbon::parse for general date strings
                     // The previous isDateValid() check's core parsing is covered by Carbon::parse() throwing an exception on failure.
-                    $carbonDate = Carbon::parse($trimmedDate);
+                    $carbonDate = Carbon::parse($normalizedDate);
                 }
 
                 // If parsing was successful, format and return the date string
@@ -167,7 +168,7 @@ final class DateUtility
                 $format .= $withSeconds ? ' H:i:s' : ' H:i';
             }
 
-            return Carbon::parse($date)->format($format);
+            return Carbon::parse(self::normalizeDateString((string) $date))->format($format);
         });
     }
 
@@ -185,7 +186,7 @@ final class DateUtility
             }
 
             $format = ($includeTime !== true) ? "Y-m-d" : "Y-m-d H:i:s";
-            return Carbon::parse($date)->format($format);
+            return Carbon::parse(self::normalizeDateString((string) $date))->format($format);
         });
     }
 
@@ -197,7 +198,7 @@ final class DateUtility
                 return null;
             }
 
-            $diff = Carbon::now()->diff(Carbon::parse($dateOfBirth));
+            $diff = Carbon::now()->diff(Carbon::parse(self::normalizeDateString((string) $dateOfBirth)));
             return [
                 "year" => $diff->y,
                 "months" => $diff->m,
@@ -212,7 +213,8 @@ final class DateUtility
             return null;
         }
 
-        $interval = Carbon::parse($dateString1)->diff(Carbon::parse($dateString2));
+        $interval = Carbon::parse(self::normalizeDateString((string) $dateString1))
+            ->diff(Carbon::parse(self::normalizeDateString((string) $dateString2)));
         return $format === null ? $interval->format('%a days') : $interval->format($format);
     }
 
@@ -235,6 +237,7 @@ final class DateUtility
     }
     private static function parseDate(string $dateStr, ?array $formats = null, $ignoreTime = false): ?Carbon
     {
+        $dateStr = self::normalizeDateString($dateStr);
 
         if ($ignoreTime === true) {
             $dateStr = explode(' ', $dateStr)[0]; // Extract only the date part
@@ -271,6 +274,33 @@ final class DateUtility
 
         return null;
     }
+    private static function normalizeDateString(string $dateStr): string
+    {
+        $replacements = [
+            '/\bjanv\.?\b/iu' => 'jan',
+            '/\bfévr\.?\b/iu' => 'feb',
+            '/\bfevr\.?\b/iu' => 'feb',
+            '/\bmars\b/iu' => 'mar',
+            '/\bavr\.?\b/iu' => 'apr',
+            '/\bmai\b/iu' => 'may',
+            '/\bjuin\b/iu' => 'jun',
+            '/\bjuil\.?\b/iu' => 'jul',
+            '/\baoût\b/iu' => 'aug',
+            '/\baout\b/iu' => 'aug',
+            '/\bsept\.?\b/iu' => 'sep',
+            '/\boct\.?\b/iu' => 'oct',
+            '/\bnov\.?\b/iu' => 'nov',
+            '/\bdéc\.?\b/iu' => 'dec',
+            '/\bdec\.?\b/iu' => 'dec',
+        ];
+
+        $normalized = $dateStr;
+        foreach ($replacements as $pattern => $replacement) {
+            $normalized = preg_replace($pattern, $replacement, $normalized);
+        }
+
+        return $normalized;
+    }
 
     /**
      * Checks if one date is greater than another.
@@ -284,8 +314,8 @@ final class DateUtility
     {
         try {
             // Validate and parse dates
-            $parsedInputDate = $inputDate ? Carbon::parse($inputDate) : null;
-            $parsedComparisonDate = $comparisonDate ? Carbon::parse($comparisonDate) : null;
+            $parsedInputDate = $inputDate ? Carbon::parse(self::normalizeDateString($inputDate)) : null;
+            $parsedComparisonDate = $comparisonDate ? Carbon::parse(self::normalizeDateString($comparisonDate)) : null;
 
             // Check if either date is null after attempting to parse
             if (!$parsedInputDate || !$parsedComparisonDate) {
@@ -310,7 +340,7 @@ final class DateUtility
      */
     public static function compareDateWithInterval(string $datetime, string $operator, string $interval): bool
     {
-        $carbonDate = Carbon::parse($datetime);
+        $carbonDate = Carbon::parse(self::normalizeDateString($datetime));
         $modifiedDate = clone $carbonDate;
 
         // Check if interval is negative
@@ -345,7 +375,7 @@ final class DateUtility
 
             if (!empty($dates[0])) {
                 try {
-                    $start = Carbon::parse($dates[0]);
+                    $start = Carbon::parse(self::normalizeDateString($dates[0]));
                     if ($includeTime) {
                         $startDate = preg_match('/\d{2}:\d{2}/', $dates[0])
                             ? $start->format('Y-m-d H:i:s')
@@ -360,7 +390,7 @@ final class DateUtility
 
             if (!empty($dates[1])) {
                 try {
-                    $end = Carbon::parse($dates[1]);
+                    $end = Carbon::parse(self::normalizeDateString($dates[1]));
                     if ($includeTime) {
                         $endDate = preg_match('/\d{2}:\d{2}/', $dates[1])
                             ? $end->format('Y-m-d H:i:s')
@@ -419,7 +449,7 @@ final class DateUtility
         $earliestDate = null;
 
         foreach ($validDates as $date) {
-            $carbonDate = Carbon::parse($date);
+            $carbonDate = Carbon::parse(self::normalizeDateString((string) $date));
 
             if (is_null($earliestDate) || $carbonDate->lt($earliestDate)) {
                 $earliestDate = $carbonDate;
@@ -447,7 +477,7 @@ final class DateUtility
         $latestDate = null;
 
         foreach ($validDates as $date) {
-            $carbonDate = Carbon::parse($date);
+            $carbonDate = Carbon::parse(self::normalizeDateString((string) $date));
 
             if (is_null($latestDate) || $carbonDate->gt($latestDate)) {
                 $latestDate = $carbonDate;
