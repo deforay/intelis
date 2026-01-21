@@ -1208,20 +1208,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="auto-sample-code" class="autoSample"
 													style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-																</code>
+																																<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																															</code>
 												<code id="auto-sample-code2" class="autoSample"
 													style="display:<?php echo ($arr['sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. R+Year+Province Code+VL+Increment Counter (R18NCDVL0001)"); ?>
-																</code>
+																																<?php echo _translate("eg. R+Year+Province Code+VL+Increment Counter (R18NCDVL0001)"); ?>
+																															</code>
 												<code id="auto-sample-code-MMYY" class="autoSample"
 													style="display:<?php echo ($arr['sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (VL0517999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (VL0517999)"); ?>
+																															</code>
 												<code id="auto-sample-code-YY" class="autoSample"
 													style="display:<?php echo ($arr['sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Year+Increment Counter (VL17999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Year+Increment Counter (VL17999)"); ?>
+																															</code>
 											</div>
 										</div><br />
 										<div class="row">
@@ -1336,12 +1336,12 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-6">
 												<div class="form-group">
 													<label for="vl_show_participant_name_in_manifest"
-														class="col-lg-4 control-label"><?php echo _translate("VL Show Participant Name in Manifest"); ?></label>
+														class="col-lg-4 control-label"><?php echo _translate("Show Participant Name in VL Manifest"); ?></label>
 													<div class="col-lg-4">
 														<select id="vl_show_participant_name_in_manifest"
 															name="vl_show_participant_name_in_manifest" type="text"
 															class="form-control readPage"
-															title="<?php echo _translate('Please select VL Participant Name in Manifest'); ?>">
+															title="<?php echo _translate('Please select Participant Name in VL Manifest'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?>
 															</option>
 															<option value="yes" <?php echo (isset($arr['vl_show_participant_name_in_manifest']) && $arr['vl_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>>
@@ -1485,20 +1485,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="eid_auto-sample-code" class="eid_autoSample"
 													style="display:<?php echo ($arr['eid_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-																</code>
+																																<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																															</code>
 												<code id="eid_auto-sample-code2" class="eid_autoSample"
 													style="display:<?php echo ($arr['eid_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. R+Year+Province Code+EID+Increment Counter (R18NCDEID0001)"); ?>
-																</code>
+																																<?php echo _translate("eg. R+Year+Province Code+EID+Increment Counter (R18NCDEID0001)"); ?>
+																															</code>
 												<code id="eid_auto-sample-code-MMYY" class="eid_autoSample"
 													style="display:<?php echo ($arr['eid_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (EID0517999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (EID0517999)"); ?>
+																															</code>
 												<code id="eid_auto-sample-code-YY" class="eid_autoSample"
 													style="display:<?php echo ($arr['eid_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Year+Increment Counter (EID17999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Year+Increment Counter (EID17999)"); ?>
+																															</code>
 											</div>
 										</div><br />
 										<div class="row">
@@ -1567,12 +1567,12 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-6">
 												<div class="form-group">
 													<label for="eid_show_participant_name_in_manifest"
-														class="col-lg-4 control-label"><?php echo _translate("EID Show Participant Name in Manifest"); ?></label>
+														class="col-lg-4 control-label"><?php echo _translate("Show Participant Name in EID Manifest"); ?></label>
 													<div class="col-lg-4">
 														<select id="eid_show_participant_name_in_manifest"
 															name="eid_show_participant_name_in_manifest" type="text"
 															class="form-control readPage"
-															title="<?php echo _translate('Please select EID Participant Name in Manifest'); ?>">
+															title="<?php echo _translate('Please select Show Participant Name in EID Manifest'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?>
 															</option>
 															<option value="yes" <?php echo (isset($arr['eid_show_participant_name_in_manifest']) && $arr['eid_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>>
@@ -1695,20 +1695,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="covid19_auto-sample-code" class="covid19_autoSample"
 													style="display:<?php echo ($arr['covid19_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-																</code>
+																																<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																															</code>
 												<code id="covid19_auto-sample-code2" class="covid19_autoSample"
 													style="display:<?php echo ($arr['covid19_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. R+Year+Province Code+covid19+Increment Counter (R18NCDC190001)"); ?>
-																</code>
+																																<?php echo _translate("eg. R+Year+Province Code+covid19+Increment Counter (R18NCDC190001)"); ?>
+																															</code>
 												<code id="covid19_auto-sample-code-MMYY" class="covid19_autoSample"
 													style="display:<?php echo ($arr['covid19_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
+																															</code>
 												<code id="covid19_auto-sample-code-YY" class="covid19_autoSample"
 													style="display:<?php echo ($arr['covid19_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
+																															</code>
 											</div>
 										</div><br />
 
@@ -1780,12 +1780,12 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-6">
 												<div class="form-group">
 													<label for="eid_show_participant_name_in_manifest"
-														class="col-lg-4 control-label"><?php echo _translate("COVID-19 Show Participant Name in Manifest"); ?></label>
+														class="col-lg-4 control-label"><?php echo _translate("Show Participant Name in COVID-19 Manifest"); ?></label>
 													<div class="col-lg-4">
 														<select id="covid19_show_participant_name_in_manifest"
 															name="covid19_show_participant_name_in_manifest" type="text"
 															class="form-control readPage"
-															title="<?php echo _translate('Please select COVID-19 Show Participant Name in Manifest'); ?>">
+															title="<?php echo _translate('Please select Show Participant Name in COVID-19 Manifest'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?>
 															</option>
 															<option value="yes" <?php echo (isset($arr['covid19_show_participant_name_in_manifest']) && $arr['covid19_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>>
@@ -1885,20 +1885,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="hepatitis_auto-sample-code" class="hepatitis_autoSample"
 													style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-																</code>
+																																<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																															</code>
 												<code id="hepatitis_auto-sample-code2" class="hepatitis_autoSample"
 													style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. R+Year+Province Code+hepatitis+Increment Counter (R18NCDC190001)"); ?>
-																</code>
+																																<?php echo _translate("eg. R+Year+Province Code+hepatitis+Increment Counter (R18NCDC190001)"); ?>
+																															</code>
 												<code id="hepatitis_auto-sample-code-MMYY" class="hepatitis_autoSample"
 													style="display:<?php echo ($arr['hepatitis_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (HEP0517999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (HEP0517999)"); ?>
+																															</code>
 												<code id="hepatitis_auto-sample-code-YY" class="hepatitis_autoSample"
 													style="display:<?php echo ($arr['hepatitis_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Year+Increment Counter (HEP17999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Year+Increment Counter (HEP17999)"); ?>
+																															</code>
 											</div>
 										</div><br />
 
@@ -1949,12 +1949,12 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-6">
 												<div class="form-group">
 													<label for="hepatitis_show_participant_name_in_manifest"
-														class="col-lg-4 control-label"><?php echo _translate("Hepatitis Show Participant Name in Manifest"); ?></label>
+														class="col-lg-4 control-label"><?php echo _translate("Show Participant Name in Hepatitis Manifest"); ?></label>
 													<div class="col-lg-4">
 														<select id="hepatitis_show_participant_name_in_manifest"
 															name="hepatitis_show_participant_name_in_manifest" type="text"
 															class="form-control readPage"
-															title="<?php echo _translate('Please select Hepatitis Participant Name in Manifest'); ?>">
+															title="<?php echo _translate('Please select Participant Name in Hepatitis Manifest'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?>
 															</option>
 															<option value="yes" <?php echo (isset($arr['hepatitis_show_participant_name_in_manifest']) && $arr['hepatitis_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>>
@@ -2049,20 +2049,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="tb_auto-sample-code" class="tb_autoSample"
 													style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-																</code>
+																																<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																															</code>
 												<code id="tb_auto-sample-code2" class="tb_autoSample"
 													style="display:<?php echo ($arr['tb_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. R+Year+Province Code+tb+Increment Counter (R18NCDC190001)"); ?>
-																</code>
+																																<?php echo _translate("eg. R+Year+Province Code+tb+Increment Counter (R18NCDC190001)"); ?>
+																															</code>
 												<code id="tb_auto-sample-code-MMYY" class="tb_autoSample"
 													style="display:<?php echo ($arr['tb_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
+																															</code>
 												<code id="tb_auto-sample-code-YY" class="tb_autoSample"
 													style="display:<?php echo ($arr['tb_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
+																															</code>
 											</div>
 										</div><br />
 
@@ -2132,12 +2132,12 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-6">
 												<div class="form-group">
 													<label for="tb_show_participant_name_in_manifest"
-														class="col-lg-4 control-label"><?php echo _translate("TB Show Participant Name in Manifest"); ?></label>
+														class="col-lg-4 control-label"><?php echo _translate("Show Participant Name in TB Manifest"); ?></label>
 													<div class="col-lg-4">
 														<select id="tb_show_participant_name_in_manifest"
 															name="tb_show_participant_name_in_manifest" type="text"
 															class="form-control readPage"
-															title="<?php echo _translate('Please select TB Participant Name in Manifest'); ?>">
+															title="<?php echo _translate('Please select Participant Name in TB Manifest'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?>
 															</option>
 															<option value="yes" <?php echo (isset($arr['tb_show_participant_name_in_manifest']) && $arr['tb_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>>
@@ -2235,20 +2235,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="cd4_auto-sample-code" class="cd4_autoSample"
 													style="display:<?php echo ($arr['cd4_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-																</code>
+																																<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																															</code>
 												<code id="cd4_auto-sample-code2" class="cd4_autoSample"
 													style="display:<?php echo ($arr['cd4_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. R+Year+Province Code+cd4+Increment Counter (R18NCDC190001)"); ?>
-																</code>
+																																<?php echo _translate("eg. R+Year+Province Code+cd4+Increment Counter (R18NCDC190001)"); ?>
+																															</code>
 												<code id="cd4_auto-sample-code-MMYY" class="cd4_autoSample"
 													style="display:<?php echo ($arr['cd4_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
+																															</code>
 												<code id="cd4_auto-sample-code-YY" class="cd4_autoSample"
 													style="display:<?php echo ($arr['cd4_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
+																															</code>
 											</div>
 										</div><br />
 										<div class="row">
@@ -2298,12 +2298,12 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-6">
 												<div class="form-group">
 													<label for="cd4_show_participant_name_in_manifest"
-														class="col-lg-4 control-label"><?php echo _translate("cd4 Show Participant Name in Manifest"); ?></label>
+														class="col-lg-4 control-label"><?php echo _translate(text: "Show Participant Name in CD4 Manifest"); ?></label>
 													<div class="col-lg-4">
 														<select id="cd4_show_participant_name_in_manifest"
 															name="cd4_show_participant_name_in_manifest" type="text"
 															class="form-control readPage"
-															title="<?php echo _translate('Please select cd4 Participant Name in Manifest'); ?>">
+															title="<?php echo _translate('Please select Participant Name in CD4 Manifest'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?>
 															</option>
 															<option value="yes" <?php echo (isset($arr['cd4_show_participant_name_in_manifest']) && $arr['cd4_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>>
@@ -2402,20 +2402,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-12" style="text-align:center;">
 												<code id="generic_auto-sample-code" class="generic_autoSample"
 													style="display:<?php echo ($arr['generic_sample_code'] == 'auto') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
-																</code>
+																																<?php echo _translate("eg. Province Code+Year+Month+Date+Increment Counter"); ?>
+																															</code>
 												<code id="generic_auto-sample-code2" class="generic_autoSample"
 													style="display:<?php echo ($arr['generic_sample_code'] == 'auto2') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. R+Year+Province Code+tb+Increment Counter (R18NCDLAB0001)"); ?>
-																</code>
+																																<?php echo _translate("eg. R+Year+Province Code+tb+Increment Counter (R18NCDLAB0001)"); ?>
+																															</code>
 												<code id="generic_auto-sample-code-MMYY" class="generic_autoSample"
 													style="display:<?php echo ($arr['generic_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (LAB0517999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (LAB0517999)"); ?>
+																															</code>
 												<code id="generic_auto-sample-code-YY" class="generic_autoSample"
 													style="display:<?php echo ($arr['generic_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-																	<?php echo _translate("eg. Prefix+Year+Increment Counter (LAB17999)"); ?>
-																</code>
+																																<?php echo _translate("eg. Prefix+Year+Increment Counter (LAB17999)"); ?>
+																															</code>
 											</div>
 										</div><br />
 
@@ -2484,12 +2484,12 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="col-md-6">
 												<div class="form-group">
 													<label for="generic_show_participant_name_in_manifest"
-														class="col-lg-4 control-label"><?php echo _translate("Other Lab Tests Show Participant Name in Manifest"); ?></label>
+														class="col-lg-4 control-label"><?php echo _translate("Show Participant Name in Custom Lab Tests Manifest"); ?></label>
 													<div class="col-lg-4">
 														<select id="generic_show_participant_name_in_manifest"
 															name="generic_show_participant_name_in_manifest" type="text"
 															class="form-control readPage"
-															title="<?php echo _translate('Please select Other Lab Tests Participant Name in Manifest'); ?>">
+															title="<?php echo _translate('Please select Participant Name in Custom Lab Tests Manifest'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?>
 															</option>
 															<option value="yes" <?php echo (isset($arr['generic_show_participant_name_in_manifest']) && $arr['generic_show_participant_name_in_manifest'] == 'yes') ? "selected='selected'" : ''; ?>>
