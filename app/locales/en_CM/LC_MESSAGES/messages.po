@@ -1811,7 +1811,7 @@ msgstr "Registered via DAMA and Tested"
 
 #: admin/api-dashboard/api-dashboard.php:479
 msgid "Registered vis API/EMR and Not Yet Tested"
-msgstr "Registered vis DAMA and Not Yet Tested"
+msgstr "Registered via DAMA and Not Yet Tested"
 
 #: admin/api-dashboard/api-dashboard.php:480
 msgid "Results Sent back to API/EMR"

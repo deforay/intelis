@@ -2774,7 +2774,7 @@ msgstr "Actions"
 
 #: app/admin/api-dashboard/missing-samples-detail.php:335
 msgid "Follow-up Actions"
-msgstr "Conditions de l'email marketing"
+msgstr "Actions de suivi"
 
 #: app/admin/api-dashboard/missing-samples-detail.php:339
 msgid "Sample Code"
@@ -4070,7 +4070,7 @@ msgstr "Échantillon reçu le"
 #: app/vl/program-management/vl-export-data.php:497
 #: app/vl/requests/export-vl-requests.php:30
 msgid "Sample Tested On"
-msgstr "Echantillon testé le"
+msgstr "Échantillon testé le"
 
 #: app/admin/monitoring/export-test-results-report.php:36
 #: app/admin/monitoring/test-results-metadata.php:143
@@ -4782,7 +4782,7 @@ msgstr "Dernier résultat reçu du laboratoire"
 #: app/vl/requests/sample-storage.php:656 app/vl/requests/vl-requests.php:1298
 #: app/vl/results/vl-failed-results.php:618
 msgid "Unable to generate the excel file"
-msgstr "Impossible de générer le fichier excel"
+msgstr "Impossible de générer le fichier Excel"
 
 #: app/admin/monitoring/log-files.php:10 app/admin/monitoring/log-files.php:300
 msgid "Log File Viewer"
@@ -6823,7 +6823,7 @@ msgstr "Feuille de test"
 
 #: app/batch/generate-batch-pdf.php:111
 msgid "LIS BATCH PDF"
-msgstr "LIS BATCH PDF"
+msgstr "PDF par lot LIS"
 
 #: app/batch/generate-batch-pdf.php:112 app/batch/generate-batch-pdf.php:113
 #: app/batch/generate-compact-batch-pdf.php:115
@@ -9335,7 +9335,7 @@ msgstr "Sélectionner au moins un filtre pour obtenir un rapport"
 #: app/vl/program-management/vl-export-data.php:863
 #: app/vl/program-management/vl-sample-status.php:500
 msgid "Unable to generate excel"
-msgstr "Impossible de générer le fichier excel"
+msgstr "Impossible de générer le fichier Excel"
 
 #: app/cd4/management/cd4-export-data.php:605
 #: app/covid-19/management/covid-19-export-data.php:621
@@ -9541,7 +9541,7 @@ msgstr "Résultat Date d'impression"
 #: app/hepatitis/management/hepatitis-sample-status.php:119
 #: app/tb/management/tb-sample-status.php:118
 msgid "Sample Email Date"
-msgstr "Exemple-Date d'envoie de l'email"
+msgstr "Date d'envoi de l'échantillon par courriel"
 
 #: app/cd4/management/cd4-sample-status.php:153
 #: app/covid-19/management/covid-19-sample-status.php:151
@@ -9662,7 +9662,7 @@ msgstr "Sélectionner le nom de FOSA"
 #: app/hepatitis/management/hepatitis-testing-target-report.php:379
 #: app/vl/program-management/vlMonitoringReport.php:469
 msgid "Unable to generate excel file"
-msgstr "Impossible de générer le fichier excel"
+msgstr "Impossible de générer le fichier Excel"
 
 #: app/cd4/management/cd4-testing-target-report.php:421
 #: app/cd4/results/cd4-result-status.php:251
@@ -9998,7 +9998,7 @@ msgstr "Voir"
 #: app/hepatitis/management/get-data-export.php:268
 #: app/tb/management/get-data-export.php:283
 msgid "Result PDF"
-msgstr "Résultats PDF"
+msgstr "Résultat en PDF"
 
 #: app/cd4/management/get-data-export.php:273
 #: app/covid-19/management/get-data-export.php:273
@@ -10961,7 +10961,7 @@ msgstr "Date de réception au labo"
 #: app/tb/requests/addSamplesFromManifest.php:63
 #: app/vl/requests/addSamplesFromManifest.php:79
 msgid "Activate Samples"
-msgstr "Echantillons activés"
+msgstr "Activer les échantillons"
 
 #: app/cd4/requests/add-samples-from-manifest.php:111
 #: app/cd4/requests/cd4-requests.php:679
@@ -11897,7 +11897,7 @@ msgstr "CD4 | Voir toutes les demandes"
 #: app/system/translate-strings.php:62 app/tb/results/tb-failed-results.php:54
 #: app/vl/results/vl-failed-results.php:52
 msgid "Failed/Hold Samples"
-msgstr "Échec/Echantillons en attente"
+msgstr "Échec/Échantillons en attente"
 
 #: app/cd4/results/cd4-failed-results.php:138
 #: app/covid-19/results/covid-19-failed-results.php:137
@@ -12176,7 +12176,7 @@ msgstr "Veuillez selectionner le Laboratoire de test"
 #: app/tb/results/tb-print-results.php:201
 #: app/vl/results/vl-print-results.php:377
 msgid "Print Selected Results PDF"
-msgstr "Imprimer les résultats sélectionnés PDF"
+msgstr "Imprimer les résultats sélectionnés en PDF"
 
 #: app/cd4/results/cd4-print-results.php:379
 #: app/covid-19/results/covid-19-print-results.php:385
@@ -12186,7 +12186,7 @@ msgstr "Imprimer les résultats sélectionnés PDF"
 #: app/tb/results/tb-print-results.php:371
 #: app/vl/results/vl-print-results.php:761
 msgid "Print selected Results PDF"
-msgstr "Imprimer les résultats sélectionnés PDF"
+msgstr "Imprimer les résultats sélectionnés en PDF"
 
 #: app/cd4/results/cd4-print-results.php:884
 #: app/cd4/results/email-results.php:423 app/cd4/results/email-results.php:432
@@ -12482,7 +12482,7 @@ msgstr "Envoyer par courriel les résultats du test CD4"
 #: app/vl/results/email-results.php:57 app/vl/results/email-results.php:64
 #: app/vl/results/vlResultMail.php:57 app/vl/results/vlResultMail.php:64
 msgid "E-mail Test Result"
-msgstr "Envoie de résultats par email"
+msgstr "Envoyer le résultat du test par courriel"
 
 #: app/cd4/results/email-results.php:85 app/cd4/results/email-results.php:88
 #: app/covid-19/results/email-results.php:87
@@ -12830,7 +12830,7 @@ msgstr "Bonjour"
 #: app/tb/results/email-results.php:360 app/vl/results/email-results.php:360
 #: app/vl/results/vlResultMail.php:360
 msgid "Please find the test results attached with this email"
-msgstr "Veuillez voir les résultats des tests sont joints à ce courriel"
+msgstr "Veuillez trouver les résultats des tests en pièce jointe"
 
 #: app/cd4/results/email-results.php:358
 #: app/covid-19/results/email-results.php:360
@@ -14114,7 +14114,7 @@ msgstr "Pays"
 
 #: app/covid-19/management/covid-19-export-data.php:611
 msgid "Unable to generate excel."
-msgstr "Impossible de générer excel."
+msgstr "Impossible de générer le fichier Excel."
 
 #: app/covid-19/management/covid-19-sample-rejection-report.php:6
 msgid "Covid-19 | Sample Rejection Report"
@@ -14134,7 +14134,7 @@ msgstr "Covid-19-Statut d'echantillons"
 
 #: app/covid-19/management/covid-19-sample-status.php:111
 msgid "Covid-19 Sample ID"
-msgstr "Covid-19-No Echantillon"
+msgstr "ID échantillon Covid-19"
 
 #: app/covid-19/management/covid-19-sample-status.php:117
 #: app/eid/management/eid-sample-status.php:140
@@ -14841,7 +14841,7 @@ msgstr "Dem. Type d'échantillon"
 #: app/hepatitis/requests/hepatitis-requests.php:191
 #: app/tb/requests/tb-requests.php:194
 msgid "Sample With Result"
-msgstr "Echantillon avec résultats"
+msgstr "Échantillon avec résultat"
 
 #: app/covid-19/requests/covid-19-requests.php:243
 #: app/eid/requests/eid-requests.php:223
@@ -14849,7 +14849,7 @@ msgstr "Echantillon avec résultats"
 #: app/hepatitis/requests/hepatitis-requests.php:194
 #: app/tb/requests/tb-requests.php:195
 msgid "Sample Without Result"
-msgstr "Echantillons sans résultats"
+msgstr "Échantillon sans résultat"
 
 #: app/covid-19/requests/covid-19-requests.php:401
 #: app/covid-19/requests/covid-19-requests.php:441
@@ -15998,7 +15998,7 @@ msgstr "Veuillez sélectionner le type de FOSA"
 #: app/covid-19/requests/forms/add-cameroon.php:626
 #: app/facilities/addFacility.php:158 app/facilities/editFacility.php:233
 msgid "Email(s)"
-msgstr "Email(s)"
+msgstr "Courriel(s)"
 
 #: app/covid-19/requests/forms/add-cameroon.php:638
 #: app/facilities/addFacility.php:198 app/facilities/editFacility.php:267
@@ -16697,7 +16697,7 @@ msgstr "Les résultats du Covid-19 ont été mis à jour avec succès"
 
 #: app/covid-19/results/email-results.php:9
 msgid "Email COVID-19 Test Results"
-msgstr "Résultats du test COVID-19 par courriel"
+msgstr "Envoyer par courriel les résultats COVID-19"
 
 #: app/covid-19/results/forms/update-cameroon-result.php:93
 msgid "SITE INFORMATIO"
@@ -16767,7 +16767,7 @@ msgstr "Résultats pas encore imprimés"
 
 #: app/dashboard/getSampleCount.php:168
 msgid "Samples with Accepted Results"
-msgstr "Echantillons avec résultats acceptés"
+msgstr "Échantillons avec résultats acceptés"
 
 #: app/dashboard/getSampleCount.php:171 app/dashboard/getSampleResult.php:752
 msgid "Samples Rejected"
@@ -16803,7 +16803,7 @@ msgstr "ÉCHANTILLONS REJETÉS"
 
 #: app/dashboard/getSampleResult.php:423
 msgid "SAMPLES WITH NO RESULTS"
-msgstr "Echantillons sans résultats"
+msgstr "ÉCHANTILLONS SANS RÉSULTATS"
 
 #: app/dashboard/getSampleResult.php:426
 msgid "(LAST 6 MONTHS)"
@@ -18533,7 +18533,7 @@ msgstr "Le résultat EID mis à jour avec succès"
 #: app/eid/results/eid-print-results.php:312
 #: app/system/translate-strings.php:111
 msgid "Print Result PDF"
-msgstr "Imprimer Résultat PDF"
+msgstr "Imprimer le résultat en PDF"
 
 #: app/eid/results/eid-update-result-helper.php:132
 msgid "EID result updated successfully"
@@ -18541,7 +18541,7 @@ msgstr "Le résultat de l'EID a été mis à jour avec succès"
 
 #: app/eid/results/email-results.php:9
 msgid "Email EID Test Results"
-msgstr "Envoyé Résultats EID par courrier électronique"
+msgstr "Envoyer par courriel les résultats EID"
 
 #: app/eid/results/forms/update-burkina-faso-result.php:52
 #: app/eid/results/forms/update-southsudan-result.php:55
@@ -19932,7 +19932,7 @@ msgstr "Veuillez saisir l'ordre des champs"
 #: app/generic-tests/configuration/clone-test-type.php:661
 #: app/generic-tests/configuration/edit-test-type.php:679
 msgid "Test Results Configuration"
-msgstr "Résultats de Configuration des tests"
+msgstr "Configuration des résultats des tests"
 
 #: app/generic-tests/configuration/add-test-type.php:281
 #: app/generic-tests/configuration/clone-test-type.php:850
@@ -19952,7 +19952,7 @@ msgstr "Unité de résultats des tests"
 #: app/generic-tests/requests/getTestTypeForm.php:366
 #: app/generic-tests/results/update-generic-test-result.php:1894
 msgid "Enter test result unit"
-msgstr "Veuillez entrer l'unité de résultat des test"
+msgstr "Veuillez saisir l'unité de résultat du test"
 
 #: app/generic-tests/configuration/add-test-type.php:283
 #: app/generic-tests/configuration/clone-test-type.php:856
@@ -20118,7 +20118,7 @@ msgstr "Sélectionner les symptômes"
 
 #: app/generic-tests/configuration/clone-test-type.php:990
 msgid "Select Test Result Unit"
-msgstr "Sélectionner l'unité de résultat des test"
+msgstr "Sélectionner l'unité de résultat du test"
 
 #: app/generic-tests/configuration/clone-test-type.php:1123
 #: app/generic-tests/configuration/edit-test-type.php:1179
@@ -20518,7 +20518,7 @@ msgstr "Méthode de test ajoutée avec succès"
 #: app/generic-tests/configuration/test-result-units/generic-test-result-units.php:23
 #: app/system/translate-strings.php:35
 msgid "Test Result Units"
-msgstr "Unités des Résultat du test"
+msgstr "Unités des résultats de test"
 
 #: app/generic-tests/configuration/test-result-units/generic-add-test-result-units.php:11
 #: app/generic-tests/configuration/test-result-units/generic-test-result-units.php:37
@@ -20529,7 +20529,7 @@ msgstr "Ajouter les unités de résultats de test"
 #: app/generic-tests/configuration/test-result-units/generic-add-test-result-units.php:35
 #: app/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:47
 msgid "Test Result Unit Name"
-msgstr "Nom de l'unité de résultats"
+msgstr "Nom de l'unité de résultat"
 
 #: app/generic-tests/configuration/test-result-units/generic-add-test-result-units.php:35
 msgid "Please enter test result unit name"
@@ -21377,7 +21377,7 @@ msgstr "Impossible de générer l'exportation"
 
 #: app/generic-tests/results/email-results.php:9
 msgid "Email Generic Test Results"
-msgstr "Résultats du test de l'e-mail générique"
+msgstr "Envoyer par courriel les résultats des tests génériques"
 
 #: app/generic-tests/results/generic-print-result.php:10
 #: app/vl/results/vl-print-results.php:9 app/vl/results/vl-print-results.php:54
@@ -21640,7 +21640,7 @@ msgstr ""
 
 #: app/global-config/editGlobalConfig.php:739
 msgid "Support Email"
-msgstr "Email du support"
+msgstr "Courriel du support"
 
 #: app/global-config/editGlobalConfig.php:744
 #: app/global-config/editGlobalConfig.php:798
@@ -22020,11 +22020,11 @@ msgstr "Veuillez sélectionner le nom du participant EID dans le manifeste"
 
 #: app/global-config/editGlobalConfig.php:1595
 msgid "Covid-19 Settings"
-msgstr "Covid-19 Paramètres"
+msgstr "Paramètres Covid-19"
 
 #: app/global-config/editGlobalConfig.php:1604
 msgid "Covid-19 Positive Confirmatory Tests Required"
-msgstr "Covid-19 Tests de confirmation positifs requis"
+msgstr "Tests de confirmation Covid-19 positifs requis"
 
 #: app/global-config/editGlobalConfig.php:1610
 msgid "Please select covid19 report type"
@@ -22139,7 +22139,7 @@ msgstr ""
 
 #: app/global-config/editGlobalConfig.php:2161
 msgid "CD4 Settings"
-msgstr "CD4 Paramètres"
+msgstr "Paramètres CD4"
 
 #: app/global-config/editGlobalConfig.php:2185
 #: app/global-config/editGlobalConfig.php:2196
@@ -22165,7 +22165,7 @@ msgstr "Veuillez sélectionner le nom du participant au cd4 dans le manifeste"
 
 #: app/global-config/editGlobalConfig.php:2326
 msgid "Other Lab Tests Settings"
-msgstr "Autres tests de laboratoire Paramètres"
+msgstr "Paramètres des autres tests de laboratoire"
 
 #: app/global-config/editGlobalConfig.php:2350
 #: app/global-config/editGlobalConfig.php:2361
@@ -22227,7 +22227,7 @@ msgstr "Veuillez saisir l'URL du tableau de bord national"
 
 #: app/global-config/editGlobalConfig.php:2559
 msgid "Viral Load Result PDF Settings"
-msgstr "Résultat de la charge virale en paramètres PDF"
+msgstr "Paramètres PDF des résultats de charge virale"
 
 #: app/global-config/editGlobalConfig.php:2567
 msgid "Show Emoticon/Smiley"
@@ -22414,7 +22414,7 @@ msgstr "Résultats HBV CV"
 #: app/hepatitis/results/hepatitis-print-results.php:360
 #: app/hepatitis/results/hepatitis-print-results.php:395
 msgid "HCV VL Count"
-msgstr "Charge viraleHCV"
+msgstr "Charge virale HCV"
 
 #: app/hepatitis/management/hepatitis-clinic-report.php:560
 #: app/hepatitis/requests/hepatitis-dhis2.php:333
@@ -22452,7 +22452,7 @@ msgstr "Covid-19-Manifeste d'échantillons"
 
 #: app/hepatitis/management/hepatitis-sample-status.php:114
 msgid "Hepatitis Sample ID"
-msgstr "Hépatite-ID Echantillon"
+msgstr "ID échantillon hépatite"
 
 #: app/hepatitis/management/hepatitis-testing-target-report.php:8
 msgid "Hepatitis Quarterly Monitoring Report"
@@ -22702,7 +22702,7 @@ msgstr "résultats des tests à partir d'un fichier"
 
 #: app/import-result/import-file.php:57
 msgid "Test Results From File"
-msgstr "Importer le résultat à partir du fichier"
+msgstr "Résultats des tests depuis un fichier"
 
 #: app/import-result/import-file.php:61
 msgid "Import Result"
@@ -23794,7 +23794,7 @@ msgstr "Veuillez vérifier vos identifiants de connexion"
 #: app/mail/vlResultMail.php:9 app/vl/results/email-results.php:9
 #: app/vl/results/vlResultMail.php:9
 msgid "Email VL Test Results"
-msgstr "Résultats du test CV par courriel"
+msgstr "Envoyer par courriel les résultats CV"
 
 #: app/mail/vlResultMail.php:360
 msgid "Hi"
@@ -24197,7 +24197,7 @@ msgstr "-- Choisir la langue du système --"
 
 #: app/setup/index.php:456 app/system-admin/setup/index.php:93
 msgid "Email ID"
-msgstr "Email ID"
+msgstr "Adresse courriel"
 
 #: app/setup/index.php:466 app/system-admin/reset-password/get-user.php:40
 #: app/system-admin/setup/index.php:99
@@ -24376,7 +24376,7 @@ msgstr "Modifié le"
 
 #: app/specimen-referral-manifest/get-manifests.php:159
 msgid "Print Manifest PDF"
-msgstr "Imprimer le manifeste PDF"
+msgstr "Imprimer le bordereau en PDF"
 
 #: app/specimen-referral-manifest/move-manifest.php:12
 #: app/specimen-referral-manifest/view-manifests.php:48
@@ -24663,7 +24663,7 @@ msgstr "Clé secrète"
 
 #: app/system-admin/setup/index.php:94
 msgid "Please enter the email id"
-msgstr "Veuillez saisir l'identifiant de l'email"
+msgstr "Veuillez saisir l'adresse courriel"
 
 #: app/system-admin/setup/index.php:100
 msgid "Please enter the login id"
@@ -24810,7 +24810,7 @@ msgstr "Étiquettes manquantes sur le conteneur ou le formulaire de suivi"
 
 #: app/system/translate-strings-country-4.php:33
 msgid "Sample without request forms/Tracking forms"
-msgstr "Echantillon sans formulaire de demande/Formulaires de suivi"
+msgstr "Échantillon sans formulaire de demande/Formulaires de suivi"
 
 #: app/system/translate-strings-country-4.php:34
 msgid "Name/Information of requester is missing"
@@ -25172,7 +25172,7 @@ msgstr "Enregistrer les tests de confirmation"
 
 #: app/system/translate-strings.php:83
 msgid "Hepatitis Manifest"
-msgstr "Manifestation d'hépatite"
+msgstr "Bordereau hépatite"
 
 #: app/system/translate-strings.php:85
 msgid "TB Manifest"
@@ -25362,7 +25362,7 @@ msgstr "Gérer les Référence de l'hépatite"
 
 #: app/system/translate-strings.php:151
 msgid "Suppressed Target report"
-msgstr "Rapport sur les cibles supprimées"
+msgstr "Rapport sur les cibles de suppression virale"
 
 #: app/system/translate-strings.php:152
 msgid "Hepatitis Clinic Reports"
@@ -25526,7 +25526,7 @@ msgstr "Voir les manifestes COVID-19"
 
 #: app/system/translate-strings.php:198
 msgid "View Hepatitis Manifests"
-msgstr "Voir les manifestations de l'hépatite"
+msgstr "Voir les bordereaux hépatite"
 
 #: app/system/translate-strings.php:199
 msgid "View TB Manifests"
@@ -25534,7 +25534,7 @@ msgstr "Voir les manifestes du TB"
 
 #: app/system/translate-strings.php:200
 msgid "View Lab Tests Manifests"
-msgstr "Voir les manifestations des tests de laboratoire"
+msgstr "Voir les bordereaux des tests de laboratoire"
 
 #: app/system/translate-strings.php:201
 msgid "Add VL Manifests"
@@ -25550,7 +25550,7 @@ msgstr "Ajouter les manifestes COVID-19"
 
 #: app/system/translate-strings.php:204
 msgid "Add Hepatitis Manifests"
-msgstr "Ajouter les manifestations de l'hépatite"
+msgstr "Ajouter les bordereaux hépatite"
 
 #: app/system/translate-strings.php:205
 msgid "Add TB Manifests"
@@ -25558,7 +25558,7 @@ msgstr "Ajouter les manifestes du TB"
 
 #: app/system/translate-strings.php:206
 msgid "Add Lab Tests Manifests"
-msgstr "Ajouter des manifestations de tests de laboratoire"
+msgstr "Ajouter les bordereaux des tests de laboratoire"
 
 #: app/system/translate-strings.php:207
 msgid "Edit VL Manifests"
@@ -25574,7 +25574,7 @@ msgstr "Modifier les manifestes COVID-19"
 
 #: app/system/translate-strings.php:210
 msgid "Edit Hepatitis Manifests"
-msgstr "Modifier les manifestations de l'hépatite"
+msgstr "Modifier les bordereaux hépatite"
 
 #: app/system/translate-strings.php:211
 msgid "Edit TB Manifests"
@@ -25582,7 +25582,7 @@ msgstr "Modifier les manifestes de la tuberculose"
 
 #: app/system/translate-strings.php:212
 msgid "Edit Lab Tests Manifests"
-msgstr "Modifier les tests de laboratoire Manifestations"
+msgstr "Modifier les bordereaux des tests de laboratoire"
 
 #: app/system/translate-strings.php:213
 msgid "Move VL Manifests"
@@ -25598,7 +25598,7 @@ msgstr "Déplacer les manifestes COVID-19"
 
 #: app/system/translate-strings.php:216
 msgid "Move Hepatitis Manifests"
-msgstr "Déplacer les manifestations de l'hépatite"
+msgstr "Déplacer les bordereaux hépatite"
 
 #: app/system/translate-strings.php:217
 msgid "Move TB Manifests"
@@ -25606,7 +25606,7 @@ msgstr "Déplacer les manifestes de la tuberculose"
 
 #: app/system/translate-strings.php:218
 msgid "Move Lab Tests Manifests"
-msgstr "Déplacer les tests de laboratoire Manifestations"
+msgstr "Déplacer les bordereaux des tests de laboratoire"
 
 #: app/system/translate-strings.php:219
 msgid "Add/Edit Test Types"
@@ -25630,7 +25630,7 @@ msgstr "Gérer les motifs d'échec du test"
 
 #: app/system/translate-strings.php:224
 msgid "Manage Test Result Units"
-msgstr "Gérer les unités de résultats"
+msgstr "Gérer les unités de résultats de test"
 
 #: app/system/translate-strings.php:225
 msgid "Manage Test Methods"
@@ -25658,7 +25658,7 @@ msgstr "Modifier les échantillons de tests génériques verrouillés"
 
 #: app/system/translate-strings.php:234
 msgid "Email Test Result"
-msgstr "Résultat du test de l'email"
+msgstr "Envoyer le résultat du test par courriel"
 
 #: app/system/translate-strings.php:235
 msgid "Export CD4 Requests"
@@ -25666,11 +25666,11 @@ msgstr "Exporter les demandes de CD4"
 
 #: app/system/translate-strings.php:236
 msgid "Add CD4 Manifests"
-msgstr "Ajouter les manifestations CD4"
+msgstr "Ajouter les bordereaux CD4"
 
 #: app/system/translate-strings.php:237
 msgid "Edit CD4 Manifests"
-msgstr "Modifier les manifestations CD4"
+msgstr "Modifier les bordereaux CD4"
 
 #: app/system/translate-strings.php:238
 msgid "View CD4 Manifests"
@@ -25682,7 +25682,7 @@ msgstr "Modifier les lots"
 
 #: app/system/translate-strings.php:240
 msgid "Email Test Results"
-msgstr "Résultats du test de l'email"
+msgstr "Envoyer les résultats des tests par courriel"
 
 #: app/system/translate-strings.php:242
 msgid "CD4 Clinic Reports"
@@ -25960,7 +25960,7 @@ msgstr "Tuberculose-Status d'échantillon"
 
 #: app/tb/management/tb-sample-status.php:113
 msgid "TB Sample ID"
-msgstr "ID Echantillons Tuberculose"
+msgstr "ID échantillon TB"
 
 #: app/tb/reference/add-rejection-reason-helper.php:33
 msgid "TB Sample Rejection Reasons details added successfully"
@@ -26871,7 +26871,7 @@ msgstr "Modifier la nouvelle demande"
 
 #: app/tb/results/getTbReferralDetails.php:146
 msgid "Print Manifest Referral PDF"
-msgstr "Imprimer le manifeste de référence PDF"
+msgstr "Imprimer le bordereau de référence en PDF"
 
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:190
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:212
@@ -27077,7 +27077,7 @@ msgstr "Courriel"
 #: app/users/editUser.php:132
 #: app/vl/result-mail/editTestResultEmailConfig.php:60
 msgid "Please enter email"
-msgstr "Veuillez entrer votre email"
+msgstr "Veuillez saisir votre courriel"
 
 #: app/users/addUser.php:87 app/users/edit-profile.php:94
 #: app/users/editUser.php:134
@@ -27134,7 +27134,7 @@ msgstr "Cet utilisateur a-t-il accès à l'application mobile ?"
 
 #: app/users/addUser.php:177 app/users/editUser.php:246
 msgid "(Used to embed in Result PDF)"
-msgstr "(Utilisé pour intégrer dans le résultat PDF)"
+msgstr "(Utilisé pour intégrer dans le PDF du résultat)"
 
 #: app/users/addUser.php:189 app/users/editUser.php:265
 msgid "Select Signature Image"
@@ -27214,7 +27214,7 @@ msgstr "Veuillez sélectionner votre localité"
 
 #: app/users/edit-profile.php:92 app/users/edit-profile.php:94
 msgid "Official Email"
-msgstr "Email officiel"
+msgstr "Courriel officiel"
 
 #: app/users/edit-profile.php:149
 msgid "Recent Login Attempts"
@@ -27509,7 +27509,7 @@ msgstr "Collecté - Imprimé pour la première fois"
 #: app/vl/program-management/getSuppressedTargetReport.php:134
 #: app/vl/program-management/getSuppressedTargetReport.php:139
 msgid "VL Suppressed Testing Target"
-msgstr "cible de suppression CV (cible de test supprimée)"
+msgstr "Cible de suppression virale CV"
 
 #: app/vl/program-management/getSuppressedTargetReport.php:154
 msgid "No of target in month %"
@@ -27706,12 +27706,12 @@ msgstr "Suppression de la charge virale"
 #: app/vl/program-management/vl-export-data.php:167
 #: app/vl/requests/vl-requests.php:203
 msgid "Suppressed"
-msgstr "Supprimé"
+msgstr "Indétectable"
 
 #: app/vl/program-management/vl-export-data.php:168
 #: app/vl/requests/vl-requests.php:204
 msgid "Not Suppressed"
-msgstr "Non supprimé"
+msgstr "Détectable"
 
 #: app/vl/program-management/vl-export-data.php:417
 msgid "Lab Assigned_code"
@@ -28854,7 +28854,7 @@ msgstr "Code de l'assurance maladie"
 #: app/vl/result-mail/editTestResultEmailConfig.php:35
 #: app/vl/result-mail/editTestResultEmailConfig.php:39
 msgid "Edit Test Result Email Configuration"
-msgstr "Modifier la configuration de l'e-mail des résultats du test"
+msgstr "Modifier la configuration de l'envoi des résultats par courriel"
 
 #: app/vl/result-mail/editTestResultEmailConfig.php:38
 msgid "Manage Test Result Email/SMS Config"
@@ -28909,7 +28909,7 @@ msgstr "Configuration des résultats par e-mail et SMS"
 #: app/vl/result-mail/testResultEmailConfig.php:10
 #: app/vl/result-mail/testResultEmailConfig.php:13
 msgid "Test Result Email/SMS Configuration"
-msgstr "Résultat du test Configuration de l'e-mail/SMS"
+msgstr "Configuration de l'envoi des résultats par courriel/SMS"
 
 #: app/vl/result-mail/testResultEmailConfig.php:30
 msgid "Config Name"
@@ -28999,7 +28999,7 @@ msgstr "Date de modification"
 
 #: app/vl/results/pdf/result-pdf-cameroon-cresar.php:192
 msgid "HIV VIRAL LOAD RESULT SHEET"
-msgstr "FICHE DE RESULTAT CHARGE VIRAL VIH"
+msgstr "FICHE DE RÉSULTAT CHARGE VIRALE VIH"
 
 #: app/vl/results/pdf/result-pdf-cameroon-cresar.php:199
 msgid "Patient ART Code"

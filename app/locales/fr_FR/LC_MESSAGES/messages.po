@@ -2626,7 +2626,7 @@ msgstr "Nombre"
 
 #: app/admin/api-dashboard/duplicates-detail.php:119
 msgid "Date Span"
-msgstr "Date Span"
+msgstr "Plage de dates"
 
 #: app/admin/api-dashboard/duplicates-detail.php:120
 #: app/facilities/addFacility.php:79 app/facilities/editFacility.php:141
@@ -5076,7 +5076,7 @@ msgstr "Statut de l'échantillon"
 #: app/tb/results/forms/update-rwanda.php:622
 #: app/tb/results/forms/update-rwanda.php:838
 msgid "Test Result"
-msgstr "Envoie de résultats par email"
+msgstr "Résultat du test"
 
 #: app/admin/monitoring/sources-of-requests.php:258
 msgid "Result Received/Entered Date and Time"
@@ -9440,7 +9440,7 @@ msgstr "Veuillez sélectionner le nom de la clinique"
 #: app/vl/program-management/sampleRejectionReport.php:146
 #: app/vl/results/vl-failed-results.php:350
 msgid "Select Labs"
-msgstr "Select Labs"
+msgstr "Sélectionner les laboratoires"
 
 #: app/cd4/management/cd4-sample-rejection-report.php:106
 #: app/covid-19/management/covid-19-sample-rejection-report.php:98
@@ -12248,7 +12248,7 @@ msgstr "Un maximum de 100 résultats peut être imprimé à la fois"
 #: app/hepatitis/results/hepatitis-result-status.php:10
 #: app/system/translate-strings.php:125 app/tb/results/tb-result-status.php:9
 msgid "Manage Result Status"
-msgstr "Gérer le status des résultats"
+msgstr "Gérer le statut des résultats"
 
 #: app/cd4/results/cd4-result-status.php:43
 #: app/vl/results/vlResultApproval.php:43
@@ -12479,7 +12479,7 @@ msgstr "Envoyer par courriel les résultats du test CD4"
 #: app/vl/results/email-results.php:57 app/vl/results/email-results.php:64
 #: app/vl/results/vlResultMail.php:57 app/vl/results/vlResultMail.php:64
 msgid "E-mail Test Result"
-msgstr "Envoie de résultats par email"
+msgstr "Envoyer le résultat du test par courriel"
 
 #: app/cd4/results/email-results.php:85 app/cd4/results/email-results.php:88
 #: app/covid-19/results/email-results.php:87
@@ -14134,11 +14134,11 @@ msgstr "Covid-19 | Rapport sur l'état de l'échantillon"
 
 #: app/covid-19/management/covid-19-sample-status.php:43
 msgid "Covid-19 Sample Status Report"
-msgstr "Covid-19-Rapport de status d'échantillons"
+msgstr "Rapport sur le statut des échantillons Covid-19"
 
 #: app/covid-19/management/covid-19-sample-status.php:46
 msgid "Covid-19 Sample Status"
-msgstr "Covid-19-Status d'echantillons"
+msgstr "Statut des échantillons Covid-19"
 
 #: app/covid-19/management/covid-19-sample-status.php:111
 msgid "Covid-19 Sample ID"
@@ -14475,7 +14475,7 @@ msgstr "Enlevé - Envoyé"
 #: app/covid-19/reference/covid19-test-reasons.php:10
 #: app/covid-19/reference/covid19-test-reasons.php:13
 msgid "Covid-19 Test Reasons"
-msgstr "Covid-19 Test Raisons"
+msgstr "Raisons du test Covid-19"
 
 #: app/covid-19/reference/add-comorbidity-helper.php:34
 msgid "Comorbidity details added successfully"
@@ -14491,7 +14491,7 @@ msgstr "Ajouter les comorbidités Covid-19"
 #: app/covid-19/reference/covid19-comorbidities.php:16
 #: app/covid-19/reference/covid19-comorbidities.php:19
 msgid "Covid-19 Co-morbidities"
-msgstr "Covid-19 Co-morbidités"
+msgstr "Comorbidités Covid-19"
 
 #: app/covid-19/reference/add-covid19-comorbidities.php:32
 #: app/covid-19/reference/add-covid19-comorbidities.php:34
@@ -14662,7 +14662,7 @@ msgstr "Ajouter les symptômes de Covid-19"
 #: app/covid-19/reference/covid19-symptoms.php:16
 #: app/covid-19/reference/covid19-symptoms.php:19
 msgid "Covid-19 Symptoms"
-msgstr "Covid-19 Symptômes"
+msgstr "Symptômes Covid-19"
 
 #: app/covid-19/reference/add-covid19-symptoms.php:34
 #: app/covid-19/reference/add-covid19-symptoms.php:36
@@ -14707,11 +14707,11 @@ msgstr "Veuillez saisir le statut de l'échantillon"
 #: app/covid-19/reference/add-covid19-test-reasons.php:12
 #: app/covid-19/reference/covid19-test-reasons.php:24
 msgid "Add Covid-19 Test Reasons"
-msgstr "Covid-19-Ajouter une nouvelle demande"
+msgstr "Ajouter des raisons de test Covid-19"
 
 #: app/covid-19/reference/add-rejection-reason-helper.php:33
 msgid "Covid-19 Sample Rejection Reasons details added successfully"
-msgstr "Covid-19 Sample Rejection Reasons détails ajoutés avec succès"
+msgstr "Détails des raisons de rejet d'échantillon Covid-19 ajoutés avec succès"
 
 #: app/covid-19/reference/add-sample-type-helper.php:28
 #: app/tb/reference/add-sample-type-helper.php:29
@@ -14720,7 +14720,7 @@ msgstr "Les détails du type d'échantillon ont été ajoutés avec succès"
 
 #: app/covid-19/reference/add-symptoms-helper.php:33
 msgid "Symptom details added successfully"
-msgstr "Demande de test TB ajoutée avec succès"
+msgstr "Détails du symptôme ajoutés avec succès"
 
 #: app/covid-19/reference/add-test-reasons-helper.php:26
 msgid "COVID 19 Test reasons details added successfully"
@@ -14755,7 +14755,7 @@ msgstr "Créé le"
 #: app/covid-19/reference/edit-covid19-qc-test-kit.php:36
 #: app/covid-19/results/edit-covid-19-qc-data.php:57
 msgid "Edit Covid-19 QC Test Kit"
-msgstr "Edit Covid-19 QC Test Kit"
+msgstr "Modifier le kit de test CQ Covid-19"
 
 #: app/covid-19/reference/save-covid19-qc-test-kits-helper.php:28
 #: app/covid-19/results/save-covid-19-qc-data.php:68
@@ -14764,7 +14764,7 @@ msgstr "Le kit de test Covid-19 QC a été sauvegardé avec succès"
 
 #: app/covid-19/reference/save-covid19-results-helper.php:31
 msgid "Covid-19 Results details saved successfully"
-msgstr "Covid-19 Les détails des résultats ont été sauvegardés avec succès"
+msgstr "Détails des résultats Covid-19 sauvegardés avec succès"
 
 #: app/covid-19/requests/addSamplesFromManifest.php:7
 #: app/covid-19/requests/addSamplesFromManifest.php:26
@@ -14815,7 +14815,7 @@ msgstr "La demande de Covid-19 a été mise à jour avec succès"
 
 #: app/covid-19/requests/covid-19-edit-request.php:13
 msgid "COVID-19 | Edit Request"
-msgstr "EID-Modifier la demande de test"
+msgstr "COVID-19 | Modifier la demande"
 
 #: app/covid-19/requests/covid-19-requests.php:11
 msgid "Covid-19 | View All Requests"
@@ -17060,15 +17060,15 @@ msgstr "EID | Rapport de rejet d'échantillon"
 
 #: app/eid/management/eid-sample-status.php:9
 msgid "EID | Sample Status Report"
-msgstr "EID-Rapport de status d'échantillons"
+msgstr "EID | Rapport sur le statut des échantillons"
 
 #: app/eid/management/eid-sample-status.php:47
 msgid "EID Sample Status Report"
-msgstr "EID-Rapport de status d'échantillons"
+msgstr "Rapport sur le statut des échantillons EID"
 
 #: app/eid/management/eid-sample-status.php:50
 msgid "EID Sample Status"
-msgstr "EID-Status d'échantillons"
+msgstr "Statut des échantillons EID"
 
 #: app/eid/management/eid-sample-status.php:122
 #: app/generic-tests/program-management/generic-sample-status.php:155
@@ -17102,7 +17102,7 @@ msgstr "Échantillons EID"
 #: app/eid/reference/add-eid-results.php:14 app/eid/reference/eid-results.php:9
 #: app/eid/reference/eid-results.php:16 app/eid/reference/eid-results.php:19
 msgid "EID Results"
-msgstr "EID-Imprimer le résultat"
+msgstr "Résultats EID"
 
 #: app/eid/management/getSampleStatus.php:351
 #: app/eid/management/getSampleStatus.php:356
@@ -17112,7 +17112,7 @@ msgstr "Délai d'exécution du laboratoire de l'EID"
 #: app/eid/reference/add-eid-results.php:11
 #: app/eid/reference/eid-results.php:33
 msgid "Add EID Results"
-msgstr "EID-Imprimer le résultat"
+msgstr "Ajouter des résultats EID"
 
 #: app/eid/reference/add-eid-results.php:35
 #: app/hepatitis/reference/add-hepatitis-results.php:35
@@ -17137,7 +17137,7 @@ msgstr "Motifs de rejet des échantillons de l'EID"
 #: app/eid/reference/add-eid-sample-type.php:10
 #: app/eid/reference/eid-sample-type.php:33
 msgid "Add EID Sample Type"
-msgstr "EID-Ajouter une nouvelle demande"
+msgstr "Ajouter un type d'échantillon EID"
 
 #: app/eid/reference/add-eid-sample-type.php:13
 #: app/eid/reference/eid-sample-type.php:9
@@ -17165,7 +17165,7 @@ msgstr "Type"
 
 #: app/eid/reference/save-eid-results-helper.php:37
 msgid "EID Results details saved successfully"
-msgstr "EID Les détails des résultats ont été enregistrés avec succès"
+msgstr "Détails des résultats EID enregistrés avec succès"
 
 #: app/eid/reference/save-eid-sample-rejection-reasons-helper.php:34
 msgid "EID Sample Rejection Reasons details added successfully"
@@ -17175,11 +17175,11 @@ msgstr ""
 
 #: app/eid/reference/save-eid-sample-type-helper.php:32
 msgid "EID Sample details saved successfully"
-msgstr "EID Les détails de l'échantillon ont été enregistrés avec succès"
+msgstr "Détails de l'échantillon EID enregistrés avec succès"
 
 #: app/eid/reference/save-eid-test-reasons-helper.php:32
 msgid "EID Test Reason details saved successfully"
-msgstr "EID Test Reason details saved successfully"
+msgstr "Détails de la raison du test EID enregistrés avec succès"
 
 #: app/eid/requests/addSamplesFromManifest.php:2
 #: app/eid/requests/addSamplesFromManifest.php:29
@@ -17188,7 +17188,7 @@ msgstr "EID | Ajouter des échantillons à partir du manifeste"
 
 #: app/eid/requests/addSamplesFromManifest.php:36
 msgid "EID Test Request"
-msgstr "EID-Demande de test"
+msgstr "Demande de test EID"
 
 #: app/eid/requests/addSamplesFromManifest.php:128
 #: app/eid/requests/eid-requests.php:512
@@ -17221,15 +17221,15 @@ msgstr "EID | Voir toutes les demandes"
 
 #: app/eid/requests/eid-requests.php:103
 msgid "EID Test Requests"
-msgstr "EID- Demandes de test"
+msgstr "Demandes de test EID"
 
 #: app/eid/requests/eid-requests.php:422 app/eid/requests/eid-requests.php:451
 msgid "Add new EID Request"
-msgstr "EID-Ajouter une nouvelle demande"
+msgstr "Ajouter une nouvelle demande EID"
 
 #: app/eid/requests/eid-requests.php:427 app/eid/requests/eid-requests.php:456
 msgid "Bulk Import EID Request"
-msgstr "EID-Import de résultats en bloc"
+msgstr "Importation en bloc de demandes EID"
 
 #: app/eid/requests/forms/add-burkina-faso.php:42
 #: app/eid/requests/forms/add-cameroon.php:43
@@ -17257,7 +17257,7 @@ msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)-FORMULAIRE DE DEMANDE DE TEST"
 #: app/eid/requests/forms/edit-cameroon.php:67
 #: app/eid/requests/forms/edit-rwanda.php:56
 msgid "Add EID Request"
-msgstr "EID-Ajouter une demande"
+msgstr "Ajouter une demande EID"
 
 #: app/eid/requests/forms/add-burkina-faso.php:52
 #: app/eid/requests/forms/edit-burkina-faso.php:59
@@ -18492,7 +18492,7 @@ msgstr "Raison de la répétition du test"
 #: app/eid/results/forms/update-rwanda-result.php:48
 #: app/eid/results/forms/update-sierraleone-result.php:55
 msgid "Edit EID Request"
-msgstr "EID-Modifier la demande de test"
+msgstr "Modifier la demande EID"
 
 #: app/eid/requests/forms/edit-cameroon.php:307
 #: app/eid/results/forms/update-cameroon-result.php:198
@@ -18533,7 +18533,7 @@ msgstr "Résultats de l'EID manuelle"
 #: app/eid/results/eid-print-results.php:50
 #: app/eid/results/eid-print-results.php:53
 msgid "Print EID Results"
-msgstr "EID-Imprimer le résultat"
+msgstr "Imprimer les résultats EID"
 
 #: app/eid/results/eid-print-results.php:140
 #: app/eid/results/eid-print-results.php:312
@@ -18944,7 +18944,7 @@ msgstr "Veuillez sélectionner le statut"
 
 #: app/facilities/addFacility.php:435 app/facilities/editFacility.php:555
 msgid "Report Format For EID"
-msgstr "EID-Rapport de status d'échantillons"
+msgstr "Format de rapport pour l'EID"
 
 #: app/facilities/addFacility.php:460 app/facilities/editFacility.php:579
 msgid "Report Format For Covid-19"
@@ -19007,7 +19007,7 @@ msgstr "Afficher le numéro de page dans le pied de page"
 #: app/facilities/addFacility.php:613 app/facilities/addFacility.php:616
 #: app/facilities/editFacility.php:750 app/facilities/editFacility.php:754
 msgid "Display Signature Table"
-msgstr "Table Signature Display"
+msgstr "Afficher le tableau de signatures"
 
 #: app/facilities/addFacility.php:629 app/facilities/addFacility.php:632
 #: app/facilities/editFacility.php:767 app/facilities/editFacility.php:773
@@ -19420,7 +19420,7 @@ msgstr ""
 
 #: app/footer.php:31
 msgid "Clear Cache"
-msgstr "Vider Cache"
+msgstr "Vider le cache"
 
 #: app/footer.php:43
 msgid "Force Remote Sync"
@@ -19488,7 +19488,7 @@ msgstr "Le nom générique de ce test que vous avez saisi existe déjà"
 #: app/generic-tests/configuration/edit-test-type.php:159
 #: app/generic-tests/configuration/edit-test-type.php:164
 msgid "Test Short Code"
-msgstr "Test Short Code"
+msgstr "Code court du test"
 
 #: app/generic-tests/configuration/add-test-type.php:100
 #: app/generic-tests/configuration/clone-test-type.php:158
@@ -19777,7 +19777,7 @@ msgstr "Liste déroulante"
 #: app/generic-tests/configuration/edit-test-type.php:504
 #: app/generic-tests/configuration/edit-test-type.php:614
 msgid "Multiselect Dropdown"
-msgstr "Multiselect Dropdown"
+msgstr "Liste déroulante à sélection multiple"
 
 #: app/generic-tests/configuration/add-test-type.php:240
 #: app/generic-tests/configuration/clone-test-type.php:601
@@ -19886,13 +19886,13 @@ msgstr "Veuillez saisir le nom de l'échantillon"
 #: app/generic-tests/configuration/clone-test-type.php:661
 #: app/generic-tests/configuration/edit-test-type.php:679
 msgid "Test Results Configuration"
-msgstr "Résultats des tests Configuration"
+msgstr "Configuration des résultats des tests"
 
 #: app/generic-tests/configuration/add-test-type.php:281
 #: app/generic-tests/configuration/clone-test-type.php:850
 #: app/generic-tests/configuration/edit-test-type.php:683
 msgid "Test Result Unit"
-msgstr "Envoie de résultats par email"
+msgstr "Unité de résultat du test"
 
 #: app/generic-tests/configuration/add-test-type.php:283
 #: app/generic-tests/configuration/clone-test-type.php:855
@@ -20072,7 +20072,7 @@ msgstr "Sélectionner les symptômes"
 
 #: app/generic-tests/configuration/clone-test-type.php:990
 msgid "Select Test Result Unit"
-msgstr "Configuration de l'e-mail des résultats"
+msgstr "Sélectionner l'unité de résultat du test"
 
 #: app/generic-tests/configuration/clone-test-type.php:1123
 #: app/generic-tests/configuration/edit-test-type.php:1179
@@ -20301,15 +20301,15 @@ msgstr ""
 #: app/generic-tests/configuration/test-categories/generic-test-categories.php:22
 #: app/system/translate-strings.php:37
 msgid "Test Categories"
-msgstr "Date du test de l'échantillon"
+msgstr "Catégories de tests"
 
 #: app/generic-tests/configuration/test-categories/generic-edit-test-categories.php:22
 msgid "Edit Test Categories"
-msgstr "EID-Modifier la demande de test"
+msgstr "Modifier les catégories de tests"
 
 #: app/generic-tests/configuration/test-categories/generic-edit-test-categories.php:53
 msgid "Please enter test category"
-msgstr "Veuillez saisir le statut de l'échantillon"
+msgstr "Veuillez saisir la catégorie de test"
 
 #: app/generic-tests/configuration/test-categories/generic-edit-test-categories.php:54
 msgid "This test category that you entered already exists.Try another name"
@@ -20441,7 +20441,7 @@ msgstr "La méthode de test que vous avez saisie existe déjà"
 
 #: app/generic-tests/configuration/test-methods/generic-edit-test-methods.php:23
 msgid "Edit Test Methods"
-msgstr "EID-Modifier la demande de test"
+msgstr "Modifier les méthodes de test"
 
 #: app/generic-tests/configuration/test-methods/generic-edit-test-methods.php:54
 msgid "This test method that you entered already exists.Try another name"
@@ -20472,18 +20472,18 @@ msgstr "Méthode de test ajoutée avec succès"
 #: app/generic-tests/configuration/test-result-units/generic-test-result-units.php:23
 #: app/system/translate-strings.php:35
 msgid "Test Result Units"
-msgstr "Résultat du test Unités"
+msgstr "Unités de résultat du test"
 
 #: app/generic-tests/configuration/test-result-units/generic-add-test-result-units.php:11
 #: app/generic-tests/configuration/test-result-units/generic-test-result-units.php:37
 msgid "Add Test Result Units"
-msgstr "Gestion des résultats des tests"
+msgstr "Ajouter des unités de résultat du test"
 
 #: app/generic-tests/configuration/test-result-units/generic-add-test-result-units.php:33
 #: app/generic-tests/configuration/test-result-units/generic-add-test-result-units.php:35
 #: app/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:47
 msgid "Test Result Unit Name"
-msgstr "Gestion des résultats des tests"
+msgstr "Nom de l'unité de résultat du test"
 
 #: app/generic-tests/configuration/test-result-units/generic-add-test-result-units.php:35
 msgid "Please enter test result unit name"
@@ -20502,7 +20502,7 @@ msgstr "Modifier les unités de résultats des tests"
 #: app/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:51
 #: app/generic-tests/configuration/test-result-units/generic-test-result-units.php:45
 msgid "Unit Name"
-msgstr "Nom de l'untité"
+msgstr "Nom de l'unité"
 
 #: app/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:52
 msgid "Please enter unit name"
@@ -20521,11 +20521,11 @@ msgstr "Autres unités de résultats de tests de laboratoire"
 
 #: app/generic-tests/configuration/test-result-units/save-test-result-units-helper.php:24
 msgid "Test Result Unit Details updated successfully"
-msgstr "Résultat du test Les détails de l'unité ont été mis à jour avec succès"
+msgstr "Détails de l'unité de résultat du test mis à jour avec succès"
 
 #: app/generic-tests/configuration/test-result-units/save-test-result-units-helper.php:31
 msgid "Test Result Unit details added successfully"
-msgstr "Résultat du test Les détails de l'unité ont été ajoutés avec succès"
+msgstr "Détails de l'unité de résultat du test ajoutés avec succès"
 
 #: app/generic-tests/configuration/test-type.php:19
 #: app/generic-tests/configuration/test-type.php:22
@@ -20535,7 +20535,7 @@ msgstr "Configuration du type de test"
 
 #: app/generic-tests/configuration/test-type.php:44
 msgid "Standard Name"
-msgstr "Nom de niveau scolaire"
+msgstr "Nom standard"
 
 #: app/generic-tests/configuration/test-type.php:45
 msgid "Generic Name"
@@ -20543,7 +20543,7 @@ msgstr "Nom générique"
 
 #: app/generic-tests/configuration/test-type.php:46
 msgid "Short Code"
-msgstr "Short Code"
+msgstr "Code court"
 
 #: app/generic-tests/configuration/test-type.php:47
 msgid "LOINC Code"
@@ -21330,7 +21330,7 @@ msgstr "Impossible de générer l'exportation"
 
 #: app/generic-tests/results/email-results.php:9
 msgid "Email Generic Test Results"
-msgstr "Résultats du test de l'e-mail générique"
+msgstr "Envoyer par courriel les résultats des tests génériques"
 
 #: app/generic-tests/results/generic-print-result.php:10
 #: app/vl/results/vl-print-results.php:9 app/vl/results/vl-print-results.php:54
@@ -21512,11 +21512,11 @@ msgstr "Veuillez choisir un fuseau horaire"
 
 #: app/global-config/editGlobalConfig.php:535
 msgid "System Locale"
-msgstr "Locale System"
+msgstr "Paramètres régionaux du système"
 
 #: app/global-config/editGlobalConfig.php:540 app/setup/index.php:436
 msgid "Please select the System Locale"
-msgstr "Veuillez sélectionner le lieu du System"
+msgstr "Veuillez sélectionner les paramètres régionaux du système"
 
 #: app/global-config/editGlobalConfig.php:552
 #: app/global-config/editGlobalConfig.php:556
@@ -21929,7 +21929,7 @@ msgstr "Format CRESAR"
 
 #: app/global-config/editGlobalConfig.php:1411
 msgid "EID Settings"
-msgstr "EID Paramètres"
+msgstr "Paramètres EID"
 
 #: app/global-config/editGlobalConfig.php:1435
 #: app/global-config/editGlobalConfig.php:1446
@@ -21964,7 +21964,7 @@ msgstr ""
 
 #: app/global-config/editGlobalConfig.php:1570
 msgid "EID Show Participant Name in Manifest"
-msgstr "EID Afficher le nom du participant dans le manifeste"
+msgstr "Afficher le nom du participant EID dans le manifeste"
 
 #: app/global-config/editGlobalConfig.php:1575
 msgid "Please select EID Participant Name in Manifest"
@@ -21972,11 +21972,11 @@ msgstr "Veuillez sélectionner le nom du participant à l'EID dans le manifeste"
 
 #: app/global-config/editGlobalConfig.php:1595
 msgid "Covid-19 Settings"
-msgstr "Covid-19 Paramètres"
+msgstr "Paramètres Covid-19"
 
 #: app/global-config/editGlobalConfig.php:1604
 msgid "Covid-19 Positive Confirmatory Tests Required"
-msgstr "Covid-19 Tests de confirmation positifs requis"
+msgstr "Tests de confirmation positifs Covid-19 requis"
 
 #: app/global-config/editGlobalConfig.php:1610
 msgid "Please select covid19 report type"
@@ -22090,7 +22090,7 @@ msgstr "Veuillez sélectionner le nom du participant TB dans le manifeste"
 
 #: app/global-config/editGlobalConfig.php:2161
 msgid "CD4 Settings"
-msgstr "CD4 Paramètres"
+msgstr "Paramètres CD4"
 
 #: app/global-config/editGlobalConfig.php:2185
 #: app/global-config/editGlobalConfig.php:2196
@@ -22108,7 +22108,7 @@ msgstr ""
 
 #: app/global-config/editGlobalConfig.php:2301
 msgid "cd4 Show Participant Name in Manifest"
-msgstr "cd4 Afficher le nom du participant dans le manifeste"
+msgstr "Afficher le nom du participant CD4 dans le manifeste"
 
 #: app/global-config/editGlobalConfig.php:2306
 msgid "Please select cd4 Participant Name in Manifest"
@@ -22116,7 +22116,7 @@ msgstr "Veuillez sélectionner le nom du participant au cd4 dans le manifeste"
 
 #: app/global-config/editGlobalConfig.php:2326
 msgid "Other Lab Tests Settings"
-msgstr "Autres tests de laboratoire Paramètres"
+msgstr "Paramètres des autres tests de laboratoire"
 
 #: app/global-config/editGlobalConfig.php:2350
 #: app/global-config/editGlobalConfig.php:2361
@@ -22178,7 +22178,7 @@ msgstr "Veuillez saisir l'URL du tableau de bord national"
 
 #: app/global-config/editGlobalConfig.php:2559
 msgid "Viral Load Result PDF Settings"
-msgstr "Résultat de la charge virale PDF Settings"
+msgstr "Paramètres PDF des résultats de charge virale"
 
 #: app/global-config/editGlobalConfig.php:2567
 msgid "Show Emoticon/Smiley"
@@ -22391,11 +22391,11 @@ msgstr "Rapport sur le rejet des échantillons d'hépatite"
 
 #: app/hepatitis/management/hepatitis-sample-status.php:9
 msgid "Hepatitis | Sample Status Report"
-msgstr "Hepatite-Rapport de status d'échantillons"
+msgstr "Hépatite | Rapport sur le statut des échantillons"
 
 #: app/hepatitis/management/hepatitis-sample-status.php:44
 msgid "Hepatitis Sample Status Report"
-msgstr "Hepatite-Rapport de status d'échantillons"
+msgstr "Rapport sur le statut des échantillons Hépatite"
 
 #: app/hepatitis/management/hepatitis-sample-status.php:49
 msgid "Hepatitis Sample Status"
@@ -23175,7 +23175,7 @@ msgstr "VL"
 #: app/instruments/add-instrument.php:244
 #: app/instruments/edit-instrument.php:360
 msgid "Please enter Reviewed By for VL Test"
-msgstr "Veuillez saisir Reviewed By pour VL Test"
+msgstr "Veuillez saisir Révisé par pour le test de charge virale"
 
 #: app/instruments/add-instrument.php:249
 #: app/instruments/edit-instrument.php:368
@@ -23193,7 +23193,7 @@ msgstr "EID"
 #: app/instruments/add-instrument.php:261
 #: app/instruments/edit-instrument.php:385
 msgid "Please enter Reviewed By for EID Test"
-msgstr "Veuillez saisir Reviewed By pour le test EID"
+msgstr "Veuillez saisir Révisé par pour le test EID"
 
 #: app/instruments/add-instrument.php:266
 #: app/instruments/edit-instrument.php:393
@@ -23203,17 +23203,17 @@ msgstr "Veuillez saisir Approuvé par pour le test EID"
 #: app/instruments/add-instrument.php:278
 #: app/instruments/edit-instrument.php:410
 msgid "Please enter Reviewed By for Covid19 Test"
-msgstr "Veuillez saisir Reviewed By pour Covid19 Test"
+msgstr "Veuillez saisir Révisé par pour le test Covid-19"
 
 #: app/instruments/add-instrument.php:283
 #: app/instruments/edit-instrument.php:418
 msgid "Please enter Approved By for Covid19 Test"
-msgstr "Veuillez saisir Approved By pour Covid19 Test"
+msgstr "Veuillez saisir Approuvé par pour le test Covid-19"
 
 #: app/instruments/add-instrument.php:295
 #: app/instruments/edit-instrument.php:435
 msgid "Please enter Reviewed By for Hepatitis Test"
-msgstr "Veuillez saisir Reviewed By pour Hepatitis Test"
+msgstr "Veuillez saisir Révisé par pour le test de dépistage de l'hépatite"
 
 #: app/instruments/add-instrument.php:300
 #: app/instruments/edit-instrument.php:443
@@ -23237,12 +23237,12 @@ msgstr ""
 #: app/instruments/add-instrument.php:329
 #: app/instruments/edit-instrument.php:485
 msgid "Please enter Reviewed By for CD4 Test"
-msgstr "Veuillez saisir Reviewed By pour CD4 Test"
+msgstr "Veuillez saisir Révisé par pour le test CD4"
 
 #: app/instruments/add-instrument.php:346
 #: app/instruments/edit-instrument.php:510
 msgid "Please enter Reviewed By for Other Lab Test"
-msgstr "Veuillez saisir Reviewed By pour Other Lab Test"
+msgstr "Veuillez saisir Révisé par pour les autres tests de laboratoire"
 
 #: app/instruments/add-instrument.php:351
 #: app/instruments/edit-instrument.php:518
@@ -23965,19 +23965,19 @@ msgstr "Demandes de test de la vue VL"
 
 #: app/roles/addRole.php:180
 msgid "Add New EID Request"
-msgstr "EID-Ajouter une nouvelle demande"
+msgstr "Ajouter une nouvelle demande EID"
 
 #: app/roles/addRole.php:183
 msgid "EID View Test Requests"
-msgstr "Demandes d'essai de l'EID View"
+msgstr "Voir les demandes de test EID"
 
 #: app/roles/addRole.php:188
 msgid "Add New Covid-19 Request"
-msgstr "Covid-19-Ajouter une nouvelle demande"
+msgstr "Ajouter une nouvelle demande Covid-19"
 
 #: app/roles/addRole.php:191
 msgid "Covid-19 View Test Requests"
-msgstr "Covid-19 Voir les demandes de test"
+msgstr "Voir les demandes de test Covid-19"
 
 #: app/roles/addRole.php:196
 msgid "Add New Hepatitis Request"
@@ -24244,7 +24244,7 @@ msgstr "CLUSTERS OF DIFFERENTIATION 4 Exemple de manifeste d'orientation"
 
 #: app/specimen-referral-manifest/generateCovid19Manifest.php:82
 msgid "Covid-19 Sample Referral Manifest"
-msgstr "Covid-19 Exemple de manifeste de renvoi"
+msgstr "Manifeste de référence d'échantillons Covid-19"
 
 #: app/specimen-referral-manifest/generateEIDManifest.php:67
 msgid "EID Sample Referral Manifest"
@@ -24543,11 +24543,11 @@ msgstr "VL Dernière synchronisation"
 
 #: app/system-admin/instance-overview/instanceIndex.php:81
 msgid "EID Last Sync"
-msgstr "EID Dernière synchronisation"
+msgstr "Dernière synchronisation EID"
 
 #: app/system-admin/instance-overview/instanceIndex.php:87
 msgid "Covid-19 Last Sync"
-msgstr "Covid-19 Dernière synchronisation"
+msgstr "Dernière synchronisation Covid-19"
 
 #: app/system-admin/instance-overview/instanceIndex.php:93
 msgid "Remote Request Last Sync"
@@ -24963,15 +24963,15 @@ msgstr "Configuration CV"
 
 #: app/system/translate-strings.php:17
 msgid "EID Config"
-msgstr "EID-Configuration"
+msgstr "Configuration EID"
 
 #: app/system/translate-strings.php:18
 msgid "Covid-19 Config"
-msgstr "Covid-19-Configurations"
+msgstr "Configuration Covid-19"
 
 #: app/system/translate-strings.php:19
 msgid "Hepatitis Config"
-msgstr "Hépatite-Configuration"
+msgstr "Configuration Hépatite"
 
 #: app/system/translate-strings.php:20
 msgid "TB Config"
@@ -25058,11 +25058,11 @@ msgstr "Saisir le résultat manuellement"
 
 #: app/system/translate-strings.php:63
 msgid "Manage Results Status"
-msgstr "Gérer le status des résultats"
+msgstr "Gérer le statut des résultats"
 
 #: app/system/translate-strings.php:64
 msgid "Sample Status Report"
-msgstr "Rapport de status d'échantillons"
+msgstr "Rapport sur le statut des échantillons"
 
 #: app/system/translate-strings.php:65
 msgid "Export Results"
@@ -25108,7 +25108,7 @@ msgstr "Rapport  clinique"
 
 #: app/system/translate-strings.php:77
 msgid "EID Testing Target Report"
-msgstr "EID-Rapport d'objectif de test"
+msgstr "Rapport sur les objectifs de test EID"
 
 #: app/system/translate-strings.php:78
 msgid "Covid-19 Manifest"
@@ -25148,7 +25148,7 @@ msgstr "Manifeste CD4"
 
 #: app/system/translate-strings.php:94
 msgid "CD4 Config"
-msgstr "CD4 Config"
+msgstr "Configuration CD4"
 
 #: app/system/translate-strings.php:100
 msgid "Sample Registered at Testing Lab"
@@ -25270,7 +25270,7 @@ msgstr "Ajouter les comorbidités"
 
 #: app/system/translate-strings.php:140
 msgid "Edit Comorbidities"
-msgstr "EID-Modifier la demande de test"
+msgstr "Modifier les comorbidités"
 
 #: app/system/translate-strings.php:141
 msgid "Manage Sample Rejection Reasons"
@@ -25582,7 +25582,7 @@ msgstr "Motifs du test"
 
 #: app/system/translate-strings.php:224
 msgid "Manage Test Result Units"
-msgstr "Configuration de l'e-mail des résultats"
+msgstr "Gérer les unités de résultat du test"
 
 #: app/system/translate-strings.php:225
 msgid "Manage Test Methods"
@@ -25610,7 +25610,7 @@ msgstr "Modifier les échantillons de tests génériques verrouillés"
 
 #: app/system/translate-strings.php:234
 msgid "Email Test Result"
-msgstr "Résultat du test de l'email"
+msgstr "Envoyer le résultat du test par courriel"
 
 #: app/system/translate-strings.php:235
 msgid "Export CD4 Requests"
@@ -25634,7 +25634,7 @@ msgstr "Modifier les lots"
 
 #: app/system/translate-strings.php:240
 msgid "Email Test Results"
-msgstr "Résultats du test de l'email"
+msgstr "Envoyer les résultats des tests par courriel"
 
 #: app/system/translate-strings.php:242
 msgid "CD4 Clinic Reports"
@@ -25678,7 +25678,7 @@ msgstr "Tableaux de référence communs"
 
 #: app/system/translate-strings.php:253
 msgid "Covid-19 Batch Management"
-msgstr "Covid-19 Gestion des lots"
+msgstr "Gestion des lots Covid-19"
 
 #: app/system/translate-strings.php:254
 msgid "Covid-19 Reports"
@@ -25686,7 +25686,7 @@ msgstr "Rapports Covid-19"
 
 #: app/system/translate-strings.php:255
 msgid "Covid-19 Reference Tables"
-msgstr "Covid-19 Tableaux de référence"
+msgstr "Tableaux de référence Covid-19"
 
 #: app/system/translate-strings.php:256
 msgid "Covid-19 Request Management"
@@ -25694,7 +25694,7 @@ msgstr "Gestion des demandes Covid-19"
 
 #: app/system/translate-strings.php:257
 msgid "Covid-19 Result Management"
-msgstr "Covid-19 Gestion des résultats"
+msgstr "Gestion des résultats Covid-19"
 
 #: app/system/translate-strings.php:258
 msgid "EID Batch Management"
@@ -25904,11 +25904,11 @@ msgstr "TB - Rapport sur l'état des échantillons"
 
 #: app/tb/management/tb-sample-status.php:45
 msgid "TB Sample Status Report"
-msgstr "Tuberculose-Rapport de status d'échantillons"
+msgstr "Rapport sur le statut des échantillons TB"
 
 #: app/tb/management/tb-sample-status.php:48
 msgid "TB Sample Status"
-msgstr "Tuberculose-Status d'échantillon"
+msgstr "Statut des échantillons TB"
 
 #: app/tb/management/tb-sample-status.php:113
 msgid "TB Sample ID"
@@ -27320,12 +27320,12 @@ msgstr "Résultat Valeur"
 #: app/vl/program-management/export-vl-results.php:32
 #: app/vl/requests/export-vl-requests.php:28
 msgid "Result Value Log"
-msgstr "Résultat Valeur Journal"
+msgstr "Journal des valeurs de résultat"
 
 #: app/vl/program-management/export-vl-results.php:32
 #: app/vl/requests/export-vl-requests.php:28
 msgid "Is suppressed"
-msgstr "Est supprimée"
+msgstr "Est indétectable"
 
 #: app/vl/program-management/export-vl-results.php:32
 #: app/vl/requests/export-vl-requests.php:28
@@ -27658,12 +27658,12 @@ msgstr "Suppression de la charge virale"
 #: app/vl/program-management/vl-export-data.php:167
 #: app/vl/requests/vl-requests.php:203
 msgid "Suppressed"
-msgstr "Supprimé"
+msgstr "Indétectable"
 
 #: app/vl/program-management/vl-export-data.php:168
 #: app/vl/requests/vl-requests.php:204
 msgid "Not Suppressed"
-msgstr "Non supprimé"
+msgstr "Détectable"
 
 #: app/vl/program-management/vl-export-data.php:417
 msgid "Lab Assigned_code"
@@ -28852,7 +28852,7 @@ msgstr "Valeur logarithmique"
 
 #: app/vl/result-mail/editTestResultEmailConfigHelper.php:23
 msgid "Test Result Email Config values updated successfully."
-msgstr "Test Result Email Config values updated successfully."
+msgstr "Configuration de l'e-mail des résultats du test mise à jour avec succès."
 
 #: app/vl/result-mail/testResultEmailConfig.php:2
 msgid "Result Email & SMS Config"
@@ -28861,7 +28861,7 @@ msgstr "Configuration des résultats par e-mail et SMS"
 #: app/vl/result-mail/testResultEmailConfig.php:10
 #: app/vl/result-mail/testResultEmailConfig.php:13
 msgid "Test Result Email/SMS Configuration"
-msgstr "Résultat du test Configuration de l'e-mail/SMS"
+msgstr "Configuration de l'e-mail/SMS des résultats du test"
 
 #: app/vl/result-mail/testResultEmailConfig.php:30
 msgid "Config Name"
@@ -29763,7 +29763,7 @@ msgstr "Format allemand"
 #~ msgstr "Saisir le résultat de l'EID"
 
 #~ msgid "Enter EID Result Manually"
-#~ msgstr "EID-Saisir le résultat manuellement"
+#~ msgstr "Saisir manuellement le résultat EID"
 
 #~ msgid "Remote Sample Tracking Module"
 #~ msgstr "Module de suivi des échantillons prélevé à l'extérieur du labo"
