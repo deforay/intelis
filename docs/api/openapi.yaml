@@ -1,7 +1,7 @@
 ---
 openapi: 3.0.3
 info:
-  title: InteLIS REST API
+  title: InteLIS API
   version: v1.1
   description: Contract for the InteLIS REST API. This file is the source of truth
     for the API.
