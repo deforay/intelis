@@ -1,7 +1,7 @@
 # InteLIS
 
 > **Integrated Laboratory Information & Sample Tracking System**
-> Simple, open-source LIS to manage and track samples for HIV VL, EID, TB, Hepatitis, COVID-19, CD4 and other priority diseases.
+> Simple, open-source LIS to manage and track samples for HIV VL, EID, TB, Hepatitis, COVID-19, CD4, and other priority diseases.
 
 ![PHP](https://img.shields.io/badge/PHP-8.4+-blue)
  ![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04%2B-orange)
@@ -12,15 +12,17 @@ InteLIS (formerly **VLSM**) digitizes laboratory workflows — from sample colle
 
 It's lightweight, self-hostable, and works both online and offline.
 
+For a codebase overview, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ------
 
-## 📁 Table of Contents
+## Table of Contents
 
 - [InteLIS](#intelis)
-  - [📁 Table of Contents](#-table-of-contents)
-  - [⚖️ License](#️-license)
-  - [📋 Pre-requisites](#-pre-requisites)
-  - [🚀 Installation](#-installation)
+  - [Table of Contents](#table-of-contents)
+  - [License](#license)
+  - [Pre-requisites](#pre-requisites)
+  - [Installation](#installation)
     - [Option 1 — Automated Installation (Ubuntu LTS only)](#option-1--automated-installation-ubuntu-lts-only)
     - [Option 2 — Manual Installation](#option-2--manual-installation)
       - [Step 1 — Get the code](#step-1--get-the-code)
@@ -29,15 +31,15 @@ It's lightweight, self-hostable, and works both online and offline.
       - [Step 4 — Configure the application](#step-4--configure-the-application)
       - [Step 5 — Set up Apache virtual host](#step-5--set-up-apache-virtual-host)
       - [Step 6 — Set up the cron job](#step-6--set-up-the-cron-job)
-  - [✅ Complete the Setup](#-complete-the-setup)
-  - [🔄 Updating InteLIS](#-updating-intelis)
+  - [Complete the Setup](#complete-the-setup)
+  - [Updating InteLIS](#updating-intelis)
     - [Option 1 — Automated Update (Ubuntu LTS only)](#option-1--automated-update-ubuntu-lts-only)
     - [Option 2 — Manual Update](#option-2--manual-update)
-  - [💬 Support](#-support)
+  - [Support](#support)
 
 ------
 
-## ⚖️ License
+## License
 
 InteLIS is released under the **InteLIS Community Copyleft License (Non-Commercial), Version 1.0**.
 
@@ -49,7 +51,7 @@ See the full license text in [LICENSE.md](LICENSE.md).
 
 ------
 
-## 📋 Pre-requisites
+## Pre-requisites
 
 - Apache 2.x (with `rewrite` and `headers` modules enabled)
 - MySQL 5.7 or higher
@@ -58,7 +60,7 @@ See the full license text in [LICENSE.md](LICENSE.md).
 
 ------
 
-## 🚀 Installation
+## Installation
 
 ### Option 1 — Automated Installation (Ubuntu LTS only)
 
@@ -187,7 +189,7 @@ Add this line:
 
 ------
 
-## ✅ Complete the Setup
+## Complete the Setup
 
 **Applies to both automated and manual installations.**
 
@@ -206,7 +208,7 @@ Add this line:
 
 ------
 
-## 🔄 Updating InteLIS
+## Updating InteLIS
 
 ### Option 1 — Automated Update (Ubuntu LTS only)
 
@@ -250,7 +252,7 @@ When prompted, enter:
 
 ------
 
-## 💬 Support
+## Support
 
 Need help or commercial licensing?
 
