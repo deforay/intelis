@@ -7,7 +7,7 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
-$title = "Edit Specimen Referral Manifest";
+$title = _translate("Edit Specimen Referral Manifest");
 require_once APPLICATION_PATH . '/header.php';
 
 
@@ -96,11 +96,19 @@ if ($module == 'generic-tests') {
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-pen-to-square"></em> Edit Specimen Referral Manifest</h1>
+		<h1><em class="fa-solid fa-pen-to-square"></em>
+			<?= _translate("Edit Specimen Referral Manifest"); ?>
+		</h1>
 		<ol class="breadcrumb">
-			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-			<li><a href="/specimen-referral-manifest/view-manifests.php"> Manage Specimen Referral Manifest</a></li>
-			<li class="active">Edit Specimen Referral Manifest</li>
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
+					<?= _translate("Home"); ?>
+				</a></li>
+			<li><a href="/specimen-referral-manifest/view-manifests.php">
+					<?= _translate("Manage Specimen Referral Manifest"); ?>
+				</a></li>
+			<li class="active">
+				<?= _translate("Edit Specimen Referral Manifest"); ?>
+			</li>
 		</ol>
 	</section>
 	<!-- Main content -->
@@ -120,7 +128,9 @@ if ($module == 'generic-tests') {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="testType" class="col-lg-4 control-label">Test Type</label>
+									<label for="testType" class="col-lg-4 control-label">
+										<?= _translate("Test Type"); ?>
+									</label>
 									<div class="col-lg-7" style="margin-left:3%;">
 										<select disabled="disabled" class="form-control select2" name="testType"
 											id="testType" title="Please choose test type" style="width:100%;"
@@ -129,7 +139,8 @@ if ($module == 'generic-tests') {
 											<?php foreach ($testTypeResult as $testTypeInfo) { ?>
 												<option value="<?php echo $testTypeInfo['test_type_id'] ?>"
 													data-short="<?php echo $testTypeInfo['test_short_code']; ?>" <?php echo ($testType['test_type'] == $testTypeInfo['test_type_id']) ? "selected='selected'" : ""; ?>>
-													<?php echo $testTypeInfo['test_standard_name'] ?></option>
+													<?php echo $testTypeInfo['test_standard_name'] ?>
+												</option>
 											<?php } ?>
 										</select>
 									</div>
@@ -141,12 +152,13 @@ if ($module == 'generic-tests') {
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="packageCode" class="col-lg-4 control-label">Manifest Code <span
+								<label for="packageCode"
+									class="col-lg-4 control-label"><?= _translate("Manifest Code"); ?> <span
 										class="mandatory">*</span></label>
 								<div class="col-lg-7" style="margin-left:3%;">
 									<input type="text" class="form-control isRequired" id="packageCode"
-										name="packageCode" placeholder="Manifest Code"
-										title="Please enter manifest code" readonly
+										name="packageCode" placeholder="<?= _htmlTranslate("Manifest Code"); ?>" title="
+									<?= _htmlTranslate("Please enter manifest code"); ?>" readonly
 										value="<?php echo strtoupper((string) $pResult['manifest_code']); ?>" />
 								</div>
 							</div>
@@ -154,10 +166,12 @@ if ($module == 'generic-tests') {
 
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="packageCode" class="col-lg-4 control-label">Testing Lab :</label>
+								<label for="packageCode"
+									class="col-lg-4 control-label"><?= _translate("Testing Lab"); ?> :</label>
 								<div class="col-lg-7" style="margin-left:3%;">
 									<select class="form-control" id="testingLab" name="testingLab"
-										title="Choose one test lab" <?= empty($pResult['lab_id']) ? '' : 'readonly="readonly"'; ?>>
+										title="<?= _htmlTranslate("Choose one test lab"); ?>"
+										<?= empty($pResult['lab_id']) ? '' : 'readonly="readonly"'; ?>>
 										<?= $general->generateSelectOptions($testingLabs, $pResult['lab_id'], '-- Select --'); ?>
 									</select>
 								</div>
@@ -167,11 +181,13 @@ if ($module == 'generic-tests') {
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<label for="packageCode" class="col-lg-4 control-label">Manifest Status <span
+								<label for="packageCode"
+									class="col-lg-4 control-label"><?= _translate("Manifest Status"); ?> <span
 										class="mandatory">*</span></label>
 								<div class="col-lg-7" style="margin-left:3%;">
 									<select class="form-control isRequired" name="packageStatus" id="packageStatus"
-										title="Please select manifest status" readonly="readonly">
+										title="<?= _htmlTranslate("Please select manifest status"); ?>"
+										readonly="readonly">
 										<option value="">-- Select --</option>
 										<option value="pending" <?php echo ($pResult['manifest_status'] == 'pending') ? "selected='selected'" : ''; ?>>Pending</option>
 										<option value="dispatch" <?php echo ($pResult['manifest_status'] == 'dispatch') ? "selected='selected'" : ''; ?>>Dispatch</option>
@@ -187,7 +203,7 @@ if ($module == 'generic-tests') {
 								</label>
 								<div class="col-lg-7" style="margin-left:3%;">
 									<select class="form-control select2" id="operator" name="operator"
-										title="Choose one Operator/Technician">
+										title="<?= _htmlTranslate("Choose one Operator/Technician"); ?>">
 										<?= $general->generateSelectOptions($usersList, $pResult['added_by'], '-- Select --'); ?>
 									</select>
 								</div>
@@ -202,7 +218,7 @@ if ($module == 'generic-tests') {
 								</label>
 								<div class="col-lg-7" style="margin-left:3%;">
 									<select class="form-control select2" id="facility" name="facility"
-										title="Choose one sample collection point">
+										title="<?= _htmlTranslate("Choose one sample collection point"); ?>">
 										<?= $general->generateSelectOptions($facilities, null, '-- Select --'); ?>
 									</select>
 								</div>
@@ -215,7 +231,7 @@ if ($module == 'generic-tests') {
 								</label>
 								<div class="col-lg-7" style="margin-left:3%;">
 									<select class="form-control select2" id="sampleType" name="sampleType"
-										title="Choose Sample Type">
+										title="<?= _htmlTranslate("Choose Sample Type"); ?>">
 										<?= $general->generateSelectOptions($sampleTypes, null, '-- Select --'); ?>
 									</select>
 								</div>
@@ -231,7 +247,7 @@ if ($module == 'generic-tests') {
 								<div class="col-lg-7" style="margin-left:3%;">
 									<input type="text" class="form-control" id="daterange" name="daterange"
 										placeholder="<?php echo _translate('Sample Collection Date Range'); ?>"
-										title="Choose one sample collection date range">
+										title="<?= _htmlTranslate("Choose one sample collection date range"); ?>">
 								</div>
 							</div>
 						</div>
@@ -239,7 +255,7 @@ if ($module == 'generic-tests') {
 					<div class="row">
 						<div class="col-md-12 text-center">
 							<div class="form-group">
-								<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab"
+								<a class="btn btn-primary" href="javascript:void(0);" title="<?= _htmlTranslate("Please select testing lab"); ?>"
 									onclick="getSamplesForManifest();return false;">Search </a>
 								<a href="javascript:void(0);" class="btn btn-default" onclick="clearSelection();">
 									Clear</a>
