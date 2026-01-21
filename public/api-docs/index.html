@@ -3,45 +3,44 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>InteLIS REST API Docs</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css"
-    />
+    <title>InteLIS API v1.1</title>
     <style>
-      html,
       body {
         margin: 0;
         padding: 0;
-        background: #f7f8fa;
       }
-      #swagger-ui {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 24px 16px;
-      }
-      .swagger-ui .auth-wrapper,
-      .swagger-ui .authorize,
-      .swagger-ui .authorization__btn {
-        display: none;
+      .api-header {
+        background: #1a1a2e;
+        color: #fff;
+        padding: 12px 24px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 15px;
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
       }
     </style>
   </head>
   <body>
-    <div id="swagger-ui"></div>
-    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
-    <script>
-      window.onload = () => {
-        window.ui = SwaggerUIBundle({
-          url: "./openapi.yaml",
-          dom_id: "#swagger-ui",
-          deepLinking: true,
-          persistAuthorization: false,
-          supportedSubmitMethods: [],
-          plugins: [SwaggerUIBundle.plugins.DownloadUrl],
-          presets: [SwaggerUIBundle.presets.apis],
-        });
-      };
-    </script>
+    <div class="api-header">InteLIS API v1.1</div>
+    <script
+      id="api-reference"
+      data-url="./openapi.yaml"
+      data-configuration='{
+        "theme": "kepler",
+        "layout": "modern",
+        "showSidebar": true,
+        "hideModels": false,
+        "hideDownloadButton": false,
+        "darkMode": false,
+        "searchHotKey": "k",
+        "metaData": {
+          "title": "InteLIS API v1.1"
+        }
+      }'
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
   </body>
 </html>
