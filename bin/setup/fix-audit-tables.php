@@ -9,10 +9,11 @@ declare(strict_types=1);
  * Non-destructive audit table sync with Symfony Console output/progress.
  * - Derives form tables & PKs from TestsService (no hardcoding)
  * - Creates audit tables if missing: audit_<formTable>
- * - Aligns engine/collation (MyISAM, utf8mb4_0900_ai_ci)
+ * - Aligns engine/collation (InnoDB, utf8mb4_0900_ai_ci)
  * - Ensures audit cols: action, revision, dt_datetime
  * - ADD/MODIFY/DROP columns in audit to match form (keeps data)
  * - Rebuilds triggers with per-key MAX(revision)+1
+ * - Detects crashed audit tables and recreates them
  *
  * Options:
  *   --only=form_vl,form_eid      Limit to specific form_* or audit_* tables
@@ -47,7 +48,9 @@ require_once __DIR__ . '/../../bootstrap.php';
 final class FixAuditTablesCommand extends Command
 {
     private const string CHARSET = 'utf8mb4';
-    private const string COLLATE = 'utf8mb4_0900_ai_ci';
+    private const string COLLATE_MYSQL8 = 'utf8mb4_0900_ai_ci';
+    private const string COLLATE_LEGACY = 'utf8mb4_unicode_ci';
+    private const string ENGINE = 'InnoDB';
     private const array RESERVED_AUDIT_COLS = ['action', 'revision', 'dt_datetime'];
 
     /** @var DatabaseService */
@@ -55,6 +58,7 @@ final class FixAuditTablesCommand extends Command
     /** @var \mysqli */
     private $mysqli;
     private string $dbName;
+    private string $collation;
 
     #[\Override]
     protected function configure(): void
@@ -76,16 +80,19 @@ final class FixAuditTablesCommand extends Command
         }
         $this->mysqli = $this->db->mysqli();
         $this->dbName = (string) (SYSTEM_CONFIG['database']['db'] ?? '');
+        $this->collation = $this->db->isMySQL8OrHigher()
+            ? self::COLLATE_MYSQL8
+            : self::COLLATE_LEGACY;
     }
 
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $dryRun             = (bool) $input->getOption('dry-run');
-        $dropExtras         = !$input->getOption('no-drop-extras');
+        $dryRun = (bool) $input->getOption('dry-run');
+        $dropExtras = !$input->getOption('no-drop-extras');
         $rebuildTriggersOnly = (bool) $input->getOption('rebuild-triggers-only');
-        $skipTriggers       = (bool) $input->getOption('skip-triggers');
+        $skipTriggers = (bool) $input->getOption('skip-triggers');
 
         $io->title('Audit table sync (non-destructive)');
 
@@ -113,20 +120,38 @@ final class FixAuditTablesCommand extends Command
             $bar->advance();
 
             $sqlBatch = [];
+            $actions = [];
             try {
+                if ($this->tableExists($audit) && $this->isTableCrashed($audit)) {
+                    $io->warning("$audit is marked as crashed; dropping and recreating.");
+                    $actions[] = 'recreated (crashed)';
+                    $sqlBatch = $this->recreateAuditTable($form, $audit, $pk);
+                    if ($dryRun) {
+                        $this->printSqlBatch($io, $form, $audit, $sqlBatch);
+                    } else {
+                        $this->executeSqlBatch($sqlBatch);
+                    }
+                    $sqlBatch = [];
+                }
+
                 if (!$dryRun) {
                     $this->mysqli->begin_transaction();
                 }
 
                 if (!$rebuildTriggersOnly) {
-                    $sqlBatch = array_merge($sqlBatch, $this->ensureAuditTableExists($form, $audit, $pk));
-                    $sqlBatch = array_merge($sqlBatch, $this->alignEngineAndCollation($audit));
-                    $sqlBatch = array_merge($sqlBatch, $this->ensureAuditColumnsAndPK($audit, $pk));
-                    $sqlBatch = array_merge($sqlBatch, $this->syncColumnsToMatchForm($form, $audit, $dropExtras, $pk));
+                    $sqlBatch = [
+                        ...$sqlBatch,
+                        ...$this->ensureAuditTableExists($form, $audit, $pk),
+                        ...$this->alignEngineAndCollation($audit),
+                        ...$this->ensureAuditColumnsAndPK($audit, $pk),
+                        ...$this->syncColumnsToMatchForm($form, $audit, $dropExtras, $pk)
+                    ];
+                    $actions[] = 'schema synced';
                 }
 
                 if (!$skipTriggers) {
-                    $sqlBatch = array_merge($sqlBatch, $this->rebuildTriggers($form, $audit, $pk));
+                    $sqlBatch = [...$sqlBatch, ...$this->rebuildTriggers($form, $audit, $pk)];
+                    $actions[] = 'triggers rebuilt';
                 }
 
                 if ($dryRun) {
@@ -135,6 +160,9 @@ final class FixAuditTablesCommand extends Command
                     $this->executeSqlBatch($sqlBatch);
                     $this->mysqli->commit();
                 }
+
+                $actionsText = $actions === [] ? 'no changes' : implode(', ', $actions);
+                $io->writeln(" - $audit: $actionsText");
             } catch (\Throwable $e) {
                 if (!$dryRun) {
                     $this->mysqli->rollback();
@@ -158,7 +186,7 @@ final class FixAuditTablesCommand extends Command
         $tmp = [];
         foreach ($types as $meta) {
             $form = $meta['tableName'] ?? null;
-            $pk   = $meta['primaryKey'] ?? null;
+            $pk = $meta['primaryKey'] ?? null;
             if (!$form || !$pk) {
                 continue;
             }
@@ -180,8 +208,35 @@ final class FixAuditTablesCommand extends Command
              WHERE TABLE_SCHEMA=? AND TABLE_NAME=?
              ORDER BY ORDINAL_POSITION", [$this->dbName, $table]);
         $out = [];
-        foreach ($rows as $r) $out[$r['COLUMN_NAME']] = true;
+        foreach ($rows as $r)
+            $out[$r['COLUMN_NAME']] = true;
         return $out;
+    }
+
+    private function tableExists(string $table): bool
+    {
+        return (bool) $this->db->rawQueryValue(
+            "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=? AND TABLE_NAME=?",
+            [$this->dbName, $table]
+        );
+    }
+
+    private function isTableCrashed(string $table): bool
+    {
+        $res = $this->mysqli->query("CHECK TABLE `{$this->dbName}`.`$table`");
+        if (!$res) {
+            return false;
+        }
+        while ($row = $res->fetch_assoc()) {
+            $msgType = strtolower((string) ($row['Msg_type'] ?? ''));
+            $msgText = strtolower((string) ($row['Msg_text'] ?? ''));
+            if ($msgType === 'error' || str_contains($msgText, 'crash') || str_contains($msgText, 'corrupt')) {
+                $res->free();
+                return true;
+            }
+        }
+        $res->free();
+        return false;
     }
 
     /** Extract a single column's full DDL (backticked) from SHOW CREATE output. */
@@ -230,27 +285,40 @@ final class FixAuditTablesCommand extends Command
     }
 
     /** @return string[] */
-    private function ensureAuditTableExists(string $form, string $audit, string $pk): array
+    private function removeAutoIncrementFromAudit(string $audit): array
     {
         $sql = [];
-        $exists = $this->db->rawQueryValue(
-            "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA=? AND TABLE_NAME=?",
-            [$this->dbName, $audit]
-        );
-        if ($exists) {
-            return $sql;
+        $auditCols = $this->parseColumnDDLs($this->showCreate($audit));
+        foreach ($auditCols as $col => $ddl) {
+            if (stripos($ddl, 'AUTO_INCREMENT') === false) {
+                continue;
+            }
+            $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` MODIFY COLUMN " . $this->stripAutoIncrementFromDDL($ddl);
+        }
+        return $sql;
+    }
+
+    /** @return string[] */
+    private function createAuditTableSql(
+        string $form,
+        string $audit,
+        string $pk,
+        bool $dropFirst,
+        bool $useAuditDdl
+    ): array
+    {
+        $sql = [];
+        if ($dropFirst) {
+            $sql[] = "DROP TABLE IF EXISTS `{$this->dbName}`.`$audit`";
         }
 
         // Create and align
         $sql[] = "CREATE TABLE `{$this->dbName}`.`$audit` LIKE `{$this->dbName}`.`$form`";
-        $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ENGINE=MyISAM";
-        $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` CONVERT TO CHARACTER SET " . self::CHARSET . " COLLATE " . self::COLLATE;
+        $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ENGINE=" . self::ENGINE;
+        $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` CONVERT TO CHARACTER SET " . self::CHARSET . " COLLATE " . $this->collation;
 
-        // Remove AUTO_INCREMENT from copied pk BEFORE touching PKs
-        $auditPkDDL = $this->getColumnDDL($audit, $pk) ?? $this->getColumnDDL($form, $pk);
-        if ($auditPkDDL && stripos($auditPkDDL, 'AUTO_INCREMENT') !== false) {
-            $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` MODIFY COLUMN " . $this->stripAutoIncrementFromDDL($auditPkDDL);
-        }
+        // Remove AUTO_INCREMENT from any copied columns BEFORE touching PKs
+        $sql = [...$sql, ...$this->removeAutoIncrementFromAudit($audit)];
 
         // Add audit columns
         $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN `action` VARCHAR(8) NOT NULL DEFAULT 'insert' FIRST";
@@ -267,14 +335,32 @@ final class FixAuditTablesCommand extends Command
         return $sql;
     }
 
+    /** @return string[] */
+    private function ensureAuditTableExists(string $form, string $audit, string $pk): array
+    {
+        $sql = [];
+        if ($this->tableExists($audit)) {
+            return $sql;
+        }
+
+        $sql = [...$sql, ...$this->createAuditTableSql($form, $audit, $pk, false, false)];
+
+        return $sql;
+    }
+
+    /** @return string[] */
+    private function recreateAuditTable(string $form, string $audit, string $pk): array
+    {
+        return $this->createAuditTableSql($form, $audit, $pk, true, false);
+    }
 
 
     /** @return string[] */
     private function alignEngineAndCollation(string $audit): array
     {
         return [
-            "ALTER TABLE `{$this->dbName}`.`$audit` ENGINE=MyISAM",
-            "ALTER TABLE `{$this->dbName}`.`$audit` CONVERT TO CHARACTER SET " . self::CHARSET . " COLLATE " . self::COLLATE,
+            "ALTER TABLE `{$this->dbName}`.`$audit` ENGINE=" . self::ENGINE,
+            "ALTER TABLE `{$this->dbName}`.`$audit` CONVERT TO CHARACTER SET " . self::CHARSET . " COLLATE " . $this->collation,
         ];
     }
 
@@ -316,11 +402,8 @@ final class FixAuditTablesCommand extends Command
             $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`";
         }
 
-        // Strip AUTO_INCREMENT on pk if present (safe even when PK already composite)
-        $auditPkDDL = $this->getColumnDDL($audit, $pk);
-        if ($auditPkDDL && stripos($auditPkDDL, 'AUTO_INCREMENT') !== false) {
-            $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` MODIFY COLUMN " . $this->stripAutoIncrementFromDDL($auditPkDDL);
-        }
+        // Strip AUTO_INCREMENT on any column in audit (audit tables should never auto-increment)
+        $sql = [...$sql, ...$this->removeAutoIncrementFromAudit($audit)];
 
         // Only rebuild PK if it isn't exactly (<pk>, revision)
         $currentPk = $this->getPrimaryKeyColumns($audit);
@@ -338,19 +421,21 @@ final class FixAuditTablesCommand extends Command
     private function syncColumnsToMatchForm(string $form, string $audit, bool $dropExtras, string $pk): array
     {
         $sql = [];
-        $formCreate  = $this->showCreate($form);
+        $formCreate = $this->showCreate($form);
         $auditCreate = $this->showCreate($audit);
 
-        $formCols  = $this->parseColumnDDLs($formCreate);
+        $formCols = $this->parseColumnDDLs($formCreate);
         $auditCols = $this->parseColumnDDLs($auditCreate);
 
-        // ADD missing (strip AI if it's the pk)
+        // ADD missing (strip AUTO_INCREMENT if present)
         foreach ($formCols as $col => $ddl) {
             if (in_array($col, self::RESERVED_AUDIT_COLS, true)) {
                 continue;
             }
             if (!array_key_exists($col, $auditCols)) {
-                $addDDL = ($col === $pk) ? $this->stripAutoIncrementFromDDL($ddl) : $ddl;
+                $addDDL = (stripos($ddl, 'AUTO_INCREMENT') !== false)
+                    ? $this->stripAutoIncrementFromDDL($ddl)
+                    : $ddl;
                 $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN $addDDL";
             }
         }
@@ -364,8 +449,12 @@ final class FixAuditTablesCommand extends Command
                 continue;
             }
 
-            $lhs = ($col === $pk) ? $this->stripAutoIncrementFromDDL($ddl) : $ddl;           // desired
-            $rhs = ($col === $pk) ? $this->stripAutoIncrementFromDDL($auditCols[$col]) : $auditCols[$col]; // current
+            $lhs = (stripos($ddl, 'AUTO_INCREMENT') !== false)
+                ? $this->stripAutoIncrementFromDDL($ddl)
+                : $ddl;           // desired
+            $rhs = (stripos($auditCols[$col], 'AUTO_INCREMENT') !== false)
+                ? $this->stripAutoIncrementFromDDL($auditCols[$col])
+                : $auditCols[$col]; // current
 
             if ($lhs !== $rhs) {
                 $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` MODIFY COLUMN $lhs";
@@ -442,7 +531,7 @@ SQL;
             if (str_starts_with((string) $sql, 'DELIMITER')) {
                 $io->writeln('<comment>-- trigger block --</comment>');
             } else {
-                $io->writeln($sql . ';');
+                $io->writeln("$sql;");
             }
         }
         $io->newLine();
