@@ -427,13 +427,13 @@ final class FixAuditTablesCommand extends Command
         $formCols = $this->parseColumnDDLs($formCreate);
         $auditCols = $this->parseColumnDDLs($auditCreate);
 
-        // ADD missing (strip AUTO_INCREMENT if present)
+        // ADD missing (strip AUTO_INCREMENT, always strip for PK)
         foreach ($formCols as $col => $ddl) {
             if (in_array($col, self::RESERVED_AUDIT_COLS, true)) {
                 continue;
             }
             if (!array_key_exists($col, $auditCols)) {
-                $addDDL = (stripos($ddl, 'AUTO_INCREMENT') !== false)
+                $addDDL = ($col === $pk || stripos($ddl, 'AUTO_INCREMENT') !== false)
                     ? $this->stripAutoIncrementFromDDL($ddl)
                     : $ddl;
                 $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN $addDDL";
@@ -449,7 +449,7 @@ final class FixAuditTablesCommand extends Command
                 continue;
             }
 
-            $lhs = (stripos($ddl, 'AUTO_INCREMENT') !== false)
+            $lhs = ($col === $pk || stripos($ddl, 'AUTO_INCREMENT') !== false)
                 ? $this->stripAutoIncrementFromDDL($ddl)
                 : $ddl;           // desired
             $rhs = (stripos($auditCols[$col], 'AUTO_INCREMENT') !== false)
