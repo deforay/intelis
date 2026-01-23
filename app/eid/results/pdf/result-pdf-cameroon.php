@@ -261,8 +261,8 @@ if (!empty($result)) {
     $html .= '<table style="padding:8px 2px 2px 2px;">';
 
     $html .= '<tr>';
-    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate('AGE IN MONTHS') . '</td>';
-    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate('SEX') . '</td>';
+    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _toUpperCase(_translate('AGE IN MONTHS')) . '</td>';
+    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _toUpperCase(_translate('SEX')) . '</td>';
     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
     $html .= '</tr>';
@@ -348,7 +348,7 @@ if (!empty($result)) {
         $finalResult = $eidResults[$result['result']] ?? ucwords((string) $result['result']);
     }
 
-    $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:40px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;' . _translate('Result') . '    &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $finalResult . '</td><td >' . $smileyContent . '</td></tr>';
+    $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:40px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;' . _translate('Result') . '    &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . _translate($finalResult) . '</td><td >' . $smileyContent . '</td></tr>';
     //$html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:70px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . ($result['result']) . '</td><td >' . $smileyContent . '</td></tr>';
     if ($result['reason_for_sample_rejection'] != '') {
         $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;' . _translate('Rejection Reason') . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
