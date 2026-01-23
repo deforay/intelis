@@ -113,11 +113,12 @@ final class FixAuditTablesCommand extends Command
 
         $bar = new ProgressBar($output, count($tableMap));
         $bar->setFormat(' [%bar%] %percent%%  %current%/%max%  %message%');
+        $bar->setMessage('Starting...');
         $bar->start();
 
         foreach ($tableMap as $form => [$audit, $pk]) {
             $bar->setMessage("Syncing $audit ⇐ $form");
-            $bar->advance();
+            $bar->display();
 
             $sqlBatch = [];
             $actions = [];
@@ -139,35 +140,47 @@ final class FixAuditTablesCommand extends Command
                 }
 
                 if (!$rebuildTriggersOnly) {
-                    $sqlBatch = [
-                        ...$sqlBatch,
+                    $schemaSql = [
                         ...$this->ensureAuditTableExists($form, $audit, $pk),
+                        ...($this->tableExists($audit) ? $this->removeAutoIncrementFromAudit($audit) : []),
                         ...$this->alignEngineAndCollation($audit),
                         ...$this->ensureAuditColumnsAndPK($audit, $pk),
                         ...$this->syncColumnsToMatchForm($form, $audit, $dropExtras, $pk)
                     ];
-                    $actions[] = 'schema synced';
+                    if ($schemaSql !== []) {
+                        $sqlBatch = [...$sqlBatch, ...$schemaSql];
+                        $actions[] = 'schema synced';
+                    }
                 }
 
                 if (!$skipTriggers) {
-                    $sqlBatch = [...$sqlBatch, ...$this->rebuildTriggers($form, $audit, $pk)];
-                    $actions[] = 'triggers rebuilt';
+                    $triggerSql = $this->rebuildTriggers($form, $audit, $pk);
+                    if ($triggerSql !== []) {
+                        $sqlBatch = [...$sqlBatch, ...$triggerSql];
+                        $actions[] = 'triggers rebuilt';
+                    }
                 }
 
                 if ($dryRun) {
-                    $this->printSqlBatch($io, $form, $audit, $sqlBatch);
+                    if ($sqlBatch !== []) {
+                        $this->printSqlBatch($io, $form, $audit, $sqlBatch);
+                    }
                 } else {
-                    $this->executeSqlBatch($sqlBatch);
+                    if ($sqlBatch !== []) {
+                        $this->executeSqlBatch($sqlBatch);
+                    }
                     $this->mysqli->commit();
                 }
 
                 $actionsText = $actions === [] ? 'no changes' : implode(', ', $actions);
                 $io->writeln(" - $audit: $actionsText");
+                $bar->advance();
             } catch (\Throwable $e) {
                 if (!$dryRun) {
                     $this->mysqli->rollback();
                 }
                 $io->error($e->getMessage());
+                $bar->advance();
             }
         }
 
@@ -223,7 +236,8 @@ final class FixAuditTablesCommand extends Command
 
     private function isTableCrashed(string $table): bool
     {
-        $res = $this->mysqli->query("CHECK TABLE `{$this->dbName}`.`$table`");
+        // Use QUICK check to avoid slow full table scan on large InnoDB tables
+        $res = $this->mysqli->query("CHECK TABLE `{$this->dbName}`.`$table` QUICK");
         if (!$res) {
             return false;
         }
@@ -285,6 +299,20 @@ final class FixAuditTablesCommand extends Command
     }
 
     /** @return string[] */
+    private function generateRemoveAutoIncrementSql(string $sourceTable, string $targetTable): array
+    {
+        $sql = [];
+        $sourceCols = $this->parseColumnDDLs($this->showCreate($sourceTable));
+        foreach ($sourceCols as $col => $ddl) {
+            if (stripos($ddl, 'AUTO_INCREMENT') === false) {
+                continue;
+            }
+            $sql[] = "ALTER TABLE `{$this->dbName}`.`$targetTable` MODIFY COLUMN " . $this->stripAutoIncrementFromDDL($ddl);
+        }
+        return $sql;
+    }
+
+    /** @return string[] */
     private function removeAutoIncrementFromAudit(string $audit): array
     {
         $sql = [];
@@ -318,19 +346,16 @@ final class FixAuditTablesCommand extends Command
         $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` CONVERT TO CHARACTER SET " . self::CHARSET . " COLLATE " . $this->collation;
 
         // Remove AUTO_INCREMENT from any copied columns BEFORE touching PKs
-        $sql = [...$sql, ...$this->removeAutoIncrementFromAudit($audit)];
+        $sql = [...$sql, ...$this->generateRemoveAutoIncrementSql($form, $audit)];
 
         // Add audit columns
         $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN `action` VARCHAR(8) NOT NULL DEFAULT 'insert' FIRST";
         $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN `revision` INT NOT NULL AFTER `action`";
         $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD COLUMN `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`";
 
-        // Switch PK only if not already (<pk>, revision) — on brand-new LIKE it will be just <pk>
-        $currentPk = $this->getPrimaryKeyColumns($audit);
-        if ($currentPk !== [$pk, 'revision']) {
-            $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` DROP PRIMARY KEY";
-            $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD PRIMARY KEY (`$pk`,`revision`)";
-        }
+        // Always rebuild PK - table is new/recreated via CREATE LIKE, so PK needs changing to ($pk, revision)
+        $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` DROP PRIMARY KEY";
+        $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD PRIMARY KEY (`$pk`,`revision`)";
 
         return $sql;
     }
@@ -358,10 +383,27 @@ final class FixAuditTablesCommand extends Command
     /** @return string[] */
     private function alignEngineAndCollation(string $audit): array
     {
-        return [
-            "ALTER TABLE `{$this->dbName}`.`$audit` ENGINE=" . self::ENGINE,
-            "ALTER TABLE `{$this->dbName}`.`$audit` CONVERT TO CHARACTER SET " . self::CHARSET . " COLLATE " . $this->collation,
-        ];
+        $sql = [];
+
+        // Only alter if engine/collation don't already match
+        $info = $this->db->rawQuery(
+            "SELECT ENGINE, TABLE_COLLATION FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?",
+            [$this->dbName, $audit]
+        );
+
+        if (!empty($info[0])) {
+            $currentEngine = $info[0]['ENGINE'] ?? '';
+            $currentCollation = $info[0]['TABLE_COLLATION'] ?? '';
+
+            if (strcasecmp($currentEngine, self::ENGINE) !== 0) {
+                $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ENGINE=" . self::ENGINE;
+            }
+            if (strcasecmp($currentCollation, $this->collation) !== 0) {
+                $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` CONVERT TO CHARACTER SET " . self::CHARSET . " COLLATE " . $this->collation;
+            }
+        }
+
+        return $sql;
     }
 
     private function getPrimaryKeyColumns(string $table): array
@@ -477,9 +519,33 @@ final class FixAuditTablesCommand extends Command
 
 
 
+    /** Check if all three audit triggers exist for a form table */
+    private function allTriggersExist(string $form): bool
+    {
+        $triggers = [
+            "{$form}_data__ai",
+            "{$form}_data__au",
+            "{$form}_data__bd"
+        ];
+
+        $rows = $this->db->rawQuery(
+            "SELECT TRIGGER_NAME FROM information_schema.TRIGGERS
+             WHERE TRIGGER_SCHEMA = ? AND EVENT_OBJECT_TABLE = ?",
+            [$this->dbName, $form]
+        );
+
+        $existing = array_column($rows ?? [], 'TRIGGER_NAME');
+        return count(array_intersect($triggers, $existing)) === 3;
+    }
+
     /** @return string[] */
     private function rebuildTriggers(string $form, string $audit, string $pk): array
     {
+        // Skip if all triggers already exist
+        if ($this->allTriggersExist($form)) {
+            return [];
+        }
+
         $mk = function (string $suffix, string $timing, string $rowRef, string $action) use ($form, $audit, $pk): string {
             $pkRef = ($rowRef === 'OLD') ? "OLD.`$pk`" : "NEW.`$pk`";
             return <<<SQL
