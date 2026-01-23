@@ -68,7 +68,7 @@ final class FixAuditTablesCommand extends Command
             ->addOption('no-drop-extras', null, InputOption::VALUE_NONE, 'Keep columns that exist only in audit.')
             ->addOption('rebuild-triggers-only', null, InputOption::VALUE_NONE, 'Only (re)create triggers.')
             ->addOption('skip-triggers', null, InputOption::VALUE_NONE, 'Skip trigger (re)creation.')
-            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Print SQL only, don’t execute.');
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Print SQL only, do not execute.');
     }
 
     #[\Override]
@@ -523,33 +523,10 @@ final class FixAuditTablesCommand extends Command
     }
 
 
-
-    /** Check if all three audit triggers exist for a form table */
-    private function allTriggersExist(string $form): bool
-    {
-        $triggers = [
-            "{$form}_data__ai",
-            "{$form}_data__au",
-            "{$form}_data__bd"
-        ];
-
-        $rows = $this->db->rawQuery(
-            "SELECT TRIGGER_NAME FROM information_schema.TRIGGERS
-             WHERE TRIGGER_SCHEMA = ? AND EVENT_OBJECT_TABLE = ?",
-            [$this->dbName, $form]
-        );
-
-        $existing = array_column($rows ?? [], 'TRIGGER_NAME');
-        return count(array_intersect($triggers, $existing)) === 3;
-    }
-
     /** @return string[] */
     private function rebuildTriggers(string $form, string $audit, string $pk): array
     {
-        // Skip if all triggers already exist
-        if ($this->allTriggersExist($form)) {
-            return [];
-        }
+        // Always rebuild triggers to ensure they're up-to-date
 
         $mk = function (string $suffix, string $timing, string $rowRef, string $action) use ($form, $audit, $pk): string {
             $pkRef = ($rowRef === 'OLD') ? "OLD.`$pk`" : "NEW.`$pk`";
@@ -587,8 +564,12 @@ SQL;
                 if (!$this->mysqli->multi_query($normalized)) {
                     throw new RuntimeException('Trigger rebuild failed: ' . $this->mysqli->error);
                 }
-                while ($this->mysqli->more_results() && $this->mysqli->next_result()) { /* drain */
-                }
+                // Check each result for errors
+                do {
+                    if ($this->mysqli->error) {
+                        throw new RuntimeException('Trigger statement failed: ' . $this->mysqli->error);
+                    }
+                } while ($this->mysqli->more_results() && $this->mysqli->next_result());
             } elseif (!$this->mysqli->query($sql)) {
                 throw new RuntimeException('SQL failed: ' . $this->mysqli->error . ' (' . $sql . ')');
             }
@@ -599,11 +580,7 @@ SQL;
     {
         $io->section("$audit ⇐ $form");
         foreach ($sqlBatch as $sql) {
-            if (str_starts_with((string) $sql, 'DELIMITER')) {
-                $io->writeln('<comment>-- trigger block --</comment>');
-            } else {
-                $io->writeln("$sql;");
-            }
+            $io->writeln($sql);
         }
         $io->newLine();
     }
