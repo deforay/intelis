@@ -12,6 +12,7 @@
 <script type="text/javascript" src="/assets/js/dayjs.customParseFormat.js"></script>
 <script type="text/javascript" src="/assets/js/dayjs.utc.js"></script>
 <script type="text/javascript" src="/assets/js/dayjs.timezone.js"></script>
+<script type="text/javascript" src="/assets/js/intelis-date.js"></script>
 <script type="text/javascript" src="/assets/js/app.min.js"></script>
 <script type="text/javascript" src="/assets/js/deforayValidation.js"></script>
 <script type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
@@ -472,8 +473,8 @@ $remoteURL = $general->getRemoteURL();
 
 
     function calculateAgeInYears(calcFrom, calcTo) {
-        var dateOfBirth = moment($("#" + calcFrom).val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
-        $("#" + calcTo).val(moment().diff(dateOfBirth, 'years'));
+        var dateOfBirth = IntelisDate($("#" + calcFrom).val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
+        $("#" + calcTo).val(IntelisDate().diff(dateOfBirth, 'year'));
     }
 
     function getAge() {
