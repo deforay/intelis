@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2026-01-21 14:10+0530\n"
-"PO-Revision-Date: 2026-01-21 14:10+0530\n"
+"POT-Creation-Date: 2026-01-23 17:32+0530\n"
+"PO-Revision-Date: 2026-01-23 17:33+0530\n"
 "Last-Translator: Amit <amit@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -2516,14 +2516,14 @@ msgstr "Aucune installation correspondante n'a été trouvée"
 #: app/admin/api-dashboard/api-dashboard.php:888
 #: app/admin/api-dashboard/api-dashboard.php:1010
 #: app/admin/api-dashboard/api-dashboard.php:1122
-#: public/assets/js/main.js.php:86
+#: public/assets/js/main.js.php:87
 msgid "First"
 msgstr "Premier"
 
 #: app/admin/api-dashboard/api-dashboard.php:889
 #: app/admin/api-dashboard/api-dashboard.php:1011
 #: app/admin/api-dashboard/api-dashboard.php:1123
-#: public/assets/js/main.js.php:87
+#: public/assets/js/main.js.php:88
 msgid "Last"
 msgstr "Dernier"
 
@@ -2537,14 +2537,14 @@ msgstr "Dernier"
 #: app/hepatitis/results/email-results.php:336 app/mail/vlResultMail.php:336
 #: app/setup/index.php:345 app/setup/index.php:444
 #: app/tb/results/email-results.php:336 app/vl/results/email-results.php:336
-#: app/vl/results/vlResultMail.php:336 public/assets/js/main.js.php:88
+#: app/vl/results/vlResultMail.php:336 public/assets/js/main.js.php:89
 msgid "Next"
 msgstr "Suivante"
 
 #: app/admin/api-dashboard/api-dashboard.php:891
 #: app/admin/api-dashboard/api-dashboard.php:1013
 #: app/admin/api-dashboard/api-dashboard.php:1125
-#: public/assets/js/main.js.php:89
+#: public/assets/js/main.js.php:90
 msgid "Previous"
 msgstr "Précédent"
 
@@ -3153,7 +3153,7 @@ msgstr "Type d'action"
 #: app/vl/results/vl-print-results.php:240
 #: app/vl/results/vl-print-results.php:602
 #: app/vl/results/vlResultApproval.php:198 app/vl/results/vlResultMail.php:287
-#: app/vl/results/vlTestResult.php:174 public/assets/js/main.js.php:84
+#: app/vl/results/vlTestResult.php:174 public/assets/js/main.js.php:85
 msgid "Search"
 msgstr "Rechercher"
 
@@ -5356,7 +5356,7 @@ msgstr "Échec du chargement des données. Veuillez réessayer."
 msgid "Failed to load data"
 msgstr "Échec lors du chargement des données"
 
-#: app/admin/monitoring/sync-status.php:623 public/assets/js/main.js.php:92
+#: app/admin/monitoring/sync-status.php:623 public/assets/js/main.js.php:93
 msgid "Loading..."
 msgstr "Chargement..."
 
@@ -18272,7 +18272,7 @@ msgstr "Sélectionner Approuvé par"
 #: app/vl/requests/forms/edit-cameroon.php:881
 #: app/vl/requests/forms/edit-drc.php:1101
 #: app/vl/results/forms/update-drc-result.php:812
-#: public/assets/js/main.js.php:516
+#: public/assets/js/main.js.php:517
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères pour rechercher"
 
@@ -18802,7 +18802,7 @@ msgstr "Établissement de santé/COMTÉ DE POE"
 
 #: app/eid/results/pdf/result-pdf-cameroon.php:232
 msgid "LAB NAME"
-msgstr "Les réponses, le nom et le numéro de téléphone sont obligatoires"
+msgstr "NOM DU LABO"
 
 #: app/eid/results/pdf/result-pdf-cameroon.php:234
 msgid "ARV PROTOCOL FOLLOWED BY MOTHER"
@@ -29288,147 +29288,147 @@ msgstr ""
 "La date d'analyse de l'échantillon ne peut être antérieure à la date de "
 "prélèvement de l'échantillon"
 
-#: public/assets/js/main.js.php:78
+#: public/assets/js/main.js.php:79
 msgid "records per page"
 msgstr "enregistrements par page"
 
-#: public/assets/js/main.js.php:79
+#: public/assets/js/main.js.php:80
 msgid "No records found"
 msgstr "Aucun enregistrement trouvé"
 
-#: public/assets/js/main.js.php:80
+#: public/assets/js/main.js.php:81
 msgid "No data available in table"
 msgstr "Aucune donnée disponible dans le tableau"
 
-#: public/assets/js/main.js.php:81
+#: public/assets/js/main.js.php:82
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Affichage de _START_ à _END_ sur _TOTAL_ éléments"
 
-#: public/assets/js/main.js.php:82
+#: public/assets/js/main.js.php:83
 msgid "Showing 0 to 0 of 0 entries"
 msgstr "Affiche 0 à 0 de 0 entrées"
 
-#: public/assets/js/main.js.php:83
+#: public/assets/js/main.js.php:84
 msgid "filtered from _MAX_ total entries"
 msgstr "filtré de _MAX_ entrées totales"
 
-#: public/assets/js/main.js.php:91
+#: public/assets/js/main.js.php:92
 msgid "Loading Table Data..."
 msgstr "Chargement des données du tableau..."
 
-#: public/assets/js/main.js.php:103 public/assets/js/main.js.php:269
-#: public/assets/js/main.js.php:296 public/assets/js/main.js.php:318
-#: public/assets/js/main.js.php:342
+#: public/assets/js/main.js.php:104 public/assets/js/main.js.php:270
+#: public/assets/js/main.js.php:297 public/assets/js/main.js.php:319
+#: public/assets/js/main.js.php:343
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
-#: public/assets/js/main.js.php:140
+#: public/assets/js/main.js.php:141
 msgid "Please enter the Sample Manifest Code"
 msgstr "Veuillez saisir l'exemple de code de manifeste"
 
-#: public/assets/js/main.js.php:156
+#: public/assets/js/main.js.php:157
 msgid "Unable to verify manifest"
 msgstr "Impossible de vérifier le manifeste"
 
-#: public/assets/js/main.js.php:172
+#: public/assets/js/main.js.php:173
 msgid "Unable to find manifest"
 msgstr "Impossible de trouver le manifeste"
 
-#: public/assets/js/main.js.php:179
+#: public/assets/js/main.js.php:180
 msgid "Samples loaded successfully for manifest"
 msgstr "Échantillons chargés avec succès pour le manifeste"
 
-#: public/assets/js/main.js.php:193 public/assets/js/main.js.php:244
+#: public/assets/js/main.js.php:194 public/assets/js/main.js.php:245
 msgid "Some error occurred while processing the manifest"
 msgstr "Une erreur s'est produite lors du traitement du manifeste"
 
-#: public/assets/js/main.js.php:216
+#: public/assets/js/main.js.php:217
 msgid "Unable to sync manifest"
 msgstr "Impossible de synchroniser le manifeste"
 
-#: public/assets/js/main.js.php:225
+#: public/assets/js/main.js.php:226
 msgid "Invalid server response while processing manifest"
 msgstr "Réponse invalide du serveur lors du traitement du manifeste"
 
-#: public/assets/js/main.js.php:234
+#: public/assets/js/main.js.php:235
 msgid "Unable to find or sync samples from manifest"
 msgstr "Impossible de trouver ou de synchroniser les échantillons du manifeste"
 
-#: public/assets/js/main.js.php:238
+#: public/assets/js/main.js.php:239
 msgid "Samples synced successfully from STS for manifest"
 msgstr ""
 "Échantillons synchronisés avec succès à partir de STS pour le manifeste"
 
-#: public/assets/js/main.js.php:250
+#: public/assets/js/main.js.php:251
 msgid "Please enter a valid Sample Manifest Code"
 msgstr "Veuillez saisir un exemple de code de manifeste valide"
 
-#: public/assets/js/main.js.php:263 public/assets/js/main.js.php:290
+#: public/assets/js/main.js.php:264 public/assets/js/main.js.php:291
 msgid "Please connect to internet to sync with STS"
 msgstr "Veuillez vous connecter à Internet pour synchroniser avec STS"
 
-#: public/assets/js/main.js.php:269
+#: public/assets/js/main.js.php:270
 msgid "Receiving Metadata from STS"
 msgstr "Réception des métadonnées du STS"
 
-#: public/assets/js/main.js.php:280 public/assets/js/main.js.php:307
-#: public/assets/js/main.js.php:331 public/assets/js/main.js.php:355
+#: public/assets/js/main.js.php:281 public/assets/js/main.js.php:308
+#: public/assets/js/main.js.php:332 public/assets/js/main.js.php:356
 msgid "Unable to do STS Sync. Please contact technical team for assistance."
 msgstr ""
 "Impossible d'effectuer la synchronisation STS. Veuillez contacter l'équipe "
 "technique pour obtenir de l'aide."
 
-#: public/assets/js/main.js.php:296
+#: public/assets/js/main.js.php:297
 msgid "Sending Lab Metadata"
 msgstr "Envoi de métadonnées de laboratoire"
 
-#: public/assets/js/main.js.php:318
+#: public/assets/js/main.js.php:319
 msgid "Sending Test Results"
 msgstr "Envoi des résultats des tests"
 
-#: public/assets/js/main.js.php:342
+#: public/assets/js/main.js.php:343
 msgid "Receiving Test Requests"
 msgstr "Réception des demandes de test"
 
-#: public/assets/js/main.js.php:390
+#: public/assets/js/main.js.php:391
 msgid "STS server is reachable"
 msgstr "Le serveur STS est accessible"
 
-#: public/assets/js/main.js.php:398
+#: public/assets/js/main.js.php:399
 msgid "STS server is unreachable"
 msgstr "Le serveur STS est inaccessible"
 
-#: public/assets/js/main.js.php:422 public/assets/js/main.js.php:433
+#: public/assets/js/main.js.php:423 public/assets/js/main.js.php:434
 msgid "Thank you.Your message has been submitted."
 msgstr "Merci, votre message a été envoyé."
 
-#: public/assets/js/main.js.php:551
+#: public/assets/js/main.js.php:552
 msgid "Cache cleared successfully"
 msgstr "Le Câche a été éliminé avec succès"
 
-#: public/assets/js/main.js.php:567
+#: public/assets/js/main.js.php:568
 msgid "Synced successfully"
 msgstr "Synchronisation réussie"
 
-#: public/assets/js/main.js.php:585
+#: public/assets/js/main.js.php:586
 msgid "Sample Collection date cannot be in the future"
 msgstr "La date de prélèvement de l'échantillon ne peut pas être ultérieure"
 
-#: public/assets/js/main.js.php:592
+#: public/assets/js/main.js.php:593
 msgid "Sample Collection Date is over 6 months old"
 msgstr "La date de prélèvement de l'échantillon remonte à plus de 6 mois"
 
-#: public/assets/js/main.js.php:667
+#: public/assets/js/main.js.php:668
 msgid "Invalid date format. Please check the input dates."
 msgstr "Format de date incorrect. Veuillez vérifier les dates saisies."
 
-#: public/assets/js/main.js.php:672
+#: public/assets/js/main.js.php:673
 msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
 
-#: public/assets/js/main.js.php:843
+#: public/assets/js/main.js.php:844
 msgid ""
 "Invalid phone number. Please enter full phone number with the proper country "
 "code"
@@ -29436,7 +29436,7 @@ msgstr ""
 "Numéro de téléphone non valide. Veuillez saisir le numéro de téléphone "
 "complet avec l'indicatif du pays"
 
-#: public/assets/js/main.js.php:884
+#: public/assets/js/main.js.php:885
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identifiant du patient : "
 
