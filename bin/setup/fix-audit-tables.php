@@ -29,7 +29,6 @@ declare(strict_types=1);
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,6 +37,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestsService;
+use App\Utilities\MiscUtility;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
@@ -111,20 +111,21 @@ final class FixAuditTablesCommand extends Command
             return Command::SUCCESS;
         }
 
-        $bar = new ProgressBar($output, count($tableMap));
-        $bar->setFormat(' [%bar%] %percent%%  %current%/%max%  %message%');
-        $bar->setMessage('Starting...');
-        $bar->start();
+        $bar = MiscUtility::spinnerStart(
+            count($tableMap),
+            'Syncing audit tables…',
+            '█',
+            '░',
+            '█',
+            'cyan'
+        );
 
         foreach ($tableMap as $form => [$audit, $pk]) {
-            $bar->setMessage("Syncing $audit ⇐ $form");
-            $bar->display();
-
             $sqlBatch = [];
             $actions = [];
             try {
                 if ($this->tableExists($audit) && $this->isTableCrashed($audit)) {
-                    $io->warning("$audit is marked as crashed; dropping and recreating.");
+                    MiscUtility::spinnerPausePrint($bar, fn() => $io->warning("$audit is marked as crashed; dropping and recreating."));
                     $actions[] = 'recreated (crashed)';
                     $sqlBatch = $this->recreateAuditTable($form, $audit, $pk);
                     if ($dryRun) {
@@ -172,19 +173,23 @@ final class FixAuditTablesCommand extends Command
                     $this->mysqli->commit();
                 }
 
-                $actionsText = $actions === [] ? 'no changes' : implode(', ', $actions);
-                $io->writeln(" - $audit: $actionsText");
-                $bar->advance();
+                if ($actions !== []) {
+                    $actionsText = implode(', ', $actions);
+                    MiscUtility::spinnerPausePrint($bar, function () use ($output, $audit, $actionsText): void {
+                        $output->writeln("  $audit: $actionsText");
+                    });
+                }
+                MiscUtility::spinnerAdvance($bar, 1);
             } catch (\Throwable $e) {
                 if (!$dryRun) {
                     $this->mysqli->rollback();
                 }
-                $io->error($e->getMessage());
-                $bar->advance();
+                MiscUtility::spinnerPausePrint($bar, fn() => $io->error($e->getMessage()));
+                MiscUtility::spinnerAdvance($bar, 1);
             }
         }
 
-        $bar->finish();
+        MiscUtility::spinnerFinish($bar);
         $output->writeln('');
         $io->success('All requested audit tables checked and updated.');
         return Command::SUCCESS;
