@@ -340,6 +340,8 @@ try {
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Purpose of Test:</td>';
+
+            $result['purpose_of_test'] = explode(',', $result['purpose_of_test']);
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['purpose_of_test'] . '</td>';
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Registered By:</td>';
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
