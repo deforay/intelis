@@ -117,7 +117,7 @@ paths:
               example:
                 status: success
                 timestamp: 1703746347
-                manifestCode: GENERICTESTS231228DF9DE0
+                manifestCode: VL2VL25120309SZ73
                 data:
                   alreadyInManifest:
                   - RVL1223167772
@@ -275,7 +275,7 @@ paths:
                         description: ''
                       patientGender:
                         type: string
-                        description: Patient Gender
+                        description: Patient Sex
                       healthInsuranceCode:
                         type: string
                         description: ''
