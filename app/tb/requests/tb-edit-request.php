@@ -218,7 +218,7 @@ foreach ($testPlatformResult as $row) {
 }
 
 if ($tbInfo['locked'] == 'yes') {
-    if($checkNonAdminUser == 1){
+    if ($checkNonAdminUser == 1) {
         $fileArray = [
             COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
             COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
@@ -231,15 +231,12 @@ if ($tbInfo['locked'] == 'yes') {
         ];
 
         require_once($fileArray[$arr['vl_form']]);
-    }
-    else{
+    } else {
         http_response_code(403);
         throw new SystemException('Invalid URL', 403);
     }
-}
-else{
-    if(_isAllowed("/eid/requests/eid-edit-request.php"))
-    {
+} else {
+    if (_isAllowed("/eid/requests/eid-edit-request.php")) {
         $fileArray = [
             COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
             COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
@@ -252,8 +249,7 @@ else{
         ];
 
         require_once($fileArray[$arr['vl_form']]);
-    }
-    else{
+    } else {
         http_response_code(403);
         throw new SystemException('Invalid URL', 403);
     }
@@ -265,13 +261,13 @@ else{
         if ($.trim($("#" + id).val()) != '') {
             $.blockUI();
             $.post("/tb/requests/check-sample-duplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: $("#" + id).val(),
-                fnct: fnct,
-                format: "html"
-            },
-                function (data) {
+                    tableName: tableName,
+                    fieldName: fieldName,
+                    value: $("#" + id).val(),
+                    fnct: fnct,
+                    format: "html"
+                },
+                function(data) {
                     if (data != 0) {
 
                     }
@@ -280,21 +276,21 @@ else{
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
 
-        $('#isSampleRejected').change(function (e) {
+        $('#isSampleRejected').change(function(e) {
             changeReject(this.value);
         });
-        $('#hasRecentTravelHistory').change(function (e) {
+        $('#hasRecentTravelHistory').change(function(e) {
             changeHistory(this.value);
         });
         changeReject($('#isSampleRejected').val());
         changeHistory($('#hasRecentTravelHistory').val());
 
-        $('.result-focus').change(function (e) {
+        $('.result-focus').change(function(e) {
             var status = false;
-            $(".result-focus").each(function (index) {
+            $(".result-focus").each(function(index) {
                 if ($(this).val() != "") {
                     status = true;
                 }
@@ -323,9 +319,9 @@ else{
         $("#showEmptyResult").hide();
         if ($.trim($("#artPatientNo").val()) != '') {
             $.post("/tb/requests/search-patients.php", {
-                artPatientNo: $("#artPatientNo").val()
-            },
-                function (data) {
+                    artPatientNo: $("#artPatientNo").val()
+                },
+                function(data) {
                     if (data >= '1') {
                         showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
                     } else {
