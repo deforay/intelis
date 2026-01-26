@@ -101,13 +101,13 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
                             <div class="box-header with-border">
                                 <h3 class="box-title" style="font-size:1em;">
-                                    <?php echo _translate("To be filled by requesting Clinician/Nurse"); ?>
+                                    <?php echo _translate("Enter requesting Clinician/Nurse details"); ?>
                                 </h3>
                             </div>
 
                             <table class="table" style="width:100%">
                                 <tr>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="province"><?php echo _translate("Health Facility State"); ?><span
                                                 class="mandatory">*</span></label>
@@ -117,7 +117,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             <?php echo $province; ?>
                                         </select>
                                     </td>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="district"><?php echo _translate("Health Facility County"); ?><span
                                                 class="mandatory">*</span></label>
@@ -127,9 +127,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             <option value=""> -- <?php echo _translate("Select"); ?> -- </option>
                                         </select>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="facilityId"><?php echo _translate("Health Facility Name"); ?><span
                                                 class="mandatory">*</span></label>
@@ -139,28 +137,22 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             <?php echo $facility; ?>
                                         </select>
                                     </td>
-                                    <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                                        <td style="width: 50%;">
-                                            <label class="label-control"
-                                                for="labId"><?php echo _translate("Testing Laboratory"); ?><span
-                                                    class="mandatory">*</span></label>
-                                            <select name="labId" id="labId" class="form-control select2 isRequired"
-                                                title="<?php echo _translate("Please select Testing Laboratory"); ?>">
-                                                <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
-                                            </select>
-                                        </td>
-                                    <?php } ?>
-                                    <!-- <td style="width: 50%;">
-                                        <label class="label-control"
-                                            for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?><span
-                                                class="mandatory">*</span></label>
-                                        <select name="affiliatedLabId" id="affiliatedLabId"
-                                            class="form-control select2 isRequired"
-                                            title="<?php echo _translate("Please select affiliated laboratory"); ?>">
-                                            <?= $general->generateSelectOptions($testingLabs, $tbInfo['affiliated_lab_id'], '-- Select --'); ?>
-                                        </select>
-                                    </td> -->
                                 </tr>
+                                <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+                                <tr>
+                                    <td style="width: 33.33%;">
+                                        <label class="label-control"
+                                            for="labId"><?php echo _translate("Testing Laboratory"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <select name="labId" id="labId" class="form-control select2 isRequired"
+                                            title="<?php echo _translate("Please select Testing Laboratory"); ?>">
+                                            <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
+                                        </select>
+                                    </td>
+                                    <td style="width: 33.33%;"></td>
+                                    <td style="width: 33.33%;"></td>
+                                </tr>
+                                <?php } ?>
                             </table>
 
                             <!-- PATIENT DETAILS -->
@@ -169,7 +161,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                             </div>
                             <div class="box-header with-border">
                                 <h3 class="box-title" style="font-size:1em;">
-                                    <?php echo _translate("Complete full information on patient identification, contact and type of patient by TB program definition"); ?>
+                                    <?php echo _translate("Enter patient identification, contact details, and type of patient"); ?>
                                 </h3>
                                 <a style="margin-top:-0.35%;margin-left:10px;" href="javascript:void(0);"
                                     class="btn btn-default pull-right btn-sm" onclick="showPatientList();"><em
@@ -179,12 +171,12 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                 <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo"
                                     class="pull-right"
                                     placeholder="<?php echo _translate("Enter Patient ID or Patient Name"); ?>"
-                                    title="<?php echo _translate("Enter art number or patient name"); ?>" />
+                                    title="<?php echo _translate("Enter ART number or patient name"); ?>" />
                             </div>
 
                             <table class="table" style="width:100%">
                                 <tr class="encryptPIIContainer">
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label for="encryptPII"><?= _translate('Encrypt PII'); ?></label>
                                         <select name="encryptPII" id="encryptPII" class="form-control"
                                             title="<?= _translate('Encrypt Patient Identifying Information'); ?>">
@@ -193,43 +185,43 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             <option value="yes" <?php echo ($tbInfo['is_encrypted'] == "yes") ? "selected='selected'" : ""; ?>><?= _translate('Yes'); ?></option>
                                         </select>
                                     </td>
+                                    <td style="width: 33.33%;"></td>
+                                    <td style="width: 33.33%;"></td>
                                 </tr>
                                 <tr>
-                                    <td style="width: 40%;">
+                                    <td style="width: 33.33%;">
                                         <label for="trackerNo"><?= _translate('e-TB tracker No.'); ?></label>
                                         <input type="text" value="<?php echo $tbInfo['etb_tracker_number']; ?>"
                                             class="form-control" id="trackerNo" name="trackerNo"
                                             placeholder="<?php echo _translate("Enter the e-TB tracker number"); ?>"
                                             title="<?php echo _translate("Please enter the e-TB tracker number"); ?>" />
                                     </td>
-                                    <td style="width: 60%;display: flex;gap: 10px;">
-                                        <div style="width:50%">
-                                            <label for="dob"><?= _translate('Date of Birth'); ?></label>
-                                            <input type="text"
-                                                value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>"
-                                                class="form-control date" id="dob" name="dob"
-                                                placeholder="<?php echo _translate("Date of Birth"); ?>"
-                                                title="<?php echo _translate("Please enter Date of birth"); ?>"
-                                                onchange="calculateAgeInYears('dob', 'patientAge');" />
-                                        </div>
-                                        <div style="width:50%;">
-                                            <label for="patientAge"><?= _translate('Age (years)'); ?></label>
-                                            <input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150"
-                                                maxlength="3" class="form-control" id="patientAge" name="patientAge"
-                                                placeholder="<?php echo _translate("Age (in years)"); ?>"
-                                                title="<?php echo _translate("Patient Age"); ?>" />
-                                        </div>
+                                    <td style="width: 33.33%;">
+                                        <label for="dob"><?= _translate('Date of Birth'); ?></label>
+                                        <input type="text"
+                                            value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>"
+                                            class="form-control date" id="dob" name="dob"
+                                            placeholder="<?php echo _translate("Date of Birth"); ?>"
+                                            title="<?php echo _translate("Please enter Date of birth"); ?>"
+                                            onchange="calculateAgeInYears('dob', 'patientAge');" />
+                                    </td>
+                                    <td style="width: 33.33%;">
+                                        <label for="patientAge"><?= _translate('Age (years)'); ?></label>
+                                        <input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150"
+                                            maxlength="3" class="form-control" id="patientAge" name="patientAge"
+                                            placeholder="<?php echo _translate("Age (in years)"); ?>"
+                                            title="<?php echo _translate("Patient Age"); ?>" />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label for="patientId"><?php echo _translate("Patient ID"); ?></label>
                                         <input type="text" value="<?php echo $tbInfo['patient_id']; ?>"
                                             class="form-control patientId" id="patientId" name="patientId"
                                             placeholder="Patient Identification"
                                             title="<?php echo _translate("Please enter Patient ID"); ?>" />
                                     </td>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label for="patientGender"><?php echo _translate("Sex"); ?><span
                                                 class="mandatory">*</span></label>
                                         <select class="form-control isRequired" name="patientGender" id="patientGender"
@@ -244,9 +236,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             </option>
                                         </select>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label for="firstName"><?php echo _translate("First Name"); ?><span
                                                 class="mandatory">*</span></label>
                                         <input type="text" value="<?php echo $tbInfo['patient_name']; ?>"
@@ -254,16 +244,16 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             placeholder="<?php echo _translate("First Name"); ?>"
                                             title="<?php echo _translate("Please enter First name"); ?>" />
                                     </td>
-                                    <td style="width: 50%;">
+                                </tr>
+                                <tr>
+                                    <td style="width: 33.33%;">
                                         <label for="lastName"><?php echo _translate("Surname"); ?></label>
                                         <input type="text" value="<?php echo $tbInfo['patient_surname']; ?>"
                                             class="form-control" id="lastName" name="lastName"
                                             placeholder="<?php echo _translate("Last name"); ?>"
                                             title="<?php echo _translate("Please enter Last name"); ?>" />
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label
                                             for="patientPhoneNumber"><?php echo _translate("Phone contact"); ?>:</label>
                                         <input type="text" value="<?php echo $tbInfo['patient_phone']; ?>"
@@ -272,7 +262,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             placeholder="<?php echo _translate("Phone Number"); ?>"
                                             title="<?php echo _translate("Please enter phone number"); ?>" />
                                     </td>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label for="typeOfPatient"><?php echo _translate("Type of patient"); ?><span
                                                 class="mandatory">*</span></label>
                                         <select class="select2 form-control isRequired" name="typeOfPatient[]"
@@ -304,13 +294,13 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                             </div>
                             <div class="box-header with-border">
                                 <h3 class="box-title" style="font-size:1em;">
-                                    <?php echo _translate("Please complete full information on treatment history, TB regimen and risk factors"); ?>
+                                    <?php echo _translate("Enter treatment history, TB regimen, and risk factors"); ?>
                                 </h3>
                             </div>
 
                             <table class="table" style="width:100%">
                                 <tr>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label
                                             for="isPatientInitiatedTreatment"><?php echo _translate("Is patient initiated on TB treatment?"); ?>:</label>
                                         <select name="isPatientInitiatedTreatment" id="isPatientInitiatedTreatment"
@@ -321,7 +311,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                         </select>
                                     </td>
                                     <td class="treatmentSelected"
-                                        style="width: 50%; <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
+                                        style="width: 33.33%; <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
                                         <label class="label-control"
                                             for="treatmentDate"><?php echo _translate("Date of treatment Initiation"); ?><span
                                                 class="mandatory">*</span></label>
@@ -334,7 +324,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                 </tr>
                                 <tr class="treatmentSelected"
                                     style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label for="currentRegimen"
                                             class="label-control"><?php echo _translate("Current regimen"); ?><span
                                                 class="mandatory">*</span></label>
@@ -344,7 +334,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             placeholder="<?php echo _translate('Enter the current regimen'); ?>"
                                             title="<?php echo _translate('Please enter current regimen'); ?>">
                                     </td>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="regimenDate"><?php echo _translate("Date of Initiation of Current Regimen"); ?><span
                                                 class="mandatory">*</span></label>
@@ -357,7 +347,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                 </tr>
                                 <tr class="treatmentSelected"
                                     style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="riskFactors"><?php echo _translate("Risk Factors"); ?><span
                                                 class="mandatory">*</span></label>
@@ -396,13 +386,13 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                             </div>
                             <div class="box-header with-border">
                                 <h3 class="box-title" style="font-size:1em;">
-                                    <?php echo _translate("Please tick/circle all as applicable below"); ?>
+                                    <?php echo _translate("Please select all that apply"); ?>
                                 </h3>
                             </div>
 
                             <table class="table" style="width:100%">
                                 <tr style="border: 1px solid #8080804f;">
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="purposeOfTbTest"><?php echo _translate("Purpose of TB test(s)"); ?><span
                                                 class="mandatory">*</span></label>
@@ -428,13 +418,13 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                             </div>
                             <div class="box-header with-border">
                                 <h3 class="box-title" style="font-size:1em;">
-                                    <?php echo _translate("Please complete full information and circle/tick as appropriate"); ?>
+                                    <?php echo _translate("Enter specimen collection details"); ?>
                                 </h3>
                             </div>
 
                             <table class="table">
                                 <tr>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="sampleCollectionDate"><?php echo _translate("Date Specimen Collected"); ?><span
                                                 class="mandatory">*</span></label>
@@ -445,7 +435,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             onchange="generateSampleCode(); checkCollectionDate(this.value);" />
                                         <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                     </td>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="specimenType"><?php echo _translate("Specimen Type"); ?><span
                                                 class="mandatory">*</span></label>
@@ -465,7 +455,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="width: 50%;">
+                                    <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="reOrderedCorrectiveAction"><?php echo _translate("Is specimen re-ordered as part of corrective action?"); ?></label>
                                         <select class="form-control" name="reOrderedCorrectiveAction"
@@ -490,10 +480,31 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                 </div>
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">
-                                        <?php echo _translate("Please complete full information and appropriate results with reference to TB test(s) requested above"); ?>
+                                        <?php echo _translate("Enter test results for the requested TB test(s)"); ?>
                                     </h3>
                                 </div>
 
+                                <style>
+                                    .test-section {
+                                        padding: 15px;
+                                        margin-bottom: 10px;
+                                        border-radius: 5px;
+                                        border: 1px solid #ddd;
+                                    }
+                                    .test-section:nth-child(odd) {
+                                        background-color: #f9f9f9;
+                                    }
+                                    .test-section:nth-child(even) {
+                                        background-color: #ffffff;
+                                    }
+                                    .test-section .section-header {
+                                        font-size: 1.1em;
+                                        color: #3c8dbc;
+                                        margin-bottom: 10px;
+                                        padding-bottom: 5px;
+                                        border-bottom: 2px solid #3c8dbc;
+                                    }
+                                </style>
                                 <div id="testSections">
                                     <?php if (isset($tbTestInfo) && !empty($tbTestInfo)) {
                                         $n = 1;
@@ -503,7 +514,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                             class="section-number"><?php echo $n; ?></span></strong></div>
                                                 <table class="table" style="width:100%; margin-top: 15px;">
                                                     <tr>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="labId<?php echo $n; ?>"><?php echo _translate("Testing Lab"); ?><span
                                                                     class="mandatory">*</span></label>
@@ -513,7 +524,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                                 <?= $general->generateSelectOptions($testingLabs, $test['lab_id'], '-- Select lab --'); ?>
                                                             </select>
                                                         </td>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="sampleReceivedDate<?php echo $n; ?>"><?php echo _translate("Date specimen received at TB testing site"); ?><span
                                                                     class="mandatory">*</span></label>
@@ -526,7 +537,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="isSampleRejected<?php echo $n; ?>"><?php echo _translate("Is Sample Rejected?"); ?></label>
                                                             <select class="form-control sample-rejection-select"
@@ -539,7 +550,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                                 <option value="no" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>> <?php echo _translate("No"); ?> </option>
                                                             </select>
                                                         </td>
-                                                        <td style="width: 50%;<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>"
+                                                        <td style="width: 33.33%;<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>"
                                                             class="rejection-reason-field">
                                                             <label class="label-control"
                                                                 for="sampleRejectionReason<?php echo $n; ?>"><?php echo _translate("Reason for Rejection"); ?><span
@@ -573,7 +584,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                     </tr>
                                                     <tr class="rejection-date-field"
                                                         style="<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>">
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="rejectionDate<?php echo $n; ?>"><?php echo _translate("Rejection Date"); ?><span
                                                                     class="mandatory">*</span></label>
@@ -584,10 +595,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                                 placeholder="<?php echo _translate("Select rejection date"); ?>"
                                                                 title="<?php echo _translate("Please select the rejection date"); ?>" />
                                                         </td>
-                                                        <td style="width: 50%;"></td>
+                                                        <td style="width: 33.33%;"></td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="specimenType<?php echo $n; ?>"><?php echo _translate("Specimen Type"); ?></label>
                                                             <select name="testResult[specimenType][]"
@@ -596,7 +607,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $test['specimen_type'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="testType<?php echo $n; ?>"><?php echo _translate("Test Type"); ?></label>
                                                             <select class="form-control test-type-select"
@@ -616,7 +627,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="testResult<?php echo $n; ?>"><?php echo _translate("Test Result"); ?></label>
                                                             <select class="form-control test-result-select"
@@ -629,7 +640,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                                     selected="selected"><?php echo $test['test_type']; ?></option>
                                                             </select>
                                                         </td>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="comments<?php echo $n; ?>"><?php echo _translate("Comments"); ?></label>
                                                             <textarea class="form-control" id="comments<?php echo $n; ?>"
@@ -639,7 +650,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="testedBy<?php echo $n; ?>"><?php echo _translate("Tested By"); ?></label>
                                                             <select name="testResult[testedBy][]" id="testedBy<?php echo $n; ?>"
@@ -648,7 +659,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                                 <?= $general->generateSelectOptions($userInfo, $test['tested_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="sampleTestedDateTime<?php echo $n; ?>"><?php echo _translate("Tested On"); ?></label>
                                                             <input type="text"
@@ -661,7 +672,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="reviewedBy<?php echo $n; ?>"><?php echo _translate("Reviewed By"); ?></label>
                                                             <select name="testResult[reviewedBy][]" id="reviewedBy<?php echo $n; ?>"
@@ -670,19 +681,19 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                                 <?= $general->generateSelectOptions($userInfo, $test['result_reviewed_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
-                                                                for="reviewedOn<?php echo $n; ?>"><?php echo _translate("Reviewed on"); ?></label>
+                                                                for="reviewedOn<?php echo $n; ?>"><?php echo _translate("Reviewed On"); ?></label>
                                                             <input type="text"
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['result_reviewed_datetime'], true); ?>"
                                                                 name="testResult[reviewedOn][]" id="reviewedOn<?php echo $n; ?>"
                                                                 class="date-time disabled-field form-control"
-                                                                placeholder="<?php echo _translate("Reviewed on"); ?>"
+                                                                placeholder="<?php echo _translate("Reviewed On"); ?>"
                                                                 title="<?php echo _translate("Please enter the Reviewed on"); ?>" />
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="approvedBy<?php echo $n; ?>"><?php echo _translate("Approved By"); ?></label>
                                                             <select name="testResult[approvedBy][]" id="approvedBy<?php echo $n; ?>"
@@ -691,19 +702,19 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                                 <?= $general->generateSelectOptions($userInfo, $test['result_reviewed_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
-                                                                for="approvedOn<?php echo $n; ?>"><?php echo _translate("Approved on"); ?></label>
+                                                                for="approvedOn<?php echo $n; ?>"><?php echo _translate("Approved On"); ?></label>
                                                             <input type="text"
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['result_approved_datetime'], true); ?>"
                                                                 name="testResult[approvedOn][]" id="approvedOn<?php echo $n; ?>"
                                                                 class="date-time form-control"
-                                                                placeholder="<?php echo _translate("Approved on"); ?>"
+                                                                placeholder="<?php echo _translate("Approved On"); ?>"
                                                                 title="<?php echo _translate("Please enter the approved on date"); ?>" />
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="revisedBy<?php echo $n; ?>"><?php echo _translate("Revised By"); ?></label>
                                                             <select name="testResult[revisedBy][]" id="revisedBy<?php echo $n; ?>"
@@ -712,9 +723,9 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                                 <?= $general->generateSelectOptions($userInfo, $test['revised_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
-                                                                for="revisedOn<?php echo $n; ?>"><?php echo _translate("Revised on"); ?></label>
+                                                                for="revisedOn<?php echo $n; ?>"><?php echo _translate("Revised On"); ?></label>
                                                             <input
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>"
                                                                 type="text" name="testResult[revisedOn][]"
@@ -724,7 +735,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                         </td>
                                                     </tr>
                                                     <tr style="display: none;" class="reasonForChange<?php echo $n; ?>">
-                                                        <td style="width: 50%;">
+                                                        <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="reasonForChange<?php echo $n; ?>"><?php echo _translate('Reason for result change'); ?></label>
                                                             <textarea class="form-control" name="testResult[reasonForChange][]"
@@ -744,7 +755,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                         class="section-number">1</span></strong></div>
                                             <table class="table" style="width:100%; margin-top: 15px;">
                                                 <tr>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="labId1"><?php echo _translate("Testing Lab"); ?><span
                                                                 class="mandatory">*</span></label>
@@ -754,7 +765,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                             <?= $general->generateSelectOptions($testingLabs, null, '-- Select lab --'); ?>
                                                         </select>
                                                     </td>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="sampleReceivedDate1"><?php echo _translate("Date specimen received at TB testing site"); ?><span
                                                                 class="mandatory">*</span></label>
@@ -765,7 +776,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="isSampleRejected1"><?php echo _translate("Is Sample Rejected?"); ?></label>
                                                         <select class="form-control sample-rejection-select"
@@ -777,7 +788,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                             <option value="no"> <?php echo _translate("No"); ?> </option>
                                                         </select>
                                                     </td>
-                                                    <td style="width: 50%;display:none;" class="rejection-reason-field">
+                                                    <td style="width: 33.33%;display:none;" class="rejection-reason-field">
                                                         <label class="label-control"
                                                             for="sampleRejectionReason1"><?php echo _translate("Reason for Rejection"); ?><span
                                                                 class="mandatory">*</span></label>
@@ -792,7 +803,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                     </td>
                                                 </tr>
                                                 <tr class="rejection-date-field" style="display:none;">
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="rejectionDate1"><?php echo _translate("Rejection Date"); ?><span
                                                                 class="mandatory">*</span></label>
@@ -801,10 +812,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                             placeholder="<?php echo _translate("Select rejection date"); ?>"
                                                             title="<?php echo _translate("Please select the rejection date"); ?>" />
                                                     </td>
-                                                    <td style="width: 50%;"></td>
+                                                    <td style="width: 33.33%;"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="specimenType1"><?php echo _translate("Specimen Type"); ?></label>
                                                         <select name="testResult[specimenType][]" id="specimenType1"
@@ -813,7 +824,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                             <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="testType1"><?php echo _translate("Test Type"); ?></label>
                                                         <select class="form-control test-type-select"
@@ -833,7 +844,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="testResult1"><?php echo _translate("Test Result"); ?></label>
                                                         <select class="form-control test-result-select"
@@ -843,7 +854,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                             </option>
                                                         </select>
                                                     </td>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="comments1"><?php echo _translate("Comments"); ?></label>
                                                         <textarea class="form-control" id="comments1"
@@ -853,7 +864,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="testedBy1"><?php echo _translate("Tested By"); ?></label>
                                                         <select name="testResult[testedBy][]" id="testedBy1"
@@ -862,7 +873,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="sampleTestedDateTime1"><?php echo _translate("Tested On"); ?></label>
                                                         <input type="text" class="date-time form-control"
@@ -872,7 +883,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="reviewedBy1"><?php echo _translate("Reviewed By"); ?></label>
                                                         <select name="testResult[reviewedBy][]" id="reviewedBy1"
@@ -881,17 +892,17 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
-                                                            for="reviewedOn1"><?php echo _translate("Reviewed on"); ?></label>
+                                                            for="reviewedOn1"><?php echo _translate("Reviewed On"); ?></label>
                                                         <input type="text" name="testResult[reviewedOn][]" id="reviewedOn1"
                                                             class="date-time disabled-field form-control"
-                                                            placeholder="<?php echo _translate("Reviewed on"); ?>"
+                                                            placeholder="<?php echo _translate("Reviewed On"); ?>"
                                                             title="<?php echo _translate("Please enter the Reviewed on"); ?>" />
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="approvedBy1"><?php echo _translate("Approved By"); ?></label>
                                                         <select name="testResult[approvedBy][]" id="approvedBy1"
@@ -900,17 +911,17 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
-                                                            for="approvedOn1"><?php echo _translate("Approved on"); ?></label>
+                                                            for="approvedOn1"><?php echo _translate("Approved On"); ?></label>
                                                         <input type="text" name="testResult[approvedOn][]" id="approvedOn1"
                                                             class="date-time form-control"
-                                                            placeholder="<?php echo _translate("Approved on"); ?>"
+                                                            placeholder="<?php echo _translate("Approved On"); ?>"
                                                             title="<?php echo _translate("Please enter the approved on date"); ?>" />
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="revisedBy1"><?php echo _translate("Revised By"); ?></label>
                                                         <select name="testResult[revisedBy][]" id="revisedBy1"
@@ -919,9 +930,9 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
-                                                    <td style="width: 50%;">
+                                                    <td style="width: 33.33%;">
                                                         <label class="label-control"
-                                                            for="revisedOn1"><?php echo _translate("Revised on"); ?></label>
+                                                            for="revisedOn1"><?php echo _translate("Revised On"); ?></label>
                                                         <input type="text" name="testResult[revisedOn][]" id="revisedOn1"
                                                             class="date-time form-control"
                                                             placeholder="<?php echo _translate("Enter the revised on date"); ?>"
@@ -936,14 +947,14 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                 <div class="controls" style="margin-top: 20px;">
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+
                                         <?php echo _translate("Add Test"); ?></button>
-                                    <button type="button" class="btn btn-danger" onclick="removeTestSection()">-
+                                    <button type="button" id="removeTestBtn" class="btn btn-danger" style="display: none;" onclick="removeTestSection()">-
                                         <?php echo _translate("Remove Test"); ?></button>
                                 </div>
                                 <div class="row pr-5 fnal-result">
                                     <div class="col-md-6">
                                         <label class="label-control"
                                             for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
-                                        <select name="finalResult" id="finalResult" class="form-control"
+                                        <select name="finalResult" id="finalResult" class="form-control select2"
                                             title="Please enter the final interpretation"
                                             onchange="(this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();">
                                             <?= $general->generateSelectOptions($tbResults, $tbInfo['result'], '-- Select --'); ?>
@@ -1105,6 +1116,14 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         initializeDatePickers(section);
     }
 
+    // Update Remove Test button visibility
+    function updateRemoveButtonVisibility() {
+        const removeBtn = document.getElementById('removeTestBtn');
+        if (removeBtn) {
+            removeBtn.style.display = (testCount > 1) ? '' : 'none';
+        }
+    }
+
     // Add new test section
     function addTestSection() {
         testCount++;
@@ -1130,6 +1149,9 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
         // Initialize the new section
         initializeTestSection(newSection, testCount);
+
+        // Update Remove button visibility
+        updateRemoveButtonVisibility();
     }
 
     // Remove test section
@@ -1142,6 +1164,8 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                 testCount--;
             }
         }
+        // Update Remove button visibility
+        updateRemoveButtonVisibility();
     }
 
     // Update element IDs and names for new section
@@ -1328,6 +1352,15 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
             if (testTypeSelect.length && testTypeSelect.val()) {
                 updateTestResults(sectionNumber);
             }
+        });
+
+        // Update Remove Test button visibility on page load
+        updateRemoveButtonVisibility();
+
+        // Initialize Final Interpretation Select2
+        $('#finalResult').select2({
+            placeholder: "<?php echo _translate('Select final interpretation'); ?>",
+            width: '100%'
         });
 
         // Treatment initiation change handler
