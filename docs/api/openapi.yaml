@@ -8,10 +8,10 @@ info:
 servers:
 - url: https://api.example.org/v1.1
 tags:
+- name: Initialization API
 - name: Core API
 - name: VL API
 - name: EID API
-- name: Initialization API
 - name: TB API
 - name: COVID-19 API
 components:
