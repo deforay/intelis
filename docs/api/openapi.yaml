@@ -6,7 +6,7 @@ info:
   description: Contract for the InteLIS REST API. This file is the source of truth
     for the API.
 servers:
-- url: https://api.example.org/v1.1
+- url: https://example.org/api/v1.1
 tags:
 - name: Initialization API
 - name: Core API
