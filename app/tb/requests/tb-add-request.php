@@ -96,7 +96,6 @@ $testPlatformList = [];
 foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
-
 $fileArray = [
     COUNTRY\SOUTH_SUDAN => 'forms/add-southsudan.php',
     COUNTRY\SIERRA_LEONE => 'forms/add-sierraleone.php',
