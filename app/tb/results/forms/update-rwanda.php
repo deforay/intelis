@@ -146,7 +146,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                         for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
                                     <select name="affiliatedLabId" id="affiliatedLabId"
                                         class="form-control select2 isRequired"
-                                        title="<?php echo _translate("Please select afflicated laboratory"); ?>">
+                                        title="<?php echo _translate("Please select affiliated laboratory"); ?>">
                                         <?= $general->generateSelectOptions($testingLabs, $tbInfo['affiliated_lab_id'], '-- Select --'); ?>
                                     </select>
                                 </td>
