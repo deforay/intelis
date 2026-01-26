@@ -207,7 +207,9 @@ try {
 
     //Update patient Information in Patients Table
     //$systemPatientCode = $patientsService->savePatient($_POST, 'form_tb');
-
+    if (is_array($_POST['purposeOfTbTest'])) {
+        $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
+    }
     $tbData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],

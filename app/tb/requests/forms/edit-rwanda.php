@@ -44,7 +44,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 $typeOfPatient = json_decode((string) $tbInfo['patient_type']);
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
 $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
-
+$tbInfo['purpose_of_test'] = explode(',', $tbInfo['purpose_of_test']);
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 ?>
@@ -139,6 +139,17 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             <?php echo $facility; ?>
                                         </select>
                                     </td>
+                                    <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+                                        <td style="width: 50%;">
+                                            <label class="label-control"
+                                                for="labId"><?php echo _translate("Testing Laboratory"); ?><span
+                                                    class="mandatory">*</span></label>
+                                            <select name="labId" id="labId" class="form-control select2 isRequired"
+                                                title="<?php echo _translate("Please select Testing Laboratory"); ?>">
+                                                <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
+                                            </select>
+                                        </td>
+                                    <?php } ?>
                                     <!-- <td style="width: 50%;">
                                         <label class="label-control"
                                             for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?><span
@@ -150,19 +161,6 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                         </select>
                                     </td> -->
                                 </tr>
-                                <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                                    <tr>
-                                        <td style="width: 50%;">
-                                            <label class="label-control"
-                                                for="labId"><?php echo _translate("Testing Laboratory"); ?><span
-                                                    class="mandatory">*</span></label>
-                                            <select name="labId" id="labId" class="form-control select2 isRequired"
-                                                title="<?php echo _translate("Please select Testing Laboratory"); ?>">
-                                                <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                <?php } ?>
                             </table>
 
                             <!-- PATIENT DETAILS -->
@@ -412,13 +410,13 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             class="form-control isRequired"
                                             title="Please select the any one of purpose of test">
                                             <option value="">Select purpose of TB test...</option>
-                                            <option value="Initial TB diagnosis" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'Initial TB diagnosis') ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
-                                            <option value="DS-TB Treatment Follow-Up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'DS-TB Treatment Follow-Up') ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
-                                            <option value="C2" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'C2') ? 'selected="selected"' : ''; ?>>C2</option>
-                                            <option value="C5" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'c5') ? 'selected="selected"' : ''; ?>>C5</option>
-                                            <option value="End of TB treatment" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'End of TB treatment') ? 'selected="selected"' : ''; ?>>End of TB treatment</option>
-                                            <option value="DR-TB Patient Baseline tests" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'DR-TB Patient Baseline tests') ? 'selected="selected"' : ''; ?>>DR-TB Patient Baseline tests</option>
-                                            <option value="DR-TB patient Follow up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'DR-TB patient Follow up') ? 'selected="selected"' : ''; ?>>DR-TB patient Follow up</option>
+                                            <option value="Initial TB diagnosis" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('Initial TB diagnosis', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
+                                            <option value="DS-TB Treatment Follow-Up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DS-TB Treatment Follow-Up', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
+                                            <option value="C2" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C2', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C2</option>
+                                            <option value="C5" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C5', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C5</option>
+                                            <option value="End of TB treatment" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('End of TB treatment', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>End of TB treatment</option>
+                                            <option value="DR-TB Patient Baseline tests" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB Patient Baseline tests', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB Patient Baseline tests</option>
+                                            <option value="DR-TB patient Follow up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB patient Follow up', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB patient Follow up</option>
                                         </select>
                                     </td>
                                 </tr>

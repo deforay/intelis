@@ -49,7 +49,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 $typeOfPatient = json_decode((string) $tbInfo['patient_type']);
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
 $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
-
+$tbInfo['purpose_of_test'] = explode(',', $tbInfo['purpose_of_test']);
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 ?>
@@ -562,7 +562,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                                                     <?php echo ($test['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
                                                                                     <?= $reject['rejection_reason_name']; ?>
                                                                                 </option>
-                                                                            <?php }
+                                                                        <?php }
                                                                         } ?>
                                                                     </optgroup>
                                                                 <?php }
@@ -736,7 +736,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                     </tr>
                                                 </table>
                                             </div>
-                                            <?php $n += 1;
+                                        <?php $n += 1;
                                         } ?>
                                     <?php } else { ?>
                                         <!-- Initial test section -->
@@ -1087,7 +1087,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         const $section = $(section);
 
         // Sample rejection change handler
-        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function () {
+        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function() {
             const $row = $(this).closest('.test-section');
             if ($(this).val() === 'yes') {
                 $row.find('.rejection-reason-field, .rejection-date-field').show();
@@ -1099,7 +1099,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         });
 
         // Test type change handler - FIXED: Use proper event delegation
-        $section.find('.test-type-select').off('change.testSection').on('change.testSection', function () {
+        $section.find('.test-type-select').off('change.testSection').on('change.testSection', function() {
             const sectionNum = $(this).closest('.test-section').attr('data-count');
             updateTestResults(sectionNum);
         });
@@ -1150,7 +1150,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
     // Update element IDs and names for new section
     function updateElementIds(section, count) {
         // Update labels
-        $(section).find('label[for]').each(function () {
+        $(section).find('label[for]').each(function() {
             const oldFor = $(this).attr('for');
             if (oldFor && /\d+$/.test(oldFor)) {
                 const newFor = oldFor.replace(/\d+$/, count);
@@ -1159,7 +1159,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         });
 
         // Update form elements
-        $(section).find('input[id], select[id], textarea[id]').each(function () {
+        $(section).find('input[id], select[id], textarea[id]').each(function() {
             const oldId = $(this).attr('id');
             if (oldId && /\d+$/.test(oldId)) {
                 const newId = oldId.replace(/\d+$/, count);
@@ -1176,7 +1176,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
     // Clear all values in a section
     function clearSectionValues(section) {
-        $(section).find('input, select, textarea').each(function () {
+        $(section).find('input, select, textarea').each(function() {
             if (this.type === 'checkbox' || this.type === 'radio') {
                 this.checked = false;
             } else if (this.tagName === 'SELECT') {
@@ -1192,13 +1192,13 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         var removeDots = obj.value.replace(/\./g, "").replace(/\,/g, "").replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-            tableName: tableName,
-            fieldName: fieldName,
-            value: removeDots.trim(),
-            fnct: fnct,
-            format: "html"
-        },
-            function (data) {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: removeDots.trim(),
+                fnct: fnct,
+                format: "html"
+            },
+            function(data) {
                 if (data === '1') {
                     alert(alrt);
                     document.getElementById(obj.id).value = "";
@@ -1216,10 +1216,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
         if ($.trim(pName) != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                pName: pName,
-                testType: 'tb'
-            },
-                function (data) {
+                    pName: pName,
+                    testType: 'tb'
+                },
+                function(data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -1245,11 +1245,11 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
         if (dName != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                dName: dName,
-                cliName: cName,
-                testType: 'tb'
-            },
-                function (data) {
+                    dName: dName,
+                    cliName: cName,
+                    testType: 'tb'
+                },
+                function(data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -1271,10 +1271,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
         if (cName != '' && facilityName) {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                cName: cName,
-                testType: 'tb'
-            },
-                function (data) {
+                    cName: cName,
+                    testType: 'tb'
+                },
+                function(data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#province").html(details[0]);
@@ -1308,10 +1308,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
         if (pName != '' && sDate != '') {
             $.post("/tb/requests/generate-sample-code.php", {
-                sampleCollectionDate: sDate,
-                provinceCode: provinceCode
-            },
-                function (data) {
+                    sampleCollectionDate: sDate,
+                    provinceCode: provinceCode
+                },
+                function(data) {
                     var sCodeKey = JSON.parse(data);
                     $("#sampleCode").val(sCodeKey.sampleCode);
                     $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
@@ -1361,7 +1361,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
     }
 
     // Document ready function
-    $(document).ready(function () {
+    $(document).ready(function() {
         // Initialize Select2 for main form elements
         $("#facilityId, #province, #district").select2({
             placeholder: "<?php echo _translate('Select option'); ?>",
@@ -1385,7 +1385,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         <?php } ?>
 
         // Initialize all existing test sections
-        $('.test-section').each(function (index) {
+        $('.test-section').each(function(index) {
             const sectionNumber = $(this).attr('data-count') || (index + 1);
             initializeTestSection(this, sectionNumber);
 
@@ -1397,7 +1397,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         });
 
         // Treatment initiation change handler
-        $('#isPatientInitiatedTreatment').on('change', function () {
+        $('#isPatientInitiatedTreatment').on('change', function() {
             if (this.value === 'yes') {
                 $('.treatmentSelected').show();
                 $('.treatmentSelectedInput').addClass('isRequired');
@@ -1408,28 +1408,28 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         });
 
         // Lab and facility change handlers
-        $("#labId, #facilityId, #sampleCollectionDate").on('change', function () {
+        $("#labId, #facilityId, #sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
         });
 
         <?php if (isset($arr['tb_positive_confirmatory_tests_required_by_central_lab']) && $arr['tb_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
-            $(document).on('change', '.test-result, #result', function (e) {
+            $(document).on('change', '.test-result, #result', function(e) {
                 checkPostive();
             });
         <?php } ?>
 
-        $("#labId").change(function (e) {
+        $("#labId").change(function(e) {
             if ($(this).val() != "") {
                 $.post("/tb/requests/get-attributes-data.php", {
-                    id: this.value,
-                },
-                    function (data) {
+                        id: this.value,
+                    },
+                    function(data) {
                         if (data != "" && data != false) {
                             _data = jQuery.parseJSON(data);
                             $(".platform").hide();
-                            $.each(_data, function (index, value) {
+                            $.each(_data, function(index, value) {
                                 $("." + value).show();
                             });
                         }

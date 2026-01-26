@@ -130,6 +130,17 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                             <?php echo $facility; ?>
                                         </select>
                                     </td>
+                                    <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+                                        <td style="width: 50%;">
+                                            <label class="label-control"
+                                                for="labId"><?php echo _translate("Testing Laboratory"); ?><span
+                                                    class="mandatory">*</span></label>
+                                            <select name="labId" id="labId" class="form-control select2 isRequired"
+                                                title="<?php echo _translate("Please select Testing Laboratory"); ?>">
+                                                <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                            </select>
+                                        </td>
+                                    <?php } ?>
                                     <!-- <td style="width: 50%;">
                                         <label class="label-control"
                                             for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?><span
@@ -141,19 +152,6 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                         </select>
                                     </td> -->
                                 </tr>
-                                <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                                    <tr>
-                                        <td style="width: 50%;">
-                                            <label class="label-control"
-                                                for="labId"><?php echo _translate("Testing Laboratory"); ?><span
-                                                    class="mandatory">*</span></label>
-                                            <select name="labId" id="labId" class="form-control select2 isRequired"
-                                                title="<?php echo _translate("Please select Testing Laboratory"); ?>">
-                                                <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                <?php } ?>
                             </table>
 
                             <!-- PATIENT DETAILS -->
@@ -380,7 +378,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                         <label class="label-control"
                                             for="purposeOfTbTest"><?php echo _translate("Purpose of TB test(s)"); ?><span
                                                 class="mandatory">*</span></label>
-                                        <select id="purposeOfTbTest" name="purposeOfTbTest"
+                                        <select id="purposeOfTbTest" multiple name="purposeOfTbTest[]"
                                             class="form-control isRequired"
                                             title="Please select the any one of purpose of test">
                                             <option value="">Select purpose of TB test...</option>

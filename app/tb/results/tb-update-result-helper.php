@@ -108,6 +108,9 @@ try {
         $_POST['approvedBy'] = $_POST['testResult']['approvedBy'][0];
         $_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['testResult']['approvedOn'][0] ?? null);
     }
+    if (is_array($_POST['purposeOfTbTest'])) {
+        $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
+    }
     $tbData = [
         'lab_id' => empty($_POST['labId']) ? $_POST['testResult']['labId'][0] : $_POST['labId'],
         'result_date' => empty($_POST['resultDate']) ? null : $_POST['resultDate'],
