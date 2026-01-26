@@ -975,4 +975,28 @@ $remoteURL = $general->getRemoteURL();
     //         console.error('SSE init failed', err);
     //     }
     // })();
+
+    // Session heartbeat - keeps session alive while user is actively working
+    (function() {
+        const HEARTBEAT_INTERVAL = 5 * 60 * 1000; // 5 minutes
+        let lastActivity = Date.now();
+        let lastHeartbeat = Date.now();
+
+        // Track user activity
+        const updateActivity = Utilities.throttle(function() {
+            lastActivity = Date.now();
+        }, 1000);
+
+        ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(function(event) {
+            document.addEventListener(event, updateActivity, { passive: true });
+        });
+
+        // Send heartbeat if user was active since last heartbeat
+        setInterval(function() {
+            if (lastActivity > lastHeartbeat) {
+                lastHeartbeat = Date.now();
+                $.post('/includes/session-heartbeat.php');
+            }
+        }, HEARTBEAT_INTERVAL);
+    })();
 </script>

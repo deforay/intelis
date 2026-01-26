@@ -35,6 +35,9 @@ class AppAuthMiddleware implements MiddlewareInterface
     // Inactivity window (seconds).
     private int $maxIdle = 1800; // 30 minutes
 
+    // Session ID regeneration interval (seconds) - prevents session fixation.
+    private int $regenInterval = 1800; // 30 minutes
+
     #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -83,8 +86,15 @@ class AppAuthMiddleware implements MiddlewareInterface
                 : $this->redirect('/login/login.php?e=timeout');
         }
 
-        if (!$isAjax && ($method === 'GET' || $method === 'HEAD')) {
-            $_SESSION['last_activity'] = $now;
+        // Sliding session: any authenticated request extends the session
+        $_SESSION['last_activity'] = $now;
+
+        // Periodic session ID regeneration to prevent session fixation
+        // Using false to keep old session briefly (avoids race condition with multiple tabs)
+        $lastRegen = $_SESSION['_session_regenerated'] ?? 0;
+        if ($now - $lastRegen > $this->regenInterval) {
+            session_regenerate_id(false);
+            $_SESSION['_session_regenerated'] = $now;
         }
 
         $response = $handler->handle($request);
