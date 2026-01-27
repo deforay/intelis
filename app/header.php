@@ -7,6 +7,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Utilities\JsonUtility;
+use App\Utilities\MemoUtility;
 
 // Reset query counters on page reload
 unset($_SESSION['queryCounters']);
@@ -191,8 +192,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 		}
 		return $flatList;
 	};
-	// TODO: Re-enable caching after development
-	$spotlightData = $flattenMenuForSpotlight($_SESSION['menuItems'] ?? []);
+	$spotlightData = MemoUtility::remember(fn() => $flattenMenuForSpotlight($_SESSION['menuItems'] ?? []), 300);
 	?>
 	<script>
 		window.spotlightData = <?= JsonUtility::encodeUtf8Json($spotlightData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
