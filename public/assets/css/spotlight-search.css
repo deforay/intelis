@@ -1,0 +1,392 @@
+/* Spotlight Search Modal Styles */
+
+/* Prevent body scroll when modal is open */
+body.spotlight-open {
+    overflow: hidden;
+}
+
+/* Modal container */
+.spotlight-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 15vh;
+}
+
+/* Semi-transparent backdrop */
+.spotlight-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+/* Main dialog container */
+.spotlight-dialog {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    animation: spotlightSlideIn 0.15s ease-out;
+}
+
+@keyframes spotlightSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Search input wrapper */
+.spotlight-search-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.spotlight-icon {
+    font-size: 20px;
+    color: #999;
+    margin-right: 12px;
+}
+
+.spotlight-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    padding: 0;
+    background: transparent;
+    color: #333;
+}
+
+.spotlight-input::placeholder {
+    color: #aaa;
+}
+
+.spotlight-shortcut {
+    font-size: 12px;
+    color: #999;
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+}
+
+/* Results container */
+.spotlight-results {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+/* Category grouping */
+.spotlight-category {
+    margin-bottom: 8px;
+}
+
+.spotlight-category-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #888;
+    padding: 8px 20px 4px;
+    letter-spacing: 0.5px;
+}
+
+/* Individual result item */
+.spotlight-result-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.spotlight-result-item:hover,
+.spotlight-result-item.selected {
+    background-color: #3C8DBC;
+    color: #fff;
+}
+
+.spotlight-result-item.selected .spotlight-item-icon,
+.spotlight-result-item.selected .spotlight-item-arrow,
+.spotlight-result-item:hover .spotlight-item-icon,
+.spotlight-result-item:hover .spotlight-item-arrow {
+    color: #fff;
+}
+
+.spotlight-item-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    border-radius: 6px;
+    margin-right: 12px;
+    font-size: 14px;
+    color: #666;
+    transition: all 0.1s;
+}
+
+.spotlight-result-item.selected .spotlight-item-icon,
+.spotlight-result-item:hover .spotlight-item-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.spotlight-item-content {
+    flex: 1;
+}
+
+.spotlight-item-title {
+    font-size: 14px;
+    font-weight: 500;
+    display: block;
+}
+
+.spotlight-item-path {
+    font-size: 11px;
+    color: #999;
+    display: block;
+    margin-top: 2px;
+}
+
+.spotlight-result-item.selected .spotlight-item-path,
+.spotlight-result-item:hover .spotlight-item-path {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.spotlight-item-arrow {
+    font-size: 12px;
+    color: #ccc;
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+
+.spotlight-result-item.selected .spotlight-item-arrow,
+.spotlight-result-item:hover .spotlight-item-arrow {
+    opacity: 1;
+}
+
+/* No results state */
+.spotlight-no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+.spotlight-no-results i {
+    font-size: 32px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* Footer with keyboard hints */
+.spotlight-footer {
+    display: flex;
+    gap: 20px;
+    padding: 10px 20px;
+    background: #f8f8f8;
+    border-top: 1px solid #e5e5e5;
+    font-size: 12px;
+    color: #888;
+}
+
+.spotlight-footer kbd {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+    color: #333;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    margin-right: 4px;
+}
+
+/* Trigger button styling in navbar */
+.navbar-nav > .spotlight-trigger-wrapper > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.navbar-nav > .spotlight-trigger-wrapper .kbd-hint {
+    font-size: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+    line-height: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .spotlight-modal {
+        padding: 10px;
+        padding-top: 10vh;
+    }
+
+    .spotlight-dialog {
+        max-width: 100%;
+        margin: 0 10px;
+    }
+
+    .spotlight-footer {
+        display: none;
+    }
+
+    .spotlight-trigger-wrapper .kbd-hint {
+        display: none;
+    }
+}
+
+/* Expandable items */
+.spotlight-expandable {
+    cursor: pointer;
+}
+
+/* Chevron icon styling */
+.spotlight-item-chevron {
+    font-size: 12px;
+    color: #999;
+    transition: transform 0.15s ease;
+}
+
+/* Non-expanded expandable: hover/selected should be blue with white text */
+.spotlight-expandable:not(.expanded):hover,
+.spotlight-expandable:not(.expanded).selected {
+    background-color: #3C8DBC;
+    color: #fff;
+}
+
+.spotlight-expandable:not(.expanded):hover .spotlight-item-icon,
+.spotlight-expandable:not(.expanded).selected .spotlight-item-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.spotlight-expandable:not(.expanded):hover .spotlight-item-path,
+.spotlight-expandable:not(.expanded).selected .spotlight-item-path {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.spotlight-expandable:not(.expanded):hover .spotlight-item-chevron,
+.spotlight-expandable:not(.expanded).selected .spotlight-item-chevron {
+    color: #fff;
+}
+
+/* Expanded state - light blue with border */
+.spotlight-expandable.expanded,
+.spotlight-expandable.expanded:hover,
+.spotlight-expandable.expanded.selected {
+    background-color: #e8f4fc;
+    border-left: 3px solid #3C8DBC;
+    padding-left: 17px;
+    color: #333;
+}
+
+.spotlight-expandable.expanded .spotlight-item-icon,
+.spotlight-expandable.expanded:hover .spotlight-item-icon,
+.spotlight-expandable.expanded.selected .spotlight-item-icon {
+    background: #d4e9f7;
+    color: #3C8DBC;
+}
+
+.spotlight-expandable.expanded .spotlight-item-path,
+.spotlight-expandable.expanded:hover .spotlight-item-path,
+.spotlight-expandable.expanded.selected .spotlight-item-path {
+    color: #888;
+}
+
+.spotlight-expandable.expanded .spotlight-item-chevron,
+.spotlight-expandable.expanded:hover .spotlight-item-chevron,
+.spotlight-expandable.expanded.selected .spotlight-item-chevron {
+    color: #3C8DBC;
+}
+
+/* Actions container */
+.spotlight-actions {
+    background: #f9f9f9;
+    border-left: 3px solid #3C8DBC;
+    padding: 4px 0;
+}
+
+.spotlight-action-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 20px 8px 52px;
+    cursor: pointer;
+    transition: background-color 0.1s;
+    font-size: 13px;
+    color: #555;
+}
+
+.spotlight-action-item:hover,
+.spotlight-action-item.selected {
+    background-color: #3C8DBC;
+    color: #fff;
+}
+
+.spotlight-action-icon {
+    width: 20px;
+    margin-right: 10px;
+    font-size: 12px;
+    color: #888;
+}
+
+.spotlight-action-item:hover .spotlight-action-icon,
+.spotlight-action-item.selected .spotlight-action-icon {
+    color: #fff;
+}
+
+.spotlight-action-label {
+    flex: 1;
+}
+
+/* STS skin (red) override */
+.skin-red .spotlight-result-item:hover,
+.skin-red .spotlight-result-item.selected {
+    background-color: #dd4b39;
+}
+
+.skin-red .spotlight-expandable.expanded {
+    background-color: #fce8e6;
+    border-left-color: #dd4b39;
+}
+
+.skin-red .spotlight-expandable.expanded .spotlight-item-icon {
+    background: #f7d4d0;
+    color: #dd4b39;
+}
+
+.skin-red .spotlight-expandable.expanded .spotlight-item-chevron {
+    color: #dd4b39;
+}
+
+.skin-red .spotlight-actions {
+    border-left-color: #dd4b39;
+}
+
+.skin-red .spotlight-action-item:hover,
+.skin-red .spotlight-action-item.selected {
+    background-color: #dd4b39;
+}

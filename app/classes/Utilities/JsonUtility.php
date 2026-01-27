@@ -64,7 +64,7 @@ final class JsonUtility
     }
 
     // Encode data to JSON with UTF-8 encoding
-    public static function encodeUtf8Json(mixed $data): ?string
+    public static function encodeUtf8Json(mixed $data, int $flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE): ?string
     {
         if (is_string($data)) {
             if (self::isJSON($data, checkUtf8Encoding: true)) {
@@ -72,7 +72,7 @@ final class JsonUtility
             }
             $data = MiscUtility::toUtf8($data); // normalize string
         }
-        return self::toJSON($data);
+        return self::toJSON($data, $flags);
     }
 
     // Convert data to JSON string — handle scalars & objects too
@@ -207,7 +207,7 @@ final class JsonUtility
             return $value ? 'true' : 'false';
         }
         if (is_numeric($value)) {
-            return (string)$value;
+            return (string) $value;
         }
         if (is_array($value) || is_object($value)) {
             $json = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
@@ -215,7 +215,7 @@ final class JsonUtility
             return "'" . $json . "'";
         }
         // string
-        return self::sqlQuote((string)$value);
+        return self::sqlQuote((string) $value);
     }
 
     // Convert a JSON string to a string that can be used with JSON_SET()
