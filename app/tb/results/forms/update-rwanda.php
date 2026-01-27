@@ -291,9 +291,12 @@ if ($isLisInstance) {
                                         title="<?php echo _translate("Please select the case type"); ?>"
                                         onchange="showOther(this.value,'typeOfPatientOther');">
                                         <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
-                                        <option value='new' <?php echo ((is_array($typeOfPatient) && in_array("new", $typeOfPatient)) || $typeOfPatient == "new") ? "selected='selected'" : ""; ?>> New </option>
-                                        <option value='loss-to-follow-up' <?php echo ((is_array($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) || $typeOfPatient == "loss-to-follow-up") ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
-                                        <option value='treatment-failure' <?php echo ((is_array($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) || $typeOfPatient == "treatment-failure") ? "selected='selected'" : ""; ?>> Treatment Failure </option>
+                                        <option value='new' <?php echo ((is_array($typeOfPatient) && in_array("new", $typeOfPatient)) || $typeOfPatient == "new") ? "selected='selected'" : ""; ?>>
+                                            New </option>
+                                        <option value='loss-to-follow-up' <?php echo ((is_array($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) || $typeOfPatient == "loss-to-follow-up") ? "selected='selected'" : ""; ?>> Loss
+                                            to Follow Up </option>
+                                        <option value='treatment-failure' <?php echo ((is_array($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) || $typeOfPatient == "treatment-failure") ? "selected='selected'" : ""; ?>>
+                                            Treatment Failure </option>
                                         <option value='relapse' <?php echo ((is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) || $typeOfPatient == "relapse") ? "selected='selected'" : ""; ?>>
                                             Relapse </option>
                                         <option value='other' <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "selected='selected'" : ""; ?>> Other </option>
@@ -487,11 +490,9 @@ if ($isLisInstance) {
                                         title="<?php echo _translate("Please enter the specimen type if others"); ?>"
                                         style="display: none;" />
                                 </td>
-                            </tr>
-                            <tr>
                                 <td style="width: 33.33%;">
                                     <label class="label-control"
-                                        for="reOrderedCorrectiveAction"><?php echo _translate("Is specimen re-ordered as part of corrective action?"); ?></label>
+                                        for="reOrderedCorrectiveAction"><?php echo _translate("Is Specimen re-ordered as part of Corrective Action?"); ?></label>
                                     <select class="form-control" name="reOrderedCorrectiveAction"
                                         id="reOrderedCorrectiveAction"
                                         title="<?php echo _translate("Is specimen re-ordered as part of corrective action"); ?>">
@@ -554,23 +555,24 @@ if ($isLisInstance) {
                                                                 placeholder="<?= _translate("Please enter date"); ?>"
                                                                 title="<?php echo _translate("Please enter sample receipt date"); ?>" />
                                                         </td>
-                                                    </tr>
-                                                    <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="isSampleRejected<?php echo $n; ?>"><?php echo _translate("Is Sample Rejected?"); ?></label>
                                                             <select class="form-control sample-rejection-select"
                                                                 name="testResult[isSampleRejected][]"
                                                                 id="isSampleRejected<?php echo $n; ?>"
-                                                                title="<?php echo _translate("Please select the Is sample rejected?"); ?>"
-                                                                onchange="$('.reasonForChange').show();>
-                                                                <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
-                                                                <option value=" yes" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>> <?php echo _translate("Yes"); ?> </option>
+                                                                title="<?php echo _translate("Please select if sample was rejected"); ?>"
+                                                                onchange="$('.reasonForChange<?php echo $n; ?>').show();">
+                                                                <option value=''> -- <?php echo _translate("Select"); ?> --
+                                                                </option>
+                                                                <option value="yes" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>> <?php echo _translate("Yes"); ?> </option>
                                                                 <option value="no" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>> <?php echo _translate("No"); ?> </option>
                                                             </select>
                                                         </td>
-                                                        <td style="width: 33.33%;<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>"
-                                                            class="rejection-reason-field">
+                                                    </tr>
+                                                    <tr class="rejection-date-field"
+                                                        style="<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>">
+                                                        <td style="width: 33.33%;" class="rejection-reason-field">
                                                             <label class="label-control"
                                                                 for="sampleRejectionReason<?php echo $n; ?>"><?php echo _translate("Reason for Rejection"); ?><span
                                                                     class="mandatory">*</span></label>
@@ -600,9 +602,6 @@ if ($isLisInstance) {
                                                                 } ?>
                                                             </select>
                                                         </td>
-                                                    </tr>
-                                                    <tr class="rejection-date-field"
-                                                        style="<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>">
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="rejectionDate<?php echo $n; ?>"><?php echo _translate("Rejection Date"); ?><span
@@ -632,9 +631,10 @@ if ($isLisInstance) {
                                                             <select class="form-control test-type-select"
                                                                 name="testResult[testType][]" id="testType<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test type"); ?>"
-                                                                onchange="$('.reasonForChange<?php echo $n; ?>').show();>
-                                                                <option value=""><?php echo _translate("Select test type"); ?></option>
-                                                                <option value=" Smear Microscopy" <?php echo ($test['test_type'] == 'Smear Microscopy') ? 'selected="selected"' : ''; ?>>Smear Microscopy</option>
+                                                                onchange="$('.reasonForChange<?php echo $n; ?>').show();">
+                                                                <option value=""><?php echo _translate("Select test type"); ?>
+                                                                </option>
+                                                                <option value="Smear Microscopy" <?php echo ($test['test_type'] == 'Smear Microscopy') ? 'selected="selected"' : ''; ?>>Smear Microscopy</option>
                                                                 <option value="TB LAM test" <?php echo ($test['test_type'] == 'TB LAM test') ? 'selected="selected"' : ''; ?>>TB LAM test</option>
                                                                 <option value="MTB/ RIF Ultra" <?php echo ($test['test_type'] == 'MTB/ RIF Ultra') ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra
                                                                 </option>
@@ -644,8 +644,6 @@ if ($isLisInstance) {
                                                                     Drug susceptibility test (DST)</option>
                                                             </select>
                                                         </td>
-                                                    </tr>
-                                                    <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="testResult<?php echo $n; ?>"><?php echo _translate("Test Result"); ?></label>
@@ -659,6 +657,8 @@ if ($isLisInstance) {
                                                                     selected="selected"><?php echo $test['test_type']; ?></option>
                                                             </select>
                                                         </td>
+                                                    </tr>
+                                                    <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="comments<?php echo $n; ?>"><?php echo _translate("Comments"); ?></label>
@@ -667,8 +667,6 @@ if ($isLisInstance) {
                                                                 placeholder="<?= _translate("Please enter comments"); ?>"
                                                                 title="<?php echo _translate("Please enter comments"); ?>"><?php echo $test['comments']; ?></textarea>
                                                         </td>
-                                                    </tr>
-                                                    <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="testedBy<?php echo $n; ?>"><?php echo _translate("Tested By"); ?></label>
@@ -687,7 +685,7 @@ if ($isLisInstance) {
                                                                 id="sampleTestedDateTime<?php echo $n; ?>"
                                                                 name="testResult[sampleTestedDateTime][]"
                                                                 placeholder="<?= _translate("Please enter date"); ?>"
-                                                                title="<?php echo _translate("Please enter sample tested"); ?>" />
+                                                                title="<?php echo _translate("Please enter tested date"); ?>" />
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -702,16 +700,14 @@ if ($isLisInstance) {
                                                         </td>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
-                                                                for="reviewedOn<?php echo $n; ?>"><?php echo _translate("Reviewed on"); ?></label>
+                                                                for="reviewedOn<?php echo $n; ?>"><?php echo _translate("Reviewed On"); ?></label>
                                                             <input type="text"
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['result_reviewed_datetime'], true); ?>"
                                                                 name="testResult[reviewedOn][]" id="reviewedOn<?php echo $n; ?>"
                                                                 class="date-time disabled-field form-control"
-                                                                placeholder="<?php echo _translate("Reviewed on"); ?>"
-                                                                title="<?php echo _translate("Please enter the Reviewed on"); ?>" />
+                                                                placeholder="<?php echo _translate("Reviewed On"); ?>"
+                                                                title="<?php echo _translate("Please enter reviewed date"); ?>" />
                                                         </td>
-                                                    </tr>
-                                                    <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="approvedBy<?php echo $n; ?>"><?php echo _translate("Approved By"); ?></label>
@@ -721,18 +717,18 @@ if ($isLisInstance) {
                                                                 <?= $general->generateSelectOptions($userInfo, $test['result_reviewed_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
+                                                    </tr>
+                                                    <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
-                                                                for="approvedOn<?php echo $n; ?>"><?php echo _translate("Approved on"); ?></label>
+                                                                for="approvedOn<?php echo $n; ?>"><?php echo _translate("Approved On"); ?></label>
                                                             <input type="text"
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['result_approved_datetime'], true); ?>"
                                                                 name="testResult[approvedOn][]" id="approvedOn<?php echo $n; ?>"
                                                                 class="date-time form-control"
-                                                                placeholder="<?php echo _translate("Approved on"); ?>"
-                                                                title="<?php echo _translate("Please enter the approved on date"); ?>" />
+                                                                placeholder="<?php echo _translate("Approved On"); ?>"
+                                                                title="<?php echo _translate("Please enter approved date"); ?>" />
                                                         </td>
-                                                    </tr>
-                                                    <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="revisedBy<?php echo $n; ?>"><?php echo _translate("Revised By"); ?></label>
@@ -744,13 +740,13 @@ if ($isLisInstance) {
                                                         </td>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
-                                                                for="revisedOn<?php echo $n; ?>"><?php echo _translate("Revised on"); ?></label>
+                                                                for="revisedOn<?php echo $n; ?>"><?php echo _translate("Revised On"); ?></label>
                                                             <input
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>"
                                                                 type="text" name="testResult[revisedOn][]"
                                                                 id="revisedOn<?php echo $n; ?>" class="date-time form-control"
-                                                                placeholder="<?php echo _translate("Enter the revised on date"); ?>"
-                                                                title="<?php echo _translate("Please enter the revised on date"); ?>" />
+                                                                placeholder="<?php echo _translate("Revised On"); ?>"
+                                                                title="<?php echo _translate("Please enter revised date"); ?>" />
                                                         </td>
                                                     </tr>
                                                     <tr style="display: none;" class="reasonForChange<?php echo $n; ?>">
