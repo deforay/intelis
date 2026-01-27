@@ -138,6 +138,19 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                         </select>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td style="width: 33.33%;">
+                                        <label class="label-control"
+                                            for="affiliatedDistrictHospital"><?php echo _translate("Affiliated District Hospital"); ?></label>
+                                        <input type="text" class="form-control" id="affiliatedDistrictHospital"
+                                            name="affiliatedDistrictHospital"
+                                            value="<?php echo $tbInfo['affiliated_district_hospital'] ?? ''; ?>"
+                                            placeholder="<?php echo _translate("Enter affiliated district hospital"); ?>"
+                                            title="<?php echo _translate("Please enter affiliated district hospital"); ?>" />
+                                    </td>
+                                    <td style="width: 33.33%;"></td>
+                                    <td style="width: 33.33%;"></td>
+                                </tr>
                                 <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                 <tr>
                                     <td style="width: 33.33%;">

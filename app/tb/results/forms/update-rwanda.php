@@ -144,6 +144,15 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                             <tr>
                                 <td style="width: 33.33%;">
                                     <label class="label-control"
+                                        for="affiliatedDistrictHospital"><?php echo _translate("Affiliated District Hospital"); ?></label>
+                                    <input type="text" class="form-control" id="affiliatedDistrictHospital"
+                                        name="affiliatedDistrictHospital"
+                                        value="<?php echo $tbInfo['affiliated_district_hospital'] ?? ''; ?>"
+                                        placeholder="<?php echo _translate("Enter affiliated district hospital"); ?>"
+                                        title="<?php echo _translate("Please enter affiliated district hospital"); ?>" />
+                                </td>
+                                <td style="width: 33.33%;">
+                                    <label class="label-control"
                                         for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
                                     <select name="affiliatedLabId" id="affiliatedLabId"
                                         class="form-control select2 isRequired"
@@ -161,9 +170,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
                                         </select>
                                     </td>
-                                    <td style="width: 33.33%;"></td>
                                 <?php } else { ?>
-                                    <td style="width: 33.33%;"></td>
                                     <td style="width: 33.33%;"></td>
                                 <?php } ?>
                             </tr>
