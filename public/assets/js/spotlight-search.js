@@ -230,7 +230,7 @@
             }
 
             this.filteredResults = [];
-            var recentCategory = 'Recent';
+            var recentCategory = (window.spotlightTranslations && window.spotlightTranslations.recent) || 'Recent';
 
             recentItems.forEach(function(item) {
                 self.filteredResults.push($.extend({}, item, { category: recentCategory }));
@@ -298,7 +298,7 @@
                 $container.html(
                     '<div class="spotlight-no-results">' +
                     '<i class="fa-solid fa-magnifying-glass"></i>' +
-                    '<p>No results found</p>' +
+                    '<p>' + ((window.spotlightTranslations && window.spotlightTranslations.noResults) || 'No results found') + '</p>' +
                     '</div>'
                 );
                 return;
