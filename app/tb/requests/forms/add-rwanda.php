@@ -39,6 +39,13 @@ if ($_SESSION['accessType'] == 'collection-site') {
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
+
+// Auto-select lab for LIS instances
+$isLisInstance = $general->isLISInstance();
+$currentLabId = null;
+if ($isLisInstance) {
+    $currentLabId = $general->getSystemConfig('sc_testing_lab_id');
+}
 ?>
 
 <div class="content-wrapper">
@@ -259,12 +266,12 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                             title="<?php echo _translate("Please enter phone number"); ?>" />
                                     </td>
                                     <td style="width: 33.33%;">
-                                        <label for="typeOfPatient"><?php echo _translate("Type of patient"); ?><span
+                                        <label for="typeOfPatient"><?php echo _translate("Case Type"); ?><span
                                                 class="mandatory">*</span></label>
-                                        <select class="select2 form-control isRequired" name="typeOfPatient[]"
+                                        <select class="select2 form-control isRequired" name="typeOfPatient"
                                             id="typeOfPatient"
-                                            title="<?php echo _translate("Please select the type of patient"); ?>"
-                                            multiple onchange="showOther(this.value,'typeOfPatientOther');">
+                                            title="<?php echo _translate("Please select the case type"); ?>"
+                                            onchange="showOther(this.value,'typeOfPatientOther');">
                                             <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
                                             <option value='new'> New </option>
                                             <option value='loss-to-follow-up'> Loss to Follow Up </option>
@@ -274,8 +281,8 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                         </select>
                                         <input type="text" class="form-control typeOfPatientOther"
                                             id="typeOfPatientOther" name="typeOfPatientOther"
-                                            placeholder="<?php echo _translate("Enter type of patient if others"); ?>"
-                                            title="<?php echo _translate("Please enter type of patient if others"); ?>"
+                                            placeholder="<?php echo _translate("Enter case type if others"); ?>"
+                                            title="<?php echo _translate("Please enter case type if others"); ?>"
                                             style="display: none;" />
                                     </td>
                                 </tr>
@@ -297,7 +304,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                 <tr>
                                     <td style="width: 33.33%;">
                                         <label
-                                            for="isPatientInitiatedTreatment"><?php echo _translate("Is patient initiated on TB treatment?"); ?><span
+                                            for="isPatientInitiatedTreatment"><?php echo _translate("Is Patient initiated on TB treatment?"); ?><span
                                                 class="mandatory">*</span></label>
                                         <select name="isPatientInitiatedTreatment" id="isPatientInitiatedTreatment"
                                             class="form-control isRequired" title="Please choose treatment status">
@@ -514,9 +521,9 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                                 <td style="width: 33.33%;">
                                                     <label class="label-control"
                                                         for="labId1"><?php echo _translate("Testing Lab"); ?></label>
-                                                    <select name="testResult[labId][]" id="labId1" class="form-control"
+                                                    <select name="testResult[labId][]" id="labId1" class="form-control select2"
                                                         title="<?php echo _translate("Please select testing laboratory"); ?>">
-                                                        <?= $general->generateSelectOptions($testingLabs, null, '-- Select lab --'); ?>
+                                                        <?= $general->generateSelectOptions($testingLabs, $currentLabId, '-- Select lab --'); ?>
                                                     </select>
                                                 </td>
                                                 <td style="width: 33.33%;">
@@ -702,14 +709,15 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                         <label class="label-control"
                                             for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
                                         <div class="resultInputContainer">
-                                            <input type="text" list="possibleFinalResults" class="form-control" id="finalResult"
-                                                name="finalResult"
+                                            <input type="text" list="possibleFinalResults" class="form-control"
+                                                id="finalResult" name="finalResult"
                                                 placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>"
                                                 title="<?php echo _translate('Please enter the final interpretation'); ?>"
                                                 onchange="confirmFinalInterpretation(this);" />
                                             <datalist id="possibleFinalResults">
                                                 <?php foreach ($tbResults as $resultValue) { ?>
-                                                    <option value="<?php echo $resultValue; ?>"><?php echo $resultValue; ?></option>
+                                                    <option value="<?php echo $resultValue; ?>"><?php echo $resultValue; ?>
+                                                    </option>
                                                 <?php } ?>
                                             </datalist>
                                         </div>
@@ -805,7 +813,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
         const $section = $(section);
 
         // Initialize Select2 for dropdowns
-        $section.find('.resultSelect2').each(function () {
+        $section.find('.resultSelect2, .select2').each(function () {
             const $this = $(this);
             if (!$this.hasClass('select2-hidden-accessible')) {
                 $this.select2({
@@ -1273,7 +1281,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
     }
 
     // Store initial value on focus
-    document.getElementById('finalResult')?.addEventListener('focus', function() {
+    document.getElementById('finalResult')?.addEventListener('focus', function () {
         this.dataset.previousValue = this.value;
     });
 </script>
