@@ -192,7 +192,8 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 		}
 		return $flatList;
 	};
-	$spotlightData = MemoUtility::remember(fn() => $flattenMenuForSpotlight($_SESSION['menuItems'] ?? []), 300);
+	$spotlightCacheKey = 'spotlight_menu_' . ($_SESSION['userId'] ?? 'default');
+	$spotlightData = MemoUtility::memo($spotlightCacheKey, fn() => $flattenMenuForSpotlight($_SESSION['menuItems'] ?? []), 300);
 	?>
 	<script>
 		window.spotlightData = <?= JsonUtility::encodeUtf8Json($spotlightData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
