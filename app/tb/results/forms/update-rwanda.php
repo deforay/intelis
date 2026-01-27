@@ -976,7 +976,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                 value="<?php echo $tbInfo['result'] ?? ''; ?>"
                                                 placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>"
                                                 title="<?php echo _translate('Please enter the final interpretation'); ?>"
-                                                onchange="(this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();" />
+                                                onchange="if(confirmFinalInterpretation(this)) { (this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show(); }" />
                                             <datalist id="possibleFinalResults">
                                                 <?php foreach ($tbResults as $resultValue) { ?>
                                                     <option value="<?php echo $resultValue; ?>"><?php echo $resultValue; ?></option>
@@ -1521,6 +1521,23 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         getfacilityProvinceDetails($('facilityId'));
         $('.disabledForm input, .disabledForm select , .disabledForm textarea').attr('disabled', true);
         $('.disabledForm input, .disabledForm select , .disabledForm textarea').removeClass("isRequired");
+    });
+
+    function confirmFinalInterpretation(input) {
+        if (input.value !== '' && input.value !== input.dataset.previousValue) {
+            if (!confirm('<?php echo _translate("Tests with Final Interpretation cannot be referred to other labs. Are you sure you want to continue?"); ?>')) {
+                input.value = input.dataset.previousValue || '';
+                (input.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();
+                return false;
+            }
+        }
+        input.dataset.previousValue = input.value;
+        return true;
+    }
+
+    // Store initial value on focus
+    document.getElementById('finalResult')?.addEventListener('focus', function() {
+        this.dataset.previousValue = this.value;
     });
 </script>
 <script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>

@@ -708,7 +708,8 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                             <input type="text" list="possibleFinalResults" class="form-control" id="finalResult"
                                                 name="finalResult"
                                                 placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>"
-                                                title="<?php echo _translate('Please enter the final interpretation'); ?>" />
+                                                title="<?php echo _translate('Please enter the final interpretation'); ?>"
+                                                onchange="confirmFinalInterpretation(this);" />
                                             <datalist id="possibleFinalResults">
                                                 <?php foreach ($tbResults as $resultValue) { ?>
                                                     <option value="<?php echo $resultValue; ?>"><?php echo $resultValue; ?></option>
@@ -1261,6 +1262,22 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                     });
             }
         });
+    });
+
+    function confirmFinalInterpretation(input) {
+        if (input.value !== '' && input.value !== input.dataset.previousValue) {
+            if (!confirm('<?php echo _translate("Tests with Final Interpretation cannot be referred to other labs. Are you sure you want to continue?"); ?>')) {
+                input.value = input.dataset.previousValue || '';
+                return false;
+            }
+        }
+        input.dataset.previousValue = input.value;
+        return true;
+    }
+
+    // Store initial value on focus
+    document.getElementById('finalResult')?.addEventListener('focus', function() {
+        this.dataset.previousValue = this.value;
     });
 </script>
 <script type="text/javascript"

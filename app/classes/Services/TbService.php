@@ -109,7 +109,7 @@ final class TbService extends AbstractTestService
         foreach ($results as $row) {
             $response[$row['result_id']] = $row['result'];
         }
-        return $response;
+        return array_unique($response);
     }
 
     public function getTbReasonsForTesting($updatedDateTime = null): array
