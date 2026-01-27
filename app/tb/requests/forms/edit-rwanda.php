@@ -345,14 +345,12 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             title="Please choose date of current regimen" />
                                     </td>
                                 </tr>
-                                <tr class="treatmentSelected"
-                                    style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
+                                <tr>
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
-                                            for="riskFactors"><?php echo _translate("Risk Factors"); ?><span
-                                                class="mandatory">*</span></label>
+                                            for="riskFactors"><?php echo _translate("Risk Factors"); ?></label>
                                         <select id="riskFactors" name="riskFactors"
-                                            class="form-control treatmentSelectedInput"
+                                            class="form-control"
                                             title="Please select the any one of risk factors"
                                             onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
                                             <option value="">Select risk factor...</option>
@@ -366,7 +364,8 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             <option value="Diabetic" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Diabetic') ? 'selected="selected"' : ''; ?>>Diabetic</option>
                                             <option value="Miner" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Miner') ? 'selected="selected"' : ''; ?>>Miner</option>
                                             <option value="Refugee camp" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Refugee camp') ? 'selected="selected"' : ''; ?>>Refugee camp</option>
-                                            <option value="Others">Others</option>
+                                            <option value="No information provided" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'No information provided') ? 'selected="selected"' : ''; ?>>No information provided</option>
+                                            <option value="Others" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Others') ? 'selected="selected"' : ''; ?>>Others</option>
                                         </select>
                                         <input
                                             style="<?php echo (isset($tbInfo['risk_factor_other']) && !empty($tbInfo['risk_factor_other'])) ? "" : "display: none"; ?>"
@@ -375,6 +374,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             placeholder="Enter the other risk factor"
                                             title="Please enter the other risk factor" />
                                     </td>
+                                    <td style="width: 33.33%;"></td>
                                 </tr>
                             </table>
 
@@ -392,11 +392,11 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
                             <table class="table" style="width:100%">
                                 <tr style="border: 1px solid #8080804f;">
-                                    <td style="width: 33.33%;">
+                                    <td style="width: 50%;">
                                         <label class="label-control"
                                             for="purposeOfTbTest"><?php echo _translate("Purpose of TB test(s)"); ?><span
                                                 class="mandatory">*</span></label>
-                                        <select id="purposeOfTbTest" name="purposeOfTbTest"
+                                        <select id="purposeOfTbTest" name="purposeOfTbTest[]" multiple
                                             class="form-control isRequired"
                                             title="Please select the any one of purpose of test">
                                             <option value="">Select purpose of TB test...</option>
@@ -407,6 +407,21 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             <option value="End of TB treatment" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('End of TB treatment', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>End of TB treatment</option>
                                             <option value="DR-TB Patient Baseline tests" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB Patient Baseline tests', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB Patient Baseline tests</option>
                                             <option value="DR-TB patient Follow up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB patient Follow up', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB patient Follow up</option>
+                                        </select>
+                                    </td>
+                                    <td style="width: 50%;">
+                                        <?php $tbTestsRequested = !empty($tbInfo['tests_requested']) ? explode(',', $tbInfo['tests_requested']) : []; ?>
+                                        <label class="label-control"
+                                            for="tbTestsRequested"><?php echo _translate("TB test(s) requested"); ?></label>
+                                        <select id="tbTestsRequested" multiple name="tbTestsRequested[]"
+                                            class="form-control"
+                                            title="Please select the TB test(s) requested">
+                                            <option value="">Select TB test(s) requested...</option>
+                                            <option value="LED microscopy" <?php echo in_array('LED microscopy', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>LED microscopy</option>
+                                            <option value="TB LAM test" <?php echo in_array('TB LAM test', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>TB LAM test</option>
+                                            <option value="MTB/ RIF Ultra" <?php echo in_array('MTB/ RIF Ultra', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra</option>
+                                            <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>MTB/ XDR (if RIF detected)</option>
+                                            <option value="TB culture and Drug susceptibility test (DST)" <?php echo in_array('TB culture and Drug susceptibility test (DST)', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>TB culture and Drug susceptibility test (DST)</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -1356,6 +1371,16 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
         // Update Remove Test button visibility on page load
         updateRemoveButtonVisibility();
+
+        // Initialize Purpose of TB Test Select2
+        $('#purposeOfTbTest').select2({
+            placeholder: "Select purpose of test"
+        });
+
+        // Initialize TB Tests Requested Select2
+        $('#tbTestsRequested').select2({
+            placeholder: "Select TB test(s) requested"
+        });
 
         // Initialize Final Interpretation Select2
         $('#finalResult').select2({

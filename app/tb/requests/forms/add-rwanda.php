@@ -319,12 +319,15 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                             class="treatmentSelectedInput form-control date"
                                             title="Please choose date of current regimen" />
                                     </td>
+                                    <td style="width: 33.33%;"></td>
+                                    <td style="width: 33.33%;"></td>
+                                </tr>
+                                <tr>
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
-                                            for="riskFactors"><?php echo _translate("Risk Factors"); ?><span
-                                                class="mandatory">*</span></label>
+                                            for="riskFactors"><?php echo _translate("Risk Factors"); ?></label>
                                         <select id="riskFactors" name="riskFactors"
-                                            class="form-control treatmentSelectedInput"
+                                            class="form-control"
                                             title="Please select the any one of risk factors"
                                             onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
                                             <option value="">Select risk factor...</option>
@@ -338,6 +341,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                             <option value="Diabetic">Diabetic</option>
                                             <option value="Miner">Miner</option>
                                             <option value="Refugee camp">Refugee camp</option>
+                                            <option value="No information provided">No information provided</option>
                                             <option value="Others">Others</option>
                                         </select>
                                         <input style="display: none;" type="text" id="riskFactorsOther"
@@ -345,6 +349,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                             placeholder="Enter the other risk factor"
                                             title="Please enter the other risk factor" />
                                     </td>
+                                    <td style="width: 33.33%;"></td>
                                     <td style="width: 33.33%;"></td>
                                 </tr>
                             </table>
@@ -379,6 +384,20 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                             <option value="DR-TB Patient Baseline tests">DR-TB Patient Baseline tests
                                             </option>
                                             <option value="DR-TB patient Follow up">DR-TB patient Follow up</option>
+                                        </select>
+                                    </td>
+                                    <td style="width: 50%;">
+                                        <label class="label-control"
+                                            for="tbTestsRequested"><?php echo _translate("TB test(s) requested"); ?></label>
+                                        <select id="tbTestsRequested" multiple name="tbTestsRequested[]"
+                                            class="form-control"
+                                            title="Please select the TB test(s) requested">
+                                            <option value="">Select TB test(s) requested...</option>
+                                            <option value="LED microscopy">LED microscopy</option>
+                                            <option value="TB LAM test">TB LAM test</option>
+                                            <option value="MTB/ RIF Ultra">MTB/ RIF Ultra</option>
+                                            <option value="MTB/ XDR (if RIF detected)">MTB/ XDR (if RIF detected)</option>
+                                            <option value="TB culture and Drug susceptibility test (DST)">TB culture and Drug susceptibility test (DST)</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -1177,6 +1196,10 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
         $('#purposeOfTbTest').select2({
             placeholder: "Select purpose of test"
+        });
+
+        $('#tbTestsRequested').select2({
+            placeholder: "Select TB test(s) requested"
         });
 
         $('#finalResult').select2({
