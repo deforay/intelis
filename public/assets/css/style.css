@@ -112,28 +112,44 @@ form table tr td>label,
 .resultInputContainer datalist {
     position: absolute;
     max-height: 20em;
-    border: 0 none;
+    border: 1px solid #ddd;
+    border-top: none;
     left: 0;
     overflow-x: hidden;
     overflow-y: auto;
     z-index: 9999;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
 }
 
 .resultInputContainer datalist option {
-    font-size: 1em;
-    padding: 0.3em 1em;
-    background-color: #777;
-    color: #eee;
+    font-size: 0.95em;
+    padding: 10px 14px;
+    background-color: #fff;
+    color: #333;
     cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.resultInputContainer datalist option:last-child {
+    border-bottom: none;
+    border-radius: 0 0 6px 6px;
 }
 
 /* option active styles */
 .resultInputContainer datalist option:hover,
-.resultInputContainer datalist option:focus,
-.resultInputContainer datalist option.selected {
+.resultInputContainer datalist option:focus {
     color: #fff;
     background-color: #3C8DBC;
     outline: 0 none;
+}
+
+.resultInputContainer datalist option.selected {
+    color: #3C8DBC;
+    background-color: #e8f4fc;
+    font-weight: 500;
 }
 
 /* .main-sidebar {
