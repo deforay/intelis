@@ -167,6 +167,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 						'category' => $category,
 						'subcategory' => $subcategory,
 						'module' => $menu['module'] ?? '',
+						'sortOrder' => (int) ($menu['sort_order'] ?? 0),
 						'actions' => $actions,
 						'isExpandable' => true,
 					];
@@ -184,6 +185,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 					'category' => $category,
 					'subcategory' => $subcategory,
 					'module' => $menu['module'] ?? '',
+					'sortOrder' => (int) ($menu['sort_order'] ?? 0),
 				];
 			}
 		}
