@@ -1197,7 +1197,7 @@ if ($isLisInstance) {
         });
 
         $('#typeOfPatient').select2({
-            placeholder: "<?php echo _translate('Select patient type'); ?>",
+            placeholder: "<?php echo _translate('Select case type'); ?>",
             width: '100%'
         });
 
