@@ -65,12 +65,15 @@ ALTER TABLE `audit_form_cd4` DROP `sample_registered_at_lab`;
 ALTER TABLE `audit_form_generic` DROP `sample_registered_at_lab`;
 
 -- Thana 06-Oct-2025
-INSERT INTO `privileges` 
+INSERT IGNORE INTO `privileges` 
 (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES 
-(NULL, 'tb-results', '/tb/results/tb-referral-list.php', NULL, 'TB Referral Lab', '2', 'always'),
-(NULL, 'tb-results', '/tb/results/add-tb-referral.php', NULL, 'Add TB Referral Lab', '2', 'always');
+(NULL, 'tb-results', '/tb/results/tb-referral-list.php', NULL, 'Refer to another lab', '2', 'always');
 
-INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'tb', NULL, 'no', 'TB Referral Lab', '/tb/results/tb-referral-list.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbFailedResultsMenu', '82', '164', 'active', CURRENT_TIMESTAMP);
+INSERT IGNORE INTO `privileges` 
+(`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES 
+(NULL, 'tb-results', '/tb/results/add-tb-referral.php', NULL, 'Add Referral', '2', 'always');
+
+INSERT IGNORE INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'tb', NULL, 'no', 'Refer to another lab', '/tb/results/tb-referral-list.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbFailedResultsMenu', '82', '164', 'active', CURRENT_TIMESTAMP);
 
 -- Thana 10-Oct-2025
 CREATE TABLE `tb_referral_history` (
@@ -101,8 +104,8 @@ ALTER TABLE specimen_manifests
 UPDATE specimen_manifests SET manifest_type = 'collection' WHERE manifest_type IS NULL;
 
 -- Thana 17-Oct-2025
-UPDATE `privileges` SET `display_name` = 'Add TB Referral Manifest' WHERE `privileges`.`privilege_name` = '/tb/results/add-tb-referral.php'; 
-INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'tb-results', '/tb/results/edit-tb-referral.php', NULL, 'Edit TB Referral Manifest', '2', 'always');
+UPDATE `privileges` SET `display_name` = 'Add TB Referral' WHERE `privileges`.`privilege_name` = '/tb/results/add-tb-referral.php'; 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'tb-results', '/tb/results/edit-tb-referral.php', NULL, 'Edit TB Referral', '2', 'always');
 UPDATE `s_app_menu` SET `inner_pages` = '/tb/results/add-tb-referral.php,/tb/results/edit-tb-referral.php' WHERE `s_app_menu`.`link` = '/tb/results/tb-referral-list.php'; 
 
 -- Thana 23-Oct-2025
