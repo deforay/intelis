@@ -178,7 +178,7 @@ try {
                             'lab_id' => $testResult['labId'][$key] ?? null,
                             'specimen_type' => $testResult['specimenType'][$key] ?? null,
                             'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($testResult['sampleReceivedDate'][$key] ?? null, true),
-                            'is_sample_rejected' => $testResult['isSampleRejected'][$key] ?? 'no',
+                            'is_sample_rejected' => $testResult['isSampleRejected'][$key] ?? null,
                             'reason_for_sample_rejection' => $testResult['sampleRejectionReason'][$key] ?? null,
                             'rejection_on' => DateUtility::isoDateFormat($testResult['rejectionDate'][$key] ?? null),
                             'test_type' => $testResult['testType'][$key] ?? null,
