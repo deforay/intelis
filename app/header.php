@@ -6,6 +6,7 @@ use App\Services\AppMenuService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\JsonUtility;
 
 // Reset query counters on page reload
 unset($_SESSION['queryCounters']);
@@ -109,6 +110,8 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 		href="/assets/css/toastify.min.css?v=<?= filemtime(WEB_ROOT . "/assets/css/toastify.min.css") ?>">
 	<link rel="stylesheet" type="text/css" href="/assets/css/summernote.min.css">
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
+	<link rel="stylesheet" media="all" type="text/css"
+		href="/assets/css/spotlight-search.css?v=<?= filemtime(WEB_ROOT . '/assets/css/spotlight-search.css'); ?>" />
 
 	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
@@ -117,6 +120,82 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 	<script type="text/javascript" src="/assets/js/jquery.fastconfirm.js"></script>
 	<script type="text/javascript"
 		src="/assets/js/utils.js?v=<?= filemtime(WEB_ROOT . '/assets/js/utils.js') ?>"></script>
+
+	<?php
+	// Flatten menu for spotlight - includes parent menus with expandable children
+	$flattenMenuForSpotlight = function (array $menuItems, array $parentPath = []) use (&$flattenMenuForSpotlight): array {
+		$flatList = [];
+		foreach ($menuItems as $menu) {
+			$menuTitle = _translate($menu['display_text']);
+			$currentPath = $parentPath;
+
+			// Skip headers but process their children
+			if (($menu['is_header'] ?? 'no') === 'yes') {
+				$currentPath[] = $menuTitle;
+				if (!empty($menu['children'])) {
+					$flatList = [...$flatList, ...$flattenMenuForSpotlight($menu['children'], $currentPath)];
+				}
+				continue;
+			}
+
+			$link = $menu['link'] ?? '';
+			$hasChildren = ($menu['has_children'] ?? 'no') === 'yes' && !empty($menu['children']);
+			$hasValidLink = $link !== '' && $link !== '#' && !str_starts_with($link, '#');
+
+			$category = !empty($parentPath) ? end($parentPath) : _translate('Navigation');
+			$subcategory = count($parentPath) > 1 ? implode(' → ', array_slice($parentPath, 0, -1)) : '';
+
+			// Parent menu with children - make it expandable
+			if ($hasChildren) {
+				$actions = [];
+				foreach ($menu['children'] as $child) {
+					$childLink = $child['link'] ?? '';
+					if ($childLink !== '' && $childLink !== '#' && !str_starts_with($childLink, '#')) {
+						$actions[] = [
+							'label' => _translate($child['display_text']),
+							'url' => $childLink,
+							'icon' => $child['icon'] ?? 'fa-solid fa-arrow-right',
+						];
+					}
+				}
+				if (!empty($actions)) {
+					$flatList[] = [
+						'id' => 'menu-' . $menu['id'],
+						'title' => $menuTitle,
+						'url' => $actions[0]['url'], // Default to first child
+						'icon' => $menu['icon'] ?? 'fa-solid fa-folder',
+						'category' => $category,
+						'subcategory' => $subcategory,
+						'module' => $menu['module'] ?? '',
+						'actions' => $actions,
+						'isExpandable' => true,
+					];
+				}
+				// Also process children recursively for deeper nesting
+				$currentPath[] = $menuTitle;
+				$flatList = [...$flatList, ...$flattenMenuForSpotlight($menu['children'], $currentPath)];
+			} elseif ($hasValidLink) {
+				// Regular menu item with direct link
+				$flatList[] = [
+					'id' => 'menu-' . $menu['id'],
+					'title' => $menuTitle,
+					'url' => $link,
+					'icon' => $menu['icon'] ?? 'fa-solid fa-file',
+					'category' => $category,
+					'subcategory' => $subcategory,
+					'module' => $menu['module'] ?? '',
+				];
+			}
+		}
+		return $flatList;
+	};
+	// TODO: Re-enable caching after development
+	$spotlightData = $flattenMenuForSpotlight($_SESSION['menuItems'] ?? []);
+	?>
+	<script>
+		window.spotlightData = <?= JsonUtility::encodeUtf8Json($spotlightData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
+		window.spotlightUserId = '<?= $_SESSION['userId'] ?? 'default'; ?>';
+	</script>
 </head>
 <style>
 	.topBar {
@@ -211,6 +290,13 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 				</ul>
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
+						<!-- Spotlight Search Trigger -->
+						<li class="spotlight-trigger-wrapper">
+							<a href="#" id="spotlightTrigger" title="<?= _translate('Quick Search'); ?> (Ctrl+K)">
+								<i class="fa-solid fa-magnifying-glass"></i>
+								<span class="hidden-xs kbd-hint">Ctrl+K</span>
+							</a>
+						</li>
 						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
 							?>
 							<li class="user-menu">
@@ -374,6 +460,26 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 					referrerpolicy="no-referrer"></iframe>
 				<div id="dfy-modal-fallback" class="dfy-modal__fallback" hidden>
 					<?= _translate("Unable to load this page or resource"); ?>
+				</div>
+			</div>
+		</div>
+
+		<!-- Spotlight Search Modal -->
+		<div id="spotlightModal" class="spotlight-modal" style="display: none;">
+			<div class="spotlight-backdrop"></div>
+			<div class="spotlight-dialog">
+				<div class="spotlight-search-wrapper">
+					<i class="fa-solid fa-magnifying-glass spotlight-icon"></i>
+					<input type="text" id="spotlightInput" class="spotlight-input"
+						placeholder="<?= _translate('Search menus, actions...'); ?>" autocomplete="off"
+						spellcheck="false">
+					<span class="spotlight-shortcut">ESC</span>
+				</div>
+				<div id="spotlightResults" class="spotlight-results"></div>
+				<div class="spotlight-footer">
+					<span><kbd>↑</kbd><kbd>↓</kbd> <?= _translate('Navigate'); ?></span>
+					<span><kbd>Enter</kbd> <?= _translate('Open'); ?></span>
+					<span><kbd>Esc</kbd> <?= _translate('Close'); ?></span>
 				</div>
 			</div>
 		</div>
