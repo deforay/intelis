@@ -584,7 +584,8 @@ if ($isLisInstance) {
                                                                 id="isSampleRejected<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select if sample was rejected"); ?>"
                                                                 onchange="$('.reasonForChange<?php echo $n; ?>').show();">
-                                                                <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
+                                                                <option value=''> -- <?php echo _translate("Select"); ?> --
+                                                                </option>
                                                                 <option value="yes" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>> <?php echo _translate("Yes"); ?> </option>
                                                                 <option value="no" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>> <?php echo _translate("No"); ?> </option>
                                                             </select>
@@ -652,7 +653,8 @@ if ($isLisInstance) {
                                                                 name="testResult[testType][]" id="testType<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test type"); ?>"
                                                                 onchange="updateTestResults(<?php echo $n; ?>);$('.reasonForChange<?php echo $n; ?>').show();">
-                                                                <option value=""><?php echo _translate("Select test type"); ?></option>
+                                                                <option value=""><?php echo _translate("Select test type"); ?>
+                                                                </option>
                                                                 <option value="Smear Microscopy" <?php echo ($test['test_type'] == 'Smear Microscopy') ? 'selected="selected"' : ''; ?>>Smear Microscopy</option>
                                                                 <option value="TB LAM test" <?php echo ($test['test_type'] == 'TB LAM test') ? 'selected="selected"' : ''; ?>>TB LAM test</option>
                                                                 <option value="MTB/ RIF Ultra" <?php echo ($test['test_type'] == 'MTB/ RIF Ultra') ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra
@@ -1376,7 +1378,7 @@ if ($isLisInstance) {
         });
 
         $('#typeOfPatient').select2({
-            placeholder: "<?php echo _translate('Select patient type'); ?>",
+            placeholder: "<?php echo _translate('Select case type'); ?>",
             width: '100%'
         });
 
