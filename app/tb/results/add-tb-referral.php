@@ -22,7 +22,15 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /* Testing lab list */
 $testingLabs = $facilitiesService->getTestingLabs('tb');
-$sampleManifestCode = strtoupper('RTB' . date('ymdH') .  MiscUtility::generateRandomString(4));
+$sampleManifestCode = strtoupper('RTB' . date('ymdH') . MiscUtility::generateRandomString(4));
+
+$isLisInstance = $general->isLISInstance();
+
+$fromLabId = null;
+if ($isLisInstance) {
+    $fromLabId = $general->getSystemConfig('sc_testing_lab_id');
+}
+
 ?>
 
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -39,33 +47,42 @@ $sampleManifestCode = strtoupper('RTB' . date('ymdH') .  MiscUtility::generateRa
 
 <div class="content-wrapper">
     <section class="content-header">
-        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("Referral Labs"); ?></h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("Add Referral"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-            <li class="active"><?php echo _translate("Referral Labs"); ?></li>
+            <li class="active"><?php echo _translate("Add Referral"); ?></li>
         </ol>
     </section>
 
     <section class="content">
         <div class="box box-default">
-            <form class="form-horizontal" method="post" name="referralForm" id="referralForm" autocomplete="off" action="save-tb-referral-helper.php">
+            <form class="form-horizontal" method="post" name="referralForm" id="referralForm" autocomplete="off"
+                action="save-tb-referral-helper.php">
 
                 <div class="box-body" style="margin-top:20px;">
                     <div class="row">
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
-                                <label for="referralLabId" class="control-label"> <?php echo _translate("Referral From Lab"); ?> <span class="mandatory">*</span></label>
+                                <label for="referralLabId" class="control-label">
+                                    <?php echo _translate("Referral From Lab"); ?> <span
+                                        class="mandatory">*</span></label>
                                 <select name="referralLabId" id="referralLabId" class="form-control select2 isRequired"
-                                    title="<?php echo _translate("Please select referral from Laboratory"); ?>" required>
+                                    title="<?php echo _translate("Please select referral from Laboratory"); ?>"
+                                    required>
                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
-                                <label for="packageCode" class="control-label"> <?php echo _translate("Referral Manifest Code"); ?> <span class="mandatory">*</span></label>
-                                <input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper(htmlspecialchars($sampleManifestCode)); ?>" />
-                                <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
+                                <label for="packageCode" class="control-label">
+                                    <?php echo _translate("Referral Manifest Code"); ?> <span
+                                        class="mandatory">*</span></label>
+                                <input type="text" class="form-control isRequired" id="packageCode" name="packageCode"
+                                    placeholder="Manifest Code" title="Please enter manifest code" readonly
+                                    value="<?php echo strtoupper(htmlspecialchars($sampleManifestCode)); ?>" />
+                                <input type="hidden" class="form-control isRequired" id="module" name="module"
+                                    placeholder="" title="" readonly value="tb" />
                             </div>
                         </div>
                     </div>
@@ -80,7 +97,8 @@ $sampleManifestCode = strtoupper('RTB' . date('ymdH') .  MiscUtility::generateRa
                     <div class="row sampleSelectionArea" style="margin-top: 20px; display: none;">
                         <div class="col-md-5">
                             <label><?php echo _translate("Available Samples"); ?></label>
-                            <select name="availableSamples" id="search" class="form-control" size="10" multiple="multiple">
+                            <select name="availableSamples" id="search" class="form-control" size="10"
+                                multiple="multiple">
                             </select>
                             <div class="sampleCounterDiv">
                                 <?= _translate("Available samples"); ?> : <span id="unselectedCount">0</span>
@@ -104,7 +122,8 @@ $sampleManifestCode = strtoupper('RTB' . date('ymdH') .  MiscUtility::generateRa
 
                         <div class="col-md-5">
                             <label><?php echo _translate("Selected Samples for Referral"); ?></label>
-                            <select name="referralSamples[]" id="search_to" class="form-control" size="10" multiple="multiple">
+                            <select name="referralSamples[]" id="search_to" class="form-control" size="10"
+                                multiple="multiple">
                             </select>
                             <div class="sampleCounterDiv">
                                 <?= _translate("Selected samples"); ?> : <span id="selectedCount">0</span>
@@ -114,16 +133,23 @@ $sampleManifestCode = strtoupper('RTB' . date('ymdH') .  MiscUtility::generateRa
                     <div class="row sampleSelectionArea" style="margin-top: 30px;display:none;">
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
-                                <label for="referralToLabId" class="control-label"> <?php echo _translate("Referral To Lab"); ?> <span class="mandatory">*</span></label>
-                                <select name="referralToLabId" id="referralToLabId" class="form-control select2 isRequired"
+                                <label for="referralToLabId" class="control-label">
+                                    <?php echo _translate("Referral To Lab"); ?> <span
+                                        class="mandatory">*</span></label>
+                                <select name="referralToLabId" id="referralToLabId"
+                                    class="form-control select2 isRequired"
                                     title="<?php echo _translate("Please select referral To Laboratory"); ?>" required>
                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <label for="referralReason" class="control-label"> <?php echo _translate("Reason for Referral"); ?> <span class="mandatory">*</span></label>
-                            <textarea type="text" class="form-control isRequired" id="referralReason" name="referralReason" placeholder="Enter referral reason" title="Please enter reerral reason"></textarea>
+                            <label for="referralReason" class="control-label">
+                                <?php echo _translate("Reason for Referral"); ?> <span
+                                    class="mandatory">*</span></label>
+                            <textarea type="text" class="form-control isRequired" id="referralReason"
+                                name="referralReason" placeholder="Enter referral reason"
+                                title="Please enter reerral reason"></textarea>
                         </div>
                     </div>
                     <div class="box-footer sampleSelectionArea" style="margin-top: 20px;display:none;">
@@ -143,11 +169,20 @@ $sampleManifestCode = strtoupper('RTB' . date('ymdH') .  MiscUtility::generateRa
 
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
         $("#referralLabId").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Referral Lab"); ?>"
         });
+        <?php
+        if ($isLisInstance && !empty($fromLabId)) {
+            ?>
+            $("#referralLabId").val("<?php echo $fromLabId; ?>");
+            $("#referralLabId").trigger('change');
+            $("#referralLabId").prop('disabled', true);
+            <?php
+        }
+        ?>
     });
 
     function loadSamples() {
@@ -163,7 +198,7 @@ $sampleManifestCode = strtoupper('RTB' . date('ymdH') .  MiscUtility::generateRa
         $.post("/tb/results/get-referral-samples.php", {
             type: 'tb',
             referralLabId: referralLabId
-        }, function(data) {
+        }, function (data) {
             if (data && data.trim() !== "") {
                 $("#search").html(data);
                 $(".sampleSelectionArea").show();
@@ -181,7 +216,7 @@ $sampleManifestCode = strtoupper('RTB' . date('ymdH') .  MiscUtility::generateRa
                 left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
                 right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
             },
-            fireSearch: function(value) {
+            fireSearch: function (value) {
                 return value.length > 2;
             },
             autoSelectNext: true,

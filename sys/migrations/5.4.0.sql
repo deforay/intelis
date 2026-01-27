@@ -39,3 +39,7 @@ ALTER TABLE `audit_form_tb` CHANGE `tests_requested` `tests_requested` VARCHAR(5
 -- Amit 27-Jan-2026 - Add affiliated_district_hospital column for Rwanda forms
 ALTER TABLE `form_tb` ADD `affiliated_district_hospital` VARCHAR(255) NULL DEFAULT NULL AFTER `affiliated_lab_id`;
 ALTER TABLE `audit_form_tb` ADD `affiliated_district_hospital` VARCHAR(255) NULL DEFAULT NULL AFTER `affiliated_lab_id`;
+
+-- Amit 27-Jan-2026 - Change patient_type from JSON to VARCHAR for Rwanda forms (single select)
+ALTER TABLE `form_tb` CHANGE `patient_type` `patient_type` VARCHAR(255) NULL DEFAULT NULL;
+ALTER TABLE `audit_form_tb` CHANGE `patient_type` `patient_type` VARCHAR(255) NULL DEFAULT NULL;

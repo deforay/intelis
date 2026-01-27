@@ -46,7 +46,12 @@ $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
 $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
 $tbInfo['purpose_of_test'] = explode(',', $tbInfo['purpose_of_test']);
 
-$labId = $general->getSystemConfig('sc_testing_lab_id');
+// Auto-select lab for LIS instances
+$isLisInstance = $general->isLISInstance();
+$currentLabId = null;
+if ($isLisInstance) {
+    $currentLabId = $general->getSystemConfig('sc_testing_lab_id');
+}
 ?>
 
 <div class="content-wrapper">
@@ -280,24 +285,24 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             title="<?php echo _translate("Please enter phone number"); ?>" />
                                     </td>
                                     <td style="width: 33.33%;">
-                                        <label for="typeOfPatient"><?php echo _translate("Type of patient"); ?><span
+                                        <label for="typeOfPatient"><?php echo _translate("Case Type"); ?><span
                                                 class="mandatory">*</span></label>
-                                        <select class="select2 form-control isRequired" name="typeOfPatient[]"
+                                        <select class="select2 form-control isRequired" name="typeOfPatient"
                                             id="typeOfPatient"
-                                            title="<?php echo _translate("Please select the type of patient"); ?>"
-                                            multiple onchange="showOther(this.value,'typeOfPatientOther');">
+                                            title="<?php echo _translate("Please select the case type"); ?>"
+                                            onchange="showOther(this.value,'typeOfPatientOther');">
                                             <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
-                                            <option value='new' <?php echo (is_array($typeOfPatient) && in_array("new", $typeOfPatient)) ? "selected='selected'" : ""; ?>> New </option>
-                                            <option value='loss-to-follow-up' <?php echo (is_array($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
-                                            <option value='treatment-failure' <?php echo (is_array($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Treatment Failure </option>
-                                            <option value='relapse' <?php echo (is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) ? "selected='selected'" : ""; ?>>
+                                            <option value='new' <?php echo ((is_array($typeOfPatient) && in_array("new", $typeOfPatient)) || $typeOfPatient == "new") ? "selected='selected'" : ""; ?>> New </option>
+                                            <option value='loss-to-follow-up' <?php echo ((is_array($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) || $typeOfPatient == "loss-to-follow-up") ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
+                                            <option value='treatment-failure' <?php echo ((is_array($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) || $typeOfPatient == "treatment-failure") ? "selected='selected'" : ""; ?>> Treatment Failure </option>
+                                            <option value='relapse' <?php echo ((is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) || $typeOfPatient == "relapse") ? "selected='selected'" : ""; ?>>
                                                 Relapse </option>
-                                            <!-- <option value='other' <?php echo (is_array($typeOfPatient) && in_array("other", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Other </option> -->
+                                            <!-- <option value='other' <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "selected='selected'" : ""; ?>> Other </option> -->
                                         </select>
                                         <input type="text" class="form-control typeOfPatientOther"
                                             id="typeOfPatientOther" name="typeOfPatientOther"
-                                            placeholder="<?php echo _translate("Enter type of patient if others"); ?>"
-                                            title="<?php echo _translate("Please enter type of patient if others"); ?>"
+                                            placeholder="<?php echo _translate("Enter case type if others"); ?>"
+                                            title="<?php echo _translate("Please enter case type if others"); ?>"
                                             style="display: none;" />
                                     </td>
                                 </tr>
@@ -319,7 +324,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                 <tr>
                                     <td style="width: 33.33%;">
                                         <label
-                                            for="isPatientInitiatedTreatment"><?php echo _translate("Is patient initiated on TB treatment?"); ?>:</label>
+                                            for="isPatientInitiatedTreatment"><?php echo _translate("Is Patient initiated on TB treatment?"); ?>:</label>
                                         <select name="isPatientInitiatedTreatment" id="isPatientInitiatedTreatment"
                                             class="form-control isRequired" title="Please choose treatment status">
                                             <option value=''>-- <?php echo _translate("Select"); ?> --</option>
@@ -555,9 +560,9 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                                 for="labId<?php echo $n; ?>"><?php echo _translate("Testing Lab"); ?><span
                                                                     class="mandatory">*</span></label>
                                                             <select name="testResult[labId][]" id="labId<?php echo $n; ?>"
-                                                                class="isRequired form-control"
+                                                                class="isRequired form-control select2"
                                                                 title="<?php echo _translate("Please select testing laboratory"); ?>">
-                                                                <?= $general->generateSelectOptions($testingLabs, $test['lab_id'], '-- Select lab --'); ?>
+                                                                <?= $general->generateSelectOptions($testingLabs, $test['lab_id'] ?: $currentLabId, '-- Select lab --'); ?>
                                                             </select>
                                                         </td>
                                                         <td style="width: 33.33%;">
@@ -796,9 +801,9 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                             for="labId1"><?php echo _translate("Testing Lab"); ?><span
                                                                 class="mandatory">*</span></label>
                                                         <select name="testResult[labId][]" id="labId1"
-                                                            class="isRequired form-control"
+                                                            class="isRequired form-control select2"
                                                             title="<?php echo _translate("Please select testing laboratory"); ?>">
-                                                            <?= $general->generateSelectOptions($testingLabs, null, '-- Select lab --'); ?>
+                                                            <?= $general->generateSelectOptions($testingLabs, $currentLabId, '-- Select lab --'); ?>
                                                         </select>
                                                     </td>
                                                     <td style="width: 33.33%;">
@@ -1000,7 +1005,8 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                 onchange="if(confirmFinalInterpretation(this)) { (this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show(); }" />
                                             <datalist id="possibleFinalResults">
                                                 <?php foreach ($tbResults as $resultValue) { ?>
-                                                    <option value="<?php echo $resultValue; ?>"><?php echo $resultValue; ?></option>
+                                                    <option value="<?php echo $resultValue; ?>"><?php echo $resultValue; ?>
+                                                    </option>
                                                 <?php } ?>
                                             </datalist>
                                         </div>
@@ -1138,6 +1144,17 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
     // Initialize event handlers for a test section
     function initializeTestSection(section, sectionNumber) {
         const $section = $(section);
+
+        // Initialize Select2 for dropdowns
+        $section.find('.select2').each(function () {
+            const $this = $(this);
+            if (!$this.hasClass('select2-hidden-accessible')) {
+                $this.select2({
+                    placeholder: "Select option",
+                    width: '100%'
+                });
+            }
+        });
 
         // Sample rejection change handler
         $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function () {
@@ -1457,7 +1474,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         if (input.value !== '' && input.value !== input.dataset.previousValue) {
             if (!confirm('<?php echo _translate("Tests with Final Interpretation cannot be referred to other labs. Are you sure you want to continue?"); ?>')) {
                 input.value = input.dataset.previousValue || '';
-                (input.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();
+                (input.value != '') ? $('.refer-inputs').hide() : $('.refer-inputs').show();
                 return false;
             }
         }
@@ -1466,8 +1483,9 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
     }
 
     // Store initial value on focus
-    document.getElementById('finalResult')?.addEventListener('focus', function() {
+    document.getElementById('finalResult')?.addEventListener('focus', function () {
         this.dataset.previousValue = this.value;
     });
 </script>
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script type="text/javascript"
+    src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
