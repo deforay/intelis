@@ -63,19 +63,16 @@
         },
 
         createResultsCache: function() {
-            this.searchData = (window.spotlightData || []).map(function(item) {
-                // Include action labels in search text for expandable items
-                var actionText = '';
-                if (item.actions) {
-                    actionText = item.actions.map(function(a) { return a.label; }).join(' ');
-                }
+            this.searchData = (window.spotlightData || []).map(function(item, index) {
+                // For expandable items, only match on title/module/category (not child actions)
+                // Child actions are already added as separate searchable items
                 return $.extend({}, item, {
+                    _originalIndex: index,
                     searchText: [
                         item.title,
                         item.category,
                         item.subcategory || '',
                         item.module || '',
-                        actionText,
                         (item.keywords || []).join(' ')
                     ].join(' ').toLowerCase()
                 });
@@ -164,19 +161,19 @@
                 }
             });
 
-            // Hover on result
+            // Hover on result (no scroll, just highlight)
             $(document).on('mouseenter', '.spotlight-result-item', function() {
                 if (!$(this).hasClass('spotlight-expandable') || self.expandedIndex < 0) {
                     self.selectedIndex = parseInt($(this).data('index'));
                     self.selectedActionIndex = -1;
-                    self.updateSelection();
+                    self.updateSelection(false);
                 }
             });
 
-            // Hover on action
+            // Hover on action (no scroll, just highlight)
             $(document).on('mouseenter', '.spotlight-action-item', function() {
                 self.selectedActionIndex = parseInt($(this).data('action-index'));
-                self.updateActionSelection();
+                self.updateActionSelection(false);
             });
         },
 
@@ -262,35 +259,19 @@
             this.filteredResults.sort(function(a, b) {
                 var aTitle = a.title.toLowerCase();
                 var bTitle = b.title.toLowerCase();
-                var aModule = (a.module || '').toLowerCase();
-                var bModule = (b.module || '').toLowerCase();
 
-                // Expandable items (parent menus) first when searching
-                var aExpandable = a.isExpandable ? 1 : 0;
-                var bExpandable = b.isExpandable ? 1 : 0;
-                if (aExpandable !== bExpandable) return bExpandable - aExpandable;
+                // Priority 1: Title contains search term (direct matches first)
+                var aTitleMatch = queryWords.every(function(w) { return aTitle.indexOf(w) !== -1; });
+                var bTitleMatch = queryWords.every(function(w) { return bTitle.indexOf(w) !== -1; });
+                if (aTitleMatch !== bTitleMatch) return bTitleMatch - aTitleMatch;
 
-                // Exact module match
-                var aModuleExact = queryWords.some(function(w) { return aModule === w; });
-                var bModuleExact = queryWords.some(function(w) { return bModule === w; });
-                if (aModuleExact !== bModuleExact) return bModuleExact - aModuleExact;
-
-                // Module contains query word
-                var aModuleMatch = queryWords.some(function(w) { return aModule.indexOf(w) !== -1; });
-                var bModuleMatch = queryWords.some(function(w) { return bModule.indexOf(w) !== -1; });
-                if (aModuleMatch !== bModuleMatch) return bModuleMatch - aModuleMatch;
-
-                // Exact title match
-                var aExact = aTitle === query;
-                var bExact = bTitle === query;
-                if (aExact !== bExact) return bExact - aExact;
-
-                // Title starts with first word
+                // Priority 2: Title starts with first word
                 var aStarts = aTitle.indexOf(firstWord) === 0;
                 var bStarts = bTitle.indexOf(firstWord) === 0;
                 if (aStarts !== bStarts) return bStarts - aStarts;
 
-                return 0;
+                // Priority 3: Use menu sort_order
+                return (a.sortOrder || 0) - (b.sortOrder || 0);
             });
 
             this.selectedIndex = this.filteredResults.length > 0 ? 0 : -1;
@@ -485,24 +466,24 @@
             }
         },
 
-        updateSelection: function() {
+        updateSelection: function(scroll) {
             var $items = $('.spotlight-result-item');
             $items.removeClass('selected');
             var $selected = $items.filter('[data-index="' + this.selectedIndex + '"]');
             $selected.addClass('selected');
 
-            if ($selected.length) {
+            if (scroll !== false && $selected.length) {
                 this.scrollIntoView($selected);
             }
         },
 
-        updateActionSelection: function() {
+        updateActionSelection: function(scroll) {
             var $actions = $('.spotlight-action-item');
             $actions.removeClass('selected');
             var $selected = $actions.filter('[data-action-index="' + this.selectedActionIndex + '"]');
             $selected.addClass('selected');
 
-            if ($selected.length) {
+            if (scroll !== false && $selected.length) {
                 this.scrollIntoView($selected);
             }
         },
