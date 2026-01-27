@@ -16,3 +16,7 @@ ALTER TABLE `form_tb` ADD `tb_lam_result` VARCHAR(64) NULL DEFAULT NULL AFTER `x
 -- Add api_token column to track_api_requests for bearer token search
 ALTER TABLE `track_api_requests` ADD `api_token` VARCHAR(255) NULL DEFAULT NULL AFTER `data_format`;
 ALTER TABLE `track_api_requests` ADD INDEX `api_token` (`api_token`);
+
+
+-- Amit 27-Jan-2026
+UPDATE `s_app_menu` SET `display_text` = 'Refer to another lab' WHERE link = '/tb/results/tb-referral-list.php';
