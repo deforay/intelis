@@ -19,4 +19,15 @@ ALTER TABLE `track_api_requests` ADD INDEX `api_token` (`api_token`);
 
 
 -- Amit 27-Jan-2026
+
+
+INSERT IGNORE INTO `privileges` 
+(`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES 
+(NULL, 'tb-results', '/tb/results/tb-referral-list.php', NULL, 'Refer to another lab', '2', 'always');
+
+INSERT IGNORE INTO `privileges` 
+(`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES 
+(NULL, 'tb-results', '/tb/results/add-tb-referral.php', NULL, 'Add Referral', '2', 'always');
+
 UPDATE `s_app_menu` SET `display_text` = 'Refer to another lab' WHERE link = '/tb/results/tb-referral-list.php';
+UPDATE `s_app_menu` SET `display_text` = 'Add Referral' WHERE link = '/tb/results/add-tb-referral.php';
