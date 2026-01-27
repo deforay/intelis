@@ -127,7 +127,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 	$flattenMenuForSpotlight = function (array $menuItems, array $parentPath = []) use (&$flattenMenuForSpotlight): array {
 		$flatList = [];
 		foreach ($menuItems as $menu) {
-			$menuTitle = _translate($menu['display_text']);
+			$menuTitle = _jsTranslate($menu['display_text']);
 			$currentPath = $parentPath;
 
 			// Skip headers but process their children
@@ -143,7 +143,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 			$hasChildren = ($menu['has_children'] ?? 'no') === 'yes' && !empty($menu['children']);
 			$hasValidLink = $link !== '' && $link !== '#' && !str_starts_with($link, '#');
 
-			$category = !empty($parentPath) ? end($parentPath) : _translate('Navigation');
+			$category = !empty($parentPath) ? end($parentPath) : _jsTranslate('Navigation');
 			$subcategory = count($parentPath) > 1 ? implode(' → ', array_slice($parentPath, 0, -1)) : '';
 
 			// Parent menu with children - make it expandable
@@ -153,7 +153,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 					$childLink = $child['link'] ?? '';
 					if ($childLink !== '' && $childLink !== '#' && !str_starts_with($childLink, '#')) {
 						$actions[] = [
-							'label' => _translate($child['display_text']),
+							'label' => _jsTranslate($child['display_text']),
 							'url' => $childLink,
 							'icon' => $child['icon'] ?? 'fa-solid fa-arrow-right',
 						];
@@ -192,12 +192,16 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 		}
 		return $flatList;
 	};
-	$spotlightCacheKey = 'spotlight_menu_' . ($_SESSION['userId'] ?? 'default');
+	$spotlightCacheKey = 'spotlight_menu_' . ($_SESSION['userId'] ?? 'default') . '_' . ($_SESSION['APP_LOCALE'] ?? 'en');
 	$spotlightData = MemoUtility::memo($spotlightCacheKey, fn() => $flattenMenuForSpotlight($_SESSION['menuItems'] ?? []), 300);
 	?>
 	<script>
 		window.spotlightData = <?= JsonUtility::encodeUtf8Json($spotlightData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
 		window.spotlightUserId = '<?= $_SESSION['userId'] ?? 'default'; ?>';
+		window.spotlightTranslations = {
+			recent: '<?= _jsTranslate('Recent'); ?>',
+			noResults: '<?= _jsTranslate('No results found'); ?>'
+		};
 	</script>
 </head>
 <style>
