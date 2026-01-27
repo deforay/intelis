@@ -112,7 +112,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                             <tr>
                                 <td style="width: 33.33%;">
                                     <label class="label-control"
-                                        for="province"><?php echo _translate("Health Facility State"); ?><span
+                                        for="province"><?php echo _translate("Province"); ?><span
                                             class="mandatory">*</span></label>
                                     <select class="form-control select2 isRequired" name="province" id="province"
                                         title="<?php echo _translate("Please choose State"); ?>"
@@ -122,7 +122,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                 </td>
                                 <td style="width: 33.33%;">
                                     <label class="label-control"
-                                        for="district"><?php echo _translate("Health Facility County"); ?><span
+                                        for="district"><?php echo _translate("District"); ?><span
                                             class="mandatory">*</span></label>
                                     <select class="form-control select2 isRequired" name="district" id="district"
                                         title="<?php echo _translate("Please choose County"); ?>"
@@ -364,8 +364,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                 <td style="width: 33.33%;">
                                     <label class="label-control"
                                         for="riskFactors"><?php echo _translate("Risk Factors"); ?></label>
-                                    <select id="riskFactors" name="riskFactors"
-                                        class="form-control"
+                                    <select id="riskFactors" name="riskFactors" class="form-control"
                                         title="Please select the any one of risk factors"
                                         onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
                                         <option value="">Select risk factor...</option>
@@ -411,16 +410,20 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                     <label class="label-control"
                                         for="purposeOfTbTest"><?php echo _translate("Purpose of TB test(s)"); ?><span
                                             class="mandatory">*</span></label>
-                                    <select id="purposeOfTbTest" name="purposeOfTbTest[]" multiple class="form-control isRequired"
+                                    <select id="purposeOfTbTest" name="purposeOfTbTest[]" multiple
+                                        class="form-control isRequired"
                                         title="Please select the any one of purpose of test">
                                         <option value="">Select purpose of TB test...</option>
-                                        <option value="Initial TB diagnosis" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('Initial TB diagnosis', (array)$tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
-                                        <option value="DS-TB Treatment Follow-Up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DS-TB Treatment Follow-Up', (array)$tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
-                                        <option value="C2" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C2', (array)$tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C2</option>
-                                        <option value="C5" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C5', (array)$tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C5</option>
-                                        <option value="End of TB treatment" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('End of TB treatment', (array)$tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>End of TB treatment</option>
-                                        <option value="DR-TB Patient Baseline tests" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB Patient Baseline tests', (array)$tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB Patient Baseline tests</option>
-                                        <option value="DR-TB patient Follow up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB patient Follow up', (array)$tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB patient Follow up</option>
+                                        <option value="Initial TB diagnosis" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('Initial TB diagnosis', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
+                                        <option value="DS-TB Treatment Follow-Up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DS-TB Treatment Follow-Up', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
+                                        <option value="C2" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C2', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C2
+                                        </option>
+                                        <option value="C5" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C5', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C5
+                                        </option>
+                                        <option value="End of TB treatment" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('End of TB treatment', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>End of TB treatment</option>
+                                        <option value="DR-TB Patient Baseline tests" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB Patient Baseline tests', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB Patient
+                                            Baseline tests</option>
+                                        <option value="DR-TB patient Follow up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB patient Follow up', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB patient Follow up</option>
                                     </select>
                                 </td>
                                 <td style="width: 50%;">
@@ -428,14 +431,15 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                     <label class="label-control"
                                         for="tbTestsRequested"><?php echo _translate("TB test(s) requested"); ?></label>
                                     <select id="tbTestsRequested" multiple name="tbTestsRequested[]"
-                                        class="form-control"
-                                        title="Please select the TB test(s) requested">
+                                        class="form-control" title="Please select the TB test(s) requested">
                                         <option value="">Select TB test(s) requested...</option>
                                         <option value="LED microscopy" <?php echo in_array('LED microscopy', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>LED microscopy</option>
                                         <option value="TB LAM test" <?php echo in_array('TB LAM test', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>TB LAM test</option>
                                         <option value="MTB/ RIF Ultra" <?php echo in_array('MTB/ RIF Ultra', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra</option>
-                                        <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>MTB/ XDR (if RIF detected)</option>
-                                        <option value="TB culture and Drug susceptibility test (DST)" <?php echo in_array('TB culture and Drug susceptibility test (DST)', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>TB culture and Drug susceptibility test (DST)</option>
+                                        <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>MTB/ XDR (if
+                                            RIF detected)</option>
+                                        <option value="TB culture and Drug susceptibility test (DST)" <?php echo in_array('TB culture and Drug susceptibility test (DST)', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>TB culture and Drug susceptibility test
+                                            (DST)</option>
                                     </select>
                                 </td>
                             </tr>
@@ -960,7 +964,8 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                 <div class="controls" style="margin-top: 20px;">
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+
                                         <?php echo _translate("Add Test"); ?></button>
-                                    <button type="button" id="removeTestBtn" class="btn btn-danger" style="display: none;" onclick="removeTestSection()">-
+                                    <button type="button" id="removeTestBtn" class="btn btn-danger" style="display: none;"
+                                        onclick="removeTestSection()">-
                                         <?php echo _translate("Remove Test"); ?></button>
                                 </div>
                                 <br>
@@ -1006,12 +1011,15 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         border-radius: 5px;
         border: 1px solid #ddd;
     }
+
     .test-section:nth-child(odd) {
         background-color: #f9f9f9;
     }
+
     .test-section:nth-child(even) {
         background-color: #ffffff;
     }
+
     .test-section .section-header {
         font-size: 1.1em;
         color: #3c8dbc;

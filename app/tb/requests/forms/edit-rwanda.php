@@ -109,7 +109,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                 <tr>
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
-                                            for="province"><?php echo _translate("Health Facility State"); ?><span
+                                            for="province"><?php echo _translate("Province"); ?><span
                                                 class="mandatory">*</span></label>
                                         <select class="form-control select2 isRequired" name="province" id="province"
                                             title="<?php echo _translate("Please choose State"); ?>"
@@ -119,7 +119,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
-                                            for="district"><?php echo _translate("Health Facility County"); ?><span
+                                            for="district"><?php echo _translate("District"); ?><span
                                                 class="mandatory">*</span></label>
                                         <select class="form-control select2 isRequired" name="district" id="district"
                                             title="<?php echo _translate("Please choose County"); ?>"
@@ -148,23 +148,30 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             placeholder="<?php echo _translate("Enter affiliated district hospital"); ?>"
                                             title="<?php echo _translate("Please enter affiliated district hospital"); ?>" />
                                     </td>
-                                    <td style="width: 33.33%;"></td>
-                                    <td style="width: 33.33%;"></td>
-                                </tr>
-                                <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                                <tr>
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
-                                            for="labId"><?php echo _translate("Testing Laboratory"); ?><span
-                                                class="mandatory">*</span></label>
-                                        <select name="labId" id="labId" class="form-control select2 isRequired"
-                                            title="<?php echo _translate("Please select Testing Laboratory"); ?>">
-                                            <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
+                                            for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
+                                        <select name="affiliatedLabId" id="affiliatedLabId" class="form-control select2"
+                                            title="<?php echo _translate("Please select affiliated TB testing site"); ?>">
+                                            <?= $general->generateSelectOptions($testingLabs, $tbInfo['affiliated_lab_id'], '-- Select --'); ?>
                                         </select>
                                     </td>
                                     <td style="width: 33.33%;"></td>
-                                    <td style="width: 33.33%;"></td>
                                 </tr>
+                                <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+                                    <tr>
+                                        <td style="width: 33.33%;">
+                                            <label class="label-control"
+                                                for="labId"><?php echo _translate("Testing Laboratory"); ?><span
+                                                    class="mandatory">*</span></label>
+                                            <select name="labId" id="labId" class="form-control select2 isRequired"
+                                                title="<?php echo _translate("Please select Testing Laboratory"); ?>">
+                                                <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
+                                            </select>
+                                        </td>
+                                        <td style="width: 33.33%;"></td>
+                                        <td style="width: 33.33%;"></td>
+                                    </tr>
                                 <?php } ?>
                             </table>
 
@@ -362,8 +369,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="riskFactors"><?php echo _translate("Risk Factors"); ?></label>
-                                        <select id="riskFactors" name="riskFactors"
-                                            class="form-control"
+                                        <select id="riskFactors" name="riskFactors" class="form-control"
                                             title="Please select the any one of risk factors"
                                             onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
                                             <option value="">Select risk factor...</option>
@@ -415,8 +421,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             <option value="">Select purpose of TB test...</option>
                                             <option value="Initial TB diagnosis" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('Initial TB diagnosis', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
                                             <option value="DS-TB Treatment Follow-Up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DS-TB Treatment Follow-Up', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
-                                            <option value="C2" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C2', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C2</option>
-                                            <option value="C5" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C5', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C5</option>
+                                            <option value="C2" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C2', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C2
+                                            </option>
+                                            <option value="C5" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C5', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C5
+                                            </option>
                                             <option value="End of TB treatment" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('End of TB treatment', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>End of TB treatment</option>
                                             <option value="DR-TB Patient Baseline tests" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB Patient Baseline tests', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB Patient Baseline tests</option>
                                             <option value="DR-TB patient Follow up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB patient Follow up', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB patient Follow up</option>
@@ -427,14 +435,17 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                         <label class="label-control"
                                             for="tbTestsRequested"><?php echo _translate("TB test(s) requested"); ?></label>
                                         <select id="tbTestsRequested" multiple name="tbTestsRequested[]"
-                                            class="form-control"
-                                            title="Please select the TB test(s) requested">
+                                            class="form-control" title="Please select the TB test(s) requested">
                                             <option value="">Select TB test(s) requested...</option>
-                                            <option value="LED microscopy" <?php echo in_array('LED microscopy', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>LED microscopy</option>
+                                            <option value="LED microscopy" <?php echo in_array('LED microscopy', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>LED microscopy
+                                            </option>
                                             <option value="TB LAM test" <?php echo in_array('TB LAM test', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>TB LAM test</option>
-                                            <option value="MTB/ RIF Ultra" <?php echo in_array('MTB/ RIF Ultra', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra</option>
-                                            <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>MTB/ XDR (if RIF detected)</option>
-                                            <option value="TB culture and Drug susceptibility test (DST)" <?php echo in_array('TB culture and Drug susceptibility test (DST)', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>TB culture and Drug susceptibility test (DST)</option>
+                                            <option value="MTB/ RIF Ultra" <?php echo in_array('MTB/ RIF Ultra', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra
+                                            </option>
+                                            <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>MTB/
+                                                XDR (if RIF detected)</option>
+                                            <option value="TB culture and Drug susceptibility test (DST)" <?php echo in_array('TB culture and Drug susceptibility test (DST)', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>TB culture and Drug
+                                                susceptibility test (DST)</option>
                                         </select>
                                     </td>
                                 </tr>
@@ -519,12 +530,15 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                         border-radius: 5px;
                                         border: 1px solid #ddd;
                                     }
+
                                     .test-section:nth-child(odd) {
                                         background-color: #f9f9f9;
                                     }
+
                                     .test-section:nth-child(even) {
                                         background-color: #ffffff;
                                     }
+
                                     .test-section .section-header {
                                         font-size: 1.1em;
                                         color: #3c8dbc;
@@ -600,7 +614,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                                                     <?php echo ($test['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
                                                                                     <?= $reject['rejection_reason_name']; ?>
                                                                                 </option>
-                                                                        <?php }
+                                                                            <?php }
                                                                         } ?>
                                                                     </optgroup>
                                                                 <?php }
@@ -774,7 +788,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                     </tr>
                                                 </table>
                                             </div>
-                                        <?php $n += 1;
+                                            <?php $n += 1;
                                         } ?>
                                     <?php } else { ?>
                                         <!-- Initial test section -->
@@ -975,7 +989,8 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                 <div class="controls" style="margin-top: 20px;">
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+
                                         <?php echo _translate("Add Test"); ?></button>
-                                    <button type="button" id="removeTestBtn" class="btn btn-danger" style="display: none;" onclick="removeTestSection()">-
+                                    <button type="button" id="removeTestBtn" class="btn btn-danger" style="display: none;"
+                                        onclick="removeTestSection()">-
                                         <?php echo _translate("Remove Test"); ?></button>
                                 </div>
                                 <div class="row pr-5 fnal-result">
@@ -1123,7 +1138,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         const $section = $(section);
 
         // Sample rejection change handler
-        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function() {
+        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function () {
             const $row = $(this).closest('.test-section');
             if ($(this).val() === 'yes') {
                 $row.find('.rejection-reason-field, .rejection-date-field').show();
@@ -1135,7 +1150,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         });
 
         // Test type change handler - FIXED: Use proper event delegation
-        $section.find('.test-type-select').off('change.testSection').on('change.testSection', function() {
+        $section.find('.test-type-select').off('change.testSection').on('change.testSection', function () {
             const sectionNum = $(this).closest('.test-section').attr('data-count');
             updateTestResults(sectionNum);
         });
@@ -1199,7 +1214,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
     // Update element IDs and names for new section
     function updateElementIds(section, count) {
         // Update labels
-        $(section).find('label[for]').each(function() {
+        $(section).find('label[for]').each(function () {
             const oldFor = $(this).attr('for');
             if (oldFor && /\d+$/.test(oldFor)) {
                 const newFor = oldFor.replace(/\d+$/, count);
@@ -1208,7 +1223,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         });
 
         // Update form elements
-        $(section).find('input[id], select[id], textarea[id]').each(function() {
+        $(section).find('input[id], select[id], textarea[id]').each(function () {
             const oldId = $(this).attr('id');
             if (oldId && /\d+$/.test(oldId)) {
                 const newId = oldId.replace(/\d+$/, count);
@@ -1225,7 +1240,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
     // Clear all values in a section
     function clearSectionValues(section) {
-        $(section).find('input, select, textarea').each(function() {
+        $(section).find('input, select, textarea').each(function () {
             if (this.type === 'checkbox' || this.type === 'radio') {
                 this.checked = false;
             } else if (this.tagName === 'SELECT') {
@@ -1246,7 +1261,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
             value: removeDots.trim(),
             fnct: fnct,
             format: "html"
-        }, function(data) {
+        }, function (data) {
             if (data === '1') {
                 alert(alrt);
                 document.getElementById(obj.id).value = "";
@@ -1262,7 +1277,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
             $.post("/includes/siteInformationDropdownOptions.php", {
                 pName: pName,
                 testType: 'tb'
-            }, function(data) {
+            }, function (data) {
                 if (data != "") {
                     details = data.split("###");
                     $("#facilityId").html(details[0]);
@@ -1286,7 +1301,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                 dName: dName,
                 cliName: cName,
                 testType: 'tb'
-            }, function(data) {
+            }, function (data) {
                 if (data != "") {
                     details = data.split("###");
                     $("#facilityId").html(details[0]);
@@ -1308,10 +1323,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 
         if (cName != '' && facilityName) {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    cName: cName,
-                    testType: 'tb'
-                },
-                function(data) {
+                cName: cName,
+                testType: 'tb'
+            },
+                function (data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#province").html(details[0]);
@@ -1347,7 +1362,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
     }
 
     // Document ready initialization
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Initialize Select2 for main form elements
         $("#facilityId, #province, #district").select2({
             placeholder: "<?php echo _translate('Select option'); ?>",
@@ -1364,6 +1379,11 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
             width: '100%'
         });
 
+        $('#affiliatedLabId').select2({
+            placeholder: "<?php echo _translate('Select affiliated TB testing site'); ?>",
+            width: '100%'
+        });
+
         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
             $('#labId').select2({
                 placeholder: "<?php echo _translate('Select testing lab'); ?>"
@@ -1371,7 +1391,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         <?php } ?>
 
         // Initialize all existing test sections
-        $('.test-section').each(function(index) {
+        $('.test-section').each(function (index) {
             const sectionNumber = $(this).attr('data-count') || (index + 1);
             initializeTestSection(this, sectionNumber);
 
@@ -1402,7 +1422,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         });
 
         // Treatment initiation change handler
-        $('#isPatientInitiatedTreatment').on('change', function() {
+        $('#isPatientInitiatedTreatment').on('change', function () {
             if (this.value === 'yes') {
                 $('.treatmentSelected').show();
                 $('.treatmentSelectedInput').addClass('isRequired');
@@ -1413,21 +1433,21 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         });
 
         // Lab and facility change handlers
-        $("#labId, #facilityId, #sampleCollectionDate").on('change', function() {
+        $("#labId, #facilityId, #sampleCollectionDate").on('change', function () {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
         });
 
-        $("#labId").change(function(e) {
+        $("#labId").change(function (e) {
             if ($(this).val() != "") {
                 $.post("/tb/requests/get-attributes-data.php", {
                     id: this.value,
-                }, function(data) {
+                }, function (data) {
                     if (data != "" && data != false) {
                         _data = jQuery.parseJSON(data);
                         $(".platform").hide();
-                        $.each(_data, function(index, value) {
+                        $.each(_data, function (index, value) {
                             $("." + value).show();
                         });
                     }
