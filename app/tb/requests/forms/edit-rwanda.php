@@ -330,42 +330,6 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             <option value='yes' <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] == 'yes') ? 'selected="selected"' : ''; ?>><?php echo _translate("Yes"); ?></option>
                                         </select>
                                     </td>
-                                    <td class="treatmentSelected"
-                                        style="width: 33.33%; <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
-                                        <label class="label-control"
-                                            for="treatmentDate"><?php echo _translate("Date of treatment Initiation"); ?><span
-                                                class="mandatory">*</span></label>
-                                        <input type="text"
-                                            value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_treatment_initiation']) ?? ''; ?>"
-                                            name="treatmentDate" id="treatmentDate"
-                                            class="treatmentSelectedInput form-control date"
-                                            title="Please choose treatment date" />
-                                    </td>
-                                </tr>
-                                <tr class="treatmentSelected"
-                                    style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
-                                    <td style="width: 33.33%;">
-                                        <label for="currentRegimen"
-                                            class="label-control"><?php echo _translate("Current regimen"); ?><span
-                                                class="mandatory">*</span></label>
-                                        <input type="text" value="<?php echo $tbInfo['current_regimen'] ?? ''; ?>"
-                                            class="form-control treatmentSelectedInput" id="currentRegimen"
-                                            name="currentRegimen"
-                                            placeholder="<?php echo _translate('Enter the current regimen'); ?>"
-                                            title="<?php echo _translate('Please enter current regimen'); ?>">
-                                    </td>
-                                    <td style="width: 33.33%;">
-                                        <label class="label-control"
-                                            for="regimenDate"><?php echo _translate("Date of Initiation of Current Regimen"); ?><span
-                                                class="mandatory">*</span></label>
-                                        <input type="text"
-                                            value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_initiation_of_current_regimen']) ?? ''; ?>"
-                                            name="regimenDate" id="regimenDate"
-                                            class="treatmentSelectedInput form-control date"
-                                            title="Please choose date of current regimen" />
-                                    </td>
-                                </tr>
-                                <tr>
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="riskFactors"><?php echo _translate("Risk Factors"); ?></label>
@@ -394,6 +358,39 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             title="Please enter the other risk factor" />
                                     </td>
                                     <td style="width: 33.33%;"></td>
+                                </tr>
+                                <tr class="treatmentSelected"
+                                    style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
+                                    <td style="width: 33.33%;">
+                                        <label class="label-control"
+                                            for="treatmentDate"><?php echo _translate("Date of treatment Initiation"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <input type="text"
+                                            value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_treatment_initiation']) ?? ''; ?>"
+                                            name="treatmentDate" id="treatmentDate"
+                                            class="treatmentSelectedInput form-control date"
+                                            title="Please choose treatment date" />
+                                    </td>
+                                    <td style="width: 33.33%;">
+                                        <label for="currentRegimen"
+                                            class="label-control"><?php echo _translate("Current regimen"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <input type="text" value="<?php echo $tbInfo['current_regimen'] ?? ''; ?>"
+                                            class="form-control treatmentSelectedInput" id="currentRegimen"
+                                            name="currentRegimen"
+                                            placeholder="<?php echo _translate('Enter the current regimen'); ?>"
+                                            title="<?php echo _translate('Please enter current regimen'); ?>">
+                                    </td>
+                                    <td style="width: 33.33%;">
+                                        <label class="label-control"
+                                            for="regimenDate"><?php echo _translate("Date of Initiation of Current Regimen"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <input type="text"
+                                            value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_initiation_of_current_regimen']) ?? ''; ?>"
+                                            name="regimenDate" id="regimenDate"
+                                            class="treatmentSelectedInput form-control date"
+                                            title="Please choose date of current regimen" />
+                                    </td>
                                 </tr>
                             </table>
 
@@ -997,11 +994,19 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                     <div class="col-md-6">
                                         <label class="label-control"
                                             for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
-                                        <select name="finalResult" id="finalResult" class="form-control select2"
-                                            title="Please enter the final interpretation"
-                                            onchange="(this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();">
-                                            <?= $general->generateSelectOptions($tbResults, $tbInfo['result'], '-- Select --'); ?>
-                                        </select>
+                                        <div class="resultInputContainer">
+                                            <input type="text" list="possibleFinalResults" class="form-control"
+                                                id="finalResult" name="finalResult"
+                                                value="<?php echo $tbInfo['result'] ?? ''; ?>"
+                                                placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>"
+                                                title="<?php echo _translate('Please enter the final interpretation'); ?>"
+                                                onchange="(this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();" />
+                                            <datalist id="possibleFinalResults">
+                                                <?php foreach ($tbResults as $resultValue) { ?>
+                                                    <option value="<?php echo $resultValue; ?>"><?php echo $resultValue; ?></option>
+                                                <?php } ?>
+                                            </datalist>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1415,12 +1420,6 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
             placeholder: "Select TB test(s) requested"
         });
 
-        // Initialize Final Interpretation Select2
-        $('#finalResult').select2({
-            placeholder: "<?php echo _translate('Select final interpretation'); ?>",
-            width: '100%'
-        });
-
         // Treatment initiation change handler
         $('#isPatientInitiatedTreatment').on('change', function () {
             if (this.value === 'yes') {
@@ -1457,3 +1456,4 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
         getfacilityProvinceDetails($('facilityId'));
     });
 </script>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>

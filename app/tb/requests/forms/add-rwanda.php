@@ -309,39 +309,6 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                             <option value='yes'><?php echo _translate("Yes"); ?></option>
                                         </select>
                                     </td>
-                                    <td class="treatmentSelected" style="width: 33.33%; display: none;">
-                                        <label class="label-control"
-                                            for="treatmentDate"><?php echo _translate("Date of treatment Initiation"); ?><span
-                                                class="mandatory">*</span></label>
-                                        <input type="text" name="treatmentDate" id="treatmentDate"
-                                            placeholder="Enter the date of treatment initiation"
-                                            class="treatmentSelectedInput form-control date"
-                                            title="Please choose treatment date" />
-                                    </td>
-                                    <td class="treatmentSelected" style="width: 33.33%; display: none;">
-                                        <label for="currentRegimen"
-                                            class="label-control"><?php echo _translate("Current regimen"); ?><span
-                                                class="mandatory">*</span></label>
-                                        <input type="text" class="form-control treatmentSelectedInput"
-                                            id="currentRegimen" name="currentRegimen"
-                                            placeholder="<?php echo _translate('Enter the current regimen'); ?>"
-                                            title="<?php echo _translate('Please enter current regimen'); ?>">
-                                    </td>
-                                </tr>
-                                <tr class="treatmentSelected" style="display: none;">
-                                    <td style="width: 33.33%;">
-                                        <label class="label-control"
-                                            for="regimenDate"><?php echo _translate("Date of Initiation of Current Regimen"); ?><span
-                                                class="mandatory">*</span></label>
-                                        <input type="text" name="regimenDate" id="regimenDate"
-                                            placeholder="Enter the initiation of current regimen"
-                                            class="treatmentSelectedInput form-control date"
-                                            title="Please choose date of current regimen" />
-                                    </td>
-                                    <td style="width: 33.33%;"></td>
-                                    <td style="width: 33.33%;"></td>
-                                </tr>
-                                <tr>
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="riskFactors"><?php echo _translate("Risk Factors"); ?></label>
@@ -368,7 +335,35 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                             title="Please enter the other risk factor" />
                                     </td>
                                     <td style="width: 33.33%;"></td>
-                                    <td style="width: 33.33%;"></td>
+                                </tr>
+                                <tr class="treatmentSelected" style="display: none;">
+                                    <td style="width: 33.33%;">
+                                        <label class="label-control"
+                                            for="treatmentDate"><?php echo _translate("Date of treatment Initiation"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <input type="text" name="treatmentDate" id="treatmentDate"
+                                            placeholder="Enter the date of treatment initiation"
+                                            class="treatmentSelectedInput form-control date"
+                                            title="Please choose treatment date" />
+                                    </td>
+                                    <td style="width: 33.33%;">
+                                        <label for="currentRegimen"
+                                            class="label-control"><?php echo _translate("Current regimen"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <input type="text" class="form-control treatmentSelectedInput"
+                                            id="currentRegimen" name="currentRegimen"
+                                            placeholder="<?php echo _translate('Enter the current regimen'); ?>"
+                                            title="<?php echo _translate('Please enter current regimen'); ?>">
+                                    </td>
+                                    <td style="width: 33.33%;">
+                                        <label class="label-control"
+                                            for="regimenDate"><?php echo _translate("Date of Initiation of Current Regimen"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <input type="text" name="regimenDate" id="regimenDate"
+                                            placeholder="Enter the initiation of current regimen"
+                                            class="treatmentSelectedInput form-control date"
+                                            title="Please choose date of current regimen" />
+                                    </td>
                                 </tr>
                             </table>
 
@@ -709,10 +704,17 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                     <div class="col-md-6">
                                         <label class="label-control"
                                             for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
-                                        <select name="finalResult" id="finalResult" class="form-control select2"
-                                            title="Please select the final interpretation">
-                                            <?= $general->generateSelectOptions($tbResults, $tbInfo['result'], '-- Select --'); ?>
-                                        </select>
+                                        <div class="resultInputContainer">
+                                            <input type="text" list="possibleFinalResults" class="form-control" id="finalResult"
+                                                name="finalResult"
+                                                placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>"
+                                                title="<?php echo _translate('Please enter the final interpretation'); ?>" />
+                                            <datalist id="possibleFinalResults">
+                                                <?php foreach ($tbResults as $resultValue) { ?>
+                                                    <option value="<?php echo $resultValue; ?>"><?php echo $resultValue; ?></option>
+                                                <?php } ?>
+                                            </datalist>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1230,11 +1232,6 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
             placeholder: "Select TB test(s) requested"
         });
 
-        $('#finalResult').select2({
-            placeholder: "<?php echo _translate('Select final interpretation'); ?>",
-            width: '100%'
-        });
-
         // Lab and facility change handlers
         $("#labId, #facilityId, #sampleCollectionDate").on('change', function () {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
@@ -1266,3 +1263,5 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
         });
     });
 </script>
+<script type="text/javascript"
+    src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
