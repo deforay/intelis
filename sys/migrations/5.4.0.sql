@@ -31,3 +31,7 @@ INSERT IGNORE INTO `privileges`
 
 UPDATE `s_app_menu` SET `display_text` = 'Refer to another lab' WHERE link = '/tb/results/tb-referral-list.php';
 UPDATE `s_app_menu` SET `display_text` = 'Add Referral' WHERE link = '/tb/results/add-tb-referral.php';
+
+-- Amit 27-Jan-2026 - Change tests_requested from JSON to VARCHAR for Rwanda forms
+ALTER TABLE `form_tb` CHANGE `tests_requested` `tests_requested` VARCHAR(512) NULL DEFAULT NULL;
+ALTER TABLE `audit_form_tb` CHANGE `tests_requested` `tests_requested` VARCHAR(512) NULL DEFAULT NULL;
