@@ -156,10 +156,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             <?= $general->generateSelectOptions($testingLabs, $tbInfo['affiliated_lab_id'], '-- Select --'); ?>
                                         </select>
                                     </td>
-                                    <td style="width: 33.33%;"></td>
-                                </tr>
-                                <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                                    <tr>
+                                    <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                         <td style="width: 33.33%;">
                                             <label class="label-control"
                                                 for="labId"><?php echo _translate("Testing Laboratory"); ?><span
@@ -169,10 +166,10 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                                 <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
                                             </select>
                                         </td>
+                                    <?php } else { ?>
                                         <td style="width: 33.33%;"></td>
-                                        <td style="width: 33.33%;"></td>
-                                    </tr>
-                                <?php } ?>
+                                    <?php } ?>
+                                </tr>
                             </table>
 
                             <!-- PATIENT DETAILS -->
