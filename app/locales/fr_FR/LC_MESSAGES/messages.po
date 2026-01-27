@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2026-01-27 16:19+0530\n"
-"PO-Revision-Date: 2026-01-27 16:20+0530\n"
+"POT-Creation-Date: 2026-01-27 16:30+0530\n"
+"PO-Revision-Date: 2026-01-27 16:30+0530\n"
 "Last-Translator: Amit <amit@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -10088,7 +10088,7 @@ msgid "CD4 Samples"
 msgstr "Échantillons CD4"
 
 #: app/cd4/management/get-sample-status.php:346
-#: app/system/translate-strings.php:261
+#: app/system/translate-strings.php:260
 msgid "CD4 Results"
 msgstr "Résultats des CD4"
 
@@ -25843,194 +25843,190 @@ msgid "Edit Lab Storage"
 msgstr "Modifier le stockage en laboratoire"
 
 #: app/system/translate-strings.php:253
-msgid "TB Referral Lab"
-msgstr "Laboratoire de référence pour la tuberculose"
+msgid "Add TB Referral"
+msgstr "Ajouter une recommandation TB"
 
 #: app/system/translate-strings.php:254
-msgid "Add TB Referral Manifest"
-msgstr "Ajouter le manifeste de référence TB"
+msgid "Edit TB Referral"
+msgstr "Modifier la recommandation TB"
 
 #: app/system/translate-strings.php:255
-msgid "Edit TB Referral Manifest"
-msgstr "Modifier le manifeste de référence TB"
-
-#: app/system/translate-strings.php:256
 msgid "API Dashboard"
 msgstr "Tableau de bord de l’API"
 
-#: app/system/translate-strings.php:257
+#: app/system/translate-strings.php:256
 msgid "CD4 Batch Management"
 msgstr "Gestion des lots de CD4"
 
-#: app/system/translate-strings.php:258
+#: app/system/translate-strings.php:257
 msgid "CD4 Reports"
 msgstr "Rapports sur les CD4"
 
-#: app/system/translate-strings.php:259
+#: app/system/translate-strings.php:258
 msgid "CD4 Reference Management"
 msgstr "Gestion de la référence CD4"
 
-#: app/system/translate-strings.php:260
+#: app/system/translate-strings.php:259
 msgid "CD4 Requests"
 msgstr "Demandes de CD4"
 
-#: app/system/translate-strings.php:262
+#: app/system/translate-strings.php:261
 msgid "Common Reference Tables"
 msgstr "Tableaux de référence communs"
 
-#: app/system/translate-strings.php:263
+#: app/system/translate-strings.php:262
 msgid "Covid-19 Batch Management"
 msgstr "Gestion des lots Covid-19"
 
-#: app/system/translate-strings.php:264
+#: app/system/translate-strings.php:263
 msgid "Covid-19 Reports"
 msgstr "Rapports Covid-19"
 
-#: app/system/translate-strings.php:265
+#: app/system/translate-strings.php:264
 msgid "Covid-19 Reference Tables"
 msgstr "Tableaux de référence Covid-19"
 
-#: app/system/translate-strings.php:266
+#: app/system/translate-strings.php:265
 msgid "Covid-19 Request Management"
 msgstr "Gestion des demandes Covid-19"
 
-#: app/system/translate-strings.php:267
+#: app/system/translate-strings.php:266
 msgid "Covid-19 Result Management"
 msgstr "Gestion des résultats Covid-19"
 
-#: app/system/translate-strings.php:268
+#: app/system/translate-strings.php:267
 msgid "EID Batch Management"
 msgstr "Gestion des lots EID"
 
-#: app/system/translate-strings.php:269
+#: app/system/translate-strings.php:268
 msgid "EID Reports"
 msgstr "Rapports de l'EID"
 
-#: app/system/translate-strings.php:270
+#: app/system/translate-strings.php:269
 msgid "EID Reference Management"
 msgstr "Gestion des références EID"
 
-#: app/system/translate-strings.php:271
+#: app/system/translate-strings.php:270
 msgid "EID Request Management"
 msgstr "Gestion des demandes d'EID"
 
-#: app/system/translate-strings.php:272
+#: app/system/translate-strings.php:271
 msgid "EID Result Management"
 msgstr "Gestion des résultats de l'EID"
 
-#: app/system/translate-strings.php:273
+#: app/system/translate-strings.php:272
 msgid "Manage Facility"
 msgstr "Gérer l'installation"
 
-#: app/system/translate-strings.php:274
+#: app/system/translate-strings.php:273
 msgid "Lab Tests Report Management"
 msgstr "Gestion des rapports de tests de laboratoire"
 
-#: app/system/translate-strings.php:275
+#: app/system/translate-strings.php:274
 msgid "Lab Tests Request Management"
 msgstr "Gestion des demandes de tests de laboratoire"
 
-#: app/system/translate-strings.php:276
+#: app/system/translate-strings.php:275
 msgid "Lab Tests Result Management"
 msgstr "Gestion des résultats des tests de laboratoire"
 
-#: app/system/translate-strings.php:277
+#: app/system/translate-strings.php:276
 msgid "Lab Tests Batch Management"
 msgstr "Gestion des lots de tests de laboratoire"
 
-#: app/system/translate-strings.php:278
+#: app/system/translate-strings.php:277
 msgid "Configure Generic Lab Tests"
 msgstr "Configurer les tests génériques de laboratoire"
 
-#: app/system/translate-strings.php:279
+#: app/system/translate-strings.php:278
 msgid "Manage General Config"
 msgstr "Gérer la configuration générale"
 
-#: app/system/translate-strings.php:280
+#: app/system/translate-strings.php:279
 msgid "Hepatitis Batch Management"
 msgstr "Gestion des lots d'hépatite"
 
-#: app/system/translate-strings.php:281
+#: app/system/translate-strings.php:280
 msgid "Hepatitis Reports"
 msgstr "Rapports sur l'hépatite"
 
-#: app/system/translate-strings.php:282
+#: app/system/translate-strings.php:281
 msgid "Hepatitis Reference Management"
 msgstr "Gestion de la référence de l'hépatite"
 
-#: app/system/translate-strings.php:283
+#: app/system/translate-strings.php:282
 msgid "Hepatitis Request Management"
 msgstr "Gestion des demandes relatives à l'hépatite"
 
-#: app/system/translate-strings.php:284
+#: app/system/translate-strings.php:283
 msgid "Hepatitis Results Management"
 msgstr "Gestion des résultats de l'hépatite"
 
-#: app/system/translate-strings.php:285
+#: app/system/translate-strings.php:284
 msgid "Manage Instruments"
 msgstr "Gérer les instruments"
 
-#: app/system/translate-strings.php:286
+#: app/system/translate-strings.php:285
 msgid "Move Samples"
 msgstr "Déplacer les échantillons"
 
-#: app/system/translate-strings.php:287
+#: app/system/translate-strings.php:286
 msgid "Manage Roles"
 msgstr "Gérer les rôles"
 
-#: app/system/translate-strings.php:288
+#: app/system/translate-strings.php:287
 msgid "TB Batch Management"
 msgstr "Gestion des lots de la tuberculose"
 
-#: app/system/translate-strings.php:289
+#: app/system/translate-strings.php:288
 msgid "TB Reports"
 msgstr "Rapports du CT"
 
-#: app/system/translate-strings.php:290
+#: app/system/translate-strings.php:289
 msgid "TB Reference"
 msgstr "Référence TB"
 
-#: app/system/translate-strings.php:291
+#: app/system/translate-strings.php:290
 msgid "TB Request Management"
 msgstr "Gestion des demandes de la CT"
 
-#: app/system/translate-strings.php:292
+#: app/system/translate-strings.php:291
 msgid "TB Result Management"
 msgstr "Gestion des résultats de la tuberculose"
 
-#: app/system/translate-strings.php:293
+#: app/system/translate-strings.php:292
 msgid "Manage Test Request Email Config"
 msgstr "Gérer la configuration des courriels de demande de test"
 
-#: app/system/translate-strings.php:294
+#: app/system/translate-strings.php:293
 msgid "Manage Test Result Email Config"
 msgstr "Gérer la configuration des courriels de résultats de tests"
 
-#: app/system/translate-strings.php:295
+#: app/system/translate-strings.php:294
 msgid "Manage Test Type"
 msgstr "Gérer le type de test"
 
-#: app/system/translate-strings.php:296
+#: app/system/translate-strings.php:295
 msgid "Manage Users"
 msgstr "Gérez les utilisateurs"
 
-#: app/system/translate-strings.php:297
+#: app/system/translate-strings.php:296
 msgid "Manage VL Batch"
 msgstr "Gestion des lots VL"
 
-#: app/system/translate-strings.php:298
+#: app/system/translate-strings.php:297
 msgid "VL Reference Management"
 msgstr "Gestion des références VL"
 
-#: app/system/translate-strings.php:299
+#: app/system/translate-strings.php:298
 msgid "VL Reports"
 msgstr "Rapports VL"
 
-#: app/system/translate-strings.php:300 app/vl/requests/vl-requests.php:6
+#: app/system/translate-strings.php:299 app/vl/requests/vl-requests.php:6
 msgid "VL Requests"
 msgstr "Demandes VL"
 
-#: app/system/translate-strings.php:301 app/vl/reference/add-vl-results.php:38
+#: app/system/translate-strings.php:300 app/vl/reference/add-vl-results.php:38
 #: app/vl/reference/vl-results.php:9 app/vl/reference/vl-results.php:19
 msgid "VL Results"
 msgstr "Résultats VL"
@@ -29753,6 +29749,12 @@ msgstr "Format ISO"
 msgid "German Format"
 msgstr "Format allemand"
 
+#~ msgid "TB Referral Lab"
+#~ msgstr "Laboratoire de référence pour la tuberculose"
+
+#~ msgid "Add TB Referral Manifest"
+#~ msgstr "Ajouter le manifeste de référence TB"
+
 #~ msgid "CLUSTERS OF DIFFERENTIATION 4"
 #~ msgstr "GROUPES DE DIFFÉRENCIATION 4"
 
@@ -29921,9 +29923,6 @@ msgstr "Format allemand"
 
 #~ msgid "Remote Instance"
 #~ msgstr "Instance distante"
-
-#~ msgid "Add New Referral"
-#~ msgstr "Ajouter Nouveau Parrainage"
 
 #~ msgid "Patient Details"
 #~ msgstr "Présentation du patient"
