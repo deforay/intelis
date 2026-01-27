@@ -259,19 +259,30 @@
             this.filteredResults.sort(function(a, b) {
                 var aTitle = a.title.toLowerCase();
                 var bTitle = b.title.toLowerCase();
+                var aModule = (a.module || '').toLowerCase();
+                var bModule = (b.module || '').toLowerCase();
 
-                // Priority 1: Title contains search term (direct matches first)
+                // Priority 1: Module matches search term (vl items should come first when searching "vl")
+                var aModuleMatch = queryWords.some(function(w) { return aModule.indexOf(w) !== -1; });
+                var bModuleMatch = queryWords.some(function(w) { return bModule.indexOf(w) !== -1; });
+                if (aModuleMatch !== bModuleMatch) return bModuleMatch - aModuleMatch;
+
+                // Priority 2: Title contains search term
                 var aTitleMatch = queryWords.every(function(w) { return aTitle.indexOf(w) !== -1; });
                 var bTitleMatch = queryWords.every(function(w) { return bTitle.indexOf(w) !== -1; });
                 if (aTitleMatch !== bTitleMatch) return bTitleMatch - aTitleMatch;
 
-                // Priority 2: Title starts with first word
+                // Priority 3: Title starts with first word
                 var aStarts = aTitle.indexOf(firstWord) === 0;
                 var bStarts = bTitle.indexOf(firstWord) === 0;
                 if (aStarts !== bStarts) return bStarts - aStarts;
 
-                // Priority 3: Use menu sort_order
-                return (a.sortOrder || 0) - (b.sortOrder || 0);
+                // Priority 4: Use menu sort_order
+                var sortOrderDiff = (a.sortOrder || 0) - (b.sortOrder || 0);
+                if (sortOrderDiff !== 0) return sortOrderDiff;
+
+                // Priority 5: Preserve original array order (menu hierarchy order)
+                return (a._originalIndex || 0) - (b._originalIndex || 0);
             });
 
             this.selectedIndex = this.filteredResults.length > 0 ? 0 : -1;
