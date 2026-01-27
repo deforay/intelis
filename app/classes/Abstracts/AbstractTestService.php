@@ -126,6 +126,9 @@ abstract class AbstractTestService
                 $provinceCode = $params['provinceCode'] ?? '';
                 $sampleCodeFormat = $params['sampleCodeFormat'] ?? 'MMYY';
                 $prefix = $params['prefix'] ?? $this->shortCode ?? 'T';
+
+                // postfix can be used for adding additional identifiers like facility code
+                // currently used in TB to add facility code at the end of sample code
                 $postfix = $params['postfix'] ?? '';
 
                 if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false) {

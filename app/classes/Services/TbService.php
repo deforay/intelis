@@ -7,9 +7,7 @@ use const COUNTRY\PNG;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\MiscUtility;
-use COUNTRY;
 use Throwable;
-use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
@@ -31,7 +29,7 @@ final class TbService extends AbstractTestService
             $params['prefix'] ??= $globalConfig['tb_sample_code_prefix'] ?? $this->shortCode;
             $postFix = '';
             if ($this->commonService->isLISInstance()) {
-                $postFix = $this->commonService->getSystemConfig('sc_testing_lab_id') ?? '';
+                $postFix = "-" . $this->commonService->getSystemConfig('sc_testing_lab_id') ?? '';
             }
             $params['postfix'] ??= $postFix;
 
@@ -42,6 +40,8 @@ final class TbService extends AbstractTestService
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error
+                    'last_db_error' => $this->db->getLastError(),
+                    'last_db_query' => $this->db->getLastQuery(),
                     'stacktrace' => $e->getTraceAsString()
                 ]);
                 return json_encode([]);
