@@ -34,6 +34,15 @@ $db->where('reason_for_referral IS NOT NULL');
 $tbResult = $db->getOne('form_tb');
 /* Testing lab list */
 $testingLabs = $facilitiesService->getTestingLabs('tb');
+
+
+$isLisInstance = $general->isLISInstance();
+
+$fromLabId = null;
+if ($isLisInstance) {
+    $fromLabId = $general->getSystemConfig('sc_testing_lab_id');
+}
+
 ?>
 
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -50,13 +59,13 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
 
 <div class="content-wrapper">
     <section class="content-header">
-        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("Referral Labs"); ?></h1>
+        <h1><em class="fa-solid fa-pen-to-square"></em> <?php echo _translate("Edit Referral"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-            <li class="active"><?php echo _translate("Referral Labs"); ?></li>
+            <li class="active"><?php echo _translate("Edit Referral"); ?></li>
         </ol>
     </section>
-    <pre><?php print_r($tbResult['referral_manifest_code']); ?></pre>
+
     <section class="content">
         <div class="box box-default">
             <form class="form-horizontal" method="post" name="referralForm" id="referralForm" autocomplete="off"
@@ -66,9 +75,10 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
                                 <label for="referralLabId" class="control-label">
-                                    <?php echo _translate("Referral Lab"); ?> <span class="mandatory">*</span></label>
+                                    <?php echo _translate("Referred By"); ?>
+                                    <span class="mandatory">*</span></label>
                                 <select name="referralLabId" id="referralLabId" class="form-control select2 isRequired"
-                                    title="<?php echo _translate("Please select referral Laboratory"); ?>" required>
+                                    title="<?php echo _translate("Please select sending lab"); ?>" required>
                                     <?= $general->generateSelectOptions($testingLabs, $id, '-- Select --'); ?>
                                 </select>
                             </div>
@@ -137,11 +147,10 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
                                 <label for="referralToLabId" class="control-label">
-                                    <?php echo _translate("Referral To Lab"); ?> <span
-                                        class="mandatory">*</span></label>
+                                    <?php echo _translate("Receiving Lab"); ?> <span class="mandatory">*</span></label>
                                 <select name="referralToLabId" id="referralToLabId"
                                     class="form-control select2 isRequired"
-                                    title="<?php echo _translate("Please select referral To Laboratory"); ?>" required>
+                                    title="<?php echo _translate("Please select receiving lab"); ?>" required>
                                     <?= $general->generateSelectOptions($testingLabs, $tbResult['referred_to_lab_id'], '-- Select --'); ?>
                                 </select>
                             </div>
@@ -184,7 +193,7 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
         const referralLabId = $("#referralLabId").val();
 
         if (!referralLabId) {
-            alert("<?php echo _translate("Please select a referral lab first"); ?>");
+            alert("<?php echo _translate("Please select the sending lab first"); ?>");
             return;
         }
 
@@ -203,7 +212,7 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
                 // Move pre-selected items to the right box BEFORE initializing the plugin
                 $("#search option[selected='selected']").each(function () {
                     $(this).prop('selected', false).removeAttr('selected');
-                    $("#search_to").append($(this));
+                    $("#search_to").html($(this));
                 });
 
                 initializeMultiselect();

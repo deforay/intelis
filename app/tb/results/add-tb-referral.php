@@ -57,18 +57,17 @@ if ($isLisInstance) {
     <section class="content">
         <div class="box box-default">
             <form class="form-horizontal" method="post" name="referralForm" id="referralForm" autocomplete="off"
-                action="save-tb-referral-helper.php">
+                action="/tb/results/save-tb-referral-helper.php">
 
                 <div class="box-body" style="margin-top:20px;">
                     <div class="row">
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
                                 <label for="referralLabId" class="control-label">
-                                    <?php echo _translate("Referral From Lab"); ?> <span
-                                        class="mandatory">*</span></label>
+                                    <?php echo _translate("Referred By"); ?>
+                                    <span class="mandatory">*</span></label>
                                 <select name="referralLabId" id="referralLabId" class="form-control select2 isRequired"
-                                    title="<?php echo _translate("Please select referral from Laboratory"); ?>"
-                                    required>
+                                    title="<?php echo _translate("Please select sending lab"); ?>" required>
                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                 </select>
                             </div>
@@ -134,11 +133,10 @@ if ($isLisInstance) {
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
                                 <label for="referralToLabId" class="control-label">
-                                    <?php echo _translate("Referral To Lab"); ?> <span
-                                        class="mandatory">*</span></label>
+                                    <?php echo _translate("Receiving Lab"); ?> <span class="mandatory">*</span></label>
                                 <select name="referralToLabId" id="referralToLabId"
                                     class="form-control select2 isRequired"
-                                    title="<?php echo _translate("Please select referral To Laboratory"); ?>" required>
+                                    title="<?php echo _translate("Please select receiving lab"); ?>" required>
                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                 </select>
                             </div>
@@ -180,6 +178,7 @@ if ($isLisInstance) {
             $("#referralLabId").val("<?php echo $fromLabId; ?>");
             $("#referralLabId").trigger('change');
             $("#referralLabId").prop('disabled', true);
+            loadSamples();
             <?php
         }
         ?>
@@ -189,7 +188,7 @@ if ($isLisInstance) {
         const referralLabId = $("#referralLabId").val();
 
         if (!referralLabId) {
-            alert("<?php echo _translate("Please select a referral lab first"); ?>");
+            alert("<?php echo _translate("Please select the sending laboratory"); ?>");
             return;
         }
 

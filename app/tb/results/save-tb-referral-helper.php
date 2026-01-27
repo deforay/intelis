@@ -34,9 +34,9 @@ try {
     }
 
     $testType = $_POST['type'] ?? 'tb';
-    $referralLabId = $_POST['referralLabId'];
+    $referredBy = $_POST['referralLabId'];
     $referralSamples = $_POST['referralSamples'];
-    $referralToLabId = $_POST['referralToLabId'];
+    $referredTo = $_POST['referralToLabId'];
 
     // Get current user and lab information
     $userId = $_SESSION['userId'] ?? null;
@@ -55,7 +55,7 @@ try {
         $currentDateTime = DateUtility::getCurrentDateTime();
         $data = [
             'module' => 'tb',
-            'lab_id' => $referralToLabId,
+            'lab_id' => $referredTo,
             'number_of_samples' => $numberOfSamples,
             'manifest_type' => 'referral',
             'manifest_status' => 'pending',
@@ -85,8 +85,8 @@ try {
             'referral_manifest_code' => $_POST['packageCode'],
             'data_sync' => 0,
             'result_status' => REFERRED,
-            'referred_by_lab_id' => $referralLabId,
-            'referred_to_lab_id' => $referralToLabId,
+            'referred_by_lab_id' => $referredBy,
+            'referred_to_lab_id' => $referredTo,
             'reason_for_referral' => $_POST['referralReason'],
             'last_modified_by' => $userId,
             'last_modified_datetime' => $currentDateTime
