@@ -248,11 +248,16 @@
             }
 
             var queryWords = query.split(/\s+/).filter(function(w) { return w.length > 0; });
+            var queryNormalized = queryWords.join(' ');
 
             this.filteredResults = this.searchData.filter(function(item) {
                 return queryWords.every(function(word) {
                     return item.searchText.indexOf(word) !== -1;
                 });
+            });
+
+            var hasExactModuleMatch = this.filteredResults.some(function(item) {
+                return (item.module || '').toLowerCase() === queryNormalized;
             });
 
             var firstWord = queryWords[0] || '';
@@ -262,10 +267,19 @@
                 var aModule = (a.module || '').toLowerCase();
                 var bModule = (b.module || '').toLowerCase();
 
-                // Priority 1: Module matches search term (vl items should come first when searching "vl")
-                var aModuleMatch = queryWords.some(function(w) { return aModule.indexOf(w) !== -1; });
-                var bModuleMatch = queryWords.some(function(w) { return bModule.indexOf(w) !== -1; });
-                if (aModuleMatch !== bModuleMatch) return bModuleMatch - aModuleMatch;
+                // Priority 1: Exact module match (only when query matches a module key)
+                if (hasExactModuleMatch) {
+                    var aModuleExact = aModule === queryNormalized;
+                    var bModuleExact = bModule === queryNormalized;
+                    if (aModuleExact !== bModuleExact) return bModuleExact - aModuleExact;
+
+                    // For exact module match, show module-level (expandable) items first
+                    if (aModuleExact && bModuleExact) {
+                        var aIsModuleItem = !!a.isExpandable;
+                        var bIsModuleItem = !!b.isExpandable;
+                        if (aIsModuleItem !== bIsModuleItem) return bIsModuleItem - aIsModuleItem;
+                    }
+                }
 
                 // Priority 2: Title contains search term
                 var aTitleMatch = queryWords.every(function(w) { return aTitle.indexOf(w) !== -1; });
@@ -316,9 +330,22 @@
                 grouped[cat].push(item);
             });
 
+            var categoryOrder = {};
+            this.filteredResults.forEach(function(item) {
+                var cat = item.category || 'Other';
+                if (categoryOrder[cat] === undefined) {
+                    categoryOrder[cat] = item._globalIndex;
+                }
+            });
+
             var sortedCategories = Object.keys(grouped).sort(function(a, b) {
                 if (a === 'Recent') return -1;
                 if (b === 'Recent') return 1;
+                var aOrder = categoryOrder[a];
+                var bOrder = categoryOrder[b];
+                if (aOrder !== undefined && bOrder !== undefined && aOrder !== bOrder) {
+                    return aOrder - bOrder;
+                }
                 return a.localeCompare(b);
             });
 
