@@ -886,45 +886,47 @@ try {
                     if (isset($remoteData['data_from_symptoms']) && !empty($remoteData['data_from_symptoms']) && $covid19Id) {
                         $db->where($primaryKeyName, $covid19Id);
                         $db->delete("covid19_patient_symptoms");
+                        $symptomFields = $general->getTableFieldsAsArray('covid19_patient_symptoms', ['id']);
                         foreach ($remoteData['data_from_symptoms'] as $value) {
-                            $symptomData = [
-                                "covid19_id" => $covid19Id,
-                                "symptom_id" => $value['symptom_id'],
-                                "symptom_detected" => $value['symptom_detected'],
-                                "symptom_details" => $value['symptom_details'],
-                            ];
+                            $symptomData = ['covid19_id' => $covid19Id];
+                            foreach ($symptomFields as $field => $default) {
+                                if ($field === 'covid19_id') continue;
+                                if (isset($value[$field])) {
+                                    $symptomData[$field] = $value[$field];
+                                }
+                            }
                             $db->insert("covid19_patient_symptoms", $symptomData);
                         }
                     }
                     if (isset($remoteData['data_from_comorbidities']) && !empty($remoteData['data_from_comorbidities']) && $covid19Id) {
                         $db->where($primaryKeyName, $covid19Id);
                         $db->delete("covid19_patient_comorbidities");
+                        $comorbidityFields = $general->getTableFieldsAsArray('covid19_patient_comorbidities', ['id']);
                         foreach ($remoteData['data_from_comorbidities'] as $comorbidityData) {
-                            $comData = [
-                                "covid19_id" => $covid19Id,
-                                "comorbidity_id" => $comorbidityData['comorbidity_id'],
-                                "comorbidity_detected" => $comorbidityData['comorbidity_detected'],
-                            ];
+                            $comData = ['covid19_id' => $covid19Id];
+                            foreach ($comorbidityFields as $field => $default) {
+                                if ($field === 'covid19_id') continue;
+                                if (isset($comorbidityData[$field])) {
+                                    $comData[$field] = $comorbidityData[$field];
+                                }
+                            }
                             $db->insert("covid19_patient_comorbidities", $comData);
                         }
                     }
                     if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests']) && $covid19Id) {
                         $db->where($primaryKeyName, $covid19Id);
                         $db->delete("covid19_tests");
+                        $covid19TestFields = $general->getTableFieldsAsArray('covid19_tests', ['test_id', 'data_sync']);
                         foreach ($remoteData['data_from_tests'] as $cdata) {
-                            $covid19TestData = [
-                                "covid19_id" => $covid19Id,
-                                "facility_id" => $cdata['facility_id'],
-                                "test_name" => $cdata['test_name'],
-                                "tested_by" => $cdata['tested_by'],
-                                "sample_tested_datetime" => $cdata['sample_tested_datetime'],
-                                "testing_platform" => $cdata['testing_platform'],
-                                "instrument_id" => $cdata['instrument_id'],
-                                "kit_lot_no" => $cdata['kit_lot_no'],
-                                "kit_expiry_date" => $cdata['kit_expiry_date'],
-                                "result" => $cdata['result'],
-                                "updated_datetime" => $cdata['updated_datetime'],
-                            ];
+                            $covid19TestData = ['covid19_id' => $covid19Id];
+                            foreach ($covid19TestFields as $field => $default) {
+                                if ($field === 'covid19_id') continue;
+                                if ($field === 'updated_datetime') {
+                                    $covid19TestData[$field] = DateUtility::getCurrentDateTime();
+                                } elseif (isset($cdata[$field])) {
+                                    $covid19TestData[$field] = $cdata[$field];
+                                }
+                            }
                             $db->insert("covid19_tests", $covid19TestData);
                         }
                     }
@@ -935,28 +937,23 @@ try {
                     if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests']) && $tbId) {
                         $db->where($primaryKeyName, $tbId);
                         $db->delete("tb_tests");
+
+                        // Get tb_tests table fields dynamically from DDL
+                        $tbTestFields = $general->getTableFieldsAsArray('tb_tests', ['tb_test_id', 'data_sync']);
+
                         foreach ($remoteData['data_from_tests'] as $cdata) {
-                            $tbTestData = [
-                                "tb_id" => $tbId,
-                                'lab_id' => $cdata['lab_id'] ?? null,
-                                'specimen_type' => $cdata['specimen_type'] ?? null,
-                                'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($cdata['sample_received_at_lab_datetime'] ?? null, true),
-                                'is_sample_rejected' => $cdata['is_sample_rejected'][$key] ?? 'no',
-                                'reason_for_sample_rejection' => $cdata['reason_for_sample_rejection'] ?? null,
-                                'rejection_on' => DateUtility::isoDateFormat($cdata['rejection_on'] ?? null),
-                                'test_type' => $cdata['test_type'] ?? null,
-                                'test_result' => $cdata['test_result'] ?? null,
-                                'sample_tested_datetime' => DateUtility::isoDateFormat($cdata['sample_tested_datetime'] ?? null, true),
-                                'tested_by' => $cdata['tested_by'] ?? null,
-                                'result_reviewed_by' => $cdata['result_reviewed_by'] ?? null,
-                                'result_reviewed_datetime' => DateUtility::isoDateFormat($cdata['result_reviewed_datetime'] ?? null, true),
-                                'result_approved_by' => $cdata['result_approved_by'] ?? null,
-                                'result_approved_datetime' => DateUtility::isoDateFormat($cdata['result_approved_datetime'] ?? null, true),
-                                'revised_by' => $cdata['revised_by'] ?? null,
-                                'revised_on' => DateUtility::isoDateFormat($cdata['revised_on'] ?? null, true),
-                                'comments' => $cdata['comments'] ?? null,
-                                'updated_datetime' => DateUtility::getCurrentDateTime(),
-                            ];
+                            $tbTestData = ['tb_id' => $tbId];
+
+                            // Map incoming data to table fields dynamically
+                            foreach ($tbTestFields as $field => $default) {
+                                if ($field === 'tb_id') continue; // Already set above
+                                if ($field === 'updated_datetime') {
+                                    $tbTestData[$field] = DateUtility::getCurrentDateTime();
+                                } elseif (isset($cdata[$field])) {
+                                    $tbTestData[$field] = $cdata[$field];
+                                }
+                            }
+
                             $db->insert("tb_tests", $tbTestData);
                         }
                     }
@@ -966,24 +963,34 @@ try {
                     if (isset($remoteData['data_from_risks']) && !empty($remoteData['data_from_risks']) && $hepatitisId) {
                         $db->where($primaryKeyName, $hepatitisId);
                         $db->delete("hepatitis_risk_factors");
+                        $riskFields = $general->getTableFieldsAsArray('hepatitis_risk_factors', ['id']);
                         foreach ($remoteData['data_from_risks'] as $riskId => $riskValue) {
-                            $riskFactorsData = [
-                                "hepatitis_id" => $hepatitisId,
-                                "riskfactors_id" => $riskId,
-                                "riskfactors_detected" => $riskValue,
-                            ];
+                            $riskFactorsData = ['hepatitis_id' => $hepatitisId];
+                            foreach ($riskFields as $field => $default) {
+                                if ($field === 'hepatitis_id') continue;
+                                if ($field === 'riskfactors_id') {
+                                    $riskFactorsData[$field] = $riskId;
+                                } elseif ($field === 'riskfactors_detected') {
+                                    $riskFactorsData[$field] = $riskValue;
+                                }
+                            }
                             $db->insert("hepatitis_risk_factors", $riskFactorsData);
                         }
                     }
                     if (isset($remoteData['data_from_comorbidities']) && !empty($remoteData['data_from_comorbidities']) && $hepatitisId) {
                         $db->where($primaryKeyName, $hepatitisId);
                         $db->delete("hepatitis_patient_comorbidities");
+                        $hepComorbidityFields = $general->getTableFieldsAsArray('hepatitis_patient_comorbidities', ['id']);
                         foreach ($remoteData['data_from_comorbidities'] as $comoId => $comoValue) {
-                            $comorbidityData = [
-                                "hepatitis_id" => $hepatitisId,
-                                "comorbidity_id" => $comoId,
-                                "comorbidity_detected" => $comoValue,
-                            ];
+                            $comorbidityData = ['hepatitis_id' => $hepatitisId];
+                            foreach ($hepComorbidityFields as $field => $default) {
+                                if ($field === 'hepatitis_id') continue;
+                                if ($field === 'comorbidity_id') {
+                                    $comorbidityData[$field] = $comoId;
+                                } elseif ($field === 'comorbidity_detected') {
+                                    $comorbidityData[$field] = $comoValue;
+                                }
+                            }
                             $db->insert('hepatitis_patient_comorbidities', $comorbidityData);
                         }
                     }
@@ -1185,25 +1192,18 @@ try {
                 if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests']) && !empty($genericId)) {
                     $db->where('generic_id', $genericId);
                     $db->delete("generic_test_results");
+                    $genericTestFields = $general->getTableFieldsAsArray('generic_test_results', ['generic_test_result_id', 'data_sync']);
                     foreach ($remoteData['data_from_tests'] as $genericTestData) {
-                        $db->insert("generic_test_results", [
-                            "generic_id" => $genericId,
-                            "facility_id" => $genericTestData['facility_id'],
-                            "sub_test_name" => $genericTestData['sub_test_name'],
-                            "final_result_unit" => $genericTestData['final_result_unit'],
-                            "result_type" => $genericTestData['result_type'],
-                            "test_name" => $genericTestData['test_name'],
-                            "tested_by" => $genericTestData['tested_by'],
-                            "sample_tested_datetime" => $genericTestData['sample_tested_datetime'],
-                            "testing_platform" => $genericTestData['testing_platform'],
-                            "kit_lot_no" => $genericTestData['kit_lot_no'],
-                            "kit_expiry_date" => $genericTestData['kit_expiry_date'],
-                            "result" => $genericTestData['result'],
-                            "final_result" => $genericTestData['final_result'],
-                            "result_unit" => $genericTestData['result_unit'],
-                            "final_result_interpretation" => $genericTestData['final_result_interpretation'],
-                            "updated_datetime" => $genericTestData['updated_datetime'],
-                        ]);
+                        $testData = ['generic_id' => $genericId];
+                        foreach ($genericTestFields as $field => $default) {
+                            if ($field === 'generic_id') continue;
+                            if ($field === 'updated_datetime') {
+                                $testData[$field] = DateUtility::getCurrentDateTime();
+                            } elseif (isset($genericTestData[$field])) {
+                                $testData[$field] = $genericTestData[$field];
+                            }
+                        }
+                        $db->insert("generic_test_results", $testData);
                     }
                 }
 
