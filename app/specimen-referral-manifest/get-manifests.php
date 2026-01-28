@@ -164,16 +164,16 @@ foreach ($rResult as $aRow) {
     </a>
     BARCODEBUTTON;
 
-    $editBtn = '';
-    if ($editAllowed) {
-        $editBtn = '<a href="' . $editUrl . '&id=' . base64_encode((string) $aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
-    }
-
     $disable = '';
     $pointerEvent = '';
     if ($aRow['manifest_status'] == 'dispatch') {
         $pointerEvent = "pointer-events:none;";
         $disable = "disabled";
+    }
+
+    $editBtn = '';
+    if ($editAllowed) {
+        $editBtn = '<a href="' . $editUrl . '&id=' . base64_encode((string) $aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
     }
     if ($testType == 'generic-tests') {
         $aRow['module'] = "OTHER LAB TESTS ";
