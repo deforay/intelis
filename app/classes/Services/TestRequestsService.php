@@ -860,8 +860,8 @@ final class TestRequestsService
             $whereConditions[] = "(" . implode(' OR ', $patientMatchConditions) . ")";
 
             // Date range check
-            $startDate = date('Y-m-d H:i:s', strtotime("$collectionDate -$withinDays days"));
-            $endDate = date('Y-m-d H:i:s', strtotime("$collectionDate +$withinDays days"));
+            $startDate = DateUtility::subDays($collectionDate, $withinDays);
+            $endDate = DateUtility::addDays($collectionDate, $withinDays);
 
             $whereConditions[] = "t1.sample_collection_date BETWEEN ? AND ?";
             $queryParams[] = $startDate;
@@ -1047,6 +1047,142 @@ final class TestRequestsService
                 'error' => 'Error during duplicate detection: ' . $e->getMessage()
             ];
         }
+    }
+
+    /**
+     * Handle duplicate detection with full flow including risk-based actions.
+     * Returns structured result for caller to handle blocking/warnings.
+     *
+     * @param array $sampleData Sample data array with column names
+     * @param string $testType Test type (vl, eid, tb, etc.)
+     * @param int|null $excludeSampleId Sample ID to exclude (for updates)
+     * @param int $withinDays Days to check for duplicates
+     * @param string $transactionId Transaction ID for response
+     * @param string $appSampleCode App sample code for response/logging
+     * @return array Result with shouldBlock, blockedResponse, duplicateWarning, duplicateInfo, counters
+     */
+    public function handleDuplicateDetection(
+        array $sampleData,
+        string $testType,
+        ?int $excludeSampleId = null,
+        int $withinDays = 7,
+        string $transactionId = '',
+        string $appSampleCode = ''
+    ): array {
+        $result = [
+            'shouldBlock' => false,
+            'blockedResponse' => null,
+            'duplicateWarning' => null,
+            'duplicateInfo' => null,
+            'counters' => [
+                'blocked' => 0,
+                'warning' => 0
+            ]
+        ];
+
+        try {
+            // Set exclude ID for the detection query
+            if ($excludeSampleId !== null) {
+                $sampleData['excludeSampleId'] = $excludeSampleId;
+            }
+
+            $duplicateCheck = $this->detectDuplicateSample($sampleData, $testType, $withinDays, true);
+
+            // Clean up
+            unset($sampleData['excludeSampleId']);
+
+            if (!($duplicateCheck['isDuplicate'] ?? false)) {
+                return $result;
+            }
+
+            $riskLevel = $duplicateCheck['riskLevel'];
+            $duplicateCount = $duplicateCheck['duplicateCount'];
+
+            // Build duplicate info for response/form attributes
+            $duplicateInfo = [
+                'detected' => true,
+                'riskLevel' => $riskLevel,
+                'duplicateCount' => $duplicateCount,
+                'withinDays' => $duplicateCheck['withinDays'],
+                'searchCriteria' => $duplicateCheck['searchCriteria'] ?? [],
+                'duplicates' => array_map(fn($dup): array => [
+                    'sampleCode' => $dup['sample_code'] ?? $dup['remote_sample_code'] ?? $dup['app_sample_code'] ?? null,
+                    'collectionDate' => $dup['sample_collection_date_formatted'] ?? null,
+                    'daysDifference' => $dup['days_abs_difference'] ?? null,
+                    'facility' => $dup['facility_name'] ?? null,
+                    'lab' => $dup['lab_name'] ?? null,
+                    'matchConfidence' => $dup['match_confidence'] ?? null,
+                    'riskLevel' => $dup['risk_level'] ?? null
+                ], array_slice($duplicateCheck['duplicates'] ?? [], 0, 5))
+            ];
+
+            $result['duplicateInfo'] = $duplicateInfo;
+
+            // Log duplicate detection
+            LoggerUtility::logInfo("Duplicate sample detected", [
+                'appSampleCode' => $appSampleCode,
+                'testType' => $testType,
+                'riskLevel' => $riskLevel,
+                'duplicateCount' => $duplicateCount,
+                'action' => $riskLevel === 'high' ? 'blocked' : 'allowed_with_warning'
+            ]);
+
+            // Handle based on risk level
+            switch ($riskLevel) {
+                case 'high':
+                    // Block high-risk duplicates (within 1 day)
+                    $result['shouldBlock'] = true;
+                    $result['counters']['blocked'] = 1;
+                    $result['blockedResponse'] = [
+                        'transactionId' => $transactionId,
+                        'appSampleCode' => $appSampleCode ?: null,
+                        'status' => 'failed',
+                        'action' => 'blocked_duplicate',
+                        'message' => _translate("Potential duplicate sample detected within 1 day"),
+                        'duplicateInfo' => $duplicateInfo
+                    ];
+                    break;
+
+                case 'medium':
+                    // Warn but allow medium-risk duplicates (2-3 days)
+                    $result['counters']['warning'] = 1;
+                    $result['duplicateWarning'] = [
+                        'detected' => true,
+                        'riskLevel' => $riskLevel,
+                        'count' => $duplicateCount,
+                        'withinDays' => $duplicateCheck['withinDays'],
+                        'message' => _translate("Medium-risk duplicate detected") . " ($duplicateCount duplicates within {$duplicateCheck['withinDays']} days)"
+                    ];
+                    break;
+
+                case 'low':
+                    // Log low-risk duplicates for monitoring (4-7 days)
+                    $result['duplicateWarning'] = [
+                        'detected' => true,
+                        'riskLevel' => $riskLevel,
+                        'count' => $duplicateCount,
+                        'withinDays' => $duplicateCheck['withinDays']
+                    ];
+                    break;
+            }
+        } catch (Throwable $e) {
+            // Log error but don't block the sample
+            LoggerUtility::logError("Duplicate detection failed for sample", [
+                'appSampleCode' => $appSampleCode,
+                'testType' => $testType,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Store error info for debugging
+            $result['duplicateInfo'] = [
+                'detected' => false,
+                'error' => $e->getMessage(),
+                'timestamp' => DateUtility::getCurrentDateTime()
+            ];
+        }
+
+        return $result;
     }
 
     /**
