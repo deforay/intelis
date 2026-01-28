@@ -63,7 +63,7 @@ $testName = TestsService::getTestTypes();
   <meta name="viewport" content="width=1024">
 
   <?php
-  $iconType = !empty($_SESSION['instance']['type']) && $general->isSTSInstance() ? 'vlsts' : 'vlsm';
+  $iconType = !empty($_SESSION['instance']['type']) && $general->isSTSInstance() ? 'sts' : 'lis';
   ?>
 
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/<?= $iconType; ?>-icons/apple-touch-icon.png">
