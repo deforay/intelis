@@ -1195,8 +1195,8 @@ sudo -u www-data composer post-update
 print success "Database migrations and post-update tasks completed."
 log_action "Database migrations and post-update tasks completed."
 
-print header "Syncing audit tables"
-sudo -u www-data php "${lis_path}/bin/setup/fix-audit-tables.php"
+print header "Running database repairs"
+sudo -u www-data composer db:repair
 
 # Ensure background directory migrations are finished before any run-once/maintenance scripts
 if [ "${#dir_migration_pids[@]}" -gt 0 ]; then
