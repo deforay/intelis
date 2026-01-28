@@ -167,7 +167,7 @@ foreach ($genericRemoteRows as $row) {
 
 if (empty($changes)) {
     $io->success('All sequence counters are in sync. No changes needed.');
-    exit(CLI\SUCCESS);
+    exit(CLI\OK);
 }
 
 $io->section('Changes detected');
@@ -185,7 +185,7 @@ $io->table(
 
 if ($dryRun) {
     $io->note(sprintf('%d counter(s) would be updated. Run without --dry-run to apply changes.', count($changes)));
-    exit(CLI\SUCCESS);
+    exit(CLI\OK);
 }
 
 $io->section('Applying changes...');
@@ -221,4 +221,4 @@ if ($errors > 0) {
 }
 
 $io->success(sprintf('%d sequence counter(s) updated successfully.', $updated));
-exit(CLI\SUCCESS);
+exit(CLI\OK);
