@@ -42,6 +42,63 @@ final class CommonService
         return session_status() === PHP_SESSION_ACTIVE;
     }
 
+    /**
+     * Syncs sub-table data by deleting existing records and inserting new ones.
+     * Uses dynamic field detection from DDL for future-proofing across different schema versions.
+     *
+     * @param string $tableName Target table name
+     * @param string $foreignKey Foreign key column name
+     * @param mixed $foreignKeyValue Foreign key value
+     * @param array|null $remoteData Data from remote server
+     * @param array $excludeFields Fields to exclude from DDL detection (e.g., ['id', 'data_sync'])
+     * @param array $keyValueMapping For key-value pair data: ['keyField' => 'col_name', 'valueField' => 'col_name']
+     * @param bool $setUpdatedDatetime Whether to set updated_datetime to current time
+     */
+    public function syncSubTable(
+        string $tableName,
+        string $foreignKey,
+        mixed $foreignKeyValue,
+        ?array $remoteData,
+        array $excludeFields = ['id'],
+        array $keyValueMapping = [],
+        bool $setUpdatedDatetime = false
+    ): void {
+        if (empty($remoteData) || empty($foreignKeyValue)) {
+            return;
+        }
+
+        $this->db->where($foreignKey, $foreignKeyValue);
+        $this->db->delete($tableName);
+
+        $fields = $this->getTableFieldsAsArray($tableName, $excludeFields);
+
+        foreach ($remoteData as $key => $row) {
+            $insertData = [$foreignKey => $foreignKeyValue];
+
+            if (!empty($keyValueMapping)) {
+                // Key-value pair mapping (e.g., hepatitis risk factors: [id => detected_value])
+                if (isset($keyValueMapping['keyField'])) {
+                    $insertData[$keyValueMapping['keyField']] = $key;
+                }
+                if (isset($keyValueMapping['valueField'])) {
+                    $insertData[$keyValueMapping['valueField']] = $row;
+                }
+            } else {
+                // Standard array-of-objects mapping
+                foreach ($fields as $field => $default) {
+                    if ($field === $foreignKey) continue;
+                    if ($setUpdatedDatetime && $field === 'updated_datetime') {
+                        $insertData[$field] = DateUtility::getCurrentDateTime();
+                    } elseif (isset($row[$field])) {
+                        $insertData[$field] = $row[$field];
+                    }
+                }
+            }
+
+            $this->db->insert($tableName, $insertData);
+        }
+    }
+
 
     public function getAppVersion($composerFilePath = ROOT_PATH . '/composer.json')
     {
