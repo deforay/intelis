@@ -285,26 +285,25 @@ final class ResultsService
                     }
                     // sub-table updates/inserts for some test types
                     if ($testType == "covid19") {
-
                         // Insert covid19_tests
-                        $testsData = $dataFromLIS[$key]['data_from_tests'] ?? [];
+                        $testsData = $dataFromLIS['data_from_tests'] ?? [];
 
                         $this->db->where($this->primaryKeyName, $primaryKeyValue);
                         $this->db->delete("covid19_tests");
+
+                        // Get covid19_tests table fields dynamically from DDL
+                        $covid19TestFields = $this->commonService->getTableFieldsAsArray('covid19_tests', ['test_id', 'data_sync']);
+
                         foreach ($testsData as $tRow) {
-                            $covid19TestData = [
-                                "covid19_id"                => $primaryKeyValue,
-                                "facility_id"               => $tRow['facility_id'],
-                                "test_name"                 => $tRow['test_name'],
-                                "tested_by"                 => $tRow['tested_by'],
-                                "sample_tested_datetime"    => $tRow['sample_tested_datetime'],
-                                "testing_platform"          => $tRow['testing_platform'],
-                                "instrument_id"             => $tRow['instrument_id'],
-                                "kit_lot_no"                => $tRow['kit_lot_no'],
-                                "kit_expiry_date"           => $tRow['kit_expiry_date'],
-                                "result"                    => $tRow['result'],
-                                "updated_datetime"          => $tRow['updated_datetime']
-                            ];
+                            $covid19TestData = ['covid19_id' => $primaryKeyValue];
+                            foreach ($covid19TestFields as $field => $default) {
+                                if ($field === 'covid19_id') continue;
+                                if ($field === 'updated_datetime') {
+                                    $covid19TestData[$field] = DateUtility::getCurrentDateTime();
+                                } elseif (isset($tRow[$field])) {
+                                    $covid19TestData[$field] = $tRow[$field];
+                                }
+                            }
                             $this->db->insert("covid19_tests", $covid19TestData);
                         }
                     } elseif ($testType == "generic-tests") {
@@ -312,16 +311,20 @@ final class ResultsService
                         $testsData = $dataFromLIS['data_from_tests'] ?? [];
                         $this->db->where('generic_id', $primaryKeyValue);
                         $this->db->delete("generic_test_results");
+
+                        // Get generic_test_results table fields dynamically from DDL
+                        $genericTestFields = $this->commonService->getTableFieldsAsArray('generic_test_results', ['generic_test_result_id', 'data_sync']);
+
                         foreach ($testsData as $tRow) {
-                            $customTestData = [
-                                "generic_id" => $primaryKeyValue,
-                                "test_name" => $tRow['test_name'],
-                                "facility_id" => $tRow['facility_id'],
-                                "sample_tested_datetime" => $tRow['sample_tested_datetime'],
-                                "testing_platform" => $tRow['testing_platform'],
-                                "result" => $tRow['result'],
-                                "updated_datetime" => DateUtility::getCurrentDateTime()
-                            ];
+                            $customTestData = ['generic_id' => $primaryKeyValue];
+                            foreach ($genericTestFields as $field => $default) {
+                                if ($field === 'generic_id') continue;
+                                if ($field === 'updated_datetime') {
+                                    $customTestData[$field] = DateUtility::getCurrentDateTime();
+                                } elseif (isset($tRow[$field])) {
+                                    $customTestData[$field] = $tRow[$field];
+                                }
+                            }
                             $this->db->insert("generic_test_results", $customTestData);
                         }
                     } elseif ($testType == 'tb') {
@@ -334,29 +337,23 @@ final class ResultsService
 
                         $this->db->where($this->primaryKeyName, $primaryKeyValue);
                         $this->db->delete("tb_tests");
+
+                        // Get tb_tests table fields dynamically from DDL
+                        $tbTestFields = $this->commonService->getTableFieldsAsArray('tb_tests', ['tb_test_id', 'data_sync']);
+
                         foreach ($testsData as $tRow) {
-                            $tbTestData = [
-                                'tb_id' => $primaryKeyValue,
-                                'lab_id' => $tRow['lab_id'] ?? null,
-                                'specimen_type' => $tRow['specimen_type'] ?? null,
-                                'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($tRow['sample_received_at_lab_datetime'] ?? null, true),
-                                'is_sample_rejected' => $tRow['is_sample_rejected'] ?? 'no',
-                                'reason_for_sample_rejection' => $tRow['reason_for_sample_rejection'] ?? null,
-                                'rejection_on' => $tRow['rejection_on'] ?? null,
-                                'test_type' => $tRow['test_type'] ?? null,
-                                'test_result' => $tRow['test_result'] ?? null,
-                                'sample_tested_datetime' => $tRow['sample_tested_datetime'] ?? null,
-                                'tested_by' => $tRow['tested_by'] ?? null,
-                                'result_reviewed_by' => $tRow['result_reviewed_by'] ?? null,
-                                'result_reviewed_datetime' => $tRow['result_reviewed_datetime'] ?? null,
-                                'result_approved_by' => $tRow['result_approved_by'] ?? null,
-                                'result_approved_datetime' => $tRow['result_approved_datetime'] ?? null,
-                                'revised_by' => $tRow['revised_by'] ?? null,
-                                'revised_on' => $tRow['revised_on'] ?? null,
-                                'comments' => $tRow['comments'] ?? null,
-                                'reason_for_result_change' => $tRow['reason_for_result_change'] ?? null,
-                                'updated_datetime' => DateUtility::getCurrentDateTime()
-                            ];
+                            $tbTestData = ['tb_id' => $primaryKeyValue];
+
+                            // Map incoming data to table fields dynamically
+                            foreach ($tbTestFields as $field => $default) {
+                                if ($field === 'tb_id') continue; // Already set above
+                                if ($field === 'updated_datetime') {
+                                    $tbTestData[$field] = DateUtility::getCurrentDateTime();
+                                } elseif (isset($tRow[$field])) {
+                                    $tbTestData[$field] = $tRow[$field];
+                                }
+                            }
+
                             $this->db->insert("tb_tests", $tbTestData);
                         }
                     }
