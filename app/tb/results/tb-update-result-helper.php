@@ -97,17 +97,6 @@ try {
             $_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
         }
     }
-    if ($_POST['formId'] == COUNTRY\RWANDA) {
-        $_POST['labId'] = $_POST['testResult']['labId'][0];
-        $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['testResult']['sampleReceivedDate'][0] ?? null);
-        $_POST['isSampleRejected'] = $_POST['testResult']['isSampleRejected'][0];
-        $_POST['rejectionDate'] = $_POST['testResult']['rejectionDate'][0];
-        $_POST['sampleRejectionReason'] = $_POST['testResult']['sampleRejectionReason'][0];
-        $_POST['reviewedBy'] = $_POST['testResult']['reviewedBy'][0];
-        $_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['testResult']['reviewedOn'][0] ?? null);
-        $_POST['approvedBy'] = $_POST['testResult']['approvedBy'][0];
-        $_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['testResult']['approvedOn'][0] ?? null);
-    }
     if (is_array($_POST['purposeOfTbTest'])) {
         $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
     }
@@ -117,7 +106,7 @@ try {
     $tbData = [
         'tests_requested' => empty($_POST['tbTestsRequested']) ? null : $_POST['tbTestsRequested'],
         'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
-        'lab_id' => empty($_POST['labId']) ? $_POST['testResult']['labId'][0] : $_POST['labId'],
+        'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : ($_POST['testResult']['labId'][0] ?? null),
         'result_date' => empty($_POST['resultDate']) ? null : $_POST['resultDate'],
         'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
         'is_sample_rejected' => empty($_POST['isSampleRejected']) ? null : $_POST['isSampleRejected'],
@@ -164,59 +153,76 @@ try {
 
     $id = 0;
 
-    if ($_POST['formId'] == 7) {
-        if (!empty($_POST['testResult'])) {
-            $db->where('tb_id', $_POST['tbSampleId']);
-            $db->delete($testTableName);
-            foreach ($_POST['testResult']['labId'] as $key => $labid) {
-                $testResult = $_POST['testResult'];
-                if (!empty($testResult['labId'])) {
-                    $db->insert(
-                        $testTableName,
-                        [
-                            'tb_id' => $_POST['tbSampleId'] ?? null,
-                            'lab_id' => $testResult['labId'][$key] ?? null,
-                            'specimen_type' => $testResult['specimenType'][$key] ?? null,
-                            'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($testResult['sampleReceivedDate'][$key] ?? null, true),
-                            'is_sample_rejected' => $testResult['isSampleRejected'][$key] ?? null,
-                            'reason_for_sample_rejection' => $testResult['sampleRejectionReason'][$key] ?? null,
-                            'rejection_on' => DateUtility::isoDateFormat($testResult['rejectionDate'][$key] ?? null),
-                            'test_type' => $testResult['testType'][$key] ?? null,
-                            'test_result' => $testResult['testResult'][$key] ?? null,
-                            'sample_tested_datetime' => DateUtility::isoDateFormat($testResult['sampleTestedDateTime'][$key] ?? null, true),
-                            'tested_by' => $testResult['testedBy'][$key] ?? null,
-                            'result_reviewed_by' => $testResult['reviewedBy'][$key] ?? null,
-                            'result_reviewed_datetime' => DateUtility::isoDateFormat($testResult['reviewedOn'][$key] ?? null, true),
-                            'result_approved_by' => $testResult['approvedBy'][$key] ?? null,
-                            'result_approved_datetime' => DateUtility::isoDateFormat($testResult['approvedOn'][$key] ?? null, true),
-                            'revised_by' => $testResult['revisedBy'][$key] ?? null,
-                            'revised_on' => DateUtility::isoDateFormat($testResult['revisedOn'][$key] ?? null, true),
-                            'comments' => $testResult['comments'][$key] ?? null,
-                            'reason_for_result_change' => $testResult['comments'][$key] ?? null,
-                            'updated_datetime' => DateUtility::getCurrentDateTime()
-                        ]
-                    );
-                }
-            }
-        }
-    } elseif (isset($_POST['tbSampleId']) && $_POST['tbSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
-        if (!empty($_POST['testResult'])) {
-            $db->where('tb_id', $_POST['tbSampleId']);
-            $db->delete($testTableName);
+    /**
+     * TB Test Data Handling Logic:
+     *
+     * This system supports two types of TB forms:
+     *
+     * 1. MULTIPLE TESTS PER SAMPLE (e.g., Rwanda):
+     *    - Form sends nested array: testResult[fieldName][]
+     *    - Each test has its own lab, specimen type, reviewer, approver, etc.
+     *    - Tests are stored in `tb_tests` table (one row per test)
+     *    - The LATEST test's data is also stored in `form_tb` for quick access
+     *
+     * 2. SINGLE TEST PER SAMPLE (e.g., Sierra Leone, South Sudan, Burkina Faso):
+     *    - Form sends flat array: testResult[] (just result values)
+     *    - Test-level fields (reviewer, approver, etc.) are direct POST fields
+     *    - All data goes directly to `form_tb` table
+     *    - `tb_tests` table is NOT used
+     *
+     * Detection: If testResult[labId][] exists as array = multiple tests
+     */
+    $hasMultipleTests = !empty($_POST['testResult']['labId']) && is_array($_POST['testResult']['labId']);
 
-            foreach ($_POST['testResult'] as $testKey => $testResult) {
-                if (!empty($testResult) && trim((string) $testResult) !== "") {
-                    $db->insert(
-                        $testTableName,
-                        ['tb_id' => $_POST['tbSampleId'], 'actual_no' => $_POST['actualNo'][$testKey] ?? null, 'test_result' => $testResult, 'updated_datetime' => DateUtility::getCurrentDateTime()]
-                    );
-                }
-            }
-        }
-    } else {
+    if ($hasMultipleTests) {
+        // Delete existing tests
         $db->where('tb_id', $_POST['tbSampleId']);
         $db->delete($testTableName);
+
+        // Insert all tests into tb_tests
+        $testResult = $_POST['testResult'];
+        foreach ($testResult['labId'] as $key => $labid) {
+            if (!empty($labid)) {
+                $db->insert($testTableName, [
+                    'tb_id' => $_POST['tbSampleId'] ?? null,
+                    'lab_id' => $testResult['labId'][$key] ?? null,
+                    'specimen_type' => $testResult['specimenType'][$key] ?? null,
+                    'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($testResult['sampleReceivedDate'][$key] ?? null, true),
+                    'is_sample_rejected' => $testResult['isSampleRejected'][$key] ?? null,
+                    'reason_for_sample_rejection' => $testResult['sampleRejectionReason'][$key] ?? null,
+                    'rejection_on' => DateUtility::isoDateFormat($testResult['rejectionDate'][$key] ?? null),
+                    'test_type' => $testResult['testType'][$key] ?? null,
+                    'test_result' => $testResult['testResult'][$key] ?? null,
+                    'sample_tested_datetime' => DateUtility::isoDateFormat($testResult['sampleTestedDateTime'][$key] ?? null, true),
+                    'tested_by' => $testResult['testedBy'][$key] ?? null,
+                    'result_reviewed_by' => $testResult['reviewedBy'][$key] ?? null,
+                    'result_reviewed_datetime' => DateUtility::isoDateFormat($testResult['reviewedOn'][$key] ?? null, true),
+                    'result_approved_by' => $testResult['approvedBy'][$key] ?? null,
+                    'result_approved_datetime' => DateUtility::isoDateFormat($testResult['approvedOn'][$key] ?? null, true),
+                    'revised_by' => $testResult['revisedBy'][$key] ?? null,
+                    'revised_on' => DateUtility::isoDateFormat($testResult['revisedOn'][$key] ?? null, true),
+                    'reason_for_result_change' => $testResult['reasonForChange'][$key] ?? null,
+                    'comments' => $testResult['comments'][$key] ?? null,
+                    'updated_datetime' => DateUtility::getCurrentDateTime()
+                ]);
+            }
+        }
+
+        // Update $tbData with LATEST test's data for form_tb
+        $lastIndex = count($testResult['labId']) - 1;
+        $tbData['lab_id'] = $testResult['labId'][$lastIndex] ?? null;
+        $tbData['sample_received_at_lab_datetime'] = DateUtility::isoDateFormat($testResult['sampleReceivedDate'][$lastIndex] ?? null, true);
+        $tbData['is_sample_rejected'] = $testResult['isSampleRejected'][$lastIndex] ?? null;
+        $tbData['reason_for_sample_rejection'] = $testResult['sampleRejectionReason'][$lastIndex] ?? null;
+        $tbData['rejection_on'] = DateUtility::isoDateFormat($testResult['rejectionDate'][$lastIndex] ?? null);
+        $tbData['sample_tested_datetime'] = DateUtility::isoDateFormat($testResult['sampleTestedDateTime'][$lastIndex] ?? null, true);
+        $tbData['tested_by'] = $testResult['testedBy'][$lastIndex] ?? null;
+        $tbData['result_reviewed_by'] = $testResult['reviewedBy'][$lastIndex] ?? null;
+        $tbData['result_reviewed_datetime'] = DateUtility::isoDateFormat($testResult['reviewedOn'][$lastIndex] ?? null, true);
+        $tbData['result_approved_by'] = $testResult['approvedBy'][$lastIndex] ?? null;
+        $tbData['result_approved_datetime'] = DateUtility::isoDateFormat($testResult['approvedOn'][$lastIndex] ?? null, true);
     }
+    // For flat testResult[] (other countries): no tb_tests operations, form_tb already has all data
 
     if (!empty($_POST['tbSampleId'])) {
         $db->where('tb_id', $_POST['tbSampleId']);
