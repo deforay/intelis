@@ -43,3 +43,8 @@ ALTER TABLE `audit_form_tb` ADD `affiliated_district_hospital` VARCHAR(255) NULL
 -- Amit 27-Jan-2026 - Change patient_type from JSON to VARCHAR for Rwanda forms (single select)
 ALTER TABLE `form_tb` CHANGE `patient_type` `patient_type` VARCHAR(255) NULL DEFAULT NULL;
 ALTER TABLE `audit_form_tb` CHANGE `patient_type` `patient_type` VARCHAR(255) NULL DEFAULT NULL;
+
+-- Amit 28-Jan-2026 - Add global config for duplicate detection
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`)
+VALUES ('Enable Duplicate Detection', 'enable_duplicate_detection', 'yes', 'general')
+ON DUPLICATE KEY UPDATE `display_name` = VALUES(`display_name`);

@@ -100,6 +100,7 @@ try {
         $whereString = " WHERE " . implode(" AND ", $where);
     }
     $sQuery .= $whereString;
+    $sQuery .= " ORDER BY COALESCE(NULLIF(vl.remote_sample_code, ''), NULLIF(vl.sample_code, ''), NULLIF(vl.app_sample_code, ''), vl.$testPrimaryKey)";
 
     $rowData = $db->rawQuery($sQuery);
 

@@ -97,6 +97,32 @@ final class DateUtility
     }
 
     /**
+     * Add days to a given date.
+     *
+     * @param string $date The base date
+     * @param int $days Number of days to add
+     * @param string $format Output format (default: 'Y-m-d H:i:s')
+     * @return string The resulting date
+     */
+    public static function addDays(string $date, int $days, string $format = 'Y-m-d H:i:s'): string
+    {
+        return Carbon::parse($date)->addDays($days)->format($format);
+    }
+
+    /**
+     * Subtract days from a given date.
+     *
+     * @param string $date The base date
+     * @param int $days Number of days to subtract
+     * @param string $format Output format (default: 'Y-m-d H:i:s')
+     * @return string The resulting date
+     */
+    public static function subDays(string $date, int $days, string $format = 'Y-m-d H:i:s'): string
+    {
+        return Carbon::parse($date)->subDays($days)->format($format);
+    }
+
+    /**
      * @return bool
      */
     public static function isDateValid(mixed $date): bool
