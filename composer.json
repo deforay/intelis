@@ -144,6 +144,10 @@
             "@metadata-sync",
             "@cleanup",
             "@purge-cache"
+        ],
+        "db:repair": [
+            "@php bin/setup/fix-audit-tables.php",
+            "@php bin/reset-seq.php"
         ]
     },
     "scripts-descriptions": {

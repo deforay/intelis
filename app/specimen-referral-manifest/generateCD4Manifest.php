@@ -46,7 +46,7 @@ if (!empty($id)) {
                         u_d.user_name as releaser_name,
                         u_d.phone_number as phone,
                         u_d.email as email,
-                        pd.request_created_datetime as created_date
+                        DATE_FORMAT(pd.request_created_datetime,'%d-%b-%Y') as created_date
                 FROM specimen_manifests as pd
                 LEFT JOIN form_cd4 as vl ON vl.sample_package_id=pd.manifest_id
                 LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
@@ -79,122 +79,17 @@ if (!empty($id)) {
 
         $reasonHistory = json_decode((string) $bResult['manifest_change_history']);
 
-        // create new PDF document
+        // Create and initialize PDF
         $pdf = new ManifestPdfHelper(_translate('CLUSTERS OF DIFFERENTIATION 4 Sample Referral Manifest'), PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf->initializeManifest($globalConfig['logo'], $globalConfig['header'], $labname);
 
-        $pdf->setHeading($globalConfig['logo'], $globalConfig['header'], $labname);
-
-        // set document information
-        $pdf->SetCreator('STS');
-        $pdf->SetAuthor('STS');
-        $pdf->SetTitle('Specimen Referral Manifest');
-        $pdf->SetSubject('Specimen Referral Manifest');
-        $pdf->SetKeywords('Specimen Referral Manifest');
-
-        // set default header data
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
-
-        // set header and footer fonts
-        $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
-        $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
-
-        // set default monospaced font
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-        // set margins
-        $pdf->SetMargins(PDF_MARGIN_LEFT, 36, PDF_MARGIN_RIGHT);
-        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-        // set auto page breaks
-        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
-
-        // set image scale factor
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-
-
-        // set font
-        $pdf->SetFont('helvetica', '', 10);
-        $pdf->setPageOrientation('L');
-
-        // add a page
-        $pdf->AddPage();
+        // Rwanda specific sections
         if ($globalConfig['vl_form'] == RWANDA) {
-            //$pdf->writeHTMLCell(0, 20, 10, 10, 'FACILITY RELEASER INFORMATION ', 0, 0, 0, true, 'C', true);
-            $pdf->WriteHTML('<strong>FACILITY RELEASER INFORMATION</strong>');
-
-            $tbl1 = '<br>';
-            $tbl1 .= '<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
-            $tbl1 .= '<tr>
-        <td align="left"> Releaser Name :  ' . $result[0]['releaser_name'] . '</td>
-        <td align="left"> Date :  ' . DateUtility::humanReadableDateFormat($result[0]['created_date']) . '</td>
-        </tr>
-        <tr>
-        <td align="left"> Phone No. :  ' . $result[0]['phone'] . '</td>
-        <td align="left"> Email :  ' . $result[0]['email'] . '</td>
-        </tr>
-        <tr>
-        <td align="left"> Facility Name :  ' . $result[0]['clinic_name'] . '</td>
-        <td align="left"> District :  ' . $result[0]['facility_district'] . '</td>
-        </tr>';
-            $tbl1 .= '</table>';
-            $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl1, 0, 1, 0, true, 'C');
-
-            $pdf->WriteHTML('<p></p><strong>SPECIMEN PACKAGING</strong>');
-
-            $tbl2 = '<br>';
-            $tbl2 .= '<table nobr="true" style="width:100%;" border="0" cellpadding="2">';
-            $tbl2 .= '<tr>
-        <td align="left"> Number of specimen included :  ' . $result[0]['number_of_samples'] . '</td>
-        <td align="left"> Forms completed and included :  Yes / No</td>
-        </tr>
-        <tr>
-        <td align="left"> Packaged By :  ..................</td>
-        <td align="left"> Date :  ...................</td>
-        </tr>';
-            $tbl2 .= '</table>';
-
-            $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl2, 0, 1, 0, true, 'C');
-
-            $pdf->WriteHTML('<p></p><strong>CHAIN OF CUSTODY : </strong>(persons relinquishing and receiving specimen fill their respective sections)');
-            $pdf->WriteHTML('<p></p><strong>To be completed at facility in the presence of specimen courier</strong>');
-            $tbl3 = '<br>';
-            $tbl3 .= '<table border="1">
-        <tr>
-            <td colspan="2">Relinquished By (Laboratory)</td>
-            <td colspan="2">Received By (Courier)</td>
-        </tr>
-        <tr>
-            <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
-            <td align="left"> Date : <br><p></p><br> Time :</td>
-            <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
-            <td align="left"> Date : <br><p></p><br> Time :</td>
-        </tr>
-        </table>';
-            $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl3, 0, 1, 0, true, 'C');
-
-            $pdf->WriteHTML('<p></p><strong>To be completed at testing laboratory by specimen reception personnel</strong>');
-            $tbl4 = '<br>';
-            $tbl4 .= '<table border="1">
-            <tr>
-                <td colspan="2">Relinquished By (Courier)</td>
-                <td colspan="2">Received By (Laboratory)</td>
-            </tr>
-            <tr>
-                <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
-                <td align="left"> Date : <br><p></p><br> Time :</td>
-                <td align="left"> Name : <br><br> Sign : <br><br> Phone No. :</td>
-                <td align="left"> Date : <br><p></p><br> Time :</td>
-            </tr>
-        </table>';
-            $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl4, 0, 1, 0, true, 'C');
+            $pdf->renderCountrySpecificSections($result[0], (int)($result[0]['number_of_samples'] ?? 0));
         }
 
-
-        $tbl = '<p></p><span style="font-size:1.7em;"> ' . $result[0]['manifest_code'];
-        $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['manifest_code']) . '">';
-        $tbl .= '</span><br>';
+        // Manifest code and barcode
+        $tbl = $pdf->renderManifestCodeSection($result[0]['manifest_code'], $general->getBarcodeImageContent($result[0]['manifest_code']));
 
         if (!empty($result)) {
 
@@ -218,7 +113,6 @@ if (!empty($id)) {
 
             foreach ($result as $sample) {
 
-                // $params = $pdf->serializeTCPDFtagParameters(array($sample['remote_sample_code'], 'C39', '', '', 0, 9, 0.25, array('border' => false, 'align' => 'L', 'padding' => 1, 'fgcolor' => array(0, 0, 0), 'bgcolor' => array(255, 255, 255), 'text' => false, 'font' => 'helvetica', 'fontsize' => 9, 'stretchtext' => 2), 'N'));
                 $tbl .= '<table nobr="true" style="width:100%;" border="1" cellpadding="2">';
                 $tbl .= '<tr nobr="true">';
 
@@ -247,40 +141,19 @@ if (!empty($id)) {
             }
         }
 
-        $tbl .= '<br><br><table cellspacing="0" style="width:100%;">';
-        $tbl .= '<tr >';
-        $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;"><strong>Generated By : </strong><br>' . $_SESSION['userName'] . '</td>';
-        $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;"><strong>Verified By :  </strong></td>';
-        $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;"><strong>Received By : </strong><br>(at ' . $labname . ')</td>';
-        $tbl .= '</tr>';
-        $tbl .= '</table><br><br>';
+        // Signature section
+        $tbl .= $pdf->renderSignatureSection($_SESSION['userName'], $labname);
 
+        // Change history
         if (!empty($reasonHistory) && count($reasonHistory) > 0) {
-            $tbl .= 'Manifest Change History';
-            $tbl .= '<br><br><table nobr="true" style="width:100%;" border="1" cellpadding="2"><tr nobr="true">';
-            $tbl .= '<th>Reason for Changes</th>';
-            $tbl .= '<th>Changed By </th>';
-            $tbl .= '<th>Changed On</th>';
-            $tbl .= '</tr>';
-            foreach ($reasonHistory as $change) {
-                $userResult = $usersService->findUserByUserId($change->changedBy);
-                $userName = $userResult['user_name'];
-                $tbl .= '<tr nobr="true">';
-                $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . $change->reason . '</td>';
-                $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . $userName . '</td>';
-                $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . DateUtility::humanReadableDateFormat($change->date) . '</td>';
-                $tbl .= '</tr>';
-            }
+            $tbl .= $pdf->renderChangeHistory((array)$reasonHistory, function ($userId) use ($usersService) {
+                $userResult = $usersService->findUserByUserId($userId);
+                return $userResult['user_name'] ?? '';
+            });
         }
-        $tbl .= '</table>';
 
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C');
 
-        $filename = trim((string) $bResult['manifest_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
-
-        $manifestsPath = MiscUtility::buildSafePath(TEMP_PATH, ["sample-manifests"]);
-        $filename = MiscUtility::cleanFileName($filename);
-        $pdf->Output($manifestsPath . DIRECTORY_SEPARATOR . $filename, "F");
-        echo $filename;
+        echo $pdf->outputManifest($bResult['manifest_code']);
     }
 }
