@@ -121,6 +121,14 @@ final class FixAuditTablesCommand extends Command
         );
 
         foreach ($tableMap as $form => [$audit, $pk]) {
+            /**
+             * Flow for each form table (ref: sql/audit-triggers.sql):
+             * 1. Check if audit table exists
+             * 2. If not exists -> create table with columns + primary key (pk, revision)
+             *    (no sync needed - CREATE TABLE LIKE copies structure from form table)
+             * 3. If exists -> sync columns, engine, collation to match form table
+             * 4. Recreate triggers (always, to ensure they exist and are current)
+             */
             $sqlBatch = [];
             $actions = [];
             try {
@@ -140,36 +148,54 @@ final class FixAuditTablesCommand extends Command
                     $this->mysqli->begin_transaction();
                 }
 
+                // Phase 1: Schema sync (create table if missing, sync columns if exists)
                 if (!$rebuildTriggersOnly) {
+                    $auditExists = $this->tableExists($audit);
                     $schemaSql = [
                         ...$this->ensureAuditTableExists($form, $audit, $pk),
-                        ...($this->tableExists($audit) ? $this->removeAutoIncrementFromAudit($audit) : []),
-                        ...$this->alignEngineAndCollation($audit),
-                        ...$this->ensureAuditColumnsAndPK($audit, $pk),
-                        ...$this->syncColumnsToMatchForm($form, $audit, $dropExtras, $pk)
+                        ...($auditExists ? $this->removeAutoIncrementFromAudit($audit) : []),
+                        ...($auditExists ? $this->alignEngineAndCollation($audit) : []),
+                        ...($auditExists ? $this->ensureAuditColumnsAndPK($audit, $pk) : []),
+                        ...($auditExists ? $this->syncColumnsToMatchForm($form, $audit, $dropExtras, $pk) : [])
                     ];
                     if ($schemaSql !== []) {
                         $sqlBatch = [...$sqlBatch, ...$schemaSql];
                         $actions[] = 'schema synced';
                     }
+
+                    // Execute schema changes first
+                    if ($dryRun) {
+                        if ($sqlBatch !== []) {
+                            $this->printSqlBatch($io, $form, $audit, $sqlBatch);
+                        }
+                    } else {
+                        if ($sqlBatch !== []) {
+                            $this->executeSqlBatch($sqlBatch);
+                        }
+                    }
+                    $sqlBatch = [];
                 }
 
-                if (!$skipTriggers) {
+                // Phase 2: Triggers (only after audit table confirmed to exist)
+                if (!$skipTriggers && $this->tableExists($audit)) {
                     $triggerSql = $this->rebuildTriggers($form, $audit, $pk);
                     if ($triggerSql !== []) {
                         $sqlBatch = [...$sqlBatch, ...$triggerSql];
                         $actions[] = 'triggers rebuilt';
                     }
+
+                    if ($dryRun) {
+                        if ($sqlBatch !== []) {
+                            $this->printSqlBatch($io, $form, $audit, $sqlBatch);
+                        }
+                    } else {
+                        if ($sqlBatch !== []) {
+                            $this->executeSqlBatch($sqlBatch);
+                        }
+                    }
                 }
 
-                if ($dryRun) {
-                    if ($sqlBatch !== []) {
-                        $this->printSqlBatch($io, $form, $audit, $sqlBatch);
-                    }
-                } else {
-                    if ($sqlBatch !== []) {
-                        $this->executeSqlBatch($sqlBatch);
-                    }
+                if (!$dryRun) {
                     $this->mysqli->commit();
                 }
 
