@@ -48,3 +48,15 @@ ALTER TABLE `audit_form_tb` CHANGE `patient_type` `patient_type` VARCHAR(255) NU
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`)
 VALUES ('Enable Duplicate Detection', 'enable_duplicate_detection', 'yes', 'general')
 ON DUPLICATE KEY UPDATE `display_name` = VALUES(`display_name`);
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
