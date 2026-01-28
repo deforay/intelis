@@ -64,13 +64,13 @@ if (!empty($facilityIdRequested)) {
 } elseif (!empty($districtRequested)) {
 	// Fetch Facilities for the selected District
 	$facilityOptions = $facilitiesService->getFacilitiesDropdown($testType, $facilityTypeRequested, null, $districtRequested, $option, $_POST['comingFromUser'] ?? null);
-	$testingLabsList = $facilitiesService->getTestingLabs($GLOBALS['testType']);
+	$testingLabsList = $facilitiesService->getTestingLabs($testType);
 	$testingLabsOptions = $general->generateSelectOptions($testingLabsList, null, '-- Select --');
 
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 } elseif (!empty($facilityTypeRequested)) {
 	$facilityOptions = $facilitiesService->getFacilitiesDropdown($testType, $facilityTypeRequested, null, $districtRequested, $option, $_POST['comingFromUser'] ?? null);
-	$testingLabsList = $facilitiesService->getTestingLabs($GLOBALS['testType']);
+	$testingLabsList = $facilitiesService->getTestingLabs($testType);
 	$testingLabsOptions = $general->generateSelectOptions($testingLabsList, null, '-- Select --');
 	echo $facilityOptions . "###" . $testingLabsOptions . "###";
 }
