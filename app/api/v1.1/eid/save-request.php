@@ -35,6 +35,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+// Configuration flag for duplicate detection (from global config)
+$enableDuplicateDetection = $general->getGlobalConfig('enable_duplicate_detection') === 'yes';
+
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
@@ -55,6 +58,9 @@ try {
     $request = AppRegistry::get('request');
 
     $noOfFailedRecords = 0;
+    $duplicateBlockedRecords = 0;
+    $duplicateWarningRecords = 0;
+    $duplicateInfo = [];
 
     $updatedLabs = [];
     $uniqueIdsForSampleCodeGeneration = [];
@@ -382,7 +388,6 @@ try {
             $reasonForChanges = json_encode($allChange);
         }
 
-        $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
         /* New API changes start */
         foreach (["motherTreatment", "childTreatment", "childTreatmentOther"] as $key) {
             if (is_array($data[$key])) {
@@ -463,8 +468,7 @@ try {
             'data_sync' => 0,
             'reason_for_sample_rejection' => $data['sampleRejectionReason'] ?? null,
             'rejection_on' => (isset($data['rejectionDate']) && $data['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($data['rejectionDate']) : null,
-            'source_of_request' => $data['sourceOfRequest'] ?? "API",
-            'form_attributes' => $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $db->func($formAttributes)
+            'source_of_request' => $data['sourceOfRequest'] ?? "API"
         ];
 
         if (!empty($rowData)) {
@@ -475,6 +479,47 @@ try {
             $eidData['request_created_by'] = $user['user_id'];
         }
 
+        // ========================================
+        // DUPLICATE DETECTION
+        // ========================================
+        $duplicateWarning = null;
+
+        if ($enableDuplicateDetection) {
+            $duplicateResult = $testRequestsService->handleDuplicateDetection(
+                sampleData: $eidData,
+                testType: 'eid',
+                excludeSampleId: !empty($rowData) ? $rowData['eid_id'] : null,
+                transactionId: $transactionId,
+                appSampleCode: $data['appSampleCode'] ?? ''
+            );
+
+            if ($duplicateResult['shouldBlock']) {
+                $noOfFailedRecords++;
+                $duplicateBlockedRecords++;
+                $responseData[$rootKey] = $duplicateResult['blockedResponse'];
+                continue;
+            }
+
+            $duplicateWarning = $duplicateResult['duplicateWarning'];
+            $duplicateWarningRecords += $duplicateResult['counters']['warning'];
+
+            if ($duplicateResult['duplicateInfo']) {
+                $duplicateInfo[$rootKey] = $duplicateResult['duplicateInfo'];
+            }
+        }
+
+        // Add duplicate detection info to form attributes
+        if ($duplicateWarning !== null && $duplicateWarning !== []) {
+            $formAttributes['duplicateWarning'] = $duplicateWarning;
+        }
+        if (isset($duplicateInfo[$rootKey]) && !isset($duplicateInfo[$rootKey]['error'])) {
+            $formAttributes['duplicateDetection'] = $duplicateInfo[$rootKey];
+        }
+
+        // Finalize form attributes
+        $formAttributesStr = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
+        $eidData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
+
         $id = false;
         $eidData = MiscUtility::arrayEmptyStringsToNull($eidData);
         if (!empty($data['eidSampleId'])) {
@@ -483,7 +528,7 @@ try {
         }
 
         if ($id === true) {
-            $responseData[$rootKey] = [
+            $sampleResponse = [
                 'status' => 'success',
                 'action' => $currentSampleData['action'] ?? null,
                 'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
@@ -491,6 +536,19 @@ try {
                 'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
+
+            // Add duplicate warning information if present
+            if ($duplicateWarning !== null && $duplicateWarning !== []) {
+                $sampleResponse['warning'] = $duplicateWarning['message'] ?? null;
+                $sampleResponse['duplicateWarning'] = $duplicateWarning;
+            }
+
+            // Add duplicate detection info if available
+            if (isset($duplicateInfo[$rootKey]) && !isset($duplicateInfo[$rootKey]['error'])) {
+                $sampleResponse['duplicateInfo'] = $duplicateInfo[$rootKey];
+            }
+
+            $responseData[$rootKey] = $sampleResponse;
         } else {
             $noOfFailedRecords++;
             $responseData[$rootKey] = [
@@ -536,8 +594,24 @@ try {
         'status' => $payloadStatus,
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'data' => $responseData ?? []
+        'data' => $responseData ?? [],
+        'summary' => [
+            'isDuplicateCheckEnabled' => $enableDuplicateDetection ? 'yes' : 'no',
+            'totalRecords' => $dataCounter,
+            'successfulRecords' => $dataCounter - $noOfFailedRecords,
+            'failedRecords' => $noOfFailedRecords,
+        ]
     ];
+
+    // Add detailed duplicate information only if duplicates were detected
+    if ($enableDuplicateDetection && $duplicateInfo !== []) {
+        $payload['duplicateDetails'] = $duplicateInfo;
+        $payload['summary']['duplicateRecords'] = [
+            'blockedRecords' => $duplicateBlockedRecords,
+            'warningRecords' => $duplicateWarningRecords,
+            'totalDuplicatesDetected' => count($duplicateInfo)
+        ];
+    }
 } catch (Throwable $exc) {
     $db->rollbackTransaction();
     http_response_code(500);

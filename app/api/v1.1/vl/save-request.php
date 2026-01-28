@@ -28,15 +28,14 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
-// Configuration flag for duplicate detection
-$enableDuplicateDetection = true; // TODO: Replace with global config once implemented
-// $enableDuplicateDetection = (bool) $general->getGlobalConfig('enable_duplicate_detection', true);
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+// Configuration flag for duplicate detection (from global config)
+$enableDuplicateDetection = $general->getGlobalConfig('enable_duplicate_detection') === 'yes';
 
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
@@ -426,166 +425,32 @@ try {
 
 
         // ========================================
-        // DUPLICATE DETECTION - ONLY FOR NEW SAMPLES WITH DIFFERENT CODES
+        // DUPLICATE DETECTION
         // ========================================
         $duplicateWarning = null;
 
-        // Only check for duplicates if:
-        // 1. This is a new sample (no existing rowData), OR
-        // 2. This is an update but the appSampleCode is different from existing sample codes
-        $shouldCheckDuplicates = false;
-
         if ($enableDuplicateDetection) {
-            if (empty($rowData)) {
-                // New sample - always check for duplicates
-                $shouldCheckDuplicates = true;
-                LoggerUtility::logInfo("Duplicate check: New sample", [
-                    'appSampleCode' => $data['appSampleCode']
-                ]);
-            } else {
-                // Existing sample - only check if sample codes are different
-                $existingSampleCode = $rowData['sample_code'] ?? '';
-                $existingRemoteSampleCode = $rowData['remote_sample_code'] ?? '';
-                $currentAppSampleCode = $data['appSampleCode'] ?? '';
+            $duplicateResult = $testRequestsService->handleDuplicateDetection(
+                sampleData: $vlFulldata,
+                testType: 'vl',
+                excludeSampleId: !empty($rowData) ? $rowData['vl_sample_id'] : null,
+                transactionId: $transactionId,
+                appSampleCode: $data['appSampleCode'] ?? ''
+            );
 
-                // Check if this is truly a different sample
-                if (
-                    $currentAppSampleCode !== $existingSampleCode &&
-                    $currentAppSampleCode !== $existingRemoteSampleCode
-                ) {
-                    $shouldCheckDuplicates = true;
-                    LoggerUtility::logInfo("Duplicate check: Different sample code", [
-                        'currentAppSampleCode' => $currentAppSampleCode,
-                        'existingSampleCode' => $existingSampleCode,
-                        'existingRemoteSampleCode' => $existingRemoteSampleCode
-                    ]);
-                } else {
-                    LoggerUtility::logInfo("Duplicate check: Same sample - skipping", [
-                        'currentAppSampleCode' => $currentAppSampleCode,
-                        'existingSampleCode' => $existingSampleCode,
-                        'existingRemoteSampleCode' => $existingRemoteSampleCode
-                    ]);
-                }
+            if ($duplicateResult['shouldBlock']) {
+                $noOfFailedRecords++;
+                $duplicateBlockedRecords++;
+                $responseData[$rootKey] = $duplicateResult['blockedResponse'];
+                continue;
             }
-        }
 
-        if ($shouldCheckDuplicates) {
-            try {
-                // Pass the entire vlFulldata array - let the function extract what it needs
-                // Add exclude ID for updates
-                $vlFulldata['excludeSampleId'] = empty($rowData) ? null : $rowData['vl_sample_id'];
+            $duplicateWarning = $duplicateResult['duplicateWarning'];
+            $duplicateWarningRecords += $duplicateResult['counters']['warning'];
 
-                $duplicateCheck = $testRequestsService->detectDuplicateSample($vlFulldata, 'vl', 7, true);
-
-                LoggerUtility::logInfo("DEBUG: Duplicate detection result", [
-                    'appSampleCode' => $data['appSampleCode'],
-                    'isDuplicate' => $duplicateCheck['isDuplicate'] ?? false,
-                    'duplicateCount' => $duplicateCheck['duplicateCount'] ?? 0,
-                    'riskLevel' => $duplicateCheck['riskLevel'] ?? 'none',
-                    'error' => $duplicateCheck['error'] ?? null
-                ]);
-
-                // IMPORTANT: Remove excludeSampleId from data before database operations
-                unset($vlFulldata['excludeSampleId']);
-
-                if ($duplicateCheck['isDuplicate']) {
-                    $riskLevel = $duplicateCheck['riskLevel'];
-                    $duplicateCount = $duplicateCheck['duplicateCount'];
-
-                    // Store duplicate info for response payload
-                    $duplicateInfo[$rootKey] = [
-                        'detected' => true,
-                        'riskLevel' => $riskLevel,
-                        'duplicateCount' => $duplicateCount,
-                        'withinDays' => $duplicateCheck['withinDays'],
-                        'searchCriteria' => $duplicateCheck['searchCriteria'],
-                        'duplicates' => array_map(fn($dup): array => [
-                            'sampleCode' => $dup['sample_code'] ?? $dup['remote_sample_code'] ?? $dup['app_sample_code'],
-                            'collectionDate' => $dup['sample_collection_date_formatted'],
-                            'daysDifference' => $dup['days_abs_difference'],
-                            'facility' => $dup['facility_name'],
-                            'lab' => $dup['lab_name'],
-                            'matchConfidence' => $dup['match_confidence'],
-                            'riskLevel' => $dup['risk_level']
-                        ], array_slice($duplicateCheck['duplicates'], 0, 5))
-                    ];
-
-                    // Log duplicate detection
-                    LoggerUtility::logInfo("Duplicate sample detected", [
-                        'appSampleCode' => $data['appSampleCode'],
-                        'patientArtNo' => $vlFulldata['patient_art_no'],
-                        'patientName' => $vlFulldata['patient_first_name'],
-                        'facilityId' => $vlFulldata['facility_id'],
-                        'riskLevel' => $riskLevel,
-                        'duplicateCount' => $duplicateCount,
-                        'action' => $riskLevel === 'high' ? 'blocked' : 'allowed_with_warning'
-                    ]);
-
-                    // Business logic based on risk level
-                    switch ($riskLevel) {
-                        case 'high':
-                            // Block high-risk duplicates (within 1 day)
-                            $noOfFailedRecords++;
-                            $duplicateBlockedRecords++;
-                            $responseData[$rootKey] = [
-                                'transactionId' => $transactionId,
-                                'appSampleCode' => $data['appSampleCode'] ?? null,
-                                'status' => 'failed',
-                                'action' => 'blocked_duplicate',
-                                'message' => _translate("Potential duplicate sample detected within 1 day"),
-                                'duplicateInfo' => $duplicateInfo[$rootKey]
-                            ];
-                            continue 2; // Continue to next record in the main loop
-
-                        case 'medium':
-                            // Warn but allow medium-risk duplicates (2-3 days)
-                            $duplicateWarningRecords++;
-                            $duplicateWarning = [
-                                'detected' => true,
-                                'riskLevel' => $riskLevel,
-                                'count' => $duplicateCount,
-                                'withinDays' => $duplicateCheck['withinDays'],
-                                'message' => _translate("Medium-risk duplicate detected") . " ($duplicateCount duplicates within {$duplicateCheck['withinDays']} days)"
-                            ];
-                            break;
-
-                        case 'low':
-                            // Log low-risk duplicates for monitoring (4-7 days)
-                            $duplicateWarning = [
-                                'detected' => true,
-                                'riskLevel' => $riskLevel,
-                                'count' => $duplicateCount,
-                                'withinDays' => $duplicateCheck['withinDays']
-                            ];
-                            break;
-                    }
-                }
-            } catch (Throwable $duplicateError) {
-                // Log duplicate detection errors but don't block the sample
-                LoggerUtility::logError("Duplicate detection failed for sample", [
-                    'appSampleCode' => $data['appSampleCode'],
-                    'error' => $duplicateError->getMessage(),
-                    'trace' => $duplicateError->getTraceAsString()
-                ]);
-
-                // Add error info for debugging
-                $duplicateInfo[$rootKey] = [
-                    'detected' => false,
-                    'error' => $duplicateError->getMessage(),
-                    'timestamp' => DateUtility::getCurrentDateTime()
-                ];
-
-                // IMPORTANT: Ensure excludeSampleId is removed even on error
-                if (isset($vlFulldata['excludeSampleId'])) {
-                    unset($vlFulldata['excludeSampleId']);
-                }
+            if ($duplicateResult['duplicateInfo']) {
+                $duplicateInfo[$rootKey] = $duplicateResult['duplicateInfo'];
             }
-        } else {
-            // Skip duplicate detection - just log why
-            LoggerUtility::logInfo("Duplicate detection skipped", [
-                'appSampleCode' => $data['appSampleCode'],
-                'reason' => empty($rowData) ? 'new_sample' : 'same_sample_code'
-            ]);
         }
 
         // Add duplicate detection info to form attributes (only for allowed samples)
@@ -602,11 +467,6 @@ try {
 
         // Clean up data and perform database update
         $vlFulldata = MiscUtility::arrayEmptyStringsToNull($vlFulldata);
-
-        // Double-check that excludeSampleId is not in the data
-        if (isset($vlFulldata['excludeSampleId'])) {
-            unset($vlFulldata['excludeSampleId']);
-        }
 
         $id = false;
 
