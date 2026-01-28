@@ -83,7 +83,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 	<meta name="viewport" content="width=1024">
 
 	<?php
-	$iconType = $general->isSTSInstance() ? 'vlsts' : 'vlsm';
+	$iconType = $general->isSTSInstance() ? 'sts' : 'lis';
 	?>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/assets/<?= $iconType; ?>-icons/apple-touch-icon.png">
