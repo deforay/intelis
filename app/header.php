@@ -121,6 +121,8 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 	<script type="text/javascript" src="/assets/js/jquery.fastconfirm.js"></script>
 	<script type="text/javascript"
 		src="/assets/js/utils.js?v=<?= filemtime(WEB_ROOT . '/assets/js/utils.js') ?>"></script>
+	<script type="text/javascript"
+		src="/assets/js/error-logger.js?v=<?= filemtime(WEB_ROOT . '/assets/js/error-logger.js') ?>"></script>
 
 	<?php
 	// Flatten menu for spotlight - includes parent menus with expandable children
