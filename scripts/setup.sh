@@ -292,6 +292,9 @@ chmod u+x ./lamp-setup.sh
 
 rm -f ./lamp-setup.sh
 
+# Configure PHP INI settings (session timeout, opcache, security, etc.)
+configure_php_ini "${PHP_VERSION}"
+
 echo "Calculating checksums of current composer files..."
 CURRENT_COMPOSER_JSON_CHECKSUM="none"
 CURRENT_COMPOSER_LOCK_CHECKSUM="none"
