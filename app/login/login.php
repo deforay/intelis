@@ -12,7 +12,7 @@ use App\Registries\ContainerRegistry;
 $commonService = null;
 
 if (isset($_SESSION['userId'])) {
-	SecurityService::redirect("/dashboard/index.php", rotateCSRF: false);
+	SecurityService::redirect("/dashboard/index.php");
 } else {
 	$alertMessage = null;
 	if (!empty($_SESSION['alertMsg'])) {
@@ -69,7 +69,7 @@ if (!($db instanceof DatabaseService) || $db->isConnected() === false) {
 	}
 }
 
-SecurityService::rotateCSRF();
+SecurityService::generateCSRF();
 
 
 /** @var CommonService $general */

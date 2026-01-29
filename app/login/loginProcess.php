@@ -165,5 +165,5 @@ try {
     $redirect = "/login/login.php";
 }
 
-SecurityService::redirect($redirect, rotateCSRF: true);
+SecurityService::redirect($redirect);
 exit;
