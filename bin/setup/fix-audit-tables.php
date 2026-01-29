@@ -643,6 +643,6 @@ SQL;
 
 /** Run the single-file console app */
 $application = new Application('InteLIS Tools', '1.0');
-$application->add(new FixAuditTablesCommand());
+$application->addCommand(new FixAuditTablesCommand());
 $application->setDefaultCommand('intelis:fix-audit-tables', true);
 $application->run();
