@@ -74,7 +74,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility
 
 $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
-$typeOfPatient = (array) json_decode((string) $tbInfo['patient_type']);
+$typeOfPatient = $tbInfo['patient_type'] ?? '';
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
 $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
 $diagnosis = (array) $reasonForTbTest->elaboration->diagnosis;
@@ -182,7 +182,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 										<td><label class="label-control" for="facilityId">Health Facility/POE
 											</label><span class="mandatory">*</span></td>
 										<td>
-											<select class="form-control isRequired " name="facilityId" id="facilityId"
+											<select class="form-control select2 isRequired" name="facilityId" id="facilityId"
 												title="Please choose facility" style="width:100%;"
 												onchange="getfacilityProvinceDetails(this);">
 												<?php echo $facility; ?>
@@ -211,7 +211,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 										<td><label class="label-control" for="referringUnit">Referring Unit </label>
 										</td>
 										<td>
-											<select class="form-control " name="referringUnit" id="referringUnit"
+											<select class="form-control select2" name="referringUnit" id="referringUnit"
 												title="Please choose referring unit" style="width:100%;"
 												onchange="showOther(this.value, 'typeOfReferringUnit');">
 												<option value="">-- Select --</option>
@@ -278,17 +278,17 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label for="patientId">TB Registration Unique ID<span
+										<th scope="row" style="width:15%"><label for="patientId">TB Registration Unique ID<span
 													class="mandatory">*</span></label></th>
-										<td>
+										<td style="width:35%">
 											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>"
 												class="form-control isRequired patientId" id="patientId"
 												name="patientId" placeholder="Patient Identification"
 												title="Please enter Patient ID" style="width:100%;" onchange="" />
 										</td>
-										<th scope="row"><label for="firstName">First Name <span
+										<th scope="row" style="width:15%"><label for="firstName">First Name <span
 													class="mandatory">*</span> </label></th>
-										<td>
+										<td style="width:35%">
 											<input type="text" value="<?php echo $tbInfo['patient_name']; ?>"
 												class="form-control isRequired" id="firstName" name="firstName"
 												placeholder="First Name" title="Please enter First name"
@@ -351,19 +351,20 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 										<th scope="row"><label for="typeOfPatient">Type of patient<span
 													class="mandatory">*</span> </label></th>
 										<td>
-											<select class="select2 form-control isRequired" name="typeOfPatient[]"
+											<select class="select2 form-control isRequired" name="typeOfPatient"
 												id="typeOfPatient" title="Please select the type of patient"
-												onchange="showOther(this.value,'typeOfPatientOther');" multiple>
+												onchange="showOther(this.value,'typeOfPatientOther');">
 												<option value=''> -- Select -- </option>
-												<option value='new' <?php echo (is_array($typeOfPatient) && in_array("new", $typeOfPatient)) ? "selected='selected'" : ""; ?>>
+												<option value='new' <?php echo ($typeOfPatient == "new") ? "selected='selected'" : ""; ?>>
 													New </option>
-												<option value='loss-to-follow-up' <?php echo (is_array($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
-												<option value='treatment-failure' <?php echo (is_array($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Treatment Failure </option>
-												<option value='relapse' <?php echo (is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Relapse </option>
-												<option value='other' <?php echo (is_array($typeOfPatient) && in_array("other", $typeOfPatient)) ? "selected='selected'" : ""; ?>>
+												<option value='loss-to-follow-up' <?php echo ($typeOfPatient == "loss-to-follow-up") ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
+												<option value='treatment-failure' <?php echo ($typeOfPatient == "treatment-failure") ? "selected='selected'" : ""; ?>> Treatment Failure </option>
+												<option value='relapse' <?php echo ($typeOfPatient == "relapse") ? "selected='selected'" : ""; ?>> Relapse </option>
+												<option value='other' <?php echo ($typeOfPatient == "other") ? "selected='selected'" : ""; ?>>
 													Other </option>
 											</select>
 										</td>
+										<th scope="row"></th>
 										<td>
 											<input type="text" class="form-control typeOfPatientOther"
 												value="<?php echo $tbInfo['other_patient_type']; ?>"
@@ -377,7 +378,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 												class="mandatory">*</span></th>
 									</tr>
 									<tr style=" border: 1px solid #8080804f; ">
-										<td>
+										<td colspan="2">
 											<label class="radio-inline" style="margin-left:0;">
 												<input type="radio" class="isRequired diagnosis-check"
 													id="reasonForTbTest1" name="reasonForTbTest[reason]"
@@ -387,94 +388,88 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 												<strong>Diagnosis</strong>
 											</label>
 										</td>
-										<td style="float: left;text-align: center;">
-											<div class="diagnosis hide-reasons"
-												style="display: <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "block" : "none"; ?>;">
-												<ul style=" display: inline-flex; list-style: none; padding: 0px; ">
-													<li>
-														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox"
-																class="diagnosis-check reason-checkbox"
-																id="presumptiveTb"
-																name="reasonForTbTest[elaboration][diagnosis][Presumptive TB]"
-																value="yes" <?php echo (isset($diagnosis['Presumptive TB']) && $diagnosis['Presumptive TB'] == "yes") ? "checked" : ""; ?>>
-														</label>
-														<label class="radio-inline" for="presumptiveTb"
-															style="padding-left:17px !important;margin-left:0;">Presumptive
-															TB</label>
-													</li>
-													<li>
-														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox"
-																class="diagnosis-check reason-checkbox"
-																id="rifampicinResistantTb"
-																name="reasonForTbTest[elaboration][diagnosis][Rifampicin-resistant TB]"
-																value="yes" <?php echo (isset($diagnosis['Rifampicin-resistant TB']) && $diagnosis['Rifampicin-resistant TB'] == "yes") ? "checked" : ""; ?>>
-														</label>
-														<label class="radio-inline" for="rifampicinResistantTb"
-															style="padding-left:17px !important;margin-left:0;">Rifampicin-resistant
-															TB</label>
-													</li>
-													<li>
-														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox"
-																class="diagnosis-check reason-checkbox" id="mdrtb"
-																name="reasonForTbTest[elaboration][diagnosis][MDR-TB]"
-																value="yes" <?php echo (isset($diagnosis['MDR-TB']) && $diagnosis['MDR-TB'] == "yes") ? "checked" : ""; ?>>
-														</label>
-														<label class="radio-inline" for="mdrtb"
-															style="padding-left:17px !important;margin-left:0;">MDR-TB</label>
-													</li>
-												</ul>
-											</div>
-										</td>
-										<td>
+										<td colspan="2">
 											<label class="radio-inline" style="margin-left:0;">
 												<input type="radio" class="isRequired followup-uncheck"
-													id="reasonForTbTest1" name="reasonForTbTest[reason]"
+													id="reasonForTbTest2" name="reasonForTbTest[reason]"
 													value="followup" title="Select reason for examination"
 													onchange="checkSubReason(this,'follow-up', 'diagnosis-check');"
 													<?php echo (isset($followup) && array_filter($followup) !== []) ? "checked" : ""; ?>>
 												<strong>Follow Up</strong>
 											</label>
 										</td>
-										<td style="float: left;text-align: center;">
-
-											<div class="follow-up hide-reasons"
-												style="display: <?php echo (isset($followup) && array_filter($followup) !== []) ? "block" : "none"; ?>;">
-												<ul class="followUp">
-													<li>
-														<label>Month Of Treatment</label>
-														<input type="text"
-															value="<?php echo (isset($followup['month-of-treatment']) && $followup['month-of-treatment'] != "" && trim((string) $followup['month-of-treatment']) !== "") ? $followup['month-of-treatment'] : ""; ?>"
-															class="form-control followup-uncheck reason-checkbox"
-															id="followUp"
-															name="reasonForTbTest[elaboration][follow-up][month-of-treatment]"
-															placeholder="Enter Month Of Treatment"
-															title="Please enter Month Of Treatment">
-													</li>
-													<li>
-														<label>Patient's District TB No.</label>
-														<input type="text"
-															value="<?php echo (isset($followup['patient-district-tb-no']) && $followup['patient-district-tb-no'] != "" && trim((string) $followup['patient-district-tb-no']) !== "") ? $followup['patient-district-tb-no'] : ""; ?>"
-															class="form-control followup-uncheck reason-checkbox"
-															id="followUp"
-															name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]"
-															placeholder="Enter Patient's District TB No."
-															title="Please enter Patient's District TB No.">
-													</li>
-													<li>
-														<label>Patient's MDR No.</label>
-														<input type="text"
-															value="<?php echo (isset($followup['patient-mdr-no']) && $followup['patient-mdr-no'] != "" && trim((string) $followup['patient-mdr-no']) !== "") ? $followup['patient-mdr-no'] : ""; ?>"
-															class="form-control followup-uncheck reason-checkbox"
-															id="followUp"
-															name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]"
-															placeholder="Enter Patient's MDR No."
-															title="Please enter Patient's MDR No.">
-													</li>
-												</ul>
-											</div>
+									</tr>
+									<tr class="diagnosis hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "table-row" : "none"; ?>; border: 1px solid #8080804f;">
+										<td colspan="2" style="text-align: left; padding: 10px;">
+											<ul style="display: inline-flex; list-style: none; padding: 0px; margin: 0;">
+												<li style="margin-right: 20px;">
+													<label class="radio-inline" style="margin-left:0;">
+														<input type="checkbox"
+															class="diagnosis-check reason-checkbox"
+															id="presumptiveTb"
+															name="reasonForTbTest[elaboration][diagnosis][Presumptive TB]"
+															value="yes" <?php echo (isset($diagnosis['Presumptive TB']) && $diagnosis['Presumptive TB'] == "yes") ? "checked" : ""; ?>>
+														Presumptive TB
+													</label>
+												</li>
+												<li style="margin-right: 20px;">
+													<label class="radio-inline" style="margin-left:0;">
+														<input type="checkbox"
+															class="diagnosis-check reason-checkbox"
+															id="rifampicinResistantTb"
+															name="reasonForTbTest[elaboration][diagnosis][Rifampicin-resistant TB]"
+															value="yes" <?php echo (isset($diagnosis['Rifampicin-resistant TB']) && $diagnosis['Rifampicin-resistant TB'] == "yes") ? "checked" : ""; ?>>
+														Rifampicin-resistant TB
+													</label>
+												</li>
+												<li>
+													<label class="radio-inline" style="margin-left:0;">
+														<input type="checkbox"
+															class="diagnosis-check reason-checkbox" id="mdrtb"
+															name="reasonForTbTest[elaboration][diagnosis][MDR-TB]"
+															value="yes" <?php echo (isset($diagnosis['MDR-TB']) && $diagnosis['MDR-TB'] == "yes") ? "checked" : ""; ?>>
+														MDR-TB
+													</label>
+												</li>
+											</ul>
+										</td>
+										<td colspan="2"></td>
+									</tr>
+									<tr class="follow-up hide-reasons" style="display: <?php echo (isset($followup) && array_filter($followup) !== []) ? "table-row" : "none"; ?>; border: 1px solid #8080804f;">
+										<td colspan="2"></td>
+										<td colspan="2" style="text-align: left; padding: 10px;">
+											<ul class="followUp" style="display: inline-flex; list-style: none; padding: 0px; margin: 0;">
+												<li style="margin-right: 20px;">
+													<label>Month Of Treatment</label>
+													<input type="text"
+														value="<?php echo (isset($followup['month-of-treatment']) && $followup['month-of-treatment'] != "" && trim((string) $followup['month-of-treatment']) !== "") ? $followup['month-of-treatment'] : ""; ?>"
+														class="form-control followup-uncheck reason-checkbox"
+														id="followUp"
+														name="reasonForTbTest[elaboration][follow-up][month-of-treatment]"
+														placeholder="Enter Month Of Treatment"
+														title="Please enter Month Of Treatment">
+												</li>
+												<li style="margin-right: 20px;">
+													<label>Patient's District TB No.</label>
+													<input type="text"
+														value="<?php echo (isset($followup['patient-district-tb-no']) && $followup['patient-district-tb-no'] != "" && trim((string) $followup['patient-district-tb-no']) !== "") ? $followup['patient-district-tb-no'] : ""; ?>"
+														class="form-control followup-uncheck reason-checkbox"
+														id="followUp"
+														name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]"
+														placeholder="Enter Patient's District TB No."
+														title="Please enter Patient's District TB No.">
+												</li>
+												<li>
+													<label>Patient's MDR No.</label>
+													<input type="text"
+														value="<?php echo (isset($followup['patient-mdr-no']) && $followup['patient-mdr-no'] != "" && trim((string) $followup['patient-mdr-no']) !== "") ? $followup['patient-mdr-no'] : ""; ?>"
+														class="form-control followup-uncheck reason-checkbox"
+														id="followUp"
+														name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]"
+														placeholder="Enter Patient's MDR No."
+														title="Please enter Patient's MDR No.">
+												</li>
+											</ul>
 										</td>
 									</tr>
 									<tr>
@@ -509,11 +504,11 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">SPECIMEN INFORMATION</h3>
 								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<th scope="row"><label class="label-control" for="sampleCollectionDate">Date
+										<th scope="row" style="width:15%"><label class="label-control" for="sampleCollectionDate">Date
 												Specimen Collected <span class="mandatory">*</span></label></th>
-										<td>
+										<td style="width:35%">
 											<input class="form-control isRequired"
 												value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text"
 												name="sampleCollectionDate" id="sampleCollectionDate"
@@ -521,9 +516,9 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 												onchange="checkCollectionDate(this.value);" />
 											<span class="expiredCollectionDate" style="color:red; display:none;"></span>
 										</td>
-										<th scope="row"><label class="label-control" for="specimenType">Specimen Type
+										<th scope="row" style="width:15%"><label class="label-control" for="specimenType">Specimen Type
 												<span class="mandatory">*</span></label></th>
-										<td>
+										<td style="width:35%">
 											<select name="specimenType" id="specimenType"
 												class="form-control isRequired" title="Please choose specimen type"
 												style="width:100%" onchange="showOther(this.value,'specimenTypeOther')">

@@ -63,7 +63,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility
 
 $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
-$typeOfPatient = json_decode((string) $tbInfo['patient_type']);
+$typeOfPatient = $tbInfo['patient_type'] ?? '';
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
 $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
 $diagnosis = (array) $reasonForTbTest->elaboration->diagnosis;
@@ -285,15 +285,15 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								<tr>
 									<th scope="row"><label for="typeOfPatient">Type of patient </label></th>
 									<td>
-										<select class="select2 form-control" name="typeOfPatient[]" id="typeOfPatient"
-											title="Please select the type of patient" multiple>
+										<select class="select2 form-control" name="typeOfPatient" id="typeOfPatient"
+											title="Please select the type of patient">
 											<option value=''> -- Select -- </option>
-											<option value='new' <?php echo (isset($typeOfPatient) && in_array('new', $typeOfPatient)) ? "selected='selected'" : ""; ?>> New </option>
-											<option value='loss-to-follow-up' <?php echo (isset($typeOfPatient) && in_array('loss-to-follow-up', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
-											<option value='treatment-failure' <?php echo (isset($typeOfPatient) && in_array('treatment-failure', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Treatment Failure </option>
-											<option value='relapse' <?php echo (isset($typeOfPatient) && in_array('relapse', $typeOfPatient)) ? "selected='selected'" : ""; ?>>
+											<option value='new' <?php echo ($typeOfPatient == 'new') ? "selected='selected'" : ""; ?>> New </option>
+											<option value='loss-to-follow-up' <?php echo ($typeOfPatient == 'loss-to-follow-up') ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
+											<option value='treatment-failure' <?php echo ($typeOfPatient == 'treatment-failure') ? "selected='selected'" : ""; ?>> Treatment Failure </option>
+											<option value='relapse' <?php echo ($typeOfPatient == 'relapse') ? "selected='selected'" : ""; ?>>
 												Relapse </option>
-											<option value='other' <?php echo (isset($typeOfPatient) && in_array('other', $typeOfPatient)) ? "selected='selected'" : ""; ?>> Other </option>
+											<option value='other' <?php echo ($typeOfPatient == 'other') ? "selected='selected'" : ""; ?>> Other </option>
 										</select>
 										<input type="text" class="form-control" id="typeOfPatientOther"
 											name="typeOfPatientOther" placeholder="Enter type of patient if others"

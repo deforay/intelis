@@ -237,7 +237,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                     <tr>
                                         <th scope="row" class="th-label"><label for="typeOfPatient"><?= _translate("Type of patient"); ?><span class="mandatory">*</span> </label></th>
                                         <td class="td-input">
-                                            <select class="select2 form-control isRequired" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" onchange="showOther(this.value,'typeOfPatientOther');" multiple style="width:100%;">
+                                            <select class="select2 form-control isRequired" name="typeOfPatient" id="typeOfPatient" title="Please select the type of patient" onchange="showOther(this.value,'typeOfPatientOther');" style="width:100%;">
                                                 <option value=''> -- <?= _translate("Select"); ?> -- </option>
                                                 <option value='new'> <?= _translate("New"); ?> </option>
                                                 <option value='loss-to-follow-up'> <?= _translate("Loss to Follow Up"); ?> </option>
