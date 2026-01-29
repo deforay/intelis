@@ -266,9 +266,9 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 										<th scope="row"><label for="typeOfPatient">Type of patient<span
 													class="mandatory">*</span> </label></th>
 										<td>
-											<select class="select2 form-control isRequired" name="typeOfPatient[]"
+											<select class="select2 form-control isRequired" name="typeOfPatient"
 												id="typeOfPatient" title="Please select the type of patient"
-												onchange="showOther(this.value,'typeOfPatientOther');" multiple>
+												onchange="showOther(this.value,'typeOfPatientOther');">
 												<option value=''> -- Select -- </option>
 												<option value='new'> New </option>
 												<option value='loss-to-follow-up'> Loss to Follow Up </option>

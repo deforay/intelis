@@ -154,7 +154,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 										<td><label class="label-control" for="facilityId">Health Facility/POE
 											</label><span class="mandatory">*</span></td>
 										<td>
-											<select class="form-control isRequired " name="facilityId" id="facilityId"
+											<select class="form-control select2 isRequired" name="facilityId" id="facilityId"
 												title="Please choose facility" style="width:100%;"
 												onchange="getfacilityProvinceDetails(this);">
 												<?php echo $facility; ?>
@@ -180,7 +180,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 										<td><label class="label-control" for="referringUnit">Referring Unit </label>
 										</td>
 										<td>
-											<select class="form-control " name="referringUnit" id="referringUnit"
+											<select class="form-control select2" name="referringUnit" id="referringUnit"
 												title="Please choose referring unit"
 												onchange="showOther(this.value, 'typeOfReferringUnit');"
 												style="width:100%;">
@@ -244,16 +244,16 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label for="patientId">TB Registration Unique ID<span
+										<th scope="row" style="width:15%"><label for="patientId">TB Registration Unique ID<span
 													class="mandatory">*</span></label></th>
-										<td>
+										<td style="width:35%">
 											<input type="text" class="form-control isRequired patientId" id="patientId"
 												name="patientId" placeholder="Patient Identification"
 												title="Please enter Patient ID" style="width:100%;" onchange="" />
 										</td>
-										<th scope="row"><label for="firstName">First Name <span
+										<th scope="row" style="width:15%"><label for="firstName">First Name <span
 													class="mandatory">*</span> </label></th>
-										<td>
+										<td style="width:35%">
 											<input type="text" class="form-control isRequired" id="firstName"
 												name="firstName" placeholder="First Name"
 												title="Please enter First name" style="width:100%;" onchange="" />
@@ -310,9 +310,9 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 										<th scope="row"><label for="typeOfPatient">Type of patient<span
 													class="mandatory">*</span> </label></th>
 										<td>
-											<select class="select2 form-control isRequired" name="typeOfPatient[]"
+											<select class="select2 form-control isRequired" name="typeOfPatient"
 												id="typeOfPatient" title="Please select the type of patient"
-												onchange="showOther(this.value,'typeOfPatientOther');" multiple>
+												onchange="showOther(this.value,'typeOfPatientOther');">
 												<option value=''> -- Select -- </option>
 												<option value='new'> New </option>
 												<option value='loss-to-follow-up'> Loss to Follow Up </option>
@@ -321,25 +321,20 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 												<option value='other'> Other </option>
 											</select>
 										</td>
+										<th scope="row"></th>
 										<td>
 											<input type="text" class="form-control typeOfPatientOther"
 												id="typeOfPatientOther" name="typeOfPatientOther"
 												placeholder="Enter type of patient if others"
 												title="Please enter type of patient if others" style="display: none;" />
 										</td>
-										<!-- <th scope="row"><label for="typeOfPatient">Reason for Examination <span class="mandatory">*</span> </label></th>
-										<td>
-											<select name="reasonForTbTest" id="reasonForTbTest" class="select2 form-control isRequired" title="Please choose reason for examination" style="width:100%" multiple>
-												<?= $general->generateSelectOptions($tbReasonsForTesting, null, '-- Select --'); ?>
-											</select>
-										</td> -->
 									</tr>
 									<tr>
 										<th scope="row" colspan="4"><label for="reasonForExamination">Reason for
 												Examination<span class="mandatory">*</span></th>
 									</tr>
 									<tr style=" border: 1px solid #8080804f; ">
-										<td>
+										<td colspan="2">
 											<label class="radio-inline" style="margin-left:0;">
 												<input type="radio" class="isRequired diagnosis-check"
 													id="reasonForTbTest1" name="reasonForTbTest[reason]"
@@ -348,87 +343,84 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 												<strong>Diagnosis</strong>
 											</label>
 										</td>
-										<td style="float: left;text-align: center;">
-											<div class="diagnosis hide-reasons" style="display: none;">
-												<ul style=" display: inline-flex; list-style: none; padding: 0px; ">
-													<li>
-														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox"
-																class="diagnosis-check reason-checkbox"
-																id="presumptiveTb"
-																name="reasonForTbTest[elaboration][diagnosis][Presumptive TB]"
-																value="yes">
-														</label>
-														<label class="radio-inline" for="presumptiveTb"
-															style="padding-left:17px !important;margin-left:0;">Presumptive
-															TB</label>
-													</li>
-													<li>
-														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox"
-																class="diagnosis-check reason-checkbox"
-																id="rifampicinResistantTb"
-																name="reasonForTbTest[elaboration][diagnosis][Rifampicin-resistant TB]"
-																value="yes">
-														</label>
-														<label class="radio-inline" for="rifampicinResistantTb"
-															style="padding-left:17px !important;margin-left:0;">Rifampicin-resistant
-															TB</label>
-													</li>
-													<li>
-														<label class="radio-inline" style="width:4%;margin-left:0;">
-															<input type="checkbox"
-																class="diagnosis-check reason-checkbox" id="mdrtb"
-																name="reasonForTbTest[elaboration][diagnosis][MDR-TB]"
-																value="yes">
-														</label>
-														<label class="radio-inline" for="mdrtb"
-															style="padding-left:17px !important;margin-left:0;">MDR-TB</label>
-													</li>
-												</ul>
-											</div>
-										</td>
-										<td>
+										<td colspan="2">
 											<label class="radio-inline" style="margin-left:0;">
 												<input type="radio" class="isRequired followup-uncheck"
-													id="reasonForTbTest1" name="reasonForTbTest[reason]"
+													id="reasonForTbTest2" name="reasonForTbTest[reason]"
 													value="followup" title="Select reason for examination"
 													onchange="checkSubReason(this,'follow-up','diagnosis-check');">
 												<strong>Follow Up</strong>
 											</label>
 										</td>
-										<td style="float: left;text-align: center;">
-											<div class="follow-up hide-reasons" style="display: none;">
-												<ul class="followUp">
-													<li>
-														<label>Month Of Treatment</label>
-														<input type="text"
-															class="form-control followup-uncheck reason-checkbox"
-															id="followUp"
-															name="reasonForTbTest[elaboration][follow-up][month-of-treatment]"
-															placeholder="Enter Month Of Treatment"
-															title="Please enter Month Of Treatment">
-													</li>
-													<li>
-														<label>Patient's District TB No.</label>
-														<input type="text"
-															class="form-control followup-uncheck reason-checkbox"
-															id="followUp"
-															name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]"
-															placeholder="Enter Patient's District TB No."
-															title="Please enter Patient's District TB No.">
-													</li>
-													<li>
-														<label>Patient's MDR No.</label>
-														<input type="text"
-															class="form-control followup-uncheck reason-checkbox"
-															id="followUp"
-															name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]"
-															placeholder="Enter Patient's MDR No."
-															title="Please enter Patient's MDR No.">
-													</li>
-												</ul>
-											</div>
+									</tr>
+									<tr class="diagnosis hide-reasons" style="display: none; border: 1px solid #8080804f;">
+										<td colspan="2" style="text-align: left; padding: 10px;">
+											<ul style="display: inline-flex; list-style: none; padding: 0px; margin: 0;">
+												<li style="margin-right: 20px;">
+													<label class="radio-inline" style="margin-left:0;">
+														<input type="checkbox"
+															class="diagnosis-check reason-checkbox"
+															id="presumptiveTb"
+															name="reasonForTbTest[elaboration][diagnosis][Presumptive TB]"
+															value="yes">
+														Presumptive TB
+													</label>
+												</li>
+												<li style="margin-right: 20px;">
+													<label class="radio-inline" style="margin-left:0;">
+														<input type="checkbox"
+															class="diagnosis-check reason-checkbox"
+															id="rifampicinResistantTb"
+															name="reasonForTbTest[elaboration][diagnosis][Rifampicin-resistant TB]"
+															value="yes">
+														Rifampicin-resistant TB
+													</label>
+												</li>
+												<li>
+													<label class="radio-inline" style="margin-left:0;">
+														<input type="checkbox"
+															class="diagnosis-check reason-checkbox" id="mdrtb"
+															name="reasonForTbTest[elaboration][diagnosis][MDR-TB]"
+															value="yes">
+														MDR-TB
+													</label>
+												</li>
+											</ul>
+										</td>
+										<td colspan="2"></td>
+									</tr>
+									<tr class="follow-up hide-reasons" style="display: none; border: 1px solid #8080804f;">
+										<td colspan="2"></td>
+										<td colspan="2" style="text-align: left; padding: 10px;">
+											<ul class="followUp" style="display: inline-flex; list-style: none; padding: 0px; margin: 0;">
+												<li style="margin-right: 20px;">
+													<label>Month Of Treatment</label>
+													<input type="text"
+														class="form-control followup-uncheck reason-checkbox"
+														id="followUp"
+														name="reasonForTbTest[elaboration][follow-up][month-of-treatment]"
+														placeholder="Enter Month Of Treatment"
+														title="Please enter Month Of Treatment">
+												</li>
+												<li style="margin-right: 20px;">
+													<label>Patient's District TB No.</label>
+													<input type="text"
+														class="form-control followup-uncheck reason-checkbox"
+														id="followUp"
+														name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]"
+														placeholder="Enter Patient's District TB No."
+														title="Please enter Patient's District TB No.">
+												</li>
+												<li>
+													<label>Patient's MDR No.</label>
+													<input type="text"
+														class="form-control followup-uncheck reason-checkbox"
+														id="followUp"
+														name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]"
+														placeholder="Enter Patient's MDR No."
+														title="Please enter Patient's MDR No.">
+												</li>
+											</ul>
 										</td>
 									</tr>
 									<tr>
@@ -460,20 +452,20 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">SPECIMEN INFORMATION</h3>
 								</div>
-								<table aria-describedby="table" class="table" aria-hidden="true">
+								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<th scope="row"><label class="label-control" for="sampleCollectionDate">Date
+										<th scope="row" style="width:15%"><label class="label-control" for="sampleCollectionDate">Date
 												Specimen Collected <span class="mandatory">*</span></label></th>
-										<td>
+										<td style="width:35%">
 											<input class="form-control isRequired" type="text"
 												name="sampleCollectionDate" id="sampleCollectionDate"
 												placeholder="Sample Collection Date"
 												onchange="generateSampleCode(); checkCollectionDate(this.value);" />
 											<span class="expiredCollectionDate" style="color:red; display:none;"></span>
 										</td>
-										<th scope="row"><label class="label-control" for="specimenType">Specimen Type
+										<th scope="row" style="width:15%"><label class="label-control" for="specimenType">Specimen Type
 												<span class="mandatory">*</span></label></th>
-										<td>
+										<td style="width:35%">
 											<select name="specimenType" id="specimenType"
 												class="form-control isRequired" title="Please choose specimen type"
 												style="width:100%" onchange="showOther(this.value,'specimenTypeOther')">
@@ -597,10 +589,9 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 											<th scope="row"><label class="label-control" for="resultDate">Date Of
 													Result</label></th>
 											<td>
-												<input type="text" value="<?php echo $tbInfo['result_date']; ?>"
-													class="date-time form-control"
-													value="<?php echo $tbInfo['result_date']; ?>" id="resultDate"
-													name="resultDate" placeholder="<?= _translate("Please enter date"); ?>"
+												<input type="text" value="" class="date-time form-control" value=""
+													id="resultDate" name="resultDate"
+													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter result date" style="width:100%;" />
 											</td>
 
@@ -893,7 +884,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 							onclick="validateNow();return false;">Save</a>
 						<a class="btn btn-primary btn-disabled" href="javascript:void(0);"
 							onclick="validateNow();$('#saveNext').val('next');return false;">Save and Next</a>
-						<input type="hidden" name="formId" id="formId" value="1" />
+						<input type="hidden" name="formId" id="formId" value="" />
 						<input type="hidden" name="tbSampleId" id="tbSampleId" value="" />
 						<a href="/tb/requests/tb-requests.php" class="btn btn-default"> Cancel</a>
 					</div>

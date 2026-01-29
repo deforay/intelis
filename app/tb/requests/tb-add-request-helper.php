@@ -12,31 +12,31 @@ use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-/** @var GeoLocationsService $geolocationService */
-$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
-
-/** @var PatientsService $patientsService */
-$patientsService = ContainerRegistry::get(PatientsService::class);
-
-// Sanitized values from $request object
-/** @var ServerRequestInterface $request */
-$request = AppRegistry::get('request');
-
-$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
-
-$tableName = "form_tb";
-$tableName1 = "activity_log";
-$testTableName = 'tb_tests';
-
 try {
+
+    /** @var DatabaseService $db */
+    $db = ContainerRegistry::get(DatabaseService::class);
+
+    /** @var CommonService $general */
+    $general = ContainerRegistry::get(CommonService::class);
+
+    /** @var GeoLocationsService $geolocationService */
+    $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
+
+    /** @var PatientsService $patientsService */
+    $patientsService = ContainerRegistry::get(PatientsService::class);
+
+    // Sanitized values from $request object
+    /** @var ServerRequestInterface $request */
+    $request = AppRegistry::get('request');
+
+    $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
+
+    $tableName = "form_tb";
+    $tableName1 = "activity_log";
+    $testTableName = 'tb_tests';
+
+
     $instanceId = '';
     if (!empty($_SESSION['instanceId'])) {
         $instanceId = $_SESSION['instanceId'];
@@ -144,7 +144,7 @@ try {
 
 
     //$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
-    if (is_array($_POST['purposeOfTbTest'])) {
+    if (!empty($_POST['purposeOfTbTest']) && is_array($_POST['purposeOfTbTest'])) {
         $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
     }
     if (!empty($_POST['tbTestsRequested']) && is_array($_POST['tbTestsRequested'])) {
@@ -332,7 +332,7 @@ try {
         $tbData['is_encrypted'] = 'yes';
     }
 
-
+    $id = false;
     if (!empty($_POST['tbSampleId'])) {
         $db->where('tb_id', $_POST['tbSampleId']);
         $id = $db->update($tableName, $tbData);
@@ -354,10 +354,12 @@ try {
     } else {
         header("Location:/tb/requests/tb-requests.php");
     }
-} catch (Exception $e) {
-    LoggerUtility::log("error", $e->getMessage(), [
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getMessage(), [
+        'trace' => $e->getTraceAsString(),
         'file' => $e->getFile(),
         'line' => $e->getLine(),
-        'trace' => $e->getTraceAsString(),
+        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery()
     ]);
 }
