@@ -127,7 +127,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
             );
 
             foreach ($iterator as $fileInfo) {
-                if ($fileInfo->getFilename() === '.gitkeep') {
+                if (in_array($fileInfo->getFilename(), ['.gitkeep', '.hgkeep'], true)) {
                     continue; // keep marker files
                 }
                 if (!$fileInfo->isFile()) {
@@ -188,7 +188,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
 
     // Try streaming with find + sort to avoid loading everything into memory
     $findCmd = sprintf(
-        'find %s -type f ! -name \'.htaccess\' ! -name \'index.php\' ! -name \'.gitkeep\' -printf \'%%T@|%%p|%%s\n\' 2>/dev/null | sort -n',
+        'find %s -type f ! -name \'.htaccess\' ! -name \'index.php\' ! -name \'.gitkeep\' ! -name \'.hgkeep\' -printf \'%%T@|%%p|%%s\n\' 2>/dev/null | sort -n',
         escapeshellarg($folder)
     );
 
@@ -288,7 +288,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
                 if (in_array($basename, ['.htaccess', 'index.php'], true)) {
                     continue;
                 }
-                if ($basename === '.gitkeep') {
+                if (in_array($basename, ['.gitkeep', '.hgkeep'], true)) {
                     continue; // keep marker files
                 }
                 $mtime = $file->getMTime();
