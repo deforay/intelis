@@ -29,7 +29,7 @@ if (!is_dir($logDir)) {
     exit(CLI\ERROR);
 }
 
-$preserveFiles = ['.hgkeep', '.htaccess'];
+$preserveFiles = ['.gitkeep', '.hgkeep', '.htaccess'];
 $removedFiles = 0;
 $errors = [];
 $files = [];
