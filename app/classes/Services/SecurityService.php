@@ -85,7 +85,7 @@ final class SecurityService
         }
     }
 
-    public static function checkCSRF(ServerRequestInterface $request, bool $rotateCSRF = false): void
+    public static function checkCSRF(ServerRequestInterface $request): void
     {
         // Retrieve CSRF token from header or body
         $csrfToken = $request->getHeaderLine('X-CSRF-Token')
@@ -99,37 +99,18 @@ final class SecurityService
             }
             exit;
         }
-
-
-        // Optionally rotate the CSRF token after successful use
-        if (CommonService::isAjaxRequest($request) === false && $rotateCSRF) {
-            self::rotateCSRF();
-        }
     }
-    public static function rotateCSRF(): void
-    {
-        self::invalidateCSRF();
-        self::generateCSRF();
-    }
+
     public static function generateCSRF(): void
     {
-        $_SESSION['csrf_token'] ??= MiscUtility::generateRandomString();
-        $_SESSION['csrf_token_time'] = time();
-    }
-
-    private static function invalidateCSRF(): void
-    {
-        if (isset($_SESSION['csrf_token'])) {
-            unset($_SESSION['csrf_token']);
-            unset($_SESSION['csrf_token_time']);
+        if (!isset($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = MiscUtility::generateRandomString();
+            $_SESSION['csrf_token_time'] = time();
         }
     }
 
-    public static function redirect(string $url, $rotateCSRF = false): void
+    public static function redirect(string $url): void
     {
-        if ($rotateCSRF) {
-            self::rotateCSRF();
-        }
         if (str_contains(strtolower($url), 'location:')) {
             header($url);
         } else {
