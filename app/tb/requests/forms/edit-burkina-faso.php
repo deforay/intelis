@@ -50,7 +50,7 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
 $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
-$typeOfPatient = json_decode((string) $tbInfo['patient_type']);
+$typeOfPatient = $tbInfo['patient_type'] ?? '';
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
 $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
 $diagnosis = (array)$reasonForTbTest->elaboration->diagnosis;
@@ -257,13 +257,13 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                     <tr>
                                         <th scope="row" class="th-label"><label for="typeOfPatient"><?= _translate("Type of patient"); ?><span class="mandatory">*</span> </label></th>
                                         <td class="td-input">
-                                            <select class="select2 form-control isRequired" name="typeOfPatient[]" id="typeOfPatient" title="Please select the type of patient" onchange="showOther(this.value,'typeOfPatientOther');" multiple style="width:100%;">
+                                            <select class="select2 form-control isRequired" name="typeOfPatient" id="typeOfPatient" title="Please select the type of patient" onchange="showOther(this.value,'typeOfPatientOther');" style="width:100%;">
                                                 <option value=''> -- <?= _translate("Select"); ?> -- </option>
-                                                <option value='new' <?php echo (is_array($typeOfPatient) && in_array("new", $typeOfPatient)) ? "selected='selected'" : ""; ?>> <?= _translate("New"); ?> </option>
-                                                <option value='loss-to-follow-up' <?php echo (is_array($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) ? "selected='selected'" : ""; ?>> <?= _translate("Loss to Follow Up"); ?> </option>
-                                                <option value='treatment-failure' <?php echo (is_array($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) ? "selected='selected'" : ""; ?>> <?= _translate("Treatment Failure"); ?> </option>
-                                                <option value='relapse' <?php echo (is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) ? "selected='selected'" : ""; ?>> <?= _translate("Relapse"); ?> </option>
-                                                <option value='other' <?php echo (is_array($typeOfPatient) && in_array("other", $typeOfPatient)) ? "selected='selected'" : ""; ?>> <?= _translate("Other"); ?> </option>
+                                                <option value='new' <?php echo ($typeOfPatient == "new") ? "selected='selected'" : ""; ?>> <?= _translate("New"); ?> </option>
+                                                <option value='loss-to-follow-up' <?php echo ($typeOfPatient == "loss-to-follow-up") ? "selected='selected'" : ""; ?>> <?= _translate("Loss to Follow Up"); ?> </option>
+                                                <option value='treatment-failure' <?php echo ($typeOfPatient == "treatment-failure") ? "selected='selected'" : ""; ?>> <?= _translate("Treatment Failure"); ?> </option>
+                                                <option value='relapse' <?php echo ($typeOfPatient == "relapse") ? "selected='selected'" : ""; ?>> <?= _translate("Relapse"); ?> </option>
+                                                <option value='other' <?php echo ($typeOfPatient == "other") ? "selected='selected'" : ""; ?>> <?= _translate("Other"); ?> </option>
                                             </select>
                                             <input type="text" class="form-control typeOfPatientOther" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="Enter type of patient if others" title="Please enter type of patient if others" style="display: none;" />
                                         </td>
