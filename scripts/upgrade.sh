@@ -3,6 +3,18 @@
 # To use this script:
 # sudo wget -O /usr/local/bin/intelis-update https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh && sudo chmod +x /usr/local/bin/intelis-update
 # sudo intelis-update
+#
+# Options:
+#   -p PATH   Specify the LIS installation path (e.g., -p /var/www/intelis)
+#   -A        Auto-detect and update ALL intelis installations in /var/www
+#   -s        Skip Ubuntu system updates
+#   -b        Skip backup prompts
+#
+# Examples:
+#   sudo intelis-update                    # Interactive single instance
+#   sudo intelis-update -p /var/www/intelis  # Specific path
+#   sudo intelis-update -A                   # Update all instances in /var/www
+#   sudo intelis-update -A -s -b             # Update all, skip updates and backups
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -57,18 +69,38 @@ resolve_lis_path() {
     fi
 }
 
+# Detect all valid intelis installations in a directory
+detect_intelis_installations() {
+    local search_dir="${1:-/var/www}"
+    local found_paths=()
+
+    for dir in "$search_dir"/*/; do
+        [ -d "$dir" ] || continue
+        # Remove trailing slash for cleaner paths
+        dir="${dir%/}"
+        if is_valid_application_path "$dir"; then
+            found_paths+=("$dir")
+        fi
+    done
+
+    printf '%s\n' "${found_paths[@]}"
+}
+
 # Initialize flags
 skip_ubuntu_updates=false
 skip_backup=false
+auto_detect=false
 lis_path=""
+declare -a lis_paths=()
 
 log_file="/tmp/intelis-upgrade-$(date +'%Y%m%d-%H%M%S').log"
 
 # Parse command-line options
-while getopts ":sbp:" opt; do
+while getopts ":sbAp:" opt; do
     case $opt in
     s) skip_ubuntu_updates=true ;;
     b) skip_backup=true ;;
+    A) auto_detect=true ;;
     p) lis_path="$OPTARG" ;;
         # Ignore invalid options silently
     esac
@@ -187,28 +219,56 @@ current_trap=$(trap -p ERR)
 # Disable the error trap temporarily
 trap - ERR
 
-# Prompt for the LIS path if not provided via the command-line argument
-if [ -z "$lis_path" ]; then
+# Handle path resolution based on mode
+if [ "$auto_detect" = true ]; then
+    # Auto-detect mode: scan /var/www for all valid installations
+    print info "Scanning /var/www for intelis installations..."
+    mapfile -t lis_paths < <(detect_intelis_installations /var/www)
+
+    if [ ${#lis_paths[@]} -eq 0 ]; then
+        print error "No valid intelis installations found in /var/www"
+        log_action "Auto-detect found no valid installations"
+        exit 1
+    fi
+
+    print info "Found ${#lis_paths[@]} installation(s):"
+    for p in "${lis_paths[@]}"; do
+        print info "  - $p"
+    done
+    log_action "Auto-detected ${#lis_paths[@]} installations: ${lis_paths[*]}"
+elif [ -n "$lis_path" ]; then
+    # Single path provided via -p flag
+    lis_path="$(resolve_lis_path "$lis_path")"
+    if ! is_valid_application_path "$lis_path"; then
+        print error "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
+        log_action "Invalid LIS path specified: $lis_path"
+        exit 1
+    fi
+    lis_paths=("$lis_path")
+    print info "LIS path is set to ${lis_path}"
+    log_action "LIS path is set to ${lis_path}"
+else
+    # Interactive prompt for path (existing behavior)
     echo "Enter the LIS installation path [press enter for /var/www/intelis]: "
     if read -t 60 lis_path && [ -n "$lis_path" ]; then
         : # user provided a value; resolver will honor it as-is
     else
         lis_path=""  # empty => resolver will auto-pick intelis, else vlsm
     fi
+    lis_path="$(resolve_lis_path "$lis_path")"
+    if ! is_valid_application_path "$lis_path"; then
+        print error "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
+        log_action "Invalid LIS path specified: $lis_path"
+        exit 1
+    fi
+    lis_paths=("$lis_path")
+    print info "LIS path is set to ${lis_path}"
+    log_action "LIS path is set to ${lis_path}"
 fi
 
-# Resolve LIS path
-lis_path="$(resolve_lis_path "$lis_path")"
-
-
-print info "LIS path is set to ${lis_path}"
-log_action "LIS path is set to ${lis_path}"
-
-# Check if the LIS path is valid
-if ! is_valid_application_path "$lis_path"; then
-    print error "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
-    log_action "Invalid LIS path specified: $lis_path"
-    exit 1
+# For single-instance mode, set lis_path for backward compatibility with existing code
+if [ ${#lis_paths[@]} -eq 1 ]; then
+    lis_path="${lis_paths[0]}"
 fi
 
 # Restore the previous error trap
@@ -221,9 +281,12 @@ if ! command -v mysql &>/dev/null; then
     exit 1
 fi
 
-# Clean up vim swap files and setup MySQL config
-find "${lis_path}" -name ".*.swp" -delete 2>/dev/null || true
-setup_mysql_config "${lis_path}/configs/config.production.php" && print info "MySQL config ready"
+# Clean up vim swap files and setup MySQL config (use first instance for config)
+first_lis_path="${lis_paths[0]}"
+for p in "${lis_paths[@]}"; do
+    find "$p" -name ".*.swp" -delete 2>/dev/null || true
+done
+setup_mysql_config "${first_lis_path}/configs/config.production.php" && print info "MySQL config ready"
 
 MYSQL_CONFIG_FILE="/etc/mysql/mysql.conf.d/mysqld.cnf"
 backup_timestamp=$(date +%Y%m%d%H%M%S)
@@ -436,12 +499,12 @@ print info "Removed all MySQL backup files matching *.bak.*"
 
 print info "Applying SET PERSIST sql_mode='' to override MySQL defaults..."
 
-# Determine which password to use
+# Determine which password to use (use first instance's config for multi-instance)
 if [ -n "$mysql_root_password" ]; then
     mysql_pw="$mysql_root_password"
     print info "Using user-provided MySQL root password"
-elif [ -f "${lis_path}/configs/config.production.php" ]; then
-    mysql_pw=$(extract_mysql_password_from_config "${lis_path}/configs/config.production.php")
+elif [ -f "${first_lis_path}/configs/config.production.php" ]; then
+    mysql_pw=$(extract_mysql_password_from_config "${first_lis_path}/configs/config.production.php")
     print info "Extracted MySQL root password from config.production.php"
 else
     print error "MySQL root password not provided and config.production.php not found."
@@ -620,7 +683,10 @@ fi
 
 log_action "Ubuntu packages updated/installed."
 
-set_permissions "${lis_path}/var/logs" "full"
+# Set initial log permissions for all instances
+for p in "${lis_paths[@]}"; do
+    set_permissions "$p/var/logs" "full"
+done
 
 # Function to list databases and get the database list
 get_databases() {
@@ -710,41 +776,31 @@ if [ "$skip_backup" = false ]; then
         log_action "Skipping database backup as per user request."
     fi
 
-    # Ask the user if they want to backup the LIS folder
-    if ask_yes_no "Do you want to backup the LIS folder before updating?" "no"; then
-        # Backup Old LIS Folder
-        print info "Backing up old LIS folder..."
-        timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
-        backup_folder="/var/intelis-backup/www/intelis-backup-$timestamp"
-        mkdir -p "${backup_folder}"
-        rsync -a --delete --exclude "public/temporary/" --inplace --whole-file --info=progress2 "${lis_path}/" "${backup_folder}/" &
-        rsync_pid=$!           # Save the process ID of the rsync command
-        spinner "${rsync_pid}" # Start the spinner
-        log_action "LIS folder backed up to ${backup_folder}"
+    # Ask the user if they want to backup the LIS folder(s)
+    local backup_prompt="Do you want to backup the LIS folder before updating?"
+    if [ ${#lis_paths[@]} -gt 1 ]; then
+        backup_prompt="Do you want to backup all ${#lis_paths[@]} LIS folders before updating?"
+    fi
+
+    if ask_yes_no "$backup_prompt" "no"; then
+        timestamp=$(date +%Y%m%d-%H%M%S)
+        for p in "${lis_paths[@]}"; do
+            local folder_name=$(basename "$p")
+            local backup_folder="/var/intelis-backup/www/${folder_name}-backup-$timestamp"
+            print info "Backing up $p..."
+            mkdir -p "${backup_folder}"
+            rsync -a --delete --exclude "public/temporary/" --inplace --whole-file --info=progress2 "$p/" "${backup_folder}/" &
+            rsync_pid=$!
+            spinner "${rsync_pid}"
+            log_action "LIS folder $p backed up to ${backup_folder}"
+        done
     else
         print info "Skipping LIS folder backup as per user request."
         log_action "Skipping LIS folder backup as per user request."
     fi
 fi
 
-if [ -d "${lis_path}/run-once" ]; then
-    rm -rf "${lis_path}/run-once"
-fi
-
-print info "Calculating checksums of current composer files..."
-CURRENT_COMPOSER_JSON_CHECKSUM="none"
-CURRENT_COMPOSER_LOCK_CHECKSUM="none"
-
-if [ -f "${lis_path}/composer.json" ]; then
-    CURRENT_COMPOSER_JSON_CHECKSUM=$(md5sum "${lis_path}/composer.json" | awk '{print $1}')
-    print info "Current composer.json checksum: ${CURRENT_COMPOSER_JSON_CHECKSUM}"
-fi
-
-if [ -f "${lis_path}/composer.lock" ]; then
-    CURRENT_COMPOSER_LOCK_CHECKSUM=$(md5sum "${lis_path}/composer.lock" | awk '{print $1}')
-    print info "Current composer.lock checksum: ${CURRENT_COMPOSER_LOCK_CHECKSUM}"
-fi
-
+# Download LIS package ONCE (shared across all instances)
 print header "Downloading LIS"
 
 download_file "master.tar.gz" "https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master" "Downloading LIS package..." || {
@@ -753,392 +809,353 @@ download_file "master.tar.gz" "https://codeload.github.com/deforay/intelis/tar.g
     exit 1
 }
 
-# Extract the tar.gz file into temporary directory
+# Extract the tar.gz file into temporary directory ONCE
 temp_dir=$(mktemp -d)
 print info "Extracting files from master.tar.gz..."
 
 tar -xzf master.tar.gz -C "$temp_dir" &
-tar_pid=$!           # Save tar PID
-spinner "${tar_pid}" # Spinner tracks extraction
-wait ${tar_pid}      # Wait for extraction to finish
+tar_pid=$!
+spinner "${tar_pid}"
+wait ${tar_pid}
 
-# Copy the unzipped content to the LIS PATH, overwriting any existing files
-# Find all symlinks in the destination directory and create an exclude pattern
-exclude_options=""
-# Initialize symlinks_found to 0 before using it
-symlinks_found=0
-for symlink in $(find "$lis_path" -type l -not -path "*/\.*" 2>/dev/null); do
-    # Extract the relative path from the full path
-    rel_path=${symlink#"$lis_path/"}
-    exclude_options="$exclude_options --exclude '$rel_path'"
-    print info "Detected symlink: $rel_path"
-    symlinks_found=$((symlinks_found + 1))
+print success "LIS package ready for deployment to ${#lis_paths[@]} instance(s)."
+
+# Track which instances were updated for summary
+declare -a updated_instances=()
+declare -a failed_instances=()
+
+# Function to upgrade a single instance
+upgrade_instance() {
+    local lis_path="$1"
+    local instance_num="$2"
+    local total_instances="$3"
+    local temp_dir="$4"
+
+    print header "Upgrading instance ${instance_num}/${total_instances}: ${lis_path}"
+    log_action "Starting upgrade for instance: ${lis_path}"
+
+    # Remove old run-once directory
+    if [ -d "${lis_path}/run-once" ]; then
+        rm -rf "${lis_path}/run-once"
+    fi
+
+    # Calculate checksums of current composer files for this instance
+    local CURRENT_COMPOSER_JSON_CHECKSUM="none"
+    local CURRENT_COMPOSER_LOCK_CHECKSUM="none"
+
+    if [ -f "${lis_path}/composer.json" ]; then
+        CURRENT_COMPOSER_JSON_CHECKSUM=$(md5sum "${lis_path}/composer.json" | awk '{print $1}')
+    fi
+
+    if [ -f "${lis_path}/composer.lock" ]; then
+        CURRENT_COMPOSER_LOCK_CHECKSUM=$(md5sum "${lis_path}/composer.lock" | awk '{print $1}')
+    fi
+
+    # Find all symlinks in the destination directory and create an exclude pattern
+    local exclude_options=""
+    local symlinks_found=0
+    for symlink in $(find "$lis_path" -type l -not -path "*/\.*" 2>/dev/null); do
+        local rel_path=${symlink#"$lis_path/"}
+        exclude_options="$exclude_options --exclude '$rel_path'"
+        symlinks_found=$((symlinks_found + 1))
+    done
+
+    if [ $symlinks_found -gt 0 ]; then
+        print info "Preserving $symlinks_found symlinks."
+    fi
+
+    # Rsync from temp to this instance
+    eval rsync -a --inplace --whole-file $exclude_options --info=progress2 "$temp_dir/intelis-master/" "$lis_path/" &
+    local rsync_pid=$!
+    spinner "${rsync_pid}"
+    wait ${rsync_pid}
+    local rsync_status=$?
+
+    if [ $rsync_status -ne 0 ]; then
+        print error "Error occurred during rsync for $lis_path"
+        log_action "Error during rsync operation. Path was: $lis_path"
+        return 1
+    fi
+
+    print success "Files copied to ${lis_path}."
+    log_action "Files copied to ${lis_path}."
+
+    # Migrate directories to var/ structure
+    print info "Migrating directories to var/ structure..."
+
+    # Ensure var/* root exists
+    mkdir -p "${lis_path}/var" 2>/dev/null || true
+    chown www-data:www-data "${lis_path}/var" 2>/dev/null || true
+
+    # Define directories to migrate
+    declare -A dir_migrations=(
+        ["${lis_path}/logs"]="logs"
+        ["${lis_path}/audit-trail"]="audit-trail"
+        ["${lis_path}/cache"]="cache"
+        ["${lis_path}/metadata"]="metadata"
+        ["${lis_path}/public/uploads/track-api"]="track-api"
+    )
+
+    declare -a dir_migration_pids=()
+    declare -A dir_migration_labels=()
+
+    # Migrate each directory with progress indication
+    for src_dir in "${!dir_migrations[@]}"; do
+        local dest_name="${dir_migrations[$src_dir]}"
+        local dest_dir="${lis_path}/var/${dest_name}"
+
+        if [ -d "$src_dir" ]; then
+            (
+                move_dir_fully "$src_dir" "$dest_dir"
+            ) &
+            local migration_pid=$!
+            dir_migration_pids+=("${migration_pid}")
+            dir_migration_labels["${migration_pid}"]="${dest_name}"
+        fi
+    done
+
+    # Set proper permissions
+    set_permissions "${lis_path}" "quick"
+
+    # Make intelis command globally accessible (only for first instance)
+    if [ "$instance_num" -eq 1 ]; then
+        print info "Setting up intelis command..."
+        local TARGET="/usr/local/bin/intelis"
+        local SOURCE="${lis_path}/intelis"
+
+        if [ -f "${SOURCE}" ]; then
+            rm -f "${TARGET}" /usr/bin/intelis 2>/dev/null || true
+            chmod 755 "${SOURCE}"
+            ln -sf "${SOURCE}" "${TARGET}"
+            print success "intelis command installed globally at ${TARGET}"
+        fi
+    fi
+
+    # Check for config.production.php and its content
+    local config_file="${lis_path}/configs/config.production.php"
+    local dist_config_file="${lis_path}/configs/config.production.dist.php"
+
+    if [ -f "${config_file}" ]; then
+        if ! grep -q "\$systemConfig\['database'\]\['host'\]" "${config_file}"; then
+            mv "${config_file}" "${config_file}_backup_$(date +%Y%m%d_%H%M%S)"
+            cp "${dist_config_file}" "${config_file}"
+            update_configuration
+        fi
+    else
+        if [ -f "${dist_config_file}" ]; then
+            cp "${dist_config_file}" "${config_file}"
+            update_configuration
+        fi
+    fi
+
+    # Check if the cache_di setting is set to true
+    ensure_cache_di_true "${config_file}"
+
+    # Run Composer Install as www-data
+    print info "Running composer operations..."
+    cd "${lis_path}"
+
+    sudo -u www-data composer config process-timeout 30000 --no-interaction
+    sudo -u www-data composer clear-cache --no-interaction
+
+    local NEED_FULL_INSTALL=false
+
+    # Check if the vendor directory exists
+    if [ ! -d "${lis_path}/vendor" ]; then
+        NEED_FULL_INSTALL=true
+    else
+        # Calculate new checksums
+        local NEW_COMPOSER_JSON_CHECKSUM="none"
+        local NEW_COMPOSER_LOCK_CHECKSUM="none"
+
+        if [ -f "${lis_path}/composer.json" ]; then
+            NEW_COMPOSER_JSON_CHECKSUM=$(md5sum "${lis_path}/composer.json" 2>/dev/null | awk '{print $1}')
+        else
+            NEED_FULL_INSTALL=true
+        fi
+
+        if [ -f "${lis_path}/composer.lock" ] && [ "$NEED_FULL_INSTALL" = false ]; then
+            NEW_COMPOSER_LOCK_CHECKSUM=$(md5sum "${lis_path}/composer.lock" 2>/dev/null | awk '{print $1}')
+        else
+            NEED_FULL_INSTALL=true
+        fi
+
+        if [ "$NEED_FULL_INSTALL" = false ]; then
+            if [ "$CURRENT_COMPOSER_JSON_CHECKSUM" = "none" ] || [ "$CURRENT_COMPOSER_LOCK_CHECKSUM" = "none" ] ||
+                [ "$NEW_COMPOSER_JSON_CHECKSUM" = "none" ] || [ "$NEW_COMPOSER_LOCK_CHECKSUM" = "none" ] ||
+                [ "$CURRENT_COMPOSER_JSON_CHECKSUM" != "$NEW_COMPOSER_JSON_CHECKSUM" ] ||
+                [ "$CURRENT_COMPOSER_LOCK_CHECKSUM" != "$NEW_COMPOSER_LOCK_CHECKSUM" ]; then
+                NEED_FULL_INSTALL=true
+            fi
+        fi
+    fi
+
+    # Download and install vendor if needed
+    if [ "$NEED_FULL_INSTALL" = true ]; then
+        print info "Installing dependencies..."
+        if curl --output /dev/null --silent --head --fail "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz"; then
+            # Check if vendor.tar.gz already downloaded (shared across instances)
+            if [ ! -f "/tmp/vendor.tar.gz" ]; then
+                download_file "/tmp/vendor.tar.gz" "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz" "Downloading vendor packages..."
+                download_file "/tmp/vendor.tar.gz.md5" "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.md5" "Downloading checksum..."
+            fi
+
+            # Verify checksum (cd to /tmp so md5sum finds the file by name)
+            if (cd /tmp && md5sum -c vendor.tar.gz.md5 2>/dev/null); then
+                tar -xzf /tmp/vendor.tar.gz -C "${lis_path}" &
+                local vendor_tar_pid=$!
+                spinner "${vendor_tar_pid}"
+                wait ${vendor_tar_pid}
+
+                find "${lis_path}/vendor" -exec chown www-data:www-data {} \; 2>/dev/null || true
+                chmod -R 755 "${lis_path}/vendor" 2>/dev/null || true
+
+                sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev --no-interaction
+            else
+                sudo -u www-data composer install --prefer-dist --no-dev --no-interaction
+            fi
+        else
+            sudo -u www-data composer install --prefer-dist --no-dev --no-interaction
+        fi
+    fi
+
+    sudo -u www-data composer dump-autoload -o --no-interaction
+    print success "Composer operations completed."
+
+    # Database connectivity and migrations
+    print info "Checking database connectivity..."
+    php "${lis_path}/vendor/bin/db-tools" db:test --all
+
+    print info "Running database migrations..."
+    sudo -u www-data composer post-update
+
+    print info "Running database repairs..."
+    sudo -u www-data composer db:repair
+
+    # Wait for directory migrations
+    if [ "${#dir_migration_pids[@]}" -gt 0 ]; then
+        for pid in "${dir_migration_pids[@]}"; do
+            wait "$pid" 2>/dev/null || true
+        done
+    fi
+
+    # Run run-once scripts
+    if [ -d "${lis_path}/run-once" ]; then
+        local run_once_scripts=("${lis_path}/run-once/"*.php)
+        if [ -e "${run_once_scripts[0]}" ]; then
+            for script_path in "${run_once_scripts[@]}"; do
+                php "$script_path" || print warning "Run-once script $script_path exited with status $?"
+            done
+        fi
+    fi
+
+    # Cleanup
+    if [ -f "${lis_path}/startup.php" ]; then
+        sudo rm "${lis_path}/startup.php"
+        sudo touch "${lis_path}/startup.php"
+    fi
+
+    if [ -f "${lis_path}/var/cache/CompiledContainer.php" ]; then
+        sudo rm "${lis_path}/var/cache/CompiledContainer.php"
+    fi
+
+    if [ -f "${lis_path}/public/test.php" ]; then
+        sudo rm "${lis_path}/public/test.php"
+    fi
+
+    # Cron job setup
+    setup_intelis_cron "${lis_path}"
+
+    # Set final permissions in background
+    (intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
+        find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
+    disown
+
+    print success "Instance ${lis_path} updated successfully."
+    log_action "Instance ${lis_path} update complete."
+
+    return 0
+}
+
+# Download and setup intelis-refresh script (once)
+download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh
+chmod +x /usr/local/bin/intelis-refresh
+
+# Process each instance
+total_instances=${#lis_paths[@]}
+for i in "${!lis_paths[@]}"; do
+    if upgrade_instance "${lis_paths[$i]}" "$((i+1))" "$total_instances" "$temp_dir"; then
+        updated_instances+=("${lis_paths[$i]}")
+    else
+        failed_instances+=("${lis_paths[$i]}")
+    fi
 done
 
-print info "Found $symlinks_found symlinks that will be preserved."
+# Maintenance scripts prompt (only for single instance to avoid tedious multi-prompts)
+if [ ${#lis_paths[@]} -eq 1 ]; then
+    lis_path="${lis_paths[0]}"
+    echo ""
+    if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
+        echo "Available maintenance scripts to run:"
+        files=("${lis_path}/maintenance/"*.php)
+        for i in "${!files[@]}"; do
+            filename=$(basename "${files[$i]}")
+            echo "$((i + 1))) $filename"
+        done
 
-# Use the dynamically generated exclude options in the rsync command
-eval rsync -a --inplace --whole-file $exclude_options --info=progress2 "$temp_dir/intelis-master/" "$lis_path/" &
-rsync_pid=$!           # Save the process ID of the rsync command
-spinner "${rsync_pid}" # Start the spinner
-wait ${rsync_pid}      # Wait for the rsync process to finish
-rsync_status=$?        # Capture the exit status after waiting
+        echo "Enter the numbers of the scripts you want to run separated by commas (e.g., 1,2,4) or type 'all' to run them all."
+        read -r files_to_run
 
-# Check if rsync command succeeded
-if [ $rsync_status -ne 0 ]; then
-    print error "Error occurred during rsync. Logging and continuing..."
-    log_action "Error during rsync operation. Path was: $lis_path"
-else
-    print success "Files copied successfully, preserving symlinks where necessary."
-    log_action "Files copied successfully."
+        if [[ "$files_to_run" == "all" ]]; then
+            for file in "${files[@]}"; do
+                print info "Running $file..."
+                sudo -u www-data php "$file"
+            done
+        else
+            IFS=',' read -ra ADDR <<<"$files_to_run"
+            for i in "${ADDR[@]}"; do
+                i=$(echo "$i" | xargs)
+                file_index=$((i - 1))
+                if [[ $file_index -ge 0 ]] && [[ $file_index -lt ${#files[@]} ]]; then
+                    file="${files[$file_index]}"
+                    print info "Running $file..."
+                    sudo -u www-data php "$file"
+                fi
+            done
+        fi
+    fi
 fi
 
-# Remove the empty directory and the downloaded tar file
-if [ -d "$temp_dir/intelis-master/" ]; then
-    rm -rf "$temp_dir/intelis-master/"
-fi
+# Cleanup temp files
 if [ -d "$temp_dir" ]; then
     rm -rf "$temp_dir"
 fi
-
-# Remove the downloaded tar file if it exists
 if [ -f master.tar.gz ]; then
     rm master.tar.gz
 fi
-
-print success "LIS copied to ${lis_path}."
-log_action "LIS copied to ${lis_path}."
-
-print header "Migrating directories to var/ structure"
-
-# Ensure var/* root exists
-mkdir -p "${lis_path}/var" 2>/dev/null || true
-chown www-data:www-data "${lis_path}/var" 2>/dev/null || true
-
-# Define directories to migrate
-declare -A dir_migrations=(
-    ["${lis_path}/logs"]="logs"
-    ["${lis_path}/audit-trail"]="audit-trail"
-    ["${lis_path}/cache"]="cache"
-    ["${lis_path}/metadata"]="metadata"
-    ["${lis_path}/public/uploads/track-api"]="track-api"
-)
-
-declare -a dir_migration_pids=()
-declare -A dir_migration_labels=()
-
-# Migrate each directory with progress indication
-for src_dir in "${!dir_migrations[@]}"; do
-    dest_name="${dir_migrations[$src_dir]}"
-    dest_dir="${lis_path}/var/${dest_name}"
-    
-    if [ -d "$src_dir" ]; then
-        print info "Moving ${dest_name}/ to var/${dest_name}/ in background"
-        (
-            move_dir_fully "$src_dir" "$dest_dir"
-        ) &
-        migration_pid=$!
-        dir_migration_pids+=("${migration_pid}")
-        dir_migration_labels["${migration_pid}"]="${dest_name}"
-        log_action "Started migration of ${dest_name} (pid: ${migration_pid})"
-    else
-        print info "Skipping ${dest_name}/ (not found)"
-    fi
-done
-
-if [ "${#dir_migration_pids[@]}" -gt 0 ]; then
-    print info "Directory migrations running in background; continuing with upgrade..."
-else
-    print success "Directory migration completed (nothing to move)"
+if [ -f "/tmp/vendor.tar.gz" ]; then
+    rm /tmp/vendor.tar.gz
+fi
+if [ -f "/tmp/vendor.tar.gz.md5" ]; then
+    rm /tmp/vendor.tar.gz.md5
 fi
 
-# Set proper permissions
-set_permissions "${lis_path}" "quick"
-
-
-# Make intelis command globally accessible
-print info "Setting up intelis command..."
-
-TARGET="/usr/local/bin/intelis"
-SOURCE="${lis_path}/intelis"
-
-if [ -f "${SOURCE}" ]; then
-    # Remove any existing version
-    rm -f "${TARGET}" /usr/bin/intelis 2>/dev/null || true
-
-    # Create symlink and make source executable
-    chmod 755 "${SOURCE}"
-    ln -sf "${SOURCE}" "${TARGET}"
-
-    print success "intelis command installed globally at ${TARGET}"
-    log_action "intelis command installed at ${TARGET}"
-else
-    print warning "intelis script not found at ${SOURCE}, skipping setup"
-    log_action "intelis setup skipped — source missing"
-fi
-
-
-# Check for config.production.php and its content
-config_file="${lis_path}/configs/config.production.php"
-dist_config_file="${lis_path}/configs/config.production.dist.php"
-
-if [ -f "${config_file}" ]; then
-    # Check if the file contains the required string
-    if ! grep -q "\$systemConfig\['database'\]\['host'\]" "${config_file}"; then
-        # Backup config.production.php
-        mv "${config_file}" "${config_file}_backup_$(date +%Y%m%d_%H%M%S)"
-
-        # Copy from config.production.dist.php to config.production.php
-        cp "${dist_config_file}" "${config_file}"
-
-        update_configuration
-    else
-        echo "Configuration file already contains required settings."
-    fi
-else
-    echo "Configuration file does not exist. Creating a new one from the distribution file."
-    cp "${dist_config_file}" "${config_file}"
-
-    update_configuration
-fi
-
-# Check if the cache_di setting is set to true
-ensure_cache_di_true "${config_file}"
-
-# Run Composer Install as www-data
-print header "Running composer operations"
-cd "${lis_path}"
-
-# Configure composer timeout regardless of installation path
-sudo -u www-data composer config process-timeout 30000 --no-interaction
-sudo -u www-data composer clear-cache --no-interaction
-
-# Replace the checksum comparison part with this improved version:
-
-echo "Checking if composer dependencies need updating..."
-NEED_FULL_INSTALL=false
-
-# Check if the vendor directory exists
-if [ ! -d "${lis_path}/vendor" ]; then
-    print info "Vendor directory doesn't exist. Full installation needed."
-    NEED_FULL_INSTALL=true
-else
-    # Calculate new checksums
-    NEW_COMPOSER_JSON_CHECKSUM="none"
-    NEW_COMPOSER_LOCK_CHECKSUM="none"
-
-    if [ -f "${lis_path}/composer.json" ]; then
-        NEW_COMPOSER_JSON_CHECKSUM=$(md5sum "${lis_path}/composer.json" 2>/dev/null | awk '{print $1}')
-        print info "New composer.json checksum: ${NEW_COMPOSER_JSON_CHECKSUM}"
-    else
-        print warning "Warning: composer.json is missing after extraction. Full installation needed."
-        NEED_FULL_INSTALL=true
-    fi
-
-    if [ -f "${lis_path}/composer.lock" ] && [ "$NEED_FULL_INSTALL" = false ]; then
-        NEW_COMPOSER_LOCK_CHECKSUM=$(md5sum "${lis_path}/composer.lock" 2>/dev/null | awk '{print $1}')
-        print info "New composer.lock checksum: ${NEW_COMPOSER_LOCK_CHECKSUM}"
-    else
-        print warning "Warning: composer.lock is missing after extraction. Full installation needed."
-        NEED_FULL_INSTALL=true
-    fi
-
-    # Only do checksum comparison if we haven't already determined we need a full install
-    if [ "$NEED_FULL_INSTALL" = false ]; then
-        # Compare checksums - only if both files existed before and after
-        if [ "$CURRENT_COMPOSER_JSON_CHECKSUM" = "none" ] || [ "$CURRENT_COMPOSER_LOCK_CHECKSUM" = "none" ] ||
-            [ "$NEW_COMPOSER_JSON_CHECKSUM" = "none" ] || [ "$NEW_COMPOSER_LOCK_CHECKSUM" = "none" ] ||
-            [ "$CURRENT_COMPOSER_JSON_CHECKSUM" != "$NEW_COMPOSER_JSON_CHECKSUM" ] ||
-            [ "$CURRENT_COMPOSER_LOCK_CHECKSUM" != "$NEW_COMPOSER_LOCK_CHECKSUM" ]; then
-            print info "Composer files have changed or were missing. Full installation needed."
-            NEED_FULL_INSTALL=true
-        else
-            print info "Composer files haven't changed. Skipping full installation."
-            NEED_FULL_INSTALL=false
-        fi
-    fi
-fi
-
-# Download vendor.tar.gz if needed
-if [ "$NEED_FULL_INSTALL" = true ]; then
-    print info "Dependency update needed. Checking for vendor packages..."
-
-    # Check if the vendor package exists
-    if curl --output /dev/null --silent --head --fail "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz"; then
-        # Download the vendor archive
-        download_file "vendor.tar.gz" "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz" "Downloading vendor packages..."
-        if [ $? -ne 0 ]; then
-            print error "Failed to download vendor.tar.gz"
-            exit 1
-        fi
-
-        # Download the checksum file
-        download_file "vendor.tar.gz.md5" "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.md5" "Downloading checksum file..."
-        if [ $? -ne 0 ]; then
-            print error "Failed to download vendor.tar.gz.md5"
-            exit 1
-        fi
-
-        print info "Verifying checksum..."
-        if ! md5sum -c vendor.tar.gz.md5; then
-            print error "Checksum verification failed"
-            exit 1
-        fi
-        print success "Checksum verification passed"
-
-        print info "Extracting files from vendor.tar.gz..."
-        tar -xzf vendor.tar.gz -C "${lis_path}" &
-        vendor_tar_pid=$!
-        spinner "${vendor_tar_pid}" "Extracting vendor files..."
-        wait ${vendor_tar_pid}
-        vendor_tar_status=$?
-
-        if [ $vendor_tar_status -ne 0 ]; then
-            print error "Failed to extract vendor.tar.gz"
-            exit 1
-        fi
-
-        # Clean up downloaded files
-        rm vendor.tar.gz
-        rm vendor.tar.gz.md5
-
-        # Fix permissions on the vendor directory
-        print info "Setting permissions on vendor directory..."
-        find "${lis_path}/vendor" -exec chown www-data:www-data {} \; 2>/dev/null || true
-        chmod -R 755 "${lis_path}/vendor" 2>/dev/null || true
-
-        print success "Vendor files successfully installed"
-
-        # Update the composer.lock file to match the current state
-        print info "Finalizing composer installation..."
-        sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev --no-interaction
-    else
-        print warning "Vendor package not found in GitHub releases. Proceeding with regular composer install."
-
-        # Perform full install if vendor.tar.gz isn't available
-        print info "Running full composer install (this may take a while)..."
-        sudo -u www-data composer install --prefer-dist --no-dev --no-interaction
-    fi
-else
-    print info "Dependencies are up to date. Skipping vendor download."
-fi
-
-# Always generate the optimized autoloader, regardless of install path
-sudo -u www-data composer dump-autoload -o --no-interaction
-
-print success "Composer operations completed."
-log_action "Composer operations completed."
-
-apache2ctl -k graceful || systemctl reload apache2
-
-print header "Checking database connectivity"
-php "${lis_path}/vendor/bin/db-tools" db:test --all
-
-# Run the database migrations and other post-update tasks
-print header "Running database migrations and other post-update tasks"
-sudo -u www-data composer post-update
-
-print success "Database migrations and post-update tasks completed."
-log_action "Database migrations and post-update tasks completed."
-
-print header "Running database repairs"
-sudo -u www-data composer db:repair
-
-# Ensure background directory migrations are finished before any run-once/maintenance scripts
-if [ "${#dir_migration_pids[@]}" -gt 0 ]; then
-    print info "Waiting for background directory migrations to finish..."
-    for pid in "${dir_migration_pids[@]}"; do
-        migration_name="${dir_migration_labels[$pid]}"
-        spinner "$pid" "Finalizing migration for ${migration_name}/"
-    done
-    print success "All directory migrations completed."
-else
-    print info "No directory migrations were started."
-fi
-
-
-if [ -d "${lis_path}/run-once" ]; then
-    # Check if there are any PHP scripts in the run-once directory
-    run_once_scripts=("${lis_path}/run-once/"*.php)
-
-    if [ -e "${run_once_scripts[0]}" ]; then
-        for script_path in "${run_once_scripts[@]}"; do
-            echo ""
-            php "$script_path" || print warning "Run-once script $script_path exited with status $?"
-        done
-    else
-        print error "No scripts found in the run-once directory."
-        log_action "No scripts found in the run-once directory."
-    fi
-fi
-
-echo ""
-# Ask User to Run 'maintenance' Scripts
-if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
-    # List the files in maintenance directory
-    echo "Available maintenance scripts to run:"
-    files=("${lis_path}/maintenance/"*.php)
-    for i in "${!files[@]}"; do
-        filename=$(basename "${files[$i]}")
-        echo "$((i + 1))) $filename"
-    done
-
-    # Ask which files to run
-    echo "Enter the numbers of the scripts you want to run separated by commas (e.g., 1,2,4) or type 'all' to run them all."
-    read -r files_to_run
-
-    # Run selected files
-    if [[ "$files_to_run" == "all" ]]; then
-        for file in "${files[@]}"; do
-            print info "Running $file..."
-            sudo -u www-data php "$file"
-        done
-    else
-        IFS=',' read -ra ADDR <<<"$files_to_run"
-        for i in "${ADDR[@]}"; do
-            # Remove any spaces in the input and correct the array index
-            i=$(echo "$i" | xargs)
-            file_index=$((i - 1))
-
-            # Check if the selected index is within the range of available files
-            if [[ $file_index -ge 0 ]] && [[ $file_index -lt ${#files[@]} ]]; then
-                file="${files[$file_index]}"
-                echo ""
-                print info "Running $file..."
-                sudo -u www-data php "$file"
-            else
-                print error "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
-            fi
-        done
-    fi
-fi
-
-# The old startup.php file is no longer needed, but if it exists, make sure it is empty
-if [ -f "${lis_path}/startup.php" ]; then
-    sudo rm "${lis_path}/startup.php"
-    sudo touch "${lis_path}/startup.php"
-fi
-
-if [ -f "${lis_path}/var/cache/CompiledContainer.php" ]; then
-    sudo rm "${lis_path}/var/cache/CompiledContainer.php"
-fi
-
-if [ -f "${lis_path}/public/test.php" ]; then
-    sudo rm "${lis_path}/public/test.php"
-fi
-
-# Cron job setup
-setup_intelis_cron "${lis_path}"
-
-# Set proper permissions
-download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh
-chmod +x /usr/local/bin/intelis-refresh
-(print success "Setting final permissions in the background..." &&
-    intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
-    find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
-disown
-
+# Reload Apache
 apache2ctl -k graceful || systemctl reload apache2 || systemctl restart apache2
 
-print success "LIS update complete."
-log_action "LIS update complete."
+# Print summary
+print header "Upgrade Summary"
+if [ ${#updated_instances[@]} -gt 0 ]; then
+    print success "Successfully updated ${#updated_instances[@]} instance(s):"
+    for p in "${updated_instances[@]}"; do
+        print info "  ✓ $p"
+    done
+fi
+if [ ${#failed_instances[@]} -gt 0 ]; then
+    print error "Failed to update ${#failed_instances[@]} instance(s):"
+    for p in "${failed_instances[@]}"; do
+        print error "  ✗ $p"
+    done
+fi
+
+log_action "Upgrade complete. Updated: ${#updated_instances[@]}, Failed: ${#failed_instances[@]}"
