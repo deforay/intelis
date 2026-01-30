@@ -85,112 +85,23 @@ $testQuery = "SELECT * from tb_tests where tb_id=? ORDER BY tb_test_id ASC";
 $tbTestInfo = $db->rawQuery($testQuery, [$id]);
 $specimenTypeResult = $general->fetchDataFromTable('r_tb_sample_type', "status = 'active'");
 
-$userId =  $_SESSION['userId'];
+$userId = $_SESSION['userId'];
 $checkNonAdminUser = $general->isNonAdmin($userId);
 
-if (isset($tbInfo['request_created_datetime']) && trim((string) $tbInfo['request_created_datetime']) !== '' && $tbInfo['request_created_datetime'] != '0000-00-00 00:00:00') {
-    $requestedDate = $tbInfo['request_created_datetime'];
-    $expStr = explode(" ", (string) $tbInfo['request_created_datetime']);
-    $tbInfo['request_created_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-} else {
-    $requestedDate = '';
-    $tbInfo['request_created_datetime'] = '';
-}
-
-if (isset($tbInfo['sample_collection_date']) && trim((string) $tbInfo['sample_collection_date']) !== '' && $tbInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
-    $sampleCollectionDate = $tbInfo['sample_collection_date'];
-    $expStr = explode(" ", (string) $tbInfo['sample_collection_date']);
-    $tbInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-} else {
-    $sampleCollectionDate = '';
-    $tbInfo['sample_collection_date'] = '';
-}
-
-if (isset($tbInfo['sample_received_at_lab_datetime']) && trim((string) $tbInfo['sample_received_at_lab_datetime']) !== '' && $tbInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-    $sampleReceivedDate = $tbInfo['sample_received_at_lab_datetime'];
-    $expStr = explode(" ", (string) $tbInfo['sample_received_at_lab_datetime']);
-    $tbInfo['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-} else {
-    $sampleReceivedDate = '';
-    $tbInfo['sample_received_at_lab_datetime'] = '';
-}
-
-if (isset($tbInfo['sample_tested_datetime']) && trim((string) $tbInfo['sample_tested_datetime']) !== '' && $tbInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-    $sampleTestedDateTime = explode(" ", (string) $tbInfo['sample_tested_datetime']);
-    $tbInfo['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($sampleTestedDateTime[0]) . " " . $sampleTestedDateTime[1];
-} else {
-    $tbInfo['sample_tested_datetime'] = '';
-}
-
-if (isset($tbInfo['sample_dispatched_datetime']) && trim((string) $tbInfo['sample_dispatched_datetime']) !== '' && $tbInfo['sample_tested_datetime'] !== '0000-00-00 00:00:00') {
-    $sampleTestedDateTime = explode(" ", (string) $tbInfo['sample_dispatched_datetime']);
-    $tbInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($sampleTestedDateTime[0]) . " " . $sampleTestedDateTime[1];
-} else {
-    $tbInfo['sample_dispatched_datetime'] = '';
-}
-
-if (isset($tbInfo['result_reviewed_datetime']) && trim((string) $tbInfo['result_reviewed_datetime']) !== '' && $tbInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['result_reviewed_datetime']);
-    $tbInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['result_reviewed_datetime'] = '';
-}
-
-if (isset($tbInfo['result_date']) && trim((string) $tbInfo['result_date']) !== '' && $tbInfo['result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['result_date']);
-    $tbInfo['result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['result_date'] = '';
-}
-
-if (isset($tbInfo['xpert_result_date']) && trim((string) $tbInfo['xpert_result_date']) !== '' && $tbInfo['xpert_result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['xpert_result_date']);
-    $tbInfo['xpert_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['xpert_result_date'] = '';
-}
-
-if (isset($tbInfo['tblam_result_date']) && trim((string) $tbInfo['tblam_result_date']) !== '' && $tbInfo['tblam_result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['tblam_result_date']);
-    $tbInfo['tblam_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['tblam_result_date'] = '';
-}
-
-if (isset($tbInfo['culture_result_date']) && trim((string) $tbInfo['culture_result_date']) !== '' && $tbInfo['culture_result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['culture_result_date']);
-    $tbInfo['culture_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['culture_result_date'] = '';
-}
-
-if (isset($tbInfo['identification_result_date']) && trim((string) $tbInfo['identification_result_date']) !== '' && $tbInfo['identification_result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['identification_result_date']);
-    $tbInfo['identification_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['identification_result_date'] = '';
-}
-
-if (isset($tbInfo['drug_mgit_result_date']) && trim((string) $tbInfo['drug_mgit_result_date']) !== '' && $tbInfo['drug_mgit_result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['drug_mgit_result_date']);
-    $tbInfo['drug_mgit_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['drug_mgit_result_date'] = '';
-}
-
-if (isset($tbInfo['drug_lpa_result_date']) && trim((string) $tbInfo['drug_lpa_result_date']) !== '' && $tbInfo['drug_lpa_result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['drug_lpa_result_date']);
-    $tbInfo['drug_lpa_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['drug_lpa_result_date'] = '';
-}
-
-if (isset($tbInfo['result_approved_datetime']) && trim((string) $tbInfo['result_approved_datetime']) !== '' && $tbInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
-    $approvedOn = explode(" ", (string) $tbInfo['result_approved_datetime']);
-    $tbInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($approvedOn[0]) . " " . $approvedOn[1];
-} else {
-    $tbInfo['result_approved_datetime'] = '';
-}
+$tbInfo['request_created_datetime'] = DateUtility::humanReadableDateFormat($tbInfo['request_created_datetime'] ?? null, true);
+$tbInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($tbInfo['sample_collection_date'] ?? null, true);
+$tbInfo['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($tbInfo['sample_received_at_lab_datetime'] ?? null, true);
+$tbInfo['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($tbInfo['sample_tested_datetime'] ?? null, true);
+$tbInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($tbInfo['sample_dispatched_datetime'] ?? null, true);
+$tbInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($tbInfo['result_reviewed_datetime'] ?? null, true);
+$tbInfo['result_date'] = DateUtility::humanReadableDateFormat($tbInfo['result_date'] ?? null, true);
+$tbInfo['xpert_result_date'] = DateUtility::humanReadableDateFormat($tbInfo['xpert_result_date'] ?? null, true);
+$tbInfo['tblam_result_date'] = DateUtility::humanReadableDateFormat($tbInfo['tblam_result_date'] ?? null, true);
+$tbInfo['culture_result_date'] = DateUtility::humanReadableDateFormat($tbInfo['culture_result_date'] ?? null, true);
+$tbInfo['identification_result_date'] = DateUtility::humanReadableDateFormat($tbInfo['identification_result_date'] ?? null, true);
+$tbInfo['drug_mgit_result_date'] = DateUtility::humanReadableDateFormat($tbInfo['drug_mgit_result_date'] ?? null, true);
+$tbInfo['drug_lpa_result_date'] = DateUtility::humanReadableDateFormat($tbInfo['drug_lpa_result_date'] ?? null, true);
+$tbInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($tbInfo['result_approved_datetime'] ?? null, true);
 //Recommended corrective actions
 $condition = "status ='active' AND test_type='tb'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
@@ -217,43 +128,26 @@ foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
-if ($tbInfo['locked'] == 'yes') {
-    if ($checkNonAdminUser == 1) {
-        $fileArray = [
-            COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
-            COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
-            COUNTRY\DRC => 'forms/edit-drc.php',
-            COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
-            COUNTRY\PNG => 'forms/edit-png.php',
-            COUNTRY\WHO => 'forms/edit-who.php',
-            COUNTRY\RWANDA => 'forms/edit-rwanda.php',
-            COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'
-        ];
+$fileArray = [
+    COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
+    COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
+    COUNTRY\DRC => 'forms/edit-drc.php',
+    COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
+    COUNTRY\PNG => 'forms/edit-png.php',
+    COUNTRY\WHO => 'forms/edit-who.php',
+    COUNTRY\RWANDA => 'forms/edit-rwanda.php',
+    COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'
+];
 
-        require_once($fileArray[$arr['vl_form']]);
-    } else {
-        http_response_code(403);
-        throw new SystemException('Invalid URL', 403);
-    }
-} else {
-    if (_isAllowed("/eid/requests/eid-edit-request.php")) {
-        $fileArray = [
-            COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
-            COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
-            COUNTRY\DRC => 'forms/edit-drc.php',
-            COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
-            COUNTRY\PNG => 'forms/edit-png.php',
-            COUNTRY\WHO => 'forms/edit-who.php',
-            COUNTRY\RWANDA => 'forms/edit-rwanda.php',
-            COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'
-        ];
+$canEdit = ($tbInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
+    || ($tbInfo['locked'] != 'yes' && _isAllowed("/tb/requests/tb-edit-request.php"));
 
-        require_once($fileArray[$arr['vl_form']]);
-    } else {
-        http_response_code(403);
-        throw new SystemException('Invalid URL', 403);
-    }
+if (!$canEdit) {
+    http_response_code(403);
+    throw new SystemException('Cannot Edit Locked Samples', 403);
 }
+
+require_once($fileArray[$arr['vl_form']]);
 ?>
 
 <script>
@@ -261,13 +155,13 @@ if ($tbInfo['locked'] == 'yes') {
         if ($.trim($("#" + id).val()) != '') {
             $.blockUI();
             $.post("/tb/requests/check-sample-duplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: $("#" + id).val(),
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: $("#" + id).val(),
+                fnct: fnct,
+                format: "html"
+            },
+                function (data) {
                     if (data != 0) {
 
                     }
@@ -276,21 +170,21 @@ if ($tbInfo['locked'] == 'yes') {
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
 
 
-        $('#isSampleRejected').change(function(e) {
+        $('#isSampleRejected').change(function (e) {
             changeReject(this.value);
         });
-        $('#hasRecentTravelHistory').change(function(e) {
+        $('#hasRecentTravelHistory').change(function (e) {
             changeHistory(this.value);
         });
         changeReject($('#isSampleRejected').val());
         changeHistory($('#hasRecentTravelHistory').val());
 
-        $('.result-focus').change(function(e) {
+        $('.result-focus').change(function (e) {
             var status = false;
-            $(".result-focus").each(function(index) {
+            $(".result-focus").each(function (index) {
                 if ($(this).val() != "") {
                     status = true;
                 }
@@ -319,9 +213,9 @@ if ($tbInfo['locked'] == 'yes') {
         $("#showEmptyResult").hide();
         if ($.trim($("#artPatientNo").val()) != '') {
             $.post("/tb/requests/search-patients.php", {
-                    artPatientNo: $("#artPatientNo").val()
-                },
-                function(data) {
+                artPatientNo: $("#artPatientNo").val()
+            },
+                function (data) {
                     if (data >= '1') {
                         showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
                     } else {
