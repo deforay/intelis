@@ -197,31 +197,25 @@ if (isset($arr['eid_min_patient_id_length']) && $arr['eid_min_patient_id_length'
     $minPatientIdLength = $arr['eid_min_patient_id_length'];
 }
 
+$fileArray = [
+    COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
+    COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
+    COUNTRY\DRC => 'forms/edit-drc.php',
+    COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
+    COUNTRY\PNG => 'forms/edit-png.php',
+    COUNTRY\WHO => 'forms/edit-who.php',
+    COUNTRY\RWANDA => 'forms/edit-rwanda.php',
+    COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'
+];
 
+$canEdit = ($eidInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
+    || ($eidInfo['locked'] != 'yes' && _isAllowed("/eid/requests/eid-edit-request.php"));
 
-if ($eidInfo['locked'] == 'yes') {
-    if($checkNonAdminUser == 1){
-        $fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php', COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'];
-        require_once($fileArray[$arr['vl_form']]);
-    }
-    else{
-        http_response_code(403);
-        throw new SystemException('Invalid URL', 403);
-    }
+if (!$canEdit) {
+    http_response_code(403);
+    throw new SystemException('Cannot Edit Locked Samples', 403);
 }
-else{
-    if(_isAllowed("/eid/requests/eid-edit-request.php"))
-    {
-        $fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php', COUNTRY\BURKINA_FASO => 'forms/edit-burkina-faso.php'];
-        require_once($fileArray[$arr['vl_form']]);
-    }
-    else{
-        http_response_code(403);
-        throw new SystemException('Invalid URL', 403);
-    }
-}
-?>
-<?php
+require_once($fileArray[$arr['vl_form']]);
 // Common JS functions in a PHP file
 // Why PHP? Because we can use PHP variables in the JS code
 require_once APPLICATION_PATH . "/eid/eid.js.php";
@@ -258,15 +252,15 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
     }
 
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         updateSampleResult();
-        $("#isSampleRejected,#result").on("change", function () {
+        $("#isSampleRejected,#result").on("change", function() {
             updateSampleResult();
         });
 
-        $('.result-focus').change(function (e) {
+        $('.result-focus').change(function(e) {
             var status = false;
-            $(".result-focus").each(function (index) {
+            $(".result-focus").each(function(index) {
                 if ($(this).val() != "") {
                     status = true;
                 }

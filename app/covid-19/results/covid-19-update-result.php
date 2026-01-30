@@ -6,7 +6,7 @@ use App\Utilities\DateUtility;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
-
+use App\Exceptions\SystemException;
 
 $title = _translate("Enter Covid-19 Result");
 
@@ -146,21 +146,31 @@ if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes
 </style>
 
 <?php
+$fileArray = [
+	COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php',
+	COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php',
+	COUNTRY\DRC => 'forms/update-drc-result.php',
+	COUNTRY\CAMEROON => 'forms/update-cameroon-result.php',
+	COUNTRY\PNG => 'forms/update-png-result.php',
+	COUNTRY\RWANDA => 'forms/update-rwanda-result.php'
+];
 
+$canEdit = ($covid19Info['locked'] == 'yes' && $_SESSION['roleId'] == 1)
+	|| ($covid19Info['locked'] != 'yes' && _isAllowed("/covid-19/results/covid-19-update-result.php"));
 
-
-$fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php', COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php', COUNTRY\DRC => 'forms/update-drc-result.php', COUNTRY\CAMEROON => 'forms/update-cameroon-result.php', COUNTRY\PNG => 'forms/update-png-result.php', COUNTRY\WHO => 'forms/update-who-result.php', COUNTRY\RWANDA => 'forms/update-rwanda-result.php'];
-
+if (!$canEdit) {
+	http_response_code(403);
+	throw new SystemException('Cannot Edit Locked Samples', 403);
+}
 require_once($fileArray[$formId]);
-
 ?>
 
 <script>
-	$(document).ready(function () {
-		$('#isSampleRejected').change(function (e) {
+	$(document).ready(function() {
+		$('#isSampleRejected').change(function(e) {
 			changeReject(this.value);
 		});
-		$('#hasRecentTravelHistory').change(function (e) {
+		$('#hasRecentTravelHistory').change(function(e) {
 			changeHistory(this.value);
 		});
 		changeReject($('#isSampleRejected').val());
@@ -176,17 +186,17 @@ require_once($fileArray[$formId]);
 			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
-			onChangeMonthYear: function (year, month, widget) {
-				setTimeout(function () {
+			onChangeMonthYear: function(year, month, widget) {
+				setTimeout(function() {
 					$('.ui-datepicker-calendar').show();
 				});
 			},
-			onSelect: function (e) {
+			onSelect: function(e) {
 				$('#sampleTestedDateTime').val('');
 				$('#sampleTestedDateTime').datetimepicker('option', 'minDate', e);
 			},
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function () {
+		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
 
@@ -195,9 +205,9 @@ require_once($fileArray[$formId]);
 		//$('.date').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?>');
 		//$('.dateTime').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?> 99:99');
 		<?php if (isset($covid19Info['result']) && $covid19Info['result'] != "") { ?>
-			$('.result-focus').change(function (e) {
+			$('.result-focus').change(function(e) {
 				var status = false;
-				$(".result-focus").each(function (index) {
+				$(".result-focus").each(function(index) {
 					if ($(this).val() != "") {
 						status = true;
 					}
