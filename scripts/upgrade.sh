@@ -7,14 +7,16 @@
 # Options:
 #   -p PATH   Specify the LIS installation path (e.g., -p /var/www/intelis)
 #   -A        Auto-detect and update ALL intelis installations in /var/www
+#   -i        Interactive instance selection (use with -A to pick specific instances)
 #   -s        Skip Ubuntu system updates
 #   -b        Skip backup prompts
 #
 # Examples:
-#   sudo intelis-update                    # Interactive single instance
+#   sudo intelis-update                      # Interactive single instance
 #   sudo intelis-update -p /var/www/intelis  # Specific path
 #   sudo intelis-update -A                   # Update all instances in /var/www
-#   sudo intelis-update -A -s -b             # Update all, skip updates and backups
+#   sudo intelis-update -A -i                # Detect instances, pick which to update
+#   sudo intelis-update -A -s -b             # Non-interactive, update all instances
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -90,17 +92,19 @@ detect_intelis_installations() {
 skip_ubuntu_updates=false
 skip_backup=false
 auto_detect=false
+interactive_select=false
 lis_path=""
 declare -a lis_paths=()
 
 log_file="/tmp/intelis-upgrade-$(date +'%Y%m%d-%H%M%S').log"
 
 # Parse command-line options
-while getopts ":sbAp:" opt; do
+while getopts ":sbAip:" opt; do
     case $opt in
     s) skip_ubuntu_updates=true ;;
     b) skip_backup=true ;;
     A) auto_detect=true ;;
+    i) interactive_select=true ;;
     p) lis_path="$OPTARG" ;;
         # Ignore invalid options silently
     esac
@@ -221,21 +225,59 @@ trap - ERR
 
 # Handle path resolution based on mode
 if [ "$auto_detect" = true ]; then
+    # Warn if -p was also specified
+    if [ -n "$lis_path" ]; then
+        print warning "-A flag specified, ignoring -p ${lis_path}"
+    fi
     # Auto-detect mode: scan /var/www for all valid installations
     print info "Scanning /var/www for intelis installations..."
-    mapfile -t lis_paths < <(detect_intelis_installations /var/www)
+    mapfile -t detected_paths < <(detect_intelis_installations /var/www)
 
-    if [ ${#lis_paths[@]} -eq 0 ]; then
+    if [ ${#detected_paths[@]} -eq 0 ]; then
         print error "No valid intelis installations found in /var/www"
         log_action "Auto-detect found no valid installations"
         exit 1
     fi
 
-    print info "Found ${#lis_paths[@]} installation(s):"
+    # Show numbered list
+    print info "Found ${#detected_paths[@]} installation(s):"
+    for i in "${!detected_paths[@]}"; do
+        echo "$((i+1))) ${detected_paths[$i]}"
+    done
+
+    if [ "$interactive_select" = true ]; then
+        # Interactive mode: let user pick which instances to update
+        echo ""
+        echo "Enter instance numbers to update (e.g., 1,2,3) or press Enter for all:"
+        read -r selection
+
+        if [ -z "$selection" ]; then
+            lis_paths=("${detected_paths[@]}")
+        else
+            IFS=',' read -ra selected_nums <<< "$selection"
+            for num in "${selected_nums[@]}"; do
+                num=$(echo "$num" | xargs)  # trim whitespace
+                idx=$((num - 1))
+                if [[ $idx -ge 0 ]] && [[ $idx -lt ${#detected_paths[@]} ]]; then
+                    lis_paths+=("${detected_paths[$idx]}")
+                fi
+            done
+        fi
+
+        if [ ${#lis_paths[@]} -eq 0 ]; then
+            print error "No valid instances selected"
+            exit 1
+        fi
+    else
+        # Non-interactive: use all detected instances
+        lis_paths=("${detected_paths[@]}")
+    fi
+
+    print info "Will update ${#lis_paths[@]} instance(s):"
     for p in "${lis_paths[@]}"; do
         print info "  - $p"
     done
-    log_action "Auto-detected ${#lis_paths[@]} installations: ${lis_paths[*]}"
+    log_action "Selected ${#lis_paths[@]} installations for update: ${lis_paths[*]}"
 elif [ -n "$lis_path" ]; then
     # Single path provided via -p flag
     lis_path="$(resolve_lis_path "$lis_path")"
@@ -1007,7 +1049,7 @@ upgrade_instance() {
                 spinner "${vendor_tar_pid}"
                 wait ${vendor_tar_pid}
 
-                find "${lis_path}/vendor" -exec chown www-data:www-data {} \; 2>/dev/null || true
+                chown -R www-data:www-data "${lis_path}/vendor" 2>/dev/null || true
                 chmod -R 755 "${lis_path}/vendor" 2>/dev/null || true
 
                 sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev --no-interaction
@@ -1068,7 +1110,7 @@ upgrade_instance() {
 
     # Set final permissions in background
     (intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
-        find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
+        chown -R www-data:www-data "${lis_path}" 2>/dev/null || true) &
     disown
 
     print success "Instance ${lis_path} updated successfully."
