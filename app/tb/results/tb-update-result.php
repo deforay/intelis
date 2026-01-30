@@ -84,111 +84,21 @@ $tbTestInfo = $db->rawQuery($testQuery, [$id]);
 $specimenTypeResult = $general->fetchDataFromTable('r_tb_sample_type', "status = 'active'");
 
 
-if (isset($tbInfo['request_created_datetime']) && trim((string) $tbInfo['request_created_datetime']) !== '' && $tbInfo['request_created_datetime'] != '0000-00-00 00:00:00') {
-    $requestedDate = $tbInfo['request_created_datetime'];
-    $expStr = explode(" ", (string) $tbInfo['request_created_datetime']);
-    $tbInfo['request_created_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-} else {
-    $requestedDate = '';
-    $tbInfo['request_created_datetime'] = '';
-}
 
-if (isset($tbInfo['sample_collection_date']) && trim((string) $tbInfo['sample_collection_date']) !== '' && $tbInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
-    $sampleCollectionDate = $tbInfo['sample_collection_date'];
-    $expStr = explode(" ", (string) $tbInfo['sample_collection_date']);
-    $tbInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-} else {
-    $sampleCollectionDate = '';
-    $tbInfo['sample_collection_date'] = '';
-}
-
-if (isset($tbInfo['sample_received_at_lab_datetime']) && trim((string) $tbInfo['sample_received_at_lab_datetime']) !== '' && $tbInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-    $sampleReceivedDate = $tbInfo['sample_received_at_lab_datetime'];
-    $expStr = explode(" ", (string) $tbInfo['sample_received_at_lab_datetime']);
-    $tbInfo['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-} else {
-    $sampleReceivedDate = '';
-    $tbInfo['sample_received_at_lab_datetime'] = '';
-}
-
-if (isset($tbInfo['sample_tested_datetime']) && trim((string) $tbInfo['sample_tested_datetime']) !== '' && $tbInfo['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-    $sampleTestedDateTime = explode(" ", (string) $tbInfo['sample_tested_datetime']);
-    $tbInfo['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($sampleTestedDateTime[0]) . " " . $sampleTestedDateTime[1];
-} else {
-    $tbInfo['sample_tested_datetime'] = '';
-}
-
-if (isset($tbInfo['sample_dispatched_datetime']) && trim((string) $tbInfo['sample_dispatched_datetime']) !== '' && $tbInfo['sample_tested_datetime'] !== '0000-00-00 00:00:00') {
-    $sampleTestedDateTime = explode(" ", (string) $tbInfo['sample_dispatched_datetime']);
-    $tbInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($sampleTestedDateTime[0]) . " " . $sampleTestedDateTime[1];
-} else {
-    $tbInfo['sample_dispatched_datetime'] = '';
-}
-
-if (isset($tbInfo['result_reviewed_datetime']) && trim((string) $tbInfo['result_reviewed_datetime']) !== '' && $tbInfo['result_reviewed_datetime'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['result_reviewed_datetime']);
-    $tbInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['result_reviewed_datetime'] = '';
-}
-
-if (isset($tbInfo['result_date']) && trim((string) $tbInfo['result_date']) !== '' && $tbInfo['result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['result_date']);
-    $tbInfo['result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['result_date'] = '';
-}
-
-
-if (isset($tbInfo['xpert_result_date']) && trim((string) $tbInfo['xpert_result_date']) !== '' && $tbInfo['xpert_result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['xpert_result_date']);
-    $tbInfo['xpert_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['xpert_result_date'] = '';
-}
-
-if (isset($tbInfo['tblam_result_date']) && trim((string) $tbInfo['tblam_result_date']) !== '' && $tbInfo['tblam_result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['tblam_result_date']);
-    $tbInfo['tblam_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['tblam_result_date'] = '';
-}
-
-if (isset($tbInfo['culture_result_date']) && trim((string) $tbInfo['culture_result_date']) !== '' && $tbInfo['culture_result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['culture_result_date']);
-    $tbInfo['culture_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['culture_result_date'] = '';
-}
-
-if (isset($tbInfo['identification_result_date']) && trim((string) $tbInfo['identification_result_date']) !== '' && $tbInfo['identification_result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['identification_result_date']);
-    $tbInfo['identification_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['identification_result_date'] = '';
-}
-
-if (isset($tbInfo['drug_mgit_result_date']) && trim((string) $tbInfo['drug_mgit_result_date']) !== '' && $tbInfo['drug_mgit_result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['drug_mgit_result_date']);
-    $tbInfo['drug_mgit_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['drug_mgit_result_date'] = '';
-}
-
-if (isset($tbInfo['drug_lpa_result_date']) && trim((string) $tbInfo['drug_lpa_result_date']) !== '' && $tbInfo['drug_lpa_result_date'] != '0000-00-00 00:00:00') {
-    $reviewedOn = explode(" ", (string) $tbInfo['drug_lpa_result_date']);
-    $tbInfo['drug_lpa_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-} else {
-    $tbInfo['drug_lpa_result_date'] = '';
-}
-
-
-if (isset($tbInfo['result_approved_datetime']) && trim((string) $tbInfo['result_approved_datetime']) !== '' && $tbInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
-    $approvedOn = explode(" ", (string) $tbInfo['result_approved_datetime']);
-    $tbInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($approvedOn[0]) . " " . $approvedOn[1];
-} else {
-    $tbInfo['result_approved_datetime'] = '';
-}
+$tbInfo['request_created_datetime'] = DateUtility::humanReadableDateFormat($tbInfo['request_created_datetime'] ?? null, true);
+$tbInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($tbInfo['sample_collection_date'] ?? null, true);
+$tbInfo['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($tbInfo['sample_received_at_lab_datetime'] ?? null, true);
+$tbInfo['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($tbInfo['sample_tested_datetime'] ?? null, true);
+$tbInfo['sample_dispatched_datetime'] = DateUtility::humanReadableDateFormat($tbInfo['sample_dispatched_datetime'] ?? null, true);
+$tbInfo['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($tbInfo['result_reviewed_datetime'] ?? null, true);
+$tbInfo['result_date'] = DateUtility::humanReadableDateFormat($tbInfo['result_date'] ?? null, true);
+$tbInfo['xpert_result_date'] = DateUtility::humanReadableDateFormat($tbInfo['xpert_result_date'] ?? null, true);
+$tbInfo['tblam_result_date'] = DateUtility::humanReadableDateFormat($tbInfo['tblam_result_date'] ?? null, true);
+$tbInfo['culture_result_date'] = DateUtility::humanReadableDateFormat($tbInfo['culture_result_date'] ?? null, true);
+$tbInfo['identification_result_date'] = DateUtility::humanReadableDateFormat($tbInfo['identification_result_date'] ?? null, true);
+$tbInfo['drug_mgit_result_date'] = DateUtility::humanReadableDateFormat($tbInfo['drug_mgit_result_date'] ?? null, true);
+$tbInfo['drug_lpa_result_date'] = DateUtility::humanReadableDateFormat($tbInfo['drug_lpa_result_date'] ?? null, true);
+$tbInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($tbInfo['result_approved_datetime'] ?? null, true);
 //Recommended corrective actions
 $condition = "status ='active' AND test_type='tb'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
