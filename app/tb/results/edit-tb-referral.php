@@ -27,7 +27,6 @@ $_GET = _sanitizeInput($request->getQueryParams());
 
 $id = base64_decode((string) $_GET['id']);
 $codeId = base64_decode((string) $_GET['code']);
-
 $db->where('referral_manifest_code', $codeId);
 $db->where('reason_for_referral != ""');
 $db->where('reason_for_referral IS NOT NULL');
@@ -89,7 +88,7 @@ if ($isLisInstance) {
                                     <?php echo _translate("Referral Manifest Code"); ?> <span
                                         class="mandatory">*</span></label>
                                 <input type="hidden" id="manifestId" name="manifestId"
-                                    value="<?php echo $tbResult['referral_manifest_id']; ?>" />
+                                    value="<?php echo $tbResult['RTB25110418QAHO']; ?>" />
                                 <input type="text" class="form-control isRequired" id="packageCode" name="packageCode"
                                     placeholder="Manifest Code" title="Please enter manifest code" readonly
                                     value="<?php echo $tbResult['referral_manifest_code']; ?>" />
@@ -181,10 +180,14 @@ if ($isLisInstance) {
 
 
 <script type="text/javascript">
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("#referralLabId").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Referral Lab"); ?>"
+        });
+        $("#referralToLabId").select2({
+            width: '100%',
+            placeholder: "<?php echo _translate("Select Receiving Lab"); ?>"
         });
         loadSamples();
     });
@@ -204,13 +207,13 @@ if ($isLisInstance) {
             labId: '<?php echo $id; ?>',
             packageCode: '<?php echo $codeId; ?>',
             referralLabId: referralLabId
-        }, function (data) {
+        }, function(data) {
             if (data && data.trim() !== "") {
                 $("#search").html(data);
                 $(".sampleSelectionArea").show();
 
                 // Move pre-selected items to the right box BEFORE initializing the plugin
-                $("#search option[selected='selected']").each(function () {
+                $("#search option[selected='selected']").each(function() {
                     $(this).prop('selected', false).removeAttr('selected');
                     $("#search_to").html($(this));
                 });
@@ -230,12 +233,12 @@ if ($isLisInstance) {
                 left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
                 right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
             },
-            fireSearch: function (value) {
+            fireSearch: function(value) {
                 return value.length > 2;
             },
             autoSelectNext: true,
             keepRenderingSort: true,
-            moveCallback: function () {
+            moveCallback: function() {
                 updateCounters();
             }
         });
