@@ -29,6 +29,7 @@ use PhpMyAdmin\SqlParser\Parser;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -341,7 +342,7 @@ $skippedQueries = $successfulQueries = 0;
 $totalErrors = 0;
 
 foreach ($versions as $version) {
-    $file = APPLICATION_PATH . '/../sys/migrations/' . $version . '.sql';
+    $file = ROOT_PATH . '/sys/migrations/' . $version . '.sql';
 
     if (version_compare($version, $currentVersion, '>=')) {
         if (!$quietMode) {
@@ -396,7 +397,7 @@ foreach ($versions as $version) {
                         if ($errno > 0) {
                             if (in_array($errno, [1060, 1061, 1068, 1091], true)) {
                                 if (!$quietMode && getenv('MIG_VERBOSE')) {
-                                    if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
+                                    if ($bar instanceof ProgressBar) {
                                         MiscUtility::spinnerPausePrint($bar, function () use ($db): void {
                                             echo "Benign idempotence (errno={$db->getLastErrno()}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
                                         });
@@ -409,7 +410,7 @@ foreach ($versions as $version) {
                                 $totalErrors++;
                                 $msg = "Error executing query ({$errno}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
                                 if (!$quietMode) {
-                                    if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
+                                    if ($bar instanceof ProgressBar) {
                                         MiscUtility::spinnerPausePrint($bar, fn() => print $msg);
                                     } else {
                                         $io->error($msg);
@@ -419,7 +420,7 @@ foreach ($versions as $version) {
                                     }
                                 }
                                 if (!$autoContinueOnError) {
-                                    if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
+                                    if ($bar instanceof ProgressBar) {
                                         MiscUtility::spinnerPausePrint($bar, fn() => print "Do you want to continue? (y/n): ");
                                     } else {
                                         echo "Do you want to continue? (y/n): ";
@@ -450,7 +451,7 @@ foreach ($versions as $version) {
                     if ($isBenign) {
                         if (!$quietMode && getenv('MIG_VERBOSE')) {
                             $toPrint = "Benign idempotence (exception):\n{$sqlInMsg}\n{$msgStr}\n";
-                            if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
+                            if ($bar instanceof ProgressBar) {
                                 MiscUtility::spinnerPausePrint($bar, fn() => print $toPrint);
                             } else {
                                 echo $toPrint;
@@ -464,7 +465,7 @@ foreach ($versions as $version) {
                         $totalErrors++;
                         if (!$quietMode) {
                             $toPrint = "";
-                            if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
+                            if ($bar instanceof ProgressBar) {
                                 MiscUtility::spinnerPausePrint($bar, fn() => print $toPrint);
                             } else {
                                 echo $toPrint;
@@ -474,7 +475,7 @@ foreach ($versions as $version) {
                             }
                         }
                         if (!$autoContinueOnError) {
-                            if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
+                            if ($bar instanceof ProgressBar) {
                                 MiscUtility::spinnerPausePrint($bar, fn() => print "Do you want to continue? (y/n): ");
                             } else {
                                 echo "Do you want to continue? (y/n): ";
@@ -490,7 +491,7 @@ foreach ($versions as $version) {
                     }
                 } finally {
                     $processedForVersion++;
-                    if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
+                    if ($bar instanceof ProgressBar) {
                         // Update message with step info and advance
                         MiscUtility::spinnerUpdate($bar, "v{$version}", null, $processedForVersion, $versionTotal);
                         MiscUtility::spinnerAdvance($bar, 1);
@@ -499,7 +500,7 @@ foreach ($versions as $version) {
             }
 
             if (!$quietMode) {
-                if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
+                if ($bar instanceof ProgressBar) {
                     MiscUtility::spinnerFinish($bar);
                 }
                 $io->newLine();
@@ -509,7 +510,7 @@ foreach ($versions as $version) {
             $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;");
             if ($aborted) {
                 $db->rollbackTransaction();
-                if ($bar instanceof \Symfony\Component\Console\Helper\ProgressBar) {
+                if ($bar instanceof ProgressBar) {
                     MiscUtility::spinnerFinish($bar);
                 }
                 exit("Migration aborted by user.\n");
