@@ -240,16 +240,17 @@ if [ "$auto_detect" = true ]; then
     fi
 
     # Show numbered list
+    echo ""
     print info "Found ${#detected_paths[@]} installation(s):"
     for i in "${!detected_paths[@]}"; do
-        echo "$((i+1))) ${detected_paths[$i]}"
+        echo "  $((i+1))) ${detected_paths[$i]}"
     done
+    echo ""
 
     if [ "$interactive_select" = true ]; then
         # Interactive mode: let user pick which instances to update
-        echo ""
-        echo "Enter instance numbers to update (e.g., 1,2,3) or press Enter for all:"
-        read -r selection
+        printf "Enter instance numbers to update (e.g., 1,2,3) or press Enter for all: "
+        read -r selection < /dev/tty
 
         if [ -z "$selection" ]; then
             lis_paths=("${detected_paths[@]}")
