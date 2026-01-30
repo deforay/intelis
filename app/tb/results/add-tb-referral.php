@@ -167,19 +167,23 @@ if ($isLisInstance) {
 
 
 <script type="text/javascript">
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("#referralLabId").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Referral Lab"); ?>"
         });
+        $("#referralToLabId").select2({
+            width: '100%',
+            placeholder: "<?php echo _translate("Select Receiving Lab"); ?>"
+        });
         <?php
         if ($isLisInstance && !empty($fromLabId)) {
-            ?>
+        ?>
             $("#referralLabId").val("<?php echo $fromLabId; ?>");
             $("#referralLabId").trigger('change');
             $("#referralLabId").prop('disabled', true);
             loadSamples();
-            <?php
+        <?php
         }
         ?>
     });
@@ -197,7 +201,7 @@ if ($isLisInstance) {
         $.post("/tb/results/get-referral-samples.php", {
             type: 'tb',
             referralLabId: referralLabId
-        }, function (data) {
+        }, function(data) {
             if (data && data.trim() !== "") {
                 $("#search").html(data);
                 $(".sampleSelectionArea").show();
@@ -215,7 +219,7 @@ if ($isLisInstance) {
                 left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
                 right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
             },
-            fireSearch: function (value) {
+            fireSearch: function(value) {
                 return value.length > 2;
             },
             autoSelectNext: true,
@@ -225,10 +229,16 @@ if ($isLisInstance) {
 
     function validateForm() {
         const referralLabId = $("#referralToLabId").val();
+        const referralReason = $("#referralReason").val();
         const selectedSamples = $("#search_to option").length;
 
         if (!referralLabId) {
             alert("<?php echo _translate("Please select a referral lab"); ?>");
+            return false;
+        }
+
+        if (!referralReason) {
+            alert("<?php echo _translate("Please enter the referral reason"); ?>");
             return false;
         }
 
