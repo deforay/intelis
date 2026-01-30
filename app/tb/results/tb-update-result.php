@@ -5,7 +5,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
-
+use App\Exceptions\SystemException;
 
 $title = "TB | Edit Request";
 
@@ -113,7 +113,6 @@ if (!empty($tbInfo['is_encrypted']) && $tbInfo['is_encrypted'] == 'yes') {
         $tbInfo['patient_surname'] = $general->crypto('decrypt', $tbInfo['patient_surname'], $key);
     }
 }
-
 $fileArray = [
     COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan.php',
     COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone.php',
@@ -124,7 +123,13 @@ $fileArray = [
     COUNTRY\RWANDA => 'forms/update-rwanda.php',
     COUNTRY\BURKINA_FASO => 'forms/update-burkina-faso.php'
 ];
+$canEdit = ($tbInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
+    || ($tbInfo['locked'] != 'yes' && _isAllowed("/tb/results/tb-manual-results.php"));
 
+if (!$canEdit) {
+    http_response_code(403);
+    throw new SystemException('Cannot Edit Locked Samples', 403);
+}
 require_once($fileArray[$arr['vl_form']]);
 ?>
 
@@ -133,36 +138,35 @@ require_once($fileArray[$arr['vl_form']]);
         if ($.trim($("#" + id).val()) != '') {
             $.blockUI();
             $.post("/tb/requests/check-sample-duplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: $("#" + id).val(),
-                fnct: fnct,
-                format: "html"
-            },
-                function (data) {
-                    if (data != 0) {
-                    }
+                    tableName: tableName,
+                    fieldName: fieldName,
+                    value: $("#" + id).val(),
+                    fnct: fnct,
+                    format: "html"
+                },
+                function(data) {
+                    if (data != 0) {}
                 });
             $.unblockUI();
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
 
 
-        $('#isSampleRejected').change(function (e) {
+        $('#isSampleRejected').change(function(e) {
             changeReject(this.value);
         });
-        $('#hasRecentTravelHistory').change(function (e) {
+        $('#hasRecentTravelHistory').change(function(e) {
             changeHistory(this.value);
         });
         changeReject($('#isSampleRejected').val());
         changeHistory($('#hasRecentTravelHistory').val());
 
-        $('.result-focus').change(function (e) {
+        $('.result-focus').change(function(e) {
             var status = false;
-            $(".result-focus").each(function (index) {
+            $(".result-focus").each(function(index) {
                 if ($(this).val() != "") {
                     status = true;
                 }
@@ -191,9 +195,9 @@ require_once($fileArray[$arr['vl_form']]);
         $("#showEmptyResult").hide();
         if ($.trim($("#artPatientNo").val()) != '') {
             $.post("/tb/requests/search-patients.php", {
-                artPatientNo: $("#artPatientNo").val()
-            },
-                function (data) {
+                    artPatientNo: $("#artPatientNo").val()
+                },
+                function(data) {
                     if (data >= '1') {
                         showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
                     } else {
