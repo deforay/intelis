@@ -12,6 +12,7 @@ use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
+
 try {
 
     /** @var DatabaseService $db */
@@ -147,9 +148,6 @@ try {
     if (!empty($_POST['purposeOfTbTest']) && is_array($_POST['purposeOfTbTest'])) {
         $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
     }
-    if (!empty($_POST['tbTestsRequested']) && is_array($_POST['tbTestsRequested'])) {
-        $_POST['tbTestsRequested'] = implode(",", $_POST['tbTestsRequested']);
-    }
     $tbData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],
@@ -190,7 +188,7 @@ try {
         'current_regimen' => empty($_POST['currentRegimen']) ? null : $_POST['currentRegimen'],
         'date_of_initiation_of_current_regimen' => empty($_POST['regimenDate']) ? null : DateUtility::isoDateFormat($_POST['regimenDate']),
         'previously_treated_for_tb' => empty($_POST['previouslyTreatedForTB']) ? null : $_POST['previouslyTreatedForTB'],
-        'tests_requested' => empty($_POST['tbTestsRequested']) ? null : $_POST['tbTestsRequested'],
+        'tests_requested' => empty($data['tbTestsRequested']) ? null : json_encode($data['tbTestsRequested']),
         'number_of_sputum_samples' => empty($_POST['numberOfSputumSamples']) ? null : $_POST['numberOfSputumSamples'],
         'first_sputum_samples_collection_date' => empty($_POST['firstSputumSamplesCollectionDate']) ? null : $_POST['firstSputumSamplesCollectionDate'],
         'sample_requestor_name' => empty($_POST['sampleRequestorName']) ? null : $_POST['sampleRequestorName'],
