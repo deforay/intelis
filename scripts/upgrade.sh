@@ -820,7 +820,7 @@ if [ "$skip_backup" = false ]; then
     fi
 
     # Ask the user if they want to backup the LIS folder(s)
-    local backup_prompt="Do you want to backup the LIS folder before updating?"
+    backup_prompt="Do you want to backup the LIS folder before updating?"
     if [ ${#lis_paths[@]} -gt 1 ]; then
         backup_prompt="Do you want to backup all ${#lis_paths[@]} LIS folders before updating?"
     fi
@@ -828,8 +828,8 @@ if [ "$skip_backup" = false ]; then
     if ask_yes_no "$backup_prompt" "no"; then
         timestamp=$(date +%Y%m%d-%H%M%S)
         for p in "${lis_paths[@]}"; do
-            local folder_name=$(basename "$p")
-            local backup_folder="/var/intelis-backup/www/${folder_name}-backup-$timestamp"
+            folder_name=$(basename "$p")
+            backup_folder="/var/intelis-backup/www/${folder_name}-backup-$timestamp"
             print info "Backing up $p..."
             mkdir -p "${backup_folder}"
             rsync -a --delete --exclude "public/temporary/" --inplace --whole-file --info=progress2 "$p/" "${backup_folder}/" &
