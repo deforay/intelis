@@ -7,7 +7,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
+use App\Exceptions\SystemException;
 
 $title = "Enter EID Result";
 
@@ -168,12 +168,24 @@ if (!empty($eidInfo['is_encrypted']) && $eidInfo['is_encrypted'] == 'yes') {
 	}
 </style>
 <?php
+$fileArray = [
+	COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php',
+	COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php',
+	COUNTRY\DRC => 'forms/update-drc-result.php',
+	COUNTRY\CAMEROON => 'forms/update-cameroon-result.php',
+	COUNTRY\PNG => 'forms/update-png-result.php',
+	COUNTRY\RWANDA => 'forms/update-rwanda-result.php',
+	COUNTRY\BURKINA_FASO => 'forms/update-burkina-faso-result.php'
+];
 
-$fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php', COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php', COUNTRY\DRC => 'forms/update-drc-result.php', COUNTRY\CAMEROON => 'forms/update-cameroon-result.php', COUNTRY\PNG => 'forms/update-png-result.php', COUNTRY\WHO => 'forms/update-who-result.php', COUNTRY\RWANDA => 'forms/update-rwanda-result.php', COUNTRY\BURKINA_FASO => 'forms/update-burkina-faso-result.php'];
+$canEdit = ($eidInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
+	|| ($eidInfo['locked'] != 'yes' && _isAllowed("/eid/results/eid-update-result.php"));
 
+if (!$canEdit) {
+	http_response_code(403);
+	throw new SystemException('Cannot Edit Locked Samples', 403);
+}
 require_once($fileArray[$arr['vl_form']]);
-
-
 ?>
 <?php
 // Common JS functions in a PHP file
@@ -228,7 +240,7 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
 
 	}
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$('#testedBy').select2({
 			width: '100%',
 			placeholder: "Select Tested By"
@@ -239,7 +251,7 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
 			placeholder: "Select Approved By"
 		});
 		updateSampleResult();
-		$("#isSampleRejected,#result").on("change", function () {
+		$("#isSampleRejected,#result").on("change", function() {
 			updateSampleResult();
 		});
 
@@ -248,10 +260,10 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
 		//$('.date').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?>');
 		//$('.dateTime').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?> 99:99');
 
-		$('.result-focus').change(function (e) {
+		$('.result-focus').change(function(e) {
 			<?php if (isset($eidInfo['result']) && $eidInfo['result'] != "") { ?>
 				var status = false;
-				$(".result-focus").each(function (index) {
+				$(".result-focus").each(function(index) {
 					if ($(this).val() != "") {
 						status = true;
 					}

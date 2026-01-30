@@ -135,29 +135,24 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $userId =  $_SESSION['userId'];
 $checkNonAdminUser = $general->isNonAdmin($userId);
+$fileArray = [
+    COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
+    COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
+    COUNTRY\DRC => 'forms/edit-drc.php',
+    COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
+    COUNTRY\PNG => 'forms/edit-png.php',
+    COUNTRY\WHO => 'forms/edit-who.php',
+    COUNTRY\RWANDA => 'forms/edit-rwanda.php'
+];
 
-if ($hepatitisInfo['locked'] == 'yes') {
-    if($checkNonAdminUser == 1){
-        $fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php'];
-        require_once $fileArray[$arr['vl_form']];
-    }
-    else{
-        http_response_code(403);
-        throw new SystemException('Invalid URL', 403);
-    }
-}
-else{
-    if(_isAllowed("/hepatitis/requests/hepatitis-edit-request.php"))
-    {
-        $fileArray = [COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php', COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php', COUNTRY\DRC => 'forms/edit-drc.php', COUNTRY\CAMEROON => 'forms/edit-cameroon.php', COUNTRY\PNG => 'forms/edit-png.php', COUNTRY\WHO => 'forms/edit-who.php', COUNTRY\RWANDA => 'forms/edit-rwanda.php'];
-        require_once $fileArray[$arr['vl_form']];
-    }
-    else{
-        http_response_code(403);
-        throw new SystemException('Invalid URL', 403);
-    }
-}
+$canEdit = ($hepatitisInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
+    || ($hepatitisInfo['locked'] != 'yes' && _isAllowed("/hepatitis/requests/hepatitis-edit-request.php"));
 
+if (!$canEdit) {
+    http_response_code(403);
+    throw new SystemException('Cannot Edit Locked Samples', 403);
+}
+require_once($fileArray[$arr['vl_form']]);
 // Common JS functions in a PHP file
 // Why PHP? Because we can use PHP variables in the JS code
 require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
@@ -171,13 +166,13 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
         if ($.trim($("#" + id).val()) != '') {
             $.blockUI();
             $.post("/covid-19/requests/check-sample-duplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: $("#" + id).val(),
-                fnct: fnct,
-                format: "html"
-            },
-                function (data) {
+                    tableName: tableName,
+                    fieldName: fieldName,
+                    value: $("#" + id).val(),
+                    fnct: fnct,
+                    format: "html"
+                },
+                function(data) {
                     if (data != 0) {
 
                     }
@@ -186,24 +181,24 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
 
 
-        $('#isSampleRejected').change(function (e) {
+        $('#isSampleRejected').change(function(e) {
             changeReject(this.value);
         });
 
-        $("#hepatitisPlatform").on("change", function () {
+        $("#hepatitisPlatform").on("change", function() {
             if (this.value != "") {
                 getMachine(this.value);
             }
         });
         getMachine($("#hepatitisPlatform").val());
 
-        $('.result-focus').change(function (e) {
+        $('.result-focus').change(function(e) {
             var status = false;
-            $(".result-focus").each(function (index) {
+            $(".result-focus").each(function(index) {
                 if ($(this).val() != "") {
                     status = true;
                 }
@@ -246,11 +241,11 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
 
     function getMachine(value) {
         $.post("/instruments/get-machine-names-by-instrument.php", {
-            instrumentId: value,
-            machine: <?php echo empty($hepatitisInfo['import_machine_name']) ? '""' : $hepatitisInfo['import_machine_name']; ?>,
-            testType: 'hepatitis'
-        },
-            function (data) {
+                instrumentId: value,
+                machine: <?php echo empty($hepatitisInfo['import_machine_name']) ? '""' : $hepatitisInfo['import_machine_name']; ?>,
+                testType: 'hepatitis'
+            },
+            function(data) {
                 $('#machineName').html('');
                 if (data != "") {
                     $('#machineName').append(data);

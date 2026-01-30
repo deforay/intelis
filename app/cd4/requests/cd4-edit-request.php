@@ -198,46 +198,24 @@ if (isset($arr['cd4_min_patient_id_length']) && $arr['cd4_min_patient_id_length'
      }
 </style>
 <?php
+$fileArray = [
+     COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
+     COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
+     COUNTRY\DRC => 'forms/edit-drc.php',
+     COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
+     COUNTRY\PNG => 'forms/edit-png.php',
+     COUNTRY\WHO => 'forms/edit-who.php',
+     COUNTRY\RWANDA => 'forms/edit-rwanda.php'
+];
 
-if ($cd4QueryInfo['locked'] == 'yes') {
-    if($checkNonAdminUser == 1){
-          $fileArray = [
-               COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
-               COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
-               COUNTRY\DRC => 'forms/edit-drc.php',
-               COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
-               COUNTRY\PNG => 'forms/edit-png.php',
-               COUNTRY\WHO => 'forms/edit-who.php',
-               COUNTRY\RWANDA => 'forms/edit-rwanda.php'
-          ];
+$canEdit = ($cd4QueryInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
+     || ($cd4QueryInfo['locked'] != 'yes' && _isAllowed("/cd4/requests/cd4-edit-request.php"));
 
-          require_once($fileArray[$formId]);
-    }
-    else{
-        http_response_code(403);
-        throw new SystemException('Invalid URL', 403);
-    }
+if (!$canEdit) {
+     http_response_code(403);
+     throw new SystemException('Cannot Edit Locked Samples', 403);
 }
-else{
-     if(_isAllowed("/cd4/requests/cd4-edit-request.php")){
-          $fileArray = [
-               COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
-               COUNTRY\SIERRA_LEONE => 'forms/edit-sierraleone.php',
-               COUNTRY\DRC => 'forms/edit-drc.php',
-               COUNTRY\CAMEROON => 'forms/edit-cameroon.php',
-               COUNTRY\PNG => 'forms/edit-png.php',
-               COUNTRY\WHO => 'forms/edit-who.php',
-               COUNTRY\RWANDA => 'forms/edit-rwanda.php'
-          ];
-
-          require_once($fileArray[$formId]);
-     }
-     else{
-        http_response_code(403);
-        throw new SystemException('Invalid URL', 403);
-     }
-}
-
+require_once($fileArray[$formId]);
 ?>
 
 <script type="text/javascript"
