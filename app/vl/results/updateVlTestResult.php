@@ -9,7 +9,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
+use App\Exceptions\SystemException;
 
 $title = _translate("Enter VL Result");
 
@@ -278,22 +278,24 @@ $aResult = $db->query($aQuery);
 	}
 </style>
 <?php
-if ($formId == COUNTRY\SOUTH_SUDAN) {
-	include(__DIR__ . '/forms/update-southsudan-result.php');
-} elseif ($formId == COUNTRY\SIERRA_LEONE) {
-	include(__DIR__ . '/forms/update-sierraleone-result.php');
-} elseif ($formId == COUNTRY\DRC) {
-	include(__DIR__ . '/forms/update-drc-result.php');
-} elseif ($formId == COUNTRY\CAMEROON) {
-	include(__DIR__ . '/forms/update-cameroon-result.php');
-} elseif ($formId == COUNTRY\PNG) {
-	include(__DIR__ . '/forms/update-png-result.php');
-} elseif ($formId == COUNTRY\RWANDA) {
-	include(__DIR__ . '/forms/update-rwanda-result.php');
-} elseif ($formId == COUNTRY\BURKINA_FASO) {
-	include(__DIR__ . '/forms/update-burkina-faso-result.php');
-}
+$fileArray = [
+	COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php',
+	COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php',
+	COUNTRY\DRC => 'forms/update-drc-result.php',
+	COUNTRY\CAMEROON => 'forms/update-cameroon-result.php',
+	COUNTRY\PNG => 'forms/update-png-result.php',
+	COUNTRY\RWANDA => 'forms/update-rwanda-result.php',
+	COUNTRY\BURKINA_FASO => 'forms/update-burkina-faso-result.php'
+];
 
+$canEdit = ($tbInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
+	|| ($tbInfo['locked'] != 'yes' && _isAllowed("/vl/requests/editVlRequest.php"));
+
+if (!$canEdit) {
+	http_response_code(403);
+	throw new SystemException('Cannot Edit Locked Samples', 403);
+}
+require_once($fileArray[$formId]);
 ?>
 <script type="text/javascript"
 	src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
@@ -304,18 +306,18 @@ require_once WEB_ROOT . "/assets/js/test-specific/vl.js.php";
 
 ?>
 <script>
-	$(document).ready(function () {
+	$(document).ready(function() {
 
 
 		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
 		$('.date').mask(dateFormatMask);
 		$('.dateTime').mask(dateFormatMask + ' 99:99');
 
-		$('.result-focus').change(function (e) {
+		$('.result-focus').change(function(e) {
 			<?php //if (isset($vlQueryInfo['result']) && $vlQueryInfo['result'] != "") {
 			?>
 			var status = false;
-			$(".result-focus").each(function (index) {
+			$(".result-focus").each(function(index) {
 				if ($(this).val() != "") {
 					status = true;
 				}
@@ -338,7 +340,7 @@ require_once WEB_ROOT . "/assets/js/test-specific/vl.js.php";
 			minimumInputLength: 0,
 			width: '100%',
 			allowClear: true,
-			id: function (bond) {
+			id: function(bond) {
 				return bond._id;
 			},
 			ajax: {
@@ -346,7 +348,7 @@ require_once WEB_ROOT . "/assets/js/test-specific/vl.js.php";
 				url: "/includes/get-data-list.php",
 				dataType: 'json',
 				delay: 250,
-				data: function (params) {
+				data: function(params) {
 					return {
 						fieldName: 'vl_focal_person',
 						tableName: 'form_vl',
@@ -354,7 +356,7 @@ require_once WEB_ROOT . "/assets/js/test-specific/vl.js.php";
 						page: params.page
 					};
 				},
-				processResults: function (data, params) {
+				processResults: function(data, params) {
 					params.page = params.page || 1;
 					return {
 						results: data.result,
@@ -365,23 +367,23 @@ require_once WEB_ROOT . "/assets/js/test-specific/vl.js.php";
 				},
 				//cache: true
 			},
-			escapeMarkup: function (markup) {
+			escapeMarkup: function(markup) {
 				return markup;
 			}
 		});
 
-		$("#vlFocalPerson").change(function () {
+		$("#vlFocalPerson").change(function() {
 			$.blockUI();
 			var search = $(this).val();
 			if ($.trim(search) != '') {
 				$.get("/includes/get-data-list.php", {
-					fieldName: 'vl_focal_person',
-					tableName: 'form_vl',
-					returnField: 'vl_focal_person_phone_number',
-					limit: 1,
-					q: search,
-				},
-					function (data) {
+						fieldName: 'vl_focal_person',
+						tableName: 'form_vl',
+						returnField: 'vl_focal_person_phone_number',
+						limit: 1,
+						q: search,
+					},
+					function(data) {
 						if (data != "") {
 							$("#vlFocalPersonPhoneNumber").val(data);
 						}

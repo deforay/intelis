@@ -7,7 +7,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
+use App\Exceptions\SystemException;
 
 $title = _translate("Enter CD4 Result");
 
@@ -276,32 +276,35 @@ $aResult = $db->query($aQuery);
 	}
 </style>
 <?php
-if ($formId == COUNTRY\SOUTH_SUDAN) {
-	include(__DIR__ . '/forms/update-southsudan-result.php');
-} elseif ($formId == COUNTRY\SIERRA_LEONE) {
-	include(__DIR__ . '/forms/update-sierraleone-result.php');
-} elseif ($formId == COUNTRY\DRC) {
-	include(__DIR__ . '/forms/update-drc-result.php');
-} elseif ($formId == COUNTRY\CAMEROON) {
-	include(__DIR__ . '/forms/update-cameroon-result.php');
-} elseif ($formId == COUNTRY\PNG) {
-	include(__DIR__ . '/forms/update-png-result.php');
-} elseif ($formId == COUNTRY\RWANDA) {
-	include(__DIR__ . '/forms/update-rwanda-result.php');
-}
+$fileArray = [
+	COUNTRY\SOUTH_SUDAN => 'forms/update-southsudan-result.php',
+	COUNTRY\SIERRA_LEONE => 'forms/update-sierraleone-result.php',
+	COUNTRY\DRC => 'forms/update-drc-result.php',
+	COUNTRY\CAMEROON => 'forms/update-cameroon-result.php',
+	COUNTRY\PNG => 'forms/update-png-result.php',
+	COUNTRY\RWANDA => 'forms/update-rwanda-result.php'
+];
 
+$canEdit = ($cd4QueryInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
+	|| ($cd4QueryInfo['locked'] != 'yes' && _isAllowed("/cd4/results/cd4-update-result.php"));
+
+if (!$canEdit) {
+	http_response_code(403);
+	throw new SystemException('Cannot Edit Locked Samples', 403);
+}
+require_once($fileArray[$formId]);
 ?>
 <script type="text/javascript"
 	src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 
 <script>
-	$(document).ready(function () {
+	$(document).ready(function() {
 
-		$('.result-focus').change(function (e) {
+		$('.result-focus').change(function(e) {
 			<?php //if (isset($cd4QueryInfo['result']) && $cd4QueryInfo['result'] != "") {
 			?>
 			var status = false;
-			$(".result-focus").each(function (index) {
+			$(".result-focus").each(function(index) {
 				if ($(this).val() != "") {
 					status = true;
 				}
@@ -324,7 +327,7 @@ if ($formId == COUNTRY\SOUTH_SUDAN) {
 			minimumInputLength: 0,
 			width: '100%',
 			allowClear: true,
-			id: function (bond) {
+			id: function(bond) {
 				return bond._id;
 			},
 			ajax: {
@@ -332,7 +335,7 @@ if ($formId == COUNTRY\SOUTH_SUDAN) {
 				url: "/includes/get-data-list.php",
 				dataType: 'json',
 				delay: 250,
-				data: function (params) {
+				data: function(params) {
 					return {
 						fieldName: 'cd4_focal_person',
 						tableName: 'form_cd4',
@@ -340,7 +343,7 @@ if ($formId == COUNTRY\SOUTH_SUDAN) {
 						page: params.page
 					};
 				},
-				processResults: function (data, params) {
+				processResults: function(data, params) {
 					params.page = params.page || 1;
 					return {
 						results: data.result,
@@ -351,23 +354,23 @@ if ($formId == COUNTRY\SOUTH_SUDAN) {
 				},
 				//cache: true
 			},
-			escapeMarkup: function (markup) {
+			escapeMarkup: function(markup) {
 				return markup;
 			}
 		});
 
-		$("#vlFocalPerson").change(function () {
+		$("#vlFocalPerson").change(function() {
 			$.blockUI();
 			var search = $(this).val();
 			if ($.trim(search) != '') {
 				$.get("/includes/get-data-list.php", {
-					fieldName: 'cd4_focal_person',
-					tableName: 'form_cd4',
-					returnField: 'cd4_focal_person_phone_number',
-					limit: 1,
-					q: search,
-				},
-					function (data) {
+						fieldName: 'cd4_focal_person',
+						tableName: 'form_cd4',
+						returnField: 'cd4_focal_person_phone_number',
+						limit: 1,
+						q: search,
+					},
+					function(data) {
 						if (data != "") {
 							$("#cd4FocalPersonPhoneNumber").val(data);
 						}
