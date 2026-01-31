@@ -119,7 +119,7 @@ body.spotlight-open {
     transition: background-color 0.1s;
 }
 
-.spotlight-result-item:hover,
+.spotlight-mouse-active .spotlight-result-item:hover,
 .spotlight-result-item.selected {
     background-color: #3C8DBC;
     color: #fff;
@@ -127,8 +127,8 @@ body.spotlight-open {
 
 .spotlight-result-item.selected .spotlight-item-icon,
 .spotlight-result-item.selected .spotlight-item-arrow,
-.spotlight-result-item:hover .spotlight-item-icon,
-.spotlight-result-item:hover .spotlight-item-arrow {
+.spotlight-mouse-active .spotlight-result-item:hover .spotlight-item-icon,
+.spotlight-mouse-active .spotlight-result-item:hover .spotlight-item-arrow {
     color: #fff;
 }
 
@@ -147,7 +147,7 @@ body.spotlight-open {
 }
 
 .spotlight-result-item.selected .spotlight-item-icon,
-.spotlight-result-item:hover .spotlight-item-icon {
+.spotlight-mouse-active .spotlight-result-item:hover .spotlight-item-icon {
     background: rgba(255, 255, 255, 0.2);
 }
 
@@ -169,7 +169,7 @@ body.spotlight-open {
 }
 
 .spotlight-result-item.selected .spotlight-item-path,
-.spotlight-result-item:hover .spotlight-item-path {
+.spotlight-mouse-active .spotlight-result-item:hover .spotlight-item-path {
     color: rgba(255, 255, 255, 0.7);
 }
 
@@ -181,7 +181,7 @@ body.spotlight-open {
 }
 
 .spotlight-result-item.selected .spotlight-item-arrow,
-.spotlight-result-item:hover .spotlight-item-arrow {
+.spotlight-mouse-active .spotlight-result-item:hover .spotlight-item-arrow {
     opacity: 1;
 }
 
@@ -272,24 +272,24 @@ body.spotlight-open {
 }
 
 /* Non-expanded expandable: hover/selected should be blue with white text */
-.spotlight-expandable:not(.expanded):hover,
+.spotlight-mouse-active .spotlight-expandable:not(.expanded):hover,
 .spotlight-expandable:not(.expanded).selected {
     background-color: #3C8DBC;
     color: #fff;
 }
 
-.spotlight-expandable:not(.expanded):hover .spotlight-item-icon,
+.spotlight-mouse-active .spotlight-expandable:not(.expanded):hover .spotlight-item-icon,
 .spotlight-expandable:not(.expanded).selected .spotlight-item-icon {
     background: rgba(255, 255, 255, 0.2);
     color: #fff;
 }
 
-.spotlight-expandable:not(.expanded):hover .spotlight-item-path,
+.spotlight-mouse-active .spotlight-expandable:not(.expanded):hover .spotlight-item-path,
 .spotlight-expandable:not(.expanded).selected .spotlight-item-path {
     color: rgba(255, 255, 255, 0.7);
 }
 
-.spotlight-expandable:not(.expanded):hover .spotlight-item-chevron,
+.spotlight-mouse-active .spotlight-expandable:not(.expanded):hover .spotlight-item-chevron,
 .spotlight-expandable:not(.expanded).selected .spotlight-item-chevron {
     color: #fff;
 }
@@ -340,7 +340,7 @@ body.spotlight-open {
     color: #555;
 }
 
-.spotlight-action-item:hover,
+.spotlight-mouse-active .spotlight-action-item:hover,
 .spotlight-action-item.selected {
     background-color: #3C8DBC;
     color: #fff;
@@ -353,7 +353,7 @@ body.spotlight-open {
     color: #888;
 }
 
-.spotlight-action-item:hover .spotlight-action-icon,
+.spotlight-mouse-active .spotlight-action-item:hover .spotlight-action-icon,
 .spotlight-action-item.selected .spotlight-action-icon {
     color: #fff;
 }
@@ -363,7 +363,7 @@ body.spotlight-open {
 }
 
 /* STS skin (red) override */
-.skin-red .spotlight-result-item:hover,
+.skin-red .spotlight-mouse-active .spotlight-result-item:hover,
 .skin-red .spotlight-result-item.selected {
     background-color: #dd4b39;
 }
@@ -386,7 +386,7 @@ body.spotlight-open {
     border-left-color: #dd4b39;
 }
 
-.skin-red .spotlight-action-item:hover,
+.skin-red .spotlight-mouse-active .spotlight-action-item:hover,
 .skin-red .spotlight-action-item.selected {
     background-color: #dd4b39;
 }
