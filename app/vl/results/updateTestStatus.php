@@ -88,8 +88,8 @@ try {
             $sampleCode = !empty($vlRow['remote_sample']) && $vlRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
         }
 
-        $sampleId = (isset($vlRow[$sampleCode]) && !empty($vlRow[$sampleCode])) ? ' sample id ' . $vlRow[$sampleCode] : '';
-        $patientId = (isset($vlRow['patient_art_no']) && !empty($vlRow['patient_art_no'])) ? ' patient id ' . $vlRow['patient_art_no'] : '';
+        $sampleId = (isset($vlRow[$sampleCode]) && !empty($vlRow[$sampleCode])) ? " " . _translate("Sample ID") . " " . $vlRow[$sampleCode] : '';
+        $patientId = (isset($vlRow['patient_art_no']) && !empty($vlRow['patient_art_no'])) ? " " . _translate("Patient ID") . " " . $vlRow['patient_art_no'] : '';
         $concat = ($sampleId !== '' && $sampleId !== '0' && ($patientId !== '' && $patientId !== '0')) ? ' and' : '';
         //Add event logs
         $eventType = 'update-sample-status';

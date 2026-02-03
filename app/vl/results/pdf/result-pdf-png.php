@@ -374,8 +374,8 @@ if (!empty($result)) {
                     $sampleCode = 'sample_code';
                }
           }
-          $sampleId = (isset($result[$sampleCode]) && !empty($result[$sampleCode])) ? ' sample id ' . $result[$sampleCode] : '';
-          $patientId = (isset($result['patient_art_no']) && !empty($result['patient_art_no'])) ? ' patient id ' . $result['patient_art_no'] : '';
+          $sampleId = (isset($result[$sampleCode]) && !empty($result[$sampleCode])) ? " " . _translate("Sample ID") . " " . $result[$sampleCode] : '';
+          $patientId = (isset($result['patient_art_no']) && !empty($result['patient_art_no'])) ? " " . _translate("Patient ID") . " " . $result['patient_art_no'] : '';
           $concat = ($sampleId !== '' && $sampleId !== '0' && ($patientId !== '' && $patientId !== '0')) ? ' and' : '';
           //Add event log
           $eventType = 'print-result';

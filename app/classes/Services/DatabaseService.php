@@ -120,6 +120,92 @@ final class DatabaseService extends MysqliDb
         return $this->isTransactionActive;
     }
 
+    /**
+     * Replace only true placeholders (outside of quoted strings) for debug output.
+     * Prevents notices when SQL contains literal '?' (e.g., in REGEXP patterns).
+     */
+    protected function replacePlaceHolders($str, $vals)
+    {
+        if (!is_array($vals) || count($vals) <= 1) {
+            return $str;
+        }
+
+        $i = 1;
+        $len = strlen($str);
+        $out = '';
+        $inSingle = false;
+        $inDouble = false;
+
+        for ($pos = 0; $pos < $len; $pos++) {
+            $ch = $str[$pos];
+
+            if ($inSingle) {
+                if ($ch === "'") {
+                    // Handle doubled single quote inside string literal
+                    if ($pos + 1 < $len && $str[$pos + 1] === "'") {
+                        $out .= "''";
+                        $pos++;
+                        continue;
+                    }
+                    $inSingle = false;
+                } elseif ($ch === '\\' && $pos + 1 < $len) {
+                    // Preserve escaped character in string literal
+                    $out .= $ch . $str[$pos + 1];
+                    $pos++;
+                    continue;
+                }
+                $out .= $ch;
+                continue;
+            }
+
+            if ($inDouble) {
+                if ($ch === '"') {
+                    // Handle doubled double quote inside string literal
+                    if ($pos + 1 < $len && $str[$pos + 1] === '"') {
+                        $out .= '""';
+                        $pos++;
+                        continue;
+                    }
+                    $inDouble = false;
+                } elseif ($ch === '\\' && $pos + 1 < $len) {
+                    $out .= $ch . $str[$pos + 1];
+                    $pos++;
+                    continue;
+                }
+                $out .= $ch;
+                continue;
+            }
+
+            if ($ch === "'") {
+                $inSingle = true;
+                $out .= $ch;
+                continue;
+            }
+
+            if ($ch === '"') {
+                $inDouble = true;
+                $out .= $ch;
+                continue;
+            }
+
+            if ($ch === '?' && isset($vals[$i])) {
+                $val = $vals[$i++];
+                if (is_object($val)) {
+                    $val = '[object]';
+                }
+                if ($val === null) {
+                    $val = 'NULL';
+                }
+                $out .= "'" . $val . "'";
+                continue;
+            }
+
+            $out .= $ch;
+        }
+
+        return $out;
+    }
+
 
     /**
      * Execute a query and return a generator to fetch results row by row.

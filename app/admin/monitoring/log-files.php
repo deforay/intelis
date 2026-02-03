@@ -41,7 +41,7 @@ require_once APPLICATION_PATH . '/header.php';
 		color: #000 !important;
 		font-size: 14px;
 		margin: 5px 0;
-		padding: 11px 15px 11px 25px;
+		padding: 11px 44px 11px 25px;
 		background-color: rgb(255, 255, 255);
 		border: 2px solid #f1f1f1;
 		border-left: 3px solid #4CAF50;
@@ -55,8 +55,59 @@ require_once APPLICATION_PATH . '/header.php';
 		text-indent: 0;
 	}
 
+	.log-line-actions {
+		position: absolute;
+		right: 8px;
+		top: 8px;
+		display: flex;
+		gap: 6px;
+		z-index: 2;
+	}
+
+	.log-copy-btn {
+		background: #ffffff;
+		border: 1px solid #e2e6ea;
+		border-radius: 4px;
+		width: 28px;
+		height: 28px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 12px;
+		cursor: pointer;
+		color: #495057;
+		opacity: 0.4;
+		transition: opacity 0.15s ease, box-shadow 0.15s ease;
+	}
+
+	.log-copy-btn:hover {
+		opacity: 1;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+	}
+
+	.logLine:hover .log-copy-btn {
+		opacity: 1;
+	}
+
+	.log-copy-btn:focus-visible {
+		outline: 2px solid #80bdff;
+		outline-offset: 2px;
+		opacity: 1;
+	}
+
+	.filter-chip button:focus-visible {
+		outline: 2px solid #80bdff;
+		outline-offset: 2px;
+		border-radius: 10px;
+	}
+
 	.logLine:hover {
 		background-color: #e8f0fe;
+	}
+
+	.logLine-highlight {
+		box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.4);
+		background-color: #e7f3ff;
 	}
 
 	.lineNumber {
@@ -137,6 +188,117 @@ require_once APPLICATION_PATH . '/header.php';
 	.log-actions {
 		display: flex;
 		gap: 10px;
+		margin-left: auto;
+	}
+
+	.log-type-group {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.log-type-label {
+		font-weight: bold;
+		font-size: 12px;
+		color: #495057;
+	}
+
+	.log-summary {
+		background-color: #f8f9fa;
+		border: 1px solid #e9ecef;
+		border-radius: 4px;
+		padding: 8px 12px;
+		font-size: 12px;
+		color: #495057;
+		margin-bottom: 10px;
+		display: none;
+	}
+
+	.log-summary strong {
+		color: #212529;
+	}
+
+	.log-summary .summary-sep {
+		color: #adb5bd;
+		padding: 0 6px;
+	}
+
+	.filter-chips {
+		display: none;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-bottom: 10px;
+	}
+
+	.filter-chip {
+		background: #eef2f7;
+		color: #495057;
+		border: 1px solid #dde3ea;
+		border-radius: 14px;
+		padding: 4px 10px;
+		font-size: 12px;
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+	}
+
+	.filter-chip button {
+		border: none;
+		background: transparent;
+		color: #6c757d;
+		cursor: pointer;
+		font-size: 12px;
+		line-height: 1;
+		padding: 0;
+	}
+
+	.filter-chip-clear {
+		background: #fff3cd;
+		border-color: #ffeeba;
+	}
+
+	.search-hint {
+		margin-top: 6px;
+		font-size: 12px;
+		color: #6c757d;
+	}
+
+	.log-level-legend {
+		font-size: 12px;
+		color: #6c757d;
+		margin-bottom: 10px;
+	}
+
+	.log-level-legend span {
+		margin-right: 12px;
+	}
+
+	.log-level-legend .legend-dot {
+		display: inline-block;
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		margin-right: 6px;
+		position: relative;
+		top: -1px;
+	}
+
+	.legend-error { background-color: #dc3545; }
+	.legend-warning { background-color: #ffc107; }
+	.legend-info { background-color: #17a2b8; }
+	.legend-debug { background-color: #6c757d; }
+
+	.jump-to-line {
+		margin-bottom: 8px;
+	}
+
+	.jump-to-line .form-control {
+		min-width: 80px;
+		width: 80px;
+	}
+
+	.ui-datepicker {
+		z-index: 2000 !important;
 	}
 
 	.log-header {
@@ -337,17 +499,22 @@ require_once APPLICATION_PATH . '/header.php';
 							</div>
 
 							<div class="log-actions">
-								<button class="btn btn-info btn-sm" onclick="viewApplicationLogs()">
-									<span><?php echo _translate("View System Error Logs"); ?></span>
-								</button>
-								<button class="btn btn-warning btn-sm" onclick="viewPhpErrorLogs()">
-									<span><?php echo _translate("View PHP Error Logs"); ?></span>
-								</button>
+								<div class="log-type-group">
+									<span class="log-type-label"><?php echo _translate("Log Type"); ?>:</span>
+									<div class="btn-group">
+										<button id="logTypeApplication" class="btn btn-info btn-sm" data-log-type="application" onclick="viewApplicationLogs()">
+											<span><?php echo _translate("System Error Logs"); ?></span>
+										</button>
+										<button id="logTypePhp" class="btn btn-warning btn-sm" data-log-type="php_error" onclick="viewPhpErrorLogs()">
+											<span><?php echo _translate("PHP Error Logs"); ?></span>
+										</button>
+									</div>
+								</div>
 							</div>
 						</div>
 
-						<div style="text-align: right; margin-top: 15px;">
-							<strong><?= _translate("Current Server Date and Time"); ?> : </strong>
+						<div style="text-align: right; margin-top: 8px; font-size: 12px; color: #6c757d;">
+							<strong><?= _translate("Current Server Date and Time"); ?> :</strong>
 							<?= DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime(), includeTime: true, withSeconds: true); ?>
 						</div>
 					</div>
@@ -370,17 +537,40 @@ require_once APPLICATION_PATH . '/header.php';
 							<div class="col-md-8">
 								<div class="input-group">
 									<input type="text" id="logSearchInput" class="form-control"
-										placeholder="<?php echo _translate("Search in logs... Use +word for exact, \"phrase\" for exact phrase"); ?>">
+										placeholder="<?php echo _translate("Search in logs... Use +word for exact, \"phrase\" for exact phrase"); ?>"
+										aria-label="<?php echo _translate("Search logs"); ?>">
 									<span class="input-group-btn">
-										<button id="searchLogsButton" class="btn btn-default" type="button">
+										<button id="searchLogsButton" class="btn btn-default" type="button"
+											aria-label="<?php echo _translate("Search logs"); ?>">
 											<i class="fa fa-search"></i>
 										</button>
 									</span>
 								</div>
+								<div class="search-hint">
+									<?php echo _translate("Tip: Use +word for exact match, \"phrase\" for exact phrase, ^word for line start, word$ for line end."); ?>
+								</div>
 							</div>
 							<div class="col-md-4">
+								<div class="jump-to-line">
+									<div class="input-group">
+										<input type="number" id="jumpToLineInput" class="form-control"
+											placeholder="<?php echo _translate("Line #"); ?>" min="1"
+											aria-label="<?php echo _translate("Jump to line number"); ?>">
+										<span class="input-group-btn">
+											<button id="jumpToLineButton" class="btn btn-default" type="button"
+												aria-label="<?php echo _translate("Jump to line"); ?>">
+												<i class="fa fa-location-arrow"></i> <?php echo _translate("Jump"); ?>
+											</button>
+										</span>
+									</div>
+								</div>
 								<div class="btn-group pull-right">
-									<button id="exportTxtButton" class="btn btn-default">
+									<button id="clearFiltersButton" class="btn btn-default"
+										aria-label="<?php echo _translate("Clear filters"); ?>">
+										<i class="fa fa-eraser"></i> <?php echo _translate("Clear Filters"); ?>
+									</button>
+									<button id="exportTxtButton" class="btn btn-default"
+										aria-label="<?php echo _translate("Export log file"); ?>">
 										<i class="fa fa-file-text"></i> <?php echo _translate("Export Log File"); ?>
 									</button>
 								</div>
@@ -409,6 +599,16 @@ require_once APPLICATION_PATH . '/header.php';
 							</div>
 						</div>
 
+						<div id="logSummary" class="log-summary" role="status" aria-live="polite"></div>
+						<div id="logFilterChips" class="filter-chips" aria-label="<?php echo _translate("Active filters"); ?>"></div>
+
+						<div class="log-level-legend">
+							<span><span class="legend-dot legend-error"></span><?php echo _translate("Error"); ?></span>
+							<span><span class="legend-dot legend-warning"></span><?php echo _translate("Warning"); ?></span>
+							<span><span class="legend-dot legend-info"></span><?php echo _translate("Info"); ?></span>
+							<span><span class="legend-dot legend-debug"></span><?php echo _translate("Debug"); ?></span>
+						</div>
+
 						<div class="logViewer" id="logViewer" style="white-space: pre-wrap;"></div>
 					</div>
 				</div>
@@ -434,6 +634,10 @@ require_once APPLICATION_PATH . '/header.php';
 	let allLoadedLogs = [];
 	let searchTimeout;
 	let loadStartTime = 0;
+	let estimatedLines = null;
+	let fileSizeBytes = null;
+
+	const STORAGE_KEY = 'vlsm_log_viewer_state';
 
 	// Performance settings - increased for better performance
 	const LINES_PER_PAGE = 50;
@@ -457,6 +661,10 @@ require_once APPLICATION_PATH . '/header.php';
 		};
 	}
 
+	function sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
 	function showLoadingIndicator() {
 		$('#loadingIndicator').show();
 		loadStartTime = performance.now();
@@ -471,9 +679,13 @@ require_once APPLICATION_PATH . '/header.php';
 		}
 	}
 
-	function updatePerformanceInfo(fileSize, estimatedLines, mode) {
+	function updatePerformanceInfo(fileSize, estimated, mode) {
+		fileSizeBytes = fileSize;
+		if (estimated) {
+			estimatedLines = estimated;
+		}
 		$('#fileSize').text(formatFileSize(fileSize));
-		$('#estimatedLines').text(estimatedLines ? estimatedLines.toLocaleString() : 'Unknown');
+		$('#estimatedLines').text(estimated ? estimated.toLocaleString() : 'Unknown');
 		$('#performanceMode').text(mode);
 		$('#performanceInfo').show();
 
@@ -490,6 +702,12 @@ require_once APPLICATION_PATH . '/header.php';
 		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
 		const i = Math.floor(Math.log(bytes) / Math.log(k));
 		return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+	}
+
+	function getCleanLogHtml($logLine) {
+		const clone = $logLine.clone();
+		clone.find('.log-line-actions').remove();
+		return clone.html();
 	}
 
 	function copyToClipboard(text, lineNumber) {
@@ -588,6 +806,25 @@ require_once APPLICATION_PATH . '/header.php';
 		return terms.filter(term => term.value.length > 0);
 	}
 
+	function buildSearchToken(term) {
+		switch (term.type) {
+			case 'phrase':
+				return `"${term.value}"`;
+			case 'start':
+				return `^${term.value}`;
+			case 'end':
+				return `${term.value}$`;
+			case 'exact':
+				return `+${term.value}`;
+			case 'starts_with':
+				return `${term.value}*`;
+			case 'ends_with':
+				return `*${term.value}`;
+			default:
+				return term.value;
+		}
+	}
+
 	function searchAllTerms(text, searchTerms) {
 		if (!searchTerms || searchTerms.trim() === '') {
 			return true;
@@ -646,6 +883,101 @@ require_once APPLICATION_PATH . '/header.php';
 		return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 	}
 
+	function clearHighlights($element) {
+		$element.find('.highlighted-text').each(function () {
+			$(this).replaceWith($(this).text());
+		});
+	}
+
+	function buildHighlightRegex(terms) {
+		if (!terms || terms.length === 0) return null;
+
+		const parts = terms.map(term => {
+			const value = escapeRegExp(term.value);
+			switch (term.type) {
+				case 'exact':
+					return `\\b${value}\\b`;
+				case 'starts_with':
+					return `\\b${value}`;
+				case 'ends_with':
+					return `${value}\\b`;
+				case 'start':
+					return `^${value}`;
+				case 'end':
+					return `${value}$`;
+				case 'phrase':
+				default:
+					return `${value}`;
+			}
+		});
+
+		return new RegExp(parts.join('|'), 'gi');
+	}
+
+	function highlightSearchTermsInElement($element, searchTerms) {
+		clearHighlights($element);
+
+		if (!searchTerms || searchTerms.trim() === '') {
+			return;
+		}
+
+		const terms = parseSearchTerms(searchTerms);
+		const regex = buildHighlightRegex(terms);
+		if (!regex) return;
+
+		const root = $element[0];
+		const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+			acceptNode: function (node) {
+				if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+				const parent = node.parentNode;
+				if (!parent || !parent.closest) return NodeFilter.FILTER_ACCEPT;
+				if (parent.closest('.log-line-actions') || parent.closest('.lineNumber')) {
+					return NodeFilter.FILTER_REJECT;
+				}
+				return NodeFilter.FILTER_ACCEPT;
+			}
+		});
+
+		const textNodes = [];
+		while (walker.nextNode()) {
+			textNodes.push(walker.currentNode);
+		}
+
+		textNodes.forEach(node => {
+			const text = node.nodeValue;
+			if (!regex.test(text)) {
+				regex.lastIndex = 0;
+				return;
+			}
+			regex.lastIndex = 0;
+			const frag = document.createDocumentFragment();
+			let lastIndex = 0;
+			let match;
+
+			while ((match = regex.exec(text)) !== null) {
+				const start = match.index;
+				const end = start + match[0].length;
+
+				if (start > lastIndex) {
+					frag.appendChild(document.createTextNode(text.slice(lastIndex, start)));
+				}
+
+				const span = document.createElement('span');
+				span.className = 'highlighted-text';
+				span.textContent = match[0];
+				frag.appendChild(span);
+
+				lastIndex = end;
+			}
+
+			if (lastIndex < text.length) {
+				frag.appendChild(document.createTextNode(text.slice(lastIndex)));
+			}
+
+			node.parentNode.replaceChild(frag, node);
+		});
+	}
+
 	function updateSearchTermsIndicator(searchTerms) {
 		$('.search-terms-indicator').remove();
 
@@ -685,6 +1017,54 @@ require_once APPLICATION_PATH . '/header.php';
 		}
 	}
 
+	function updateFilterChips() {
+		const chips = [];
+
+		if (logType && logType !== 'application') {
+			chips.push({
+				type: 'logType',
+				label: `Type: ${logType === 'php_error' ? 'PHP Error' : 'Application'}`
+			});
+		}
+
+		if (currentFilter && currentFilter !== 'all') {
+			chips.push({
+				type: 'level',
+				label: `Level: ${currentFilter}`
+			});
+		}
+
+		if (searchTerm && searchTerm.trim() !== '') {
+			const terms = parseSearchTerms(searchTerm).map((term, index) => ({
+				type: 'search',
+				label: buildSearchToken(term),
+				index
+			}));
+			chips.push(...terms);
+		}
+
+		if (chips.length === 0) {
+			$('#logFilterChips').hide().html('');
+			return;
+		}
+
+		const chipHtml = chips.map((chip) => `
+			<span class="filter-chip" data-chip-type="${chip.type}" ${chip.type === 'search' ? `data-chip-index="${chip.index}"` : ''}>
+				${chip.label}
+				<button type="button" aria-label="Remove filter">×</button>
+			</span>
+		`).join('');
+
+		const clearAllChip = `
+			<span class="filter-chip filter-chip-clear" data-chip-type="clear">
+				Clear All
+				<button type="button" aria-label="Clear all filters">×</button>
+			</span>
+		`;
+
+		$('#logFilterChips').html(chipHtml + clearAllChip).show();
+	}
+
 	function applyFilters() {
 		updateSearchTermsIndicator(searchTerm);
 		const logViewer = document.getElementById('logViewer');
@@ -714,7 +1094,8 @@ require_once APPLICATION_PATH . '/header.php';
 						logLine.setAttribute('data-original-html', originalHtml);
 					}
 
-					logLine.innerHTML = highlightAllSearchTerms(originalHtml, searchTerm);
+					logLine.innerHTML = originalHtml;
+					highlightSearchTermsInElement($(logLine), searchTerm);
 				} else if (logLine.hasAttribute('data-original-html')) {
 					logLine.innerHTML = logLine.getAttribute('data-original-html');
 				}
@@ -730,8 +1111,11 @@ require_once APPLICATION_PATH . '/header.php';
 
 		if (visibleCount === 0 && allLoadedLogs.length > 0) {
 			logViewer.insertAdjacentHTML('beforeend',
-				`<div class="error" id="no-matches">No logs match your filters.</div>`);
+				`<div class="error" id="no-matches">No logs match your filters. Try clearing filters or adjusting search terms.</div>`);
 		}
+
+		updateLogSummary(visibleCount);
+		updateFilterChips();
 	}
 
 	function resetAndLoadLogs() {
@@ -739,15 +1123,171 @@ require_once APPLICATION_PATH . '/header.php';
 		loading = false;
 		hasMoreLogs = true;
 		allLoadedLogs = [];
+		estimatedLines = null;
+		fileSizeBytes = null;
 		$('#logViewer').html('');
 		$('#performanceInfo').hide();
 		$('#fileSizeWarning').hide();
 		loadLogs();
 	}
 
+	async function jumpToLine() {
+		const rawValue = $('#jumpToLineInput').val();
+		const lineNumber = parseInt(rawValue, 10);
+
+		if (!lineNumber || lineNumber < 1) {
+			toast.info("<?= _translate("Enter a valid line number", true); ?>");
+			return;
+		}
+
+		let $target = $('#logViewer .logLine[data-linenumber="' + lineNumber + '"]').first();
+		if ($target.length === 0 && hasMoreLogs) {
+			toast.info("<?= _translate("Loading more logs to find that line...", true); ?>");
+			const maxAttempts = 20;
+
+			for (let attempt = 0; attempt < maxAttempts; attempt++) {
+				if (loading) {
+					await sleep(200);
+					continue;
+				}
+
+				const loaded = await loadLogsAsync();
+				if (!loaded) break;
+
+				$target = $('#logViewer .logLine[data-linenumber="' + lineNumber + '"]').first();
+				if ($target.length > 0) {
+					break;
+				}
+			}
+		}
+
+		if ($target.length === 0) {
+			toast.info("<?= _translate("Line not loaded yet. Try again after more logs load.", true); ?>");
+			return;
+		}
+
+		$('html, body').animate({ scrollTop: $target.offset().top - 80 }, 200);
+		$target.addClass('logLine-highlight');
+		setTimeout(() => $target.removeClass('logLine-highlight'), 1200);
+	}
+
+	function updateLogSummary(visibleCount) {
+		const totalLoaded = allLoadedLogs.length;
+		const activeFilters = [];
+		const estimatedText = estimatedLines ? ` / ${estimatedLines.toLocaleString()} est.` : '';
+
+		if (logType) {
+			activeFilters.push(`Type: ${logType === 'php_error' ? 'PHP Error' : 'Application'}`);
+		}
+
+		if (currentFilter && currentFilter !== 'all') {
+			activeFilters.push(`Level: ${currentFilter}`);
+		}
+
+		if (searchTerm && searchTerm.trim() !== '') {
+			activeFilters.push(`Search: "${searchTerm.trim()}"`);
+		}
+
+		const filtersText = activeFilters.length > 0 ? activeFilters.join(' · ') : 'None';
+
+		const summaryHtml = `
+			<strong>Loaded:</strong> ${totalLoaded.toLocaleString()}${estimatedText}
+			<span class="summary-sep">|</span>
+			<strong>Visible:</strong> ${visibleCount.toLocaleString()}
+			<span class="summary-sep">|</span>
+			<strong>Filters:</strong> ${filtersText}
+		`;
+
+		$('#logSummary').html(summaryHtml).show();
+	}
+
+	function saveViewerState() {
+		const state = {
+			logType,
+			currentFilter,
+			searchTerm,
+			date: $('#userDate').val()
+		};
+
+		try {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+		} catch (e) {
+			// Non-critical: ignore storage failures (e.g., private mode)
+		}
+	}
+
+	function loadViewerState() {
+		try {
+			const raw = localStorage.getItem(STORAGE_KEY);
+			if (!raw) return;
+
+			const state = JSON.parse(raw);
+			if (!state || typeof state !== 'object') return;
+
+			if (state.date) {
+				$('#userDate').val(state.date);
+			}
+			if (state.searchTerm) {
+				$('#logSearchInput').val(state.searchTerm);
+				searchTerm = state.searchTerm;
+			}
+			if (state.currentFilter) {
+				currentFilter = state.currentFilter;
+				$('#logLevelFilters button').removeClass('active');
+				$('#logLevelFilters button[data-level="' + currentFilter + '"]').addClass('active');
+			}
+			if (state.logType) {
+				logType = state.logType;
+				if (logType === 'php_error') {
+					$('#logTypePhp').addClass('active');
+					$('#logTypeApplication').removeClass('active');
+				} else {
+					$('#logTypeApplication').addClass('active');
+					$('#logTypePhp').removeClass('active');
+				}
+			} else {
+				$('#logTypeApplication').addClass('active');
+			}
+		} catch (e) {
+			// Non-critical: ignore parse/storage errors
+		}
+	}
+
+	function clearFilters() {
+		searchTerm = '';
+		currentFilter = 'all';
+		$('#logSearchInput').val('');
+		$('#logLevelFilters button').removeClass('active');
+		$('#logLevelFilters button[data-level="all"]').addClass('active');
+		applyFilters();
+		saveViewerState();
+	}
+
+	function removeSearchTermAtIndex(index) {
+		if (Number.isNaN(index)) return;
+		const terms = parseSearchTerms(searchTerm);
+		if (!terms[index]) return;
+
+		terms.splice(index, 1);
+		const rebuilt = terms.map(buildSearchToken).join(' ');
+		searchTerm = rebuilt;
+		$('#logSearchInput').val(rebuilt);
+		applyFilters();
+		saveViewerState();
+	}
+
 	// Optimized log loading function
 	function loadLogs() {
-		if (!loading && hasMoreLogs) {
+		loadLogsAsync();
+	}
+
+	function loadLogsAsync() {
+		return new Promise((resolve) => {
+			if (loading || !hasMoreLogs) {
+				resolve(false);
+				return;
+			}
+
 			loading = true;
 			$('#logViewer').show();
 
@@ -801,18 +1341,14 @@ require_once APPLICATION_PATH . '/header.php';
 
 					if (data.includes('No more logs')) {
 						hasMoreLogs = false;
-						const cleanData = data.replace(/<!-- PERFORMANCE_INFO:.*?-->/g, '');
-						$('#logViewer').append(cleanData);
-						loading = false;
-						return;
 					}
 
 					if (data.trim() === '' || data.replace(/<!-- PERFORMANCE_INFO:.*?-->/g, '').trim() === '') {
 						hasMoreLogs = false;
 						if (start === 0) {
-							$('#logViewer').html('<div class="logLine">No logs found.</div>');
+							$('#logViewer').html('<div class="logLine">No logs found for this date. Try a different date or adjust filters.</div>');
 						} else {
-							$('#logViewer').append('<div class="logLine">No more logs.</div>');
+							$('#logViewer').append('<div class="logLine">No more logs. Try a different date or adjust filters.</div>');
 						}
 					} else {
 						// Use requestAnimationFrame for smooth UI updates
@@ -820,7 +1356,9 @@ require_once APPLICATION_PATH . '/header.php';
 							appendLogsToViewer(data);
 						});
 					}
+
 					loading = false;
+					resolve(true);
 				},
 				error: function (xhr, status, error) {
 					$('.loading').remove();
@@ -836,9 +1374,10 @@ require_once APPLICATION_PATH . '/header.php';
 						}
 					}
 					loading = false;
+					resolve(false);
 				}
 			});
-		}
+		});
 	}
 
 	function appendLogsToViewer(data) {
@@ -878,6 +1417,13 @@ require_once APPLICATION_PATH . '/header.php';
 
 				const formattedContent = formatLogLine(lineInDOM.html());
 				lineInDOM.html(formattedContent);
+				lineInDOM.append(`
+					<div class="log-line-actions">
+						<button class="log-copy-btn" type="button" title="Copy line" aria-label="Copy line">
+							<i class="fa fa-clipboard"></i>
+						</button>
+					</div>
+				`);
 				lineInDOM.attr('data-original-html', lineInDOM.html());
 			}
 
@@ -987,11 +1533,17 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function viewPhpErrorLogs() {
 		logType = 'php_error';
+		$('#logTypePhp').addClass('active');
+		$('#logTypeApplication').removeClass('active');
+		saveViewerState();
 		resetAndLoadLogs();
 	}
 
 	function viewApplicationLogs() {
 		logType = 'application';
+		$('#logTypeApplication').addClass('active');
+		$('#logTypePhp').removeClass('active');
+		saveViewerState();
 		resetAndLoadLogs();
 	}
 
@@ -1034,6 +1586,7 @@ require_once APPLICATION_PATH . '/header.php';
 		}
 
 		applyFilters();
+		saveViewerState();
 	}, SEARCH_DEBOUNCE_TIME);
 
 	// Virtual scrolling for better performance
@@ -1068,13 +1621,15 @@ require_once APPLICATION_PATH . '/header.php';
 
 		$('#viewLogButton').click(function () {
 			showLoadingIndicator();
-			viewApplicationLogs();
+			saveViewerState();
+			resetAndLoadLogs();
 		});
 
 		$('#searchLogsButton').on('click', function () {
 			clearTimeout(searchTimeout);
 			searchTerm = $('#logSearchInput').val();
 			applyFilters();
+			saveViewerState();
 		});
 
 		$('#logSearchInput').on('keydown', function (e) {
@@ -1082,6 +1637,7 @@ require_once APPLICATION_PATH . '/header.php';
 				clearTimeout(searchTimeout);
 				searchTerm = $('#logSearchInput').val();
 				applyFilters();
+				saveViewerState();
 			}
 		});
 
@@ -1090,15 +1646,83 @@ require_once APPLICATION_PATH . '/header.php';
 			$(this).addClass('active');
 			currentFilter = $(this).data('level');
 			applyFilters();
+			saveViewerState();
 		});
 
 		$('#exportTxtButton').click(exportLogFile);
+		$('#clearFiltersButton').click(clearFilters);
+		$('#jumpToLineButton').click(jumpToLine);
+
+		$('#jumpToLineInput').on('keydown', function (e) {
+			if (e.keyCode === 13) {
+				jumpToLine();
+			}
+		});
+
+		$(document).on('click', '.log-copy-btn', function (e) {
+			e.stopPropagation();
+			const $line = $(this).closest('.logLine');
+			const lineNumber = $line.attr('data-linenumber') || '';
+			copyToClipboard(getCleanLogHtml($line), lineNumber);
+		});
+
+		$(document).on('keydown', function (e) {
+			if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
+				e.preventDefault();
+				$('#logSearchInput').focus().select();
+			}
+
+			if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
+				e.preventDefault();
+				clearFilters();
+			}
+
+			if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'g') {
+				e.preventDefault();
+				$('#jumpToLineInput').focus().select();
+			}
+		});
+
+		$(document).on('click', '#logFilterChips .filter-chip button', function () {
+			const $chip = $(this).closest('.filter-chip');
+			const chipType = $chip.data('chip-type');
+
+			if (chipType === 'clear') {
+				clearFilters();
+				return;
+			}
+
+			if (chipType === 'logType') {
+				viewApplicationLogs();
+				return;
+			}
+
+			if (chipType === 'level') {
+				currentFilter = 'all';
+				$('#logLevelFilters button').removeClass('active');
+				$('#logLevelFilters button[data-level="all"]').addClass('active');
+				applyFilters();
+				saveViewerState();
+				return;
+			}
+
+			if (chipType === 'search') {
+				const chipIndex = parseInt($chip.data('chip-index'), 10);
+				removeSearchTermAtIndex(chipIndex);
+			}
+		});
+
+		$('#userDate').on('change', function () {
+			saveViewerState();
+			resetAndLoadLogs();
+		});
 
 		addSearchHelp();
 		addSearchExamples();
 		initVirtualScrolling();
 
-		viewApplicationLogs();
+		loadViewerState();
+		resetAndLoadLogs();
 	});
 </script>
 
