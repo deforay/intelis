@@ -41,9 +41,9 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
 $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
-$typeOfPatient = json_decode((string) $tbInfo['patient_type']);
-$reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
-$testTypeRequested = explode(',', $tbInfo['tests_requested']);
+$typeOfPatient = ($tbInfo['patient_type']) ?  json_decode((string) $tbInfo['patient_type']) : [];
+$reasonForTbTest = ($tbInfo['reason_for_tb_test']) ?  json_decode((string) $tbInfo['reason_for_tb_test']) : [];
+$testTypeRequested = ($tbInfo['tests_requested']) ?  json_decode((string) $tbInfo['tests_requested']) : [];
 $tbInfo['purpose_of_test'] = explode(',', $tbInfo['purpose_of_test']);
 
 
@@ -1133,12 +1133,11 @@ if ($isLisInstance) {
         // Initialize Select2 for dropdowns
         $section.find('.select2').each(function() {
             const $this = $(this);
-            if (!$this.hasClass('select2-hidden-accessible')) {
-                $this.select2({
-                    placeholder: "Select option",
-                    width: '100%'
-                });
-            }
+            $this.removeClass('select2-hidden-accessible');
+            $this.select2({
+                placeholder: "Select option",
+                width: '100%'
+            });
         });
 
         // Sample rejection change handler
@@ -1187,6 +1186,8 @@ if ($isLisInstance) {
 
         // Clear form values
         clearSectionValues(newSection);
+        // Remove stale Select2 container spans from cloned section
+        $(newSection).find('.select2-container').remove();
 
         // Hide conditional fields
         $(newSection).find('.rejection-reason-field, .rejection-date-field').hide();
