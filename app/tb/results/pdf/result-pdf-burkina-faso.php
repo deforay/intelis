@@ -456,12 +456,12 @@ if (!empty($result)) {
                     $sampleCode = 'sample_code';
                }
           }
-          $sampleId = (isset($result[$sampleCode]) && !empty($result[$sampleCode])) ? ' sample id ' . $result[$sampleCode] : '';
-          $patientId = (isset($result['patient_id']) && !empty($result['patient_id'])) ? ' patient id ' . $result['patient_id'] : '';
+          $sampleId = (isset($result[$sampleCode]) && !empty($result[$sampleCode])) ? " " . _translate("Sample ID") . " " . $result[$sampleCode] : '';
+          $patientId = (isset($result['patient_id']) && !empty($result['patient_id'])) ? " " . _translate("Patient ID") . " " . $result['patient_id'] : '';
           $concat = ($sampleId !== '' && $sampleId !== '0' && ($patientId !== '' && $patientId !== '0')) ? ' and' : '';
           //Add event log
           $eventType = 'print-result';
-          $action = $_SESSION['userName'] . ' generated the test result PDF with ' . $sampleId . $concat . $patientId;
+          $action = $_SESSION['userName'] . " " . _translate("generated the test result PDF with") . " " . $sampleId . $concat . $patientId;
           $resource = 'print-test-result';
           $data = ['event_type' => $eventType, 'action' => $action, 'resource' => $resource, 'date_time' => $currentDateTime];
           $db->insert($tableName1, $data);
