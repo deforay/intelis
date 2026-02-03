@@ -16,6 +16,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 
 // Sanitized values from $request object
+
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
