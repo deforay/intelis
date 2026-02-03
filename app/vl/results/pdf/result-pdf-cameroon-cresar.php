@@ -47,10 +47,10 @@ if (!empty($result)) {
 
      $reviewedBySignaturePath = $approvedBySignaturePath = null;
      if (!empty($result['approvedBySignature'])) {
-          $approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+          $approvedBySignaturePath = MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
      if (!empty($result['reviewedBySignature'])) {
-          $reviewedBySignaturePath =  MiscUtility::getFullImagePath($result['reviewedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+          $reviewedBySignaturePath = MiscUtility::getFullImagePath($result['reviewedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
      $_SESSION['aliasPage'] = $page;
      if (empty($result['labName'])) {
@@ -59,13 +59,13 @@ if (!empty($result)) {
      $draftTextShow = false;
      //Set watermark text
      if (!empty($mFieldArray)) {
-         $counter = count($mFieldArray);
-         for ($m = 0; $m < $counter; $m++) {
-              if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) === '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
-                   $draftTextShow = true;
-                   break;
-              }
-         }
+          $counter = count($mFieldArray);
+          for ($m = 0; $m < $counter; $m++) {
+               if (!isset($result[$mFieldArray[$m]]) || trim((string) $result[$mFieldArray[$m]]) === '' || $result[$mFieldArray[$m]] == null || $result[$mFieldArray[$m]] == '0000-00-00 00:00:00') {
+                    $draftTextShow = true;
+                    break;
+               }
+          }
      }
 
      $pdf = new VLResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, $reportTemplatePath, false);
@@ -212,7 +212,7 @@ if (!empty($result)) {
      }
 
      $html .= '<tr>';
-     $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' .  _translate("Type of Sample") . " : " . _translate($result['sample_name']) . '</td>';
+     $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Type of Sample") . " : " . _translate($result['sample_name']) . '</td>';
      $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Contact") . " : " . $result['patient_mobile_number'] . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
@@ -220,7 +220,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Collected By") . " : " . $result['facility_name'] . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' .  _translate("Name of Requester") . " : " . $result['request_clinician_name'] . '</td>';
+     $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Name of Requester") . " : " . $result['request_clinician_name'] . '</td>';
      $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Contact of Requester") . " : " . $result['request_clinician_phone_number'] . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
@@ -294,28 +294,28 @@ if (!empty($result)) {
      }
 
      if ($reviewedBy != $resultApprovedBy) {
-          $html .= '<tr><td width="40%" style="line-height:8px;font-size:10px;text-align:left;">' . _translate('Validated by') . ' : ' . $reviewedBy  . '</td>';
+          $html .= '<tr><td width="40%" style="line-height:8px;font-size:10px;text-align:left;">' . _translate('Validated by') . ' : ' . $reviewedBy . '</td>';
           $html .= '<td width="40%" style="line-height:10px;font-size:10px;text-align:right;">' . _translate('Authorized by') . ' : ' . $resultApprovedBy . '</td></tr>';
           $html .= '<tr><td></td></tr>';
           $html .= '<tr>';
           if ($signImg !== '' && $signImg !== '0') {
-               $html .= '<td style="text-align:left;">' . _translate('Signature') . ' : ' . $signImg  . '</td>';
+               $html .= '<td style="text-align:left;">' . _translate('Signature') . ' : ' . $signImg . '</td>';
           } else {
                $html .= '<td style="text-align:left;"></td>';
           }
 
           if ($signImgApproved !== '' && $signImgApproved !== '0') {
-               $html .= '<td style="text-align:right;">' . _translate('Signature') . ' : ' . $signImgApproved  . '</td>';
+               $html .= '<td style="text-align:right;">' . _translate('Signature') . ' : ' . $signImgApproved . '</td>';
           } else {
                $html .= '<td style="text-align:right;"></td>';
           }
           $html .= '</tr>';
      } else {
-          $html .= '<tr><td width="40%" style="line-height:8px;font-size:10px;text-align:left;">' . _translate('Authorized and Validated by') . ' : ' . $reviewedBy  . '</td></tr>';
+          $html .= '<tr><td width="40%" style="line-height:8px;font-size:10px;text-align:left;">' . _translate('Authorized and Validated by') . ' : ' . $reviewedBy . '</td></tr>';
           $html .= '<tr><td></td></tr>';
           $html .= '<tr>';
           if ($signImg !== '' && $signImg !== '0') {
-               $html .= '<td style="text-align:left;">' . _translate('Signature') . ' : ' . $signImg  . '</td>';
+               $html .= '<td style="text-align:left;">' . _translate('Signature') . ' : ' . $signImg . '</td>';
           } else {
                $html .= '<td style="text-align:left;"></td>';
           }
@@ -356,12 +356,12 @@ if (!empty($result)) {
                     $sampleCode = 'sample_code';
                }
           }
-          $sampleId = (isset($result[$sampleCode]) && !empty($result[$sampleCode])) ? ' sample id ' . $result[$sampleCode] : '';
-          $patientId = (isset($result['patient_art_no']) && !empty($result['patient_art_no'])) ? ' patient id ' . $result['patient_art_no'] : '';
+          $sampleId = (isset($result[$sampleCode]) && !empty($result[$sampleCode])) ? " " . _translate("Sample ID") . " " . $result[$sampleCode] : '';
+          $patientId = (isset($result['patient_art_no']) && !empty($result['patient_art_no'])) ? " " . _translate("Patient ID") . " " . $result['patient_art_no'] : '';
           $concat = ($sampleId !== '' && $sampleId !== '0' && ($patientId !== '' && $patientId !== '0')) ? ' and' : '';
           //Add event log
           $eventType = 'print-result';
-          $action = $_SESSION['userName'] . ' generated the test result PDF with ' . $sampleId . $concat . $patientId;
+          $action = $_SESSION['userName'] . " " . _translate("generated the test result PDF with") . " " . $sampleId . $concat . $patientId;
           $resource = 'print-test-result';
           $data = ['event_type' => $eventType, 'action' => $action, 'resource' => $resource, 'date_time' => $currentTime];
           $db->insert($tableName1, $data);

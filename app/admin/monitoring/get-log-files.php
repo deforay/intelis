@@ -423,7 +423,7 @@ function formatPhpErrorLogEntry($entry): string|array|null
 
 function createLogLine(string $content, string $lineNumber, string $logLevel): string
 {
-    return '<div class="logLine log-' . $logLevel . '" data-linenumber="' . $lineNumber . '" data-level="' . $logLevel . '" onclick="copyToClipboard(this.innerHTML, ' . $lineNumber . ')">
+    return '<div class="logLine log-' . $logLevel . '" data-linenumber="' . $lineNumber . '" data-level="' . $logLevel . '">
         <span class="lineNumber">' . $lineNumber . '</span>' . $content . '</div>';
 }
 
