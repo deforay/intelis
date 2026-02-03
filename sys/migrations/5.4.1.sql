@@ -1,8 +1,11 @@
 -- Migration file for version 5.4.1
 -- Created on 2026-01-28 19:31:48
 
+-- Fix tb-reference resource to show under TB tab instead of Admin
+UPDATE `resources` SET `module` = 'tb' WHERE `resource_id` = 'tb-reference';
+
 -- Add missing TB reference privilege
-INSERT INTO `privileges` (`resource`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`)
+INSERT INTO `privileges` (`resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`)
 VALUES (
     'tb-reference',
     '/tb/reference/tb-sample-type.php',

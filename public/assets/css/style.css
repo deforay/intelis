@@ -60,6 +60,20 @@ select[readonly] {
     font-family: helvetica, arial, sans-serif;
 }
 
+/* Fix sidebar treeview menu z-index issue */
+.sidebar-menu > li.treeview {
+    position: relative;
+}
+
+.sidebar-menu > li.treeview.menu-open {
+    z-index: 1000;
+}
+
+.sidebar-menu > li.header {
+    position: relative;
+    z-index: 1;
+}
+
 .skin-blue .sidebar-menu>li.header {
     background: #ddd;
     color: #333;
