@@ -432,20 +432,19 @@ if ($isLisInstance) {
                                         </select>
                                     </td>
                                     <td style="width: 50%;">
-                                        <?php $tbTestsRequested = !empty($tbInfo['tests_requested']) ? explode(',', $tbInfo['tests_requested']) : []; ?>
                                         <label class="label-control"
                                             for="tbTestsRequested"><?php echo _translate("TB test(s) requested"); ?></label>
                                         <select id="tbTestsRequested" multiple name="tbTestsRequested[]"
                                             class="form-control" title="Please select the TB test(s) requested">
                                             <option value="">Select TB test(s) requested...</option>
-                                            <option value="LED microscopy" <?php echo in_array('LED microscopy', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>LED microscopy
+                                            <option value="LED microscopy" <?php echo in_array('LED microscopy', $testTypeRequested) ? 'selected="selected"' : ''; ?>>LED microscopy
                                             </option>
-                                            <option value="TB LAM test" <?php echo in_array('TB LAM test', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>TB LAM test</option>
-                                            <option value="MTB/ RIF Ultra" <?php echo in_array('MTB/ RIF Ultra', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra
+                                            <option value="TB LAM test" <?php echo in_array('TB LAM test', $testTypeRequested) ? 'selected="selected"' : ''; ?>>TB LAM test</option>
+                                            <option value="MTB/ RIF Ultra" <?php echo in_array('MTB/ RIF Ultra', $testTypeRequested) ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra
                                             </option>
-                                            <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>MTB/
+                                            <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $testTypeRequested) ? 'selected="selected"' : ''; ?>>MTB/
                                                 XDR (if RIF detected)</option>
-                                            <option value="TB culture and Drug susceptibility test (DST)" <?php echo in_array('TB culture and Drug susceptibility test (DST)', $tbTestsRequested) ? 'selected="selected"' : ''; ?>>TB culture and Drug
+                                            <option value="TB culture and Drug susceptibility test (DST)" <?php echo in_array('TB culture and Drug susceptibility test (DST)', $testTypeRequested) ? 'selected="selected"' : ''; ?>>TB culture and Drug
                                                 susceptibility test (DST)</option>
                                         </select>
                                     </td>
@@ -557,19 +556,17 @@ if ($isLisInstance) {
                                                     <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
-                                                                for="labId<?php echo $n; ?>"><?php echo _translate("Testing Lab"); ?><span
-                                                                    class="mandatory">*</span></label>
+                                                                for="labId<?php echo $n; ?>"><?php echo _translate("Testing Lab"); ?></label>
                                                             <select name="testResult[labId][]" id="labId<?php echo $n; ?>"
-                                                                class="isRequired form-control select2"
+                                                                class="form-control select2"
                                                                 title="<?php echo _translate("Please select testing laboratory"); ?>">
                                                                 <?= $general->generateSelectOptions($testingLabs, $test['lab_id'] ?: $currentLabId, '-- Select lab --'); ?>
                                                             </select>
                                                         </td>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
-                                                                for="sampleReceivedDate<?php echo $n; ?>"><?php echo _translate("Date specimen received at TB testing site"); ?><span
-                                                                    class="mandatory">*</span></label>
-                                                            <input type="text" class="date-time isRequired form-control"
+                                                                for="sampleReceivedDate<?php echo $n; ?>"><?php echo _translate("Date specimen received at TB testing site"); ?></label>
+                                                            <input type="text" class="date-time form-control"
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['sample_received_at_lab_datetime'], true); ?>"
                                                                 id="sampleReceivedDate<?php echo $n; ?>"
                                                                 name="testResult[sampleReceivedDate][]"
@@ -793,19 +790,17 @@ if ($isLisInstance) {
                                                 <tr>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control"
-                                                            for="labId1"><?php echo _translate("Testing Lab"); ?><span
-                                                                class="mandatory">*</span></label>
+                                                            for="labId1"><?php echo _translate("Testing Lab"); ?></label>
                                                         <select name="testResult[labId][]" id="labId1"
-                                                            class="isRequired form-control select2"
+                                                            class="form-control select2"
                                                             title="<?php echo _translate("Please select testing laboratory"); ?>">
                                                             <?= $general->generateSelectOptions($testingLabs, $currentLabId, '-- Select lab --'); ?>
                                                         </select>
                                                     </td>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control"
-                                                            for="sampleReceivedDate1"><?php echo _translate("Date specimen received at TB testing site"); ?><span
-                                                                class="mandatory">*</span></label>
-                                                        <input type="text" class="date-time isRequired form-control"
+                                                            for="sampleReceivedDate1"><?php echo _translate("Date specimen received at TB testing site"); ?></label>
+                                                        <input type="text" class="date-time form-control"
                                                             id="sampleReceivedDate1" name="testResult[sampleReceivedDate][]"
                                                             placeholder="<?= _translate("Please enter date"); ?>"
                                                             title="<?php echo _translate("Please enter sample receipt date"); ?>" />
