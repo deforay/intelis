@@ -75,7 +75,7 @@ $sharedGenericPrivileges = [
     '/generic-tests/configuration/test-categories/generic-edit-test-categories.php' => '/generic-tests/configuration/test-categories/generic-test-categories.php',
 ];
 
-$sharedPrivileges = array_merge($sharedPrivileges, $sharedGenericPrivileges);
+$sharedPrivileges = [...$sharedPrivileges, ...$sharedGenericPrivileges];
 
 //VL Module Shared Privileges
 $sharedVLPrivileges = [
@@ -110,7 +110,7 @@ $sharedVLPrivileges = [
     '/vl/program-management/vlSuppressedTargetReport.php' => '/vl/program-management/vlMonthlyThresholdReport.php'
 ];
 
-$sharedPrivileges = array_merge($sharedPrivileges, $sharedVLPrivileges);
+$sharedPrivileges = [...$sharedPrivileges, ...$sharedVLPrivileges];
 
 //EID Module Shared Privileges
 $sharedEIDPrivileges = [
@@ -138,7 +138,7 @@ $sharedEIDPrivileges = [
     '/eid/management/eidTestingTargetReport.php' => '/eid/management/eidMonthlyThresholdReport.php',
     '/eid/management/eidSuppressedTargetReport.php' => '/eid/management/eidMonthlyThresholdReport.php'
 ];
-$sharedPrivileges = array_merge($sharedPrivileges, $sharedEIDPrivileges);
+$sharedPrivileges = [...$sharedPrivileges, ...$sharedEIDPrivileges];
 
 //Covid19 Module Shared Privileges
 $sharedCovid19Privileges = [
@@ -176,7 +176,7 @@ $sharedCovid19Privileges = [
     '/covid-19/reference/add-covid19-qc-test-kit.php' => '/covid-19/reference/covid19-sample-type.php',
     '/covid-19/reference/edit-covid19-qc-test-kit.php' => '/covid-19/reference/covid19-sample-type.php'
 ];
-$sharedPrivileges = array_merge($sharedPrivileges, $sharedCovid19Privileges);
+$sharedPrivileges = [...$sharedPrivileges, ...$sharedCovid19Privileges];
 
 //Hepatitis Module Shared Privileges
 $sharedHepPrivileges = [
@@ -204,7 +204,7 @@ $sharedHepPrivileges = [
     '/hepatitis/interop/dhis2/hepatitis-send.php' => '/hepatitis/requests/hepatitis-dhis2.php',
     '/hepatitis/interop/dhis2/hepatitis-receive.php' => '/hepatitis/requests/hepatitis-dhis2.php'
 ];
-$sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
+$sharedPrivileges = [...$sharedPrivileges, ...$sharedHepPrivileges];
 
 //TB Module Shared Privileges
 $sharedTbPrivileges = [
@@ -217,6 +217,7 @@ $sharedTbPrivileges = [
     '/tb/results/tb-update-result.php' => '/tb/results/tb-manual-results.php',
     '/tb/results/tb-failed-results.php' => '/tb/results/tb-manual-results.php',
     '/tb/results/email-results-confirm.php' => '/tb/results/email-results.php',
+    '/tb/reference/add-sample-type-helper.php' => '/tb/reference/tb-sample-type.php',
     '/tb/reference/add-tb-sample-type.php' => '/tb/reference/tb-sample-type.php',
     '/tb/reference/tb-sample-rejection-reasons.php' => '/tb/reference/tb-sample-type.php',
     '/tb/reference/add-tb-sample-rejection-reason.php' => '/tb/reference/tb-sample-type.php',
@@ -225,7 +226,7 @@ $sharedTbPrivileges = [
     '/tb/reference/tb-results.php' => '/tb/reference/tb-sample-type.php',
     '/tb/reference/add-tb-results.php' => '/tb/reference/tb-sample-type.php',
 ];
-$sharedPrivileges = array_merge($sharedPrivileges, $sharedTbPrivileges);
+$sharedPrivileges = [...$sharedPrivileges, ...$sharedTbPrivileges];
 
 //CD4 Module Shared Privileges
 $sharedCD4Privileges = [
@@ -253,7 +254,7 @@ $sharedCD4Privileges = [
     '/cd4/management/cd4TestingTargetReport.php' => '/cd4/management/cd4MonthlyThresholdReport.php',
     '/cd4/management/cd4SuppressedTargetReport.php' => '/cd4/management/cd4MonthlyThresholdReport.php'
 ];
-$sharedPrivileges = array_merge($sharedPrivileges, $sharedCD4Privileges);
+$sharedPrivileges = [...$sharedPrivileges, ...$sharedCD4Privileges];
 
 
 $sql = "UPDATE `privileges` SET `shared_privileges` = NULL";
