@@ -43,8 +43,9 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
 $typeOfPatient = json_decode((string) $tbInfo['patient_type']);
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
-$testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
+$testTypeRequested = explode(',', $tbInfo['tests_requested']);
 $tbInfo['purpose_of_test'] = explode(',', $tbInfo['purpose_of_test']);
+
 
 // Auto-select lab for LIS instances
 $isLisInstance = $general->isLISInstance();

@@ -48,7 +48,8 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
 $typeOfPatient = $tbInfo['patient_type'] ?? '';
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
-$testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
+//$testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
+$testTypeRequested = explode(',', $tbInfo['tests_requested']);
 $diagnosis = (array) $reasonForTbTest->elaboration->diagnosis;
 $followup = (array) $reasonForTbTest->elaboration->followup;
 $attributes = null;
@@ -447,7 +448,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</label>
 										</th>
 										<td>
-											<select name="testTypeRequested[]" id="testTypeRequested"
+											<select name="tbTestsRequested[]" id="testTypeRequested"
 												class="select2 form-control" title="Please choose type of test request"
 												style="width:100%" multiple>
 												<optgroup label="Microscopy">
