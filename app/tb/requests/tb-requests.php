@@ -82,18 +82,17 @@ foreach ($sourceOfRequests as $value => $displayText) {
         display: revert !important;
     }
 
-    <?php if (!empty($_GET['id'])) { ?>
-        header {
-            display: none;
-        }
+    <?php if (!empty($_GET['id'])) { ?>header {
+        display: none;
+    }
 
-        .main-sidebar {
-            z-index: -9;
-        }
+    .main-sidebar {
+        z-index: -9;
+    }
 
-        .content-wrapper {
-            margin-left: 0px;
-        }
+    .content-wrapper {
+        margin-left: 0px;
+    }
 
     <?php } ?>
 </style>
@@ -162,7 +161,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
                                     <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                                     <?php
                                     foreach ($fundingSourceList as $fundingSource) {
-                                        ?>
+                                    ?>
                                         <option
                                             value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
                                             <?= $fundingSource['funding_source_name']; ?></option>
@@ -179,7 +178,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
                                     <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                                     <?php
                                     foreach ($implementingPartnerList as $implementingPartner) {
-                                        ?>
+                                    ?>
                                         <option
                                             value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
                                             <?= $implementingPartner['i_partner_name']; ?></option>
@@ -298,7 +297,8 @@ foreach ($sourceOfRequests as $value => $displayText) {
                                 <select name="rejectedSamples" id="rejectedSamples" class="form-control"
                                     title="<?php echo _translate('Please choose show rejected samples'); ?>"
                                     style="width:100%;">
-                                    <option value="yes" selected="selected"><?php echo _translate("Yes"); ?></option>
+                                    <option value=""><?php echo _translate("Select"); ?></option>
+                                    <option value="yes"><?php echo _translate("Yes"); ?></option>
                                     <option value="no"><?php echo _translate("No"); ?></option>
                                 </select>
                             </td>
@@ -386,7 +386,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
                         </table>
                         <?php
                         if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') {
-                            ?>
+                        ?>
 
                             <div id="printer_data_loading" style="display:none"><span
                                     id="loading_message"><?php echo _translate("Loading Printer Details"); ?>...</span><br />
@@ -406,7 +406,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
                                 <?php echo _translate("Printer"); ?>: <select id="printers"></select>
                             </div> <!-- /printer_select -->
 
-                            <?php
+                        <?php
                         }
                         ?>
 
@@ -434,10 +434,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
     var selectedTests = [];
     var selectedTestsId = [];
     var oTable = null;
-    $(document).ready(function () {
+    $(document).ready(function() {
 
         $("#batchCode").autocomplete({
-            source: function (request, response) {
+            source: function(request, response) {
                 // Fetch data
                 $.ajax({
                     url: "/batch/getBatchCodeHelper.php",
@@ -447,7 +447,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
                         search: request.term,
                         type: 'tb'
                     },
-                    success: function (data) {
+                    success: function(data) {
                         response(data);
                     }
 
@@ -472,38 +472,38 @@ foreach ($sourceOfRequests as $value => $displayText) {
         });
         loadVlRequestData();
         $('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
-            locale: {
-                cancelLabel: "<?= _translate("Clear", true); ?>",
-                format: 'DD-MMM-YYYY',
-                separator: ' to ',
+                locale: {
+                    cancelLabel: "<?= _translate("Clear", true); ?>",
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
+                },
+                showDropdowns: true,
+                alwaysShowCalendars: false,
+                startDate: moment().subtract(28, 'days'),
+                endDate: moment(),
+                maxDate: moment(),
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+                    'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+                    'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+                    'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+                    'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                    'Current Year To Date': [moment().startOf('year'), moment()]
+                }
             },
-            showDropdowns: true,
-            alwaysShowCalendars: false,
-            startDate: moment().subtract(28, 'days'),
-            endDate: moment(),
-            maxDate: moment(),
-            ranges: {
-                'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-                'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-                'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-                'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-                'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-                'Current Year To Date': [moment().startOf('year'), moment()]
-            }
-        },
-            function (start, end) {
+            function(start, end) {
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
             });
         $('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').val("");
 
-        $(".showhideCheckBox").change(function () {
+        $(".showhideCheckBox").change(function() {
             if ($(this).attr('checked')) {
                 idpart = $(this).attr('data-showhide');
                 $("#" + idpart + "-sort").show();
@@ -513,11 +513,11 @@ foreach ($sourceOfRequests as $value => $displayText) {
             }
         });
 
-        $("#showhide").hover(function () { }, function () {
+        $("#showhide").hover(function() {}, function() {
             $(this).fadeOut('slow')
         });
 
-        $("#advanceFilter input, #advanceFilter select").on("change", function () {
+        $("#advanceFilter input, #advanceFilter select").on("change", function() {
             searchExecuted = false;
         });
 
@@ -538,44 +538,44 @@ foreach ($sourceOfRequests as $value => $displayText) {
             //"bStateSave" : true,
             "bRetrieve": true,
             "aoColumns": [{
-                "sClass": "center"
-            },
-                <?php if (!$general->isStandaloneInstance()) { ?> {
                     "sClass": "center"
                 },
+                <?php if (!$general->isStandaloneInstance()) { ?> {
+                        "sClass": "center"
+                    },
                 <?php } ?> {
-                "sClass": "center"
-            }, {
-                "sClass": "center"
-            }, {
-                "sClass": "center"
-            }, {
-                "sClass": "center"
-            }, {
-                "sClass": "center"
-            }, {
-                "sClass": "center"
-            }, {
-                "sClass": "center"
-            }, {
-                "sClass": "center"
-            }, {
-                "sClass": "center"
-            }, {
-                "sClass": "center"
-            }, {
-                "sClass": "center"
-            },
-                <?php if ((_isAllowed("/tb/requests/tb-edit-request.php")) || (_isAllowed("tb-view-request.php")) && !$hidesrcofreq) { ?> {
-                    "sClass": "center action",
-                    "bSortable": false
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
+                }, {
+                    "sClass": "center"
                 },
+                <?php if ((_isAllowed("/tb/requests/tb-edit-request.php")) || (_isAllowed("tb-view-request.php")) && !$hidesrcofreq) { ?> {
+                        "sClass": "center action",
+                        "bSortable": false
+                    },
                 <?php } ?>
             ],
             "aaSorting": [
                 [<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 11 : 10 ?>, "desc"]
             ],
-            "fnDrawCallback": function () {
+            "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");
                 len = checkBoxes.length;
                 for (c = 0; c < len; c++) {
@@ -590,7 +590,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/tb/requests/get-request-list.php",
-            "fnServerData": function (sSource, aoData, fnCallback) {
+            "fnServerData": function(sSource, aoData, fnCallback) {
                 aoData.push({
                     "name": "batchCode",
                     "value": $("#batchCode").val()
@@ -712,21 +712,21 @@ foreach ($sourceOfRequests as $value => $displayText) {
 
     function toggleAllVisible() {
         //alert(tabStatus);
-        $(".checkTests").each(function () {
+        $(".checkTests").each(function() {
             $(this).prop('checked', false);
             selectedTests.splice($.inArray(this.value, selectedTests), 1);
             selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
             $("#status").prop('disabled', true);
         });
         if ($("#checkTestsData").is(':checked')) {
-            $(".checkTests").each(function () {
+            $(".checkTests").each(function() {
                 $(this).prop('checked', true);
                 selectedTests.push(this.value);
                 selectedTestsId.push(this.id);
             });
             $("#status").prop('disabled', false);
         } else {
-            $(".checkTests").each(function () {
+            $(".checkTests").each(function() {
                 $(this).prop('checked', false);
                 selectedTests.splice($.inArray(this.value, selectedTests), 1);
                 selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
@@ -742,10 +742,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
         }
         $.blockUI();
         $.post("/tb/requests/export-tb-requests.php", {
-            reqSampleType: $('#requestSampleType').val(),
-            patientInfo: $('#patientInfo').val(),
-        },
-            function (data) {
+                reqSampleType: $('#requestSampleType').val(),
+                patientInfo: $('#patientInfo').val(),
+            },
+            function(data) {
                 $.unblockUI();
                 if (data === "" || data === null || data === undefined) {
                     alert("<?php echo _translate("Unable to generate the excel file"); ?>");
@@ -770,16 +770,16 @@ foreach ($sourceOfRequests as $value => $displayText) {
 
             if (remoteSync && remoteURL != null && remoteURL != '') {
                 var jqxhr = $.ajax({
-                    url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=tb",
-                })
-                    .done(function (data) {
+                        url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=tb",
+                    })
+                    .done(function(data) {
                         ////console.log(data);
                         //alert( "success" );
                     })
-                    .fail(function () {
+                    .fail(function() {
                         $.unblockUI();
                     })
-                    .always(function () {
+                    .always(function() {
                         oTable.fnDraw();
                         $.unblockUI();
                     });
@@ -792,12 +792,12 @@ foreach ($sourceOfRequests as $value => $displayText) {
         $("#facilityName").html('');
         $("#vlLab").html('');
         $.post("/common/get-by-province-id.php", {
-            provinceId: provinceId,
-            districts: true,
-            facilities: true,
-            labs: true,
-        },
-            function (data) {
+                provinceId: provinceId,
+                districts: true,
+                facilities: true,
+                labs: true,
+            },
+            function(data) {
                 Obj = $.parseJSON(data);
                 $("#district").html(Obj['districts']);
                 $("#facilityName").html(Obj['facilities']);
@@ -809,11 +809,11 @@ foreach ($sourceOfRequests as $value => $displayText) {
         $("#facilityName").html('');
         $("#vlLab").html('');
         $.post("/common/get-by-district-id.php", {
-            districtId: districtId,
-            facilities: true,
-            labs: true,
-        },
-            function (data) {
+                districtId: districtId,
+                facilities: true,
+                labs: true,
+            },
+            function(data) {
                 Obj = $.parseJSON(data);
                 $("#facilityName").html(Obj['facilities']);
                 $("#vlLab").html(Obj['labs']);
