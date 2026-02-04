@@ -41,14 +41,10 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
 $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
-$typeOfPatient = ($tbInfo['patient_type']) ? json_decode((string) $tbInfo['patient_type']) : [];
-$typeOfPatient = is_array($typeOfPatient) ? $typeOfPatient : [];
-$reasonForTbTest = ($tbInfo['reason_for_tb_test']) ? json_decode((string) $tbInfo['reason_for_tb_test']) : [];
-$reasonForTbTest = is_array($reasonForTbTest) ? $reasonForTbTest : [];
-$testTypeRequested = ($tbInfo['tests_requested']) ? json_decode((string) $tbInfo['tests_requested']) : [];
-$testTypeRequested = is_array($testTypeRequested) ? $testTypeRequested : [];
-$tbInfo['purpose_of_test'] = !empty($tbInfo['purpose_of_test']) ? explode(',', (string) $tbInfo['purpose_of_test']) : [];
-
+$typeOfPatient = json_decode((string)($tbInfo['patient_type'] ?? '[]'));
+$reasonForTbTest = json_decode((string)($tbInfo['reason_for_tb_test'] ?? '[]'));
+$testTypeRequested = json_decode((string)($tbInfo['tests_requested'] ?? '[]'));
+$tbInfo['purpose_of_test'] = explode(',', $tbInfo['purpose_of_test']);
 
 // Auto-select lab for LIS instances
 $isLisInstance = $general->isLISInstance();
@@ -112,9 +108,7 @@ if ($isLisInstance) {
                                         <input style="width: 80%;" value="<?php echo $tbInfo['sample_code']; ?>" type="text"
                                             class="form-control isRequired" id="sampleCode" name="sampleCode" readonly
                                             placeholder="Sample ID" title="<?php echo _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>"
-                                        onchange="checkSampleNameValidation('form_tb','
-                                    <?php echo $sampleCode; ?>',this.id,null,'The Sample ID that you entered already
-                                    exists. Please try another Sample ID',null)" />
+                                            onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The Sample ID that you entered already exists. Please try another Sample ID',null)" />
                                     <?php } ?>
                                 </div>
                             </div>
@@ -170,7 +164,7 @@ if ($isLisInstance) {
                                             name="affiliatedDistrictHospital"
                                             value="<?php echo $tbInfo['affiliated_district_hospital'] ?? ''; ?>"
                                             placeholder="<?php echo _translate("Enter affiliated district hospital"); ?>"
-                                        title="
+                                            title="
                                         <?php echo _translate("Please enter affiliated district hospital"); ?>" />
                                     </td>
                                     <td style="width: 33.33%;">
@@ -220,7 +214,7 @@ if ($isLisInstance) {
                                     </strong></span>
                                 <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo"
                                     class="pull-right" placeholder="<?php echo _translate("Enter Patient ID or Patient Name"); ?>"
-                                title="
+                                    title="
                                 <?php echo _translate("Enter ART number or patient name"); ?>" />
                             </div>
 
@@ -254,7 +248,7 @@ if ($isLisInstance) {
                                         <input type="text" value="<?php echo $tbInfo['etb_tracker_number']; ?>"
                                             class="form-control" id="trackerNo" name="trackerNo"
                                             placeholder="<?php echo _translate("Enter the e-TB tracker number"); ?>"
-                                        title="
+                                            title="
                                         <?php echo _translate("Please enter the e-TB tracker number"); ?>" />
                                     </td>
                                     <td style="width: 33.33%;">
@@ -265,9 +259,9 @@ if ($isLisInstance) {
                                             value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>"
                                             class="form-control date" id="dob" name="dob"
                                             placeholder="<?php echo _translate("Date of Birth"); ?>"
-                                        title="
+                                            title="
                                         <?php echo _translate("Please enter Date of birth"); ?>"
-                                        onchange="calculateAgeInYears('dob', 'patientAge');" />
+                                            onchange="calculateAgeInYears('dob', 'patientAge');" />
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label for="patientAge">
@@ -276,7 +270,7 @@ if ($isLisInstance) {
                                         <input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150"
                                             maxlength="3" class="form-control" id="patientAge" name="patientAge"
                                             placeholder="<?php echo _translate("Age (in years)"); ?>"
-                                        title="
+                                            title="
                                         <?php echo _translate("Patient Age"); ?>" />
                                     </td>
                                 </tr>
@@ -316,7 +310,7 @@ if ($isLisInstance) {
                                         <input type="text" value="<?php echo $tbInfo['patient_name']; ?>"
                                             class="form-control isRequired" id="firstName" name="firstName"
                                             placeholder="<?php echo _translate("First Name"); ?>"
-                                        title="
+                                            title="
                                         <?php echo _translate("Please enter First name"); ?>" />
                                     </td>
                                 </tr>
@@ -328,7 +322,7 @@ if ($isLisInstance) {
                                         <input type="text" value="<?php echo $tbInfo['patient_surname']; ?>"
                                             class="form-control" id="lastName" name="lastName"
                                             placeholder="<?php echo _translate("Last name"); ?>"
-                                        title="
+                                            title="
                                         <?php echo _translate("Please enter Last name"); ?>" />
                                     </td>
                                     <td style="width: 33.33%;">
@@ -338,7 +332,7 @@ if ($isLisInstance) {
                                         <input type="text" value="<?php echo $tbInfo['patient_phone']; ?>"
                                             class="form-control checkNum" id="patientPhoneNumber"
                                             name="patientPhoneNumber" placeholder="<?php echo _translate("Phone Number"); ?>"
-                                        title="
+                                            title="
                                         <?php echo _translate("Please enter phone number"); ?>" />
                                     </td>
                                     <td style="width: 33.33%;">
@@ -363,9 +357,9 @@ if ($isLisInstance) {
                                         <input type="text" class="form-control typeOfPatientOther"
                                             id="typeOfPatientOther" name="typeOfPatientOther"
                                             placeholder="<?php echo _translate("Enter case type if others"); ?>"
-                                        title="
+                                            title="
                                         <?php echo _translate("Please enter case type if others"); ?>"
-                                        style="display: none;" />
+                                            style="display: none;" />
                                     </td>
                                 </tr>
                             </table>
@@ -424,11 +418,11 @@ if ($isLisInstance) {
                                         </select>
                                         <input
                                             style="<?php echo (isset($tbInfo['risk_factor_other']) && !empty($tbInfo['risk_factor_other'])) ? "" : "display: none"; ?>"
-                                        value="
+                                            value="
                                         <?php echo $tbInfo['risk_factor_other'] ?? ''; ?>" type="text"
-                                        id="riskFactorsOther" name="riskFactorsOther" class="form-control"
-                                        placeholder="Enter the other risk factor"
-                                        title="Please enter the other risk factor" />
+                                            id="riskFactorsOther" name="riskFactorsOther" class="form-control"
+                                            placeholder="Enter the other risk factor"
+                                            title="Please enter the other risk factor" />
                                     </td>
                                     <td style="width: 33.33%;"></td>
                                 </tr>
@@ -516,8 +510,7 @@ if ($isLisInstance) {
                                             </option>
                                             <option value="MTB/ RIF Ultra" <?php echo in_array('MTB/ RIF Ultra', $testTypeRequested) ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra
                                             </option>
-                                            <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $testTypeRequested) ? 'selected="selected"' : ''; ?>
-                                                >MTB/
+                                            <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $testTypeRequested) ? 'selected="selected"' : ''; ?>>MTB/
                                                 XDR (if RIF detected)</option>
                                             <option value="TB culture and Drug susceptibility test (DST)" <?php echo in_array('TB culture and Drug susceptibility test (DST)', $testTypeRequested) ? 'selected="selected"' : ''; ?>>TB culture and
                                                 Drug
@@ -550,7 +543,7 @@ if ($isLisInstance) {
                                             value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text"
                                             name="sampleCollectionDate" id="sampleCollectionDate"
                                             placeholder="<?php echo _translate("Sample Collection Date"); ?>"
-                                        onchange="generateSampleCode(); checkCollectionDate(this.value);" />
+                                            onchange="generateSampleCode(); checkCollectionDate(this.value);" />
                                         <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                     </td>
                                     <td style="width: 33.33%;">
@@ -567,9 +560,9 @@ if ($isLisInstance) {
                                         </select>
                                         <input type="text" class="form-control specimenTypeOther" id="specimenTypeOther"
                                             name="specimenTypeOther" placeholder="<?php echo _translate("Enter specimen type of others"); ?>"
-                                        title="
+                                            title="
                                         <?php echo _translate("Please enter the specimen type if others"); ?>"
-                                        style="display: none;" />
+                                            style="display: none;" />
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label class="label-control" for="reOrderedCorrectiveAction">
@@ -660,7 +653,7 @@ if ($isLisInstance) {
                                                                 id="sampleReceivedDate<?php echo $n; ?>"
                                                                 name="testResult[sampleReceivedDate][]"
                                                                 placeholder="<?= _translate("Please enter date"); ?>"
-                                                            title="
+                                                                title="
                                                 <?php echo _translate("Please enter sample receipt date"); ?>" />
                                                         </td>
                                                         <td style="width: 33.33%;">
@@ -671,8 +664,7 @@ if ($isLisInstance) {
                                                                 name="testResult[isSampleRejected][]"
                                                                 id="isSampleRejected<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select if sample was rejected"); ?>"
-                                                                onchange="$('.reasonForChange
-                                                    <?php echo $n; ?>').show();">
+                                                                onchange="$('.reasonForChange<?php echo $n; ?>').show();">
                                                                 <option value=''> --
                                                                     <?php echo _translate("Select"); ?> --
                                                                 </option>
@@ -711,7 +703,7 @@ if ($isLisInstance) {
                                                                                     <?php echo ($test['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
                                                                                     <?= $reject['rejection_reason_name']; ?>
                                                                                 </option>
-                                                                            <?php }
+                                                                        <?php }
                                                                         } ?>
                                                                     </optgroup>
                                                                 <?php }
@@ -730,7 +722,7 @@ if ($isLisInstance) {
                                                                 type="text" name="testResult[rejectionDate][]"
                                                                 id="rejectionDate<?php echo $n; ?>"
                                                                 placeholder="<?php echo _translate("Select rejection date"); ?>"
-                                                            title="
+                                                                title="
                                                 <?php echo _translate("Please select the rejection date"); ?>" />
                                                         </td>
                                                         <td style="width: 33.33%;"></td>
@@ -776,8 +768,7 @@ if ($isLisInstance) {
                                                             <select class="form-control test-result-select"
                                                                 name="testResult[testResult][]" id="testResult<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test result"); ?>"
-                                                                onchange="$('.reasonForChange
-                                                    <?php echo $n; ?>').show();">
+                                                                onchange="$('.reasonForChange<?php echo $n; ?>').show();">
                                                                 <option value="">
                                                                     <?php echo _translate("Select test result"); ?>
                                                                 </option>
@@ -795,7 +786,7 @@ if ($isLisInstance) {
                                                             </label>
                                                             <textarea class="form-control" id="comments<?php echo $n; ?>"
                                                                 name="testResult[comments][]" placeholder="<?= _translate("Please enter comments"); ?>"
-                                                                            title="<?php echo _translate("Please enter comments"); ?>"><?php echo $test['comments']; ?></textarea>
+                                                                title="<?php echo _translate("Please enter comments"); ?>"><?php echo $test['comments']; ?></textarea>
                                                         </td>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="testedBy<?php echo $n; ?>">
@@ -817,7 +808,7 @@ if ($isLisInstance) {
                                                                 id="sampleTestedDateTime<?php echo $n; ?>"
                                                                 name="testResult[sampleTestedDateTime][]"
                                                                 placeholder="<?= _translate("Please enter date"); ?>"
-                                                            title="
+                                                                title="
                                                 <?php echo _translate("Please enter tested date"); ?>" />
                                                         </td>
                                                     </tr>
@@ -840,7 +831,7 @@ if ($isLisInstance) {
                                                                 name="testResult[reviewedOn][]" id="reviewedOn<?php echo $n; ?>"
                                                                 class="date-time disabled-field form-control"
                                                                 placeholder="<?php echo _translate("Reviewed On"); ?>"
-                                                            title="
+                                                                title="
                                                 <?php echo _translate("Please enter reviewed date"); ?>" />
                                                         </td>
                                                         <td style="width: 33.33%;">
@@ -862,7 +853,7 @@ if ($isLisInstance) {
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['result_approved_datetime'], true); ?>"
                                                                 name="testResult[approvedOn][]" id="approvedOn<?php echo $n; ?>"
                                                                 class="date-time form-control" placeholder="<?php echo _translate("Approved On"); ?>"
-                                                            title="
+                                                                title="
                                                 <?php echo _translate("Please enter approved date"); ?>" />
                                                         </td>
                                                         <td style="width: 33.33%;">
@@ -883,7 +874,7 @@ if ($isLisInstance) {
                                                                 type="text" name="testResult[revisedOn][]"
                                                                 id="revisedOn<?php echo $n; ?>" class="date-time form-control"
                                                                 placeholder="<?php echo _translate("Revised On"); ?>"
-                                                            title="
+                                                                title="
                                                 <?php echo _translate("Please enter revised date"); ?>" />
                                                         </td>
                                                     </tr>
@@ -900,7 +891,7 @@ if ($isLisInstance) {
                                                     </tr>
                                                 </table>
                                             </div>
-                                            <?php $n += 1;
+                                        <?php $n += 1;
                                         } ?>
                                     <?php } else { ?>
                                         <!-- Initial test section -->
@@ -925,7 +916,7 @@ if ($isLisInstance) {
                                                         <input type="text" class="date-time form-control"
                                                             id="sampleReceivedDate1" name="testResult[sampleReceivedDate][]"
                                                             placeholder="<?= _translate("Please enter date"); ?>"
-                                                        title="
+                                                            title="
                                                 <?php echo _translate("Please enter sample receipt date"); ?>" />
                                                     </td>
                                                     <td style="width: 33.33%;">
@@ -970,7 +961,7 @@ if ($isLisInstance) {
                                                         <input class="form-control date rejection-date" type="text"
                                                             name="testResult[rejectionDate][]" id="rejectionDate1"
                                                             placeholder="<?php echo _translate("Select rejection date"); ?>"
-                                                        title="
+                                                            title="
                                                 <?php echo _translate("Please select the rejection date"); ?>" />
                                                     </td>
                                                     <td style="width: 33.33%;"></td>
@@ -1025,7 +1016,7 @@ if ($isLisInstance) {
                                                         </label>
                                                         <textarea class="form-control" id="comments1"
                                                             name="testResult[comments][]" placeholder="<?= _translate("Please enter comments"); ?>"
-                                                                    title="<?php echo _translate("Please enter comments"); ?>"></textarea>
+                                                            title="<?php echo _translate("Please enter comments"); ?>"></textarea>
                                                     </td>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="testedBy1">
@@ -1043,7 +1034,7 @@ if ($isLisInstance) {
                                                         <input type="text" class="date-time form-control"
                                                             id="sampleTestedDateTime1" name="testResult[sampleTestedDateTime][]"
                                                             placeholder="<?= _translate("Please enter date"); ?>"
-                                                        title="
+                                                            title="
                                                 <?php echo _translate("Please enter tested date"); ?>" />
                                                     </td>
                                                 </tr>
@@ -1064,7 +1055,7 @@ if ($isLisInstance) {
                                                         <input type="text" name="testResult[reviewedOn][]" id="reviewedOn1"
                                                             class="date-time disabled-field form-control"
                                                             placeholder="<?php echo _translate("Reviewed On"); ?>"
-                                                        title="
+                                                            title="
                                                 <?php echo _translate("Please enter reviewed date"); ?>" />
                                                     </td>
                                                     <td style="width: 33.33%;">
@@ -1084,7 +1075,7 @@ if ($isLisInstance) {
                                                         </label>
                                                         <input type="text" name="testResult[approvedOn][]" id="approvedOn1"
                                                             class="date-time form-control" placeholder="<?php echo _translate("Approved On"); ?>"
-                                                        title="
+                                                            title="
                                                 <?php echo _translate("Please enter approved date"); ?>" />
                                                     </td>
                                                     <td style="width: 33.33%;">
@@ -1102,7 +1093,7 @@ if ($isLisInstance) {
                                                         </label>
                                                         <input type="text" name="testResult[revisedOn][]" id="revisedOn1"
                                                             class="date-time form-control" placeholder="<?php echo _translate("Revised On"); ?>"
-                                                        title="
+                                                            title="
                                                 <?php echo _translate("Please enter revised date"); ?>" />
                                                     </td>
                                                 </tr>
@@ -1263,14 +1254,14 @@ if ($isLisInstance) {
             yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
         });
 
-    // DateTime picker  
-    $(section).find('.date-time:not(.hasDateTimePicker)').datetimepicker({
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-        timeFormat: "HH:mm",
-        maxDate: "Today",
-        yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
+        // DateTime picker  
+        $(section).find('.date-time:not(.hasDateTimePicker)').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
+            timeFormat: "HH:mm",
+            maxDate: "Today",
+            yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
         });
     }
 
@@ -1279,7 +1270,7 @@ if ($isLisInstance) {
         const $section = $(section);
 
         // Initialize Select2 for dropdowns
-        $section.find('.select2').each(function () {
+        $section.find('.select2').each(function() {
             const $this = $(this);
             $this.removeClass('select2-hidden-accessible');
             $this.select2({
@@ -1289,7 +1280,7 @@ if ($isLisInstance) {
         });
 
         // Sample rejection change handler
-        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function () {
+        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function() {
             const $row = $(this).closest('.test-section');
             if ($(this).val() === 'yes') {
                 $row.find('.rejection-reason-field, .rejection-date-field').show();
@@ -1301,7 +1292,7 @@ if ($isLisInstance) {
         });
 
         // Test type change handler - FIXED: Use proper event delegation
-        $section.find('.test-type-select').off('change.testSection').on('change.testSection', function () {
+        $section.find('.test-type-select').off('change.testSection').on('change.testSection', function() {
             const sectionNum = $(this).closest('.test-section').attr('data-count');
             updateTestResults(sectionNum);
         });
@@ -1367,7 +1358,7 @@ if ($isLisInstance) {
     // Update element IDs and names for new section
     function updateElementIds(section, count) {
         // Update labels
-        $(section).find('label[for]').each(function () {
+        $(section).find('label[for]').each(function() {
             const oldFor = $(this).attr('for');
             if (oldFor && /\d+$/.test(oldFor)) {
                 const newFor = oldFor.replace(/\d+$/, count);
@@ -1376,7 +1367,7 @@ if ($isLisInstance) {
         });
 
         // Update form elements
-        $(section).find('input[id], select[id], textarea[id]').each(function () {
+        $(section).find('input[id], select[id], textarea[id]').each(function() {
             const oldId = $(this).attr('id');
             if (oldId && /\d+$/.test(oldId)) {
                 const newId = oldId.replace(/\d+$/, count);
@@ -1393,7 +1384,7 @@ if ($isLisInstance) {
 
     // Clear all values in a section
     function clearSectionValues(section) {
-        $(section).find('input, select, textarea').each(function () {
+        $(section).find('input, select, textarea').each(function() {
             if (this.type === 'checkbox' || this.type === 'radio') {
                 this.checked = false;
             } else if (this.tagName === 'SELECT') {
@@ -1414,7 +1405,7 @@ if ($isLisInstance) {
             value: removeDots.trim(),
             fnct: fnct,
             format: "html"
-        }, function (data) {
+        }, function(data) {
             if (data === '1') {
                 alert(alrt);
                 document.getElementById(obj.id).value = "";
@@ -1430,7 +1421,7 @@ if ($isLisInstance) {
             $.post("/includes/siteInformationDropdownOptions.php", {
                 pName: pName,
                 testType: 'tb'
-            }, function (data) {
+            }, function(data) {
                 if (data != "") {
                     details = data.split("###");
                     $("#facilityId").html(details[0]);
@@ -1454,7 +1445,7 @@ if ($isLisInstance) {
                 dName: dName,
                 cliName: cName,
                 testType: 'tb'
-            }, function (data) {
+            }, function(data) {
                 if (data != "") {
                     details = data.split("###");
                     $("#facilityId").html(details[0]);
@@ -1476,10 +1467,10 @@ if ($isLisInstance) {
 
         if (cName != '' && facilityName) {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                cName: cName,
-                testType: 'tb'
-            },
-                function (data) {
+                    cName: cName,
+                    testType: 'tb'
+                },
+                function(data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#province").html(details[0]);
@@ -1515,7 +1506,7 @@ if ($isLisInstance) {
     }
 
     // Document ready initialization
-    $(document).ready(function () {
+    $(document).ready(function() {
         // Initialize Select2 for main form elements
         $("#facilityId, #province, #district").select2({
             placeholder: "<?php echo _translate('Select option'); ?>",
@@ -1538,22 +1529,22 @@ if ($isLisInstance) {
         });
 
         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                $('#labId').select2({
-                    placeholder: "<?php echo _translate('Select testing lab'); ?>"
-                });
+            $('#labId').select2({
+                placeholder: "<?php echo _translate('Select testing lab'); ?>"
+            });
         <?php } ?>
 
-            // Initialize all existing test sections
-            $('.test-section').each(function (index) {
-                const sectionNumber = $(this).attr('data-count') || (index + 1);
-                initializeTestSection(this, sectionNumber);
+        // Initialize all existing test sections
+        $('.test-section').each(function(index) {
+            const sectionNumber = $(this).attr('data-count') || (index + 1);
+            initializeTestSection(this, sectionNumber);
 
-                // Initialize test results for existing sections
-                const testTypeSelect = $(this).find('.test-type-select');
-                if (testTypeSelect.length && testTypeSelect.val()) {
-                    updateTestResults(sectionNumber);
-                }
-            });
+            // Initialize test results for existing sections
+            const testTypeSelect = $(this).find('.test-type-select');
+            if (testTypeSelect.length && testTypeSelect.val()) {
+                updateTestResults(sectionNumber);
+            }
+        });
 
         // Update Remove Test button visibility on page load
         updateRemoveButtonVisibility();
@@ -1569,7 +1560,7 @@ if ($isLisInstance) {
         });
 
         // Treatment initiation change handler
-        $('#isPatientInitiatedTreatment').on('change', function () {
+        $('#isPatientInitiatedTreatment').on('change', function() {
             if (this.value === 'yes') {
                 $('.treatmentSelected').show();
                 $('.treatmentSelectedInput').addClass('isRequired');
@@ -1580,21 +1571,21 @@ if ($isLisInstance) {
         });
 
         // Lab and facility change handlers
-        $("#labId, #facilityId, #sampleCollectionDate").on('change', function () {
+        $("#labId, #facilityId, #sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
         });
 
-        $("#labId").change(function (e) {
+        $("#labId").change(function(e) {
             if ($(this).val() != "") {
                 $.post("/tb/requests/get-attributes-data.php", {
                     id: this.value,
-                }, function (data) {
+                }, function(data) {
                     if (data != "" && data != false) {
                         _data = jQuery.parseJSON(data);
                         $(".platform").hide();
-                        $.each(_data, function (index, value) {
+                        $.each(_data, function(index, value) {
                             $("." + value).show();
                         });
                     }
@@ -1608,7 +1599,7 @@ if ($isLisInstance) {
         if (input.value !== '' && input.value !== input.dataset.previousValue) {
             if (!confirm('<?php echo _translate("Tests with Final Interpretation cannot be referred to other labs. Are you sure you want to continue?"); ?>')) {
                 input.value = input.dataset.previousValue || '';
-                (input.value != '') ? $('.refer-inputs').hide() : $('.refer-inputs').show();
+                (input.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();
                 return false;
             }
         }
@@ -1617,7 +1608,7 @@ if ($isLisInstance) {
     }
 
     // Store initial value on focus
-    document.getElementById('finalResult')?.addEventListener('focus', function () {
+    document.getElementById('finalResult')?.addEventListener('focus', function() {
         this.dataset.previousValue = this.value;
     });
 </script>
