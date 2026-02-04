@@ -268,9 +268,8 @@ if ($isLisInstance) {
                                     <td style="width: 33.33%;">
                                         <label for="typeOfPatient"><?php echo _translate("Case Type"); ?><span
                                                 class="mandatory">*</span></label>
-                                        <select class="select2 form-control isRequired" name="typeOfPatient"
-                                            id="typeOfPatient"
-                                            title="<?php echo _translate("Please select the case type"); ?>"
+                                        <select class="select2 form-control isRequired" multiple name="typeOfPatient[]"
+                                            id="typeOfPatient" title="<?php echo _translate("Please select the case type"); ?>"
                                             onchange="showOther(this.value,'typeOfPatientOther');">
                                             <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
                                             <option value='new'> New </option>
@@ -814,7 +813,7 @@ if ($isLisInstance) {
         const $section = $(section);
 
         // Initialize Select2 for dropdowns
-        $section.find('.resultSelect2, .select2').each(function () {
+        $section.find('.resultSelect2, .select2').each(function() {
             const $this = $(this);
             if (!$this.hasClass('select2-hidden-accessible')) {
                 $this.select2({
@@ -825,42 +824,42 @@ if ($isLisInstance) {
         });
 
         // Initialize date pickers
-        $('.date:not(.hasDatePicker)').each(function () {
+        $('.date:not(.hasDatePicker)').each(function() {
             $(this).datepicker({
                 changeMonth: true,
                 changeYear: true,
-                onSelect: function () {
+                onSelect: function() {
                     $(this).change();
                 },
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 maxDate: "Today",
                 yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function () {
+            }).click(function() {
                 $('.ui-datepicker-calendar').show();
             });
         });
 
         // Initialize datetime pickers  
-        $('.dateTime:not(.hasDateTimePicker), .date-time:not(.hasDateTimePicker)').each(function () {
+        $('.dateTime:not(.hasDateTimePicker), .date-time:not(.hasDateTimePicker)').each(function() {
             $(this).datetimepicker({
                 changeMonth: true,
                 changeYear: true,
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
                 maxDate: "Today",
-                onChangeMonthYear: function (year, month, widget) {
-                    setTimeout(function () {
+                onChangeMonthYear: function(year, month, widget) {
+                    setTimeout(function() {
                         $('.ui-datepicker-calendar').show();
                     });
                 },
                 yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function () {
+            }).click(function() {
                 $('.ui-datepicker-calendar').show();
             });
         });
 
         // Bind sample rejection change event
-        $section.find('.sample-rejection-select').off('change').on('change', function () {
+        $section.find('.sample-rejection-select').off('change').on('change', function() {
             const $row = $(this).closest('.test-section');
             if ($(this).val() === 'yes') {
                 $row.find('.rejection-reason-field, .rejection-date-field').show();
@@ -872,7 +871,7 @@ if ($isLisInstance) {
         });
 
         // Bind test type change event
-        $section.find('.test-type-select').on('change', function () {
+        $section.find('.test-type-select').on('change', function() {
             updateTestResults(count);
         });
     }
@@ -946,7 +945,7 @@ if ($isLisInstance) {
             const lastSection = container.querySelector('.test-section:last-child');
             if (lastSection) {
                 // Destroy Select2 instances before removing
-                $(lastSection).find('select.select2-hidden-accessible').each(function () {
+                $(lastSection).find('select.select2-hidden-accessible').each(function() {
                     $(this).select2('destroy');
                 });
                 lastSection.remove();
@@ -1017,13 +1016,13 @@ if ($isLisInstance) {
         var removeDots = obj.value.replace(/\./g, "").replace(/\,/g, "").replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-            tableName: tableName,
-            fieldName: fieldName,
-            value: removeDots.trim(),
-            fnct: fnct,
-            format: "html"
-        },
-            function (data) {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: removeDots.trim(),
+                fnct: fnct,
+                format: "html"
+            },
+            function(data) {
                 if (data === '1') {
                     alert(alrt);
                     document.getElementById(obj.id).value = "";
@@ -1041,10 +1040,10 @@ if ($isLisInstance) {
 
         if ($.trim(pName) != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                pName: pName,
-                testType: 'tb'
-            },
-                function (data) {
+                    pName: pName,
+                    testType: 'tb'
+                },
+                function(data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -1070,11 +1069,11 @@ if ($isLisInstance) {
 
         if (dName != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                dName: dName,
-                cliName: cName,
-                testType: 'tb'
-            },
-                function (data) {
+                    dName: dName,
+                    cliName: cName,
+                    testType: 'tb'
+                },
+                function(data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -1096,10 +1095,10 @@ if ($isLisInstance) {
 
         if (cName != '' && facilityName) {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                cName: cName,
-                testType: 'tb'
-            },
-                function (data) {
+                    cName: cName,
+                    testType: 'tb'
+                },
+                function(data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#province").html(details[0]);
@@ -1133,10 +1132,10 @@ if ($isLisInstance) {
 
         if (pName != '' && sDate != '') {
             $.post("/tb/requests/generate-sample-code.php", {
-                sampleCollectionDate: sDate,
-                provinceCode: provinceCode
-            },
-                function (data) {
+                    sampleCollectionDate: sDate,
+                    provinceCode: provinceCode
+                },
+                function(data) {
                     var sCodeKey = JSON.parse(data);
                     $("#sampleCode").val(sCodeKey.sampleCode);
                     $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
@@ -1189,7 +1188,7 @@ if ($isLisInstance) {
     }
 
     // Document ready function
-    $(document).ready(function () {
+    $(document).ready(function() {
         // Initialize Select2 for main form elements
         $("#facilityId, #province, #district").select2({
             placeholder: "<?php echo _translate('Select'); ?>",
@@ -1221,7 +1220,7 @@ if ($isLisInstance) {
         initializePluginsForSection(document.querySelector('.test-section'), 1);
 
         // Treatment initiation change handler
-        $('#isPatientInitiatedTreatment').on('change', function () {
+        $('#isPatientInitiatedTreatment').on('change', function() {
             if (this.value === 'yes') {
                 $('.treatmentSelected').show();
                 $('.treatmentSelectedInput').addClass('isRequired');
@@ -1240,28 +1239,28 @@ if ($isLisInstance) {
         });
 
         // Lab and facility change handlers
-        $("#labId, #facilityId, #sampleCollectionDate").on('change', function () {
+        $("#labId, #facilityId, #sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
         });
 
         <?php if (isset($arr['tb_positive_confirmatory_tests_required_by_central_lab']) && $arr['tb_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
-            $(document).on('change', '.test-result, #result', function (e) {
+            $(document).on('change', '.test-result, #result', function(e) {
                 checkPostive();
             });
         <?php } ?>
 
-        $("#labId").change(function (e) {
+        $("#labId").change(function(e) {
             if ($(this).val() != "") {
                 $.post("/tb/requests/get-attributes-data.php", {
-                    id: this.value,
-                },
-                    function (data) {
+                        id: this.value,
+                    },
+                    function(data) {
                         if (data != "" && data != false) {
                             _data = jQuery.parseJSON(data);
                             $(".platform").hide();
-                            $.each(_data, function (index, value) {
+                            $.each(_data, function(index, value) {
                                 $("." + value).show();
                             });
                         }
@@ -1282,7 +1281,7 @@ if ($isLisInstance) {
     }
 
     // Store initial value on focus
-    document.getElementById('finalResult')?.addEventListener('focus', function () {
+    document.getElementById('finalResult')?.addEventListener('focus', function() {
         this.dataset.previousValue = this.value;
     });
 </script>
