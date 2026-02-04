@@ -41,10 +41,13 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
 $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
-$typeOfPatient = json_decode((string)($tbInfo['patient_type'] ?? '[]'));
-$reasonForTbTest = json_decode((string)($tbInfo['reason_for_tb_test'] ?? '[]'));
-$testTypeRequested = json_decode((string)($tbInfo['tests_requested'] ?? '[]'));
-$tbInfo['purpose_of_test'] = explode(',', $tbInfo['purpose_of_test']);
+$typeOfPatient = ($tbInfo['patient_type']) ? json_decode((string) $tbInfo['patient_type']) : [];
+$typeOfPatient = is_array($typeOfPatient) ? $typeOfPatient : [];
+$reasonForTbTest = ($tbInfo['reason_for_tb_test']) ? json_decode((string) $tbInfo['reason_for_tb_test']) : [];
+$reasonForTbTest = is_array($reasonForTbTest) ? $reasonForTbTest : [];
+$testTypeRequested = ($tbInfo['tests_requested']) ? json_decode((string) $tbInfo['tests_requested']) : [];
+$testTypeRequested = is_array($testTypeRequested) ? $testTypeRequested : [];
+$tbInfo['purpose_of_test'] = !empty($tbInfo['purpose_of_test']) ? explode(',', (string) $tbInfo['purpose_of_test']) : [];
 
 // Auto-select lab for LIS instances
 $isLisInstance = $general->isLISInstance();

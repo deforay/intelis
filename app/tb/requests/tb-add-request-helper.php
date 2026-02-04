@@ -32,7 +32,6 @@ try {
     $request = AppRegistry::get('request');
 
     $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
-
     $tableName = "form_tb";
     $tableName1 = "activity_log";
     $testTableName = 'tb_tests';
