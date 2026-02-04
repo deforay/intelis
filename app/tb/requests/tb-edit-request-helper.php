@@ -256,10 +256,9 @@ try {
             $db->where('tb_id', $_POST['tbSampleId']);
             $db->delete($testTableName);
         }
-
-        // Insert all tests into tb_tests
         $testResult = $_POST['testResult'];
         foreach ($testResult['labId'] as $key => $labid) {
+            // Insert all tests into tb_tests
             if (!empty($labid)) {
                 $db->insert($testTableName, [
                     'tb_id' => $_POST['tbSampleId'] ?? null,

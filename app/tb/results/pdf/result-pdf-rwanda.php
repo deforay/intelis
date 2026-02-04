@@ -340,11 +340,6 @@ try {
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Purpose of Test:</td>';
-            if (is_array($result['purpose_of_test'])) {
-                $result['purpose_of_test'] = implode(",", $result['purpose_of_test']);
-            } else {
-                $result['purpose_of_test'] = explode(',', $result['purpose_of_test']);
-            }
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['purpose_of_test'] . '</td>';
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Registered By:</td>';
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
@@ -408,9 +403,14 @@ try {
                     $n += 1;
                     $html .= '</table><br><br>';
                 }
+                if (is_numeric($result['result'])) {
+                    $testResult = $tbResults[$result['result']];
+                } else {
+                    $testResult = $result['result'];
+                }
                 $html .= '<table border="1" style="padding:3px;">';
                 $html .= '<tr style="font-size:13px;font-weight:bolt;border-radius:20%;width:100%;background-color:#c0c0c0;border:2px;">';
-                $html .= '<td colspan="4">Final Interpretation : ' . $tbResults[$result['result']] . '</td>';
+                $html .= '<td colspan="4">Final Interpretation : ' . $testResult . '</td>';
                 $html .= '</tr>';
                 $html .= '</table>';
             }
