@@ -338,8 +338,8 @@ final class VlService extends AbstractTestService
             $originalResult = $result;
 
             // Special case for -1.00
-            if ($result == "-1.00") {
-                $result = "Not Detected";
+            if ($result == "-1.00" || $result == "BT") {
+                $result = "Target Not Detected";
             }
 
             // Check for failure cases
