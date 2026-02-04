@@ -100,11 +100,8 @@ try {
     if (is_array($_POST['purposeOfTbTest'])) {
         $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
     }
-    if (is_array($_POST['tbTestsRequested'])) {
-        $_POST['tbTestsRequested'] = implode(",", $_POST['tbTestsRequested']);
-    }
     $tbData = [
-        'tests_requested' => empty($_POST['tbTestsRequested']) ? null : $_POST['tbTestsRequested'],
+        'tests_requested' => empty($_POST['tbTestsRequested']) ? null : json_encode($_POST['tbTestsRequested']),
         'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
         'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : ($_POST['testResult']['labId'][0] ?? null),
         'result_date' => empty($_POST['resultDate']) ? null : $_POST['resultDate'],
