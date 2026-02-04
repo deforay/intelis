@@ -596,17 +596,21 @@ php_version=$(php -v | head -n 1 | grep -oP 'PHP \K([0-9]+\.[0-9]+)')
 desired_php_version="8.4"
 
 # Download and install switch-php script
+ensure_path
 ensure_switch_php
 
 if [[ "${php_version}" != "${desired_php_version}" ]]; then
     print info "Current PHP version is ${php_version}. Switching to PHP ${desired_php_version}."
 
     # Switch to PHP 8.4
-    switch-php ${desired_php_version} --fast
-
-    if [ $? -ne 0 ]; then
-        print error "Failed to switch to PHP ${desired_php_version}. Please check your setup."
-        exit 1
+    # WHY: We don't want the upgrade to hard-fail if switch-php can't switch; keep going and surface a warning.
+    if ! switch_out=$(switch-php "${desired_php_version}" --fast 2>&1); then
+        print warning "switch-php --fast failed; retrying without --fast."
+        log_action "switch-php --fast failed: ${switch_out}"
+        if ! switch_out=$(switch-php "${desired_php_version}" 2>&1); then
+            print warning "Failed to switch to PHP ${desired_php_version}: ${switch_out}"
+            log_action "switch-php failed: ${switch_out}"
+        fi
     fi
 else
     print success "PHP version is already ${desired_php_version}."
