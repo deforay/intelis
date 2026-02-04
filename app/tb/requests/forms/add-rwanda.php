@@ -461,8 +461,8 @@ if ($isLisInstance) {
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
-                                            for="correctiveAction"><?php echo _translate("Is Specimen re-ordered as part of Corrective Action?"); ?></label>
-                                        <select class="form-control" name="correctiveAction" id="correctiveAction"
+                                            for="reOrderedCorrectiveAction"><?php echo _translate("Is Specimen re-ordered as part of Corrective Action?"); ?></label>
+                                        <select class="form-control" name="reOrderedCorrectiveAction" id="reOrderedCorrectiveAction"
                                             title="<?php echo _translate("Is specimen re-ordered as part of corrective action"); ?>">
                                             <option value="">--<?php echo _translate("Select"); ?>--</option>
                                             <option value="0"><?php echo _translate("No"); ?></option>
