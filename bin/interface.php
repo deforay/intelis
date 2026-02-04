@@ -382,9 +382,9 @@ try {
 
                     $unit = trim((string) $result['test_unit']);
 
-                    if ($vlResult === "-1.00") {
+                    if ($vlResult == "-1.00" || $vlResult == "BT") {
                         $vlResult = "Target Not Detected";
-                    } elseif (strtolower($vlResult) === 'detected' && !empty($lowerLimit)) {
+                    } elseif (strtolower($vlResult) == 'detected' && !empty($lowerLimit)) {
                         $vlResult = "< $lowerLimit";
                     }
 
