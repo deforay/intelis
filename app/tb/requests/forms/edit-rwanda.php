@@ -568,18 +568,16 @@ if ($isLisInstance) {
                                             style="display: none;" />
                                     </td>
                                     <td style="width: 33.33%;">
-                                        <label class="label-control" for="correctiveAction">
-                                            <?php echo _translate("Is Specimen re-ordered as part of Corrective Action?"); ?>
-                                        </label>
-                                        <select class="form-control" name="correctiveAction"
-                                            id="correctiveAction" title="<?php echo _translate("Is specimen re-ordered as part of corrective action"); ?>">
-                                            <option value="">--
-                                                <?php echo _translate("Select"); ?>--
-                                            </option>
-                                            <option value="0" <?php echo (isset($tbInfo['recommended_corrective_action']) && !empty($tbInfo['recommended_corrective_action']) && $tbInfo['recommended_corrective_action'] == 0) ? 'selected="selected"' : ''; ?>>
+                                        <label class="label-control"
+                                            for="reOrderedCorrectiveAction"><?php echo _translate("Is Specimen re-ordered as part of Corrective Action?"); ?></label>
+                                        <select class="form-control" name="reOrderedCorrectiveAction"
+                                            id="reOrderedCorrectiveAction"
+                                            title="<?php echo _translate("Is specimen re-ordered as part of corrective action"); ?>">
+                                            <option value="">--<?php echo _translate("Select"); ?>--</option>
+                                            <option value="0" <?php echo (isset($tbInfo['is_specimen_reordered']) && !empty($tbInfo['is_specimen_reordered']) && $tbInfo['is_specimen_reordered'] == 0) ? 'selected="selected"' : ''; ?>>
                                                 <?php echo _translate("No"); ?>
                                             </option>
-                                            <option value="1" <?php echo (isset($tbInfo['recommended_corrective_action']) && !empty($tbInfo['recommended_corrective_action']) && $tbInfo['recommended_corrective_action'] == 1) ? 'selected="selected"' : ''; ?>>
+                                            <option value="1" <?php echo (isset($tbInfo['is_specimen_reordered']) && !empty($tbInfo['is_specimen_reordered']) && $tbInfo['is_specimen_reordered'] == 1) ? 'selected="selected"' : ''; ?>>
                                                 <?php echo _translate("Yes"); ?>
                                             </option>
                                         </select>
