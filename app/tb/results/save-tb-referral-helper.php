@@ -1,13 +1,14 @@
 <?php
 
-use Psr\Http\Message\ServerRequestInterface;
-use const SAMPLE_STATUS\REFERRED;
 use App\Services\TestsService;
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use const SAMPLE_STATUS\REFERRED;
 use App\Registries\ContainerRegistry;
+use Psr\Http\Message\ServerRequestInterface;
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -117,9 +118,15 @@ try {
     } else {
         $_SESSION['alertMsg'] = _translate("Failed to refer samples. Please try again.");
     }
-} catch (Exception $e) {
+} catch (Throwable $e) {
 
-    error_log("TB Referral Error: " . $e->getMessage());
+    LoggerUtility::log("error", "TB Referral Error: " . $e->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'trace' => $e->getTraceAsString(),
+    ]);
     $_SESSION['alertMsg'] = _translate("An error occurred while processing the referral. Please try again.");
 }
 

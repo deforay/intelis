@@ -226,8 +226,6 @@ try {
           $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
 
-     error_log($sQuery);
-
      [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
      $_SESSION['eidRequestSearchResultQueryCount'] = $resultCount;

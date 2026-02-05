@@ -1,12 +1,13 @@
 <?php
 
-use Psr\Http\Message\ServerRequestInterface;
-use const SAMPLE_STATUS\REJECTED;
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use const SAMPLE_STATUS\REJECTED;
+use App\Registries\ContainerRegistry;
+use Psr\Http\Message\ServerRequestInterface;
 
 
 /** @var DatabaseService $db */
@@ -70,7 +71,13 @@ try {
         $resource = 'tb-results';
         $general->activityLog($eventType, $action, $resource);
     }
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Throwable $e) {
+    LoggerUtility::log("error", $e->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }
 echo $result;
