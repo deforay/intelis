@@ -103,7 +103,7 @@ try {
     $tbData = [
         'tests_requested' => empty($_POST['tbTestsRequested']) ? null : json_encode($_POST['tbTestsRequested']),
         'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
-        'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : ($_POST['testResult']['labId'][0] ?? null),
+        'lab_id' => $_POST['labId'] ?? ($_POST['testResult']['labId'][0] ?? null),
         'result_date' => empty($_POST['resultDate']) ? null : $_POST['resultDate'],
         'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
         'is_sample_rejected' => empty($_POST['isSampleRejected']) ? null : $_POST['isSampleRejected'],

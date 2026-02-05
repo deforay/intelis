@@ -158,7 +158,7 @@ try {
         'requesting_clinician' => empty($_POST['requestingClinician']) ? null : $_POST['requestingClinician'],
         'specimen_quality' => empty($_POST['testNumber']) ? null : $_POST['testNumber'],
         'province_id' => empty($_POST['provinceId']) ? null : $_POST['provinceId'],
-        'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : ($_POST['testResult']['labId'][0] ?? null),
+        'lab_id' => $_POST['labId'] ?? ($_POST['testResult']['labId'][0] ?? null),
         'affiliated_lab_id' => empty($_POST['affiliatedLabId']) ? null : $_POST['affiliatedLabId'],
         'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
         'etb_tracker_number' => empty($_POST['trackerNo']) ? null : $_POST['trackerNo'],
