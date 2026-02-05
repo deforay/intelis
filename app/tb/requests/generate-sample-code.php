@@ -1,10 +1,11 @@
 <?php
 
-use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TbService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
+use Psr\Http\Message\ServerRequestInterface;
 
 
 /** @var TbService $tbService */
@@ -29,6 +30,12 @@ try {
         $sampleCodeParams['insertOperation'] = false;
         echo $tbService->getSampleCode($sampleCodeParams);
     }
-} catch (Throwable $exception) {
-    error_log("Error while generating Sample ID : " . $exception->getMessage());
+} catch (Throwable $e) {
+    LoggerUtility::log("error", "Error while generating Sample ID : " . $e->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

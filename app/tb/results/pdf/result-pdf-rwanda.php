@@ -1,13 +1,14 @@
 <?php
 
 // this file is included in tb/results/generate-result-pdf.php
-use const SAMPLE_STATUS\REJECTED;
+use App\Services\TbService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use const SAMPLE_STATUS\REJECTED;
 use App\Helpers\PdfWatermarkHelper;
-use App\Services\TbService;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\CountrySpecificHelpers\RwandaTBResultPDFHelper;
 
@@ -39,7 +40,6 @@ try {
         LEFT JOIN user_details as revised ON tt.revised_by=revised.user_id 
         LEFT JOIN r_tb_sample_rejection_reasons as reject ON tt.reason_for_sample_rejection=reject.rejection_reason_id 
         where tb_id= " . $result['tb_id'] . " ORDER BY tb_test_id DESC";
-            // error_log($tbTestQuery);
             $tbTestInfo = $db->rawQuery($tbTestQuery);
 
             $facilityQuery = "SELECT * from form_tb as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where tb_id= " . $result['tb_id'] . " GROUP BY fd.facility_id LIMIT 1";
@@ -483,6 +483,12 @@ try {
             }
         }
     }
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Throwable $e) {
+    LoggerUtility::log("error", $e->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

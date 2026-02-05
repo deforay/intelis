@@ -28,10 +28,12 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
+$output = MiscUtility::console();
+
 $smartConnectURL = $general->getGlobalConfig('vldashboard_url');
 
 if (empty($smartConnectURL)) {
-    echo "Smart Connect URL not set";
+    $output->writeln("<error> Smart Connect URL not set </error>");
     exit(0);
 }
 
@@ -42,6 +44,11 @@ $data = [];
 // if forceSync is set as true, we will drop and create tables on VL Dashboard DB
 $options = getopt("f", ["force"]);
 $data['forceSync'] = isset($options['f']) || isset($options['force']);
+
+$output->writeln("<info>Smart Connect Metadata Sync</info>");
+if ($data['forceSync']) {
+    $output->writeln("<comment>Force sync enabled — tables will be dropped and recreated</comment>");
+}
 
 $lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_vldash_sync');
 
@@ -103,7 +110,9 @@ try {
 
     $healthUrl = $baseUrl . "/api/health";
 
+    $output->write("Checking connectivity... ");
     if ($apiService->checkConnectivity($healthUrl) !== true) {
+        $output->writeln("<error>FAILED</error>");
         LoggerUtility::log("error", "Unable to connect to Smart Connect health endpoint", [
             'file' => __FILE__,
             'line' => __LINE__,
@@ -111,9 +120,11 @@ try {
         ]);
         exit(0);
     }
+    $output->writeln("<info>OK</info>");
 
     $url = "$baseUrl/api/vlsm-metadata";
 
+    $bar = MiscUtility::spinnerStart(count($metadataTables), 'Collecting table data…');
     foreach ($metadataTables as $table) {
         if ($data['forceSync'] === true) {
             $createResult = $db->rawQueryOne("SHOW CREATE TABLE `$table`");
@@ -132,7 +143,9 @@ try {
         }
         $db->orderBy("updated_datetime", "ASC");
         $data[$table]['tableData'] = $db->get($table);
+        MiscUtility::spinnerAdvance($bar);
     }
+    MiscUtility::spinnerFinish($bar);
 
     $dataToSync = [];
     $dataToSync['timestamp'] = empty($lastUpdatedOn) ? time() : strtotime((string) $lastUpdatedOn);
@@ -161,11 +174,13 @@ try {
         ]
     ];
 
+    $output->write("Uploading to Smart Connect... ");
     $response = $apiService->postFile($url, 'referenceFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
 
     MiscUtility::deleteFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 
     if (empty($response)) {
+        $output->writeln("<error>FAILED</error>");
         LoggerUtility::log("error", "Metadata sync failed: no response from Smart Connect", [
             'file' => __FILE__,
             'line' => __LINE__,
@@ -173,6 +188,21 @@ try {
         ]);
         exit(0);
     }
+
+    $responseData = json_decode($response, true);
+    if (json_last_error() !== JSON_ERROR_NONE || (isset($responseData['status']) && $responseData['status'] === 'error')) {
+        $errorMsg = $responseData['message'] ?? $response;
+        $output->writeln("<error>FAILED</error>");
+        $output->writeln("<error> API Error: $errorMsg </error>");
+        LoggerUtility::log("error", "Metadata sync API error", [
+            'file' => __FILE__,
+            'line' => __LINE__,
+            'url' => $url,
+            'response' => $response,
+        ]);
+        exit(0);
+    }
+    $output->writeln("<info>OK</info>");
 
     $unionParts = array_map(fn($table) => "SELECT MAX(updated_datetime) AS latest_update FROM `$table`", $metadataTables);
     $query = "SELECT MAX(latest_update) AS latest_update FROM (" . implode(" UNION ALL ", $unionParts) . ") AS combined";
@@ -184,7 +214,10 @@ try {
     ];
 
     $db->update('s_vlsm_instance', $data);
-} catch (Exception $exc) {
+
+    $output->writeln("<info>Sync complete. Last sync time: " . $data['last_vldash_sync'] . "</info>");
+} catch (Throwable $exc) {
+    $output->writeln("<error> Error: " . $exc->getMessage() . " </error>");
     LoggerUtility::log("error", $exc->getMessage(), [
         'file' => __FILE__,
         'line' => __LINE__,
