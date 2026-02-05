@@ -1,13 +1,14 @@
 <?php
 
-use Psr\Http\Message\ServerRequestInterface;
 use App\Services\TestsService;
-use App\Registries\AppRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use Psr\Http\Message\ServerRequestInterface;
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -99,8 +100,14 @@ try {
     } else {
         $response['message'] = _translate("Failed to update samples. Please try again.");
     }
-} catch (Exception $e) {
-    error_log("TB Referral Update Error: " . $e->getMessage());
+} catch (Throwable $e) {
+    LoggerUtility::log("error", "Update TB Referral Error: " . $e->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'trace' => $e->getTraceAsString(),
+    ]);
     $response['message'] = _translate("An error occurred while processing the update. Please try again.");
 }
 

@@ -151,9 +151,4 @@ foreach ($rResult as $aRow) {
      $output['aaData'][] = $row;
 }
 
-
-// Log the actual query being executed
-error_log("Query: " . $sQuery);
-error_log("Result count: " . $resultCount);
-
 echo JsonUtility::encodeUtf8Json($output);

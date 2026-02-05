@@ -1,16 +1,17 @@
 <?php
 
-use Psr\Http\Message\ServerRequestInterface;
-use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
+use const SAMPLE_STATUS\REJECTED;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use Psr\Http\Message\ServerRequestInterface;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
 
 /** @var DatabaseService $db */
@@ -340,6 +341,12 @@ try {
     } else {
         header("Location:/tb/requests/tb-requests.php");
     }
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Throwable $e) {
+    LoggerUtility::log("error", $e->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

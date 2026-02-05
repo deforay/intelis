@@ -27,7 +27,7 @@ $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 if (isset($_SESSION['highTbResult']) && trim((string) $_SESSION['highTbResult']) !== "") {
-     error_log($_SESSION['highTbResult']);
+
 
      $output = [];
      $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL"];
@@ -44,11 +44,11 @@ if (isset($_SESSION['highTbResult']) && trim((string) $_SESSION['highTbResult'])
           $sampleTestDate = '';
           if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $aRow['sample_collection_date']);
-               $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
+               $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
           }
           if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) !== '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
                $expStr = explode(" ", (string) $aRow['sample_tested_datetime']);
-               $sampleTestDate =  date("d-m-Y", strtotime($expStr[0]));
+               $sampleTestDate = date("d-m-Y", strtotime($expStr[0]));
           }
 
           $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';
