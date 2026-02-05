@@ -40,12 +40,13 @@ $baseUrl = rtrim((string) $smartConnectURL, "/");
 $data = [];
 
 // if forceSync is set as true, we will drop and create tables on VL Dashboard DB
-$data['forceSync'] = false;
+$options = getopt("f", ["force"]);
+$data['forceSync'] = isset($options['f']) || isset($options['force']);
 
 $lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_vldash_sync');
 
 
-$referenceTables = [
+$metadataTables = [
     'facility_details',
     'geographical_divisions',
     'instrument_machines',
@@ -60,7 +61,7 @@ if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === 
         'r_vl_sample_rejection_reasons'
     ];
 
-    $referenceTables = array_merge($referenceTables, $vlTables);
+    $metadataTables = [...$metadataTables, ...$vlTables];
 }
 
 
@@ -71,7 +72,7 @@ if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] ==
         'r_eid_sample_type',
         //'r_eid_test_reasons',
     ];
-    $referenceTables = array_merge($referenceTables, $eidTables);
+    $metadataTables = [...$metadataTables, ...$eidTables];
 }
 
 
@@ -83,7 +84,7 @@ if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covi
         'r_covid19_symptoms',
         'r_covid19_test_reasons',
     ];
-    $referenceTables = array_merge($referenceTables, $covid19Tables);
+    $metadataTables = [...$metadataTables, ...$covid19Tables];
 }
 
 if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) {
@@ -95,7 +96,7 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
         'r_hepatitis_risk_factors',
         'r_hepatitis_test_reasons',
     ];
-    $referenceTables = array_merge($referenceTables, $hepatitisTables);
+    $metadataTables = [...$metadataTables, ...$hepatitisTables];
 }
 
 try {
@@ -111,9 +112,9 @@ try {
         exit(0);
     }
 
-    $url = $baseUrl . "/api/vlsm-metadata";
+    $url = "$baseUrl/api/vlsm-metadata";
 
-    foreach ($referenceTables as $table) {
+    foreach ($metadataTables as $table) {
         if ($data['forceSync'] === true) {
             $createResult = $db->rawQueryOne("SHOW CREATE TABLE `$table`");
             $data[$table]['tableStructure'] = "SET FOREIGN_KEY_CHECKS=0;" . PHP_EOL;
@@ -139,7 +140,7 @@ try {
 
     $currentDate = DateUtility::getCurrentDateTime();
 
-    $filename = 'reference-data-' . $currentDate . '.json';
+    $filename = "reference-data-$currentDate.json";
     $fp = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'w');
     fwrite($fp, json_encode($dataToSync));
     fclose($fp);
@@ -156,7 +157,7 @@ try {
         ],
         [
             'name' => 'labId',
-            'contents' => $general->getSystemConfig('sc_testing_lab_id') ?? null
+            'contents' => $general->getSystemConfig('sc_testing_lab_id')
         ]
     ];
 
@@ -164,22 +165,19 @@ try {
 
     MiscUtility::deleteFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 
-
-    $latestDateTime = null;
-
-    foreach ($referenceTables as $table) {
-        // Build the SQL query to fetch the latest updated_datetime for each table
-        $query = "SELECT MAX(updated_datetime) AS latest_update FROM `$table`";
-        // Execute the query. Make sure to adjust this line to use your actual method for executing the query.
-        $result = $db->rawQueryOne($query); // This method might vary depending on your DatabaseService class.
-        // Extract the latest_update value from the result.
-        $tableLatestDateTime = $result['latest_update'];
-
-        // Update $latestDateTime if this table's latest update is more recent.
-        if (!empty($tableLatestDateTime) && (is_null($latestDateTime) || $tableLatestDateTime > $latestDateTime)) {
-            $latestDateTime = $tableLatestDateTime;
-        }
+    if (empty($response)) {
+        LoggerUtility::log("error", "Metadata sync failed: no response from Smart Connect", [
+            'file' => __FILE__,
+            'line' => __LINE__,
+            'url' => $url,
+        ]);
+        exit(0);
     }
+
+    $unionParts = array_map(fn($table) => "SELECT MAX(updated_datetime) AS latest_update FROM `$table`", $metadataTables);
+    $query = "SELECT MAX(latest_update) AS latest_update FROM (" . implode(" UNION ALL ", $unionParts) . ") AS combined";
+    $result = $db->rawQueryOne($query);
+    $latestDateTime = $result['latest_update'];
 
     $data = [
         'last_vldash_sync' => $latestDateTime ?? DateUtility::getCurrentDateTime()
