@@ -50,7 +50,7 @@ if ($data['forceSync']) {
     $output->writeln("<comment>Force sync enabled — tables will be dropped and recreated</comment>");
 }
 
-$lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_vldash_sync');
+$lastUpdatedOn = $data['forceSync'] ? null : $db->getValue('s_vlsm_instance', 'last_vldash_sync');
 
 
 $metadataTables = [
@@ -105,6 +105,8 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
     ];
     $metadataTables = [...$metadataTables, ...$hepatitisTables];
 }
+
+$transactionId = MiscUtility::generateULID();
 
 try {
 
@@ -174,7 +176,7 @@ try {
         ]
     ];
 
-    $output->write("Uploading to Smart Connect... ");
+    $output->write("$transactionId : Uploading to Smart Connect... ");
     $response = $apiService->postFile($url, 'referenceFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params);
 
     MiscUtility::deleteFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
@@ -204,6 +206,17 @@ try {
     }
     $output->writeln("<info>OK</info>");
 
+    $general->addApiTracking(
+        $transactionId,
+        'vlsm-system',
+        count($metadataTables),
+        'smart-connect-metadata-sync',
+        'common',
+        $url,
+        $dataToSync,
+        $response,
+        'json'
+    );
     $unionParts = array_map(fn($table) => "SELECT MAX(updated_datetime) AS latest_update FROM `$table`", $metadataTables);
     $query = "SELECT MAX(latest_update) AS latest_update FROM (" . implode(" UNION ALL ", $unionParts) . ") AS combined";
     $result = $db->rawQueryOne($query);
