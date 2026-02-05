@@ -31,6 +31,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 $lastUpdate = null;
 $output = [];
+$transactionId = MiscUtility::generateULID();
 
 try {
 
@@ -96,6 +97,18 @@ try {
     $response = $apiService->postFile($url, 'vlFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params, true);
 
     $deResult = json_decode((string) $response, true);
+
+    $general->addApiTracking(
+        $transactionId,
+        'vlsm-system',
+        count($rResult),
+        'smart-connect-vl-sync',
+        'vl',
+        $url,
+        $output,
+        $response,
+        'json'
+    );
 
     if (isset($deResult['status']) && trim((string) $deResult['status']) === 'success') {
         $data = [

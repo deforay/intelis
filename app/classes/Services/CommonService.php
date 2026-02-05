@@ -1007,11 +1007,12 @@ final class CommonService
                 MiscUtility::makeDirectory($requestDir);
 
                 // Use ArchiveUtility with auto-backend selection
-                ArchiveUtility::compressContent(
+                $requestFile = ArchiveUtility::compressContent(
                     $requestData,
                     "$requestDir/$transactionId.json"
-                    // No backend specified - system will choose best available
                 );
+                // Ensure file is readable by the web server (CLI may run as root)
+                @chmod($requestFile, 0644);
             }
 
             // Save response data
@@ -1020,11 +1021,12 @@ final class CommonService
                 MiscUtility::makeDirectory($responseDir);
 
                 // Use ArchiveUtility with auto-backend selection
-                ArchiveUtility::compressContent(
+                $responseFile = ArchiveUtility::compressContent(
                     $responseData,
                     "$responseDir/$transactionId.json"
-                    // No backend specified - system will choose best available
                 );
+                // Ensure file is readable by the web server (CLI may run as root)
+                @chmod($responseFile, 0644);
             }
 
             $this->db->reset();
