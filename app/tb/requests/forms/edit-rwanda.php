@@ -773,10 +773,12 @@ if ($isLisInstance) {
                                                                 <option value="">
                                                                     <?php echo _translate("Select test result"); ?>
                                                                 </option>
-                                                                <option value="<?php echo $test['test_type']; ?>"
-                                                                    selected="selected">
-                                                                    <?php echo $test['test_type']; ?>
-                                                                </option>
+                                                                <?php if (isset($test['test_result']) && !empty($test['test_result'])) { ?>
+                                                                    <option value="<?php echo $test['test_result']; ?>"
+                                                                        selected="selected">
+                                                                        <?php echo $test['test_result']; ?>
+                                                                    </option>
+                                                                <?php } ?>
                                                             </select>
                                                         </td>
                                                     </tr>
@@ -1560,7 +1562,7 @@ if ($isLisInstance) {
             // Initialize test results for existing sections
             const testTypeSelect = $(this).find('.test-type-select');
             if (testTypeSelect.length && testTypeSelect.val()) {
-                updateTestResults(sectionNumber);
+                // updateTestResults(sectionNumber);
             }
         });
 

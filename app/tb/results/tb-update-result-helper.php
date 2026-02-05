@@ -148,7 +148,7 @@ try {
     }
     $db->where('tb_id', $_POST['tbSampleId']);
     $getPrevResult = $db->getOne('form_tb');
-    if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
+    if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['finalResult']) {
         $tbData['result_modified'] = "yes";
     } else {
         $tbData['result_modified'] = "no";
