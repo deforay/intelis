@@ -100,6 +100,11 @@ try {
     if (is_array($_POST['purposeOfTbTest'])) {
         $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
     }
+    if ((isset($_POST['isResultFinalized']) && !empty($_POST['isResultFinalized']) && isset($_POST['finalResult']) && !empty($_POST['finalResult'])) && $_POST['isResultFinalized'] == 'yes') {
+        $_POST['finalResult'] = $_POST['finalResult'];
+    } else {
+        $_POST['finalResult'] = null;
+    }
     $tbData = [
         'tests_requested' => empty($_POST['tbTestsRequested']) ? null : json_encode($_POST['tbTestsRequested']),
         'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
@@ -107,7 +112,8 @@ try {
         'result_date' => empty($_POST['resultDate']) ? null : $_POST['resultDate'],
         'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
         'is_sample_rejected' => empty($_POST['isSampleRejected']) ? null : $_POST['isSampleRejected'],
-        'result' => $_POST['finalResult'] ?? null,
+        'is_result_finalized' => $_POST['isResultFinalized'] ?? null,
+        'result' => $_POST['finalResult'],
         'tb_lam_result' => $_POST['tbLamResult'] ?? null,
         'xpert_mtb_result' => empty($_POST['xPertMTMResult']) ? null : $_POST['xPertMTMResult'],
         'culture_result' => empty($_POST['cultureResult']) ? null : $_POST['cultureResult'],
