@@ -133,7 +133,11 @@ try {
     if (is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = implode(",", $_POST['tbTestsRequested']);
     }
-
+    if ((isset($_POST['isResultFinalized']) && !empty($_POST['isResultFinalized']) && isset($_POST['finalResult']) && !empty($_POST['finalResult'])) && $_POST['isResultFinalized'] == 'yes') {
+        $_POST['finalResult'] = $_POST['finalResult'];
+    } else {
+        $_POST['finalResult'] = null;
+    }
     $tbData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],
@@ -184,7 +188,8 @@ try {
         'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
         'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
         'recommended_corrective_action' => $_POST['correctiveAction'] ?? null,
-        'result' => $_POST['finalResult'] ?? null,
+        'is_result_finalized' => $_POST['isResultFinalized'] ?? null,
+        'result' => $_POST['finalResult'],
         'tb_lam_result' => $_POST['tbLamResult'] ?? null,
         'xpert_mtb_result' => empty($_POST['xPertMTMResult']) ? null : $_POST['xPertMTMResult'],
         'culture_result' => empty($_POST['cultureResult']) ? null : $_POST['cultureResult'],
