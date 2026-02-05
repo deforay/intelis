@@ -84,7 +84,7 @@ try {
     $resultSentToSource = null;
 
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
-        $_POST['result'] = null;
+        $_POST['finalResult'] = null;
         $status = REJECTED;
         $resultSentToSource = 'pending';
     }
@@ -96,7 +96,7 @@ try {
         $_POST['firstSputumSamplesCollectionDate'] = DateUtility::isoDateFormat($_POST['firstSputumSamplesCollectionDate']);
     }
 
-    if (!empty($_POST['result'])) {
+    if (!empty($_POST['finalResult'])) {
         $resultSentToSource = 'pending';
     }
 
@@ -127,10 +127,10 @@ try {
 
     //Update patient Information in Patients Table
     //$systemPatientCode = $patientsService->savePatient($_POST, 'form_tb');
-    if (is_array($_POST['purposeOfTbTest'])) {
+    if (isset($_POST['purposeOfTbTest']) && is_array($_POST['purposeOfTbTest'])) {
         $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
     }
-    if (is_array($_POST['tbTestsRequested'])) {
+    if (isset($_POST['tbTestsRequested']) && is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = implode(",", $_POST['tbTestsRequested']);
     }
     if ((isset($_POST['isResultFinalized']) && !empty($_POST['isResultFinalized']) && isset($_POST['finalResult']) && !empty($_POST['finalResult'])) && $_POST['isResultFinalized'] == 'yes') {
@@ -231,7 +231,7 @@ try {
     $db->where('tb_id', $_POST['tbSampleId']);
     $getPrevResult = $db->getOne('form_tb');
 
-    if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
+    if (isset($getPrevResult['result']) && ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['finalResult'])) {
         $tbData['result_modified'] = "yes";
     } else {
         $tbData['result_modified'] = "no";
