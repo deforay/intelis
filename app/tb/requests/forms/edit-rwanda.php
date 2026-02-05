@@ -41,13 +41,9 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
 $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
-$typeOfPatient = ($tbInfo['patient_type']) ? json_decode((string) $tbInfo['patient_type']) : [];
-$typeOfPatient = is_array($typeOfPatient) ? $typeOfPatient : [];
-$reasonForTbTest = ($tbInfo['reason_for_tb_test']) ? json_decode((string) $tbInfo['reason_for_tb_test']) : [];
-$reasonForTbTest = is_array($reasonForTbTest) ? $reasonForTbTest : [];
-//$testTypeRequested = ($tbInfo['tests_requested']) ? json_decode((string) $tbInfo['tests_requested']) : [];
-//$testTypeRequested = is_array($testTypeRequested) ? $testTypeRequested : [];
-$testTypeRequested = !empty($tbInfo['tests_requested']) ? explode(',', (string) $tbInfo['tests_requested']) : [];
+$typeOfPatient = (!empty($tbInfo['patient_type'])) ? (array)json_decode((string) $tbInfo['patient_type']) : [];
+$reasonForTbTest = (!empty($tbInfo['reason_for_tb_test'])) ? (array)json_decode((string) $tbInfo['reason_for_tb_test']) : [];
+$testTypeRequested = (!empty($tbInfo['tests_requested'])) ? (array)json_decode((string) $tbInfo['tests_requested']) : [];
 $tbInfo['purpose_of_test'] = !empty($tbInfo['purpose_of_test']) ? explode(',', (string) $tbInfo['purpose_of_test']) : [];
 
 // Auto-select lab for LIS instances
@@ -573,14 +569,14 @@ if ($isLisInstance) {
                                             <?php echo _translate("Is Specimen re-ordered as part of Corrective Action?"); ?>
                                         </label>
                                         <select class="form-control" name="reOrderedCorrectiveAction"
+
                                             id="reOrderedCorrectiveAction" title="<?php echo _translate("Is specimen re-ordered as part of corrective action"); ?>">
-                                            <option value="">--
-                                                <?php echo _translate("Select"); ?>--
-                                            </option>
-                                            <option value="no" <?php echo (isset($tbInfo['is_specimen_reordered']) && !empty($tbInfo['is_specimen_reordered']) && $tbInfo['is_specimen_reordered'] == 'no') ? 'selected="selected"' : ''; ?>>
+                                            <option value="">--<?php echo _translate("Select"); ?>--</option>
+                                            <option value="no" <?php echo (isset($tbInfo['is_specimen_reordered']) && !empty($tbInfo['is_specimen_reordered']) && $tbInfo['is_specimen_reordered'] == "no") ? 'selected="selected"' : ''; ?>>
                                                 <?php echo _translate("No"); ?>
                                             </option>
-                                            <option value="yes" <?php echo (isset($tbInfo['is_specimen_reordered']) && !empty($tbInfo['is_specimen_reordered']) && $tbInfo['is_specimen_reordered'] == 'yes') ? 'selected="selected"' : ''; ?>>
+                                            <option value="yes" <?php echo (isset($tbInfo['is_specimen_reordered']) && !empty($tbInfo['is_specimen_reordered']) && $tbInfo['is_specimen_reordered'] == "yes") ? 'selected="selected"' : ''; ?>>
+
                                                 <?php echo _translate("Yes"); ?>
                                             </option>
                                         </select>
