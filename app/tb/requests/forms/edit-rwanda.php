@@ -45,8 +45,9 @@ $typeOfPatient = ($tbInfo['patient_type']) ? json_decode((string) $tbInfo['patie
 $typeOfPatient = is_array($typeOfPatient) ? $typeOfPatient : [];
 $reasonForTbTest = ($tbInfo['reason_for_tb_test']) ? json_decode((string) $tbInfo['reason_for_tb_test']) : [];
 $reasonForTbTest = is_array($reasonForTbTest) ? $reasonForTbTest : [];
-$testTypeRequested = ($tbInfo['tests_requested']) ? json_decode((string) $tbInfo['tests_requested']) : [];
-$testTypeRequested = is_array($testTypeRequested) ? $testTypeRequested : [];
+//$testTypeRequested = ($tbInfo['tests_requested']) ? json_decode((string) $tbInfo['tests_requested']) : [];
+//$testTypeRequested = is_array($testTypeRequested) ? $testTypeRequested : [];
+$testTypeRequested = !empty($tbInfo['tests_requested']) ? explode(',', (string) $tbInfo['tests_requested']) : [];
 $tbInfo['purpose_of_test'] = !empty($tbInfo['purpose_of_test']) ? explode(',', (string) $tbInfo['purpose_of_test']) : [];
 
 // Auto-select lab for LIS instances
@@ -1504,6 +1505,16 @@ if ($isLisInstance) {
         } else {
             $('.' + othersId).hide();
         }
+    }
+
+    function setPatientDetails(pDetails) {
+        patientArray = JSON.parse(pDetails);
+        $("#firstName").val(patientArray['firstname']);
+        $("#lastName").val(patientArray['lastname']);
+        $("#patientGender").val(patientArray['gender']);
+        $("#patientAge").val(patientArray['age']);
+        $("#dob").val(patientArray['dob']);
+        $("#patientId").val(patientArray['patient_id']);
     }
 
     // Document ready initialization
