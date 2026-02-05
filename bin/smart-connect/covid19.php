@@ -28,6 +28,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 $lastUpdate = null;
 $output = [];
+$transactionId = MiscUtility::generateULID();
 
 try {
 
@@ -94,6 +95,18 @@ try {
 
     $response = $apiService->postFile($url, 'covid19File', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params, true);
     $deResult = json_decode((string) $response, true);
+
+    $general->addApiTracking(
+        $transactionId,
+        'vlsm-system',
+        count($rResult),
+        'smart-connect-covid19-sync',
+        'covid19',
+        $url,
+        $output,
+        $response,
+        'json'
+    );
 
     if (isset($deResult['status']) && trim((string) $deResult['status']) === 'success') {
         $data = ['covid19_last_dash_sync' => (empty($lastUpdate) ? DateUtility::getCurrentDateTime() : $lastUpdate)];
