@@ -603,7 +603,9 @@ if [[ "${php_version}" != "${desired_php_version}" ]]; then
     print info "Current PHP version is ${php_version}. Switching to PHP ${desired_php_version}."
 
     # Switch to PHP 8.4
-    # WHY: We don't want the upgrade to hard-fail if switch-php can't switch; keep going and surface a warning.
+    # WHY: switch-php can exit non-zero even after doing useful work; don't let the ERR trap abort the upgrade.
+    previous_err_trap="$(trap -p ERR || true)"
+    trap - ERR
     if ! switch_out=$(switch-php "${desired_php_version}" --fast 2>&1); then
         print warning "switch-php --fast failed; retrying without --fast."
         log_action "switch-php --fast failed: ${switch_out}"
@@ -611,6 +613,9 @@ if [[ "${php_version}" != "${desired_php_version}" ]]; then
             print warning "Failed to switch to PHP ${desired_php_version}: ${switch_out}"
             log_action "switch-php failed: ${switch_out}"
         fi
+    fi
+    if [ -n "${previous_err_trap}" ]; then
+        eval "${previous_err_trap}"
     fi
 else
     print success "PHP version is already ${desired_php_version}."
