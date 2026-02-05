@@ -16,4 +16,7 @@ VALUES (
 ) ON DUPLICATE KEY UPDATE shared_privileges = VALUES(shared_privileges);
 
 UPDATE `system_config` SET `value` = '5.4.1' WHERE `system_config`.`name` = 'sc_version';
-
+-- Thana 05-Feb-2026
+ALTER TABLE `form_tb` CHANGE `is_specimen_reordered` `is_specimen_reordered` ENUM('yes','no','') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL;
+ALTER TABLE `audit_form_tb` ADD `is_result_finalized` ENUM('no','yes','') NOT NULL DEFAULT 'no' AFTER `locked`;
+ALTER TABLE `form_tb` ADD `is_result_finalized` ENUM('no','yes','') NOT NULL DEFAULT 'no' AFTER `locked`;

@@ -706,6 +706,13 @@ if ($isLisInstance) {
                                 <br>
                                 <div class="row pr-5">
                                     <div class="col-md-6">
+                                        <label class="label-control" for="isResultFinalized"><?php echo _translate("Do you want to enter the Final Interpretation?"); ?></label>
+                                        <select class="form-control" name="isResultFinalized" id="isResultFinalized" title="<?php echo _translate("Is result finalized"); ?>" onchange="$('.finalResult').toggle();">
+                                            <option value="no"><?php echo _translate("No"); ?></option>
+                                            <option value="yes"><?php echo _translate("Yes"); ?></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 finalResult" style="display: none;">
                                         <label class="label-control"
                                             for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
                                         <div class="resultInputContainer">

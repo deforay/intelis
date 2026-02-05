@@ -1114,6 +1114,13 @@ if ($isLisInstance) {
                                 </div>
                                 <div class="row pr-5 fnal-result">
                                     <div class="col-md-6">
+                                        <label class="label-control" for="isResultFinalized"><?php echo _translate("Do you want to enter the Final Interpretation?"); ?></label>
+                                        <select class="form-control" name="isResultFinalized" id="isResultFinalized" title="<?php echo _translate("Is result finalized"); ?>" onchange="$('.finalResult').toggle();$('.finalResult').val('');">
+                                            <option value="no" <?php echo (isset($tbInfo['is_result_finalized']) && !empty($tbInfo['is_result_finalized']) && $tbInfo['is_result_finalized'] == "no") ? 'selected="selected"' : ''; ?>><?php echo _translate("No"); ?></option>
+                                            <option value="yes" <?php echo (isset($tbInfo['is_result_finalized']) && !empty($tbInfo['is_result_finalized']) && $tbInfo['is_result_finalized'] == "yes") ? 'selected="selected"' : ''; ?>><?php echo _translate("Yes"); ?></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 finalResult" <?php echo (isset($tbInfo['is_result_finalized']) && $tbInfo['is_result_finalized'] == "yes") ? '' : 'style="display:none;"'; ?>>
                                         <label class="label-control" for="finalResult">
                                             <?php echo _translate("Final Interpretation"); ?>
                                         </label>

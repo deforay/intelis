@@ -961,6 +961,13 @@ if ($isLisInstance) {
                                 <br>
                                 <div class="row pr-5 fnal-result" <?php echo $referralResultDisplay; ?>>
                                     <div class="col-md-6">
+                                        <label class="label-control" for="isResultFinalized"><?php echo _translate("Do you want to enter the Final Interpretation?"); ?></label>
+                                        <select class="form-control" name="isResultFinalized" id="isResultFinalized" title="<?php echo _translate("Is result finalized"); ?>" onchange="finalResultChange();">
+                                            <option value="no" <?php echo (isset($tbInfo['is_result_finalized']) && !empty($tbInfo['is_result_finalized']) && $tbInfo['is_result_finalized'] == "no") ? 'selected="selected"' : ''; ?>><?php echo _translate("No"); ?></option>
+                                            <option value="yes" <?php echo (isset($tbInfo['is_result_finalized']) && !empty($tbInfo['is_result_finalized']) && $tbInfo['is_result_finalized'] == "yes") ? 'selected="selected"' : ''; ?>><?php echo _translate("Yes"); ?></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 finalResult" <?php echo (isset($tbInfo['is_result_finalized']) && $tbInfo['is_result_finalized'] == "yes") ? '' : 'style="display:none;"'; ?>>
                                         <label class="label-control"
                                             for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
                                         <div class="resultInputContainer">
@@ -1545,6 +1552,11 @@ if ($isLisInstance) {
     document.getElementById('finalResult')?.addEventListener('focus', function() {
         this.dataset.previousValue = this.value;
     });
+
+    function finalResultChange() {
+        $('.finalResult').toggle();
+        $('#finalResult').val('').trigger('change');
+    }
 </script>
 <script type="text/javascript"
     src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
