@@ -49,7 +49,8 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
 $typeOfPatient = (!empty($tbInfo['patient_type'])) ? (array)json_decode((string) $tbInfo['patient_type']) : [];
 $reasonForTbTest = (!empty($tbInfo['reason_for_tb_test'])) ? (array)json_decode((string) $tbInfo['reason_for_tb_test']) : [];
-$testTypeRequested = (!empty($tbInfo['tests_requested'])) ? (array)json_decode((string) $tbInfo['tests_requested']) : [];
+//$testTypeRequested = (!empty($tbInfo['tests_requested'])) ? (array)json_decode((string) $tbInfo['tests_requested']) : [];
+$testTypeRequested = !empty($tbInfo['tests_requested']) ? explode(',', (string) $tbInfo['tests_requested']) : [];
 $tbInfo['purpose_of_test'] = !empty($tbInfo['purpose_of_test']) ? explode(',', (string) $tbInfo['purpose_of_test']) : [];
 // Auto-select lab for LIS instances
 $isLisInstance = $general->isLISInstance();
@@ -435,16 +436,18 @@ if ($isLisInstance) {
                                         for="tbTestsRequested"><?php echo _translate("TB test(s) requested"); ?></label>
                                     <select id="tbTestsRequested" multiple name="tbTestsRequested[]"
                                         class="form-control" title="Please select the TB test(s) requested">
-                                        <option value="">Select TB test(s) requested...</option>
-                                        <option value="LED microscopy" <?php echo in_array('LED microscopy', $testTypeRequested) ? 'selected="selected"' : ''; ?>>LED microscopy</option>
-                                        <option value="TB LAM test" <?php echo in_array('TB LAM test', $testTypeRequested) ? 'selected="selected"' : ''; ?>>TB LAM test</option>
-                                        <option value="MTB/ RIF Ultra" <?php echo in_array('MTB/ RIF Ultra', $testTypeRequested) ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra</option>
-                                        <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $testTypeRequested) ? 'selected="selected"' : ''; ?>>MTB/ XDR
-                                            (if
-                                            RIF detected)</option>
-                                        <option value="TB culture and Drug susceptibility test (DST)" <?php echo in_array('TB culture and Drug susceptibility test (DST)', $testTypeRequested) ? 'selected="selected"' : ''; ?>>TB culture and Drug
-                                            susceptibility test
-                                            (DST)</option>
+                                            <option value="">Select TB test(s) requested...</option>
+                                            <option value="LED microscopy" <?php echo in_array('LED microscopy', $testTypeRequested) ? 'selected="selected"' : ''; ?>>LED microscopy
+                                            </option>
+                                            <option value="TB LAM test" <?php echo in_array('TB LAM test', $testTypeRequested) ? 'selected="selected"' : ''; ?>>TB LAM test
+                                            </option>
+                                            <option value="MTB/ RIF Ultra" <?php echo in_array('MTB/ RIF Ultra', $testTypeRequested) ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra
+                                            </option>
+                                            <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $testTypeRequested) ? 'selected="selected"' : ''; ?>>MTB/
+                                                XDR (if RIF detected)</option>
+                                            <option value="TB culture and Drug susceptibility test (DST)" <?php echo in_array('TB culture and Drug susceptibility test (DST)', $testTypeRequested) ? 'selected="selected"' : ''; ?>>TB culture and
+                                                Drug
+                                                susceptibility test (DST)</option>
                                     </select>
                                 </td>
                             </tr>
