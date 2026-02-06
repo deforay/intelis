@@ -105,10 +105,17 @@ try {
     } else {
         $_POST['finalResult'] = null;
     }
+
+    $labId = null;
+    if (isset($_POST['labId']) && !empty($_POST['labId'])) {
+        $labId = $_POST['labId'];
+    } else if (isset($_POST['testResult']['labId'][0]) && !empty($_POST['testResult']['labId'][0])) {
+        $labId = $_POST['testResult']['labId'][0];
+    }
     $tbData = [
         'tests_requested' => empty($_POST['tbTestsRequested']) ? null : json_encode($_POST['tbTestsRequested']),
         'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
-        'lab_id' => $_POST['labId'] ?? ($_POST['testResult']['labId'][0] ?? null),
+        'lab_id' => $labId,
         'result_date' => empty($_POST['resultDate']) ? null : $_POST['resultDate'],
         'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
         'is_sample_rejected' => empty($_POST['isSampleRejected']) ? null : $_POST['isSampleRejected'],
@@ -210,10 +217,8 @@ try {
                 ]);
             }
         }
-
         // Update $tbData with LATEST test's data for form_tb
         $lastIndex = count($testResult['labId']) - 1;
-        $tbData['lab_id'] = $testResult['labId'][$lastIndex] ?? null;
         $tbData['sample_received_at_lab_datetime'] = DateUtility::isoDateFormat($testResult['sampleReceivedDate'][$lastIndex] ?? null, true);
         $tbData['is_sample_rejected'] = $testResult['isSampleRejected'][$lastIndex] ?? null;
         $tbData['reason_for_sample_rejection'] = $testResult['sampleRejectionReason'][$lastIndex] ?? null;

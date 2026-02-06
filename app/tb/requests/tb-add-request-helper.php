@@ -156,6 +156,12 @@ try {
     } else {
         $_POST['finalResult'] = null;
     }
+    $labId = null;
+    if (isset($_POST['labId']) && !empty($_POST['labId'])) {
+        $labId = $_POST['labId'];
+    } else if (isset($_POST['testResult']['labId'][0]) && !empty($_POST['testResult']['labId'][0])) {
+        $labId = $_POST['testResult']['labId'][0];
+    }
     $tbData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],
@@ -163,7 +169,7 @@ try {
         'requesting_clinician' => empty($_POST['requestingClinician']) ? null : $_POST['requestingClinician'],
         'specimen_quality' => empty($_POST['testNumber']) ? null : $_POST['testNumber'],
         'province_id' => empty($_POST['provinceId']) ? null : $_POST['provinceId'],
-        'lab_id' => $_POST['labId'] ?? ($_POST['testResult']['labId'][0] ?? null),
+        'lab_id' => $labId,
         'affiliated_lab_id' => empty($_POST['affiliatedLabId']) ? null : $_POST['affiliatedLabId'],
         'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
         'etb_tracker_number' => empty($_POST['trackerNo']) ? null : $_POST['trackerNo'],
@@ -309,10 +315,8 @@ try {
                 ]);
             }
         }
-
         // Update $tbData with LATEST test's data for form_tb
         $lastIndex = count($testResult['labId']) - 1;
-        $tbData['lab_id'] = $testResult['labId'][$lastIndex] ?? null;
         $tbData['sample_received_at_lab_datetime'] = DateUtility::isoDateFormat($testResult['sampleReceivedDate'][$lastIndex] ?? null, true);
         $tbData['is_sample_rejected'] = $testResult['isSampleRejected'][$lastIndex] ?? null;
         $tbData['reason_for_sample_rejection'] = $testResult['sampleRejectionReason'][$lastIndex] ?? null;
