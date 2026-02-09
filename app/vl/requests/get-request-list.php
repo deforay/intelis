@@ -1,13 +1,7 @@
 <?php
 
-use App\Services\UsersService;
-use Psr\Http\Message\ServerRequestInterface;
 use const COUNTRY\CAMEROON;
-use const SAMPLE_STATUS\REJECTED;
-use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-use const SAMPLE_STATUS\ACCEPTED;
-use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-use const SAMPLE_STATUS\CANCELLED;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -15,9 +9,16 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use const SAMPLE_STATUS\ACCEPTED;
+use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\CANCELLED;
 use App\Services\FacilitiesService;
+use App\Utilities\DataTableUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+use Psr\Http\Message\ServerRequestInterface;
+use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -80,12 +81,12 @@ try {
           $sLimit = $_POST['iDisplayLength'];
      }
 
-     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
+     $sOrder = DataTableUtility::buildOrder($_POST, $orderColumns);
 
-     $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+     $columnSearch = DataTableUtility::buildSearchWhereEscaped($_POST, $aColumns);
 
      $sWhere = [];
-     if (!empty($columnSearch) && $columnSearch != '') {
+     if (!empty($columnSearch)) {
           $sWhere[] = $columnSearch;
      }
 
