@@ -86,7 +86,9 @@ final class CommonService
             } else {
                 // Standard array-of-objects mapping
                 foreach ($fields as $field => $default) {
-                    if ($field === $foreignKey) continue;
+                    if ($field === $foreignKey) {
+                        continue;
+                    }
                     if ($setUpdatedDatetime && $field === 'updated_datetime') {
                         $insertData[$field] = DateUtility::getCurrentDateTime();
                     } elseif (isset($row[$field])) {
@@ -221,13 +223,12 @@ final class CommonService
         }, ['users_count']);
     }
 
-    public function isNonAdmin($userId){
-        if(isset($userId) && !empty($userId))
-        {
+    public function isNonAdmin($userId)
+    {
+        if (isset($userId) && !empty($userId)) {
             $this->db->where("status = 'active' and user_id = '$userId'");
-            return $this->db->getValue("user_details","role_id");
-        }
-        else{
+            return $this->db->getValue("user_details", "role_id");
+        } else {
             return false;
         }
     }
