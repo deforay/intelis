@@ -205,7 +205,13 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 								</option>
 							</select>
 						</div>
-						 <div class="col-md-2 col-sm-2">
+							<div style="display:none;" class="col-md-3 col-sm-3 bulkRejectionReason">
+							<select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _translate('Please select test status'); ?>" style="width:350px;">
+								<!-- <option value=''> -- Select -- </option> -->
+								<?php echo $rejectionReason; ?>
+							</select>
+						</div>
+					<div class="col-md-2 col-sm-2">
                <select class="form-control" id="approver" name="approver" title="<?php echo _translate('Please select approver'); ?>" disabled="disabled">
                 <option value="">
                   <?php echo _translate("-- Select Approver --"); ?>
@@ -215,7 +221,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
                   <?php } ?>
                 </select>
                   </div>
-                  <div class="col-md-2 col-sm-2">
+                  <div class="col-md-2 col-sm-2 testerDiv">
                  <select class="form-control" id="tester" name="tester" title="<?php echo _translate('Please select tester'); ?>" disabled="disabled">
                 <option value="">
                   <?php echo _translate("-- Select Tester --"); ?>
@@ -234,14 +240,8 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
                       <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
                   <?php } ?>
                 </select>
-                 
             </div>
-						<div style="display:none;" class="col-md-5 col-sm-5 bulkRejectionReason">
-							<select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _translate('Please select test status'); ?>">
-								<!-- <option value=''> -- Select -- </option> -->
-								<?php echo $rejectionReason; ?>
-							</select>
-						</div>
+					
 						<div class="col-md-2 col-sm-2"><input type="button" onclick="submitTestStatus();" value="<?php echo _translate('Apply'); ?>" class="btn btn-success btn-sm"></div>
 					</div>
 					<!-- /.box-header -->
@@ -312,10 +312,16 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 	var endDate = "";
 	var selectedTests = [];
 	var selectedTestsId = [];
+
+	
 	$(document).ready(function() {
 		$("#facilityName").selectize({
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
+		
+    $("#bulkRejectionReason").select2({
+      placeholder: "<?php echo _translate("Select Rejection Reason"); ?>"
+    });
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
@@ -603,9 +609,12 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 	function showSampleRejectionReason() {
 		if ($("#status").val() == '4') {
 			$(".bulkRejectionReason").show();
+			$(".testerDiv").hide();
 		} else {
 			$("#bulkRejectionReason").val('');
 			$(".bulkRejectionReason").hide();
+			$(".testerDiv").show();
+
 		}
 	}
 
