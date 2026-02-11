@@ -156,7 +156,12 @@ foreach ($rejectionTypeResult as $type) {
                 <option value="2"><?php echo _translate("Lost"); ?></option>
               </select>
             </div>
-
+          <div style="display:none;" class="col-md-3 col-sm-3 bulkRejectionReason">
+              <select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _translate('Please select test status'); ?>" style="width:350px;">
+                <option value=''> <?php echo _translate("-- Select --"); ?> </option>
+                <?php echo $rejectionReason; ?>
+              </select>
+            </div>
             <div class="col-md-2 col-sm-2">
                <select class="form-control" id="approver" name="approver" title="<?php echo _translate('Please select approver'); ?>" disabled="disabled">
                 <option value="">
@@ -167,7 +172,7 @@ foreach ($rejectionTypeResult as $type) {
                   <?php } ?>
                 </select>
                   </div>
-                  <div class="col-md-2 col-sm-2">
+                  <div class="col-md-2 col-sm-2 testerDiv">
                  <select class="form-control" id="tester" name="tester" title="<?php echo _translate('Please select tester'); ?>" disabled="disabled">
                 <option value="">
                   <?php echo _translate("-- Select Tester --"); ?>
@@ -189,12 +194,7 @@ foreach ($rejectionTypeResult as $type) {
                  
             </div>
 
-            <div style="display:none;" class="col-md-5 col-sm-5 bulkRejectionReason">
-              <select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _translate('Please select test status'); ?>">
-                <option value=''> <?php echo _translate("-- Select --"); ?> </option>
-                <?php echo $rejectionReason; ?>
-              </select>
-            </div>
+           
             <div class="col-md-2 col-sm-2"><input type="button" onclick="submitTestStatus();" value="<?php echo _translate("Apply"); ?>" class="btn btn-success btn-sm"></div>
           </div>
           <!-- /.box-header -->
@@ -245,6 +245,10 @@ foreach ($rejectionTypeResult as $type) {
     $("#facilityName").select2({
       placeholder: "<?php echo _translate("Select Facilities"); ?>"
     });
+     $("#bulkRejectionReason").select2({
+      placeholder: "<?php echo _translate("Select Rejection Reason"); ?>"
+    });
+    
     $('#sampleCollectionDate').daterangepicker({
         locale: {
           cancelLabel: "<?= _translate("Clear", true); ?>",
@@ -519,9 +523,13 @@ foreach ($rejectionTypeResult as $type) {
   function showSampleRejectionReason() {
     if ($("#status").val() == '4') {
       $(".bulkRejectionReason").show();
+      $(".testerDiv").hide();
+
     } else {
       $("#bulkRejectionReason").val('');
       $(".bulkRejectionReason").hide();
+      $(".testerDiv").show();
+
     }
   }
 
