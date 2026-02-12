@@ -14,6 +14,7 @@ use DateTimeImmutable;
 use App\Services\TestsService;
 
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -300,5 +301,36 @@ abstract class AbstractTestService
         } catch (Throwable $e) {
             throw new SystemException($e->getMessage(), (int) $e->getCode(), $e);
         }
+    }
+
+    /**
+     * Set one or more attributes in the form_attributes JSON column.
+     * Uses MySQL JSON_SET for atomic update without read-then-write.
+     *
+     * Usage:
+     *   $service->setAttributes($id, 'key', 'value');
+     *   $service->setAttributes($id, ['key1' => 'val1', 'key2' => 'val2']);
+     */
+    public function setAttributes(int|string $sampleId, string|array $name, mixed $value = null): bool
+    {
+        $attributes = \is_array($name) ? $name : [$name => $value];
+
+        if (empty($attributes)) {
+            return false;
+        }
+
+        $setString = JsonUtility::jsonToSetString(
+            json_encode($attributes),
+            'form_attributes'
+        );
+
+        if (empty($setString)) {
+            return false;
+        }
+
+        $this->db->where($this->primaryKey, $sampleId);
+        return $this->db->update($this->table, [
+            'form_attributes' => $this->db->func($setString),
+        ]);
     }
 }
