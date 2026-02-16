@@ -134,61 +134,84 @@ foreach ($rejectionTypeResult as $type) {
 						<tr>
 							<td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-
 							</td>
 						</tr>
-
 					</table>
 					<div class="box-header with-border">
-						<div class="col-md-3 col-sm-3">
-							<input type="hidden" name="checkedTests" id="checkedTests" />
-							<select class="form-control" id="status" name="status" title="<?php echo _translate('Please select test status'); ?>" disabled="disabled" onchange="showSampleRejectionReason()">
-								<option value=""><?php echo _translate("-- Select at least one sample to apply bulk action --"); ?></option>
-								<option value="7"><?php echo _translate("Accepted"); ?></option>
-								<option value="4"><?php echo _translate("Rejected"); ?></option>
-								<option value="2"><?php echo _translate("Lost"); ?></option>
-							</select>
-						</div>
-						<div style="display:none;" class="col-md-3 col-sm-3 bulkRejectionReason">
-							<select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _translate('Please select test status'); ?>" style="width:350px;">
-								<option value=''> <?php echo _translate("-- Select --"); ?> </option>
-								<?php echo $rejectionReason; ?>
-							</select>
-						</div>
-						<div class="col-md-2 col-sm-2">
-							<select class="form-control" id="approver" name="approver" title="<?php echo _translate('Please select approver'); ?>" disabled="disabled">
-								<option value="">
-									<?php echo _translate("-- Select Approver --"); ?>
-								</option>
-								<?php foreach ($userResult as $uName) { ?>
-									<option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-								<?php } ?>
-							</select>
-						</div>
-						<div class="col-md-2 col-sm-2 testerDiv">
-							<select class="form-control" id="tester" name="tester" title="<?php echo _translate('Please select tester'); ?>" disabled="disabled">
-								<option value="">
-									<?php echo _translate("-- Select Tester --"); ?>
-								</option>
-								<?php foreach ($userResult as $uName) { ?>
-									<option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-								<?php } ?>
-							</select>
-						</div>
-						<div class="col-md-2 col-sm-2">
-							<select class="form-control" id="reviewer" name="reviewer" title="<?php echo _translate('Please select reviewer'); ?>" disabled="disabled">
-								<option value="">
-									<?php echo _translate("-- Select Reviewer --"); ?>
-								</option>
-								<?php foreach ($userResult as $uName) { ?>
-									<option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-								<?php } ?>
-							</select>
+						<div class="bulk-actions-panel">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title"><?php echo _translate("Bulk Actions"); ?> <small style="text-align: right;float:right;color:gray;"> Select one or multiple samples to do bulk actions</small></h4>
+								</div>
+								<div class="panel-body">
+									<div class="row">
+										<input type="hidden" name="checkedTests" id="checkedTests" />
 
-						</div>
+										<div class="col-md-3">
+											<label><?php echo _translate("Status"); ?></label>
+											<select class="form-control" id="status" name="status"
+												disabled="disabled" onchange="showSampleRejectionReason()">
+												<option value=""><?php echo _translate("-- Select --"); ?></option>
+												<option value="7"><?php echo _translate("Accepted"); ?></option>
+												<option value="4"><?php echo _translate("Rejected"); ?></option>
+												<option value="2"><?php echo _translate("Lost"); ?></option>
+											</select>
+										</div>
 
-						
-						<div class="col-md-2 col-sm-2"><input type="button" onclick="submitTestStatus();" value="<?php echo _translate("Apply"); ?>" class="btn btn-success btn-sm"></div>
+										<div class="col-md-3 bulkRejectionReason" style="display:none;">
+											<label><?php echo _translate("Rejection Reason"); ?></label>
+											<select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason">
+												<option value=''><?php echo _translate("-- Select --"); ?></option>
+												<?php echo $rejectionReason; ?>
+											</select>
+										</div>
+
+										<div class="col-md-2">
+											<label><?php echo _translate("Approver"); ?></label>
+											<select class="form-control" id="approver" name="approver" disabled="disabled">
+												<option value=""><?php echo _translate("-- Select --"); ?></option>
+												<?php foreach ($userResult as $uName) { ?>
+													<option value="<?php echo $uName['user_id']; ?>">
+														<?php echo ($uName['user_name']); ?>
+													</option>
+												<?php } ?>
+											</select>
+										</div>
+
+										<div class="col-md-2 testerDiv">
+											<label><?php echo _translate("Tester"); ?></label>
+											<select class="form-control" id="tester" name="tester" disabled="disabled">
+												<option value=""><?php echo _translate("-- Select --"); ?></option>
+												<?php foreach ($userResult as $uName) { ?>
+													<option value="<?php echo $uName['user_id']; ?>">
+														<?php echo ($uName['user_name']); ?>
+													</option>
+												<?php } ?>
+											</select>
+										</div>
+
+										<div class="col-md-2">
+											<label><?php echo _translate("Reviewer"); ?></label>
+											<select class="form-control" id="reviewer" name="reviewer" disabled="disabled">
+												<option value=""><?php echo _translate("-- Select --"); ?></option>
+												<?php foreach ($userResult as $uName) { ?>
+													<option value="<?php echo $uName['user_id']; ?>">
+														<?php echo ($uName['user_name']); ?>
+													</option>
+												<?php } ?>
+											</select>
+										</div>
+
+										<div class="col-md-2">
+											<label>&nbsp;</label>
+											<input type="button" onclick="submitTestStatus();"
+												value="<?php echo _translate("Apply"); ?>"
+												class="btn btn-success btn-block">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
@@ -240,9 +263,18 @@ foreach ($rejectionTypeResult as $type) {
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$("#bulkRejectionReason").select2({
-			placeholder: "<?php echo _translate("Select Rejection Reason"); ?>"
+			placeholder: "<?php echo _translate("Select Rejection Reason"); ?>",
+			width: '100%'
 		});
-		
+		$("#approver").select2({
+			placeholder: "<?php echo _translate("Select approver"); ?>"
+		});
+		$("#tester").select2({
+			placeholder: "<?php echo _translate("Select tester"); ?>"
+		});
+		$("#reviewer").select2({
+			placeholder: "<?php echo _translate("Select reviewer"); ?>"
+		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
