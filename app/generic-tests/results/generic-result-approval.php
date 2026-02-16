@@ -78,6 +78,27 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 		left: 100%;
 		top: 24px;
 	}
+
+	/* Ensure consistent spacing */
+	.bulk-actions-panel .panel-body {
+		padding: 15px;
+	}
+
+	.bulk-actions-panel .row>div {
+		margin-bottom: 10px;
+	}
+
+	/* Smooth transition for rejection reason */
+	.bulkRejectionReason {
+		transition: all 0.3s ease;
+	}
+
+	/* Ensure labels are aligned */
+	.bulk-actions-panel label {
+		font-weight: 600;
+		margin-bottom: 5px;
+		display: block;
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -188,61 +209,99 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 
 					</table>
 					<div class="box-header with-border">
-						<div class="col-md-3 col-sm-3">
-							<input type="hidden" name="checkedTests" id="checkedTests" />
-							<select class="form-control" id="status" name="status" title="<?php echo _translate('Please select test status'); ?>" disabled="disabled" onchange="showSampleRejectionReason()">
-								<option value="">
-									<?php echo _translate("-- Select at least one sample to apply bulk action --"); ?>
-								</option>
-								<option value="7">
-									<?php echo _translate("Accepted"); ?>
-								</option>
-								<option value="4">
-									<?php echo _translate("Rejected"); ?>
-								</option>
-								<option value="2">
-									<?php echo _translate("Lost"); ?>
-								</option>
-							</select>
+						<div class="bulk-actions-panel">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<?php echo _translate("Bulk Actions"); ?>
+										<small style="float:right; color:#999;">
+											<?php echo _translate("Select one or multiple samples to do bulk actions"); ?>
+										</small>
+									</h4>
+								</div>
+								<div class="panel-body">
+									<div class="row">
+										<input type="hidden" name="checkedTests" id="checkedTests" />
+
+										<!-- Status -->
+										<div class="col-md-3 col-sm-4">
+											<label><?php echo _translate("Status"); ?></label>
+											<select class="form-control" id="status" name="status"
+												title="<?php echo _translate('Please select test status'); ?>"
+												disabled="disabled" onchange="showSampleRejectionReason()">
+												<option value=""><?php echo _translate("-- Select --"); ?></option>
+												<option value="7"><?php echo _translate("Accepted"); ?></option>
+												<option value="4"><?php echo _translate("Rejected"); ?></option>
+												<option value="2"><?php echo _translate("Lost"); ?></option>
+											</select>
+										</div>
+
+										<!-- Rejection Reason (Hidden by default) -->
+										<div class="col-md-3 col-sm-4 bulkRejectionReason" style="display:none;">
+											<label><?php echo _translate("Rejection Reason"); ?></label>
+											<select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason"
+												title="<?php echo _translate('Please select rejection reason'); ?>">
+												<option value=''><?php echo _translate("-- Select --"); ?></option>
+												<?php echo $rejectionReason; ?>
+											</select>
+										</div>
+
+										<!-- Approver -->
+										<div class="col-md-2 col-sm-4">
+											<label><?php echo _translate("Approver"); ?></label>
+											<select class="form-control" id="approver" name="approver"
+												title="<?php echo _translate('Please select approver'); ?>"
+												disabled="disabled">
+												<option value=""><?php echo _translate("-- Select --"); ?></option>
+												<?php foreach ($userResult as $uName) { ?>
+													<option value="<?php echo $uName['user_id']; ?>">
+														<?php echo ($uName['user_name']); ?>
+													</option>
+												<?php } ?>
+											</select>
+										</div>
+
+										<!-- Tester -->
+										<div class="col-md-2 col-sm-4 testerDiv">
+											<label><?php echo _translate("Tester"); ?></label>
+											<select class="form-control" id="tester" name="tester"
+												title="<?php echo _translate('Please select tester'); ?>"
+												disabled="disabled">
+												<option value=""><?php echo _translate("-- Select --"); ?></option>
+												<?php foreach ($userResult as $uName) { ?>
+													<option value="<?php echo $uName['user_id']; ?>">
+														<?php echo ($uName['user_name']); ?>
+													</option>
+												<?php } ?>
+											</select>
+										</div>
+
+										<!-- Reviewer -->
+										<div class="col-md-2 col-sm-4">
+											<label><?php echo _translate("Reviewer"); ?></label>
+											<select class="form-control" id="reviewer" name="reviewer"
+												title="<?php echo _translate('Please select reviewer'); ?>"
+												disabled="disabled">
+												<option value=""><?php echo _translate("-- Select --"); ?></option>
+												<?php foreach ($userResult as $uName) { ?>
+													<option value="<?php echo $uName['user_id']; ?>">
+														<?php echo ($uName['user_name']); ?>
+													</option>
+												<?php } ?>
+											</select>
+										</div>
+
+										<!-- Apply Button -->
+										<div class="col-md-2 col-sm-4">
+											<label>&nbsp;</label>
+											<input type="button" onclick="submitTestStatus();"
+												value="<?php echo _translate("Apply"); ?>"
+												class="btn btn-success btn-block">
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
-							<div style="display:none;" class="col-md-3 col-sm-3 bulkRejectionReason">
-							<select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _translate('Please select test status'); ?>" style="width:350px;">
-								<!-- <option value=''> -- Select -- </option> -->
-								<?php echo $rejectionReason; ?>
-							</select>
-						</div>
-					<div class="col-md-2 col-sm-2">
-               <select class="form-control" id="approver" name="approver" title="<?php echo _translate('Please select approver'); ?>" disabled="disabled">
-                <option value="">
-                  <?php echo _translate("-- Select Approver --"); ?>
-                </option>
-                  <?php foreach ($userResult as $uName) { ?>
-                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-                  <?php } ?>
-                </select>
-                  </div>
-                  <div class="col-md-2 col-sm-2 testerDiv">
-                 <select class="form-control" id="tester" name="tester" title="<?php echo _translate('Please select tester'); ?>" disabled="disabled">
-                <option value="">
-                  <?php echo _translate("-- Select Tester --"); ?>
-                </option>
-                  <?php foreach ($userResult as $uName) { ?>
-                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-                  <?php } ?>
-                </select>
-                  </div>
-                  <div class="col-md-2 col-sm-2">
-                 <select class="form-control" id="reviewer" name="reviewer" title="<?php echo _translate('Please select reviewer'); ?>" disabled="disabled">
-                <option value="">
-                  <?php echo _translate("-- Select Reviewer --"); ?>
-                </option>
-                  <?php foreach ($userResult as $uName) { ?>
-                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-                  <?php } ?>
-                </select>
-            </div>
-					
-						<div class="col-md-2 col-sm-2"><input type="button" onclick="submitTestStatus();" value="<?php echo _translate('Apply'); ?>" class="btn btn-success btn-sm"></div>
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
@@ -313,15 +372,25 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 	var selectedTests = [];
 	var selectedTestsId = [];
 
-	
+
 	$(document).ready(function() {
 		$("#facilityName").selectize({
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
-		
-    $("#bulkRejectionReason").select2({
-      placeholder: "<?php echo _translate("Select Rejection Reason"); ?>"
-    });
+
+		$("#bulkRejectionReason").select2({
+			placeholder: "<?php echo _translate("Select Rejection Reason"); ?>",
+			width: '100%'
+		});
+		$("#approver").select2({
+			placeholder: "<?php echo _translate("Select approver"); ?>"
+		});
+		$("#tester").select2({
+			placeholder: "<?php echo _translate("Select tester"); ?>"
+		});
+		$("#reviewer").select2({
+			placeholder: "<?php echo _translate("Select reviewer"); ?>"
+		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
@@ -525,50 +594,49 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 		var tester = $("#tester").val();
 		var reviewer = $("#reviewer").val();
 		var testIds = $("#checkedTests").val();
-		if(testIds != ''){
-      	if ((stValue != '' && approver != '' && reviewer != '')) {
-			conf = confirm("Are you sure you want to modify the sample status?");
-			if (conf) {
-				$.post("/generic-tests/results/update-test-status.php", {
-						status: stValue,
-						approver: approver,
-						tester: tester,
-						reviewer: reviewer,
-						id: testIds,
-						rejectedReason: $("#bulkRejectionReason").val()
-					},
-					function(data) {
-						if (data != "") {
-							$("#checkedTests").val('');
-							selectedTests = [];
-							selectedTestsId = [];
-							$("#checkTestsData").attr("checked", false);
-							$("#status").val('');
-							$("#status").prop('disabled', true);
-							$("#approver").val('');
-							$("#approver").prop('disabled', true);
-							$("#tester").val('');
-							$("#tester").prop('disabled', true);
-							$("#reviewer").val('');
-							$("#reviewer").prop('disabled', true);
-							$("#bulkRejectionReason").val('');
-							$(".bulkRejectionReason").hide();
-							oTable.fnDraw();
-							alert("<?= _translate("Updated successfully."); ?>");
-						}
-					});
-			  }
-      }
-      else{
-        alert("<?= _translate("Please select Status, Approver & Reviewer fields to update", true); ?>");
-      }
-    } else {
-      alert("<?= _translate("Please select at least one checkbox"); ?>");
-    }
-        $.unblockUI();
+		if (testIds != '') {
+			if ((stValue != '' && approver != '' && reviewer != '')) {
+				conf = confirm("Are you sure you want to modify the sample status?");
+				if (conf) {
+					$.post("/generic-tests/results/update-test-status.php", {
+							status: stValue,
+							approver: approver,
+							tester: tester,
+							reviewer: reviewer,
+							id: testIds,
+							rejectedReason: $("#bulkRejectionReason").val()
+						},
+						function(data) {
+							if (data != "") {
+								$("#checkedTests").val('');
+								selectedTests = [];
+								selectedTestsId = [];
+								$("#checkTestsData").attr("checked", false);
+								$("#status").val('');
+								$("#status").prop('disabled', true);
+								$("#approver").val('');
+								$("#approver").prop('disabled', true);
+								$("#tester").val('');
+								$("#tester").prop('disabled', true);
+								$("#reviewer").val('');
+								$("#reviewer").prop('disabled', true);
+								$("#bulkRejectionReason").val('');
+								$(".bulkRejectionReason").hide();
+								oTable.fnDraw();
+								alert("<?= _translate("Updated successfully."); ?>");
+							}
+						});
+				}
+			} else {
+				alert("<?= _translate("Please select Status, Approver & Reviewer fields to update", true); ?>");
+			}
+		} else {
+			alert("<?= _translate("Please select at least one checkbox"); ?>");
+		}
+		$.unblockUI();
 
-  }
-   
+	}
+
 
 	function updateRejectionReasonStatus(obj) {
 		if (obj.value != '') {

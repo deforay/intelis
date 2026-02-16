@@ -28,13 +28,13 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $rejectionReason = '<option value="">-- Select  --</option>';
 foreach ($rejectionTypeResult as $type) {
-    $rejectionReason .= '<optgroup label="' . ($type['rejection_type']) . '">';
-    foreach ($rejectionResult as $reject) {
-        if ($type['rejection_type'] == $reject['rejection_type']) {
-            $rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ($reject['rejection_reason_name']) . '</option>';
-        }
-    }
-    $rejectionReason .= '</optgroup>';
+	$rejectionReason .= '<optgroup label="' . ($type['rejection_type']) . '">';
+	foreach ($rejectionResult as $reject) {
+		if ($type['rejection_type'] == $reject['rejection_type']) {
+			$rejectionReason .= '<option value="' . $reject['rejection_reason_id'] . '">' . ($reject['rejection_reason_name']) . '</option>';
+		}
+	}
+	$rejectionReason .= '</optgroup>';
 }
 
 /** @var UsersService $usersService */
@@ -42,511 +42,586 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 ?>
 <style>
-    .select2-selection__choice {
-        color: black !important;
-    }
+	.select2-selection__choice {
+		color: black !important;
+	}
 
-    #rejectReasonDiv {
-        border: 1px solid #ecf0f5;
-        box-shadow: 3px 3px 15px #000;
-        background-color: #ecf0f5;
-        width: 50%;
-        display: none;
-        padding: 10px;
-        border-radius: 10px;
-    }
+	#rejectReasonDiv {
+		border: 1px solid #ecf0f5;
+		box-shadow: 3px 3px 15px #000;
+		background-color: #ecf0f5;
+		width: 50%;
+		display: none;
+		padding: 10px;
+		border-radius: 10px;
+	}
 
-    .arrow-right {
-        width: 0;
-        height: 0;
-        border-top: 15px solid transparent;
-        border-bottom: 15px solid transparent;
-        border-left: 15px solid #ecf0f5;
-        position: absolute;
-        left: 100%;
-        top: 24px;
-    }
+	.arrow-right {
+		width: 0;
+		height: 0;
+		border-top: 15px solid transparent;
+		border-bottom: 15px solid transparent;
+		border-left: 15px solid #ecf0f5;
+		position: absolute;
+		left: 100%;
+		top: 24px;
+	}
+
+	/* Ensure consistent spacing */
+	.bulk-actions-panel .panel-body {
+		padding: 15px;
+	}
+
+	.bulk-actions-panel .row>div {
+		margin-bottom: 10px;
+	}
+
+	/* Smooth transition for rejection reason */
+	.bulkRejectionReason {
+		transition: all 0.3s ease;
+	}
+
+	/* Ensure labels are aligned */
+	.bulk-actions-panel label {
+		font-weight: 600;
+		margin-bottom: 5px;
+		display: block;
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1><em class="fa-solid fa-list-check"></em> <?php echo _translate("Results Approval"); ?></h1>
-        <ol class="breadcrumb">
-            <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-            <li class="active"><?php echo _translate("Test Request"); ?></li>
-        </ol>
-    </section>
+	<!-- Content Header (Page header) -->
+	<section class="content-header">
+		<h1><em class="fa-solid fa-list-check"></em> <?php echo _translate("Results Approval"); ?></h1>
+		<ol class="breadcrumb">
+			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+			<li class="active"><?php echo _translate("Test Request"); ?></li>
+		</ol>
+	</section>
 
-    <!-- for sample rejection -->
-    <div id="rejectReasonDiv">
-        <a href="javascript:void(0)" style="float:right;color:red;" onclick="hideReasonDiv('rejectReasonDiv')"><em class="fa-solid fa-xmark"></em></a>
-        <div class="arrow-right"></div>
-        <input type="hidden" name="statusDropDownId" id="statusDropDownId" />
-        <h3 style="color:red;"><?php echo _translate("Choose Rejection Reason"); ?></h3>
-        <select name="rejectionReason" id="rejectionReason" class="form-control" title="<?php echo _translate('Please choose reason'); ?>" onchange="updateRejectionReasonStatus(this);">
-            <option value=''> <?php echo _translate("-- Select --"); ?> </option>
-            <?php echo $rejectionReason; ?>
-        </select>
+	<!-- for sample rejection -->
+	<div id="rejectReasonDiv">
+		<a href="javascript:void(0)" style="float:right;color:red;" onclick="hideReasonDiv('rejectReasonDiv')"><em class="fa-solid fa-xmark"></em></a>
+		<div class="arrow-right"></div>
+		<input type="hidden" name="statusDropDownId" id="statusDropDownId" />
+		<h3 style="color:red;"><?php echo _translate("Choose Rejection Reason"); ?></h3>
+		<select name="rejectionReason" id="rejectionReason" class="form-control" title="<?php echo _translate('Please choose reason'); ?>" onchange="updateRejectionReasonStatus(this);">
+			<option value=''> <?php echo _translate("-- Select --"); ?> </option>
+			<?php echo $rejectionReason; ?>
+		</select>
 
-    </div>
-    <!-- Main content -->
-    <section class="content">
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="box">
-                    <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;">
-                        <tr>
-                            <td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
-                            <td>
-                                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
-                            </td>
-                            <td>&nbsp;<strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
-                            <td>
-                                <select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
-                                    <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                                    <?php
-                                    foreach ($batResult as $code) {
-                                    ?>
-                                        <option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-                                    <?php
-                                    }
-                                    ?>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
+	</div>
+	<!-- Main content -->
+	<section class="content">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="box">
+					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;">
+						<tr>
+							<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+							</td>
+							<td>&nbsp;<strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
+							<td>
+								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+									<?php
+									foreach ($batResult as $code) {
+									?>
+										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</td>
+						</tr>
+						<tr>
 
-                            <td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
-                            <td>
-                                <select class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
-                                    <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                                    <?php
-                                    foreach ($fResult as $name) {
-                                    ?>
-                                        <option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
-                                    <?php
-                                    }
-                                    ?>
-                                </select>
-                            </td>
-                            <td>&nbsp;<strong><?php echo _translate("Show Samples that are"); ?> &nbsp;:</strong></td>
-                            <td>
-                                <select class="form-control" id="statusFilter" name="statusFilter" title="<?php echo _translate('Please choose a status'); ?>" style="width:220px;">
-                                    <option value="notApprovedOrRejected"> <?php echo _translate("Not Approved/Rejected"); ?> </option>
-                                    <option value="approvedOrRejected"> <?php echo _translate("Already Approved/Rejected"); ?> </option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
-                                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+							<td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
+							<td>
+								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+									<?php
+									foreach ($fResult as $name) {
+									?>
+										<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+									<?php
+									}
+									?>
+								</select>
+							</td>
+							<td>&nbsp;<strong><?php echo _translate("Show Samples that are"); ?> &nbsp;:</strong></td>
+							<td>
+								<select class="form-control" id="statusFilter" name="statusFilter" title="<?php echo _translate('Please choose a status'); ?>" style="width:220px;">
+									<option value="notApprovedOrRejected"> <?php echo _translate("Not Approved/Rejected"); ?> </option>
+									<option value="approvedOrRejected"> <?php echo _translate("Already Approved/Rejected"); ?> </option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 
-                            </td>
-                        </tr>
+							</td>
+						</tr>
 
-                    </table>
-                    <div class="box-header with-border">
-                        <div class="col-md-3 col-sm-3">
-                            <input type="hidden" name="checkedTests" id="checkedTests" />
-                            <select class="form-control" id="status" name="status" title="<?php echo _translate('Please select test status'); ?>" disabled="disabled" onchange="showSampleRejectionReason()">
-                                <option value=""><?php echo _translate("-- Select at least one sample to apply bulk action --"); ?></option>
-                                <option value="7"><?php echo _translate("Accepted"); ?></option>
-                                <option value="4"><?php echo _translate("Rejected"); ?></option>
-                                <option value="2"><?php echo _translate("Lost"); ?></option>
-                            </select>
-                        </div>
-                         <div style="display:none;" class="col-md-3 col-sm-3 bulkRejectionReason">
-                            <select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _translate('Please select test status'); ?>" style="width:350px;">
-                                <option value=''> -- Select -- </option>
-                                <?php echo $rejectionReason; ?>
-                            </select>
-                        </div>
-                         <div class="col-md-2 col-sm-2">
-               <select class="form-control" id="approver" name="approver" title="<?php echo _translate('Please select approver'); ?>" disabled="disabled">
-                <option value="">
-                  <?php echo _translate("-- Select Approver --"); ?>
-                </option>
-                  <?php foreach ($userResult as $uName) { ?>
-                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-                  <?php } ?>
-                </select>
-                  </div>
-                  <div class="col-md-2 col-sm-2 testerDiv">
-                 <select class="form-control" id="tester" name="tester" title="<?php echo _translate('Please select tester'); ?>" disabled="disabled">
-                <option value="">
-                  <?php echo _translate("-- Select Tester --"); ?>
-                </option>
-                  <?php foreach ($userResult as $uName) { ?>
-                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-                  <?php } ?>
-                </select>
-                  </div>
-                  <div class="col-md-2 col-sm-2">
-                 <select class="form-control" id="reviewer" name="reviewer" title="<?php echo _translate('Please select reviewer'); ?>" disabled="disabled">
-                <option value="">
-                  <?php echo _translate("-- Select Reviewer --"); ?>
-                </option>
-                  <?php foreach ($userResult as $uName) { ?>
-                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
-                  <?php } ?>
-                </select>
-                 
-            </div>
-                       
-                        <div class="col-md-2 col-sm-2"><input type="button" onclick="submitTestStatus();" value="<?php echo _translate("Apply"); ?>" class="btn btn-success btn-sm"></div>
-                    </div>
-                    <!-- /.box-header -->
-                    <div class="box-body">
-                        <table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
-                            <thead>
-                                <tr>
-                                    <th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
-                                    <th><?php echo _translate("Sample ID"); ?></th>
-                                    <?php if (!$general->isStandaloneInstance()) { ?>
-                                        <th><?php echo _translate("Remote Sample ID"); ?></th>
-                                    <?php } ?>
-                                    <th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
-                                    <th><?php echo _translate("Batch Code"); ?></th>
-                                    <th><?php echo _translate("Patient ID"); ?></th>
-                                    <th><?php echo _translate("Paitent Name"); ?></th>
-                                    <th scope="row"><?php echo _translate("Facility Name"); ?></th>
-                                    <th><?php echo _translate("Result"); ?></th>
-                                    <th><?php echo _translate("Last Modified on"); ?></th>
-                                    <?php if ((_isAllowed("/tb/requests/tb-edit-request.php"))) { ?>
-                                        <!--<th>Action</th>-->
-                                    <?php } ?>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td colspan="12" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- /.box-body -->
-                </div>
-                <!-- /.box -->
+					</table>
+					<div class="box-header with-border">
+						<div class="bulk-actions-panel">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4 class="panel-title">
+										<?php echo _translate("Bulk Actions"); ?>
+										<small style="float:right; color:#999;">
+											<?php echo _translate("Select one or multiple samples to do bulk actions"); ?>
+										</small>
+									</h4>
+								</div>
+								<div class="panel-body">
+									<div class="row">
+										<input type="hidden" name="checkedTests" id="checkedTests" />
 
-            </div>
-            <!-- /.col -->
-        </div>
-        <!-- /.row -->
-    </section>
-    <!-- /.content -->
+										<!-- Status -->
+										<div class="col-md-3 col-sm-4">
+											<label><?php echo _translate("Status"); ?></label>
+											<select class="form-control" id="status" name="status"
+												title="<?php echo _translate('Please select test status'); ?>"
+												disabled="disabled" onchange="showSampleRejectionReason()">
+												<option value=""><?php echo _translate("-- Select --"); ?></option>
+												<option value="7"><?php echo _translate("Accepted"); ?></option>
+												<option value="4"><?php echo _translate("Rejected"); ?></option>
+												<option value="2"><?php echo _translate("Lost"); ?></option>
+											</select>
+										</div>
+
+										<!-- Rejection Reason (Hidden by default) -->
+										<div class="col-md-3 col-sm-4 bulkRejectionReason" style="display:none;">
+											<label><?php echo _translate("Rejection Reason"); ?></label>
+											<select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason"
+												title="<?php echo _translate('Please select rejection reason'); ?>">
+												<option value=''><?php echo _translate("-- Select --"); ?></option>
+												<?php echo $rejectionReason; ?>
+											</select>
+										</div>
+
+										<!-- Approver -->
+										<div class="col-md-2 col-sm-4">
+											<label><?php echo _translate("Approver"); ?></label>
+											<select class="form-control" id="approver" name="approver"
+												title="<?php echo _translate('Please select approver'); ?>"
+												disabled="disabled">
+												<option value=""><?php echo _translate("-- Select --"); ?></option>
+												<?php foreach ($userResult as $uName) { ?>
+													<option value="<?php echo $uName['user_id']; ?>">
+														<?php echo ($uName['user_name']); ?>
+													</option>
+												<?php } ?>
+											</select>
+										</div>
+
+										<!-- Tester -->
+										<div class="col-md-2 col-sm-4 testerDiv">
+											<label><?php echo _translate("Tester"); ?></label>
+											<select class="form-control" id="tester" name="tester"
+												title="<?php echo _translate('Please select tester'); ?>"
+												disabled="disabled">
+												<option value=""><?php echo _translate("-- Select --"); ?></option>
+												<?php foreach ($userResult as $uName) { ?>
+													<option value="<?php echo $uName['user_id']; ?>">
+														<?php echo ($uName['user_name']); ?>
+													</option>
+												<?php } ?>
+											</select>
+										</div>
+
+										<!-- Reviewer -->
+										<div class="col-md-2 col-sm-4">
+											<label><?php echo _translate("Reviewer"); ?></label>
+											<select class="form-control" id="reviewer" name="reviewer"
+												title="<?php echo _translate('Please select reviewer'); ?>"
+												disabled="disabled">
+												<option value=""><?php echo _translate("-- Select --"); ?></option>
+												<?php foreach ($userResult as $uName) { ?>
+													<option value="<?php echo $uName['user_id']; ?>">
+														<?php echo ($uName['user_name']); ?>
+													</option>
+												<?php } ?>
+											</select>
+										</div>
+
+										<!-- Apply Button -->
+										<div class="col-md-2 col-sm-4">
+											<label>&nbsp;</label>
+											<input type="button" onclick="submitTestStatus();"
+												value="<?php echo _translate("Apply"); ?>"
+												class="btn btn-success btn-block">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+							<thead>
+								<tr>
+									<th><input type="checkbox" id="checkTestsData" onclick="toggleAllVisible()" /></th>
+									<th><?php echo _translate("Sample ID"); ?></th>
+									<?php if (!$general->isStandaloneInstance()) { ?>
+										<th><?php echo _translate("Remote Sample ID"); ?></th>
+									<?php } ?>
+									<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
+									<th><?php echo _translate("Batch Code"); ?></th>
+									<th><?php echo _translate("Patient ID"); ?></th>
+									<th><?php echo _translate("Paitent Name"); ?></th>
+									<th scope="row"><?php echo _translate("Facility Name"); ?></th>
+									<th><?php echo _translate("Result"); ?></th>
+									<th><?php echo _translate("Last Modified on"); ?></th>
+									<?php if ((_isAllowed("/tb/requests/tb-edit-request.php"))) { ?>
+										<!--<th>Action</th>-->
+									<?php } ?>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td colspan="12" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- /.box-body -->
+				</div>
+				<!-- /.box -->
+
+			</div>
+			<!-- /.col -->
+		</div>
+		<!-- /.row -->
+	</section>
+	<!-- /.content -->
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
-    var startDate = "";
-    var endDate = "";
-    var selectedTests = [];
-    var selectedTestsId = [];
-    $(document).ready(function() {
-        $("#facilityName").select2({
-            placeholder: "<?php echo _translate("Select Facilities"); ?>"
-        });
-        $("#bulkRejectionReason").select2({
-            placeholder: "<?php echo _translate("Select Rejection Reason"); ?>"
-        });
-        
-        $('#sampleCollectionDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _translate("Clear", true); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
-                showDropdowns: true,
-                alwaysShowCalendars: false,
-                startDate: moment().subtract(28, 'days'),
-                endDate: moment(),
-                maxDate: moment(),
-                ranges: {
-                    'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-                    'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-                    'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-                    'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-                    'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-                    'Current Year To Date': [moment().startOf('year'), moment()]
-                }
-            },
-            function(start, end) {
-                startDate = start.format('YYYY-MM-DD');
-                endDate = end.format('YYYY-MM-DD');
-            });
-        $('#sampleCollectionDate').val("");
-        loadVlRequestData();
-    });
+	var startDate = "";
+	var endDate = "";
+	var selectedTests = [];
+	var selectedTestsId = [];
+	$(document).ready(function() {
+		$("#facilityName").select2({
+			placeholder: "<?php echo _translate("Select Facilities"); ?>"
+		});
+		$("#bulkRejectionReason").select2({
+			placeholder: "<?php echo _translate("Select Rejection Reason"); ?>",
+			width: '100%'
+		});
+		$("#approver").select2({
+			placeholder: "<?php echo _translate("Select approver"); ?>"
+		});
+		$("#tester").select2({
+			placeholder: "<?php echo _translate("Select tester"); ?>"
+		});
+		$("#reviewer").select2({
+			placeholder: "<?php echo _translate("Select reviewer"); ?>"
+		});
 
-    var oTable = null;
+		$('#sampleCollectionDate').daterangepicker({
+				locale: {
+					cancelLabel: "<?= _translate("Clear", true); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+					'Current Year To Date': [moment().startOf('year'), moment()]
+				}
+			},
+			function(start, end) {
+				startDate = start.format('YYYY-MM-DD');
+				endDate = end.format('YYYY-MM-DD');
+			});
+		$('#sampleCollectionDate').val("");
+		loadVlRequestData();
+	});
 
-    function loadVlRequestData() {
-        $.blockUI();
-        oTable = $('#vlRequestDataTable').dataTable({
-            "bJQueryUI": false,
-            "bAutoWidth": false,
-            "bInfo": true,
-            "bScrollCollapse": true,
-            //"bStateSave" : true,
-            "iDisplayLength": 100,
-            "bRetrieve": true,
-            "aoColumns": [{
-                    "sClass": "center",
-                    "bSortable": false
-                },
-                {
-                    "sClass": "center"
-                },
-                <?php if (!$general->isStandaloneInstance()) { ?> {
-                        "sClass": "center"
-                    },
-                <?php } ?> {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
-              
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
+	var oTable = null;
 
-            ],
-            "aaSorting": [
-                [<?= ($general->isStandaloneInstance()) ? 8 : 9; ?>, "desc"]
-            ],
-            "fnDrawCallback": function() {
-                var checkBoxes = document.getElementsByName("chk[]");
-                len = checkBoxes.length;
-                for (c = 0; c < len; c++) {
-                    if (jQuery.inArray(checkBoxes[c].id, selectedTestsId) != -1) {
-                        checkBoxes[c].setAttribute("checked", true);
-                    }
-                }
-            },
-            "bProcessing": true,
-            "bServerSide": true,
-            "sAjaxSource": "/tb/results/get-tb-result-status.php",
-            "fnServerData": function(sSource, aoData, fnCallback) {
-                aoData.push({
-                    "name": "batchCode",
-                    "value": $("#batchCode").val()
-                });
-                aoData.push({
-                    "name": "sampleCollectionDate",
-                    "value": $("#sampleCollectionDate").val()
-                });
-                aoData.push({
-                    "name": "facilityName",
-                    "value": $("#facilityName").val()
-                });
-                aoData.push({
-                    "name": "sampleType",
-                    "value": $("#sampleType").val()
-                });
-                aoData.push({
-                    "name": "statusFilter",
-                    "value": $("#statusFilter").val()
-                });
-                $.ajax({
-                    "dataType": 'json',
-                    "type": "POST",
-                    "url": sSource,
-                    "data": aoData,
-                    "success": fnCallback
-                });
-            }
-        });
-        $.unblockUI();
-    }
+	function loadVlRequestData() {
+		$.blockUI();
+		oTable = $('#vlRequestDataTable').dataTable({
+			"bJQueryUI": false,
+			"bAutoWidth": false,
+			"bInfo": true,
+			"bScrollCollapse": true,
+			//"bStateSave" : true,
+			"iDisplayLength": 100,
+			"bRetrieve": true,
+			"aoColumns": [{
+					"sClass": "center",
+					"bSortable": false
+				},
+				{
+					"sClass": "center"
+				},
+				<?php if (!$general->isStandaloneInstance()) { ?> {
+						"sClass": "center"
+					},
+				<?php } ?> {
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
 
-    function searchVlRequestData() {
-        $.blockUI();
-        oTable.fnDraw();
-        $.unblockUI();
-    }
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
 
-    function toggleTest(obj) {
-        if ($(obj).is(':checked')) {
-            if ($.inArray(obj.value, selectedTests) == -1) {
-                selectedTests.push(obj.value);
-                selectedTestsId.push(obj.id);
-            }
-        } else {
-            selectedTests.splice($.inArray(obj.value, selectedTests), 1);
-            selectedTestsId.splice($.inArray(obj.id, selectedTestsId), 1);
-            $("#checkTestsData").attr("checked", false);
-        }
-        $("#checkedTests").val(selectedTests.join());
-        if (selectedTests.length != 0) {
-            $("#status").prop('disabled', false);
-            $("#approver").prop('disabled', false);
-            $("#tester").prop('disabled', false);
-            $("#reviewer").prop('disabled', false);
-            
-        } else {
-            $("#status").prop('disabled', true);
-            $("#approver").prop('disabled', true);
-            $("#tester").prop('disabled', true);
-            $("#reviewer").prop('disabled', true);
-        }
+			],
+			"aaSorting": [
+				[<?= ($general->isStandaloneInstance()) ? 8 : 9; ?>, "desc"]
+			],
+			"fnDrawCallback": function() {
+				var checkBoxes = document.getElementsByName("chk[]");
+				len = checkBoxes.length;
+				for (c = 0; c < len; c++) {
+					if (jQuery.inArray(checkBoxes[c].id, selectedTestsId) != -1) {
+						checkBoxes[c].setAttribute("checked", true);
+					}
+				}
+			},
+			"bProcessing": true,
+			"bServerSide": true,
+			"sAjaxSource": "/tb/results/get-tb-result-status.php",
+			"fnServerData": function(sSource, aoData, fnCallback) {
+				aoData.push({
+					"name": "batchCode",
+					"value": $("#batchCode").val()
+				});
+				aoData.push({
+					"name": "sampleCollectionDate",
+					"value": $("#sampleCollectionDate").val()
+				});
+				aoData.push({
+					"name": "facilityName",
+					"value": $("#facilityName").val()
+				});
+				aoData.push({
+					"name": "sampleType",
+					"value": $("#sampleType").val()
+				});
+				aoData.push({
+					"name": "statusFilter",
+					"value": $("#statusFilter").val()
+				});
+				$.ajax({
+					"dataType": 'json',
+					"type": "POST",
+					"url": sSource,
+					"data": aoData,
+					"success": fnCallback
+				});
+			}
+		});
+		$.unblockUI();
+	}
 
-    }
+	function searchVlRequestData() {
+		$.blockUI();
+		oTable.fnDraw();
+		$.unblockUI();
+	}
 
-    function toggleAllVisible() {
-        //alert(tabStatus);
-        $(".checkTests").each(function() {
-            $(this).prop('checked', false);
-            selectedTests.splice($.inArray(this.value, selectedTests), 1);
-            selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
-            $("#status").prop('disabled', true);
-            $("#approver").prop('disabled', true);
-            $("#tester").prop('disabled', true);
-            $("#reviewer").prop('disabled', true);
-        });
-        if ($("#checkTestsData").is(':checked')) {
-            $(".checkTests").each(function() {
-                $(this).prop('checked', true);
-                selectedTests.push(this.value);
-                selectedTestsId.push(this.id);
-            });
-            $("#status").prop('disabled', false);
-            $("#approver").prop('disabled', false);
-            $("#tester").prop('disabled', false);
-            $("#reviewer").prop('disabled', false);
-        } else {
-            $(".checkTests").each(function() {
-                $(this).prop('checked', false);
-                selectedTests.splice($.inArray(this.value, selectedTests), 1);
-                selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
-                $("#status").prop('disabled', true);
-                $("#approver").prop('disabled', true);
-                $("#tester").prop('disabled', true);
-                $("#reviewer").prop('disabled', true);
-            });
-        }
-        $("#checkedTests").val(selectedTests.join());
-    }
+	function toggleTest(obj) {
+		if ($(obj).is(':checked')) {
+			if ($.inArray(obj.value, selectedTests) == -1) {
+				selectedTests.push(obj.value);
+				selectedTestsId.push(obj.id);
+			}
+		} else {
+			selectedTests.splice($.inArray(obj.value, selectedTests), 1);
+			selectedTestsId.splice($.inArray(obj.id, selectedTestsId), 1);
+			$("#checkTestsData").attr("checked", false);
+		}
+		$("#checkedTests").val(selectedTests.join());
+		if (selectedTests.length != 0) {
+			$("#status").prop('disabled', false);
+			$("#approver").prop('disabled', false);
+			$("#tester").prop('disabled', false);
+			$("#reviewer").prop('disabled', false);
 
-    function submitTestStatus() {
-        $.blockUI();
-        var stValue = $("#status").val();
-        var approver = $("#approver").val();
-        var tester = $("#tester").val();
-        var reviewer = $("#reviewer").val();
-        var testIds = $("#checkedTests").val();
-         if(testIds != ''){
-      if ((stValue != '' && approver != '' && reviewer != '')) {
-            conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
-            if (conf) {
-                $.post("/tb/results/update-status.php", {
-                        status: stValue,
-                        id: testIds,
-                        rejectedReason: $("#bulkRejectionReason").val()
-                    },
-                    function(data) {
-                        if (data != "") {
-                            $("#checkedTests").val('');
-                            selectedTests = [];
-                            selectedTestsId = [];
-                            $("#checkTestsData").attr("checked", false);
-                            $("#status").val('');
-                            $("#status").prop('disabled', true);
-                            $("#approver").val('');
-                            $("#approver").prop('disabled', true);
-                            $("#tester").val('');
-                            $("#tester").prop('disabled', true);
-                            $("#reviewer").val('');
-                            $("#reviewer").prop('disabled', true);
-                            $("#bulkRejectionReason").val('');
-                            $(".bulkRejectionReason").hide();
-                            oTable.fnDraw();
-                            alert("<?php echo _translate("Updated successfully"); ?>.");
-                        }
-                    });
-             }
-      }
-      else{
-        alert("<?= _translate("Please select Status, Approver & Reviewer fields to update", true); ?>");
-      }
-    } else {
-      alert("<?= _translate("Please select at least one checkbox"); ?>");
-    }
-        $.unblockUI();
+		} else {
+			$("#status").prop('disabled', true);
+			$("#approver").prop('disabled', true);
+			$("#tester").prop('disabled', true);
+			$("#reviewer").prop('disabled', true);
+		}
 
-  }
-   
+	}
 
-    function updateRejectionReasonStatus(obj) {
-        if (obj.value != '') {
-            conf = confirm("<?php echo _translate("Do you wish to change the status ?"); ?>");
-            if (conf) {
-                $.post("/tb/results/update-status.php", {
-                        status: '4',
-                        id: $("#statusDropDownId").val(),
-                        rejectedReason: obj.value
-                    },
-                    function(data) {
-                        if (data != "") {
-                            $("#checkedTests").val('');
-                            selectedTests = [];
-                            selectedTestsId = [];
-                            $("#checkTestsData").attr("checked", false);
-                            $("#status").val('');
-                            $("#status").prop('disabled', true);
-                            $("#approver").val('');
-                            $("#approver").prop('disabled', true);
-                            $("#tester").val('');
-                            $("#tester").prop('disabled', true);
-                            $("#reviewer").val('');
-                            $("#reviewer").prop('disabled', true);
-                            $("#rejectReasonDiv").hide();
-                            $("#statusDropDownId").val('');
-                            $("#rejectionReason").val('');
-                            oTable.fnDraw();
-                            alert("<?php echo _translate("Updated successfully"); ?>.");
-                        }
-                    });
-            } else {
-                $("#rejectReasonDiv").hide();
-            }
-        }
-    }
+	function toggleAllVisible() {
+		//alert(tabStatus);
+		$(".checkTests").each(function() {
+			$(this).prop('checked', false);
+			selectedTests.splice($.inArray(this.value, selectedTests), 1);
+			selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
+			$("#status").prop('disabled', true);
+			$("#approver").prop('disabled', true);
+			$("#tester").prop('disabled', true);
+			$("#reviewer").prop('disabled', true);
+		});
+		if ($("#checkTestsData").is(':checked')) {
+			$(".checkTests").each(function() {
+				$(this).prop('checked', true);
+				selectedTests.push(this.value);
+				selectedTestsId.push(this.id);
+			});
+			$("#status").prop('disabled', false);
+			$("#approver").prop('disabled', false);
+			$("#tester").prop('disabled', false);
+			$("#reviewer").prop('disabled', false);
+		} else {
+			$(".checkTests").each(function() {
+				$(this).prop('checked', false);
+				selectedTests.splice($.inArray(this.value, selectedTests), 1);
+				selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
+				$("#status").prop('disabled', true);
+				$("#approver").prop('disabled', true);
+				$("#tester").prop('disabled', true);
+				$("#reviewer").prop('disabled', true);
+			});
+		}
+		$("#checkedTests").val(selectedTests.join());
+	}
 
-    function showSampleRejectionReason() {
-        if ($("#status").val() == '4') {
-            $(".bulkRejectionReason").show();
-            $(".testerDiv").hide();
+	function submitTestStatus() {
+		$.blockUI();
+		var stValue = $("#status").val();
+		var approver = $("#approver").val();
+		var tester = $("#tester").val();
+		var reviewer = $("#reviewer").val();
+		var testIds = $("#checkedTests").val();
+		if (testIds != '') {
+			if ((stValue != '' && approver != '' && reviewer != '')) {
+				conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
+				if (conf) {
+					$.post("/tb/results/update-status.php", {
+							status: stValue,
+							id: testIds,
+							rejectedReason: $("#bulkRejectionReason").val()
+						},
+						function(data) {
+							if (data != "") {
+								$("#checkedTests").val('');
+								selectedTests = [];
+								selectedTestsId = [];
+								$("#checkTestsData").attr("checked", false);
+								$("#status").val('');
+								$("#status").prop('disabled', true);
+								$("#approver").val('');
+								$("#approver").prop('disabled', true);
+								$("#tester").val('');
+								$("#tester").prop('disabled', true);
+								$("#reviewer").val('');
+								$("#reviewer").prop('disabled', true);
+								$("#bulkRejectionReason").val('');
+								$(".bulkRejectionReason").hide();
+								oTable.fnDraw();
+								alert("<?php echo _translate("Updated successfully"); ?>.");
+							}
+						});
+				}
+			} else {
+				alert("<?= _translate("Please select Status, Approver & Reviewer fields to update", true); ?>");
+			}
+		} else {
+			alert("<?= _translate("Please select at least one checkbox"); ?>");
+		}
+		$.unblockUI();
 
-        } else {
-            $("#bulkRejectionReason").val('');
-            $(".bulkRejectionReason").hide();
-            $(".testerDiv").show();
-        }
-    }
+	}
 
-    function hideReasonDiv(id) {
-        $("#" + id).hide();
-    }
+
+	function updateRejectionReasonStatus(obj) {
+		if (obj.value != '') {
+			conf = confirm("<?php echo _translate("Do you wish to change the status ?"); ?>");
+			if (conf) {
+				$.post("/tb/results/update-status.php", {
+						status: '4',
+						id: $("#statusDropDownId").val(),
+						rejectedReason: obj.value
+					},
+					function(data) {
+						if (data != "") {
+							$("#checkedTests").val('');
+							selectedTests = [];
+							selectedTestsId = [];
+							$("#checkTestsData").attr("checked", false);
+							$("#status").val('');
+							$("#status").prop('disabled', true);
+							$("#approver").val('');
+							$("#approver").prop('disabled', true);
+							$("#tester").val('');
+							$("#tester").prop('disabled', true);
+							$("#reviewer").val('');
+							$("#reviewer").prop('disabled', true);
+							$("#rejectReasonDiv").hide();
+							$("#statusDropDownId").val('');
+							$("#rejectionReason").val('');
+							oTable.fnDraw();
+							alert("<?php echo _translate("Updated successfully"); ?>.");
+						}
+					});
+			} else {
+				$("#rejectReasonDiv").hide();
+			}
+		}
+	}
+
+	function showSampleRejectionReason() {
+		if ($("#status").val() == '4') {
+			$(".bulkRejectionReason").show();
+			$(".testerDiv").hide();
+
+		} else {
+			$("#bulkRejectionReason").val('');
+			$(".bulkRejectionReason").hide();
+			$(".testerDiv").show();
+		}
+	}
+
+	function hideReasonDiv(id) {
+		$("#" + id).hide();
+	}
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';
