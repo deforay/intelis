@@ -1,8 +1,3 @@
----
-layout: default
-title: Installing VLSM on a Windows Machine
----
-
 # Installing VLSM on a Windows Machine
 
 ## 0. Download

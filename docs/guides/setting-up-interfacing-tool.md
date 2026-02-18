@@ -1,8 +1,3 @@
----
-layout: default
-title: Setting up Interfacing Tool on a Client Ubuntu Machine
----
-
 # Setting up Interfacing Tool on a Client Ubuntu Machine
 
 ## Client Ubuntu Machine Setup
