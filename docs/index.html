@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>InteLIS Documentation</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slate/2.0.0/css/slate.min.css" />
+  <style>
+    :root {
+      --slate-bg: #252839;
+      --slate-bg-alt: #2d3143;
+      --slate-accent: #4ecdc4;
+      --slate-text: #e0e0e0;
+      --slate-text-muted: #9a9cab;
+      --slate-border: #3d4060;
+      --slate-card-bg: #2d3143;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--slate-bg);
+      color: var(--slate-text);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1a1b2e 0%, #2d3143 100%);
+      border-bottom: 3px solid var(--slate-accent);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: var(--slate-text-muted);
+      font-size: 1.1rem;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--slate-accent);
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--slate-border);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--slate-card-bg);
+      border: 1px solid var(--slate-border);
+      border-radius: 6px;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: var(--slate-text);
+      transition: border-color 0.2s, transform 0.2s;
+      display: block;
+    }
+
+    .card:hover {
+      border-color: var(--slate-accent);
+      transform: translateY(-2px);
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+
+    .card p {
+      font-size: 0.85rem;
+      color: var(--slate-text-muted);
+      margin: 0;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .badge-ubuntu {
+      background: #e95420;
+      color: #fff;
+    }
+
+    .badge-windows {
+      background: #0078d4;
+      color: #fff;
+    }
+
+    .badge-general {
+      background: #6c63ff;
+      color: #fff;
+    }
+
+    .badge-api {
+      background: var(--slate-accent);
+      color: #1a1b2e;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--slate-text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--slate-border);
+    }
+
+    .footer a {
+      color: var(--slate-accent);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>InteLIS Documentation</h1>
+    <p>Setup guides, troubleshooting, and API reference</p>
+  </div>
+
+  <div class="container">
+
+    <div class="section-title">Installation</div>
+    <div class="card-grid">
+      <a class="card" href="guides/installing-intelis-on-ubuntu.html">
+        <span class="badge badge-ubuntu">Ubuntu</span>
+        <h3>Installing InteLIS on Ubuntu</h3>
+        <p>Install InteLIS on Ubuntu 22.04 LTS or above</p>
+      </a>
+      <a class="card" href="guides/installing-vlsm-on-windows.html">
+        <span class="badge badge-windows">Windows</span>
+        <h3>Installing VLSM on Windows</h3>
+        <p>Full setup with WampServer, PHP, MySQL, and interfacing</p>
+      </a>
+    </div>
+
+    <div class="section-title">Updates &amp; Migration</div>
+    <div class="card-grid">
+      <a class="card" href="guides/updating-intelis-on-ubuntu.html">
+        <span class="badge badge-ubuntu">Ubuntu</span>
+        <h3>Updating InteLIS on Ubuntu</h3>
+        <p>Update an existing InteLIS installation on Ubuntu</p>
+      </a>
+      <a class="card" href="guides/updating-vlsm-on-windows.html">
+        <span class="badge badge-windows">Windows</span>
+        <h3>Updating VLSM on Windows</h3>
+        <p>Update an existing VLSM installation on Windows</p>
+      </a>
+      <a class="card" href="guides/migrating-ubuntu-machines.html">
+        <span class="badge badge-ubuntu">Ubuntu</span>
+        <h3>Migrating Between Ubuntu Machines</h3>
+        <p>Backup, transfer, and restore to a new Ubuntu system</p>
+      </a>
+    </div>
+
+    <div class="section-title">Backup</div>
+    <div class="card-grid">
+      <a class="card" href="guides/backing-up-to-google-drive-with-rclone.html">
+        <span class="badge badge-ubuntu">Ubuntu</span>
+        <h3>Backup to Google Drive with Rclone</h3>
+        <p>Automated cloud backups using Rclone and cron</p>
+      </a>
+      <a class="card" href="guides/backing-up-to-remote-server.html">
+        <span class="badge badge-ubuntu">Ubuntu</span>
+        <h3>Backup to Remote Server</h3>
+        <p>Automated rsync backups over SSH to a remote server</p>
+      </a>
+    </div>
+
+    <div class="section-title">Troubleshooting</div>
+    <div class="card-grid">
+      <a class="card" href="guides/fix-collation-issue.html">
+        <span class="badge badge-general">Database</span>
+        <h3>Fix Collation Mismatch</h3>
+        <p>Resolve illegal/mismatched collation issues via phpMyAdmin</p>
+      </a>
+      <a class="card" href="guides/permission-denied-issue.html">
+        <span class="badge badge-ubuntu">Ubuntu</span>
+        <h3>Permission Denied Issue</h3>
+        <p>Fix file permission errors on /var/www</p>
+      </a>
+      <a class="card" href="guides/setting-up-interfacing-tool.html">
+        <span class="badge badge-ubuntu">Ubuntu</span>
+        <h3>Setting up Interfacing Tool</h3>
+        <p>Configure client-server interfacing on Ubuntu</p>
+      </a>
+    </div>
+
+    <div class="section-title">API Reference</div>
+    <div class="card-grid">
+      <a class="card" href="api/">
+        <span class="badge badge-api">API</span>
+        <h3>InteLIS REST API</h3>
+        <p>Interactive OpenAPI documentation for the InteLIS API</p>
+      </a>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <a href="https://github.com/deforay/intelis">GitHub Repository</a>
+  </div>
+</body>
+
+</html>
