@@ -1,8 +1,3 @@
----
-layout: default
-title: Backing up to Google Drive with Rclone on Ubuntu
----
-
 # Backing up to Google Drive with Rclone on Ubuntu
 
 ## 1. Install Rclone

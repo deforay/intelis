@@ -1,8 +1,3 @@
----
-layout: default
-title: Migrating From One Ubuntu Machine to Another
----
-
 # Migrating From One Ubuntu Machine to Another
 
 ## Backup Database on Old System

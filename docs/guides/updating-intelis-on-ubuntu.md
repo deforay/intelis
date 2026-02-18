@@ -1,8 +1,3 @@
----
-layout: default
-title: Updating InteLIS on Ubuntu 22.04 or above (only Ubuntu LTS)
----
-
 # Updating InteLIS on Ubuntu 22.04 or above (only Ubuntu LTS)
 
 **Note:** This will work on Ubuntu 22.04 or above (ONLY LTS).

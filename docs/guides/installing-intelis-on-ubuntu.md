@@ -1,8 +1,3 @@
----
-layout: default
-title: Installing InteLIS on Ubuntu 22.04 or above (only Ubuntu LTS)
----
-
 # Installing InteLIS on Ubuntu 22.04 or above (only Ubuntu LTS)
 
 **Important:** This installation works exclusively on Ubuntu 22.04 or later LTS versions.
