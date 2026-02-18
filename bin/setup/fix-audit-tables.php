@@ -387,6 +387,7 @@ final class FixAuditTablesCommand extends Command
         // Always rebuild PK - table is new/recreated via CREATE LIKE, so PK needs changing to ($pk, revision)
         $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` DROP PRIMARY KEY";
         $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD PRIMARY KEY (`$pk`,`revision`)";
+        $sql = [...$sql, ...$this->dropUniqueIndexesFromAudit($audit)];
 
         return $sql;
     }
@@ -484,6 +485,10 @@ final class FixAuditTablesCommand extends Command
             $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` DROP PRIMARY KEY";
             $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` ADD PRIMARY KEY (`$pk`,`revision`)";
         }
+
+        // WHY: Audit rows keep historical revisions for the same business keys.
+        // Any copied UNIQUE keys from form_* tables will break trigger inserts.
+        $sql = [...$sql, ...$this->dropUniqueIndexesFromAudit($audit)];
 
         return $sql;
     }
@@ -638,6 +643,34 @@ SQL;
             }
         }
         return implode(";\n", array_map(static fn($s): string => trim((string) $s, " \n;"), $buf)) . ";";
+    }
+
+    /** @return string[] */
+    private function dropUniqueIndexesFromAudit(string $audit): array
+    {
+        $rows = $this->db->rawQuery(
+            "SELECT DISTINCT INDEX_NAME
+               FROM information_schema.STATISTICS
+              WHERE TABLE_SCHEMA = ?
+                AND TABLE_NAME = ?
+                AND NON_UNIQUE = 0
+                AND INDEX_NAME <> 'PRIMARY'",
+            [$this->dbName, $audit]
+        );
+
+        if (empty($rows)) {
+            return [];
+        }
+
+        $sql = [];
+        foreach ($rows as $row) {
+            $indexName = (string) ($row['INDEX_NAME'] ?? '');
+            if ($indexName === '') {
+                continue;
+            }
+            $sql[] = "ALTER TABLE `{$this->dbName}`.`$audit` DROP INDEX `{$indexName}`";
+        }
+        return $sql;
     }
 }
 
