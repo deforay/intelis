@@ -1,0 +1,67 @@
+site_name: InteLIS Documentation
+site_description: Setup guides, troubleshooting, and API reference for InteLIS
+site_url: https://deforay.github.io/intelis/
+repo_url: https://github.com/deforay/intelis
+repo_name: deforay/intelis
+
+docs_dir: docs
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - toc.follow
+    - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - Installation:
+      - InteLIS on Ubuntu: guides/installing-intelis-on-ubuntu.md
+      - VLSM on Windows: guides/installing-vlsm-on-windows.md
+  - Updates & Migration:
+      - Updating InteLIS on Ubuntu: guides/updating-intelis-on-ubuntu.md
+      - Updating VLSM on Windows: guides/updating-vlsm-on-windows.md
+      - Migrating Ubuntu Machines: guides/migrating-ubuntu-machines.md
+  - Backup:
+      - Google Drive with Rclone: guides/backing-up-to-google-drive-with-rclone.md
+      - Remote Backup Server: guides/backing-up-to-remote-server.md
+  - Troubleshooting:
+      - Fix Collation Mismatch: guides/fix-collation-issue.md
+      - Permission Denied Issue: guides/permission-denied-issue.md
+      - Setting up Interfacing Tool: guides/setting-up-interfacing-tool.md
+  - Architecture: ARCHITECTURE.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - tables
+  - toc:
+      permalink: true
+  - attr_list
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/deforay/intelis

@@ -1,8 +1,3 @@
----
-layout: default
-title: Fix Illegal/Mismatched Collation Issue
----
-
 # Fix Illegal/Mismatched Collation Issue
 
 This guide provides steps to resolve collation mismatches in the VLSM database using phpMyAdmin by standardizing all tables and columns to use `utf8mb4_general_ci` collation.

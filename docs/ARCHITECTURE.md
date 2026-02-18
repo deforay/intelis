@@ -1,8 +1,3 @@
----
-layout: default
-title: Architecture
----
-
 # Architecture
 
 This codebase is a legacy PHP application that has been partially modernized with Slim 4

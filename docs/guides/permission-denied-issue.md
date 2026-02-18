@@ -1,8 +1,3 @@
----
-layout: default
-title: Permission Denied Issue
----
-
 # Permission Denied Issue
 
 ## Solution

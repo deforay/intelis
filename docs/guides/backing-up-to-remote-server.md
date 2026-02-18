@@ -1,8 +1,3 @@
----
-layout: default
-title: Backing up LIS or STS to a Remote Backup Server
----
-
 # Backing up LIS or STS to a Remote Backup Server
 
 ## Step 1: Download the Script

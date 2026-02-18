@@ -1,8 +1,3 @@
----
-layout: default
-title: Updating VLSM on a Windows Machine
----
-
 # Updating VLSM on a Windows Machine
 
 ## 0. Backup
