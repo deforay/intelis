@@ -136,8 +136,6 @@ try {
             echo "Connected to MySQL" . PHP_EOL;
         }
 
-        $db->connection('interface')->beginTransaction();
-
         if (!empty($lastInterfaceSync)) {
             $db->connection('interface')
                 ->where(" (added_on > '$lastInterfaceSync' OR lims_sync_status = 0) ");
@@ -280,6 +278,8 @@ try {
             }
 
             if (empty($result['order_id']) && empty($result['test_id'])) {
+                $unsyncedIds[] = $result['id'];
+                $db->connection('default')->commitTransaction();
                 continue;
             }
 
@@ -568,6 +568,7 @@ try {
             } elseif ($matchedTable === 'form_covid19') {
 
                 // TODO: Add covid19 results
+                $unsyncedIds[] = $result['id'];
 
             } elseif ($matchedTable === 'form_hepatitis') {
 
@@ -587,6 +588,8 @@ try {
                     $resultField = "hcv_vl_count";
                     $otherField = "hbv_vl_count";
                 } else {
+                    $unsyncedIds[] = $result['id'];
+                    $db->connection('default')->commitTransaction();
                     continue;
                 }
                 //set result in result fields
@@ -673,10 +676,8 @@ try {
         }
     }
 
-    $db->connection('interface')->commitTransaction();
 } catch (Throwable $e) {
     $db->connection('default')->rollbackTransaction();
-    $db->connection('interface')->rollbackTransaction();
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
