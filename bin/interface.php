@@ -149,7 +149,7 @@ try {
         if ($isCli) {
             echo "# of records from MySQL : " . count($mysqlData) . PHP_EOL;
         }
-        $interfaceData = array_merge($interfaceData, $mysqlData); // Add MySQL data
+        $interfaceData = [...$interfaceData, ...$mysqlData]; // Add MySQL data
     }
 
     if ($sqliteConnected) {
@@ -170,7 +170,7 @@ try {
         if ($isCli) {
             echo "# of records from SQLITE3 : " . count($sqliteData) . PHP_EOL;
         }
-        $interfaceData = array_merge($interfaceData, $sqliteData); // Add SQLite data
+        $interfaceData = [...$interfaceData, ...$sqliteData]; // Add SQLite data
     }
 
 
