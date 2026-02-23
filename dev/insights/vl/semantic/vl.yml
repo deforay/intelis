@@ -1,0 +1,849 @@
+version: "1.0.0"
+schema: intelis_insights
+domain: vl
+description: "HIV Viral Load analytics — semantic metric registry"
+
+# ----------------------------------------------------------
+# Privacy guardrails
+# ----------------------------------------------------------
+privacy:
+  aggregate_only: true
+  minimum_group_size: 5
+  suppression_behavior: drop
+  suppression_note: >
+    Groups with n < minimum_group_size are DROPPED entirely (not published).
+    Consequence: SUM(n_samples) across detailed rows will be less than the true
+    raw count. For public dashboards, consider switching to bucketing — publish
+    a single 'Suppressed' placeholder row per period that captures the residual
+    count. TAT tables always drop (percentiles from n < 5 are meaningless).
+  disallow_dimensions:
+    - patient_art_no
+    - patient_first_name
+    - patient_middle_name
+    - patient_last_name
+    - patient_mobile_number
+    - patient_dob
+    - patient_address
+    - sample_code
+    - remote_sample_code
+    - system_patient_code
+
+# ----------------------------------------------------------
+# Time bucket definitions
+# ----------------------------------------------------------
+time_buckets:
+  day:
+    sql: "DATE(column)"
+  week:
+    sql: "DATE_SUB(DATE(column), INTERVAL WEEKDAY(DATE(column)) DAY)"
+    note: "ISO week start (Monday)"
+  month:
+    sql: "DATE_FORMAT(column, '%Y-%m-01')"
+  quarter:
+    sql: "MAKEDATE(YEAR(column), 1) + INTERVAL (QUARTER(column)-1) QUARTER"
+    note: "Not pre-aggregated in ETL. Derive at query time by re-aggregating stored day/week/month data."
+  year:
+    sql: "MAKEDATE(YEAR(column), 1)"
+    note: "Not pre-aggregated in ETL. Derive at query time by re-aggregating stored day/week/month data."
+
+# ----------------------------------------------------------
+# Dimensions (safe for analytics — no PII)
+# ----------------------------------------------------------
+dimensions:
+
+  - id: period_type
+    type: enum
+    allowed_values: [day, week, month]
+    tables: [vl_agg_volume_status, vl_agg_volume_org, vl_agg_rejections, vl_agg_result_category, vl_agg_tat]
+
+  - id: period_start_date
+    type: date
+    tables: [vl_agg_volume_status, vl_agg_volume_org, vl_agg_rejections, vl_agg_result_category, vl_agg_tat]
+
+  - id: as_of_date
+    type: date
+    tables: [vl_agg_backlog_aging]
+
+  - id: result_status_id
+    type: integer
+    tables: [vl_agg_volume_status, vl_agg_backlog_aging]
+    label_column: result_status_name
+    label_inline_tables: [vl_agg_volume_status, vl_agg_backlog_aging]
+    label_ref_table: ref_sample_status
+    label_ref_join: "ref_sample_status.status_id = <table>.result_status_id"
+    note: "result_status_name is denormalized inline in both tables. ref_sample_status provides a general lookup."
+    allowed_values:
+      1: "Hold"
+      2: "Lost"
+      3: "Sample Reordered"
+      4: "Rejected"
+      5: "Failed/Invalid"
+      6: "Registered at Lab"
+      7: "Accepted"
+      8: "Awaiting Approval"
+      9: "Registered at Health Center"
+      10: "Expired"
+      11: "No Result"
+      12: "Cancelled"
+      13: "Referred"
+
+  - id: vl_result_category
+    type: string
+    tables: [vl_agg_result_category]
+    allowed_values:
+      suppressed: "VL below threshold (default <1000 cp/mL)"
+      not suppressed: "VL at or above threshold"
+      rejected: "Sample rejected"
+      invalid: "Test failed/invalid"
+      failed: "Result explicitly marked as failed"
+
+  - id: rejection_reason_id
+    type: integer
+    tables: [vl_agg_rejections]
+    label_column: rejection_reason_name
+
+  - id: age_bucket
+    type: string
+    tables: [vl_agg_backlog_aging]
+    allowed_values: ["0-7d", "8-14d", "15-30d", "30+d"]
+
+  - id: tat_metric
+    type: string
+    tables: [vl_agg_tat]
+    allowed_values:
+      tat_collection_to_receipt_lab: "Collection → Lab Receipt"
+      tat_collection_to_testing: "Collection → Testing"
+      tat_collection_to_approval: "Collection → Approval"
+      tat_collection_to_dispatch: "Collection → Dispatch"
+      tat_collection_to_printed: "Collection → Printed"
+      tat_dispatch_to_receipt_lab: "Dispatch → Lab Receipt"
+      tat_receipt_lab_to_testing: "Lab Receipt → Testing"
+      tat_receipt_lab_to_approval: "Lab Receipt → Approval"
+      tat_receipt_lab_to_dispatch: "Lab Receipt → Dispatch"
+      tat_testing_to_approval: "Testing → Approval"
+      tat_testing_to_printed: "Testing → Printed"
+      tat_testing_to_dispatch: "Testing → Dispatch"
+      tat_approval_to_dispatch: "Approval → Dispatch"
+
+  - id: facility_id
+    type: integer
+    tables: [vl_agg_volume_org, vl_agg_rejections, vl_agg_result_category, vl_agg_backlog_aging, vl_agg_tat]
+    label_column: facility_name
+    label_inline_tables: [vl_agg_volume_org]
+    label_ref_table: ref_facilities
+    label_ref_join: "ref_facilities.facility_id = <table>.facility_id"
+    note: "facility_name is denormalized inline only in vl_agg_volume_org. For other tables, join ref_facilities."
+
+  - id: lab_id
+    type: integer
+    tables: [vl_agg_volume_org, vl_agg_rejections, vl_agg_result_category, vl_agg_backlog_aging, vl_agg_tat]
+    label_column: lab_name
+    label_inline_tables: [vl_agg_volume_org]
+    label_ref_table: ref_facilities
+    label_ref_join: "ref_facilities.facility_id = <table>.lab_id"
+    note: "lab_name is denormalized inline only in vl_agg_volume_org. For other tables, join ref_facilities on facility_id = lab_id."
+
+  - id: province_id
+    type: integer
+    tables: [vl_agg_volume_org]
+    label_column: province_name
+    label_inline_tables: [vl_agg_volume_org]
+    label_ref_table: ref_geographical_divisions
+    label_ref_join: "ref_geographical_divisions.geo_id = <table>.province_id"
+
+  - id: vlsm_country_id
+    type: integer
+    tables: [vl_agg_volume_status, vl_agg_volume_org, vl_agg_rejections, vl_agg_result_category, vl_agg_backlog_aging, vl_agg_tat]
+
+# ----------------------------------------------------------
+# Metrics
+# ----------------------------------------------------------
+metrics:
+
+  # --- Count metrics ---
+  - id: vl_sample_count
+    description: "Count of VL samples"
+    type: sum
+    column: n_samples
+    tables: [vl_agg_volume_status, vl_agg_volume_org, vl_agg_result_category]
+    note: >
+      These tables have different grains — vl_agg_volume_status groups by status,
+      vl_agg_volume_org by facility/lab/province, vl_agg_result_category by result category.
+      Query compiler must select exactly ONE table based on the requested dimensions.
+      Do NOT sum across tables — that would double/triple count.
+
+  - id: vl_rejection_count
+    description: "Count of rejected VL samples"
+    type: sum
+    column: n_samples
+    tables: [vl_agg_rejections]
+
+  - id: vl_pending_count
+    description: "Pending VL samples by aging bucket (snapshot)"
+    type: sum
+    column: n_samples
+    tables: [vl_agg_backlog_aging]
+
+  # --- Derived rates ---
+  - id: vl_rejection_rate
+    description: "Percentage of samples rejected"
+    type: derived
+    formula: "vl_rejection_count / vl_sample_count * 100"
+    unit: "%"
+
+  - id: vl_suppression_rate
+    description: "Percentage of tested samples with suppressed VL"
+    type: derived
+    formula: "SUM(n_samples WHERE vl_result_category='suppressed') / SUM(n_samples WHERE vl_result_category IN ('suppressed','not suppressed')) * 100"
+    unit: "%"
+    note: >
+      Denominator excludes rejected/invalid/failed. Matches existing report: getSuppressedTargetReport.php.
+      Existing code uses LIKE 'suppressed%' but exact match '= suppressed' is equivalent since the only
+      matching category is literally 'suppressed' (not a prefix family). If new suppressed-prefixed
+      categories are ever added, this formula must be reviewed.
+
+  # --- TAT metrics ---
+  - id: vl_tat_mean
+    description: "Mean turnaround time"
+    column: avg_hours
+    unit: hours
+    tables: [vl_agg_tat]
+
+  - id: vl_tat_median
+    description: "Median (p50) turnaround time"
+    column: p50_hours
+    unit: hours
+    tables: [vl_agg_tat]
+
+  - id: vl_tat_p90
+    description: "90th percentile turnaround time"
+    column: p90_hours
+    unit: hours
+    tables: [vl_agg_tat]
+
+  - id: vl_tat_p95
+    description: "95th percentile turnaround time"
+    column: p95_hours
+    unit: hours
+    tables: [vl_agg_tat]
+
+  - id: vl_tat_n
+    description: "Sample size for TAT computation (after suppression)"
+    column: n_samples
+    unit: samples
+    tables: [vl_agg_tat]
+    note: "Groups with n < 5 are suppressed"
+
+# ----------------------------------------------------------
+# Reference/lookup tables
+# ----------------------------------------------------------
+# These tables are full copies of safe columns from operational
+# lookup tables. They allow insights_ro to resolve IDs to labels
+# and browse available metadata without accessing vlsm.*.
+reference_tables:
+
+  - id: ref_sample_status
+    source: vlsm.r_sample_status
+    columns: [status_id, status_name, status]
+    note: "13 sample lifecycle statuses"
+
+  - id: ref_facilities
+    source: vlsm.facility_details
+    columns: [facility_id, facility_name, facility_code, vlsm_instance_id,
+              facility_state_id, facility_district_id, facility_state, facility_district,
+              facility_type, status, test_type]
+    excluded_pii: [contact_person, facility_emails, report_email, facility_mobile_numbers,
+                   address, latitude, longitude, facility_logo, sts_token, sts_token_expiry]
+    note: "Safe facility metadata only — no contact/address/auth fields"
+
+  - id: ref_geographical_divisions
+    source: vlsm.geographical_divisions
+    columns: [geo_id, geo_name, geo_code, geo_parent, geo_status]
+    note: "Hierarchical geography (province/district). Use geo_parent to traverse."
+
+  - id: ref_vl_rejection_reasons
+    source: vlsm.r_vl_sample_rejection_reasons
+    columns: [rejection_reason_id, rejection_reason_name, rejection_type, rejection_reason_status, rejection_reason_code]
+
+  - id: ref_vl_test_reasons
+    source: vlsm.r_vl_test_reasons
+    columns: [test_reason_id, test_reason_name, parent_reason, test_reason_status]
+    note: "Hierarchical — parent_reason links to another test_reason_id"
+
+  - id: ref_vl_sample_types
+    source: vlsm.r_vl_sample_type
+    columns: [sample_id, sample_name, status]
+
+# ----------------------------------------------------------
+# TAT definitions — explicit timestamp pairs
+# ----------------------------------------------------------
+tat_definitions:
+
+  - metric: tat_collection_to_receipt_lab
+    start: sample_collection_date
+    end: sample_received_at_lab_datetime
+    description: "Pre-analytical transport: collection → lab receipt"
+    matches_existing: "AvgCollectedReceived (getSampleStatus.php)"
+
+  - metric: tat_collection_to_testing
+    start: sample_collection_date
+    end: sample_tested_datetime
+    description: "Collection → testing"
+    matches_existing: "AvgCollectedTested (getSampleStatus.php)"
+
+  - metric: tat_collection_to_approval
+    start: sample_collection_date
+    end: result_approved_datetime
+    description: "End-to-end clinical TAT: collection → approval"
+
+  - metric: tat_collection_to_dispatch
+    start: sample_collection_date
+    end: result_dispatched_datetime
+    description: "Full cycle: collection → result dispatched"
+
+  - metric: tat_collection_to_printed
+    start: sample_collection_date
+    end: result_printed_datetime
+    description: "Collection → result printed"
+    matches_existing: "AvgCollectedPrinted (getSampleStatus.php)"
+    is_default: true
+
+  - metric: tat_dispatch_to_receipt_lab
+    start: sample_dispatched_datetime
+    end: sample_received_at_lab_datetime
+    description: "Transport segment: clinic dispatch → lab receipt"
+
+  - metric: tat_receipt_lab_to_testing
+    start: sample_received_at_lab_datetime
+    end: sample_tested_datetime
+    description: "Lab processing: receipt → testing"
+    matches_existing: "AvgReceivedTested (getSampleStatus.php)"
+
+  - metric: tat_receipt_lab_to_approval
+    start: sample_received_at_lab_datetime
+    end: result_approved_datetime
+    description: "Total lab time: receipt → approval"
+
+  - metric: tat_receipt_lab_to_dispatch
+    start: sample_received_at_lab_datetime
+    end: result_dispatched_datetime
+    description: "Lab receipt → result dispatched"
+
+  - metric: tat_testing_to_approval
+    start: sample_tested_datetime
+    end: result_approved_datetime
+    description: "Approval delay: testing → approval"
+
+  - metric: tat_testing_to_printed
+    start: sample_tested_datetime
+    end: result_printed_datetime
+    description: "Post-test to print: testing → printed"
+    matches_existing: "AvgTestedPrinted (getSampleStatus.php)"
+
+  - metric: tat_testing_to_dispatch
+    start: sample_tested_datetime
+    end: result_dispatched_datetime
+    description: "Post-test dispatch: testing → dispatched"
+
+  - metric: tat_approval_to_dispatch
+    start: result_approved_datetime
+    end: result_dispatched_datetime
+    description: "Post-approval: approval → dispatch"
+
+# ----------------------------------------------------------
+# Event date policy
+# ----------------------------------------------------------
+# Each table has a defined "event date" that determines which
+# time bucket a sample falls into. This is NOT configurable
+# at query time — it is baked into the ETL.
+event_date_policy:
+  vl_agg_volume_status: sample_collection_date
+  vl_agg_volume_org: sample_collection_date
+  vl_agg_rejections: "COALESCE(rejection_on, sample_collection_date)"
+  vl_agg_result_category: sample_collection_date
+  vl_agg_backlog_aging: "sample_collection_date (age = as_of_date minus collection_date)"
+  vl_agg_tat: >
+    Start timestamp of the TAT pair (varies per metric).
+    e.g. tat_collection_to_testing uses sample_collection_date,
+    but tat_receipt_lab_to_testing uses sample_received_at_lab_datetime.
+    Same sample may appear in different time buckets for different metrics.
+
+# ----------------------------------------------------------
+# ETL requirements
+# ----------------------------------------------------------
+etl_requirements:
+  mysql_version: "8.0+"
+  reason: "Window functions (ROW_NUMBER, COUNT OVER) required for TAT percentile computation"
+  transaction: true
+  transaction_note: "Entire refresh is wrapped in START TRANSACTION / COMMIT for crash safety"
+  performance_note: >
+    TAT step is heaviest: 13 UNION ALL branches × 3 period types.
+    Acceptable for nightly batch on tables up to ~5M rows.
+    If slow: (1) add composite index on form_vl(sample_collection_date, result_status),
+    (2) pre-compute TAT hours into a staging temp table.
+
+# ----------------------------------------------------------
+# Disambiguation rules
+# ----------------------------------------------------------
+# When a query is ambiguous, the system MUST NOT guess.
+# Instead, it returns { "clarification_required": true, ... }
+# with the options below. This works with or without a UI —
+# a CLI tool, chatbot, or API caller can all consume it.
+disambiguation:
+
+  tat:
+    triggers: ["TAT", "turnaround time", "turnaround", "how long does it take"]
+    action: clarify
+    default_suggestion: tat_collection_to_printed
+    message: >
+      TAT can be measured between 13 different process steps.
+      Which turnaround time do you need?
+    options:
+      - tat_collection_to_receipt_lab
+      - tat_collection_to_testing
+      - tat_collection_to_approval
+      - tat_collection_to_dispatch
+      - tat_collection_to_printed
+      - tat_dispatch_to_receipt_lab
+      - tat_receipt_lab_to_testing
+      - tat_receipt_lab_to_approval
+      - tat_receipt_lab_to_dispatch
+      - tat_testing_to_approval
+      - tat_testing_to_printed
+      - tat_testing_to_dispatch
+      - tat_approval_to_dispatch
+    response_format:
+      clarification_required: true
+      dimension: tat_metric
+      allowed_values: "see options above"
+
+  time_period:
+    triggers: ["this month", "last month", "this week", "last quarter", "recently", "in January", "in Q1"]
+    action: clarify
+    message: >
+      Which date axis should "this month" apply to? Different tables
+      use different event dates (see event_date_policy).
+    options:
+      - label: "Collection date"
+        applies_to: [vl_agg_volume_status, vl_agg_volume_org, vl_agg_result_category]
+        note: "When was the sample collected? (most common)"
+      - label: "Rejection date"
+        applies_to: [vl_agg_rejections]
+        note: "When was the sample rejected? (COALESCE(rejection_on, collection_date))"
+      - label: "TAT start date"
+        applies_to: [vl_agg_tat]
+        note: "Start timestamp of the TAT pair — varies per metric"
+      - label: "Backlog snapshot date"
+        applies_to: [vl_agg_backlog_aging]
+        note: "as_of_date — the snapshot date, not a period"
+    default_suggestion: "Collection date (period_start_date on volume/status tables)"
+    response_format:
+      clarification_required: true
+      dimension: period_start_date
+      note: "Resolve 'this month' to a concrete date range, then pick the right table"
+
+  suppression_positivity:
+    triggers: ["suppression rate", "positivity", "suppressed", "how many suppressed", "VL suppression"]
+    action: clarify
+    message: >
+      Suppression rate denominator matters. Which denominator do you want?
+    options:
+      - label: "Clinical (suppressed + not suppressed only)"
+        formula: "n(suppressed) / n(suppressed + not suppressed) * 100"
+        note: "Excludes rejected/invalid/failed. Matches existing getSuppressedTargetReport.php."
+        is_default: true
+      - label: "All tested (all result categories)"
+        formula: "n(suppressed) / n(all categories) * 100"
+        note: "Includes rejected/invalid/failed in denominator. Lower rate, different meaning."
+      - label: "All received (total volume)"
+        formula: "n(suppressed) / n(total samples) * 100"
+        note: "Uses vl_agg_volume_status total. Even lower rate — measures program yield."
+    default_suggestion: "Clinical (matches existing reports)"
+    response_format:
+      clarification_required: true
+      metric: vl_suppression_rate
+      note: "Default formula uses clinical denominator"
+
+  rejection_rate:
+    triggers: ["rejection rate", "how many rejected", "rejection percentage"]
+    action: clarify
+    message: >
+      Rejection rate can be scoped differently. Which scope?
+    options:
+      - label: "Overall (rejected / total samples)"
+        metric: vl_rejection_rate
+        table: vl_agg_rejections vs vl_agg_volume_status
+        is_default: true
+      - label: "By reason (breakdown per rejection reason)"
+        metric: vl_rejection_count
+        table: vl_agg_rejections
+        dimensions: [rejection_reason_id]
+      - label: "By facility (which facilities reject most)"
+        metric: vl_rejection_count
+        table: vl_agg_rejections
+        dimensions: [facility_id]
+    default_suggestion: "Overall rejection rate"
+
+  volume:
+    triggers: ["how many samples", "volume", "sample count", "total samples"]
+    action: clarify_if_ambiguous
+    message: >
+      Volume can be broken down by different dimensions.
+      Which breakdown do you need?
+    options:
+      - label: "By status (accepted, rejected, pending, etc.)"
+        table: vl_agg_volume_status
+        dimensions: [result_status_id]
+      - label: "By facility/lab/province"
+        table: vl_agg_volume_org
+        dimensions: [facility_id, lab_id, province_id]
+      - label: "By result category (suppressed/not suppressed)"
+        table: vl_agg_result_category
+        dimensions: [vl_result_category]
+      - label: "Total only (no breakdown)"
+        table: vl_agg_volume_status
+        note: "SUM(n_samples) without grouping by status"
+    note: >
+      If the user specifies dimensions (e.g., "by facility"), skip clarification
+      and pick the right table directly. Only clarify when no breakdown is specified
+      and it's unclear what grain they want.
+
+# ----------------------------------------------------------
+# Blessed example queries
+# ----------------------------------------------------------
+# These are canonical query patterns mapped to exact metrics,
+# tables, and dimensions. A query compiler, chatbot, or analyst
+# can use these as templates. Each produces a single unambiguous
+# SQL query against intelis_insights.
+blessed_queries:
+
+  # --- Volume ---
+  - id: q01_monthly_volume
+    natural_language: "How many VL samples were collected each month in 2025?"
+    metric: vl_sample_count
+    table: vl_agg_volume_status
+    filters:
+      period_type: month
+      period_start_date: ">= 2025-01-01 AND < 2026-01-01"
+    group_by: [period_start_date]
+    sql: >
+      SELECT period_start_date, SUM(n_samples) AS total
+      FROM vl_agg_volume_status
+      WHERE period_type = 'month'
+        AND period_start_date >= '2025-01-01'
+        AND period_start_date < '2026-01-01'
+      GROUP BY period_start_date
+      ORDER BY period_start_date;
+
+  - id: q02_volume_by_status
+    natural_language: "Break down January 2025 samples by status"
+    metric: vl_sample_count
+    table: vl_agg_volume_status
+    filters:
+      period_type: month
+      period_start_date: "= '2025-01-01'"
+    group_by: [result_status_id]
+    sql: >
+      SELECT result_status_id, result_status_name, SUM(n_samples) AS n
+      FROM vl_agg_volume_status
+      WHERE period_type = 'month'
+        AND period_start_date = '2025-01-01'
+      GROUP BY result_status_id, result_status_name
+      ORDER BY n DESC;
+    note: "result_status_name is denormalized inline — no JOIN needed."
+
+  - id: q03_volume_by_facility
+    natural_language: "Top 10 facilities by sample volume this month"
+    metric: vl_sample_count
+    table: vl_agg_volume_org
+    filters:
+      period_type: month
+      period_start_date: "= <current_month_start>"
+    group_by: [facility_id, facility_name]
+    sql: >
+      SELECT facility_id, facility_name, SUM(n_samples) AS n
+      FROM vl_agg_volume_org
+      WHERE period_type = 'month'
+        AND period_start_date = DATE_FORMAT(CURDATE(), '%Y-%m-01')
+      GROUP BY facility_id, facility_name
+      ORDER BY n DESC
+      LIMIT 10;
+
+  - id: q04_volume_by_province
+    natural_language: "Monthly volume by province for the last 6 months"
+    metric: vl_sample_count
+    table: vl_agg_volume_org
+    filters:
+      period_type: month
+      period_start_date: ">= DATE_SUB(DATE_FORMAT(CURDATE(),'%Y-%m-01'), INTERVAL 6 MONTH)"
+    group_by: [period_start_date, province_id, province_name]
+    sql: >
+      SELECT period_start_date, province_id, province_name, SUM(n_samples) AS n
+      FROM vl_agg_volume_org
+      WHERE period_type = 'month'
+        AND period_start_date >= DATE_SUB(DATE_FORMAT(CURDATE(),'%Y-%m-01'), INTERVAL 6 MONTH)
+      GROUP BY period_start_date, province_id, province_name
+      ORDER BY period_start_date, n DESC;
+
+  # --- Rejections ---
+  - id: q05_rejection_rate_monthly
+    natural_language: "What is the monthly rejection rate?"
+    metric: vl_rejection_rate
+    tables: [vl_agg_rejections, vl_agg_volume_status]
+    filters:
+      period_type: month
+    note: "Composite query — two tables at different grains, composed at application layer"
+    sql_parts:
+      volume: >
+        SELECT period_start_date, SUM(n_samples) AS total
+        FROM vl_agg_volume_status
+        WHERE period_type = 'month'
+        GROUP BY period_start_date
+        ORDER BY period_start_date;
+      rejections: >
+        SELECT period_start_date, SUM(n_samples) AS rejected
+        FROM vl_agg_rejections
+        WHERE period_type = 'month'
+        GROUP BY period_start_date
+        ORDER BY period_start_date;
+    application_logic: "rejection_rate_pct = rejected / total * 100 (match by period_start_date)"
+
+  - id: q06_top_rejection_reasons
+    natural_language: "What are the top rejection reasons this quarter?"
+    metric: vl_rejection_count
+    table: vl_agg_rejections
+    filters:
+      period_type: month
+      period_start_date: ">= current quarter start"
+    group_by: [rejection_reason_id, rejection_reason_name]
+    sql: >
+      SELECT rejection_reason_id, rejection_reason_name, SUM(n_samples) AS n
+      FROM vl_agg_rejections
+      WHERE period_type = 'month'
+        AND period_start_date >= MAKEDATE(YEAR(CURDATE()), 1)
+                                 + INTERVAL (QUARTER(CURDATE())-1) QUARTER
+      GROUP BY rejection_reason_id, rejection_reason_name
+      ORDER BY n DESC;
+
+  # --- Suppression ---
+  - id: q07_suppression_rate
+    natural_language: "What is the VL suppression rate by month?"
+    metric: vl_suppression_rate
+    table: vl_agg_result_category
+    filters:
+      period_type: month
+      vl_result_category: "IN ('suppressed', 'not suppressed')"
+    note: "Denominator = suppressed + not suppressed (clinical denominator)"
+    sql: >
+      SELECT
+        period_start_date,
+        SUM(CASE WHEN vl_result_category = 'suppressed' THEN n_samples ELSE 0 END) AS suppressed,
+        SUM(n_samples) AS tested,
+        ROUND(
+          SUM(CASE WHEN vl_result_category = 'suppressed' THEN n_samples ELSE 0 END)
+          / SUM(n_samples) * 100, 2
+        ) AS suppression_rate_pct
+      FROM vl_agg_result_category
+      WHERE period_type = 'month'
+        AND vl_result_category IN ('suppressed', 'not suppressed')
+      GROUP BY period_start_date
+      ORDER BY period_start_date;
+
+  - id: q08_result_category_breakdown
+    natural_language: "Break down result categories for January 2025"
+    metric: vl_sample_count
+    table: vl_agg_result_category
+    filters:
+      period_type: month
+      period_start_date: "= '2025-01-01'"
+    group_by: [vl_result_category]
+    sql: >
+      SELECT vl_result_category, SUM(n_samples) AS n
+      FROM vl_agg_result_category
+      WHERE period_type = 'month'
+        AND period_start_date = '2025-01-01'
+      GROUP BY vl_result_category
+      ORDER BY n DESC;
+
+  # --- TAT ---
+  - id: q09_tat_collection_to_printed
+    natural_language: "What is the median collection-to-printed TAT by month?"
+    metric: vl_tat_median
+    table: vl_agg_tat
+    filters:
+      period_type: month
+      tat_metric: tat_collection_to_printed
+    sql: >
+      SELECT period_start_date,
+             ROUND(SUM(p50_hours * n_samples) / SUM(n_samples), 1) AS weighted_median_hours,
+             SUM(n_samples) AS total_n
+      FROM vl_agg_tat
+      WHERE period_type = 'month'
+        AND tat_metric = 'tat_collection_to_printed'
+      GROUP BY period_start_date
+      ORDER BY period_start_date;
+    note: >
+      Weighted average of group medians (approximation when re-aggregating across
+      facilities). For exact median, query at the finest pre-computed grain.
+
+  - id: q10_tat_lab_processing
+    natural_language: "How long does the lab take from receipt to testing?"
+    metric: vl_tat_median
+    table: vl_agg_tat
+    filters:
+      period_type: month
+      tat_metric: tat_receipt_lab_to_testing
+    sql: >
+      SELECT period_start_date,
+             ROUND(SUM(avg_hours * n_samples) / SUM(n_samples), 1) AS weighted_avg_hours,
+             ROUND(SUM(p50_hours * n_samples) / SUM(n_samples), 1) AS weighted_p50_hours,
+             ROUND(SUM(p90_hours * n_samples) / SUM(n_samples), 1) AS weighted_p90_hours,
+             SUM(n_samples) AS total_n
+      FROM vl_agg_tat
+      WHERE period_type = 'month'
+        AND tat_metric = 'tat_receipt_lab_to_testing'
+      GROUP BY period_start_date
+      ORDER BY period_start_date;
+
+  - id: q11_tat_by_lab
+    natural_language: "Compare TAT (collection to printed) across labs this month"
+    metric: vl_tat_median
+    table: vl_agg_tat
+    filters:
+      period_type: month
+      period_start_date: "= current month"
+      tat_metric: tat_collection_to_printed
+    group_by: [lab_id]
+    sql: >
+      SELECT t.lab_id, f.facility_name AS lab_name,
+             ROUND(SUM(t.avg_hours * t.n_samples) / SUM(t.n_samples), 1) AS weighted_avg_hours,
+             ROUND(SUM(t.p50_hours * t.n_samples) / SUM(t.n_samples), 1) AS weighted_p50_hours,
+             SUM(t.n_samples) AS total_n
+      FROM vl_agg_tat t
+      JOIN ref_facilities f ON f.facility_id = t.lab_id
+      WHERE t.period_type = 'month'
+        AND t.period_start_date = DATE_FORMAT(CURDATE(), '%Y-%m-01')
+        AND t.tat_metric = 'tat_collection_to_printed'
+      GROUP BY t.lab_id, f.facility_name
+      ORDER BY weighted_p50_hours DESC;
+
+  # --- Backlog ---
+  - id: q12_pending_backlog
+    natural_language: "How many samples are currently pending, by age bucket?"
+    metric: vl_pending_count
+    table: vl_agg_backlog_aging
+    filters:
+      as_of_date: "= latest available"
+    group_by: [age_bucket]
+    sql: >
+      SELECT age_bucket, SUM(n_samples) AS n
+      FROM vl_agg_backlog_aging
+      WHERE as_of_date = (SELECT MAX(as_of_date) FROM vl_agg_backlog_aging)
+      GROUP BY age_bucket
+      ORDER BY FIELD(age_bucket, '0-7d', '8-14d', '15-30d', '30+d');
+
+  - id: q13_backlog_by_lab
+    natural_language: "Which labs have the oldest pending samples?"
+    metric: vl_pending_count
+    table: vl_agg_backlog_aging
+    filters:
+      as_of_date: "= latest"
+      age_bucket: "30+d"
+    group_by: [lab_id]
+    sql: >
+      SELECT b.lab_id, f.facility_name AS lab_name, SUM(b.n_samples) AS overdue_30plus
+      FROM vl_agg_backlog_aging b
+      JOIN ref_facilities f ON f.facility_id = b.lab_id
+      WHERE b.as_of_date = (SELECT MAX(as_of_date) FROM vl_agg_backlog_aging)
+        AND b.age_bucket = '30+d'
+      GROUP BY b.lab_id, f.facility_name
+      ORDER BY overdue_30plus DESC;
+
+  - id: q14_backlog_trend
+    natural_language: "How has the pending backlog changed over the last 30 days?"
+    metric: vl_pending_count
+    table: vl_agg_backlog_aging
+    group_by: [as_of_date]
+    sql: >
+      SELECT as_of_date, SUM(n_samples) AS total_pending
+      FROM vl_agg_backlog_aging
+      WHERE as_of_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+      GROUP BY as_of_date
+      ORDER BY as_of_date;
+
+  # --- Cross-cutting / composite ---
+  - id: q15_facility_scorecard
+    natural_language: "Give me a scorecard for facility X: volume, rejection rate, suppression rate"
+    note: "Requires 3 queries against different tables, composed at application layer"
+    metrics: [vl_sample_count, vl_rejection_rate, vl_suppression_rate]
+    tables: [vl_agg_volume_org, vl_agg_rejections, vl_agg_result_category]
+    filters:
+      facility_id: "<user-specified>"
+      period_type: month
+      period_start_date: "= current month"
+    sql_parts:
+      volume: >
+        SELECT SUM(n_samples) AS total
+        FROM vl_agg_volume_org
+        WHERE period_type = 'month'
+          AND period_start_date = DATE_FORMAT(CURDATE(), '%Y-%m-01')
+          AND facility_id = ?;
+      rejections: >
+        SELECT SUM(n_samples) AS rejected
+        FROM vl_agg_rejections
+        WHERE period_type = 'month'
+          AND period_start_date = DATE_FORMAT(CURDATE(), '%Y-%m-01')
+          AND facility_id = ?;
+      suppression: >
+        SELECT
+          SUM(CASE WHEN vl_result_category = 'suppressed' THEN n_samples ELSE 0 END) AS suppressed,
+          SUM(CASE WHEN vl_result_category IN ('suppressed','not suppressed') THEN n_samples ELSE 0 END) AS tested
+        FROM vl_agg_result_category
+        WHERE period_type = 'month'
+          AND period_start_date = DATE_FORMAT(CURDATE(), '%Y-%m-01')
+          AND facility_id = ?;
+
+  - id: q16_weekly_trend
+    natural_language: "Show me weekly sample volume trend for the last 12 weeks"
+    metric: vl_sample_count
+    table: vl_agg_volume_status
+    filters:
+      period_type: week
+    sql: >
+      SELECT period_start_date, SUM(n_samples) AS n
+      FROM vl_agg_volume_status
+      WHERE period_type = 'week'
+        AND period_start_date >= DATE_SUB(
+          DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY),
+          INTERVAL 12 WEEK)
+      GROUP BY period_start_date
+      ORDER BY period_start_date;
+
+  - id: q17_suppression_by_facility
+    natural_language: "Which facilities have the lowest suppression rates?"
+    metric: vl_suppression_rate
+    table: vl_agg_result_category
+    filters:
+      period_type: month
+      vl_result_category: "IN ('suppressed', 'not suppressed')"
+    group_by: [facility_id]
+    sql: >
+      SELECT
+        rc.facility_id,
+        f.facility_name,
+        SUM(CASE WHEN rc.vl_result_category = 'suppressed' THEN rc.n_samples ELSE 0 END) AS suppressed,
+        SUM(rc.n_samples) AS tested,
+        ROUND(
+          SUM(CASE WHEN rc.vl_result_category = 'suppressed' THEN rc.n_samples ELSE 0 END)
+          / SUM(rc.n_samples) * 100, 2
+        ) AS suppression_rate_pct
+      FROM vl_agg_result_category rc
+      JOIN ref_facilities f ON f.facility_id = rc.facility_id
+      WHERE rc.period_type = 'month'
+        AND rc.period_start_date = DATE_FORMAT(CURDATE(), '%Y-%m-01')
+        AND rc.vl_result_category IN ('suppressed', 'not suppressed')
+      GROUP BY rc.facility_id, f.facility_name
+      HAVING tested >= 5
+      ORDER BY suppression_rate_pct ASC
+      LIMIT 20;
+    note: "HAVING tested >= 5 avoids meaningless rates from tiny volumes"
