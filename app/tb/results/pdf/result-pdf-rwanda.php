@@ -31,14 +31,13 @@ try {
         $page = 1;
         foreach ($requestResult as $result) {
 
-            $tbTestQuery = "SELECT tt.*, rtst.sample_name, l.facility_name as lab_name, test.user_name as testedBy, review.user_name as reviewedBy, approved.user_name as approvedBy, revised.user_name as revisedBy, reject.rejection_reason_name as rejectionReason
+            $tbTestQuery = "SELECT tt.*, rtst.sample_name, l.facility_name as lab_name, test.user_name as testedBy, review.user_name as reviewedBy, approved.user_name as approvedBy, reject.rejection_reason_name as rejectionReason
         from tb_tests as tt
         INNER JOIN r_tb_sample_type as rtst ON tt.specimen_type=rtst.sample_id
         INNER JOIN facility_details as l ON tt.lab_id=l.facility_id
         LEFT JOIN user_details as test ON tt.tested_by=test.user_id
         LEFT JOIN user_details as review ON tt.result_reviewed_by=review.user_id
         LEFT JOIN user_details as approved ON tt.result_approved_by=approved.user_id
-        LEFT JOIN user_details as revised ON tt.revised_by=revised.user_id
         LEFT JOIN r_tb_sample_rejection_reasons as reject ON tt.reason_for_sample_rejection=reject.rejection_reason_id
         where tb_id= " . $result['tb_id'] . " ORDER BY tb_test_id DESC";
             $tbTestInfo = $db->rawQuery($tbTestQuery);
@@ -398,14 +397,6 @@ try {
                     $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Date Approved:</td>';
                     $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . DateUtility::humanReadableDateFormat($row['result_approved_datetime']) . '</td>';
                     $html .= '</tr>';
-                    if (!empty($row['revisedBy']) || !empty($row['revised_on'])) {
-                        $html .= '<tr>';
-                        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Revised By:</td>';
-                        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $row['revisedBy'] . '</td>';
-                        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Date Revised:</td>';
-                        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . DateUtility::humanReadableDateFormat($row['revised_on']) . '</td>';
-                        $html .= '</tr>';
-                    }
                     $html .= '<tr>';
                     $html .= '<td colspan="4" style="line-height:17px;font-size:12px;text-align:left;width:100%">Interpretation(Review Note): ' . $row['comments'] . '</td>';
                     $html .= '</tr>';
