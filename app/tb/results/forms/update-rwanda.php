@@ -1519,12 +1519,14 @@ if ($isLisInstance) {
 
         // Initialize Purpose of TB Test Select2
         $('#purposeOfTbTest').select2({
-            placeholder: "Select purpose of test"
+            placeholder: "Select purpose of test",
+            width: '100%'
         });
 
         // Initialize TB Tests Requested Select2
         $('#tbTestsRequested').select2({
-            placeholder: "Select TB test(s) requested"
+            placeholder: "Select TB test(s) requested",
+            width: '100%'
         });
 
         // Update Remove button visibility on page load
