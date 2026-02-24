@@ -83,22 +83,13 @@ $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
 // echo $tQuery;die;
 $tResult = $db->rawQuery($tQuery);
 //HVL and LVL Samples
-$vlSuppressionQuery = "SELECT   COUNT(tb_id) as total,
-                                SUM(CASE
-                                        WHEN (vl.result = 'positive' and vl.result!='' and vl.result is not null) THEN 1
-                                            ELSE 0
-                                        END) AS positiveResult,
-                                (SUM(CASE
-                                        WHEN (vl.result = 'negative' and vl.result!='' and vl.result is not null) THEN 1
-                                            ELSE 0
-                                        END)) AS negativeResult,
-                                (SUM(CASE
-                                        WHEN (vl.is_sample_rejected = 'yes' ) THEN 1
-                                            ELSE 0
-                                        END)) AS rejectedResult,
-                                status_id,
-                                status_name
-
+$vlSuppressionQuery = "SELECT
+                                CASE
+                                    WHEN vl.is_sample_rejected = 'yes' THEN 'Rejected'
+                                    WHEN vl.result IS NOT NULL AND vl.result != '' THEN vl.result
+                                    ELSE 'Pending'
+                                END AS result_label,
+                                COUNT(tb_id) as total
                                 FROM form_tb as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 // $sWhere = " AND (vl.result!='' and vl.result is not null) ";
@@ -127,7 +118,8 @@ if (!empty($_POST['labName'])) {
 if ($sWhere !== []) {
     $vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
 }
-$vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
+$vlSuppressionQuery .= " GROUP BY result_label ORDER BY total DESC";
+$vlSuppressionResult = $db->rawQuery($vlSuppressionQuery);
 
 //get LAB TAT
 //get LAB TAT
@@ -333,18 +325,12 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
 
     }
 
-    if (isset($vlSuppressionResult) && (isset($vlSuppressionResult['positiveResult']) || isset($vlSuppressionResult['negativeResult']) || isset($vlSuppressionResult['rejectedResult']))) {
+    if (!empty($vlSuppressionResult)) {
 
         ?>
-        Highcharts.setOptions({
-            colors: ['#FF0000', '#50B432', '#ada99c']
-        });
         $('#tbSamplesOverview').highcharts({
             chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
+                type: 'bar'
             },
             title: {
                 text: "<?php echo _translate("TB Results"); ?>"
@@ -352,41 +338,42 @@ $testReasonResult = $db->rawQuery($testReasonQuery);
             credits: {
                 enabled: false
             },
+            xAxis: {
+                categories: [<?php
+                    foreach ($vlSuppressionResult as $row) {
+                        echo "'" . _translate(addslashes($row['result_label'])) . "',";
+                    }
+                ?>],
+                title: { text: null }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: "<?php echo _translate("No. of Samples"); ?>"
+                },
+                allowDecimals: false
+            },
             tooltip: {
-                pointFormat: "<?php echo _translate("Samples"); ?> :<strong>{point.y}</strong>"
+                pointFormat: "<?php echo _translate("Samples"); ?> : <strong>{point.y}</strong>"
             },
             plotOptions: {
-                pie: {
-                    size: '100%',
-                    allowPointSelect: true,
-                    cursor: 'pointer',
+                bar: {
                     dataLabels: {
-                        enabled: true,
-                        useHTML: true,
-                        format: '<div style="padding-bottom:10px;"><strong>{point.name}</strong>: {point.y}</div>',
-                        style: {
-                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                        },
-                        distance: 10
-                    },
-                    showInLegend: true
+                        enabled: true
+                    }
                 }
             },
+            legend: {
+                enabled: false
+            },
             series: [{
+                name: "<?php echo _translate("Samples"); ?>",
                 colorByPoint: true,
-                data: [{
-                    name: "<?php echo _translate("Positive"); ?>",
-                    y: <?php echo (isset($vlSuppressionResult['positiveResult']) && $vlSuppressionResult['positiveResult'] > 0) > 0 ? $vlSuppressionResult['positiveResult'] : 0; ?>
-                },
-                {
-                    name: "<?php echo _translate("Negative"); ?>",
-                    y: <?php echo (isset($vlSuppressionResult['negativeResult']) && $vlSuppressionResult['negativeResult'] > 0) > 0 ? $vlSuppressionResult['negativeResult'] : 0; ?>
-                },
-                {
-                    name: "<?php echo _translate("Rejected"); ?>",
-                    y: <?php echo (isset($vlSuppressionResult['rejectedResult']) && $vlSuppressionResult['rejectedResult'] > 0) > 0 ? $vlSuppressionResult['rejectedResult'] : 0; ?>
-                },
-                ]
+                data: [<?php
+                    foreach ($vlSuppressionResult as $row) {
+                        echo (int) $row['total'] . ",";
+                    }
+                ?>]
             }]
         });
         <?php
