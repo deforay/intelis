@@ -1191,6 +1191,7 @@ if ($isLisInstance) {
         let dob = new Date(document.getElementById("dob").value);
         let treatment = new Date(document.getElementById("treatmentDate").value);
         let regimen = new Date(document.getElementById("regimenDate").value);
+        let sampleCollectionDate = new Date(document.getElementById("sampleCollectionDate").value);
 
         if (dob > treatment) {
             alert("Date of Treatment Initiation must be on or after the Date of Birth");
@@ -1198,6 +1199,10 @@ if ($isLisInstance) {
         }
         if (dob > regimen) {
             alert("Date of Initiation of Current Regimen must be on or after the Date of Birth");
+            return false;
+        }
+        if (dob > sampleCollectionDate) {
+            alert("Date Specimen Collected must be on or after the Date of Birth");
             return false;
         }
         return true;
