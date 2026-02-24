@@ -452,6 +452,11 @@ paths:
                         items:
                           type: string
                         description: ''
+                      sortOrder:
+                        type: integer
+                        description: Optional sort order for processing records. When
+                          provided, records are saved and IDs generated in
+                          this order (1, 2, 3, etc.)
                     required:
                     - appSampleCode
                     - facilityId
@@ -1112,6 +1117,11 @@ paths:
                         items:
                           type: string
                         description: ''
+                      sortOrder:
+                        type: integer
+                        description: Optional sort order for processing records. When
+                          provided, records are saved and IDs generated in
+                          this order (1, 2, 3, etc.)
                     required:
                     - appSampleCode
                     - uniqueId
@@ -14633,6 +14643,11 @@ paths:
                         items:
                           type: string
                         description: ''
+                      sortOrder:
+                        type: integer
+                        description: Optional sort order for processing records. When
+                          provided, records are saved and IDs generated in
+                          this order (1, 2, 3, etc.)
                     required:
                     - appSampleCode
                     - facilityId
