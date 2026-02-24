@@ -1551,6 +1551,26 @@ if ($isLisInstance) {
             $("#sampleCollectionDate").val('');
             return false;
         }
+        for (let i = 1; i <= testCount; i++) {
+            let receivedEl = document.getElementById("sampleReceivedDate" + i);
+            let testedEl = document.getElementById("sampleTestedDateTime" + i);
+            if (receivedEl && receivedEl.value) {
+                let received = new Date(receivedEl.value);
+                if (sampleCollectionDate > received) {
+                    alert("Test #" + i + ": Date Sample Received must be on or after the Date Specimen Collected");
+                    $(receivedEl).val('');
+                    return false;
+                }
+                if (testedEl && testedEl.value) {
+                    let tested = new Date(testedEl.value);
+                    if (received > tested) {
+                        alert("Test #" + i + ": Date of Testing must be on or after the Date Sample Received");
+                        $(testedEl).val('');
+                        return false;
+                    }
+                }
+            }
+        }
         return true;
     }
 
