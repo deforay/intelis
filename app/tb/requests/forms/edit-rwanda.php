@@ -402,7 +402,7 @@ if ($isLisInstance) {
                                         <label class="label-control" for="riskFactors">
                                             <?php echo _translate("Risk Factors"); ?>
                                         </label>
-                                        <select id="riskFactors" name="riskFactors" class="form-control"
+                                        <select id="riskFactors" name="riskFactors" class="form-control select2"
                                             title="Please select the any one of risk factors"
                                             onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
                                             <option value="">Select risk factor...</option>
@@ -1558,6 +1558,12 @@ if ($isLisInstance) {
             placeholder: "<?php echo _translate('Select case type'); ?>",
             width: '100%'
         });
+
+        $('#riskFactors').select2({
+            placeholder: "<?php echo _translate('Select risk factor'); ?>",
+            width: '100%'
+        });
+
 
         $('#specimenType').select2({
             placeholder: "<?php echo _translate('Select specimen type'); ?>",
