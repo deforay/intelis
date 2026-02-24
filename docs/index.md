@@ -18,6 +18,10 @@ Welcome to the InteLIS documentation. Use the sidebar to navigate through the gu
 - [Backup to Google Drive with Rclone](guides/backing-up-to-google-drive-with-rclone.md)
 - [Backup to Remote Server](guides/backing-up-to-remote-server.md)
 
+## Maintenance
+
+- [Scripts & Tools](guides/maintenance.md) — Service guard, resource monitor, db-tools, cleanup, scanner, and scheduled tasks
+
 ## Troubleshooting
 
 - [Fix Collation Mismatch](guides/fix-collation-issue.md)
