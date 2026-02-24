@@ -1305,11 +1305,13 @@ if ($isLisInstance) {
         });
 
         $('#purposeOfTbTest').select2({
-            placeholder: "Select purpose of test"
+            placeholder: "Select purpose of test",
+            width: '100%'
         });
 
         $('#tbTestsRequested').select2({
-            placeholder: "Select TB test(s) requested"
+            placeholder: "Select TB test(s) requested",
+            width: '100%'
         });
 
         // Lab and facility change handlers
