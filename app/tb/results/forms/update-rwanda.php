@@ -1421,6 +1421,7 @@ if ($isLisInstance) {
 
         if (dob > sampleCollectionDate) {
             alert("Date Specimen Collected must be on or after the Date of Birth");
+            $("#sampleCollectionDate").val('');
             return false;
         }
         return true;
