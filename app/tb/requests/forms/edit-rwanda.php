@@ -254,7 +254,7 @@ if ($isLisInstance) {
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label for="dob">
-                                            <?= _translate('Date of Birth'); ?>
+                                            <?= _translate('Date of Birth'); ?><span class="mandatory">*</span>
                                         </label>
                                         <input type="text"
                                             value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>"
@@ -266,7 +266,7 @@ if ($isLisInstance) {
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label for="patientAge">
-                                            <?= _translate('Age (years)'); ?>
+                                            <?= _translate('Age (years)'); ?><span class="mandatory">*</span>
                                         </label>
                                         <input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150"
                                             maxlength="3" class="form-control" id="patientAge" name="patientAge"
@@ -340,7 +340,7 @@ if ($isLisInstance) {
                                         <label for="typeOfPatient">
                                             <?php echo _translate("Case Type"); ?><span class="mandatory">*</span>
                                         </label>
-                                        <select class="select2 form-control isRequired" multiple name="typeOfPatient[]"
+                                        <select class="select2 form-control isRequired" name="typeOfPatient"
                                             id="typeOfPatient" title="<?php echo _translate("Please select the case type"); ?>"
                                             onchange="showOther(this.value,'typeOfPatientOther');">
                                             <option value=''> --
@@ -353,6 +353,8 @@ if ($isLisInstance) {
                                                 Treatment Failure </option>
                                             <option value='relapse' <?php echo ((is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) || $typeOfPatient == "relapse") ? "selected='selected'" : ""; ?>>
                                                 Relapse </option>
+                                            <option value='MDR-TB' <?php echo ((is_array($typeOfPatient) && in_array("MDR-TB", $typeOfPatient)) || $typeOfPatient == "MDR-TB") ? "selected='selected'" : ""; ?>>MDR-TB</option>
+
                                             <!-- <option value='other' <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "selected='selected'" : ""; ?>> Other </option> -->
                                         </select>
                                         <input type="text" class="form-control typeOfPatientOther"
@@ -415,6 +417,7 @@ if ($isLisInstance) {
                                             <option value="Miner" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Miner') ? 'selected="selected"' : ''; ?>>Miner</option>
                                             <option value="Refugee camp" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Refugee camp') ? 'selected="selected"' : ''; ?>>Refugee camp</option>
                                             <option value="No information provided" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'No information provided') ? 'selected="selected"' : ''; ?>>No information provided</option>
+                                            <option value="Age > 55 years" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Age > 55 years') ? 'selected="selected"' : ''; ?>>Age > 55 years</option>
                                             <option value="Others" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Others') ? 'selected="selected"' : ''; ?>>Others</option>
                                         </select>
                                         <input
@@ -1501,6 +1504,19 @@ if ($isLisInstance) {
         flag = deforayValidator.init({
             formId: 'editTbRequestForm'
         });
+
+        if ($("#dob").val() == "" && $("#patientAge").val() == "") {
+            alert("Please select or enter patient DOB or Age");
+            return false;
+        }
+
+        let dob = new Date(document.getElementById("dob").value);
+        let treatment = new Date(document.getElementById("treatmentDate").value);
+
+        if (dob > treatment) {
+            alert("DOB must be earlier than Treatment Initiation date");
+            return false;
+        }
 
         if (flag) {
             document.getElementById('editTbRequestForm').submit();
