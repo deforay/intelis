@@ -210,14 +210,14 @@ if ($isLisInstance) {
                                             title="<?php echo _translate("Please enter the e-TB tracker number"); ?>" />
                                     </td>
                                     <td style="width: 33.33%;">
-                                        <label for="dob"><?= _translate('Date of Birth'); ?></label>
+                                        <label for="dob"><?= _translate('Date of Birth'); ?><span class="mandatory">*</span></label>
                                         <input type="text" class="form-control date" id="dob" name="dob"
                                             placeholder="<?php echo _translate("Date of Birth"); ?>"
                                             title="<?php echo _translate("Please enter Date of birth"); ?>"
                                             onchange="calculateAgeInYears('dob', 'patientAge');" />
                                     </td>
                                     <td style="width: 33.33%;">
-                                        <label for="patientAge"><?= _translate('Age (years)'); ?></label>
+                                        <label for="patientAge"><?= _translate('Age (years)'); ?><span class="mandatory">*</span></label>
                                         <input type="number" max="150" maxlength="3" class="form-control"
                                             id="patientAge" name="patientAge"
                                             placeholder="<?php echo _translate("Age (in years)"); ?>"
@@ -268,14 +268,16 @@ if ($isLisInstance) {
                                     <td style="width: 33.33%;">
                                         <label for="typeOfPatient"><?php echo _translate("Case Type"); ?><span
                                                 class="mandatory">*</span></label>
-                                        <select class="select2 form-control isRequired" multiple name="typeOfPatient[]"
+                                        <select class="select2 form-control isRequired" name="typeOfPatient"
                                             id="typeOfPatient" title="<?php echo _translate("Please select the case type"); ?>"
                                             onchange="showOther(this.value,'typeOfPatientOther');">
                                             <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
                                             <option value='new'> New </option>
                                             <option value='loss-to-follow-up'> Loss to Follow Up </option>
                                             <option value='treatment-failure'> Treatment Failure </option>
-                                            <option value='relapse'> Relapse </option>
+                                            <option value='relapse'>Relapse</option>
+                                            <option value='MDR-TB'>MDR-TB</option>
+                                            Risk Factors
                                             <!-- <option value='other'> <?php echo _translate("Other"); ?> </option> -->
                                         </select>
                                         <input type="text" class="form-control typeOfPatientOther"
@@ -330,6 +332,7 @@ if ($isLisInstance) {
                                             <option value="Miner">Miner</option>
                                             <option value="Refugee camp">Refugee camp</option>
                                             <option value="No information provided">No information provided</option>
+                                            <option value="Age > 55 years">Age > 55 years</option>
                                             <option value="Others">Others</option>
                                         </select>
                                         <input style="display: none;" type="text" id="riskFactorsOther"
@@ -1156,6 +1159,19 @@ if ($isLisInstance) {
         flag = deforayValidator.init({
             formId: 'addTbRequestForm'
         });
+
+        if ($("#dob").val() == "" && $("#patientAge").val() == "") {
+            alert("Please select or enter patient DOB or Age");
+            return false;
+        }
+
+        let dob = new Date(document.getElementById("dob").value);
+        let treatment = new Date(document.getElementById("treatmentDate").value);
+
+        if (dob > treatment) {
+            alert("DOB must be earlier than Treatment Initiation date");
+            return false;
+        }
 
         if (flag) {
             $('.btn-disabled').attr('disabled', 'yes');
