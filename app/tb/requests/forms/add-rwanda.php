@@ -321,7 +321,7 @@ if ($isLisInstance) {
                                         <label class="label-control"
                                             for="riskFactors"><?php echo _translate("Risk Factors"); ?></label>
                                         <select id="riskFactors" name="riskFactors" class="form-control select2"
-                                            title="Please select the any one of risk factors"
+                                            title="Please select any one of the risk factors"
                                             onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
                                             <option value="">Select risk factor...</option>
                                             <option value="TB Contact">TB Contact</option>
@@ -371,7 +371,7 @@ if ($isLisInstance) {
                                         <input type="text" name="regimenDate" id="regimenDate"
                                             placeholder="Enter the initiation of current regimen"
                                             class="treatmentSelectedInput form-control date"
-                                            title="Please choose date of current regimen" />
+                                            title="Please choose date of current regimen" onchange="dataCheckValidation();" />
                                     </td>
                                 </tr>
                             </table>
@@ -396,7 +396,7 @@ if ($isLisInstance) {
                                                 class="mandatory">*</span></label>
                                         <select id="purposeOfTbTest" multiple name="purposeOfTbTest[]"
                                             class="form-control isRequired"
-                                            title="Please select the any one of purpose of test">
+                                            title="Please select the purpose of the test">
                                             <option value="">Select purpose of TB test...</option>
                                             <option value="Initial TB diagnosis">Initial TB diagnosis</option>
                                             <option value="DS-TB Treatment Follow-Up">DS-TB Treatment Follow-Up</option>
@@ -1190,9 +1190,14 @@ if ($isLisInstance) {
     function dataCheckValidation() {
         let dob = new Date(document.getElementById("dob").value);
         let treatment = new Date(document.getElementById("treatmentDate").value);
+        let regimen = new Date(document.getElementById("regimenDate").value);
 
         if (dob > treatment) {
-            alert("DOB must be earlier than Treatment Initiation date");
+            alert("Date of Treatment Initiation must be on or after the Date of Birth");
+            return false;
+        }
+        if (dob > regimen) {
+            alert("Date of Initiation of Current Regimen must be on or after the Date of Birth");
             return false;
         }
         return true;
