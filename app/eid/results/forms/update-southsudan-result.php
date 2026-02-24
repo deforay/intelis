@@ -16,7 +16,7 @@ $specimenTypeResult = $eidObj->getEidSampleTypes();
 /* To get testing platform names */
 $testPlatformResult = $general->getTestingPlatforms('eid');
 foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
+    $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 // Getting the list of Provinces, Districts and Facilities
 
@@ -365,7 +365,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
                                         <th class="labels" scope="row">Testing Platform</th>
                                         <td><select name="eidPlatform" id="eidPlatform" class="form-control isRequired result-optional" title="Please select the testing platform">
-                                                <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
+                                                <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
                                             </select>
                                         </td>
                                     </tr>

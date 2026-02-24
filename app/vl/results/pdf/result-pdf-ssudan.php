@@ -402,7 +402,7 @@ if (!empty($result)) {
      }
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['instrument_machine_name'] . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['instrument_machine_name'] ?? $result['vl_test_platform'] ?? '') . '</td>';
      //$html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
      if ($linearDetection !== "") {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $linearDetection . '</td>';

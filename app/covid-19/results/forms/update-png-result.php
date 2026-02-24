@@ -22,7 +22,7 @@ foreach ($nationalityResult as $nrow) {
 }
 
 foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
+    $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
 
@@ -564,7 +564,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                     <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($rows['sample_tested_datetime']); ?>" name="testDate[]" id="testDate<?= ($indexKey + 1); ?>" class="form-control test-name-table-input dateTime" placeholder="Tested on" title="Please enter the tested on for row <?= ($indexKey + 1); ?>" /></td>
                                                                     <td>
                                                                         <select name="testingPlatform[]" id="testingPlatform<?= ($indexKey + 1); ?>" class="form-control test-name-table-input isRequired" title="Please select the Testing Platform for <?= ($indexKey + 1); ?>">
-                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'], '-- Select --'); ?>
+                                                                            <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'] . '##' . ($rows['instrument_id'] ?? ''), '-- Select --'); ?>
                                                                         </select>
                                                                     </td>
                                                                     <td>

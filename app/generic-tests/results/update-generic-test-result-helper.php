@@ -39,9 +39,11 @@ try {
         $instanceId = $_SESSION['instanceId'];
     }
     $testingPlatform = '';
+    $instrumentId = null;
     if (isset($_POST['testPlatform']) && trim((string) $_POST['testPlatform']) !== '') {
         $platForm = explode("##", (string) $_POST['testPlatform']);
         $testingPlatform = $platForm[0];
+        $instrumentId = $platForm[3] ?? null;
     }
     if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== "") {
         $sampleReceivedDateLab = explode(" ", (string) $_POST['sampleReceivedDate']);
@@ -126,6 +128,7 @@ try {
         'vlsm_instance_id' => $instanceId,
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] : null,
         'test_platform' => $testingPlatform,
+        'instrument_id' => $instrumentId ?? null,
         'sample_received_at_hub_datetime' => $_POST['sampleReceivedAtHubOn'],
         'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
         'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],

@@ -16,7 +16,7 @@ $specimenTypeResult = $eidObj->getEidSampleTypes();
 /* To get testing platform names */
 $testPlatformResult = $general->getTestingPlatforms('eid');
 foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
+    $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 // Getting the list of Provinces, Districts and Facilities
 
@@ -505,7 +505,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <th><?= _translate('Testing Platform'); ?><span class="mandatory">*</span> </th>
                                         <td>
                                             <select class="form-control isRequired" name="eidPlatform" id="eidPlatform" title="<?= _translate('Please select the testing platform'); ?>">
-                                                <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
+                                                <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
                                             </select>
                                         </td>
 
