@@ -162,6 +162,9 @@ try {
     } else if (isset($_POST['testResult']['labId'][0]) && !empty($_POST['testResult']['labId'][0])) {
         $labId = $_POST['testResult']['labId'][0];
     }
+    if(is_array($_POST['typeOfPatient']))
+        $_POST['typeOfPatient']  = json_encode($_POST['typeOfPatient']);
+    
     $tbData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],
@@ -178,7 +181,7 @@ try {
         'funding_source' => empty($_POST['fundingSource']) ? null : $_POST['fundingSource'],
         'referring_unit' => empty($_POST['referringUnit']) ? null : $_POST['referringUnit'],
         'patient_id' => empty($_POST['patientId']) ? null : $_POST['patientId'],
-        'patient_type' => empty($_POST['typeOfPatient']) ? null : json_encode($_POST['typeOfPatient']),
+        'patient_type' => empty($_POST['typeOfPatient']) ? null : $_POST['typeOfPatient'],
         'patient_name' => empty($_POST['firstName']) ? null : $_POST['firstName'],
         'patient_surname' => empty($_POST['lastName']) ? null : $_POST['lastName'],
         'patient_dob' => empty($_POST['dob']) ? null : $_POST['dob'],
