@@ -21,7 +21,7 @@ foreach ($nationalityResult as $nrow) {
     $nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
 }
 foreach ($testPlatformResult as $row) {
-    $testPlatformList[$row['machine_name']] = $row['machine_name'];
+    $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
 
@@ -558,7 +558,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                                                 <option value="other" <?php echo (isset($show) && $show === 'block') ? "selected='selected'" : ""; ?>>
                                                                                     Others</option>
                                                                             <?php } else { ?>
-                                                                                <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'], '-- Select --');
+                                                                                <?= $general->generateSelectOptions($testPlatformList, $rows['testing_platform'] . '##' . ($rows['instrument_id'] ?? ''), '-- Select --');
                                                                             } ?>
                                                                         </select>
                                                                     </td>

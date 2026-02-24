@@ -445,7 +445,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" style="width: 100%" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlVlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalVlResult');">
 													<option value="">-- Select --</option>
 													<?php foreach ($importResult as $mName) { ?>
-														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>">
+														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>">
 															<?php echo $mName['machine_name']; ?></option>
 													<?php } ?>
 												</select>
@@ -505,7 +505,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 												<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults', 'failedvlResult');" class="form-control" title="Please choose VL Testing Platform" style="width: 100%">
 													<option value="">-- Select --</option>
 													<?php foreach ($importResult as $mName) { ?>
-														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']; ?>">
+														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>">
 															<?php echo $mName['machine_name']; ?></option>
 													<?php } ?>
 												</select>

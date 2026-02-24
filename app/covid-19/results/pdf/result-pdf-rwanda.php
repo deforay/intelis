@@ -290,7 +290,7 @@ if (!empty($requestResult)) {
     $html .= '<tr>';
     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
-    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['covid19_test_platform']) . '</td>';
+    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['instrument_machine_name'] ?? $result['covid19_test_platform'] ?? '') . '</td>';
     $html .= '</tr>';
 
     $html .= '<tr>';

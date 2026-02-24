@@ -343,7 +343,7 @@ if (!empty($result)) {
           }
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . $corrective . '</td></tr>';
      }
-     if (str_contains(strtolower((string) $result['instrument_machine_name']), 'abbott')) {
+     if (str_contains(strtolower((string) ($result['instrument_machine_name'] ?? $result['vl_test_platform'] ?? '')), 'abbott')) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/mL - 10 million copies/mL</td>';
           $html .= '</tr>';
@@ -372,7 +372,7 @@ if (!empty($result)) {
      $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:15px;font-size:11px;font-weight:bold;">TEST PLATFORM &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . ($result['instrument_machine_name']) . '</span></td>';
+     $html .= '<td colspan="3" style="line-height:15px;font-size:11px;font-weight:bold;">TEST PLATFORM &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . (($result['instrument_machine_name'] ?? $result['vl_test_platform'] ?? '')) . '</span></td>';
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';

@@ -323,7 +323,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
                                     <tr>
                                         <td><label for="">Testing Platform <span class="mandatory">*</span></label></td>
                                         <td><select name="hepatitisPlatform" id="hepatitisPlatform" class="form-control isRequired" title="Please select the testing platform">
-                                                <?= $general->generateSelectOptions($testPlatformList, $hepatitisInfo['hepatitis_test_platform'], '-- Select --'); ?>
+                                                <?= $general->generateSelectOptions($testPlatformList, $hepatitisInfo['hepatitis_test_platform'] . '##' . $hepatitisInfo['instrument_id'], '-- Select --'); ?>
                                             </select>
                                         </td>
                                         <td><label for="">Machine used to test </label></td>

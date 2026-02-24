@@ -98,7 +98,7 @@ $disable = "disabled = 'disabled'";
 // Import machine config
 $testPlatformResult = $general->getTestingPlatforms('hepatitis');
 foreach ($testPlatformResult as $row) {
-	$testPlatformList[$row['machine_name']] = $row['machine_name'];
+	$testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 if (!empty($hepatitisInfo['is_encrypted']) && $hepatitisInfo['is_encrypted'] == 'yes') {
 	$key = (string) $general->getGlobalConfig('key');

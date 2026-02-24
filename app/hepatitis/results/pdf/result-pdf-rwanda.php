@@ -307,7 +307,7 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $sampleReceivedDate . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $sampleReceivedTime . '</td>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['labName']) . '</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['hepatitis_test_platform']) . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['instrument_machine_name'] ?? $result['hepatitis_test_platform'] ?? '') . '</td>';
         $html .= '</tr>';
         $html .= '</table>';
         $html .= '</td>';

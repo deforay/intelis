@@ -34,6 +34,14 @@ try {
      $resultSentToSource = null;
  }
 
+	$testingPlatform = null;
+	$instrumentId = null;
+	if (isset($_POST['hepatitisPlatform']) && trim((string) $_POST['hepatitisPlatform']) !== '') {
+		$platForm = explode("##", (string) $_POST['hepatitisPlatform']);
+		$testingPlatform = $platForm[0];
+		$instrumentId = $platForm[1] ?? null;
+	}
+
 	$hepatitisData = [
 		'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
 		'lab_id' => $_POST['labId'] ?? null,
@@ -44,7 +52,8 @@ try {
 		'result' => $_POST['result'] ?? null,
 		'hcv_vl_count' => $_POST['hcvCount'] ?? null,
 		'hbv_vl_count' => $_POST['hbvCount'] ?? null,
-		'hepatitis_test_platform' => $_POST['hepatitisPlatform'] ?? null,
+		'hepatitis_test_platform' => $testingPlatform,
+		'instrument_id' => $instrumentId,
 		'import_machine_name' => $_POST['machineName'] ?? null,
 		'is_result_authorised' => $_POST['isResultAuthorized'] ?? null,
 		'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
