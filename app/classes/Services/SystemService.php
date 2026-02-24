@@ -92,23 +92,21 @@ final class SystemService
         }
 
         if (empty($category)) {
-            // Return all date formats
             return $dateFormatArray;
-        } elseif ($category == 'php') {
-            return $dateFormatArray['phpDateFormat'] ?? 'd-m-Y';
-        } elseif ($category == 'js') {
-            return $dateFormatArray['jsDateFieldFormat'] ?? 'dd-mm-yy';
-        } elseif ($category == 'dayjs') {
-            return $dateFormatArray['dayjsDateFieldFormat'] ?? 'DD-MM-YYYY';
-        } elseif ($category == 'jsDateRange') {
-            return $dateFormatArray['jsDateRangeFormat'] ?? 'DD-MM-YYYY';
-        } elseif ($category == 'jsMask') {
-            return $dateFormatArray['jsDateFormatMask'] ?? '99-99-9999';
-        } elseif ($category == 'mysql') {
-            return $dateFormatArray['mysqlDateFormat'] ?? '%d-%b-%Y';
-        } else {
-            return null;
         }
+
+        $categoryKeyMap = [
+            'php'         => 'phpDateFormat',
+            'js'          => 'jsDateFieldFormat',
+            'dayjs'       => 'dayjsDateFieldFormat',
+            'jsDateRange' => 'jsDateRangeFormat',
+            'jsMask'      => 'jsDateFormatMask',
+            'mysql'       => 'mysqlDateFormat',
+        ];
+
+        return isset($categoryKeyMap[$category])
+            ? $dateFormatArray[$categoryKeyMap[$category]]
+            : null;
     }
 
 

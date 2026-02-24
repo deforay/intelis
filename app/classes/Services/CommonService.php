@@ -46,6 +46,17 @@ final class CommonService
      * Syncs sub-table data by deleting existing records and inserting new ones.
      * Uses dynamic field detection from DDL for future-proofing across different schema versions.
      *
+     * Flow:
+     *  1. Bail out early if there's nothing to sync.
+     *  2. DELETE all existing rows for this foreign key (full replace strategy).
+     *  3. Detect the table's columns from its DDL (excluding auto-increment/internal fields).
+     *  4. Loop through $remoteData and build an insert row for each entry:
+     *     - If $keyValueMapping is provided, the data is a simple key => value map
+     *       (e.g., risk_factor_id => detected_value), handled by buildKeyValueInsertData().
+     *     - Otherwise, each entry is an associative array of column values,
+     *       handled by buildStandardInsertData().
+     *  5. Insert each built row into the table.
+     *
      * @param string $tableName Target table name
      * @param string $foreignKey Foreign key column name
      * @param mixed $foreignKeyValue Foreign key value
@@ -67,38 +78,71 @@ final class CommonService
             return;
         }
 
+        // Step 1: Wipe existing child rows for this foreign key
         $this->db->where($foreignKey, $foreignKeyValue);
         $this->db->delete($tableName);
 
+        // Step 2: Get the table's writable columns (auto-increment/internal fields excluded)
         $fields = $this->getTableFieldsAsArray($tableName, $excludeFields);
 
+        // Step 3: Re-insert each remote row
         foreach ($remoteData as $key => $row) {
+            // Every row must reference the parent record
             $insertData = [$foreignKey => $foreignKeyValue];
 
-            if (!empty($keyValueMapping)) {
-                // Key-value pair mapping (e.g., hepatitis risk factors: [id => detected_value])
-                if (isset($keyValueMapping['keyField'])) {
-                    $insertData[$keyValueMapping['keyField']] = $key;
-                }
-                if (isset($keyValueMapping['valueField'])) {
-                    $insertData[$keyValueMapping['valueField']] = $row;
-                }
-            } else {
-                // Standard array-of-objects mapping
-                foreach ($fields as $field => $default) {
-                    if ($field === $foreignKey) {
-                        continue;
-                    }
-                    if ($setUpdatedDatetime && $field === 'updated_datetime') {
-                        $insertData[$field] = DateUtility::getCurrentDateTime();
-                    } elseif (isset($row[$field])) {
-                        $insertData[$field] = $row[$field];
-                    }
-                }
-            }
+            // Two data shapes are supported:
+            //  - Key-value map:  $remoteData = [risk_factor_id => 'yes', ...]
+            //  - Standard rows:  $remoteData = [['col1' => val, 'col2' => val], ...]
+            $insertData = !empty($keyValueMapping)
+                ? $this->buildKeyValueInsertData($insertData, $keyValueMapping, $key, $row)
+                : $this->buildStandardInsertData($insertData, $fields, $foreignKey, $row, $setUpdatedDatetime);
 
             $this->db->insert($tableName, $insertData);
         }
+    }
+
+    /**
+     * Builds an insert row for key-value pair data.
+     *
+     * Used when $remoteData is a flat map like [risk_factor_id => detected_value].
+     * $keyValueMapping tells us which columns to put the key and value into:
+     *   ['keyField' => 'risk_factor', 'valueField' => 'detected_value']
+     *
+     * Result example: ['sample_id' => 123, 'risk_factor' => 'hep_b', 'detected_value' => 'yes']
+     */
+    private function buildKeyValueInsertData(array $insertData, array $keyValueMapping, mixed $key, mixed $row): array
+    {
+        if (isset($keyValueMapping['keyField'])) {
+            $insertData[$keyValueMapping['keyField']] = $key;
+        }
+        if (isset($keyValueMapping['valueField'])) {
+            $insertData[$keyValueMapping['valueField']] = $row;
+        }
+        return $insertData;
+    }
+
+    /**
+     * Builds an insert row by matching remote data fields to the table's DDL columns.
+     *
+     * Iterates over every column the table has (from DDL), and if the remote $row
+     * contains a value for that column, includes it. Skips the foreign key column
+     * (already set by the caller) and optionally stamps updated_datetime.
+     */
+    private function buildStandardInsertData(array $insertData, array $fields, string $foreignKey, mixed $row, bool $setUpdatedDatetime): array
+    {
+        foreach ($fields as $field => $default) {
+            if ($field === $foreignKey) {
+                continue; // Already set by the caller
+            }
+            if ($setUpdatedDatetime && $field === 'updated_datetime') {
+                $insertData[$field] = DateUtility::getCurrentDateTime();
+            } elseif (isset($row[$field])) {
+                $insertData[$field] = $row[$field];
+            }
+            // Fields not present in $row are intentionally skipped —
+            // the DB will use its column default.
+        }
+        return $insertData;
     }
 
 
