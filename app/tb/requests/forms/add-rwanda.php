@@ -1195,14 +1195,17 @@ if ($isLisInstance) {
 
         if (dob > treatment) {
             alert("Date of Treatment Initiation must be on or after the Date of Birth");
+            $("#treatmentDate").val('');
             return false;
         }
         if (dob > regimen) {
             alert("Date of Initiation of Current Regimen must be on or after the Date of Birth");
+            $("#regimenDate").val('');
             return false;
         }
         if (dob > sampleCollectionDate) {
             alert("Date Specimen Collected must be on or after the Date of Birth");
+            $("#sampleCollectionDate").val('');
             return false;
         }
         return true;
