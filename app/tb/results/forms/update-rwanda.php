@@ -564,7 +564,7 @@ if ($isLisInstance) {
                                                                 name="testResult[isSampleRejected][]"
                                                                 id="isSampleRejected<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select if sample was rejected"); ?>"
-                                                                onchange="$('.revisedFields<?php echo $n; ?>, .reasonForChange<?php echo $n; ?>').show();">
+                                                                onchange="$(this).closest('.test-section').find('.revisedFields').show();">
                                                                 <option value=''> -- <?php echo _translate("Select"); ?> --
                                                                 </option>
                                                                 <option value="yes" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>> <?php echo _translate("Yes"); ?> </option>
@@ -633,7 +633,7 @@ if ($isLisInstance) {
                                                             <select class="form-control test-type-select"
                                                                 name="testResult[testType][]" id="testType<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test type"); ?>"
-                                                                onchange="$('.revisedFields<?php echo $n; ?>, .reasonForChange<?php echo $n; ?>').show();">
+                                                                onchange="$(this).closest('.test-section').find('.revisedFields').show();">
                                                                 <option value=""><?php echo _translate("Select test type"); ?>
                                                                 </option>
                                                                 <option value="Smear Microscopy" <?php echo ($test['test_type'] == 'Smear Microscopy') ? 'selected="selected"' : ''; ?>>Smear Microscopy</option>
@@ -652,7 +652,7 @@ if ($isLisInstance) {
                                                             <select class="form-control test-result-select"
                                                                 name="testResult[testResult][]" id="testResult<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test result"); ?>"
-                                                                onchange="$('.revisedFields<?php echo $n; ?>, .reasonForChange<?php echo $n; ?>').show();">
+                                                                onchange="$(this).closest('.test-section').find('.revisedFields').show();">
                                                                 <option value=""><?php echo _translate("Select test result"); ?>
                                                                 </option>
                                                                 <?php if (isset($test['test_result']) && !empty($test['test_result'])) { ?>
@@ -735,8 +735,10 @@ if ($isLisInstance) {
                                                                 placeholder="<?php echo _translate("Approved On"); ?>"
                                                                 title="<?php echo _translate("Please enter approved date"); ?>" />
                                                         </td>
+                                                        <td style="width: 33.33%;"></td>
+                                                        <td style="width: 33.33%;"></td>
                                                     </tr>
-                                                    <tr style="display: none;" class="revisedFields<?php echo $n; ?>">
+                                                    <tr style="display: none;" class="revisedFields">
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="revisedBy<?php echo $n; ?>"><?php echo _translate("Revised By"); ?></label>
@@ -756,8 +758,6 @@ if ($isLisInstance) {
                                                                 placeholder="<?php echo _translate("Revised On"); ?>"
                                                                 title="<?php echo _translate("Please enter revised date"); ?>" />
                                                         </td>
-                                                    </tr>
-                                                    <tr style="display: none;" class="reasonForChange<?php echo $n; ?>">
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="reasonForChange<?php echo $n; ?>"><?php echo _translate('Reason for result change'); ?></label>
@@ -937,8 +937,10 @@ if ($isLisInstance) {
                                                             placeholder="<?php echo _translate("Approved On"); ?>"
                                                             title="<?php echo _translate("Please enter approved date"); ?>" />
                                                     </td>
+                                                    <td style="width: 33.33%;"></td>
+                                                    <td style="width: 33.33%;"></td>
                                                 </tr>
-                                                <tr style="display: none;">
+                                                <tr style="display: none;" class="revisedFields">
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="revisedBy1"><?php echo _translate("Revised By"); ?></label>
@@ -953,8 +955,16 @@ if ($isLisInstance) {
                                                             for="revisedOn1"><?php echo _translate("Revised On"); ?></label>
                                                         <input type="text" name="testResult[revisedOn][]" id="revisedOn1"
                                                             class="date-time form-control"
-                                                            placeholder="<?php echo _translate("Enter the revised on date"); ?>"
-                                                            title="<?php echo _translate("Please enter the revised on date"); ?>" />
+                                                            placeholder="<?php echo _translate("Revised On"); ?>"
+                                                            title="<?php echo _translate("Please enter revised date"); ?>" />
+                                                    </td>
+                                                    <td style="width: 33.33%;">
+                                                        <label class="label-control"
+                                                            for="reasonForChange1"><?php echo _translate('Reason for result change'); ?></label>
+                                                        <textarea class="form-control" name="testResult[reasonForChange][]"
+                                                            id="reasonForChange1"
+                                                            placeholder="Enter the reason for result change"
+                                                            title="Please enter the reason for result change"></textarea>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -1215,8 +1225,7 @@ if ($isLisInstance) {
 
         // Hide conditional fields
         $(newSection).find('.rejection-reason-field, .rejection-date-field').hide();
-        $(newSection).find('[class*="revisedFields"]').hide();
-        $(newSection).find('[class*="reasonForChange"]').hide();
+        $(newSection).find('.revisedFields').hide();
 
         container.appendChild(newSection);
 
@@ -1269,13 +1278,6 @@ if ($isLisInstance) {
             }
         });
 
-        // Update revised fields and reason for change classes
-        $(section).find('[class*="revisedFields"]').removeClass(function(i, cls) {
-            return (cls.match(/revisedFields\d+/g) || []).join(' ');
-        }).addClass('revisedFields' + count);
-        $(section).find('[class*="reasonForChange"]').removeClass(function(i, cls) {
-            return (cls.match(/reasonForChange\d+/g) || []).join(' ');
-        }).addClass('reasonForChange' + count);
     }
 
     // Clear all values in a section
