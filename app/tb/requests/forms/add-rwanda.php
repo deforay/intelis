@@ -350,7 +350,7 @@ if ($isLisInstance) {
                                         <input type="text" name="treatmentDate" id="treatmentDate"
                                             placeholder="Enter the date of treatment initiation"
                                             class="treatmentSelectedInput form-control date"
-                                            title="Please choose treatment date" />
+                                            title="Please choose treatment date" onchange="dataCheckValidation();"/>
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label for="currentRegimen"
@@ -1165,13 +1165,8 @@ if ($isLisInstance) {
             return false;
         }
 
-        let dob = new Date(document.getElementById("dob").value);
-        let treatment = new Date(document.getElementById("treatmentDate").value);
-
-        if (dob > treatment) {
-            alert("DOB must be earlier than Treatment Initiation date");
+       if(dataCheckValidation() == false)
             return false;
-        }
 
         if (flag) {
             $('.btn-disabled').attr('disabled', 'yes');
@@ -1183,6 +1178,17 @@ if ($isLisInstance) {
                 document.getElementById('addTbRequestForm').submit();
             <?php } ?>
         }
+    }
+
+    function dataCheckValidation(){
+        let dob = new Date(document.getElementById("dob").value);
+        let treatment = new Date(document.getElementById("treatmentDate").value);
+
+        if (dob > treatment) {
+            alert("DOB must be earlier than Treatment Initiation date");
+            return false;
+        }
+        return true;
     }
 
     function showOther(obj, othersId) {

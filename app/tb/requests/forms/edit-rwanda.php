@@ -441,7 +441,7 @@ if ($isLisInstance) {
                                             value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_treatment_initiation']) ?? ''; ?>"
                                             name="treatmentDate" id="treatmentDate"
                                             class="treatmentSelectedInput form-control date"
-                                            title="Please choose treatment date" />
+                                            title="Please choose treatment date" onchange="dataCheckValidation();"/>
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label for="currentRegimen" class="label-control">
@@ -1509,7 +1509,15 @@ if ($isLisInstance) {
             alert("Please select or enter patient DOB or Age");
             return false;
         }
+        if(dataCheckValidation() == false)
+            return false;
 
+        if (flag) {
+            document.getElementById('editTbRequestForm').submit();
+        }
+    }
+
+    function dataCheckValidation(){
         let dob = new Date(document.getElementById("dob").value);
         let treatment = new Date(document.getElementById("treatmentDate").value);
 
@@ -1517,10 +1525,7 @@ if ($isLisInstance) {
             alert("DOB must be earlier than Treatment Initiation date");
             return false;
         }
-
-        if (flag) {
-            document.getElementById('editTbRequestForm').submit();
-        }
+        return true;
     }
 
     function showOther(obj, othersId) {
