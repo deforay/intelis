@@ -124,6 +124,7 @@ try {
         'vlsm_instance_id' => $instanceId,
         // 'lab_id' => $_POST['labId'] ?? null,
         'vl_test_platform' => $testingPlatform ?? null,
+        'instrument_id' => $instrumentId ?? null,
         'sample_received_at_hub_datetime' => $_POST['sampleReceivedAtHubOn'],
         'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
         'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
