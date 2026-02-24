@@ -669,7 +669,7 @@ if ($isLisInstance) {
                                                                 name="testResult[isSampleRejected][]"
                                                                 id="isSampleRejected<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select if sample was rejected"); ?>"
-                                                                onchange="$('.reasonForChange<?php echo $n; ?>').show();">
+                                                                onchange="$(this).closest('.test-section').find('.revisedFields').show();">
                                                                 <option value=''> --
                                                                     <?php echo _translate("Select"); ?> --
                                                                 </option>
@@ -750,9 +750,7 @@ if ($isLisInstance) {
                                                             <select class="form-control test-type-select"
                                                                 name="testResult[testType][]" id="testType<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test type"); ?>"
-                                                                onchange="updateTestResults(
-                                                    <?php echo $n; ?>);$('.reasonForChange
-                                                    <?php echo $n; ?>').show();">
+                                                                onchange="updateTestResults(<?php echo $n; ?>);$(this).closest('.test-section').find('.revisedFields').show();">
                                                                 <option value="">
                                                                     <?php echo _translate("Select test type"); ?>
                                                                 </option>
@@ -773,7 +771,7 @@ if ($isLisInstance) {
                                                             <select class="form-control test-result-select"
                                                                 name="testResult[testResult][]" id="testResult<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test result"); ?>"
-                                                                onchange="$('.reasonForChange<?php echo $n; ?>').show();">
+                                                                onchange="$(this).closest('.test-section').find('.revisedFields').show();">
                                                                 <option value="">
                                                                     <?php echo _translate("Select test result"); ?>
                                                                 </option>
@@ -862,9 +860,13 @@ if ($isLisInstance) {
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['result_approved_datetime'], true); ?>"
                                                                 name="testResult[approvedOn][]" id="approvedOn<?php echo $n; ?>"
                                                                 class="date-time form-control"
-                                                                placeholder="<?php echo _translate("Approved On"); ?>" title="
-                                                <?php echo _translate("Please enter approved date"); ?>" />
+                                                                placeholder="<?php echo _translate("Approved On"); ?>"
+                                                                title="<?php echo _translate("Please enter approved date"); ?>" />
                                                         </td>
+                                                        <td style="width: 33.33%;"></td>
+                                                        <td style="width: 33.33%;"></td>
+                                                    </tr>
+                                                    <tr style="display: none;" class="revisedFields">
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="revisedBy<?php echo $n; ?>">
                                                                 <?php echo _translate("Revised By"); ?>
@@ -883,11 +885,9 @@ if ($isLisInstance) {
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>"
                                                                 type="text" name="testResult[revisedOn][]"
                                                                 id="revisedOn<?php echo $n; ?>" class="date-time form-control"
-                                                                placeholder="<?php echo _translate("Revised On"); ?>" title="
-                                                <?php echo _translate("Please enter revised date"); ?>" />
+                                                                placeholder="<?php echo _translate("Revised On"); ?>"
+                                                                title="<?php echo _translate("Please enter revised date"); ?>" />
                                                         </td>
-                                                    </tr>
-                                                    <tr style="display: none;" class="reasonForChange<?php echo $n; ?>">
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="reasonForChange<?php echo $n; ?>">
                                                                 <?php echo _translate('Reason for result change'); ?>
@@ -1088,9 +1088,13 @@ if ($isLisInstance) {
                                                         </label>
                                                         <input type="text" name="testResult[approvedOn][]" id="approvedOn1"
                                                             class="date-time form-control"
-                                                            placeholder="<?php echo _translate("Approved On"); ?>" title="
-                                                <?php echo _translate("Please enter approved date"); ?>" />
+                                                            placeholder="<?php echo _translate("Approved On"); ?>"
+                                                            title="<?php echo _translate("Please enter approved date"); ?>" />
                                                     </td>
+                                                    <td style="width: 33.33%;"></td>
+                                                    <td style="width: 33.33%;"></td>
+                                                </tr>
+                                                <tr style="display: none;" class="revisedFields">
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="revisedBy1">
                                                             <?php echo _translate("Revised By"); ?>
@@ -1107,8 +1111,17 @@ if ($isLisInstance) {
                                                         </label>
                                                         <input type="text" name="testResult[revisedOn][]" id="revisedOn1"
                                                             class="date-time form-control"
-                                                            placeholder="<?php echo _translate("Revised On"); ?>" title="
-                                                <?php echo _translate("Please enter revised date"); ?>" />
+                                                            placeholder="<?php echo _translate("Revised On"); ?>"
+                                                            title="<?php echo _translate("Please enter revised date"); ?>" />
+                                                    </td>
+                                                    <td style="width: 33.33%;">
+                                                        <label class="label-control" for="reasonForChange1">
+                                                            <?php echo _translate('Reason for result change'); ?>
+                                                        </label>
+                                                        <textarea class="form-control" name="testResult[reasonForChange][]"
+                                                            id="reasonForChange1"
+                                                            placeholder="Enter the reason for result change"
+                                                            title="Please enter the reason for result change"></textarea>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -1356,7 +1369,7 @@ if ($isLisInstance) {
 
         // Hide conditional fields
         $(newSection).find('.rejection-reason-field, .rejection-date-field').hide();
-        $(newSection).find('.reasonForChange' + (testCount - 1)).hide();
+        $(newSection).find('.revisedFields').hide();
 
         container.appendChild(newSection);
 
@@ -1404,8 +1417,6 @@ if ($isLisInstance) {
             }
         });
 
-        // Update reason for change class
-        $(section).find('.reasonForChange1, .reasonForChange2, .reasonForChange3').removeClass().addClass('reasonForChange' + count);
     }
 
     // Clear all values in a section
