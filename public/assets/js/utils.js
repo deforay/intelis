@@ -266,7 +266,7 @@ class Utilities {
 
     // email validation
     static validateEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailRegex = /^[^\s@]+@([^\s@.]+\.)+[^\s@.]+$/;
         return emailRegex.test(email);
     }
 
@@ -364,7 +364,7 @@ class Utilities {
         if (!str) return '';
         return str
             // Handle sequences of uppercase letters as single words
-            .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
+            .replace(/([A-Z])([A-Z][a-z])/g, '$1_$2')
             // Add an underscore before any uppercase letter followed by lowercase letters
             .replace(/([a-z\d])([A-Z])/g, '$1_$2')
             // Lowercase the whole string
@@ -372,7 +372,7 @@ class Utilities {
             // Replace spaces and any non-alphanumeric characters (excluding underscores) with underscores
             .replace(/[\s\W]+/g, '_')
             // Remove leading/trailing underscores
-            .replace(/^_+|_+$/g, '');
+            .replace(/^_+/, '').replace(/_+$/, '');
     }
 
     static toCamelCase(str) {
@@ -395,7 +395,7 @@ class Utilities {
             .replace(/([a-z])([A-Z])/g, '$1-$2')
             .replace(/[\s_]+/g, '-')
             .toLowerCase()
-            .replace(/^-+|-+$/g, '');
+            .replace(/^-+/, '').replace(/-+$/, '');
     }
 
     // Capitalize first letter of each word
@@ -414,7 +414,7 @@ class Utilities {
             .trim()
             .replace(/[^\w\s-]/g, '')
             .replace(/[\s_-]+/g, '-')
-            .replace(/^-+|-+$/g, '');
+            .replace(/^-+/, '').replace(/-+$/, '');
     }
 
     // Truncate string with ellipsis
