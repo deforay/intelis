@@ -401,7 +401,7 @@ if ($isLisInstance) {
                                             <?php echo _translate("Risk Factors"); ?>
                                         </label>
                                         <select id="riskFactors" name="riskFactors" class="form-control select2"
-                                            title="Please select the any one of risk factors"
+                                            title="Please select any one of the risk factors"
                                             onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
                                             <option value="">Select risk factor...</option>
                                             <option value="TB Contact" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'TB Contact') ? 'selected="selected"' : ''; ?>>TB Contact</option>
@@ -460,7 +460,7 @@ if ($isLisInstance) {
                                             value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_initiation_of_current_regimen']) ?? ''; ?>"
                                             name="regimenDate" id="regimenDate"
                                             class="treatmentSelectedInput form-control date"
-                                            title="Please choose date of current regimen" />
+                                            title="Please choose date of current regimen" onchange="dataCheckValidation();" />
                                     </td>
                                 </tr>
                             </table>
@@ -486,7 +486,7 @@ if ($isLisInstance) {
                                         </label>
                                         <select id="purposeOfTbTest" name="purposeOfTbTest[]" multiple
                                             class="form-control isRequired"
-                                            title="Please select the any one of purpose of test">
+                                            title="Please select the purpose of the test">
                                             <option value="">Select purpose of TB test...</option>
                                             <option value="Initial TB diagnosis" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('Initial TB diagnosis', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
                                             <option value="DS-TB Treatment Follow-Up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DS-TB Treatment Follow-Up', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
@@ -1533,9 +1533,14 @@ if ($isLisInstance) {
     function dataCheckValidation() {
         let dob = new Date(document.getElementById("dob").value);
         let treatment = new Date(document.getElementById("treatmentDate").value);
+        let regimen = new Date(document.getElementById("regimenDate").value);
 
         if (dob > treatment) {
-            alert("DOB must be earlier than Treatment Initiation date");
+            alert("Date of Treatment Initiation must be on or after the Date of Birth");
+            return false;
+        }
+        if (dob > regimen) {
+            alert("Date of Initiation of Current Regimen must be on or after the Date of Birth");
             return false;
         }
         return true;

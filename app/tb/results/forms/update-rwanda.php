@@ -336,7 +336,7 @@ if ($isLisInstance) {
                                     <label class="label-control"
                                         for="riskFactors"><?php echo _translate("Risk Factors"); ?></label>
                                     <select id="riskFactors" name="riskFactors" class="form-control"
-                                        title="Please select the any one of risk factors"
+                                        title="Please select any one of the risk factors"
                                         onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
                                         <option value="">Select risk factor...</option>
                                         <option value="TB Contact" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'TB Contact') ? 'selected="selected"' : ''; ?>>TB Contact</option>
@@ -416,7 +416,7 @@ if ($isLisInstance) {
                                             class="mandatory">*</span></label>
                                     <select id="purposeOfTbTest" name="purposeOfTbTest[]" multiple
                                         class="form-control isRequired"
-                                        title="Please select the any one of purpose of test">
+                                        title="Please select the purpose of the test">
                                         <option value="">Select purpose of TB test...</option>
                                         <option value="Initial TB diagnosis" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('Initial TB diagnosis', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
                                         <option value="DS-TB Treatment Follow-Up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DS-TB Treatment Follow-Up', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
