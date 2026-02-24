@@ -121,9 +121,26 @@ try {
     $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');
     $usersService->saveUserAttributes($userAttributes, $user['user_id']);
 
+    // Collect all items from the streaming parser into an array
+    // so we can sort by sortOrder if provided
+    $dataItems = [];
+    foreach ($input as $key => $item) {
+        $dataItems[$key] = $item;
+    }
+
+    // Sort by sortOrder if any items have it
+    $hasSortOrder = array_filter($dataItems, fn($item) => isset($item['sortOrder']));
+    if ($hasSortOrder !== []) {
+        uasort($dataItems, function ($a, $b) {
+            $sortA = $a['sortOrder'] ?? PHP_INT_MAX;
+            $sortB = $b['sortOrder'] ?? PHP_INT_MAX;
+            return $sortA <=> $sortB;
+        });
+    }
+
     $responseData = [];
     $dataCounter = 0;
-    foreach ($input as $rootKey => $data) {
+    foreach ($dataItems as $rootKey => $data) {
         $dataCounter++;
 
         $mandatoryFields = [

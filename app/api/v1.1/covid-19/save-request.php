@@ -117,9 +117,26 @@ try {
     $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');
     $usersService->saveUserAttributes($userAttributes, $user['user_id']);
 
+    // Collect all items from the streaming parser into an array
+    // so we can sort by sortOrder if provided
+    $dataItems = [];
+    foreach ($input as $key => $item) {
+        $dataItems[$key] = $item;
+    }
+
+    // Sort by sortOrder if any items have it
+    $hasSortOrder = array_filter($dataItems, fn($item) => isset($item['sortOrder']));
+    if ($hasSortOrder !== []) {
+        uasort($dataItems, function ($a, $b) {
+            $sortA = $a['sortOrder'] ?? PHP_INT_MAX;
+            $sortB = $b['sortOrder'] ?? PHP_INT_MAX;
+            return $sortA <=> $sortB;
+        });
+    }
+
     $responseData = [];
     $dataCounter = 0;
-    foreach ($input as $rootKey => $data) {
+    foreach ($dataItems as $rootKey => $data) {
         $dataCounter++;
 
 
@@ -622,7 +639,7 @@ try {
         }
     }
 
-    if ($noOfFailedRecords > 0 && $noOfFailedRecords == iterator_count($input)) {
+    if ($noOfFailedRecords > 0 && $noOfFailedRecords == $dataCounter) {
         $payloadStatus = 'failed';
     } elseif ($noOfFailedRecords > 0) {
         $payloadStatus = 'partial';
@@ -661,7 +678,7 @@ try {
 
 
 $payload = JsonUtility::encodeUtf8Json($payload);
-$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'covid19', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json', null, null, $authToken);
+$general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-request', 'covid19', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json', null, null, $authToken);
 
 $general->updateResultSyncDateTime('covid19', null, $updatedLabs);
 

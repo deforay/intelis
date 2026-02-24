@@ -46,6 +46,8 @@ nav:
   - Backup:
       - Google Drive with Rclone: guides/backing-up-to-google-drive-with-rclone.md
       - Remote Backup Server: guides/backing-up-to-remote-server.md
+  - Maintenance:
+      - Scripts & Tools: guides/maintenance.md
   - Troubleshooting:
       - Fix Collation Mismatch: guides/fix-collation-issue.md
       - Permission Denied Issue: guides/permission-denied-issue.md
