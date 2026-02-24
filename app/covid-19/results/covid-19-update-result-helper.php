@@ -134,7 +134,14 @@ try {
 		if (!empty($_POST['testName'])) {
 			foreach ($_POST['testName'] as $testKey => $testName) {
 				if (trim((string) $_POST['testName'][$testKey]) !== "") {
-					$covid19TestData = ['covid19_id' => $_POST['covid19SampleId'], 'test_name' => ($_POST['testName'][$testKey] == 'other') ? $_POST['testNameOther'][$testKey] : $_POST['testName'][$testKey], 'facility_id' => $_POST['labId'] ?? null, 'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true), 'testing_platform' => $_POST['testingPlatform'][$testKey] ?? null, 'kit_lot_no' => (str_contains((string)$testName, 'RDT')) ? $_POST['lotNo'][$testKey] : null, 'kit_expiry_date' => (str_contains((string)$testName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null, 'result' => $_POST['testResult'][$testKey]];
+					$testPlatform = null;
+					$testInstrumentId = null;
+					if (isset($_POST['testingPlatform'][$testKey]) && trim((string) $_POST['testingPlatform'][$testKey]) !== '') {
+						$platForm = explode("##", (string) $_POST['testingPlatform'][$testKey]);
+						$testPlatform = $platForm[0];
+						$testInstrumentId = $platForm[1] ?? null;
+					}
+					$covid19TestData = ['covid19_id' => $_POST['covid19SampleId'], 'test_name' => ($_POST['testName'][$testKey] == 'other') ? $_POST['testNameOther'][$testKey] : $_POST['testName'][$testKey], 'facility_id' => $_POST['labId'] ?? null, 'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true), 'testing_platform' => $testPlatform, 'instrument_id' => $testInstrumentId, 'kit_lot_no' => (str_contains((string)$testName, 'RDT')) ? $_POST['lotNo'][$testKey] : null, 'kit_expiry_date' => (str_contains((string)$testName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey]) : null, 'result' => $_POST['testResult'][$testKey]];
 					if (isset($_POST['testId'][$testKey]) && $_POST['testId'][$testKey] != '') {
 						$db->where('test_id', base64_decode((string) $_POST['testId'][$testKey]));
 						$db->update($testTableName, $covid19TestData);
@@ -142,7 +149,8 @@ try {
 						$db->insert($testTableName, $covid19TestData);
 					}
 					$covid19Data['sample_tested_datetime'] = DateUtility::isoDateFormat($_POST['testDate'][$testKey] ?? '', true);
-					$covid19Data['covid19_test_platform'] = $_POST['testingPlatform'][$testKey];
+					$covid19Data['covid19_test_platform'] = $testPlatform;
+					$covid19Data['instrument_id'] = $testInstrumentId;
 					$covid19Data['covid19_test_name'] = $_POST['testName'][$testKey];
 				}
 			}

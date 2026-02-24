@@ -49,10 +49,19 @@ try {
     }
   }
 
+  $testingPlatform = null;
+  $instrumentId = null;
+  if (isset($_POST['eidPlatform']) && trim((string) $_POST['eidPlatform']) !== '') {
+    $platForm = explode("##", (string) $_POST['eidPlatform']);
+    $testingPlatform = $platForm[0];
+    $instrumentId = $platForm[1] ?? null;
+  }
+
   $eidData = [
     'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
     'eid_number' => $_POST['eidNumber'] ?? null,
-    'eid_test_platform' => $_POST['eidPlatform'] ?? null,
+    'eid_test_platform' => $testingPlatform,
+    'instrument_id' => $instrumentId,
     'import_machine_name' => $_POST['machineName'] ?? null,
     'sample_tested_datetime' => $_POST['sampleTestedDateTime'],
     'is_sample_rejected' => ($_POST['isSampleRejected'] ?? null),

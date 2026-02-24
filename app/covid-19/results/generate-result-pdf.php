@@ -76,7 +76,8 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 				c.iso_name as nationality,
 				rst.sample_name,
 				vl.data_sync as dataSync,
-				testres.test_reason_name as reasonForTesting
+				testres.test_reason_name as reasonForTesting,
+				i.machine_name AS instrument_machine_name
 				FROM form_covid19 as vl
 				LEFT JOIN r_countries as c ON vl.patient_nationality=c.id
 				LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
@@ -88,6 +89,7 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 				LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner
 				LEFT JOIN r_funding_sources as rfs ON rfs.funding_source_id=vl.funding_source
 				LEFT JOIN r_covid19_sample_type as rst ON rst.sample_id=vl.specimen_type
+				LEFT JOIN instruments as i ON i.instrument_id = vl.instrument_id
 				WHERE vl.covid19_id IN(" . $_POST['id'] . ")";
 } else {
 	$searchQuery = $allQuery;
