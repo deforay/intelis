@@ -1415,10 +1415,24 @@ if ($isLisInstance) {
         }
     }
 
+    function dataCheckValidation() {
+        let dob = new Date(document.getElementById("dob").value);
+        let sampleCollectionDate = new Date(document.getElementById("sampleCollectionDate").value);
+
+        if (dob > sampleCollectionDate) {
+            alert("Date Specimen Collected must be on or after the Date of Birth");
+            return false;
+        }
+        return true;
+    }
+
     function validateNow() {
         if ($('#isResultAuthorized').val() != "yes") {
             $('#authorizedBy,#authorizedOn').removeClass('isRequired');
         }
+
+        if (dataCheckValidation() == false)
+            return false;
 
         flag = deforayValidator.init({
             formId: 'editTbRequestForm'
