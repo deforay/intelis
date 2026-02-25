@@ -729,8 +729,7 @@ if ($isLisInstance) {
                                             <input type="text" list="possibleFinalResults" class="form-control"
                                                 id="finalResult" name="finalResult"
                                                 placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>"
-                                                title="<?php echo _translate('Please enter the final interpretation'); ?>"
-                                                onchange="confirmFinalInterpretation(this);" />
+                                                title="<?php echo _translate('Please enter the final interpretation'); ?>" />
                                             <datalist id="possibleFinalResults">
                                                 <?php foreach ($tbResults as $resultValue) { ?>
                                                     <option value="<?php echo $resultValue; ?>"><?php echo $resultValue; ?>
