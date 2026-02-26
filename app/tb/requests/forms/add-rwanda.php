@@ -320,9 +320,9 @@ if ($isLisInstance) {
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="riskFactors"><?php echo _translate("Risk Factors"); ?></label>
-                                        <select id="riskFactors" name="riskFactors" class="form-control select2"
-                                            title="Please select any one of the risk factors"
-                                            onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
+                                        <select id="riskFactors" name="riskFactors[]" multiple class="form-control select2"
+                                            title="Please select any one of the risk factors">
+                                            <option value="No information provided">No information provided</option>
                                             <option value="">Select risk factor...</option>
                                             <option value="TB Contact">TB Contact</option>
                                             <option value="PLHIV">PLHIV</option>
@@ -334,7 +334,6 @@ if ($isLisInstance) {
                                             <option value="Diabetic">Diabetic</option>
                                             <option value="Miner">Miner</option>
                                             <option value="Refugee camp">Refugee camp</option>
-                                            <option value="No information provided">No information provided</option>
                                             <option value="Age > 55 years">Age > 55 years</option>
                                             <option value="Others">Others</option>
                                         </select>
@@ -823,6 +822,32 @@ if ($isLisInstance) {
             "TB culture Positive with DST profile"
         ]
     };
+
+$('#riskFactors').on('change', function () {
+    let selectedValues = $(this).val(); // array
+    if (selectedValues && selectedValues.includes('No information provided')) {
+        // Keep only "No information provided"
+        $(this).val(['No information provided']).trigger('change.select2');
+
+        // Disable other options
+        $(this).find('option').each(function () {
+            if (this.value !== 'No information provided') {
+                $(this).prop('disabled', true);
+            }
+        });
+    } else {
+        // Enable all options
+        $(this).find('option').prop('disabled', false);
+        if (selectedValues && selectedValues.includes('Others')) 
+             $('#riskFactorsOther').show();
+        else
+             $('#riskFactorsOther').hide();
+        
+    }
+
+    // Refresh Select2
+    $(this).trigger('change.select2');
+});
 
     // Initialize plugins for a specific section
     function initializePluginsForSection(section, count) {
