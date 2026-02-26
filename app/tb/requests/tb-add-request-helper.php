@@ -148,7 +148,7 @@ try {
         $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
     }
 
-    if (isset($_POST['tbTestsRequested']) && is_array($_POST['tbTestsRequested'])) {
+    if (is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = implode(",", $_POST['tbTestsRequested']);
     }
     if ((isset($_POST['isResultFinalized']) && !empty($_POST['isResultFinalized']) && isset($_POST['finalResult']) && !empty($_POST['finalResult'])) && $_POST['isResultFinalized'] == 'yes') {
@@ -162,9 +162,13 @@ try {
     } else if (isset($_POST['testResult']['labId'][0]) && !empty($_POST['testResult']['labId'][0])) {
         $labId = $_POST['testResult']['labId'][0];
     }
-    if (is_array($_POST['typeOfPatient']))
-        $_POST['typeOfPatient']  = json_encode($_POST['typeOfPatient']);
+    if (!empty($_POST['riskFactors']) && is_array($_POST['riskFactors'])) {
+        $_POST['riskFactors'] = implode(",", $_POST['riskFactors']);
+    }
 
+    if(is_array($_POST['typeOfPatient']))
+        $_POST['typeOfPatient']  = json_encode($_POST['typeOfPatient']);
+    
     $tbData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],
@@ -196,7 +200,7 @@ try {
         'is_referred_by_community_actor' => empty($_POST['isReferredByCommunityActor']) ? null : $_POST['isReferredByCommunityActor'],
         'reason_for_tb_test' => empty($reason) ? null : json_encode($reason),
         'risk_factors' => empty($_POST['riskFactors']) ? null : $_POST['riskFactors'],
-        'risk_factor_other' => (!empty($_POST['riskFactors']) && $_POST['riskFactors'] == 'Others') ? $_POST['riskFactorsOther'] ?? null : null,
+        'risk_factor_other' => empty($_POST['riskFactorsOther']) ? null : $_POST['riskFactorsOther'],
         'recommended_corrective_action' => $_POST['correctiveAction'] ?? null,
         'purpose_of_test' => empty($_POST['purposeOfTbTest']) ? null : $_POST['purposeOfTbTest'],
         'hiv_status' => empty($_POST['hivStatus']) ? null : $_POST['hivStatus'],
@@ -209,7 +213,7 @@ try {
         'number_of_sputum_samples' => empty($_POST['numberOfSputumSamples']) ? null : $_POST['numberOfSputumSamples'],
         'first_sputum_samples_collection_date' => empty($_POST['firstSputumSamplesCollectionDate']) ? null : $_POST['firstSputumSamplesCollectionDate'],
         'sample_requestor_name' => empty($_POST['sampleRequestorName']) ? null : $_POST['sampleRequestorName'],
-        'specimen_type' => (is_array($_POST['specimenType'])) ? implode(",", $_POST['specimenType']) : $_POST['specimenType'],
+        'specimen_type' => empty($_POST['specimenType']) ? null : $_POST['specimenType'],
         'sample_collection_date' => empty($_POST['sampleCollectionDate']) ? null : $_POST['sampleCollectionDate'],
         'sample_dispatched_datetime' => empty($_POST['sampleDispatchedDate']) ? null : $_POST['sampleDispatchedDate'],
         'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
@@ -282,7 +286,6 @@ try {
      *
      * Detection: If testResult[labId][] exists as array = multiple tests
      */
-
     $hasMultipleTests = !empty($_POST['testResult']['labId']) && is_array($_POST['testResult']['labId']);
 
     if ($hasMultipleTests) {
@@ -331,17 +334,6 @@ try {
         $tbData['result_reviewed_datetime'] = DateUtility::isoDateFormat($testResult['reviewedOn'][$lastIndex] ?? null, true);
         $tbData['result_approved_by'] = $testResult['approvedBy'][$lastIndex] ?? null;
         $tbData['result_approved_datetime'] = DateUtility::isoDateFormat($testResult['approvedOn'][$lastIndex] ?? null, true);
-    } else {
-        $testResult = $_POST['testResult'];
-        foreach ($testResult as $key => $result) {
-            $db->insert($testTableName, [
-                'tb_id' => $_POST['tbSampleId'] ?? null,
-                'lab_id' => $_POST['labId'] ?? null,
-                'actual_no' => $_POST['actualNo'][$key] ?? null,
-                'test_result' => $result ?? null,
-                'updated_datetime' => DateUtility::getCurrentDateTime()
-            ]);
-        }
     }
     // For flat testResult[] (other countries): no tb_tests operations, form_tb already has all data from direct POST fields
 
