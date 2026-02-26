@@ -393,7 +393,6 @@ if ($isLisInstance) {
                                         <select id="riskFactors" name="riskFactors" class="form-control select2"
                                             title="Please select any one of the risk factors"
                                             onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
-                                            <option value="">Select risk factor...</option>
                                             <option value="TB Contact" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'TB Contact') ? 'selected="selected"' : ''; ?>>TB Contact</option>
                                             <option value="PLHIV" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'PLHIV') ? 'selected="selected"' : ''; ?>>PLHIV</option>
                                             <option value="Healthcare provider" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Healthcare provider') ? 'selected="selected"' : ''; ?>>Healthcare provider</option>
@@ -476,7 +475,6 @@ if ($isLisInstance) {
                                         <select id="purposeOfTbTest" name="purposeOfTbTest[]" multiple
                                             class="form-control isRequired"
                                             title="Please select the purpose of the test">
-                                            <option value="">Select purpose of TB test...</option>
                                             <option value="Initial TB diagnosis" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('Initial TB diagnosis', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
                                             <option value="DS-TB Treatment Follow-Up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DS-TB Treatment Follow-Up', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
                                             <option value="C2" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C2', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C2
@@ -494,7 +492,6 @@ if ($isLisInstance) {
                                         </label>
                                         <select id="tbTestsRequested" multiple name="tbTestsRequested[]"
                                             class="form-control" title="Please select the TB test(s) requested">
-                                            <option value="">Select TB test(s) requested...</option>
                                             <option value="LED microscopy" <?php echo in_array('LED microscopy', $testTypeRequested) ? 'selected="selected"' : ''; ?>>LED microscopy
                                             </option>
                                             <option value="TB LAM test" <?php echo in_array('TB LAM test', $testTypeRequested) ? 'selected="selected"' : ''; ?>>TB LAM test
@@ -511,7 +508,6 @@ if ($isLisInstance) {
                                     </td>
                                 </tr>
                             </table>
-
                             <!-- SPECIMEN INFORMATION -->
                             <div class="box-header with-border sectionHeader">
                                 <h3 class="box-title">
@@ -535,6 +531,7 @@ if ($isLisInstance) {
                                             value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text"
                                             name="sampleCollectionDate" id="sampleCollectionDate"
                                             placeholder="<?php echo _translate("Sample Collection Date"); ?>"
+                                            title="<?php echo _translate("Please select the sample collection date"); ?>"
                                             onchange="generateSampleCode(); checkCollectionDate(this.value);" />
                                         <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                     </td>
@@ -542,20 +539,22 @@ if ($isLisInstance) {
                                         <label class="label-control" for="specimenType">
                                             <?php echo _translate("Specimen Type"); ?><span class="mandatory">*</span>
                                         </label>
-                                        <select name="specimenType" id="specimenType"
+                                        <select name="specimenType[]" id="specimenType"
                                             class="form-control isRequired select2"
                                             title="<?php echo _translate("Please choose specimen type"); ?>" multiple
                                             onchange="showOther(this.value,'specimenTypeOther')">
-                                            <?php echo $general->generateSelectOptions($specimenTypeResult, $tbInfo['specimen_type'], '-- Select --'); ?>
+                                            <?php foreach ($specimenTypeResult as $key => $type) { ?>
+                                                <option value="<?php echo $type; ?>" <?php echo (in_array($type, explode(",", $tbInfo['specimen_type']))) ? 'selected="selected"' : ""; ?>><?php echo $type; ?></option>
+                                            <?php } ?>
                                             <option value='other' <?php echo ($tbInfo['specimen_type'] == 'other') ? "selected='selected'" : ""; ?>>
                                                 <?php echo _translate("Other"); ?>
                                             </option>
                                         </select>
                                         <input type="text" class="form-control specimenTypeOther" id="specimenTypeOther"
-                                            name="specimenTypeOther"
+                                            name="specimenTypeOther" value="<?php echo $tbInfo['other_specimen_type']; ?>"
                                             placeholder="<?php echo _translate("Enter specimen type of others"); ?>"
                                             title="<?php echo _translate("Please enter the specimen type if others"); ?>"
-                                            style="display: none;" />
+                                            <?php echo ($tbInfo['specimen_type'] == 'other') ? "" : 'style="display: none;"'; ?> />
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label class="label-control" for="reOrderedCorrectiveAction">
