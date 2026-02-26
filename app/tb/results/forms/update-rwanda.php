@@ -278,7 +278,7 @@ if ($isLisInstance) {
                                 <td style="width: 33.33%;">
                                     <label for="patientPhoneNumber"><?php echo _translate("Phone contact"); ?>:</label>
                                     <input type="text" value="<?php echo $tbInfo['patient_phone']; ?>"
-                                        class="form-control checkNum" id="patientPhoneNumber" name="patientPhoneNumber"
+                                        class="form-control checkNum" pattern="[0-9]+" id="patientPhoneNumber" name="patientPhoneNumber"
                                         placeholder="<?php echo _translate("Phone Number"); ?>"
                                         title="<?php echo _translate("Please enter phone number"); ?>" />
                                 </td>

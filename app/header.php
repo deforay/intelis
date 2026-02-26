@@ -237,6 +237,12 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 	.content-header {
 		margin-top: 50px;
 	}
+
+	input.checkNum:invalid {
+		border: 1px solid red;
+	}
+
+	input.checkNum:not([value*="+"])
 </style>
 
 <body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" <?= $margin; ?> translate="no"
@@ -307,7 +313,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 							</a>
 						</li>
 						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
-							?>
+						?>
 							<li class="user-menu">
 								<a onclick="setCrossLogin();"
 									href="<?= rtrim((string) SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode((string) $_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode((string) $_SESSION['userName']); ?>"
@@ -329,7 +335,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 							<ul class="dropdown-menu">
 								<?php
 								if (!empty($arr['edit_profile']) && $arr['edit_profile'] == 'yes') {
-									?>
+								?>
 									<li class="user-footer">
 										<a href="/users/edit-profile.php" class="">
 											<?= _translate("Edit Profile"); ?>
@@ -372,7 +378,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 						if ($menu['is_header'] == 'yes') {
 							echo '<li class="header">' . $menu['display_text'];
 						} else {
-							?>
+					?>
 
 							<li class="<?= $classNames; ?>">
 								<?php
@@ -392,7 +398,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 							<?php if ($menu['has_children'] == "yes") {
 								if ($menu['is_header'] == 'no') { ?>
 									<ul class="treeview-menu">
-										<?php
+									<?php
 								}
 
 								foreach ($menu['children'] as $subMenu) {
@@ -429,20 +435,20 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 															$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
 															$innerPages = "data-inner-pages='$dataInnerPages'";
 														}
-														?>
+													?>
 														<li class="<?= $childMenu['additional_class_names'] ?>">
 															<a href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
 																<i class="<?= $childMenu['icon'] ?>"></i>
 																<?= _translate($childMenu['display_text']); ?>
 															</a>
 														</li>
-														<?php
+													<?php
 													}
 													?>
 												</ul>
 											<?php } ?>
 										</li>
-										<?php
+									<?php
 
 								} ?>
 									<?php if ($menu['is_header'] == 'no') { ?>
@@ -450,11 +456,11 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 								<?php } ?>
 							<?php } ?>
 
-						</li>
+							</li>
 
-					<?php }
+						<?php }
 
-					?>
+						?>
 				</ul>
 
 			</section>
