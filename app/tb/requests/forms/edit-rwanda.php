@@ -45,7 +45,8 @@ $typeOfPatient = (!empty($tbInfo['patient_type'])) ? (array) json_decode((string
 $reasonForTbTest = (!empty($tbInfo['reason_for_tb_test'])) ? (array) json_decode((string) $tbInfo['reason_for_tb_test']) : [];
 //$testTypeRequested = (!empty($tbInfo['tests_requested'])) ? (array)json_decode((string) $tbInfo['tests_requested']) : [];
 $testTypeRequested = !empty($tbInfo['tests_requested']) ? explode(',', (string) $tbInfo['tests_requested']) : [];
-$tbInfo['purpose_of_test'] = !empty($tbInfo['purpose_of_test']) ? explode(',', (string) $tbInfo['purpose_of_test']) : [];
+//$tbInfo['purpose_of_test'] = !empty($tbInfo['purpose_of_test']) ? explode(',', (string) $tbInfo['purpose_of_test']) : [];
+$tbInfo['risk_factors'] = !empty($tbInfo['risk_factors']) ? explode(',', (string) $tbInfo['risk_factors']) : [];
 
 // Auto-select lab for LIS instances
 $isLisInstance = $general->isLISInstance();
@@ -158,7 +159,7 @@ if ($isLisInstance) {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="width: 33.33%;">
+                                    <!--<td style="width: 33.33%;">
                                         <label class="label-control" for="affiliatedDistrictHospital">
                                             <?php echo _translate("Affiliated District Hospital"); ?>
                                         </label>
@@ -169,7 +170,7 @@ if ($isLisInstance) {
                                             title="
                                         <?php echo _translate("Please enter affiliated district hospital"); ?>" />
                                     </td>
-                                    <!-- <td style="width: 33.33%;">
+                                     <td style="width: 33.33%;">
                                         <label class="label-control" for="affiliatedLabId">
                                             <?php echo _translate("Affiliated TB Testing Site"); ?>
                                         </label>
@@ -403,19 +404,19 @@ if ($isLisInstance) {
                                         <select id="riskFactors" name="riskFactors[]" multiple class="form-control select2"
                                             title="Please select any one of the risk factors">
                                             <option value="">Select risk factor...</option>
-                                            <option value="No information provided" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'No information provided') ? 'selected="selected"' : ''; ?>>No information provided</option>
-                                            <option value="TB Contact" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'TB Contact') ? 'selected="selected"' : ''; ?>>TB Contact</option>
-                                            <option value="PLHIV" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'PLHIV') ? 'selected="selected"' : ''; ?>>PLHIV</option>
-                                            <option value="Healthcare provider" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Healthcare provider') ? 'selected="selected"' : ''; ?>>Healthcare provider</option>
-                                            <option value="CHW" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'CHW') ? 'selected="selected"' : ''; ?>>CHW</option>
-                                            <option value="Prisoner inmate" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Prisoner inmate') ? 'selected="selected"' : ''; ?>>Prisoner/inmate</option>
-                                            <option value="Tobacco smoking" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Tobacco smoking') ? 'selected="selected"' : ''; ?>>Tobacco smoking</option>
-                                            <option value="Crowded habitant" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Crowded habitant') ? 'selected="selected"' : ''; ?>>Crowded habitant</option>
-                                            <option value="Diabetic" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Diabetic') ? 'selected="selected"' : ''; ?>>Diabetic</option>
-                                            <option value="Miner" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Miner') ? 'selected="selected"' : ''; ?>>Miner</option>
-                                            <option value="Refugee camp" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Refugee camp') ? 'selected="selected"' : ''; ?>>Refugee camp</option>
-                                            <option value="Age > 55 years" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Age > 55 years') ? 'selected="selected"' : ''; ?>>Age > 55 years</option>
-                                            <option value="Others" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Others') ? 'selected="selected"' : ''; ?>>Others</option>
+                                            <option value="No information provided" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('No information provided', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>No information provided</option>
+                                            <option value="TB Contact" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('TB Contact', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>TB Contact</option>
+                                            <option value="PLHIV" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('PLHIV', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>PLHIV</option>
+                                            <option value="Healthcare provider" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Healthcare provider', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Healthcare provider</option>
+                                            <option value="CHW" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('CHW',$tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>CHW</option>
+                                            <option value="Prisoner inmate" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Prisoner inmate', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Prisoner/inmate</option>
+                                            <option value="Tobacco smoking" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Tobacco smoking', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Tobacco smoking</option>
+                                            <option value="Crowded habitant" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Crowded habitant', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Crowded habitant</option>
+                                            <option value="Diabetic" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Diabetic', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Diabetic</option>
+                                            <option value="Miner" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Miner', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Miner</option>
+                                            <option value="Refugee camp" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Refugee camp', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Refugee camp</option>
+                                            <option value="Age > 55 years" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Age > 55 years', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Age > 55 years</option>
+                                            <option value="Others" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Others', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Others</option>
                                         </select>
                                         <input
                                             style="<?php echo (isset($tbInfo['risk_factor_other']) && !empty($tbInfo['risk_factor_other'])) ? "" : "display: none"; ?>"
@@ -483,19 +484,19 @@ if ($isLisInstance) {
                                             <?php echo _translate("Purpose of TB test(s)"); ?><span
                                                 class="mandatory">*</span>
                                         </label>
-                                        <select id="purposeOfTbTest" name="purposeOfTbTest[]" multiple
+                                        <select id="purposeOfTbTest" name="purposeOfTbTest"
                                             class="form-control isRequired"
                                             title="Please select the purpose of the test">
                                             <option value="">Select purpose of TB test...</option>
-                                            <option value="Initial TB diagnosis" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('Initial TB diagnosis', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
-                                            <option value="DS-TB Treatment Follow-Up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DS-TB Treatment Follow-Up', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
-                                            <option value="C2" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C2', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C2
+                                            <option value="Initial TB diagnosis" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'Initial TB diagnosis') ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
+                                            <option value="DS-TB Treatment Follow-Up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'DS-TB Treatment Follow-Up') ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
+                                            <option value="C2" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'C2') ? 'selected="selected"' : ''; ?>>C2
                                             </option>
-                                            <option value="C5" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C5', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C5
+                                            <option value="C5" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'C5') ? 'selected="selected"' : ''; ?>>C5
                                             </option>
-                                            <option value="End of TB treatment" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('End of TB treatment', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>End of TB treatment</option>
-                                            <option value="DR-TB Patient Baseline tests" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB Patient Baseline tests', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB Patient Baseline tests</option>
-                                            <option value="DR-TB patient Follow up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB patient Follow up', $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB patient Follow up</option>
+                                            <option value="End of TB treatment" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'End of TB treatment') ? 'selected="selected"' : ''; ?>>End of TB treatment</option>
+                                            <option value="DR-TB Patient Baseline tests" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'DR-TB Patient Baseline tests') ? 'selected="selected"' : ''; ?>>DR-TB Patient Baseline tests</option>
+                                            <option value="DR-TB patient Follow up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && $tbInfo['purpose_of_test'] == 'DR-TB patient Follow up') ? 'selected="selected"' : ''; ?>>DR-TB patient Follow up</option>
                                         </select>
                                     </td>
                                     <td style="width: 50%;">
@@ -1270,11 +1271,11 @@ if ($isLisInstance) {
     } else {
         // Enable all options
         $(this).find('option').prop('disabled', false);
-         if (selectedValues && selectedValues.includes('Others')) {
+         if (selectedValues && selectedValues.includes('Others')) 
              $('#riskFactorsOther').show();
         else
              $('#riskFactorsOther').hide();
-        }
+        
     }
 
     // Refresh Select2
@@ -1656,6 +1657,8 @@ if ($isLisInstance) {
             placeholder: "<?php echo _translate('Select affiliated TB testing site'); ?>",
             width: '100%'
         });
+
+         $("#riskFactors").trigger('change');
 
         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
             $('#labId').select2({

@@ -144,9 +144,7 @@ try {
 
 
     //$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
-    if (!empty($_POST['purposeOfTbTest']) && is_array($_POST['purposeOfTbTest'])) {
-        $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
-    }
+
 
     if (is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = implode(",", $_POST['tbTestsRequested']);
@@ -166,7 +164,7 @@ try {
         $_POST['riskFactors'] = implode(",", $_POST['riskFactors']);
     }
 
-    if(is_array($_POST['typeOfPatient']))
+     if(is_array($_POST['typeOfPatient']))
         $_POST['typeOfPatient']  = json_encode($_POST['typeOfPatient']);
     
     $tbData = [
@@ -178,14 +176,14 @@ try {
         'province_id' => empty($_POST['provinceId']) ? null : $_POST['provinceId'],
         'lab_id' => $labId,
         'affiliated_lab_id' => empty($_POST['affiliatedLabId']) ? null : $_POST['affiliatedLabId'],
-        'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
+        //'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
         'etb_tracker_number' => empty($_POST['trackerNo']) ? null : $_POST['trackerNo'],
         //'system_patient_code' => $systemGeneratedCode,
         'implementing_partner' => empty($_POST['implementingPartner']) ? null : $_POST['implementingPartner'],
         'funding_source' => empty($_POST['fundingSource']) ? null : $_POST['fundingSource'],
         'referring_unit' => empty($_POST['referringUnit']) ? null : $_POST['referringUnit'],
         'patient_id' => empty($_POST['patientId']) ? null : $_POST['patientId'],
-        'patient_type' => empty($_POST['typeOfPatient']) ? null : $_POST['typeOfPatient'],
+        'patient_type' => empty($_POST['typeOfPatient']) ? null : json_encode($_POST['typeOfPatient']),
         'patient_name' => empty($_POST['firstName']) ? null : $_POST['firstName'],
         'patient_surname' => empty($_POST['lastName']) ? null : $_POST['lastName'],
         'patient_dob' => empty($_POST['dob']) ? null : $_POST['dob'],
