@@ -166,8 +166,7 @@ if ($isLisInstance) {
                                             name="affiliatedDistrictHospital"
                                             value="<?php echo $tbInfo['affiliated_district_hospital'] ?? ''; ?>"
                                             placeholder="<?php echo _translate("Enter affiliated district hospital"); ?>"
-                                            title="
-                                        <?php echo _translate("Please enter affiliated district hospital"); ?>" />
+                                            title="<?php echo _translate("Please enter affiliated district hospital"); ?>" />
                                     </td>
                                     <!-- <td style="width: 33.33%;">
                                         <label class="label-control" for="affiliatedLabId">
@@ -216,8 +215,7 @@ if ($isLisInstance) {
                                     </strong></span>
                                 <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo"
                                     class="pull-right"
-                                    placeholder="<?php echo _translate("Enter Patient ID or Patient Name"); ?>" title="
-                                <?php echo _translate("Enter ART number or patient name"); ?>" />
+                                    placeholder="<?php echo _translate("Enter Patient ID or Patient Name"); ?>" title="<?php echo _translate("Enter ART number or patient name"); ?>" />
                             </div>
 
                             <table class="table" style="width:100%">
@@ -250,8 +248,7 @@ if ($isLisInstance) {
                                         <input type="text" value="<?php echo $tbInfo['etb_tracker_number']; ?>"
                                             class="form-control" id="trackerNo" name="trackerNo"
                                             placeholder="<?php echo _translate("Enter the e-TB tracker number"); ?>"
-                                            title="
-                                        <?php echo _translate("Please enter the e-TB tracker number"); ?>" />
+                                            title="<?php echo _translate("Please enter the e-TB tracker number"); ?>" />
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label for="dob">
@@ -260,8 +257,7 @@ if ($isLisInstance) {
                                         <input type="text"
                                             value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>"
                                             class="form-control date isRequired" id="dob" name="dob"
-                                            placeholder="<?php echo _translate("Date of Birth"); ?>" title="
-                                        <?php echo _translate("Please enter Date of birth"); ?>"
+                                            placeholder="<?php echo _translate("Date of Birth"); ?>" title="<?php echo _translate("Please enter Date of birth"); ?>"
                                             onchange="calculateAgeInYears('dob', 'patientAge');" />
                                     </td>
                                     <td style="width: 33.33%;">
@@ -270,8 +266,7 @@ if ($isLisInstance) {
                                         </label>
                                         <input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150"
                                             maxlength="3" class="form-control isRequired" id="patientAge" name="patientAge"
-                                            placeholder="<?php echo _translate("Age (in years)"); ?>" title="
-                                        <?php echo _translate("Patient Age"); ?>" />
+                                            placeholder="<?php echo _translate("Age (in years)"); ?>" title="<?php echo _translate("Please enter the patient age"); ?>" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -320,18 +315,16 @@ if ($isLisInstance) {
                                         </label>
                                         <input type="text" value="<?php echo $tbInfo['patient_surname']; ?>"
                                             class="form-control" id="lastName" name="lastName"
-                                            placeholder="<?php echo _translate("Last name"); ?>" title="
-                                        <?php echo _translate("Please enter Last name"); ?>" />
+                                            placeholder="<?php echo _translate("Last name"); ?>" title="<?php echo _translate("Please enter Last name"); ?>" />
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label for="patientPhoneNumber">
                                             <?php echo _translate("Phone contact"); ?>:
                                         </label>
                                         <input type="text" value="<?php echo $tbInfo['patient_phone']; ?>"
-                                            class="form-control checkNum" id="patientPhoneNumber"
+                                            class="form-control checkNum" pattern="[0-9]+" id="patientPhoneNumber"
                                             name="patientPhoneNumber"
-                                            placeholder="<?php echo _translate("Phone Number"); ?>" title="
-                                        <?php echo _translate("Please enter phone number"); ?>" />
+                                            placeholder="<?php echo _translate("Phone Number"); ?>" title="<?php echo _translate("Please enter phone number"); ?>" />
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label for="typeOfPatient">
@@ -352,14 +345,12 @@ if ($isLisInstance) {
                                             <option value='relapse' <?php echo ((is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) || $typeOfPatient == "relapse") ? "selected='selected'" : ""; ?>>
                                                 Relapse </option>
                                             <option value='MDR-TB' <?php echo ((is_array($typeOfPatient) && in_array("MDR-TB", $typeOfPatient)) || $typeOfPatient == "MDR-TB") ? "selected='selected'" : ""; ?>>MDR-TB</option>
-
-                                            <!-- <option value='other' <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "selected='selected'" : ""; ?>> Other </option> -->
+                                            <option value='other' <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "selected='selected'" : ""; ?>> Other </option>
                                         </select>
-                                        <input type="text" class="form-control typeOfPatientOther"
-                                            id="typeOfPatientOther" name="typeOfPatientOther"
-                                            placeholder="<?php echo _translate("Enter case type if others"); ?>" title="
-                                        <?php echo _translate("Please enter case type if others"); ?>"
-                                            style="display: none;" />
+                                        <input type="text" class="form-control typeOfPatientOther <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "isRequired" : ""; ?>"
+                                            id="typeOfPatientOther" name="typeOfPatientOther" value="<?php echo ($tbInfo['other_patient_type'] ?? null); ?>"
+                                            placeholder="<?php echo _translate("Enter case type if others"); ?>" title="<?php echo _translate("Please enter case type if others"); ?>"
+                                            <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "" : "style='display: none;'"; ?> />
                                     </td>
                                 </tr>
                             </table>
@@ -419,8 +410,7 @@ if ($isLisInstance) {
                                         </select>
                                         <input
                                             style="<?php echo (isset($tbInfo['risk_factor_other']) && !empty($tbInfo['risk_factor_other'])) ? "" : "display: none"; ?>"
-                                            value="
-                                        <?php echo $tbInfo['risk_factor_other'] ?? ''; ?>" type="text"
+                                            value="<?php echo $tbInfo['risk_factor_other'] ?? ''; ?>" type="text"
                                             id="riskFactorsOther" name="riskFactorsOther" class="form-control"
                                             placeholder="Enter the other risk factor"
                                             title="Please enter the other risk factor" />
@@ -437,7 +427,7 @@ if ($isLisInstance) {
                                         <input type="text"
                                             value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_treatment_initiation']) ?? ''; ?>"
                                             name="treatmentDate" id="treatmentDate"
-                                            class="treatmentSelectedInput form-control date"
+                                            class="treatmentSelectedInput form-control date <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] == 'yes') ? 'isRequired' : ''; ?>" placeholder="Date of treatment Initiation"
                                             title="Please choose treatment date" onchange="dataCheckValidation();" />
                                     </td>
                                     <td style="width: 33.33%;">
@@ -445,7 +435,7 @@ if ($isLisInstance) {
                                             <?php echo _translate("Current regimen"); ?><span class="mandatory">*</span>
                                         </label>
                                         <input type="text" value="<?php echo $tbInfo['current_regimen'] ?? ''; ?>"
-                                            class="form-control treatmentSelectedInput" id="currentRegimen"
+                                            class="form-control treatmentSelectedInput <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] == 'yes') ? 'isRequired' : ''; ?>" id="currentRegimen"
                                             name="currentRegimen"
                                             placeholder="<?php echo _translate('Enter the current regimen'); ?>"
                                             title="<?php echo _translate('Please enter current regimen'); ?>">
@@ -458,7 +448,7 @@ if ($isLisInstance) {
                                         <input type="text"
                                             value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_initiation_of_current_regimen']) ?? ''; ?>"
                                             name="regimenDate" id="regimenDate"
-                                            class="treatmentSelectedInput form-control date"
+                                            class="treatmentSelectedInput form-control date <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] == 'yes') ? 'isRequired' : ''; ?>" placeholder="Date of Initiation of Current Regimen"
                                             title="Please choose date of current regimen" onchange="dataCheckValidation();" />
                                     </td>
                                 </tr>
@@ -564,8 +554,7 @@ if ($isLisInstance) {
                                         <input type="text" class="form-control specimenTypeOther" id="specimenTypeOther"
                                             name="specimenTypeOther"
                                             placeholder="<?php echo _translate("Enter specimen type of others"); ?>"
-                                            title="
-                                        <?php echo _translate("Please enter the specimen type if others"); ?>"
+                                            title="<?php echo _translate("Please enter the specimen type if others"); ?>"
                                             style="display: none;" />
                                     </td>
                                     <td style="width: 33.33%;">
@@ -657,8 +646,7 @@ if ($isLisInstance) {
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['sample_received_at_lab_datetime'], true); ?>"
                                                                 id="sampleReceivedDate<?php echo $n; ?>"
                                                                 name="testResult[sampleReceivedDate][]"
-                                                                placeholder="<?= _translate("Please enter date"); ?>" title="
-                                                <?php echo _translate("Please enter sample receipt date"); ?>" />
+                                                                placeholder="<?= _translate("Please enter date"); ?>" title="<?php echo _translate("Please enter sample receipt date"); ?>" />
                                                         </td>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="isSampleRejected<?php echo $n; ?>">
@@ -726,8 +714,7 @@ if ($isLisInstance) {
                                                                 type="text" name="testResult[rejectionDate][]"
                                                                 id="rejectionDate<?php echo $n; ?>"
                                                                 placeholder="<?php echo _translate("Select rejection date"); ?>"
-                                                                title="
-                                                <?php echo _translate("Please select the rejection date"); ?>" />
+                                                                title="<?php echo _translate("Please select the rejection date"); ?>" />
                                                         </td>
                                                         <td style="width: 33.33%;"></td>
                                                     </tr>
@@ -813,8 +800,7 @@ if ($isLisInstance) {
                                                                 class="date-time form-control"
                                                                 id="sampleTestedDateTime<?php echo $n; ?>"
                                                                 name="testResult[sampleTestedDateTime][]"
-                                                                placeholder="<?= _translate("Please enter date"); ?>" title="
-                                                <?php echo _translate("Please enter tested date"); ?>" />
+                                                                placeholder="<?= _translate("Please enter date"); ?>" title="<?php echo _translate("Please enter tested date"); ?>" />
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -836,8 +822,7 @@ if ($isLisInstance) {
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['result_reviewed_datetime'], true); ?>"
                                                                 name="testResult[reviewedOn][]" id="reviewedOn<?php echo $n; ?>"
                                                                 class="date-time disabled-field form-control"
-                                                                placeholder="<?php echo _translate("Reviewed On"); ?>" title="
-                                                <?php echo _translate("Please enter reviewed date"); ?>" />
+                                                                placeholder="<?php echo _translate("Reviewed On"); ?>" title="<?php echo _translate("Please enter reviewed date"); ?>" />
                                                         </td>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="approvedBy<?php echo $n; ?>">
@@ -924,8 +909,7 @@ if ($isLisInstance) {
                                                         </label>
                                                         <input type="text" class="date-time form-control"
                                                             id="sampleReceivedDate1" name="testResult[sampleReceivedDate][]"
-                                                            placeholder="<?= _translate("Please enter date"); ?>" title="
-                                                <?php echo _translate("Please enter sample receipt date"); ?>" />
+                                                            placeholder="<?= _translate("Please enter date"); ?>" title="<?php echo _translate("Please enter sample receipt date"); ?>" />
                                                     </td>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="isSampleRejected1">
@@ -970,8 +954,7 @@ if ($isLisInstance) {
                                                         <input class="form-control date rejection-date" type="text"
                                                             name="testResult[rejectionDate][]" id="rejectionDate1"
                                                             placeholder="<?php echo _translate("Select rejection date"); ?>"
-                                                            title="
-                                                <?php echo _translate("Please select the rejection date"); ?>" />
+                                                            title="<?php echo _translate("Please select the rejection date"); ?>" />
                                                     </td>
                                                     <td style="width: 33.33%;"></td>
                                                 </tr>
@@ -1045,8 +1028,7 @@ if ($isLisInstance) {
                                                         </label>
                                                         <input type="text" class="date-time form-control"
                                                             id="sampleTestedDateTime1" name="testResult[sampleTestedDateTime][]"
-                                                            placeholder="<?= _translate("Please enter date"); ?>" title="
-                                                <?php echo _translate("Please enter tested date"); ?>" />
+                                                            placeholder="<?= _translate("Please enter date"); ?>" title="<?php echo _translate("Please enter tested date"); ?>" />
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -1066,8 +1048,7 @@ if ($isLisInstance) {
                                                         </label>
                                                         <input type="text" name="testResult[reviewedOn][]" id="reviewedOn1"
                                                             class="date-time disabled-field form-control"
-                                                            placeholder="<?php echo _translate("Reviewed On"); ?>" title="
-                                                <?php echo _translate("Please enter reviewed date"); ?>" />
+                                                            placeholder="<?php echo _translate("Reviewed On"); ?>" title="<?php echo _translate("Please enter reviewed date"); ?>" />
                                                     </td>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="approvedBy1">
@@ -1585,6 +1566,7 @@ if ($isLisInstance) {
     function showOther(obj, othersId) {
         if (obj == 'other') {
             $('.' + othersId).show();
+            $('.' + othersId).addClass('isRequired');
         } else {
             $('.' + othersId).hide();
         }
