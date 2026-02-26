@@ -127,9 +127,7 @@ try {
 
     //Update patient Information in Patients Table
     //$systemPatientCode = $patientsService->savePatient($_POST, 'form_tb');
-    if (isset($_POST['purposeOfTbTest']) && is_array($_POST['purposeOfTbTest'])) {
-        $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
-    }
+   
     if (isset($_POST['tbTestsRequested']) && is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = implode(",", $_POST['tbTestsRequested']);
     }
@@ -159,7 +157,7 @@ try {
         'province_id' => empty($_POST['provinceId']) ? null : $_POST['provinceId'],
         'lab_id' => $labId,
         'affiliated_lab_id' => empty($_POST['affiliatedLabId']) ? null : $_POST['affiliatedLabId'],
-        'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
+       // 'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
         'etb_tracker_number' => empty($_POST['trackerNo']) ? null : $_POST['trackerNo'],
         //'system_patient_code' => $systemPatientCode,
         'implementing_partner' => empty($_POST['implementingPartner']) ? null : $_POST['implementingPartner'],
