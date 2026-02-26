@@ -452,7 +452,7 @@ if ($isLisInstance) {
                                         <label class="label-control"
                                             for="specimenType"><?php echo _translate("Specimen Type"); ?><span
                                                 class="mandatory">*</span></label>
-                                        <select name="specimenType" id="specimenType"
+                                        <select name="specimenType[]" id="specimenType"
                                             class="form-control isRequired select2"
                                             title="<?php echo _translate("Please choose specimen type"); ?>" multiple
                                             onchange="showOther(this.value,'specimenTypeOther')">
