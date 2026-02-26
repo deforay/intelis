@@ -137,7 +137,7 @@ if ($isLisInstance) {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="width: 33.33%;">
+                                   <!-- <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="affiliatedDistrictHospital"><?php echo _translate("Affiliated District Hospital"); ?></label>
                                         <input type="text" class="form-control" id="affiliatedDistrictHospital"
@@ -145,7 +145,7 @@ if ($isLisInstance) {
                                             placeholder="<?php echo _translate("Enter affiliated district hospital"); ?>"
                                             title="<?php echo _translate("Please enter affiliated district hospital"); ?>" />
                                     </td>
-                                    <!-- <td style="width: 33.33%;">
+                                     <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
                                         <select name="affiliatedLabId" id="affiliatedLabId" class="form-control select2"
@@ -323,7 +323,6 @@ if ($isLisInstance) {
                                         <select id="riskFactors" name="riskFactors[]" multiple class="form-control select2"
                                             title="Please select any one of the risk factors">
                                             <option value="No information provided">No information provided</option>
-                                            <option value="">Select risk factor...</option>
                                             <option value="TB Contact">TB Contact</option>
                                             <option value="PLHIV">PLHIV</option>
                                             <option value="Healthcare provider">Healthcare provider</option>
@@ -393,7 +392,7 @@ if ($isLisInstance) {
                                         <label class="label-control"
                                             for="purposeOfTbTest"><?php echo _translate("Purpose of TB test(s)"); ?><span
                                                 class="mandatory">*</span></label>
-                                        <select id="purposeOfTbTest" multiple name="purposeOfTbTest[]"
+                                        <select id="purposeOfTbTest" name="purposeOfTbTest"
                                             class="form-control isRequired"
                                             title="Please select the purpose of the test">
                                             <option value="">Select purpose of TB test...</option>
