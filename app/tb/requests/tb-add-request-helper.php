@@ -162,9 +162,9 @@ try {
     } else if (isset($_POST['testResult']['labId'][0]) && !empty($_POST['testResult']['labId'][0])) {
         $labId = $_POST['testResult']['labId'][0];
     }
-    if(is_array($_POST['typeOfPatient']))
+    if (is_array($_POST['typeOfPatient']))
         $_POST['typeOfPatient']  = json_encode($_POST['typeOfPatient']);
-    
+
     $tbData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],
@@ -196,7 +196,7 @@ try {
         'is_referred_by_community_actor' => empty($_POST['isReferredByCommunityActor']) ? null : $_POST['isReferredByCommunityActor'],
         'reason_for_tb_test' => empty($reason) ? null : json_encode($reason),
         'risk_factors' => empty($_POST['riskFactors']) ? null : $_POST['riskFactors'],
-        'risk_factor_other' => empty($_POST['riskFactorsOther']) ? null : $_POST['riskFactorsOther'],
+        'risk_factor_other' => (!empty($_POST['riskFactors']) && $_POST['riskFactors'] == 'Others') ? $_POST['riskFactorsOther'] ?? null : null,
         'recommended_corrective_action' => $_POST['correctiveAction'] ?? null,
         'purpose_of_test' => empty($_POST['purposeOfTbTest']) ? null : $_POST['purposeOfTbTest'],
         'hiv_status' => empty($_POST['hivStatus']) ? null : $_POST['hivStatus'],
