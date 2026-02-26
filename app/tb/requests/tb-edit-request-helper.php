@@ -145,6 +145,11 @@ try {
     } else if (isset($_POST['testResult']['labId'][0]) && !empty($_POST['testResult']['labId'][0])) {
         $labId = $_POST['testResult']['labId'][0];
     }
+    if (!empty($_POST['riskFactors']) && is_array($_POST['riskFactors'])) {
+        $_POST['riskFactors'] = implode(",", $_POST['riskFactors']);
+    }
+     if(is_array($_POST['typeOfPatient']))
+        $_POST['typeOfPatient']  = json_encode($_POST['typeOfPatient']);
     $tbData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],
