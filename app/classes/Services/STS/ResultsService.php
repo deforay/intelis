@@ -239,12 +239,10 @@ final class ResultsService
 
                     $localRecord = $this->testRequestsService->findMatchingLocalRecord($resultFromLab, $this->tableName, $this->primaryKeyName);
 
-                    $formAttributes = JsonUtility::jsonToSetString(
+                    $resultFromLab['form_attributes'] = $this->buildSafeFormAttributesExpression(
                         $localRecord['form_attributes'] ?? null,
-                        'form_attributes',
                         $resultFromLab['form_attributes'] ?? null
                     );
-                    $resultFromLab['form_attributes'] = $formAttributes === null || $formAttributes === '' || $formAttributes === '0' ? null : $this->db->func($formAttributes);
 
 
                     // Now we update/insert the record
@@ -328,5 +326,63 @@ final class ResultsService
         }
 
         return $sampleCodes;
+    }
+
+    private function buildSafeFormAttributesExpression(mixed $existingAttributes, mixed $incomingAttributes): mixed
+    {
+        $existing = $this->normalizeFormAttributesPayload($existingAttributes, 'existing');
+        $incoming = $this->normalizeFormAttributesPayload($incomingAttributes, 'incoming');
+        $mergedAttributes = array_merge($existing, $incoming);
+
+        if ($mergedAttributes === []) {
+            return null;
+        }
+
+        $encoded = JsonUtility::toJSON($mergedAttributes);
+        if ($encoded === null || !JsonUtility::isJSON($encoded)) {
+            LoggerUtility::logWarning('Skipping invalid merged form_attributes payload', [
+                'test_type' => $this->testType,
+            ]);
+            return null;
+        }
+
+        // MySQL string literals interpret backslashes, so we escape them here to preserve valid JSON bytes for CAST(... AS JSON).
+        $encoded = str_replace(["\\", "'"], ["\\\\", "''"], $encoded);
+        return $this->db->func("CAST('{$encoded}' AS JSON)");
+    }
+
+    private function normalizeFormAttributesPayload(mixed $payload, string $source): array
+    {
+        if (is_array($payload)) {
+            return $payload;
+        }
+
+        if (!is_string($payload)) {
+            return [];
+        }
+
+        $payload = trim($payload);
+        if ($payload === '') {
+            return [];
+        }
+
+        if (JsonUtility::isJSON($payload)) {
+            $decoded = json_decode($payload, true);
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+
+            LoggerUtility::logWarning('Ignoring non-object JSON payload for form_attributes', [
+                'test_type' => $this->testType,
+                'source' => $source,
+            ]);
+            return [];
+        }
+
+        LoggerUtility::logWarning('Wrapping invalid form_attributes payload into raw_data', [
+            'test_type' => $this->testType,
+            'source' => $source,
+        ]);
+        return ['raw_data' => $payload];
     }
 }
