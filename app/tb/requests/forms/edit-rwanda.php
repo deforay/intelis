@@ -532,7 +532,7 @@ if ($isLisInstance) {
                                             name="sampleCollectionDate" id="sampleCollectionDate"
                                             placeholder="<?php echo _translate("Sample Collection Date"); ?>"
                                             title="<?php echo _translate("Please select the sample collection date"); ?>"
-                                            onchange="generateSampleCode(); checkCollectionDate(this.value);" />
+                                            onchange="checkCollectionDate(this.value);" />
                                         <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                     </td>
                                     <td style="width: 33.33%;">
