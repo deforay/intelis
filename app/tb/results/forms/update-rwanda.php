@@ -584,8 +584,7 @@ if ($isLisInstance) {
                                                                 name="testResult[sampleRejectionReason][]"
                                                                 id="sampleRejectionReason<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the reason for rejection"); ?>">
-                                                                <option value=''> -- <?php echo _translate("Select"); ?> --
-                                                                </option>
+                                                                <option value=''> -- <?php echo _translate("Select"); ?> --</option>
                                                                 <?php foreach ($rejectionTypeResult as $type) { ?>
                                                                     <optgroup
                                                                         label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
