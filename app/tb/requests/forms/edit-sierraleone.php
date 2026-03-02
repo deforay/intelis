@@ -19,6 +19,7 @@ use App\Services\DatabaseService;
 use App\Services\TbService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -76,10 +77,9 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
 $typeOfPatient = $tbInfo['patient_type'] ?? '';
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
-$testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
+$testTypeRequested = JsonUtility::isJSON($tbInfo['tests_requested']) ? json_decode($tbInfo['tests_requested']) : [];
 $diagnosis = (array) $reasonForTbTest->elaboration->diagnosis;
-$followupArr = (array) $reasonForTbTest->elaboration;
-$followup = (array) $followupArr['follow-up'];
+$followup = (array) $reasonForTbTest->elaboration->followup;
 
 $attributes = null;
 if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
@@ -96,7 +96,6 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 
 
 ?>
-
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
@@ -548,8 +547,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 											</select>
 										</td> -->
 										<th scope="row">
-											<label class="label-control" for="testTypeRequested">Test(s) requested<span
-													class="mandatory">*</span> </label>
+											<label class="label-control" for="testTypeRequested">Test(s) requested<span class="mandatory">*</span> </label>
 										</th>
 										<td>
 											<select name="testTypeRequested[]" id="testTypeRequested"
@@ -591,7 +589,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 						</div>
 						<?php if (_isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
 							<?php // if (false) {
-								?>
+							?>
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
@@ -688,7 +686,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 																	<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($tbInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
 																		<?= $reject['rejection_reason_name']; ?>
 																	</option>
-																<?php }
+															<?php }
 															} ?>
 														</optgroup>
 													<?php }
@@ -772,7 +770,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 																			title="Please enter the actual number" />
 																	</td>
 																</tr>
-																<?php
+															<?php
 															} else { ?>
 																<tr>
 																	<td class="text-center"><?php echo $no; ?></td>
@@ -792,7 +790,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 																			title="Please enter the actual number" />
 																	</td>
 																</tr>
-															<?php }
+														<?php }
 														} ?>
 													</tbody>
 												</table>
@@ -1032,13 +1030,13 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-			tableName: tableName,
-			fieldName: fieldName,
-			value: removeDots.trim(),
-			fnct: fnct,
-			format: "html"
-		},
-			function (data) {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: removeDots.trim(),
+				fnct: fnct,
+				format: "html"
+			},
+			function(data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";
@@ -1051,10 +1049,10 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 		var selectedTestingPoint = null;
 		if (labId) {
 			$.post("/includes/getTestingPoints.php", {
-				labId: labId,
-				selectedTestingPoint: selectedTestingPoint
-			},
-				function (data) {
+					labId: labId,
+					selectedTestingPoint: selectedTestingPoint
+				},
+				function(data) {
 					if (data != "") {
 						$(".testingPointField").show();
 						$("#testingPoint").html(data);
@@ -1076,10 +1074,10 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 		}
 		if ($.trim(pName) != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-				pName: pName,
-				testType: 'tb'
-			},
-				function (data) {
+					pName: pName,
+					testType: 'tb'
+				},
+				function(data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#facilityId").html(details[0]);
@@ -1103,10 +1101,10 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 		var pName = obj.value;
 		if ($.trim(pName) != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-				pName: pName,
-				testType: 'tb'
-			},
-				function (data) {
+					pName: pName,
+					testType: 'tb'
+				},
+				function(data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#patientDistrict").html(details[1]);
@@ -1136,11 +1134,11 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 		var cName = $("#facilityId").val();
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-				dName: dName,
-				cliName: cName,
-				testType: 'tb'
-			},
-				function (data) {
+					dName: dName,
+					cliName: cName,
+					testType: 'tb'
+				},
+				function(data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#facilityId").html(details[0]);
@@ -1162,10 +1160,10 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 		}
 		if (cName != '' && facilityName) {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-				cName: cName,
-				testType: 'tb'
-			},
-				function (data) {
+					cName: cName,
+					testType: 'tb'
+				},
+				function(data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#province").html(details[0]);
@@ -1195,7 +1193,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 		}
 	}
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 
 
 
@@ -1208,15 +1206,15 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			maxDate: "Today",
 			yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
-			onSelect: function (dateText, inst) {
+			onSelect: function(dateText, inst) {
 				//$("#sampleCollectionDate").datetimepicker("option", "minDate", $("#dob").datepicker("getDate"));
 				$(this).change();
 			}
-		}).click(function () {
+		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
 
-		$("#labId,#facilityId,#sampleCollectionDate").on('change', function () {
+		$("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
 			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
 				$('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
 			}
@@ -1226,11 +1224,11 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 
 			if ($("#labId").val() != "") {
 				$.post("/includes/get-sample-type.php", {
-					facilityId: $('#labId').val(),
-					testType: 'tb',
-					sampleId: '<?php echo $tbInfo['specimen_type']; ?>'
-				},
-					function (data) {
+						facilityId: $('#labId').val(),
+						testType: 'tb',
+						sampleId: '<?php echo $tbInfo['specimen_type']; ?>'
+					},
+					function(data) {
 						if (data != "") {
 							$("#specimenType").html(data);
 						}
@@ -1271,11 +1269,11 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 			placeholder: "Select Patient Region"
 		});
 
-		$('#isResultAuthorized').change(function (e) {
+		$('#isResultAuthorized').change(function(e) {
 			checkIsResultAuthorized();
 		});
 
-		$('#sourceOfAlertPOE').change(function (e) {
+		$('#sourceOfAlertPOE').change(function(e) {
 			if (this.value == 'others') {
 				$('.show-alert-poe').show();
 				$('#alertPoeOthers').addClass('isRequired');
@@ -1285,22 +1283,22 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 			}
 		});
 		<?php if (isset($arr['tb_positive_confirmatory_tests_required_by_central_lab']) && $arr['tb_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
-			$(document).on('change', '.test-result, #result', function (e) {
+			$(document).on('change', '.test-result, #result', function(e) {
 				checkPostive();
 			});
 		<?php } ?>
 		getfacilityProvinceDetails($("#facilityId").val());
-		$("#labId").change(function (e) {
+		$("#labId").change(function(e) {
 			if ($(this).val() != "") {
 				$.post("/tb/requests/get-attributes-data.php", {
-					id: this.value,
-				},
-					function (data) {
+						id: this.value,
+					},
+					function(data) {
 						//console.log(data);
 						if (data != "" && data != false) {
 							_data = jQuery.parseJSON(data);
 							$(".platform").hide();
-							$.each(_data, function (index, value) {
+							$.each(_data, function(index, value) {
 								$("." + value).show();
 							});
 						}
