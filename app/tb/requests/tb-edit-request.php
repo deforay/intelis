@@ -147,7 +147,6 @@ if (!$canEdit) {
 }
 require_once($fileArray[$arr['vl_form']]);
 ?>
-
 <script>
     function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
         if ($.trim($("#" + id).val()) != '') {
