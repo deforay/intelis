@@ -69,7 +69,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
 $typeOfPatient = $tbInfo['patient_type'] ?? '';
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
-$testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
+$testTypeRequested = JsonUtility::isJSON($tbInfo['tests_requested']) ? json_decode($tbInfo['tests_requested']) : [];
 $diagnosis = (array) $reasonForTbTest->elaboration->diagnosis;
 $followup = (array) $reasonForTbTest->elaboration->followup;
 $attributes = null;
@@ -469,7 +469,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 						</div>
 						<?php if (_isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
 							<?php // if (false) {
-								?>
+							?>
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
@@ -569,7 +569,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 																	<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($tbInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
 																		<?= $reject['rejection_reason_name']; ?>
 																	</option>
-																<?php }
+															<?php }
 															} ?>
 														</optgroup>
 													<?php }
@@ -652,7 +652,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 																			title="Please enter the actual number" />
 																	</td>
 																</tr>
-																<?php
+															<?php
 															} else { ?>
 																<tr>
 																	<td class="text-center"><?php echo $no; ?></td>
@@ -672,7 +672,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 																			title="Please enter the actual number" />
 																	</td>
 																</tr>
-															<?php }
+														<?php }
 														} ?>
 													</tbody>
 												</table>
@@ -897,13 +897,13 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-			tableName: tableName,
-			fieldName: fieldName,
-			value: removeDots.trim(),
-			fnct: fnct,
-			format: "html"
-		},
-			function (data) {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: removeDots.trim(),
+				fnct: fnct,
+				format: "html"
+			},
+			function(data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";
@@ -916,10 +916,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		var selectedTestingPoint = null;
 		if (labId) {
 			$.post("/includes/getTestingPoints.php", {
-				labId: labId,
-				selectedTestingPoint: selectedTestingPoint
-			},
-				function (data) {
+					labId: labId,
+					selectedTestingPoint: selectedTestingPoint
+				},
+				function(data) {
 					if (data != "") {
 						$(".testingPointField").show();
 						$("#testingPoint").html(data);
@@ -941,10 +941,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		}
 		if ($.trim(pName) != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-				pName: pName,
-				testType: 'tb'
-			},
-				function (data) {
+					pName: pName,
+					testType: 'tb'
+				},
+				function(data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#facilityId").html(details[0]);
@@ -968,10 +968,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		var pName = obj.value;
 		if ($.trim(pName) != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-				pName: pName,
-				testType: 'tb'
-			},
-				function (data) {
+					pName: pName,
+					testType: 'tb'
+				},
+				function(data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#patientDistrict").html(details[1]);
@@ -999,7 +999,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		$("#patientNationality").select2('val', patientArray[12]);
 		$("#patientCity").val(patientArray[13]);
 
-		setTimeout(function () {
+		setTimeout(function() {
 			$("#patientDistrict").val(patientArray[15]).trigger('change');
 		}, 3000);
 	}
@@ -1011,11 +1011,11 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		var cName = $("#facilityId").val();
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-				dName: dName,
-				cliName: cName,
-				testType: 'tb'
-			},
-				function (data) {
+					dName: dName,
+					cliName: cName,
+					testType: 'tb'
+				},
+				function(data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#facilityId").html(details[0]);
@@ -1037,10 +1037,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		}
 		if (cName != '' && facilityName) {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-				cName: cName,
-				testType: 'tb'
-			},
-				function (data) {
+					cName: cName,
+					testType: 'tb'
+				},
+				function(data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#province").html(details[0]);
@@ -1070,7 +1070,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		}
 	}
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 
 
 
@@ -1104,11 +1104,11 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 			placeholder: "Select Patient Region"
 		});
 
-		$('#isResultAuthorized').change(function (e) {
+		$('#isResultAuthorized').change(function(e) {
 			checkIsResultAuthorized();
 		});
 
-		$('#sourceOfAlertPOE').change(function (e) {
+		$('#sourceOfAlertPOE').change(function(e) {
 			if (this.value == 'others') {
 				$('.show-alert-poe').show();
 				$('#alertPoeOthers').addClass('isRequired');
@@ -1118,22 +1118,22 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 			}
 		});
 		<?php if (isset($arr['tb_positive_confirmatory_tests_required_by_central_lab']) && $arr['tb_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
-			$(document).on('change', '.test-result, #result', function (e) {
+			$(document).on('change', '.test-result, #result', function(e) {
 				checkPostive();
 			});
 		<?php } ?>
 		getfacilityProvinceDetails($("#facilityId").val());
-		$("#labId").change(function (e) {
+		$("#labId").change(function(e) {
 			if ($(this).val() != "") {
 				$.post("/tb/requests/get-attributes-data.php", {
-					id: this.value,
-				},
-					function (data) {
+						id: this.value,
+					},
+					function(data) {
 						//console.log(data);
 						if (data != "" && data != false) {
 							_data = jQuery.parseJSON(data);
 							$(".platform").hide();
-							$.each(_data, function (index, value) {
+							$.each(_data, function(index, value) {
 								$("." + value).show();
 							});
 						}
