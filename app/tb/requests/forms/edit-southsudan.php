@@ -13,7 +13,6 @@ foreach ($nationalityResult as $nrow) {
 	$nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
 }
 
-
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
 $tbXPertResults = $tbService->getTbResults('x-pert');
@@ -47,9 +46,10 @@ $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility
 $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
 $typeOfPatient = $tbInfo['patient_type'] ?? '';
+
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
-//$testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
-$testTypeRequested = explode(',', $tbInfo['tests_requested']);
+$testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
+//$testTypeRequested = explode(',', $tbInfo['tests_requested']);
 $diagnosis = (array) $reasonForTbTest->elaboration->diagnosis;
 $followup = (array) $reasonForTbTest->elaboration->followup;
 $attributes = null;
@@ -186,8 +186,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												<option value="nutrition" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'nutrition') ? "selected='selected'" : ""; ?>>Nutrition</option>
 												<option value="other" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'other') ? "selected='selected'" : ""; ?>>Others</option>
 											</select>
-										</td>
-										<td>
 											<input type="text" class="form-control typeOfReferringUnit"
 												style="display: none;" name="typeOfReferringUnit"
 												id="typeOfReferringUnit"
@@ -195,16 +193,15 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												placeholder="Enter other reffering unit"
 												title="Please enter the other referring unit" />
 										</td>
-										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+										
 											<td><label class="label-control" for="labId">Testing Laboratory <span
 														class="mandatory">*</span></label> </td>
 											<td>
 												<select name="labId" id="labId" class="form-control select2 isRequired"
-													title="Please select Testing Testing Laboratory" style="width:100%;">
+													title="Please select Testing Laboratory" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
 												</select>
 											</td>
-										<?php } ?>
 									</tr>
 								</table>
 
@@ -491,13 +488,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td><label class="label-control" for="labId">Testing Laboratory</label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control select2"
-													title="Please select Testing Testing Laboratory" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
-												</select>
-											</td>
 											<th scope="row"><label class="label-control" for="sampleTestedDateTime">Date of
 													Sample Tested</label></th>
 											<td>
@@ -507,9 +497,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter sample tested" style="width:100%;" />
 											</td>
-										</tr>
-										<tr>
-
 											<th scope="row"><label class="label-control" for="sampleDispatchedDate">Sample
 													Dispatched On</label></th>
 											<td>
@@ -520,6 +507,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please choose sample dispatched date" style="width:100%;" />
 											</td>
+										</tr>
+										<tr>
 											<th scope="row"><label class="label-control" for="testedBy">Tested By</label>
 											</th>
 											<td>
@@ -528,8 +517,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
 												</select>
 											</td>
-										</tr>
-										<tr>
 											<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample
 													Rejected?</label></th>
 											<td>
@@ -540,7 +527,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<option value="no" <?php echo (isset($tbInfo['is_sample_rejected']) && $tbInfo['is_sample_rejected'] == "no") ? "selected='selecetd'" : ""; ?>> No </option>
 												</select>
 											</td>
-											<th scope="row" class="show-rejection" style="display:none;"><label
+										</tr>
+										<tr class="show-rejection" style="display:none;">
+											<th scope="row"><label
 													class="label-control" for="sampleRejectionReason">Reason for
 													Rejection<span class="mandatory">*</span></label></th>
 											<td class="show-rejection" style="display:none;">
@@ -566,8 +555,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													} ?>
 												</select>
 											</td>
-										</tr>
-										<tr class="show-rejection" style="display:none;">
 											<th scope="row"><label class="label-control" for="rejectionDate">Rejection
 													Date<span class="mandatory">*</span></label></th>
 											<td><input
@@ -577,6 +564,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													placeholder="Select rejection date"
 													title="Please select the rejection date" /></td>
 										</tr>
+									
 										<tr class="platform microscopy" <?php echo (isset($attributes) && $attributes != "" && in_array("microscopy", $attributes)) ? 'style="display:none;"' : ''; ?>>
 											<td colspan="4">
 												<table aria-describedby="table" class="table table-bordered table-striped"

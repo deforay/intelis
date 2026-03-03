@@ -147,7 +147,7 @@ try {
 
 
     if (is_array($_POST['tbTestsRequested'])) {
-        $_POST['tbTestsRequested'] = implode(",", $_POST['tbTestsRequested']);
+        $_POST['tbTestsRequested'] = json_encode($_POST['tbTestsRequested']);
     }
     if ((isset($_POST['isResultFinalized']) && !empty($_POST['isResultFinalized']) && isset($_POST['finalResult']) && !empty($_POST['finalResult'])) && $_POST['isResultFinalized'] == 'yes') {
         $_POST['finalResult'] = $_POST['finalResult'];
@@ -183,7 +183,7 @@ try {
         'funding_source' => empty($_POST['fundingSource']) ? null : $_POST['fundingSource'],
         'referring_unit' => empty($_POST['referringUnit']) ? null : $_POST['referringUnit'],
         'patient_id' => empty($_POST['patientId']) ? null : $_POST['patientId'],
-        'patient_type' => empty($_POST['typeOfPatient']) ? null : json_encode($_POST['typeOfPatient']),
+        'patient_type' => empty($_POST['typeOfPatient']) ? null : $_POST['typeOfPatient'],
         'patient_name' => empty($_POST['firstName']) ? null : $_POST['firstName'],
         'patient_surname' => empty($_POST['lastName']) ? null : $_POST['lastName'],
         'patient_dob' => empty($_POST['dob']) ? null : $_POST['dob'],
@@ -262,9 +262,9 @@ try {
         $tbData['source_of_request'] = 'vlsts';
     }
 
-    /* echo "<pre>";
+     echo "<pre>";
     print_r($tbData);
-    die; */
+    die; 
     /**
      * TB Test Data Handling Logic:
      *
