@@ -226,8 +226,6 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 												<option value="nutrition" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'nutrition') ? "selected='selected'" : ""; ?>>Nutrition</option>
 												<option value="other" <?php echo (isset($tbInfo['referring_unit']) && $tbInfo['referring_unit'] == 'other') ? "selected='selected'" : ""; ?>>Others</option>
 											</select>
-										</td>
-										<td>
 											<input type="text" class="form-control typeOfReferringUnit"
 												style="display: none;" name="typeOfReferringUnit"
 												id="typeOfReferringUnit"
@@ -235,7 +233,8 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 												placeholder="Enter other reffering unit"
 												title="Please enter the other referring unit" />
 										</td>
-										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+									</tr>
+									<tr>
 											<td><label class="label-control" for="labId">Testing Laboratory <span
 														class="mandatory">*</span></label> </td>
 											<td>
@@ -244,10 +243,8 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 													<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
 												</select>
 											</td>
-										<?php } ?>
 									</tr>
 								</table>
-
 
 								<div class="box-header with-border sectionHeader">
 									<h3 class="box-title">PATIENT INFORMATION</h3>
@@ -550,7 +547,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 											<label class="label-control" for="testTypeRequested">Test(s) requested<span class="mandatory">*</span> </label>
 										</th>
 										<td>
-											<select name="testTypeRequested[]" id="testTypeRequested"
+											<select name="tbTestsRequested[]" id="tbTestsRequested"
 												class="select2 form-control isRequired"
 												title="Please choose type of test request" style="width:100%" multiple>
 												<optgroup label="Microscopy">
@@ -597,13 +594,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td><label class="label-control" for="labId">Testing Laboratory</label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control select2"
-													title="Please select Testing Testing Laboratory" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
-												</select>
-											</td>
+											
 											<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of
 													Reception </label></th>
 											<td>
@@ -613,9 +604,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter sample receipt date" style="width:100%;" />
 											</td>
-										</tr>
-										<tr>
-											<th scope="row"><label class="label-control" for="sampleTestedDateTime">Date of
+												<th scope="row"><label class="label-control" for="sampleTestedDateTime">Date of
 													Sample Tested</label></th>
 											<td>
 												<input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>"
@@ -625,6 +614,9 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter sample tested" style="width:100%;" />
 											</td>
+										</tr>
+										<tr>
+										
 											<th scope="row"><label class="label-control" for="sampleDispatchedDate">Sample
 													Dispatched On</label></th>
 											<td>
@@ -635,8 +627,6 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please choose sample dispatched date" style="width:100%;" />
 											</td>
-										</tr>
-										<tr>
 											<th scope="row"><label class="label-control" for="testedBy">Tested By</label>
 											</th>
 											<td>
@@ -645,6 +635,9 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
 												</select>
 											</td>
+										</tr>
+										<tr>
+										
 											<th scope="row"><label class="label-control" for="testedBy">Date Of
 													Result</label></th>
 											<td>
@@ -653,10 +646,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 													name="resultDate" placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter result date" style="width:100%;" />
 											</td>
-
-										</tr>
-										<tr>
-											<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample
+										<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample
 													Rejected?</label></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected"
@@ -667,6 +657,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 												</select>
 											</td>
 										</tr>
+									
 										<tr class="show-rejection" style="display:none;">
 											<th scope="row" class="show-rejection" style="display:none;"><label
 													class="label-control" for="sampleRejectionReason">Reason for

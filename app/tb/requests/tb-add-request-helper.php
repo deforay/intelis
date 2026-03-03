@@ -262,9 +262,7 @@ try {
         $tbData['source_of_request'] = 'vlsts';
     }
 
-     echo "<pre>";
-    print_r($tbData);
-    die; 
+   
     /**
      * TB Test Data Handling Logic:
      *

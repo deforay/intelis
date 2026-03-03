@@ -71,7 +71,8 @@ $typeOfPatient = $tbInfo['patient_type'] ?? '';
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
 $testTypeRequested = JsonUtility::isJSON($tbInfo['tests_requested']) ? json_decode($tbInfo['tests_requested']) : [];
 $diagnosis = (array) $reasonForTbTest->elaboration->diagnosis;
-$followup = (array) $reasonForTbTest->elaboration->followup;
+$followupArr = (array) $reasonForTbTest->elaboration;
+$followup = (array) $followupArr['follow-up'];
 $attributes = null;
 if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	$db->where("f.facility_id", $tbInfo['lab_id']);
@@ -208,15 +209,15 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												id="otherReferringUnit" placeholder="Enter other reffering unit"
 												title="Please enter the other referring unit" />
 										</td>
-										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-											<td><label class="label-control" for="labId">Testing Laboratory </label> </td>
+										</tr>
+										<tr>
+											<td><label class="label-control" for="labId">Testing Laboratory </label></td>
 											<td>
 												<select name="labId" id="labId" class="form-control select2"
-													title="Please select Testing Testing Laboratory" style="width:100%;">
+													title="Please select Testing Laboratory" style="width:100%;">
 													<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
 												</select>
 											</td>
-										<?php } ?>
 									</tr>
 								</table>
 
@@ -381,14 +382,38 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<tr class="follow-up hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "table-row" : "none"; ?>; border: 1px solid #8080804f;">
 										<td colspan="2"></td>
 										<td colspan="2" style="text-align: left; padding: 10px;">
-											<label>Follow Up Details</label>
-											<input type="text"
-												value="<?php echo (isset($followup['value']) && $followup['value'] != "" && trim((string) $followup['value']) !== "") ? $followup['value'] : ""; ?>"
-												class="form-control followup-uncheck reason-checkbox" id="followUp"
-												name="reasonForTbTest[elaboration][followup][value]"
-												placeholder="Enter the follow up"
-												title="Please enter the follow up"
-												style="width: 300px; display: inline-block;">
+											<ul class="followUp" style="display: inline-flex; list-style: none; padding: 0px; margin: 0;">
+												<li style="margin-right: 20px;">
+													<label>Month Of Treatment</label>
+													<input type="text"
+														value="<?php echo (isset($followup['month-of-treatment']) && $followup['month-of-treatment'] != "" && trim((string) $followup['month-of-treatment']) !== "") ? $followup['month-of-treatment'] : ""; ?>"
+														class="form-control followup-uncheck reason-checkbox"
+														id="followUp"
+														name="reasonForTbTest[elaboration][follow-up][month-of-treatment]"
+														placeholder="Enter Month Of Treatment"
+														title="Please enter Month Of Treatment">
+												</li>
+												<li style="margin-right: 20px;">
+													<label>Patient's District TB No.</label>
+													<input type="text"
+														value="<?php echo (isset($followup['patient-district-tb-no']) && $followup['patient-district-tb-no'] != "" && trim((string) $followup['patient-district-tb-no']) !== "") ? $followup['patient-district-tb-no'] : ""; ?>"
+														class="form-control followup-uncheck reason-checkbox"
+														id="followUp"
+														name="reasonForTbTest[elaboration][follow-up][patient-district-tb-no]"
+														placeholder="Enter Patient's District TB No."
+														title="Please enter Patient's District TB No.">
+												</li>
+												<li>
+													<label>Patient's MDR No.</label>
+													<input type="text"
+														value="<?php echo (isset($followup['patient-mdr-no']) && $followup['patient-mdr-no'] != "" && trim((string) $followup['patient-mdr-no']) !== "") ? $followup['patient-mdr-no'] : ""; ?>"
+														class="form-control followup-uncheck reason-checkbox"
+														id="followUp"
+														name="reasonForTbTest[elaboration][follow-up][patient-mdr-no]"
+														placeholder="Enter Patient's MDR No."
+														title="Please enter Patient's MDR No.">
+												</li>
+											</ul>
 										</td>
 									</tr>
 								</table>
@@ -402,7 +427,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												Specimen Collected </label></th>
 										<td style="width:35%">
 											<input class="form-control"
-												value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text"
+												value="<?php echo $tbInfo['sample_collection_date']; ?>"  type="text"
 												name="sampleCollectionDate" id="sampleCollectionDate"
 												placeholder="Sample Collection Date" />
 										</td>
@@ -444,11 +469,11 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									</tr>
 									<tr>
 										<th scope="row">
-											<label class="label-control" for="testTypeRequested">Test(s) requested
+											<label class="label-control" for="tbTestsRequested">Test(s) requested
 											</label>
 										</th>
 										<td>
-											<select name="testTypeRequested[]" id="testTypeRequested"
+											<select name="tbTestsRequested[]" id="tbTestsRequested"
 												class="select2 form-control" title="Please choose type of test request"
 												style="width:100%" multiple>
 												<optgroup label="Microscopy">
@@ -461,6 +486,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 														ULTRA</option>
 													<option value="TB LAM" <?php echo (isset($tbInfo['tests_requested']) && in_array("TB LAM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>TB LAM</option>
 												</optgroup>
+												<option value="Culture" <?php echo (isset($tbInfo['tests_requested']) && in_array("Culture", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>Culture</option>
+												<option value="Drug Susceptibility" <?php echo (isset($tbInfo['tests_requested']) && in_array("Drug Susceptibility", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>Drug Susceptibility</option>
+												<option value="Line probe assay" <?php echo (isset($tbInfo['tests_requested']) && in_array("Line probe assay", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>Line probe
+													assay</option>
 											</select>
 										</td>
 									</tr>
@@ -477,14 +506,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td><label class="label-control" for="labId">Testing Laboratory<span
-														class="mandatory">*</span></label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control select2 isRequired"
-													title="Please select Testing Testing Laboratory" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
-												</select>
-											</td>
+											
 											<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of
 													Reception </label></th>
 											<td>
@@ -494,9 +516,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter sample receipt date" style="width:100%;" />
 											</td>
-
-										</tr>
-										<tr>
 											<th scope="row"><label class="label-control" for="sampleTestedDateTime">Date of
 													Sample Tested <span class="mandatory">*</span></label></th>
 											<td>
@@ -506,6 +525,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter sample tested" style="width:100%;" />
 											</td>
+										</tr>
+										<tr>
+											
 											<th scope="row"><label class="label-control" for="testedBy">Tested By</label>
 											</th>
 											<td>
@@ -514,9 +536,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
 												</select>
 											</td>
-
-										</tr>
-										<tr>
 											<th scope="row"><label class="label-control" for="testedBy">Date Of
 													Result</label></th>
 											<td>
@@ -526,7 +545,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													name="resultDate" placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter result date" style="width:100%;" />
 											</td>
-
+										</tr>
+										<tr>
+											
 											<th scope="row"><label class="label-control" for="sampleDispatchedDate">Sample
 													Dispatched On</label></th>
 											<td>
@@ -537,10 +558,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please choose sample dispatched date" style="width:100%;" />
 											</td>
-
-
-										</tr>
-										<tr>
 											<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample
 													Rejected? <span class="mandatory">*</span></label></th>
 											<td>
@@ -551,7 +568,11 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<option value="no" <?php echo (isset($tbInfo['is_sample_rejected']) && $tbInfo['is_sample_rejected'] == "no") ? "selected='selecetd'" : ""; ?>> No </option>
 												</select>
 											</td>
-											<th scope="row" class="show-rejection" style="display:none;"><label
+
+										</tr>
+										<tr class="show-rejection" style="display:none;">
+											
+											<th scope="row"><label
 													class="label-control" for="sampleRejectionReason">Reason for Rejection
 													<span class="mandatory">*</span></label></th>
 											<td class="show-rejection" style="display:none;">
@@ -585,9 +606,6 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													style="width:100%;display:none;margin-top:2px;">
 
 											</td>
-										</tr>
-										<tr class="show-rejection" style="display:none;">
-
 											<th class="labels">Recommended Corrective Action</th>
 											<td><select name="correctiveAction" id="correctiveAction" class="form-control"
 													title="Please choose Recommended corrective action">
@@ -601,6 +619,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<?php } ?>
 												</select>
 											</td>
+										</tr>
+										<tr class="show-rejection" style="display:none;">
+
 											<th scope="row"><label class="label-control" for="rejectionDate">Rejection
 													Date<span class="mandatory">*</span></label></th>
 											<td><input
