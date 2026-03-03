@@ -194,15 +194,15 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 												<option value="nutrition">Nutrition</option>
 												<option value="other">Others</option>
 											</select>
-										</td>
-										<td>
 											<input type="text" class="form-control typeOfReferringUnit"
 												id="typeOfReferringUnit" name="typeOfReferringUnit"
 												placeholder="Enter other of referring unit if others"
 												title="Please enter other of referring unit if others"
 												style="display: none;" />
 										</td>
-										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+									</tr>
+									<tr>
+									
 											<td><label class="label-control" for="labId">Testing Laboratory <span
 														class="mandatory">*</span></label> </td>
 											<td>
@@ -211,7 +211,6 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
 												</select>
 											</td>
-										<?php } ?>
 									</tr>
 								</table>
 
@@ -498,7 +497,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													class="mandatory">*</span></label>
 										</th>
 										<td>
-											<select name="testTypeRequested[]" id="testTypeRequested"
+											<select name="tbTestsRequested[]" id="tbTestsRequested"
 												class="select2 form-control isRequired"
 												title="Please choose type of test request" style="width:100%" multiple>
 												<optgroup label="Microscopy">
@@ -542,13 +541,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td><label class="label-control" for="labId">Testing Laboratory</label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control select2"
-													title="Please select Testing Testing Laboratory" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-												</select>
-											</td>
+											
 											<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of
 													Reception </label></th>
 											<td>
@@ -557,8 +550,6 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter sample receipt date" style="width:100%;" />
 											</td>
-										</tr>
-										<tr>
 											<th scope="row"><label class="label-control" for="sampleTestedDateTime">Date of
 													Sample Tested</label></th>
 											<td>
@@ -567,7 +558,9 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter sample tested" style="width:100%;" />
 											</td>
-
+										</tr>
+										<tr>
+											
 											<th scope="row"><label class="label-control" for="sampleDispatchedDate">Sample
 													Dispatched On</label></th>
 											<td>
@@ -576,8 +569,6 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please choose sample dispatched date" style="width:100%;" />
 											</td>
-										</tr>
-										<tr>
 											<th scope="row"><label class="label-control" for="testedBy">Tested By</label>
 											</th>
 											<td>
@@ -586,6 +577,9 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
+										</tr>
+										<tr>
+											
 											<th scope="row"><label class="label-control" for="resultDate">Date Of
 													Result</label></th>
 											<td>
@@ -594,10 +588,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter result date" style="width:100%;" />
 											</td>
-
-										</tr>
-										<tr>
-											<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample
+										<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample
 													Rejected?</label></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected"
@@ -608,6 +599,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 												</select>
 											</td>
 										</tr>
+										
 										<tr class="show-rejection" style="display:none;">
 											<th scope="row" class="show-rejection" style="display:none;"><label
 													class="label-control" for="sampleRejectionReason">Reason for

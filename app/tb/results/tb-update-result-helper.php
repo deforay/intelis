@@ -101,7 +101,7 @@ try {
         $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
     }
     if (is_array($_POST['tbTestsRequested'])) {
-        $_POST['tbTestsRequested'] = implode(",", $_POST['tbTestsRequested']);
+        $_POST['tbTestsRequested'] = json_encode($_POST['tbTestsRequested']);
     }
 
     if ((isset($_POST['isResultFinalized']) && !empty($_POST['isResultFinalized']) && isset($_POST['finalResult']) && !empty($_POST['finalResult'])) && $_POST['isResultFinalized'] == 'yes') {
@@ -110,7 +110,7 @@ try {
         $_POST['finalResult'] = null;
     }
 
-    $labId = null;
+     $labId = null;
     if (isset($_POST['labId']) && !empty($_POST['labId'])) {
         $labId = $_POST['labId'];
     } else if (isset($_POST['testResult']['labId'][0]) && !empty($_POST['testResult']['labId'][0])) {
@@ -119,7 +119,7 @@ try {
     $tbData = [
         //'tests_requested' => empty($_POST['tbTestsRequested']) ? null : $_POST['tbTestsRequested'],
         'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
-        'lab_id' => $labId,
+        //'lab_id' => $labId,
         'result_date' => empty($_POST['resultDate']) ? null : $_POST['resultDate'],
         'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
         'is_sample_rejected' => empty($_POST['isSampleRejected']) ? null : $_POST['isSampleRejected'],
@@ -164,7 +164,7 @@ try {
     } else {
         $tbData['result_modified'] = "no";
     }
-
+//echo "<pre>"; print_r($tbData); die;
     $id = 0;
 
     /**
