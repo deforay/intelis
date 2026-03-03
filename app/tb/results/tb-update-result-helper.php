@@ -103,7 +103,7 @@ try {
     if (is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = implode(",", $_POST['tbTestsRequested']);
     }
-   
+
     if ((isset($_POST['isResultFinalized']) && !empty($_POST['isResultFinalized']) && isset($_POST['finalResult']) && !empty($_POST['finalResult'])) && $_POST['isResultFinalized'] == 'yes') {
         $_POST['finalResult'] = $_POST['finalResult'];
     } else {
@@ -117,7 +117,7 @@ try {
         $labId = $_POST['testResult']['labId'][0];
     }
     $tbData = [
-      //'tests_requested' => empty($_POST['tbTestsRequested']) ? null : $_POST['tbTestsRequested'],
+        //'tests_requested' => empty($_POST['tbTestsRequested']) ? null : $_POST['tbTestsRequested'],
         'affiliated_district_hospital' => empty($_POST['affiliatedDistrictHospital']) ? null : $_POST['affiliatedDistrictHospital'],
         'lab_id' => $labId,
         'result_date' => empty($_POST['resultDate']) ? null : $_POST['resultDate'],
@@ -233,6 +233,19 @@ try {
         $tbData['result_reviewed_datetime'] = DateUtility::isoDateFormat($testResult['reviewedOn'][$lastIndex] ?? null, true);
         $tbData['result_approved_by'] = $testResult['approvedBy'][$lastIndex] ?? null;
         $tbData['result_approved_datetime'] = DateUtility::isoDateFormat($testResult['approvedOn'][$lastIndex] ?? null, true);
+    } else {
+        $testResult = $_POST['testResult'];
+        $db->where('tb_id', $_POST['tbSampleId']);
+        $db->delete($testTableName);
+        foreach ($testResult as $key => $result) {
+            $db->insert($testTableName, [
+                'tb_id' => $_POST['tbSampleId'] ?? null,
+                'lab_id' => $_POST['labId'] ?? null,
+                'actual_no' => $_POST['actualNo'][$key] ?? null,
+                'test_result' => $result ?? null,
+                'updated_datetime' => DateUtility::getCurrentDateTime()
+            ]);
+        }
     }
     // For flat testResult[] (other countries): no tb_tests operations, form_tb already has all data
 
