@@ -312,6 +312,19 @@ try {
         $tbData['result_reviewed_datetime'] = DateUtility::isoDateFormat($testResult['reviewedOn'][$lastIndex] ?? null, true);
         $tbData['result_approved_by'] = $testResult['approvedBy'][$lastIndex] ?? null;
         $tbData['result_approved_datetime'] = DateUtility::isoDateFormat($testResult['approvedOn'][$lastIndex] ?? null, true);
+    } else {
+        $testResult = $_POST['testResult'];
+        $db->where('tb_id', $_POST['tbSampleId']);
+        $db->delete($testTableName);
+        foreach ($testResult as $key => $result) {
+            $db->insert($testTableName, [
+                'tb_id' => $_POST['tbSampleId'] ?? null,
+                'lab_id' => $_POST['labId'] ?? null,
+                'actual_no' => $_POST['actualNo'][$key] ?? null,
+                'test_result' => $result ?? null,
+                'updated_datetime' => DateUtility::getCurrentDateTime()
+            ]);
+        }
     }
     // For flat testResult[] (other countries): no tb_tests operations, form_tb already has all data from direct POST fields
 

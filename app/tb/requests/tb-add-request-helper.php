@@ -148,7 +148,7 @@ try {
         $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
     }
 
-    if (is_array($_POST['tbTestsRequested'])) {
+    if (isset($_POST['tbTestsRequested']) && is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = implode(",", $_POST['tbTestsRequested']);
     }
     if ((isset($_POST['isResultFinalized']) && !empty($_POST['isResultFinalized']) && isset($_POST['finalResult']) && !empty($_POST['finalResult'])) && $_POST['isResultFinalized'] == 'yes') {
@@ -209,7 +209,7 @@ try {
         'number_of_sputum_samples' => empty($_POST['numberOfSputumSamples']) ? null : $_POST['numberOfSputumSamples'],
         'first_sputum_samples_collection_date' => empty($_POST['firstSputumSamplesCollectionDate']) ? null : $_POST['firstSputumSamplesCollectionDate'],
         'sample_requestor_name' => empty($_POST['sampleRequestorName']) ? null : $_POST['sampleRequestorName'],
-        'specimen_type' => empty($_POST['specimenType']) ? null : implode(",", $_POST['specimenType']),
+        'specimen_type' => (is_array($_POST['specimenType'])) ? implode(",", $_POST['specimenType']) : $_POST['specimenType'],
         'sample_collection_date' => empty($_POST['sampleCollectionDate']) ? null : $_POST['sampleCollectionDate'],
         'sample_dispatched_datetime' => empty($_POST['sampleDispatchedDate']) ? null : $_POST['sampleDispatchedDate'],
         'sample_received_at_lab_datetime' => empty($_POST['sampleReceivedDate']) ? null : $_POST['sampleReceivedDate'],
@@ -282,6 +282,7 @@ try {
      *
      * Detection: If testResult[labId][] exists as array = multiple tests
      */
+
     $hasMultipleTests = !empty($_POST['testResult']['labId']) && is_array($_POST['testResult']['labId']);
 
     if ($hasMultipleTests) {
@@ -330,6 +331,17 @@ try {
         $tbData['result_reviewed_datetime'] = DateUtility::isoDateFormat($testResult['reviewedOn'][$lastIndex] ?? null, true);
         $tbData['result_approved_by'] = $testResult['approvedBy'][$lastIndex] ?? null;
         $tbData['result_approved_datetime'] = DateUtility::isoDateFormat($testResult['approvedOn'][$lastIndex] ?? null, true);
+    } else {
+        $testResult = $_POST['testResult'];
+        foreach ($testResult as $key => $result) {
+            $db->insert($testTableName, [
+                'tb_id' => $_POST['tbSampleId'] ?? null,
+                'lab_id' => $_POST['labId'] ?? null,
+                'actual_no' => $_POST['actualNo'][$key] ?? null,
+                'test_result' => $result ?? null,
+                'updated_datetime' => DateUtility::getCurrentDateTime()
+            ]);
+        }
     }
     // For flat testResult[] (other countries): no tb_tests operations, form_tb already has all data from direct POST fields
 
