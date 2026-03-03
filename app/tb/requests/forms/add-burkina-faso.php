@@ -338,10 +338,10 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                             </select>
                                         </td>
                                         <th scope="row" class="th-label">
-                                            <label class="label-control" for="testTypeRequested"><?= _translate("Test(s) requested"); ?> </label>
+                                            <label class="label-control" for="tbTestsRequested"><?= _translate("Test(s) requested"); ?> </label>
                                         </th>
                                         <td class="td-input">
-                                            <select name="testTypeRequested[]" id="testTypeRequested" class="select2 form-control" title="Please choose type of test request" style="width:100%" multiple>
+                                            <select name="tbTestsRequested[]" id="tbTestsRequested" class="select2 form-control" title="Please choose type of test request" style="width:100%" multiple>
                                                 <optgroup label="Microscopy">
                                                     <option value="ZN">ZN</option>
                                                     <option value="FM">FM</option>
@@ -379,18 +379,26 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                             <td class="td-input">
                                                 <input type="text" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
                                             </td>
+                                            <th class="th-label"><label class="label-control" for="labId"><?= _translate("Testing Laboratory"); ?> <span class="mandatory">*</span></label> </th>
+                                            <td class="td-input">
+                                                <select name="labId" id="labId" class="form-control select2 isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">
+                                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleDispatchedDate"><?= _translate("Sample Dispatched On"); ?></label></th>
                                             <td class="td-input">
                                                 <input type="text" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="testedBy"><?= _translate("Tested By"); ?></label></th>
                                             <td class="td-input">
                                                 <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
+                                        </tr>
+                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="isSampleRejected"><?= _translate("Is Sample Rejected?"); ?></label></th>
                                             <td class="td-input">
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
@@ -482,7 +490,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                     </table>
                                 </div>
                             </div>
-<?php } ?>
+                        <?php } ?>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
@@ -742,7 +750,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
         $('#reasonForTbTest').select2({
             placeholder: "Select Test Reqest Type"
         });
-        $('#testTypeRequested').select2({
+        $('#tbTestsRequested').select2({
             placeholder: "Select Type of Examination"
         });
 
