@@ -164,15 +164,15 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 												<option value="nutrition">Nutrition</option>
 												<option value="other">Others</option>
 											</select>
-										</td>
-										<td>
+
 											<input type="text" class="form-control typeOfReferringUnit"
 												id="typeOfReferringUnit" name="typeOfReferringUnit"
 												placeholder="Enter other of referring unit if others"
 												title="Please enter other of referring unit if others"
 												style="display: none;" />
 										</td>
-										<?php if ($_SESSION['accessType'] == 'collection-site') { ?>
+										
+										
 											<td><label class="label-control" for="labId">Testing Laboratory <span
 														class="mandatory">*</span></label> </td>
 											<td>
@@ -181,7 +181,6 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
 												</select>
 											</td>
-										<?php } ?>
 									</tr>
 								</table>
 
@@ -455,13 +454,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td><label class="label-control" for="labId">Testing Laboratory</label> </td>
-											<td>
-												<select name="labId" id="labId" class="form-control select2"
-													title="Please select Testing Testing Laboratory" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-												</select>
-											</td>
+											
 											<th scope="row"><label class="label-control" for="sampleTestedDateTime">Date of
 													Sample Tested</label></th>
 											<td>
@@ -470,9 +463,6 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter sample tested" style="width:100%;" />
 											</td>
-										</tr>
-										<tr>
-
 											<th scope="row"><label class="label-control" for="sampleDispatchedDate">Sample
 													Dispatched On</label></th>
 											<td>
@@ -481,6 +471,8 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please choose sample dispatched date" style="width:100%;" />
 											</td>
+										</tr>
+										<tr>
 											<th scope="row"><label class="label-control" for="testedBy">Tested By</label>
 											</th>
 											<td>
@@ -489,9 +481,6 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
-										</tr>
-										<tr>
-
 											<th scope="row"><label class="label-control" for="isSampleRejected">Is Sample
 													Rejected?</label></th>
 											<td>
@@ -502,7 +491,9 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													<option value="no"> No </option>
 												</select>
 											</td>
-											<th scope="row" class="show-rejection" style="display:none;"><label
+										</tr>
+										<tr class="show-rejection" style="display:none;">
+											<th scope="row"><label
 													class="label-control" for="sampleRejectionReason">Reason for
 													Rejection<span class="mandatory">*</span></label></th>
 											<td class="show-rejection" style="display:none;">
@@ -513,8 +504,6 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													<?php echo $rejectionReason; ?>
 												</select>
 											</td>
-										</tr>
-										<tr class="show-rejection" style="display:none;">
 											<th scope="row"><label class="label-control" for="rejectionDate">Rejection
 													Date<span class="mandatory">*</span></label></th>
 											<td><input class="form-control date rejection-date" type="text"
@@ -522,6 +511,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													placeholder="Select rejection date"
 													title="Please select the rejection date" /></td>
 										</tr>
+										
 										<tr class="platform microscopy">
 											<td colspan="4">
 												<table aria-describedby="table" class="table table-bordered table-striped"
