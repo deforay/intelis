@@ -358,19 +358,19 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</select>
 									</td>
 									<th scope="row" class="th-label">
-										<label class="label-control" for="testTypeRequested"><?= _translate("Test(s) requested"); ?> </label>
+										<label class="label-control" for="tbTestsRequested"><?= _translate("Test(s) requested"); ?> </label>
 									</th>
 									<td class="td-input">
-										<select name="testTypeRequested[]" id="testTypeRequested" class="select2 form-control" title="Please choose type of test request" style="width:100%" multiple>
+										<select name="tbTestsRequested[]" id="tbTestsRequested" class="select2 form-control" title="Please choose type of test request" style="width:100%" multiple>
 											<optgroup label="Microscopy">
-												<option value="ZN" <?php echo (is_array($testTypeRequested) && in_array("ZN", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>ZN</option>
-												<option value="FM" <?php echo (is_array($testTypeRequested) && in_array("FM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>FM</option>
-											</optgroup>
-											<optgroup label="Xpert MTB">
-												<option value="MTB/RIF" <?php echo (is_array($testTypeRequested) && in_array("MTB/RIF", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF</option>
-												<option value="MTB/RIF ULTRA" <?php echo (is_array($tbInfo['tests_requested']) && in_array("MTB/RIF ULTRA", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF ULTRA</option>
-												<option value="TB LAM" <?php echo (is_array($tbInfo['tests_requested']) && in_array("TB LAM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>TB LAM</option>
-											</optgroup>
+                                                    <option value="ZN" <?php echo (is_array($testTypeRequested) && in_array("ZN", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>ZN</option>
+                                                    <option value="FM" <?php echo (is_array($testTypeRequested) && in_array("FM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>FM</option>
+                                                </optgroup>
+                                                <optgroup label="Xpert MTB">
+                                                    <option value="MTB/RIF" <?php echo (is_array($testTypeRequested) && in_array("MTB/RIF", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF</option>
+                                                    <option value="MTB/RIF ULTRA" <?php echo (is_array($testTypeRequested) && in_array("MTB/RIF ULTRA", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF ULTRA</option>
+                                                    <option value="TB LAM" <?php echo (is_array($testTypeRequested) && in_array("TB LAM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>TB LAM</option>
+                                                </optgroup>
 										</select>
 									</td>
 								</tr>

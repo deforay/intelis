@@ -133,12 +133,10 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                                 <option value="nutrition"><?= _translate("Nutrition"); ?></option>
                                                 <option value="other"><?= _translate("Others"); ?></option>
                                             </select>
-                                        </td>
-                                        <td class="td-input">
                                             <input type="text" class="form-control typeOfReferringUnit" id="typeOfReferringUnit" name="typeOfReferringUnit" placeholder="Enter other of referring unit if others" title="Please enter other of referring unit if others" style="display: none;" />
+
                                         </td>
                                     </tr>
-                                    <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                         <tr>
                                             <th class="th-label"><label class="label-control" for="labId"><?= _translate("Testing Laboratory"); ?> <span class="mandatory">*</span></label> </th>
                                             <td class="td-input">
@@ -147,9 +145,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                                 </select>
                                             </td>
                                         </tr>
-                                    <?php } ?>
                                 </table>
-
 
                                 <div class="box-header with-border sectionHeader">
                                     <h3 class="box-title"><?= _translate("PATIENT INFORMATION"); ?></h3>
@@ -342,14 +338,14 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                         </th>
                                         <td class="td-input">
                                             <select name="tbTestsRequested[]" id="tbTestsRequested" class="select2 form-control" title="Please choose type of test request" style="width:100%" multiple>
-                                                <optgroup label="Microscopy">
-                                                    <option value="ZN">ZN</option>
-                                                    <option value="FM">FM</option>
+                                                 <optgroup label="Microscopy">
+                                                    <option value="ZN" <?php echo (is_array($testTypeRequested) && in_array("ZN", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>ZN</option>
+                                                    <option value="FM" <?php echo (is_array($testTypeRequested) && in_array("FM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>FM</option>
                                                 </optgroup>
                                                 <optgroup label="Xpert MTB">
-                                                    <option value="MTB/RIF"><?= _translate("MTB/RIF"); ?></option>
-                                                    <option value="MTB/RIF ULTRA"><?= _translate("MTB/RIF ULTRA"); ?></option>
-                                                    <option value="TB LAM"><?= _translate("TB LAM"); ?></option>
+                                                    <option value="MTB/RIF" <?php echo (is_array($testTypeRequested) && in_array("MTB/RIF", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF</option>
+                                                    <option value="MTB/RIF ULTRA" <?php echo (is_array($testTypeRequested) && in_array("MTB/RIF ULTRA", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>MTB/RIF ULTRA</option>
+                                                    <option value="TB LAM" <?php echo (is_array($testTypeRequested) && in_array("TB LAM", $testTypeRequested)) ? "selected='selecetd'" : ""; ?>>TB LAM</option>
                                                 </optgroup>
                                             </select>
                                         </td>
@@ -379,26 +375,18 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                             <td class="td-input">
                                                 <input type="text" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
                                             </td>
-                                            <th class="th-label"><label class="label-control" for="labId"><?= _translate("Testing Laboratory"); ?> <span class="mandatory">*</span></label> </th>
-                                            <td class="td-input">
-                                                <select name="labId" id="labId" class="form-control select2 isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">
-                                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleDispatchedDate"><?= _translate("Sample Dispatched On"); ?></label></th>
                                             <td class="td-input">
                                                 <input type="text" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
                                             </td>
+                                        </tr>
+                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="testedBy"><?= _translate("Tested By"); ?></label></th>
                                             <td class="td-input">
                                                 <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="isSampleRejected"><?= _translate("Is Sample Rejected?"); ?></label></th>
                                             <td class="td-input">
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
@@ -490,7 +478,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                     </table>
                                 </div>
                             </div>
-                        <?php } ?>
+<?php } ?>
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
@@ -750,7 +738,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
         $('#reasonForTbTest').select2({
             placeholder: "Select Test Reqest Type"
         });
-        $('#tbTestsRequested').select2({
+        $('#testTypeRequested').select2({
             placeholder: "Select Type of Examination"
         });
 
