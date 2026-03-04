@@ -63,6 +63,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
         $attributes = json_decode((string) $results['attributes'], true);
     }
 }
+
+//echo "<pre>"; print_r($tbTestInfo); die;
 ?>
 <style>
     .th-label {
@@ -464,38 +466,53 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                                             <th scope="row" style="width: 40%;" class="text-center"><?= _translate("Actual Number"); ?></th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody id="testKitNameTable">
-                                                        <?php
-                                                        $n = count($tbTestInfo);
-                                                        foreach (range(1, 3) as $no) {
-                                                            if ($n >= $no) { ?>
-                                                                <tr>
-                                                                    <td class="text-center"><?php echo $no; ?></td>
-                                                                    <td>
-                                                                        <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult<?php echo $no; ?>" title="Please select the result for row <?php echo $no; ?>">
-                                                                            <?= $general->generateSelectOptions($microscope, $tbTestInfo[$no - 1]['test_result'], '-- Select --'); ?>
-                                                                        </select>
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="text" value="<?php echo $tbTestInfo[$no - 1]['actual_no']; ?>" class="form-control test-name-table-input" id="actualNo<?php echo $no; ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
-                                                                    </td>
-                                                                </tr>
-                                                            <?php
-                                                            } else { ?>
-                                                                <tr>
-                                                                    <td class="text-center"><?php echo $no; ?></td>
-                                                                    <td>
-                                                                        <select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult<?php echo $no; ?>" title="Please select the result for row <?php echo $no; ?>">
-                                                                            <?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?>
-                                                                        </select>
-                                                                    </td>
-                                                                    <td>
-                                                                        <input type="text" class="form-control test-name-table-input" id="actualNo<?php echo $no; ?>" name="actualNo[]" placeholder="Enter the actual number" title="Please enter the actual number" />
-                                                                    </td>
-                                                                </tr>
-                                                        <?php }
-                                                        } ?>
-                                                    </tbody>
+                                                   <tbody id="testKitNameTable">
+														<?php
+														$n = count($tbTestInfo);
+														foreach (range(1, 3) as $no) {
+															if ($n >= $no) { ?>
+																<tr>
+																	<td class="text-center"><?php echo $no; ?></td>
+																	<td>
+																		<select
+																			class="form-control test-result test-name-table-input"
+																			name="testResult[]" id="testResult<?php echo $no; ?>"
+																			title="Please select the result for row <?php echo $no; ?>">
+																			<?= $general->generateSelectOptions($microscope, $tbTestInfo[$no - 1]['test_result'], '-- Select --'); ?>
+																		</select>
+																	</td>
+																	<td>
+																		<input type="text"
+																			value="<?php echo $tbTestInfo[$no - 1]['actual_no']; ?>"
+																			class="form-control test-name-table-input"
+																			id="actualNo<?php echo $no; ?>" name="actualNo[]"
+																			placeholder="Enter the actual number"
+																			title="Please enter the actual number" />
+																	</td>
+																</tr>
+																<?php
+															} else { ?>
+																<tr>
+																	<td class="text-center"><?php echo $no; ?></td>
+																	<td>
+																		<select
+																			class="form-control test-result test-name-table-input"
+																			name="testResult[]" id="testResult<?php echo $no; ?>"
+																			title="Please select the result for row <?php echo $no; ?>">
+																			<?= $general->generateSelectOptions($microscope, null, '-- Select --'); ?>
+																		</select>
+																	</td>
+																	<td>
+																		<input type="text"
+																			class="form-control test-name-table-input"
+																			id="actualNo<?php echo $no; ?>" name="actualNo[]"
+																			placeholder="Enter the actual number"
+																			title="Please enter the actual number" />
+																	</td>
+																</tr>
+															<?php }
+														} ?>
+													</tbody>
                                                 </table>
                                             </td>
                                         </tr>
