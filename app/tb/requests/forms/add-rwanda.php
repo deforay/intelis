@@ -685,7 +685,7 @@ if ($isLisInstance) {
                                         <?php echo _translate("Remove Test"); ?></button>
                                 </div>
                                 <br>
-                                <div class="row pr-5">
+                                <div class="row pr-5 fnal-result" style="display:none;">
                                     <div class="col-md-6">
                                         <label class="label-control"
                                             for="isResultFinalized"><?php echo _translate("Do you want to enter the Final Interpretation?"); ?></label>
@@ -901,7 +901,22 @@ if ($isLisInstance) {
         // Bind test result change event
         $section.find('.test-result-select').on('change', function () {
             updateTestFieldsRequired(this);
+            updateFinalInterpretationVisibility();
         });
+    }
+
+    function updateFinalInterpretationVisibility() {
+        var hasAnyResult = false;
+        $('.test-result-select').each(function () {
+            if ($(this).val()) hasAnyResult = true;
+        });
+        if (hasAnyResult) {
+            $('.fnal-result').show();
+        } else {
+            $('.fnal-result').hide();
+            $('#isResultFinalized').val('no');
+            $('.finalResult').hide();
+        }
     }
 
     // Make all test fields required when rejected=yes or (testType + testResult both selected)
@@ -955,6 +970,11 @@ if ($isLisInstance) {
 
     // Add new test section
     function addTestSection() {
+        if ($('#isResultFinalized').val() === 'yes' && $('#finalResult').val()) {
+            if (!confirm('<?= _translate("The Final Interpretation is already recorded. Do you still want to add a new test?"); ?>')) {
+                return;
+            }
+        }
         testCount++;
         const container = document.getElementById('testSections');
         const firstSection = container.querySelector('.test-section');
@@ -1023,6 +1043,7 @@ if ($isLisInstance) {
         }
         // Update Remove button visibility
         updateRemoveButtonVisibility();
+        updateFinalInterpretationVisibility();
     }
 
     // Update IDs and labels for new section

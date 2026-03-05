@@ -1158,7 +1158,7 @@ if ($isLisInstance) {
                                         <?php echo _translate("Remove Test"); ?>
                                     </button>
                                 </div>
-                                <div class="row pr-5 fnal-result">
+                                <div class="row pr-5 fnal-result" style="display:none;">
                                     <div class="col-md-6">
                                         <label class="label-control"
                                             for="isResultFinalized"><?php echo _translate("Do you want to enter the Final Interpretation?"); ?></label>
@@ -1419,10 +1419,25 @@ if ($isLisInstance) {
         $section.find('.test-result-select').off('change.testSection').on('change.testSection', function () {
             showRevisedFields(this);
             updateTestFieldsRequired(this);
+            updateFinalInterpretationVisibility();
         });
 
         // Initialize date pickers
         initializeDatePickers(section);
+    }
+
+    function updateFinalInterpretationVisibility() {
+        var hasAnyResult = false;
+        $('.test-result-select').each(function () {
+            if ($(this).val()) hasAnyResult = true;
+        });
+        if (hasAnyResult) {
+            $('.fnal-result').show();
+        } else {
+            $('.fnal-result').hide();
+            $('#isResultFinalized').val('no');
+            $('.finalResult').hide();
+        }
     }
 
     // Update Remove Test button visibility
@@ -1435,6 +1450,11 @@ if ($isLisInstance) {
 
     // Add new test section
     function addTestSection() {
+        if ($('#isResultFinalized').val() === 'yes' && $('#finalResult').val()) {
+            if (!confirm('<?= _translate("The Final Interpretation is already recorded. Do you still want to add a new test?"); ?>')) {
+                return;
+            }
+        }
         testCount++;
         const container = document.getElementById('testSections');
         const firstSection = container.querySelector('.test-section');
@@ -1510,6 +1530,7 @@ if ($isLisInstance) {
         }
         // Update Remove button visibility
         updateRemoveButtonVisibility();
+        updateFinalInterpretationVisibility();
     }
 
     // Update element IDs and names for new section
@@ -1775,6 +1796,9 @@ if ($isLisInstance) {
                 $rejectionSelect.trigger('change.testSection');
             }
         });
+
+        // Show final interpretation block if any test results exist
+        updateFinalInterpretationVisibility();
 
         // Update Remove Test button visibility on page load
         updateRemoveButtonVisibility();
