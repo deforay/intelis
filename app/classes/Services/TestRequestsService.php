@@ -555,7 +555,7 @@ final class TestRequestsService
             }
             $tableName = TestsService::getTestTableName($testType);
 
-            $sampleQuery = "SELECT * FROM $tableName WHERE sample_package_code = '$manifestCode' ORDER BY request_created_datetime";
+            $sampleQuery = "SELECT * FROM $tableName WHERE sample_package_code = '$manifestCode' ORDER BY remote_sample_code ASC";
 
             $sampleResult = $this->db->rawQuery($sampleQuery);
 
