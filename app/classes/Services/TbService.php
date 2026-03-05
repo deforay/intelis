@@ -7,6 +7,8 @@ use const COUNTRY\PNG;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\MiscUtility;
+use App\Utilities\FileCacheUtility;
+use App\Registries\ContainerRegistry;
 use Throwable;
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;
@@ -30,7 +32,17 @@ final class TbService extends AbstractTestService
             $postFix = '';
             if ($this->commonService->isLISInstance()) {
                 $labId = $this->commonService->getSystemConfig('sc_testing_lab_id');
-                $postFix = !empty($labId) ? "-" . strtoupper(base_convert((string) $labId, 10, 36)) : '';
+                if (!empty($labId)) {
+                    /** @var FileCacheUtility $fileCache */
+                    $fileCache = ContainerRegistry::get(FileCacheUtility::class);
+                    $code = $fileCache->get("tb_lab_facility_code_$labId", function () use ($labId) {
+                        $facilityCode = $this->db->rawQueryOne("SELECT facility_code FROM facility_details WHERE facility_id = ?", [$labId]);
+                        return !empty($facilityCode['facility_code'])
+                            ? $facilityCode['facility_code']
+                            : strtoupper(substr(md5((string) $labId), 0, 4));
+                    }, ['facility']);
+                    $postFix = "-" . $code;
+                }
             }
             $params['postfix'] ??= $postFix;
 
