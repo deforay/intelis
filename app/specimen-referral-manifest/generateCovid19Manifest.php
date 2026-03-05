@@ -57,7 +57,8 @@ if (trim((string) $id) !== '') {
                 JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 JOIN facility_details as l ON l.facility_id=vl.lab_id
                 LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by
-                WHERE pd.manifest_id IN(?)";
+                WHERE pd.manifest_id IN(?)
+                ORDER BY remote_sample_code ASC";
     $result = $db->rawQuery($sQuery, [$id]);
 
 
