@@ -137,7 +137,7 @@ if ($isLisInstance) {
                                     </td>
                                 </tr>
                                 <tr>
-                                   <!-- <td style="width: 33.33%;">
+                                    <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="affiliatedDistrictHospital"><?php echo _translate("Affiliated District Hospital"); ?></label>
                                         <input type="text" class="form-control" id="affiliatedDistrictHospital"
@@ -145,7 +145,7 @@ if ($isLisInstance) {
                                             placeholder="<?php echo _translate("Enter affiliated district hospital"); ?>"
                                             title="<?php echo _translate("Please enter affiliated district hospital"); ?>" />
                                     </td>
-                                     <td style="width: 33.33%;">
+                                    <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
                                         <select name="affiliatedLabId" id="affiliatedLabId" class="form-control select2"
@@ -166,6 +166,8 @@ if ($isLisInstance) {
                                     <?php } else { ?>
                                         <td style="width: 33.33%;"></td>
                                     <?php } ?>
+                                    <td style="width: 33.33%;"></td>
+                                    <td style="width: 33.33%;"></td>
                                 </tr>
                             </table>
 
@@ -262,8 +264,8 @@ if ($isLisInstance) {
                                     <td style="width: 33.33%;">
                                         <label
                                             for="patientPhoneNumber"><?php echo _translate("Phone contact"); ?>:</label>
-                                        <input type="text" pattern="[0-9]+" class="form-control checkNum" id="patientPhoneNumber"
-                                            name="patientPhoneNumber"
+                                        <input type="text" pattern="[0-9]+" class="form-control checkNum"
+                                            id="patientPhoneNumber" name="patientPhoneNumber"
                                             placeholder="<?php echo _translate("Phone Number"); ?>"
                                             title="<?php echo _translate("Please enter phone number"); ?>" />
                                     </td>
@@ -320,7 +322,8 @@ if ($isLisInstance) {
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="riskFactors"><?php echo _translate("Risk Factors"); ?></label>
-                                        <select id="riskFactors" name="riskFactors[]" multiple class="form-control select2"
+                                        <select id="riskFactors" name="riskFactors[]" multiple
+                                            class="form-control select2"
                                             title="Please select any one of the risk factors">
                                             <option value="No information provided">No information provided</option>
                                             <option value="TB Contact">TB Contact</option>
@@ -369,7 +372,8 @@ if ($isLisInstance) {
                                         <input type="text" name="regimenDate" id="regimenDate"
                                             placeholder="Enter the initiation of current regimen"
                                             class="treatmentSelectedInput form-control date"
-                                            title="Please choose date of current regimen" onchange="dataCheckValidation();" />
+                                            title="Please choose date of current regimen"
+                                            onchange="dataCheckValidation();" />
                                     </td>
                                 </tr>
                             </table>
@@ -438,7 +442,7 @@ if ($isLisInstance) {
                                 <tr>
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
-                                            for="sampleCollectionDate"><?php echo _translate("Date Specimen Collected"); ?><span
+                                            for="sampleCollectionDate"><?php echo _translate("Date and Time of Specimen Collection"); ?><span
                                                 class="mandatory">*</span></label>
                                         <input class="form-control isRequired date-time" type="text"
                                             name="sampleCollectionDate" id="sampleCollectionDate"
@@ -578,7 +582,7 @@ if ($isLisInstance) {
                                                 <td style="width: 33.33%;"></td>
                                             </tr>
                                             <tr>
-                                               <!-- <td style="width: 33.33%;">
+                                                <!-- <td style="width: 33.33%;">
                                                     <label class="label-control"
                                                         for="specimenType1"><?php echo _translate("Specimen Type"); ?></label>
                                                     <select name="testResult[specimenType][]" id="specimenType1"
@@ -822,38 +826,38 @@ if ($isLisInstance) {
         ]
     };
 
-$('#riskFactors').on('change', function () {
-    let selectedValues = $(this).val(); // array
-    if (selectedValues && selectedValues.includes('No information provided')) {
-        // Keep only "No information provided"
-        $(this).val(['No information provided']).trigger('change.select2');
+    $('#riskFactors').on('change', function () {
+        let selectedValues = $(this).val(); // array
+        if (selectedValues && selectedValues.includes('No information provided')) {
+            // Keep only "No information provided"
+            $(this).val(['No information provided']).trigger('change.select2');
 
-        // Disable other options
-        $(this).find('option').each(function () {
-            if (this.value !== 'No information provided') {
-                $(this).prop('disabled', true);
-            }
-        });
-    } else {
-        // Enable all options
-        $(this).find('option').prop('disabled', false);
-        if (selectedValues && selectedValues.includes('Others')) 
-             $('#riskFactorsOther').show();
-        else
-             $('#riskFactorsOther').hide();
-        
-    }
+            // Disable other options
+            $(this).find('option').each(function () {
+                if (this.value !== 'No information provided') {
+                    $(this).prop('disabled', true);
+                }
+            });
+        } else {
+            // Enable all options
+            $(this).find('option').prop('disabled', false);
+            if (selectedValues && selectedValues.includes('Others'))
+                $('#riskFactorsOther').show();
+            else
+                $('#riskFactorsOther').hide();
 
-    // Refresh Select2
-    $(this).trigger('change.select2');
-});
+        }
+
+        // Refresh Select2
+        $(this).trigger('change.select2');
+    });
 
     // Initialize plugins for a specific section
     function initializePluginsForSection(section, count) {
         const $section = $(section);
 
         // Initialize Select2 for dropdowns
-        $section.find('.resultSelect2, .select2').each(function() {
+        $section.find('.resultSelect2, .select2').each(function () {
             const $this = $(this);
             if (!$this.hasClass('select2-hidden-accessible')) {
                 $this.select2({
@@ -864,42 +868,42 @@ $('#riskFactors').on('change', function () {
         });
 
         // Initialize date pickers
-        $('.date:not(.hasDatePicker)').each(function() {
+        $('.date:not(.hasDatePicker)').each(function () {
             $(this).datepicker({
                 changeMonth: true,
                 changeYear: true,
-                onSelect: function() {
+                onSelect: function () {
                     $(this).change();
                 },
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 maxDate: "Today",
                 yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function() {
+            }).click(function () {
                 $('.ui-datepicker-calendar').show();
             });
         });
 
         // Initialize datetime pickers  
-        $('.dateTime:not(.hasDateTimePicker), .date-time:not(.hasDateTimePicker)').each(function() {
+        $('.dateTime:not(.hasDateTimePicker), .date-time:not(.hasDateTimePicker)').each(function () {
             $(this).datetimepicker({
                 changeMonth: true,
                 changeYear: true,
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
                 maxDate: "Today",
-                onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
+                onChangeMonthYear: function (year, month, widget) {
+                    setTimeout(function () {
                         $('.ui-datepicker-calendar').show();
                     });
                 },
                 yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function() {
+            }).click(function () {
                 $('.ui-datepicker-calendar').show();
             });
         });
 
         // Bind sample rejection change event
-        $section.find('.sample-rejection-select').off('change').on('change', function() {
+        $section.find('.sample-rejection-select').off('change').on('change', function () {
             const $row = $(this).closest('.test-section');
             if ($(this).val() === 'yes') {
                 $row.find('.rejection-reason-field, .rejection-date-field').show();
@@ -913,7 +917,7 @@ $('#riskFactors').on('change', function () {
         });
 
         // Bind test type change event
-        $section.find('.test-type-select').on('change', function() {
+        $section.find('.test-type-select').on('change', function () {
             updateTestResults(count);
         });
     }
@@ -987,7 +991,7 @@ $('#riskFactors').on('change', function () {
             const lastSection = container.querySelector('.test-section:last-child');
             if (lastSection) {
                 // Destroy Select2 instances before removing
-                $(lastSection).find('select.select2-hidden-accessible').each(function() {
+                $(lastSection).find('select.select2-hidden-accessible').each(function () {
                     $(this).select2('destroy');
                 });
                 lastSection.remove();
@@ -1058,13 +1062,13 @@ $('#riskFactors').on('change', function () {
         var removeDots = obj.value.replace(/\./g, "").replace(/\,/g, "").replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: removeDots.trim(),
-                fnct: fnct,
-                format: "html"
-            },
-            function(data) {
+            tableName: tableName,
+            fieldName: fieldName,
+            value: removeDots.trim(),
+            fnct: fnct,
+            format: "html"
+        },
+            function (data) {
                 if (data === '1') {
                     alert(alrt);
                     document.getElementById(obj.id).value = "";
@@ -1082,10 +1086,10 @@ $('#riskFactors').on('change', function () {
 
         if ($.trim(pName) != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    pName: pName,
-                    testType: 'tb'
-                },
-                function(data) {
+                pName: pName,
+                testType: 'tb'
+            },
+                function (data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -1111,11 +1115,11 @@ $('#riskFactors').on('change', function () {
 
         if (dName != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    dName: dName,
-                    cliName: cName,
-                    testType: 'tb'
-                },
-                function(data) {
+                dName: dName,
+                cliName: cName,
+                testType: 'tb'
+            },
+                function (data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -1137,10 +1141,10 @@ $('#riskFactors').on('change', function () {
 
         if (cName != '' && facilityName) {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    cName: cName,
-                    testType: 'tb'
-                },
-                function(data) {
+                cName: cName,
+                testType: 'tb'
+            },
+                function (data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#province").html(details[0]);
@@ -1174,10 +1178,10 @@ $('#riskFactors').on('change', function () {
 
         if (pName != '' && sDate != '') {
             $.post("/tb/requests/generate-sample-code.php", {
-                    sampleCollectionDate: sDate,
-                    provinceCode: provinceCode
-                },
-                function(data) {
+                sampleCollectionDate: sDate,
+                provinceCode: provinceCode
+            },
+                function (data) {
                     var sCodeKey = JSON.parse(data);
                     $("#sampleCode").val(sCodeKey.sampleCode);
                     $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
@@ -1224,7 +1228,7 @@ $('#riskFactors').on('change', function () {
             return false;
         }
         if (dob > sampleCollectionDate) {
-            alert("Date Specimen Collected must be on or after the Date of Birth");
+            alert("Date and Time of Specimen Collection must be on or after the Date of Birth");
             $("#sampleCollectionDate").val('');
             return false;
         }
@@ -1234,7 +1238,7 @@ $('#riskFactors').on('change', function () {
             if (receivedEl && receivedEl.value) {
                 let received = new Date(receivedEl.value);
                 if (sampleCollectionDate > received) {
-                    alert("Test #" + i + ": Date Sample Received must be on or after the Date Specimen Collected");
+                    alert("Test #" + i + ": Date Sample Received must be on or after the Date and Time of Specimen Collection");
                     $(receivedEl).val('');
                     return false;
                 }
@@ -1277,7 +1281,7 @@ $('#riskFactors').on('change', function () {
     }
 
     // Document ready function
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Initialize Select2 for main form elements
         $("#facilityId, #province, #district").select2({
             placeholder: "<?php echo _translate('Select'); ?>",
@@ -1314,7 +1318,7 @@ $('#riskFactors').on('change', function () {
         initializePluginsForSection(document.querySelector('.test-section'), 1);
 
         // Treatment initiation change handler
-        $('#isPatientInitiatedTreatment').on('change', function() {
+        $('#isPatientInitiatedTreatment').on('change', function () {
             if (this.value === 'yes') {
                 $('.treatmentSelected').show();
                 $('.treatmentSelectedInput').addClass('isRequired');
@@ -1335,28 +1339,28 @@ $('#riskFactors').on('change', function () {
         });
 
         // Lab and facility change handlers
-        $("#labId, #facilityId, #sampleCollectionDate").on('change', function() {
+        $("#labId, #facilityId, #sampleCollectionDate").on('change', function () {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
         });
 
         <?php if (isset($arr['tb_positive_confirmatory_tests_required_by_central_lab']) && $arr['tb_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
-            $(document).on('change', '.test-result, #result', function(e) {
+            $(document).on('change', '.test-result, #result', function (e) {
                 checkPostive();
             });
         <?php } ?>
 
-        $("#labId").change(function(e) {
+        $("#labId").change(function (e) {
             if ($(this).val() != "") {
                 $.post("/tb/requests/get-attributes-data.php", {
-                        id: this.value,
-                    },
-                    function(data) {
+                    id: this.value,
+                },
+                    function (data) {
                         if (data != "" && data != false) {
                             _data = jQuery.parseJSON(data);
                             $(".platform").hide();
-                            $.each(_data, function(index, value) {
+                            $.each(_data, function (index, value) {
                                 $("." + value).show();
                             });
                         }
@@ -1377,7 +1381,7 @@ $('#riskFactors').on('change', function () {
     }
 
     // Store initial value on focus
-    document.getElementById('finalResult')?.addEventListener('focus', function() {
+    document.getElementById('finalResult')?.addEventListener('focus', function () {
         this.dataset.previousValue = this.value;
     });
 </script>
