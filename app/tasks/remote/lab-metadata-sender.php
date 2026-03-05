@@ -31,6 +31,8 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
+$output = MiscUtility::console();
+
 // only for LIS instances
 if ($general->isLISInstance() === false) {
     exit(0);
@@ -46,17 +48,26 @@ $lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_lab_metadata_sync');
 
 $remoteURL = $general->getRemoteURL();
 
+$output->writeln("<info>Lab Metadata Sync</info>");
+if ($forceFlag) {
+    $output->writeln("<comment>Force sync enabled — ignoring last sync time</comment>");
+}
+
 if (empty($remoteURL)) {
+    $output->writeln("<error>STS URL is not set</error>");
     LoggerUtility::logError("Please check if STS URL is set");
     exit(0);
 }
 
 try {
     // Checking if the network connection is available
+    $output->write("Checking connectivity... ");
     if (false == CommonService::validateStsUrl($remoteURL, $labId)) {
+        $output->writeln("<error>FAILED</error>");
         LoggerUtility::logError("No network connectivity while trying remote sync.");
         return false;
     }
+    $output->writeln("<info>OK</info>");
 
     $transactionId = MiscUtility::generateULID();
 
@@ -69,58 +80,26 @@ try {
 
     $lastUpdatedOnCondition = "(updated_datetime > '$lastUpdatedOn' OR updated_datetime IS NULL)";
 
-    // LAB STORAGE
-    if ($forceFlag === false && !empty($lastUpdatedOn)) {
-        $db->where($lastUpdatedOnCondition);
-    }
-    $labStorage = $db->get('lab_storage');
-    if (!empty($labStorage)) {
-        $payload["labStorage"] = $labStorage;
-    }
+    $metadataTables = [
+        'lab_storage' => 'labStorage',
+        'lab_storage_history' => 'labStorageHistory',
+        'instruments' => 'instruments',
+        'instrument_machines' => 'instrumentMachines',
+        'instrument_controls' => 'instrumentControls',
+    ];
 
-    // LAB STORAGE HISTORY
-    if ($forceFlag === false && !empty($lastUpdatedOn)) {
-        $db->where($lastUpdatedOnCondition);
-    }
-    $labStorageHistory = $db->get('lab_storage_history');
-    if (!empty($labStorageHistory)) {
-        $payload["labStorageHistory"] = $labStorageHistory;
-    }
+    // +1 for users table
+    $bar = MiscUtility::spinnerStart(count($metadataTables) + 1, 'Collecting table data…');
 
-    // // PATIENTS
-    // if ($forceFlag === false && !empty($lastUpdatedOn)) {
-    //     $db->where($lastUpdatedOnCondition);
-    // }
-    // $patients = $db->get('patients');
-    // if (!empty($patients)) {
-    //     $payload["patients"] = $patients;
-    // }
-
-    // INSTRUMENTS
-    if ($forceFlag === false && !empty($lastUpdatedOn)) {
-        $db->where($lastUpdatedOnCondition);
-    }
-    $instruments = $db->get('instruments');
-    if (!empty($instruments)) {
-        $payload["instruments"] = $instruments;
-    }
-
-    // INSTRUMENT MACHINES
-    if ($forceFlag === false && !empty($lastUpdatedOn)) {
-        $db->where($lastUpdatedOnCondition);
-    }
-    $instrumentMachines = $db->get('instrument_machines');
-    if (!empty($instrumentMachines)) {
-        $payload["instrumentMachines"] = $instrumentMachines;
-    }
-
-    // INSTRUMENT CONTROLS
-    if ($forceFlag === false && !empty($lastUpdatedOn)) {
-        $db->where($lastUpdatedOnCondition);
-    }
-    $instrumentControls = $db->get('instrument_controls');
-    if (!empty($instrumentControls)) {
-        $payload["instrumentControls"] = $instrumentControls;
+    foreach ($metadataTables as $table => $payloadKey) {
+        if ($forceFlag === false && !empty($lastUpdatedOn)) {
+            $db->where($lastUpdatedOnCondition);
+        }
+        $records = $db->get($table);
+        if (!empty($records)) {
+            $payload[$payloadKey] = $records;
+        }
+        MiscUtility::spinnerAdvance($bar);
     }
 
     // USERS
@@ -143,7 +122,6 @@ try {
                 $user['signature_image_content'] = base64_encode(file_get_contents($signatureImagePath));
                 $user['signature_image_filename'] = $user['user_signature'];
             } else {
-                // Handle cases where the image doesn't exist
                 $user['signature_image_content'] = null;
                 $user['signature_image_filename'] = null;
             }
@@ -155,14 +133,22 @@ try {
         }
         $payload["users"] = $users;
     }
+    MiscUtility::spinnerAdvance($bar);
+    MiscUtility::spinnerFinish($bar);
 
+    $output->write("Uploading to STS... ");
     $jsonResponse = $apiService->post($url, $payload, gzip: true);
+    $output->writeln("<info>OK</info>");
+
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', [
         'last_lab_metadata_sync' => DateUtility::getCurrentDateTime()
     ]);
+
+    $output->writeln("<info>Sync complete.</info>");
 } catch (Exception $exc) {
+    $output->writeln("<error>Error: " . $exc->getMessage() . "</error>");
     LoggerUtility::log("error", __FILE__ . ":" . $exc->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
