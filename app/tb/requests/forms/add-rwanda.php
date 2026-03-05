@@ -582,15 +582,6 @@ if ($isLisInstance) {
                                                 <td style="width: 33.33%;"></td>
                                             </tr>
                                             <tr>
-                                                <!-- <td style="width: 33.33%;">
-                                                    <label class="label-control"
-                                                        for="specimenType1"><?php echo _translate("Specimen Type"); ?></label>
-                                                    <select name="testResult[specimenType][]" id="specimenType1"
-                                                        class="form-control"
-                                                        title="<?php echo _translate("Please choose specimen type"); ?>">
-                                                        <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
-                                                    </select>
-                                                </td>-->
                                                 <td style="width: 33.33%;">
                                                     <label class="label-control"
                                                         for="testType1"><?php echo _translate("Test Type"); ?></label>
@@ -618,8 +609,6 @@ if ($isLisInstance) {
                                                         </option>
                                                     </select>
                                                 </td>
-                                            </tr>
-                                            <tr>
                                                 <td style="width: 33.33%;">
                                                     <label class="label-control"
                                                         for="comments1"><?php echo _translate("Comments"); ?></label>
@@ -628,6 +617,8 @@ if ($isLisInstance) {
                                                         placeholder="<?= _translate("Please enter comments"); ?>"
                                                         title="<?php echo _translate("Please enter comments"); ?>"></textarea>
                                                 </td>
+                                            </tr>
+                                            <tr>
                                                 <td style="width: 33.33%;">
                                                     <label class="label-control"
                                                         for="testedBy1"><?php echo _translate("Tested By"); ?></label>
@@ -645,8 +636,6 @@ if ($isLisInstance) {
                                                         placeholder="<?= _translate("Please enter date"); ?>"
                                                         title="<?php echo _translate("Please enter tested date"); ?>" />
                                                 </td>
-                                            </tr>
-                                            <tr>
                                                 <td style="width: 33.33%;">
                                                     <label class="label-control"
                                                         for="reviewedBy1"><?php echo _translate("Reviewed By"); ?></label>
@@ -656,6 +645,8 @@ if ($isLisInstance) {
                                                         <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                     </select>
                                                 </td>
+                                            </tr>
+                                            <tr>
                                                 <td style="width: 33.33%;">
                                                     <label class="label-control"
                                                         for="reviewedOn1"><?php echo _translate("Reviewed On"); ?></label>
@@ -673,8 +664,6 @@ if ($isLisInstance) {
                                                         <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                     </select>
                                                 </td>
-                                            </tr>
-                                            <tr>
                                                 <td style="width: 33.33%;">
                                                     <label class="label-control"
                                                         for="approvedOn1"><?php echo _translate("Approved On"); ?></label>
@@ -980,13 +969,20 @@ if ($isLisInstance) {
         // Lab: from FACILITY INFORMATION section, date: from previous test
         var facilityLabId = $('#labId').val();
         var $lastSection = $(container).find('.test-section').last();
-        var lastDateVal = $lastSection.find('input[name="testResult[sampleReceivedDate][]"]').val();
+        var lastDateVal = $lastSection.find('input[name="testResult[sampleReceivedDate][]"]').val()
+            || $lastSection.find('input[type="hidden"][name="testResult[sampleReceivedDate][]"]').val();
 
+        var $labSelect = $(newSection).find('select[name="testResult[labId][]"]');
         if (facilityLabId) {
-            $(newSection).find('select[name="testResult[labId][]"]').val(facilityLabId);
+            $labSelect.val(facilityLabId).prop('disabled', true).removeAttr('name');
+            $labSelect.after('<input type="hidden" name="testResult[labId][]" value="' + facilityLabId + '" />');
         }
+
+        var $dateInput = $(newSection).find('input[name="testResult[sampleReceivedDate][]"]');
         if (lastDateVal) {
-            $(newSection).find('input[name="testResult[sampleReceivedDate][]"]').val(lastDateVal);
+            $dateInput.val(lastDateVal).prop('readonly', true).removeAttr('name')
+                .removeClass('date-time').removeAttr('placeholder');
+            $dateInput.after('<input type="hidden" name="testResult[sampleReceivedDate][]" value="' + lastDateVal + '" />');
         }
 
         // Hide conditional fields and clear required state

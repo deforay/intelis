@@ -760,16 +760,6 @@ if ($isLisInstance) {
                                                         <td style="width: 33.33%;"></td>
                                                     </tr>
                                                     <tr>
-                                                       <!-- <td style="width: 33.33%;">
-                                                            <label class="label-control" for="specimenType<?php echo $n; ?>">
-                                                                <?php echo _translate("Specimen Type"); ?>
-                                                            </label>
-                                                            <select name="testResult[specimenType][]"
-                                                                id="specimenType<?php echo $n; ?>" class="form-control"
-                                                                title="<?php echo _translate("Please choose specimen type"); ?>">
-                                                                <?php echo $general->generateSelectOptions($specimenTypeResult, $test['specimen_type'], '-- Select --'); ?>
-                                                            </select>
-                                                        </td>-->
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="testType<?php echo $n; ?>">
                                                                 <?php echo _translate("Test Type"); ?>
@@ -810,8 +800,6 @@ if ($isLisInstance) {
                                                                 <?php } ?>
                                                             </select>
                                                         </td>
-                                                    </tr>
-                                                    <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="comments<?php echo $n; ?>">
                                                                 <?php echo _translate("Comments"); ?>
@@ -821,6 +809,8 @@ if ($isLisInstance) {
                                                                 placeholder="<?= _translate("Please enter comments"); ?>"
                                                                 title="<?php echo _translate("Please enter comments"); ?>"><?php echo $test['comments']; ?></textarea>
                                                         </td>
+                                                    </tr>
+                                                    <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="testedBy<?php echo $n; ?>">
                                                                 <?php echo _translate("Tested By"); ?>
@@ -844,8 +834,6 @@ if ($isLisInstance) {
                                                                 placeholder="<?= _translate("Please enter date"); ?>"
                                                                 title="<?php echo _translate("Please enter tested date"); ?>" />
                                                         </td>
-                                                    </tr>
-                                                    <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="reviewedBy<?php echo $n; ?>">
                                                                 <?php echo _translate("Reviewed By"); ?>
@@ -856,6 +844,8 @@ if ($isLisInstance) {
                                                                 <?= $general->generateSelectOptions($userInfo, $test['result_reviewed_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
+                                                    </tr>
+                                                    <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="reviewedOn<?php echo $n; ?>">
                                                                 <?php echo _translate("Reviewed On"); ?>
@@ -877,8 +867,6 @@ if ($isLisInstance) {
                                                                 <?= $general->generateSelectOptions($userInfo, $test['result_reviewed_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
-                                                    </tr>
-                                                    <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="approvedOn<?php echo $n; ?>">
                                                                 <?php echo _translate("Approved On"); ?>
@@ -890,8 +878,6 @@ if ($isLisInstance) {
                                                                 placeholder="<?php echo _translate("Approved On"); ?>"
                                                                 title="<?php echo _translate("Please enter approved date"); ?>" />
                                                         </td>
-                                                        <td style="width: 33.33%;"></td>
-                                                        <td style="width: 33.33%;"></td>
                                                     </tr>
                                                     <tr style="display: none;" class="revisedFields">
                                                         <td style="width: 33.33%;">
@@ -1024,16 +1010,6 @@ if ($isLisInstance) {
                                                     <td style="width: 33.33%;"></td>
                                                 </tr>
                                                 <tr>
-                                                  <!--  <td style="width: 33.33%;">
-                                                        <label class="label-control" for="specimenType1">
-                                                            <?php echo _translate("Specimen Type"); ?>
-                                                        </label>
-                                                        <select name="testResult[specimenType][]" id="specimenType1"
-                                                            class="form-control"
-                                                            title="<?php echo _translate("Please choose specimen type"); ?>">
-                                                            <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
-                                                        </select>
-                                                    </td>-->
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="testType1">
                                                             <?php echo _translate("Test Type"); ?>
@@ -1067,8 +1043,6 @@ if ($isLisInstance) {
                                                             </option>
                                                         </select>
                                                     </td>
-                                                </tr>
-                                                <tr>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="comments1">
                                                             <?php echo _translate("Comments"); ?>
@@ -1078,6 +1052,8 @@ if ($isLisInstance) {
                                                             placeholder="<?= _translate("Please enter comments"); ?>"
                                                             title="<?php echo _translate("Please enter comments"); ?>"></textarea>
                                                     </td>
+                                                </tr>
+                                                <tr>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="testedBy1">
                                                             <?php echo _translate("Tested By"); ?>
@@ -1097,8 +1073,6 @@ if ($isLisInstance) {
                                                             placeholder="<?= _translate("Please enter date"); ?>"
                                                             title="<?php echo _translate("Please enter tested date"); ?>" />
                                                     </td>
-                                                </tr>
-                                                <tr>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="reviewedBy1">
                                                             <?php echo _translate("Reviewed By"); ?>
@@ -1109,6 +1083,8 @@ if ($isLisInstance) {
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
+                                                </tr>
+                                                <tr>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="reviewedOn1">
                                                             <?php echo _translate("Reviewed On"); ?>
@@ -1128,8 +1104,6 @@ if ($isLisInstance) {
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
-                                                </tr>
-                                                <tr>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="approvedOn1">
                                                             <?php echo _translate("Approved On"); ?>
@@ -1139,8 +1113,6 @@ if ($isLisInstance) {
                                                             placeholder="<?php echo _translate("Approved On"); ?>"
                                                             title="<?php echo _translate("Please enter approved date"); ?>" />
                                                     </td>
-                                                    <td style="width: 33.33%;"></td>
-                                                    <td style="width: 33.33%;"></td>
                                                 </tr>
                                                 <tr style="display: none;" class="revisedFields">
                                                     <td style="width: 33.33%;">
@@ -1478,24 +1450,29 @@ if ($isLisInstance) {
         var formLabId = '<?= $tbInfo['lab_id'] ?? '' ?>';
         var formReceivedDate = '<?= !empty($tbInfo['sample_received_at_lab_datetime']) ? DateUtility::humanReadableDateFormat($tbInfo['sample_received_at_lab_datetime'], true) : '' ?>';
 
-        // Ensure lab select is editable (cloned section may have disabled select + hidden input)
+        // Clean up cloned lab field
         $(newSection).find('input[type="hidden"][name="testResult[labId][]"]').remove();
         var $labSelect = $(newSection).find('select[id^="labId"]');
-        $labSelect.prop('disabled', false).attr('name', 'testResult[labId][]')
-            .attr('id', 'labId' + testCount);
+        $labSelect.attr('id', 'labId' + testCount);
         if (formLabId) {
-            $labSelect.val(formLabId);
+            $labSelect.val(formLabId).prop('disabled', true).removeAttr('name');
+            $labSelect.after('<input type="hidden" name="testResult[labId][]" value="' + formLabId + '" />');
+        } else {
+            $labSelect.prop('disabled', false).attr('name', 'testResult[labId][]');
         }
 
-        // Ensure date input is editable (cloned section may have readonly input + hidden input)
+        // Clean up cloned date field
         $(newSection).find('input[type="hidden"][name="testResult[sampleReceivedDate][]"]').remove();
         var $dateInput = $(newSection).find('input[id^="sampleReceivedDate"]');
-        $dateInput.prop('readonly', false).attr('name', 'testResult[sampleReceivedDate][]')
-            .attr('id', 'sampleReceivedDate' + testCount)
-            .addClass('date-time')
-            .attr('placeholder', '<?= _translate("Please enter date"); ?>');
+        $dateInput.attr('id', 'sampleReceivedDate' + testCount);
         if (formReceivedDate) {
-            $dateInput.val(formReceivedDate);
+            $dateInput.val(formReceivedDate).prop('readonly', true).removeAttr('name')
+                .removeClass('date-time').removeAttr('placeholder');
+            $dateInput.after('<input type="hidden" name="testResult[sampleReceivedDate][]" value="' + formReceivedDate + '" />');
+        } else {
+            $dateInput.prop('readonly', false).attr('name', 'testResult[sampleReceivedDate][]')
+                .addClass('date-time')
+                .attr('placeholder', '<?= _translate("Please enter date"); ?>');
         }
 
         // Hide conditional fields
