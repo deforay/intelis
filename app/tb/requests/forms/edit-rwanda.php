@@ -645,27 +645,48 @@ if ($isLisInstance) {
                                                             <?php echo $n; ?>
                                                         </span></strong></div>
                                                 <table class="table" style="width:100%; margin-top: 15px;">
+                                                    <?php
+                                                        $testLabId = $test['lab_id'] ?: $tbInfo['lab_id'];
+                                                        $testReceivedDate = !empty($test['sample_received_at_lab_datetime'])
+                                                            ? DateUtility::humanReadableDateFormat($test['sample_received_at_lab_datetime'], true)
+                                                            : ($tbInfo['sample_received_at_lab_datetime'] ?? '');
+                                                    ?>
                                                     <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="labId<?php echo $n; ?>">
                                                                 <?php echo _translate("Testing Lab"); ?>
                                                             </label>
-                                                            <select name="testResult[labId][]" id="labId<?php echo $n; ?>"
-                                                                class="form-control select2"
-                                                                title="<?php echo _translate("Please select testing laboratory"); ?>">
-                                                                <?= $general->generateSelectOptions($testingLabs, $test['lab_id'] ?: $currentLabId, '-- Select lab --'); ?>
-                                                            </select>
+                                                            <?php if (!empty($testLabId)) { ?>
+                                                                <select id="labId<?php echo $n; ?>"
+                                                                    class="form-control select2" disabled="disabled">
+                                                                    <?= $general->generateSelectOptions($testingLabs, $testLabId, '-- Select lab --'); ?>
+                                                                </select>
+                                                                <input type="hidden" name="testResult[labId][]" value="<?= $testLabId; ?>" />
+                                                            <?php } else { ?>
+                                                                <select name="testResult[labId][]" id="labId<?php echo $n; ?>"
+                                                                    class="form-control select2"
+                                                                    title="<?php echo _translate("Please select testing laboratory"); ?>">
+                                                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select lab --'); ?>
+                                                                </select>
+                                                            <?php } ?>
                                                         </td>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="sampleReceivedDate<?php echo $n; ?>">
                                                                 <?php echo _translate("Date specimen received at TB testing site"); ?>
                                                             </label>
-                                                            <input type="text" class="date-time form-control"
-                                                                value="<?php echo DateUtility::humanReadableDateFormat($test['sample_received_at_lab_datetime'], true); ?>"
-                                                                id="sampleReceivedDate<?php echo $n; ?>"
-                                                                name="testResult[sampleReceivedDate][]"
-                                                                placeholder="<?= _translate("Please enter date"); ?>"
-                                                                title="<?php echo _translate("Please enter sample receipt date"); ?>" />
+                                                            <?php if (!empty($testReceivedDate)) { ?>
+                                                                <input type="text" class="form-control"
+                                                                    value="<?= $testReceivedDate; ?>"
+                                                                    id="sampleReceivedDate<?php echo $n; ?>"
+                                                                    readonly="readonly" />
+                                                                <input type="hidden" name="testResult[sampleReceivedDate][]" value="<?= $testReceivedDate; ?>" />
+                                                            <?php } else { ?>
+                                                                <input type="text" class="date-time form-control"
+                                                                    id="sampleReceivedDate<?php echo $n; ?>"
+                                                                    name="testResult[sampleReceivedDate][]"
+                                                                    placeholder="<?= _translate("Please enter date"); ?>"
+                                                                    title="<?php echo _translate("Please enter sample receipt date"); ?>" />
+                                                            <?php } ?>
                                                         </td>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="isSampleRejected<?php echo $n; ?>">
@@ -914,25 +935,45 @@ if ($isLisInstance) {
                                             <div class="section-header"><strong>Test #<span
                                                         class="section-number">1</span></strong></div>
                                             <table class="table" style="width:100%; margin-top: 15px;">
+                                                <?php
+                                                    $emptyLabId = $tbInfo['lab_id'] ?? null;
+                                                    $emptyReceivedDate = $tbInfo['sample_received_at_lab_datetime'] ?? '';
+                                                ?>
                                                 <tr>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="labId1">
                                                             <?php echo _translate("Testing Lab"); ?>
                                                         </label>
-                                                        <select name="testResult[labId][]" id="labId1"
-                                                            class="form-control select2"
-                                                            title="<?php echo _translate("Please select testing laboratory"); ?>">
-                                                            <?= $general->generateSelectOptions($testingLabs, $currentLabId, '-- Select lab --'); ?>
-                                                        </select>
+                                                        <?php if (!empty($emptyLabId)) { ?>
+                                                            <select id="labId1"
+                                                                class="form-control select2" disabled="disabled">
+                                                                <?= $general->generateSelectOptions($testingLabs, $emptyLabId, '-- Select lab --'); ?>
+                                                            </select>
+                                                            <input type="hidden" name="testResult[labId][]" value="<?= $emptyLabId; ?>" />
+                                                        <?php } else { ?>
+                                                            <select name="testResult[labId][]" id="labId1"
+                                                                class="form-control select2"
+                                                                title="<?php echo _translate("Please select testing laboratory"); ?>">
+                                                                <?= $general->generateSelectOptions($testingLabs, $currentLabId, '-- Select lab --'); ?>
+                                                            </select>
+                                                        <?php } ?>
                                                     </td>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="sampleReceivedDate1">
                                                             <?php echo _translate("Date specimen received at TB testing site"); ?>
                                                         </label>
-                                                        <input type="text" class="date-time form-control"
-                                                            id="sampleReceivedDate1" name="testResult[sampleReceivedDate][]"
-                                                            placeholder="<?= _translate("Please enter date"); ?>"
-                                                            title="<?php echo _translate("Please enter sample receipt date"); ?>" />
+                                                        <?php if (!empty($emptyReceivedDate)) { ?>
+                                                            <input type="text" class="form-control"
+                                                                value="<?= $emptyReceivedDate; ?>"
+                                                                id="sampleReceivedDate1"
+                                                                readonly="readonly" />
+                                                            <input type="hidden" name="testResult[sampleReceivedDate][]" value="<?= $emptyReceivedDate; ?>" />
+                                                        <?php } else { ?>
+                                                            <input type="text" class="date-time form-control"
+                                                                id="sampleReceivedDate1" name="testResult[sampleReceivedDate][]"
+                                                                placeholder="<?= _translate("Please enter date"); ?>"
+                                                                title="<?php echo _translate("Please enter sample receipt date"); ?>" />
+                                                        <?php } ?>
                                                     </td>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="isSampleRejected1">
