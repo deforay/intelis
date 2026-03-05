@@ -102,7 +102,7 @@ final class ResultsService
                 // Normalize/force important fields
                 $row = MiscUtility::arrayEmptyStringsToNull($row);
                 $row['manifest_type'] = 'referral';
-                $row['test_type']     = $testType; // enforce consistency with the envelope
+                $row['test_type'] = $testType; // enforce consistency with the envelope
 
                 // If remote didn't set last_modified_datetime, set now (keeps audit/logical order sane)
                 $row['last_modified_datetime'] ??= DateUtility::getCurrentDateTime();
@@ -141,9 +141,9 @@ final class ResultsService
             } catch (Throwable $e) {
                 $stats['errors']++;
                 LoggerUtility::logError('receiveReferralManifests error: ' . $e->getMessage(), [
-                    'test_type'     => $testType,
+                    'test_type' => $testType,
                     'manifest_code' => $row['manifest_code'] ?? null,
-                    'trace'         => $e->getTraceAsString(),
+                    'trace' => $e->getTraceAsString(),
                     'last_db_error' => $this->db->getLastError(),
                     'last_db_query' => $this->db->getLastQuery(),
                 ]);
@@ -319,7 +319,7 @@ final class ResultsService
                         'trace' => $e->getTraceAsString(),
                     ]);
                     QueryLoggerUtility::log($errorId . " - " . $e->getFile() . ":" . $e->getLine() . ":" . $this->db->getLastErrno());
-                    QueryLoggerUtility::log($errorId . " - " .  $this->db->getLastError());
+                    QueryLoggerUtility::log($errorId . " - " . $this->db->getLastError());
                     QueryLoggerUtility::log($errorId . " - " . $this->db->getLastQuery());
                 }
             }
@@ -332,7 +332,7 @@ final class ResultsService
     {
         $existing = $this->normalizeFormAttributesPayload($existingAttributes, 'existing');
         $incoming = $this->normalizeFormAttributesPayload($incomingAttributes, 'incoming');
-        $mergedAttributes = array_merge($existing, $incoming);
+        $mergedAttributes = [...$existing, ...$incoming];
 
         if ($mergedAttributes === []) {
             return null;
