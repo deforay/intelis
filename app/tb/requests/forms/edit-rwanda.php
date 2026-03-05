@@ -1474,6 +1474,30 @@ if ($isLisInstance) {
         // Remove stale Select2 container spans from cloned section
         $(newSection).find('.select2-container').remove();
 
+        // Default values from form_tb (editable — user can change if test is from another lab)
+        var formLabId = '<?= $tbInfo['lab_id'] ?? '' ?>';
+        var formReceivedDate = '<?= !empty($tbInfo['sample_received_at_lab_datetime']) ? DateUtility::humanReadableDateFormat($tbInfo['sample_received_at_lab_datetime'], true) : '' ?>';
+
+        // Ensure lab select is editable (cloned section may have disabled select + hidden input)
+        $(newSection).find('input[type="hidden"][name="testResult[labId][]"]').remove();
+        var $labSelect = $(newSection).find('select[id^="labId"]');
+        $labSelect.prop('disabled', false).attr('name', 'testResult[labId][]')
+            .attr('id', 'labId' + testCount);
+        if (formLabId) {
+            $labSelect.val(formLabId);
+        }
+
+        // Ensure date input is editable (cloned section may have readonly input + hidden input)
+        $(newSection).find('input[type="hidden"][name="testResult[sampleReceivedDate][]"]').remove();
+        var $dateInput = $(newSection).find('input[id^="sampleReceivedDate"]');
+        $dateInput.prop('readonly', false).attr('name', 'testResult[sampleReceivedDate][]')
+            .attr('id', 'sampleReceivedDate' + testCount)
+            .addClass('date-time')
+            .attr('placeholder', '<?= _translate("Please enter date"); ?>');
+        if (formReceivedDate) {
+            $dateInput.val(formReceivedDate);
+        }
+
         // Hide conditional fields
         $(newSection).find('.rejection-reason-field, .rejection-date-field').hide();
         $(newSection).find('.revisedFields').hide();
