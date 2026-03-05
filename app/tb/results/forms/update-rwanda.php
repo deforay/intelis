@@ -991,7 +991,7 @@ if ($isLisInstance) {
                                         <?php echo _translate("Remove Test"); ?></button>
                                 </div>
                                 <br>
-                                <div class="row pr-5 fnal-result" <?php echo $referralResultDisplay; ?>>
+                                <div class="row pr-5 fnal-result" style="display:none;">
                                     <div class="col-md-6">
                                         <label class="label-control"
                                             for="isResultFinalized"><?php echo _translate("Do you want to enter the Final Interpretation?"); ?></label>
@@ -1231,14 +1231,34 @@ if ($isLisInstance) {
         // Test result change handler
         $section.find('.test-result-select').off('change.testSection').on('change.testSection', function () {
             showRevisedFields(this);
+            updateFinalInterpretationVisibility();
         });
 
         // Initialize date pickers
         initializeDatePickers(section);
     }
 
+    function updateFinalInterpretationVisibility() {
+        var hasAnyResult = false;
+        $('.test-result-select').each(function () {
+            if ($(this).val()) hasAnyResult = true;
+        });
+        if (hasAnyResult) {
+            $('.fnal-result').show();
+        } else {
+            $('.fnal-result').hide();
+            $('#isResultFinalized').val('no');
+            $('.finalResult').hide();
+        }
+    }
+
     // Add new test section
     function addTestSection() {
+        if ($('#isResultFinalized').val() === 'yes' && $('#finalResult').val()) {
+            if (!confirm('<?= _translate("The Final Interpretation is already recorded. Do you still want to add a new test?"); ?>')) {
+                return;
+            }
+        }
         testCount++;
         const container = document.getElementById('testSections');
         const firstSection = container.querySelector('.test-section');
@@ -1309,6 +1329,7 @@ if ($isLisInstance) {
                 lastSection.remove();
                 testCount--;
                 updateRemoveButtonVisibility();
+                updateFinalInterpretationVisibility();
             }
         }
     }
@@ -1659,6 +1680,9 @@ if ($isLisInstance) {
                 $rejectionSelect.trigger('change.testSection');
             }
         });
+
+        // Show final interpretation block if any test results exist
+        updateFinalInterpretationVisibility();
 
         // Treatment initiation change handler
         $('#isPatientInitiatedTreatment').on('change', function () {
