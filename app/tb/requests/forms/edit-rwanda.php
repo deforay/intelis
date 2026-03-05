@@ -44,8 +44,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 //$typeOfPatient = (!empty($tbInfo['patient_type'])) ? (array) json_decode((string) $tbInfo['patient_type']) : [];
 $typeOfPatient = $tbInfo['patient_type'];
 $reasonForTbTest = (!empty($tbInfo['reason_for_tb_test'])) ? (array) json_decode((string) $tbInfo['reason_for_tb_test']) : [];
-//$testTypeRequested = (!empty($tbInfo['tests_requested'])) ? (array)json_decode((string) $tbInfo['tests_requested']) : [];
-$testTypeRequested = !empty($tbInfo['tests_requested']) ? explode(',', (string) $tbInfo['tests_requested']) : [];
+$testTypeRequested = (!empty($tbInfo['tests_requested'])) ? (array)json_decode((string) $tbInfo['tests_requested']) : [];
 $purposeOfTest = !empty($tbInfo['reason_for_tb_test']) ? json_decode((string) $tbInfo['reason_for_tb_test']) : '';
 $tbInfo['risk_factors'] = !empty($tbInfo['risk_factors']) ? json_decode((string) $tbInfo['risk_factors'], true) : [];
 

@@ -49,8 +49,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 //$typeOfPatient = (!empty($tbInfo['patient_type'])) ? (array) json_decode((string) $tbInfo['patient_type']) : [];
 $typeOfPatient = $tbInfo['patient_type'];
 $reasonForTbTest = (!empty($tbInfo['reason_for_tb_test'])) ? (array) json_decode((string) $tbInfo['reason_for_tb_test']) : [];
-//$testTypeRequested = (!empty($tbInfo['tests_requested'])) ? (array)json_decode((string) $tbInfo['tests_requested']) : [];
-$testTypeRequested = !empty($tbInfo['tests_requested']) ? explode(',', (string) $tbInfo['tests_requested']) : [];
+$testTypeRequested = (!empty($tbInfo['tests_requested'])) ? (array)json_decode((string) $tbInfo['tests_requested']) : [];
 $purposeOfTest = !empty($tbInfo['reason_for_tb_test']) ? json_decode((string) $tbInfo['reason_for_tb_test']) : '';
 $tbInfo['risk_factors'] = !empty($tbInfo['risk_factors']) ? json_decode((string) $tbInfo['risk_factors'], true) : [];
 // Auto-select lab for LIS instances
@@ -415,34 +414,37 @@ if ($isLisInstance) {
                                         for="purposeOfTbTest"><?php echo _translate("Purpose of TB test(s)"); ?><span
                                             class="mandatory">*</span></label>
                                     <select id="purposeOfTbTest" name="purposeOfTbTest"
-                                        class="form-control isRequired" title="Please select the purpose of the test">
+                                        class="form-control isRequired select2" title="Please select the purpose of the test"> 
                                         <option value="">Select purpose of TB test...</option>
-                                        <option value="Initial TB diagnosis" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'Initial TB diagnosis') ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
-                                        <option value="DS-TB Treatment Follow-Up" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'DS-TB Treatment Follow-Up') ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
-                                        <option value="C2" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'C2') ? 'selected="selected"' : ''; ?>>C2</option>
-                                        <option value="C5" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'C5') ? 'selected="selected"' : ''; ?>>C5</option>
-                                        <option value="End of TB treatment" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'End of TB treatment') ? 'selected="selected"' : ''; ?>>End of TB treatment</option>
-                                        <option value="DR-TB Patient Baseline tests" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'DR-TB Patient Baseline tests') ? 'selected="selected"' : ''; ?>>DR-TB Patient Baseline tests</option>
-                                        <option value="DR-TB patient Follow up" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'DR-TB patient Follow up') ? 'selected="selected"' : ''; ?>>DR-TB patient Follow up</option>
-                                    </select>
+                                            <option value="Initial TB diagnosis" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'Initial TB diagnosis') ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
+                                            <option value="DS-TB Treatment Follow-Up" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'DS-TB Treatment Follow-Up') ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
+                                            <option value="C2" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'C2') ? 'selected="selected"' : ''; ?>>C2
+                                            </option>
+                                            <option value="C5" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'C5') ? 'selected="selected"' : ''; ?>>C5
+                                            </option>
+                                            <option value="End of TB treatment" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'End of TB treatment') ? 'selected="selected"' : ''; ?>>End of TB treatment</option>
+                                            <option value="DR-TB Patient Baseline tests" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'DR-TB Patient Baseline tests') ? 'selected="selected"' : ''; ?>>DR-TB Patient Baseline tests</option>
+                                            <option value="DR-TB patient Follow up" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'DR-TB patient Follow up') ? 'selected="selected"' : ''; ?>>DR-TB patient Follow up</option>
+                                        </select>
                                 </td>
                                 <td style="width: 50%;">
                                     <label class="label-control"
                                         for="tbTestsRequested"><?php echo _translate("TB test(s) requested"); ?></label>
                                     <select id="tbTestsRequested" multiple name="tbTestsRequested[]"
-                                        class="form-control" title="Please select the TB test(s) requested">
+                                        class="form-control select2" title="Please select the TB test(s) requested">
                                         <option value="">Select TB test(s) requested...</option>
-                                        <option value="LED microscopy" <?php echo in_array('LED microscopy', $testTypeRequested) ? 'selected="selected"' : ''; ?>>LED microscopy
-                                        </option>
-                                        <option value="TB LAM test" <?php echo in_array('TB LAM test', $testTypeRequested) ? 'selected="selected"' : ''; ?>>TB LAM test
-                                        </option>
-                                        <option value="MTB/ RIF Ultra" <?php echo in_array('MTB/ RIF Ultra', $testTypeRequested) ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra
-                                        </option>
-                                        <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $testTypeRequested) ? 'selected="selected"' : ''; ?>>MTB/
-                                            XDR (if RIF detected)</option>
-                                        <option value="TB culture and Drug susceptibility test (DST)" <?php echo in_array('TB culture and Drug susceptibility test (DST)', $testTypeRequested) ? 'selected="selected"' : ''; ?>>TB culture and
-                                            Drug
-                                            susceptibility test (DST)</option>
+                                            <option value="LED microscopy" <?php echo in_array('LED microscopy', $testTypeRequested) ? 'selected="selected"' : ''; ?>>LED microscopy
+                                            </option>
+                                            <option value="TB LAM test" <?php echo in_array('TB LAM test', $testTypeRequested) ? 'selected="selected"' : ''; ?>>TB LAM test
+                                            </option>
+                                            <option value="MTB/ RIF Ultra" <?php echo in_array('MTB/ RIF Ultra', $testTypeRequested) ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra
+                                            </option>
+                                            <option value="MTB/ XDR (if RIF detected)" <?php echo in_array('MTB/ XDR (if RIF detected)', $testTypeRequested) ? 'selected="selected"' : ''; ?>>
+                                                MTB/
+                                                XDR (if RIF detected)</option>
+                                            <option value="TB culture and Drug susceptibility test (DST)" <?php echo in_array('TB culture and Drug susceptibility test (DST)', $testTypeRequested) ? 'selected="selected"' : ''; ?>>TB culture and
+                                                Drug
+                                                susceptibility test (DST)</option>
                                     </select>
                                 </td>
                             </tr>
