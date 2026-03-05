@@ -204,7 +204,7 @@ use App\Services\CommonService;
 			}
 			],
 			"aaSorting": [
-				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 9 : 8 ?>, "desc"]
+				[1, "asc"]
 			],
 			"fnDrawCallback": function () { },
 			"bProcessing": true,
