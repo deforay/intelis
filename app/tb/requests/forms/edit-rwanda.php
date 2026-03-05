@@ -179,20 +179,16 @@ if ($isLisInstance) {
                                             <?= $general->generateSelectOptions($testingLabs, $tbInfo['affiliated_lab_id'], '-- Select --'); ?>
                                         </select>
                                     </td> -->
-                                    <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                                        <td style="width: 33.33%;">
-                                            <label class="label-control" for="labId">
-                                                <?php echo _translate("Testing Laboratory"); ?><span
-                                                    class="mandatory">*</span>
-                                            </label>
-                                            <select name="labId" id="labId" class="form-control select2 isRequired"
-                                                title="<?php echo _translate("Please select Testing Laboratory"); ?>">
-                                                <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
-                                            </select>
-                                        </td>
-                                    <?php } else { ?>
-                                        <td style="width: 33.33%;"></td>
-                                    <?php } ?>
+                                    <td style="width: 33.33%;">
+                                        <label class="label-control" for="labId">
+                                            <?php echo _translate("Testing Laboratory"); ?><span
+                                                class="mandatory">*</span>
+                                        </label>
+                                        <select name="labId" id="labId" class="form-control select2 isRequired"
+                                            title="<?php echo _translate("Please select Testing Laboratory"); ?>">
+                                            <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
+                                        </select>
+                                    </td>
                                     <td style="width: 33.33%;"></td>
                                     <td style="width: 33.33%;"></td>
                                 </tr>
@@ -401,22 +397,33 @@ if ($isLisInstance) {
                                         <label class="label-control" for="riskFactors">
                                             <?php echo _translate("Risk Factors"); ?>
                                         </label>
-                                        <select id="riskFactors" name="riskFactors[]" multiple class="form-control select2"
+                                        <select id="riskFactors" name="riskFactors[]" multiple
+                                            class="form-control select2"
                                             title="Please select any one of the risk factors">
                                             <option value="">Select risk factor...</option>
                                             <option value="No information provided" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('No information provided', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>No information provided</option>
-                                            <option value="TB Contact" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('TB Contact', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>TB Contact</option>
-                                            <option value="PLHIV" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('PLHIV', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>PLHIV</option>
+                                            <option value="TB Contact" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('TB Contact', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>TB Contact
+                                            </option>
+                                            <option value="PLHIV" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('PLHIV', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>PLHIV
+                                            </option>
                                             <option value="Healthcare provider" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Healthcare provider', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Healthcare provider</option>
-                                            <option value="CHW" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('CHW',$tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>CHW</option>
-                                            <option value="Prisoner inmate" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Prisoner inmate', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Prisoner/inmate</option>
-                                            <option value="Tobacco smoking" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Tobacco smoking', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Tobacco smoking</option>
-                                            <option value="Crowded habitant" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Crowded habitant', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Crowded habitant</option>
-                                            <option value="Diabetic" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Diabetic', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Diabetic</option>
-                                            <option value="Miner" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Miner', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Miner</option>
-                                            <option value="Refugee camp" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Refugee camp', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Refugee camp</option>
-                                            <option value="Age > 55 years" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Age > 55 years', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Age > 55 years</option>
-                                            <option value="Others" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Others', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Others</option>
+                                            <option value="CHW" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('CHW', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>CHW</option>
+                                            <option value="Prisoner inmate" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Prisoner inmate', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>
+                                                Prisoner/inmate</option>
+                                            <option value="Tobacco smoking" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Tobacco smoking', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Tobacco
+                                                smoking</option>
+                                            <option value="Crowded habitant" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Crowded habitant', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Crowded
+                                                habitant</option>
+                                            <option value="Diabetic" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Diabetic', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Diabetic
+                                            </option>
+                                            <option value="Miner" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Miner', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Miner
+                                            </option>
+                                            <option value="Refugee camp" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Refugee camp', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Refugee camp
+                                            </option>
+                                            <option value="Age > 55 years" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Age > 55 years', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Age > 55
+                                                years</option>
+                                            <option value="Others" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Others', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Others
+                                            </option>
                                         </select>
                                         <input
                                             style="<?php echo (isset($tbInfo['risk_factor_other']) && !empty($tbInfo['risk_factor_other'])) ? "" : "display: none"; ?>"
@@ -492,7 +499,8 @@ if ($isLisInstance) {
                                             title="Please select the purpose of the test">
                                             <option value="">Select purpose of TB test...</option>
                                             <option value="Initial TB diagnosis" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'Initial TB diagnosis') ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
-                                            <option value="DS-TB Treatment Follow-Up" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'DS-TB Treatment Follow-Up') ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
+                                            <option value="DS-TB Treatment Follow-Up" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'DS-TB Treatment Follow-Up') ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up
+                                            </option>
                                             <option value="C2" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'C2') ? 'selected="selected"' : ''; ?>>C2
                                             </option>
                                             <option value="C5" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'C5') ? 'selected="selected"' : ''; ?>>C5
@@ -644,10 +652,10 @@ if ($isLisInstance) {
                                                         </span></strong></div>
                                                 <table class="table" style="width:100%; margin-top: 15px;">
                                                     <?php
-                                                        $testLabId = $test['lab_id'] ?: $tbInfo['lab_id'];
-                                                        $testReceivedDate = !empty($test['sample_received_at_lab_datetime'])
-                                                            ? DateUtility::humanReadableDateFormat($test['sample_received_at_lab_datetime'], true)
-                                                            : ($tbInfo['sample_received_at_lab_datetime'] ?? '');
+                                                    $testLabId = $test['lab_id'] ?: $tbInfo['lab_id'];
+                                                    $testReceivedDate = !empty($test['sample_received_at_lab_datetime'])
+                                                        ? DateUtility::humanReadableDateFormat($test['sample_received_at_lab_datetime'], true)
+                                                        : ($tbInfo['sample_received_at_lab_datetime'] ?? '');
                                                     ?>
                                                     <tr>
                                                         <td style="width: 33.33%;">
@@ -655,11 +663,12 @@ if ($isLisInstance) {
                                                                 <?php echo _translate("Testing Lab"); ?>
                                                             </label>
                                                             <?php if (!empty($testLabId)) { ?>
-                                                                <select id="labId<?php echo $n; ?>"
-                                                                    class="form-control select2" disabled="disabled">
+                                                                <select id="labId<?php echo $n; ?>" class="form-control select2"
+                                                                    disabled="disabled">
                                                                     <?= $general->generateSelectOptions($testingLabs, $testLabId, '-- Select lab --'); ?>
                                                                 </select>
-                                                                <input type="hidden" name="testResult[labId][]" value="<?= $testLabId; ?>" />
+                                                                <input type="hidden" name="testResult[labId][]"
+                                                                    value="<?= $testLabId; ?>" />
                                                             <?php } else { ?>
                                                                 <select name="testResult[labId][]" id="labId<?php echo $n; ?>"
                                                                     class="form-control select2"
@@ -675,9 +684,9 @@ if ($isLisInstance) {
                                                             <?php if (!empty($testReceivedDate)) { ?>
                                                                 <input type="text" class="form-control"
                                                                     value="<?= $testReceivedDate; ?>"
-                                                                    id="sampleReceivedDate<?php echo $n; ?>"
-                                                                    readonly="readonly" />
-                                                                <input type="hidden" name="testResult[sampleReceivedDate][]" value="<?= $testReceivedDate; ?>" />
+                                                                    id="sampleReceivedDate<?php echo $n; ?>" readonly="readonly" />
+                                                                <input type="hidden" name="testResult[sampleReceivedDate][]"
+                                                                    value="<?= $testReceivedDate; ?>" />
                                                             <?php } else { ?>
                                                                 <input type="text" class="date-time form-control"
                                                                     id="sampleReceivedDate<?php echo $n; ?>"
@@ -762,8 +771,10 @@ if ($isLisInstance) {
                                                             <label class="label-control" for="testType<?php echo $n; ?>">
                                                                 <?php echo _translate("Test Type"); ?>
                                                             </label>
-                                                            <select class="form-control test-type-select resultSectionInput test-required-field" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?> name="testResult[testType][]"
-                                                                id="testType<?php echo $n; ?>"
+                                                            <select
+                                                                class="form-control test-type-select resultSectionInput test-required-field"
+                                                                <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?>
+                                                                name="testResult[testType][]" id="testType<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test type"); ?>"
                                                                 onchange="updateTestResults(<?php echo $n; ?>);showRevisedFields(this);updateTestFieldsRequired(this);">
                                                                 <option value="">
@@ -783,8 +794,10 @@ if ($isLisInstance) {
                                                             <label class="label-control" for="testResult<?php echo $n; ?>">
                                                                 <?php echo _translate("Test Result"); ?>
                                                             </label>
-                                                            <select class="form-control test-result-select resultSectionInput test-required-field" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?> name="testResult[testResult][]"
-                                                                id="testResult<?php echo $n; ?>"
+                                                            <select
+                                                                class="form-control test-result-select resultSectionInput test-required-field"
+                                                                <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?>
+                                                                name="testResult[testResult][]" id="testResult<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test result"); ?>"
                                                                 onchange="showRevisedFields(this);updateTestFieldsRequired(this);">
                                                                 <option value="">
@@ -920,8 +933,8 @@ if ($isLisInstance) {
                                                         class="section-number">1</span></strong></div>
                                             <table class="table" style="width:100%; margin-top: 15px;">
                                                 <?php
-                                                    $emptyLabId = $tbInfo['lab_id'] ?? null;
-                                                    $emptyReceivedDate = $tbInfo['sample_received_at_lab_datetime'] ?? '';
+                                                $emptyLabId = $tbInfo['lab_id'] ?? null;
+                                                $emptyReceivedDate = $tbInfo['sample_received_at_lab_datetime'] ?? '';
                                                 ?>
                                                 <tr>
                                                     <td style="width: 33.33%;">
@@ -929,11 +942,11 @@ if ($isLisInstance) {
                                                             <?php echo _translate("Testing Lab"); ?>
                                                         </label>
                                                         <?php if (!empty($emptyLabId)) { ?>
-                                                            <select id="labId1"
-                                                                class="form-control select2" disabled="disabled">
+                                                            <select id="labId1" class="form-control select2" disabled="disabled">
                                                                 <?= $general->generateSelectOptions($testingLabs, $emptyLabId, '-- Select lab --'); ?>
                                                             </select>
-                                                            <input type="hidden" name="testResult[labId][]" value="<?= $emptyLabId; ?>" />
+                                                            <input type="hidden" name="testResult[labId][]"
+                                                                value="<?= $emptyLabId; ?>" />
                                                         <?php } else { ?>
                                                             <select name="testResult[labId][]" id="labId1"
                                                                 class="form-control select2"
@@ -948,10 +961,10 @@ if ($isLisInstance) {
                                                         </label>
                                                         <?php if (!empty($emptyReceivedDate)) { ?>
                                                             <input type="text" class="form-control"
-                                                                value="<?= $emptyReceivedDate; ?>"
-                                                                id="sampleReceivedDate1"
+                                                                value="<?= $emptyReceivedDate; ?>" id="sampleReceivedDate1"
                                                                 readonly="readonly" />
-                                                            <input type="hidden" name="testResult[sampleReceivedDate][]" value="<?= $emptyReceivedDate; ?>" />
+                                                            <input type="hidden" name="testResult[sampleReceivedDate][]"
+                                                                value="<?= $emptyReceivedDate; ?>" />
                                                         <?php } else { ?>
                                                             <input type="text" class="date-time form-control"
                                                                 id="sampleReceivedDate1" name="testResult[sampleReceivedDate][]"
@@ -1276,31 +1289,31 @@ if ($isLisInstance) {
         ]
     };
 
-   $('#riskFactors').on('change', function () {
-    let selectedValues = $(this).val(); // array
-    if (selectedValues && selectedValues.includes('No information provided')) {
-        // Keep only "No information provided"
-        $(this).val(['No information provided']).trigger('change.select2');
+    $('#riskFactors').on('change', function () {
+        let selectedValues = $(this).val(); // array
+        if (selectedValues && selectedValues.includes('No information provided')) {
+            // Keep only "No information provided"
+            $(this).val(['No information provided']).trigger('change.select2');
 
-        // Disable other options
-        $(this).find('option').each(function () {
-            if (this.value !== 'No information provided') {
-                $(this).prop('disabled', true);
-            }
-        });
-    } else {
-        // Enable all options
-        $(this).find('option').prop('disabled', false);
-         if (selectedValues && selectedValues.includes('Others')) 
-             $('#riskFactorsOther').show();
-        else
-             $('#riskFactorsOther').hide();
-        
-    }
+            // Disable other options
+            $(this).find('option').each(function () {
+                if (this.value !== 'No information provided') {
+                    $(this).prop('disabled', true);
+                }
+            });
+        } else {
+            // Enable all options
+            $(this).find('option').prop('disabled', false);
+            if (selectedValues && selectedValues.includes('Others'))
+                $('#riskFactorsOther').show();
+            else
+                $('#riskFactorsOther').hide();
 
-    // Refresh Select2
-    $(this).trigger('change.select2');
-});
+        }
+
+        // Refresh Select2
+        $(this).trigger('change.select2');
+    });
 
     // Update test results dropdown based on selected test type
     function updateTestResults(rowNumber) {
@@ -1769,7 +1782,7 @@ if ($isLisInstance) {
             width: '100%'
         });
 
-         $("#riskFactors").trigger('change');
+        $("#riskFactors").trigger('change');
 
         <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
             $('#labId').select2({
