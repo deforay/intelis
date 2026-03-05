@@ -977,6 +977,18 @@ if ($isLisInstance) {
         // Clear all form values
         clearFormValues(newSection);
 
+        // Lab: from FACILITY INFORMATION section, date: from previous test
+        var facilityLabId = $('#labId').val();
+        var $lastSection = $(container).find('.test-section').last();
+        var lastDateVal = $lastSection.find('input[name="testResult[sampleReceivedDate][]"]').val();
+
+        if (facilityLabId) {
+            $(newSection).find('select[name="testResult[labId][]"]').val(facilityLabId);
+        }
+        if (lastDateVal) {
+            $(newSection).find('input[name="testResult[sampleReceivedDate][]"]').val(lastDateVal);
+        }
+
         // Hide conditional fields and clear required state
         $(newSection).find('.rejection-reason-field, .rejection-date-field').hide();
         $(newSection).find('.test-required-field').removeClass('isRequired');
