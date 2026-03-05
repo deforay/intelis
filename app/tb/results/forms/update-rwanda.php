@@ -46,7 +46,8 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
 $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
-$typeOfPatient = (!empty($tbInfo['patient_type'])) ? (array) json_decode((string) $tbInfo['patient_type']) : [];
+//$typeOfPatient = (!empty($tbInfo['patient_type'])) ? (array) json_decode((string) $tbInfo['patient_type']) : [];
+$typeOfPatient = $tbInfo['patient_type'];
 $reasonForTbTest = (!empty($tbInfo['reason_for_tb_test'])) ? (array) json_decode((string) $tbInfo['reason_for_tb_test']) : [];
 //$testTypeRequested = (!empty($tbInfo['tests_requested'])) ? (array)json_decode((string) $tbInfo['tests_requested']) : [];
 $testTypeRequested = !empty($tbInfo['tests_requested']) ? explode(',', (string) $tbInfo['tests_requested']) : [];
