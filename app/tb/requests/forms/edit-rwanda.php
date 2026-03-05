@@ -811,7 +811,7 @@ if ($isLisInstance) {
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width: 33.33%;">
+                                                        <td style="width: 33.33%;" class="tested-field-td">
                                                             <label class="label-control" for="testedBy<?php echo $n; ?>">
                                                                 <?php echo _translate("Tested By"); ?>
                                                             </label>
@@ -821,7 +821,7 @@ if ($isLisInstance) {
                                                                 <?= $general->generateSelectOptions($userInfo, $test['tested_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
-                                                        <td style="width: 33.33%;">
+                                                        <td style="width: 33.33%;" class="tested-field-td">
                                                             <label class="label-control"
                                                                 for="sampleTestedDateTime<?php echo $n; ?>">
                                                                 <?php echo _translate("Tested On"); ?>
@@ -1054,7 +1054,7 @@ if ($isLisInstance) {
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 33.33%;">
+                                                    <td style="width: 33.33%;" class="tested-field-td">
                                                         <label class="label-control" for="testedBy1">
                                                             <?php echo _translate("Tested By"); ?>
                                                         </label>
@@ -1064,7 +1064,7 @@ if ($isLisInstance) {
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
-                                                    <td style="width: 33.33%;">
+                                                    <td style="width: 33.33%;" class="tested-field-td">
                                                         <label class="label-control" for="sampleTestedDateTime1">
                                                             <?php echo _translate("Tested On"); ?>
                                                         </label>
@@ -1367,7 +1367,10 @@ if ($isLisInstance) {
         var hasResult = testType && testResult;
 
         if (isRejected || hasResult) {
-            $section.find('.test-required-field:not(:disabled)').addClass('isRequired');
+            $section.find('.test-required-field:not(:disabled)').not('.tested-field-td .test-required-field').addClass('isRequired');
+            if (!isRejected) {
+                $section.find('.tested-field-td .test-required-field').addClass('isRequired');
+            }
         } else {
             $section.find('.test-required-field').removeClass('isRequired');
         }
@@ -1395,9 +1398,12 @@ if ($isLisInstance) {
             if ($(this).val() === 'yes') {
                 $row.find('.rejection-reason-field, .rejection-date-field').show();
                 $row.find('.rejection-reason-select, .rejection-date').addClass('isRequired');
+                $row.find('.tested-field-td').hide();
+                $row.find('.tested-field-td .test-required-field').removeClass('isRequired');
             } else {
                 $row.find('.rejection-reason-field, .rejection-date-field').hide();
                 $row.find('.rejection-reason-select, .rejection-date').removeClass('isRequired').val('');
+                $row.find('.tested-field-td').show();
             }
         });
 
@@ -1761,6 +1767,12 @@ if ($isLisInstance) {
             const testTypeSelect = $(this).find('.test-type-select');
             if (testTypeSelect.length && testTypeSelect.val()) {
                 // updateTestResults(sectionNumber);
+            }
+
+            // Apply rejection state on page load
+            var $rejectionSelect = $(this).find('.sample-rejection-select');
+            if ($rejectionSelect.val() === 'yes') {
+                $rejectionSelect.trigger('change.testSection');
             }
         });
 
