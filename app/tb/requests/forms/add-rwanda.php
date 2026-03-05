@@ -153,19 +153,15 @@ if ($isLisInstance) {
                                             <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                         </select>
                                     </td> -->
-                                    <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
-                                        <td style="width: 33.33%;">
-                                            <label class="label-control"
-                                                for="labId"><?php echo _translate("Testing Laboratory"); ?><span
-                                                    class="mandatory">*</span></label>
-                                            <select name="labId" id="labId" class="form-control select2 isRequired"
-                                                title="<?php echo _translate("Please select Testing Laboratory"); ?>">
-                                                <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                            </select>
-                                        </td>
-                                    <?php } else { ?>
-                                        <td style="width: 33.33%;"></td>
-                                    <?php } ?>
+                                    <td style="width: 33.33%;">
+                                        <label class="label-control"
+                                            for="labId"><?php echo _translate("Testing Laboratory"); ?><span
+                                                class="mandatory">*</span></label>
+                                        <select name="labId" id="labId" class="form-control select2 isRequired"
+                                            title="<?php echo _translate("Please select Testing Laboratory"); ?>">
+                                            <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                        </select>
+                                    </td>
                                     <td style="width: 33.33%;"></td>
                                     <td style="width: 33.33%;"></td>
                                 </tr>
