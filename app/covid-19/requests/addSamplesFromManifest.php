@@ -170,6 +170,7 @@ $general = ContainerRegistry::get(CommonService::class);
 		}
 		oTable = $('#manifestDataTable').dataTable({
 			"bJQueryUI": false,
+			"iDisplayLength": 200,
 			"bAutoWidth": false,
 			"bInfo": true,
 			"bScrollCollapse": true,
