@@ -22,4 +22,10 @@ ALTER TABLE `audit_form_tb` ADD `is_result_finalized` ENUM('no','yes','') NOT NU
 ALTER TABLE `form_tb` ADD `is_result_finalized` ENUM('no','yes','') NOT NULL DEFAULT 'no' AFTER `locked`;
 
 -- Jeyabanu 26-Feb-2026
-ALTER TABLE `form_tb` CHANGE `risk_factors` `risk_factors` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL;
+-- Migrate existing single-value risk_factors to JSON array format before changing column type
+UPDATE `form_tb` SET `risk_factors` = JSON_ARRAY(`risk_factors`) WHERE `risk_factors` IS NOT NULL AND `risk_factors` != '' AND `risk_factors` NOT LIKE '[%';
+ALTER TABLE `form_tb` CHANGE `risk_factors` `risk_factors` JSON DEFAULT NULL;
+
+-- Consolidate purpose_of_test into reason_for_tb_test
+UPDATE `form_tb` SET `reason_for_tb_test` = JSON_QUOTE(`purpose_of_test`) WHERE `purpose_of_test` IS NOT NULL AND `purpose_of_test` != '' AND (`reason_for_tb_test` IS NULL OR `reason_for_tb_test` = 'null');
+ALTER TABLE `form_tb` DROP COLUMN `purpose_of_test`;
