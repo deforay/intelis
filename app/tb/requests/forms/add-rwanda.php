@@ -216,7 +216,7 @@ if ($isLisInstance) {
                                                 class="mandatory">*</span></label>
                                         <input type="text" class="form-control date isRequired" id="dob" name="dob"
                                             placeholder="<?php echo _translate("Date of Birth"); ?>"
-                                            title="<?php echo _translate("Please enter Date of birth"); ?>"
+                                            title="<?php echo _translate("Please enter Date of Birth"); ?>"
                                             onchange="calculateAgeInYears('dob', 'patientAge');" />
                                     </td>
                                     <td style="width: 33.33%;">
@@ -287,8 +287,8 @@ if ($isLisInstance) {
                                         </select>
                                         <input type="text" class="form-control typeOfPatientOther"
                                             id="typeOfPatientOther" name="typeOfPatientOther"
-                                            placeholder="<?php echo _translate("Enter case type if others"); ?>"
-                                            title="<?php echo _translate("Please enter case type if others"); ?>"
+                                            placeholder="<?php echo _translate("Enter case type if other"); ?>"
+                                            title="<?php echo _translate("Please enter case type if other"); ?>"
                                             style="display: none;" />
                                     </td>
                                 </tr>
@@ -349,7 +349,7 @@ if ($isLisInstance) {
                                 <tr class="treatmentSelected" style="display: none;">
                                     <td style="width: 33.33%;">
                                         <label class="label-control"
-                                            for="treatmentDate"><?php echo _translate("Date of treatment Initiation"); ?><span
+                                            for="treatmentDate"><?php echo _translate("Date of Treatment Initiation"); ?><span
                                                 class="mandatory">*</span></label>
                                         <input type="text" name="treatmentDate" id="treatmentDate"
                                             placeholder="Enter the date of treatment initiation"
@@ -464,7 +464,7 @@ if ($isLisInstance) {
                                         <input type="text" class="form-control specimenTypeOther" id="specimenTypeOther"
                                             name="specimenTypeOther"
                                             placeholder="<?php echo _translate("Enter specimen type of others"); ?>"
-                                            title="<?php echo _translate("Please enter the specimen type if others"); ?>"
+                                            title="<?php echo _translate("Please enter the specimen type if other"); ?>"
                                             style="display: none;" />
                                     </td>
                                     <td style="width: 33.33%;">
