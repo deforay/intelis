@@ -1613,7 +1613,7 @@ if ($isLisInstance) {
     // Document ready function
     $(document).ready(function () {
         // Initialize Select2 for main form elements
-        $("#facilityId, #province, #district").select2({
+        $("#facilityId").select2({
             placeholder: "<?php echo _translate('Select option'); ?>",
             width: '100%'
         });
