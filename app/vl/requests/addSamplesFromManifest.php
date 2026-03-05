@@ -167,6 +167,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 		oTable = $('#manifestDataTable').dataTable({
 			"bJQueryUI": false,
+			"iDisplayLength": 200,
 			"bAutoWidth": false,
 			"bInfo": true,
 			"bScrollCollapse": true,

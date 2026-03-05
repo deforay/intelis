@@ -167,6 +167,7 @@ $title = _translate("CD4 | Add Samples from Manifest");
 
 		oTable = $('#manifestDataTable').dataTable({
 			"bJQueryUI": false,
+			"iDisplayLength": 200,
 			"bAutoWidth": false,
 			"bInfo": true,
 			"bScrollCollapse": true,
