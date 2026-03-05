@@ -113,7 +113,10 @@
         ],
         "system-admin": "@php bin/setup/system-admin.php",
         "migrate": "@php bin/migrate.php -y",
-        "reset-metadata": "@php app/tasks/remote/sts-metadata-receiver.php -ft",
+        "reset-metadata": [
+            "@php app/tasks/remote/sts-metadata-receiver.php -ft",
+            "@php app/tasks/remote/lab-metadata-sender.php -f"
+        ],
         "metadata-sync": [
             "@php app/tasks/remote/sts-metadata-receiver.php",
             "@php app/tasks/remote/lab-metadata-sender.php"
