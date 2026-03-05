@@ -640,7 +640,7 @@ if ($isLisInstance) {
                                                         <td style="width: 33.33%;"></td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width: 33.33%;">
+                                                        <!-- <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="specimenType<?php echo $n; ?>"><?php echo _translate("Specimen Type"); ?></label>
                                                             <select name="testResult[specimenType][]"
@@ -648,11 +648,11 @@ if ($isLisInstance) {
                                                                 title="<?php echo _translate("Please choose specimen type"); ?>">
                                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $test['specimen_type'], '-- Select --'); ?>
                                                             </select>
-                                                        </td>
+                                                        </td> -->
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="testType<?php echo $n; ?>"><?php echo _translate("Test Type"); ?></label>
-                                                            <select class="form-control test-type-select resultSectionInput" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'disabled' : ''; ?> name="testResult[testType][]"
+                                                            <select class="form-control test-type-select resultSectionInput" <?php echo (isset($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?> name="testResult[testType][]"
                                                                 id="testType<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test type"); ?>"
                                                                 onchange="$(this).closest('.test-section').find('.revisedFields').show();">
@@ -671,7 +671,7 @@ if ($isLisInstance) {
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="testResult<?php echo $n; ?>"><?php echo _translate("Test Result"); ?></label>
-                                                            <select class="form-control test-result-select resultSectionInput" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'disabled' : ''; ?> name="testResult[testResult][]"
+                                                            <select class="form-control test-result-select resultSectionInput" <?php echo (isset($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?> name="testResult[testResult][]"
                                                                 id="testResult<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test result"); ?>"
                                                                 onchange="$(this).closest('.test-section').find('.revisedFields').show();">
@@ -878,7 +878,7 @@ if ($isLisInstance) {
                                                     <td style="width: 33.33%;"></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width: 33.33%;">
+                                                    <!-- <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="specimenType1"><?php echo _translate("Specimen Type"); ?></label>
                                                         <select name="testResult[specimenType][]" id="specimenType1"
@@ -886,7 +886,7 @@ if ($isLisInstance) {
                                                             title="<?php echo _translate("Please choose specimen type"); ?>">
                                                             <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
                                                         </select>
-                                                    </td>
+                                                    </td> -->
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="testType1"><?php echo _translate("Test Type"); ?></label>
