@@ -218,7 +218,7 @@ $batResult = $db->rawQuery($batQuery);
 			}
 			],
 			"aaSorting": [
-				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 11 : 10 ?>, "desc"]
+				[1, "asc"]
 			],
 			"fnDrawCallback": function () { },
 			"bProcessing": true,

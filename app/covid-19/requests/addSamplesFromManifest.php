@@ -205,7 +205,7 @@ $general = ContainerRegistry::get(CommonService::class);
 			}
 			],
 			"aaSorting": [
-				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 9 : 8 ?>, "desc"]
+				[1, "asc"]
 			],
 			"fnDrawCallback": function () { },
 			"bProcessing": true,
