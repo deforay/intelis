@@ -478,7 +478,7 @@ if ($isLisInstance) {
                             </table>
                         </div>
                     </div>
-                    <?php if (_isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
+                    <?php if (!$general->isSTSInstance() && (_isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site')) { ?>
                         <!-- TEST RESULTS INFORMATION -->
                         <div class="box box-primary">
                             <div class="box-body">
