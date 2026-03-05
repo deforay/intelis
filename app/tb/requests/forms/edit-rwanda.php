@@ -263,7 +263,7 @@ if ($isLisInstance) {
                                             value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['patient_dob']); ?>"
                                             class="form-control date isRequired" id="dob" name="dob"
                                             placeholder="<?php echo _translate("Date of Birth"); ?>"
-                                            title="<?php echo _translate("Please enter Date of birth"); ?>"
+                                            title="<?php echo _translate("Please enter Date of Birth"); ?>"
                                             onchange="calculateAgeInYears('dob', 'patientAge');" />
                                     </td>
                                     <td style="width: 33.33%;">
@@ -362,8 +362,8 @@ if ($isLisInstance) {
                                             class="form-control typeOfPatientOther <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "isRequired" : ""; ?>"
                                             id="typeOfPatientOther" name="typeOfPatientOther"
                                             value="<?php echo ($tbInfo['other_patient_type'] ?? null); ?>"
-                                            placeholder="<?php echo _translate("Enter case type if others"); ?>"
-                                            title="<?php echo _translate("Please enter case type if others"); ?>" <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "" : "style='display: none;'"; ?> />
+                                            placeholder="<?php echo _translate("Enter case type if other"); ?>"
+                                            title="<?php echo _translate("Please enter case type if other"); ?>" <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "" : "style='display: none;'"; ?> />
                                     </td>
                                 </tr>
                             </table>
@@ -434,14 +434,14 @@ if ($isLisInstance) {
                                     style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
                                     <td style="width: 33.33%;">
                                         <label class="label-control" for="treatmentDate">
-                                            <?php echo _translate("Date of treatment Initiation"); ?><span
+                                            <?php echo _translate("Date of Treatment Initiation"); ?><span
                                                 class="mandatory">*</span>
                                         </label>
                                         <input type="text"
                                             value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_treatment_initiation']) ?? ''; ?>"
                                             name="treatmentDate" id="treatmentDate"
                                             class="treatmentSelectedInput form-control date <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] == 'yes') ? 'isRequired' : ''; ?>"
-                                            placeholder="Date of treatment Initiation"
+                                            placeholder="Date of Treatment Initiation"
                                             title="Please choose treatment date" onchange="dataCheckValidation();" />
                                     </td>
                                     <td style="width: 33.33%;">
@@ -572,7 +572,7 @@ if ($isLisInstance) {
                                             value="<?php echo $tbInfo['other_specimen_type']; ?>"
                                             placeholder="<?php echo _translate("Enter specimen type of others"); ?>"
                                             title="
-                                        <?php echo _translate("Please enter the specimen type if others"); ?>"
+                                        <?php echo _translate("Please enter the specimen type if other"); ?>"
                                             style="display: none;" />
                                     </td>
                                     <td style="width: 33.33%;">
@@ -710,7 +710,7 @@ if ($isLisInstance) {
                                                         </td>
                                                     </tr>
                                                     <tr class="rejection-date-field"
-                                                        style="<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>">
+                                                        style="<?php echo (isset($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? '' : 'display:none;'; ?>">
                                                         <td style="width: 33.33%;" class="rejection-reason-field">
                                                             <label class="label-control"
                                                                 for="sampleRejectionReason<?php echo $n; ?>">
@@ -896,33 +896,33 @@ if ($isLisInstance) {
                                                     <tr style="display: none;" class="revisedFields">
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="revisedBy<?php echo $n; ?>">
-                                                                <?php echo _translate("Revised By"); ?>
+                                                                <?php echo _translate("Result Modified By"); ?>
                                                             </label>
                                                             <select name="testResult[revisedBy][]" id="revisedBy<?php echo $n; ?>"
                                                                 class="form-control"
-                                                                title="<?php echo _translate("Please choose revised by"); ?>">
+                                                                title="<?php echo _translate("Please choose result modified by"); ?>">
                                                                 <?= $general->generateSelectOptions($userInfo, $test['revised_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="revisedOn<?php echo $n; ?>">
-                                                                <?php echo _translate("Revised On"); ?>
+                                                                <?php echo _translate("Result Modified On"); ?>
                                                             </label>
                                                             <input
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>"
                                                                 type="text" name="testResult[revisedOn][]"
                                                                 id="revisedOn<?php echo $n; ?>" class="date-time form-control"
-                                                                placeholder="<?php echo _translate("Revised On"); ?>"
-                                                                title="<?php echo _translate("Please enter revised date"); ?>" />
+                                                                placeholder="<?php echo _translate("Result Modified On"); ?>"
+                                                                title="<?php echo _translate("Please enter result modified date"); ?>" />
                                                         </td>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control" for="reasonForChange<?php echo $n; ?>">
-                                                                <?php echo _translate('Reason for result change'); ?>
+                                                                <?php echo _translate('Reason for Result Modification'); ?>
                                                             </label>
                                                             <textarea class="form-control" name="testResult[reasonForChange][]"
                                                                 id="reasonForChange<?php echo $n; ?>"
-                                                                placeholder="Enter the reason for result change"
-                                                                title="Please enter the reason for result change"></textarea>
+                                                                placeholder="Enter the reason for result modification"
+                                                                title="Please enter the reason for result modification"></textarea>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -1144,26 +1144,26 @@ if ($isLisInstance) {
                                                 <tr style="display: none;" class="revisedFields">
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="revisedBy1">
-                                                            <?php echo _translate("Revised By"); ?>
+                                                            <?php echo _translate("Result Modified By"); ?>
                                                         </label>
                                                         <select name="testResult[revisedBy][]" id="revisedBy1"
                                                             class="form-control"
-                                                            title="<?php echo _translate("Please choose revised by"); ?>">
+                                                            title="<?php echo _translate("Please choose result modified by"); ?>">
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
                                                     </td>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="revisedOn1">
-                                                            <?php echo _translate("Revised On"); ?>
+                                                            <?php echo _translate("Result Modified On"); ?>
                                                         </label>
                                                         <input type="text" name="testResult[revisedOn][]" id="revisedOn1"
                                                             class="date-time form-control"
-                                                            placeholder="<?php echo _translate("Revised On"); ?>"
-                                                            title="<?php echo _translate("Please enter revised date"); ?>" />
+                                                            placeholder="<?php echo _translate("Result Modified On"); ?>"
+                                                            title="<?php echo _translate("Please enter result modified date"); ?>" />
                                                     </td>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control" for="reasonForChange1">
-                                                            <?php echo _translate('Reason for result change'); ?>
+                                                            <?php echo _translate('Reason for Result Modification'); ?>
                                                         </label>
                                                         <textarea class="form-control" name="testResult[reasonForChange][]"
                                                             id="reasonForChange1"
