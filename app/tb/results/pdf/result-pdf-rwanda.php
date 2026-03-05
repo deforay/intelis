@@ -31,9 +31,8 @@ try {
         $page = 1;
         foreach ($requestResult as $result) {
 
-            $tbTestQuery = "SELECT tt.*, rtst.sample_name, l.facility_name as lab_name, test.user_name as testedBy, review.user_name as reviewedBy, approved.user_name as approvedBy, reject.rejection_reason_name as rejectionReason
+            $tbTestQuery = "SELECT tt.*, l.facility_name as lab_name, test.user_name as testedBy, review.user_name as reviewedBy, approved.user_name as approvedBy, reject.rejection_reason_name as rejectionReason
         from tb_tests as tt
-        INNER JOIN r_tb_sample_type as rtst ON tt.specimen_type=rtst.sample_id
         INNER JOIN facility_details as l ON tt.lab_id=l.facility_id
         LEFT JOIN user_details as test ON tt.tested_by=test.user_id
         LEFT JOIN user_details as review ON tt.result_reviewed_by=review.user_id
