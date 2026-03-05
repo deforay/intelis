@@ -560,7 +560,7 @@ if ($isLisInstance) {
                                         </label>
                                         <select name="specimenType" id="specimenType"
                                             class="form-control isRequired select2"
-                                            title="<?php echo _translate("Please choose specimen type"); ?>" multiple
+                                            title="<?php echo _translate("Please choose specimen type"); ?>"
                                             onchange="showOther(this.value,'specimenTypeOther')">
                                             <?php echo $general->generateSelectOptions($specimenTypeResult, $tbInfo['specimen_type'], '-- Select --'); ?>
                                             <option value='other' <?php echo ($tbInfo['specimen_type'] == 'other') ? "selected='selected'" : ""; ?>>
