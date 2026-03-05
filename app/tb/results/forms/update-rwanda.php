@@ -533,7 +533,7 @@ if ($isLisInstance) {
                                             <div class="test-section" data-count="<?php echo $n; ?>">
                                                 <div class="section-header"><strong>Test #<span
                                                             class="section-number"><?php echo $n; ?></span></strong>
-                                                    <span class="mandatory all-fields-required" style="display:none;"> &mdash; <?php echo _translate("All fields are required"); ?></span>
+                                                    <span class="mandatory all-fields-required"> &mdash; <?php echo _translate("All fields are required"); ?></span>
                                                 </div>
                                                 <table class="table" style="width:100%; margin-top: 15px;">
                                                     <?php
@@ -545,8 +545,7 @@ if ($isLisInstance) {
                                                     <tr>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
-                                                                for="labId<?php echo $n; ?>"><?php echo _translate("Testing Lab"); ?><span
-                                                                    class="mandatory">*</span></label>
+                                                                for="labId<?php echo $n; ?>"><?php echo _translate("Testing Lab"); ?></label>
                                                             <?php if (!empty($testLabId)) { ?>
                                                                 <select id="labId<?php echo $n; ?>"
                                                                     class="form-control select2" disabled="disabled">
@@ -563,8 +562,7 @@ if ($isLisInstance) {
                                                         </td>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
-                                                                for="sampleReceivedDate<?php echo $n; ?>"><?php echo _translate("Date specimen received at TB testing site"); ?><span
-                                                                    class="mandatory">*</span></label>
+                                                                for="sampleReceivedDate<?php echo $n; ?>"><?php echo _translate("Date specimen received at TB testing site"); ?></label>
                                                             <?php if (!empty($testReceivedDate)) { ?>
                                                                 <input type="text" class="form-control"
                                                                     value="<?= $testReceivedDate; ?>"
@@ -796,7 +794,7 @@ if ($isLisInstance) {
                                         <div class="test-section" data-count="1">
                                             <div class="section-header"><strong>Test #<span
                                                         class="section-number">1</span></strong>
-                                                <span class="mandatory all-fields-required" style="display:none;"> &mdash; <?php echo _translate("All fields are required"); ?></span>
+                                                <span class="mandatory all-fields-required"> &mdash; <?php echo _translate("All fields are required"); ?></span>
                                             </div>
                                             <table class="table" style="width:100%; margin-top: 15px;">
                                                 <?php
@@ -806,8 +804,7 @@ if ($isLisInstance) {
                                                 <tr>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control"
-                                                            for="labId1"><?php echo _translate("Testing Lab"); ?><span
-                                                                class="mandatory">*</span></label>
+                                                            for="labId1"><?php echo _translate("Testing Lab"); ?></label>
                                                         <?php if (!empty($emptyLabId)) { ?>
                                                             <select id="labId1"
                                                                 class="form-control select2" disabled="disabled">
@@ -824,8 +821,7 @@ if ($isLisInstance) {
                                                     </td>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control"
-                                                            for="sampleReceivedDate1"><?php echo _translate("Date specimen received at TB testing site"); ?><span
-                                                                class="mandatory">*</span></label>
+                                                            for="sampleReceivedDate1"><?php echo _translate("Date specimen received at TB testing site"); ?></label>
                                                         <?php if (!empty($emptyReceivedDate)) { ?>
                                                             <input type="text" class="form-control"
                                                                 value="<?= $emptyReceivedDate; ?>"
@@ -1282,11 +1278,34 @@ if ($isLisInstance) {
         // Remove stale Select2 container spans from cloned section
         $(newSection).find('.select2-container').remove();
 
+        // Default values from form_tb (editable — user can change if test is from another lab)
+        var formLabId = '<?= $tbInfo['lab_id'] ?? '' ?>';
+        var formReceivedDate = '<?= !empty($tbInfo['sample_received_at_lab_datetime']) ? DateUtility::humanReadableDateFormat($tbInfo['sample_received_at_lab_datetime'], true) : '' ?>';
+
+        // Ensure lab select is editable (cloned section may have disabled select + hidden input)
+        $(newSection).find('input[type="hidden"][name="testResult[labId][]"]').remove();
+        var $labSelect = $(newSection).find('select[id^="labId"]');
+        $labSelect.prop('disabled', false).attr('name', 'testResult[labId][]')
+            .attr('id', 'labId' + testCount);
+        if (formLabId) {
+            $labSelect.val(formLabId);
+        }
+
+        // Ensure date input is editable (cloned section may have readonly input + hidden input)
+        $(newSection).find('input[type="hidden"][name="testResult[sampleReceivedDate][]"]').remove();
+        var $dateInput = $(newSection).find('input[id^="sampleReceivedDate"]');
+        $dateInput.prop('readonly', false).attr('name', 'testResult[sampleReceivedDate][]')
+            .attr('id', 'sampleReceivedDate' + testCount)
+            .addClass('date-time')
+            .attr('placeholder', '<?= _translate("Please enter date"); ?>');
+        if (formReceivedDate) {
+            $dateInput.val(formReceivedDate);
+        }
+
         // Hide conditional fields
         $(newSection).find('.rejection-reason-field, .rejection-date-field').hide();
         $(newSection).find('.revisedFields').hide();
         $(newSection).find('.revised-field').removeClass('isRequired');
-        $(newSection).find('.all-fields-required').hide();
 
         container.appendChild(newSection);
 
