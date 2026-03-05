@@ -167,6 +167,7 @@ use App\Services\CommonService;
 		}
 		oTable = $('#manifestDataTable').dataTable({
 			"bJQueryUI": false,
+			"iDisplayLength": 200,
 			"bAutoWidth": false,
 			"bInfo": true,
 			"bScrollCollapse": true,
