@@ -69,7 +69,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
 $typeOfPatient = $tbInfo['patient_type'] ?? '';
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
-$testTypeRequested = JsonUtility::isJSON($tbInfo['tests_requested']) ? json_decode($tbInfo['tests_requested']) : [];
+$testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
 $diagnosis = (array) $reasonForTbTest->elaboration->diagnosis;
 $followupArr = (array) $reasonForTbTest->elaboration;
 $followup = (array) $followupArr['follow-up'];
