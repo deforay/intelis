@@ -340,7 +340,7 @@ try {
             $html .= '</tr>';
             $html .= '<tr>';
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Purpose of Test:</td>';
-            $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . (json_decode((string) $result['reason_for_tb_test']) ?? $result['reason_for_tb_test']) . '</td>';
+            $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . implode(', ', (array) json_decode((string) ($result['reason_for_tb_test'] ?? ''), true)) . '</td>';
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Registered By:</td>';
             $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
             $html .= '</tr>';
