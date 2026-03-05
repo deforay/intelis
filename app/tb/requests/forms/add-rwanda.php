@@ -970,6 +970,9 @@ if ($isLisInstance) {
     // Remove test section
     function removeTestSection() {
         if (testCount > 1) {
+            if (!confirm('Are you sure you want to remove this test? This cannot be undone.')) {
+                return;
+            }
             const container = document.getElementById('testSections');
             const lastSection = container.querySelector('.test-section:last-child');
             if (lastSection) {
