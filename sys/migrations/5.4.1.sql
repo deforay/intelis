@@ -26,6 +26,12 @@ ALTER TABLE `form_tb` ADD `is_result_finalized` ENUM('no','yes','') NOT NULL DEF
 UPDATE `form_tb` SET `risk_factors` = JSON_ARRAY(`risk_factors`) WHERE `risk_factors` IS NOT NULL AND `risk_factors` != '' AND `risk_factors` NOT LIKE '[%';
 ALTER TABLE `form_tb` CHANGE `risk_factors` `risk_factors` JSON DEFAULT NULL;
 
+UPDATE `audit_form_tb` SET `risk_factors` = JSON_ARRAY(`risk_factors`) WHERE `risk_factors` IS NOT NULL AND `risk_factors` != '' AND `risk_factors` NOT LIKE '[%';
+ALTER TABLE `audit_form_tb` CHANGE `risk_factors` `risk_factors` JSON DEFAULT NULL;
+
 -- Consolidate purpose_of_test into reason_for_tb_test
 UPDATE `form_tb` SET `reason_for_tb_test` = JSON_QUOTE(`purpose_of_test`) WHERE `purpose_of_test` IS NOT NULL AND `purpose_of_test` != '' AND (`reason_for_tb_test` IS NULL OR `reason_for_tb_test` = 'null');
 ALTER TABLE `form_tb` DROP COLUMN `purpose_of_test`;
+
+UPDATE `audit_form_tb` SET `reason_for_tb_test` = JSON_QUOTE(`purpose_of_test`) WHERE `purpose_of_test` IS NOT NULL AND `purpose_of_test` != '' AND (`reason_for_tb_test` IS NULL OR `reason_for_tb_test` = 'null');
+ALTER TABLE `audit_form_tb` DROP COLUMN `purpose_of_test`;
