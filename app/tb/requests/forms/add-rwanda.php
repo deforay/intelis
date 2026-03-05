@@ -152,7 +152,7 @@ if ($isLisInstance) {
                                             title="<?php echo _translate("Please select affiliated TB testing site"); ?>">
                                             <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                         </select>
-                                    </td> -->
+                                    </td>
                                     <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                         <td style="width: 33.33%;">
                                             <label class="label-control"
@@ -682,23 +682,6 @@ if ($isLisInstance) {
                                                         class="date-time form-control"
                                                         placeholder="<?php echo _translate("Approved On"); ?>"
                                                         title="<?php echo _translate("Please enter approved date"); ?>" />
-                                                </td>
-                                                <td style="width: 33.33%;">
-                                                    <label class="label-control"
-                                                        for="revisedBy1"><?php echo _translate("Revised By"); ?></label>
-                                                    <select name="testResult[revisedBy][]" id="revisedBy1"
-                                                        class="form-control"
-                                                        title="<?php echo _translate("Please choose revised by"); ?>">
-                                                        <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
-                                                    </select>
-                                                </td>
-                                                <td style="width: 33.33%;">
-                                                    <label class="label-control"
-                                                        for="revisedOn1"><?php echo _translate("Revised On"); ?></label>
-                                                    <input type="text" name="testResult[revisedOn][]" id="revisedOn1"
-                                                        class="date-time form-control"
-                                                        placeholder="<?php echo _translate("Revised On"); ?>"
-                                                        title="<?php echo _translate("Please enter revised date"); ?>" />
                                                 </td>
                                             </tr>
                                         </table>
