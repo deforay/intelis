@@ -29,7 +29,8 @@ final class TbService extends AbstractTestService
             $params['prefix'] ??= $globalConfig['tb_sample_code_prefix'] ?? $this->shortCode;
             $postFix = '';
             if ($this->commonService->isLISInstance()) {
-                $postFix = "-" . $this->commonService->getSystemConfig('sc_testing_lab_id') ?? '';
+                $labId = $this->commonService->getSystemConfig('sc_testing_lab_id');
+                $postFix = !empty($labId) ? "-" . strtoupper(base_convert((string) $labId, 10, 36)) : '';
             }
             $params['postfix'] ??= $postFix;
 
