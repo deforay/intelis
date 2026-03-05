@@ -122,8 +122,18 @@ try {
         }
     }
 
-    $reason = $_POST['reasonForTbTest'] ?? null;
-    $reason['reason'] = [$reason['reason'] => 'yes'];
+    // Handle reason for TB test / purpose of test (consolidated into reason_for_tb_test column)
+    if (!empty($_POST['purposeOfTbTest'])) {
+        // Rwanda: simple string value
+        $reasonForTest = json_encode($_POST['purposeOfTbTest']);
+    } elseif (!empty($_POST['reasonForTbTest'])) {
+        // Other countries: complex nested structure
+        $reason = $_POST['reasonForTbTest'];
+        $reason['reason'] = [$reason['reason'] => 'yes'];
+        $reasonForTest = json_encode($reason);
+    } else {
+        $reasonForTest = null;
+    }
 
     //Update patient Information in Patients Table
     //$systemPatientCode = $patientsService->savePatient($_POST, 'form_tb');
@@ -144,7 +154,7 @@ try {
         $labId = $_POST['testResult']['labId'][0];
     }
     if (!empty($_POST['riskFactors']) && is_array($_POST['riskFactors'])) {
-        $_POST['riskFactors'] = implode(",", $_POST['riskFactors']);
+        $_POST['riskFactors'] = json_encode($_POST['riskFactors']);
     }
      if(is_array($_POST['typeOfPatient']))
         $_POST['typeOfPatient']  = json_encode($_POST['typeOfPatient']);
@@ -177,11 +187,11 @@ try {
         'patient_address' => empty($_POST['patientAddress']) ? null : $_POST['patientAddress'],
         'is_displaced_population' => empty($_POST['displacedPopulation']) ? null : $_POST['displacedPopulation'],
         'is_referred_by_community_actor' => empty($_POST['isReferredByCommunityActor']) ? null : $_POST['isReferredByCommunityActor'],
-        'reason_for_tb_test' => empty($reason) ? null : json_encode($reason),
+        'reason_for_tb_test' => $reasonForTest,
         'risk_factors' => empty($_POST['riskFactors']) ? null : $_POST['riskFactors'],
-        'risk_factor_other' => (!empty($_POST['riskFactors']) && $_POST['riskFactors'] == 'Others') ? $_POST['riskFactorsOther'] ?? null : null,
+        'risk_factor_other' => !empty($_POST['riskFactorsOther']) ? $_POST['riskFactorsOther'] : null,
         'is_specimen_reordered' => empty($_POST['reOrderedCorrectiveAction']) ? null : $_POST['reOrderedCorrectiveAction'],
-        'purpose_of_test' => empty($_POST['purposeOfTbTest']) ? null : $_POST['purposeOfTbTest'],
+        //'purpose_of_test' is now consolidated into 'reason_for_tb_test'
         'hiv_status' => empty($_POST['hivStatus']) ? null : $_POST['hivStatus'],
         'is_patient_initiated_on_tb_treatment' => empty($_POST['isPatientInitiatedTreatment']) ? null : $_POST['isPatientInitiatedTreatment'],
         'date_of_treatment_initiation' => empty($_POST['treatmentDate']) ? null : DateUtility::isoDateFormat($_POST['treatmentDate']),

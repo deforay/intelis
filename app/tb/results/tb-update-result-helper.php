@@ -97,9 +97,6 @@ try {
             $_POST['sampleRejectionReason'] = $rejectionResult['rejection_reason_id'];
         }
     }
-    if (is_array($_POST['purposeOfTbTest'])) {
-        $_POST['purposeOfTbTest'] = implode(",", $_POST['purposeOfTbTest']);
-    }
     if (is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = json_encode($_POST['tbTestsRequested']);
     }

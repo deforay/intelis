@@ -50,7 +50,8 @@ $typeOfPatient = (!empty($tbInfo['patient_type'])) ? (array) json_decode((string
 $reasonForTbTest = (!empty($tbInfo['reason_for_tb_test'])) ? (array) json_decode((string) $tbInfo['reason_for_tb_test']) : [];
 //$testTypeRequested = (!empty($tbInfo['tests_requested'])) ? (array)json_decode((string) $tbInfo['tests_requested']) : [];
 $testTypeRequested = !empty($tbInfo['tests_requested']) ? explode(',', (string) $tbInfo['tests_requested']) : [];
-$tbInfo['purpose_of_test'] = !empty($tbInfo['purpose_of_test']) ? explode(',', (string) $tbInfo['purpose_of_test']) : [];
+$purposeOfTest = !empty($tbInfo['reason_for_tb_test']) ? json_decode((string) $tbInfo['reason_for_tb_test']) : '';
+$tbInfo['risk_factors'] = !empty($tbInfo['risk_factors']) ? json_decode((string) $tbInfo['risk_factors'], true) : [];
 // Auto-select lab for LIS instances
 $isLisInstance = $general->isLISInstance();
 $currentLabId = null;
@@ -146,7 +147,7 @@ if ($isLisInstance) {
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width: 33.33%;">
+                                <!-- <td style="width: 33.33%;">
                                     <label class="label-control"
                                         for="affiliatedDistrictHospital"><?php echo _translate("Affiliated District Hospital"); ?></label>
                                     <input type="text" class="form-control" id="affiliatedDistrictHospital"
@@ -154,7 +155,7 @@ if ($isLisInstance) {
                                         value="<?php echo $tbInfo['affiliated_district_hospital'] ?? ''; ?>"
                                         placeholder="<?php echo _translate("Enter affiliated district hospital"); ?>"
                                         title="<?php echo _translate("Please enter affiliated district hospital"); ?>" />
-                                </td>
+                                </td> -->
                                 <!-- <td style="width: 33.33%;">
                                     <label class="label-control"
                                         for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
@@ -177,6 +178,8 @@ if ($isLisInstance) {
                                 <?php } else { ?>
                                     <td style="width: 33.33%;"></td>
                                 <?php } ?>
+                                <td style="width: 33.33%;"></td>
+                                <td style="width: 33.33%;"></td>
                             </tr>
                         </table>
 
@@ -278,7 +281,8 @@ if ($isLisInstance) {
                                 <td style="width: 33.33%;">
                                     <label for="patientPhoneNumber"><?php echo _translate("Phone contact"); ?>:</label>
                                     <input type="text" value="<?php echo $tbInfo['patient_phone']; ?>"
-                                        class="form-control checkNum" pattern="[0-9]+" id="patientPhoneNumber" name="patientPhoneNumber"
+                                        class="form-control checkNum" pattern="[0-9]+" id="patientPhoneNumber"
+                                        name="patientPhoneNumber"
                                         placeholder="<?php echo _translate("Phone Number"); ?>"
                                         title="<?php echo _translate("Please enter phone number"); ?>" />
                                 </td>
@@ -335,22 +339,21 @@ if ($isLisInstance) {
                                 <td style="width: 33.33%;">
                                     <label class="label-control"
                                         for="riskFactors"><?php echo _translate("Risk Factors"); ?></label>
-                                    <select id="riskFactors" name="riskFactors" class="form-control"
-                                        title="Please select any one of the risk factors"
-                                        onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
-                                        <option value="">Select risk factor...</option>
-                                        <option value="TB Contact" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'TB Contact') ? 'selected="selected"' : ''; ?>>TB Contact</option>
-                                        <option value="PLHIV" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'PLHIV') ? 'selected="selected"' : ''; ?>>PLHIV</option>
-                                        <option value="Healthcare provider" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Healthcare provider') ? 'selected="selected"' : ''; ?>>Healthcare provider</option>
-                                        <option value="CHW" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'CHW') ? 'selected="selected"' : ''; ?>>CHW</option>
-                                        <option value="Prisoner inmate" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Prisoner inmate') ? 'selected="selected"' : ''; ?>>Prisoner/inmate</option>
-                                        <option value="Tobacco smoking" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Tobacco smoking') ? 'selected="selected"' : ''; ?>>Tobacco smoking</option>
-                                        <option value="Crowded habitant" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Crowded habitant') ? 'selected="selected"' : ''; ?>>Crowded habitant</option>
-                                        <option value="Diabetic" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Diabetic') ? 'selected="selected"' : ''; ?>>Diabetic</option>
-                                        <option value="Miner" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Miner') ? 'selected="selected"' : ''; ?>>Miner</option>
-                                        <option value="Refugee camp" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Refugee camp') ? 'selected="selected"' : ''; ?>>Refugee camp</option>
-                                        <option value="No information provided" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'No information provided') ? 'selected="selected"' : ''; ?>>No information provided</option>
-                                        <option value="Others" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Others') ? 'selected="selected"' : ''; ?>>Others</option>
+                                    <select id="riskFactors" name="riskFactors[]" multiple class="form-control select2"
+                                        title="Please select any one of the risk factors">
+                                        <option value="No information provided" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('No information provided', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>No information provided</option>
+                                        <option value="TB Contact" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('TB Contact', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>TB Contact</option>
+                                        <option value="PLHIV" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('PLHIV', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>PLHIV</option>
+                                        <option value="Healthcare provider" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Healthcare provider', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Healthcare provider</option>
+                                        <option value="CHW" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('CHW', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>CHW</option>
+                                        <option value="Prisoner inmate" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Prisoner inmate', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Prisoner/inmate</option>
+                                        <option value="Tobacco smoking" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Tobacco smoking', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Tobacco smoking</option>
+                                        <option value="Crowded habitant" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Crowded habitant', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Crowded habitant</option>
+                                        <option value="Diabetic" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Diabetic', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Diabetic</option>
+                                        <option value="Miner" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Miner', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Miner</option>
+                                        <option value="Refugee camp" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Refugee camp', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Refugee camp</option>
+                                        <option value="Age > 55 years" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Age > 55 years', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Age > 55 years</option>
+                                        <option value="Others" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && in_array('Others', $tbInfo['risk_factors'])) ? 'selected="selected"' : ''; ?>>Others</option>
                                     </select>
                                     <input
                                         style="<?php echo (isset($tbInfo['risk_factor_other']) && !empty($tbInfo['risk_factor_other'])) ? "" : "display: none"; ?>"
@@ -414,20 +417,16 @@ if ($isLisInstance) {
                                     <label class="label-control"
                                         for="purposeOfTbTest"><?php echo _translate("Purpose of TB test(s)"); ?><span
                                             class="mandatory">*</span></label>
-                                    <select id="purposeOfTbTest" name="purposeOfTbTest[]" multiple
-                                        class="form-control isRequired"
-                                        title="Please select the purpose of the test">
+                                    <select id="purposeOfTbTest" name="purposeOfTbTest"
+                                        class="form-control isRequired" title="Please select the purpose of the test">
                                         <option value="">Select purpose of TB test...</option>
-                                        <option value="Initial TB diagnosis" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('Initial TB diagnosis', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
-                                        <option value="DS-TB Treatment Follow-Up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DS-TB Treatment Follow-Up', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
-                                        <option value="C2" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C2', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C2
-                                        </option>
-                                        <option value="C5" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('C5', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>C5
-                                        </option>
-                                        <option value="End of TB treatment" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('End of TB treatment', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>End of TB treatment</option>
-                                        <option value="DR-TB Patient Baseline tests" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB Patient Baseline tests', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB Patient
-                                            Baseline tests</option>
-                                        <option value="DR-TB patient Follow up" <?php echo (isset($tbInfo['purpose_of_test']) && !empty($tbInfo['purpose_of_test']) && in_array('DR-TB patient Follow up', (array) $tbInfo['purpose_of_test'])) ? 'selected="selected"' : ''; ?>>DR-TB patient Follow up</option>
+                                        <option value="Initial TB diagnosis" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'Initial TB diagnosis') ? 'selected="selected"' : ''; ?>>Initial TB diagnosis</option>
+                                        <option value="DS-TB Treatment Follow-Up" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'DS-TB Treatment Follow-Up') ? 'selected="selected"' : ''; ?>>DS-TB Treatment Follow-Up</option>
+                                        <option value="C2" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'C2') ? 'selected="selected"' : ''; ?>>C2</option>
+                                        <option value="C5" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'C5') ? 'selected="selected"' : ''; ?>>C5</option>
+                                        <option value="End of TB treatment" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'End of TB treatment') ? 'selected="selected"' : ''; ?>>End of TB treatment</option>
+                                        <option value="DR-TB Patient Baseline tests" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'DR-TB Patient Baseline tests') ? 'selected="selected"' : ''; ?>>DR-TB Patient Baseline tests</option>
+                                        <option value="DR-TB patient Follow up" <?php echo (isset($purposeOfTest) && !empty($purposeOfTest) && $purposeOfTest == 'DR-TB patient Follow up') ? 'selected="selected"' : ''; ?>>DR-TB patient Follow up</option>
                                     </select>
                                 </td>
                                 <td style="width: 50%;">
@@ -466,7 +465,7 @@ if ($isLisInstance) {
                             <tr>
                                 <td style="width: 33.33%;">
                                     <label class="label-control"
-                                        for="sampleCollectionDate"><?php echo _translate("Date Specimen Collected"); ?><span
+                                        for="sampleCollectionDate"><?php echo _translate("Date and Time of Specimen Collection"); ?><span
                                             class="mandatory">*</span></label>
                                     <input class="form-control isRequired date-time"
                                         value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text"
@@ -484,7 +483,9 @@ if ($isLisInstance) {
                                         title="<?php echo _translate("Please choose specimen type"); ?>" multiple
                                         onchange="showOther(this.value,'specimenTypeOther')">
                                         <?php foreach ($specimenTypeResult as $key => $type) { ?>
-                                            <option value="<?php echo $type; ?>" <?php echo (in_array($type, explode(",", $tbInfo['specimen_type']))) ? 'selected="selected"' : ""; ?>><?php echo $type; ?></option>
+                                            <option value="<?php echo $type; ?>" <?php echo (in_array($type, explode(",", $tbInfo['specimen_type']))) ? 'selected="selected"' : ""; ?>>
+                                                <?php echo $type; ?>
+                                            </option>
                                         <?php } ?>
                                         <option value='other' <?php echo ($tbInfo['specimen_type'] == 'other') ? "selected='selected'" : ""; ?>> <?php echo _translate("Other"); ?> </option>
                                     </select>
@@ -595,7 +596,7 @@ if ($isLisInstance) {
                                                                                     <?php echo ($test['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
                                                                                     <?= $reject['rejection_reason_name']; ?>
                                                                                 </option>
-                                                                        <?php }
+                                                                            <?php }
                                                                         } ?>
                                                                     </optgroup>
                                                                 <?php }
@@ -630,8 +631,8 @@ if ($isLisInstance) {
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="testType<?php echo $n; ?>"><?php echo _translate("Test Type"); ?></label>
-                                                            <select class="form-control test-type-select resultSectionInput" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'disabled' : ''; ?>
-                                                                name="testResult[testType][]" id="testType<?php echo $n; ?>"
+                                                            <select class="form-control test-type-select resultSectionInput" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'disabled' : ''; ?> name="testResult[testType][]"
+                                                                id="testType<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test type"); ?>"
                                                                 onchange="$(this).closest('.test-section').find('.revisedFields').show();">
                                                                 <option value=""><?php echo _translate("Select test type"); ?>
@@ -649,8 +650,8 @@ if ($isLisInstance) {
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="testResult<?php echo $n; ?>"><?php echo _translate("Test Result"); ?></label>
-                                                            <select class="form-control test-result-select resultSectionInput" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'disabled' : ''; ?>
-                                                                name="testResult[testResult][]" id="testResult<?php echo $n; ?>"
+                                                            <select class="form-control test-result-select resultSectionInput" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'disabled' : ''; ?> name="testResult[testResult][]"
+                                                                id="testResult<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test result"); ?>"
                                                                 onchange="$(this).closest('.test-section').find('.revisedFields').show();">
                                                                 <option value=""><?php echo _translate("Select test result"); ?>
@@ -769,7 +770,7 @@ if ($isLisInstance) {
                                                     </tr>
                                                 </table>
                                             </div>
-                                        <?php $n += 1;
+                                            <?php $n += 1;
                                         } ?>
                                     <?php } else { ?>
                                         <!-- Initial test section -->
@@ -1173,7 +1174,7 @@ if ($isLisInstance) {
         const $section = $(section);
 
         // Initialize Select2 for dropdowns
-        $section.find('.select2').each(function() {
+        $section.find('.select2').each(function () {
             const $this = $(this);
             $this.removeClass('select2-hidden-accessible');
             $this.select2({
@@ -1183,7 +1184,7 @@ if ($isLisInstance) {
         });
 
         // Sample rejection change handler
-        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function() {
+        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function () {
             const $row = $(this).closest('.test-section');
             if ($(this).val() === 'yes') {
                 $row.find('.rejection-reason-field, .rejection-date-field').show();
@@ -1197,7 +1198,7 @@ if ($isLisInstance) {
         });
 
         // Test type change handler - FIXED: Use proper event delegation
-        $section.find('.test-type-select').off('change.testSection').on('change.testSection', function() {
+        $section.find('.test-type-select').off('change.testSection').on('change.testSection', function () {
             const sectionNum = $(this).closest('.test-section').attr('data-count');
             updateTestResults(sectionNum);
         });
@@ -1260,7 +1261,7 @@ if ($isLisInstance) {
     // Update element IDs and names for new section
     function updateElementIds(section, count) {
         // Update labels
-        $(section).find('label[for]').each(function() {
+        $(section).find('label[for]').each(function () {
             const oldFor = $(this).attr('for');
             if (oldFor && /\d+$/.test(oldFor)) {
                 const newFor = oldFor.replace(/\d+$/, count);
@@ -1269,7 +1270,7 @@ if ($isLisInstance) {
         });
 
         // Update form elements
-        $(section).find('input[id], select[id], textarea[id]').each(function() {
+        $(section).find('input[id], select[id], textarea[id]').each(function () {
             const oldId = $(this).attr('id');
             if (oldId && /\d+$/.test(oldId)) {
                 const newId = oldId.replace(/\d+$/, count);
@@ -1284,7 +1285,7 @@ if ($isLisInstance) {
 
     // Clear all values in a section
     function clearSectionValues(section) {
-        $(section).find('input, select, textarea').each(function() {
+        $(section).find('input, select, textarea').each(function () {
             if (this.type === 'checkbox' || this.type === 'radio') {
                 this.checked = false;
             } else if (this.tagName === 'SELECT') {
@@ -1300,13 +1301,13 @@ if ($isLisInstance) {
         var removeDots = obj.value.replace(/\./g, "").replace(/\,/g, "").replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: removeDots.trim(),
-                fnct: fnct,
-                format: "html"
-            },
-            function(data) {
+            tableName: tableName,
+            fieldName: fieldName,
+            value: removeDots.trim(),
+            fnct: fnct,
+            format: "html"
+        },
+            function (data) {
                 if (data === '1') {
                     alert(alrt);
                     document.getElementById(obj.id).value = "";
@@ -1324,10 +1325,10 @@ if ($isLisInstance) {
 
         if ($.trim(pName) != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    pName: pName,
-                    testType: 'tb'
-                },
-                function(data) {
+                pName: pName,
+                testType: 'tb'
+            },
+                function (data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -1353,11 +1354,11 @@ if ($isLisInstance) {
 
         if (dName != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    dName: dName,
-                    cliName: cName,
-                    testType: 'tb'
-                },
-                function(data) {
+                dName: dName,
+                cliName: cName,
+                testType: 'tb'
+            },
+                function (data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -1379,10 +1380,10 @@ if ($isLisInstance) {
 
         if (cName != '' && facilityName) {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    cName: cName,
-                    testType: 'tb'
-                },
-                function(data) {
+                cName: cName,
+                testType: 'tb'
+            },
+                function (data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#province").html(details[0]);
@@ -1416,10 +1417,10 @@ if ($isLisInstance) {
 
         if (pName != '' && sDate != '') {
             $.post("/tb/requests/generate-sample-code.php", {
-                    sampleCollectionDate: sDate,
-                    provinceCode: provinceCode
-                },
-                function(data) {
+                sampleCollectionDate: sDate,
+                provinceCode: provinceCode
+            },
+                function (data) {
                     var sCodeKey = JSON.parse(data);
                     $("#sampleCode").val(sCodeKey.sampleCode);
                     $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
@@ -1434,7 +1435,7 @@ if ($isLisInstance) {
         let sampleCollectionDate = new Date(document.getElementById("sampleCollectionDate").value);
 
         if (dob > sampleCollectionDate) {
-            alert("Date Specimen Collected must be on or after the Date of Birth");
+            alert("Date and Time of Specimen Collection must be on or after the Date of Birth");
             $("#sampleCollectionDate").val('');
             return false;
         }
@@ -1444,7 +1445,7 @@ if ($isLisInstance) {
             if (receivedEl && receivedEl.value) {
                 let received = new Date(receivedEl.value);
                 if (sampleCollectionDate > received) {
-                    alert("Test #" + i + ": Date Sample Received must be on or after the Date Specimen Collected");
+                    alert("Test #" + i + ": Date Sample Received must be on or after the Date and Time of Specimen Collection");
                     $(receivedEl).val('');
                     return false;
                 }
@@ -1503,8 +1504,33 @@ if ($isLisInstance) {
         }
     }
 
+    $('#riskFactors').on('change', function () {
+        let selectedValues = $(this).val(); // array
+        if (selectedValues && selectedValues.includes('No information provided')) {
+            // Keep only "No information provided"
+            $(this).val(['No information provided']).trigger('change.select2');
+
+            // Disable other options
+            $(this).find('option').each(function () {
+                if (this.value !== 'No information provided') {
+                    $(this).prop('disabled', true);
+                }
+            });
+        } else {
+            // Enable all options
+            $(this).find('option').prop('disabled', false);
+            if (selectedValues && selectedValues.includes('Others'))
+                $('#riskFactorsOther').show();
+            else
+                $('#riskFactorsOther').hide();
+        }
+
+        // Refresh Select2
+        $(this).trigger('change.select2');
+    });
+
     // Document ready function
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Initialize Select2 for main form elements
         $("#facilityId, #province, #district").select2({
             placeholder: "<?php echo _translate('Select option'); ?>",
@@ -1520,6 +1546,13 @@ if ($isLisInstance) {
             placeholder: "<?php echo _translate('Select specimen type'); ?>",
             width: '100%'
         });
+
+        $('#riskFactors').select2({
+            placeholder: "<?php echo _translate('Select risk factor'); ?>",
+            width: '100%'
+        });
+
+        $("#riskFactors").trigger('change');
 
         // Initialize Purpose of TB Test Select2
         $('#purposeOfTbTest').select2({
@@ -1547,7 +1580,7 @@ if ($isLisInstance) {
         <?php } ?>
 
         // Initialize all existing test sections
-        $('.test-section').each(function(index) {
+        $('.test-section').each(function (index) {
             const sectionNumber = $(this).attr('data-count') || (index + 1);
             initializeTestSection(this, sectionNumber);
 
@@ -1559,7 +1592,7 @@ if ($isLisInstance) {
         });
 
         // Treatment initiation change handler
-        $('#isPatientInitiatedTreatment').on('change', function() {
+        $('#isPatientInitiatedTreatment').on('change', function () {
             if (this.value === 'yes') {
                 $('.treatmentSelected').show();
                 $('.treatmentSelectedInput').addClass('isRequired');
@@ -1570,28 +1603,28 @@ if ($isLisInstance) {
         });
 
         // Lab and facility change handlers
-        $("#labId, #facilityId, #sampleCollectionDate").on('change', function() {
+        $("#labId, #facilityId, #sampleCollectionDate").on('change', function () {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
         });
 
         <?php if (isset($arr['tb_positive_confirmatory_tests_required_by_central_lab']) && $arr['tb_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
-            $(document).on('change', '.test-result, #result', function(e) {
+            $(document).on('change', '.test-result, #result', function (e) {
                 checkPostive();
             });
         <?php } ?>
 
-        $("#labId").change(function(e) {
+        $("#labId").change(function (e) {
             if ($(this).val() != "") {
                 $.post("/tb/requests/get-attributes-data.php", {
-                        id: this.value,
-                    },
-                    function(data) {
+                    id: this.value,
+                },
+                    function (data) {
                         if (data != "" && data != false) {
                             _data = jQuery.parseJSON(data);
                             $(".platform").hide();
-                            $.each(_data, function(index, value) {
+                            $.each(_data, function (index, value) {
                                 $("." + value).show();
                             });
                         }
@@ -1608,7 +1641,7 @@ if ($isLisInstance) {
         if (input.value !== '' && input.value !== input.dataset.previousValue) {
             if (!confirm('<?php echo _translate("Tests with Final Interpretation cannot be referred to other labs. Are you sure you want to continue?"); ?>')) {
                 input.value = input.dataset.previousValue || '';
-                (input.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();
+                (input.value != '') ? $('.refer-inputs').hide() : $('.refer-inputs').show();
                 return false;
             }
         }
@@ -1617,7 +1650,7 @@ if ($isLisInstance) {
     }
 
     // Store initial value on focus
-    document.getElementById('finalResult')?.addEventListener('focus', function() {
+    document.getElementById('finalResult')?.addEventListener('focus', function () {
         this.dataset.previousValue = this.value;
     });
 
