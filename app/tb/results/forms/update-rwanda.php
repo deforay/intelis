@@ -532,7 +532,9 @@ if ($isLisInstance) {
                                         foreach ($tbTestInfo as $key => $test) { ?>
                                             <div class="test-section" data-count="<?php echo $n; ?>">
                                                 <div class="section-header"><strong>Test #<span
-                                                            class="section-number"><?php echo $n; ?></span></strong></div>
+                                                            class="section-number"><?php echo $n; ?></span></strong>
+                                                    <span class="mandatory all-fields-required" style="display:none;"> &mdash; <?php echo _translate("All fields are required"); ?></span>
+                                                </div>
                                                 <table class="table" style="width:100%; margin-top: 15px;">
                                                     <?php
                                                         $testLabId = $test['lab_id'] ?: $tbInfo['lab_id'];
@@ -584,7 +586,7 @@ if ($isLisInstance) {
                                                                 name="testResult[isSampleRejected][]"
                                                                 id="isSampleRejected<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select if sample was rejected"); ?>"
-                                                                onchange="$(this).closest('.test-section').find('.revisedFields').show();">
+                                                                onchange="showRevisedFields(this);">
                                                                 <option value=''> -- <?php echo _translate("Select"); ?> --
                                                                 </option>
                                                                 <option value="yes" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>> <?php echo _translate("Yes"); ?> </option>
@@ -651,7 +653,7 @@ if ($isLisInstance) {
                                                             <select class="form-control test-type-select resultSectionInput" <?php echo (isset($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?> name="testResult[testType][]"
                                                                 id="testType<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test type"); ?>"
-                                                                onchange="$(this).closest('.test-section').find('.revisedFields').show();">
+                                                                onchange="showRevisedFields(this);">
                                                                 <option value=""><?php echo _translate("Select test type"); ?>
                                                                 </option>
                                                                 <option value="Smear Microscopy" <?php echo ($test['test_type'] == 'Smear Microscopy') ? 'selected="selected"' : ''; ?>>Smear Microscopy</option>
@@ -670,7 +672,7 @@ if ($isLisInstance) {
                                                             <select class="form-control test-result-select resultSectionInput" <?php echo (isset($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?> name="testResult[testResult][]"
                                                                 id="testResult<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test result"); ?>"
-                                                                onchange="$(this).closest('.test-section').find('.revisedFields').show();">
+                                                                onchange="showRevisedFields(this);">
                                                                 <option value=""><?php echo _translate("Select test result"); ?>
                                                                 </option>
                                                                 <?php if (isset($test['test_result']) && !empty($test['test_result'])) { ?>
@@ -761,7 +763,7 @@ if ($isLisInstance) {
                                                             <label class="label-control"
                                                                 for="revisedBy<?php echo $n; ?>"><?php echo _translate("Result Modified By"); ?></label>
                                                             <select name="testResult[revisedBy][]" id="revisedBy<?php echo $n; ?>"
-                                                                class="form-control"
+                                                                class="form-control revised-field"
                                                                 title="<?php echo _translate("Please choose result modified by"); ?>">
                                                                 <?= $general->generateSelectOptions($userInfo, $test['revised_by'], '-- Select --'); ?>
                                                             </select>
@@ -772,14 +774,14 @@ if ($isLisInstance) {
                                                             <input
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>"
                                                                 type="text" name="testResult[revisedOn][]"
-                                                                id="revisedOn<?php echo $n; ?>" class="date-time form-control"
+                                                                id="revisedOn<?php echo $n; ?>" class="date-time form-control revised-field"
                                                                 placeholder="<?php echo _translate("Result Modified On"); ?>"
                                                                 title="<?php echo _translate("Please enter result modified date"); ?>" />
                                                         </td>
                                                         <td style="width: 33.33%;">
                                                             <label class="label-control"
                                                                 for="reasonForChange<?php echo $n; ?>"><?php echo _translate('Reason for Result Modification'); ?></label>
-                                                            <textarea class="form-control" name="testResult[reasonForChange][]"
+                                                            <textarea class="form-control revised-field" name="testResult[reasonForChange][]"
                                                                 id="reasonForChange<?php echo $n; ?>"
                                                                 placeholder="Enter the reason for result modification"
                                                                 title="Please enter the reason for result modification"></textarea>
@@ -793,7 +795,9 @@ if ($isLisInstance) {
                                         <!-- Initial test section -->
                                         <div class="test-section" data-count="1">
                                             <div class="section-header"><strong>Test #<span
-                                                        class="section-number">1</span></strong></div>
+                                                        class="section-number">1</span></strong>
+                                                <span class="mandatory all-fields-required" style="display:none;"> &mdash; <?php echo _translate("All fields are required"); ?></span>
+                                            </div>
                                             <table class="table" style="width:100%; margin-top: 15px;">
                                                 <?php
                                                     $emptyLabId = $tbInfo['lab_id'] ?? null;
@@ -983,7 +987,7 @@ if ($isLisInstance) {
                                                         <label class="label-control"
                                                             for="revisedBy1"><?php echo _translate("Result Modified By"); ?></label>
                                                         <select name="testResult[revisedBy][]" id="revisedBy1"
-                                                            class="form-control select2"
+                                                            class="form-control select2 revised-field"
                                                             title="<?php echo _translate("Please choose result modified by"); ?>">
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
@@ -992,14 +996,14 @@ if ($isLisInstance) {
                                                         <label class="label-control"
                                                             for="revisedOn1"><?php echo _translate("Result Modified On"); ?></label>
                                                         <input type="text" name="testResult[revisedOn][]" id="revisedOn1"
-                                                            class="date-time form-control"
+                                                            class="date-time form-control revised-field"
                                                             placeholder="<?php echo _translate("Result Modified On"); ?>"
                                                             title="<?php echo _translate("Please enter result modified date"); ?>" />
                                                     </td>
                                                     <td style="width: 33.33%;">
                                                         <label class="label-control"
                                                             for="reasonForChange1"><?php echo _translate('Reason for Result Modification'); ?></label>
-                                                        <textarea class="form-control" name="testResult[reasonForChange][]"
+                                                        <textarea class="form-control revised-field" name="testResult[reasonForChange][]"
                                                             id="reasonForChange1"
                                                             placeholder="Enter the reason for result change"
                                                             title="Please enter the reason for result change"></textarea>
@@ -1206,6 +1210,14 @@ if ($isLisInstance) {
         });
     }
 
+    // Show revised fields and mark them as required
+    function showRevisedFields(el) {
+        var $section = $(el).closest('.test-section');
+        $section.find('.revisedFields').show();
+        $section.find('.revised-field').addClass('isRequired');
+        $section.find('.all-fields-required').show();
+    }
+
     // Initialize event handlers for a test section
     function initializeTestSection(section, sectionNumber) {
         const $section = $(section);
@@ -1223,6 +1235,7 @@ if ($isLisInstance) {
         // Sample rejection change handler
         $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function () {
             const $row = $(this).closest('.test-section');
+            showRevisedFields(this);
             if ($(this).val() === 'yes') {
                 $row.find('.rejection-reason-field, .rejection-date-field').show();
                 $row.find('.rejection-reason-select, .rejection-date').addClass('isRequired');
@@ -1234,10 +1247,16 @@ if ($isLisInstance) {
             }
         });
 
-        // Test type change handler - FIXED: Use proper event delegation
+        // Test type change handler
         $section.find('.test-type-select').off('change.testSection').on('change.testSection', function () {
             const sectionNum = $(this).closest('.test-section').attr('data-count');
             updateTestResults(sectionNum);
+            showRevisedFields(this);
+        });
+
+        // Test result change handler
+        $section.find('.test-result-select').off('change.testSection').on('change.testSection', function () {
+            showRevisedFields(this);
         });
 
         // Initialize date pickers
@@ -1266,6 +1285,8 @@ if ($isLisInstance) {
         // Hide conditional fields
         $(newSection).find('.rejection-reason-field, .rejection-date-field').hide();
         $(newSection).find('.revisedFields').hide();
+        $(newSection).find('.revised-field').removeClass('isRequired');
+        $(newSection).find('.all-fields-required').hide();
 
         container.appendChild(newSection);
 
