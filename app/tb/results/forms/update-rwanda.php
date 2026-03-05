@@ -478,15 +478,11 @@ if ($isLisInstance) {
                                     <label class="label-control"
                                         for="specimenType"><?php echo _translate("Specimen Type"); ?><span
                                             class="mandatory">*</span></label>
-                                    <select name="specimenType[]" id="specimenType"
+                                    <select name="specimenType" id="specimenType"
                                         class="form-control isRequired select2"
-                                        title="<?php echo _translate("Please choose specimen type"); ?>" multiple
+                                        title="<?php echo _translate("Please choose specimen type"); ?>"
                                         onchange="showOther(this.value,'specimenTypeOther')">
-                                        <?php foreach ($specimenTypeResult as $key => $type) { ?>
-                                            <option value="<?php echo $type; ?>" <?php echo (in_array($type, explode(",", $tbInfo['specimen_type']))) ? 'selected="selected"' : ""; ?>>
-                                                <?php echo $type; ?>
-                                            </option>
-                                        <?php } ?>
+                                        <?= $general->generateSelectOptions($specimenTypeResult, $tbInfo['specimen_type'], '-- Select --'); ?>
                                         <option value='other' <?php echo ($tbInfo['specimen_type'] == 'other') ? "selected='selected'" : ""; ?>> <?php echo _translate("Other"); ?> </option>
                                     </select>
                                     <input type="text" class="form-control specimenTypeOther" id="specimenTypeOther"

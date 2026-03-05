@@ -454,9 +454,9 @@ if ($isLisInstance) {
                                         <label class="label-control"
                                             for="specimenType"><?php echo _translate("Specimen Type"); ?><span
                                                 class="mandatory">*</span></label>
-                                        <select name="specimenType[]" id="specimenType"
+                                        <select name="specimenType" id="specimenType"
                                             class="form-control isRequired select2"
-                                            title="<?php echo _translate("Please choose specimen type"); ?>" multiple
+                                            title="<?php echo _translate("Please choose specimen type"); ?>"
                                             onchange="showOther(this.value,'specimenTypeOther')">
                                             <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
                                             <option value='other'> <?php echo _translate("Other"); ?> </option>
