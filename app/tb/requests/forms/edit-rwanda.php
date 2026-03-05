@@ -696,7 +696,7 @@ if ($isLisInstance) {
                                                                 name="testResult[isSampleRejected][]"
                                                                 id="isSampleRejected<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select if sample was rejected"); ?>"
-                                                                onchange="$(this).closest('.test-section').find('.revisedFields').show();">
+                                                                onchange="showRevisedFields(this);updateTestFieldsRequired(this);">
                                                                 <option value=''> --
                                                                     <?php echo _translate("Select"); ?> --
                                                                 </option>
@@ -774,10 +774,10 @@ if ($isLisInstance) {
                                                             <label class="label-control" for="testType<?php echo $n; ?>">
                                                                 <?php echo _translate("Test Type"); ?>
                                                             </label>
-                                                            <select class="form-control test-type-select resultSectionInput" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?> name="testResult[testType][]"
+                                                            <select class="form-control test-type-select resultSectionInput test-required-field" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?> name="testResult[testType][]"
                                                                 id="testType<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test type"); ?>"
-                                                                onchange="updateTestResults(<?php echo $n; ?>);$(this).closest('.test-section').find('.revisedFields').show();">
+                                                                onchange="updateTestResults(<?php echo $n; ?>);showRevisedFields(this);updateTestFieldsRequired(this);">
                                                                 <option value="">
                                                                     <?php echo _translate("Select test type"); ?>
                                                                 </option>
@@ -795,10 +795,10 @@ if ($isLisInstance) {
                                                             <label class="label-control" for="testResult<?php echo $n; ?>">
                                                                 <?php echo _translate("Test Result"); ?>
                                                             </label>
-                                                            <select class="form-control test-result-select resultSectionInput" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?> name="testResult[testResult][]"
+                                                            <select class="form-control test-result-select resultSectionInput test-required-field" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'disabled' : ''; ?> name="testResult[testResult][]"
                                                                 id="testResult<?php echo $n; ?>"
                                                                 title="<?php echo _translate("Please select the test result"); ?>"
-                                                                onchange="$(this).closest('.test-section').find('.revisedFields').show();">
+                                                                onchange="showRevisedFields(this);updateTestFieldsRequired(this);">
                                                                 <option value="">
                                                                     <?php echo _translate("Select test result"); ?>
                                                                 </option>
@@ -826,7 +826,7 @@ if ($isLisInstance) {
                                                                 <?php echo _translate("Tested By"); ?>
                                                             </label>
                                                             <select name="testResult[testedBy][]" id="testedBy<?php echo $n; ?>"
-                                                                class="form-control"
+                                                                class="form-control test-required-field"
                                                                 title="<?php echo _translate("Please choose tested by"); ?>">
                                                                 <?= $general->generateSelectOptions($userInfo, $test['tested_by'], '-- Select --'); ?>
                                                             </select>
@@ -838,7 +838,7 @@ if ($isLisInstance) {
                                                             </label>
                                                             <input type="text"
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['sample_tested_datetime'], true); ?>"
-                                                                class="date-time form-control"
+                                                                class="date-time form-control test-required-field"
                                                                 id="sampleTestedDateTime<?php echo $n; ?>"
                                                                 name="testResult[sampleTestedDateTime][]"
                                                                 placeholder="<?= _translate("Please enter date"); ?>"
@@ -851,7 +851,7 @@ if ($isLisInstance) {
                                                                 <?php echo _translate("Reviewed By"); ?>
                                                             </label>
                                                             <select name="testResult[reviewedBy][]" id="reviewedBy<?php echo $n; ?>"
-                                                                class="form-control"
+                                                                class="form-control test-required-field"
                                                                 title="<?php echo _translate("Please choose reviewed by"); ?>">
                                                                 <?= $general->generateSelectOptions($userInfo, $test['result_reviewed_by'], '-- Select --'); ?>
                                                             </select>
@@ -863,7 +863,7 @@ if ($isLisInstance) {
                                                             <input type="text"
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['result_reviewed_datetime'], true); ?>"
                                                                 name="testResult[reviewedOn][]" id="reviewedOn<?php echo $n; ?>"
-                                                                class="date-time disabled-field form-control"
+                                                                class="date-time disabled-field form-control test-required-field"
                                                                 placeholder="<?php echo _translate("Reviewed On"); ?>"
                                                                 title="<?php echo _translate("Please enter reviewed date"); ?>" />
                                                         </td>
@@ -872,7 +872,7 @@ if ($isLisInstance) {
                                                                 <?php echo _translate("Approved By"); ?>
                                                             </label>
                                                             <select name="testResult[approvedBy][]" id="approvedBy<?php echo $n; ?>"
-                                                                class="form-control"
+                                                                class="form-control test-required-field"
                                                                 title="<?php echo _translate("Please choose approved by"); ?>">
                                                                 <?= $general->generateSelectOptions($userInfo, $test['result_reviewed_by'], '-- Select --'); ?>
                                                             </select>
@@ -886,7 +886,7 @@ if ($isLisInstance) {
                                                             <input type="text"
                                                                 value="<?php echo DateUtility::humanReadableDateFormat($test['result_approved_datetime'], true); ?>"
                                                                 name="testResult[approvedOn][]" id="approvedOn<?php echo $n; ?>"
-                                                                class="date-time form-control"
+                                                                class="date-time form-control test-required-field"
                                                                 placeholder="<?php echo _translate("Approved On"); ?>"
                                                                 title="<?php echo _translate("Please enter approved date"); ?>" />
                                                         </td>
@@ -1038,10 +1038,10 @@ if ($isLisInstance) {
                                                         <label class="label-control" for="testType1">
                                                             <?php echo _translate("Test Type"); ?>
                                                         </label>
-                                                        <select class="form-control test-type-select"
+                                                        <select class="form-control test-type-select test-required-field"
                                                             name="testResult[testType][]" id="testType1"
                                                             title="<?php echo _translate("Please select the test type"); ?>"
-                                                            onchange="updateTestResults(1);">
+                                                            onchange="updateTestResults(1);updateTestFieldsRequired(this);">
                                                             <option value="">
                                                                 <?php echo _translate("Select test type"); ?>
                                                             </option>
@@ -1058,9 +1058,10 @@ if ($isLisInstance) {
                                                         <label class="label-control" for="testResult1">
                                                             <?php echo _translate("Test Result"); ?>
                                                         </label>
-                                                        <select class="form-control test-result-select"
+                                                        <select class="form-control test-result-select test-required-field"
                                                             name="testResult[testResult][]" id="testResult1"
-                                                            title="<?php echo _translate("Please select the test result"); ?>">
+                                                            title="<?php echo _translate("Please select the test result"); ?>"
+                                                            onchange="updateTestFieldsRequired(this);">
                                                             <option value="">
                                                                 <?php echo _translate("Select test result"); ?>
                                                             </option>
@@ -1082,7 +1083,7 @@ if ($isLisInstance) {
                                                             <?php echo _translate("Tested By"); ?>
                                                         </label>
                                                         <select name="testResult[testedBy][]" id="testedBy1"
-                                                            class="form-control"
+                                                            class="form-control test-required-field"
                                                             title="<?php echo _translate("Please choose tested by"); ?>">
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
@@ -1091,7 +1092,7 @@ if ($isLisInstance) {
                                                         <label class="label-control" for="sampleTestedDateTime1">
                                                             <?php echo _translate("Tested On"); ?>
                                                         </label>
-                                                        <input type="text" class="date-time form-control"
+                                                        <input type="text" class="date-time form-control test-required-field"
                                                             id="sampleTestedDateTime1" name="testResult[sampleTestedDateTime][]"
                                                             placeholder="<?= _translate("Please enter date"); ?>"
                                                             title="<?php echo _translate("Please enter tested date"); ?>" />
@@ -1103,7 +1104,7 @@ if ($isLisInstance) {
                                                             <?php echo _translate("Reviewed By"); ?>
                                                         </label>
                                                         <select name="testResult[reviewedBy][]" id="reviewedBy1"
-                                                            class="form-control"
+                                                            class="form-control test-required-field"
                                                             title="<?php echo _translate("Please choose reviewed by"); ?>">
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
@@ -1113,7 +1114,7 @@ if ($isLisInstance) {
                                                             <?php echo _translate("Reviewed On"); ?>
                                                         </label>
                                                         <input type="text" name="testResult[reviewedOn][]" id="reviewedOn1"
-                                                            class="date-time disabled-field form-control"
+                                                            class="date-time disabled-field form-control test-required-field"
                                                             placeholder="<?php echo _translate("Reviewed On"); ?>"
                                                             title="<?php echo _translate("Please enter reviewed date"); ?>" />
                                                     </td>
@@ -1122,7 +1123,7 @@ if ($isLisInstance) {
                                                             <?php echo _translate("Approved By"); ?>
                                                         </label>
                                                         <select name="testResult[approvedBy][]" id="approvedBy1"
-                                                            class="form-control"
+                                                            class="form-control test-required-field"
                                                             title="<?php echo _translate("Please choose approved by"); ?>">
                                                             <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                         </select>
@@ -1134,7 +1135,7 @@ if ($isLisInstance) {
                                                             <?php echo _translate("Approved On"); ?>
                                                         </label>
                                                         <input type="text" name="testResult[approvedOn][]" id="approvedOn1"
-                                                            class="date-time form-control"
+                                                            class="date-time form-control test-required-field"
                                                             placeholder="<?php echo _translate("Approved On"); ?>"
                                                             title="<?php echo _translate("Please enter approved date"); ?>" />
                                                     </td>
@@ -1379,6 +1380,27 @@ if ($isLisInstance) {
         });
     }
 
+    // Show revised fields when result part is modified
+    function showRevisedFields(el) {
+        var $section = $(el).closest('.test-section');
+        $section.find('.revisedFields').show();
+    }
+
+    // Make all test fields required when rejected=yes or (testType + testResult both selected)
+    function updateTestFieldsRequired(el) {
+        var $section = $(el).closest('.test-section');
+        var isRejected = $section.find('.sample-rejection-select').val() === 'yes';
+        var testType = $section.find('.test-type-select').val();
+        var testResult = $section.find('.test-result-select').val();
+        var hasResult = testType && testResult;
+
+        if (isRejected || hasResult) {
+            $section.find('.test-required-field:not(:disabled)').addClass('isRequired');
+        } else {
+            $section.find('.test-required-field').removeClass('isRequired');
+        }
+    }
+
     // Initialize event handlers for a test section
     function initializeTestSection(section, sectionNumber) {
         const $section = $(section);
@@ -1396,6 +1418,8 @@ if ($isLisInstance) {
         // Sample rejection change handler
         $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function () {
             const $row = $(this).closest('.test-section');
+            showRevisedFields(this);
+            updateTestFieldsRequired(this);
             if ($(this).val() === 'yes') {
                 $row.find('.rejection-reason-field, .rejection-date-field').show();
                 $row.find('.rejection-reason-select, .rejection-date').addClass('isRequired');
@@ -1405,10 +1429,18 @@ if ($isLisInstance) {
             }
         });
 
-        // Test type change handler - FIXED: Use proper event delegation
+        // Test type change handler
         $section.find('.test-type-select').off('change.testSection').on('change.testSection', function () {
             const sectionNum = $(this).closest('.test-section').attr('data-count');
             updateTestResults(sectionNum);
+            showRevisedFields(this);
+            updateTestFieldsRequired(this);
+        });
+
+        // Test result change handler
+        $section.find('.test-result-select').off('change.testSection').on('change.testSection', function () {
+            showRevisedFields(this);
+            updateTestFieldsRequired(this);
         });
 
         // Initialize date pickers
@@ -1445,6 +1477,7 @@ if ($isLisInstance) {
         // Hide conditional fields
         $(newSection).find('.rejection-reason-field, .rejection-date-field').hide();
         $(newSection).find('.revisedFields').hide();
+        $(newSection).find('.test-required-field').removeClass('isRequired');
 
         container.appendChild(newSection);
 
