@@ -41,7 +41,8 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
 $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 
-$typeOfPatient = (!empty($tbInfo['patient_type'])) ? (array) json_decode((string) $tbInfo['patient_type']) : [];
+//$typeOfPatient = (!empty($tbInfo['patient_type'])) ? (array) json_decode((string) $tbInfo['patient_type']) : [];
+$typeOfPatient = $tbInfo['patient_type'];
 $reasonForTbTest = (!empty($tbInfo['reason_for_tb_test'])) ? (array) json_decode((string) $tbInfo['reason_for_tb_test']) : [];
 //$testTypeRequested = (!empty($tbInfo['tests_requested'])) ? (array)json_decode((string) $tbInfo['tests_requested']) : [];
 $testTypeRequested = !empty($tbInfo['tests_requested']) ? explode(',', (string) $tbInfo['tests_requested']) : [];
@@ -344,20 +345,17 @@ if ($isLisInstance) {
                                             id="typeOfPatient"
                                             title="<?php echo _translate("Please select the case type"); ?>"
                                             onchange="showOther(this.value,'typeOfPatientOther');">
-                                            <option value=''> --
-                                                <?php echo _translate("Select"); ?> --
-                                            </option>
-                                            <option value='new' <?php echo ((is_array($typeOfPatient) && in_array("new", $typeOfPatient)) || $typeOfPatient == "new") ? "selected='selected'" : ""; ?>> New </option>
-                                            <option value='loss-to-follow-up' <?php echo ((is_array($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) || $typeOfPatient == "loss-to-follow-up") ? "selected='selected'" : ""; ?>>
-                                                Loss to Follow Up </option>
-                                            <option value='treatment-failure' <?php echo ((is_array($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) || $typeOfPatient == "treatment-failure") ? "selected='selected'" : ""; ?>>
-                                                Treatment Failure </option>
-                                            <option value='relapse' <?php echo ((is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) || $typeOfPatient == "relapse") ? "selected='selected'" : ""; ?>>
-                                                Relapse </option>
-                                            <option value='MDR-TB' <?php echo ((is_array($typeOfPatient) && in_array("MDR-TB", $typeOfPatient)) || $typeOfPatient == "MDR-TB") ? "selected='selected'" : ""; ?>>MDR-TB</option>
-
-                                            <!-- <option value='other' <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "selected='selected'" : ""; ?>> Other </option> -->
-                                        </select>
+                                             <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
+                                        <option value='new' <?php echo ((is_array($typeOfPatient) && in_array("new", $typeOfPatient)) || $typeOfPatient == "new") ? "selected='selected'" : ""; ?>>
+                                            New </option>
+                                        <option value='loss-to-follow-up' <?php echo ((is_array($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) || $typeOfPatient == "loss-to-follow-up") ? "selected='selected'" : ""; ?>>
+                                            Loss to Follow Up </option>
+                                        <option value='treatment-failure' <?php echo ((is_array($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) || $typeOfPatient == "treatment-failure") ? "selected='selected'" : ""; ?>>
+                                            Treatment Failure </option>
+                                        <option value='relapse' <?php echo ((is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) || $typeOfPatient == "relapse") ? "selected='selected'" : ""; ?>>
+                                            Relapse </option>
+                                        <!-- <option value='other' <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "selected='selected'" : ""; ?>> Other </option> -->
+                                    </select>
                                         <input type="text"
                                             class="form-control typeOfPatientOther <?php echo ((is_array($typeOfPatient) && in_array("other", $typeOfPatient)) || $typeOfPatient == "other") ? "isRequired" : ""; ?>"
                                             id="typeOfPatientOther" name="typeOfPatientOther"
