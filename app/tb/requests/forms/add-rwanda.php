@@ -137,22 +137,22 @@ if ($isLisInstance) {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="width: 33.33%;">
+                                    <!-- <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="affiliatedDistrictHospital"><?php echo _translate("Affiliated District Hospital"); ?></label>
                                         <input type="text" class="form-control" id="affiliatedDistrictHospital"
                                             name="affiliatedDistrictHospital"
                                             placeholder="<?php echo _translate("Enter affiliated district hospital"); ?>"
                                             title="<?php echo _translate("Please enter affiliated district hospital"); ?>" />
-                                    </td>
-                                    <td style="width: 33.33%;">
+                                    </td> -->
+                                    <!-- <td style="width: 33.33%;">
                                         <label class="label-control"
                                             for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
                                         <select name="affiliatedLabId" id="affiliatedLabId" class="form-control select2"
                                             title="<?php echo _translate("Please select affiliated TB testing site"); ?>">
                                             <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                         </select>
-                                    </td>
+                                    </td> -->
                                     <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
                                         <td style="width: 33.33%;">
                                             <label class="label-control"
@@ -1335,9 +1335,10 @@ if ($isLisInstance) {
         <?php } ?>
 
         $("#labId").change(function (e) {
-            if ($(this).val() != "") {
+            let labVal = $(this).val();
+            if (labVal != "") {
                 $.post("/tb/requests/get-attributes-data.php", {
-                    id: this.value,
+                    id: labVal,
                 },
                     function (data) {
                         if (data != "" && data != false) {
@@ -1349,6 +1350,8 @@ if ($isLisInstance) {
                         }
                     });
             }
+            // Auto-populate Testing Lab in test results sections
+            $('#testSections select[name="testResult[labId][]"]').val(labVal).trigger('change.select2');
         });
     });
 

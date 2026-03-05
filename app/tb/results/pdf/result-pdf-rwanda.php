@@ -356,10 +356,6 @@ try {
                     $html .= '<tr>';
                     $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Laboratory:</td>';
                     $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $row['lab_name'] . '</td>';
-                    $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Specimen Collected:</td>';
-                    $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $row['sample_name'] . '</td>';
-                    $html .= '</tr>';
-                    $html .= '<tr>';
                     $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Date of reception:</td>';
                     $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . DateUtility::humanReadableDateFormat($row['sample_received_at_lab_datetime']) . '</td>';
                     $html .= '</tr>';
