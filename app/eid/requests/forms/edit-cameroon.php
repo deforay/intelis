@@ -210,7 +210,10 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                 <hr style="border: 1px solid #ccc;">
 
                                 <div class="box-header with-border">
-                                    <h3 class="box-title"><?= _translate("CHILD'S IDENTIFICATION"); ?></h3>
+                                    <h3 class="box-title"><?= _translate("CHILD'S IDENTIFICATION"); ?></h3>&nbsp;&nbsp;&nbsp;
+                                        <input style="width:30%;" type="text" name="childIdNo" id="childIdNo" class="" placeholder="<?= _translate('Enter Infant Identification Number or Child Name'); ?>" title="<?= _translate('Enter art number or patient name'); ?>" />&nbsp;&nbsp;
+                                        <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _translate('No Patient Found'); ?></strong></span>
+
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
@@ -1148,6 +1151,54 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
             $('#childAge').prop('readonly', false);
             $('#childDob').addClass('isRequired');
         }
+    }
+
+     function setPatientDetails(pDetails) {
+        $("#selectedSample").val(pDetails);
+        var patientArray = JSON.parse(pDetails);
+          
+        $("#childId").val(patientArray['child_id']);
+        $("#childName").val(patientArray['name']);
+        $("#childWeight").val(patientArray['child_weight']);
+
+        
+        $("#patientPhoneNumber").val(patientArray['mobile']);
+        if ($.trim(patientArray['dob']) != '') {
+               $("#childDob").val(patientArray['dob']);
+               getAge();
+          } 
+          if ($.trim(patientArray['mother_dob']) != '') {
+               $("#mothersDob").val(patientArray['mother_dob']);
+               getAge();
+          } 
+          
+          if ($.trim(patientArray['age']) != '' && $.trim(patientArray['age']) > 0) {
+               $("#childAge").val(patientArray['age']);
+          } 
+
+          $("#childGender").val(patientArray['gender']);
+
+
+          if ($.trim(patientArray['is_encrypted']) != '') {
+               if (patientArray['is_encrypted'] == 'yes') {
+                    $("#encryptPII").val('yes');
+               } else {
+                    $("#encryptPII").val('no');
+               }
+          }
+
+          if ($.trim(patientArray['caretaker_address']) != '') {
+               $("#caretakerAddress").val($.trim(patientArray['caretaker_address']));
+          }
+
+          if ($.trim(patientArray['caretaker_no']) != '') {
+               $("#caretakerPhoneNumber").val($.trim(patientArray['caretaker_no']));
+          }
+
+          if ($.trim(patientArray['mother_name']) != '') {
+               $("#mothersName").val($.trim(patientArray['mother_name']));
+          }
+
     }
 
     $(document).ready(function () {
