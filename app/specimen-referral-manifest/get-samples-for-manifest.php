@@ -81,7 +81,7 @@ if (!empty($_POST['sampleType'])) {
 if ($where !== []) {
 	$query .= " WHERE " . implode(" AND ", $where);
 }
-$query .= " ORDER BY vl.request_created_datetime ASC";
+$query .= " ORDER BY vl.remote_sample_code ASC, vl.request_created_datetime ASC";
 
 $result = $db->rawQuery($query);
 $key = (string) $general->getGlobalConfig('key');
