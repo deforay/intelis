@@ -190,7 +190,9 @@ final class LoggerUtility
         }
 
         self::$hasLoggedFallback = true;
-        @error_log("LoggerUtility: {$message} | PHP error_log: " . self::getPhpErrorLogPath());
+        // PHP's error_log() writes raw lines, so strip control characters and line breaks here.
+        $sanitizedMessage = MiscUtility::sanitizeCliString($message, preserveLineBreaks: false);
+        @error_log("LoggerUtility: {$sanitizedMessage} | PHP error_log: " . self::getPhpErrorLogPath());
 
         // Reset flag after a moment to allow future errors
         register_shutdown_function(function (): void {

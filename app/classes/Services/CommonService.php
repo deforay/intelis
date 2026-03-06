@@ -1056,8 +1056,8 @@ final class CommonService
                     $requestData,
                     "$requestDir/$transactionId.json"
                 );
-                // Ensure file is readable by the web server (CLI may run as root)
-                @chmod($requestFile, 0644);
+                // Keep archives readable to the app group without exposing them to all local users.
+                @chmod($requestFile, 0640);
             }
 
             // Save response data
@@ -1070,8 +1070,8 @@ final class CommonService
                     $responseData,
                     "$responseDir/$transactionId.json"
                 );
-                // Ensure file is readable by the web server (CLI may run as root)
-                @chmod($responseFile, 0644);
+                // Keep archives readable to the app group without exposing them to all local users.
+                @chmod($responseFile, 0640);
             }
 
             $this->db->reset();
