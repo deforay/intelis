@@ -400,7 +400,7 @@ try {
             'result_sent_to_source' => 'pending'
         ];
 
-        // Process patient names - combining into single field as per your logic
+        // Process patient names - combining into single field 
         $vlFulldata['patient_first_name'] = $data['patientFirstName'] ?? '';
         $vlFulldata['patient_middle_name'] = $data['patientMiddleName'] ?? '';
         $vlFulldata['patient_last_name'] = $data['patientLastName'] ?? '';

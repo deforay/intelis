@@ -161,6 +161,13 @@ try {
             $apiData['userId'] = base64_encode($userId);
             $apiUrl = $general->getRemoteURL() . "/api/v1.1/user/save-user-profile.php";
 
+            if ($signatureImagePath !== null && $signatureImagePath !== '' && $signatureImagePath !== '0' && MiscUtility::isImageValid($signatureImagePath)) {
+                // Mirror the signature into JSON so the cloud API can still persist it
+                // when multipart file parsing is altered by proxies or PHP config.
+                $apiData['signature_image_content'] = base64_encode(file_get_contents($signatureImagePath));
+                $apiData['signature_image_filename'] = basename($signatureImagePath);
+            }
+
             $multipart = [
                 [
                     'name' => 'post',
@@ -175,7 +182,11 @@ try {
             if ($signatureImagePath !== null && $signatureImagePath !== '' && $signatureImagePath !== '0' && MiscUtility::isImageValid($signatureImagePath)) {
                 $multipart[] = [
                     'name' => 'sign',
-                    'contents' => fopen($signatureImagePath, 'r')
+                    'contents' => fopen($signatureImagePath, 'r'),
+                    'filename' => basename($signatureImagePath),
+                    'headers' => [
+                        'Content-Type' => mime_content_type($signatureImagePath) ?: 'application/octet-stream',
+                    ],
                 ];
             }
 

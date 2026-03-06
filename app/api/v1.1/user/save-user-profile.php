@@ -48,8 +48,7 @@ try {
     $transactionId = MiscUtility::generateULID();
 
     $uploadedFiles = $request->getUploadedFiles();
-
-    $sanitizedSignFile = _sanitizeFiles($uploadedFiles['sign'], ['png', 'jpg', 'jpeg', 'gif']);
+    $sanitizedSignFile = isset($uploadedFiles['sign']) ? _sanitizeFiles($uploadedFiles['sign'], ['png', 'jpg', 'jpeg', 'gif']) : null;
 
     $authToken = ApiService::extractBearerToken($request);
     $user = $usersService->findUserByApiToken($authToken);
@@ -142,6 +141,21 @@ try {
         $resizeObj->save($signatureImagePath);
 
         $data['user_signature'] = basename($signatureImagePath);
+    } elseif (!empty($post['signature_image_content']) && !empty($post['signature_image_filename'])) {
+        // Accept base64 signatures as a fallback because some remote multipart
+        // requests reach the cloud instance without a usable uploaded file part.
+        $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
+        MiscUtility::makeDirectory($signatureImagePath);
+
+        $signatureImagePath = realpath($signatureImagePath) . DIRECTORY_SEPARATOR . basename((string) $post['signature_image_filename']);
+        file_put_contents($signatureImagePath, base64_decode((string) $post['signature_image_content']));
+
+        if (MiscUtility::isImageValid($signatureImagePath)) {
+            $resizeObj = new ImageResizeUtility($signatureImagePath);
+            $resizeObj->resizeToWidth(250);
+            $resizeObj->save($signatureImagePath);
+            $data['user_signature'] = basename($signatureImagePath);
+        }
     }
     $id = false;
     $data = MiscUtility::arrayEmptyStringsToNull($data);

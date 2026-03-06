@@ -236,6 +236,7 @@ final class SystemService
         }
 
         $dbFile = self::SYSTEM_ALERT_SQLITE_FILE;
+        $dbFileMissing = !file_exists($dbFile);
         try {
             $pdo = new PDO('sqlite:' . $dbFile, null, null, [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -243,10 +244,9 @@ final class SystemService
                 PDO::ATTR_TIMEOUT            => 3,
             ]);
 
-            // If we just created it, set perms so web user can RW
-            if (!file_exists($dbFile)) {
-                // touching first will create via PDO anyway; still set perms
-                @chmod($dbFile, 0664);
+            // If PDO created the file, keep access limited to the owner and app group.
+            if ($dbFileMissing && file_exists($dbFile)) {
+                @chmod($dbFile, 0660);
             }
 
             $pdo->exec("PRAGMA journal_mode = WAL");
