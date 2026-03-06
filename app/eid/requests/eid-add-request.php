@@ -111,6 +111,22 @@ require_once($fileArray[$arr['vl_form']]);
 require_once APPLICATION_PATH . "/eid/eid.js.php";
 ?>
 <script>
+    function showPatientList() {
+        $("#showEmptyResult").hide();
+        if ($.trim($("#childIdNo").val()) != '') {
+            $.post("/eid/requests/search-patients.php", {
+                    childIdNo: $.trim($("#childIdNo").val())
+                },
+                function(data) {
+                    if (data >= '1') {
+                        showModal('/eid/requests/patientModal.php?idNo=' + $.trim($("#childIdNo").val()), 900, 520);
+                    } else {
+                        $("#showEmptyResult").show();
+                    }
+                });
+        }
+    }
+
     function updateSampleResult() {
         if ($('#isSampleRejected').val() == "yes") {
             $('.rejected').show();

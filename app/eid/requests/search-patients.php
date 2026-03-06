@@ -13,7 +13,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$artNo = $_POST['artPatientNo'];
+$artNo = $_POST['childIdNo'];
 
 $count = 0;
 $pQuery = "SELECT count(*) as 'count'
