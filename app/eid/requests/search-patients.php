@@ -13,14 +13,20 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$artNo = $_POST['childIdNo'];
+$artNo = $_POST['childIdNo'] ?? $_POST['artPatientNo'] ?? '';
 
-$count = 0;
-$pQuery = "SELECT count(*) as 'count'
+if (!empty($artNo) && $artNo != '') {
+
+    $count = 0;
+    $pQuery = "SELECT count(*) as 'count'
             FROM form_eid
             WHERE child_id like '%$artNo%'
             OR child_name like '%$artNo%'
             OR child_surname like '%$artNo%'
             OR caretaker_phone_number like '%$artNo%'";
-$pResult = $db->rawQueryOne($pQuery);
-echo $pResult['count'];
+    $pResult = $db->rawQueryOne($pQuery);
+    echo $pResult['count'];
+
+} else {
+    echo '0';
+}
