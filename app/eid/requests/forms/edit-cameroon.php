@@ -88,7 +88,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                 </div>
                                 <div class="box-header with-border">
                                     <h3 class="box-title" style="font-size:1em;">
-                                        <?= _translate('To be filled by requesting Clinician/Nurse'); ?></h3>
+                                        <?= _translate('To be filled by requesting Clinician/Nurse'); ?>
+                                    </h3>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 
@@ -145,7 +146,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                                     ?>
                                                     <option value="<?php echo $hFacility['facility_id']; ?>" <?php echo ($eidInfo['facility_id'] == $hFacility['facility_id']) ? "selected='selected'" : ""; ?>
                                                         data-code="<?php echo $hFacility['facility_code']; ?>">
-                                                        <?php echo $hFacility['facility_name']; ?></option>
+                                                        <?php echo $hFacility['facility_name']; ?>
+                                                    </option>
                                                     <?php
                                                 }
                                                 ?>
@@ -173,7 +175,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                                     <option
                                                         value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"
                                                         <?php echo ($fundingSource['funding_source_id'] == $eidInfo['funding_source']) ? 'selected="selected"' : ''; ?>>
-                                                        <?= $fundingSource['funding_source_name']; ?></option>
+                                                        <?= $fundingSource['funding_source_name']; ?>
+                                                    </option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -191,7 +194,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                                     <option
                                                         value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"
                                                         <?php echo ($implementingPartner['i_partner_id'] == $eidInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>>
-                                                        <?= $implementingPartner['i_partner_name']; ?></option>
+                                                        <?= $implementingPartner['i_partner_name']; ?>
+                                                    </option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -210,9 +214,17 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                 <hr style="border: 1px solid #ccc;">
 
                                 <div class="box-header with-border">
-                                    <h3 class="box-title"><?= _translate("CHILD'S IDENTIFICATION"); ?></h3>&nbsp;&nbsp;&nbsp;
-                                        <input style="width:30%;" type="text" name="childIdNo" id="childIdNo" class="" placeholder="<?= _translate('Enter Infant Identification Number or Child Name'); ?>" title="<?= _translate('Enter art number or patient name'); ?>" />&nbsp;&nbsp;
-                                        <a style="margin-top:-0.35%;" href="javascript:void(0);" class="btn btn-default btn-sm" onclick="showPatientList();"><em class="fa-solid fa-magnifying-glass"></em>Search</a><span id="showEmptyResult" style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _translate('No Patient Found'); ?></strong></span>
+                                    <h3 class="box-title"><?= _translate("CHILD'S IDENTIFICATION"); ?></h3>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <input style="width:30%;" type="text" name="childIdNo" id="childIdNo" class=""
+                                        placeholder="<?= _translate('Enter Infant Identification Number or Child Name'); ?>"
+                                        title="<?= _translate('Enter art number or patient name'); ?>" />&nbsp;&nbsp;
+                                    <a style="margin-top:-0.35%;" href="javascript:void(0);"
+                                        class="btn btn-default btn-sm"
+                                        onclick="showPatientList($('#childIdNo').val(), 0);"><em
+                                            class="fa-solid fa-magnifying-glass"></em>Search</a><span
+                                        id="showEmptyResult"
+                                        style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _translate('No Patient Found'); ?></strong></span>
 
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
@@ -395,7 +407,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                     </tr>
                                     <tr>
                                         <th scope="row" style="width:18% !important">
-                                            <?= _translate('Date of next appointment'); ?> </th>
+                                            <?= _translate('Date of next appointment'); ?>
+                                        </th>
                                         <td>
                                             <input class="form-control" type="text" name="nextAppointmentDate"
                                                 id="nextAppointmentDate"
@@ -403,7 +416,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                                 value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['next_appointment_date']); ?>" />
                                         </td>
                                         <th scope="row" style="width:18% !important">
-                                            <?= _translate('Mode of Delivery'); ?> </th>
+                                            <?= _translate('Mode of Delivery'); ?>
+                                        </th>
                                         <td>
                                             <select class="form-control" name="modeOfDelivery" id="modeOfDelivery"
                                                 onchange="showOtherOption(this.value)">
@@ -416,7 +430,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                     </tr>
                                     <tr>
                                         <th scope="row" style="width:18% !important">
-                                            <?= _translate('Number of exposed children'); ?> </th>
+                                            <?= _translate('Number of exposed children'); ?>
+                                        </th>
                                         <td>
                                             <input class="form-control forceNumeric" type="text"
                                                 value="<?php echo ($eidInfo['no_of_exposed_children']); ?>"
@@ -424,7 +439,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                                 placeholder="<?= _translate('Please enter number of exposed children'); ?>" />
                                         </td>
                                         <th scope="row" style="width:18% !important">
-                                            <?= _translate('Number of infected children'); ?> </th>
+                                            <?= _translate('Number of infected children'); ?>
+                                        </th>
                                         <td>
                                             <input class="form-control forceNumeric" type="text"
                                                 name="noOfInfectedChildren"
@@ -436,14 +452,16 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
 
                                     <tr>
                                         <th scope="row" style="width:18% !important">
-                                            <?= _translate('ARV protocol followed by mother'); ?> </th>
+                                            <?= _translate('ARV protocol followed by mother'); ?>
+                                        </th>
                                         <td>
                                             <select class="form-control" name="motherArvProtocol" id="motherArvProtocol"
                                                 onchange="showArvProtocolOtherOption()">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
                                                 <option value="Nothing" <?php echo ($eidInfo['mother_arv_protocol'] == 'Nothing') ? "selected='selected'" : ""; ?>> <?= _translate('Nothing'); ?> </option>
                                                 <option value="TELE (TDF+TC+EFV)" <?php echo ($eidInfo['mother_arv_protocol'] == 'TELE (TDF+TC+EFV)') ? "selected='selected'" : ""; ?>>
-                                                    <?= _translate('TELE (TDF+TC+EFV)'); ?> </option>
+                                                    <?= _translate('TELE (TDF+TC+EFV)'); ?>
+                                                </option>
                                                 <option value="other" <?php echo ($eidInfo['mother_arv_protocol'] == 'other') ? "selected='selected'" : ""; ?>><?= _translate('Other'); ?></option>
                                             </select>
                                             <input type="text" class="form-control" name="motherArvProtocolOther"
@@ -480,7 +498,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                     <tr>
                                         <th scope="row" style="width:16% !important">
                                             <?= _translate('Is the child symptomatic?'); ?> <span
-                                                class="mandatory">*</span></th>
+                                                class="mandatory">*</span>
+                                        </th>
                                         <td style="width:30% !important">
                                             <select class="form-control isRequired" name="isChildSymptomatic"
                                                 id="isChildSymptomatic">
@@ -491,7 +510,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                             </select>
                                         </td>
                                         <th scope="row" style="width:16% !important">
-                                            <?= _translate('Date of Weaning?'); ?> </th>
+                                            <?= _translate('Date of Weaning?'); ?>
+                                        </th>
                                         <td style="width:30% !important">
                                             <input type="text" class="form-control date" name="dateOfWeaning"
                                                 id="dateOfWeaning" title="<?= _translate('Enter date of weaning'); ?>"
@@ -501,7 +521,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                     </tr>
                                     <tr>
                                         <th scope="row" style="width:16% !important">
-                                            <?= _translate('Was the child breastfed?'); ?> </th>
+                                            <?= _translate('Was the child breastfed?'); ?>
+                                        </th>
                                         <td style="width:30% !important">
                                             <select class="form-control" name="wasChildBreastfed"
                                                 id="wasChildBreastfed">
@@ -519,13 +540,15 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                                 <option value="Exclusive" <?php echo ($eidInfo['choice_of_feeding'] == 'Exclusive') ? "selected='selected'" : ""; ?>><?= _translate('Exclusive'); ?></option>
                                                 <option value="Mixed" <?php echo ($eidInfo['choice_of_feeding'] == 'Mixed') ? "selected='selected'" : ""; ?>><?= _translate('Mixed'); ?></option>
                                                 <option value="Exclusive formula feeding" <?php echo ($eidInfo['choice_of_feeding'] == 'Exclusive formula feeding') ? "selected='selected'" : ""; ?>>
-                                                    <?= _translate('Exclusive formula feeding'); ?></option>
+                                                    <?= _translate('Exclusive formula feeding'); ?>
+                                                </option>
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th scope="row" style="width:16% !important">
-                                            <?= _translate('Is the child on Cotrim?'); ?> </th>
+                                            <?= _translate('Is the child on Cotrim?'); ?>
+                                        </th>
                                         <td style="width:30% !important">
                                             <select class="form-control" name="isChildOnCotrim" id="isChildOnCotrim">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
@@ -534,7 +557,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                             </select>
                                         </td>
                                         <th scope="row" style="width:16% !important">
-                                            <?= _translate('If Yes, Date of Initiation'); ?> </th>
+                                            <?= _translate('If Yes, Date of Initiation'); ?>
+                                        </th>
                                         <td style="width:30% !important">
                                             <input type="text" class="form-control date" name="childStartedCotrimDate"
                                                 id="childStartedCotrimDate"
@@ -546,7 +570,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                     </tr>
                                     <tr>
                                         <th scope="row" style="width:16% !important">
-                                            <?= _translate('Is the child on ART?'); ?> </th>
+                                            <?= _translate('Is the child on ART?'); ?>
+                                        </th>
                                         <td style="width:30% !important">
                                             <select class="form-control" name="infantArtStatus" id="infantArtStatus">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
@@ -555,7 +580,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                             </select>
                                         </td>
                                         <th scope="row" style="width:16% !important">
-                                            <?= _translate('If Yes, Date of Initiation'); ?> </th>
+                                            <?= _translate('If Yes, Date of Initiation'); ?>
+                                        </th>
                                         <td style="width:30% !important">
                                             <input type="text" class="form-control date" name="childStartedArtDate"
                                                 id="childStartedArtDate"
@@ -603,7 +629,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                     </tr>
                                     <tr>
                                         <td style="text-align:center;" scope="row">
-                                            <?= _translate('Serological Test'); ?> </td>
+                                            <?= _translate('Serological Test'); ?>
+                                        </td>
                                         <td colspan="2" style="text-align:center;">
                                             <input <?php echo ($eidInfo['serological_test'] == 'positive') ? "checked='checked'" : ""; ?> type="radio" class="form-check"
                                                 name="serologicalTest" id="serologicalTest"
@@ -622,7 +649,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                     <tr>
                                         <td style="text-align:center;" scope="row">
                                             <?= _translate('Previous PCR Tests'); ?> <br><br>PCR
-                                            1<br><br><br>PCR2<br><br><br>PCR 3</td>
+                                            1<br><br><br>PCR2<br><br><br>PCR 3
+                                        </td>
                                         <td>
                                             <?= _translate('Date of sample collection'); ?><br> <br>
                                             <input
@@ -667,7 +695,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                                     <?= _translate('1st Test for well child born of HIV+ mother'); ?>
                                                 </option>
                                                 <option value="1st Test for sick child" <?php echo ($eidInfo['sample_collection_reason'] == '1st Test for sick child') ? "selected='selected'" : ""; ?>>
-                                                    <?= _translate('1st Test for sick child'); ?></option>
+                                                    <?= _translate('1st Test for sick child'); ?>
+                                                </option>
                                                 <option value="Repeat Testing for 6 weeks after weaning" <?php echo ($eidInfo['sample_collection_reason'] == 'Repeat Testing for 6 weeks after weaning') ? "selected='selected'" : ""; ?>>
                                                     <?= _translate('Repeat Testing for 6 weeks after weaning'); ?>
                                                 </option>
@@ -689,9 +718,11 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                                 <option value="PMTCT(PT)" <?php echo ($eidInfo['lab_testing_point'] == 'PMTCT(PT)') ? "selected='selected'" : ""; ?>><?= _translate('PMTCT(PT)'); ?></option>
                                                 <option value="IWC(IC)" <?php echo ($eidInfo['lab_testing_point'] == 'IWC(IC)') ? "selected='selected'" : ""; ?>> <?= _translate('IWC(IC)'); ?> </option>
                                                 <option value="Hospitalization (HO)" <?php echo ($eidInfo['lab_testing_point'] == 'Hospitalization (HO)') ? "selected='selected'" : ""; ?>>
-                                                    <?= _translate('Hospitalization (HO)'); ?>' </option>
+                                                    <?= _translate('Hospitalization (HO)'); ?>'
+                                                </option>
                                                 <option value="Consultation (CS)" <?php echo ($eidInfo['lab_testing_point'] == 'Consultation (CS)') ? "selected='selected'" : ""; ?>>
-                                                    <?= _translate('Consultation (CS)'); ?> </option>
+                                                    <?= _translate('Consultation (CS)'); ?>
+                                                </option>
                                                 <option value="EPI(PE)" <?php echo ($eidInfo['lab_testing_point'] == 'EPI(PE)') ? "selected='selected'" : ""; ?>> <?= _translate('EPI(PE)'); ?> </option>
                                                 <option value="other" <?php echo ($eidInfo['lab_testing_point'] == 'other') ? "selected='selected'" : ""; ?>><?= _translate('Other'); ?></option>
                                             </select>
@@ -731,7 +762,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                     <tr>
                                         <th scope="row" style="width:15% !important">
                                             <?= _translate('Sample Collection Date'); ?> <span
-                                                class="mandatory">*</span> </th>
+                                                class="mandatory">*</span>
+                                        </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" type="text"
                                                 name="sampleCollectionDate" id="sampleCollectionDate"
@@ -833,7 +865,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                         </tr>
                                         <tr class="show-rejection rejected" style="display:none;">
                                             <th scope="row" class="rejected" style="display: none;">
-                                                <?= _translate('Reason for Rejection'); ?></th>
+                                                <?= _translate('Reason for Rejection'); ?>
+                                            </th>
                                             <td class="rejected" style="display: none;">
                                                 <select class="form-control" name="sampleRejectionReason"
                                                     id="sampleRejectionReason"
@@ -846,7 +879,8 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                                             foreach ($rejectionResult as $reject) {
                                                                 if ($type['rejection_type'] == $reject['rejection_type']) { ?>
                                                                     <option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($eidInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
-                                                                        <?= $reject['rejection_reason_name']; ?></option>
+                                                                        <?= $reject['rejection_reason_name']; ?>
+                                                                    </option>
                                                                 <?php }
                                                             } ?>
                                                         </optgroup>
@@ -1153,51 +1187,51 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
         }
     }
 
-     function setPatientDetails(pDetails) {
+    function setPatientDetails(pDetails) {
         $("#selectedSample").val(pDetails);
         var patientArray = JSON.parse(pDetails);
-          
+
         $("#childId").val(patientArray['child_id']);
         $("#childName").val(patientArray['name']);
         $("#childWeight").val(patientArray['child_weight']);
 
-        
+
         $("#patientPhoneNumber").val(patientArray['mobile']);
         if ($.trim(patientArray['dob']) != '') {
-               $("#childDob").val(patientArray['dob']);
-               getAge();
-          } 
-          if ($.trim(patientArray['mother_dob']) != '') {
-               $("#mothersDob").val(patientArray['mother_dob']);
-               getAge();
-          } 
-          
-          if ($.trim(patientArray['age']) != '' && $.trim(patientArray['age']) > 0) {
-               $("#childAge").val(patientArray['age']);
-          } 
+            $("#childDob").val(patientArray['dob']);
+            getAge();
+        }
+        if ($.trim(patientArray['mother_dob']) != '') {
+            $("#mothersDob").val(patientArray['mother_dob']);
+            getAge();
+        }
 
-          $("#childGender").val(patientArray['gender']);
+        if ($.trim(patientArray['age']) != '' && $.trim(patientArray['age']) > 0) {
+            $("#childAge").val(patientArray['age']);
+        }
+
+        $("#childGender").val(patientArray['gender']);
 
 
-          if ($.trim(patientArray['is_encrypted']) != '') {
-               if (patientArray['is_encrypted'] == 'yes') {
-                    $("#encryptPII").val('yes');
-               } else {
-                    $("#encryptPII").val('no');
-               }
-          }
+        if ($.trim(patientArray['is_encrypted']) != '') {
+            if (patientArray['is_encrypted'] == 'yes') {
+                $("#encryptPII").val('yes');
+            } else {
+                $("#encryptPII").val('no');
+            }
+        }
 
-          if ($.trim(patientArray['caretaker_address']) != '') {
-               $("#caretakerAddress").val($.trim(patientArray['caretaker_address']));
-          }
+        if ($.trim(patientArray['caretaker_address']) != '') {
+            $("#caretakerAddress").val($.trim(patientArray['caretaker_address']));
+        }
 
-          if ($.trim(patientArray['caretaker_no']) != '') {
-               $("#caretakerPhoneNumber").val($.trim(patientArray['caretaker_no']));
-          }
+        if ($.trim(patientArray['caretaker_no']) != '') {
+            $("#caretakerPhoneNumber").val($.trim(patientArray['caretaker_no']));
+        }
 
-          if ($.trim(patientArray['mother_name']) != '') {
-               $("#mothersName").val($.trim(patientArray['mother_name']));
-          }
+        if ($.trim(patientArray['mother_name']) != '') {
+            $("#mothersName").val($.trim(patientArray['mother_name']));
+        }
 
     }
 
