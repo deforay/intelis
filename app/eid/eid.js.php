@@ -13,11 +13,12 @@
             $("#showEmptyResult").hide();
             if ($.trim(patientCode) != '') {
                 $.post("/eid/requests/search-patients.php", {
-                    artPatientNo: $.trim(patientCode)
+                    childIdNo: $.trim(patientCode)
                 },
                     function (data) {
-                        if (data >= '1') {
-                            showModal('/eid/requests/patientModal.php?artNo=' + $.trim(patientCode), 900, 520);
+                        data = parseInt(data);
+                        if (data >= 1) {
+                            showModal('/eid/requests/patientModal.php?id=' + $.trim(patientCode), 900, 520);
                         } else {
                             $("#showEmptyResult").show();
                         }

@@ -14,7 +14,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
-$artNo = urldecode((string) $_GET['idNo']);
+$artNo = urldecode((string) $_GET['id'] ?? $_GET['artNo'] ?? '');
 
 $db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
 $db->where("child_id LIKE ?", ["%$artNo%"]);
