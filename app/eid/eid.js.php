@@ -1,21 +1,23 @@
 <script type="text/javascript">
     let patientSearchTimeout = null;
 
+
+
     function showPatientList(patientCode, timeOutDuration) {
         if (patientSearchTimeout != null) {
             clearTimeout(patientSearchTimeout);
         }
-        patientSearchTimeout = setTimeout(function() {
+        patientSearchTimeout = setTimeout(function () {
             patientSearchTimeout = null;
 
             $("#showEmptyResult").hide();
             if ($.trim(patientCode) != '') {
                 $.post("/eid/requests/search-patients.php", {
-                        artPatientNo: $.trim(patientCode)
-                    },
-                    function(data) {
+                    artPatientNo: $.trim(patientCode)
+                },
+                    function (data) {
                         if (data >= '1') {
-                            showModal('patientModal.php?artNo=' + $.trim(patientCode), 900, 520);
+                            showModal('/eid/requests/patientModal.php?artNo=' + $.trim(patientCode), 900, 520);
                         } else {
                             $("#showEmptyResult").show();
                         }
@@ -49,7 +51,7 @@
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         if ($('#childAgeInWeeks').length) {
             // The childAgeInWeeks element exists, attach the event handler
             $('#childAge, #childAgeInWeeks').on('change', calculateTotalAge);
