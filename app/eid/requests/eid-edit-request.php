@@ -49,7 +49,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$userId =  $_SESSION['userId'];
+$userId = $_SESSION['userId'];
 $checkNonAdminUser = $general->isNonAdmin($userId);
 //Funding source list
 $fundingSourceList = $general->getFundingSources();
@@ -221,22 +221,7 @@ require_once($fileArray[$arr['vl_form']]);
 require_once APPLICATION_PATH . "/eid/eid.js.php";
 ?>
 <script>
-       function showPatientList() {
-        $("#showEmptyResult").hide();
-        if ($.trim($("#childIdNo").val()) != '') {
-            $.post("/eid/requests/search-patients.php", {
-                    artPatientNo: $.trim($("#childIdNo").val())
-                },
-                function(data) {
-                    if (data >= '1') {
-                        showModal('/eid/requests/patientModal.php?idNo=' + $.trim($("#childIdNo").val()), 900, 520);
-                    } else {
-                        $("#showEmptyResult").show();
-                    }
-                });
-        }
-    }
-    
+
     function updateSampleResult() {
         if ($('#isSampleRejected').val() == "yes") {
             $('.rejected').show();
@@ -268,15 +253,15 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
     }
 
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         updateSampleResult();
-        $("#isSampleRejected,#result").on("change", function() {
+        $("#isSampleRejected,#result").on("change", function () {
             updateSampleResult();
         });
 
-        $('.result-focus').change(function(e) {
+        $('.result-focus').change(function (e) {
             var status = false;
-            $(".result-focus").each(function(index) {
+            $(".result-focus").each(function (index) {
                 if ($(this).val() != "") {
                     status = true;
                 }
