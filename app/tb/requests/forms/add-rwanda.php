@@ -1364,10 +1364,10 @@ if ($isLisInstance) {
         $('#isPatientInitiatedTreatment').on('change', function () {
             if (this.value === 'yes') {
                 $('.treatmentSelected').show();
-                // $('.treatmentSelectedInput').addClass('isRequired');
+                $('#currentRegimen').addClass('isRequired');
             } else {
                 $('.treatmentSelected').hide();
-                // $('.treatmentSelectedInput').removeClass('isRequired').val('');
+                $('#currentRegimen').removeClass('isRequired').val('');
             }
         });
 
