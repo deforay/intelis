@@ -379,8 +379,10 @@ if ($isLisInstance) {
                                         title="Please choose treatment date" />
                                 </td>
                                 <td style="width: 33.33%;">
-                                    <label for="currentRegimen"
-                                        class="label-control"><?php echo _translate("Current regimen"); ?></label>
+                                    <label for="currentRegimen" class="label-control">
+                                        <?php echo _translate("Current regimen"); ?>
+                                        <span class="mandatory">*</span>
+                                    </label>
                                     <select id="currentRegimen" name="currentRegimen"
                                         class="form-control treatmentSelectedInput <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] == 'yes') ? 'isRequired' : ''; ?>"
                                         title="<?php echo _translate('Please select the current regimen'); ?>">
@@ -1707,10 +1709,10 @@ if ($isLisInstance) {
         $('#isPatientInitiatedTreatment').on('change', function () {
             if (this.value === 'yes') {
                 $('.treatmentSelected').show();
-                // $('.treatmentSelectedInput').addClass('isRequired');
+                $('#currentRegimen').addClass('isRequired');
             } else {
                 $('.treatmentSelected').hide();
-                // $('.treatmentSelectedInput').removeClass('isRequired').val('');
+                $('#currentRegimen').removeClass('isRequired').val('');
             }
         });
 
