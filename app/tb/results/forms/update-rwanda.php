@@ -371,8 +371,7 @@ if ($isLisInstance) {
                                 style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
                                 <td style="width: 33.33%;">
                                     <label class="label-control"
-                                        for="treatmentDate"><?php echo _translate("Date of Treatment Initiation"); ?><span
-                                            class="mandatory">*</span></label>
+                                        for="treatmentDate"><?php echo _translate("Date of initiation of TB treatment"); ?></label>
                                     <input type="text"
                                         value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_treatment_initiation']) ?? ''; ?>"
                                         name="treatmentDate" id="treatmentDate"
@@ -381,8 +380,7 @@ if ($isLisInstance) {
                                 </td>
                                 <td style="width: 33.33%;">
                                     <label for="currentRegimen"
-                                        class="label-control"><?php echo _translate("Current regimen"); ?><span
-                                            class="mandatory">*</span></label>
+                                        class="label-control"><?php echo _translate("Current regimen"); ?></label>
                                     <select id="currentRegimen" name="currentRegimen"
                                         class="form-control treatmentSelectedInput <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] == 'yes') ? 'isRequired' : ''; ?>"
                                         title="<?php echo _translate('Please select the current regimen'); ?>">
@@ -395,8 +393,7 @@ if ($isLisInstance) {
                                 </td>
                                 <td style="width: 33.33%;">
                                     <label class="label-control"
-                                        for="regimenDate"><?php echo _translate("Date of Initiation of Current Regimen"); ?><span
-                                            class="mandatory">*</span></label>
+                                        for="regimenDate"><?php echo _translate("Date of Initiation of Current Regimen"); ?></label>
                                     <input type="text"
                                         value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_initiation_of_current_regimen']) ?? ''; ?>"
                                         name="regimenDate" id="regimenDate"
