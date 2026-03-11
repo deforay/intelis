@@ -353,7 +353,9 @@ if ($isLisInstance) {
                                     </td>
                                     <td style="width: 33.33%;">
                                         <label for="currentRegimen"
-                                            class="label-control"><?php echo _translate("Current regimen"); ?></label>
+                                            class="label-control"><?php echo _translate("Current regimen"); ?>
+                                            <span class="mandatory">*</span>
+                                        </label>
                                         <select id="currentRegimen" name="currentRegimen"
                                             class="form-control treatmentSelectedInput"
                                             title="<?php echo _translate('Please select the current regimen'); ?>">
