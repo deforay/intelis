@@ -23,8 +23,10 @@ try {
             $adminRow = $db->rawQueryOne("SELECT * FROM system_admin as ud WHERE ud.system_admin_login = ?", $params);
 
             if (!empty($adminRow) && $usersService->passwordVerify($adminUsername, $adminPassword, (string) $adminRow['system_admin_password'])) {
-                $_SESSION['adminUserId'] = $adminRow['system_admin_id'];
-                $_SESSION['adminUserName'] = ($adminRow['system_admin_name']);
+                $_SESSION['_systemAdmin'] = [
+                    'userId' => $adminRow['system_admin_id'],
+                    'userName' => $adminRow['system_admin_name'],
+                ];
                 header("Location:/system-admin/edit-config/index.php");
             } else {
                 throw new SystemException("Invalid username or password");
@@ -36,6 +38,6 @@ try {
 } catch (SystemException $exc) {
     error_log($exc->getMessage());
 
-    $_SESSION['alertMsg'] = _translate("Please check your login credentials");
+    $_SESSION['_systemAdmin']['alertMsg'] = _translate("Please check your login credentials");
     header("Location:/system-admin/login/login.php");
 }

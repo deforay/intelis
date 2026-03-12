@@ -101,8 +101,8 @@ $skin = "skin-blue";
 						<li class="dropdown user user-menu">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								<img src="/assets/img/default-user.png" class="user-image" alt="User Image">
-								<span class="hidden-xs"><?php if (isset($_SESSION['adminUserName'])) {
-															echo $_SESSION['adminUserName'];
+								<span class="hidden-xs"><?php if (isset($_SESSION['_systemAdmin']['userName'])) {
+															echo $_SESSION['_systemAdmin']['userName'];
 														} ?></span>
 							</a>
 							<ul class="dropdown-menu">
