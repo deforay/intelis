@@ -15,7 +15,7 @@ try {
         $data['updated_datetime'] = DateUtility::getCurrentDateTime();
         $db->where('user_id', $userId);
         $db->update('user_details', $data);
-        $_SESSION['alertMsg'] = _translate("Password updated successfully");
+        $_SESSION['_systemAdmin']['alertMsg'] = _translate("Password updated successfully");
     }
     header("Location:/system-admin/reset-password/reset-password.php");
 } catch (Exception $exc) {

@@ -27,12 +27,11 @@
 <script type="text/javascript">
   $(document).ready(function() {
     <?php
-    if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) !== "") {
+    if (isset($_SESSION['_systemAdmin']['alertMsg']) && trim((string) $_SESSION['_systemAdmin']['alertMsg']) !== "") {
     ?>
-      alert("<?php echo $_SESSION['alertMsg']; ?>");
+      alert("<?php echo $_SESSION['_systemAdmin']['alertMsg']; ?>");
     <?php
-      $_SESSION['alertMsg'] = '';
-      unset($_SESSION['alertMsg']);
+      unset($_SESSION['_systemAdmin']['alertMsg']);
     }
     ?>
   });

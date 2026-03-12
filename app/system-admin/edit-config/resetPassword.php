@@ -1,7 +1,7 @@
 <?php
 
 include(__DIR__ . '/../admin-header.php');
-$id = $_SESSION['adminUserId'];
+$id = $_SESSION['_systemAdmin']['userId'];
 $userQuery = "SELECT * from system_admin where system_admin_id='" . $id . "'";
 $userInfo = $db->query($userQuery);
 ?>

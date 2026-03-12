@@ -1,6 +1,6 @@
 <?php
 
-if (isset($_SESSION['adminUserId'])) {
+if (!empty($_SESSION['_systemAdmin']['userId'])) {
     header("Location:/system-admin/edit-config/index.php");
 }
 $adminCount = $db->rawQuery("SELECT * FROM system_admin as ud");
@@ -113,12 +113,11 @@ $bgColor = $general->isSTSInstance() ? 'red' : 'blue';
         }
         $(document).ready(function () {
             <?php
-            if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) !== "") {
+            if (isset($_SESSION['_systemAdmin']['alertMsg']) && trim((string) $_SESSION['_systemAdmin']['alertMsg']) !== "") {
                 ?>
-                alert("<?php echo $_SESSION['alertMsg']; ?>");
+                alert("<?php echo $_SESSION['_systemAdmin']['alertMsg']; ?>");
                 <?php
-                $_SESSION['alertMsg'] = '';
-                unset($_SESSION['alertMsg']);
+                unset($_SESSION['_systemAdmin']['alertMsg']);
             }
             ?>
         });

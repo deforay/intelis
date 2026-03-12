@@ -28,15 +28,15 @@ try {
             ];
             $db->insert("system_admin", $insertData);
             MiscUtility::deleteFile(SYSADMIN_SECRET_KEY_FILE);
-            $_SESSION['alertMsg'] = _translate("System Admin added successfully");
+            $_SESSION['_systemAdmin']['alertMsg'] = _translate("System Admin added successfully");
             header("Location:/system-admin/login/login.php");
         }
     } else {
-        $_SESSION['alertMsg'] = _translate("Invalid Secret Key, Please enter valid key");
+        $_SESSION['_systemAdmin']['alertMsg'] = _translate("Invalid Secret Key, Please enter valid key");
         header("Location:/system-admin/setup/index.php");
     }
 } catch (Exception $exc) {
-    $_SESSION['alertMsg'] = _translate("Failed to add System Admin. Please try again.");
+    $_SESSION['_systemAdmin']['alertMsg'] = _translate("Failed to add System Admin. Please try again.");
     header("Location:/system-admin/setup/index.php");
     LoggerUtility::logError($exc->getMessage(), [
         'trace' => $exc->getTraceAsString(),
