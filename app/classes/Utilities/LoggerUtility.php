@@ -346,6 +346,55 @@ final class LoggerUtility
     }
 
     /**
+     * Log the error and terminate with an appropriate CLI or HTML response.
+     */
+    public static function fatalError(string $title, Throwable|string $error): never
+    {
+        $message = $error instanceof Throwable ? $error->getMessage() : $error;
+
+        error_log("[FATAL] {$title}: {$message}");
+
+        if (php_sapi_name() === 'cli') {
+            fwrite(STDERR, "{$title}: {$message}\n");
+            exit(1);
+        }
+
+        http_response_code(500);
+        header('Content-Type: text/html; charset=utf-8');
+
+        $debugMode = defined('SYSTEM_CONFIG')
+            && !empty(SYSTEM_CONFIG['system']['debug_mode']);
+
+        $safeTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+        $detail = $debugMode
+            ? '<pre>' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '</pre>'
+            : '';
+
+        echo <<<HTML
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <title>System Error</title>
+        <style>
+        body { font-family: system-ui, sans-serif; background: #fafafa; color: #333; margin: 4rem; }
+        h1 { color: #c00; }
+        p  { max-width: 600px; }
+        pre { background: #f0f0f0; padding: 1rem; overflow-x: auto; }
+        </style>
+        </head>
+        <body>
+        <h1>{$safeTitle}</h1>
+        <p>The application could not start. Please check your configuration or contact an administrator.</p>
+        {$detail}
+        </body>
+        </html>
+        HTML;
+
+        exit;
+    }
+
+    /**
      * Reset the log call counter (useful for testing or long-running processes)
      */
     public static function resetLogCallCount(): void

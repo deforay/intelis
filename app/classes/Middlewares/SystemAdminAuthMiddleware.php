@@ -34,7 +34,7 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
             !isset($_SESSION['userId']) && !isset($_SESSION['requestedURI']) &&
             strtolower($request->getHeaderLine('X-Requested-With')) !== 'xmlhttprequest'
         ) {
-            $_SESSION['systemAdminrequestedURI'] = AppRegistry::get('currentRequestURI');
+            $_SESSION['_systemAdmin']['requestedURI'] = AppRegistry::get('currentRequestURI');
         }
 
         $redirect = null;
@@ -44,7 +44,7 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
             // a CLI request, or if the requested URI is excluded from the
             // authentication check
             return $handler->handle($request);
-        } elseif (empty($_SESSION['adminUserId'])) {
+        } elseif (empty($_SESSION['_systemAdmin']['userId'])) {
             if (CommonService::isAjaxRequest($request)) {
                 $response = new Response(401);
                 $response->getBody()->write(json_encode(['error' => 'session_expired'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
