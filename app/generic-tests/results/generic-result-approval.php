@@ -208,6 +208,12 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 									</option>
 								</select>
 							</td>
+							<td>&nbsp;<strong>
+									<?php echo _translate("Sample Test Date"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Test Date'); ?>" readonly style="width:220px;background:#fff;" />
+							</td>
 						</tr>
 						<tr>
 							<td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
@@ -397,6 +403,14 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 
 
 	$(document).ready(function() {
+		$("#batchCode").select2({
+			placeholder: "<?php echo _translate("Select Batch Code"); ?>",
+			allowClear: true
+		});
+		$("#sampleType").select2({
+			placeholder: "<?php echo _translate("Select Sample Type"); ?>",
+			allowClear: true
+		});
 		$("#facilityName").selectize({
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
@@ -414,6 +428,32 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 		$("#reviewer").select2({
 			placeholder: "<?php echo _translate("Select reviewer"); ?>"
 		});
+		$('#sampleTestDate').daterangepicker({
+				locale: {
+					cancelLabel: "<?= _translate("Clear", true); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+					'Current Year To Date': [moment().startOf('year'), moment()]
+				}
+			});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
@@ -445,6 +485,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 				endDate = end.format('YYYY-MM-DD');
 			});
 		$('#sampleCollectionDate').val("");
+		$('#sampleTestDate').val("");
 		loadVlRequestData();
 	});
 
@@ -518,6 +559,10 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 				aoData.push({
 					"name": "sampleCollectionDate",
 					"value": $("#sampleCollectionDate").val()
+				});
+				aoData.push({
+					"name": "sampleTestDate",
+					"value": $("#sampleTestDate").val()
 				});
 				aoData.push({
 					"name": "facilityName",
