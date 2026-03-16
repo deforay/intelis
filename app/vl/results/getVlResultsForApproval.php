@@ -66,6 +66,10 @@ if (!empty($_POST['sampleCollectionDate'])) {
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
      $sWhere[] =  "  DATE(vl.sample_collection_date) BEWTEEN '$start_date' AND '$end_date' ";
 }
+if (!empty($_POST['sampleTestDate'])) {
+     [$tested_start_date, $tested_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+     $sWhere[] =  " DATE(vl.sample_tested_datetime) BETWEEN '$tested_start_date' AND '$tested_end_date' ";
+}
 if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
      $sWhere[] =  ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
