@@ -40,6 +40,34 @@ print() {
     esac
 }
 
+# Print a status board for all instances during multi-instance upgrades
+# Usage: print_instance_status paths_array_name statuses_array_name
+print_instance_status() {
+    local -n _paths=$1
+    local -n _statuses=$2
+    local total=${#_paths[@]}
+    local term_width
+    term_width=$([ -t 1 ] && tput cols 2>/dev/null || echo 80)
+
+    echo ""
+    printf "\033[1;96m%${term_width}s\033[0m\n" '' | tr ' ' '─'
+    printf "\033[1;96m  Instance Progress (%d total)\033[0m\n" "$total"
+    printf "\033[1;96m%${term_width}s\033[0m\n" '' | tr ' ' '─'
+    for i in "${!_paths[@]}"; do
+        local status="${_statuses[$i]}"
+        local icon label color
+        case $status in
+            pending)  icon="○"; label="pending";     color="\033[0;37m"  ;;
+            running)  icon="▶"; label="in progress"; color="\033[1;93m"  ;;
+            done)     icon="✓"; label="done";         color="\033[1;92m"  ;;
+            failed)   icon="✗"; label="failed";       color="\033[1;91m"  ;;
+        esac
+        printf "  ${color}[%d/%d] %s  %s  (%s)\033[0m\n" "$((i+1))" "$total" "$icon" "${_paths[$i]}" "$label"
+    done
+    printf "\033[1;96m%${term_width}s\033[0m\n" '' | tr ' ' '─'
+    echo ""
+}
+
 escape_php_string_for_sed() {
     # Escape for PHP single-quoted strings and sed replacement
     local value="$1"
