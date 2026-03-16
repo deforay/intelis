@@ -540,6 +540,36 @@ foreach ($rejectionTypeResult as $type) {
 		toggleBulkActionControls(true);
 	}
 
+	function confirmDuplicateBulkRoles(approver, tester, reviewer) {
+		var selectedRoles = [
+			{ label: "<?= _translate('Approver', true); ?>", value: approver },
+			{ label: "<?= _translate('Tester', true); ?>", value: tester },
+			{ label: "<?= _translate('Reviewer', true); ?>", value: reviewer }
+		].filter(function(role) {
+			return role.value !== '';
+		});
+
+		var duplicateGroups = {};
+		selectedRoles.forEach(function(role) {
+			if (!duplicateGroups[role.value]) {
+				duplicateGroups[role.value] = [];
+			}
+			duplicateGroups[role.value].push(role.label);
+		});
+
+		var duplicateLabels = Object.values(duplicateGroups).filter(function(labels) {
+			return labels.length > 1;
+		});
+		if (duplicateLabels.length === 0) {
+			return true;
+		}
+
+		var duplicateText = duplicateLabels.map(function(labels) {
+			return labels.join(', ');
+		}).join(' / ');
+		return confirm("<?= _translate('The same user is selected for multiple roles', true); ?> (" + duplicateText + "). <?= _translate('Do you want to continue?', true); ?>");
+	}
+
 	function toggleTest(obj) {
 		if ($(obj).is(':checked')) {
 			if ($.inArray(obj.value, selectedTests) == -1) {
@@ -601,6 +631,8 @@ foreach ($rejectionTypeResult as $type) {
 				alert("<?= _translate("Please select at least one field to update", true); ?>");
 			} else if (stValue == '4' && $("#bulkRejectionReason").val() == '') {
 				alert("<?= _translate("Please select rejection reason", true); ?>");
+			} else if (!confirmDuplicateBulkRoles(approver, tester, reviewer)) {
+				return;
 			} else {
 				conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
 				if (conf) {
