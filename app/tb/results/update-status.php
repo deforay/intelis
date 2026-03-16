@@ -5,6 +5,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\BulkResultStatusService;
 use const SAMPLE_STATUS\REJECTED;
 use App\Registries\ContainerRegistry;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,6 +16,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var BulkResultStatusService $bulkResultStatusService */
+$bulkResultStatusService = ContainerRegistry::get(BulkResultStatusService::class);
 $tableName = "form_tb";
 try {
 
@@ -26,40 +30,35 @@ try {
     $id = explode(",", (string) $_POST['id']);
     $counter = count($id);
     for ($i = 0; $i < $counter; $i++) {
-        $status = ['result_status' => $_POST['status'], 'result_approved_datetime' => DateUtility::getCurrentDateTime(), 'last_modified_datetime' => DateUtility::getCurrentDateTime(), 'data_sync' => 0];
-        /* Check if already have reviewed and approved by 
         $db->where('tb_id', $id[$i]);
-        $reviewd = $db->getOne($tableName, array("result_reviewed_by", "result_approved_by"));
-        if (empty($reviewd['result_reviewed_by'])) {
-            $status['result_reviewed_by'] = $_SESSION['userId'];
+        $currentRow = $db->getOne($tableName, ['result_approved_by', 'tested_by', 'result_reviewed_by']);
+
+        $status = [];
+        if (!empty($_POST['status'])) {
+            $status = [
+                'result_status' => $_POST['status'],
+                'result_approved_datetime' => DateUtility::getCurrentDateTime(),
+                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                'data_sync' => 0
+            ];
+            if ($_POST['status'] == REJECTED) {
+                $status['result'] = null;
+                $status['is_sample_rejected'] = 'yes';
+                $status['reason_for_sample_rejection'] = $_POST['rejectedReason'];
+            } else {
+                $status['is_sample_rejected'] = 'no';
+                $status['reason_for_sample_rejection'] = null;
+            }
+            $db->where('tb_id', $id[$i]);
+            $db->update($tableName, $status);
         }
-        if (empty($reviewd['result_approved_by'])) {
-            $status['result_approved_by'] = $_SESSION['userId'];
-        }*/
-        if ($_POST['status'] == REJECTED) {
-            $status['result'] = null;
-            $status['is_sample_rejected'] = 'yes';
-            $status['reason_for_sample_rejection'] = $_POST['rejectedReason'];
-        } else {
-            $status['is_sample_rejected'] = 'no';
-            $status['reason_for_sample_rejection'] = null;
-        }
-        $db->where('tb_id', $id[$i]);
-        $db->update($tableName, $status);
         $result = $id[$i];
 
-        $userData = [];
-        if ($_POST['approver'] != '') {
-            $userData['result_approved_by'] = $_POST['approver'];
-        }
-        if ($_POST['tester'] != '') {
-            $userData['tested_by'] = $_POST['tester'];
-        }
-        if ($_POST['reviewer'] != '') {
-            $userData['result_reviewed_by'] = $_POST['reviewer'];
-        }
-
+        $userData = $bulkResultStatusService->getBulkUserData($currentRow, $_POST);
         if ($userData !== []) {
+            $userData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+            $userData['data_sync'] = 0;
+
             $db->where('tb_id', $id[$i]);
             $db->update($tableName, $userData);
         }

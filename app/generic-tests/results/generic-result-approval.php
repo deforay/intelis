@@ -99,6 +99,17 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 		margin-bottom: 5px;
 		display: block;
 	}
+
+	.bulk-overwrite-option {
+		display: block;
+		margin-top: 6px;
+		font-size: 12px;
+		font-weight: 400 !important;
+	}
+
+	.bulk-overwrite-option input {
+		margin-right: 6px;
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -259,6 +270,10 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 													</option>
 												<?php } ?>
 											</select>
+											<label class="bulk-overwrite-option">
+												<input type="checkbox" id="overwriteApprover" name="overwriteApprover" disabled="disabled">
+												<?php echo _translate("Replace existing"); ?>
+											</label>
 										</div>
 
 										<!-- Tester -->
@@ -274,6 +289,10 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 													</option>
 												<?php } ?>
 											</select>
+											<label class="bulk-overwrite-option">
+												<input type="checkbox" id="overwriteTester" name="overwriteTester" disabled="disabled">
+												<?php echo _translate("Replace existing"); ?>
+											</label>
 										</div>
 
 										<!-- Reviewer -->
@@ -289,6 +308,10 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 													</option>
 												<?php } ?>
 											</select>
+											<label class="bulk-overwrite-option">
+												<input type="checkbox" id="overwriteReviewer" name="overwriteReviewer" disabled="disabled">
+												<?php echo _translate("Replace existing"); ?>
+											</label>
 										</div>
 
 										<!-- Apply Button -->
@@ -526,6 +549,22 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 		$.unblockUI();
 	}
 
+	function toggleBulkActionControls(disabled) {
+		$("#status, #approver, #tester, #reviewer, #overwriteApprover, #overwriteTester, #overwriteReviewer").prop('disabled', disabled);
+	}
+
+	function resetBulkActionForm() {
+		$("#status").val('').trigger('change');
+		$("#approver").val('').trigger('change');
+		$("#tester").val('').trigger('change');
+		$("#reviewer").val('').trigger('change');
+		$("#bulkRejectionReason").val('').trigger('change');
+		$("#overwriteApprover, #overwriteTester, #overwriteReviewer").prop('checked', false);
+		$(".bulkRejectionReason").hide();
+		$(".testerDiv").show();
+		toggleBulkActionControls(true);
+	}
+
 	function toggleTest(obj) {
 		if ($(obj).is(':checked')) {
 			if ($.inArray(obj.value, selectedTests) == -1) {
@@ -539,15 +578,9 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 		}
 		$("#checkedTests").val(selectedTests.join());
 		if (selectedTests.length != 0) {
-			$("#status").prop('disabled', false);
-			$("#approver").prop('disabled', false);
-			$("#tester").prop('disabled', false);
-			$("#reviewer").prop('disabled', false);
+			toggleBulkActionControls(false);
 		} else {
-			$("#status").prop('disabled', true);
-			$("#approver").prop('disabled', true);
-			$("#tester").prop('disabled', true);
-			$("#reviewer").prop('disabled', true);
+			toggleBulkActionControls(true);
 		}
 
 	}
@@ -558,10 +591,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 			$(this).prop('checked', false);
 			selectedTests.splice($.inArray(this.value, selectedTests), 1);
 			selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
-			$("#status").prop('disabled', true);
-			$("#approver").prop('disabled', true);
-			$("#tester").prop('disabled', true);
-			$("#reviewer").prop('disabled', true);
+			toggleBulkActionControls(true);
 		});
 		if ($("#checkTestsData").is(':checked')) {
 			$(".checkTests").each(function() {
@@ -569,19 +599,13 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 				selectedTests.push(this.value);
 				selectedTestsId.push(this.id);
 			});
-			$("#status").prop('disabled', false);
-			$("#approver").prop('disabled', false);
-			$("#tester").prop('disabled', false);
-			$("#reviewer").prop('disabled', false);
+			toggleBulkActionControls(false);
 		} else {
 			$(".checkTests").each(function() {
 				$(this).prop('checked', false);
 				selectedTests.splice($.inArray(this.value, selectedTests), 1);
 				selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
-				$("#status").prop('disabled', true);
-				$("#approver").prop('disabled', true);
-				$("#tester").prop('disabled', true);
-				$("#reviewer").prop('disabled', true);
+				toggleBulkActionControls(true);
 			});
 		}
 		$("#checkedTests").val(selectedTests.join());
@@ -594,8 +618,16 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 		var tester = $("#tester").val();
 		var reviewer = $("#reviewer").val();
 		var testIds = $("#checkedTests").val();
+		var overwriteApprover = $("#overwriteApprover").is(':checked') ? 'yes' : '';
+		var overwriteTester = $("#overwriteTester").is(':checked') ? 'yes' : '';
+		var overwriteReviewer = $("#overwriteReviewer").is(':checked') ? 'yes' : '';
+		var hasBulkChanges = stValue !== '' || approver !== '' || tester !== '' || reviewer !== '';
 		if (testIds != '') {
-			if ((stValue != '' && approver != '' && reviewer != '')) {
+			if (!hasBulkChanges) {
+				alert("<?= _translate("Please select at least one field to update", true); ?>");
+			} else if (stValue == '4' && $("#bulkRejectionReason").val() == '') {
+				alert("<?= _translate("Please select rejection reason", true); ?>");
+			} else {
 				conf = confirm("Are you sure you want to modify the sample status?");
 				if (conf) {
 					$.post("/generic-tests/results/update-test-status.php", {
@@ -603,6 +635,9 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 							approver: approver,
 							tester: tester,
 							reviewer: reviewer,
+							overwriteApprover: overwriteApprover,
+							overwriteTester: overwriteTester,
+							overwriteReviewer: overwriteReviewer,
 							id: testIds,
 							rejectedReason: $("#bulkRejectionReason").val()
 						},
@@ -612,23 +647,12 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 								selectedTests = [];
 								selectedTestsId = [];
 								$("#checkTestsData").attr("checked", false);
-								$("#status").val('');
-								$("#status").prop('disabled', true);
-								$("#approver").val('');
-								$("#approver").prop('disabled', true);
-								$("#tester").val('');
-								$("#tester").prop('disabled', true);
-								$("#reviewer").val('');
-								$("#reviewer").prop('disabled', true);
-								$("#bulkRejectionReason").val('');
-								$(".bulkRejectionReason").hide();
+								resetBulkActionForm();
 								oTable.fnDraw();
 								alert("<?= _translate("Updated successfully."); ?>");
 							}
 						});
 				}
-			} else {
-				alert("<?= _translate("Please select Status, Approver & Reviewer fields to update", true); ?>");
 			}
 		} else {
 			alert("<?= _translate("Please select at least one checkbox"); ?>");
@@ -653,14 +677,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 							selectedTests = [];
 							selectedTestsId = [];
 							$("#checkTestsData").attr("checked", false);
-							$("#status").val('');
-							$("#status").prop('disabled', true);
-							$("#approver").val('');
-							$("#approver").prop('disabled', true);
-							$("#tester").val('');
-							$("#tester").prop('disabled', true);
-							$("#reviewer").val('');
-							$("#reviewer").prop('disabled', true);
+							resetBulkActionForm();
 							$("#rejectReasonDiv").hide();
 							$("#statusDropDownId").val('');
 							$("#rejectionReason").val('');

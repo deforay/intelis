@@ -151,13 +151,15 @@ final class FixAuditTablesCommand extends Command
                 // Phase 1: Schema sync (create table if missing, sync columns if exists)
                 if (!$rebuildTriggersOnly) {
                     $auditExists = $this->tableExists($audit);
-                    $schemaSql = [
-                        ...$this->ensureAuditTableExists($form, $audit, $pk),
-                        ...($auditExists ? $this->removeAutoIncrementFromAudit($audit) : []),
-                        ...($auditExists ? $this->alignEngineAndCollation($audit) : []),
-                        ...($auditExists ? $this->ensureAuditColumnsAndPK($audit, $pk) : []),
-                        ...($auditExists ? $this->syncColumnsToMatchForm($form, $audit, $dropExtras, $pk) : [])
-                    ];
+
+                    if (!$auditExists) {
+                        // Table doesn't exist yet — CREATE LIKE + setup is fast, no batching needed
+                        $schemaSql = $this->ensureAuditTableExists($form, $audit, $pk);
+                    } else {
+                        // Table exists — batch all ALTER operations into minimal statements
+                        $schemaSql = $this->buildBatchedAlter($form, $audit, $pk, $dropExtras);
+                    }
+
                     if ($schemaSql !== []) {
                         $sqlBatch = [...$sqlBatch, ...$schemaSql];
                         $actions[] = 'schema synced';
@@ -411,6 +413,120 @@ final class FixAuditTablesCommand extends Command
         return $this->createAuditTableSql($form, $audit, $pk, true, false);
     }
 
+
+    /**
+     * Collect all column-level changes (ADD/MODIFY/DROP, PK, indexes, auto-increment)
+     * and emit the minimum number of ALTER TABLE statements (ideally one).
+     * This avoids multiple full-table rebuilds on large InnoDB tables.
+     *
+     * @return string[]
+     */
+    private function buildBatchedAlter(string $form, string $audit, string $pk, bool $dropExtras): array
+    {
+        $formCreate = $this->showCreate($form);
+        $auditCreate = $this->showCreate($audit);
+        $formCols = $this->parseColumnDDLs($formCreate);
+        $auditCols = $this->parseColumnDDLs($auditCreate);
+
+        $clauses = [];
+
+        // 1. Remove AUTO_INCREMENT from existing audit columns
+        foreach ($auditCols as $col => $ddl) {
+            if (stripos($ddl, 'AUTO_INCREMENT') !== false) {
+                $clauses[] = 'MODIFY COLUMN ' . $this->stripAutoIncrementFromDDL($ddl);
+            }
+        }
+
+        // 2. Ensure audit meta columns exist
+        $have = $this->listColumns($audit);
+        if (!isset($have['action'])) {
+            $clauses[] = "ADD COLUMN `action` VARCHAR(8) NOT NULL DEFAULT 'insert' FIRST";
+        }
+        if (!isset($have['revision'])) {
+            $clauses[] = "ADD COLUMN `revision` INT NOT NULL AFTER `action`";
+        }
+        if (!isset($have['dt_datetime'])) {
+            $clauses[] = "ADD COLUMN `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`";
+        }
+
+        // 3. ADD missing form columns / MODIFY mismatched ones
+        foreach ($formCols as $col => $ddl) {
+            if (in_array($col, self::RESERVED_AUDIT_COLS, true)) {
+                continue;
+            }
+            $desiredDDL = ($col === $pk || stripos($ddl, 'AUTO_INCREMENT') !== false)
+                ? $this->stripAutoIncrementFromDDL($ddl)
+                : $ddl;
+
+            if (!array_key_exists($col, $auditCols)) {
+                $clauses[] = "ADD COLUMN $desiredDDL";
+            } else {
+                $currentDDL = (stripos($auditCols[$col], 'AUTO_INCREMENT') !== false)
+                    ? $this->stripAutoIncrementFromDDL($auditCols[$col])
+                    : $auditCols[$col];
+                if ($desiredDDL !== $currentDDL) {
+                    $clauses[] = "MODIFY COLUMN $desiredDDL";
+                }
+            }
+        }
+
+        // 4. DROP extra columns
+        if ($dropExtras) {
+            foreach (array_keys($auditCols) as $col) {
+                if (in_array($col, self::RESERVED_AUDIT_COLS, true)) {
+                    continue;
+                }
+                if (!array_key_exists($col, $formCols)) {
+                    $clauses[] = "DROP COLUMN `$col`";
+                }
+            }
+        }
+
+        // 5. PK rebuild if needed
+        $currentPk = $this->getPrimaryKeyColumns($audit);
+        if ($currentPk !== [$pk, 'revision']) {
+            $clauses[] = "DROP PRIMARY KEY";
+            $clauses[] = "ADD PRIMARY KEY (`$pk`,`revision`)";
+        }
+
+        // 6. Drop unique indexes
+        $uniqueDrops = $this->dropUniqueIndexesFromAudit($audit);
+        foreach ($uniqueDrops as $dropSql) {
+            // Extract just the DROP INDEX clause from the full ALTER TABLE statement
+            if (preg_match('/DROP INDEX `.+`/', $dropSql, $m)) {
+                $clauses[] = $m[0];
+            }
+        }
+
+        // 7. Engine/collation alignment
+        $info = $this->db->rawQuery(
+            "SELECT ENGINE, TABLE_COLLATION FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?",
+            [$this->dbName, $audit]
+        );
+        $engineClause = '';
+        $collateClause = '';
+        if (!empty($info[0])) {
+            if (strcasecmp($info[0]['ENGINE'] ?? '', self::ENGINE) !== 0) {
+                $engineClause = ' ENGINE=' . self::ENGINE;
+            }
+            if (strcasecmp($info[0]['TABLE_COLLATION'] ?? '', $this->collation) !== 0) {
+                $collateClause = ' , CONVERT TO CHARACTER SET ' . self::CHARSET . ' COLLATE ' . $this->collation;
+            }
+        }
+
+        if ($clauses === [] && $engineClause === '' && $collateClause === '') {
+            return [];
+        }
+
+        // Build a single ALTER TABLE statement
+        $sql = "ALTER TABLE `{$this->dbName}`.`$audit`";
+        if ($clauses !== []) {
+            $sql .= ' ' . implode(', ', $clauses);
+        }
+        $sql .= $collateClause . $engineClause;
+
+        return [$sql];
+    }
 
     /** @return string[] */
     private function alignEngineAndCollation(string $audit): array

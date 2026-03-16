@@ -35,3 +35,15 @@ ALTER TABLE `form_tb` DROP COLUMN `purpose_of_test`;
 
 UPDATE `audit_form_tb` SET `reason_for_tb_test` = JSON_QUOTE(`purpose_of_test`) WHERE `purpose_of_test` IS NOT NULL AND `purpose_of_test` != '' AND (`reason_for_tb_test` IS NULL OR `reason_for_tb_test` = 'null');
 ALTER TABLE `audit_form_tb` DROP COLUMN `purpose_of_test`;
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

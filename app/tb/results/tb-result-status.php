@@ -87,6 +87,17 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 		margin-bottom: 5px;
 		display: block;
 	}
+
+	.bulk-overwrite-option {
+		display: block;
+		margin-top: 6px;
+		font-size: 12px;
+		font-weight: 400 !important;
+	}
+
+	.bulk-overwrite-option input {
+		margin-right: 6px;
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -134,6 +145,12 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 									}
 									?>
 								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;<strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
+							<td>
+								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 						</tr>
 						<tr>
@@ -218,6 +235,10 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 													</option>
 												<?php } ?>
 											</select>
+											<label class="bulk-overwrite-option">
+												<input type="checkbox" id="overwriteApprover" name="overwriteApprover" disabled="disabled">
+												<?php echo _translate("Replace existing"); ?>
+											</label>
 										</div>
 
 										<!-- Tester -->
@@ -233,6 +254,10 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 													</option>
 												<?php } ?>
 											</select>
+											<label class="bulk-overwrite-option">
+												<input type="checkbox" id="overwriteTester" name="overwriteTester" disabled="disabled">
+												<?php echo _translate("Replace existing"); ?>
+											</label>
 										</div>
 
 										<!-- Reviewer -->
@@ -248,6 +273,10 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 													</option>
 												<?php } ?>
 											</select>
+											<label class="bulk-overwrite-option">
+												<input type="checkbox" id="overwriteReviewer" name="overwriteReviewer" disabled="disabled">
+												<?php echo _translate("Replace existing"); ?>
+											</label>
 										</div>
 
 										<!-- Apply Button -->
@@ -310,6 +339,10 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 	var selectedTests = [];
 	var selectedTestsId = [];
 	$(document).ready(function() {
+		$("#batchCode").select2({
+			placeholder: "<?php echo _translate("Select Batch Code"); ?>",
+			allowClear: true
+		});
 		$("#facilityName").select2({
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
@@ -326,6 +359,32 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 		$("#reviewer").select2({
 			placeholder: "<?php echo _translate("Select reviewer"); ?>"
 		});
+		$('#sampleTestDate').daterangepicker({
+				locale: {
+					cancelLabel: "<?= _translate("Clear", true); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+					'Current Year To Date': [moment().startOf('year'), moment()]
+				}
+			});
 
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
@@ -358,6 +417,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 				endDate = end.format('YYYY-MM-DD');
 			});
 		$('#sampleCollectionDate').val("");
+		$('#sampleTestDate').val("");
 		loadVlRequestData();
 	});
 
@@ -432,6 +492,10 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 					"value": $("#sampleCollectionDate").val()
 				});
 				aoData.push({
+					"name": "sampleTestDate",
+					"value": $("#sampleTestDate").val()
+				});
+				aoData.push({
 					"name": "facilityName",
 					"value": $("#facilityName").val()
 				});
@@ -461,6 +525,22 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 		$.unblockUI();
 	}
 
+	function toggleBulkActionControls(disabled) {
+		$("#status, #approver, #tester, #reviewer, #overwriteApprover, #overwriteTester, #overwriteReviewer").prop('disabled', disabled);
+	}
+
+	function resetBulkActionForm() {
+		$("#status").val('').trigger('change');
+		$("#approver").val('').trigger('change');
+		$("#tester").val('').trigger('change');
+		$("#reviewer").val('').trigger('change');
+		$("#bulkRejectionReason").val('').trigger('change');
+		$("#overwriteApprover, #overwriteTester, #overwriteReviewer").prop('checked', false);
+		$(".bulkRejectionReason").hide();
+		$(".testerDiv").show();
+		toggleBulkActionControls(true);
+	}
+
 	function toggleTest(obj) {
 		if ($(obj).is(':checked')) {
 			if ($.inArray(obj.value, selectedTests) == -1) {
@@ -474,16 +554,9 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 		}
 		$("#checkedTests").val(selectedTests.join());
 		if (selectedTests.length != 0) {
-			$("#status").prop('disabled', false);
-			$("#approver").prop('disabled', false);
-			$("#tester").prop('disabled', false);
-			$("#reviewer").prop('disabled', false);
-
+			toggleBulkActionControls(false);
 		} else {
-			$("#status").prop('disabled', true);
-			$("#approver").prop('disabled', true);
-			$("#tester").prop('disabled', true);
-			$("#reviewer").prop('disabled', true);
+			toggleBulkActionControls(true);
 		}
 
 	}
@@ -494,10 +567,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 			$(this).prop('checked', false);
 			selectedTests.splice($.inArray(this.value, selectedTests), 1);
 			selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
-			$("#status").prop('disabled', true);
-			$("#approver").prop('disabled', true);
-			$("#tester").prop('disabled', true);
-			$("#reviewer").prop('disabled', true);
+			toggleBulkActionControls(true);
 		});
 		if ($("#checkTestsData").is(':checked')) {
 			$(".checkTests").each(function() {
@@ -505,19 +575,13 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 				selectedTests.push(this.value);
 				selectedTestsId.push(this.id);
 			});
-			$("#status").prop('disabled', false);
-			$("#approver").prop('disabled', false);
-			$("#tester").prop('disabled', false);
-			$("#reviewer").prop('disabled', false);
+			toggleBulkActionControls(false);
 		} else {
 			$(".checkTests").each(function() {
 				$(this).prop('checked', false);
 				selectedTests.splice($.inArray(this.value, selectedTests), 1);
 				selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
-				$("#status").prop('disabled', true);
-				$("#approver").prop('disabled', true);
-				$("#tester").prop('disabled', true);
-				$("#reviewer").prop('disabled', true);
+				toggleBulkActionControls(true);
 			});
 		}
 		$("#checkedTests").val(selectedTests.join());
@@ -530,12 +594,26 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 		var tester = $("#tester").val();
 		var reviewer = $("#reviewer").val();
 		var testIds = $("#checkedTests").val();
+		var overwriteApprover = $("#overwriteApprover").is(':checked') ? 'yes' : '';
+		var overwriteTester = $("#overwriteTester").is(':checked') ? 'yes' : '';
+		var overwriteReviewer = $("#overwriteReviewer").is(':checked') ? 'yes' : '';
+		var hasBulkChanges = stValue !== '' || approver !== '' || tester !== '' || reviewer !== '';
 		if (testIds != '') {
-			if ((stValue != '' && approver != '' && reviewer != '')) {
+			if (!hasBulkChanges) {
+				alert("<?= _translate("Please select at least one field to update", true); ?>");
+			} else if (stValue == '4' && $("#bulkRejectionReason").val() == '') {
+				alert("<?= _translate("Please select rejection reason", true); ?>");
+			} else {
 				conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
 				if (conf) {
 					$.post("/tb/results/update-status.php", {
 							status: stValue,
+							approver: approver,
+							tester: tester,
+							reviewer: reviewer,
+							overwriteApprover: overwriteApprover,
+							overwriteTester: overwriteTester,
+							overwriteReviewer: overwriteReviewer,
 							id: testIds,
 							rejectedReason: $("#bulkRejectionReason").val()
 						},
@@ -545,23 +623,12 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 								selectedTests = [];
 								selectedTestsId = [];
 								$("#checkTestsData").attr("checked", false);
-								$("#status").val('');
-								$("#status").prop('disabled', true);
-								$("#approver").val('');
-								$("#approver").prop('disabled', true);
-								$("#tester").val('');
-								$("#tester").prop('disabled', true);
-								$("#reviewer").val('');
-								$("#reviewer").prop('disabled', true);
-								$("#bulkRejectionReason").val('');
-								$(".bulkRejectionReason").hide();
+								resetBulkActionForm();
 								oTable.fnDraw();
 								alert("<?php echo _translate("Updated successfully"); ?>.");
 							}
 						});
 				}
-			} else {
-				alert("<?= _translate("Please select Status, Approver & Reviewer fields to update", true); ?>");
 			}
 		} else {
 			alert("<?= _translate("Please select at least one checkbox"); ?>");
@@ -586,14 +653,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 							selectedTests = [];
 							selectedTestsId = [];
 							$("#checkTestsData").attr("checked", false);
-							$("#status").val('');
-							$("#status").prop('disabled', true);
-							$("#approver").val('');
-							$("#approver").prop('disabled', true);
-							$("#tester").val('');
-							$("#tester").prop('disabled', true);
-							$("#reviewer").val('');
-							$("#reviewer").prop('disabled', true);
+							resetBulkActionForm();
 							$("#rejectReasonDiv").hide();
 							$("#statusDropDownId").val('');
 							$("#rejectionReason").val('');

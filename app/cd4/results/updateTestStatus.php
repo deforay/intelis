@@ -5,6 +5,7 @@ use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\BulkResultStatusService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -14,6 +15,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var BulkResultStatusService $bulkResultStatusService */
+$bulkResultStatusService = ContainerRegistry::get(BulkResultStatusService::class);
 
 $tableName = "form_cd4";
 try {
@@ -27,33 +31,46 @@ try {
     $id = explode(",", (string) $_POST['id']);
     $counter = count($id);
     for ($i = 0; $i < $counter; $i++) {
-        $status = [
-            'result_status' => $_POST['status'],
-            'result_approved_datetime' => DateUtility::getCurrentDateTime(),
-            'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-            'data_sync' => 0
-        ];
-        /* Check if already have reviewed and approved by */
         $db->where('cd4_id', $id[$i]);
         $vlRow = $db->getOne($tableName);
-        if (empty($vlRow['result_reviewed_by'])) {
-            $status['result_reviewed_by'] = $_SESSION['userId'];
-        }
-        if (empty($vlRow['result_approved_by'])) {
-            $status['result_approved_by'] = $_SESSION['userId'];
-        }
-        if ($_POST['status'] == REJECTED) {
-            $status['cd4_result'] = '';
-            $status['cd4_result_percentage'] = '';
-            $status['is_sample_rejected'] = 'yes';
-            $status['reason_for_sample_rejection'] = $_POST['rejectedReason'];
-        } else {
-            $status['is_sample_rejected'] = 'no';
-        }
+        $status = [];
+        if (!empty($_POST['status'])) {
+            $status = [
+                'result_status' => $_POST['status'],
+                'result_approved_datetime' => DateUtility::getCurrentDateTime(),
+                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                'data_sync' => 0
+            ];
+            // Preserve the historic auto-fill behavior on status updates for CD4.
+            if (empty($vlRow['result_reviewed_by'])) {
+                $status['result_reviewed_by'] = $_SESSION['userId'];
+            }
+            if (empty($vlRow['result_approved_by'])) {
+                $status['result_approved_by'] = $_SESSION['userId'];
+            }
+            if ($_POST['status'] == REJECTED) {
+                $status['cd4_result'] = '';
+                $status['cd4_result_percentage'] = '';
+                $status['is_sample_rejected'] = 'yes';
+                $status['reason_for_sample_rejection'] = $_POST['rejectedReason'];
+            } else {
+                $status['is_sample_rejected'] = 'no';
+                $status['reason_for_sample_rejection'] = null;
+            }
 
-        $db->where('cd4_id', $id[$i]);
-        $db->update($tableName, $status);
+            $db->where('cd4_id', $id[$i]);
+            $db->update($tableName, $status);
+        }
         $result = $id[$i];
+
+        $userData = $bulkResultStatusService->getBulkUserData($vlRow, $_POST);
+        if ($userData !== []) {
+            $userData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+            $userData['data_sync'] = 0;
+
+            $db->where('cd4_id', $id[$i]);
+            $db->update($tableName, $userData);
+        }
 
 
         //Add event log

@@ -115,6 +115,19 @@ try {
         }
     }
 
+    $tested_start_date = '';
+    $tested_end_date = '';
+    if (!empty($_POST['sampleTestDate'])) {
+        $s_t_date = explode("to", (string) $_POST['sampleTestDate']);
+
+        if (isset($s_t_date[0]) && trim($s_t_date[0]) !== "") {
+            $tested_start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
+        }
+        if (isset($s_t_date[1]) && trim($s_t_date[1]) !== "") {
+            $tested_end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
+        }
+    }
+
 
     if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
         $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
@@ -124,6 +137,13 @@ try {
             $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
         } else {
             $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+        }
+    }
+    if (!empty($_POST['sampleTestDate'])) {
+        if (trim((string) $tested_start_date) === trim((string) $tested_end_date)) {
+            $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $tested_start_date . '"';
+        } else {
+            $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $tested_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $tested_end_date . '"';
         }
     }
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
