@@ -71,7 +71,13 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 				LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner
 				LEFT JOIN r_funding_sources as rfs ON rfs.funding_source_id=vl.funding_source
 				LEFT JOIN r_hepatitis_sample_type as rst ON rst.sample_id=vl.specimen_type
-				LEFT JOIN instruments as i ON i.instrument_id = vl.instrument_id
+				LEFT JOIN instruments as i ON (
+					(vl.instrument_id IS NOT NULL AND vl.instrument_id != '' AND i.instrument_id = vl.instrument_id)
+					OR (
+						(vl.instrument_id IS NULL OR vl.instrument_id = '')
+						AND i.machine_name = vl.hepatitis_test_platform
+					)
+				)
 				WHERE vl.hepatitis_id IN(" . $_POST['id'] . ")";
 } else {
 	$searchQuery = $allQuery;

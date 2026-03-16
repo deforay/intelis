@@ -62,7 +62,14 @@ if ((isset($_POST['id']) && !in_array(trim((string) $_POST['id']), ['', '0'], tr
 					LEFT JOIN user_details as r_r_b ON r_r_b.user_id = vl.revised_by
 					LEFT JOIN facility_details as l ON l.facility_id = vl.lab_id
 					LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id = vl.implementing_partner
-					LEFT JOIN r_generic_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection";
+					LEFT JOIN r_generic_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection
+					LEFT JOIN instruments as i ON (
+						(vl.instrument_id IS NOT NULL AND vl.instrument_id != '' AND i.instrument_id = vl.instrument_id)
+						OR (
+							(vl.instrument_id IS NULL OR vl.instrument_id = '')
+							AND i.machine_name = vl.test_platform
+						)
+					)";
 
 	$searchQueryWhere = [];
 	if (!in_array(trim((string) $_POST['id']), ['', '0'], true)) {
