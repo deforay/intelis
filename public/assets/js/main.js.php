@@ -997,7 +997,12 @@ $remoteURL = $general->getRemoteURL();
         setInterval(function() {
             if (lastActivity > lastHeartbeat) {
                 lastHeartbeat = Date.now();
-                $.post('/includes/session-heartbeat.php');
+                $.post('/includes/session-heartbeat.php').fail(function(xhr) {
+                    // 429 means rate-limited but session is still alive (e.g. another tab just refreshed it) — not an error
+                    if (xhr.status !== 429) {
+                        console.warn('Session heartbeat failed:', xhr.status);
+                    }
+                });
             }
         }, HEARTBEAT_INTERVAL);
     })();

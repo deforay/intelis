@@ -80,7 +80,7 @@ require_once APPLICATION_PATH . '/header.php';
       {
         "sClass": "center"
       },
-        <?php if (_isAllowed("editRole.php")) { ?> {
+        <?php if (_isAllowed("/roles/editRole.php")) { ?> {
           "sClass": "center",
           "bSortable": false
         },
