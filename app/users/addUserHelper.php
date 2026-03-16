@@ -40,8 +40,11 @@ try {
         $userId = MiscUtility::generateUUID();
 
         $_POST['loginId'] = strtolower(trim((string) $_POST['loginId']));
-        $_POST['loginId'] = str_replace(' ', '', $_POST['loginId']);
-        $_POST['loginId'] = preg_replace('/[^a-z0-9_-]/', '', $_POST['loginId']);
+        if (!preg_match('/^[a-z0-9_-]+$/', $_POST['loginId'])) {
+            $_SESSION['alertMsg'] = _translate("Login ID can only contain lowercase letters, numbers, hyphens (-), and underscores (_). Spaces are not allowed.");
+            header("Location:addUser.php");
+            exit;
+        }
 
         $data = [
             'user_id' => $userId,

@@ -302,6 +302,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                        title="<?php echo _translate('Please enter login id'); ?>"
                                                        value="<?php echo $userInfo['login_id']; ?>"
                                                        onblur="checkNameValidation('user_details','login_id',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _translate("This login id that you entered already exists.Try another login id"); ?>',null)" />
+                                                  <input type="hidden" id="originalLoginId"
+                                                       value="<?php echo htmlspecialchars((string) $userInfo['login_id'], ENT_QUOTES); ?>" />
                                                   <small class="form-text text-muted">
                                                        <?php echo _translate("Only lowercase letters, numbers, hyphens (-), and underscores (_) are allowed. No spaces."); ?>
                                                   </small>
@@ -497,6 +499,12 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
 <script type="text/javascript">
+     function normalizeLoginId(value) {
+          value = value.toLowerCase();
+          value = value.replace(/\s+/g, '');
+          return value.replace(/[^a-z0-9_-]/g, '');
+     }
+
      function clearUserSignature(img) {
           $(".userSignature").fileinput("clear");
           $("#clearUserSignature").addClass("hide");
@@ -512,11 +520,11 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
      jQuery(document).ready(function ($) {
 
           $('#loginId').on('input', function () {
-               let val = $(this).val();
-               val = val.toLowerCase(); // convert to lowercase
-               val = val.replace(/\s+/g, ''); // remove all spaces
-               val = val.replace(/[^a-z0-9_-]/g, ''); // allow only a-z, 0-9, _ and -
-               $(this).val(val); // set sanitized value back
+               const originalLoginId = $('#originalLoginId').val();
+               if ($(this).val() === originalLoginId) {
+                    return;
+               }
+               $(this).val(normalizeLoginId($(this).val()));
           });
 
 
@@ -576,6 +584,12 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
           $("#districtId").select2({
                placeholder: '<?php echo _translate("Select District", true); ?>',
+               allowClear: true,
+               width: '100%'
+          });
+
+          $("#role").select2({
+               placeholder: '<?php echo _translate("Select Role", true); ?>',
                allowClear: true,
                width: '100%'
           });

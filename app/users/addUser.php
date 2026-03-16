@@ -342,14 +342,16 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
      provinceName = true;
      facilityName = true;
 
+     function normalizeLoginId(value) {
+          value = value.toLowerCase();
+          value = value.replace(/\s+/g, '');
+          return value.replace(/[^a-z0-9_-]/g, '');
+     }
+
      jQuery(document).ready(function ($) {
 
           $('#loginId').on('input', function () {
-               let val = $(this).val();
-               val = val.toLowerCase(); // convert to lowercase
-               val = val.replace(/\s+/g, ''); // remove all spaces
-               val = val.replace(/[^a-z0-9_-]/g, ''); // allow only a-z, 0-9, _ and -
-               $(this).val(val); // set sanitized value back
+               $(this).val(normalizeLoginId($(this).val()));
           });
 
 
@@ -386,6 +388,12 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
           $("#districtId").select2({
                placeholder: '<?php echo _translate("Select District", true); ?>',
+               allowClear: true,
+               width: '100%'
+          });
+
+          $("#role").select2({
+               placeholder: '<?php echo _translate("Select Role", true); ?>',
                allowClear: true,
                width: '100%'
           });

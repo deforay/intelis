@@ -43,6 +43,18 @@ $signatureImage = null;
 
 try {
     if (trim((string) $_POST['userName']) !== '' && trim((string) $_POST['loginId']) !== '' && ($_POST['role']) != '') {
+        $submittedLoginId = strtolower(trim((string) $_POST['loginId']));
+        $existingLoginId = strtolower(trim((string) ($userInfo['login_id'] ?? '')));
+
+        // Older users may still have login IDs that predate this rule. Keep those
+        // unchanged, but validate any newly submitted login ID against the policy.
+        if ($submittedLoginId !== $existingLoginId && !preg_match('/^[a-z0-9_-]+$/', $submittedLoginId)) {
+            $_SESSION['alertMsg'] = _translate("Login ID can only contain lowercase letters, numbers, hyphens (-), and underscores (_). Spaces are not allowed.");
+            header("Location:editUser.php?id=" . rawurlencode((string) $_POST['userId']));
+            exit;
+        }
+
+        $_POST['loginId'] = $submittedLoginId;
 
         $data = [
             'user_name' => $_POST['userName'],
