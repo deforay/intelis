@@ -80,7 +80,13 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					LEFT JOIN r_funding_sources as funding ON funding.funding_source_id = vl.funding_source
 					LEFT JOIN r_cd4_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = vl.reason_for_sample_rejection
 					LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
-					LEFT JOIN instruments as i ON i.instrument_id = vl.instrument_id";
+					LEFT JOIN instruments as i ON (
+					(vl.instrument_id IS NOT NULL AND vl.instrument_id != '' AND i.instrument_id = vl.instrument_id)
+					OR (
+						(vl.instrument_id IS NULL OR vl.instrument_id = '')
+						AND i.machine_name = vl.cd4_test_platform
+					)
+				)";
 
 	$searchQueryWhere = [];
 	if (!empty($_POST['id'])) {
