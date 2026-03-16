@@ -1,5 +1,9 @@
 #!/bin/bash
 # shared-functions.sh - Common functions for LIS scripts
+
+# Ensure UTF-8 locale so Unicode characters (─ ▶ ✓ ✅ etc.) render correctly.
+export LANG="${LANG:-en_US.UTF-8}"
+export LC_ALL="${LC_ALL:-en_US.UTF-8}"
 # Unified print function for colored output
 print() {
     local type=$1
