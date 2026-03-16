@@ -1135,11 +1135,36 @@ chmod +x /usr/local/bin/intelis-refresh
 
 # Process each instance
 total_instances=${#lis_paths[@]}
+
+# Initialize status tracking
+declare -a instance_statuses
 for i in "${!lis_paths[@]}"; do
+    instance_statuses[$i]="pending"
+done
+
+# Show initial status board for multi-instance runs
+if [ "$total_instances" -gt 1 ]; then
+    print_instance_status lis_paths instance_statuses
+fi
+
+for i in "${!lis_paths[@]}"; do
+    # Mark current as running and show updated board
+    if [ "$total_instances" -gt 1 ]; then
+        instance_statuses[$i]="running"
+        print_instance_status lis_paths instance_statuses
+    fi
+
     if upgrade_instance "${lis_paths[$i]}" "$((i+1))" "$total_instances" "$temp_dir"; then
         updated_instances+=("${lis_paths[$i]}")
+        instance_statuses[$i]="done"
     else
         failed_instances+=("${lis_paths[$i]}")
+        instance_statuses[$i]="failed"
+    fi
+
+    # Show status after completion
+    if [ "$total_instances" -gt 1 ]; then
+        print_instance_status lis_paths instance_statuses
     fi
 done
 
