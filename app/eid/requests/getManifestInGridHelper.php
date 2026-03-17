@@ -121,7 +121,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['facility_name'];
      $row[] = $aRow['child_id'];
-     $row[] = $aRow['child_name'];
+     $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
      $row[] = $aRow['mother_id'];
      $row[] = $aRow['mother_name'];
      $row[] = $aRow['facility_state'];

@@ -55,7 +55,7 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
                $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
           }
           $row[] = $aRow['child_id'];
-          $row[] = $aRow['child_name'];
+          $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
           $row[] = $aRow['child_age'];
           $row[] = $aRow['child_dob'];
           $row[] = ($aRow['facility_name']);

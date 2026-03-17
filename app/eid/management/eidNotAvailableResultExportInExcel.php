@@ -74,7 +74,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         }
         $row[] = $aRow['facility_name'];
         $row[] = $aRow['child_id'];
-        $row[] = ($aRow['child_name']);
+        $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
         $row[] = $sampleCollectionDate;
         $row[] = ($aRow['labName']);
         $row[] = ($aRow['status_name']);

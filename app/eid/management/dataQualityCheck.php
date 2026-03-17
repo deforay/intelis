@@ -169,7 +169,7 @@ foreach ($rResult as $aRow) {
      }
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
-     $row[] = ($childName);
+     $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
      $row[] = ($aRow['facility_name']);
      $row[] = ($aRow['facility_state']);
      $row[] = ($aRow['facility_district']);

@@ -285,7 +285,7 @@ try {
           $row[] = $aRow['batch_code'];
           $row[] = $aRow['child_id'];
           //$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-          $row[] = $aRow['child_name'];
+          $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['lab_name']);
           if ($formId == CAMEROON) {

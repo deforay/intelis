@@ -192,7 +192,7 @@ try {
         }
         $row[] = ($aRow['facility_name']);
         $row[] = $aRow['child_id'];
-        $row[] = ($childName);
+        $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
         $row[] = $aRow['caretaker_phone_number'];
         $row[] = $aRow['sample_collection_date'];
         $row[] = $aRow['sample_tested_datetime'];
