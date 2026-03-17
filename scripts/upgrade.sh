@@ -967,7 +967,7 @@ upgrade_instance() {
     done
 
     # Set proper permissions
-    set_permissions "${lis_path}" "quick"
+    set_permissions "${lis_path}" "quick" "sync"
 
     # Make intelis command globally accessible (only for first instance)
     if [ "$instance_num" -eq 1 ]; then
@@ -1006,6 +1006,9 @@ upgrade_instance() {
     # Run Composer Install as www-data
     print info "Running composer operations..."
     cd "${lis_path}"
+
+    # Ensure composer files are writable by www-data before running composer commands
+    chown www-data:www-data "${lis_path}/composer.json" "${lis_path}/composer.lock" 2>/dev/null || true
 
     sudo -u www-data composer config process-timeout 30000 --no-interaction
     sudo -u www-data composer clear-cache --no-interaction
