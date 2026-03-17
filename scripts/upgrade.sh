@@ -1175,9 +1175,13 @@ done
 if [ ${#lis_paths[@]} -eq 1 ]; then
     lis_path="${lis_paths[0]}"
     echo ""
-    if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
+    files=()
+    for f in "${lis_path}/maintenance/"*.php; do
+        [ -f "$f" ] && files+=("$f")
+    done
+
+    if [ ${#files[@]} -gt 0 ] && ask_yes_no "Do you want to run maintenance scripts?" "no"; then
         echo "Available maintenance scripts to run:"
-        files=("${lis_path}/maintenance/"*.php)
         for i in "${!files[@]}"; do
             filename=$(basename "${files[$i]}")
             echo "$((i + 1))) $filename"
