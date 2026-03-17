@@ -359,12 +359,15 @@ rm master.tar.gz
 log_action "LIS copied to ${lis_path}."
 
 # Set proper permissions
-set_permissions "${lis_path}" "quick"
+set_permissions "${lis_path}" "quick" "sync"
 find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true
 
 # Run Composer Install as www-data
 print header "Running composer operations"
 cd "${lis_path}"
+
+# Ensure composer files are writable by www-data before running composer commands
+chown www-data:www-data "${lis_path}/composer.json" "${lis_path}/composer.lock" 2>/dev/null || true
 
 # Configure composer timeout regardless of installation path
 sudo -u www-data composer config process-timeout 30000
