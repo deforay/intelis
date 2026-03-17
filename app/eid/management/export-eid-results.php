@@ -98,7 +98,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 				//$aRow['mother_name'] = $general->crypto('decrypt', $aRow['mother_name'], $key);
 			}
 			$row[] = $aRow['child_id'];
-			$row[] = $aRow['child_name'];
+			$row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
 			$row[] = $aRow['mother_id'];
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['child_dob']);

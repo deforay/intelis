@@ -57,7 +57,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           }
           $row[] = ($aRow['facility_name']);
           $row[] = $aRow['child_id'];
-          $row[] = ($childName);
+          $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
           $row[] = $aRow['caretaker_phone_number'];
           $row[] = $sampleCollectionDate;
           $row[] = $sampleTestDate;

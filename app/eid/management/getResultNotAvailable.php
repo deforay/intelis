@@ -195,7 +195,7 @@ try {
         }
         $row[] = ($aRow['facility_name']);
         $row[] = $aRow['child_id'];
-        $row[] = ($childName);
+        $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
         $row[] = $aRow['sample_collection_date'];
         $row[] = ($aRow['labName']);
         $row[] = ($aRow['status_name']);
