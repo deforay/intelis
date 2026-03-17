@@ -306,7 +306,7 @@ try {
           } else {
                $row[] = '<span>' . $aRow['child_id'] . '</span>';
           }
-          $row[] = $aRow['child_name'];
+          $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
           $row[] = $aRow['mother_id'];
           $row[] = $aRow['mother_name'];
 
