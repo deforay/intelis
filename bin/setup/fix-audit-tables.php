@@ -504,17 +504,16 @@ final class FixAuditTablesCommand extends Command
             [$this->dbName, $audit]
         );
         $engineClause = '';
-        $collateClause = '';
         if (!empty($info[0])) {
             if (strcasecmp($info[0]['ENGINE'] ?? '', self::ENGINE) !== 0) {
                 $engineClause = ' ENGINE=' . self::ENGINE;
             }
             if (strcasecmp($info[0]['TABLE_COLLATION'] ?? '', $this->collation) !== 0) {
-                $collateClause = ' , CONVERT TO CHARACTER SET ' . self::CHARSET . ' COLLATE ' . $this->collation;
+                $clauses[] = 'CONVERT TO CHARACTER SET ' . self::CHARSET . ' COLLATE ' . $this->collation;
             }
         }
 
-        if ($clauses === [] && $engineClause === '' && $collateClause === '') {
+        if ($clauses === [] && $engineClause === '') {
             return [];
         }
 
@@ -523,7 +522,7 @@ final class FixAuditTablesCommand extends Command
         if ($clauses !== []) {
             $sql .= ' ' . implode(', ', $clauses);
         }
-        $sql .= $collateClause . $engineClause;
+        $sql .= $engineClause;
 
         return [$sql];
     }
