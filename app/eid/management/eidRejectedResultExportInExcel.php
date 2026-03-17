@@ -49,7 +49,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           }
           $row[] = ($aRow['facility_name']);
           $row[] = $aRow['child_id'];
-          $row[] = ($patientFname);
+          $row[] = trim(($patientFname ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['labName'];
           $row[] = $aRow['rejection_reason_name'];

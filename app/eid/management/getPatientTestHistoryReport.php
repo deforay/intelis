@@ -144,7 +144,7 @@ try {
         }
 
         $row[] = $aRow['child_id'];
-        $row[] = $aRow['child_name'];
+        $row[] = trim(($aRow['child_name'] ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
         $row[] = $aRow['child_age'];
         $row[] = $aRow['child_dob'];
         $row[] = ($aRow['facility_name']);

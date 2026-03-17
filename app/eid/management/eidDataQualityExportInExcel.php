@@ -50,7 +50,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           $row[] = $sampleCollectionDate;
           $row[] = $aRow['batch_code'];
           $row[] = $aRow['child_id'];
-          $row[] = ($childName);
+          $row[] = trim(($childName ?? '') . ' ' . ($aRow['child_surname'] ?? ''));
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['facility_state']);
           $row[] = ($aRow['facility_district']);
