@@ -105,7 +105,8 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 						)
 					)
                     LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
-                    WHERE vl.eid_id IN(" . $_POST['id'] . ")";
+                    WHERE vl.eid_id IN(" . $_POST['id'] . ")
+                    GROUP BY vl.eid_id";
 } else {
     $searchQuery = $allQuery;
 }

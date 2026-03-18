@@ -54,9 +54,10 @@ print_instance_status() {
     term_width=$([ -t 1 ] && tput cols 2>/dev/null || echo 80)
 
     echo ""
-    printf "\033[1;96m%${term_width}s\033[0m\n" '' | tr ' ' '─'
+    printf "\033[1;96m%${term_width}s\033[0m\n" '' | tr ' ' '='
     printf "\033[1;96m  Instance Progress (%d total)\033[0m\n" "$total"
-    printf "\033[1;96m%${term_width}s\033[0m\n" '' | tr ' ' '─'
+    printf "\033[1;96m%${term_width}s\033[0m\n" '' | tr ' ' '='
+    local i
     for i in "${!_paths[@]}"; do
         local status="${_statuses[$i]}"
         local icon label color
@@ -68,7 +69,7 @@ print_instance_status() {
         esac
         printf "  ${color}[%d/%d] %s  %s  (%s)\033[0m\n" "$((i+1))" "$total" "$icon" "${_paths[$i]}" "$label"
     done
-    printf "\033[1;96m%${term_width}s\033[0m\n" '' | tr ' ' '─'
+    printf "\033[1;96m%${term_width}s\033[0m\n" '' | tr ' ' '='
     echo ""
 }
 

@@ -98,7 +98,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 	if ($searchQueryWhere !== []) {
 		$searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
 	}
-	//echo ($searchQuery);
+	$searchQuery .= " GROUP BY vl.cd4_id";
 	$requestResult = $db->query($searchQuery);
 }
 

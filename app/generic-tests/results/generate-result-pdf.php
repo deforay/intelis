@@ -82,7 +82,7 @@ if ((isset($_POST['id']) && !in_array(trim((string) $_POST['id']), ['', '0'], tr
 	if ($searchQueryWhere !== []) {
 		$searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
 	}
-	// echo ($searchQuery);die;
+	$searchQuery .= " GROUP BY vl.sample_id";
 	$requestResult = $db->query($searchQuery);
 	// echo "<pre>";print_r($requestResult);die;
 }
