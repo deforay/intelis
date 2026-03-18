@@ -113,6 +113,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 	if ($searchQueryWhere !== []) {
 		$searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
 	}
+	$searchQuery .= " GROUP BY vl.vl_sample_id";
 	$requestResult = $db->query($searchQuery);
 }
 
