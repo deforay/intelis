@@ -20,7 +20,6 @@ if (function_exists('pcntl_signal') && function_exists('pcntl_async_signals')) {
     });
 }
 
-use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
