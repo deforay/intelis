@@ -33,6 +33,7 @@ $user = $usersService->findUserByApiToken($authToken);
 
 try {
     $labId = !empty($_GET['labId']) ? $_GET['labId'] : null;
+    $detailed = !empty($_GET['detailed']);
 
     $params = [];
     $labFilter = '';
@@ -41,27 +42,54 @@ try {
         $params[] = $labId;
     }
 
-    $sql = "SELECT
-                ins.instrument_id,
-                COALESCE(NULLIF(TRIM(im.config_machine_name), ''), ins.machine_name) AS name,
-                im.date_format
-            FROM instruments ins
-            LEFT JOIN instrument_machines im ON im.instrument_id = ins.instrument_id
-            WHERE ins.status = 'active'
-              AND COALESCE(NULLIF(TRIM(im.config_machine_name), ''), ins.machine_name) IS NOT NULL
-              $labFilter
-            GROUP BY ins.instrument_id, name, im.date_format
-            ORDER BY name ASC";
+    $nameSql = "SELECT TRIM(im.config_machine_name) AS name" . ($detailed ? ",
+                    ins.instrument_id,
+                    im.date_format" : "") . "
+                FROM instrument_machines im
+                INNER JOIN instruments ins ON ins.instrument_id = im.instrument_id
+                WHERE ins.status = 'active'
+                  AND im.config_machine_name IS NOT NULL
+                  AND TRIM(im.config_machine_name) != ''
+                  $labFilter
 
-    $rows = $db->rawQuery($sql, !empty($params) ? $params : null);
+                UNION
+
+                SELECT TRIM(ins.machine_name) AS name" . ($detailed ? ",
+                    ins.instrument_id,
+                    NULL AS date_format" : "") . "
+                FROM instruments ins
+                WHERE ins.status = 'active'
+                  AND ins.machine_name IS NOT NULL
+                  AND TRIM(ins.machine_name) != ''
+                  AND NOT EXISTS (
+                      SELECT 1 FROM instrument_machines im2
+                      WHERE im2.instrument_id = ins.instrument_id
+                        AND im2.config_machine_name IS NOT NULL
+                        AND TRIM(im2.config_machine_name) != ''
+                  )
+                  $labFilter";
+
+    if ($detailed) {
+        $sql = "$nameSql ORDER BY name ASC";
+        $allParams = array_merge($params, $params);
+    } else {
+        $sql = "SELECT DISTINCT name FROM ($nameSql) AS combined ORDER BY name ASC";
+        $allParams = array_merge($params, $params);
+    }
+
+    $rows = $db->rawQuery($sql, !empty($allParams) ? $allParams : null);
 
     $instruments = [];
     foreach ($rows as $row) {
-        $instruments[] = [
-            'instrumentId' => $row['instrument_id'],
-            'name' => $row['name'],
-            'dateFormat' => $row['date_format'],
-        ];
+        if ($detailed) {
+            $instruments[] = [
+                'instrumentId' => $row['instrument_id'],
+                'name' => $row['name'],
+                'dateFormat' => $row['date_format'],
+            ];
+        } else {
+            $instruments[] = ['name' => $row['name']];
+        }
     }
 
     $payload = [
