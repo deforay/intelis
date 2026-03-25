@@ -39,30 +39,32 @@ COPY ./docker/php-apache/app.conf /etc/apache2/sites-enabled/000-default.conf
 # Second stage: web server
 FROM php-apache AS php-web
 
-# Folder Permissions
+# Copy entrypoint script (requires root)
+COPY ./docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Configure the cron job (requires root)
+COPY ./docker/php-apache/crontab /etc/cron.d/crontab
+RUN chmod 0644 /etc/cron.d/crontab && \
+    crontab /etc/cron.d/crontab
+
+# Set working directory and folder permissions
+WORKDIR /var/www/html
 RUN setfacl -R -m u:www-data:rwx /var/www/html && \
     setfacl -dR -m u:www-data:rwx /var/www/html
 
-# Set working directory
-WORKDIR /var/www/html
-
-# Switch to www-data user for web tasks
+# Switch to www-data user for application code
 USER www-data
 
 # Copy the application code to the container
-COPY . .
+COPY --chown=www-data:www-data . .
 
 # Install project dependencies using Composer
 RUN composer install --no-dev --optimize-autoloader --no-progress && \
     composer dump-autoload --optimize
 
-# Use custom entrypoint script for the web server
-COPY ./docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# Configure the cron job
-COPY ./docker/php-apache/crontab /etc/cron.d/crontab
-RUN chmod 0644 /etc/cron.d/crontab && \
-    crontab /etc/cron.d/crontab
+# Switch back to root for entrypoint (needs to modify Apache config, start cron, etc.)
+# Apache workers will still run as www-data via its own configuration
+USER root
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
