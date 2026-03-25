@@ -1,0 +1,53 @@
+# Git
+.git
+.gitignore
+
+# IDE/editor
+.vscode/
+.idea/
+
+# OS files
+*.DS_Store
+*.DS_Store.orig
+
+# DDEV
+.ddev/
+
+# Docker data (avoid recursive copy)
+docker/mysql/data/
+
+# Logs, runtime state
+*.log
+*error_log
+*.pid
+*.orig
+*.lock
+.cron_heartbeat
+
+# Node modules
+**/node_modules/
+
+# Uploads and temporary files
+public/uploads/*
+public/temporary/*
+
+# Var directory
+var/
+
+# Cache and logs directories
+cache/
+logs/
+audit-trail/
+metadata/
+
+# Backups
+backups/
+backup/
+
+# Local dump files
+dump-*
+
+# Misc
+temp.ini
+rector.php
+.env
