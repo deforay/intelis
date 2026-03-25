@@ -665,6 +665,15 @@ ensure_opcache
 # Ensure Composer is installed
 ensure_composer
 
+# WHY: Older global Composer versions can emit PHP deprecations or fail newer package flows.
+# Keep Composer current during upgrade, but do not block the entire upgrade if self-update fails.
+print info "Updating Composer if a newer version is available..."
+if composer self-update --stable --clean-backups; then
+    print success "Composer is up to date."
+else
+    print warning "Composer self-update failed. Continuing with the existing Composer version."
+fi
+
 # Configure PHP INI settings (uses shared function)
 configure_php_ini "${php_version}"
 

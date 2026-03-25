@@ -101,6 +101,7 @@
             "@php bin/setup/fix-app-menu.php"
         ],
         "audit-tables-fix": "@php bin/setup/fix-audit-tables.php",
+        "audit-tables-reset": "@php bin/setup/fix-audit-tables.php --reset-tables",
         "archive-audit-tables": "@php app/tasks/archive-audit-tables.php",
         "token": "@php bin/token.php",
         "sts-setup": [

@@ -18,6 +18,7 @@ declare(strict_types=1);
  * Options:
  *   --only=form_vl,form_eid      Limit to specific form_* or audit_* tables
  *   --no-drop-extras             Do not drop columns that exist only in audit
+ *   --reset-tables               Drop and recreate audit tables before rebuilding triggers
  *   --rebuild-triggers-only      Skip schema sync; only (re)create triggers
  *   --skip-triggers              Do schema sync; skip triggers
  *   --dry-run                    Print SQL; don’t execute
@@ -66,6 +67,7 @@ final class FixAuditTablesCommand extends Command
         $this
             ->addOption('only', null, InputOption::VALUE_REQUIRED, 'Comma-separated form_* or audit_* tables to process.')
             ->addOption('no-drop-extras', null, InputOption::VALUE_NONE, 'Keep columns that exist only in audit.')
+            ->addOption('reset-tables', null, InputOption::VALUE_NONE, 'Drop and recreate audit tables. This deletes existing audit history.')
             ->addOption('rebuild-triggers-only', null, InputOption::VALUE_NONE, 'Only (re)create triggers.')
             ->addOption('skip-triggers', null, InputOption::VALUE_NONE, 'Skip trigger (re)creation.')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Print SQL only, do not execute.');
@@ -91,10 +93,15 @@ final class FixAuditTablesCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $dryRun = (bool) $input->getOption('dry-run');
         $dropExtras = !$input->getOption('no-drop-extras');
+        $resetTables = (bool) $input->getOption('reset-tables');
         $rebuildTriggersOnly = (bool) $input->getOption('rebuild-triggers-only');
         $skipTriggers = (bool) $input->getOption('skip-triggers');
 
-        $io->title('Audit table sync (non-destructive)');
+        if ($resetTables && $rebuildTriggersOnly) {
+            throw new InvalidArgumentException('--reset-tables cannot be combined with --rebuild-triggers-only.');
+        }
+
+        $io->title($resetTables ? 'Audit table reset and trigger rebuild' : 'Audit table sync (non-destructive)');
 
         $tableMap = $this->buildTableMapFromTestsService();
 
@@ -132,7 +139,16 @@ final class FixAuditTablesCommand extends Command
             $sqlBatch = [];
             $actions = [];
             try {
-                if ($this->tableExists($audit) && $this->isTableCrashed($audit)) {
+                if ($resetTables) {
+                    $actions[] = 'reset';
+                    $sqlBatch = $this->recreateAuditTable($form, $audit, $pk);
+                    if ($dryRun) {
+                        $this->printSqlBatch($io, $form, $audit, $sqlBatch);
+                    } else {
+                        $this->executeSqlBatch($sqlBatch);
+                    }
+                    $sqlBatch = [];
+                } elseif ($this->tableExists($audit) && $this->isTableCrashed($audit)) {
                     MiscUtility::spinnerPausePrint($bar, fn() => $io->warning("$audit is marked as crashed; dropping and recreating."));
                     $actions[] = 'recreated (crashed)';
                     $sqlBatch = $this->recreateAuditTable($form, $audit, $pk);
@@ -149,15 +165,16 @@ final class FixAuditTablesCommand extends Command
                 }
 
                 // Phase 1: Schema sync (create table if missing, sync columns if exists)
-                if (!$rebuildTriggersOnly) {
+                if (!$rebuildTriggersOnly && !$resetTables) {
                     $auditExists = $this->tableExists($audit);
 
                     if (!$auditExists) {
                         // Table doesn't exist yet — CREATE LIKE + setup is fast, no batching needed
                         $schemaSql = $this->ensureAuditTableExists($form, $audit, $pk);
                     } else {
-                        // Table exists — batch all ALTER operations into minimal statements
-                        $schemaSql = $this->buildBatchedAlter($form, $audit, $pk, $dropExtras);
+                        // WHY: Upgrade repair favors explicit ALTER statements over batched SQL
+                        // so syntax issues are isolated to one step and easier to diagnose.
+                        $schemaSql = $this->buildSchemaSyncSql($form, $audit, $pk, $dropExtras);
                     }
 
                     if ($schemaSql !== []) {
@@ -414,117 +431,15 @@ final class FixAuditTablesCommand extends Command
     }
 
 
-    /**
-     * Collect all column-level changes (ADD/MODIFY/DROP, PK, indexes, auto-increment)
-     * and emit the minimum number of ALTER TABLE statements (ideally one).
-     * This avoids multiple full-table rebuilds on large InnoDB tables.
-     *
-     * @return string[]
-     */
-    private function buildBatchedAlter(string $form, string $audit, string $pk, bool $dropExtras): array
+    /** @return string[] */
+    private function buildSchemaSyncSql(string $form, string $audit, string $pk, bool $dropExtras): array
     {
-        $formCreate = $this->showCreate($form);
-        $auditCreate = $this->showCreate($audit);
-        $formCols = $this->parseColumnDDLs($formCreate);
-        $auditCols = $this->parseColumnDDLs($auditCreate);
+        $sql = [];
+        $sql = [...$sql, ...$this->ensureAuditColumnsAndPK($audit, $pk)];
+        $sql = [...$sql, ...$this->syncColumnsToMatchForm($form, $audit, $dropExtras, $pk)];
+        $sql = [...$sql, ...$this->alignEngineAndCollation($audit)];
 
-        $clauses = [];
-
-        // 1. Remove AUTO_INCREMENT from existing audit columns
-        foreach ($auditCols as $col => $ddl) {
-            if (stripos($ddl, 'AUTO_INCREMENT') !== false) {
-                $clauses[] = 'MODIFY COLUMN ' . $this->stripAutoIncrementFromDDL($ddl);
-            }
-        }
-
-        // 2. Ensure audit meta columns exist
-        $have = $this->listColumns($audit);
-        if (!isset($have['action'])) {
-            $clauses[] = "ADD COLUMN `action` VARCHAR(8) NOT NULL DEFAULT 'insert' FIRST";
-        }
-        if (!isset($have['revision'])) {
-            $clauses[] = "ADD COLUMN `revision` INT NOT NULL AFTER `action`";
-        }
-        if (!isset($have['dt_datetime'])) {
-            $clauses[] = "ADD COLUMN `dt_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `revision`";
-        }
-
-        // 3. ADD missing form columns / MODIFY mismatched ones
-        foreach ($formCols as $col => $ddl) {
-            if (in_array($col, self::RESERVED_AUDIT_COLS, true)) {
-                continue;
-            }
-            $desiredDDL = ($col === $pk || stripos($ddl, 'AUTO_INCREMENT') !== false)
-                ? $this->stripAutoIncrementFromDDL($ddl)
-                : $ddl;
-
-            if (!array_key_exists($col, $auditCols)) {
-                $clauses[] = "ADD COLUMN $desiredDDL";
-            } else {
-                $currentDDL = (stripos($auditCols[$col], 'AUTO_INCREMENT') !== false)
-                    ? $this->stripAutoIncrementFromDDL($auditCols[$col])
-                    : $auditCols[$col];
-                if ($desiredDDL !== $currentDDL) {
-                    $clauses[] = "MODIFY COLUMN $desiredDDL";
-                }
-            }
-        }
-
-        // 4. DROP extra columns
-        if ($dropExtras) {
-            foreach (array_keys($auditCols) as $col) {
-                if (in_array($col, self::RESERVED_AUDIT_COLS, true)) {
-                    continue;
-                }
-                if (!array_key_exists($col, $formCols)) {
-                    $clauses[] = "DROP COLUMN `$col`";
-                }
-            }
-        }
-
-        // 5. PK rebuild if needed
-        $currentPk = $this->getPrimaryKeyColumns($audit);
-        if ($currentPk !== [$pk, 'revision']) {
-            $clauses[] = "DROP PRIMARY KEY";
-            $clauses[] = "ADD PRIMARY KEY (`$pk`,`revision`)";
-        }
-
-        // 6. Drop unique indexes
-        $uniqueDrops = $this->dropUniqueIndexesFromAudit($audit);
-        foreach ($uniqueDrops as $dropSql) {
-            // Extract just the DROP INDEX clause from the full ALTER TABLE statement
-            if (preg_match('/DROP INDEX `.+`/', $dropSql, $m)) {
-                $clauses[] = $m[0];
-            }
-        }
-
-        // 7. Engine/collation alignment
-        $info = $this->db->rawQuery(
-            "SELECT ENGINE, TABLE_COLLATION FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?",
-            [$this->dbName, $audit]
-        );
-        $engineClause = '';
-        if (!empty($info[0])) {
-            if (strcasecmp($info[0]['ENGINE'] ?? '', self::ENGINE) !== 0) {
-                $engineClause = ' ENGINE=' . self::ENGINE;
-            }
-            if (strcasecmp($info[0]['TABLE_COLLATION'] ?? '', $this->collation) !== 0) {
-                $clauses[] = 'CONVERT TO CHARACTER SET ' . self::CHARSET . ' COLLATE ' . $this->collation;
-            }
-        }
-
-        if ($clauses === [] && $engineClause === '') {
-            return [];
-        }
-
-        // Build a single ALTER TABLE statement
-        $sql = "ALTER TABLE `{$this->dbName}`.`$audit`";
-        if ($clauses !== []) {
-            $sql .= ' ' . implode(', ', $clauses);
-        }
-        $sql .= $engineClause;
-
-        return [$sql];
+        return $sql;
     }
 
     /** @return string[] */
@@ -668,12 +583,10 @@ final class FixAuditTablesCommand extends Command
         return $sql;
     }
 
-
     /** @return string[] */
     private function rebuildTriggers(string $form, string $audit, string $pk): array
     {
         // Always rebuild triggers to ensure they're up-to-date
-
         $mk = function (string $suffix, string $timing, string $rowRef, string $action) use ($form, $audit, $pk): string {
             $pkRef = ($rowRef === 'OLD') ? "OLD.`$pk`" : "NEW.`$pk`";
             return <<<SQL
