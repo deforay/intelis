@@ -90,6 +90,12 @@ mysql_exec() { mysql -e "$*"; }
 
 handle_database_setup_and_import() {
     local sql_file="${1:-${lis_path}/sql/init.sql}"
+    local default_sql_file="${lis_path}/sql/init.sql"
+    local is_user_supplied_dump=false
+
+    if [[ -n "$1" ]]; then
+        is_user_supplied_dump=true
+    fi
 
     # Detect DB status
     local db_exists db_not_empty
@@ -133,6 +139,58 @@ handle_database_setup_and_import() {
         
     }
 
+    recreate_vlsm_database() {
+        mysql_exec "SET FOREIGN_KEY_CHECKS=0; DROP DATABASE IF EXISTS vlsm; SET FOREIGN_KEY_CHECKS=1;"
+        mysql_exec "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    }
+
+    import_sql_dump_into_vlsm() {
+        local import_file="$1"
+        local import_pid import_status
+
+        # Run the import in a child process so we can show progress for large dumps.
+        (
+            set -o pipefail
+
+            if [[ "$import_file" == *".gz" ]]; then
+                gunzip -c "$import_file" | mysql vlsm
+            elif [[ "$import_file" == *".zst" ]]; then
+                zstd -dc "$import_file" | mysql vlsm
+            else
+                mysql vlsm < "$import_file"
+            fi
+        ) &
+        import_pid=$!
+
+        spinner "${import_pid}" "Importing database dump..."
+        wait "${import_pid}"
+        import_status=$?
+
+        return "${import_status}"
+    }
+
+    prompt_failed_import_fallback() {
+        local failed_file="$1"
+        local tty="/dev/tty"
+
+        {
+            echo
+            echo "Import failed for: ${failed_file}"
+            echo "Choose how to continue:"
+            echo "  1) SEED  – reset 'vlsm' and import the default init.sql"
+            echo "  2) BLANK – reset 'vlsm' and continue with an empty database"
+            echo "  3) ABORT – stop setup"
+        } >"$tty"
+
+        read -r -p "Enter choice [1=SEED(default), 2=BLANK, 3=ABORT]: " choice <"$tty"
+        case "${choice:-1}" in
+            1) echo "seed"  ;;
+            2) echo "blank" ;;
+            3) echo "abort" ;;
+            *) echo "seed"  ;;
+        esac
+    }
+
     local strategy
     strategy="$(resolve_db_strategy "$DB_STRATEGY_FLAG")"
     if [[ -z "$strategy" && "$db_exists" -eq 1 && "$db_not_empty" -gt 0 ]]; then
@@ -171,12 +229,35 @@ handle_database_setup_and_import() {
     mysql -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
     echo "Importing base schema into 'vlsm' from: ${sql_file}"
-    if [[ "$sql_file" == *".gz" ]]; then
-        gunzip -c "$sql_file" | mysql vlsm
-    elif [[ "$sql_file" == *".zip" ]]; then
-        unzip -p "$sql_file" | mysql vlsm
-    else
-        mysql vlsm < "$sql_file"
+    if ! import_sql_dump_into_vlsm "$sql_file"; then
+        if [[ "$is_user_supplied_dump" == true ]]; then
+            print warning "Import failed for user-provided dump: ${sql_file}"
+            log_action "User-provided database import failed: ${sql_file}"
+
+            fallback_choice="$(prompt_failed_import_fallback "$sql_file")"
+            case "$fallback_choice" in
+                seed)
+                    # Recreate the database first so we do not keep a partially imported schema.
+                    recreate_vlsm_database
+                    echo "Falling back to default seed: ${default_sql_file}"
+                    log_action "Falling back to default seed after failed import: ${sql_file}"
+                    import_sql_dump_into_vlsm "$default_sql_file"
+                    ;;
+                blank)
+                    # Recreate the database first so we leave the instance in a known empty state.
+                    recreate_vlsm_database
+                    echo "Continuing with a blank 'vlsm' database."
+                    log_action "Continuing with blank database after failed import: ${sql_file}"
+                    ;;
+                *)
+                    echo "Aborting setup because the provided database import failed."
+                    log_action "Setup aborted after failed database import: ${sql_file}"
+                    return 1
+                    ;;
+            esac
+        else
+            return 1
+        fi
     fi
 
     [[ -f "${lis_path}/sql/audit-triggers.sql"   ]] && mysql vlsm        < "${lis_path}/sql/audit-triggers.sql"
@@ -273,6 +354,13 @@ if [[ -n "$intelis_sql_file" ]]; then
     if [[ ! -f "$intelis_sql_file" ]]; then
         echo "SQL file not found: $intelis_sql_file. Please check the path."
         log_action "SQL file not found: $intelis_sql_file. Please check the path."
+        exit 1
+    fi
+
+    # Restrict accepted dump formats so setup behavior stays predictable.
+    if [[ ! "$intelis_sql_file" =~ \.(sql|sql\.gz|sql\.zst)$ ]]; then
+        echo "Unsupported SQL file format: $intelis_sql_file. Use .sql, .sql.gz, or .sql.zst"
+        log_action "Unsupported SQL file format: $intelis_sql_file"
         exit 1
     fi
 fi
