@@ -21,6 +21,7 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\VlService;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 
@@ -166,6 +167,10 @@ foreach ($requestResult as $result) {
 		$db->where('vl_sample_id', $result['vl_sample_id']);
 		$id = $db->update('form_vl', $pData);
 	}
+
+	// Re-check vl_result_category at print time to fix any stale/incorrect values
+	$vlService = ContainerRegistry::get(VlService::class);
+	$result['vl_result_category'] = $vlService->getVLResultCategory($result['result_status'], $result['result']);
 
 	$selectedReportFormats = [];
 	if (!empty($result['reportFormat'])) {
