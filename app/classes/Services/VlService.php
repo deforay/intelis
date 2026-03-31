@@ -206,14 +206,7 @@ final class VlService extends AbstractTestService
         return MemoUtility::remember(function () use ($resultStatus, $finalResult): ?string {
             $vlResultCategory = null;
             $orignalResultValue = $finalResult;
-            $patterns = [
-                '/c\/?p(?:ml|m|opies)?/i',
-                '/copies/i'
-            ];
-
-
-            $finalResult = preg_replace($patterns, '', (string) $finalResult);
-            $finalResult = trim((string) $finalResult);
+            $finalResult = $this->preprocessViralLoadInput((string) $finalResult);
 
 
             if ($resultStatus == 4) {
