@@ -2,7 +2,6 @@
 
 // This file is included in /vl/results/generate-result-pdf.php
 use const SAMPLE_STATUS\REJECTED;
-use App\Services\VlService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -18,9 +17,6 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var InstrumentsService $instrumentsService */
 $instrumentsService = ContainerRegistry::get(InstrumentsService::class);
 
-
-/** @var VlService $vlService */
-$vlService = ContainerRegistry::get(VlService::class);
 
 /** @var ResultPdfService $resultPdfService */
 $resultPdfService = ContainerRegistry::get(ResultPdfService::class);
@@ -216,10 +212,6 @@ if (!empty($result)) {
      $showMessage = '';
      $tndMessage = '';
      $messageTextSize = '15px';
-
-     if (empty($result['vl_result_category']) || $result['vl_result_category'] == '') {
-          $result['vl_result_category'] = $vlService->getVLResultCategory($result['result_status'], $result['result']);
-     }
 
      if (isset($globalConfig['show_smiley']) && trim((string) $globalConfig['show_smiley']) === "no") {
           $smileyContent = '';
