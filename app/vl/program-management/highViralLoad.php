@@ -1624,7 +1624,7 @@ $state = $geolocationService->getProvinces("yes");
 			},
 			],
 			"aaSorting": [
-				[<?= ($general->isStandaloneInstance()) ? 5 : 6; ?>, "desc"]
+				[<?= ($general->isStandaloneInstance()) ? 6 : 7; ?>, "desc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
