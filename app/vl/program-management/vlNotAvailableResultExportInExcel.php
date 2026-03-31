@@ -4,10 +4,12 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
+
+ini_set('memory_limit', '512M');
+set_time_limit(300);
+ini_set('max_execution_time', 300);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -15,97 +17,58 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-
-$arr = $general->getGlobalConfig();
-
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
-$key = $arr['key'] ?? "";
+$key = (string) $general->getGlobalConfig('key');
 
 if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNotAvailable']) !== "") {
 
-    $output = [];
-    $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status"];
-    if ($general->isStandaloneInstance()) {
-        $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
-    }
-    if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
-        $headings = MiscUtility::removeMatchingElements($headings, ['Patient Name']);
-    }
+     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient Name", "Sample Collection Date", "Lab Name", "Sample Status"];
+     if ($general->isStandaloneInstance()) {
+          $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
+     }
+     if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
+          $headings = MiscUtility::removeMatchingElements($headings, ['Patient Name']);
+     }
 
-    $resultSet = $db->rawQuery($_SESSION['resultNotAvailable']);
-    foreach ($resultSet as $aRow) {
-        $row = [];
-        //sample collecion date
-        $sampleCollectionDate = '';
-        if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-            $expStr = explode(" ", (string) $aRow['sample_collection_date']);
-            $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
-        }
-        // if($aRow['remote_sample']=='yes'){
-        //   $sampleId = $aRow['remote_sample_code'];
-        // }else{
-        //   $sampleId = $aRow['sample_code'];
-        // }
+     $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
 
-        $patientFname = $aRow['patient_first_name'] != '' ? $aRow['patient_first_name'] : '';
-        $patientMname = $aRow['patient_middle_name'] != '' ? $aRow['patient_middle_name'] : '';
-        $patientLname = $aRow['patient_last_name'] != '' ? $aRow['patient_last_name'] : '';
-        $row[] = $aRow['sample_code'];
-        if (!$general->isStandaloneInstance()) {
-            $row[] = $aRow['remote_sample_code'];
-        }
-        if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
-            $patientFname = $general->crypto('decrypt', $patientFname, $key);
-            $patientMname = $general->crypto('decrypt', $patientMname, $key);
-            $patientLname = $general->crypto('decrypt', $patientLname, $key);
-        }
-        $row[] = ($aRow['facility_name']);
-        $row[] = $aRow['patient_art_no'];
-        if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-            $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-        }
-        $row[] = $sampleCollectionDate;
-        $row[] = ($aRow['labName']);
-        $row[] = ($aRow['status_name']);
-        $output[] = $row;
-    }
+     $writer = new Writer();
+     $writer->openToFile($filename);
+     $writer->addRow(Row::fromValues($headings));
 
-    if (isset($_SESSION['resultNotAvailableCount']) && $_SESSION['resultNotAvailableCount'] > 50000) {
-        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.csv';
-        $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-        // we dont need the $output variable anymore
-        unset($output);
-        echo base64_encode((string) $fileName);
-    } else {
-        $excel = new Spreadsheet();
-        $sheet = $excel->getActiveSheet();
+     $resultSet = $db->rawQueryGenerator($_SESSION['resultNotAvailable']);
+     foreach ($resultSet as $aRow) {
+          $row = [];
+          $sampleCollectionDate = '';
+          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $aRow['sample_collection_date']);
+               $sampleCollectionDate = date("d-m-Y", strtotime($expStr[0]));
+          }
 
-        $styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THIN]]];
+          $patientFname = $aRow['patient_first_name'] != '' ? $aRow['patient_first_name'] : '';
+          $patientMname = $aRow['patient_middle_name'] != '' ? $aRow['patient_middle_name'] : '';
+          $patientLname = $aRow['patient_last_name'] != '' ? $aRow['patient_last_name'] : '';
+          $row[] = $aRow['sample_code'];
+          if (!$general->isStandaloneInstance()) {
+               $row[] = $aRow['remote_sample_code'];
+          }
+          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+               $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+               $patientFname = $general->crypto('decrypt', $patientFname, $key);
+               $patientMname = $general->crypto('decrypt', $patientMname, $key);
+               $patientLname = $general->crypto('decrypt', $patientLname, $key);
+          }
+          $row[] = ($aRow['facility_name']);
+          $row[] = $aRow['patient_art_no'];
+          if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
+               $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+          }
+          $row[] = $sampleCollectionDate;
+          $row[] = ($aRow['labName']);
+          $row[] = ($aRow['status_name']);
 
-        $sheet->mergeCells('A1:AE1');
+          $writer->addRow(Row::fromValues($row));
+     }
 
-        $sheet->getStyle('A3:A3')->applyFromArray($styleArray);
-        $sheet->getStyle('B3:B3')->applyFromArray($styleArray);
-        $sheet->getStyle('C3:C3')->applyFromArray($styleArray);
-        $sheet->getStyle('D3:D3')->applyFromArray($styleArray);
-        $sheet->getStyle('E3:E3')->applyFromArray($styleArray);
-        $sheet->getStyle('F3:F3')->applyFromArray($styleArray);
-        $sheet->getStyle('G3:G3')->applyFromArray($styleArray);
-        if (!$general->isStandaloneInstance()) {
-            $sheet->getStyle('H3:H3')->applyFromArray($styleArray);
-        }
-
-        $sheet->fromArray($headings, null, 'A3');
-
-        foreach ($output as $rowNo => $rowData) {
-            $rRowCount = $rowNo + 4;
-            $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-        }
-        $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-        $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-        $writer->save($filename);
-        echo urlencode(basename($filename));
-    }
+     $writer->close();
+     echo urlencode(basename($filename));
 }
