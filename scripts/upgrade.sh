@@ -668,7 +668,7 @@ ensure_composer
 # WHY: Older global Composer versions can emit PHP deprecations or fail newer package flows.
 # Keep Composer current during upgrade, but do not block the entire upgrade if self-update fails.
 print info "Updating Composer if a newer version is available..."
-if composer self-update --stable --clean-backups; then
+if COMPOSER_ALLOW_SUPERUSER=1 composer self-update --stable --clean-backups; then
     print success "Composer is up to date."
 else
     print warning "Composer self-update failed. Continuing with the existing Composer version."
