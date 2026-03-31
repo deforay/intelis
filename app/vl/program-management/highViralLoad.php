@@ -1451,36 +1451,46 @@ $state = $geolocationService->getProvinces("yes");
 	let currentXHR = null;
 	let currentRequestType = null;
 
-	var hvlStorageKey = 'hvlClinicReportFilters';
+	var filterClasses = [
+		'highViralLoadReportFilter',
+		'vfvlnsfilters',
+		'sampleRjtReportFilter',
+		'notAvailReportFilter',
+		'incompleteFormReportFilter',
+		'stReportFilter',
+		'patientHistoryFilter'
+	];
 
-	function saveFiltersToStorage() {
+	function getStorageKey(filtersClass) {
+		return 'vlClinicReport_' + filtersClass;
+	}
+
+	function saveFiltersToStorage(filtersClass) {
 		var filters = {};
-		$('.highViralLoadReportFilter').each(function () {
+		$('.' + filtersClass).each(function () {
 			var id = $(this).attr('id');
 			if (id) {
 				filters[id] = $(this).val();
 			}
 		});
-		localStorage.setItem(hvlStorageKey, JSON.stringify(filters));
+		localStorage.setItem(getStorageKey(filtersClass), JSON.stringify(filters));
 	}
 
-	function restoreFiltersFromStorage() {
-		var saved = localStorage.getItem(hvlStorageKey);
+	function restoreFiltersFromStorage(filtersClass) {
+		var saved = localStorage.getItem(getStorageKey(filtersClass));
 		if (!saved) return;
 		try {
 			var filters = JSON.parse(saved);
 			$.each(filters, function (id, value) {
 				var $el = $('#' + id);
 				if ($el.length && value !== null && value !== '' && !(Array.isArray(value) && value.length === 0)) {
-					if ($el.hasClass('stDate') && value) {
+					var drp = $el.data('daterangepicker');
+					if (drp && value) {
 						$el.val(value);
-						var drp = $el.data('daterangepicker');
-						if (drp) {
-							var parts = value.split(' to ');
-							if (parts.length === 2) {
-								drp.setStartDate(moment(parts[0], 'DD-MMM-YYYY'));
-								drp.setEndDate(moment(parts[1], 'DD-MMM-YYYY'));
-							}
+						var parts = value.split(' to ');
+						if (parts.length === 2) {
+							drp.setStartDate(moment(parts[0], 'DD-MMM-YYYY'));
+							drp.setEndDate(moment(parts[1], 'DD-MMM-YYYY'));
 						}
 					} else {
 						$el.val(value).trigger('change');
@@ -1488,6 +1498,12 @@ $state = $geolocationService->getProvinces("yes");
 				}
 			});
 		} catch (e) {}
+	}
+
+	function restoreAllFilters() {
+		$.each(filterClasses, function (i, cls) {
+			restoreFiltersFromStorage(cls);
+		});
 	}
 
 	$(document).ready(function () {
@@ -1579,7 +1595,7 @@ $state = $geolocationService->getProvinces("yes");
 			$(this).val('');
 		});
 		$('#vfVlnsSampleTestDate').val('');
-		restoreFiltersFromStorage();
+		restoreAllFilters();
 		highViralLoadReport();
 		sampleRjtReport();
 		notAvailReport();
@@ -1589,8 +1605,10 @@ $state = $geolocationService->getProvinces("yes");
 		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select, #patientTestHistoryFormReport input").on("change", function () {
 			searchExecuted = false;
 		});
-		$(".highViralLoadReportFilter").on("change", function () {
-			saveFiltersToStorage();
+		$.each(filterClasses, function (i, cls) {
+			$('.' + cls).on('change', function () {
+				saveFiltersToStorage(cls);
+			});
 		});
 
 	});
@@ -2259,9 +2277,7 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 	function resetFilters(filtersClass) {
-		if (filtersClass === 'highViralLoadReportFilter') {
-			localStorage.removeItem(hvlStorageKey);
-		}
+		localStorage.removeItem(getStorageKey(filtersClass));
 		$('.' + filtersClass).val('');
 		$('.' + filtersClass).val(null).trigger('change');
 	}
