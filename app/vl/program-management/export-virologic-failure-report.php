@@ -140,13 +140,6 @@ if (!$rResult) {
      return null;
 }
 
-// Separate the data into two arrays
-$vfData = [];
-$vlnsData = [];
-
-
-$patientIds = [];
-$output = [];
 $headings = [
      'Patient ID',
      'Sample Date',
@@ -164,39 +157,33 @@ $headings = [
      'Current Regimen Start Date',
      'VL Result'
 ];
-// Separate the data into two arrays
-$vfData = [];
-$vlnsData = [];
-$patientIds = [];
-foreach ($rResult as $aRow) {
 
+// Group rows by patient ID in a single pass - O(n)
+$grouped = [];
+foreach ($rResult as $aRow) {
      if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] === 'yes') {
           $aRow['patient_art_no'] = CommonService::decrypt($aRow['patient_art_no'], base64_decode((string) $keyFromGlobalConfig));
      }
      unset($aRow['is_encrypted']);
      $patientId = trim((string) $aRow['patient_art_no']);
-     //$aRow['result'] = $vlService->extractViralLoadValue($aRow['result']);
-     $vfData[] = $aRow;
-     $vlnsData[] = $aRow;
-     // Check if patient id already there in array
-     if (in_array(trim($patientId), $patientIds)) {
-          // If there we remove vlsndata for this dublication
-          foreach ($vlnsData as $key => $vlnsDataRow) {
-               if (trim((string) $vlnsDataRow['patient_art_no']) === trim($patientId)) {
-                    unset($vlnsData[$key]);
-               }
+     $grouped[$patientId][] = $aRow;
+}
+unset($rResult);
+
+// Separate: patients with multiple results = virologic failure, single result = VL not suppressed
+$vfData = [];
+$vlnsData = [];
+foreach ($grouped as $rows) {
+     if (count($rows) > 1) {
+          foreach ($rows as $row) {
+               $vfData[] = $row;
           }
      } else {
-          $patientIds[] = trim($patientId);
+          $vlnsData[] = $rows[0];
      }
 }
-foreach ($vlnsData as $vlnsKey => $vlnsDataRow) {
-     foreach ($vfData as $key => $vfDataRow) {
-          if ($vfDataRow['patient_art_no'] === $vlnsDataRow['patient_art_no']) {
-               unset($vfData[$key]);
-          }
-     }
-}
+unset($grouped);
+
 if ($vfData !== []) {
      $vfData = array_combine(range(1, count($vfData)), array_values($vfData));
 }
