@@ -37,6 +37,7 @@ theme:
 nav:
   - Home: index.md
   - Installation:
+      - Using Docker (Recommended): guides/installing-intelis-with-docker.md
       - InteLIS on Ubuntu: guides/installing-intelis-on-ubuntu.md
       - VLSM on Windows: guides/installing-vlsm-on-windows.md
   - Updates & Migration:

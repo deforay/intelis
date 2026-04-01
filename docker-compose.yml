@@ -1,9 +1,9 @@
 services:
-  web:
+  intelis:
     build:
       context: .
       target: php-web
-      # image: deforay/intelis-web:latest
+      # image: deforay/intelis:latest
     ports:
       - "${APACHE_PORT:-80}:80"
     volumes:
@@ -15,7 +15,7 @@ services:
       - APACHE_PORT=${APACHE_PORT:-80}
       # Interfacing DB — defaults to main db container
       # Point these to an external host to use an independent interfacing DB
-      - INTERFACE_DB_HOST=${INTERFACE_DB_HOST:-db}
+      - INTERFACE_DB_HOST=${INTERFACE_DB_HOST:-intelis-db}
       - INTERFACE_DB_PORT=${INTERFACE_DB_PORT:-3306}
       - INTERFACE_DB_USER=${INTERFACE_DB_USER:-root}
       - INTERFACE_DB_PASSWORD=${INTERFACE_DB_PASSWORD:-${MYSQL_ROOT_PASSWORD:-root_password}}
@@ -24,10 +24,10 @@ services:
     entrypoint: ["/usr/local/bin/entrypoint.sh"]
     restart: unless-stopped
     depends_on:
-      db:
+      intelis-db:
         condition: service_healthy
 
-  db:
+  intelis-db:
     image: mysql:8.4
     command: --innodb-strict-mode=OFF --sql-mode=""
     ports:
