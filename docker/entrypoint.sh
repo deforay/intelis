@@ -11,7 +11,7 @@ mv /etc/apache2/sites-enabled/000-default.conf.tmp /etc/apache2/sites-enabled/00
 echo "127.0.0.1 ${DOMAIN}" >>/etc/hosts
 
 # Main DB config
-main_db_host="db"
+main_db_host="intelis-db"
 main_db_user="root"
 main_db_password="${MYSQL_ROOT_PASSWORD:-default_password}"
 main_db_name="${MYSQL_DATABASE:-vlsm}"
