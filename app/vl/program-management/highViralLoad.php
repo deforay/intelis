@@ -1437,10 +1437,19 @@ $state = $geolocationService->getProvinces("yes");
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/highcharts-exporting.js"></script>
-<script src="/assets/js/highcharts-offline-exporting.js"></script>
-<script src="/assets/js/highcharts-accessibility.js"></script>
+<script>
+(function() {
+	var scripts = ['/assets/js/highcharts.js', '/assets/js/highcharts-exporting.js', '/assets/js/highcharts-offline-exporting.js', '/assets/js/highcharts-accessibility.js'];
+	if (!window.Highcharts) {
+		scripts.forEach(function(src) {
+			var s = document.createElement('script');
+			s.src = src;
+			s.async = false;
+			document.head.appendChild(s);
+		});
+	}
+})();
+</script>
 <script type="text/javascript">
 	let searchExecuted = false;
 	var oTableViralLoad = null;
