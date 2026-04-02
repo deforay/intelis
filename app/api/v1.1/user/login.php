@@ -36,7 +36,7 @@ try {
 
     if (empty($input) || empty($input['userName']) || (empty($input['password']))) {
         http_response_code(400);
-        throw new SystemException('Invalid request', 400);
+        throw new SystemException(_translate('Invalid request'), 400);
     }
 
     if (!empty($input['userName']) && !empty($input['password'])) {
@@ -62,7 +62,7 @@ try {
         $userResult = $db->rawQueryOne($userQuery, [$input['userName']]);
 
         if (empty($userResult) || !$usersService->passwordVerify($input['userName'], (string) $input['password'], (string) $userResult['password'])) {
-            throw new SystemException('Login failed. Please contact system administrator.');
+            throw new SystemException(_translate('Login failed. Please contact system administrator.'));
         }
 
         // Not needed anymore in the following code
@@ -71,7 +71,7 @@ try {
         $tokenData = $usersService->handleTokenAuthentication($userResult['api_token'], $userResult['user_id']);
 
         if (empty($tokenData)) {
-            throw new SystemException('Authentication failed. Please contact system administrator.');
+            throw new SystemException(_translate('Authentication failed. Please contact system administrator.'));
         }
 
 
@@ -92,20 +92,20 @@ try {
             'data' => $data
         ];
     } else {
-        throw new SystemException('Login failed. Please contact system administrator.');
+        throw new SystemException(_translate('Login failed. Please contact system administrator.'));
     }
 } catch (Throwable $exc) {
     http_response_code(500);
     $payload = [
         'status' => 2,
-        'message' => 'Login failed. Please contact system administrator.',
+        'message' => _translate('Login failed. Please contact system administrator.'),
         'timestamp' => time(),
         'transactionId' => $transactionId
     ];
 
     LoggerUtility::logError($exc->getMessage(), [
-        'file' => $exc->getLine(),
-        'line' => $exc->getFile(),
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
         'trace' => $exc->getTraceAsString()
     ]);
 }

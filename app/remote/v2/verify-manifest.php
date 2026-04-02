@@ -53,7 +53,7 @@ if (
     empty($input['manifestHash'])
 ) {
     http_response_code(400);
-    throw new SystemException('Invalid request', 400);
+    throw new SystemException(_translate('Invalid request'), 400);
 }
 
 $transactionId = MiscUtility::generateULID();
@@ -69,11 +69,11 @@ $payload = [
 ];
 
 $labId = (int) ($input['labId'] ?? 0);
-$testType = trim((string)($input['testType'] ?? ''));
+$testType = trim((string) ($input['testType'] ?? ''));
 
 try {
-    $manifestCode = trim((string)($input['manifestCode'] ?? ''));
-    $providedHash = trim((string)($input['manifestHash'] ?? ''));
+    $manifestCode = trim((string) ($input['manifestCode'] ?? ''));
+    $providedHash = trim((string) ($input['manifestHash'] ?? ''));
 
     if ($manifestCode === '' || $providedHash === '') {
         http_response_code(400);

@@ -290,7 +290,7 @@ $canEdit = ($cd4QueryInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
 
 if (!$canEdit) {
 	http_response_code(403);
-	throw new SystemException('Cannot Edit Locked Samples', 403);
+	throw new SystemException(_translate('Cannot Edit Locked Samples'), 403);
 }
 require_once($fileArray[$formId]);
 ?>
@@ -298,13 +298,13 @@ require_once($fileArray[$formId]);
 	src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 
 <script>
-	$(document).ready(function() {
+	$(document).ready(function () {
 
-		$('.result-focus').change(function(e) {
+		$('.result-focus').change(function (e) {
 			<?php //if (isset($cd4QueryInfo['result']) && $cd4QueryInfo['result'] != "") {
 			?>
 			var status = false;
-			$(".result-focus").each(function(index) {
+			$(".result-focus").each(function (index) {
 				if ($(this).val() != "") {
 					status = true;
 				}
@@ -327,7 +327,7 @@ require_once($fileArray[$formId]);
 			minimumInputLength: 0,
 			width: '100%',
 			allowClear: true,
-			id: function(bond) {
+			id: function (bond) {
 				return bond._id;
 			},
 			ajax: {
@@ -335,7 +335,7 @@ require_once($fileArray[$formId]);
 				url: "/includes/get-data-list.php",
 				dataType: 'json',
 				delay: 250,
-				data: function(params) {
+				data: function (params) {
 					return {
 						fieldName: 'cd4_focal_person',
 						tableName: 'form_cd4',
@@ -343,7 +343,7 @@ require_once($fileArray[$formId]);
 						page: params.page
 					};
 				},
-				processResults: function(data, params) {
+				processResults: function (data, params) {
 					params.page = params.page || 1;
 					return {
 						results: data.result,
@@ -354,23 +354,23 @@ require_once($fileArray[$formId]);
 				},
 				//cache: true
 			},
-			escapeMarkup: function(markup) {
+			escapeMarkup: function (markup) {
 				return markup;
 			}
 		});
 
-		$("#vlFocalPerson").change(function() {
+		$("#vlFocalPerson").change(function () {
 			$.blockUI();
 			var search = $(this).val();
 			if ($.trim(search) != '') {
 				$.get("/includes/get-data-list.php", {
-						fieldName: 'cd4_focal_person',
-						tableName: 'form_cd4',
-						returnField: 'cd4_focal_person_phone_number',
-						limit: 1,
-						q: search,
-					},
-					function(data) {
+					fieldName: 'cd4_focal_person',
+					tableName: 'form_cd4',
+					returnField: 'cd4_focal_person_phone_number',
+					limit: 1,
+					q: search,
+				},
+					function (data) {
 						if (data != "") {
 							$("#cd4FocalPersonPhoneNumber").val(data);
 						}

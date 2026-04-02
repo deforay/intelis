@@ -133,7 +133,7 @@ if (isset($arr['hepatitis_min_patient_id_length']) && $arr['hepatitis_min_patien
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$userId =  $_SESSION['userId'];
+$userId = $_SESSION['userId'];
 $checkNonAdminUser = $general->isNonAdmin($userId);
 $fileArray = [
     COUNTRY\SOUTH_SUDAN => 'forms/edit-southsudan.php',
@@ -150,7 +150,7 @@ $canEdit = ($hepatitisInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
 
 if (!$canEdit) {
     http_response_code(403);
-    throw new SystemException('Cannot Edit Locked Samples', 403);
+    throw new SystemException(_translate('Cannot Edit Locked Samples'), 403);
 }
 require_once($fileArray[$arr['vl_form']]);
 // Common JS functions in a PHP file
@@ -166,13 +166,13 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
         if ($.trim($("#" + id).val()) != '') {
             $.blockUI();
             $.post("/covid-19/requests/check-sample-duplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: $("#" + id).val(),
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: $("#" + id).val(),
+                fnct: fnct,
+                format: "html"
+            },
+                function (data) {
                     if (data != 0) {
 
                     }
@@ -181,24 +181,24 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
 
 
 
-        $('#isSampleRejected').change(function(e) {
+        $('#isSampleRejected').change(function (e) {
             changeReject(this.value);
         });
 
-        $("#hepatitisPlatform").on("change", function() {
+        $("#hepatitisPlatform").on("change", function () {
             if (this.value != "") {
                 getMachine(this.value);
             }
         });
         getMachine($("#hepatitisPlatform").val());
 
-        $('.result-focus').change(function(e) {
+        $('.result-focus').change(function (e) {
             var status = false;
-            $(".result-focus").each(function(index) {
+            $(".result-focus").each(function (index) {
                 if ($(this).val() != "") {
                     status = true;
                 }
@@ -241,11 +241,11 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
 
     function getMachine(value) {
         $.post("/instruments/get-machine-names-by-instrument.php", {
-                instrumentId: value,
-                machine: <?php echo empty($hepatitisInfo['import_machine_name']) ? '""' : $hepatitisInfo['import_machine_name']; ?>,
-                testType: 'hepatitis'
-            },
-            function(data) {
+            instrumentId: value,
+            machine: <?php echo empty($hepatitisInfo['import_machine_name']) ? '""' : $hepatitisInfo['import_machine_name']; ?>,
+            testType: 'hepatitis'
+        },
+            function (data) {
                 $('#machineName').html('');
                 if (data != "") {
                     $('#machineName').append(data);

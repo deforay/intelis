@@ -81,7 +81,7 @@ $covid19TestInfo = $db->rawQuery($covid19TestQuery, [$id]);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$userId =  $_SESSION['userId'];
+$userId = $_SESSION['userId'];
 $checkNonAdminUser = $general->isNonAdmin($userId);
 
 //Funding source list
@@ -150,7 +150,7 @@ $canEdit = ($covid19Info['locked'] == 'yes' && $_SESSION['roleId'] == 1)
 
 if (!$canEdit) {
     http_response_code(403);
-    throw new SystemException('Cannot Edit Locked Samples', 403);
+    throw new SystemException(_translate('Cannot Edit Locked Samples'), 403);
 }
 require_once($fileArray[$arr['vl_form']]);
 ?>
@@ -160,13 +160,13 @@ require_once($fileArray[$arr['vl_form']]);
         if ($.trim($("#" + id).val()) != '') {
             $.blockUI();
             $.post("/covid-19/requests/check-sample-duplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: $("#" + id).val(),
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: $("#" + id).val(),
+                fnct: fnct,
+                format: "html"
+            },
+                function (data) {
                     if (data != 0) {
 
                     }
@@ -175,23 +175,23 @@ require_once($fileArray[$arr['vl_form']]);
         }
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
 
 
 
 
-        $('#isSampleRejected').change(function(e) {
+        $('#isSampleRejected').change(function (e) {
             changeReject(this.value);
         });
-        $('#hasRecentTravelHistory').change(function(e) {
+        $('#hasRecentTravelHistory').change(function (e) {
             changeHistory(this.value);
         });
         changeReject($('#isSampleRejected').val());
         changeHistory($('#hasRecentTravelHistory').val());
 
-        $('.result-focus').change(function(e) {
+        $('.result-focus').change(function (e) {
             var status = false;
-            $(".result-focus").each(function(index) {
+            $(".result-focus").each(function (index) {
                 if ($(this).val() != "") {
                     status = true;
                 }
@@ -220,9 +220,9 @@ require_once($fileArray[$arr['vl_form']]);
         $("#showEmptyResult").hide();
         if ($.trim($("#artPatientNo").val()) != '') {
             $.post("/covid-19/requests/search-patients.php", {
-                    artPatientNo: $.trim($("#artPatientNo").val())
-                },
-                function(data) {
+                artPatientNo: $.trim($("#artPatientNo").val())
+            },
+                function (data) {
                     if (data >= '1') {
                         showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
                     } else {
