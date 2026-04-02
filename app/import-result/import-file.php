@@ -41,24 +41,8 @@ $primaryKey = TestsService::getPrimaryColumn($type);
 
 // Check upload directory existence and permissions
 $uploadDir = UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results";
-$uploadDirStatus = 'ok';
-$uploadDirWarning = '';
-if (!is_dir($uploadDir)) {
-	// Attempt to create the directory recursively
-	if (!MiscUtility::makeDirectory($uploadDir)) {
-		$uploadDirStatus = 'error';
-	}
-}
-
-if ($uploadDirStatus === 'ok' && !is_writable($uploadDir)) {
-	// Attempt to fix permissions
-	if (!chmod($uploadDir, 0755)) {
-		$uploadDirStatus = 'error';
-	}
-}
-if ($uploadDirStatus != 'ok') {
-	$uploadDirWarning = _translate("The upload directory is not available or not writable. Please contact your system administrator.");
-}
+MiscUtility::makeDirectory($uploadDir);
+$uploadDirReady = is_dir($uploadDir) && is_writable($uploadDir);
 
 $lastQuery = "SELECT lab_id FROM $testTableName WHERE lab_id is not NULL ORDER BY last_modified_datetime DESC LIMIT 1";
 
@@ -269,10 +253,10 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 											<!-- <input type="hidden" id="dateFormat" name="dateFormat" value="" /> -->
 											<input type="hidden" id="fileName" name="fileName" value="" />
 
-											<?php if ($uploadDirStatus === 'error') : ?>
+											<?php if (!$uploadDirReady) : ?>
 												<div class="alert alert-danger" role="alert" style="margin-bottom: 12px;">
 													<strong><em class="fa-solid fa-circle-exclamation"></em> <?php echo _translate("Upload Directory Error"); ?></strong><br>
-													<?php echo $uploadDirWarning; ?>
+													<?php echo _translate("The upload directory is not available or not writable. Please contact your system administrator."); ?>
 												</div>
 												<a class="btn btn-primary disabled" href="javascript:void(0);"
 													style="pointer-events:none;opacity:0.6;cursor:not-allowed;"

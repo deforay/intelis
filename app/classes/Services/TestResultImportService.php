@@ -83,21 +83,8 @@ class TestResultImportService
         $fileName = ($this->postData['fileName'] ?? 'import') . "-" . MiscUtility::generateRandomString(12) . "." . $extension;
         $uploadPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results";
 
-        if (!is_dir($uploadPath)) {
-            MiscUtility::makeDirectory($uploadPath);
-        }
-
-        // Check upload directory existence and permissions
-        $uploadDirStatus = 'ok';
         MiscUtility::makeDirectory($uploadPath);
-        if (!is_dir($uploadPath)) {
-            $uploadDirStatus = 'error';
-        }
-
-        if ($uploadDirStatus === 'ok' && !is_writable($uploadPath)) {
-            $uploadDirStatus = 'error';
-        }
-        if ($uploadDirStatus != 'ok') {
+        if (!is_dir($uploadPath) || !is_writable($uploadPath)) {
             throw new SystemException(_translate("The upload directory is not available or not writable. Please contact your system administrator."));
         }
         $this->currentFileName = realpath($uploadPath) . DIRECTORY_SEPARATOR . $fileName;

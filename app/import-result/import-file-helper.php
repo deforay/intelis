@@ -36,18 +36,8 @@ $directoryMap = [
 
 // Check upload directory existence and permissions
 $uploadDir = UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results";
-$uploadDirStatus = 'ok';
-$uploadDirWarning = '';
-
 MiscUtility::makeDirectory($uploadDir);
-if (!is_dir($uploadDir)) {
-    $uploadDirStatus = 'error';
-}
-
-if ($uploadDirStatus === 'ok' && !is_writable($uploadDir)) {
-    $uploadDirStatus = 'error';
-}
-if ($uploadDirStatus != 'ok') {
+if (!is_dir($uploadDir) || !is_writable($uploadDir)) {
     throw new SystemException(_translate("The upload directory is not available or not writable. Please contact your system administrator."));
 }
 
