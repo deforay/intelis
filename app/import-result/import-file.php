@@ -56,7 +56,6 @@ if ($uploadDirStatus === 'ok' && !is_writable($uploadDir)) {
 		$uploadDirStatus = 'error';
 	}
 }
-$uploadDirStatus = 'ok';
 if ($uploadDirStatus != 'ok') {
 	$uploadDirWarning = _translate("The upload directory is not available or not writable. Please contact your system administrator.");
 }
