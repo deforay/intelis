@@ -1,5 +1,6 @@
 <?php
 // this is import-file.php
+use App\Utilities\MiscUtility;
 use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -8,6 +9,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
+
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
@@ -33,11 +35,31 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 
-
-
 $testName = TestsService::getTestName($type);
 $testTableName = TestsService::getTestTableName($type);
 $primaryKey = TestsService::getPrimaryColumn($type);
+
+// Check upload directory existence and permissions
+$uploadDir = UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results";
+$uploadDirStatus = 'ok';
+$uploadDirWarning = '';
+if (!is_dir($uploadDir)) {
+	// Attempt to create the directory recursively
+	if (!MiscUtility::makeDirectory($uploadDir)) {
+		$uploadDirStatus = 'error';
+	}
+}
+
+if ($uploadDirStatus === 'ok' && !is_writable($uploadDir)) {
+	// Attempt to fix permissions
+	if (!chmod($uploadDir, 0755)) {
+		$uploadDirStatus = 'error';
+	}
+}
+$uploadDirStatus = 'ok';
+if ($uploadDirStatus != 'ok') {
+	$uploadDirWarning = _translate("The upload directory is not available or not writable. Please contact your system administrator.");
+}
 
 $lastQuery = "SELECT lab_id FROM $testTableName WHERE lab_id is not NULL ORDER BY last_modified_datetime DESC LIMIT 1";
 
@@ -206,7 +228,7 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 														</option>
 														<?php
 														foreach ($facilitiesList as $val) {
-															?>
+														?>
 															<option
 																value="<?php echo base64_encode((string) $val['facility_id']); ?>"
 																<?php echo (isset($lastResult['lab_id']) && $lastResult['lab_id'] == $val['facility_id']) ? "selected='selected'" : ""; ?>>
@@ -247,8 +269,22 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 											<input type="hidden" id="type" name="type" value="<?php echo $type; ?>" />
 											<!-- <input type="hidden" id="dateFormat" name="dateFormat" value="" /> -->
 											<input type="hidden" id="fileName" name="fileName" value="" />
-											<a class="btn btn-primary" href="javascript:void(0);"
-												onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+
+											<?php if ($uploadDirStatus === 'error') : ?>
+												<div class="alert alert-danger" role="alert" style="margin-bottom: 12px;">
+													<strong><em class="fa-solid fa-circle-exclamation"></em> <?php echo _translate("Upload Directory Error"); ?></strong><br>
+													<?php echo $uploadDirWarning; ?>
+												</div>
+												<a class="btn btn-primary disabled" href="javascript:void(0);"
+													style="pointer-events:none;opacity:0.6;cursor:not-allowed;"
+													title="<?php echo _translate('Submit is disabled due to upload directory issue'); ?>">
+													<?php echo _translate("Submit"); ?>
+												</a>
+											<?php else : ?>
+												<a class="btn btn-primary" href="javascript:void(0);"
+													onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
+											<?php endif; ?>
+
 											<a href="/dashboard/index.php" class="btn btn-default">
 												<?php echo _translate("Cancel"); ?></a>
 										</div>
@@ -272,7 +308,7 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 
 <?php require_once WEB_ROOT . '/assets/js/smart-date-format.js.php'; ?>
 <script type="text/javascript">
-	$(document).ready(function () {
+	$(document).ready(function() {
 		// Initialize Smart Date Format for import form
 		SmartDateFormat.init({
 			inputId: 'sampleDateInput',
@@ -281,7 +317,7 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 			manualInputId: 'manualFormatInput',
 			rowId: 'import',
 			defaultFormat: 'd/m/Y H:i',
-			onFormatSelected: function (format, settings) {
+			onFormatSelected: function(format, settings) {
 				console.log('Date format selected for import:', format);
 			}
 		});
@@ -300,7 +336,7 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 		}
 	}
 
-	$("#machineName").on('change', function () {
+	$("#machineName").on('change', function() {
 		if ($("#machineName").val() == "") {
 			$("#vltestPlatform").val("");
 		} else {
@@ -309,7 +345,7 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 		}
 	});
 
-	$("#configMachineName").on('change', function () {
+	$("#configMachineName").on('change', function() {
 		updateDateFormatFromSelectedMachine();
 	});
 
@@ -372,9 +408,9 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 	function getConfigMachineName() {
 		if ($("#machineName").val() != '') {
 			$.post("/import-result/getConfigMachineName.php", {
-				configId: $("#machineName").val()
-			},
-				function (data) {
+					configId: $("#machineName").val()
+				},
+				function(data) {
 					$("#configMachineName").html(data);
 					// Apply date format after the dropdown is populated
 					updateDateFormatFromSelectedMachine();
