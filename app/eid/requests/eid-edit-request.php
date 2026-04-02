@@ -213,7 +213,7 @@ $canEdit = ($eidInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
 
 if (!$canEdit) {
     http_response_code(403);
-    throw new SystemException('Cannot Edit Locked Samples', 403);
+    throw new SystemException(_translate('Cannot Edit Locked Samples'), 403);
 }
 require_once($fileArray[$arr['vl_form']]);
 // Common JS functions in a PHP file

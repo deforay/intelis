@@ -25,7 +25,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $id = isset($_GET['id']) && $_GET['id'] !== '' ? MiscUtility::desqid((string) $_GET['id']) : null;
 if ($id === null) {
     http_response_code(400);
-    throw new SystemException('Invalid or missing id', 400);
+    throw new SystemException(_translate('Invalid or missing id'), 400);
 }
 
 $db->where('api_track_id', $id);
@@ -33,13 +33,13 @@ $result = $db->getOne('track_api_requests');
 
 if (empty($result)) {
     http_response_code(404);
-    throw new SystemException('Transaction not found', 404);
+    throw new SystemException(_translate('Transaction not found'), 404);
 }
 
 $transactionId = (string) ($result['transaction_id'] ?? '');
 if ($transactionId === '') {
     http_response_code(500);
-    throw new SystemException('Transaction row is corrupt: missing transaction_id', 500);
+    throw new SystemException(_translate('Transaction row is corrupt: missing transaction_id'), 500);
 }
 
 // ---------- Locate archives ----------
@@ -598,7 +598,8 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
                                 <i class="fa fa-file-o error-icon-large"></i>
                                 <div class="error-title"><?= _translate('Request Not Available'); ?></div>
                                 <p><?= _translate("Couldn't load"); ?>
-                                    <code><?= htmlspecialchars($reqName, ENT_QUOTES, 'UTF-8') ?></code>.</p>
+                                    <code><?= htmlspecialchars($reqName, ENT_QUOTES, 'UTF-8') ?></code>.
+                                </p>
                                 <div class="error-detail"><?= htmlspecialchars((string) $req['error'], ENT_QUOTES, 'UTF-8') ?>
                                 </div>
                             </div>
@@ -630,7 +631,8 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
                                     <i class="fa fa-file-o error-icon-large"></i>
                                     <div class="error-title"><?= _translate('Response Not Available'); ?></div>
                                     <p><?= _translate("Couldn't load"); ?>
-                                        <code><?= htmlspecialchars($resName, ENT_QUOTES, 'UTF-8') ?></code>.</p>
+                                        <code><?= htmlspecialchars($resName, ENT_QUOTES, 'UTF-8') ?></code>.
+                                    </p>
                                     <div class="error-detail"><?= htmlspecialchars((string) $res['error'], ENT_QUOTES, 'UTF-8') ?>
                                     </div>
                                 </div>

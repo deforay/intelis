@@ -30,7 +30,7 @@ $vlService = ContainerRegistry::get(VlService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$userId =  $_SESSION['userId'];
+$userId = $_SESSION['userId'];
 $checkNonAdminUser = $general->isNonAdmin($userId);
 $formId = (int) $general->getGlobalConfig('vl_form');
 
@@ -213,7 +213,7 @@ $canEdit = ($cd4QueryInfo['locked'] == 'yes' && $_SESSION['roleId'] == 1)
 
 if (!$canEdit) {
      http_response_code(403);
-     throw new SystemException('Cannot Edit Locked Samples', 403);
+     throw new SystemException(_translate('Cannot Edit Locked Samples'), 403);
 }
 require_once($fileArray[$formId]);
 ?>
