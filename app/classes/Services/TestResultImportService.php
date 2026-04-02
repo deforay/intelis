@@ -87,6 +87,19 @@ class TestResultImportService
             MiscUtility::makeDirectory($uploadPath);
         }
 
+        // Check upload directory existence and permissions
+        $uploadDirStatus = 'ok';
+        MiscUtility::makeDirectory($uploadPath);
+        if (!is_dir($uploadPath)) {
+            $uploadDirStatus = 'error';
+        }
+
+        if ($uploadDirStatus === 'ok' && !is_writable($uploadPath)) {
+            $uploadDirStatus = 'error';
+        }
+        if ($uploadDirStatus != 'ok') {
+            throw new SystemException(_translate("The upload directory is not available or not writable. Please contact your system administrator."));
+        }
         $this->currentFileName = realpath($uploadPath) . DIRECTORY_SEPARATOR . $fileName;
 
         if (!move_uploaded_file($_FILES['resultFile']['tmp_name'], $this->currentFileName)) {

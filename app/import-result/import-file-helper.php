@@ -9,6 +9,7 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
+
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
@@ -33,8 +34,22 @@ $directoryMap = [
     'cd4' => 'cd4',
 ];
 
+// Check upload directory existence and permissions
+$uploadDir = UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results";
+$uploadDirStatus = 'ok';
+$uploadDirWarning = '';
 
-MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results");
+MiscUtility::makeDirectory($uploadDir);
+if (!is_dir($uploadDir)) {
+    $uploadDirStatus = 'error';
+}
+
+if ($uploadDirStatus === 'ok' && !is_writable($uploadDir)) {
+    $uploadDirStatus = 'error';
+}
+if ($uploadDirStatus != 'ok') {
+    throw new SystemException(_translate("The upload directory is not available or not writable. Please contact your system administrator."));
+}
 
 if (!isset($directoryMap[$type])) {
     throw new SystemException(_translate('Invalid Test Type'));
