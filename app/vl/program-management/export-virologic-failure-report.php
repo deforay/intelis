@@ -6,29 +6,15 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
+
+ini_set('memory_limit', '512M');
+set_time_limit(300);
+ini_set('max_execution_time', 300);
 
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
-
-
-// Define the style array for border
-$styleArray = [
-     'borders' => [
-          'allBorders' => [
-               'borderStyle' => Border::BORDER_THIN,
-               'color' => ['argb' => '000000'],
-          ],
-     ],
-     'alignment' => [
-          'horizontal' => Alignment::HORIZONTAL_LEFT,
-          'vertical' => Alignment::VERTICAL_CENTER,
-     ],
-];
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -38,16 +24,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 
-$headerStyleArray = [
-     'font' => [
-          'bold' => true,
-          'size' => '13',
-     ],
-     'alignment' => [
-          'horizontal' => Alignment::HORIZONTAL_CENTER,
-          'vertical' => Alignment::VERTICAL_CENTER,
-     ]
-];
 $sQuery = "SELECT
                vl.patient_art_no,
                DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y') as sampleDate,
@@ -133,10 +109,21 @@ if (!empty($sWhere)) {
      $sQuery = $sQuery . " WHERE " . implode(" AND ", $sWhere);
 }
 $sQuery .= " ORDER BY f.facility_name asc, patient_art_no asc, sample_collection_date asc";
-//die($sQuery);
-$rResult = $db->rawQuery($sQuery);
 
-if (!$rResult) {
+$resultSet = $db->rawQueryGenerator($sQuery);
+
+// Group rows by patient ID — streamed from generator, no raw result array held
+$grouped = [];
+foreach ($resultSet as $aRow) {
+     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] === 'yes') {
+          $aRow['patient_art_no'] = CommonService::decrypt($aRow['patient_art_no'], base64_decode((string) $keyFromGlobalConfig));
+     }
+     unset($aRow['is_encrypted']);
+     $patientId = trim((string) $aRow['patient_art_no']);
+     $grouped[$patientId][] = $aRow;
+}
+
+if (empty($grouped)) {
      return null;
 }
 
@@ -158,112 +145,47 @@ $headings = [
      'VL Result'
 ];
 
-// Group rows by patient ID in a single pass - O(n)
-$grouped = [];
-foreach ($rResult as $aRow) {
-     if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] === 'yes') {
-          $aRow['patient_art_no'] = CommonService::decrypt($aRow['patient_art_no'], base64_decode((string) $keyFromGlobalConfig));
-     }
-     unset($aRow['is_encrypted']);
-     $patientId = trim((string) $aRow['patient_art_no']);
-     $grouped[$patientId][] = $aRow;
-}
-unset($rResult);
+$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-HIGH-VL-AND-VIROLOGIC-FAILURE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 
-// Separate: patients with multiple results = virologic failure, single result = VL not suppressed
-$vfData = [];
-$vlnsData = [];
+$writer = new Writer();
+$writer->openToFile($filename);
+
+// Sheet 1: VL - Not Suppressed
+$vlnsSheet = $writer->getCurrentSheet();
+$vlnsSheet->setName('VL - Not Suppressed');
+$writer->addRow(Row::fromValues($headings));
+
+// Sheet 2: Virologic Failure
+$vfSheet = $writer->addNewSheetAndMakeItCurrent();
+$vfSheet->setName('Virologic Failure');
+$writer->addRow(Row::fromValues($headings));
+
+$rowCount = 0;
 foreach ($grouped as $rows) {
      if (count($rows) > 1) {
+          // Virologic Failure — show patient ID only on first row
+          $writer->setCurrentSheet($vfSheet);
+          $isFirst = true;
           foreach ($rows as $row) {
-               $vfData[] = $row;
+               if (!$isFirst) {
+                    $row['patient_art_no'] = '';
+               }
+               $writer->addRow(Row::fromValues(array_values($row)));
+               $isFirst = false;
           }
      } else {
-          $vlnsData[] = $rows[0];
+          // VL - Not Suppressed
+          $writer->setCurrentSheet($vlnsSheet);
+          $writer->addRow(Row::fromValues(array_values($rows[0])));
+     }
+
+     $rowCount++;
+     if ($rowCount % 5000 === 0) {
+          gc_collect_cycles();
      }
 }
 unset($grouped);
 
-if ($vfData !== []) {
-     $vfData = array_combine(range(1, count($vfData)), array_values($vfData));
-}
-if ($vlnsData !== []) {
-     $vlnsData = array_combine(range(1, count($vlnsData)), array_values($vlnsData));
-}
-$colNo = 1;
-$vlnsColNo = 1;
-$excel = new Spreadsheet();
-$vlnsSheet = $excel->getActiveSheet();
-$vfSheet = $excel->createSheet();
+$writer->close();
 
-$vfSheet->setTitle('Virologic Failure');
-$vlnsSheet->setTitle('VL - Not Suppressed');
-foreach ($headings as $field => $value) {
-     $vfSheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . '1', html_entity_decode($value));
-     $colNo++;
-     $vlnsSheet->setCellValue(Coordinate::stringFromColumnIndex($vlnsColNo) . '1', html_entity_decode($value));
-     $vlnsColNo++;
-}
-$vfSheet->getStyle('A1:O1')->applyFromArray($headerStyleArray);
-$currentPatientId = null;
-$startRow = 2; // Start from the second row as the first row is the header
-foreach ($vfData as $rowNo => $rowData) {
-     $colNo = 1;
-     $rRowCount = $rowNo + 1; // +2 because Excel rows are 1-indexed and the header row
-     foreach ($rowData as $field => $value) {
-          $vfSheet->setCellValue(
-               Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-               html_entity_decode((string) $value)
-          );
-          $colNo++;
-     }
-     // If the patient ID changes, merge the cells of the previous patient and update the start row and current patient ID
-     if ($rowData['patient_art_no'] !== $currentPatientId && $currentPatientId !== null) {
-          $vfSheet->mergeCells('A' . $startRow . ':A' . ($rRowCount - 1));
-          $startRow = $rRowCount;
-     }
-     $currentPatientId = $rowData['patient_art_no'];
-}
-// Merge the cells of the last patient
-$vfSheet->mergeCells('A' . $startRow . ':A' . ($rRowCount ?? ($startRow + 1)));
-
-
-// Get the highest row and column numbers
-$highestRow = $vfSheet->getHighestRow(); // e.g. 10
-$highestCol = $vfSheet->getHighestColumn(); // e.g 'F'
-
-// Apply the border style to all cells
-$vfSheet->getStyle("A1:$highestCol$highestRow")->applyFromArray($styleArray);
-
-foreach (range('A', 'O') as $columnID) {
-     $vfSheet->getColumnDimension($columnID)->setAutoSize(true);
-}
-
-$vlnsSheet->getStyle('A1:O1')->applyFromArray($headerStyleArray);
-foreach ($vlnsData as $rowNo => $rowData) {
-     $colNo = 1;
-     $rRowCount = $rowNo + 1;
-     foreach ($rowData as $field => $value) {
-          $vlnsSheet->setCellValue(
-               Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-               html_entity_decode((string) $value)
-          );
-          $colNo++;
-     }
-}
-
-
-// Get the highest row and column numbers
-$highestRow = $vlnsSheet->getHighestRow(); // e.g. 10
-$highestCol = $vlnsSheet->getHighestColumn(); // e.g 'F'
-
-$vlnsSheet->getStyle("A1:$highestCol$highestRow")->applyFromArray($styleArray);
-
-foreach (range('A', 'O') as $columnID) {
-     $vlnsSheet->getColumnDimension($columnID)->setAutoSize(true);
-}
-
-$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-HIGH-VL-AND-VIROLOGIC-FAILURE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
-$writer->save($filename);
 echo urlencode(basename($filename));
