@@ -270,6 +270,5 @@ try {
 
     header("Location:/import-result/imported-results.php?t=$type");
 } catch (Exception $exc) {
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-    error_log($exc->getMessage());
+    throw $exc;
 }

@@ -5,6 +5,7 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -52,4 +53,16 @@ if (!is_file($machineImportScript) || !is_readable($machineImportScript)) {
     throw new SystemException(_translate("Import Script not found"), 404);
 }
 
-require_once $machineImportScript;
+try {
+    require_once $machineImportScript;
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+        'instrument' => $machineImportScript,
+    ]);
+    $_SESSION['alertMsg'] = _translate("Import failed") . ": " . $e->getMessage();
+    header("Location:/import-result/import-file.php?t=" . urlencode($type));
+    exit;
+}
