@@ -70,6 +70,12 @@ if ($testType === 'eid') {
     $samplesRejectedChart = "cd4SamplesRejectedChart";
     $samplesWaitingChart = "cd4SamplesWaitingChart";
     $samplesOverviewChart = "cd4SamplesOverviewChart";
+} elseif ($testType === 'tb') {
+    $samplesReceivedChart = "eidSamplesReceivedChart";
+    $samplesTestedChart = "eidSamplesTestedChart";
+    $samplesRejectedChart = "eidSamplesRejectedChart";
+    $samplesWaitingChart = "eidSamplesWaitingChart";
+    $samplesOverviewChart = "eidSamplesOverviewChart";
 } elseif ($testType === 'recency') {
     // The “Recency” view is driven from the VL table but only for reason 9999
     $recencyWhere = " reason_for_vl_testing = 9999 ";
@@ -78,12 +84,6 @@ if ($testType === 'eid') {
     $samplesRejectedChart = "recencySamplesRejectedChart";
     $samplesWaitingChart = "recencySamplesWaitingChart";
     $samplesOverviewChart = "recencySamplesOverviewChart";
-} elseif ($testType === 'tb') {
-    $samplesReceivedChart = "tbSamplesReceivedChart";
-    $samplesTestedChart = "tbSamplesTestedChart";
-    $samplesRejectedChart = "tbSamplesRejectedChart";
-    $samplesWaitingChart = "tbSamplesWaitingChart";
-    $samplesOverviewChart = "tbSamplesOverviewChart";
 } elseif ($testType === 'generic-tests') {
     $samplesReceivedChart = "genericTestsSamplesReceivedChart";
     $samplesTestedChart = "genericTestsSamplesTestedChart";
@@ -388,7 +388,7 @@ try {
     </div>
 </div>
 
-<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
+<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
     <div class="dashboard-stat2 " style="cursor:pointer;">
         <div class="display font-red-haze">
             <div class="number">

@@ -172,7 +172,24 @@ require_once WEB_ROOT . "/assets/js/test-specific/vl.js.php";
                 }
             });
     }
+
+    function updateLocationOfSample()
+    {
+        var communitySample = $("#communitySample").val();
+        var sampleLocation = $("#locationOfSampleCollection").val();
+        if(communitySample!='' && communitySample == "yes")
+        {
+            $("#locationOfSampleCollection").val('community');
+            $("#locationOfSampleCollection").prop("disabled", true);
+        }
+        if(sampleLocation != '' && sampleLocation == 'community')
+        {
+            $("#communitySample").val('yes');
+            $("#communitySample").prop("disabled", true);
+        }
+    }
 </script>
 <?php
 
 require_once APPLICATION_PATH . '/footer.php';
+ 
