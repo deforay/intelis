@@ -55,19 +55,12 @@ try {
 
             $result = (string) $row['Result'];
             $resultInLowerCase = strtolower($result);
+            $negativeKeywords = ['non-reactive', 'non reactive', 'not detected', 'negative'];
+            $positiveKeywords = ['reactive', 'detected', 'positive', 'passed'];
 
-            if (
-                str_contains($resultInLowerCase, 'non-reactive') ||
-                str_contains($resultInLowerCase, 'not detected') ||
-                str_contains($resultInLowerCase, 'negative')
-            ) {
+            if (array_any($negativeKeywords, fn($kw) => str_contains($resultInLowerCase, $kw))) {
                 $result = 'negative';
-            } elseif (
-                str_contains($resultInLowerCase, 'reactive') ||
-                str_contains($resultInLowerCase, 'detected') ||
-                str_contains($resultInLowerCase, 'positive') ||
-                str_contains($resultInLowerCase, 'passed')
-            ) {
+            } elseif (array_any($positiveKeywords, fn($kw) => str_contains($resultInLowerCase, $kw))) {
                 $result = 'positive';
             } else {
                 $result = $resultInLowerCase;
