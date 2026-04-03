@@ -227,7 +227,23 @@ require_once($fileArray[$arr['vl_form']]);
 ?>
 
 <script type="text/javascript"
-     src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+     src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>">
+function updateLocationOfSample()
+    {
+        var communitySample = $("#communitySample").val();
+        var sampleLocation = $("#locationOfSampleCollection").val();
+        if(communitySample!='' && communitySample == "yes")
+        {
+            $("#locationOfSampleCollection").val('community');
+            $("#locationOfSampleCollection").prop("disabled", true);
+        }
+        if(sampleLocation != '' && sampleLocation == 'community')
+        {
+            $("#communitySample").val('yes');
+            $("#communitySample").prop("disabled", true);
+        }
+    }
+</script>
 
 <?php
 // Common JS functions in a PHP file

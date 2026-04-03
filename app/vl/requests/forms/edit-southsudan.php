@@ -203,7 +203,7 @@ if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty
 									<div class="col-xs-4 col-md-4">
 										<div class="form-group">
 											<label for="communitySample">Community Sample</label>
-											<select class="form-control" name="communitySample" id="communitySample" title="Please choose if this is a community sample" style="width:100%;">
+											<select class="form-control" name="communitySample" id="communitySample" title="Please choose if this is a community sample" onclick="updateLocationOfSample();" style="width:100%;">
 												<option value=""> -- Select -- </option>
 												<option value="yes" <?php echo (isset($vlQueryInfo['community_sample']) && $vlQueryInfo['community_sample'] == 'yes') ? 'selected="selected"' : ''; ?>>Yes</option>
 												<option value="no" <?php echo (isset($vlQueryInfo['community_sample']) && $vlQueryInfo['community_sample'] == 'no') ? 'selected="selected"' : ''; ?>>No</option>
@@ -433,7 +433,7 @@ if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
 												<label for="locationOfSampleCollection">Location Of Sample Collection</label>
-												<select name="locationOfSampleCollection" id="locationOfSampleCollection" class="form-control" title="Please choose location of sample collection">
+												<select name="locationOfSampleCollection" id="locationOfSampleCollection" class="form-control" onclick="updateLocationOfSample();" title="Please choose location of sample collection">
 													<option value=""> -- Select -- </option>
 													<option value="facility" <?php echo ($vlQueryInfo['location_of_sample_collection'] == 'facility') ? "selected='selected'" : "" ?>>Facility</option>
 													<option value="community" <?php echo ($vlQueryInfo['location_of_sample_collection'] == 'community') ? "selected='selected'" : "" ?>>Community</option>
