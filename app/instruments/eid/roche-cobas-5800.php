@@ -60,15 +60,11 @@ try {
             $positiveKeywords = ['reactive', 'detected', 'positive', 'passed'];
 
             $parts = array_map('trim', explode('|', $resultInLowerCase));
-            $isPositive = array_any(
-                $parts,
-                fn($part) =>
+            $isPositive = array_any($parts, fn($part) =>
                 array_any($positiveKeywords, fn($kw) => str_contains($part, $kw)) &&
-                    !array_any($negativeKeywords, fn($kw) => str_contains($part, $kw))
+                !array_any($negativeKeywords, fn($kw) => str_contains($part, $kw))
             );
-            $isNegative = array_any(
-                $parts,
-                fn($part) =>
+            $isNegative = array_any($parts, fn($part) =>
                 array_any($negativeKeywords, fn($kw) => str_contains($part, $kw))
             );
 
@@ -84,35 +80,35 @@ try {
 
             $infoFromFile[$row['Sample ID']] = [
                 "sampleCode" => $row['Sample ID'],
-                "logVal"         => null,
-                "absVal"         => null,
-                "absDecimalVal"  => null,
-                "txtVal"         => null,
-                "result"         => $result,
-                "resultFlag"     => null,
-                "testingDate"    => $testingDate,
-                "sampleType"     => null,
+                "logVal" => null,
+                "absVal" => null,
+                "absDecimalVal" => null,
+                "txtVal" => null,
+                "result" => $result,
+                "resultFlag" => null,
+                "testingDate" => $testingDate,
+                "sampleType" => null,
             ];
         }
 
         foreach ($infoFromFile as $sampleCode => $d) {
 
             $data = [
-                'module'                       => 'eid',
-                'lab_id'                       => base64_decode((string) $_POST['labId']),
-                'vl_test_platform'             => $_POST['vltestPlatform'],
-                'result_reviewed_by'           => $_SESSION['userId'],
-                'sample_code'                  => $d['sampleCode'],
-                'result_value_log'             => $d['logVal'],
-                'sample_type'                  => $d['sampleType'],
-                'result'                       => $d['result'],
-                'result_value_absolute'        => $d['absVal'],
-                'result_value_text'            => $d['txtVal'],
+                'module' => 'eid',
+                'lab_id' => base64_decode((string) $_POST['labId']),
+                'vl_test_platform' => $_POST['vltestPlatform'],
+                'result_reviewed_by' => $_SESSION['userId'],
+                'sample_code' => $d['sampleCode'],
+                'result_value_log' => $d['logVal'],
+                'sample_type' => $d['sampleType'],
+                'result' => $d['result'],
+                'result_value_absolute' => $d['absVal'],
+                'result_value_text' => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal'],
-                'sample_tested_datetime'       => $d['testingDate'],
-                'result_status'                => RECEIVED_AT_TESTING_LAB,
-                'import_machine_file_name'     => $fileName,
-                'lab_tech_comments'            => $d['resultFlag'],
+                'sample_tested_datetime' => $d['testingDate'],
+                'result_status' => RECEIVED_AT_TESTING_LAB,
+                'import_machine_file_name' => $fileName,
+                'lab_tech_comments' => $d['resultFlag'],
             ];
 
             $query = "SELECT facility_id,
@@ -137,7 +133,7 @@ try {
             // in this scope — only $d['...'] equivalents exist).
             if (!empty($d['sampleCode'])) {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
-                $data['imported_by']              = $_SESSION['userId'];
+                $data['imported_by'] = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);
             }
         }
@@ -147,15 +143,15 @@ try {
 
     // Add event log
     $eventType = 'result-import';
-    $action    = $_SESSION['userName'] . ' imported test results for Roche EID';
-    $resource  = 'import-result';
+    $action = $_SESSION['userName'] . ' imported test results for Roche EID';
+    $resource = 'import-result';
     $general->activityLog($eventType, $action, $resource);
 
     header("Location:/import-result/imported-results.php?t=$type");
 } catch (Exception $e) {
     LoggerUtility::logError($e->getMessage(), [
-        'file'  => $e->getFile(),
-        'line'  => $e->getLine(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),
     ]);
 }
