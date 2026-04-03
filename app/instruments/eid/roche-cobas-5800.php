@@ -30,8 +30,6 @@ try {
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'eid');
 
-    // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
-
     if (
         isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
         || $_FILES['resultFile']['size'] <= 0
@@ -44,22 +42,32 @@ try {
     $extension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $fileName = $_POST['fileName'] . "." . $extension;
 
-
-
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
+
     if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
 
+        $infoFromFile = [];
 
         foreach (MiscUtility::readCSVFile($resultFile) as $row) {
-            if ($row['Sample ID'] == "") {
+            if (empty($row['Sample ID'])) {
                 continue;
             }
 
             $result = (string) $row['Result'];
             $resultInLowerCase = strtolower($result);
-            if (str_contains($resultInLowerCase, 'not detected')) {
+
+            if (
+                str_contains($resultInLowerCase, 'non-reactive') ||
+                str_contains($resultInLowerCase, 'not detected') ||
+                str_contains($resultInLowerCase, 'negative')
+            ) {
                 $result = 'negative';
-            } elseif ((str_contains($resultInLowerCase, 'detected')) || (str_contains(strtolower((string) $rowData[$resultCol]), 'passed'))) {
+            } elseif (
+                str_contains($resultInLowerCase, 'reactive') ||
+                str_contains($resultInLowerCase, 'detected') ||
+                str_contains($resultInLowerCase, 'positive') ||
+                str_contains($resultInLowerCase, 'passed')
+            ) {
                 $result = 'positive';
             } else {
                 $result = $resultInLowerCase;
@@ -69,45 +77,46 @@ try {
 
             $infoFromFile[$row['Sample ID']] = [
                 "sampleCode" => $row['Sample ID'],
-                "logVal" => null,
-                "absVal" => null,
-                "absDecimalVal" => null,
-                "txtVal" => null,
-                "result" => $result,
-                "resultFlag" => null,
-                "testingDate" => $testingDate,
-                "sampleType" => null
+                "logVal"         => null,
+                "absVal"         => null,
+                "absDecimalVal"  => null,
+                "txtVal"         => null,
+                "result"         => $result,
+                "resultFlag"     => null,
+                "testingDate"    => $testingDate,
+                "sampleType"     => null,
             ];
         }
 
         foreach ($infoFromFile as $sampleCode => $d) {
 
             $data = [
-                'module' => 'eid',
-                'lab_id' => base64_decode((string) $_POST['labId']),
-                'vl_test_platform' => $_POST['vltestPlatform'],
-                'result_reviewed_by' => $_SESSION['userId'],
-                'sample_code' => $d['sampleCode'],
-                'result_value_log' => $d['logVal'],
-                'sample_type' => $d['sampleType'],
-                'result' => $d['result'],
-                'result_value_absolute' => $d['absVal'],
-                'result_value_text' => $d['txtVal'],
+                'module'                       => 'eid',
+                'lab_id'                       => base64_decode((string) $_POST['labId']),
+                'vl_test_platform'             => $_POST['vltestPlatform'],
+                'result_reviewed_by'           => $_SESSION['userId'],
+                'sample_code'                  => $d['sampleCode'],
+                'result_value_log'             => $d['logVal'],
+                'sample_type'                  => $d['sampleType'],
+                'result'                       => $d['result'],
+                'result_value_absolute'        => $d['absVal'],
+                'result_value_text'            => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal'],
-                'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => RECEIVED_AT_TESTING_LAB,
-                'import_machine_file_name' => $fileName,
-                'lab_tech_comments' => $d['resultFlag']
+                'sample_tested_datetime'       => $d['testingDate'],
+                'result_status'                => RECEIVED_AT_TESTING_LAB,
+                'import_machine_file_name'     => $fileName,
+                'lab_tech_comments'            => $d['resultFlag'],
             ];
 
-
             $query = "SELECT facility_id,
-                                eid_id,
-                                result
-                        FROM form_eid
-                        WHERE result_printed_datetime is null
-                        AND sample_code= ?";
+                             eid_id,
+                             result
+                      FROM form_eid
+                      WHERE result_printed_datetime IS NULL
+                      AND sample_code = ?";
+
             $vlResult = $db->rawQueryOne($query, [$sampleCode]);
+
             if (!empty($vlResult) && !empty($sampleCode)) {
                 if (!empty($vlResult['result'])) {
                     $data['sample_details'] = 'Result already exists';
@@ -116,28 +125,30 @@ try {
             } else {
                 $data['sample_details'] = 'New Sample';
             }
-            if ($sampleCode != '' || $sampleType != '' || $logVal != '' || $absVal != '' || $absDecimalVal != '') {
+
+            // ($sampleType, $logVal, $absVal, $absDecimalVal were never defined
+            // in this scope — only $d['...'] equivalents exist).
+            if (!empty($d['sampleCode'])) {
                 $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
-                $data['imported_by'] = $_SESSION['userId'];
+                $data['imported_by']              = $_SESSION['userId'];
                 $id = $db->insert("temp_sample_import", $data);
             }
         }
     }
 
     $_SESSION['alertMsg'] = "Results imported successfully";
-    //Add event log
 
+    // Add event log
     $eventType = 'result-import';
-    $action = $_SESSION['userName'] . ' imported test results for Roche EID';
-    $resource = 'import-result';
+    $action    = $_SESSION['userName'] . ' imported test results for Roche EID';
+    $resource  = 'import-result';
     $general->activityLog($eventType, $action, $resource);
-
 
     header("Location:/import-result/imported-results.php?t=$type");
 } catch (Exception $e) {
     LoggerUtility::logError($e->getMessage(), [
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
+        'file'  => $e->getFile(),
+        'line'  => $e->getLine(),
         'trace' => $e->getTraceAsString(),
     ]);
 }
