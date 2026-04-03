@@ -328,7 +328,7 @@ $userModules = $_SESSION['modules'] ?? [];
 				<!-- Hepatitis END -->
 
 				<!-- TB START-->
-				<?php if (
+			<?php if (
 					isset(SYSTEM_CONFIG['modules']['tb']) &&
 					SYSTEM_CONFIG['modules']['tb'] === true && array_intersect($_SESSION['modules'], ['tb'])
 				) { ?>
@@ -336,7 +336,7 @@ $userModules = $_SESSION['modules'] ?? [];
 					<div class="tab-pane fade in" id="tbDashboard">
 						<!-- TB content -->
 						<section class="content">
-							<div id="contCovid"> </div>
+							<div id="contTb"> </div>
 							<!-- Small boxes (Stat box) -->
 							<div class="row" style="padding-top:10px;padding-bottom:20px;">
 								<div class="col-lg-7">
@@ -1311,21 +1311,21 @@ $userModules = $_SESSION['modules'] ?? [];
 
 	function getTbMonthlyTargetsReport() {
 		let xhr = $.ajax({
-			url: "/tb/management/get-tb-monthly-threshold-report.php",
+			url: "/tb/management/getTbMonthlyThresholdReport.php",
 			type: 'POST',
 			data: {
 				targetType: '1',
-				sampleTestDate: $("#tbSampleCollectionDate").val(),
+				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
 			async: true,
 			success: function(data) {
 				var dataObj = JSON.parse(data);
 				if (dataObj['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
-				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + dataObj['aaData'].length + ' <?= _translate("TB testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
-				</div>';
-					$("#contCovid").html(div);
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
+							<span>' + dataObj['aaData'].length + ' <?= _translate("TB testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/tb/management/tbTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							</div>';
+					$("#contTB").html(div);
 				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {

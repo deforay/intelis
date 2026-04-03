@@ -115,7 +115,7 @@ $sFormat = '';
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group">
                                                        <label for="communitySample">Community Sample</label>
-                                                       <select class="form-control" name="communitySample" id="communitySample" title="Please choose if this is a community sample" style="width:100%;">
+                                                       <select class="form-control" name="communitySample" id="communitySample" onclick="updateLocationOfSample();" title="Please choose if this is a community sample" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
                                                             <option value="yes">Yes</option>
                                                             <option value="no">No</option>
@@ -355,7 +355,7 @@ $sFormat = '';
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="locationOfSampleCollection">Location Of Sample Collection</label>
-                                                            <select name="locationOfSampleCollection" id="locationOfSampleCollection" class="form-control" title="Please choose location of sample collection">
+                                                            <select name="locationOfSampleCollection" id="locationOfSampleCollection" onclick="updateLocationOfSample();" class="form-control" title="Please choose location of sample collection">
                                                                  <option value=""> -- Select -- </option>
                                                                  <option value="facility">Facility</option>
                                                                  <option value="community">Community</option>
