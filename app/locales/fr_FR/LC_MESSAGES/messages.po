@@ -591,7 +591,7 @@ msgstr "Labo de test"
 #: app/vl/requests/vl-requests.php:451 app/vl/results/vl-failed-results.php:103
 #: app/vl/results/vlTestResult.php:151
 msgid "Please select Testing Lab"
-msgstr "Enregistré au laboratoire de test"
+msgstr "Veuillez sélectionner le laboratoire de test"
 
 #: app/admin/api-dashboard/api-dashboard.php:274
 #: app/admin/monitoring/lab-sync-details.php:115
@@ -2056,11 +2056,11 @@ msgstr "API/EMR %"
 
 #: app/admin/api-dashboard/api-dashboard.php:476
 msgid "Registered via API/EMR but Not Received at Testing Lab"
-msgstr "Enregistré via API/EMR mais non reçu au laboratoire d'essai"
+msgstr "Enregistré via API/EMR mais non reçu au laboratoire de test"
 
 #: app/admin/api-dashboard/api-dashboard.php:477
 msgid "Registered via API/EMR and Received at Testing Lab"
-msgstr "Enregistré via API/EMR et reçu au laboratoire d'essai"
+msgstr "Enregistré via API/EMR et reçu au laboratoire de test"
 
 #: app/admin/api-dashboard/api-dashboard.php:478
 msgid "Registered via API/EMR and Tested"
@@ -2092,7 +2092,7 @@ msgstr ""
 
 #: app/admin/api-dashboard/api-dashboard.php:511
 msgid "Not Yet Received at Testing Lab"
-msgstr "Pas encore reçu au laboratoire d'essais"
+msgstr "Pas encore reçu au laboratoire de test"
 
 #: app/admin/api-dashboard/api-dashboard.php:512
 msgid "≤ 7 Days"
@@ -2511,7 +2511,7 @@ msgstr "Effacer"
 #: app/admin/api-dashboard/api-dashboard.php:1004
 #: app/admin/api-dashboard/api-dashboard.php:1116
 msgid "Search facilities"
-msgstr "Facilités de recherche"
+msgstr "Rechercher des établissements"
 
 #: app/admin/api-dashboard/api-dashboard.php:883
 #: app/admin/api-dashboard/api-dashboard.php:1005
@@ -2526,7 +2526,7 @@ msgstr "Afficher"
 #: app/admin/api-dashboard/api-dashboard.php:1006
 #: app/admin/api-dashboard/api-dashboard.php:1118
 msgid "facilities"
-msgstr "structures sanitaire"
+msgstr "structures sanitaires"
 
 #: app/admin/api-dashboard/api-dashboard.php:884
 #: app/admin/api-dashboard/api-dashboard.php:1006
@@ -2601,7 +2601,7 @@ msgstr "Précédent"
 
 #: app/admin/api-dashboard/api-dashboard.php:1007
 msgid "No facilities with duplicate suspects found"
-msgstr "Sélectionnez les structures"
+msgstr "Aucun établissement avec des doublons suspects trouvé"
 
 #: app/admin/api-dashboard/api-dashboard.php:1117
 msgid "entries"
@@ -2688,7 +2688,7 @@ msgstr "Plage de dates"
 #: app/facilities/facilities.php:56 app/facilities/upload-facilities.php:83
 #: app/system/translate-strings.php:12
 msgid "Facilities"
-msgstr "Structures sanitaire"
+msgstr "Structures sanitaires"
 
 #: app/admin/api-dashboard/get-api-dashboard-alerts.php:87
 msgid "High Missing API/EMR Sample Receipts"
@@ -2830,7 +2830,7 @@ msgstr "Actions"
 
 #: app/admin/api-dashboard/missing-samples-detail.php:335
 msgid "Follow-up Actions"
-msgstr "Conditions de l'email marketing"
+msgstr "Actions de suivi"
 
 #: app/admin/api-dashboard/missing-samples-detail.php:339
 msgid "Sample Code"
@@ -2838,7 +2838,7 @@ msgstr "Code d'échantillon"
 
 #: app/admin/api-dashboard/missing-samples-detail.php:343
 msgid "Action Type"
-msgstr "Type d'impact"
+msgstr "Type d'action"
 
 #: app/admin/api-dashboard/missing-samples-detail.php:345
 msgid "Add Note"
@@ -2850,7 +2850,7 @@ msgstr "Envoyer une alerte"
 
 #: app/admin/api-dashboard/missing-samples-detail.php:347
 msgid "Contact Facility"
-msgstr "Mécanisme de contact"
+msgstr "Contacter l'établissement"
 
 #: app/admin/api-dashboard/missing-samples-detail.php:348
 msgid "Escalate Issue"
@@ -3221,7 +3221,7 @@ msgstr "Adresse IP"
 
 #: app/admin/monitoring/activity-log.php:118
 msgid "Recorded On"
-msgstr "Pas enregistré"
+msgstr "Enregistré le"
 
 #: app/admin/monitoring/activity-log.php:125
 #: app/admin/monitoring/api-sync-history.php:167 app/batch/batches.php:126
@@ -3389,7 +3389,7 @@ msgstr "Historique de l’API"
 #: app/admin/monitoring/test-results-metadata.php:64
 #: app/facilities/facilities.php:105
 msgid "Please select the Test types"
-msgstr "Veuillez sélectionner le projet"
+msgstr "Veuillez sélectionner les types de test"
 
 #: app/admin/monitoring/api-sync-history.php:106
 msgid "API Type"
@@ -3401,7 +3401,7 @@ msgstr "Veuillez sélectionner le type d'API"
 
 #: app/admin/monitoring/api-sync-history.php:117
 msgid "Bearer Token"
-msgstr "Jeton au porteur"
+msgstr "Bearer Token"
 
 #: app/admin/monitoring/api-sync-history.php:121
 msgid "Enter bearer token to search"
@@ -3530,11 +3530,11 @@ msgstr "Réinitialiser"
 
 #: app/admin/monitoring/api-sync-history.php:142
 msgid "Transaction ID"
-msgstr "No Patient"
+msgstr "ID de transaction"
 
 #: app/admin/monitoring/api-sync-history.php:145
 msgid "Number of Records Synced"
-msgstr "Dernière synchronisation le"
+msgstr "Nombre d'enregistrements synchronisés"
 
 #: app/admin/monitoring/api-sync-history.php:148
 msgid "Sync Type"
@@ -4301,7 +4301,7 @@ msgstr "Examiné par"
 #: app/covid-19/requests/forms/edit-cameroon.php:460
 #: app/covid-19/results/forms/update-cameroon-result.php:410
 msgid "Test Platform/Instrument"
-msgstr "Plate-forme d'essai/instrument"
+msgstr "Plateforme de test/instrument"
 
 #: app/admin/monitoring/export-test-results-report.php:39
 #: app/admin/monitoring/test-results-metadata.php:152
@@ -5076,7 +5076,7 @@ msgstr "Le fichier n'a pas pu être chargé ou n'est pas valide"
 
 #: app/admin/monitoring/show-params.php:544
 msgid "Response Error"
-msgstr "Pas de réponse"
+msgstr "Erreur de réponse"
 
 #: app/admin/monitoring/show-params.php:599
 msgid "Request Not Available"
@@ -5113,7 +5113,7 @@ msgstr "Nom de la clinique"
 #: app/admin/monitoring/sources-of-requests.php:124
 #: app/admin/monitoring/sources-of-requests.php:237
 msgid "Name of the Testing Lab"
-msgstr "Nom du laboratoire d'essai"
+msgstr "Nom du laboratoire de test"
 
 #: app/admin/monitoring/sources-of-requests.php:178
 #: app/cd4/requests/cd4-requests.php:373
@@ -5133,7 +5133,7 @@ msgstr "Source de la demande"
 #: app/hepatitis/requests/hepatitis-requests.php:289
 #: app/tb/requests/tb-requests.php:137 app/vl/requests/vl-requests.php:391
 msgid "Please select source of request"
-msgstr "Veuillez sélectionner le statut"
+msgstr "Veuillez sélectionner la source de la demande"
 
 #: app/admin/monitoring/sources-of-requests.php:200
 msgid "No. of Samples Requested"
@@ -5145,7 +5145,7 @@ msgstr "Nombre d'échantillons ayant fait l'objet d'un accusé de réception"
 
 #: app/admin/monitoring/sources-of-requests.php:202
 msgid "No. of Samples Received at Testing Lab"
-msgstr "Nombre d'échantillons reçus au laboratoire d'essai"
+msgstr "Nombre d'échantillons reçus au laboratoire de test"
 
 #: app/admin/monitoring/sources-of-requests.php:203 app/batch/batches.php:115
 #: app/cd4/management/get-sample-status.php:461
@@ -5407,7 +5407,7 @@ msgstr "Actualisation automatique des données..."
 #: app/vl/program-management/vl-sample-status.php:212
 #: app/vl/requests/vl-requests.php:893 app/vl/results/vlTestResult.php:353
 msgid "Select Testing Lab"
-msgstr "Enregistré au laboratoire de test"
+msgstr "Sélectionner le laboratoire de test"
 
 #: app/admin/monitoring/sync-status.php:456
 #: app/cd4/management/cd4-clinic-report.php:611
@@ -6309,7 +6309,7 @@ msgstr "indique les champs obligatoires"
 #: app/generic-tests/requests/add-request.php:745
 #: app/generic-tests/requests/edit-request.php:928
 msgid "Testing Platform"
-msgstr "Plate-forme d'essai"
+msgstr "Plateforme de test"
 
 #: app/batch/add-batch.php:182 app/batch/edit-batch.php:302
 #: app/vl/program-management/upload-vl-control.php:102
@@ -6776,7 +6776,7 @@ msgstr "Veuillez sélectionner le type d'échantillon"
 #: app/vl/requests/forms/edit-burkina-faso.php:272
 #: app/vl/results/forms/update-burkina-faso-result.php:272
 msgid "Funding Source"
-msgstr "Sources de financement"
+msgstr "Source de financement"
 
 #: app/batch/add-batch.php:304 app/batch/edit-batch.php:238
 #: app/tb/results/tb-referral.php:185
@@ -6900,7 +6900,7 @@ msgstr "Non spécifié"
 
 #: app/batch/batches.php:30
 msgid "Testing Batches"
-msgstr "Lots d'essai"
+msgstr "Lots de test"
 
 #: app/batch/batches.php:55
 msgid "Manage Batches"
@@ -6931,7 +6931,7 @@ msgstr "Nombre d'échantillons"
 
 #: app/batch/batches.php:116
 msgid "Tested Date"
-msgstr "Date de l'essai"
+msgstr "Date du test"
 
 #: app/batch/batches.php:220
 msgid "Are you sure you want to delete Batch"
@@ -7229,7 +7229,7 @@ msgstr "Vérification de la qualité des données"
 #: app/hepatitis/management/hepatitis-clinic-report.php:90
 #: app/tb/management/tb-clinic-report.php:88
 msgid "Sample Testing Report"
-msgstr "Exemple de rapport d'essai"
+msgstr "Rapport de test des échantillons"
 
 #: app/cd4/management/cd4-clinic-report.php:97
 #: app/covid-19/management/covid-19-clinic-report.php:88
@@ -8248,7 +8248,7 @@ msgstr "Statut"
 #: app/vl/program-management/highViralLoad.php:848
 #: app/vl/program-management/highViralLoad.php:1100
 msgid "Testing Lab Name"
-msgstr "Nom du laboratoire d'essai"
+msgstr "Nom du laboratoire de test"
 
 #: app/cd4/management/cd4-clinic-report.php:315
 #: app/cd4/management/cd4-clinic-report.php:412
@@ -8341,7 +8341,7 @@ msgstr "Sélectionner la date de prélèvement de l'échantillon"
 #: app/vl/results/vl-print-results.php:215
 #: app/vl/results/vl-print-results.php:577
 msgid "Enter Patient ID"
-msgstr "No Patient"
+msgstr "Saisir l'identifiant du patient"
 
 #: app/cd4/management/cd4-clinic-report.php:519
 #: app/cd4/management/cd4-clinic-report.php:541
@@ -9716,7 +9716,7 @@ msgstr "Sélectionner la date de réception de l'échantillon au laboratoire"
 #: app/vl/program-management/vlControlReport.php:57
 #: app/vl/requests/vl-requests.php:191
 msgid "Select Tested Date"
-msgstr "Sélectionner la date de l'essai"
+msgstr "Sélectionner la date du test"
 
 #: app/cd4/management/cd4-sample-status.php:116
 msgid "CD4 Sample ID"
@@ -9767,7 +9767,7 @@ msgstr "Echantillon-Date d'envoie de l'email"
 #: app/vl/program-management/vl-sample-status.php:216
 #: app/vl/results/vlResultApproval.php:433
 msgid "Select Batch Code"
-msgstr "Selectioner le code du batch"
+msgstr "Sélectionner le code du batch"
 
 #: app/cd4/management/cd4-sample-testing-report.php:97
 #: app/covid-19/management/covid-19-sample-testing-report.php:98
@@ -9921,7 +9921,7 @@ msgstr "Nom de l'établissement de santé"
 #: app/vl/requests/export-vl-requests.php:28
 #: app/vl/requests/export-vl-requests.php:30
 msgid "Sample Reception Date"
-msgstr "Exemple de date de réception"
+msgstr "Date de réception de l'échantillon"
 
 #: app/cd4/management/export-cd4-results.php:31
 #: app/cd4/requests/export-cd4-requests.php:26
@@ -10265,7 +10265,7 @@ msgstr "Catégorie de motif"
 #: app/tb/management/get-rejected-samples.php:139
 #: app/vl/program-management/getRejectionResult.php:173
 msgid "Sample Rejection Reasons"
-msgstr "Exemples de motifs de rejet"
+msgstr "Motifs de rejet des échantillons"
 
 #: app/cd4/management/get-rejected-samples.php:189
 #: app/covid-19/management/get-rejected-samples.php:181
@@ -10274,7 +10274,7 @@ msgstr "Exemples de motifs de rejet"
 #: app/hepatitis/management/get-rejected-samples.php:190
 #: app/tb/management/get-rejected-samples.php:194
 msgid "Sample Rejection by Categories"
-msgstr "Échantillon de rejet par catégorie"
+msgstr "Rejet d'échantillons par catégorie"
 
 #: app/cd4/management/get-sample-status.php:273
 msgid "CD4 Samples Status Overview"
@@ -10422,7 +10422,7 @@ msgstr "Raisons du test CD4"
 #: app/system/translate-strings.php:43
 #: app/tb/management/getSampleStatus.php:527
 msgid "Test Reasons"
-msgstr "Motifs du test"
+msgstr "Motifs de test"
 
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:10
 #: app/cd4/reference/cd4-sample-rejection-reasons.php:33
@@ -10491,7 +10491,7 @@ msgstr ""
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:40
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:42
 msgid "Rejection Type"
-msgstr "Type d'échantillon"
+msgstr "Type de rejet"
 
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:42
 #: app/covid-19/reference/add-covid19-sample-rejection-reason.php:42
@@ -10500,7 +10500,7 @@ msgstr "Type d'échantillon"
 #: app/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php:42
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:42
 msgid "Please enter Rejection Type"
-msgstr "Veuillez saisir le statut de l'échantillon"
+msgstr "Veuillez saisir le type de rejet"
 
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:51
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:53
@@ -10532,7 +10532,7 @@ msgstr "Code de motif de rejet"
 #: app/tb/reference/add-tb-sample-rejection-reason.php:53
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:53
 msgid "Please enter Rejection Reason Code"
-msgstr "Veuillez saisir le code manifeste puis soumettre"
+msgstr "Veuillez saisir le code du motif de rejet"
 
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:53
 #: app/covid-19/reference/add-covid19-sample-rejection-reason.php:53
@@ -10568,7 +10568,7 @@ msgstr ""
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:61
 #: app/vl/reference/vl-sample-rejection-reasons.php:46
 msgid "Rejection Reason Status"
-msgstr "Motif de rejet"
+msgstr "Statut du motif de rejet"
 
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:61
 #: app/covid-19/reference/add-covid19-sample-rejection-reason.php:61
@@ -10862,7 +10862,7 @@ msgstr "Ajouter les raisons du test CD4"
 #: app/vl/reference/add-vl-test-reasons.php:38
 #: app/vl/reference/add-vl-test-reasons.php:40
 msgid "Test Reason Name"
-msgstr "Motif de rejet"
+msgstr "Nom du motif de test"
 
 #: app/cd4/reference/add-cd4-test-reasons.php:40
 #: app/covid-19/reference/add-covid19-test-reasons.php:36
@@ -10871,7 +10871,7 @@ msgstr "Motif de rejet"
 #: app/tb/reference/add-tb-test-reasons.php:36
 #: app/vl/reference/add-vl-test-reasons.php:40
 msgid "Please enter Test Reason name"
-msgstr "Veuillez saisir le nom de l'échantillon"
+msgstr "Veuillez saisir le nom du motif de test"
 
 #: app/cd4/reference/add-cd4-test-reasons.php:40
 #: app/covid-19/reference/add-covid19-test-reasons.php:36
@@ -10881,7 +10881,7 @@ msgstr "Veuillez saisir le nom de l'échantillon"
 #: app/vl/reference/add-vl-test-reasons.php:40
 msgid "The Test Reason name that you entered already exists.Enter another name"
 msgstr ""
-"Le nom de l'échantillon que vous avez saisi existe déjà. Saisissez un autre "
+"Le nom du motif de test que vous avez saisi existe déjà. Saisissez un autre "
 "nom"
 
 #: app/cd4/reference/add-cd4-test-reasons.php:46
@@ -10906,7 +10906,7 @@ msgstr "Raison"
 #: app/tb/reference/add-tb-test-reasons.php:44
 #: app/vl/reference/add-vl-test-reasons.php:48
 msgid "Please enter Parent Reason"
-msgstr "Veuillez saisir le statut de l'échantillon"
+msgstr "Veuillez saisir la raison parente"
 
 #: app/cd4/reference/add-cd4-test-reasons.php:56
 #: app/cd4/reference/add-cd4-test-reasons.php:58
@@ -10932,7 +10932,7 @@ msgstr "Statut du motif du test"
 #: app/tb/reference/add-tb-test-reasons.php:61
 #: app/vl/reference/add-vl-test-reasons.php:58
 msgid "Please select Test Reason Status"
-msgstr "Veuillez sélectionner le statut"
+msgstr "Veuillez sélectionner le statut du motif de test"
 
 #: app/cd4/reference/cd4-sample-rejection-reasons.php:43
 #: app/covid-19/reference/covid19-sample-rejection-reasons.php:43
@@ -10940,7 +10940,7 @@ msgstr "Veuillez sélectionner le statut"
 #: app/tb/reference/tb-sample-rejection-reasons.php:41
 #: app/vl/reference/vl-sample-rejection-reasons.php:44
 msgid "Rejection Reason Type"
-msgstr "Motif de rejet"
+msgstr "Type de motif de rejet"
 
 #: app/cd4/reference/cd4-sample-rejection-reasons.php:112
 #: app/cd4/reference/cd4-sample-type.php:108
@@ -11145,7 +11145,7 @@ msgstr "Entrer le code manifeste d'échantillons"
 #: app/generic-tests/requests/add-samples-from-manifest.php:40
 #: app/vl/requests/addSamplesFromManifest.php:52
 msgid "Sample Manifest Code"
-msgstr "Exemple de code de manifeste"
+msgstr "Code manifeste de l'échantillon"
 
 #: app/cd4/requests/add-samples-from-manifest.php:52
 #: app/covid-19/requests/addSamplesFromManifest.php:52
@@ -11155,7 +11155,7 @@ msgstr "Exemple de code de manifeste"
 #: app/tb/requests/addSamplesFromManifest.php:40
 #: app/vl/requests/addSamplesFromManifest.php:53
 msgid "Please enter the sample manifest code"
-msgstr "Veuillez saisir l'exemple de code de manifeste"
+msgstr "Veuillez saisir le code manifeste de l'échantillon"
 
 #: app/cd4/requests/add-samples-from-manifest.php:65
 #: app/covid-19/requests/addSamplesFromManifest.php:65
@@ -11225,7 +11225,7 @@ msgstr "Veuillez saisir un code manifeste valide pour l'activation"
 msgid "Please select when the samples were received at the Testing Lab"
 msgstr ""
 "Veuillez indiquer la date à laquelle les échantillons ont été reçus par le "
-"laboratoire d'essais"
+"laboratoire de test"
 
 #: app/cd4/requests/add-samples-from-manifest.php:251
 #: app/covid-19/requests/addSamplesFromManifest.php:246
@@ -11422,7 +11422,7 @@ msgstr "Échantillon communautaire"
 #: app/cd4/requests/cd4-requests.php:437
 #: app/cd4/results/cd4-manual-results.php:150
 msgid "Please Select Testing Lab"
-msgstr "Veuiller selectionner le laboratoire de test"
+msgstr "Veuillez sélectionner le laboratoire de test"
 
 #: app/cd4/requests/cd4-requests.php:496 app/cd4/requests/cd4-requests.php:526
 msgid "Add CD4 Request Form"
@@ -11563,7 +11563,7 @@ msgstr "Êtes-vous sûr de vouloir modifier le statut de l'échantillon ?"
 #: app/hepatitis/results/hepatitis-result-status.php:598
 #: app/vl/requests/vl-requests.php:1271 app/vl/results/vlResultApproval.php:754
 msgid "Updated successfully."
-msgstr "Mis à jour avec succés."
+msgstr "Mis à jour avec succès."
 
 #: app/cd4/requests/cd4-requests.php:1185
 #: app/generic-tests/requests/view-requests.php:515
@@ -11998,7 +11998,7 @@ msgstr "Code barre"
 #: app/tb/requests/get-request-list.php:331
 #: app/vl/requests/get-request-list.php:453
 msgid "Sync Sample"
-msgstr "Échantillon de synchronisation"
+msgstr "Synchroniser l'échantillon"
 
 #: app/cd4/requests/get-request-list.php:387
 #: app/covid-19/requests/get-request-list.php:361
@@ -12105,7 +12105,7 @@ msgstr "Date et Heure"
 #: app/generic-tests/requests/patientModal.php:119
 #: app/vl/requests/patientModal.php:120
 msgid "Previous Tested Date"
-msgstr "Date de l'essai précédent"
+msgstr "Date du test précédent"
 
 #: app/cd4/requests/patientModal.php:123
 #: app/covid-19/requests/covid-19-dhis2.php:94
@@ -12457,7 +12457,7 @@ msgstr "Imprimer les résultats sélectionnés PDF"
 #: app/vl/results/vl-print-results.php:1401 app/vl/results/vlResultMail.php:425
 #: app/vl/results/vlResultMail.php:434
 msgid "You have selected"
-msgstr "Aucune imprimante sélectionnée"
+msgstr "Vous avez sélectionné"
 
 #: app/cd4/results/cd4-print-results.php:884
 #: app/covid-19/results/covid-19-print-results.php:912
@@ -12713,7 +12713,7 @@ msgstr "Veuillez sélectionner un testeur"
 #: app/vl/results/vlResultApproval.php:334
 #: app/vl/results/vlResultApproval.php:641
 msgid "Reviewer"
-msgstr "Critique"
+msgstr "Réviseur"
 
 #: app/cd4/results/cd4-result-status.php:314
 #: app/covid-19/results/covid-19-result-status.php:267
@@ -12879,7 +12879,7 @@ msgstr "Sujet"
 #: app/tb/results/email-results.php:90 app/vl/results/email-results.php:90
 #: app/vl/results/vlResultMail.php:90
 msgid "Please enter subject"
-msgstr "S'il vous plaît entrer sujet"
+msgstr "Veuillez saisir le sujet"
 
 #: app/cd4/results/email-results.php:97
 #: app/covid-19/results/email-results.php:99
@@ -13421,7 +13421,7 @@ msgstr "Saisir le résultat"
 #: app/hepatitis/results/pdf/result-pdf-rwanda.php:442
 #: app/vl/results/pdf/result-pdf-rwanda.php:372
 msgid "Report generated at Testing Lab"
-msgstr "Rapport généré par le laboratoire d'essais"
+msgstr "Rapport généré par le laboratoire de test"
 
 #: app/cd4/results/view.php:16 app/covid-19/results/view.php:20
 #: app/eid/results/view.php:16 app/generic-tests/results/view.php:16
@@ -13812,7 +13812,7 @@ msgstr "jour sans zéro initial"
 
 #: app/classes/Utilities/SmartDateFormatDetector.php:1450
 msgid "24-hour format"
-msgstr "Format 24 heures sur 24"
+msgstr "Format 24 heures"
 
 #: app/classes/Utilities/SmartDateFormatDetector.php:1452
 msgid "12-hour format"
@@ -13858,11 +13858,11 @@ msgstr "Peut être confondu avec le format américain (Mois/Jour/Année)"
 
 #: app/common/reference/add-funding-sources.php:11
 msgid "Add Funding Source"
-msgstr "Sources de financement"
+msgstr "Ajouter une source de financement"
 
 #: app/common/reference/add-funding-sources.php:35
 msgid "Please enter Funding Source"
-msgstr "Sources de financement"
+msgstr "Veuillez saisir la source de financement"
 
 #: app/common/reference/add-funding-sources.php:35
 msgid ""
@@ -13947,11 +13947,11 @@ msgstr "Division géographique de la société mère"
 #: app/common/reference/add-geographical-divisions.php:87
 #: app/common/reference/edit-geographical-divisions.php:182
 msgid "Parent Division"
-msgstr "Division des parents"
+msgstr "Division parente"
 
 #: app/common/reference/add-geographical-divisions.php:88
 msgid "Please select Parent Division"
-msgstr "Veuillez sélectionner la division des parents"
+msgstr "Veuillez sélectionner la division parente"
 
 #: app/common/reference/add-implementation-partners.php:3
 #: app/common/reference/add-implementation-partners.php:14
@@ -14091,7 +14091,7 @@ msgstr "Code des divisions géographiques"
 
 #: app/common/reference/edit-geographical-divisions.php:183
 msgid "Please select Parent division"
-msgstr "Veuillez sélectionner la division des parents"
+msgstr "Veuillez sélectionner la division parente"
 
 #: app/common/reference/edit-geographical-divisions.php:210
 msgid "Move Active Districts and Facilities To"
@@ -14218,7 +14218,7 @@ msgstr "Modifier Action corrective recommandée"
 
 #: app/common/reference/funding-sources.php:26
 msgid "Add Funding Sources"
-msgstr "Sources de financement"
+msgstr "Ajouter des sources de financement"
 
 #: app/common/reference/funding-sources.php:35
 msgid "Funding Source Name"
@@ -14383,11 +14383,11 @@ msgstr "Type de fusion"
 
 #: app/common/reference/merge-geographical-divisions.php:72
 msgid "Provinces"
-msgstr "Departements"
+msgstr "Provinces"
 
 #: app/common/reference/merge-geographical-divisions.php:76
 msgid "Districts"
-msgstr "Quartiers"
+msgstr "Districts"
 
 #: app/common/reference/merge-geographical-divisions.php:84
 msgid "Select Provinces to Merge"
@@ -14509,7 +14509,7 @@ msgstr "Partenaires de mise en œuvre sauvés avec succès"
 
 #: app/common/reference/save-lab-storage-helper.php:32
 msgid "Lab Storage saved successfully"
-msgstr "Lab Storage sauvegardé avec succès"
+msgstr "Stockage laboratoire sauvegardé avec succès"
 
 #: app/common/reference/save-recommended-corrective-action-helper.php:40
 msgid "Recommended Corrective Action saved successfully"
@@ -14533,7 +14533,7 @@ msgstr "Champs"
 #: app/vl/program-management/highViralLoad.php:1163
 #: app/vl/results/forms/update-cameroon-result.php:238
 msgid "County"
-msgstr "Pays"
+msgstr "Comté"
 
 #: app/covid-19/management/covid-19-export-data.php:611
 msgid "Unable to generate excel."
@@ -14605,7 +14605,7 @@ msgstr "État"
 #: app/covid-19/management/generate-export-drc.php:38 app/roles/addRole.php:248
 #: app/roles/editRole.php:256
 msgid "Collection Site"
-msgstr "Site de la collection"
+msgstr "Site de prélèvement"
 
 #: app/covid-19/management/generate-export-drc.php:38
 #: app/covid-19/management/generate-export-drc.php:45
@@ -14690,7 +14690,7 @@ msgstr "Symptômes détectés"
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Medical History"
-msgstr "Historique Medical"
+msgstr "Antécédents médicaux"
 
 #: app/covid-19/management/generate-export-drc.php:38
 #: app/covid-19/requests/export-covid19-requests.php:35
@@ -14768,7 +14768,7 @@ msgstr "Aéroport de départ"
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Transit"
-msgstr "Transport en commun"
+msgstr "Transit"
 
 #: app/covid-19/management/generate-export-drc.php:38
 #: app/covid-19/requests/export-covid19-requests.php:35
@@ -14854,7 +14854,7 @@ msgstr "Type de spécimen"
 #: app/generic-tests/configuration/test-methods/generic-edit-test-methods.php:48
 #: app/generic-tests/configuration/test-methods/generic-test-methods.php:44
 msgid "Test Method"
-msgstr "Méthode d'essai"
+msgstr "Méthode de test"
 
 #: app/covid-19/management/generate-export-drc.php:38
 #: app/covid-19/requests/export-covid19-requests.php:35
@@ -14868,7 +14868,7 @@ msgstr "Date de publication du résultat"
 #: app/covid-19/reference/covid19-results.php:10
 #: app/covid-19/reference/covid19-results.php:13
 msgid "Covid-19 Results"
-msgstr "Covid-19-Imprimer le résultat"
+msgstr "Résultats Covid-19"
 
 #: app/covid-19/management/getSampleStatus.php:319
 #: app/covid-19/management/getSampleStatus.php:324
@@ -15092,27 +15092,27 @@ msgstr "Veuillez saisir le nom du symptôme"
 #: app/covid-19/reference/add-covid19-symptoms.php:36
 msgid "The Symptom name that you entered already exists.Enter another name"
 msgstr ""
-"Le nom de la division géographique que vous avez entré existe déjà. Entrez "
-"un autre nom"
+"Le nom du symptôme que vous avez saisi existe déjà. Saisissez un autre "
+"nom"
 
 #: app/covid-19/reference/add-covid19-symptoms.php:42
 #: app/covid-19/reference/add-covid19-symptoms.php:44
 msgid "Parent Symptom"
-msgstr "Symptôme"
+msgstr "Symptôme parent"
 
 #: app/covid-19/reference/add-covid19-symptoms.php:44
 msgid "Please enter Parent Symptom"
-msgstr "Veuillez saisir le statut de l'échantillon"
+msgstr "Veuillez saisir le symptôme parent"
 
 #: app/covid-19/reference/add-covid19-symptoms.php:59
 #: app/covid-19/reference/add-covid19-symptoms.php:61
 #: app/covid-19/reference/covid19-symptoms.php:43
 msgid "Symptom Status"
-msgstr "Symptôme"
+msgstr "Statut du symptôme"
 
 #: app/covid-19/reference/add-covid19-symptoms.php:61
 msgid "Please enter Symptom Status"
-msgstr "Veuillez saisir le statut de l'échantillon"
+msgstr "Veuillez saisir le statut du symptôme"
 
 #: app/covid-19/reference/add-covid19-test-reasons.php:12
 #: app/covid-19/reference/covid19-test-reasons.php:24
@@ -15135,7 +15135,7 @@ msgstr "Détails du symptôme ajoutés avec succès"
 
 #: app/covid-19/reference/add-test-reasons-helper.php:26
 msgid "COVID 19 Test reasons details added successfully"
-msgstr "COVID 19 Les détails des motifs de l'essai ont été ajoutés avec succès"
+msgstr "COVID 19 Les détails des motifs de test ont été ajoutés avec succès"
 
 #: app/covid-19/reference/covid19-comorbidities.php:38
 #: app/covid-19/reference/covid19-sample-type.php:38
@@ -15149,7 +15149,7 @@ msgstr "Type d'installation"
 #: app/covid-19/reference/covid19-qc-test-kits.php:16
 #: app/covid-19/reference/covid19-qc-test-kits.php:19
 msgid "Covid-19 QC Test Kits"
-msgstr "Covid-19-Demandes de test"
+msgstr "Kits de test CQ Covid-19"
 
 #: app/covid-19/reference/covid19-qc-test-kits.php:33
 msgid "Add New Covid-19 QC Test Kit"
@@ -15244,7 +15244,7 @@ msgstr "Covid-19-Demandes de tests"
 #: app/tb/requests/tb-requests.php:227
 #: app/vl/program-management/vl-export-data.php:207
 msgid "Please choose record sample"
-msgstr "Veuillez choisir Province/État/Région"
+msgstr "Veuillez choisir l'enregistrement de l'échantillon"
 
 #: app/covid-19/requests/covid-19-requests.php:231
 #: app/eid/requests/eid-requests.php:211
@@ -15334,7 +15334,7 @@ msgstr "Personnel de laboratoire Assigné"
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Source Of Alert / POE"
-msgstr "Sources de financement"
+msgstr "Source de l'alerte / POE"
 
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
@@ -15376,7 +15376,7 @@ msgstr "Établissement de santé/POE"
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Patient State"
-msgstr "Province"
+msgstr "État du patient"
 
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
@@ -15386,7 +15386,7 @@ msgstr "Comté du patient"
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Patient City/Village"
-msgstr "CITY"
+msgstr "Ville/Village du patient"
 
 #: app/covid-19/requests/forms/add-cameroon.php:63
 #: app/covid-19/requests/forms/add-rwanda.php:43
@@ -15472,7 +15472,7 @@ msgstr "Site Sentinelle"
 #: app/covid-19/requests/forms/edit-cameroon.php:116
 #: app/covid-19/results/forms/update-cameroon-result.php:122
 msgid "Screening"
-msgstr "Projection"
+msgstr "Dépistage"
 
 #: app/covid-19/requests/forms/add-cameroon.php:115
 #: app/covid-19/requests/forms/add-cameroon.php:469
@@ -15554,7 +15554,7 @@ msgstr "Nom du projet"
 #: app/tb/results/forms/update-burkina-faso.php:389
 #: app/tb/results/forms/update-rwanda.php:170
 msgid "Testing Laboratory"
-msgstr "Laboratoire d'essais"
+msgstr "Laboratoire de test"
 
 #: app/covid-19/requests/forms/add-cameroon.php:193
 #: app/covid-19/requests/forms/edit-cameroon.php:189
@@ -16236,7 +16236,7 @@ msgstr "Réservé à l'usage des laboratoires"
 #: app/covid-19/requests/forms/edit-cameroon.php:388
 #: app/covid-19/results/forms/update-cameroon-result.php:337
 msgid "Please select Testing Testing Laboratory"
-msgstr "Veuillez sélectionner le laboratoire d'essais"
+msgstr "Veuillez sélectionner le laboratoire de test"
 
 #: app/covid-19/requests/forms/add-cameroon.php:396
 #: app/covid-19/requests/forms/edit-cameroon.php:392
@@ -16260,7 +16260,7 @@ msgstr "Faible"
 #: app/covid-19/requests/forms/edit-cameroon.php:403
 #: app/covid-19/results/forms/update-cameroon-result.php:351
 msgid "Lab Technician"
-msgstr "Technicien de l’analyse"
+msgstr "Technicien de laboratoire"
 
 #: app/covid-19/requests/forms/add-cameroon.php:416
 #: app/covid-19/requests/forms/edit-cameroon.php:412
@@ -16343,7 +16343,7 @@ msgstr "Sélectionner la date de rejet"
 #: app/covid-19/requests/forms/add-cameroon.php:440
 #: app/covid-19/requests/forms/edit-cameroon.php:448
 msgid "Please select the Rejection Date"
-msgstr "Veuillez sélectionner le statut"
+msgstr "Veuillez sélectionner la date de rejet"
 
 #: app/covid-19/requests/forms/add-cameroon.php:449
 msgid "Test Number"
@@ -16569,7 +16569,7 @@ msgstr "Sélectionner Autorisé par"
 #: app/vl/requests/forms/edit-drc.php:246
 #: app/vl/results/forms/update-drc-result.php:200
 msgid "Please enter the Patient ID"
-msgstr "No Patient"
+msgstr "Veuillez saisir l'identifiant du patient"
 
 #: app/covid-19/requests/forms/add-drc.php:1242
 msgid "Please enter Patient Age or Date of Birth"
@@ -16696,7 +16696,7 @@ msgstr "Test No."
 
 #: app/covid-19/requests/forms/edit-cameroon.php:490
 msgid "Enter Test Method used"
-msgstr "Indiquer la méthode d'essai utilisée"
+msgstr "Indiquer la méthode de test utilisée"
 
 #: app/covid-19/requests/forms/edit-cameroon.php:492
 #: app/covid-19/requests/forms/edit-cameroon.php:956
@@ -16707,7 +16707,7 @@ msgstr "Indiquer la méthode d'essai utilisée"
 #: app/generic-tests/requests/edit-request.php:2000
 #: app/generic-tests/results/update-generic-test-result.php:1908
 msgid "Tested on"
-msgstr "Nombre d'échantillons testés"
+msgstr "Testé le"
 
 #: app/covid-19/requests/forms/edit-cameroon.php:501
 #: app/covid-19/results/forms/update-cameroon-result.php:451
@@ -16844,7 +16844,7 @@ msgstr "Examiné le"
 #: app/vl/requests/forms/edit-cameroon.php:690
 #: app/vl/results/forms/update-cameroon-result.php:680
 msgid "Please enter the Reviewed on"
-msgstr "Veuillez saisir le statut de l'échantillon"
+msgstr "Veuillez saisir la date de révision"
 
 #: app/covid-19/requests/forms/edit-cameroon.php:559
 #: app/covid-19/results/forms/update-cameroon-result.php:511
@@ -16958,7 +16958,7 @@ msgstr "Kit de test"
 #: app/covid-19/results/add-covid-19-qc-data.php:84
 #: app/covid-19/results/edit-covid-19-qc-data.php:98
 msgid "Please select test kit"
-msgstr "Veuillez sélectionner le statut"
+msgstr "Veuillez sélectionner le kit de test"
 
 #: app/covid-19/results/add-covid-19-qc-data.php:96
 #: app/covid-19/results/add-covid-19-qc-data.php:100
@@ -16996,12 +16996,12 @@ msgstr "Veuillez sélectionner le point de test"
 #: app/covid-19/results/covid-19-qc-data.php:86
 #: app/covid-19/results/edit-covid-19-qc-data.php:193
 msgid "Tester Name"
-msgstr "Nom du plan"
+msgstr "Nom du testeur"
 
 #: app/covid-19/results/add-covid-19-qc-data.php:181
 #: app/covid-19/results/edit-covid-19-qc-data.php:198
 msgid "Please select tester name"
-msgstr "Veuillez saisir le nom de l'échantillon"
+msgstr "Veuillez sélectionner le nom du testeur"
 
 #: app/covid-19/results/add-covid-19-qc-data.php:191
 #: app/covid-19/results/edit-covid-19-qc-data.php:207
@@ -17016,7 +17016,7 @@ msgstr "Reçu le"
 #: app/covid-19/results/add-covid-19-qc-data.php:196
 #: app/covid-19/results/edit-covid-19-qc-data.php:214
 msgid "Please enter received on"
-msgstr "Veuillez saisir le statut de l'échantillon"
+msgstr "Veuillez saisir la date de réception"
 
 #: app/covid-19/results/add-covid-19-qc-data.php:203
 #: app/covid-19/results/covid-19-qc-data.php:87
@@ -17027,7 +17027,7 @@ msgstr "Veuillez saisir le statut de l'échantillon"
 #: app/tb/results/forms/update-rwanda.php:712
 #: app/tb/results/forms/update-rwanda.php:933
 msgid "Tested On"
-msgstr "Nombre d'échantillons testés"
+msgstr "Testé le"
 
 #: app/covid-19/results/add-covid-19-qc-data.php:208
 #: app/covid-19/results/edit-covid-19-qc-data.php:228
@@ -17069,7 +17069,7 @@ msgstr "Covid-19-Imprimer le résultat"
 #: app/covid-19/results/covid-19-qc-data.php:62
 #: app/system/translate-strings.php:81
 msgid "Covid-19 QC Data"
-msgstr "Chargement des données depuis le serveur"
+msgstr "Données CQ Covid-19"
 
 #: app/covid-19/results/covid-19-qc-data.php:73
 msgid "Add New Covid-19 QC Data"
@@ -17146,7 +17146,7 @@ msgstr "ÉCHANTILLONS ENREGISTRÉS PAR POINT DE COLLECTE"
 #: app/dashboard/getSampleResult.php:380 app/dashboard/getSampleResult.php:403
 #: app/dashboard/getSampleResult.php:445
 msgid "In Selected Range"
-msgstr "Aucune imprimante sélectionnée"
+msgstr "Dans la plage sélectionnée"
 
 #: app/dashboard/getSampleCount.php:157
 msgid "Total Samples Registered"
@@ -17158,11 +17158,11 @@ msgstr "Échantillons actuellement enregistrés à HC"
 
 #: app/dashboard/getSampleCount.php:163
 msgid "Samples Currently Registered at Testing Lab"
-msgstr "Échantillons actuellement enregistrés au laboratoire d'essais"
+msgstr "Échantillons actuellement enregistrés au laboratoire de test"
 
 #: app/dashboard/getSampleCount.php:165
 msgid "(Results not yet available)"
-msgstr "Résultats pas encore imprimés"
+msgstr "(Résultats pas encore disponibles)"
 
 #: app/dashboard/getSampleCount.php:168
 msgid "Samples with Accepted Results"
@@ -17194,7 +17194,7 @@ msgstr "ÉCHANTILLONS PRÉLEVÉS"
 
 #: app/dashboard/getSampleResult.php:377
 msgid "SAMPLES TESTED"
-msgstr "Nombre d'échantillons testés"
+msgstr "ÉCHANTILLONS TESTÉS"
 
 #: app/dashboard/getSampleResult.php:400
 msgid "SAMPLES REJECTED"
@@ -17202,7 +17202,7 @@ msgstr "ÉCHANTILLONS REJETÉS"
 
 #: app/dashboard/getSampleResult.php:423
 msgid "SAMPLES WITH NO RESULTS"
-msgstr "Nombre d'échantillons"
+msgstr "ÉCHANTILLONS SANS RÉSULTATS"
 
 #: app/dashboard/getSampleResult.php:426
 msgid "(LAST 6 MONTHS)"
@@ -17214,7 +17214,7 @@ msgstr "ÉTAT ACTUEL DES ÉCHANTILLONS - GÉNÉRAL"
 
 #: app/dashboard/getSampleResult.php:751
 msgid "Samples Tested"
-msgstr "Nombre d'échantillons testés"
+msgstr "Échantillons testés"
 
 #: app/dashboard/getSampleResult.php:753
 msgid "Samples on Hold"
@@ -17222,7 +17222,7 @@ msgstr "Échantillons en attente"
 
 #: app/dashboard/getSampleResult.php:754
 msgid "Samples Registered at Testing Lab"
-msgstr "Enregistré au laboratoire de test"
+msgstr "Échantillons enregistrés au laboratoire de test"
 
 #: app/dashboard/getSampleResult.php:755
 msgid "Samples Awaiting Approval"
@@ -17255,8 +17255,8 @@ msgstr "Date de prélèvement de l'échantillon"
 #: app/dashboard/index.php:1182
 msgid "EID testing lab(s) did not meet the monthly test target"
 msgstr ""
-"Le(s) laboratoire(s) d'essais de l'EID n'a (n'ont) pas atteint l'objectif "
-"d'essais mensuels"
+"Le(s) laboratoire(s) de test de l'EID n'a (n'ont) pas atteint l'objectif "
+"de test mensuels"
 
 #: app/dashboard/index.php:1182 app/dashboard/index.php:1211
 #: app/dashboard/index.php:1239 app/dashboard/index.php:1268
@@ -17549,14 +17549,14 @@ msgstr "Type d'échantillon EID"
 #: app/eid/reference/add-eid-test-reasons.php:15
 #: app/eid/reference/eid-test-reasons.php:33
 msgid "Add EID Test Reasons"
-msgstr "Ajouter les raisons de l'essai de l'EID"
+msgstr "Ajouter les raisons du test EID"
 
 #: app/eid/reference/add-eid-test-reasons.php:18
 #: app/eid/reference/eid-test-reasons.php:9
 #: app/eid/reference/eid-test-reasons.php:16
 #: app/eid/reference/eid-test-reasons.php:19
 msgid "EID Test Reasons"
-msgstr "Raisons de l'essai de l'EID"
+msgstr "Raisons du test EID"
 
 #: app/eid/reference/eid-sample-rejection-reasons.php:43
 #: app/hepatitis/reference/hepatitis-sample-rejection-reasons.php:43
@@ -17856,7 +17856,7 @@ msgstr "copies/mL"
 #: app/eid/results/forms/update-burkina-faso-result.php:267
 #: app/eid/results/forms/update-cameroon-result.php:290
 msgid "Date of HIV diagnosis"
-msgstr "Date d'entrée en vigueur"
+msgstr "Date du diagnostic VIH"
 
 #: app/eid/requests/forms/add-burkina-faso.php:264
 #: app/eid/requests/forms/add-cameroon.php:430
@@ -17935,7 +17935,7 @@ msgstr "Veuillez préciser l'autre ARV prophylactique administré"
 #: app/eid/results/forms/update-cameroon-result.php:221
 #: app/eid/results/forms/update-cameroon-result.php:284
 msgid "Date of Initiation"
-msgstr "Date d'entrée en vigueur"
+msgstr "Date d'initiation"
 
 #: app/eid/requests/forms/add-burkina-faso.php:281
 #: app/eid/requests/forms/add-cameroon.php:330
@@ -17973,7 +17973,7 @@ msgstr "Âge (mois) de l'arrêt de l'allaitement"
 #: app/eid/results/forms/update-burkina-faso-result.php:303
 #: app/eid/results/forms/update-cameroon-result.php:251
 msgid "Mode of Delivery"
-msgstr "Mode de livraison"
+msgstr "Mode d'accouchement"
 
 #: app/eid/requests/forms/add-burkina-faso.php:303
 #: app/eid/requests/forms/add-cameroon.php:377
@@ -18026,7 +18026,7 @@ msgstr "Téléphone du demandeur d'échantillon"
 #: app/eid/requests/forms/edit-burkina-faso.php:354
 #: app/eid/results/forms/update-burkina-faso-result.php:352
 msgid "Sample Received Date (at Testing Lab)"
-msgstr "Date de réception de l'échantillon (au laboratoire d'essais)"
+msgstr "Date de réception de l'échantillon (au laboratoire de test)"
 
 #: app/eid/requests/forms/add-burkina-faso.php:371
 #: app/eid/requests/forms/edit-burkina-faso.php:377
@@ -18177,7 +18177,7 @@ msgstr "Veuillez saisir le code de la clinique/du centre de santé"
 #: app/eid/results/forms/update-cameroon-result.php:150
 #: app/eid/results/forms/update-cameroon-result.php:519
 msgid "Please select Testing Lab name"
-msgstr "Veuillez sélectionner le nom du laboratoire d'essais"
+msgstr "Veuillez sélectionner le nom du laboratoire de test"
 
 #: app/eid/requests/forms/add-cameroon.php:189
 #: app/eid/requests/forms/edit-cameroon.php:217
@@ -18367,7 +18367,7 @@ msgstr "L'enfant est-il sous Cotrim ?"
 #: app/eid/results/forms/update-cameroon-result.php:347
 #: app/eid/results/forms/update-cameroon-result.php:362
 msgid "If Yes, Date of Initiation"
-msgstr "Si oui, date d'ouverture"
+msgstr "Si oui, date d'initiation"
 
 #: app/eid/requests/forms/add-cameroon.php:512
 #: app/eid/requests/forms/add-cameroon.php:513
@@ -18645,7 +18645,7 @@ msgstr "Validé le"
 #: app/eid/results/forms/update-cameroon-result.php:584
 #: app/vl/requests/forms/add-cameroon.php:635
 msgid "Please enter the Approved on"
-msgstr "Veuillez saisir l'adresse approuvée sur"
+msgstr "Veuillez saisir la date d'approbation"
 
 #: app/eid/requests/forms/add-cameroon.php:1229
 #: app/move-samples/select-samples-to-move.php:249
@@ -18731,7 +18731,7 @@ msgstr "Congélateur"
 #: app/vl/requests/forms/add-drc.php:442 app/vl/requests/forms/edit-drc.php:484
 #: app/vl/results/forms/update-drc-result.php:458
 msgid "Enter Freezer"
-msgstr "Entrer dans le congélateur"
+msgstr "Saisir le congélateur"
 
 #: app/eid/requests/forms/add-drc.php:681
 #: app/eid/requests/forms/edit-drc.php:544
@@ -18805,7 +18805,7 @@ msgstr "Boîte"
 #: app/vl/requests/forms/add-drc.php:453 app/vl/requests/forms/edit-drc.php:496
 #: app/vl/results/forms/update-drc-result.php:471
 msgid "Please enter box"
-msgstr "Veuillez entrer dans la case"
+msgstr "Veuillez saisir la boîte"
 
 #: app/eid/requests/forms/add-drc.php:701
 #: app/eid/requests/forms/add-drc.php:704
@@ -19405,7 +19405,7 @@ msgstr "LAM"
 
 #: app/facilities/addFacility.php:410 app/facilities/editFacility.php:530
 msgid "Report Format For VL"
-msgstr "Rapport hebdomadaire du labo VL"
+msgstr "Format de rapport pour la CV"
 
 #: app/facilities/addFacility.php:413 app/facilities/addFacility.php:438
 #: app/facilities/addFacility.php:463 app/facilities/addFacility.php:488
@@ -19437,7 +19437,7 @@ msgstr "Format du rapport sur l'hépatite"
 
 #: app/facilities/addFacility.php:510 app/facilities/editFacility.php:627
 msgid "Report Format For TB"
-msgstr "Format de rapport pour le CT"
+msgstr "Format de rapport pour la TB"
 
 #: app/facilities/addFacility.php:535 app/facilities/editFacility.php:649
 #: app/global-config/editGlobalConfig.php:568
@@ -19458,7 +19458,7 @@ msgstr "Changer"
 #: app/facilities/addFacility.php:548 app/facilities/editFacility.php:669
 #: app/global-config/editGlobalConfig.php:589
 msgid "Please select logo image"
-msgstr "Veuillez sélectionner le statut"
+msgstr "Veuillez sélectionner l'image du logo"
 
 #: app/facilities/addFacility.php:551 app/facilities/editFacility.php:679
 #: app/global-config/editGlobalConfig.php:600 app/users/addUser.php:198
@@ -19478,7 +19478,7 @@ msgstr "Texte du header"
 
 #: app/facilities/addFacility.php:589 app/facilities/editFacility.php:696
 msgid "Please enter header text"
-msgstr "Veuillez saisir le nom de l'échantillon"
+msgstr "Veuillez saisir le texte d'en-tête"
 
 #: app/facilities/addFacility.php:599 app/facilities/addFacility.php:602
 #: app/facilities/editFacility.php:735 app/facilities/editFacility.php:739
@@ -19642,7 +19642,7 @@ msgstr "Veuillez indiquer la marge de l'en-tête"
 
 #: app/facilities/addFacility.php:838 app/facilities/editFacility.php:1126
 msgid "Select Lab Manager"
-msgstr "Selectioner la Labo CV"
+msgstr "Sélectionner le responsable du laboratoire"
 
 #: app/facilities/addFacility.php:854 app/facilities/editFacility.php:1141
 msgid "Select Available Platforms"
@@ -19756,7 +19756,7 @@ msgstr "Veuillez choisir d'abord le type d'établissement"
 
 #: app/facilities/getFacilityMapUser.php:28
 msgid "User-Facility Map"
-msgstr "Commentaires utilisateurs"
+msgstr "Correspondance utilisateur-établissement"
 
 #: app/facilities/getSampleType.php:71
 #: app/generic-tests/configuration/add-test-type.php:128
@@ -19803,7 +19803,7 @@ msgstr ""
 
 #: app/facilities/mapTestTypeHelper.php:51
 msgid "Facility Mapped to Selected Test Type successfully"
-msgstr "Facility Mapped to Selected Test Type successfully"
+msgstr "Établissement associé au type de test sélectionné avec succès"
 
 #: app/facilities/mapTestTypeHelper.php:53
 msgid "No Facility Mapped to Selected Test Type"
@@ -19924,7 +19924,7 @@ msgstr "Ajouter un type de test"
 #: app/generic-tests/configuration/edit-test-type.php:123
 #: app/generic-tests/configuration/edit-test-type.php:128
 msgid "Test Standard Name"
-msgstr "Nom du département"
+msgstr "Nom standard du test"
 
 #: app/generic-tests/configuration/add-test-type.php:80
 #: app/generic-tests/configuration/clone-test-type.php:124
@@ -20020,25 +20020,25 @@ msgstr ""
 #: app/generic-tests/configuration/test-methods/generic-test-methods.php:22
 #: app/system/translate-strings.php:36
 msgid "Test Methods"
-msgstr "Motifs du test"
+msgstr "Méthodes de test"
 
 #: app/generic-tests/configuration/add-test-type.php:120
 #: app/generic-tests/configuration/clone-test-type.php:187
 #: app/generic-tests/configuration/edit-test-type.php:197
 msgid "Please select the test methods"
-msgstr "Veuillez sélectionner le statut"
+msgstr "Veuillez sélectionner les méthodes de test"
 
 #: app/generic-tests/configuration/add-test-type.php:130
 #: app/generic-tests/configuration/clone-test-type.php:202
 #: app/generic-tests/configuration/edit-test-type.php:212
 msgid "Please select the test categories"
-msgstr "Veuillez sélectionner le statut"
+msgstr "Veuillez sélectionner les catégories de test"
 
 #: app/generic-tests/configuration/add-test-type.php:141
 #: app/generic-tests/configuration/clone-test-type.php:214
 #: app/generic-tests/configuration/edit-test-type.php:224
 msgid "Sample/Specimen Types"
-msgstr "Manifeste d'échantillons"
+msgstr "Types d'échantillons/spécimens"
 
 #: app/generic-tests/configuration/add-test-type.php:143
 #: app/generic-tests/configuration/clone-test-type.php:218
@@ -20361,7 +20361,7 @@ msgstr "Veuillez indiquer une autre section"
 #: app/generic-tests/configuration/edit-test-type.php:663
 #: app/generic-tests/configuration/edit-test-type.php:1195
 msgid "Please enter field order"
-msgstr "Veuillez saisir le nom de l'échantillon"
+msgstr "Veuillez saisir l'ordre des champs"
 
 #: app/generic-tests/configuration/add-test-type.php:278
 #: app/generic-tests/configuration/clone-test-type.php:661
@@ -20387,7 +20387,7 @@ msgstr "Unité de résultat du test"
 #: app/generic-tests/requests/getTestTypeForm.php:366
 #: app/generic-tests/results/update-generic-test-result.php:1894
 msgid "Enter test result unit"
-msgstr "Covid-19-Saisir le résultat manuellement"
+msgstr "Saisir l'unité de résultat de test"
 
 #: app/generic-tests/configuration/add-test-type.php:283
 #: app/generic-tests/configuration/clone-test-type.php:856
@@ -20444,7 +20444,7 @@ msgstr "Type de test ajouté avec succès"
 #: app/generic-tests/configuration/edit-test-type.php:103
 #: app/system/translate-strings.php:182
 msgid "Edit Test Type"
-msgstr "Modifier le profil"
+msgstr "Modifier le type de test"
 
 #: app/generic-tests/configuration/clone-test-type.php:668
 #: app/tb/reference/add-tb-results.php:52
@@ -20496,7 +20496,7 @@ msgstr "Veuillez saisir une valeur basse"
 
 #: app/generic-tests/configuration/clone-test-type.php:800
 msgid "Result Interpretation"
-msgstr "Résultat Précédent"
+msgstr "Interprétation du résultat"
 
 #: app/generic-tests/configuration/clone-test-type.php:805
 msgid "Below Threshold"
@@ -20692,7 +20692,7 @@ msgstr "Ajouter des symptômes"
 #: app/generic-tests/configuration/symptoms/generic-add-symptoms.php:34
 #: app/generic-tests/configuration/symptoms/generic-edit-symptoms.php:52
 msgid "Please enter symptom name"
-msgstr "Veuillez saisir le nom de l'échantillon"
+msgstr "Veuillez saisir le nom du symptôme"
 
 #: app/generic-tests/configuration/symptoms/generic-add-symptoms.php:34
 msgid "The symptom name that you entered already exists.Enter another name"
@@ -20715,7 +20715,7 @@ msgstr "Veuillez saisir le code du symptôme"
 #: app/generic-tests/configuration/symptoms/generic-add-symptoms.php:43
 msgid "The symptom code that you entered already exists.Enter another code"
 msgstr ""
-"Le code de division géographique que vous avez entré existe déjà. Entrez un "
+"Le code du symptôme que vous avez saisi existe déjà. Saisissez un "
 "autre code"
 
 #: app/generic-tests/configuration/symptoms/generic-edit-symptoms.php:22
@@ -20730,7 +20730,7 @@ msgstr ""
 #: app/generic-tests/configuration/symptoms/generic-edit-symptoms.php:69
 msgid "This symptom code that you entered already exists.Try another code"
 msgstr ""
-"Le code de division géographique que vous avez entré existe déjà. Entrez un "
+"Le code du symptôme que vous avez saisi existe déjà. Essayez un "
 "autre code"
 
 #: app/generic-tests/configuration/symptoms/generic-symptoms.php:19
@@ -20751,16 +20751,16 @@ msgstr "Catégories de tests"
 
 #: app/generic-tests/configuration/test-categories/generic-add-test-categories.php:10
 msgid "Add Test Category"
-msgstr "Catégorie de motif"
+msgstr "Ajouter une catégorie de test"
 
 #: app/generic-tests/configuration/test-categories/generic-add-test-categories.php:34
 msgid "Please enter test Category"
-msgstr "Veuillez saisir le statut de l'échantillon"
+msgstr "Veuillez saisir la catégorie de test"
 
 #: app/generic-tests/configuration/test-categories/generic-add-test-categories.php:34
 msgid "The test category that you entered already exists.Enter another name"
 msgstr ""
-"Le nom de l'échantillon que vous avez saisi existe déjà. Saisissez un autre "
+"La catégorie de test que vous avez saisie existe déjà. Saisissez un autre "
 "nom"
 
 #: app/generic-tests/configuration/test-categories/generic-edit-test-categories.php:5
@@ -20897,12 +20897,12 @@ msgstr "Motif d'échec du test ajouté avec succès"
 
 #: app/generic-tests/configuration/test-methods/generic-add-test-methods.php:11
 msgid "Add Test Method"
-msgstr "Test-Raisons"
+msgstr "Ajouter une méthode de test"
 
 #: app/generic-tests/configuration/test-methods/generic-add-test-methods.php:35
 #: app/generic-tests/configuration/test-methods/generic-edit-test-methods.php:53
 msgid "Please enter test method"
-msgstr "Veuillez saisir le nom de l'échantillon"
+msgstr "Veuillez saisir la méthode de test"
 
 #: app/generic-tests/configuration/test-methods/generic-add-test-methods.php:35
 msgid "The test method that you entered already exists.Enter another name"
@@ -20919,11 +20919,11 @@ msgstr ""
 
 #: app/generic-tests/configuration/test-methods/generic-test-methods.php:19
 msgid "Other Lab Test Methods"
-msgstr "Autres méthodes d'essai en laboratoire"
+msgstr "Autres méthodes de test en laboratoire"
 
 #: app/generic-tests/configuration/test-methods/generic-test-methods.php:36
 msgid "Add Test Methods"
-msgstr "Test-Raisons"
+msgstr "Ajouter des méthodes de test"
 
 #: app/generic-tests/configuration/test-methods/save-test-methods-helper.php:26
 msgid "Test Method updated successfully"
@@ -20961,8 +20961,8 @@ msgstr "Veuillez saisir le nom de l'unité de résultat du test"
 #: app/generic-tests/configuration/test-result-units/generic-add-test-result-units.php:35
 msgid "The unit name that you entered already exists.Enter another name"
 msgstr ""
-"Le nom de la division géographique que vous avez entré existe déjà. Entrez "
-"un autre nom"
+"Le nom de l'unité que vous avez saisi existe déjà. Saisissez un "
+"autre nom"
 
 #: app/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:22
 msgid "Edit Test Result Units"
@@ -21510,7 +21510,7 @@ msgstr "Veuillez sélectionner l'échantillon reçu à la date du Hub"
 #: app/vl/results/forms/update-burkina-faso-result.php:402
 #: app/vl/results/forms/update-cameroon-result.php:607
 msgid "Date Sample Received at Testing Lab"
-msgstr "Date de réception de l'échantillon au laboratoire d'essai"
+msgstr "Date de réception de l'échantillon au laboratoire de test"
 
 #: app/generic-tests/requests/add-request.php:737
 msgid "Sample Received at LAB Date"
@@ -21739,7 +21739,7 @@ msgid ""
 "\t\t\t\t\t\t\t\t\t\t\t\t\tSample Received at Testing Lab"
 msgstr ""
 "Date de réception de l'échantillon\n"
-"\t\t\t\t\t\t\t\t\t\t\t\t\tÉchantillon reçu au laboratoire d'essai"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tÉchantillon reçu au laboratoire de test"
 
 #: app/generic-tests/requests/edit-request.php:920
 #: app/generic-tests/results/update-generic-test-result.php:847
@@ -21853,8 +21853,8 @@ msgid ""
 "Testing\n"
 "\t\t\t\t\t\t\t\t\t\t\t\t\tPlatform"
 msgstr ""
-"Tests\n"
-"\t\t\t\t\t\t\t\t\t\t\t\t\tPlate-forme"
+"Plateforme\n"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tde test"
 
 #: app/generic-tests/results/update-generic-test-result.php:872
 msgid ""
@@ -21862,7 +21862,7 @@ msgid ""
 "\t\t\t\t\t\t\t\t\t\t\t\t\tTesting Date"
 msgstr ""
 "Échantillon\n"
-"\t\t\t\t\t\t\t\t\t\t\t\t\tDate de l'essai"
+"\t\t\t\t\t\t\t\t\t\t\t\t\tDate du test"
 
 #: app/generic-tests/results/update-generic-test-result.php:907
 msgid ""
@@ -22034,7 +22034,7 @@ msgstr "Le même utilisateur peut réviser et approuver"
 
 #: app/global-config/editGlobalConfig.php:691
 msgid "Sample ID Barcode Label Printing"
-msgstr "Exemple d'impression d'étiquettes à code-barres"
+msgstr "Impression d'étiquettes code-barres des échantillons"
 
 #: app/global-config/editGlobalConfig.php:696
 msgid "Please select the barcode printing"
@@ -22167,7 +22167,7 @@ msgstr "Veuillez indiquer les jours d'expiration de l'échantillon"
 
 #: app/global-config/editGlobalConfig.php:876
 msgid "Sample Lock Days"
-msgstr "Exemple de jours de fermeture"
+msgstr "Jours de verrouillage des échantillons"
 
 #: app/global-config/editGlobalConfig.php:882
 msgid "Enter the sample lock days"
@@ -22542,7 +22542,7 @@ msgstr "eg. R+Année+Code province+tb+Compteur d'incrémentation (R18NCDC190001)
 
 #: app/global-config/editGlobalConfig.php:2114
 msgid "TB Auto Approve API Results"
-msgstr "Approbation automatique des résultats de l'API par le CT"
+msgstr "Approbation automatique des résultats de l'API TB"
 
 #: app/global-config/editGlobalConfig.php:2119
 msgid "Please select TB Auto Approve API Results"
@@ -22632,7 +22632,7 @@ msgstr "Nom du menu de l'APP mobile"
 
 #: app/global-config/editGlobalConfig.php:2524
 msgid "Please enter name"
-msgstr "S'il vous plaît entrer le nom"
+msgstr "Veuillez saisir le nom"
 
 #: app/global-config/editGlobalConfig.php:2534
 msgid "Connect"
@@ -22897,7 +22897,7 @@ msgstr "Rapport sur le statut des échantillons Hépatite"
 
 #: app/hepatitis/management/hepatitis-sample-status.php:49
 msgid "Hepatitis Sample Status"
-msgstr "Covid-19-Manifeste d'échantillons"
+msgstr "Statut des échantillons d'hépatite"
 
 #: app/hepatitis/management/hepatitis-sample-status.php:114
 msgid "Hepatitis Sample ID"
@@ -22934,7 +22934,7 @@ msgstr "Ajouter les résultats concernant l'hépatite"
 #: app/hepatitis/reference/hepatitis-results.php:16
 #: app/hepatitis/reference/hepatitis-results.php:19
 msgid "Hepatitis Results"
-msgstr "Hepatite-Imprimer le résultat"
+msgstr "Résultats de l'hépatite"
 
 #: app/hepatitis/reference/add-hepatitis-risk-factors.php:11
 #: app/hepatitis/reference/hepatitis-risk-factors.php:33
@@ -23122,7 +23122,7 @@ msgstr "Résultat actuel"
 #: app/import-result/updateImportedSample.php:87
 #: app/instruments/vl/hologic-panther.php:195
 msgid "New Sample"
-msgstr "Nouveau modèle"
+msgstr "Nouvel échantillon"
 
 #: app/import-result/getImportedResults.php:232
 msgid "Unknown Sample"
@@ -23880,7 +23880,7 @@ msgstr ""
 #: app/instruments/add-instrument.php:435
 #: app/instruments/edit-instrument.php:670
 msgid "No of In-House Controls in TB"
-msgstr "Nombre de contrôles internes au sein du CT"
+msgstr "Nombre de contrôles internes dans la TB"
 
 #: app/instruments/add-instrument.php:435
 #: app/instruments/edit-instrument.php:671
@@ -23900,7 +23900,7 @@ msgstr "Veuillez indiquer le nombre de contrôles du fabricant dans TB"
 #: app/instruments/add-instrument.php:439
 #: app/instruments/edit-instrument.php:684
 msgid "No of Calibrators in TB"
-msgstr "Nombre d'étalons dans le CT"
+msgstr "Nombre d'étalons dans la TB"
 
 #: app/instruments/add-instrument.php:439
 #: app/instruments/edit-instrument.php:685
@@ -23986,7 +23986,7 @@ msgstr "Noms des machines"
 #: app/instruments/edit-instrument.php:893
 #: app/instruments/edit-instrument.php:1525
 msgid "Machine Name"
-msgstr "Nom système"
+msgstr "Nom de la machine"
 
 #: app/instruments/add-instrument.php:491
 #: app/instruments/edit-instrument.php:212
@@ -24065,7 +24065,7 @@ msgstr "Veuillez indiquer le nombre de contrôles internes dans l'eid"
 
 #: app/instruments/edit-instrument.php:593
 msgid "No of Manufacturer Controls in eid"
-msgstr "Nombre de contrôles de fabricants à l'occasion de l'Aïd"
+msgstr "Nombre de contrôles fabricant en EID"
 
 #: app/instruments/edit-instrument.php:594
 msgid "Please enter No of Manufacturer Controls in eid"
@@ -24545,7 +24545,7 @@ msgstr "Rôle mis à jour avec succès"
 
 #: app/setup/getTestingLabOptions.php:13
 msgid "-- Choose Testing Lab --"
-msgstr "-- Choisir le laboratoire d'essai --"
+msgstr "-- Choisir le laboratoire de test --"
 
 #: app/setup/index.php:41
 msgid "Lab Sample Management System"
@@ -24705,7 +24705,7 @@ msgstr "- Sélectionnez un fuseau horaire -"
 #: app/specimen-referral-manifest/add-manifest-helper.php:21
 #: app/specimen-referral-manifest/edit-manifest-helper.php:22
 msgid "Please select the Testing lab"
-msgstr "Veuillez sélectionner le laboratoire d'essai"
+msgstr "Veuillez sélectionner le laboratoire de test"
 
 #: app/specimen-referral-manifest/add-manifest.php:127
 #: app/specimen-referral-manifest/add-manifest.php:133
@@ -24720,7 +24720,7 @@ msgstr "Veuillez saisir le code du manifeste"
 #: app/specimen-referral-manifest/add-manifest.php:203
 #: app/specimen-referral-manifest/edit-manifest.php:173
 msgid "Choose one test lab"
-msgstr "Choisissez un laboratoire d'essai"
+msgstr "Choisissez un laboratoire de test"
 
 #: app/specimen-referral-manifest/add-manifest.php:214
 #: app/specimen-referral-manifest/edit-manifest.php:202
@@ -24779,7 +24779,7 @@ msgstr "Veuillez sélectionner le statut du manifeste"
 
 #: app/specimen-referral-manifest/edit-manifest.php:258
 msgid "Please select testing lab"
-msgstr "Veuillez sélectionner un laboratoire d'essai"
+msgstr "Veuillez sélectionner un laboratoire de test"
 
 #: app/specimen-referral-manifest/edit-manifest.php:271
 msgid "Reason for changing manifest"
@@ -24791,11 +24791,11 @@ msgstr "Raison de la modification de ce manifeste"
 
 #: app/specimen-referral-manifest/edit-manifest.php:499
 msgid "Please select the Testing Lab"
-msgstr "Veuillez sélectionner le laboratoire d'essai"
+msgstr "Veuillez sélectionner le laboratoire de test"
 
 #: app/specimen-referral-manifest/generateCD4Manifest.php:84
 msgid "CLUSTERS OF DIFFERENTIATION 4 Sample Referral Manifest"
-msgstr "CLUSTERS OF DIFFERENTIATION 4 Exemple de manifeste d'orientation"
+msgstr "CLUSTERS OF DIFFERENTIATION 4 Manifeste de référence d'échantillon"
 
 #: app/specimen-referral-manifest/generateCovid19Manifest.php:83
 msgid "Covid-19 Sample Referral Manifest"
@@ -24803,7 +24803,7 @@ msgstr "Manifeste de référence d'échantillons Covid-19"
 
 #: app/specimen-referral-manifest/generateEIDManifest.php:65
 msgid "EID Sample Referral Manifest"
-msgstr "Exemple de manifeste de renvoi de l'EID"
+msgstr "Manifeste de référence d'échantillon EID"
 
 #: app/specimen-referral-manifest/generateGenericManifest.php:56
 msgid "Lab Tests Sample Referral Manifest"
@@ -24851,7 +24851,7 @@ msgstr "DATE DE COLLECTE"
 
 #: app/specimen-referral-manifest/generateVLManifest.php:106
 msgid "SAMPLE BARCODE"
-msgstr "EXEMPLE DE CODE-BARRES"
+msgstr "CODE-BARRES DE L'ÉCHANTILLON"
 
 #: app/specimen-referral-manifest/get-manifests.php:159
 msgid "Print Manifest PDF"
@@ -24864,11 +24864,11 @@ msgstr "Déplacer le manifeste"
 
 #: app/specimen-referral-manifest/move-manifest.php:151
 msgid "Manifest From Testing Lab"
-msgstr "Manifeste du laboratoire d'essais"
+msgstr "Manifeste du laboratoire de test"
 
 #: app/specimen-referral-manifest/move-manifest.php:222
 msgid "Assign to Testing Lab"
-msgstr "Affectation au laboratoire d'essais"
+msgstr "Affectation au laboratoire de test"
 
 #: app/specimen-referral-manifest/move-manifest.php:227
 msgid "Choose the Testing Lab where these manifests are being moved to"
@@ -25319,7 +25319,7 @@ msgstr "Emballage inapproprié de l'échantillon"
 
 #: app/system/translate-strings-country-4.php:40
 msgid "Inappropriate specimen for test request"
-msgstr "Échantillon inapproprié pour la demande d'essai"
+msgstr "Échantillon inapproprié pour la demande de test"
 
 #: app/system/translate-strings-country-4.php:41
 msgid "EDTA tube specimens that arrived hemolyzed"
@@ -25478,7 +25478,7 @@ msgstr "Contrôle d'accès"
 
 #: app/system/translate-strings.php:13
 msgid "Monitoring"
-msgstr "Moniteur"
+msgstr "Surveillance"
 
 #: app/system/translate-strings.php:15
 msgid "Other Lab Tests Config"
@@ -25651,11 +25651,11 @@ msgstr "Enregistrer les tests de confirmation"
 
 #: app/system/translate-strings.php:83
 msgid "Hepatitis Manifest"
-msgstr "Manifestation d'hépatite"
+msgstr "Manifeste Hépatite"
 
 #: app/system/translate-strings.php:85
 msgid "TB Manifest"
-msgstr "Manifeste de la CT"
+msgstr "Manifeste TB"
 
 #: app/system/translate-strings.php:88
 msgid "Send Result Mail"
@@ -25686,7 +25686,7 @@ msgstr "Consulter un autre laboratoire"
 
 #: app/system/translate-strings.php:104
 msgid "Sample Registered at Testing Lab"
-msgstr "Échantillon enregistré au laboratoire d'essai"
+msgstr "Échantillon enregistré au laboratoire de test"
 
 #: app/system/translate-strings.php:107
 msgid "Sample Registered at Health Center"
@@ -26000,7 +26000,7 @@ msgstr "Importer les résultats de l'hépatite à partir de fichiers"
 
 #: app/system/translate-strings.php:199
 msgid "Import TB Results from Files"
-msgstr "Importer les résultats du CT à partir de fichiers"
+msgstr "Importer les résultats TB à partir de fichiers"
 
 #: app/system/translate-strings.php:200
 msgid "Import Results from Files"
@@ -26020,15 +26020,15 @@ msgstr "Voir les manifestes COVID-19"
 
 #: app/system/translate-strings.php:204
 msgid "View Hepatitis Manifests"
-msgstr "Voir les manifestations de l'hépatite"
+msgstr "Voir les manifestes Hépatite"
 
 #: app/system/translate-strings.php:205
 msgid "View TB Manifests"
-msgstr "Voir les manifestes du CT"
+msgstr "Voir les manifestes TB"
 
 #: app/system/translate-strings.php:206
 msgid "View Lab Tests Manifests"
-msgstr "Voir les manifestations des tests de laboratoire"
+msgstr "Voir les manifestes des tests de laboratoire"
 
 #: app/system/translate-strings.php:207
 msgid "Add VL Manifests"
@@ -26044,15 +26044,15 @@ msgstr "Ajouter les manifestes COVID-19"
 
 #: app/system/translate-strings.php:210
 msgid "Add Hepatitis Manifests"
-msgstr "Ajouter les manifestations de l'hépatite"
+msgstr "Ajouter les manifestes Hépatite"
 
 #: app/system/translate-strings.php:211
 msgid "Add TB Manifests"
-msgstr "Ajouter les manifestes du CT"
+msgstr "Ajouter les manifestes TB"
 
 #: app/system/translate-strings.php:212
 msgid "Add Lab Tests Manifests"
-msgstr "Ajouter des manifestations de tests de laboratoire"
+msgstr "Ajouter des manifestes de tests de laboratoire"
 
 #: app/system/translate-strings.php:213
 msgid "Edit VL Manifests"
@@ -26068,7 +26068,7 @@ msgstr "Modifier les manifestes COVID-19"
 
 #: app/system/translate-strings.php:216
 msgid "Edit Hepatitis Manifests"
-msgstr "Modifier les manifestations de l'hépatite"
+msgstr "Modifier les manifestes Hépatite"
 
 #: app/system/translate-strings.php:217
 msgid "Edit TB Manifests"
@@ -26076,7 +26076,7 @@ msgstr "Modifier les manifestes de la tuberculose"
 
 #: app/system/translate-strings.php:218
 msgid "Edit Lab Tests Manifests"
-msgstr "Modifier les tests de laboratoire Manifestations"
+msgstr "Modifier les manifestes des tests de laboratoire"
 
 #: app/system/translate-strings.php:219
 msgid "Add/Edit Test Types"
@@ -26096,7 +26096,7 @@ msgstr "Gérer les symptômes"
 
 #: app/system/translate-strings.php:223
 msgid "Manage Test Failure Reasons"
-msgstr "Motifs du test"
+msgstr "Gérer les motifs d'échec des tests"
 
 #: app/system/translate-strings.php:224
 msgid "Manage Test Result Units"
@@ -26104,7 +26104,7 @@ msgstr "Gérer les unités de résultat du test"
 
 #: app/system/translate-strings.php:225
 msgid "Manage Test Methods"
-msgstr "Gérer les méthodes d'essai"
+msgstr "Gérer les méthodes de test"
 
 #: app/system/translate-strings.php:226
 msgid "Manage Test Categories"
@@ -26124,7 +26124,7 @@ msgstr "Déplacer les manifestes COVID-19"
 
 #: app/system/translate-strings.php:230
 msgid "Move Hepatitis Manifests"
-msgstr "Déplacer les manifestations de l'hépatite"
+msgstr "Déplacer les manifestes Hépatite"
 
 #: app/system/translate-strings.php:231
 msgid "Move TB Manifests"
@@ -26132,7 +26132,7 @@ msgstr "Déplacer les manifestes de la tuberculose"
 
 #: app/system/translate-strings.php:232
 msgid "Move Lab Tests Manifests"
-msgstr "Déplacer les tests de laboratoire Manifestations"
+msgstr "Déplacer les manifestes des tests de laboratoire"
 
 #: app/system/translate-strings.php:233
 msgid "Edit Locked Samples"
@@ -26336,7 +26336,7 @@ msgstr "Gestion des lots de la tuberculose"
 
 #: app/system/translate-strings.php:288
 msgid "TB Reports"
-msgstr "Rapports du CT"
+msgstr "Rapports TB"
 
 #: app/system/translate-strings.php:289
 msgid "TB Reference"
@@ -26344,7 +26344,7 @@ msgstr "Référence TB"
 
 #: app/system/translate-strings.php:290
 msgid "TB Request Management"
-msgstr "Gestion des demandes de la CT"
+msgstr "Gestion des demandes TB"
 
 #: app/system/translate-strings.php:291
 msgid "TB Result Management"
@@ -26575,7 +26575,7 @@ msgstr "Pédiatrie"
 #: app/tb/requests/forms/edit-burkina-faso.php:154
 #: app/tb/results/forms/update-burkina-faso.php:152
 msgid "Nutrition"
-msgstr "Valeurs nutritionnelles"
+msgstr "Nutrition"
 
 #: app/tb/requests/forms/add-burkina-faso.php:151
 #: app/tb/requests/forms/edit-burkina-faso.php:176
@@ -26799,7 +26799,7 @@ msgstr "Veuillez sélectionner un centre de dépistage de la tuberculose agréé
 #: app/tb/requests/forms/edit-rwanda.php:187
 #: app/tb/results/forms/update-rwanda.php:173
 msgid "Please select Testing Laboratory"
-msgstr "Veuillez sélectionner le laboratoire d'essai"
+msgstr "Veuillez sélectionner le laboratoire de test"
 
 #: app/tb/requests/forms/add-rwanda.php:172
 #: app/tb/requests/forms/edit-rwanda.php:199
@@ -26886,7 +26886,7 @@ msgstr "Veuillez saisir votre numéro de téléphone"
 #: app/tb/requests/forms/edit-rwanda.php:337
 #: app/tb/results/forms/update-rwanda.php:286
 msgid "Case Type"
-msgstr "Type de housse"
+msgstr "Type de cas"
 
 #: app/tb/requests/forms/add-rwanda.php:273
 #: app/tb/requests/forms/edit-rwanda.php:341
@@ -27016,7 +27016,7 @@ msgstr ""
 #: app/tb/results/forms/update-rwanda.php:570
 #: app/tb/results/forms/update-rwanda.php:823
 msgid "Please select testing laboratory"
-msgstr "Veuillez sélectionner le laboratoire d'essai"
+msgstr "Veuillez sélectionner le laboratoire de test"
 
 #: app/tb/requests/forms/add-rwanda.php:539
 #: app/tb/requests/forms/edit-rwanda.php:684
@@ -27217,7 +27217,7 @@ msgstr "Sélectionnez un centre de dépistage de la tuberculose agréé"
 #: app/tb/requests/forms/edit-rwanda.php:1791
 #: app/tb/results/forms/update-rwanda.php:1683
 msgid "Select testing lab"
-msgstr "Sélectionner un laboratoire d'essai"
+msgstr "Sélectionner un laboratoire de test"
 
 #: app/tb/requests/forms/add-rwanda.php:1422
 #: app/tb/requests/forms/edit-rwanda.php:1869
@@ -27237,7 +27237,7 @@ msgstr "Saisir le nom du clinicien"
 #: app/tb/requests/forms/edit-burkina-faso.php:84
 #: app/tb/results/forms/update-burkina-faso.php:83
 msgid "Edit TB Request"
-msgstr "Modifier la demande du CT"
+msgstr "Modifier la demande TB"
 
 #: app/tb/requests/forms/edit-rwanda.php:272
 msgid "Please enter the patient age"
@@ -27962,12 +27962,12 @@ msgstr "Numéro de CV"
 #: app/vl/program-management/export-vl-results.php:32
 #: app/vl/requests/export-vl-requests.php:28
 msgid "Test Platform"
-msgstr "Plate-forme d'essai"
+msgstr "Plateforme de test"
 
 #: app/vl/program-management/export-vl-results.php:32
 #: app/vl/requests/export-vl-requests.php:28
 msgid "Test platform detection limit"
-msgstr "Limite de détection de la plate-forme d'essai"
+msgstr "Limite de détection de la plateforme de test"
 
 #: app/vl/program-management/export-vl-results.php:32
 #: app/vl/requests/export-vl-requests.php:28
@@ -28019,7 +28019,7 @@ msgstr "Nom du laboratoire de référence"
 #: app/vl/program-management/export-vl-results.php:32
 #: app/vl/requests/export-vl-requests.php:28
 msgid "Category of testing site"
-msgstr "Catégorie de site d'essai"
+msgstr "Catégorie de site de test"
 
 #: app/vl/program-management/export-vl-results.php:32
 #: app/vl/requests/export-vl-requests.php:28
@@ -28402,7 +28402,7 @@ msgstr "Rapport hebdomadaire du laboratoire VL - Femmes"
 #: app/vl/program-management/vlWeeklyReport.php:202
 #: app/vl/program-management/vlWeeklyReport.php:205
 msgid "Sample Test Date Range"
-msgstr "Date de l'essai de l'échantillon"
+msgstr "Plage de dates de test d'échantillon"
 
 #: app/vl/program-management/vlWeeklyReport.php:80
 #: app/vl/program-management/vlWeeklyReport.php:208
@@ -28486,11 +28486,11 @@ msgstr "Homme >1000 cp/mL"
 
 #: app/vl/program-management/vlWeeklyReport.php:163
 msgid "Female <=1000 cp/mL"
-msgstr "Femelle <=1000 cp/mL"
+msgstr "Femme <=1000 cp/mL"
 
 #: app/vl/program-management/vlWeeklyReport.php:167
 msgid "Female >1000 cp/mL"
-msgstr "Femelle >1000 cp/mL"
+msgstr "Femme >1000 cp/mL"
 
 #: app/vl/program-management/vlWeeklyReport.php:176
 msgid "Unknown Age/Sex <=1000 cp/mL"
@@ -28565,17 +28565,17 @@ msgstr "Code ART"
 
 #: app/vl/reference/add-vl-art-code-details.php:47
 msgid "Enter art code"
-msgstr "Saisir le code artistique"
+msgstr "Saisir le code TARV"
 
 #: app/vl/reference/add-vl-art-code-details.php:47
 msgid "Please enter art code"
-msgstr "Veuillez saisir le code artistique"
+msgstr "Veuillez saisir le code TARV"
 
 #: app/vl/reference/add-vl-art-code-details.php:47
 msgid "This art code that you entered already exists.Try another art code"
 msgstr ""
-"Ce code artistique que vous avez saisi existe déjà. Essayez un autre code "
-"artistique"
+"Ce code TARV que vous avez saisi existe déjà. Essayez un autre code "
+"TARV"
 
 #: app/vl/reference/add-vl-art-code-details.php:53
 #: app/vl/reference/vl-art-code-details.php:42
@@ -28592,25 +28592,25 @@ msgstr "Veuillez choisir une catégorie"
 
 #: app/vl/reference/add-vl-art-code-details.php:66
 msgid "Parent ART Code"
-msgstr "Code ART des parents"
+msgstr "Code TARV parent"
 
 #: app/vl/reference/add-vl-art-code-details.php:68
 msgid "Select parent art code"
-msgstr "Sélectionner le code de l'art parent"
+msgstr "Sélectionner le code TARV parent"
 
 #: app/vl/reference/add-vl-art-code-details.php:68
 msgid "Please select parent art code"
-msgstr "Veuillez sélectionner le code artistique des parents"
+msgstr "Veuillez sélectionner le code TARV parent"
 
 #: app/vl/reference/add-vl-art-code-details.php:79
 msgid "Select art status"
-msgstr "Sélectionner le statut de l'art"
+msgstr "Sélectionner le statut TARV"
 
 #: app/vl/reference/add-vl-art-code-details.php:79
 #: app/vl/reference/add-vl-test-failure-reason.php:43
 #: app/vl/reference/edit-vl-test-failure-reason.php:64
 msgid "Please select art status"
-msgstr "Veuillez sélectionner le statut de l'art"
+msgstr "Veuillez sélectionner le statut TARV"
 
 #: app/vl/reference/add-vl-results.php:31 app/vl/reference/vl-results.php:33
 msgid "Add VL Results"
@@ -28628,7 +28628,7 @@ msgstr "Résultat de la charge virale"
 #: app/vl/reference/add-vl-results.php:90
 #: app/vl/reference/edit-vl-results.php:97
 msgid "Interpretation"
-msgstr "Exégèse"
+msgstr "Interprétation"
 
 #: app/vl/reference/add-vl-results.php:108
 #: app/vl/reference/edit-vl-results.php:126
@@ -28724,7 +28724,7 @@ msgstr "Modifier les raisons de l'échec du test VL"
 
 #: app/vl/reference/save-vl-art-code-details-helper.php:34
 msgid "Art Code details saved successfully"
-msgstr "Les détails du code de l'art ont été enregistrés avec succès"
+msgstr "Les détails du code TARV ont été enregistrés avec succès"
 
 #: app/vl/reference/save-vl-results-helper.php:42
 msgid "VL Results details saved successfully"
@@ -28746,7 +28746,7 @@ msgstr "Raison de l'échec du test VL Sauvegardé avec succès"
 
 #: app/vl/reference/save-vl-test-reasons-helper.php:31
 msgid "VL Test Reason details saved successfully"
-msgstr "VL Test Reason details saved successfully"
+msgstr "Détails du motif de test CV sauvegardés avec succès"
 
 #: app/vl/reference/vl-art-code-details.php:9
 #: app/vl/reference/vl-art-code-details.php:19
@@ -28793,7 +28793,7 @@ msgstr "VL | Ajouter une nouvelle demande"
 
 #: app/vl/requests/addVlRequestHelper.php:424
 msgid "VL request added successfully"
-msgstr "Mis à jour avec succés"
+msgstr "Demande VL ajoutée avec succès"
 
 #: app/vl/requests/editVlRequest.php:15
 msgid "VL | Edit Request"
@@ -29119,7 +29119,7 @@ msgstr "Saisir le numéro ART"
 #: app/vl/requests/forms/edit-cameroon.php:303
 #: app/vl/results/forms/update-cameroon-result.php:335
 msgid "Enter art number"
-msgstr "Saisir le numéro de l'art"
+msgstr "Saisir le numéro TARV"
 
 #: app/vl/requests/forms/add-cameroon.php:279
 #: app/vl/requests/forms/edit-cameroon.php:338
@@ -29364,7 +29364,7 @@ msgstr "Demande verrouillée"
 
 #: app/vl/requests/get-request-list.php:435
 msgid "Edit Sample Request"
-msgstr "Modifier l'exemple de demande"
+msgstr "Modifier la demande d'échantillon"
 
 #: app/vl/requests/get-request-list.php:442
 msgid "Cannot Edit Locked Sample"
@@ -29408,7 +29408,7 @@ msgstr "Veuillez sélectionner une machine"
 
 #: app/vl/requests/upload-storage-helper.php:137
 msgid "Lab Storage added successfully"
-msgstr "Lab Storage ajouté avec succès"
+msgstr "Stockage laboratoire ajouté avec succès"
 
 #: app/vl/requests/upload-storage-helper.php:139
 msgid "Bulk Storage Import Failed"
@@ -29702,11 +29702,11 @@ msgstr "Autorisé et validé par"
 
 #: app/vl/results/pdf/result-pdf-cameroon.php:236
 msgid "FACILITY"
-msgstr "Facilité"
+msgstr "ÉTABLISSEMENT"
 
 #: app/vl/results/pdf/result-pdf-cameroon.php:237
 msgid "FACILITY CODE"
-msgstr "CODE DE LA FACILITÉ"
+msgstr "CODE DE L'ÉTABLISSEMENT"
 
 #: app/vl/results/pdf/result-pdf-cameroon.php:250
 msgid "PROJECT"
@@ -29829,7 +29829,7 @@ msgid ""
 "Sample Received at Testing Lab Date cannot be earlier than Sample Collection "
 "Date"
 msgstr ""
-"Échantillon reçu au laboratoire d'essai La date ne peut être antérieure à la "
+"Échantillon reçu au laboratoire de test - La date ne peut être antérieure à la "
 "date de prélèvement de l'échantillon"
 
 #: public/assets/js/dates.js.php:298
@@ -30015,7 +30015,7 @@ msgstr "Format de date détecté - analyse..."
 
 #: public/assets/js/smart-date-format.js.php:171
 msgid "Sample date detected - finding format..."
-msgstr "Exemple de date détectée - format de recherche..."
+msgstr "Date d'échantillon détectée - recherche du format..."
 
 #: public/assets/js/smart-date-format.js.php:280
 msgid "Analyzing date format..."
