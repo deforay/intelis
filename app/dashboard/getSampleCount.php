@@ -35,6 +35,7 @@ if ($testType === 'eid') {
     $requestCountDataTable = "vlRequestCountDataTable";
     $samplesCollectionChart = "vlSamplesCollectionChart";
 } elseif ($testType === 'covid19') {
+    $requestCountDataTable = "covid19RequestCountDataTable";
     $samplesCollectionChart = "covid19SamplesCollectionChart";
 } elseif ($testType === 'hepatitis') {
     $requestCountDataTable = "hepatitisRequestCountDataTable";

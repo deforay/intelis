@@ -884,6 +884,27 @@ $userModules = $_SESSION['modules'] ?? [];
 					}
 				}
 			});
+		} else if (requestType == 'covid19') {
+			// Keep COVID-19 aligned with the other dashboard tabs that lazy-load count tables.
+			xhr = $.ajax({
+				url: "/dashboard/getSampleCount.php",
+				type: 'POST',
+				data: {
+					sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
+					type: 'covid19'
+				},
+				async: true,
+				success: function(data) {
+					if (data != '') {
+						$("#covid19NoOfSampleCount").html(data);
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching COVID-19 sample counts:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'cd4') {
 			xhr = $.ajax({
 				url: "/dashboard/getSampleCount.php",
