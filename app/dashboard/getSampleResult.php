@@ -71,11 +71,12 @@ if ($testType === 'eid') {
     $samplesWaitingChart = "cd4SamplesWaitingChart";
     $samplesOverviewChart = "cd4SamplesOverviewChart";
 } elseif ($testType === 'tb') {
-    $samplesReceivedChart = "eidSamplesReceivedChart";
-    $samplesTestedChart = "eidSamplesTestedChart";
-    $samplesRejectedChart = "eidSamplesRejectedChart";
-    $samplesWaitingChart = "eidSamplesWaitingChart";
-    $samplesOverviewChart = "eidSamplesOverviewChart";
+    // TB needs its own chart container IDs so the dashboard does not reuse EID widgets.
+    $samplesReceivedChart = "tbSamplesReceivedChart";
+    $samplesTestedChart = "tbSamplesTestedChart";
+    $samplesRejectedChart = "tbSamplesRejectedChart";
+    $samplesWaitingChart = "tbSamplesWaitingChart";
+    $samplesOverviewChart = "tbSamplesOverviewChart";
 } elseif ($testType === 'recency') {
     // The “Recency” view is driven from the VL table but only for reason 9999
     $recencyWhere = " reason_for_vl_testing = 9999 ";
