@@ -23,8 +23,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$formId = (int) $general->getGlobalConfig('vl_form');
-
 $tResult = [];
 //$rjResult = [];
 
@@ -32,6 +30,7 @@ $tResult = [];
 $vlQuery = "select count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`, r_c_a.recommended_corrective_action_name
                 FROM form_tb as vl
                 INNER JOIN r_tb_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
+                LEFT JOIN r_tb_sample_type as s ON s.sample_id=vl.specimen_type
                 LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
                 INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";

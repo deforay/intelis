@@ -47,8 +47,8 @@ if ($whereCondition !== '' && $whereCondition !== '0') {
 	$sWhere[] = $whereCondition;
 }
 
-$tQuery = "SELECT COUNT(eid_id) as total,status_id,status_name
-                FROM form_eid as vl
+$tQuery = "SELECT COUNT(tb_id) as total,status_id,status_name
+                FROM form_tb as vl
                 JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                 JOIN facility_details as f ON vl.lab_id=f.facility_id
                 LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
@@ -82,26 +82,21 @@ $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
 $tResult = $db->rawQuery($tQuery);
 
 
-//HVL and LVL Samples
+// TB final results are free-text values, so aggregate them by label instead of forcing
+// them into a positive/negative split like EID.
 $sWhere = [];
 if ($whereCondition !== '' && $whereCondition !== '0') {
 	$sWhere[] = $whereCondition;
 }
-$vlSuppressionQuery = "SELECT   COUNT(eid_id) as total,
-		SUM(CASE
-				WHEN (vl.result = 'positive') THEN 1
-					ELSE 0
-				END) AS positiveResult,
-		(SUM(CASE
-				WHEN (vl.result = 'negative') THEN 1
-					ELSE 0
-				END)) AS negativeResult,
-		status_id,
-		status_name
+$tbResultsDistributionQuery = "SELECT
+		TRIM(vl.result) AS resultName,
+		COUNT(vl.tb_id) AS total
+		FROM form_tb as vl
+		INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+		JOIN facility_details as f ON vl.lab_id=f.facility_id
+		LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-		FROM form_eid as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.lab_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
-
-$sWhere[] = " (vl.result!='' and vl.result is not null) ";
+$sWhere[] = "NULLIF(TRIM(vl.result), '') IS NOT NULL";
 
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
 	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -125,9 +120,10 @@ if (!empty($_POST['labName'])) {
 	$sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 if ($sWhere !== []) {
-	$vlSuppressionQuery .= " where " . implode(" AND ", $sWhere);
+	$tbResultsDistributionQuery .= " where " . implode(" AND ", $sWhere);
 }
-$vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
+$tbResultsDistributionQuery .= " GROUP BY TRIM(vl.result) ORDER BY total DESC";
+$tbResultsDistribution = $db->rawQuery($tbResultsDistributionQuery);
 
 //get LAB TAT
 $sWhere = [];
@@ -157,9 +153,9 @@ $tatSampleQuery = "SELECT
 					ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.sample_tested_datetime, vl.result_printed_datetime), 0)), 2) AS AvgTestedPrinted,
 					ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.result_printed_on_lis_datetime, vl.result_printed_on_sts_datetime), 0)), 2) AS AvgTestedPrintedFirstTime
 
-				FROM `form_eid` AS vl
+				FROM `form_tb` AS vl
 				INNER JOIN facility_details AS f ON vl.lab_id = f.facility_id
-				LEFT JOIN r_vl_sample_type AS s ON s.sample_id = vl.specimen_type
+				LEFT JOIN r_tb_sample_type AS s ON s.sample_id = vl.specimen_type
 				WHERE
 					vl.result IS NOT NULL AND vl.result != '' AND
 					DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate'
@@ -200,12 +196,12 @@ foreach ($tatResult as $sRow) {
 <div class="col-xs-12">
 	<div class="box">
 		<div class="box-body">
-			<div id="eidSampleStatusOverviewContainer" style="float:left;width:100%; margin: 0 auto;"></div>
+			<div id="tbSampleStatusOverviewContainer" style="float:left;width:100%; margin: 0 auto;"></div>
 		</div>
 	</div>
 	<div class="box">
 		<div class="box-body">
-			<div id="eidSamplesOverview" style="float:right;width:100%;margin: 0 auto;"></div>
+			<div id="tbSamplesOverview" style="float:right;width:100%;margin: 0 auto;"></div>
 		</div>
 	</div>
 </div>
@@ -213,7 +209,7 @@ foreach ($tatResult as $sRow) {
 <div class="col-xs-12 labAverageTatDiv">
 	<div class="box">
 		<div class="box-body">
-			<div id="eidLabAverageTat" style="padding:15px 0px 5px 0px;float:left;width:100%;"></div>
+			<div id="tbLabAverageTat" style="padding:15px 0px 5px 0px;float:left;width:100%;"></div>
 		</div>
 	</div>
 </div>
@@ -221,7 +217,7 @@ foreach ($tatResult as $sRow) {
 	<?php
 	if (!empty($tResult)) {
 		?>
-		$('#eidSampleStatusOverviewContainer').highcharts({
+		$('#tbSampleStatusOverviewContainer').highcharts({
 			chart: {
 				plotBackgroundColor: null,
 				plotBorderWidth: null,
@@ -229,13 +225,13 @@ foreach ($tatResult as $sRow) {
 				type: 'pie'
 			},
 			title: {
-				text: "<?php echo _translate("EID Samples Status Overview"); ?>"
+				text: "<?php echo _translate("TB Samples Status Overview"); ?>"
 			},
 			credits: {
 				enabled: false
 			},
 			tooltip: {
-				pointFormat: "<?php echo _translate("EID Samples"); ?> :<strong>{point.y}</strong>"
+				pointFormat: "<?php echo _translate("TB Samples"); ?> :<strong>{point.y}</strong>"
 			},
 			plotOptions: {
 				pie: {
@@ -287,55 +283,59 @@ foreach ($tatResult as $sRow) {
 
 	}
 
-	if (isset($vlSuppressionResult) && (isset($vlSuppressionResult['positiveResult']) || isset($vlSuppressionResult['negativeResult']))) {
+	if (!empty($tbResultsDistribution)) {
 
 		?>
-		Highcharts.setOptions({
-			colors: ['#FF0000', '#50B432']
-		});
-		$('#eidSamplesOverview').highcharts({
+		$('#tbSamplesOverview').highcharts({
 			chart: {
-				plotBackgroundColor: null,
-				plotBorderWidth: null,
-				plotShadow: false,
-				type: 'pie'
+				type: 'bar'
 			},
 			title: {
-				text: "<?php echo _translate("EID Results"); ?>"
+				text: "<?php echo _translate("TB Final Result Counts"); ?>"
 			},
 			credits: {
 				enabled: false
 			},
+			xAxis: {
+				categories: [
+					<?php
+					foreach ($tbResultsDistribution as $resultRow) {
+						echo "'" . htmlspecialchars((string) $resultRow['resultName'], ENT_QUOTES) . "',";
+					}
+					?>
+				],
+				title: {
+					text: null
+				}
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: "<?php echo _translate("Number of Samples"); ?>",
+					align: 'high'
+				}
+			},
 			tooltip: {
-				pointFormat: "<?php echo _translate("Samples"); ?> :<strong>{point.y}</strong>"
+				pointFormat: "<?php echo _translate("Samples"); ?> : <strong>{point.y}</strong>"
 			},
 			plotOptions: {
-				pie: {
-					size: '100%',
-					allowPointSelect: true,
-					cursor: 'pointer',
+				series: {
 					dataLabels: {
 						enabled: true,
-						useHTML: true,
-						format: '<div style="padding-bottom:10px;"><strong>{point.name}</strong>: {point.y}</div>',
-						style: {
-							color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-						},
-						distance: 10
-					},
-					showInLegend: true
+						format: '{point.y}'
+					}
 				}
 			},
 			series: [{
-				colorByPoint: true,
-				data: [{
-					name: "<?php echo _translate("Positive"); ?>",
-					y: <?php echo (isset($vlSuppressionResult['positiveResult']) && $vlSuppressionResult['positiveResult'] > 0) > 0 ? $vlSuppressionResult['positiveResult'] : 0; ?>
-				},
-				{
-					name: "<?php echo _translate("Negative"); ?>",
-					y: <?php echo (isset($vlSuppressionResult['negativeResult']) && $vlSuppressionResult['negativeResult'] > 0) > 0 ? $vlSuppressionResult['negativeResult'] : 0; ?>
-				},
+				showInLegend: false,
+				name: "<?php echo _translate("Samples"); ?>",
+				color: '#7CB5ED',
+				data: [
+				<?php
+				foreach ($tbResultsDistribution as $resultRow) {
+					echo (int) $resultRow['total'] . ',';
+				}
+				?>
 				]
 			}]
 		});
@@ -343,17 +343,17 @@ foreach ($tatResult as $sRow) {
 	}
 	if (!empty($result)) {
 		?>
-		$('#eidLabAverageTat').highcharts({
+		$('#tbLabAverageTat').highcharts({
 			chart: {
 				type: 'line'
 			},
 			title: {
-				text: "<?php echo _translate("EID Laboratory Turnaround Time"); ?>"
+				text: "<?php echo _translate("TB Laboratory Turnaround Time"); ?>"
 			},
 			exporting: {
 				chartOptions: {
 					subtitle: {
-						text: "<?php echo _translate("EID Laboratory Turnaround Time"); ?>",
+						text: "<?php echo _translate("TB Laboratory Turnaround Time"); ?>",
 					}
 				}
 			},

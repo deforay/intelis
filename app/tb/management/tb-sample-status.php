@@ -90,7 +90,7 @@ $batResult = $db->rawQuery($batQuery);
 							<td></td>
 						</tr>
 						<tr>
-							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchTbTATData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 							</td>
 						</tr>
@@ -175,7 +175,7 @@ $batResult = $db->rawQuery($batQuery);
 			});
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').val("");
 		searchResultData();
-		loadVlTATData();
+		loadTbTATData();
 
 	});
 
@@ -197,13 +197,13 @@ $batResult = $db->rawQuery($batQuery);
 		$.unblockUI();
 	}
 
-	function searchVlTATData() {
+	function searchTbTATData() {
 		$.blockUI();
 		oTable.fnDraw();
 		$.unblockUI();
 	}
 
-	function loadVlTATData() {
+	function loadTbTATData() {
 		$.blockUI();
 		oTable = $('#tbRequestDataTable').dataTable({
 			"bJQueryUI": false,

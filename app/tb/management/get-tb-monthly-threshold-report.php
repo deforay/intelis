@@ -17,13 +17,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$formId = (int) $general->getGlobalConfig('vl_form');
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 $tableName = "form_tb";
 $primaryKey = "tb_id";
 
@@ -167,7 +160,7 @@ if (!empty($_SESSION['facilityMap'])) {
 }
 $sWhere .= " AND hf.test_type = 'tb'";
 $sQuery = $sQuery . ' ' . $sWhere;
-$_SESSION['hepatitisMonitoringThresholdReportQuery'] = $sQuery;
+$_SESSION['tbMonitoringThresholdReportQuery'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
 
 $aResultFilterTotal = $db->rawQuery($sQuery);
