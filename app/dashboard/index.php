@@ -924,6 +924,27 @@ $userModules = $_SESSION['modules'] ?? [];
 					}
 				}
 			});
+		} else if (requestType == 'tb') {
+			// TB uses the same lazy-loaded count panel as the other dashboard tabs.
+			xhr = $.ajax({
+				url: "/dashboard/getSampleCount.php",
+				type: 'POST',
+				data: {
+					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
+					type: 'tb'
+				},
+				async: true,
+				success: function(data) {
+					if (data != '') {
+						$("#tbNoOfSampleCount").html(data);
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching TB sample counts:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'generic-tests') {
 			xhr = $.ajax({
 				url: "/dashboard/getSampleCount.php",
