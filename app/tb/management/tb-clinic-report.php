@@ -94,11 +94,11 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="hvlSampleTestDate" name="hvlSampleTestDate" class="form-control stDate" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
+														<input type="text" id="positiveTbSampleTestDate" name="positiveTbSampleTestDate" class="form-control stDate" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" onchange="setSampleTestDate(this)" />
 													</td>
 													<td>&nbsp;<strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="hvlBatchCode" name="hvlBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+														<select class="form-control" id="positiveTbBatchCode" name="positiveTbBatchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($batResult as $code) {
@@ -111,7 +111,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td>&nbsp;<strong><?php echo _translate("Sample Type"); ?>&nbsp;:</strong></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="hvlSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+														<select style="width:220px;" class="form-control" id="positiveTbSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<?php
 															foreach ($sResult as $type) {
@@ -126,19 +126,19 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control select2-element" id="state" onchange="getByProvince('district','hvlFacilityName',this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+														<select class="form-control select2-element" id="state" onchange="getByProvince('district','positiveTbFacilityName',this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
 													<td><strong><?php echo _translate("District/County"); ?> :</strong></td>
 													<td>
-														<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
+														<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('positiveTbFacilityName',this.value)">
 														</select>
 													</td>
 													<td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="hvlFacilityName" name="hvlFacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="positiveTbFacilityName" name="positiveTbFacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
@@ -147,7 +147,7 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td>&nbsp;<strong><?php echo _translate("Contact Status"); ?>&nbsp;:</strong></td>
 													<td>
-														<select class="form-control" id="hvlContactStatus" name="hvlContactStatus" title="<?php echo _translate('Please select contact status'); ?>" style="width:220px;">
+														<select class="form-control" id="positiveTbContactStatus" name="positiveTbContactStatus" title="<?php echo _translate('Please select contact status'); ?>" style="width:220px;">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="yes"><?php echo _translate("Completed"); ?></option>
 															<option value="no"><?php echo _translate("Not Completed"); ?></option>
@@ -156,7 +156,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td><strong><?php echo _translate("Sex"); ?>&nbsp;:</strong></td>
 													<td>
-														<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="">
+														<select name="positiveTbGender" id="positiveTbGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>
@@ -166,9 +166,9 @@ $state = $geolocationService->getProvinces("yes");
 													<td></td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													<td colspan="6">&nbsp;<input type="button" onclick="searchTbRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-														<button class="btn btn-success btn-sm" type="button" onclick="exportHighViralLoadInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportPositiveTbResultsInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 													</td>
 												</tr>
 											</table>
@@ -271,7 +271,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													<td colspan="6">&nbsp;<input type="button" onclick="searchTbRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 														<button class="btn btn-success btn-sm" type="button" onclick="exportRejectedResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 													</td>
@@ -368,7 +368,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 												</tr>
 												<tr>
-													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													<td colspan="6">&nbsp;<input type="button" onclick="searchTbRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 														<button class="btn btn-success btn-sm" type="button" onclick="exportNotAvailableResultInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 													</td>
@@ -421,7 +421,7 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 
 												<tr>
-													<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+													<td colspan="4">&nbsp;<input type="button" onclick="searchTbRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 														<button class="btn btn-success btn-sm" type="button" onclick="exportDataQualityInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 													</td>
@@ -511,7 +511,7 @@ $state = $geolocationService->getProvinces("yes");
 													<td style="width: 23.33%;">
 														<input type="text" id="patientName" name="patientName" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
 													</td>
-													<td> <input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
+													<td> <input type="button" onclick="searchTbRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 														<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
 															<?php echo _translate("Export to excel"); ?>
@@ -589,7 +589,7 @@ $state = $geolocationService->getProvinces("yes");
 <script src="/assets/js/highcharts-accessibility.js"></script>
 <script type="text/javascript">
 	let searchExecuted = false;
-	var oTableViralLoad = null;
+	var oTablePositiveTbReport = null;
 	var oTableRjtReport = null;
 	var oTablenotAvailReport = null;
 	var oTableincompleteReport = null;
@@ -603,13 +603,13 @@ $state = $geolocationService->getProvinces("yes");
 			placeholder: "<?php echo _translate("Select District"); ?>",
 			width: '100%'
 		});
-		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName,#stfacilityName").select2({
+		$("#positiveTbFacilityName,#rjtFacilityName,#noResultFacilityName,#stfacilityName").select2({
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$("#formField").select2({
 			placeholder: "<?php echo _translate("Select Fields"); ?>"
 		});
-		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#stSampleCollectionDate').daterangepicker({
+		$('#positiveTbSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#stSampleCollectionDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
@@ -633,7 +633,7 @@ $state = $geolocationService->getProvinces("yes");
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').val('');
+		$('#positiveTbSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate').val('');
 		highTbReportTable();
 		sampleRjtReport();
 		notAvailReport();
@@ -647,7 +647,7 @@ $state = $geolocationService->getProvinces("yes");
 
 	function highTbReportTable() {
 		$.blockUI();
-		oTableViralLoad = $('#highTbReportTable').dataTable({
+		oTablePositiveTbReport = $('#highTbReportTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -695,12 +695,12 @@ $state = $geolocationService->getProvinces("yes");
 			"sAjaxSource": "getPositiveTbResultDetails.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
-					"name": "hvlBatchCode",
-					"value": $("#hvlBatchCode").val()
+					"name": "positiveTbBatchCode",
+					"value": $("#positiveTbBatchCode").val()
 				});
 				aoData.push({
-					"name": "hvlSampleTestDate",
-					"value": $("#hvlSampleTestDate").val()
+					"name": "positiveTbSampleTestDate",
+					"value": $("#positiveTbSampleTestDate").val()
 				});
 				aoData.push({
 					"name": "state",
@@ -711,20 +711,20 @@ $state = $geolocationService->getProvinces("yes");
 					"value": $("#district").val()
 				});
 				aoData.push({
-					"name": "hvlFacilityName",
-					"value": $("#hvlFacilityName").val()
+					"name": "positiveTbFacilityName",
+					"value": $("#positiveTbFacilityName").val()
 				});
 				aoData.push({
-					"name": "hvlSampleType",
-					"value": $("#hvlSampleType").val()
+					"name": "positiveTbSampleType",
+					"value": $("#positiveTbSampleType").val()
 				});
 				aoData.push({
-					"name": "hvlContactStatus",
-					"value": $("#hvlContactStatus").val()
+					"name": "positiveTbContactStatus",
+					"value": $("#positiveTbContactStatus").val()
 				});
 				aoData.push({
-					"name": "hvlGender",
-					"value": $("#hvlGender").val()
+					"name": "positiveTbGender",
+					"value": $("#positiveTbGender").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -1051,10 +1051,10 @@ $state = $geolocationService->getProvinces("yes");
 		$.unblockUI();
 	}
 
-	function searchVlRequestData() {
+	function searchTbRequestData() {
 		searchExecuted = true;
 		$.blockUI();
-		oTableViralLoad.fnDraw();
+		oTablePositiveTbReport.fnDraw();
 		oTableRjtReport.fnDraw();
 		oTablenotAvailReport.fnDraw();
 		//incompleteForm();
@@ -1064,9 +1064,9 @@ $state = $geolocationService->getProvinces("yes");
 	}
 
 
-	function exportHighViralLoadInexcel() {
+	function exportPositiveTbResultsInexcel() {
 		if (searchExecuted === false) {
-			searchVlRequestData();
+			searchTbRequestData();
 		}
 		var markAsComplete = false;
 		confm = confirm("<?php echo _translate("Do you want to mark these as complete ?"); ?>");
@@ -1075,11 +1075,11 @@ $state = $geolocationService->getProvinces("yes");
 		}
 		$.blockUI();
 		$.post("/tb/management/tbClinicResultExportInExcel.php", {
-				Sample_Test_Date: $("#hvlSampleTestDate").val(),
-				Batch_Code: $("#hvlBatchCode  option:selected").text(),
-				Sample_Type: $("#hvlSampleType  option:selected").text(),
-				Facility_Name: $("#hvlFacilityName  option:selected").text(),
-				Sex: $("#hvlGender  option:selected").text(),
+				Sample_Test_Date: $("#positiveTbSampleTestDate").val(),
+				Batch_Code: $("#positiveTbBatchCode  option:selected").text(),
+				Sample_Type: $("#positiveTbSampleType  option:selected").text(),
+				Facility_Name: $("#positiveTbFacilityName  option:selected").text(),
+				Sex: $("#positiveTbGender  option:selected").text(),
 				markAsComplete: markAsComplete
 			},
 			function(data) {
@@ -1095,7 +1095,7 @@ $state = $geolocationService->getProvinces("yes");
 
 	function exportRejectedResultInexcel() {
 		if (searchExecuted === false) {
-			searchVlRequestData();
+			searchTbRequestData();
 		}
 		$.blockUI();
 		$.post("/tb/management/tbRejectedResultExportInExcel.php", {
@@ -1118,7 +1118,7 @@ $state = $geolocationService->getProvinces("yes");
 
 	function exportNotAvailableResultInexcel() {
 		if (searchExecuted === false) {
-			searchVlRequestData();
+			searchTbRequestData();
 		}
 		$.blockUI();
 		$.post("/tb/management/tbNotAvailableResultExportInExcel.php", {
@@ -1141,7 +1141,7 @@ $state = $geolocationService->getProvinces("yes");
 
 	function exportDataQualityInexcel() {
 		if (searchExecuted === false) {
-			searchVlRequestData();
+			searchTbRequestData();
 		}
 		$.blockUI();
 		$.post("/tb/management/tbDataQualityExportInExcel.php", {
@@ -1161,7 +1161,7 @@ $state = $geolocationService->getProvinces("yes");
 
 	function exportPatientTesthistoryInexcel() {
 		if (searchExecuted === false) {
-			searchVlRequestData();
+			searchTbRequestData();
 		}
 		$.blockUI();
 		$.post("/tb/management/tbPatientTesthistoryInExcel.php", {

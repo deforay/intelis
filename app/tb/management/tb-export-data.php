@@ -200,7 +200,7 @@ $state = $geolocationService->getProvinces("yes");
 						</tr>
 						<tr>
 							<td colspan="6">
-								&nbsp;<button onclick="searchVlRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>
+								&nbsp;<button onclick="searchTbRequestData();" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>
 
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Clear Search"); ?></span></button>
 
@@ -257,7 +257,7 @@ $state = $geolocationService->getProvinces("yes");
 
 					<!-- /.box-header -->
 					<div class="box-body">
-						<table aria-describedby="table" id="vlRequestDataTable" class="table pageFilters" table-bordered table-striped" aria-hidden="true">
+						<table aria-describedby="table" id="tbRequestDataTable" class="table pageFilters" table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
 									<th><?php echo _translate("Sample ID"); ?></th>
@@ -373,7 +373,7 @@ $state = $geolocationService->getProvinces("yes");
 		$('#sampleCollectionDate').val("");
 		$('#sampleRecievedDate').val("");
 		//$('#sampleTestDate').val("");
-		loadVlRequestData();
+		loadTbRequestData();
 
 		$(".showhideCheckBox").change(function() {
 			if ($(this).attr('checked')) {
@@ -408,9 +408,9 @@ $state = $geolocationService->getProvinces("yes");
 		oTable.fnSetColumnVis(iCol, bVis ? false : true);
 	}
 
-	function loadVlRequestData() {
+	function loadTbRequestData() {
 		$.blockUI();
-		oTable = $('#vlRequestDataTable').dataTable({
+		oTable = $('#tbRequestDataTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -540,7 +540,7 @@ $state = $geolocationService->getProvinces("yes");
 		$.unblockUI();
 	}
 
-	function searchVlRequestData() {
+	function searchTbRequestData() {
 		searchExecuted = true;
 		var flag = false;
 		$(".filter-input ").each(function() {
@@ -577,7 +577,7 @@ $state = $geolocationService->getProvinces("yes");
 
 	function exportInexcel(fileName) {
 		if (searchExecuted === false) {
-			searchVlRequestData();
+			searchTbRequestData();
 		}
 		var withAlphaNum = null;
 		$.blockUI();

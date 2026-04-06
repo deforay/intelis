@@ -30,12 +30,12 @@ if (isset($_SESSION['highTbResult']) && trim((string) $_SESSION['highTbResult'])
 
 
      $output = [];
-     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL"];
+     $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ID", "Patient's Name", "Sample Collection Date", "Sample Tested Date", "Lab Name", "TB Result"];
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
-     $vlSampleId = [];
+     $tbSampleIds = [];
      $resultSet = $db->rawQueryGenerator($_SESSION['highTbResult']);
      foreach ($resultSet as $aRow) {
           $row = [];
@@ -70,11 +70,11 @@ if (isset($_SESSION['highTbResult']) && trim((string) $_SESSION['highTbResult'])
           $row[] = $sampleTestDate;
           $row[] = $aRow['labName'];
           $row[] = $aRow['result'];
-          $vlSampleId[] = $aRow['vl_sample_id'];
+          $tbSampleIds[] = $aRow['tb_id'];
           $output[] = $row;
      }
      if ($_POST['markAsComplete'] == 'true') {
-          $vlId = implode(",", $vlSampleId);
+          $tbId = implode(",", $tbSampleIds);
      }
      if (isset($_SESSION['highTbResultCount']) && $_SESSION['highTbResultCount'] > 50000) {
 

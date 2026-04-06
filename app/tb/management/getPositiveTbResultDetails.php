@@ -95,14 +95,14 @@ try {
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
         LEFT JOIN r_tb_results as rtbr ON rtbr.result_id = vl.result
-        LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
+        LEFT JOIN r_tb_sample_type as s ON s.sample_id=vl.specimen_type
         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
     $start_date = '';
     $end_date = '';
 
-    if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) !== '') {
-        $sWhere[] = ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
+    if (isset($_POST['positiveTbBatchCode']) && trim((string) $_POST['positiveTbBatchCode']) !== '') {
+        $sWhere[] = ' b.batch_code LIKE "%' . $_POST['positiveTbBatchCode'] . '%"';
     }
     /* if(isset($_POST['hvlContactStatus']) && trim($_POST['hvlContactStatus'])!= ''){
         if($_POST['hvlContactStatus']=='all')
@@ -113,8 +113,8 @@ try {
         }
     } */
 
-    if (isset($_POST['hvlSampleTestDate']) && trim((string) $_POST['hvlSampleTestDate']) !== '') {
-        $s_c_date = explode("to", (string) $_POST['hvlSampleTestDate']);
+    if (isset($_POST['positiveTbSampleTestDate']) && trim((string) $_POST['positiveTbSampleTestDate']) !== '') {
+        $s_c_date = explode("to", (string) $_POST['positiveTbSampleTestDate']);
 
         if (isset($s_c_date[0]) && trim($s_c_date[0]) !== "") {
             $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
@@ -128,8 +128,8 @@ try {
             $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
         }
     }
-    if (isset($_POST['hvlSampleType']) && $_POST['hvlSampleType'] != '') {
-        $sWhere[] = ' s.sample_id = "' . $_POST['hvlSampleType'] . '"';
+    if (isset($_POST['positiveTbSampleType']) && $_POST['positiveTbSampleType'] != '') {
+        $sWhere[] = ' s.sample_id = "' . $_POST['positiveTbSampleType'] . '"';
     }
     if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
         $sWhere[] = " f.facility_state_id = '" . $_POST['state'] . "' ";
@@ -137,21 +137,21 @@ try {
     if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
         $sWhere[] = " f.facility_district_id = '" . $_POST['district'] . "' ";
     }
-    if (isset($_POST['hvlFacilityName']) && $_POST['hvlFacilityName'] != '') {
-        $sWhere[] = ' f.facility_id IN (' . $_POST['hvlFacilityName'] . ')';
+    if (isset($_POST['positiveTbFacilityName']) && $_POST['positiveTbFacilityName'] != '') {
+        $sWhere[] = ' f.facility_id IN (' . $_POST['positiveTbFacilityName'] . ')';
     }
-    if (isset($_POST['hvlGender']) && $_POST['hvlGender'] != '') {
-        if (trim((string) $_POST['hvlGender']) === "unreported") {
+    if (isset($_POST['positiveTbGender']) && $_POST['positiveTbGender'] != '') {
+        if (trim((string) $_POST['positiveTbGender']) === "unreported") {
             $sWhere[] = ' vl.patient_gender="unreported" OR vl.patient_gender="" OR vl.patient_gender IS NULL';
         } else {
-            $sWhere[] = ' vl.patient_gender IN ("' . $_POST['hvlGender'] . '")';
+            $sWhere[] = ' vl.patient_gender IN ("' . $_POST['positiveTbGender'] . '")';
         }
     }
-    if (isset($_POST['hvlPatientPregnant']) && $_POST['hvlPatientPregnant'] != '') {
-        $sWhere[] = ' vl.is_patient_pregnant = "' . $_POST['hvlPatientPregnant'] . '"';
+    if (isset($_POST['positiveTbPatientPregnant']) && $_POST['positiveTbPatientPregnant'] != '') {
+        $sWhere[] = ' vl.is_patient_pregnant = "' . $_POST['positiveTbPatientPregnant'] . '"';
     }
-    if (isset($_POST['hvlPatientBreastfeeding']) && $_POST['hvlPatientBreastfeeding'] != '') {
-        $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['hvlPatientBreastfeeding'] . '"';
+    if (isset($_POST['positiveTbPatientBreastfeeding']) && $_POST['positiveTbPatientBreastfeeding'] != '') {
+        $sWhere[] = ' vl.is_patient_breastfeeding = "' . $_POST['positiveTbPatientBreastfeeding'] . '"';
     }
 
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
@@ -173,7 +173,7 @@ try {
 
     [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-    $_SESSION['highViralResultCount'] = $resultCount;
+    $_SESSION['highTbResultCount'] = $resultCount;
 
 
     /*
