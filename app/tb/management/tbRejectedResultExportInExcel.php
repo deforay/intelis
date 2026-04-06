@@ -21,7 +21,7 @@ $arr = $general->getGlobalConfig();
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['rejectedViralLoadResult']) !== "") {
+if (isset($_SESSION['tbRejectedResult']) && trim((string) $_SESSION['tbRejectedResult']) !== "") {
 
      $output = [];
      $headings = ['Sample ID', 'Remote Sample ID', "Facility Name", "Patient ID.", "Patient's Name", "Sample Collection Date", "Lab Name", "Rejection Reason", "Recommended Corrective Action"];
@@ -29,7 +29,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
-     $resultSet = $db->rawQuery($_SESSION['rejectedViralLoadResult']);
+     $resultSet = $db->rawQuery($_SESSION['tbRejectedResult']);
      foreach ($resultSet as $aRow) {
           $row = [];
           //sample collecion date
@@ -60,7 +60,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $row[] = $aRow['recommended_corrective_action_name'];
           $output[] = $row;
      }
-     if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 50000) {
+     if (isset($_SESSION['tbRejectedResultCount']) && $_SESSION['tbRejectedResultCount'] > 50000) {
 
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-TB-Rejected-Data-report-' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);

@@ -22,7 +22,7 @@ $key = (string) $general->getGlobalConfig('key');
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncompleteForm']) !== "") {
+if (isset($_SESSION['tbIncompleteForm']) && trim((string) $_SESSION['tbIncompleteForm']) !== "") {
 
      $output = [];
 
@@ -32,7 +32,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
      }
 
 
-     $resultSet = $db->rawQuery($_SESSION['vlIncompleteForm']);
+     $resultSet = $db->rawQuery($_SESSION['tbIncompleteForm']);
      foreach ($resultSet as $aRow) {
           $row = [];
           //sample collecion date
@@ -66,7 +66,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           $row[] = ($aRow['status_name']);
           $output[] = $row;
      }
-     if (isset($_SESSION['vlIncompleteFormCount']) && $_SESSION['vlIncompleteFormCount'] > 50000) {
+     if (isset($_SESSION['tbIncompleteFormCount']) && $_SESSION['tbIncompleteFormCount'] > 50000) {
 
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Data-Quality-report-' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
