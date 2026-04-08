@@ -90,7 +90,11 @@ try {
 <script>
     Highcharts.chart('container', {
         chart: {
-            type: 'column'
+            type: 'column',
+            scrollablePlotArea: {
+            minWidth: 2500, // makes chart scrollable
+            scrollPositionX: 0
+            },
         },
         title: {
             text: "<?= _translate("Samples Testing Report"); ?>",
@@ -141,7 +145,7 @@ try {
             column: {
                 stacking: 'normal',
                 dataLabels: {
-                    enabled: true
+                    enabled: false
                 }
             }
         },
