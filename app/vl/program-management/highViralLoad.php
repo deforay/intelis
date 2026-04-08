@@ -1261,7 +1261,7 @@ $state = $geolocationService->getProvinces("yes");
 												</tbody>
 											</table>
 										</div>
-										<div class="tab-pane fade" id="sampleTestingReport">
+										<div class="tab-pane fade" id="sampleTestingReport" style="width: 100%; overflow-x: auto;">
 											<table aria-describedby="table" class="table pageFilters" aria-hidden="true"
 												style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
@@ -1332,8 +1332,7 @@ $state = $geolocationService->getProvinces("yes");
 											<figure class="highcharts-figure">
 												<div id="container"></div>
 												<div id="sampleTestingResultDetails">
-													<p class="highcharts-description">
-													</p>
+													<p class="highcharts-description"></p>
 											</figure>
 										</div>
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
