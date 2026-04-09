@@ -495,7 +495,3 @@ if (!empty($requestResult)) {
         }
     }
 }
-
-MiscUtility::removeDirectory($pathFront);
-unset($_SESSION['rVal']);
-echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);
