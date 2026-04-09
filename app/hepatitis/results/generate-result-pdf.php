@@ -31,6 +31,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
+$arr = $general->getGlobalConfig();
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 //set print time
@@ -118,4 +119,6 @@ if ($pages !== []) {
 	$resultFilename = 'InteLIS-Hepatitis-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
 	$resultPdf = new PdfConcatenateHelper();
 	$resultPdf->mergeFiles($pages, TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, 50);
+	// The print page expects this endpoint to return the generated PDF path for download.php.
+	echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);
 }
