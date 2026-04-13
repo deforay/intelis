@@ -1,3 +1,5 @@
+<link rel="stylesheet" media="all" type="text/css" href="/assets/css/tom-select.css" />
+
 <?php
 // imported in tb-add-request.php based on country in global config
 
@@ -1186,7 +1188,7 @@ if ($isLisInstance) {
                                             </option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6 finalResult" <?php echo (isset($tbInfo['is_result_finalized']) && $tbInfo['is_result_finalized'] == "yes") ? '' : 'style="display:none;"'; ?>>
+                                   <!-- <div class="col-md-6 finalResult" <?php echo (isset($tbInfo['is_result_finalized']) && $tbInfo['is_result_finalized'] == "yes") ? '' : 'style="display:none;"'; ?>>
                                         <label class="label-control" for="finalResult">
                                             <?php echo _translate("Final Interpretation"); ?>
                                         </label>
@@ -1205,7 +1207,18 @@ if ($isLisInstance) {
                                                 <?php } ?>
                                             </datalist>
                                         </div>
+                                    </div>-->
+                                    <div class="col-md-6 finalResult" <?php echo (isset($tbInfo['is_result_finalized']) && $tbInfo['is_result_finalized'] == "yes") ? '' : 'style="display:none;"'; ?>>
+                                        <label class="label-control" for="finalResult">
+                                            <?php echo _translate("Final Interpretation"); ?>
+                                        </label>
+                                        <div class="resultInputContainer">
+                                            <?php $resultValues = implode(',',$tbResults); ?>
+                                            <input id="finalResult" name="finalResult" value="<?php echo $resultValues; ?>" title="<?php echo _translate('Please enter the final interpretation'); ?>" autocomplete="off" 
+                                            placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>" onchange="if(confirmFinalInterpretation(this)) { (this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show(); }">
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -1233,10 +1246,13 @@ if ($isLisInstance) {
         </div>
     </section>
 </div>
+<script type="text/javascript"
+    src="/assets/js/tom-select.complete.min.js"></script>
 <script type="text/javascript">
     let testCount = $('.test-section').length || 1;
     let provinceName = true;
     let facilityName = true;
+    let isFirstChange = true;
 
     // Test result options for each test type
     const testResultOptions = {
@@ -1757,6 +1773,13 @@ if ($isLisInstance) {
 
     // Document ready initialization
     $(document).ready(function () {
+         var TS = new TomSelect("#finalResult",{
+            maxItems: 1,
+            closeAfterSelect: true,
+            allowEmptyOption: true
+        });
+        TS.setValue("<?php echo $tbInfo['result']; ?>");
+        //TS.clear();
         // Initialize Select2 for main form elements
         $("#facilityId, #province, #district").select2({
             placeholder: "<?php echo _translate('Select option'); ?>",
@@ -1865,6 +1888,11 @@ if ($isLisInstance) {
     });
 
     function confirmFinalInterpretation(input) {
+
+        if (isFirstChange) {
+        isFirstChange = false;
+        return; // skip first change
+    }
         if (input.value !== '' && input.value !== input.dataset.previousValue) {
             if (!confirm('<?php echo _translate("Tests with Final Interpretation cannot be referred to other labs. Are you sure you want to continue?"); ?>')) {
                 input.value = input.dataset.previousValue || '';
@@ -1874,6 +1902,7 @@ if ($isLisInstance) {
         }
         input.dataset.previousValue = input.value;
         return true;
+
     }
 
     // Store initial value on focus

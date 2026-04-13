@@ -1,3 +1,4 @@
+<link rel="stylesheet" media="all" type="text/css" href="/assets/css/tom-select.css" />
 <?php
 // imported in tb-add-request.php based on country in global config
 
@@ -517,6 +518,10 @@ if ($isLisInstance) {
                                         padding-bottom: 5px;
                                         border-bottom: 2px solid #3c8dbc;
                                     }
+                                    datalist {
+                                        position: absolute;
+                                        z-index: 9999;
+                                    }
                                 </style>
                                 <div id="testSections">
                                     <!-- Initial test section -->
@@ -697,7 +702,7 @@ if ($isLisInstance) {
                                             <option value="yes"><?php echo _translate("Yes"); ?></option>
                                         </select>
                                     </div>
-                                    <div class="col-md-6 finalResult" style="display: none;">
+                                    <!--<div class="col-md-6 finalResult" style="display: none;">
                                         <label class="label-control"
                                             for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
                                         <div class="resultInputContainer">
@@ -711,6 +716,15 @@ if ($isLisInstance) {
                                                     </option>
                                                 <?php } ?>
                                             </datalist>
+                                        </div>
+                                    </div>-->
+                                    <div class="col-md-6 finalResult" style="display: block;">
+                                        <label class="label-control"
+                                            for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
+                                        <div class="resultInputContainer">
+                                            <?php $resultValues = implode(',',$tbResults); ?>
+                                            <input id="finalResult" name="finalResult" value="<?php echo $resultValues; ?>" title="<?php echo _translate('Please enter the final interpretation'); ?>" autocomplete="off" 
+                                            placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>" onchange="if(confirmFinalInterpretation(this)) { (this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show(); }">
                                         </div>
                                     </div>
                                 </div>
@@ -740,7 +754,8 @@ if ($isLisInstance) {
         </div>
     </section>
 </div>
-
+  <script type="text/javascript"
+    src="/assets/js/tom-select.complete.min.js"></script>
 <script type="text/javascript">
     let provinceName = true;
     let facilityName = true;
@@ -1327,6 +1342,16 @@ if ($isLisInstance) {
 
     // Document ready function
     $(document).ready(function () {
+        
+        var TS = new TomSelect("#finalResult",{
+            persist: false,
+            createOnBlur: true,
+            create: true,
+            maxItems: 1,
+            closeAfterSelect: true,
+            allowEmptyOption: true
+        });
+        TS.clear();
         // Initialize Select2 for main form elements
         $("#facilityId, #province, #district").select2({
             placeholder: "<?php echo _translate('Select'); ?>",
@@ -1433,5 +1458,6 @@ if ($isLisInstance) {
         this.dataset.previousValue = this.value;
     });
 </script>
-<script type="text/javascript"
-    src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<!--<script type="text/javascript"
+    src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>-->
+  
