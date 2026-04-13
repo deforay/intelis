@@ -1889,7 +1889,7 @@ if ($isLisInstance) {
 
     function confirmFinalInterpretation(input) {
 
-        if (isFirstChange) {
+    if (isFirstChange) {
         isFirstChange = false;
         return; // skip first change
     }
