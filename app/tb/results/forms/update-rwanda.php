@@ -1,3 +1,5 @@
+<link rel="stylesheet" media="all" type="text/css" href="/assets/css/tom-select.css" />
+
 <?php
 // imported in tb-add-request.php based on country in global config
 
@@ -1028,21 +1030,13 @@ if ($isLisInstance) {
                                         </select>
                                     </div>
                                     <div class="col-md-6 finalResult" <?php echo (isset($tbInfo['is_result_finalized']) && $tbInfo['is_result_finalized'] == "yes") ? '' : 'style="display:none;"'; ?>>
-                                        <label class="label-control"
-                                            for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
+                                        <label class="label-control" for="finalResult">
+                                            <?php echo _translate("Final Interpretation"); ?>
+                                        </label>
                                         <div class="resultInputContainer">
-                                            <input type="text" list="possibleFinalResults" class="form-control"
-                                                id="finalResult" name="finalResult"
-                                                value="<?php echo $tbInfo['result'] ?? ''; ?>"
-                                                placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>"
-                                                title="<?php echo _translate('Please enter the final interpretation'); ?>"
-                                                onchange="if(confirmFinalInterpretation(this)) { (this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show(); }" />
-                                            <datalist id="possibleFinalResults">
-                                                <?php foreach ($tbResults as $resultValue) { ?>
-                                                    <option value="<?php echo $resultValue; ?>"><?php echo $resultValue; ?>
-                                                    </option>
-                                                <?php } ?>
-                                            </datalist>
+                                            <?php $resultValues = implode(',',$tbResults); ?>
+                                            <input id="finalResult" name="finalResult" value="<?php echo $resultValues; ?>" title="<?php echo _translate('Please enter the final interpretation'); ?>" autocomplete="off" 
+                                            placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>" onchange="if(confirmFinalInterpretation(this)) { (this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show(); }">
                                         </div>
                                     </div>
                                 </div>
@@ -1094,11 +1088,13 @@ if ($isLisInstance) {
         border-bottom: 2px solid #3c8dbc;
     }
 </style>
-
+<script type="text/javascript"
+    src="/assets/js/tom-select.complete.min.js"></script>
 <script type="text/javascript">
     let provinceName = true;
     let facilityName = true;
     let testCount = $('.test-section').length || 1;
+    let isFirstChange = true;
 
     // Test result options for each test type
     const testResultOptions = {
@@ -1636,6 +1632,12 @@ if ($isLisInstance) {
 
     // Document ready function
     $(document).ready(function () {
+         var TS = new TomSelect("#finalResult",{
+            maxItems: 1,
+            closeAfterSelect: true,
+            allowEmptyOption: true
+        });
+        TS.setValue("<?php echo $tbInfo['result']; ?>");
         // Initialize Select2 for main form elements
         $("#facilityId").select2({
             placeholder: "<?php echo _translate('Select option'); ?>",
@@ -1752,6 +1754,10 @@ if ($isLisInstance) {
     });
 
     function confirmFinalInterpretation(input) {
+    if (isFirstChange) {
+        isFirstChange = false;
+        return; // skip first change
+    }
         if (input.value !== '' && input.value !== input.dataset.previousValue) {
             if (!confirm('<?php echo _translate("Tests with Final Interpretation cannot be referred to other labs. Are you sure you want to continue?"); ?>')) {
                 input.value = input.dataset.previousValue || '';
@@ -1773,5 +1779,3 @@ if ($isLisInstance) {
         $('#finalResult').val('').trigger('change');
     }
 </script>
-<script type="text/javascript"
-    src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
