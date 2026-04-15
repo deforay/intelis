@@ -2,9 +2,22 @@
 <?php
 
 // bin/interface-migrate.php
-// Force-run vlsm-interfacing MySQL migrations against the interface database.
-// Migrations are fetched from the GitHub repo and executed one statement at a time.
-// Errors are logged but do not stop execution (permissive mode).
+// Force-run vlsm-interfacing migrations (MySQL + SQLite) against the local/remote
+// interface databases. Migration files are fetched from the GitHub repo and
+// executed one statement at a time. Errors are logged but do not stop execution
+// (permissive mode).
+//
+// Two phases:
+//   1. MySQL  -- against SYSTEM_CONFIG['interfacing']['database'] (remote or local)
+//   2. SQLite -- uses SYSTEM_CONFIG['interfacing']['sqlite3Path'] if set (any OS);
+//                otherwise, on Linux only, globs /home/*/.config/vlsm-interfacing/interface.db.
+//                Skipped silently if no DB is found.
+//
+// Usage:
+//   php bin/interface-migrate.php                    run all migrations
+//   php bin/interface-migrate.php --from=005.sql     start MySQL from a specific file
+//   php bin/interface-migrate.php --status           list pending files, exit
+//   php bin/interface-migrate.php --dry-run          preview statements without executing
 
 require_once __DIR__ . '/../bootstrap.php';
 
@@ -58,8 +71,10 @@ try {
 $repoApiUrl = 'https://api.github.com/repos/deforay/vlsm-interfacing/contents/app/mysql-migrations?ref=master';
 $rawBaseUrl = 'https://raw.githubusercontent.com/deforay/vlsm-interfacing/master/app/mysql-migrations/';
 
-$options = getopt("", ["from:"]);
+$options = getopt("", ["from:", "status", "dry-run"]);
 $fromFile = $options['from'] ?? null;
+$showStatus = isset($options['status']);
+$dryRun = isset($options['dry-run']);
 
 echo "Fetching migration list from GitHub..." . PHP_EOL;
 
@@ -104,6 +119,18 @@ echo "Found " . count($migrationFiles) . " migration file(s): " . implode(', ', 
 if ($fromFile !== null) {
     $migrationFiles = array_values(array_filter($migrationFiles, fn($f) => $f >= $fromFile));
     echo "Starting from: $fromFile (" . count($migrationFiles) . " file(s) remaining)" . PHP_EOL;
+}
+
+if ($showStatus) {
+    echo PHP_EOL . "Pending migrations:" . PHP_EOL;
+    if (empty($migrationFiles)) {
+        echo "  (none)" . PHP_EOL;
+    } else {
+        foreach ($migrationFiles as $f) {
+            echo "  $f" . PHP_EOL;
+        }
+    }
+    exit(0);
 }
 
 echo PHP_EOL;
@@ -160,6 +187,16 @@ foreach ($migrationFiles as $migrationFile) {
 
     echo "  " . count($statements) . " statement(s)" . PHP_EOL;
 
+    if ($dryRun) {
+        foreach ($statements as $idx => $sql) {
+            $totalStatements++;
+            $preview = mb_substr(preg_replace('/\s+/', ' ', $sql), 0, 100);
+            echo "  [" . ($idx + 1) . "] WOULD RUN  $preview" . PHP_EOL;
+        }
+        echo PHP_EOL;
+        continue;
+    }
+
     $db->connection('interface')->rawQuery("SET FOREIGN_KEY_CHECKS = 0");
 
     foreach ($statements as $idx => $sql) {
@@ -212,15 +249,251 @@ foreach ($migrationFiles as $migrationFile) {
     echo PHP_EOL;
 }
 
-// --- Summary ---
+// --- MySQL Summary ---
 
 echo "====================================" . PHP_EOL;
-echo "Interface Migration Summary" . PHP_EOL;
+echo "MySQL Interface Migration Summary" . PHP_EOL;
 echo "====================================" . PHP_EOL;
+if ($dryRun) {
+    echo "Mode:              DRY RUN (no changes made)" . PHP_EOL;
+}
 echo "Total statements:  $totalStatements" . PHP_EOL;
-echo "Successful:        $successCount" . PHP_EOL;
-echo "Skipped (benign):  $skippedCount" . PHP_EOL;
-echo "Errors:            $errorCount" . PHP_EOL;
+if (!$dryRun) {
+    echo "Successful:        $successCount" . PHP_EOL;
+    echo "Skipped (benign):  $skippedCount" . PHP_EOL;
+    echo "Errors:            $errorCount" . PHP_EOL;
+}
 echo "====================================" . PHP_EOL;
 
-exit($errorCount > 0 ? CLI\ERROR : 0);
+// --- SQLite migrations (Ubuntu/Linux only) ---
+// The Electron app (vlsm-interfacing) keeps its local DB at
+// ~/.config/vlsm-interfacing/interface.db per user. Discover all such DBs on
+// the machine and force-apply the latest sqlite-migrations/*.sql from GitHub.
+
+$sqliteErrors = 0;
+
+if (!extension_loaded('pdo_sqlite')) {
+    echo PHP_EOL . "SQLite phase skipped: pdo_sqlite extension not loaded." . PHP_EOL;
+    echo "  Install with: sudo apt install php-sqlite3" . PHP_EOL;
+    exit($errorCount > 0 ? CLI\ERROR : 0);
+}
+
+// 1. Prefer explicit path from VLSM config if set (honoured on any OS).
+// 2. Otherwise, glob standard Electron userData locations — Linux only.
+$sqliteDbCandidates = [];
+$configuredSqlitePath = SYSTEM_CONFIG['interfacing']['sqlite3Path'] ?? '';
+if (is_string($configuredSqlitePath) && $configuredSqlitePath !== '') {
+    if (is_file($configuredSqlitePath)) {
+        $sqliteDbCandidates[] = $configuredSqlitePath;
+        echo PHP_EOL . "Using SQLite DB from VLSM config: $configuredSqlitePath" . PHP_EOL;
+    } else {
+        echo PHP_EOL . "WARN: VLSM config sqlite3Path is set but file not found: $configuredSqlitePath" . PHP_EOL;
+        if (PHP_OS_FAMILY === 'Linux') {
+            echo "      Falling back to filesystem search." . PHP_EOL;
+        }
+    }
+}
+
+if (empty($sqliteDbCandidates) && PHP_OS_FAMILY === 'Linux') {
+    $sqliteDbCandidates = array_merge(
+        glob('/home/*/.config/vlsm-interfacing/interface.db') ?: [],
+        glob('/root/.config/vlsm-interfacing/interface.db') ?: []
+    );
+}
+
+if (empty($sqliteDbCandidates)) {
+    echo PHP_EOL . "SQLite phase skipped: no interface.db found (set interfacing.sqlite3Path in VLSM config or run on Linux where it can be auto-discovered)." . PHP_EOL;
+    exit($errorCount > 0 ? CLI\ERROR : 0);
+}
+
+echo PHP_EOL . "====================================" . PHP_EOL;
+echo "SQLite Interface Migrations" . PHP_EOL;
+echo "====================================" . PHP_EOL;
+echo "NOTE: Close the vlsm-interfacing Electron app before proceeding - WAL contention risk." . PHP_EOL . PHP_EOL;
+
+echo "Found " . count($sqliteDbCandidates) . " SQLite DB(s):" . PHP_EOL;
+foreach ($sqliteDbCandidates as $p) {
+    echo "  $p" . PHP_EOL;
+}
+echo PHP_EOL;
+
+$sqliteRepoApiUrl = 'https://api.github.com/repos/deforay/vlsm-interfacing/contents/app/sqlite-migrations?ref=master';
+$sqliteRawBaseUrl = 'https://raw.githubusercontent.com/deforay/vlsm-interfacing/master/app/sqlite-migrations/';
+
+echo "Fetching SQLite migration list from GitHub..." . PHP_EOL;
+$sqliteApiResponse = @file_get_contents($sqliteRepoApiUrl, false, $context);
+if ($sqliteApiResponse === false) {
+    echo "Failed to fetch SQLite migration list from GitHub." . PHP_EOL;
+    exit($errorCount > 0 ? CLI\ERROR : 0);
+}
+$sqliteFilesMeta = json_decode($sqliteApiResponse, true);
+if (!is_array($sqliteFilesMeta)) {
+    echo "Unexpected response from GitHub API." . PHP_EOL;
+    exit($errorCount > 0 ? CLI\ERROR : 0);
+}
+
+$sqliteMigrationFiles = [];
+foreach ($sqliteFilesMeta as $file) {
+    if (($file['type'] ?? '') === 'file' && str_ends_with($file['name'], '.sql')) {
+        $sqliteMigrationFiles[] = $file['name'];
+    }
+}
+sort($sqliteMigrationFiles, SORT_NATURAL);
+
+if (empty($sqliteMigrationFiles)) {
+    echo "No SQLite migration files found." . PHP_EOL;
+    exit($errorCount > 0 ? CLI\ERROR : 0);
+}
+
+echo "Found " . count($sqliteMigrationFiles) . " SQLite migration file(s): " . implode(', ', $sqliteMigrationFiles) . PHP_EOL . PHP_EOL;
+
+// Pre-fetch all contents once - avoids N-DBs x M-files HTTP calls
+$sqliteContents = [];
+foreach ($sqliteMigrationFiles as $file) {
+    $content = @file_get_contents($sqliteRawBaseUrl . $file, false, $context);
+    if ($content === false) {
+        echo "  WARN: Failed to fetch $file, will skip." . PHP_EOL;
+        continue;
+    }
+    $sqliteContents[$file] = $content;
+}
+
+$sqliteStmtTotal = 0;
+$sqliteSuccess = 0;
+$sqliteSkipped = 0;
+
+foreach ($sqliteDbCandidates as $dbPath) {
+    echo "--- DB: $dbPath ---" . PHP_EOL;
+
+    try {
+        $pdo = new PDO('sqlite:' . $dbPath);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    } catch (Throwable $e) {
+        echo "  ERROR: Failed to open DB: " . $e->getMessage() . PHP_EOL;
+        $sqliteErrors++;
+        continue;
+    }
+
+    // Mirror Electron's bookkeeping (app/main.ts runSqliteMigrations)
+    try {
+        $pdo->query('CREATE TABLE IF NOT EXISTS versions (version INTEGER PRIMARY KEY, filename TEXT, applied_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
+        // Idempotent - older DBs miss this column; newer ones throw and we ignore
+        try {
+            $pdo->query('ALTER TABLE versions ADD COLUMN filename TEXT');
+        } catch (Throwable) {
+        }
+    } catch (Throwable $e) {
+        echo "  ERROR: Failed to prepare versions table: " . $e->getMessage() . PHP_EOL;
+        $sqliteErrors++;
+        continue;
+    }
+
+    $applied = [];
+    try {
+        $stmt = $pdo->query('SELECT filename FROM versions WHERE filename IS NOT NULL');
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $applied[$row['filename']] = true;
+        }
+    } catch (Throwable) {
+    }
+
+    $pending = array_values(array_filter(
+        $sqliteMigrationFiles,
+        fn($f) => !isset($applied[$f]) && isset($sqliteContents[$f])
+    ));
+
+    if (empty($pending)) {
+        echo "  (no pending migrations)" . PHP_EOL . PHP_EOL;
+        $pdo = null;
+        continue;
+    }
+
+    if ($showStatus) {
+        echo "  Pending:" . PHP_EOL;
+        foreach ($pending as $f) {
+            echo "    $f" . PHP_EOL;
+        }
+        echo PHP_EOL;
+        $pdo = null;
+        continue;
+    }
+
+    foreach ($pending as $file) {
+        echo "  $file:" . PHP_EOL;
+        $sqlContent = $sqliteContents[$file];
+
+        // Same splitter as Electron (main.ts:150-155): strip `--` comment lines, split on `;`
+        $lines = explode("\n", $sqlContent);
+        $cleanLines = array_filter($lines, fn($l) => !str_starts_with(trim($l), '--'));
+        $clean = implode("\n", $cleanLines);
+        $statements = array_values(array_filter(
+            array_map('trim', explode(';', $clean)),
+            fn($s) => $s !== ''
+        ));
+
+        if ($dryRun) {
+            foreach ($statements as $idx => $s) {
+                $sqliteStmtTotal++;
+                $preview = mb_substr(preg_replace('/\s+/', ' ', $s), 0, 100);
+                echo "    [" . ($idx + 1) . "] WOULD RUN  $preview" . PHP_EOL;
+            }
+            continue;
+        }
+
+        $migrationFailed = false;
+        foreach ($statements as $idx => $s) {
+            $sqliteStmtTotal++;
+            $stmtNum = $idx + 1;
+            try {
+                $pdo->query($s);
+                $sqliteSuccess++;
+            } catch (Throwable $e) {
+                $msg = $e->getMessage();
+                $isBenign =
+                    stripos($msg, 'duplicate column') !== false ||
+                    stripos($msg, 'already exists') !== false;
+                if ($isBenign) {
+                    $sqliteSkipped++;
+                    echo "    [$stmtNum] SKIPPED (benign): " . mb_substr($msg, 0, 120) . PHP_EOL;
+                } else {
+                    $sqliteErrors++;
+                    $migrationFailed = true;
+                    echo "    [$stmtNum] ERROR: " . mb_substr($msg, 0, 200) . PHP_EOL;
+                    echo "         SQL: " . mb_substr($s, 0, 200) . PHP_EOL;
+                    LoggerUtility::logError("SQLite interface migration error in $file ($dbPath): $msg\nSQL: $s");
+                    break; // abort this file, match Electron - leave versions row absent so next run retries
+                }
+            }
+        }
+
+        if (!$migrationFailed) {
+            $version = (int) $file;
+            try {
+                $stmt = $pdo->prepare('INSERT OR IGNORE INTO versions (version, filename) VALUES (?, ?)');
+                $stmt->execute([$version, $file]);
+            } catch (Throwable $e) {
+                echo "    WARN: Failed to record applied version: " . $e->getMessage() . PHP_EOL;
+            }
+        }
+    }
+
+    $pdo = null;
+    echo PHP_EOL;
+}
+
+echo "====================================" . PHP_EOL;
+echo "SQLite Migration Summary" . PHP_EOL;
+echo "====================================" . PHP_EOL;
+if ($dryRun) {
+    echo "Mode:              DRY RUN (no changes made)" . PHP_EOL;
+}
+echo "DBs found:         " . count($sqliteDbCandidates) . PHP_EOL;
+echo "Total statements:  $sqliteStmtTotal" . PHP_EOL;
+if (!$dryRun) {
+    echo "Successful:        $sqliteSuccess" . PHP_EOL;
+    echo "Skipped (benign):  $sqliteSkipped" . PHP_EOL;
+    echo "Errors:            $sqliteErrors" . PHP_EOL;
+}
+echo "====================================" . PHP_EOL;
+
+exit(($errorCount + $sqliteErrors) > 0 ? CLI\ERROR : 0);
