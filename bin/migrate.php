@@ -2,6 +2,14 @@
 <?php
 
 // bin/migrate.php
+//
+// Usage:
+//   php bin/migrate.php                  run pending migrations
+//   php bin/migrate.php -y               auto-continue on error
+//   php bin/migrate.php -q               quiet mode
+//   php bin/migrate.php --status         show current version and pending files, exit
+//   php bin/migrate.php --dry-run        preview statements without executing
+//   php bin/migrate.php --version=4.5.0  replay from a specific version (ignores DB version)
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -327,26 +335,52 @@ $versions = array_map(fn($file): string => basename((string) $file, '.sql'), $mi
 // Sort versions
 usort($versions, 'version_compare');
 
-$options = getopt("yq");  // -y auto-continue on error, -q quiet
+$options = getopt("yq", ["status", "dry-run", "version:"]);  // -y auto-continue on error, -q quiet, --status show pending, --dry-run preview, --version=X.Y.Z replay from version
 $autoContinueOnError = isset($options['y']);
 $quietMode = isset($options['q']);
-$showProgress = !$quietMode;
+$showStatus = isset($options['status']);
+$dryRun = isset($options['dry-run']);
+$fromVersion = $options['version'] ?? null;
+$showProgress = !$quietMode && !$dryRun && !$showStatus;
 
 if ($quietMode) {
     error_reporting(0);
+}
+
+$startVersion = $fromVersion ?? $currentVersion;
+$pendingVersions = array_values(array_filter(
+    $versions,
+    fn($v) => version_compare($v, $startVersion, '>=')
+));
+
+if ($showStatus) {
+    $io->writeln("Current DB version: " . ($currentVersion ?: '(none)'));
+    if ($fromVersion !== null) {
+        $io->writeln("Replay from:        $fromVersion");
+    }
+    $io->writeln("Pending migrations:");
+    if (empty($pendingVersions)) {
+        $io->writeln("  (none — database is up to date)");
+    } else {
+        foreach ($pendingVersions as $v) {
+            $io->writeln("  $v.sql");
+        }
+    }
+    exit(0);
 }
 
 $totalMigrations = 0;
 $totalQueries = 0;
 $skippedQueries = $successfulQueries = 0;
 $totalErrors = 0;
+$lastVersion = $currentVersion;
 
 foreach ($versions as $version) {
     $file = ROOT_PATH . '/sys/migrations/' . $version . '.sql';
 
-    if (version_compare($version, $currentVersion, '>=')) {
+    if (version_compare($version, $startVersion, '>=')) {
         if (!$quietMode) {
-            $io->section("Migrating to version $version");
+            $io->section($dryRun ? "DRY RUN: version $version" : "Migrating to version $version");
         }
         $totalMigrations++;
 
@@ -363,6 +397,16 @@ foreach ($versions as $version) {
         }
         $versionTotal = count($builtStatements);
         $processedForVersion = 0;
+
+        if ($dryRun) {
+            foreach ($builtStatements as $query) {
+                $totalQueries++;
+                $preview = mb_substr(preg_replace('/\s+/', ' ', $query), 0, 100);
+                $io->writeln("  WOULD RUN  $preview");
+            }
+            $lastVersion = $version;
+            continue;
+        }
 
         // New spinner/progress bar
         $bar = null;
@@ -521,6 +565,7 @@ foreach ($versions as $version) {
             $db->update('system_config', ['value' => $version]);
 
             $db->commitTransaction();
+            $lastVersion = $version;
         }
     }
 
@@ -528,14 +573,17 @@ foreach ($versions as $version) {
 }
 
 if (!$quietMode) {
-    $io->table(
-        ['Migration summary', ''],
-        [
-            ['Migrations attempted', $totalMigrations],
-            ['Queries executed', $totalQueries],
-            ['Successful queries', $successfulQueries],
-            ['Skipped queries', $skippedQueries],
-            ['Potential Errors logged', $totalErrors],
-        ]
-    );
+    $summaryRows = [];
+    if ($dryRun) {
+        $summaryRows[] = ['Mode', 'DRY RUN (no changes made)'];
+    }
+    $summaryRows[] = ['DB version', ($currentVersion ?: '(none)') . '  ->  ' . ($lastVersion ?: '(none)')];
+    $summaryRows[] = ['Migrations attempted', $totalMigrations];
+    $summaryRows[] = ['Queries executed', $totalQueries];
+    if (!$dryRun) {
+        $summaryRows[] = ['Successful queries', $successfulQueries];
+        $summaryRows[] = ['Skipped queries', $skippedQueries];
+        $summaryRows[] = ['Potential Errors logged', $totalErrors];
+    }
+    $io->table(['Migration summary', ''], $summaryRows);
 }
