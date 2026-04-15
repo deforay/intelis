@@ -465,9 +465,9 @@ $storageInfo = $storageService->getLabStorage();
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label></td>
+										<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory">*</span> </label></td>
 										<td style="width: 25%;">
-											<select name="eidPlatform" id="eidPlatform" class="form-control" title="Please choose EID Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;">
+											<select name="eidPlatform" id="eidPlatform" class="form-control isRequired" title="Please choose EID Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;">
 												<?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
 											</select>
 										</td>
@@ -549,23 +549,23 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Revu par</th>
+										<th scope="row">Revu par<span class="mandatory">*</span></th>
 										<td>
 											<select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose Revu par" style="width: 100%;">
 												<?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
 											</select>
 										</td>
-										<th scope="row">Date de Revu</th>
+										<th scope="row">Date de Revu<span class="mandatory">*</span></th>
 										<td><input type="text" value="<?= DateUtility::humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Date de revu" title="Date de revu" /></td>
 									</tr>
 									<tr>
-										<th scope="row">Approuvé le</th>
+										<th scope="row">Approuvé le<span class="mandatory">*</span></th>
 										<td>
-											<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+											<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="dateTime form-control isRequired" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 										</td>
-										<th scope="row">Approuvé par</th>
+										<th scope="row">Approuvé par<span class="mandatory">*</span></th>
 										<td>
-											<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
+											<select name="approvedBy" id="approvedBy" class="select2 isRequired form-control" title="Please choose Approuvé par" style="width: 100%;">
 												<?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>
 											</select>
 										</td>

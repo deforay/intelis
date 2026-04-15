@@ -507,13 +507,13 @@ $storageInfo = $storageService->getLabStorage();
 											</td>
 										</tr>
 										<tr>
-											<td><label for="">Date de réalisation de la charge virale </label></td>
+											<td><label for="">Date de réalisation de la charge virale<span class="mandatory">*</span> </label></td>
 											<td>
-												<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
+												<input type="text" class="form-control isRequired dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 											</td>
-											<td><label for="testingPlatform">Technique utilisée </label></td>
+											<td><label for="testingPlatform">Technique utilisée<span class="mandatory">*</span> </label></td>
 											<td>
-												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
+												<select name="testingPlatform" id="testingPlatform" class="isRequired form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
 													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?>
@@ -581,25 +581,25 @@ $storageInfo = $storageService->getLabStorage();
 											</tr>
 										<?php } ?>
 										<tr>
-											<td style="width:14%;"><label for="reviewedOn"> Revu le </label></td>
+											<td style="width:14%;"><label for="reviewedOn"> Revu le<span class="mandatory">*</span> </label></td>
 											<td style="width:14%;">
-												<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime authorisation form-control" placeholder="Revu le" title="Please enter the Revu le" />
+												<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime authorisation isRequired form-control" placeholder="Revu le" title="Please enter the Revu le" />
 											</td>
-											<td style="width:14%;"><label for="reviewedBy"> Revu par </label></td>
+											<td style="width:14%;"><label for="reviewedBy"> Revu par<span class="mandatory">*</span> </label></td>
 											<td style="width:14%;">
-												<select name="reviewedBy" id="reviewedBy" class="select2 authorisation form-control" title="Please choose revu par" style="width: 100%;">
+												<select name="reviewedBy" id="reviewedBy" class="select2 authorisation isRequired form-control" title="Please choose revu par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
 												</select>
 											</td>
 										</tr>
 										<tr>
-											<th scope="row">Approuvé le</th>
+											<th scope="row">Approuvé le<span class="mandatory">*</span></th>
 											<td>
-												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime authorisation form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime authorisation isRequired form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 											</td>
-											<th scope="row">Approuvé par</th>
+											<th scope="row">Approuvé par<span class="mandatory">*</span></th>
 											<td>
-												<select name="approvedBy" id="approvedBy" class="select2 authorisation form-control" title="Please choose Approuvé par" style="width: 100%;">
+												<select name="approvedBy" id="approvedBy" class="select2 authorisation isRequired form-control" title="Please choose Approuvé par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
 												</select>
 											</td>
