@@ -135,7 +135,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
-													?>
+												?>
 													<option
 														value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
 														<?= $implementingPartner['i_partner_name']; ?>
@@ -154,7 +154,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
-													?>
+												?>
 													<option
 														value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
 														<?= $fundingSource['funding_source_name']; ?>
@@ -655,10 +655,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée </label>
+											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory">*</span> </label>
 											</td>
 											<td style="width: 25%;">
-												<select name="eidPlatform" id="eidPlatform" class="form-control"
+												<select name="eidPlatform" id="eidPlatform" class="isRequired form-control"
 													title="Please choose VL Testing Platform" style="width:100%;">
 													<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
 												</select>
@@ -738,7 +738,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 																	<option value="<?php echo $reject['rejection_reason_id']; ?>">
 																		<?= $reject['rejection_reason_name']; ?>
 																	</option>
-																<?php }
+															<?php }
 															} ?>
 														</optgroup>
 													<?php } ?>
@@ -750,9 +750,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 													title="Veuillez choisir la date rejetée" /></td>
 										</tr>
 										<tr>
-											<th scope="row"><label for="">Test effectué le </label></th>
+											<th scope="row"><label for="">Test effectué le<span class="mandatory">*</span> </label></th>
 											<td>
-												<input type="text" class="form-control dateTime" id="sampleTestedDateTime"
+												<input type="text" class="form-control isRequired dateTime" id="sampleTestedDateTime"
 													name="sampleTestedDateTime"
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Test effectué le" onchange="" style="width:100%;" />
@@ -770,28 +770,28 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											</td>
 										</tr>
 										<tr>
-											<th scope="row">Revu le</th>
+											<th scope="row">Revu le<span class="mandatory">*</span></th>
 											<td><input type="text" name="reviewedOn" id="reviewedOn"
-													class="dateTime disabled-field form-control" placeholder="Revu le"
+													class="dateTime disabled-field isRequired form-control" placeholder="Revu le"
 													title="Please enter the Revu le" /></td>
-											<th scope="row">Revu par</th>
+											<th scope="row">Revu par<span class="mandatory">*</span></th>
 											<td>
-												<select name="reviewedBy" id="reviewedBy" class="select2 form-control"
+												<select name="reviewedBy" id="reviewedBy" class="isRequired select2 form-control"
 													title="Please choose Revu par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
 										</tr>
 										<tr>
-											<th scope="row">Approuvé le</th>
+											<th scope="row">Approuvé le<span class="mandatory">*</span></th>
 											<td>
 												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime"
-													class="dateTime disabled-field form-control" placeholder="Approuvé le"
+													class="dateTime disabled-field isRequired form-control" placeholder="Approuvé le"
 													title="Please enter the Approuvé le" />
 											</td>
-											<th scope="row">Approuvé par</th>
+											<th scope="row">Approuvé par<span class="mandatory">*</span></th>
 											<td>
-												<select name="approvedBy" id="approvedBy" class="select2 form-control"
+												<select name="approvedBy" id="approvedBy" class="select2 isRequired form-control"
 													title="Please choose Approuvé par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
@@ -847,10 +847,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 		if ($.trim(pName) != '') {
 			if (provinceName) {
 				$.post("/includes/siteInformationDropdownOptions.php", {
-					pName: pName,
-					testType: 'eid'
-				},
-					function (data) {
+						pName: pName,
+						testType: 'eid'
+					},
+					function(data) {
 						if (data != "") {
 							details = data.split("###");
 							$("#facilityId").html(details[0]);
@@ -891,10 +891,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 		var sDate = $("#sampleCollectionDate").val();
 		if (pName != '' && sDate != '') {
 			$.post("/eid/requests/generateSampleCode.php", {
-				sampleCollectionDate: sDate,
-				pName: pName
-			},
-				function (data) {
+					sampleCollectionDate: sDate,
+					pName: pName
+				},
+				function(data) {
 					var sCodeKey = JSON.parse(data);
 					$("#sampleCode").val(sCodeKey.sampleCode);
 					$("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
@@ -911,11 +911,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 		var cName = $("#facilityId").val();
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-				dName: dName,
-				cliName: cName,
-				testType: 'eid'
-			},
-				function (data) {
+					dName: dName,
+					cliName: cName,
+					testType: 'eid'
+				},
+				function(data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#facilityId").html(details[0]);
@@ -937,10 +937,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 		}
 		if (cName != '' && facilityName) {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-				cName: cName,
-				testType: 'eid'
-			},
-				function (data) {
+					cName: cName,
+					testType: 'eid'
+				},
+				function(data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#province").html(details[0]);
@@ -990,7 +990,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 	}
 
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 
 		$('#facilityId').select2({
 			placeholder: "Select Clinic/Health Center"
@@ -1013,12 +1013,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 
 		storageEditableSelect('freezer', 'storage_code', 'storage_id', 'lab_storage', 'Freezer Code');
 
-		$("#freezer").on('change', function () {
+		$("#freezer").on('change', function() {
 			storage = $("#freezer option:selected").text().split('-');
 			$("#freezerCode").val($.trim(storage[0]));
 		});
 
-		$("#motherViralLoadCopiesPerMl").on("change keyup paste", function () {
+		$("#motherViralLoadCopiesPerMl").on("change keyup paste", function() {
 			var motherVl = $("#motherViralLoadCopiesPerMl").val();
 			//var motherVlText = $("#motherViralLoadText").val();
 			if (motherVl != '') {
@@ -1035,7 +1035,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 			minimumInputLength: 0,
 			width: '100%',
 			allowClear: true,
-			id: function (bond) {
+			id: function(bond) {
 				return bond._id;
 			},
 			ajax: {
@@ -1043,7 +1043,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 				url: "/includes/get-data-list-for-generic.php",
 				dataType: 'json',
 				delay: 250,
-				data: function (params) {
+				data: function(params) {
 					return {
 						fieldName: _fieldName,
 						fieldId: fieldId,
@@ -1053,7 +1053,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 						labId: $("#labId").val(),
 					};
 				},
-				processResults: function (data, params) {
+				processResults: function(data, params) {
 					params.page = params.page || 1;
 					return {
 						results: data.result,
@@ -1064,13 +1064,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 				},
 				//cache: true
 			},
-			escapeMarkup: function (markup) {
+			escapeMarkup: function(markup) {
 				return markup;
 			}
 		});
 	}
 
-	$("#hasInfantStoppedBreastfeeding").change(function () {
+	$("#hasInfantStoppedBreastfeeding").change(function() {
 		if ($(this).val() == 'yes') {
 			addMandatoryField('ageBreastfeedingStopped');
 			addMandatoryField('choiceOfFeeding');
