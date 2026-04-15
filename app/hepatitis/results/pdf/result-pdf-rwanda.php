@@ -6,7 +6,6 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\HepatitisService;
 use App\Helpers\PdfWatermarkHelper;
-use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\HepatitisResultPDFHelper;
 
