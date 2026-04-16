@@ -196,20 +196,22 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
 	function updateSampleResult() {
 		if ($('#isSampleRejected').val() == "yes") {
 			$('.rejected').show();
+			$('.testing-mandatory').hide();
 			$('#sampleRejectionReason').addClass('isRequired');
 			$('#rejectionDate').addClass('isRequired');
 			$('#sampleTestedDateTime,#result').val('');
 			$('#sampleTestedDateTime,#result').removeClass('isRequired');
-			$(".result-optional").removeClass("isRequired");
+			$(".result-optional,#eidPlatform").removeClass("isRequired");
 			$('#reviewedBy').addClass('isRequired');
 			$('#reviewedOn').addClass('isRequired');
 			$('#approvedBy').addClass('isRequired');
 			$('#approvedOnDateTime').addClass('isRequired');
 		} else if ($('#isSampleRejected').val() == "no") {
 			$('.rejected').hide();
+			$('.testing-mandatory').show();
 			$('#sampleRejectionReason').removeClass('isRequired');
 			$('#rejectionDate').removeClass('isRequired');
-			$('#sampleTestedDateTime').addClass('isRequired');
+			$('#sampleTestedDateTime,#eidPlatform').addClass('isRequired');
 			$('#result').addClass('isRequired');
 			$('#testedBy').addClass('isRequired');
 			$('#reviewedBy').addClass('isRequired');
@@ -218,9 +220,10 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
 			$('#approvedOnDateTime').addClass('isRequired');
 		} else {
 			$('.rejected').hide();
+			$('.testing-mandatory').show();
 			$('#sampleRejectionReason').removeClass('isRequired');
 			$('#sampleTestedDateTime').removeClass('isRequired');
-			$('#result').removeClass('isRequired');
+			$('#result,#eidPlatform').removeClass('isRequired');
 			$('#testedBy').removeClass('isRequired');
 			$(".result-optional").removeClass("isRequired");
 
@@ -240,7 +243,7 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
 
 	}
 
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$('#testedBy').select2({
 			width: '100%',
 			placeholder: "Select Tested By"
@@ -251,7 +254,7 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
 			placeholder: "Select Approved By"
 		});
 		updateSampleResult();
-		$("#isSampleRejected,#result").on("change", function () {
+		$("#isSampleRejected,#result").on("change", function() {
 			updateSampleResult();
 		});
 
@@ -260,10 +263,10 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
 		//$('.date').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?>');
 		//$('.dateTime').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?> 99:99');
 
-		$('.result-focus').change(function (e) {
+		$('.result-focus').change(function(e) {
 			<?php if (isset($eidInfo['result']) && $eidInfo['result'] != "") { ?>
 				var status = false;
-				$(".result-focus").each(function (index) {
+				$(".result-focus").each(function(index) {
 					if ($(this).val() != "") {
 						status = true;
 					}

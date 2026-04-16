@@ -511,9 +511,9 @@ $storageInfo = $storageService->getLabStorage();
 											<td>
 												<input type="text" class="form-control isRequired dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" style="width:100%;" />
 											</td>
-											<td><label for="testingPlatform">Technique utilisée<span class="mandatory">*</span> </label></td>
+											<td><label for="testingPlatform">Technique utilisée</label></td>
 											<td>
-												<select name="testingPlatform" id="testingPlatform" class="isRequired form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
+												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
 													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?>
@@ -959,11 +959,15 @@ $storageInfo = $storageService->getLabStorage();
 			$(".vlResult, .vlLog").hide();
 			$('#reasonForFailure').val('');
 			$('#reasonForFailure').removeClass('isRequired');
+			$('#reasonForFailure, #testingPlatform').removeClass('isRequired');
+			$('#testingPlatformLabel').html('Technique utilisée');
 			$('.reasonForFailure').hide();
 		} else {
 			$(".rejectionReason").hide();
 			$("#rejectionReason").val('');
 			$("#rejectionReason").removeClass('isRequired');
+			$("#testingPlatform").add('isRequired');
+			$('#testingPlatformLabel').append('<span class="mandatory">*</span>');
 			$("#vlResult").css('pointer-events', 'auto');
 			$("#vlLog").css('pointer-events', 'auto');
 			$("#vlResult").val('').css('pointer-events', 'auto');

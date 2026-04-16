@@ -465,7 +465,7 @@ $storageInfo = $storageService->getLabStorage();
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory">*</span> </label></td>
+										<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory testing-mandatory">*</span> </label></td>
 										<td style="width: 25%;">
 											<select name="eidPlatform" id="eidPlatform" class="form-control isRequired" title="Please choose EID Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;">
 												<?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
@@ -764,14 +764,16 @@ $storageInfo = $storageService->getLabStorage();
 			$("#sampleRejectionReason").addClass('isRequired');
 			$("#sampleRejectionReason").prop('disabled', false);
 			$("#result").removeClass('isRequired');
-			$("#sampleTestedDateTime").removeClass('isRequired');
+			$("#sampleTestedDateTime,#eidPlatform").removeClass('isRequired');
 			$("#result").prop('disabled', true);
 			$("#sampleTestedDateTime").prop('disabled', true);
+			$('.testing-mandatory').hide();
 		} else {
+			$('.testing-mandatory').show();
 			$("#sampleRejectionReason").removeClass('isRequired');
 			$("#sampleRejectionReason").prop('disabled', true);
 			$("#result").addClass('isRequired');
-			$("#sampleTestedDateTime").addClass('isRequired');
+			$("#sampleTestedDateTime,#eidPlatform").addClass('isRequired');
 			$("#result").prop('disabled', false);
 			$("#sampleTestedDateTime").prop('disabled', false);
 		}

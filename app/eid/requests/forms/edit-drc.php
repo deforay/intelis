@@ -256,12 +256,6 @@ $storageInfo = $storageService->getLabStorage();
 										<td>
 											<input type="text" value="<?php echo $eidInfo['infant_phone']; ?>" class="form-control isMobile" id="phone" name="phone" placeholder="N° Téléphone" title="Please enter N° Téléphone" style="width:100%;" />
 										</td>
-										<th scope="row"><label for="childDob">Date de naissance <span class="mandatory">*</span></label></th>
-										<td>
-											<input type="text" class="form-control date isRequired" id="childDob" name="childDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
-										</td>
-									</tr>
-									<tr>
 										<th scope="row"><label for="childGender"><?= _translate("Sex"); ?> <span class="mandatory">*</span></label></th>
 										<td>
 											<select class="form-control isRequired" name="childGender" id="childGender">
@@ -270,6 +264,12 @@ $storageInfo = $storageService->getLabStorage();
 												<option value='female' <?php echo ($eidInfo['child_gender'] == 'female') ? "selected='selected'" : ""; ?>> <?= _translate("Female"); ?> </option>
 												<option value='unreported' <?php echo ($eidInfo['child_gender'] == 'unreported') ? "selected='selected'" : ""; ?>> <?= _translate("Unreported"); ?> </option>
 											</select>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><label for="childDob">Date de naissance <span class="mandatory">*</span></label></th>
+										<td>
+											<input type="text" class="form-control date isRequired" id="childDob" name="childDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
 										</td>
 										<th scope="row">Age en Jour</th>
 										<td><input type="number" value="<?php echo $eidInfo['child_age_in_days']; ?>" class="form-control " id="childAgeInDays" name="childAgeInDays" placeholder="Age en Jour" title="Age en Jour" style="width:100%;" /></td>
@@ -527,7 +527,7 @@ $storageInfo = $storageService->getLabStorage();
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory">*</span> </label></td>
+											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory testing-mandatory">*</span> </label></td>
 											<td style="width: 25%;">
 												<select name="eidPlatform" id="eidPlatform" class="form-control isRequired" title="Please choose EID Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
 													<?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
@@ -569,7 +569,7 @@ $storageInfo = $storageService->getLabStorage();
 											</td>
 											<th scope="row">Is Sample Rejected?</th>
 											<td>
-												<select class="form-control" name="isSampleRejected" id="isSampleRejected">
+												<select class="form-control" name="isSampleRejected" id="isSampleRejected" onchange="updateSampleResult();">
 													<option value=''> -- Sélectionner -- </option>
 													<option value="yes" <?php echo ($eidInfo['is_sample_rejected'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
 													<option value="no" <?php echo ($eidInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>

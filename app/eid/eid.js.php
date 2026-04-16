@@ -7,15 +7,15 @@
         if (patientSearchTimeout != null) {
             clearTimeout(patientSearchTimeout);
         }
-        patientSearchTimeout = setTimeout(function () {
+        patientSearchTimeout = setTimeout(function() {
             patientSearchTimeout = null;
 
             $("#showEmptyResult").hide();
             if ($.trim(patientCode) != '') {
                 $.post("/eid/requests/search-patients.php", {
-                    childIdNo: $.trim(patientCode)
-                },
-                    function (data) {
+                        childIdNo: $.trim(patientCode)
+                    },
+                    function(data) {
                         data = parseInt(data);
                         if (data >= 1) {
                             showModal('/eid/requests/patientModal.php?id=' + $.trim(patientCode), 900, 520);
@@ -31,8 +31,26 @@
     }
 
     function calculateAgeInMonths() {
-        let dateOfBirth = moment($("#childDob").val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
-        $("#childAge").val(moment().diff(dateOfBirth, 'months'));
+        const dobVal = $("#childDob").val();
+        if (!dobVal || $.trim(dobVal) === '') return;
+
+        const dateOfBirth = moment(dobVal, '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
+        if (!dateOfBirth.isValid()) return;
+
+        const today = moment();
+
+        const totalMonths = today.diff(dateOfBirth, 'months');
+        const totalWeeks = today.diff(dateOfBirth, 'weeks');
+        const totalDays = today.diff(dateOfBirth, 'days');
+
+        // Age in months (existing field — "Age en mois")
+        $("#childAge").val(totalMonths);
+
+        // Age in weeks
+        $("#childAgeInWeeks").val(totalWeeks);
+
+        // Age in days
+        $("#childAgeInDays").val(totalDays);
     }
 
     // Function to calculate the total age in months
@@ -52,7 +70,7 @@
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         if ($('#childAgeInWeeks').length) {
             // The childAgeInWeeks element exists, attach the event handler
             $('#childAge, #childAgeInWeeks').on('change', calculateTotalAge);
