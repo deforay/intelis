@@ -155,6 +155,9 @@ $remoteURL = $general->getRemoteURL();
                     if (typeof data === 'string') data = data.trim();
                     if (!data) {
                         toast.error("<?= _jsTranslate('Unable to verify manifest'); ?>");
+                        if (typeof reportError === 'function') {
+                            reportError('Unable to verify manifest: ' + manifestCode + ' (empty response)', { type: 'sync_error' });
+                        }
                         return;
                     }
 
@@ -192,6 +195,9 @@ $remoteURL = $general->getRemoteURL();
                 } catch (e) {
                     console.error(e);
                     toast.error("<?= _jsTranslate('Some error occurred while processing the manifest'); ?>");
+                    if (typeof reportError === 'function') {
+                        reportError(e, { type: 'sync_error', context: 'verifyManifest for ' + manifestCode });
+                    }
                     $('.activateSample').hide();
                     $('#sampleId').val('');
                 }
@@ -215,6 +221,9 @@ $remoteURL = $general->getRemoteURL();
 
                         if (!data) {
                             toast.error("<?= _jsTranslate('Unable to sync manifest'); ?>" + ' ' + manifestCode);
+                            if (typeof reportError === 'function') {
+                                reportError('Unable to sync manifest: ' + manifestCode + ' (empty response from STS)', { type: 'sync_error' });
+                            }
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                             return;
@@ -224,6 +233,9 @@ $remoteURL = $general->getRemoteURL();
                             parsed = JSON.parse(data);
                         } catch (err) {
                             toast.error("<?= _jsTranslate('Invalid server response while processing manifest'); ?>" + ' ' + manifestCode);
+                            if (typeof reportError === 'function') {
+                                reportError(err, { type: 'sync_error', context: 'Invalid server response for manifest ' + manifestCode + '\nServer response: ' + String(data).substring(0, 2000) });
+                            }
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                             return;
@@ -233,6 +245,9 @@ $remoteURL = $general->getRemoteURL();
                             (typeof parsed === 'object' && Object.keys(parsed).length === 0)
                         ) {
                             toast.error("<?= _jsTranslate('Unable to find or sync samples from manifest'); ?>" + ' ' + manifestCode);
+                            if (typeof reportError === 'function') {
+                                reportError('Unable to find or sync samples from manifest: ' + manifestCode, { type: 'sync_error', context: 'Parsed value: ' + JSON.stringify(parsed) });
+                            }
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                         } else {
@@ -243,6 +258,9 @@ $remoteURL = $general->getRemoteURL();
                         loadRequestData();
                     } catch (e) {
                         toast.error("<?= _jsTranslate("Some error occurred while processing the manifest"); ?>" + ' ' + manifestCode);
+                        if (typeof reportError === 'function') {
+                            reportError(e, { type: 'sync_error', context: 'syncManifestFromSTS for ' + manifestCode });
+                        }
                         $('.activateSample').hide();
                         $('#sampleId').val('');
                     }
