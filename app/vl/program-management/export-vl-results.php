@@ -135,7 +135,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
 			$row[] = $sampleRejection;
 			$row[] = $aRow['rejection_reason'];
-			$row[] = $aRow['result'];
+			$row[] = html_entity_decode((string) $aRow['result']);
 			$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 			$row[] = $logVal;
 			$row[] = $aRow['vl_result_category'];
@@ -216,7 +216,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			}
 
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
-			$row[] = $aRow['result'];
+			$row[] = html_entity_decode((string) $aRow['result']);
 			$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 			$row[] = $logVal;
 			$row[] = $aRow['lab_tech_comments'];
