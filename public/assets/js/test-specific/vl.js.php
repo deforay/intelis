@@ -25,14 +25,20 @@
                     provinceId: provinceId
                 },
                 function(data) {
-                    let sCodeKey = JSON.parse(data);
-                    if ($('#sampleCodeInText').length > 0) {
-                        $("#sampleCodeInText").text(sCodeKey.sampleCode);
+                    try {
+                        let sCodeKey = JSON.parse(data);
+                        if ($('#sampleCodeInText').length > 0) {
+                            $("#sampleCodeInText").text(sCodeKey.sampleCode);
+                        }
+                        $("#sampleCode").val(sCodeKey.sampleCode);
+                        $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
+                        $("#sampleCodeKey").val(sCodeKey.maxId);
+                        $("#provinceId").val(provinceId);
+                    } catch (err) {
+                        if (typeof reportError === 'function') {
+                            reportError(err, { type: 'ajax_error', context: 'generateSampleCode response: ' + String(data).substring(0, 2000) });
+                        }
                     }
-                    $("#sampleCode").val(sCodeKey.sampleCode);
-                    $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                    $("#sampleCodeKey").val(sCodeKey.maxId);
-                    $("#provinceId").val(provinceId);
                 }).always(function() {
                 generateSampleCodeRequest = null; // Reset the request object after completion
             });
@@ -68,6 +74,10 @@
                         showModal('/vl/requests/patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
                     } else {
                         $("#showEmptyResult").show();
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    if (typeof reportError === 'function') {
+                        reportError('VL patient search failed: ' + textStatus + ' ' + errorThrown, { type: 'ajax_error', context: 'Status: ' + (jqXHR.status || '') + '\nResponse: ' + String(jqXHR.responseText || '').substring(0, 2000) });
                     }
                 });
         }

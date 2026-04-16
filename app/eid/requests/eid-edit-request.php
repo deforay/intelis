@@ -218,7 +218,7 @@ if (!$canEdit) {
 require_once($fileArray[$arr['vl_form']]);
 // Common JS functions in a PHP file
 // Why PHP? Because we can use PHP variables in the JS code
-require_once APPLICATION_PATH . "/eid/eid.js.php";
+require_once WEB_ROOT . "/assets/js/test-specific/eid.js.php";
 ?>
 <script>
     function updateSampleResult() {

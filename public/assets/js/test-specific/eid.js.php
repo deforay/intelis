@@ -22,6 +22,10 @@
                         } else {
                             $("#showEmptyResult").show();
                         }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        if (typeof reportError === 'function') {
+                            reportError('EID patient search failed: ' + textStatus + ' ' + errorThrown, { type: 'ajax_error', context: 'Status: ' + (jqXHR.status || '') + '\nResponse: ' + String(jqXHR.responseText || '').substring(0, 2000) });
+                        }
                     });
             }
 

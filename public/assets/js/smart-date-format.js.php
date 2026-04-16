@@ -228,6 +228,10 @@
                 } catch (error) {
                     console.error('Date format detection failed:', error);
 
+                    if (typeof reportError === 'function') {
+                        reportError(error instanceof Error ? error : String(error), { type: 'ajax_error', context: 'SmartDateFormat.detectDateFormat' });
+                    }
+
                     if (error.message && error.message.includes('Rate limit exceeded')) {
                         this.showRateLimitError(settings);
                     } else {
@@ -632,8 +636,11 @@
                             toast.error(`<?= _translate("Format test failed:", true); ?> ${response.error || '<?= _translate("Unknown error", true); ?>'}`);
                         }
                     })
-                    .fail(function() {
+                    .fail(function(jqXHR, textStatus, errorThrown) {
                         toast.error(`<?= _translate("Test failed - network error", true); ?>`);
+                        if (typeof reportError === 'function') {
+                            reportError('Date format test failed: ' + textStatus + ' ' + errorThrown, { type: 'ajax_error', context: 'Status: ' + (jqXHR.status || '') + '\nResponse: ' + String(jqXHR.responseText || '').substring(0, 2000) });
+                        }
                     })
                     .always(function() {
                         testButton.innerHTML = originalText;
