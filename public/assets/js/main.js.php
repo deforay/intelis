@@ -479,15 +479,14 @@ $remoteURL = $general->getRemoteURL();
 
     function getAge() {
         const dob = $.trim($("#dob").val());
-        // Clear the fields initially
 
         if (dob && dob != "") {
-            $("#ageInYears, #ageInMonths").val("");
+            $("#ageInYears, #ageInMonths").val(""); // ✅ clears both first
             const age = Utilities.getAgeFromDob(dob, globalDayjsDateFormat);
             if (age.years && age.years >= 1) {
                 $("#ageInYears").val(age.years);
             } else {
-                $("#ageInMonths").val(age.months);
+                $("#ageInMonths").val(age.months); // ✅ sets months for < 1 year
             }
         }
     }

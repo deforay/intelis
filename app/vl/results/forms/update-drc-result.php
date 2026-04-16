@@ -556,25 +556,25 @@ $storageInfo = $storageService->getLabStorage();
 										</tr>
 									<?php } ?>
 									<tr>
-										<td style="width:14%;"><label for="reviewedOn">Revu le <span class="mandatory">*</span></label></td>
+										<td style="width:14%;"><label for="reviewedOn">Revu le</label></td>
 										<td style="width:14%;">
-											<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control isRequired" placeholder="Revu le" title="Please enter the Revu le" />
+											<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Revu le" title="Please enter the Revu le" />
 										</td>
-										<td style="width:14%;"><label for="reviewedBy">Revu par <span class="mandatory">*</span></label></td>
+										<td style="width:14%;"><label for="reviewedBy">Revu par</label></td>
 										<td style="width:14%;">
-											<select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose revu par" style="width: 100%;">
+											<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose revu par" style="width: 100%;">
 												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
 											</select>
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Approuvé le <span class="mandatory">*</span></th>
+										<th scope="row">Approuvé le</th>
 										<td>
-											<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control isRequired" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+											<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 										</td>
-										<th scope="row">Approuvé par <span class="mandatory">*</span></th>
+										<th scope="row">Approuvé par</th>
 										<td>
-											<select name="approvedBy" id="approvedBy" class="select2 form-control isRequired" title="Please choose Approuvé par" style="width: 100%;">
+											<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
 												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
 											</select>
 										</td>
