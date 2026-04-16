@@ -374,42 +374,31 @@ foreach ($sqliteDbCandidates as $dbPath) {
         continue;
     }
 
-    // Mirror Electron's bookkeeping (app/main.ts runSqliteMigrations)
+    // Ensure versions table exists for bookkeeping
     try {
         $pdo->query('CREATE TABLE IF NOT EXISTS versions (version INTEGER PRIMARY KEY, filename TEXT, applied_at DATETIME DEFAULT CURRENT_TIMESTAMP)');
-        // Idempotent - older DBs miss this column; newer ones throw and we ignore
         try {
             $pdo->query('ALTER TABLE versions ADD COLUMN filename TEXT');
         } catch (Throwable) {
         }
     } catch (Throwable $e) {
-        echo "  ERROR: Failed to prepare versions table: " . $e->getMessage() . PHP_EOL;
-        $sqliteErrors++;
-        continue;
+        echo "  WARN: Could not prepare versions table: " . $e->getMessage() . PHP_EOL;
     }
 
-    $applied = [];
-    try {
-        $stmt = $pdo->query('SELECT filename FROM versions WHERE filename IS NOT NULL');
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $applied[$row['filename']] = true;
-        }
-    } catch (Throwable) {
-    }
-
+    // Always run all migrations from 001.sql regardless of versions table
     $pending = array_values(array_filter(
         $sqliteMigrationFiles,
-        fn($f) => !isset($applied[$f]) && isset($sqliteContents[$f])
+        fn($f) => isset($sqliteContents[$f])
     ));
 
     if (empty($pending)) {
-        echo "  (no pending migrations)" . PHP_EOL . PHP_EOL;
+        echo "  (no migration files to run)" . PHP_EOL . PHP_EOL;
         $pdo = null;
         continue;
     }
 
     if ($showStatus) {
-        echo "  Pending:" . PHP_EOL;
+        echo "  Migrations:" . PHP_EOL;
         foreach ($pending as $f) {
             echo "    $f" . PHP_EOL;
         }
@@ -440,7 +429,6 @@ foreach ($sqliteDbCandidates as $dbPath) {
             continue;
         }
 
-        $migrationFailed = false;
         foreach ($statements as $idx => $s) {
             $sqliteStmtTotal++;
             $stmtNum = $idx + 1;
@@ -457,23 +445,19 @@ foreach ($sqliteDbCandidates as $dbPath) {
                     echo "    [$stmtNum] SKIPPED (benign): " . mb_substr($msg, 0, 120) . PHP_EOL;
                 } else {
                     $sqliteErrors++;
-                    $migrationFailed = true;
                     echo "    [$stmtNum] ERROR: " . mb_substr($msg, 0, 200) . PHP_EOL;
                     echo "         SQL: " . mb_substr($s, 0, 200) . PHP_EOL;
                     LoggerUtility::logError("SQLite interface migration error in $file ($dbPath): $msg\nSQL: $s");
-                    break; // abort this file, match Electron - leave versions row absent so next run retries
                 }
             }
         }
 
-        if (!$migrationFailed) {
-            $version = (int) $file;
-            try {
-                $stmt = $pdo->prepare('INSERT OR IGNORE INTO versions (version, filename) VALUES (?, ?)');
-                $stmt->execute([$version, $file]);
-            } catch (Throwable $e) {
-                echo "    WARN: Failed to record applied version: " . $e->getMessage() . PHP_EOL;
-            }
+        $version = (int) $file;
+        try {
+            $stmt = $pdo->prepare('INSERT OR REPLACE INTO versions (version, filename) VALUES (?, ?)');
+            $stmt->execute([$version, $file]);
+        } catch (Throwable $e) {
+            echo "    WARN: Failed to record applied version: " . $e->getMessage() . PHP_EOL;
         }
     }
 
