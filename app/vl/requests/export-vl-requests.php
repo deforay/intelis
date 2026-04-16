@@ -27,7 +27,7 @@ $formId = (int) $globalConf['vl_form'];
 if ($formId == CAMEROON && $globalConf['vl_excel_export_format'] == "cresar") {
 	$headings = [_translate('S.No.'), _translate("Sample ID"), _translate('Region of sending facility'), _translate('District of sending facility'), _translate('Sending facility'), _translate('Project'), _translate('Existing ART Code'), _translate('Date of Birth'), _translate('Age'), _translate('Patient Name'), _translate('Sex'), _translate('Universal Insurance Code'), _translate('Sample Creation Date'), _translate('Sample Created By'), _translate('Sample collection date'), _translate('Sample Type'), _translate('Requested by contact'), _translate('Treatment start date'), _translate("Treatment Protocol"), _translate('ARV Protocol'), _translate('CV Number'), _translate('Batch Code'), _translate('Test Platform'), _translate("Test platform detection limit"), _translate("Sample Tested"), _translate("Date of test"), _translate("Date of result sent to facility"), _translate("Sample Rejected"), _translate("Communication of rejected samples or high viral load (yes, no or NA)"), _translate("Result Value"), _translate("Result Printed Date"), _translate("Result Value Log"), _translate("Is suppressed"), _translate("Name of reference Lab"), _translate("Sample Reception Date"), _translate("Category of testing site"), _translate("TAT"), _translate("Age Range"), _translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"), _translate("Invalid test (yes or no)"), _translate("Invalid sample repeated (yes or no)"), _translate("Error codes (yes or no)"), _translate("Error codes values"), _translate("Tests repeated due to error codes (yes or no)"), _translate("New CV number"), _translate("Date of repeat test"), _translate("Result sent back to facility (yes or no)"), _translate("Result Type"), _translate("Observations")];
 } else {
-	$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Lab Assigned Code"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"),  _translate("Patient Contact Number"), _translate("Clinician Contact Number"), _translate("Date of Birth"), _translate("Age"), _translate("Sex"),  _translate("Universal Insurance Code"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Freezer"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Sample Tested On"), _translate("Result (cp/mL)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
+	$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Lab Assigned Code"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Patient Contact Number"), _translate("Clinician Contact Number"), _translate("Date of Birth"), _translate("Age"), _translate("Sex"), _translate("Universal Insurance Code"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for Viral Load Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Freezer"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Sample Tested On"), _translate("Result (cp/mL)"), _translate("Result Printed Date"), _translate("Result (log)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
 }
 
 if ($general->isStandaloneInstance()) {
@@ -77,14 +77,14 @@ $buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf): ar
 	if ($formId == CAMEROON && $globalConf['vl_excel_export_format'] == "cresar") {
 		$lineOfTreatment = '';
 		if ($aRow['line_of_treatment'] == 1) {
-      $lineOfTreatment = '1st Line';
-  } elseif ($aRow['line_of_treatment'] == 2) {
-      $lineOfTreatment = '2nd Line';
-  } elseif ($aRow['line_of_treatment'] == 3) {
-      $lineOfTreatment = '3rd Line';
-  } elseif ($aRow['line_of_treatment'] == 'n/a') {
-      $lineOfTreatment = 'N/A';
-  }
+			$lineOfTreatment = '1st Line';
+		} elseif ($aRow['line_of_treatment'] == 2) {
+			$lineOfTreatment = '2nd Line';
+		} elseif ($aRow['line_of_treatment'] == 3) {
+			$lineOfTreatment = '3rd Line';
+		} elseif ($aRow['line_of_treatment'] == 'n/a') {
+			$lineOfTreatment = 'N/A';
+		}
 
 		$row[] = $aRow['sample_code'];
 		$row[] = $aRow['facility_state'];
@@ -116,7 +116,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf): ar
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
-		$row[] = $aRow['result'];
+		$row[] = html_entity_decode((string) $aRow['result']);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 		$row[] = $aRow['result_value_log'];
 		$row[] = $aRow['vl_result_category'];
@@ -198,7 +198,7 @@ $buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf): ar
 		}
 
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
-		$row[] = $aRow['result'];
+		$row[] = html_entity_decode((string) $aRow['result']);
 		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 		$row[] = $aRow['result_value_log'];
 		$row[] = $aRow['lab_tech_comments'] ?? null;
