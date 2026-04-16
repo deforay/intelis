@@ -111,29 +111,31 @@ require_once($fileArray[$arr['vl_form']]);
 require_once APPLICATION_PATH . "/eid/eid.js.php";
 ?>
 <script>
-
     function updateSampleResult() {
         if ($('#isSampleRejected').val() == "yes") {
             $('.rejected').show();
+            $('.testing-mandatory').hide();
             $('#sampleRejectionReason').addClass('isRequired');
             $('#rejectionDate').addClass('isRequired');
             $('#sampleTestedDateTime,#result').val('');
             $('#sampleTestedDateTime,#result').removeClass('isRequired');
-            $(".result-optional").removeClass("isRequired");
+            $(".result-optional,#eidPlatform").removeClass("isRequired");
         } else if ($('#isSampleRejected').val() == "no") {
 
             $('.rejected').hide();
+            $('.testing-mandatory').show();
             $('#sampleRejectionReason').val('');
             $('#sampleRejectionReason').removeClass('isRequired');
             $('#rejectionDate').removeClass('isRequired');
-            $('#sampleTestedDateTime').addClass('isRequired');
+            $('#sampleTestedDateTime,#eidPlatform').addClass('isRequired');
             $('#result').addClass('isRequired');
         } else {
             $('.rejected').hide();
+            $('.testing-mandatory').show();
             $('#sampleRejectionReason').val('');
             $('#sampleRejectionReason').removeClass('isRequired');
             $('#sampleTestedDateTime').removeClass('isRequired');
-            $('#result').removeClass('isRequired');
+            $('#result,#eidPlatform').removeClass('isRequired');
         }
 
         if ($('#result').val() == "") {
@@ -145,9 +147,9 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
         }
     }
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
-        $("#isSampleRejected,#result").on("change", function () {
+        $("#isSampleRejected,#result").on("change", function() {
             updateSampleResult();
         });
 
@@ -161,7 +163,7 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
         formData += "&provinceId=" + encodeURIComponent(provinceId);
         formData += "&countryId=" + encodeURIComponent(countryId);
         $.post("/eid/requests/insert-sample.php", formData,
-            function (data) {
+            function(data) {
                 if (data > 0) {
                     $.unblockUI();
                     document.getElementById("eidSampleId").value = data;

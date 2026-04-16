@@ -281,16 +281,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 												placeholder="N° Téléphone" title="Please enter N° Téléphone"
 												style="width:100%;" />
 										</td>
-										<th scope="row"><label for="childDob">Date de naissance <span
-													class="mandatory">*</span></label></th>
-										<td>
-											<input type="text" class="form-control date isRequired" id="childDob"
-												name="childDob" placeholder="Date de naissance"
-												title="Please enter Date de naissance" style="width:100%;"
-												onchange="calculateAgeInMonths();" />
-										</td>
-									</tr>
-									<tr>
 										<th scope="row"><label for="childGender"><?= _translate("Sex"); ?> <span
 													class="mandatory">*</span></label></th>
 										<td>
@@ -300,6 +290,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 												<option value='female'> <?= _translate("Female"); ?> </option>
 												<option value='unreported'> <?= _translate("Unreported"); ?> </option>
 											</select>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><label for="childDob">Date de naissance <span
+													class="mandatory">*</span></label></th>
+										<td>
+											<input type="text" class="form-control date isRequired" id="childDob"
+												name="childDob" placeholder="Date de naissance"
+												title="Please enter Date de naissance" style="width:100%;"
+												onchange="calculateAgeInMonths();" />
 										</td>
 										<th scope="row">Age en Jour</th>
 										<td><input type="number" class="form-control " id="childAgeInDays"
@@ -655,7 +655,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory">*</span> </label>
+											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory testing-mandatory">*</span> </label>
 											</td>
 											<td style="width: 25%;">
 												<select name="eidPlatform" id="eidPlatform" class="isRequired form-control"
@@ -715,7 +715,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											</td>
 											<th scope="row"><?php echo _translate('Is Sample Rejected?'); ?></th>
 											<td>
-												<select class="form-control" name="isSampleRejected" id="isSampleRejected">
+												<select class="form-control" name="isSampleRejected" id="isSampleRejected" onchange="updateSampleResult();">
 													<option value=''> <?= _translate("-- Select --"); ?> </option>
 													<option value="yes"> Oui </option>
 													<option value="no"> Non </option>

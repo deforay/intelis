@@ -346,9 +346,9 @@ $sFormat = '';
 										</td>
 									</tr>
 									<tr>
-										<td style="width:15% !important;"><label for="">Date dernière charge virale (demande) </label></td>
+										<td style="width:15% !important;"><label for="">Date dernière charge virale (demande)<span class="mandatory">*</span> </label></td>
 										<td style="width:35% !important;">
-											<input type="text" class="form-control date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date dernière charge virale" onchange="checkLastVLTestDate();" />
+											<input type="text" class="form-control isRequired date" id="lastViralLoadTestDate" name="lastViralLoadTestDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date dernière charge virale" onchange="checkLastVLTestDate();" />
 										</td>
 										<td style="width:15% !important;"><label for="lastViralLoadResult">Résultat dernière charge virale </label></td>
 										<td style="width:35% !important;">
@@ -465,14 +465,14 @@ $sFormat = '';
 										</tr>
 										<tr>
 											<td style="width: 25%;"><label for="sampleTestingDateAtLab">Date de réalisation
-													de la charge virale<span class="mandatory">*</span> </label></td>
+													de la charge virale</label></td>
 											<td style="width: 25%;">
-												<input type="text" class="form-control isRequired dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
+												<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
-											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory">*</span></label> </label>
+											<td style="width: 25%;"><label for="testingPlatform" id="testingPlatformLabel">Technique utilisée</label> </label>
 											</td>
 											<td style="width: 25%;">
-												<select name="testingPlatform" id="testingPlatform" class="isRequired form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
+												<select name="testingPlatform" id="testingPlatform" class="form-control" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="getVlResults(this.value)">
 													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($importResult as $mName) { ?>
 														<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>">
@@ -537,25 +537,25 @@ $sFormat = '';
 											</tr>
 										<?php } ?>
 										<tr>
-											<td style="width:14%;"><label for="reviewedOn"> Revu le<span class="mandatory">*</span> </label></td>
+											<td style="width:14%;"><label for="reviewedOn"> Revu le</label></td>
 											<td style="width:14%;">
-												<input type="text" name="reviewedOn" id="reviewedOn" class="dateTime authorisation isRequired form-control" placeholder="Revu le" title="Please enter the Revu le" />
+												<input type="text" name="reviewedOn" id="reviewedOn" class="dateTime authorisation form-control" placeholder="Revu le" title="Please enter the Revu le" />
 											</td>
-											<td style="width:14%;"><label for="reviewedBy"> Revu par<span class="mandatory">*</span> </label></td>
+											<td style="width:14%;"><label for="reviewedBy"> Revu par</label></td>
 											<td style="width:14%;">
-												<select name="reviewedBy" id="reviewedBy" class="select2 authorisation isRequired form-control" title="Please choose revu par" style="width: 100%;">
+												<select name="reviewedBy" id="reviewedBy" class="select2 authorisation form-control" title="Please choose revu par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
 										</tr>
 										<tr>
-											<th scope="row">Approuvé le<span class="mandatory">*</span></th>
+											<th scope="row">Approuvé le</th>
 											<td>
-												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime authorisation isRequired form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime authorisation form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 											</td>
-											<th scope="row">Approuvé par<span class="mandatory">*</span> </th>
+											<th scope="row">Approuvé par</th>
 											<td>
-												<select name="approvedBy" id="approvedBy" class="select2 authorisation isRequired form-control" title="Please choose Approuvé par" style="width: 100%;">
+												<select name="approvedBy" id="approvedBy" class="select2 authorisation form-control" title="Please choose Approuvé par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
@@ -783,13 +783,16 @@ $sFormat = '';
 			$("#vlResult").val('').css('pointer-events', 'none');
 			$("#vlLog").val('').css('pointer-events', 'none');
 			$('#reasonForFailure').val('');
-			$('#reasonForFailure').removeClass('isRequired');
+			$('#reasonForFailure, #testingPlatform').removeClass('isRequired');
+			$('#testingPlatformLabel').html('Technique utilisée');
 			$('.reasonForFailure').hide();
 		} else {
 			$(".resultSection").show();
 			$("#rejectionReason").val('');
 			$(".rejectionReason").hide();
 			$("#rejectionReason").removeClass('isRequired');
+			$("#testingPlatform").add('isRequired');
+			$('#testingPlatformLabel').append('<span class="mandatory">*</span>');
 			$("#vlResult").css('pointer-events', 'auto');
 			$("#vlLog").css('pointer-events', 'auto');
 

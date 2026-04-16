@@ -221,26 +221,28 @@ require_once($fileArray[$arr['vl_form']]);
 require_once APPLICATION_PATH . "/eid/eid.js.php";
 ?>
 <script>
-
     function updateSampleResult() {
         if ($('#isSampleRejected').val() == "yes") {
             $('.rejected').show();
+            $('.testing-mandatory').hide();
             $('#sampleRejectionReason').addClass('isRequired');
             $('#sampleTestedDateTime,#result').val('');
             $('#sampleTestedDateTime,#result').removeClass('isRequired');
-            $(".result-optional").removeClass("isRequired");
+            $(".result-optional,#eidPlatform").removeClass("isRequired");
         } else if ($('#isSampleRejected').val() == "no") {
             $('.rejected').hide();
+            $('.testing-mandatory').show();
             $('#sampleRejectionReason').val('');
             $('#sampleRejectionReason').removeClass('isRequired');
-            $('#sampleTestedDateTime').addClass('isRequired');
+            $('#sampleTestedDateTime,#eidPlatform').addClass('isRequired');
             $('#result').addClass('isRequired');
         } else {
             $('.rejected').hide();
+            $('.testing-mandatory').show();
             $('#sampleRejectionReason').val('');
             $('#sampleRejectionReason').removeClass('isRequired');
             $('#sampleTestedDateTime').removeClass('isRequired');
-            $('#result').removeClass('isRequired');
+            $('#result,#eidPlatform').removeClass('isRequired');
         }
 
         if ($('#result').val() == "") {
@@ -253,15 +255,15 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
     }
 
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         updateSampleResult();
-        $("#isSampleRejected,#result").on("change", function () {
+        $("#isSampleRejected,#result").on("change", function() {
             updateSampleResult();
         });
 
-        $('.result-focus').change(function (e) {
+        $('.result-focus').change(function(e) {
             var status = false;
-            $(".result-focus").each(function (index) {
+            $(".result-focus").each(function(index) {
                 if ($(this).val() != "") {
                     status = true;
                 }
