@@ -10,6 +10,8 @@ use App\Services\CommonService;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
 use App\Registries\ContainerRegistry;
+use App\Services\FacilitiesService;
+use App\Services\UsersService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -21,6 +23,12 @@ $general = ContainerRegistry::get(CommonService::class);
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
 $arr = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 $formId = (int) $general->getGlobalConfig('vl_form');
@@ -29,14 +37,14 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExportResultQuery']) !== "") {
 
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = ["S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Age in Weeks", "Child Age in Days", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type", "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
+		$headings = ["S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age in Months", "Child Age in Weeks", "Child Age in Days", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type", "EID Number", "Testing Platform", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Reviewed By", "Reviewed On", "Approved By", "Approved On", "Request Created On"];
 	} else {
-		$headings = ["S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child Date of Birth", "Child Age", "Child Age in Weeks", "Child Age in Days", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type", "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On"];
+		$headings = ["S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child Date of Birth", "Child Age in Months", "Child Age in Weeks", "Child Age in Days", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type", "EID Number", "Testing Platform", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Reviewed By", "Reviewed On", "Approved By", "Approved On", "Request Created On"];
 	}
 	if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
 		unset($headings[$key]);
 	}
-	//$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding",  "PCR Test Performed Before", "Last PCR Test results","Reason For PCR Test", "Sample Collection Date", "Sample Type", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+	//$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age in Months", "Child Age in Weeks", "Child Age in Days", "Child Sex", "Breastfeeding",  "PCR Test Performed Before", "Last PCR Test results","Reason For PCR Test", "Sample Collection Date", "Sample Type", "Testing Platform", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Reviewed By", "Reviewed On", "Approved By", "Approved On", "Request Created On");
 
 
 	if ($formId != CAMEROON) {
@@ -44,11 +52,22 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 	}
 
 	if ($formId != DRC) {
-		$headings = MiscUtility::removeMatchingElements($headings, ["Freezer", "Rack", "Box", "Position", "Volume (ml)"]);
+		$headings = MiscUtility::removeMatchingElements($headings, ["Freezer", "Rack", "Box", "Position", "Volume (ml)", "Child Age in Weeks", "Child Age in Days", "Testing Platform", "Reviewed By", "Reviewed On", "Approved By", "Approved On"]);
 	}
 
+	$testPlatformResult = $general->getTestingPlatforms('eid');
+	$testPlatformList = [];
+	foreach ($testPlatformResult as $row) {
+		$testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
+	}
+	$testingLabs = $facilitiesService->getTestingLabs('eid');
+	$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
+	$userInfo = [];
+	foreach ($userResult as $user) {
+		$userInfo[$user['user_id']] = ($user['user_name']);
+	}
 	// Row builder function
-	$buildRow = function ($aRow, $no) use ($general, $key, $formId): array {
+	$buildRow = function ($aRow, $no) use ($general, $key, $formId, $testPlatformList, $userInfo): array {
 		$row = [];
 
 		//set gender
@@ -96,8 +115,10 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['child_dob']);
 		$row[] = ($aRow['child_age'] != null && trim((string) $aRow['child_age']) !== '' && $aRow['child_age'] > 0) ? $aRow['child_age'] : 0;
-		$row[] = $aRow['child_age_in_weeks'] ?? 0;
-		$row[] = $aRow['child_age_in_days'] ?? 0;
+		if ($formId == DRC) {
+			$row[] = $aRow['child_age_in_weeks'] ?? 0;
+			$row[] = $aRow['child_age_in_days'] ?? 0;
+		}
 		$row[] = $gender;
 		$row[] = $aRow['has_infant_stopped_breastfeeding'];
 		$row[] = $aRow['request_clinician_phone_number'];
@@ -108,6 +129,9 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$row[] = $aRow['sample_requestor_phone'];
 		$row[] = $aRow['sample_name'] ?: null;
 		$row[] = $aRow['eid_number'];
+		if ($formId == DRC) {
+			$row[] = $testPlatformList[$aRow['eid_test_platform'] . '##' . $aRow['instrument_id']];
+		}
 		$row[] = $sampleRejection;
 		if ($formId == DRC) {
 			$formAttributes = empty($aRow['form_attributes']) ? null : json_decode((string) $aRow['form_attributes']);
@@ -127,11 +151,15 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$row[] = $aRow['lab_tech_comments'];
 		$row[] = $aRow['funding_source_name'] ?? null;
 		$row[] = $aRow['i_partner_name'] ?? null;
-
+		if ($formId == DRC) {
+			$row[] = $userInfo[$aRow['result_reviewed_by']];
+			$row[] = DateUtility::humanReadableDateFormat($aRow['result_reviewed_datetime'], true);
+			$row[] = $userInfo[$aRow['result_approved_by']];
+			$row[] = DateUtility::humanReadableDateFormat($aRow['result_approved_datetime'], true);
+		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
 		return $row;
 	};
-
 
 	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-EID-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 
