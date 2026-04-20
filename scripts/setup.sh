@@ -93,6 +93,9 @@ handle_database_setup_and_import() {
     local default_sql_file="${lis_path}/sql/init.sql"
     local is_user_supplied_dump=false
 
+    # Clear the checkpoint before starting so interrupted imports cannot be resumed as if they succeeded.
+    rm -f "${db_setup_checkpoint_file}"
+
     if [[ -n "$1" ]]; then
         is_user_supplied_dump=true
     fi
@@ -265,6 +268,10 @@ handle_database_setup_and_import() {
 
     echo "Database setup/import completed."
     log_action "Database setup/import completed (strategy: ${strategy:-create})."
+
+    mkdir -p "$(dirname "${db_setup_checkpoint_file}")"
+    echo "completed" >"${db_setup_checkpoint_file}"
+    log_action "Database setup checkpoint written to ${db_setup_checkpoint_file}."
 }
 
 
@@ -286,6 +293,8 @@ else
 fi
 
 log_action "LIS installation path is set to ${lis_path}."
+
+db_setup_checkpoint_file="${lis_path}/var/run/setup-db-complete.checkpoint"
 
 # Check if InteLIS is already installed at this path
 if [ -d "${lis_path}" ] && [ -n "$(ls -A ${lis_path} 2>/dev/null)" ]; then
@@ -317,6 +326,7 @@ eval "$current_trap"
 # Initialize variable for database file path
 intelis_sql_file=""
 DB_STRATEGY_FLAG=""
+resume_setup=false
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -336,12 +346,30 @@ while [[ $# -gt 0 ]]; do
         DB_STRATEGY_FLAG="$2"
         shift 2
         ;;
+        --resume)
+        resume_setup=true
+        shift
+        ;;
         *)
         # unrecognized -> keep or discard; here we just shift
         shift
         ;;
     esac
 done
+
+if $resume_setup; then
+    # Resume mode is meant for late-stage reruns where re-importing the DB would be risky.
+    intelis_sql_file=""
+    DB_STRATEGY_FLAG=""
+    if [ ! -f "${db_setup_checkpoint_file}" ]; then
+        print error "Resume mode is only available after a successful database setup/import. No checkpoint was found at ${db_setup_checkpoint_file}."
+        log_action "Resume mode rejected because the database setup checkpoint was missing."
+        exit 1
+    fi
+
+    print info "Resume mode enabled. Database setup/import will be skipped."
+    log_action "Resume mode enabled. Skipping database setup/import."
+fi
 
 # Check if the specified SQL file exists
 if [[ -n "$intelis_sql_file" ]]; then
@@ -782,7 +810,10 @@ sed -i "s|\$systemConfig\['interfacing'\]\['database'\]\['username'\]\s*=.*|\$sy
 sed -i "s|\$systemConfig\['interfacing'\]\['database'\]\['password'\]\s*=.*|\$systemConfig['interfacing']['database']['password'] = '$escaped_mysql_root_password';|" "${config_file}"
 
 # Handle database setup and SQL file import
-if [[ -n "$intelis_sql_file" && -f "$intelis_sql_file" ]]; then
+if $resume_setup; then
+    print info "Skipping database setup/import in resume mode."
+    log_action "Database setup/import skipped due to resume mode."
+elif [[ -n "$intelis_sql_file" && -f "$intelis_sql_file" ]]; then
     handle_database_setup_and_import "$intelis_sql_file"
 elif [[ -n "$intelis_sql_file" ]]; then
     print error "SQL file not found: $intelis_sql_file. Please check the path."
@@ -887,6 +918,9 @@ restart_service mysql
 
 # Only prompt for Remote STS URL for LIS nodes
 if $is_lis; then
+    # Keep STS setup resilient to typos without trapping the installer in an endless loop.
+    max_sts_url_attempts=3
+    sts_url_attempts=0
     # Prompt for Remote STS URL
     while true; do
         read -p "Please enter the Remote STS URL (or press Enter to skip): " remote_sts_url
@@ -899,10 +933,15 @@ if $is_lis; then
             break
         fi
 
-        echo "Validating the provided STS URL..."
-        response_code=$(curl -s -o /dev/null -w "%{http_code}" "$remote_sts_url/api/version.php")
+        # Normalize the URL once so validation and saved config use the same value.
+        remote_sts_url="${remote_sts_url%/}"
 
-        if [ "$response_code" -eq 200 ]; then
+        echo "Validating the provided STS URL..."
+        response_code=$(curl -s -o /dev/null -w "%{http_code}" "$remote_sts_url/api/version.php" || true)
+
+        # curl transport failures return "000". Keep this retryable instead of
+        # triggering the global ERR trap so setup can continue prompting.
+        if [[ "$response_code" =~ ^[0-9]+$ ]] && [ "$response_code" -eq 200 ]; then
             print success "STS URL validation successful."
             log_action "STS URL validation successful."
 
@@ -921,8 +960,17 @@ if $is_lis; then
             fi
             break
         else
-            print error "Failed to validate the provided STS URL (HTTP response code: $response_code). Please try again."
+            sts_url_attempts=$((sts_url_attempts + 1))
             log_action "STS URL validation failed with response code $response_code."
+
+            if [ "$sts_url_attempts" -ge "$max_sts_url_attempts" ]; then
+                print warning "Failed to validate the provided STS URL ${max_sts_url_attempts} times (last HTTP response code: $response_code). Skipping STS configuration."
+                log_action "Skipping STS configuration after ${max_sts_url_attempts} failed validation attempts."
+                break
+            fi
+
+            remaining_sts_url_attempts=$((max_sts_url_attempts - sts_url_attempts))
+            print error "Failed to validate the provided STS URL (HTTP response code: $response_code). Please enter the STS URL again or press Enter to skip. Attempts remaining: $remaining_sts_url_attempts."
         fi
     done
 fi
