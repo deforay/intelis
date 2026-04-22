@@ -358,6 +358,15 @@ process_install() {
         dispatch_marker "$lp" "$marker" || log "dispatch error for $marker"
     done
     shopt -u nullglob
+
+    # Heartbeat: touch once per tick per install. The courier reads this
+    # file's mtime and reports it to STS so operators can see "runner last
+    # seen X min ago". Written by root but made world-readable so the
+    # courier (www-data) can stat() it.
+    local heartbeat="$lp/var/remote-commands/runner.heartbeat"
+    : > "$heartbeat"
+    chmod 0664 "$heartbeat" 2>/dev/null || true
+    chown root:www-data "$heartbeat" 2>/dev/null || true
 }
 
 # Age-out nonces older than 30 days so the dir doesn't grow without bound.

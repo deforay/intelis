@@ -161,11 +161,25 @@ foreach ((glob($resultsDir . '/*.json') ?: []) as $file) {
 $transactionId = MiscUtility::generateULID();
 $url = rtrim((string) $remoteURL, '/') . '/remote/v2/pending-commands.php';
 
+// Heartbeat freshness tells STS which layer is healthy. The courier's own
+// heartbeat is the previous tick's success (we haven't finished this one).
+// The runner's heartbeat comes straight from the root runner — if it's
+// missing or stale, the runner is dead / disabled and root commands will
+// never execute regardless of what the courier does.
+$courierHeartbeatFile = $baseDir . DIRECTORY_SEPARATOR . 'courier.heartbeat';
+$runnerHeartbeatFile = $baseDir . DIRECTORY_SEPARATOR . 'runner.heartbeat';
+
+$heartbeats = [
+    'courier' => is_file($courierHeartbeatFile) ? date('c', filemtime($courierHeartbeatFile)) : null,
+    'runner' => is_file($runnerHeartbeatFile) ? date('c', filemtime($runnerHeartbeatFile)) : null,
+];
+
 $payload = [
     'labId' => $labId,
     'instanceId' => $general->getInstanceId(),
     'currentVersion' => defined('VERSION') ? VERSION : null,
     'statusUpdates' => $statusUpdates,
+    'heartbeats' => $heartbeats,
 ];
 
 try {
@@ -313,6 +327,10 @@ try {
         'json',
         $labId
     );
+
+    // Mark this tick successful by touching the courier heartbeat.
+    // STS uses mtime to decide whether the courier is alive.
+    @touch($courierHeartbeatFile);
 
     if ($io) {
         $io->success(sprintf(

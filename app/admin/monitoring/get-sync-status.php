@@ -34,6 +34,8 @@ $query = "SELECT
     f.facility_attributes->>'$.lastHeartBeat' as lastHeartBeat,
     f.facility_attributes->>'$.lastResultsSync' as lastResultsSync,
     f.facility_attributes->>'$.lastRequestsSync' as lastRequestsSync,
+    f.facility_attributes->>'$.courierHeartbeat' as courierHeartbeat,
+    f.facility_attributes->>'$.runnerHeartbeat' as runnerHeartbeat,
     tar.last_requested_on,
     GREATEST(
         COALESCE(UNIX_TIMESTAMP(STR_TO_DATE(f.facility_attributes->>'$.lastHeartBeat', '%Y-%m-%d %H:%i:%s')), 0),
@@ -161,6 +163,40 @@ if (empty($resultSet)) {
             </td>
             <td class="text-center">
                 <?= htmlspecialchars($aRow['version'] ?? '-'); ?>
+                <?php if ($showActions) {
+                    // Heartbeat freshness — report on the two background loops
+                    // that actually drive remote commands. Both are "eventually
+                    // consistent" so > 10 min stale is genuinely suspicious.
+                    $courierHb = $aRow['courierHeartbeat'] ?? null;
+                    $runnerHb = $aRow['runnerHeartbeat'] ?? null;
+                    $staleThresholdSec = 15 * 60;
+
+                    $renderHb = static function (?string $iso, string $label) use ($staleThresholdSec): string {
+                        if (empty($iso)) {
+                            // Never reported — feature is either off or the lab is on an older version.
+                            return '<span class="label label-default" style="font-weight:normal;" title="'
+                                 . _translate('Not reporting') . ' (' . htmlspecialchars($label) . ')">' . htmlspecialchars($label) . ': —</span>';
+                        }
+                        $ts = strtotime($iso);
+                        $age = time() - $ts;
+                        $ageText = $age < 60 ? 'just now'
+                                 : ($age < 3600 ? floor($age / 60) . 'm ago'
+                                 : floor($age / 3600) . 'h ago');
+                        $cls = $age > $staleThresholdSec ? 'label-danger' : 'label-success';
+                        return '<span class="label ' . $cls . '" style="font-weight:normal;" title="' . htmlspecialchars($iso) . '">'
+                             . htmlspecialchars($label) . ': ' . htmlspecialchars($ageText) . '</span>';
+                    };
+
+                    // Show heartbeats only when at least one has ever reported,
+                    // so legacy (not-yet-upgraded) labs don't show noise.
+                    if (!empty($courierHb) || !empty($runnerHb)) { ?>
+                        <br>
+                        <small style="display:inline-block; margin-top:3px;">
+                            <?= $renderHb($courierHb, _translate('courier')); ?>
+                            <?= $renderHb($runnerHb, _translate('runner')); ?>
+                        </small>
+                    <?php }
+                } ?>
             </td>
             <?php if ($showActions) {
                 $labPending = $pendingCommandsByLab[$aRow['facility_id']] ?? [];

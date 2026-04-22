@@ -57,9 +57,9 @@ try {
     $now = DateUtility::getCurrentDateTime();
     $terminalStatuses = ['completed', 'failed', 'expired', 'cancelled'];
 
-    // 0) Sweep expired rows for this lab so we never hand out commands that
-    //    are past their deadline. Any non-terminal row whose expires_at has
-    //    passed moves to 'expired'.
+    // 0a) Sweep expired rows for this lab so we never hand out commands that
+    //     are past their deadline. Any non-terminal row whose expires_at has
+    //     passed moves to 'expired'.
     $db->reset();
     $db->where('lab_id', (int) $labId);
     $db->where('expires_at IS NOT NULL');
@@ -68,6 +68,24 @@ try {
     $db->update('s_lis_remote_commands', [
         'status' => 'expired',
         'completed_at' => $now,
+    ]);
+
+    // 0b) Stale-command sweep. If a row was picked up more than 2 hours ago
+    //     but never reached a terminal or 'prepared' state, its handler has
+    //     almost certainly crashed (OOM, segfault, runner restart mid-op).
+    //     Flip to 'failed' so the next command in the queue can proceed and
+    //     the UI stops showing a ghost in-flight badge forever. 'prepared'
+    //     is excluded — it's the legitimate plateau state between prepare
+    //     and apply, can sit for days.
+    $db->reset();
+    $db->where('lab_id', (int) $labId);
+    $db->where('picked_at IS NOT NULL');
+    $db->where("picked_at < DATE_SUB('$now', INTERVAL 2 HOUR)");
+    $db->where('status', ['picked', 'running', 'preparing', 'applying'], 'IN');
+    $db->update('s_lis_remote_commands', [
+        'status' => 'failed',
+        'completed_at' => $now,
+        'last_error' => 'Stale: no status report received within 2 hours of pick-up',
     ]);
 
     // 1) Apply incoming status updates (only for rows belonging to this lab).
@@ -161,6 +179,24 @@ try {
             'status' => 'picked',
             'picked_at' => $now,
         ]);
+    }
+
+    // 4) Stash heartbeats in facility_attributes so the sync-status UI can
+    //    surface "courier last seen X ago" and "runner last seen Y ago"
+    //    per lab. Any value is allowed (null, ISO 8601) — display is
+    //    best-effort.
+    if (isset($data['heartbeats']) && is_array($data['heartbeats'])) {
+        $courierHb = $data['heartbeats']['courier'] ?? null;
+        $runnerHb = $data['heartbeats']['runner'] ?? null;
+        $sql = "UPDATE facility_details
+                SET facility_attributes = JSON_SET(
+                    COALESCE(facility_attributes, '{}'),
+                    '$.courierHeartbeat', ?,
+                    '$.runnerHeartbeat', ?,
+                    '$.lastPendingCommandsSync', ?
+                )
+                WHERE facility_id = ?";
+        $db->rawQuery($sql, [$courierHb, $runnerHb, $now, (int) $labId]);
     }
 
     $payload = [
