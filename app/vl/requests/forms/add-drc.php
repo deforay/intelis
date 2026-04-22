@@ -588,7 +588,7 @@ $sFormat = '';
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td style="width: 25%;"><label for="">Date de réception de l'échantillon</label>
+											<td style="width: 25%;"><label for="">Date de réception de l'échantillon <span class="mandatory test-date-mandatory" style="display:none;">*</span></label>
 											</td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control dateTime" id="sampleReceivedDate"
@@ -639,7 +639,7 @@ $sFormat = '';
 										</tr>
 										<tr>
 											<td style="width: 25%;"><label for="sampleTestingDateAtLab">Date de réalisation
-													de la charge virale</label></td>
+													de la charge virale <span class="mandatory test-date-mandatory" style="display:none;">*</span></label></td>
 											<td style="width: 25%;">
 												<input type="text" class="form-control dateTime" id="sampleTestingDateAtLab"
 													name="sampleTestingDateAtLab"
@@ -647,7 +647,7 @@ $sFormat = '';
 													title="Please enter date de réalisation de la charge virale" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
 											<td style="width: 25%;"><label for="testingPlatform"
-													id="testingPlatformLabel">Technique utilisée</label> </label>
+													id="testingPlatformLabel">Technique utilisée <span class="mandatory test-date-mandatory" style="display:none;">*</span></label> </label>
 											</td>
 											<td style="width: 25%;">
 												<select name="testingPlatform" id="testingPlatform" class="form-control"
@@ -667,7 +667,7 @@ $sFormat = '';
 											<td style="width: 25%;">
 												<select class="form-control" id="isSampleRejected" name="isSampleRejected"
 													title="Please select décision prise" <?php echo $labFieldDisabled; ?>
-													onchange="checkTestStatus();" style="width:100%;">
+													onchange="checkTestStatus(true);" style="width:100%;">
 													<option value=""><?= _translate("-- Select --"); ?> </option>
 													<option value="no">Echantillon accepté</option>
 													<option value="yes">Echantillon rejeté</option>
@@ -676,8 +676,7 @@ $sFormat = '';
 										</tr>
 										<tr class="rejectionReason" style="display:none;">
 											<td class="rejectionReason" style="display:none;"><label
-													for="rejectionReason">Motifs de rejet <span
-														class="mandatory">*</span></label></td>
+													for="rejectionReason">Motifs de rejet <span class="mandatory rejection-mandatory" style="display:none;">*</span></label></td>
 											<td class="rejectionReason" style="display:none;">
 												<select class="form-control" id="rejectionReason" name="rejectionReason"
 													title="Please select motifs de rejet" <?php echo $labFieldDisabled; ?>
@@ -702,7 +701,7 @@ $sFormat = '';
 													title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?>
 													style="width:100%;display:none;" /></td>
 											<th scope="row" class="rejectionReason" style="display:none;">
-												<?php echo _translate("Rejection Date"); ?> <span class="mandatory">*</span>
+												<?php echo _translate("Rejection Date"); ?> <span class="mandatory rejection-mandatory" style="display:none;">*</span>
 											</th>
 											<td class="rejectionReason" style="display:none;"><input
 													class="form-control date rejection-date" type="text"
@@ -710,7 +709,7 @@ $sFormat = '';
 													placeholder="Select Rejection Date" /></td>
 										</tr>
 										<tr class="resultSection">
-											<td class="vlResult" style="width: 25%;"><label for="vlResult">Résultat </label>
+											<td class="vlResult" style="width: 25%;"><label for="vlResult">Résultat <span class="mandatory test-date-mandatory" style="display:none;">*</span></label>
 											</td>
 											<td class="resultInputContainer">
 												<input list="possibleVlResults" autocomplete="off"
@@ -743,13 +742,13 @@ $sFormat = '';
 											</tr>
 										<?php } ?>
 										<tr>
-											<td style="width:14%;"><label for="reviewedOn"> Revu le</label></td>
+											<td style="width:14%;"><label for="reviewedOn"> Revu le <span class="mandatory review-mandatory" style="display:none;">*</span></label></td>
 											<td style="width:14%;">
 												<input type="text" name="reviewedOn" id="reviewedOn"
 													class="dateTime authorisation form-control" placeholder="Revu le"
 													title="Please enter the Revu le" />
 											</td>
-											<td style="width:14%;"><label for="reviewedBy"> Revu par</label></td>
+											<td style="width:14%;"><label for="reviewedBy"> Revu par <span class="mandatory review-mandatory" style="display:none;">*</span></label></td>
 											<td style="width:14%;">
 												<select name="reviewedBy" id="reviewedBy"
 													class="select2 authorisation form-control"
@@ -759,13 +758,13 @@ $sFormat = '';
 											</td>
 										</tr>
 										<tr>
-											<th scope="row">Approuvé le</th>
+											<th scope="row">Approuvé le <span class="mandatory review-mandatory" style="display:none;">*</span></th>
 											<td>
 												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime"
 													class="dateTime authorisation form-control" placeholder="Approuvé le"
 													title="Please enter the Approuvé le" />
 											</td>
-											<th scope="row">Approuvé par</th>
+											<th scope="row">Approuvé par <span class="mandatory review-mandatory" style="display:none;">*</span></th>
 											<td>
 												<select name="approvedBy" id="approvedBy"
 													class="select2 authorisation form-control"
@@ -993,37 +992,64 @@ $sFormat = '';
 		}
 	}
 
-	function checkTestStatus() {
+	function checkTestStatus(clearValues) {
 		var status = $("#isSampleRejected").val();
+		var $reviewApprove = $("#reviewedOn, #reviewedBy, #approvedOnDateTime, #approvedBy");
+
 		if (status == 'yes') {
 			$(".rejectionReason").show();
+			$("#rejectionReason, #rejectionDate").addClass('isRequired');
+
 			$(".resultSection").hide();
-			$("#rejectionReason").addClass('isRequired');
-			$("#vlResult").val('').css('pointer-events', 'none');
-			$("#vlLog").val('').css('pointer-events', 'none');
-			$('#reasonForFailure').val('');
-			$('#reasonForFailure, #testingPlatform').removeClass('isRequired');
-			$('#testingPlatformLabel').html('Technique utilisée');
+			$("#sampleReceivedDate, #vlResult, #sampleTestingDateAtLab, #testingPlatform").removeClass('isRequired');
+			$("#vlResult").css('pointer-events', 'none');
+			$("#vlLog").css('pointer-events', 'none');
+
+			$('#reasonForFailure').val('').removeClass('isRequired');
 			$('.reasonForFailure').hide();
-		} else {
-			$(".resultSection").show();
-			$("#rejectionReason").val('');
+
+			$(".test-date-mandatory").hide();
+			$(".rejection-mandatory").show();
+			$(".review-mandatory").show();
+			$reviewApprove.addClass('isRequired');
+
+			if (clearValues) {
+				$("#vlResult, #vlLog").val('');
+			}
+		} else if (status == 'no') {
 			$(".rejectionReason").hide();
-			$("#rejectionReason").removeClass('isRequired');
-			$("#testingPlatform").add('isRequired');
-			$('#testingPlatformLabel').append('<span class="mandatory">*</span>');
+			$("#rejectionReason, #rejectionDate, #newRejectionReason").removeClass('isRequired');
+			$(".newRejectionReason").hide();
+
+			$(".resultSection").show();
+			$("#sampleReceivedDate, #vlResult, #sampleTestingDateAtLab, #testingPlatform").addClass('isRequired');
 			$("#vlResult").css('pointer-events', 'auto');
 			$("#vlLog").css('pointer-events', 'auto');
 
+			$(".test-date-mandatory").show();
+			$(".rejection-mandatory").hide();
+			$(".review-mandatory").show();
+			$reviewApprove.addClass('isRequired');
+
+			if (clearValues) {
+				$("#rejectionReason, #rejectionDate, #newRejectionReason").val('');
+			}
+		} else {
+			$(".rejectionReason").hide();
+			$("#rejectionReason, #rejectionDate, #newRejectionReason").removeClass('isRequired');
+			$(".newRejectionReason").hide();
+
+			$(".resultSection").show();
+			$("#sampleReceivedDate, #vlResult, #sampleTestingDateAtLab, #testingPlatform").removeClass('isRequired');
+			$("#vlResult").css('pointer-events', 'auto');
+			$("#vlLog").css('pointer-events', 'auto');
+
+			$(".test-date-mandatory, .rejection-mandatory, .review-mandatory").hide();
+			$reviewApprove.removeClass('isRequired');
 		}
 	}
 
 	$('#vlResult').on('change', function () {
-		if ($(this).val() != "") {
-			$('.authorisation').addClass("isRequired");
-		} else {
-			$('.authorisation').removeClass("isRequired");
-		}
 		//if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'no result' || $(this).val().trim().toLowerCase() == 'error' || $(this).val().trim().toLowerCase() == 'below detection level') {
 		if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() == 'error') {
 			if ($(this).val().trim().toLowerCase() == 'failed') {
@@ -1171,6 +1197,9 @@ $sFormat = '';
 
 
 	$(document).ready(function () {
+
+		checkTestStatus();
+		checkRejectionReason();
 
 		$("#sampleCollectionDate").trigger('change');
 		$(".select2").select2();
