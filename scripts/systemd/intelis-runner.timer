@@ -1,0 +1,16 @@
+[Unit]
+Description=Run InteLIS remote command runner every minute
+Documentation=file:///usr/local/share/doc/intelis/remote-command-plane.md
+
+[Timer]
+# First fire 60s after boot, then every 60s wall-clock. RandomizedDelaySec
+# smears load a bit if multiple hosts share a central STS behind a proxy.
+OnBootSec=60
+OnUnitActiveSec=60
+RandomizedDelaySec=10
+AccuracySec=5s
+Persistent=true
+Unit=intelis-runner.service
+
+[Install]
+WantedBy=timers.target
