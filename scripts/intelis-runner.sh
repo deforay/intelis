@@ -251,11 +251,10 @@ dispatch_marker() {
                 if [ "$rc" -eq 0 ]; then
                     # Extract staging dir from our known output format:
                     # "Prepared at /var/intelis-staging/..." on a line by itself.
-                    local staging_dir
+                    local staging_dir staged_version
                     staging_dir=$(grep -Eo '/var/intelis-staging/[^[:space:]]+' "$output_log" \
                                   | grep -v '^\s*$' | tail -n 1 || true)
                     if [ -n "$staging_dir" ] && [ -f "$staging_dir/READY" ]; then
-                        local staged_version
                         staged_version=$(grep -E '^version=' "$staging_dir/READY" | head -1 | cut -d= -f2- || true)
                         jq -n \
                             --arg stagingDir "$staging_dir" \
@@ -263,6 +262,26 @@ dispatch_marker() {
                             '{stagingDir: $stagingDir, version: $version}' \
                             > "$prepared_dir/$cmd_id.json"
                         log "$cmd_id: staged version ${staged_version:-unknown} at $staging_dir"
+                        # Override the standard result JSON with a richer payload
+                        # so STS sees stagedVersion + stagingDir alongside exitCode.
+                        local tail_json='""'
+                        [ -f "$output_log" ] && tail_json=$(tail -n 30 "$output_log" 2>/dev/null | jq -Rs . || echo '""')
+                        result_json=$(jq -n \
+                            --argjson exitCode 0 \
+                            --arg stagedVersion "${staged_version:-unknown}" \
+                            --arg stagingDir "$staging_dir" \
+                            --argjson outputTail "$tail_json" \
+                            '{exitCode: $exitCode, stagedVersion: $stagedVersion, stagingDir: $stagingDir, outputTail: $outputTail}')
+                        write_result "$results_dir" "$cmd_id" "$nonce" "prepared" "$result_json"
+                        # Mark nonce + remove marker; skip the generic result-write at end.
+                        if [ -n "$nonce" ]; then
+                            mkdir -p "$nonces_dir"
+                            : > "$nonces_dir/$nonce"
+                            chmod 0600 "$nonces_dir/$nonce" 2>/dev/null || true
+                        fi
+                        rm -f "$marker"
+                        log "$cmd_id ($command): prepared (exit=0)"
+                        return 0
                     else
                         echo "could not locate staging dir / READY sentinel after prepare" >>"$output_log"
                         rc=65

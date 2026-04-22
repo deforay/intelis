@@ -37,15 +37,24 @@ $post = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 $labId = isset($post['labId']) ? (int) $post['labId'] : 0;
 $command = $post['command'] ?? '';
 
-// Whitelist. This grows as handlers are added on the LIS side.
-// Keep in sync with the runner/courier dispatch tables.
+// Whitelist. Keep in sync with:
+//   - the LIS courier's $inProcessHandlers map (non-root)
+//   - scripts/intelis-runner.sh dispatch case (root commands)
 $commandWhitelist = [
+    // Non-root, run by the LIS courier in-process:
     'resend-results',
     'resend-requests',
     'metadata-resync',
     'refresh-cache',
     'rotate-token',
+    // Root, run by the privileged runner:
+    'refresh-perms',
+    'restart-apache',
+    'upgrade',
+    'upgrade-prepare',
+    'upgrade-apply',
 ];
+$rootCommands = ['refresh-perms', 'restart-apache', 'upgrade', 'upgrade-prepare', 'upgrade-apply'];
 
 if ($labId <= 0) {
     http_response_code(400);
@@ -62,6 +71,8 @@ if (!in_array($command, $commandWhitelist, true)) {
 // Build the params blob based on the command. Validate per-command so the
 // LIS-side handler can trust its input.
 $params = [];
+$dependsOn = null;
+$notBefore = null;
 
 if ($command === 'resend-results' || $command === 'resend-requests') {
     $module = $post['module'] ?? null;
@@ -87,11 +98,55 @@ if ($command === 'resend-results' || $command === 'resend-requests') {
     }
 }
 
+// upgrade-apply requires a dependsOn that points at a currently-prepared
+// row for THIS lab. Enforce that server-side so the operator can't apply
+// a stale or foreign staging dir by tampering with the client payload.
+if ($command === 'upgrade-apply') {
+    $dependsOn = $post['dependsOn'] ?? null;
+    if (empty($dependsOn) || !preg_match('/^[A-Z0-9]{26}$/', (string) $dependsOn)) {
+        http_response_code(400);
+        echo json_encode(['status' => 'error', 'error' => 'upgrade-apply requires a valid dependsOn commandId']);
+        exit;
+    }
+    $db->reset();
+    $db->where('command_id', $dependsOn);
+    $db->where('lab_id', $labId);
+    $db->where('command', 'upgrade-prepare');
+    $db->where('status', 'prepared');
+    $prepRow = $db->getOne('s_lis_remote_commands', 'command_id');
+    if (empty($prepRow)) {
+        http_response_code(400);
+        echo json_encode(['status' => 'error', 'error' => 'No matching prepared upgrade for this lab']);
+        exit;
+    }
+}
+
+// Optional notBefore — earliest time the runner may pick up this command.
+// Accepts ISO 8601 / datetime-local format. Never accept past values.
+if (!empty($post['notBefore'])) {
+    $raw = str_replace('T', ' ', (string) $post['notBefore']);
+    $ts = strtotime($raw);
+    if ($ts === false) {
+        http_response_code(400);
+        echo json_encode(['status' => 'error', 'error' => 'Invalid notBefore datetime']);
+        exit;
+    }
+    if ($ts < time()) {
+        // Ignore past notBefore rather than erroring — treat as "now".
+        $notBefore = null;
+    } else {
+        $notBefore = date('Y-m-d H:i:s', $ts);
+    }
+}
+
 // Refuse duplicate in-flight commands for the same lab + command combo.
+// 'prepared' is intentionally excluded — it's a plateau state waiting for
+// an apply, and operators may legitimately prepare multiple times (e.g.
+// to stage a newer version on top of an existing stage).
 $db->reset();
 $db->where('lab_id', $labId);
 $db->where('command', $command);
-$db->where('status', ['pending', 'picked', 'running', 'preparing', 'prepared', 'applying'], 'IN');
+$db->where('status', ['pending', 'picked', 'running', 'preparing', 'applying'], 'IN');
 $existing = $db->getValue('s_lis_remote_commands', 'command_id');
 
 if (!empty($existing)) {
@@ -116,6 +171,8 @@ $insertData = [
     'requested_by' => (int) $_SESSION['userId'],
     'requested_at' => date('Y-m-d H:i:s'),
     'nonce' => $nonce,
+    'depends_on' => $dependsOn,
+    'not_before' => $notBefore,
 ];
 
 try {

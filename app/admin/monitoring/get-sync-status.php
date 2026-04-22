@@ -77,16 +77,32 @@ $fourWeeksAgo = strtotime('-4 weeks');
 
 // Pre-fetch pending/in-flight commands for the labs in this result set so we
 // can badge the row and disable duplicate-queueing client-side.
+// Prepared rows are tracked separately so the "Apply prepared upgrade"
+// dropdown can show the operator what's ready to apply on each lab.
 $pendingCommandsByLab = [];
+$preparedByLab = [];
 if ($isSTS) {
-    $pendingCommands = $db->rawQuery(
-        "SELECT lab_id, command, status, requested_at
+    $inFlight = $db->rawQuery(
+        "SELECT command_id, lab_id, command, status, result, requested_at
          FROM s_lis_remote_commands
          WHERE status IN ('pending','picked','running','preparing','prepared','applying')
          ORDER BY requested_at DESC"
     );
-    foreach ($pendingCommands ?: [] as $row) {
+    foreach ($inFlight ?: [] as $row) {
         $pendingCommandsByLab[$row['lab_id']][] = $row;
+
+        if ($row['status'] === 'prepared' && $row['command'] === 'upgrade-prepare') {
+            $resultDecoded = [];
+            if (!empty($row['result'])) {
+                $resultDecoded = json_decode((string) $row['result'], true) ?: [];
+            }
+            $preparedByLab[$row['lab_id']][] = [
+                'commandId' => $row['command_id'],
+                'stagedVersion' => $resultDecoded['stagedVersion'] ?? 'unknown',
+                'stagingDir' => $resultDecoded['stagingDir'] ?? '',
+                'requestedAt' => $row['requested_at'],
+            ];
+        }
     }
 }
 
@@ -142,18 +158,34 @@ if (empty($resultSet)) {
                 <?= htmlspecialchars($aRow['version'] ?? '-'); ?>
             </td>
             <?php if ($isSTS) {
-                $labPending = $pendingCommandsByLab[$aRow['facility_id']] ?? []; ?>
+                $labPending = $pendingCommandsByLab[$aRow['facility_id']] ?? [];
+                $labPrepared = $preparedByLab[$aRow['facility_id']] ?? []; ?>
                 <td class="text-center no-row-click">
                     <button type="button" class="btn btn-sm btn-primary row-action queue-command-btn"
                         data-lab-id="<?= (int) $aRow['facility_id']; ?>"
                         data-lab-name="<?= htmlspecialchars((string) $aRow['facility_name'], ENT_QUOTES); ?>"
+                        data-prepared='<?= htmlspecialchars(json_encode($labPrepared), ENT_QUOTES); ?>'
                         title="<?= _translate('Queue a command for this lab'); ?>">
                         <i class="fa fa-paper-plane"></i>
                         <?= _translate('Queue'); ?>
                     </button>
+                    <?php if (!empty($labPrepared)) { ?>
+                        <div style="margin-top: 4px;">
+                            <?php foreach ($labPrepared as $pr) { ?>
+                                <span class="label label-info" style="display:inline-block; margin-top:2px;"
+                                    title="<?= htmlspecialchars($pr['requestedAt']); ?>">
+                                    <i class="fa fa-cube"></i>
+                                    <?= _translate('Staged'); ?>: <?= htmlspecialchars($pr['stagedVersion']); ?>
+                                </span>
+                            <?php } ?>
+                        </div>
+                    <?php } ?>
                     <?php if (!empty($labPending)) { ?>
                         <div style="margin-top: 4px;">
-                            <?php foreach ($labPending as $pc) { ?>
+                            <?php foreach ($labPending as $pc) {
+                                if ($pc['status'] === 'prepared' && $pc['command'] === 'upgrade-prepare') {
+                                    continue; // Already shown as "Staged:" above
+                                } ?>
                                 <span class="label label-warning" style="display:inline-block; margin-top:2px;"
                                     title="<?= htmlspecialchars((string) $pc['requested_at']); ?>">
                                     <?= htmlspecialchars($pc['command']); ?>: <?= htmlspecialchars($pc['status']); ?>
