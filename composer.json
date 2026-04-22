@@ -124,13 +124,15 @@
         ],
         "send-results": "@php app/tasks/remote/results-sender.php",
         "receive-requests": "@php app/tasks/remote/requests-receiver.php",
+        "pending-commands": "@php app/tasks/remote/pending-commands.php",
         "generate-translation-strings": "@php app/system/generate-translation-strings.php",
         "fix-app-menu": "@php bin/setup/fix-app-menu.php",
         "sync-sts": [
             "@token",
             "@metadata-sync",
             "@send-results",
-            "@receive-requests"
+            "@receive-requests",
+            "@pending-commands"
         ],
         "post-install": [
             "@migrate",
@@ -158,6 +160,7 @@
         "post-install": "Tasks to run after InteLIS install",
         "post-update": "Tasks to run after InteLIS update",
         "sync-sts": "Sync data with a connected STS server",
+        "pending-commands": "Pick up and dispatch remote commands queued at STS (gated behind global_config.remote_commands_enabled)",
         "sts-setup": "Setup connection with a STS server",
         "setup-sts": "Setup connection with a STS server",
         "migrate": "Run database migrations",

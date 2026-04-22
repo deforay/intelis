@@ -1,0 +1,300 @@
+<?php
+
+// app/tasks/remote/pending-commands.php
+//
+// Courier for the remote command plane. On every sync-sts tick:
+//   1) Pick up any results queued by earlier ticks (files under
+//      var/remote-commands/results/) and post them as statusUpdates.
+//   2) Receive any new pending commands for this lab.
+//   3) Dispatch each command to its handler (in-PHP for www-data commands;
+//      drop a marker file under var/remote-commands/pending/ for root commands
+//      so the privileged runner picks them up in a later tick).
+//   4) Write the result of in-PHP handlers back to var/remote-commands/results/
+//      so the NEXT tick reports them to STS.
+//
+// Gated behind global_config.remote_commands_enabled. Default: off.
+// See docs/remote-command-plane.md.
+
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
+
+$cliMode = php_sapi_name() === 'cli';
+if ($cliMode) {
+    require_once __DIR__ . "/../../../bootstrap.php";
+}
+
+use App\Services\ApiService;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
+
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+$io = $cliMode ? new SymfonyStyle(new ArgvInput(), new ConsoleOutput()) : null;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
+// Only LIS instances consume remote commands.
+if ($general->isLISInstance() === false) {
+    exit(0);
+}
+
+// Feature gate. Default off until a lab opts in by setting
+// global_config.remote_commands_enabled = 'yes' (or 1/true).
+$gateRaw = (string) $general->getGlobalConfig('remote_commands_enabled');
+$gateEnabled = in_array(strtolower(trim($gateRaw)), ['1', 'true', 'yes', 'on'], true);
+if (!$gateEnabled) {
+    if ($io) {
+        $io->text('remote_commands_enabled is off — skipping pending-commands sync.');
+    }
+    exit(0);
+}
+
+$labId = $general->getSystemConfig('sc_testing_lab_id');
+$remoteURL = $general->getRemoteURL();
+
+if (empty($labId) || empty($remoteURL)) {
+    LoggerUtility::logError('pending-commands: missing labId or remoteURL');
+    exit(0);
+}
+
+$stsBearerToken = $general->getSTSToken();
+if (empty($stsBearerToken)) {
+    LoggerUtility::logError('pending-commands: STS bearer token not available');
+    exit(0);
+}
+$apiService->setBearerToken($stsBearerToken);
+
+// Directory layout for the command plane. These are used by the privileged
+// runner too — keep the names in sync with scripts/intelis-runner (step 5).
+$baseDir = VAR_PATH . DIRECTORY_SEPARATOR . 'remote-commands';
+$pendingDir = $baseDir . DIRECTORY_SEPARATOR . 'pending';   // www-data -> runner
+$resultsDir = $baseDir . DIRECTORY_SEPARATOR . 'results';   // runner/handlers -> next tick
+MiscUtility::makeDirectory($pendingDir);
+MiscUtility::makeDirectory($resultsDir);
+
+// Handlers that run in this same PHP process (www-data). Anything requiring
+// root (upgrade, refresh-perms, restart-apache) is NOT dispatched here — we
+// drop a marker file under $pendingDir and the runner picks it up.
+$inProcessHandlers = [
+    'resend-results' => __DIR__ . '/command-handlers/resend-results.php',
+    // Additional handlers land in step 4.
+];
+$rootRunnerCommands = ['upgrade', 'upgrade-prepare', 'upgrade-apply', 'refresh-perms', 'restart-apache'];
+
+/**
+ * Atomically write a status file for a command. Overwriting is intentional —
+ * the LAST state is what the next tick reports.
+ */
+$writeStatusFile = static function (string $commandId, array $payload) use ($resultsDir): void {
+    $tmp = tempnam($resultsDir, '.tmp-');
+    if ($tmp === false) {
+        return;
+    }
+    file_put_contents($tmp, json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+    @rename($tmp, $resultsDir . DIRECTORY_SEPARATOR . $commandId . '.json');
+};
+
+// -----------------------------------------------------------------------
+// Step 1: collect status updates to send from var/remote-commands/results/
+// -----------------------------------------------------------------------
+$statusUpdates = [];
+$resultFiles = [];
+foreach ((glob($resultsDir . '/*.json') ?: []) as $file) {
+    $decoded = json_decode((string) file_get_contents($file), true);
+    if (!is_array($decoded) || empty($decoded['commandId']) || empty($decoded['status'])) {
+        continue;
+    }
+    $statusUpdates[] = $decoded;
+    $resultFiles[$decoded['commandId']] = $file;
+}
+
+// -----------------------------------------------------------------------
+// Step 2: call the STS pending-commands endpoint
+// -----------------------------------------------------------------------
+$transactionId = MiscUtility::generateULID();
+$url = rtrim((string) $remoteURL, '/') . '/remote/v2/pending-commands.php';
+
+$payload = [
+    'labId' => $labId,
+    'instanceId' => $general->getInstanceId(),
+    'currentVersion' => defined('VERSION') ? VERSION : null,
+    'statusUpdates' => $statusUpdates,
+];
+
+try {
+    if ($io && !empty($statusUpdates)) {
+        $io->text('Reporting ' . count($statusUpdates) . ' status update(s) to STS.');
+    }
+
+    $response = $apiService->post($url, $payload, gzip: true);
+    $parsed = is_array($response) ? $response : json_decode((string) $response, true);
+
+    if (!is_array($parsed) || ($parsed['status'] ?? null) !== 'success') {
+        LoggerUtility::logError('pending-commands: STS rejected the request', [
+            'response' => is_string($response) ? mb_substr($response, 0, 1000) : null,
+        ]);
+        exit(0);
+    }
+
+    // STS acknowledged these commandIds — safe to discard the local result files.
+    foreach ((array) ($parsed['acknowledged'] ?? []) as $ackId) {
+        if (isset($resultFiles[$ackId])) {
+            @unlink($resultFiles[$ackId]);
+        }
+    }
+
+    $newCommands = is_array($parsed['commands'] ?? null) ? $parsed['commands'] : [];
+
+    // -------------------------------------------------------------------
+    // Step 3 + 4: dispatch new commands
+    // -------------------------------------------------------------------
+    foreach ($newCommands as $cmd) {
+        $commandId = $cmd['commandId'] ?? null;
+        $commandName = $cmd['command'] ?? null;
+        $nonce = $cmd['nonce'] ?? null;
+        $params = is_array($cmd['params'] ?? null) ? $cmd['params'] : [];
+
+        if (empty($commandId) || empty($commandName)) {
+            continue;
+        }
+
+        // Idempotency: if we already have a result file for this commandId,
+        // the previous report just hasn't landed yet. Skip re-running.
+        if (is_file($resultsDir . DIRECTORY_SEPARATOR . $commandId . '.json')) {
+            continue;
+        }
+
+        if ($io) {
+            $io->section("Dispatching {$commandName} ({$commandId})");
+        }
+
+        // Root-privileged commands — drop a marker and let the runner do the work.
+        if (in_array($commandName, $rootRunnerCommands, true)) {
+            $markerPath = $pendingDir . DIRECTORY_SEPARATOR . $commandId . '.json';
+            if (!is_file($markerPath)) {
+                file_put_contents($markerPath, json_encode([
+                    'commandId' => $commandId,
+                    'command' => $commandName,
+                    'nonce' => $nonce,
+                    'params' => $params,
+                    'notBefore' => $cmd['notBefore'] ?? null,
+                    'expiresAt' => $cmd['expiresAt'] ?? null,
+                    'dependsOn' => $cmd['dependsOn'] ?? null,
+                    'queuedAt' => date('Y-m-d H:i:s'),
+                ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+            }
+            $writeStatusFile($commandId, [
+                'commandId' => $commandId,
+                'nonce' => $nonce,
+                'status' => 'picked',
+                'result' => ['note' => 'Queued for privileged runner'],
+            ]);
+            continue;
+        }
+
+        // In-process www-data handler.
+        if (!isset($inProcessHandlers[$commandName])) {
+            $writeStatusFile($commandId, [
+                'commandId' => $commandId,
+                'nonce' => $nonce,
+                'status' => 'failed',
+                'lastError' => "Unknown or unavailable command: {$commandName}",
+            ]);
+            continue;
+        }
+
+        $handlerPath = $inProcessHandlers[$commandName];
+        if (!is_file($handlerPath)) {
+            $writeStatusFile($commandId, [
+                'commandId' => $commandId,
+                'nonce' => $nonce,
+                'status' => 'failed',
+                'lastError' => "Handler file missing: {$commandName}",
+            ]);
+            continue;
+        }
+
+        try {
+            $command = $cmd;
+            $handlerResult = (static function () use ($handlerPath, $params, $command) {
+                return require $handlerPath;
+            })();
+
+            if (!is_array($handlerResult)) {
+                $handlerResult = ['status' => 'completed'];
+            }
+
+            $finalStatus = $handlerResult['status'] ?? 'completed';
+            unset($handlerResult['status']);
+
+            $statusPayload = [
+                'commandId' => $commandId,
+                'nonce' => $nonce,
+                'status' => $finalStatus,
+                'result' => $handlerResult,
+            ];
+            if (!empty($handlerResult['error'])) {
+                $statusPayload['lastError'] = (string) $handlerResult['error'];
+            }
+            $writeStatusFile($commandId, $statusPayload);
+        } catch (Throwable $e) {
+            LoggerUtility::logError('pending-commands handler exception', [
+                'command' => $commandName,
+                'commandId' => $commandId,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+            $writeStatusFile($commandId, [
+                'commandId' => $commandId,
+                'nonce' => $nonce,
+                'status' => 'failed',
+                'lastError' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    $general->addApiTracking(
+        $transactionId,
+        'intelis-system',
+        count($newCommands),
+        'pending-commands',
+        'system',
+        $url,
+        $payload,
+        $parsed,
+        'json',
+        $labId
+    );
+
+    if ($io) {
+        $io->success(sprintf(
+            'Pending-commands tick complete. Reported %d, received %d.',
+            count($statusUpdates),
+            count($newCommands)
+        ));
+    }
+} catch (Throwable $e) {
+    LoggerUtility::logError('pending-commands: network or processing error', [
+        'message' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+    ]);
+    if ($io) {
+        $io->error('pending-commands: ' . $e->getMessage());
+    }
+    exit(0);
+}
