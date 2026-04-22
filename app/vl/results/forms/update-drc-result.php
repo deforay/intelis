@@ -448,9 +448,9 @@ $storageInfo = $storageService->getLabStorage();
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr style="<?php echo ($sCode != '') ? 'display:none' : ''; ?>">
-										<td><label for="">Date de réception de l'échantillon <span class="mandatory">*</span> </label></td>
+										<td><label for="">Date de réception de l'échantillon <span class="mandatory test-date-mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" style="width:100%;" />
 										</td>
 										<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> <em class="fas fa-edit"></em> :
 											</label></td>
@@ -485,7 +485,7 @@ $storageInfo = $storageService->getLabStorage();
 									<tr>
 										<td><label for="isSampleRejected">Décision prise <span class="mandatory">*</span></label></td>
 										<td>
-											<select class="form-control result-focus isRequired" id="isSampleRejected" name="isSampleRejected" title="<?= _translate('Please select if sample is rejected'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus();" style="width:100%;">
+											<select class="form-control result-focus isRequired" id="isSampleRejected" name="isSampleRejected" title="<?= _translate('Please select if sample is rejected'); ?>" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus(true);" style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<option value="no" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>Echantillon accepté</option>
 												<option value="yes" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>Echantillon rejeté</option>
@@ -506,7 +506,7 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 										<th scope="row" class="rejectionReason" style="display:none;">
 
-											<label for="rejectionDate"><?= _translate("Rejection Date"); ?> <span class="mandatory">*</span></label>
+											<label for="rejectionDate"><?= _translate("Rejection Date"); ?> <span class="mandatory rejection-mandatory">*</span></label>
 										</th>
 										<td class="rejectionReason" style="display:none;">
 											<input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" />
@@ -530,7 +530,7 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr class="vlResult" style="<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'display: none;' : ''; ?>">
-										<td class="vlResult"><label for="vlResult">Résultat</label></td>
+										<td class="vlResult"><label for="vlResult">Résultat <span class="mandatory test-date-mandatory">*</span></label></td>
 										<td class="vlResult resultInputContainer">
 											<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter résultat" value="<?= htmlspecialchars((string) $vlQueryInfo['result']); ?>" oninput="calculateLogValue(this)">
 											<datalist id="possibleVlResults">
@@ -556,25 +556,25 @@ $storageInfo = $storageService->getLabStorage();
 										</tr>
 									<?php } ?>
 									<tr>
-										<td style="width:14%;"><label for="reviewedOn">Revu le</label></td>
+										<td style="width:14%;"><label for="reviewedOn">Revu le <span class="mandatory">*</span></label></td>
 										<td style="width:14%;">
-											<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control" placeholder="Revu le" title="Please enter the Revu le" />
+											<input type="text" name="reviewedOn" value="<?php echo $vlQueryInfo['result_reviewed_datetime']; ?>" id="reviewedOn" class="dateTime form-control isRequired" placeholder="Revu le" title="Please enter the Revu le" />
 										</td>
-										<td style="width:14%;"><label for="reviewedBy">Revu par</label></td>
+										<td style="width:14%;"><label for="reviewedBy">Revu par <span class="mandatory">*</span></label></td>
 										<td style="width:14%;">
-											<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose revu par" style="width: 100%;">
+											<select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose revu par" style="width: 100%;">
 												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_reviewed_by'], '-- Select --'); ?>
 											</select>
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Approuvé le</th>
+										<th scope="row">Approuvé le <span class="mandatory">*</span></th>
 										<td>
-											<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+											<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control isRequired" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 										</td>
-										<th scope="row">Approuvé par</th>
+										<th scope="row">Approuvé par <span class="mandatory">*</span></th>
 										<td>
-											<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
+											<select name="approvedBy" id="approvedBy" class="select2 form-control isRequired" title="Please choose Approuvé par" style="width: 100%;">
 												<?= $general->generateSelectOptions($userInfo, $vlQueryInfo['result_approved_by'], '-- Select --'); ?>
 											</select>
 										</td>
@@ -642,21 +642,9 @@ $storageInfo = $storageService->getLabStorage();
 		getVlResults($("#testingPlatform").val());
 		showFemaleSection('<?php echo $femaleSectionDisplay; ?>');
 
-		if ($("#status").val() == 4) {
-			$(".rejectionReason").show();
-			$("#rejectionReason").addClass('isRequired');
-			// $("#vlResult").val('').css('pointer-events', 'none');
-			// $("#vlLog").val('').css('pointer-events', 'none');
-			// $(".vlResult, .vlLog").hide();
-			// $("#vlResult").removeClass('isRequired');
-		} else {
-			$(".rejectionReason").hide();
-			$("#rejectionReason").removeClass('isRequired');
-			// $("#vlResult").css('pointer-events', 'auto');
-			// $("#vlLog").css('pointer-events', 'auto');
-			// $(".vlResult, .vlLog").show();
-			// $("#vlResult").addClass('isRequired');
-		}
+		checkTestStatus();
+		checkRejectionReason();
+
 		checkreasonForVLTesting();
 		/*$('#labId').select2({
 			placeholder: "Select Nom du laboratoire"
@@ -689,7 +677,7 @@ $storageInfo = $storageService->getLabStorage();
 		}
 	}
 
-	function checkTestStatus() {
+	function checkTestStatus(clearValues) {
 		const status = $("#isSampleRejected").val();
 
 		if (status === 'yes') {
@@ -697,29 +685,45 @@ $storageInfo = $storageService->getLabStorage();
 			$("#rejectionReason").addClass('isRequired');
 			$("#rejectionDate").addClass('isRequired');
 
-			// Hide mandatory asterisks
 			$(".test-date-mandatory").hide();
 			$(".rejection-mandatory").show();
 
 			$(".vlResult, .vlLog").hide();
-			$("#vlResult, #vlLog").val('').css('pointer-events', 'none');
+			$("#vlResult, #vlLog").css('pointer-events', 'none');
+			$("#sampleReceivedDate").removeClass('isRequired');
 			$("#vlResult").removeClass('isRequired');
 			$("#sampleTestingDateAtLab").removeClass('isRequired');
 			$("#testingPlatform").removeClass('isRequired');
-		} else {
+
+			if (clearValues) {
+				$("#vlResult, #vlLog").val('');
+			}
+		} else if (status === 'no') {
 			$(".rejectionReason").hide();
 			$("#rejectionReason").removeClass('isRequired');
 			$("#rejectionDate").removeClass('isRequired');
+			$("#newRejectionReason").removeClass('isRequired').hide();
 
-			// Show mandatory asterisks
 			$(".test-date-mandatory").show();
 			$(".rejection-mandatory").hide();
 
 			$(".vlResult, .vlLog").show();
-			$("#vlResult, #vlLog").val('').css('pointer-events', 'auto');
+			$("#vlResult, #vlLog").css('pointer-events', 'auto');
+			$("#sampleReceivedDate").addClass('isRequired');
 			$("#vlResult").addClass('isRequired');
 			$("#sampleTestingDateAtLab").addClass('isRequired');
 			$("#testingPlatform").addClass('isRequired');
+
+			if (clearValues) {
+				$("#rejectionReason").val('');
+				$("#rejectionDate").val('');
+				$("#newRejectionReason").val('');
+			}
+		} else {
+			$(".rejectionReason").hide();
+			$("#rejectionReason, #rejectionDate, #newRejectionReason").removeClass('isRequired');
+			$("#sampleReceivedDate, #vlResult, #sampleTestingDateAtLab, #testingPlatform").removeClass('isRequired');
+			$(".test-date-mandatory, .rejection-mandatory").hide();
 		}
 	}
 
