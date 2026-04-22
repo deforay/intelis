@@ -454,11 +454,22 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 <div class="form-group">
                     <label for="queueCommandType"><?= _translate('Command'); ?></label>
                     <select class="form-control" id="queueCommandType">
-                        <option value="resend-results"><?= _translate('Resend results'); ?></option>
-                        <option value="resend-requests"><?= _translate('Resend requests'); ?></option>
-                        <option value="metadata-resync"><?= _translate('Metadata resync (force)'); ?></option>
-                        <option value="refresh-cache"><?= _translate('Refresh cache'); ?></option>
-                        <option value="rotate-token"><?= _translate('Rotate STS token'); ?></option>
+                        <optgroup label="<?= _translate('Data sync'); ?>">
+                            <option value="resend-results"><?= _translate('Resend results'); ?></option>
+                            <option value="resend-requests"><?= _translate('Resend requests'); ?></option>
+                            <option value="metadata-resync"><?= _translate('Metadata resync (force)'); ?></option>
+                        </optgroup>
+                        <optgroup label="<?= _translate('Lab maintenance'); ?>">
+                            <option value="refresh-cache"><?= _translate('Refresh cache'); ?></option>
+                            <option value="rotate-token"><?= _translate('Rotate STS token'); ?></option>
+                            <option value="refresh-perms"><?= _translate('Refresh permissions'); ?></option>
+                            <option value="restart-apache"><?= _translate('Restart Apache'); ?></option>
+                        </optgroup>
+                        <optgroup label="<?= _translate('Upgrade'); ?>">
+                            <option value="upgrade"><?= _translate('Upgrade (prepare + auto-apply)'); ?></option>
+                            <option value="upgrade-prepare"><?= _translate('Prepare upgrade only'); ?></option>
+                            <option value="upgrade-apply"><?= _translate('Apply a prepared upgrade'); ?></option>
+                        </optgroup>
                     </select>
                 </div>
                 <div class="form-group command-params resend-results-params resend-requests-params">
@@ -479,9 +490,21 @@ $stateNameList = $geolocationService->getProvinces("yes");
                     <input type="number" class="form-control" id="queueCommandDays" min="1" max="3650" placeholder="<?= _translate('e.g. 45'); ?>">
                     <small class="text-muted"><?= _translate('Leave blank to send only unsynced records.'); ?></small>
                 </div>
+                <div class="form-group command-params upgrade-apply-params" style="display:none;">
+                    <label for="queueCommandDependsOn"><?= _translate('Prepared staging to apply'); ?></label>
+                    <select class="form-control" id="queueCommandDependsOn">
+                        <option value=""><?= _translate('-- No prepared upgrades available for this lab --'); ?></option>
+                    </select>
+                    <small class="text-muted"><?= _translate('Queue "Prepare upgrade only" first, then come back here.'); ?></small>
+                </div>
+                <div class="form-group command-params upgrade-params upgrade-prepare-params upgrade-apply-params" style="display:none;">
+                    <label for="queueCommandNotBefore"><?= _translate('Not before (optional)'); ?></label>
+                    <input type="datetime-local" class="form-control" id="queueCommandNotBefore">
+                    <small class="text-muted"><?= _translate('Earliest time the runner may start this command. Apply also waits for the quiet window if configured.'); ?></small>
+                </div>
                 <p class="help-block" style="margin-top: 15px;">
                     <i class="fa fa-info-circle"></i>
-                    <?= _translate('The lab picks up queued commands on its next sync tick (typically every 5 minutes).'); ?>
+                    <?= _translate('The lab picks up queued commands on its next sync tick (typically every 5 minutes). Upgrade and apply commands additionally wait for the configured quiet window at the lab.'); ?>
                 </p>
             </div>
             <div class="modal-footer">
@@ -545,11 +568,28 @@ $stateNameList = $geolocationService->getProvinces("yes");
             e.stopPropagation();
             const labId = $(this).data('labId');
             const labName = $(this).data('labName') || '';
+            const prepared = $(this).data('prepared') || [];
             $('#queueCommandModal').data('labId', labId);
+            $('#queueCommandModal').data('prepared', prepared);
             $('#queueCommandLabName').text(labName ? ('<?= _translate('Lab'); ?>: ' + labName) : '');
             $('#queueCommandType').val('resend-results').trigger('change');
             $('#queueCommandModule').val('');
             $('#queueCommandDays').val('');
+            $('#queueCommandNotBefore').val('');
+
+            // Populate the "Prepared staging to apply" dropdown from the row's data.
+            const $dep = $('#queueCommandDependsOn');
+            $dep.empty();
+            if (Array.isArray(prepared) && prepared.length > 0) {
+                $dep.append('<option value=""><?= _translate('-- Select a prepared staging --'); ?></option>');
+                prepared.forEach(function (p) {
+                    const label = p.stagedVersion + '  (' + (p.requestedAt || '') + ')';
+                    $dep.append($('<option>').val(p.commandId).text(label));
+                });
+            } else {
+                $dep.append('<option value=""><?= _translate('-- No prepared upgrades available for this lab --'); ?></option>');
+            }
+
             $('#queueCommandModal').modal('show');
         });
 
@@ -571,6 +611,18 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 const days = $('#queueCommandDays').val();
                 if (module) payload.module = module;
                 if (days) payload.days = days;
+            }
+            if (command === 'upgrade-apply') {
+                const dep = $('#queueCommandDependsOn').val();
+                if (!dep) {
+                    showNotification('<?= _translate('Select a prepared staging to apply.'); ?>', 'error');
+                    return;
+                }
+                payload.dependsOn = dep;
+            }
+            if (command === 'upgrade' || command === 'upgrade-prepare' || command === 'upgrade-apply') {
+                const nb = $('#queueCommandNotBefore').val();
+                if (nb) payload.notBefore = nb;
             }
 
             $btn.html('<i class="fa fa-spinner fa-spin"></i> <?= _translate('Queueing...'); ?>').prop('disabled', true);
