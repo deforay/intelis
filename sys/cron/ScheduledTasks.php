@@ -128,6 +128,15 @@ if (!empty($general->getRemoteURL()) && $general->isLISInstance() === true) {
 }
 // REMOTE SYNC JOBS END
 
+// Remote command plane retention — runs on both STS + LIS (cheap no-op on LIS).
+// Deletes terminal rows in s_lis_remote_commands older than
+// global_config.remote_command_retention_days (default 90).
+$schedule->run(PHP_BINARY . " " . BIN_PATH . "/prune-remote-commands.php")
+    ->cron('15 3 * * *') // 03:15 daily
+    ->timezone($timezone)
+    ->preventOverlapping()
+    ->description('Pruning old rows from s_lis_remote_commands');
+
 
 
 // Smart-Connect DASHBOARD JOBS START
