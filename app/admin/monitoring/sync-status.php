@@ -457,6 +457,9 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 <div class="form-group">
                     <label for="queueCommandType"><?= _translate('Command'); ?></label>
                     <select class="form-control" id="queueCommandType">
+                        <optgroup label="<?= _translate('Diagnostics'); ?>">
+                            <option value="ping"><?= _translate('Ping (self-test, no side effects)'); ?></option>
+                        </optgroup>
                         <optgroup label="<?= _translate('Data sync'); ?>">
                             <option value="resend-results"><?= _translate('Resend results'); ?></option>
                             <option value="resend-requests"><?= _translate('Resend requests'); ?></option>

@@ -944,6 +944,21 @@ ROLLBACK_BASE_DIR="/var/intelis-rollback"
 # output is sent to stderr so stdout is clean.
 prepare_phase() {
     local staging_dir="${STAGING_BASE_DIR}/$(date +%Y%m%d-%H%M%S)-$$"
+
+    # Disk-space preflight. Staging + extracted master + extracted vendor
+    # weighs roughly 1.2GB today; require 2GB free to leave headroom for
+    # verification and simultaneous master+vendor extraction. Fail here
+    # with a clear message instead of getting halfway through a download
+    # and running out mid-extract.
+    mkdir -p "$STAGING_BASE_DIR"
+    local free_mb
+    free_mb=$(df -Pm "$STAGING_BASE_DIR" | awk 'NR==2 {print $4}')
+    if [ -n "$free_mb" ] && [ "$free_mb" -lt 2048 ]; then
+        print error "Insufficient free space at ${STAGING_BASE_DIR}: ${free_mb}MB free, need at least 2GB." >&2
+        log_action "Prepare aborted — only ${free_mb}MB free at ${STAGING_BASE_DIR}"
+        return 1
+    fi
+
     mkdir -p "$staging_dir"
 
     print header "Prepare: staging update at ${staging_dir}" >&2

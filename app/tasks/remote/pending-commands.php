@@ -120,6 +120,7 @@ if ($quietWindow !== '' && preg_match('/^\d{2}:\d{2}-\d{2}:\d{2}$/', $quietWindo
 // root (upgrade, refresh-perms, restart-apache) is NOT dispatched here — we
 // drop a marker file under $pendingDir and the runner picks it up.
 $inProcessHandlers = [
+    'ping' => __DIR__ . '/command-handlers/ping.php',
     'resend-results' => __DIR__ . '/command-handlers/resend-results.php',
     'resend-requests' => __DIR__ . '/command-handlers/resend-requests.php',
     'metadata-resync' => __DIR__ . '/command-handlers/metadata-resync.php',

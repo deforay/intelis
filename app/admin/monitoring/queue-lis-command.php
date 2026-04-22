@@ -48,6 +48,9 @@ $command = $post['command'] ?? '';
 //   - the LIS courier's $inProcessHandlers map (non-root)
 //   - scripts/intelis-runner.sh dispatch case (root commands)
 $commandWhitelist = [
+    // Self-test: no-op, just echoes a timestamp. Useful for verifying the
+    // whole queue-courier-handler-status pipeline without side effects.
+    'ping',
     // Non-root, run by the LIS courier in-process:
     'resend-results',
     'resend-requests',

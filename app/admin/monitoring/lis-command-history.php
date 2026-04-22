@@ -27,6 +27,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $labNameList = $facilitiesService->getTestingLabs();
 
 $canCancel = _isAllowed('/admin/monitoring/cancel-lis-command.php');
+$canReplay = _isAllowed('/admin/monitoring/queue-lis-command.php');
 
 $commandOptions = [
     '' => _translate('-- All commands --'),
@@ -185,6 +186,7 @@ $statusOptions = [
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script>
 const canCancel = <?= $canCancel ? 'true' : 'false'; ?>;
+const canReplay = <?= $canReplay ? 'true' : 'false'; ?>;
 let dateFrom = '', dateTo = '';
 
 $(function () {
@@ -241,6 +243,25 @@ $(function () {
                 }
             }, 'json').fail(function (xhr) {
                 let msg = '<?= _translate('Failed to cancel'); ?>';
+                try { const b = JSON.parse(xhr.responseText); if (b && b.error) msg = b.error; } catch (_) {}
+                alert(msg);
+            });
+        });
+    }
+
+    if (canReplay) {
+        $('#cmdHistoryBody').on('click', '.replay-link', function (e) {
+            e.preventDefault();
+            const commandId = $(this).data('commandId');
+            if (!window.confirm('<?= _translate('Re-queue this command with the same params?'); ?>')) return;
+            $.post('/admin/monitoring/replay-lis-command.php', { commandId: commandId }, function (res) {
+                if (res && res.status === 'success') {
+                    loadHistory();
+                } else {
+                    alert((res && res.error) || '<?= _translate('Failed to replay'); ?>');
+                }
+            }, 'json').fail(function (xhr) {
+                let msg = '<?= _translate('Failed to replay'); ?>';
                 try { const b = JSON.parse(xhr.responseText); if (b && b.error) msg = b.error; } catch (_) {}
                 alert(msg);
             });

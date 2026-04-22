@@ -10,7 +10,6 @@
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -48,6 +47,8 @@ if ($method === 'POST') {
 }
 
 $canCancel = _isAllowed('/admin/monitoring/cancel-lis-command.php');
+$canQueue = _isAllowed('/admin/monitoring/queue-lis-command.php');
+$terminalStatuses = ['completed', 'failed', 'expired', 'cancelled'];
 
 // Single-command detail mode.
 if (!empty($post['detailFor']) && preg_match('/^[A-Z0-9]{26}$/', (string) $post['detailFor'])) {
@@ -207,6 +208,13 @@ foreach ($rows as $r) {
                 &nbsp;
                 <a href="#" class="cancel-link text-danger" data-command-id="<?= htmlspecialchars((string) $r['command_id']); ?>">
                     <i class="fa fa-times-circle"></i> <?= _translate('Cancel'); ?>
+                </a>
+            <?php } ?>
+            <?php if ($canQueue && in_array($r['status'], $terminalStatuses, true)) { ?>
+                &nbsp;
+                <a href="#" class="replay-link" data-command-id="<?= htmlspecialchars((string) $r['command_id']); ?>"
+                   title="<?= _translate('Re-queue this command with the same params'); ?>">
+                    <i class="fa fa-repeat"></i> <?= _translate('Replay'); ?>
                 </a>
             <?php } ?>
         </td>
