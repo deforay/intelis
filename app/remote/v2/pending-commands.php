@@ -57,6 +57,19 @@ try {
     $now = DateUtility::getCurrentDateTime();
     $terminalStatuses = ['completed', 'failed', 'expired', 'cancelled'];
 
+    // 0) Sweep expired rows for this lab so we never hand out commands that
+    //    are past their deadline. Any non-terminal row whose expires_at has
+    //    passed moves to 'expired'.
+    $db->reset();
+    $db->where('lab_id', (int) $labId);
+    $db->where('expires_at IS NOT NULL');
+    $db->where("expires_at <= '$now'");
+    $db->where('status', $terminalStatuses, 'NOT IN');
+    $db->update('s_lis_remote_commands', [
+        'status' => 'expired',
+        'completed_at' => $now,
+    ]);
+
     // 1) Apply incoming status updates (only for rows belonging to this lab).
     $statusUpdates = is_array($data['statusUpdates'] ?? null) ? $data['statusUpdates'] : [];
     $ackIds = [];
