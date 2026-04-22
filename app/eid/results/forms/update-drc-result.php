@@ -465,27 +465,27 @@ $storageInfo = $storageService->getLabStorage();
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory testing-mandatory">*</span> </label></td>
+										<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory test-date-mandatory" style="display:none;">*</span> </label></td>
 										<td style="width: 25%;">
-											<select name="eidPlatform" id="eidPlatform" class="form-control isRequired" title="Please choose EID Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;">
+											<select name="eidPlatform" id="eidPlatform" class="form-control" title="Please choose EID Testing Platform" <?php echo $labFieldDisabled; ?> style="width:100%;">
 												<?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
 											</select>
 										</td>
-										<th scope="row"><label for="">Date de réception de l'échantillon <span class="mandatory">*</span></label></th>
+										<th scope="row"><label for="">Date de réception de l'échantillon <span class="mandatory test-date-mandatory" style="display:none;">*</span></label></th>
 										<td>
-											<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
+											<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Date de réception de l'échantillon" <?php echo $labFieldDisabled; ?> value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
 										</td>
 
 									<tr>
 										<th scope="row"><?= _translate("Is Sample Rejected?"); ?> <span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control isRequired" name="isSampleRejected" title="Veuillez sélectionner si l'échantillon est rejeté ou non?" id="isSampleRejected" onchange="sampleRejection();">
+											<select class="form-control isRequired" name="isSampleRejected" title="Veuillez sélectionner si l'échantillon est rejeté ou non?" id="isSampleRejected" onchange="checkTestStatus(true);">
 												<option value=''><?= _translate("-- Select --"); ?></option>
 												<option value="yes" <?php echo ($eidInfo['is_sample_rejected'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
 												<option value="no" <?php echo ($eidInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
 											</select>
 										</td>
-										<th scope="row">Raison du rejet</th>
+										<th scope="row">Raison du rejet<span class="mandatory rejection-mandatory" style="display:none;">*</span></th>
 										<td>
 											<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value=""><?= _translate("-- Select --"); ?> </option>
 												<option value=""><?= _translate("-- Select --"); ?> </option>
@@ -503,7 +503,7 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr class="rejected" style="display:none;">
-										<th scope="row">Date de rejet<span class="mandatory">*</span></th>
+										<th scope="row">Date de rejet<span class="mandatory rejection-mandatory" style="display:none;">*</span></th>
 										<td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Date de rejet" title="Veuillez choisir la date rejetée" /></td>
 										<td style="width: 25%;"><label for=""><?php echo _translate('Freezer'); ?> <em class="fas fa-edit"></em> :</label></td>
 										<td style="width: 25%;">
@@ -534,13 +534,13 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<td style="width:25%;"><label for="">Test effectué le </label></td>
+										<td style="width:25%;"><label for="">Test effectué le <span class="mandatory test-date-mandatory" style="display:none;">*</span></label></td>
 										<td style="width:25%;">
-											<input type="text" class="form-control dateTime isRequired" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Test effectué le" <?php echo $labFieldDisabled; ?> onchange="" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_tested_datetime']) ?>" style="width:100%;" />
 										</td>
-										<th scope="row">Résultat </label></th>
+										<th scope="row">Résultat<span class="mandatory test-date-mandatory" style="display:none;">*</span></th>
 										<td>
-											<select class="result-focus form-control isRequired" name="result" id="result" title="Résultat">
+											<select class="result-focus form-control" name="result" id="result" title="Résultat">
 												<option value=''><?= _translate("-- Select --"); ?></option>
 												<option value="positive" <?php echo ($eidInfo['result'] == 'positive') ? "selected='selected'" : ""; ?>> Positif </option>
 												<option value="negative" <?php echo ($eidInfo['result'] == 'negative') ? "selected='selected'" : ""; ?>> Négatif </option>
@@ -549,23 +549,23 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Revu par<span class="mandatory">*</span></th>
+										<th scope="row">Revu par<span class="mandatory review-mandatory" style="display:none;">*</span></th>
 										<td>
-											<select name="reviewedBy" id="reviewedBy" class="select2 form-control isRequired" title="Please choose Revu par" style="width: 100%;">
+											<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose Revu par" style="width: 100%;">
 												<?= $general->generateSelectOptions($userInfo, $eidInfo['result_reviewed_by'], '-- Select --'); ?>
 											</select>
 										</td>
-										<th scope="row">Date de Revu<span class="mandatory">*</span></th>
-										<td><input type="text" value="<?= DateUtility::humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control isRequired" placeholder="Date de revu" title="Date de revu" /></td>
+										<th scope="row">Date de Revu<span class="mandatory review-mandatory" style="display:none;">*</span></th>
+										<td><input type="text" value="<?= DateUtility::humanReadableDateFormat($eidInfo['result_reviewed_datetime']); ?>" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Date de revu" title="Date de revu" /></td>
 									</tr>
 									<tr>
-										<th scope="row">Approuvé le<span class="mandatory">*</span></th>
+										<th scope="row">Approuvé le<span class="mandatory review-mandatory" style="display:none;">*</span></th>
 										<td>
-											<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="dateTime form-control isRequired" placeholder="Approuvé le" title="Please enter the Approuvé le" />
+											<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $eidInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approuvé le" title="Please enter the Approuvé le" />
 										</td>
-										<th scope="row">Approuvé par<span class="mandatory">*</span></th>
+										<th scope="row">Approuvé par<span class="mandatory review-mandatory" style="display:none;">*</span></th>
 										<td>
-											<select name="approvedBy" id="approvedBy" class="select2 isRequired form-control" title="Please choose Approuvé par" style="width: 100%;">
+											<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose Approuvé par" style="width: 100%;">
 												<?= $general->generateSelectOptions($userInfo, $eidInfo['result_approved_by'], '-- Select --'); ?>
 											</select>
 										</td>
@@ -756,26 +756,54 @@ $storageInfo = $storageService->getLabStorage();
 				$("#motherViralLoadText").val('');
 			}
 		});
-		sampleRejection();
+		$("#result").on('change', function() { checkTestStatus(false); });
+		checkTestStatus(false);
 	});
 
-	function sampleRejection() {
-		if ($("#isSampleRejected").val() == 'yes') {
-			$("#sampleRejectionReason").addClass('isRequired');
-			$("#sampleRejectionReason").prop('disabled', false);
-			$("#result").removeClass('isRequired');
-			$("#sampleTestedDateTime,#eidPlatform").removeClass('isRequired');
-			$("#result").prop('disabled', true);
-			$("#sampleTestedDateTime").prop('disabled', true);
-			$('.testing-mandatory').hide();
-		} else {
-			$('.testing-mandatory').show();
-			$("#sampleRejectionReason").removeClass('isRequired');
+	function checkTestStatus(clearValues) {
+		var status = $("#isSampleRejected").val();
+		var resultVal = ($("#result").val() || '').trim();
+		var $reviewApprove = $("#reviewedOn, #reviewedBy, #approvedOnDateTime, #approvedBy");
+		var $testFields = $("#eidPlatform, #sampleReceivedDate, #sampleTestedDateTime, #result");
+		var $rejectionFields = $("#sampleRejectionReason, #rejectionDate");
+
+		$testFields.removeClass('isRequired');
+		$rejectionFields.removeClass('isRequired');
+		$reviewApprove.removeClass('isRequired');
+		$(".test-date-mandatory, .rejection-mandatory, .review-mandatory").hide();
+
+		var activated = (status === 'yes' || status === 'no' || resultVal !== '');
+
+		if (!activated) {
+			$(".rejected").hide();
+			$("#result, #sampleTestedDateTime").prop('disabled', false);
 			$("#sampleRejectionReason").prop('disabled', true);
-			$("#result").addClass('isRequired');
-			$("#sampleTestedDateTime,#eidPlatform").addClass('isRequired');
-			$("#result").prop('disabled', false);
-			$("#sampleTestedDateTime").prop('disabled', false);
+			return;
+		}
+
+		$reviewApprove.addClass('isRequired');
+		$(".review-mandatory").show();
+
+		if (status === 'yes') {
+			$(".rejected").show();
+			$rejectionFields.addClass('isRequired');
+			$(".rejection-mandatory").show();
+			$("#sampleRejectionReason").prop('disabled', false);
+			$("#result, #sampleTestedDateTime").prop('disabled', true);
+			if (clearValues) {
+				$("#result").val('');
+				$("#sampleTestedDateTime").val('');
+				$("#eidPlatform").val('').trigger('change.select2');
+			}
+		} else {
+			$(".rejected").hide();
+			$testFields.addClass('isRequired');
+			$(".test-date-mandatory").show();
+			$("#sampleRejectionReason").prop('disabled', true);
+			$("#result, #sampleTestedDateTime").prop('disabled', false);
+			if (clearValues) {
+				$rejectionFields.val('');
+			}
 		}
 	}
 
