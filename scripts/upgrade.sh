@@ -1531,6 +1531,29 @@ upgrade_instance() {
 download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh
 chmod +x /usr/local/bin/intelis-refresh
 
+# Install or refresh the remote command runner (root-owned, systemd-timed).
+# Idempotent — the installer overwrites the binary + unit files and reloads
+# systemd. If any lab doesn't want remote commands, it can simply set
+# global_config.remote_commands_enabled = 'no' (or leave it unset, the default);
+# the courier then never drops markers and the runner is a 60s no-op.
+#
+# Best-effort: if the first lis_path doesn't contain the installer files yet
+# (e.g. fresh install mid-upgrade), we skip gracefully. A subsequent upgrade
+# will finish the install.
+runner_installer="${first_lis_path:-${lis_paths[0]}}/scripts/install-runner.sh"
+if [ -f "$runner_installer" ]; then
+    print header "Installing remote command runner"
+    if bash "$runner_installer" --source-dir "$(dirname "$runner_installer")" >>"$log_file" 2>&1; then
+        print success "Remote command runner installed / refreshed."
+        log_action "intelis-runner installed via $runner_installer"
+    else
+        print warning "Remote command runner install failed; see $log_file. Upgrade will continue."
+        log_action "intelis-runner install failed"
+    fi
+else
+    log_action "Skipping runner install (installer not found at $runner_installer)"
+fi
+
 # Process each instance
 total_instances=${#lis_paths[@]}
 
