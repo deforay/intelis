@@ -663,7 +663,7 @@ $sFormat = '';
 											</td>
 										</tr>
 										<tr>
-											<td style="width: 25%;"><label for="">Décision prise </label></td>
+											<td style="width: 25%;"><label for="">Décision prise <span class="mandatory decision-mandatory" style="display:none;">*</span></label></td>
 											<td style="width: 25%;">
 												<select class="form-control" id="isSampleRejected" name="isSampleRejected"
 													title="Please select décision prise" <?php echo $labFieldDisabled; ?>
@@ -994,31 +994,48 @@ $sFormat = '';
 
 	function checkTestStatus(clearValues) {
 		var status = $("#isSampleRejected").val();
+		var resultVal = ($("#vlResult").val() || '').trim();
 		var $reviewApprove = $("#reviewedOn, #reviewedBy, #approvedOnDateTime, #approvedBy");
+		var activated = (status === 'yes' || status === 'no' || resultVal !== '');
 
-		if (status == 'yes') {
+		// Reset all conditional state
+		$("#isSampleRejected, #rejectionReason, #rejectionDate, #newRejectionReason, #sampleReceivedDate, #vlResult, #sampleTestingDateAtLab, #testingPlatform").removeClass('isRequired');
+		$reviewApprove.removeClass('isRequired');
+		$(".test-date-mandatory, .rejection-mandatory, .review-mandatory, .decision-mandatory").hide();
+
+		if (!activated) {
+			$(".rejectionReason").hide();
+			$(".newRejectionReason").hide();
+			$(".resultSection").show();
+			$("#vlResult, #vlLog").css('pointer-events', 'auto');
+			return;
+		}
+
+		// Activated: décision must be picked, review/approve required
+		$("#isSampleRejected").addClass('isRequired');
+		$(".decision-mandatory").show();
+		$reviewApprove.addClass('isRequired');
+		$(".review-mandatory").show();
+
+		if (status === 'yes') {
 			$(".rejectionReason").show();
 			$("#rejectionReason, #rejectionDate").addClass('isRequired');
 
 			$(".resultSection").hide();
-			$("#sampleReceivedDate, #vlResult, #sampleTestingDateAtLab, #testingPlatform").removeClass('isRequired');
 			$("#vlResult").css('pointer-events', 'none');
 			$("#vlLog").css('pointer-events', 'none');
 
 			$('#reasonForFailure').val('').removeClass('isRequired');
 			$('.reasonForFailure').hide();
 
-			$(".test-date-mandatory").hide();
 			$(".rejection-mandatory").show();
-			$(".review-mandatory").show();
-			$reviewApprove.addClass('isRequired');
 
 			if (clearValues) {
 				$("#vlResult, #vlLog").val('');
 			}
-		} else if (status == 'no') {
+		} else {
+			// status === 'no' OR result entered without decision
 			$(".rejectionReason").hide();
-			$("#rejectionReason, #rejectionDate, #newRejectionReason").removeClass('isRequired');
 			$(".newRejectionReason").hide();
 
 			$(".resultSection").show();
@@ -1027,25 +1044,10 @@ $sFormat = '';
 			$("#vlLog").css('pointer-events', 'auto');
 
 			$(".test-date-mandatory").show();
-			$(".rejection-mandatory").hide();
-			$(".review-mandatory").show();
-			$reviewApprove.addClass('isRequired');
 
 			if (clearValues) {
 				$("#rejectionReason, #rejectionDate, #newRejectionReason").val('');
 			}
-		} else {
-			$(".rejectionReason").hide();
-			$("#rejectionReason, #rejectionDate, #newRejectionReason").removeClass('isRequired');
-			$(".newRejectionReason").hide();
-
-			$(".resultSection").show();
-			$("#sampleReceivedDate, #vlResult, #sampleTestingDateAtLab, #testingPlatform").removeClass('isRequired');
-			$("#vlResult").css('pointer-events', 'auto');
-			$("#vlLog").css('pointer-events', 'auto');
-
-			$(".test-date-mandatory, .rejection-mandatory, .review-mandatory").hide();
-			$reviewApprove.removeClass('isRequired');
 		}
 	}
 
@@ -1062,6 +1064,7 @@ $sFormat = '';
 			$('#reasonForFailure').removeClass('isRequired');
 			$('#vlLog').attr('readonly', false);
 		}
+		checkTestStatus(false);
 	});
 
 	$('#serialNo').on('change', function () {

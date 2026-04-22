@@ -523,7 +523,7 @@ $storageInfo = $storageService->getLabStorage();
 											</td>
 										</tr>
 										<tr>
-											<td><label for="">Décision prise </label></td>
+											<td><label for="">Décision prise <span class="mandatory decision-mandatory" style="display:none;">*</span></label></td>
 											<td>
 												<select class="form-control" id="isSampleRejected" name="isSampleRejected" title="Please select décision prise" <?php echo $labFieldDisabled; ?> onchange="checkTestStatus(true);" style="width:100%;">
 													<option value=""><?= _translate("-- Select --"); ?> </option>
@@ -937,31 +937,45 @@ $storageInfo = $storageService->getLabStorage();
 
 	function checkTestStatus(clearValues) {
 		var status = $("#isSampleRejected").val();
+		var resultVal = ($("#vlResult").val() || '').trim();
 		var $reviewApprove = $("#reviewedOn, #reviewedBy, #approvedOnDateTime, #approvedBy");
+		var activated = (status === 'yes' || status === 'no' || resultVal !== '');
 
-		if (status == 'yes') {
+		$("#isSampleRejected, #rejectionReason, #rejectionDate, #newRejectionReason, #sampleReceivedDate, #vlResult, #sampleTestingDateAtLab, #testingPlatform").removeClass('isRequired');
+		$reviewApprove.removeClass('isRequired');
+		$(".test-date-mandatory, .rejection-mandatory, .review-mandatory, .decision-mandatory").hide();
+
+		if (!activated) {
+			$(".rejectionReason").hide();
+			$(".newRejectionReason").hide();
+			$(".vlResult, .vlLog").show();
+			$("#vlResult, #vlLog").css('pointer-events', 'auto');
+			return;
+		}
+
+		$("#isSampleRejected").addClass('isRequired');
+		$(".decision-mandatory").show();
+		$reviewApprove.addClass('isRequired');
+		$(".review-mandatory").show();
+
+		if (status === 'yes') {
 			$(".rejectionReason").show();
 			$("#rejectionReason, #rejectionDate").addClass('isRequired');
 
 			$(".vlResult, .vlLog").hide();
-			$("#sampleReceivedDate, #vlResult, #sampleTestingDateAtLab, #testingPlatform").removeClass('isRequired');
 			$("#vlResult").css('pointer-events', 'none');
 			$("#vlLog").css('pointer-events', 'none');
 
 			$('#reasonForFailure').val('').removeClass('isRequired');
 			$('.reasonForFailure').hide();
 
-			$(".test-date-mandatory").hide();
 			$(".rejection-mandatory").show();
-			$(".review-mandatory").show();
-			$reviewApprove.addClass('isRequired');
 
 			if (clearValues) {
 				$("#vlResult, #vlLog").val('');
 			}
-		} else if (status == 'no') {
+		} else {
 			$(".rejectionReason").hide();
-			$("#rejectionReason, #rejectionDate, #newRejectionReason").removeClass('isRequired');
 			$(".newRejectionReason").hide();
 
 			$(".vlResult, .vlLog").show();
@@ -970,25 +984,10 @@ $storageInfo = $storageService->getLabStorage();
 			$("#vlLog").css('pointer-events', 'auto');
 
 			$(".test-date-mandatory").show();
-			$(".rejection-mandatory").hide();
-			$(".review-mandatory").show();
-			$reviewApprove.addClass('isRequired');
 
 			if (clearValues) {
 				$("#rejectionReason, #rejectionDate, #newRejectionReason").val('');
 			}
-		} else {
-			$(".rejectionReason").hide();
-			$("#rejectionReason, #rejectionDate, #newRejectionReason").removeClass('isRequired');
-			$(".newRejectionReason").hide();
-
-			$(".vlResult, .vlLog").show();
-			$("#sampleReceivedDate, #vlResult, #sampleTestingDateAtLab, #testingPlatform").removeClass('isRequired');
-			$("#vlResult").css('pointer-events', 'auto');
-			$("#vlLog").css('pointer-events', 'auto');
-
-			$(".test-date-mandatory, .rejection-mandatory, .review-mandatory").hide();
-			$reviewApprove.removeClass('isRequired');
 		}
 	}
 
@@ -1004,6 +1003,7 @@ $storageInfo = $storageService->getLabStorage();
 			$('#reasonForFailure').removeClass('isRequired');
 			$('#vlLog').attr('readonly', false);
 		}
+		checkTestStatus(false);
 	});
 
 	$('#serialNo').on('change', function() {
