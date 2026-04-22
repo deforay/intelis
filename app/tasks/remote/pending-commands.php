@@ -90,7 +90,10 @@ MiscUtility::makeDirectory($resultsDir);
 // drop a marker file under $pendingDir and the runner picks it up.
 $inProcessHandlers = [
     'resend-results' => __DIR__ . '/command-handlers/resend-results.php',
-    // Additional handlers land in step 4.
+    'resend-requests' => __DIR__ . '/command-handlers/resend-requests.php',
+    'metadata-resync' => __DIR__ . '/command-handlers/metadata-resync.php',
+    'refresh-cache' => __DIR__ . '/command-handlers/refresh-cache.php',
+    'rotate-token' => __DIR__ . '/command-handlers/rotate-token.php',
 ];
 $rootRunnerCommands = ['upgrade', 'upgrade-prepare', 'upgrade-apply', 'refresh-perms', 'restart-apache'];
 
