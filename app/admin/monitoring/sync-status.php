@@ -15,6 +15,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+$isSTS = $general->isSTSInstance();
+
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $labNameList = $facilitiesService->getTestingLabs();
@@ -404,11 +406,16 @@ $stateNameList = $geolocationService->getProvinces("yes");
                                             <th class="center">
                                                 <?php echo _translate("Version"); ?>
                                             </th>
+                                            <?php if ($isSTS) { ?>
+                                            <th class="center">
+                                                <?php echo _translate("Actions"); ?>
+                                            </th>
+                                            <?php } ?>
                                         </tr>
                                     </thead>
                                     <tbody id="syncStatusTable">
                                         <tr>
-                                            <td colspan="5" class="dataTables_empty center">
+                                            <td colspan="<?= $isSTS ? 6 : 5; ?>" class="dataTables_empty center">
                                                 <i class="fa fa-spinner fa-spin"></i>
                                                 <?php echo _translate("Loading data..."); ?>
                                             </td>
@@ -432,6 +439,61 @@ $stateNameList = $geolocationService->getProvinces("yes");
 <div class="refresh-indicator" id="refreshIndicator">
     <i class="fa fa-refresh fa-spin"></i> <?php echo _translate("Auto-refreshing data..."); ?>
 </div>
+
+<?php if ($isSTS) { ?>
+<!-- Queue Lab Command modal -->
+<div class="modal fade" id="queueCommandModal" tabindex="-1" role="dialog" aria-labelledby="queueCommandModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="queueCommandModalLabel"><?= _translate('Queue command for lab'); ?></h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted" id="queueCommandLabName" style="margin-bottom: 15px;"></p>
+                <div class="form-group">
+                    <label for="queueCommandType"><?= _translate('Command'); ?></label>
+                    <select class="form-control" id="queueCommandType">
+                        <option value="resend-results"><?= _translate('Resend results'); ?></option>
+                        <option value="resend-requests"><?= _translate('Resend requests'); ?></option>
+                        <option value="metadata-resync"><?= _translate('Metadata resync (force)'); ?></option>
+                        <option value="refresh-cache"><?= _translate('Refresh cache'); ?></option>
+                        <option value="rotate-token"><?= _translate('Rotate STS token'); ?></option>
+                    </select>
+                </div>
+                <div class="form-group command-params resend-results-params resend-requests-params">
+                    <label for="queueCommandModule"><?= _translate('Module (optional)'); ?></label>
+                    <select class="form-control" id="queueCommandModule">
+                        <option value=""><?= _translate('All enabled modules'); ?></option>
+                        <option value="vl">VL</option>
+                        <option value="eid">EID</option>
+                        <option value="covid19">COVID-19</option>
+                        <option value="hepatitis"><?= _translate('Hepatitis'); ?></option>
+                        <option value="tb">TB</option>
+                        <option value="cd4">CD4</option>
+                        <option value="generic-tests"><?= _translate('Generic tests'); ?></option>
+                    </select>
+                </div>
+                <div class="form-group command-params resend-results-params resend-requests-params">
+                    <label for="queueCommandDays"><?= _translate('Resend data from last N days'); ?></label>
+                    <input type="number" class="form-control" id="queueCommandDays" min="1" max="3650" placeholder="<?= _translate('e.g. 45'); ?>">
+                    <small class="text-muted"><?= _translate('Leave blank to send only unsynced records.'); ?></small>
+                </div>
+                <p class="help-block" style="margin-top: 15px;">
+                    <i class="fa fa-info-circle"></i>
+                    <?= _translate('The lab picks up queued commands on its next sync tick (typically every 5 minutes).'); ?>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><?= _translate('Cancel'); ?></button>
+                <button type="button" class="btn btn-primary" id="queueCommandSubmit">
+                    <i class="fa fa-paper-plane"></i> <?= _translate('Queue command'); ?>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php } ?>
 
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
@@ -463,14 +525,83 @@ $stateNameList = $geolocationService->getProvinces("yes");
             allowClear: true
         });
 
-        // Row click handler for drill-down
-        $('#syncStatusDataTable tbody').on('click', 'tr', function () {
+        // Row click handler for drill-down. Ignore clicks originating from
+        // action buttons / modals so those don't also open the details page.
+        $('#syncStatusDataTable tbody').on('click', 'tr', function (e) {
+            if ($(e.target).closest('.row-action, .no-row-click').length) {
+                return;
+            }
             let facilityId = $(this).attr('data-facilityId');
             if (facilityId && !$(this).hasClass('dataTables_empty')) {
                 let link = "/admin/monitoring/lab-sync-details.php?labId=" + facilityId;
                 window.open(link, '_blank');
             }
         });
+
+        <?php if ($isSTS) { ?>
+        // Queue-command modal: open, toggle params by command type, submit.
+        $('#syncStatusDataTable tbody').on('click', '.queue-command-btn', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const labId = $(this).data('labId');
+            const labName = $(this).data('labName') || '';
+            $('#queueCommandModal').data('labId', labId);
+            $('#queueCommandLabName').text(labName ? ('<?= _translate('Lab'); ?>: ' + labName) : '');
+            $('#queueCommandType').val('resend-results').trigger('change');
+            $('#queueCommandModule').val('');
+            $('#queueCommandDays').val('');
+            $('#queueCommandModal').modal('show');
+        });
+
+        $('#queueCommandType').on('change', function () {
+            const cmd = $(this).val();
+            $('.command-params').hide();
+            $('.' + cmd + '-params').show();
+        }).trigger('change');
+
+        $('#queueCommandSubmit').on('click', function () {
+            const $btn = $(this);
+            const originalHtml = $btn.html();
+            const labId = $('#queueCommandModal').data('labId');
+            const command = $('#queueCommandType').val();
+
+            const payload = { labId: labId, command: command };
+            if (command === 'resend-results' || command === 'resend-requests') {
+                const module = $('#queueCommandModule').val();
+                const days = $('#queueCommandDays').val();
+                if (module) payload.module = module;
+                if (days) payload.days = days;
+            }
+
+            $btn.html('<i class="fa fa-spinner fa-spin"></i> <?= _translate('Queueing...'); ?>').prop('disabled', true);
+            $.ajax({
+                url: '/admin/monitoring/queue-lis-command.php',
+                type: 'POST',
+                dataType: 'json',
+                data: payload,
+                timeout: 15000,
+                success: function (res) {
+                    if (res && res.status === 'success') {
+                        $('#queueCommandModal').modal('hide');
+                        showNotification('<?= _translate('Command queued.'); ?> <code>' + (res.commandId || '') + '</code>', 'success');
+                    } else {
+                        showNotification((res && res.error) ? res.error : '<?= _translate('Failed to queue command'); ?>', 'error');
+                    }
+                },
+                error: function (xhr) {
+                    let msg = '<?= _translate('Failed to queue command'); ?>';
+                    try {
+                        const body = JSON.parse(xhr.responseText);
+                        if (body && body.error) msg = body.error;
+                    } catch (_) {}
+                    showNotification(msg, 'error');
+                },
+                complete: function () {
+                    $btn.html(originalHtml).prop('disabled', false);
+                }
+            });
+        });
+        <?php } ?>
 
         // Debounced search on filter changes
         $('#province, #district, #labName').on('change', function () {
@@ -551,7 +682,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 if (status !== 'abort') {
                     console.error('Failed to load sync status:', error);
                     $("#syncStatusTable").html(
-                        '<tr><td colspan="5" class="text-center text-danger">' +
+                        '<tr><td colspan="<?= $isSTS ? 6 : 5; ?>" class="text-center text-danger">' +
                         '<i class="fa fa-exclamation-triangle"></i> ' +
                         '<?php echo _translate("Failed to load data. Please try again."); ?>' +
                         '</td></tr>'
