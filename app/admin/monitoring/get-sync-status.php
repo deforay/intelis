@@ -20,6 +20,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+$isSTS = $general->isSTSInstance();
+$colspan = $isSTS ? 6 : 5;
+
 // Build parameterized query for better performance and security
 $query = "SELECT
     f.facility_id,
@@ -72,8 +75,23 @@ $resultSet = $db->rawQueryGenerator($query, $params);
 $twoWeeksAgo = strtotime('-2 weeks');
 $fourWeeksAgo = strtotime('-4 weeks');
 
+// Pre-fetch pending/in-flight commands for the labs in this result set so we
+// can badge the row and disable duplicate-queueing client-side.
+$pendingCommandsByLab = [];
+if ($isSTS) {
+    $pendingCommands = $db->rawQuery(
+        "SELECT lab_id, command, status, requested_at
+         FROM s_lis_remote_commands
+         WHERE status IN ('pending','picked','running','preparing','prepared','applying')
+         ORDER BY requested_at DESC"
+    );
+    foreach ($pendingCommands ?: [] as $row) {
+        $pendingCommandsByLab[$row['lab_id']][] = $row;
+    }
+}
+
 if (empty($resultSet)) {
-    echo '<tr><td colspan="5" class="dataTables_empty">' . _translate("No data available") . '</td></tr>';
+    echo '<tr><td colspan="' . $colspan . '" class="dataTables_empty">' . _translate("No data available") . '</td></tr>';
 } else {
     foreach ($resultSet as $aRow) {
         // Determine sync status color
@@ -123,6 +141,28 @@ if (empty($resultSet)) {
             <td class="text-center">
                 <?= htmlspecialchars($aRow['version'] ?? '-'); ?>
             </td>
+            <?php if ($isSTS) {
+                $labPending = $pendingCommandsByLab[$aRow['facility_id']] ?? []; ?>
+                <td class="text-center no-row-click">
+                    <button type="button" class="btn btn-sm btn-primary row-action queue-command-btn"
+                        data-lab-id="<?= (int) $aRow['facility_id']; ?>"
+                        data-lab-name="<?= htmlspecialchars((string) $aRow['facility_name'], ENT_QUOTES); ?>"
+                        title="<?= _translate('Queue a command for this lab'); ?>">
+                        <i class="fa fa-paper-plane"></i>
+                        <?= _translate('Queue'); ?>
+                    </button>
+                    <?php if (!empty($labPending)) { ?>
+                        <div style="margin-top: 4px;">
+                            <?php foreach ($labPending as $pc) { ?>
+                                <span class="label label-warning" style="display:inline-block; margin-top:2px;"
+                                    title="<?= htmlspecialchars((string) $pc['requested_at']); ?>">
+                                    <?= htmlspecialchars($pc['command']); ?>: <?= htmlspecialchars($pc['status']); ?>
+                                </span>
+                            <?php } ?>
+                        </div>
+                    <?php } ?>
+                </td>
+            <?php } ?>
         </tr>
         <?php
     }
