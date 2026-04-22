@@ -655,16 +655,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory testing-mandatory">*</span> </label>
+											<td style="width: 25%;"><label for="testingPlatform">Technique utilisée<span class="mandatory test-date-mandatory" style="display:none;">*</span> </label>
 											</td>
 											<td style="width: 25%;">
-												<select name="eidPlatform" id="eidPlatform" class="isRequired form-control"
+												<select name="eidPlatform" id="eidPlatform" class="form-control"
 													title="Please choose VL Testing Platform" style="width:100%;">
 													<?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
 												</select>
 											</td>
 											<th scope="row" style="width:15%;"><label for="">Date de réception de
-													l'échantillon </label></th>
+													l'échantillon <span class="mandatory test-date-mandatory" style="display:none;">*</span></label></th>
 											<td style="width:35%;">
 												<input type="text" class="form-control dateTime" id="sampleReceivedDate"
 													name="sampleReceivedDate"
@@ -713,9 +713,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 													placeholder="<?php echo _translate('Volume'); ?>"
 													title="<?php echo _translate('Please enter volume'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" />
 											</td>
-											<th scope="row"><?php echo _translate('Is Sample Rejected?'); ?></th>
+											<th scope="row"><?php echo _translate('Is Sample Rejected?'); ?><span class="mandatory decision-mandatory" style="display:none;">*</span></th>
 											<td>
-												<select class="form-control" name="isSampleRejected" id="isSampleRejected" onchange="updateSampleResult();">
+												<select class="form-control" name="isSampleRejected" id="isSampleRejected" onchange="checkTestStatus(true);">
 													<option value=''> <?= _translate("-- Select --"); ?> </option>
 													<option value="yes"> Oui </option>
 													<option value="no"> Non </option>
@@ -723,7 +723,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											</td>
 										</tr>
 										<tr class="rejected" style="display: none;">
-											<th scope="row">Raison du rejet</th>
+											<th scope="row">Raison du rejet<span class="mandatory rejection-mandatory" style="display:none;">*</span></th>
 											<td>
 												<select name="sampleRejectionReason" id="sampleRejectionReason"
 													class="form-control labSection"
@@ -744,20 +744,20 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 													<?php } ?>
 												</select>
 											</td>
-											<th scope="row">Date de rejet<span class="mandatory">*</span></th>
+											<th scope="row">Date de rejet<span class="mandatory rejection-mandatory" style="display:none;">*</span></th>
 											<td><input value="" class="form-control date" type="text" name="rejectionDate"
 													id="rejectionDate" placeholder="Date de rejet"
 													title="Veuillez choisir la date rejetée" /></td>
 										</tr>
 										<tr>
-											<th scope="row"><label for="">Test effectué le<span class="mandatory">*</span> </label></th>
+											<th scope="row"><label for="">Test effectué le<span class="mandatory test-date-mandatory" style="display:none;">*</span> </label></th>
 											<td>
-												<input type="text" class="form-control isRequired dateTime" id="sampleTestedDateTime"
+												<input type="text" class="form-control dateTime" id="sampleTestedDateTime"
 													name="sampleTestedDateTime"
 													placeholder="<?= _translate("Please enter date"); ?>"
 													title="Test effectué le" onchange="" style="width:100%;" />
 											</td>
-											<th scope="row">Résultat</th>
+											<th scope="row">Résultat<span class="mandatory test-date-mandatory" style="display:none;">*</span></th>
 											<td>
 												<select class="form-control" name="result" id="result">
 													<option value=''> <?= _translate("-- Select --"); ?> </option>
@@ -770,28 +770,28 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											</td>
 										</tr>
 										<tr>
-											<th scope="row">Revu le<span class="mandatory">*</span></th>
+											<th scope="row">Revu le<span class="mandatory review-mandatory" style="display:none;">*</span></th>
 											<td><input type="text" name="reviewedOn" id="reviewedOn"
-													class="dateTime disabled-field isRequired form-control" placeholder="Revu le"
+													class="dateTime disabled-field form-control" placeholder="Revu le"
 													title="Please enter the Revu le" /></td>
-											<th scope="row">Revu par<span class="mandatory">*</span></th>
+											<th scope="row">Revu par<span class="mandatory review-mandatory" style="display:none;">*</span></th>
 											<td>
-												<select name="reviewedBy" id="reviewedBy" class="isRequired select2 form-control"
+												<select name="reviewedBy" id="reviewedBy" class="select2 form-control"
 													title="Please choose Revu par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
 										</tr>
 										<tr>
-											<th scope="row">Approuvé le<span class="mandatory">*</span></th>
+											<th scope="row">Approuvé le<span class="mandatory review-mandatory" style="display:none;">*</span></th>
 											<td>
 												<input type="text" name="approvedOnDateTime" id="approvedOnDateTime"
-													class="dateTime disabled-field isRequired form-control" placeholder="Approuvé le"
+													class="dateTime disabled-field form-control" placeholder="Approuvé le"
 													title="Please enter the Approuvé le" />
 											</td>
-											<th scope="row">Approuvé par<span class="mandatory">*</span></th>
+											<th scope="row">Approuvé par<span class="mandatory review-mandatory" style="display:none;">*</span></th>
 											<td>
-												<select name="approvedBy" id="approvedBy" class="select2 isRequired form-control"
+												<select name="approvedBy" id="approvedBy" class="select2 form-control"
 													title="Please choose Approuvé par" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
@@ -1027,6 +1027,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 			}
 		});
 
+		$("#result").on('change', function() { checkTestStatus(false); });
+		checkTestStatus(false);
+
 	});
 
 	function storageEditableSelect(id, _fieldName, fieldId, table, _placeholder) {
@@ -1088,5 +1091,51 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 	function removeMandatoryField(fieldId) {
 		$('label[for="' + fieldId + '"] .mandatory').hide();
 		$('#' + fieldId).removeClass('isRequired');
+	}
+
+	function checkTestStatus(clearValues) {
+		var status = $("#isSampleRejected").val();
+		var resultVal = ($("#result").val() || '').trim();
+		var $reviewApprove = $("#reviewedOn, #reviewedBy, #approvedOnDateTime, #approvedBy");
+		var $testFields = $("#eidPlatform, #sampleReceivedDate, #sampleTestedDateTime, #result");
+		var $rejectionFields = $("#sampleRejectionReason, #rejectionDate");
+
+		// Reset all conditional
+		$("#isSampleRejected").removeClass('isRequired');
+		$testFields.removeClass('isRequired');
+		$rejectionFields.removeClass('isRequired');
+		$reviewApprove.removeClass('isRequired');
+		$(".test-date-mandatory, .rejection-mandatory, .review-mandatory, .decision-mandatory").hide();
+
+		var activated = (status === 'yes' || status === 'no' || resultVal !== '');
+
+		if (!activated) {
+			$(".rejected").hide();
+			return;
+		}
+
+		// Activated: decision must be picked, review/approve required
+		$("#isSampleRejected").addClass('isRequired');
+		$(".decision-mandatory").show();
+		$reviewApprove.addClass('isRequired');
+		$(".review-mandatory").show();
+
+		if (status === 'yes') {
+			$(".rejected").show();
+			$rejectionFields.addClass('isRequired');
+			$(".rejection-mandatory").show();
+			if (clearValues) {
+				$("#result, #sampleTestedDateTime").val('');
+				$("#eidPlatform").val('').trigger('change.select2');
+			}
+		} else {
+			// status === 'no' OR result entered without decision
+			$(".rejected").hide();
+			$testFields.addClass('isRequired');
+			$(".test-date-mandatory").show();
+			if (clearValues) {
+				$rejectionFields.val('');
+			}
+		}
 	}
 </script>
