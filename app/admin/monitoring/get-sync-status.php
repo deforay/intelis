@@ -21,7 +21,10 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 $isSTS = $general->isSTSInstance();
-$colspan = $isSTS ? 6 : 5;
+$canQueue = $isSTS && _isAllowed('/admin/monitoring/queue-lis-command.php');
+$canCancel = $isSTS && _isAllowed('/admin/monitoring/cancel-lis-command.php');
+$showActions = $isSTS && ($canQueue || $canCancel);
+$colspan = $showActions ? 6 : 5;
 
 // Build parameterized query for better performance and security
 $query = "SELECT
@@ -81,13 +84,15 @@ $fourWeeksAgo = strtotime('-4 weeks');
 // dropdown can show the operator what's ready to apply on each lab.
 $pendingCommandsByLab = [];
 $preparedByLab = [];
-if ($isSTS) {
+if ($showActions) {
     $inFlight = $db->rawQuery(
         "SELECT command_id, lab_id, command, status, result, requested_at
          FROM s_lis_remote_commands
          WHERE status IN ('pending','picked','running','preparing','prepared','applying')
          ORDER BY requested_at DESC"
     );
+    // Tag each row with its command_id in the indexed array so we can show
+    // a cancel 'x' on pending badges without adding another query path.
     foreach ($inFlight ?: [] as $row) {
         $pendingCommandsByLab[$row['lab_id']][] = $row;
 
@@ -157,18 +162,20 @@ if (empty($resultSet)) {
             <td class="text-center">
                 <?= htmlspecialchars($aRow['version'] ?? '-'); ?>
             </td>
-            <?php if ($isSTS) {
+            <?php if ($showActions) {
                 $labPending = $pendingCommandsByLab[$aRow['facility_id']] ?? [];
                 $labPrepared = $preparedByLab[$aRow['facility_id']] ?? []; ?>
                 <td class="text-center no-row-click">
-                    <button type="button" class="btn btn-sm btn-primary row-action queue-command-btn"
-                        data-lab-id="<?= (int) $aRow['facility_id']; ?>"
-                        data-lab-name="<?= htmlspecialchars((string) $aRow['facility_name'], ENT_QUOTES); ?>"
-                        data-prepared='<?= htmlspecialchars(json_encode($labPrepared), ENT_QUOTES); ?>'
-                        title="<?= _translate('Queue a command for this lab'); ?>">
-                        <i class="fa fa-paper-plane"></i>
-                        <?= _translate('Queue'); ?>
-                    </button>
+                    <?php if ($canQueue) { ?>
+                        <button type="button" class="btn btn-sm btn-primary row-action queue-command-btn"
+                            data-lab-id="<?= (int) $aRow['facility_id']; ?>"
+                            data-lab-name="<?= htmlspecialchars((string) $aRow['facility_name'], ENT_QUOTES); ?>"
+                            data-prepared='<?= htmlspecialchars(json_encode($labPrepared), ENT_QUOTES); ?>'
+                            title="<?= _translate('Queue a command for this lab'); ?>">
+                            <i class="fa fa-paper-plane"></i>
+                            <?= _translate('Queue'); ?>
+                        </button>
+                    <?php } ?>
                     <?php if (!empty($labPrepared)) { ?>
                         <div style="margin-top: 4px;">
                             <?php foreach ($labPrepared as $pr) { ?>
@@ -185,10 +192,18 @@ if (empty($resultSet)) {
                             <?php foreach ($labPending as $pc) {
                                 if ($pc['status'] === 'prepared' && $pc['command'] === 'upgrade-prepare') {
                                     continue; // Already shown as "Staged:" above
-                                } ?>
-                                <span class="label label-warning" style="display:inline-block; margin-top:2px;"
+                                }
+                                $cancellable = ($pc['status'] === 'pending' && $canCancel); ?>
+                                <span class="label label-warning row-action" style="display:inline-block; margin-top:2px;"
                                     title="<?= htmlspecialchars((string) $pc['requested_at']); ?>">
                                     <?= htmlspecialchars($pc['command']); ?>: <?= htmlspecialchars($pc['status']); ?>
+                                    <?php if ($cancellable) { ?>
+                                        <a href="#" class="cancel-command-link no-row-click"
+                                           style="color: white; margin-left: 6px; font-weight: bold; text-decoration: none;"
+                                           data-command-id="<?= htmlspecialchars((string) $pc['command_id']); ?>"
+                                           data-command="<?= htmlspecialchars((string) $pc['command']); ?>"
+                                           title="<?= _translate('Cancel this pending command'); ?>">&times;</a>
+                                    <?php } ?>
                                 </span>
                             <?php } ?>
                         </div>
