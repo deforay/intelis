@@ -589,13 +589,13 @@ $state = $geolocationService->getProvinces("yes");
 												style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td style="width: 10%;"><strong>
-															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
+															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
-														<input type="text" id="rjtSampleTestDate"
-															name="rjtSampleTestDate"
+														<input type="text" id="rjtSampleCollectionDate"
+															name="rjtSampleCollectionDate"
 															class="form-control sampleRjtReportFilter stDate daterange"
-															placeholder="<?php echo _translate('Select Sample Test Date'); ?>"
+															placeholder="<?php echo _translate('Select Sample Collection Date'); ?>"
 															readonly style="width:100%;background:#fff;"
 															onchange="setSampleTestDate(this)" />
 													</td>
@@ -1535,7 +1535,7 @@ $state = $geolocationService->getProvinces("yes");
 			width: '100%',
 			placeholder: "<?php echo _translate("Select Fields"); ?>"
 		});
-		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#stSampleCollectionDate').daterangepicker({
+		$('#hvlSampleTestDate,#rjtSampleCollectionDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#stSampleCollectionDate').daterangepicker({
 			locale: {
 				cancelLabel: "<?= _translate("Clear", true); ?>",
 				format: 'DD-MMM-YYYY',
@@ -1599,7 +1599,7 @@ $state = $geolocationService->getProvinces("yes");
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$('#hvlSampleTestDate,#rjtSampleTestDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#stSampleCollectionDate').on('cancel.daterangepicker', function (ev, picker) {
+		$('#hvlSampleTestDate,#rjtSampleCollectionDate,#noResultSampleTestDate,#sampleCollectionDate,#vfVlnsSampleCollectionDate,#vfVlnsSampleTestDate,#stSampleCollectionDate').on('cancel.daterangepicker', function (ev, picker) {
 			$(this).val('');
 		});
 		$('#vfVlnsSampleTestDate').val('');
@@ -1799,8 +1799,8 @@ $state = $geolocationService->getProvinces("yes");
 					"value": $("#rjtBatchCode").val()
 				});
 				aoData.push({
-					"name": "rjtSampleTestDate",
-					"value": $("#rjtSampleTestDate").val()
+					"name": "rjtSampleCollectionDate",
+					"value": $("#rjtSampleCollectionDate").val()
 				});
 				aoData.push({
 					"name": "rjtState",
@@ -2144,7 +2144,7 @@ $state = $geolocationService->getProvinces("yes");
 		}
 		$.blockUI();
 		$.post("/vl/program-management/vlRejectedResultExportInExcel.php", {
-			Sample_Test_Date: $("#rjtSampleTestDate").val(),
+			Sample_Collection_Date: $("#rjtSampleCollectionDate").val(),
 			Batch_Code: $("#rjtBatchCode  option:selected").text(),
 			Sample_Type: $("#rjtSampleType  option:selected").text(),
 			Facility_Name: $("#rjtFacilityName  option:selected").text(),

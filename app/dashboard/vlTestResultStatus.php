@@ -67,7 +67,8 @@ $batResult = $db->rawQuery($batQuery);
 									<?php
 									foreach ($batResult as $code) { ?>
 										<option value="<?php echo $code['batch_code']; ?>">
-											<?php echo $code['batch_code']; ?></option>
+											<?php echo $code['batch_code']; ?>
+										</option>
 										<?php
 									} ?>
 								</select>
@@ -96,7 +97,8 @@ $batResult = $db->rawQuery($batQuery);
 									<?php
 									foreach ($fResult as $name) { ?>
 										<option value="<?php echo $name['facility_id']; ?>">
-											<?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+											<?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?>
+										</option>
 										<?php
 									} ?>
 								</select>
@@ -186,7 +188,7 @@ $batResult = $db->rawQuery($batQuery);
 									<th>District</th>
 									<th>Sample Type</th>
 									<th style="width:10%;">
-										<?= _translate("Previous Result"); ?>
+										<?= _translate("Result"); ?>
 									</th>
 								</tr>
 							</thead>
