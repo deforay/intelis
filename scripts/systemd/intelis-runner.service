@@ -1,0 +1,20 @@
+[Unit]
+Description=InteLIS remote command runner (root-privileged dispatcher)
+Documentation=file:///usr/local/share/doc/intelis/remote-command-plane.md
+ConditionPathExists=/usr/local/bin/intelis-runner
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/intelis-runner
+# Hardening: runner only reads/writes under /var/www/*/var, /var/log/intelis-runner,
+# /var/lock, /var/intelis-staging, /var/intelis-rollback, and calls specific
+# binaries. Keep the rest of the filesystem read-only.
+ProtectSystem=strict
+ReadWritePaths=/var/www /var/log/intelis-runner /var/lock /var/intelis-staging /var/intelis-rollback /tmp /etc/apache2/conf-available /etc/apache2/conf-enabled
+ProtectHome=true
+PrivateTmp=true
+NoNewPrivileges=false
+# NoNewPrivileges must be false because intelis-update needs to sudo to www-data
+# during composer operations. The runner itself already runs as root.
+TimeoutStartSec=7200
+Nice=10
