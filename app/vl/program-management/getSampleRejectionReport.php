@@ -84,12 +84,12 @@ try {
         $sWhere[] = ' b.batch_code LIKE "%' . $_POST['rjtBatchCode'] . '%"';
     }
 
-    if (!empty($_POST['rjtSampleTestDate'])) {
-        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['rjtSampleTestDate'] ?? '');
+    if (!empty($_POST['rjtSampleCollectionDate'])) {
+        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['rjtSampleCollectionDate'] ?? '');
         if (trim((string) $start_date) === trim((string) $end_date)) {
-            $sWhere[] = " DATE(vl.sample_tested_datetime) = '$start_date' ";
+            $sWhere[] = " DATE(vl.sample_collection_date) = '$start_date' ";
         } else {
-            $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$start_date' AND '$end_date' ";
+            $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date' ";
         }
     }
 
