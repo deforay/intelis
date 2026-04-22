@@ -5,18 +5,30 @@
 # sudo intelis-update
 #
 # Options:
-#   -p PATH   Specify the LIS installation path (e.g., -p /var/www/intelis)
-#   -A        Auto-detect and update ALL intelis installations in /var/www
-#   -i        Interactive instance selection (use with -A to pick specific instances)
-#   -s        Skip Ubuntu system updates
-#   -b        Skip backup prompts
+#   -p PATH            Specify the LIS installation path (e.g., -p /var/www/intelis)
+#   -A                 Auto-detect and update ALL intelis installations in /var/www
+#   -i                 Interactive instance selection (use with -A to pick specific instances)
+#   -s                 Skip Ubuntu system updates
+#   -b                 Skip backup prompts
+#   -P, --prepare-only Run only the prepare phase: download + extract + validate into a
+#                      staging directory, print the path, and exit 0. Safe to run
+#                      anytime; no downtime, no apply.
+#   -a, --apply-prepared <dir>
+#                      Skip prepare and apply from an existing staging dir (must contain
+#                      a READY sentinel). Ubuntu package updates are implicitly skipped
+#                      in this mode since system_prep was presumably already done during
+#                      the prepare invocation. MySQL/PHP/Apache checks still run.
+#
+#   --prepare-only and --apply-prepared are mutually exclusive.
 #
 # Examples:
-#   sudo intelis-update                      # Interactive single instance
-#   sudo intelis-update -p /var/www/intelis  # Specific path
-#   sudo intelis-update -A                   # Update all instances in /var/www
-#   sudo intelis-update -A -i                # Detect instances, pick which to update
-#   sudo intelis-update -A -s -b             # Non-interactive, update all instances
+#   sudo intelis-update                          # Interactive single instance (prepare+apply)
+#   sudo intelis-update -p /var/www/intelis      # Specific path
+#   sudo intelis-update -A                       # Update all instances in /var/www
+#   sudo intelis-update -A -i                    # Detect instances, pick which to update
+#   sudo intelis-update -A -s -b                 # Non-interactive, update all instances
+#   sudo intelis-update --prepare-only           # Stage the update now; apply later
+#   sudo intelis-update --apply-prepared /var/intelis-staging/20260422-120000-1234
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -93,22 +105,75 @@ skip_ubuntu_updates=false
 skip_backup=false
 auto_detect=false
 interactive_select=false
+prepare_only=false
+apply_prepared_dir=""
 lis_path=""
 declare -a lis_paths=()
 
 log_file="/tmp/intelis-upgrade-$(date +'%Y%m%d-%H%M%S').log"
 
+# Pre-process long options into short equivalents so getopts can handle them.
+# Supported long options:
+#   --prepare-only        -> -P
+#   --apply-prepared DIR  -> -a DIR
+declare -a _rewritten_args=()
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --prepare-only)
+            _rewritten_args+=("-P")
+            shift
+            ;;
+        --apply-prepared)
+            _rewritten_args+=("-a")
+            if [ $# -lt 2 ]; then
+                echo "Error: --apply-prepared requires a directory argument" >&2
+                exit 2
+            fi
+            _rewritten_args+=("$2")
+            shift 2
+            ;;
+        --apply-prepared=*)
+            _rewritten_args+=("-a")
+            _rewritten_args+=("${1#--apply-prepared=}")
+            shift
+            ;;
+        --)
+            _rewritten_args+=("$@")
+            break
+            ;;
+        *)
+            _rewritten_args+=("$1")
+            shift
+            ;;
+    esac
+done
+set -- "${_rewritten_args[@]}"
+
 # Parse command-line options
-while getopts ":sbAip:" opt; do
+while getopts ":sbAiPp:a:" opt; do
     case $opt in
     s) skip_ubuntu_updates=true ;;
     b) skip_backup=true ;;
     A) auto_detect=true ;;
     i) interactive_select=true ;;
     p) lis_path="$OPTARG" ;;
+    P) prepare_only=true ;;
+    a) apply_prepared_dir="$OPTARG" ;;
         # Ignore invalid options silently
     esac
 done
+
+# Mutually exclusive check
+if [ "$prepare_only" = true ] && [ -n "$apply_prepared_dir" ]; then
+    echo "Error: --prepare-only and --apply-prepared are mutually exclusive." >&2
+    exit 2
+fi
+
+# --apply-prepared implies skipping Ubuntu system updates (system_prep already ran
+# during the prepare invocation). MySQL/PHP/Apache checks still execute.
+if [ -n "$apply_prepared_dir" ]; then
+    skip_ubuntu_updates=true
+fi
 
 # Error trap
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
@@ -861,29 +926,376 @@ if [ "$skip_backup" = false ]; then
     fi
 fi
 
-# Download LIS package ONCE (shared across all instances)
-print header "Downloading LIS"
+# ---------------------------------------------------------------------------
+# Phase split helpers: prepare_phase, maintenance mode, rollback snapshot.
+# prepare_phase() downloads + extracts + validates into a staging dir and is
+# safe to run with the live LIS still serving traffic.
+# ---------------------------------------------------------------------------
 
-download_file "master.tar.gz" "https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master" "Downloading LIS package..." || {
-    print error "LIS download failed - cannot continue with update"
-    log_action "LIS download failed - update aborted"
-    exit 1
+MASTER_TARBALL_URL="https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master"
+VENDOR_TARBALL_URL="https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz"
+VENDOR_TARBALL_MD5_URL="https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.md5"
+
+STAGING_BASE_DIR="/var/intelis-staging"
+ROLLBACK_BASE_DIR="/var/intelis-rollback"
+
+# prepare_phase — download + extract + verify master and vendor tarballs in parallel.
+# Echoes the staging dir on stdout (captured by caller). All informational
+# output is sent to stderr so stdout is clean.
+prepare_phase() {
+    local staging_dir="${STAGING_BASE_DIR}/$(date +%Y%m%d-%H%M%S)-$$"
+    mkdir -p "$staging_dir"
+
+    print header "Prepare: staging update at ${staging_dir}" >&2
+    log_action "Prepare phase starting at ${staging_dir}"
+
+    local master_log="${staging_dir}/master.log"
+    local vendor_log="${staging_dir}/vendor.log"
+    local master_tar="${staging_dir}/master.tar.gz"
+    local master_extract_dir="${staging_dir}/intelis-master"
+    local vendor_tar="${staging_dir}/vendor.tar.gz"
+    local vendor_md5="${staging_dir}/vendor.tar.gz.md5"
+    local vendor_extract_dir="${staging_dir}/vendor"
+
+    # ---- master worker ----
+    _prepare_master_worker() {
+        set -e
+        if [ -d "$master_extract_dir" ] && [ -f "$master_extract_dir/composer.json" ]; then
+            echo "master: already extracted, skipping"
+            return 0
+        fi
+        if [ ! -f "$master_tar" ]; then
+            echo "master: downloading from $MASTER_TARBALL_URL"
+            wget --quiet -O "$master_tar" "$MASTER_TARBALL_URL"
+        else
+            echo "master: tarball already present, skipping download"
+        fi
+        echo "master: extracting"
+        rm -rf "$master_extract_dir"
+        mkdir -p "$master_extract_dir"
+        # GitHub codeload tarballs wrap contents in intelis-master/; strip that
+        # so our extract dir matches the old /tmp/.../intelis-master/ convention.
+        tar -xzf "$master_tar" -C "$staging_dir"
+        # The extracted dir is already named intelis-master/ - nothing else to do.
+        if [ ! -f "$master_extract_dir/composer.json" ]; then
+            echo "master: composer.json missing after extract" >&2
+            return 1
+        fi
+        echo "master: ready"
+    }
+
+    # ---- vendor worker ----
+    _prepare_vendor_worker() {
+        set -e
+        # If vendor release isn't published we silently accept — apply_phase
+        # will fall back to composer install.
+        if ! curl --output /dev/null --silent --head --fail "$VENDOR_TARBALL_URL"; then
+            echo "vendor: release URL not available; apply phase will composer install instead"
+            return 0
+        fi
+        if [ -d "$vendor_extract_dir" ] && [ -d "$vendor_extract_dir/composer" ]; then
+            echo "vendor: already extracted, skipping"
+            return 0
+        fi
+        if [ ! -f "$vendor_tar" ] || [ ! -f "$vendor_md5" ]; then
+            echo "vendor: downloading tarball"
+            wget --quiet -O "$vendor_tar" "$VENDOR_TARBALL_URL"
+            echo "vendor: downloading checksum"
+            wget --quiet -O "$vendor_md5" "$VENDOR_TARBALL_MD5_URL"
+        else
+            echo "vendor: tarball + checksum already present"
+        fi
+        echo "vendor: verifying checksum"
+        # Normalise filename in md5 file so md5sum finds it alongside the tarball.
+        local expected
+        expected=$(awk '{print $1}' "$vendor_md5")
+        local actual
+        actual=$(md5sum "$vendor_tar" | awk '{print $1}')
+        if [ "$expected" != "$actual" ]; then
+            echo "vendor: checksum mismatch (expected $expected, got $actual)" >&2
+            return 1
+        fi
+        echo "vendor: extracting"
+        rm -rf "$vendor_extract_dir"
+        mkdir -p "$vendor_extract_dir"
+        # vendor.tar.gz typically expands into a vendor/ directory; we want
+        # the *contents* inside $vendor_extract_dir so apply can rsync directly.
+        local tmp_extract="${staging_dir}/.vendor-extract"
+        rm -rf "$tmp_extract"
+        mkdir -p "$tmp_extract"
+        tar -xzf "$vendor_tar" -C "$tmp_extract"
+        if [ -d "$tmp_extract/vendor" ]; then
+            rsync -a "$tmp_extract/vendor/" "$vendor_extract_dir/"
+        else
+            rsync -a "$tmp_extract/" "$vendor_extract_dir/"
+        fi
+        rm -rf "$tmp_extract"
+        echo "vendor: ready"
+    }
+
+    # Launch both workers in parallel, each logging to its own file.
+    ( _prepare_master_worker ) >"$master_log" 2>&1 &
+    local master_pid=$!
+    ( _prepare_vendor_worker ) >"$vendor_log" 2>&1 &
+    local vendor_pid=$!
+
+    print info "Downloading master and vendor in parallel (pids ${master_pid}, ${vendor_pid})" >&2
+
+    local master_status=0 vendor_status=0
+    wait "$master_pid" || master_status=$?
+    wait "$vendor_pid" || vendor_status=$?
+
+    if [ "$master_status" -ne 0 ]; then
+        print error "Master download/extract failed. See ${master_log}" >&2
+        log_action "Prepare: master failed (status $master_status)"
+        return 1
+    fi
+    print success "Master ready at ${master_extract_dir}" >&2
+
+    if [ "$vendor_status" -ne 0 ]; then
+        print error "Vendor download/extract failed. See ${vendor_log}" >&2
+        log_action "Prepare: vendor failed (status $vendor_status)"
+        return 1
+    fi
+    if [ -d "$vendor_extract_dir" ] && [ -d "$vendor_extract_dir/composer" ]; then
+        print success "Vendor ready at ${vendor_extract_dir}" >&2
+    else
+        print warning "Vendor staging not populated; apply will fall back to composer install" >&2
+    fi
+
+    # Sanity-check composer.json
+    if command -v composer >/dev/null 2>&1; then
+        if ! (cd "$master_extract_dir" && COMPOSER_ALLOW_SUPERUSER=1 composer validate --no-check-publish --no-check-all --no-interaction >/dev/null 2>&1); then
+            print warning "composer validate flagged issues in staged composer.json (continuing)" >&2
+            log_action "Prepare: composer validate flagged issues (non-fatal)"
+        fi
+    fi
+
+    # Capture version for the READY sentinel.
+    local staged_version="unknown"
+    if [ -f "$master_extract_dir/VERSION" ]; then
+        staged_version=$(head -n1 "$master_extract_dir/VERSION" | tr -d '\r\n')
+    elif [ -f "$master_extract_dir/composer.json" ] && command -v php >/dev/null 2>&1; then
+        staged_version=$(php -r "
+            \$c = json_decode(file_get_contents('$master_extract_dir/composer.json'), true);
+            echo (\$c['version'] ?? 'unknown');
+        " 2>/dev/null || echo "unknown")
+    fi
+    [ -n "$staged_version" ] || staged_version="unknown"
+
+    # Drop READY sentinel last.
+    printf 'version=%s\nprepared_at=%s\n' "$staged_version" "$(date -Iseconds)" > "$staging_dir/READY"
+
+    print success "Staging ready (version ${staged_version})" >&2
+    log_action "Prepare phase complete at ${staging_dir} (version ${staged_version})"
+
+    # Caller captures the staging dir from stdout.
+    echo "$staging_dir"
+    return 0
 }
 
-# Extract the tar.gz file into temporary directory ONCE
-temp_dir=$(mktemp -d)
-print info "Extracting files from master.tar.gz..."
+# maintenance_conf_path — echoes the Apache conf path for a given lis_path.
+maintenance_conf_path() {
+    local lp="$1"
+    echo "/etc/apache2/conf-available/intelis-maintenance-$(basename "$lp").conf"
+}
 
-tar -xzf master.tar.gz -C "$temp_dir" &
-tar_pid=$!
-spinner "${tar_pid}"
-wait ${tar_pid}
+# enable_maintenance_mode — install + enable an Apache conf that serves 503 for
+# all requests into this instance while the apply runs. Best-effort; falls back
+# to a .maintenance marker file under public/ if Apache can't be configured.
+enable_maintenance_mode() {
+    local lp="$1"
+    local conf_file
+    conf_file=$(maintenance_conf_path "$lp")
+    local conf_basename
+    conf_basename=$(basename "$conf_file" .conf)
+    local doc_root="${lp}/public"
+
+    # Write a tiny static maintenance page next to the app.
+    local maint_page="${doc_root}/.intelis-maintenance.html"
+    cat > "$maint_page" <<'HTML'
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Upgrade in progress</title>
+<meta http-equiv="refresh" content="15"></head>
+<body style="font-family:sans-serif;max-width:640px;margin:3em auto;padding:1em;">
+<h1>Upgrade in progress</h1>
+<p>This Intelis instance is being updated. Please retry in a moment.</p>
+</body></html>
+HTML
+    chown www-data:www-data "$maint_page" 2>/dev/null || true
+
+    if command -v a2enconf >/dev/null 2>&1 && [ -d /etc/apache2/conf-available ]; then
+        cat > "$conf_file" <<EOF
+# Auto-generated by intelis-update — Apache maintenance drop-in for ${lp}
+# Matches requests under the docroot ${doc_root} and returns 503 until the
+# apply phase finishes and disables this conf.
+<Directory "${doc_root}">
+    ErrorDocument 503 /.intelis-maintenance.html
+    RewriteEngine On
+    # Let the static maintenance page itself through so we don't 503 our own 503 page
+    RewriteCond %{REQUEST_URI} !^/\.intelis-maintenance\.html$
+    RewriteRule ^ - [R=503,L]
+    Header always set Retry-After "120"
+    Header always set Cache-Control "no-store"
+</Directory>
+EOF
+        a2enconf -q "$conf_basename" >/dev/null 2>&1 || true
+        # Best-effort reload; if it fails we still proceed — the marker file is a backstop.
+        if apache2ctl -t >/dev/null 2>&1; then
+            apache2ctl -k graceful >/dev/null 2>&1 || systemctl reload apache2 >/dev/null 2>&1 || true
+            print info "Maintenance mode enabled (Apache 503) for ${lp}"
+        else
+            print warning "Apache config test failed; maintenance conf left disabled for ${lp}"
+            a2disconf -q "$conf_basename" >/dev/null 2>&1 || true
+        fi
+    else
+        print warning "a2enconf not available; skipping Apache-level maintenance mode for ${lp}"
+    fi
+
+    # Also drop a simple marker file as a cheap backstop for app-level checks.
+    touch "${doc_root}/.maintenance" 2>/dev/null || true
+    return 0
+}
+
+# disable_maintenance_mode — undo what enable_maintenance_mode did.
+disable_maintenance_mode() {
+    local lp="$1"
+    local conf_file
+    conf_file=$(maintenance_conf_path "$lp")
+    local conf_basename
+    conf_basename=$(basename "$conf_file" .conf)
+
+    if command -v a2disconf >/dev/null 2>&1; then
+        a2disconf -q "$conf_basename" >/dev/null 2>&1 || true
+    fi
+    if [ -f "$conf_file" ]; then
+        rm -f "$conf_file"
+    fi
+    rm -f "${lp}/public/.maintenance" 2>/dev/null || true
+    rm -f "${lp}/public/.intelis-maintenance.html" 2>/dev/null || true
+
+    if command -v apache2ctl >/dev/null 2>&1 && apache2ctl -t >/dev/null 2>&1; then
+        apache2ctl -k graceful >/dev/null 2>&1 || systemctl reload apache2 >/dev/null 2>&1 || true
+    fi
+    print info "Maintenance mode disabled for ${lp}"
+}
+
+# create_rollback_snapshot — hardlink snapshot of $lp. Echoes snapshot path on
+# stdout; all informational output goes to stderr so callers can capture cleanly.
+create_rollback_snapshot() {
+    local lp="$1"
+    local ts="$2"   # shared timestamp so snapshots for same run cluster together
+    local snap_dir="${ROLLBACK_BASE_DIR}/${ts}/$(basename "$lp")"
+    mkdir -p "$snap_dir" >&2
+    # --link-dest makes this near-zero-disk: unchanged files become hardlinks.
+    if rsync -a --link-dest="$lp" "$lp/" "$snap_dir/" >/dev/null 2>&1; then
+        print info "Rollback snapshot created at ${snap_dir}" >&2
+        echo "$snap_dir"
+        return 0
+    fi
+    print warning "Rollback snapshot failed for ${lp} (continuing without rollback safety net)" >&2
+    return 1
+}
+
+# restore_rollback_snapshot — rsync a snapshot back over lis_path. Uses --delete
+# so files added by the failed apply get removed.
+restore_rollback_snapshot() {
+    local lp="$1"
+    local snap="$2"
+    if [ -z "$snap" ] || [ ! -d "$snap" ]; then
+        print error "No usable snapshot to restore for ${lp}"
+        return 1
+    fi
+    print warning "Restoring ${lp} from snapshot ${snap}"
+    log_action "Restoring ${lp} from rollback snapshot ${snap}"
+    rsync -a --delete "$snap/" "$lp/" >/dev/null 2>&1 || {
+        print error "Rollback rsync failed for ${lp}"
+        return 1
+    }
+    chown -R www-data:www-data "$lp" 2>/dev/null || true
+    print success "Rollback complete for ${lp}"
+    return 0
+}
+
+# smoke_check — cheap post-apply sanity check. Prefers a smoke.php endpoint if
+# present, otherwise checks that public/index.php parses.
+smoke_check() {
+    local lp="$1"
+    if [ -f "${lp}/public/smoke.php" ] && command -v curl >/dev/null 2>&1; then
+        local code
+        code=$(curl -fsS -o /dev/null -w "%{http_code}" "http://localhost/smoke.php" 2>/dev/null || echo "000")
+        if [ "$code" = "200" ]; then
+            return 0
+        fi
+        print warning "Smoke HTTP check returned ${code}; falling back to PHP lint"
+    fi
+    if [ -f "${lp}/public/index.php" ]; then
+        if php -l "${lp}/public/index.php" >/dev/null 2>&1; then
+            return 0
+        fi
+        print error "Smoke check: public/index.php failed PHP lint"
+        return 1
+    fi
+    print warning "Smoke check: no public/index.php to lint; skipping"
+    return 0
+}
+
+# ---------------------------------------------------------------------------
+# Resolve staging dir: either validate the caller-supplied one, or run the
+# prepare phase now. prepare_only exits here.
+# ---------------------------------------------------------------------------
+if [ -n "$apply_prepared_dir" ]; then
+    # Normalise to absolute path
+    if [ "${apply_prepared_dir:0:1}" != "/" ]; then
+        apply_prepared_dir="$(pwd)/${apply_prepared_dir}"
+    fi
+    if [ ! -d "$apply_prepared_dir" ]; then
+        print error "--apply-prepared dir does not exist: ${apply_prepared_dir}"
+        exit 1
+    fi
+    if [ ! -f "${apply_prepared_dir}/READY" ]; then
+        print error "Staging dir ${apply_prepared_dir} is missing the READY sentinel. Aborting."
+        exit 1
+    fi
+    if [ ! -d "${apply_prepared_dir}/intelis-master" ] || [ ! -f "${apply_prepared_dir}/intelis-master/composer.json" ]; then
+        print error "Staging dir ${apply_prepared_dir} is missing intelis-master/ contents. Aborting."
+        exit 1
+    fi
+    staging_dir="$apply_prepared_dir"
+    print info "Applying from pre-prepared staging dir: ${staging_dir}"
+    log_action "Applying from pre-prepared staging dir: ${staging_dir}"
+else
+    print header "Downloading LIS"
+    staging_dir="$(prepare_phase)"
+    if [ -z "$staging_dir" ] || [ ! -f "${staging_dir}/READY" ]; then
+        print error "Prepare phase did not produce a valid staging directory."
+        log_action "Prepare phase failed - update aborted"
+        # Best-effort cleanup of partial staging
+        [ -n "$staging_dir" ] && [ -d "$staging_dir" ] && rm -rf "$staging_dir" 2>/dev/null || true
+        exit 1
+    fi
+
+    if [ "$prepare_only" = true ]; then
+        echo
+        print success "Prepared at ${staging_dir}"
+        echo "Apply later with: sudo intelis-update --apply-prepared ${staging_dir}"
+        log_action "Prepare-only mode complete at ${staging_dir}"
+        exit 0
+    fi
+fi
+
+# temp_dir points at the extracted master tree, matching the old contract that
+# upgrade_instance() expects ($temp_dir/intelis-master/ is the source root).
+temp_dir="$staging_dir"
 
 print success "LIS package ready for deployment to ${#lis_paths[@]} instance(s)."
 
 # Track which instances were updated for summary
 declare -a updated_instances=()
 declare -a failed_instances=()
+
+# Shared timestamp for rollback snapshots across all instances in this run.
+apply_run_ts="$(date +%Y%m%d-%H%M%S)"
 
 # Function to upgrade a single instance
 upgrade_instance() {
@@ -895,21 +1307,27 @@ upgrade_instance() {
     print header "Upgrading instance ${instance_num}/${total_instances}: ${lis_path}"
     log_action "Starting upgrade for instance: ${lis_path}"
 
+    # --- Rollback snapshot (before any destructive change) ---
+    local _snapshot_dir=""
+    _snapshot_dir="$(create_rollback_snapshot "$lis_path" "$apply_run_ts" || true)"
+
+    # --- Maintenance mode (503 via Apache) ---
+    enable_maintenance_mode "$lis_path"
+
+    # Helper: called on any failure below. Disables maintenance and restores snapshot.
+    _apply_failure() {
+        local reason="$1"
+        print error "Apply failed for ${lis_path}: ${reason}"
+        log_action "Apply failed for ${lis_path}: ${reason}"
+        if [ -n "$_snapshot_dir" ]; then
+            restore_rollback_snapshot "$lis_path" "$_snapshot_dir" || true
+        fi
+        disable_maintenance_mode "$lis_path"
+    }
+
     # Remove old run-once directory
     if [ -d "${lis_path}/run-once" ]; then
         rm -rf "${lis_path}/run-once"
-    fi
-
-    # Calculate checksums of current composer files for this instance
-    local CURRENT_COMPOSER_JSON_CHECKSUM="none"
-    local CURRENT_COMPOSER_LOCK_CHECKSUM="none"
-
-    if [ -f "${lis_path}/composer.json" ]; then
-        CURRENT_COMPOSER_JSON_CHECKSUM=$(md5sum "${lis_path}/composer.json" | awk '{print $1}')
-    fi
-
-    if [ -f "${lis_path}/composer.lock" ]; then
-        CURRENT_COMPOSER_LOCK_CHECKSUM=$(md5sum "${lis_path}/composer.lock" | awk '{print $1}')
     fi
 
     # Find all symlinks in the destination directory and create an exclude pattern
@@ -933,8 +1351,8 @@ upgrade_instance() {
     local rsync_status=$?
 
     if [ $rsync_status -ne 0 ]; then
-        print error "Error occurred during rsync for $lis_path"
         log_action "Error during rsync operation. Path was: $lis_path"
+        _apply_failure "master rsync failed"
         return 1
     fi
 
@@ -1022,65 +1440,24 @@ upgrade_instance() {
     sudo -u www-data composer config process-timeout 30000 --no-interaction
     sudo -u www-data composer clear-cache --no-interaction
 
-    local NEED_FULL_INSTALL=false
+    # Install vendor from the pre-staged directory if available; otherwise fall
+    # back to composer install. Prepare phase already downloaded + verified the
+    # vendor tarball into "$temp_dir/vendor/" (if the release was published).
+    local staged_vendor="${temp_dir}/vendor"
+    if [ -d "$staged_vendor" ] && [ -d "$staged_vendor/composer" ]; then
+        print info "Installing dependencies from staged vendor directory..."
+        rsync -a --delete "$staged_vendor/" "${lis_path}/vendor/" &
+        local vendor_sync_pid=$!
+        spinner "${vendor_sync_pid}"
+        wait ${vendor_sync_pid}
 
-    # Check if the vendor directory exists
-    if [ ! -d "${lis_path}/vendor" ]; then
-        NEED_FULL_INSTALL=true
+        chown -R www-data:www-data "${lis_path}/vendor" 2>/dev/null || true
+        chmod -R 755 "${lis_path}/vendor" 2>/dev/null || true
+
+        sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev --no-interaction
     else
-        # Calculate new checksums
-        local NEW_COMPOSER_JSON_CHECKSUM="none"
-        local NEW_COMPOSER_LOCK_CHECKSUM="none"
-
-        if [ -f "${lis_path}/composer.json" ]; then
-            NEW_COMPOSER_JSON_CHECKSUM=$(md5sum "${lis_path}/composer.json" 2>/dev/null | awk '{print $1}')
-        else
-            NEED_FULL_INSTALL=true
-        fi
-
-        if [ -f "${lis_path}/composer.lock" ] && [ "$NEED_FULL_INSTALL" = false ]; then
-            NEW_COMPOSER_LOCK_CHECKSUM=$(md5sum "${lis_path}/composer.lock" 2>/dev/null | awk '{print $1}')
-        else
-            NEED_FULL_INSTALL=true
-        fi
-
-        if [ "$NEED_FULL_INSTALL" = false ]; then
-            if [ "$CURRENT_COMPOSER_JSON_CHECKSUM" = "none" ] || [ "$CURRENT_COMPOSER_LOCK_CHECKSUM" = "none" ] ||
-                [ "$NEW_COMPOSER_JSON_CHECKSUM" = "none" ] || [ "$NEW_COMPOSER_LOCK_CHECKSUM" = "none" ] ||
-                [ "$CURRENT_COMPOSER_JSON_CHECKSUM" != "$NEW_COMPOSER_JSON_CHECKSUM" ] ||
-                [ "$CURRENT_COMPOSER_LOCK_CHECKSUM" != "$NEW_COMPOSER_LOCK_CHECKSUM" ]; then
-                NEED_FULL_INSTALL=true
-            fi
-        fi
-    fi
-
-    # Download and install vendor if needed
-    if [ "$NEED_FULL_INSTALL" = true ]; then
-        print info "Installing dependencies..."
-        if curl --output /dev/null --silent --head --fail "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz"; then
-            # Check if vendor.tar.gz already downloaded (shared across instances)
-            if [ ! -f "/tmp/vendor.tar.gz" ]; then
-                download_file "/tmp/vendor.tar.gz" "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz" "Downloading vendor packages..."
-                download_file "/tmp/vendor.tar.gz.md5" "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.md5" "Downloading checksum..."
-            fi
-
-            # Verify checksum (cd to /tmp so md5sum finds the file by name)
-            if (cd /tmp && md5sum -c vendor.tar.gz.md5 2>/dev/null); then
-                tar -xzf /tmp/vendor.tar.gz -C "${lis_path}" &
-                local vendor_tar_pid=$!
-                spinner "${vendor_tar_pid}"
-                wait ${vendor_tar_pid}
-
-                chown -R www-data:www-data "${lis_path}/vendor" 2>/dev/null || true
-                chmod -R 755 "${lis_path}/vendor" 2>/dev/null || true
-
-                sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev --no-interaction
-            else
-                sudo -u www-data composer install --prefer-dist --no-dev --no-interaction
-            fi
-        else
-            sudo -u www-data composer install --prefer-dist --no-dev --no-interaction
-        fi
+        print info "Staged vendor not available; running composer install..."
+        sudo -u www-data composer install --prefer-dist --no-dev --no-interaction
     fi
 
     sudo -u www-data composer dump-autoload -o --no-interaction
@@ -1129,6 +1506,15 @@ upgrade_instance() {
 
     # Cron job setup
     setup_intelis_cron "${lis_path}"
+
+    # Smoke check BEFORE we disable maintenance so users never see a broken app.
+    if ! smoke_check "${lis_path}"; then
+        _apply_failure "smoke check failed"
+        return 1
+    fi
+
+    # Apply succeeded — remove maintenance mode.
+    disable_maintenance_mode "${lis_path}"
 
     # Set final permissions in background
     (intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
@@ -1180,8 +1566,11 @@ for i in "${!lis_paths[@]}"; do
     fi
 done
 
-# Maintenance scripts prompt (only for single instance to avoid tedious multi-prompts)
-if [ ${#lis_paths[@]} -eq 1 ]; then
+# Maintenance scripts prompt (only for single instance to avoid tedious multi-prompts).
+# Skipped under --apply-prepared since operator context (and TTY) may differ from
+# the original prepare invocation; running extra interactive prompts at that point
+# would hang automated apply flows.
+if [ ${#lis_paths[@]} -eq 1 ] && [ -z "$apply_prepared_dir" ]; then
     lis_path="${lis_paths[0]}"
     echo ""
     files=()
@@ -1219,19 +1608,23 @@ if [ ${#lis_paths[@]} -eq 1 ]; then
     fi
 fi
 
-# Cleanup temp files
-if [ -d "$temp_dir" ]; then
-    rm -rf "$temp_dir"
+# Cleanup temp files.
+# When running via --apply-prepared we leave the staging dir alone: the operator
+# (or the remote-runner that prepared it) is responsible for its lifecycle.
+# When we prepared it in this run, remove it only if every instance succeeded.
+if [ -z "$apply_prepared_dir" ]; then
+    if [ ${#failed_instances[@]} -eq 0 ] && [ -n "$staging_dir" ] && [ -d "$staging_dir" ]; then
+        rm -rf "$staging_dir"
+    elif [ ${#failed_instances[@]} -gt 0 ]; then
+        print info "Leaving staging dir in place for debugging: ${staging_dir}"
+    fi
 fi
-if [ -f master.tar.gz ]; then
-    rm master.tar.gz
-fi
-if [ -f "/tmp/vendor.tar.gz" ]; then
-    rm /tmp/vendor.tar.gz
-fi
-if [ -f "/tmp/vendor.tar.gz.md5" ]; then
-    rm /tmp/vendor.tar.gz.md5
-fi
+# Legacy paths from the pre-refactor script — remove if they happen to exist
+# (e.g. an older in-flight run crashed before cleanup).
+[ -f master.tar.gz ] && rm master.tar.gz
+[ -f "/tmp/vendor.tar.gz" ] && rm /tmp/vendor.tar.gz
+[ -f "/tmp/vendor.tar.gz.md5" ] && rm /tmp/vendor.tar.gz.md5
+true  # absorb nonzero exit from the tests above
 
 # Reload Apache
 apache2ctl -k graceful || systemctl reload apache2 || systemctl restart apache2
