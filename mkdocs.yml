@@ -53,6 +53,8 @@ nav:
       - Fix Collation Mismatch: guides/fix-collation-issue.md
       - Permission Denied Issue: guides/permission-denied-issue.md
       - Setting up Interfacing Tool: guides/setting-up-interfacing-tool.md
+  - Remote Administration:
+      - Remote Command Plane (runbook): guides/remote-command-plane.md
   - Architecture: ARCHITECTURE.md
 
 markdown_extensions:

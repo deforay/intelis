@@ -30,6 +30,13 @@ if (empty($_SESSION['userId'])) {
     exit;
 }
 
+// AJAX requests bypass the AclMiddleware — gate here explicitly.
+if (!_isAllowed('/admin/monitoring/queue-lis-command.php')) {
+    http_response_code(403);
+    echo json_encode(['status' => 'error', 'error' => 'Not authorized to queue commands']);
+    exit;
+}
+
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $post = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);

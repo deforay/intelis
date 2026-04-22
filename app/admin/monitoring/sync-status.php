@@ -16,6 +16,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 $isSTS = $general->isSTSInstance();
+$canQueue = $isSTS && _isAllowed('/admin/monitoring/queue-lis-command.php');
+$canCancel = $isSTS && _isAllowed('/admin/monitoring/cancel-lis-command.php');
+$showActions = $isSTS && ($canQueue || $canCancel);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -406,7 +409,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                                             <th class="center">
                                                 <?php echo _translate("Version"); ?>
                                             </th>
-                                            <?php if ($isSTS) { ?>
+                                            <?php if ($showActions) { ?>
                                             <th class="center">
                                                 <?php echo _translate("Actions"); ?>
                                             </th>
@@ -415,7 +418,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                                     </thead>
                                     <tbody id="syncStatusTable">
                                         <tr>
-                                            <td colspan="<?= $isSTS ? 6 : 5; ?>" class="dataTables_empty center">
+                                            <td colspan="<?= $showActions ? 6 : 5; ?>" class="dataTables_empty center">
                                                 <i class="fa fa-spinner fa-spin"></i>
                                                 <?php echo _translate("Loading data..."); ?>
                                             </td>
@@ -440,7 +443,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
     <i class="fa fa-refresh fa-spin"></i> <?php echo _translate("Auto-refreshing data..."); ?>
 </div>
 
-<?php if ($isSTS) { ?>
+<?php if ($canQueue) { ?>
 <!-- Queue Lab Command modal -->
 <div class="modal fade" id="queueCommandModal" tabindex="-1" role="dialog" aria-labelledby="queueCommandModalLabel">
     <div class="modal-dialog" role="document">
@@ -561,7 +564,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
             }
         });
 
-        <?php if ($isSTS) { ?>
+        <?php if ($canQueue) { ?>
         // Queue-command modal: open, toggle params by command type, submit.
         $('#syncStatusDataTable tbody').on('click', '.queue-command-btn', function (e) {
             e.preventDefault();
@@ -636,6 +639,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                     if (res && res.status === 'success') {
                         $('#queueCommandModal').modal('hide');
                         showNotification('<?= _translate('Command queued.'); ?> <code>' + (res.commandId || '') + '</code>', 'success');
+                        loadData(true);
                     } else {
                         showNotification((res && res.error) ? res.error : '<?= _translate('Failed to queue command'); ?>', 'error');
                     }
@@ -650,6 +654,51 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 },
                 complete: function () {
                     $btn.html(originalHtml).prop('disabled', false);
+                }
+            });
+        });
+        <?php } ?>
+
+        <?php if ($canCancel) { ?>
+        // Cancel a pending command directly from the badge's "x" link.
+        $('#syncStatusDataTable tbody').on('click', '.cancel-command-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const $link = $(this);
+            const commandId = $link.data('commandId');
+            const commandName = $link.data('command') || 'command';
+            if (!commandId) return;
+
+            if (!window.confirm("<?= _translate('Cancel this pending'); ?> '" + commandName + "' <?= _translate('command? The lab has not yet picked it up.'); ?>")) {
+                return;
+            }
+
+            $link.css('pointer-events', 'none').text('...');
+
+            $.ajax({
+                url: '/admin/monitoring/cancel-lis-command.php',
+                type: 'POST',
+                dataType: 'json',
+                data: { commandId: commandId },
+                timeout: 15000,
+                success: function (res) {
+                    if (res && res.status === 'success') {
+                        showNotification('<?= _translate('Command cancelled.'); ?>', 'success');
+                        loadData(true);
+                    } else {
+                        showNotification((res && res.error) ? res.error : '<?= _translate('Failed to cancel command'); ?>', 'error');
+                        $link.text('×').css('pointer-events', 'auto');
+                    }
+                },
+                error: function (xhr) {
+                    let msg = '<?= _translate('Failed to cancel command'); ?>';
+                    try {
+                        const body = JSON.parse(xhr.responseText);
+                        if (body && body.error) msg = body.error;
+                    } catch (_) {}
+                    showNotification(msg, 'error');
+                    $link.text('×').css('pointer-events', 'auto');
                 }
             });
         });
@@ -734,7 +783,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 if (status !== 'abort') {
                     console.error('Failed to load sync status:', error);
                     $("#syncStatusTable").html(
-                        '<tr><td colspan="<?= $isSTS ? 6 : 5; ?>" class="text-center text-danger">' +
+                        '<tr><td colspan="<?= $showActions ? 6 : 5; ?>" class="text-center text-danger">' +
                         '<i class="fa fa-exclamation-triangle"></i> ' +
                         '<?php echo _translate("Failed to load data. Please try again."); ?>' +
                         '</td></tr>'
