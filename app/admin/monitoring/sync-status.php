@@ -538,6 +538,9 @@ $stateNameList = $geolocationService->getProvinces("yes");
     let loadDataTimeout;
     let currentRequest;
     let autoRefreshInterval;
+    // First load shows the server-rendered inline "Loading data..." row, so
+    // skip the overlay spinner to avoid two spinners competing on screen.
+    let isFirstLoad = true;
 
     $(document).ready(function () {
         // Initialize select2 with better performance
@@ -763,7 +766,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
             currentRequest.abort();
         }
 
-        if (!silent) {
+        if (!silent && !isFirstLoad) {
             showLoading();
         }
 
@@ -782,6 +785,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 $("#syncStatusTable").html(data);
                 updateStatusSummary();
                 hideLoading();
+                isFirstLoad = false;
 
                 // Show success message for manual refreshes
                 if (!silent) {
@@ -803,6 +807,9 @@ $stateNameList = $geolocationService->getProvinces("yes");
             },
             complete: function () {
                 currentRequest = null;
+                // Clear first-load flag even on error/abort so a retry shows
+                // the overlay spinner instead of an empty table with nothing.
+                isFirstLoad = false;
             }
         });
     }
