@@ -523,23 +523,14 @@ $userModules = $_SESSION['modules'] ?? [];
 	let currentRequests = [];
 	let isGeneratingDashboard = false;
 
-	// Inline, non-blocking loading indicator for lazy-loaded dashboard panels
-	function showLazyLoading(requestType) {
-		var panels = {
-			vl:              ['#vlNoOfSampleCount', '#vlPieChartDiv'],
-			recency:         ['#recencyNoOfSampleCount', '#recencyPieChartDiv'],
-			eid:             ['#eidNoOfSampleCount', '#eidPieChartDiv'],
-			covid19:         ['#covid19NoOfSampleCount', '#covid19PieChartDiv'],
-			hepatitis:       ['#hepatitisNoOfSampleCount', '#hepatitisPieChartDiv'],
-			tb:              ['#tbNoOfSampleCount', '#tbPieChartDiv'],
-			cd4:             ['#cd4NoOfSampleCount', '#cd4PieChartDiv'],
-			'generic-tests': ['#genericTestsNoOfSampleCount', '#genericTestsPieChartDiv']
-		};
-		var ids = panels[requestType] || [];
+	// Inline, non-blocking loading indicator for lazy-loaded dashboard panels.
+	// Paints every sample-count / pie-chart panel that is currently empty so the user
+	// always has something to look at while the viewport-triggered AJAX is in flight.
+	function paintLazyLoaders() {
 		var skeleton = '<div class="dashboard-lazy-loading"><span class="dashboard-lazy-loading__spinner"></span><?= _jsTranslate("Loading charts…"); ?></div>';
-		ids.forEach(function(sel) {
-			var $el = $(sel);
-			if ($el.length && $.trim($el.html()) === '') {
+		$('.sampleCountsDatatableDiv, .samplePieChartDiv').each(function() {
+			var $el = $(this);
+			if ($.trim($el.html()) === '') {
 				$el.html(skeleton);
 			}
 		});
@@ -578,6 +569,7 @@ $userModules = $_SESSION['modules'] ?? [];
 		});
 
 		$(".searchVlRequestDataDiv").html('<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2" style="cursor:pointer;"><span class="dashloader"></span> </div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> <span class="dashloader"></span></div> </div>');
+		paintLazyLoaders();
 		$("#myTab li:first-child").addClass("active");
 		$("#myTabContent div:first-child").addClass("active");
 
@@ -637,6 +629,10 @@ $userModules = $_SESSION['modules'] ?? [];
 		sampleCountsDatatableCounter = 0;
 		samplePieChartCounter = 0;
 
+		// Reset lazy panels so the skeleton shows again on re-search
+		$("." + requestType + " .sampleCountsDatatableDiv, ." + requestType + " .samplePieChartDiv").empty();
+		paintLazyLoaders();
+
 		// Fetch the first data asynchronously using jQuery's .done() and .fail() instead of .then() and .catch()
 		fetchSampleResultData(currentRequestType)
 			.done(function() {
@@ -664,9 +660,6 @@ $userModules = $_SESSION['modules'] ?? [];
 			if (sampleCountsDatatableCounter == 0) {
 				if ($("." + currentRequestType + " .sampleCountsDatatableDiv").isInViewport()) {
 					sampleCountsDatatableCounter++;
-
-					// Non-blocking inline loading indicator for the lazy panels
-					showLazyLoading(currentRequestType);
 
 					// Load charts in parallel using $.when
 					$.when(
