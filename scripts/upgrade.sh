@@ -1195,6 +1195,17 @@ disable_maintenance_mode() {
     print info "Maintenance mode disabled for ${lp}"
 }
 
+# Paths excluded from rollback snapshot/restore. User-data and ephemeral dirs
+# aren't touched by the apply phase, so snapshotting them just burns stat()
+# time on big installs — and restoring with --delete over them would nuke
+# uploads created between snapshot and failure.
+ROLLBACK_EXCLUDES=(
+    --exclude 'public/temporary/'
+    --exclude 'public/files/'
+    --exclude 'var/'
+    --exclude 'vendor/'
+)
+
 # create_rollback_snapshot — hardlink snapshot of $lp. Echoes snapshot path on
 # stdout; all informational output goes to stderr so callers can capture cleanly.
 create_rollback_snapshot() {
@@ -1203,7 +1214,7 @@ create_rollback_snapshot() {
     local snap_dir="${ROLLBACK_BASE_DIR}/${ts}/$(basename "$lp")"
     mkdir -p "$snap_dir" >&2
     # --link-dest makes this near-zero-disk: unchanged files become hardlinks.
-    if rsync -a --link-dest="$lp" "$lp/" "$snap_dir/" >/dev/null 2>&1; then
+    if rsync -a "${ROLLBACK_EXCLUDES[@]}" --link-dest="$lp" "$lp/" "$snap_dir/" >/dev/null 2>&1; then
         print info "Rollback snapshot created at ${snap_dir}" >&2
         echo "$snap_dir"
         return 0
@@ -1213,7 +1224,8 @@ create_rollback_snapshot() {
 }
 
 # restore_rollback_snapshot — rsync a snapshot back over lis_path. Uses --delete
-# so files added by the failed apply get removed.
+# so files added by the failed apply get removed. Excludes must match the
+# snapshot so --delete doesn't wipe user-data dirs that were never snapshotted.
 restore_rollback_snapshot() {
     local lp="$1"
     local snap="$2"
@@ -1223,11 +1235,29 @@ restore_rollback_snapshot() {
     fi
     print warning "Restoring ${lp} from snapshot ${snap}"
     log_action "Restoring ${lp} from rollback snapshot ${snap}"
-    rsync -a --delete "$snap/" "$lp/" >/dev/null 2>&1 || {
+    rsync -a --delete "${ROLLBACK_EXCLUDES[@]}" "$snap/" "$lp/" >/dev/null 2>&1 || {
         print error "Rollback rsync failed for ${lp}"
         return 1
     }
     chown -R www-data:www-data "$lp" 2>/dev/null || true
+
+    # vendor/ is excluded from snapshot to save disk/stat time. Rebuild it from
+    # the restored (old) composer.lock so PHP autoloading matches the rolled-back
+    # code. Wipe first so leftover new-version packages can't shadow old ones.
+    if [ -f "${lp}/composer.lock" ]; then
+        print info "Rebuilding vendor/ from snapshot composer.lock..."
+        rm -rf "${lp}/vendor"
+        if (cd "$lp" && COMPOSER_ALLOW_SUPERUSER=1 sudo -u www-data composer install --prefer-dist --no-dev --no-interaction); then
+            (cd "$lp" && COMPOSER_ALLOW_SUPERUSER=1 sudo -u www-data composer dump-autoload -o --no-interaction) || true
+            chown -R www-data:www-data "${lp}/vendor" 2>/dev/null || true
+            print success "vendor/ rebuilt from snapshot composer.lock"
+        else
+            print error "composer install failed during rollback; vendor/ is missing"
+            log_action "Rollback composer install failed for ${lp}"
+            return 1
+        fi
+    fi
+
     print success "Rollback complete for ${lp}"
     return 0
 }
