@@ -18,6 +18,10 @@
 #                      a READY sentinel). Ubuntu package updates are implicitly skipped
 #                      in this mode since system_prep was presumably already done during
 #                      the prepare invocation. MySQL/PHP/Apache checks still run.
+#   -k, --keep-snapshots N
+#                      Number of rollback snapshot generations to retain under
+#                      /var/intelis-rollback/ (default: 3). Older snapshots are
+#                      pruned after a successful apply run.
 #
 #   --prepare-only and --apply-prepared are mutually exclusive.
 #
@@ -137,6 +141,20 @@ while [ $# -gt 0 ]; do
             _rewritten_args+=("${1#--apply-prepared=}")
             shift
             ;;
+        --keep-snapshots)
+            _rewritten_args+=("-k")
+            if [ $# -lt 2 ]; then
+                echo "Error: --keep-snapshots requires a number argument" >&2
+                exit 2
+            fi
+            _rewritten_args+=("$2")
+            shift 2
+            ;;
+        --keep-snapshots=*)
+            _rewritten_args+=("-k")
+            _rewritten_args+=("${1#--keep-snapshots=}")
+            shift
+            ;;
         --)
             _rewritten_args+=("$@")
             break
@@ -150,7 +168,7 @@ done
 set -- "${_rewritten_args[@]}"
 
 # Parse command-line options
-while getopts ":sbAiPp:a:" opt; do
+while getopts ":sbAiPp:a:k:" opt; do
     case $opt in
     s) skip_ubuntu_updates=true ;;
     b) skip_backup=true ;;
@@ -159,6 +177,13 @@ while getopts ":sbAiPp:a:" opt; do
     p) lis_path="$OPTARG" ;;
     P) prepare_only=true ;;
     a) apply_prepared_dir="$OPTARG" ;;
+    k)
+        if ! [[ "$OPTARG" =~ ^[0-9]+$ ]]; then
+            echo "Error: --keep-snapshots must be a non-negative integer (got '${OPTARG}')" >&2
+            exit 2
+        fi
+        ROLLBACK_KEEP="$OPTARG"
+        ;;
         # Ignore invalid options silently
     esac
 done
@@ -939,6 +964,10 @@ VENDOR_TARBALL_MD5_URL="https://github.com/deforay/intelis/releases/download/ven
 STAGING_BASE_DIR="/var/intelis-staging"
 ROLLBACK_BASE_DIR="/var/intelis-rollback"
 
+# Default number of rollback snapshot generations to retain. Override with
+# --keep-snapshots N. Older snapshots are pruned after a successful apply run.
+ROLLBACK_KEEP="${ROLLBACK_KEEP:-3}"
+
 # prepare_phase — download + extract + verify master and vendor tarballs in parallel.
 # Echoes the staging dir on stdout (captured by caller). All informational
 # output is sent to stderr so stdout is clean.
@@ -1260,6 +1289,44 @@ restore_rollback_snapshot() {
 
     print success "Rollback complete for ${lp}"
     return 0
+}
+
+# prune_rollback_snapshots — delete all but the ROLLBACK_KEEP most recent
+# timestamped snapshot dirs under ROLLBACK_BASE_DIR. Called after a successful
+# apply run so operators still have the latest N generations (including the
+# one just created) available for manual recovery.
+prune_rollback_snapshots() {
+    local keep="${ROLLBACK_KEEP:-3}"
+    [ -d "$ROLLBACK_BASE_DIR" ] || return 0
+
+    local -a snap_dirs=()
+    local d
+    while IFS= read -r d; do
+        [ -d "$d" ] || continue
+        local base
+        base="$(basename "$d")"
+        # Only prune dirs matching the timestamp format used by apply_run_ts
+        [[ "$base" =~ ^[0-9]{8}-[0-9]{6}$ ]] || continue
+        snap_dirs+=("$d")
+    done < <(find "$ROLLBACK_BASE_DIR" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | sort -r)
+
+    local total="${#snap_dirs[@]}"
+    if [ "$total" -le "$keep" ]; then
+        return 0
+    fi
+
+    local pruned=0
+    local i
+    for (( i=keep; i<total; i++ )); do
+        if rm -rf "${snap_dirs[$i]}" 2>/dev/null; then
+            pruned=$((pruned + 1))
+        fi
+    done
+
+    if [ "$pruned" -gt 0 ]; then
+        print info "Pruned ${pruned} old rollback snapshot(s); kept the ${keep} most recent"
+        log_action "Pruned ${pruned} rollback snapshots under ${ROLLBACK_BASE_DIR} (kept ${keep})"
+    fi
 }
 
 # smoke_check — cheap post-apply sanity check. Prefers a smoke.php endpoint if
@@ -1633,6 +1700,9 @@ for i in "${!lis_paths[@]}"; do
         print_instance_status lis_paths instance_statuses
     fi
 done
+
+# Prune old rollback snapshots, keeping the N most recent (including this run's).
+prune_rollback_snapshots
 
 # Maintenance scripts prompt (only for single instance to avoid tedious multi-prompts).
 # Skipped under --apply-prepared since operator context (and TTY) may differ from
