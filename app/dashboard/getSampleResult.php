@@ -235,7 +235,7 @@ try {
     // ======================================================
     $accessionWhere = $W(["t.sample_collection_date BETWEEN '$startDate' AND '$endDate'"]);
     $accessionQuery = "SELECT
-            DATE_FORMAT(DATE(t.sample_collection_date), '$mysqlDateFormat') AS collection_date,
+            DATE(t.sample_collection_date) AS collection_date,
             COUNT(t.$primaryKey) AS count
         FROM $table AS t
         WHERE $accessionWhere
@@ -258,7 +258,7 @@ try {
     ]);
     $sampleTestedQuery = "
         SELECT
-            DATE_FORMAT(DATE(t.sample_tested_datetime), '$mysqlDateFormat') AS test_date,
+            DATE(t.sample_tested_datetime) AS test_date,
             COUNT(t.$primaryKey) AS count
         FROM $table AS t
         WHERE $testedSeriesWhere
@@ -281,7 +281,7 @@ try {
     ]);
     $sampleRejectedQuery = "
         SELECT
-            DATE_FORMAT(DATE(t.sample_collection_date), '$mysqlDateFormat') AS collection_date,
+            DATE(t.sample_collection_date) AS collection_date,
             COUNT(t.$primaryKey) AS count
         FROM $table AS t
         WHERE $rejectedWhere
@@ -479,69 +479,69 @@ try {
 
 <div class="top-stat-col">
     <div class="dashboard-stat2 bluebox" style="cursor:pointer;">
-        <div class="display">
+        <div class="display" style="color:#2ab4c0;">
             <div class="number">
-                <h3 class="font-green-sharp">
+                <h3 style="color:#2ab4c0;">
                     <span data-counter="counterup"
                         data-value="<?= $receivedTotal; ?>"><?php echo $receivedTotal; ?></span>
                 </h3>
-                <small class="font-green-sharp">
+                <small style="color:#2ab4c0;">
                     <?= _translate("SAMPLES COLLECTED"); ?>
                 </small><br>
-                <small class="font-green-sharp" style="font-size:0.75em;">
-                    <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>
-                </small>
-            </div>
-            <div class="icon font-green-sharp">
-                <em class="fa-solid fa-chart-simple"></em>
-            </div>
-        </div>
-        <div id="<?= $samplesReceivedChart; ?>" style="min-height:200px;"></div>
-    </div>
-</div>
-<div class="top-stat-col">
-    <div class="dashboard-stat2" style="cursor:pointer;">
-        <div class="display font-blue-sharp">
-            <div class="number">
-                <h3 class="font-blue-sharp">
-                    <span data-counter="counterup"
-                        data-value="<?php echo $acceptedTotal; ?>"><?php echo $acceptedTotal; ?></span>
-                </h3>
-                <small class="font-blue-sharp">
-                    <?php echo _translate("SAMPLES TESTED"); ?>
-                </small><br>
-                <small class="font-blue-sharp" style="font-size:0.75em;">
+                <small style="color:#2ab4c0;font-size:0.75em;">
                     <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>
                 </small>
             </div>
             <div class="icon">
-                <em class="fa-solid fa-chart-simple"></em>
+                <em class="fa-solid fa-chart-simple" style="color:#2ab4c0;"></em>
             </div>
         </div>
-        <div id="<?php echo $samplesTestedChart; ?>" style="min-height:200px;"></div>
+        <div id="<?= $samplesReceivedChart; ?>" style="min-height:300px;"></div>
+    </div>
+</div>
+<div class="top-stat-col">
+    <div class="dashboard-stat2" style="cursor:pointer;">
+        <div class="display" style="color:#7cb72a;">
+            <div class="number">
+                <h3 style="color:#7cb72a;">
+                    <span data-counter="counterup"
+                        data-value="<?php echo $acceptedTotal; ?>"><?php echo $acceptedTotal; ?></span>
+                </h3>
+                <small style="color:#7cb72a;">
+                    <?php echo _translate("SAMPLES TESTED"); ?>
+                </small><br>
+                <small style="color:#7cb72a;font-size:0.75em;">
+                    <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>
+                </small>
+            </div>
+            <div class="icon">
+                <em class="fa-solid fa-chart-simple" style="color:#7cb72a;"></em>
+            </div>
+        </div>
+        <div id="<?php echo $samplesTestedChart; ?>" style="min-height:300px;"></div>
     </div>
 </div>
 
 <div class="top-stat-col">
     <div class="dashboard-stat2 " style="cursor:pointer;">
-        <div class="display font-red-haze">
+        <div class="display" style="color:#5C9BD1;">
             <div class="number">
-                <h3 class="font-red-haze">
+                <h3 style="color:#5C9BD1;">
                     <span data-counter="counterup"
                         data-value="<?php echo $rejectedTotal; ?>"><?php echo $rejectedTotal; ?></span>
                 </h3>
-                <small class="font-red-haze">
+                <small style="color:#5C9BD1;">
                     <?php echo _translate("SAMPLES REJECTED"); ?>
                 </small><br>
-                <small class="font-red-haze" style="font-size:0.75em;">
+                <small style="color:#5C9BD1;font-size:0.75em;">
                     <?php echo _translate("In Selected Range") . " - " . $selectedRange; ?>
                 </small>
             </div>
             <div class="icon">
-                <em class="fa-solid fa-chart-simple"></em>
+                <em class="fa-solid fa-chart-simple" style="color:#5C9BD1;"></em>
             </div>
         </div>
-        <div id="<?php echo $samplesRejectedChart; ?>" style="min-height:260px;"></div>
+        <div id="<?php echo $samplesRejectedChart; ?>" style="min-height:300px;"></div>
     </div>
 </div>
 
@@ -748,8 +748,8 @@ try {
             ?>
                 <div class="lh-bar-row">
                     <div class="lh-bar-label">
-                        <span title="<?= htmlspecialchars((string) $label); ?>" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%;">
-                            <?= htmlspecialchars((string) $label); ?>
+                        <span title="<?= _htmlTranslate((string) $label); ?>" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%;">
+                            <?= _htmlTranslate((string) $label); ?>
                         </span>
                         <strong><?= $count; ?></strong>
                     </div>
@@ -787,8 +787,8 @@ try {
                 ?>
                     <div class="lh-bar-row">
                         <div class="lh-bar-label">
-                            <span title="<?= htmlspecialchars($reason['name']); ?>" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%;">
-                                <?= htmlspecialchars($reason['name']); ?>
+                            <span title="<?= _htmlTranslate($reason['name']); ?>" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%;">
+                                <?= _htmlTranslate($reason['name']); ?>
                             </span>
                             <strong><?= $reason['count']; ?></strong>
                         </div>
@@ -851,12 +851,113 @@ try {
 </div>
 
 <script>
+    // ---- Dashboard top-stats bucketing helpers (shared; guard against multi-include) ----
+    (function () {
+        if (window.__dashboardBucketHelperLoaded) return;
+        window.__dashboardBucketHelperLoaded = true;
+
+        var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+        function pad2(n) { return (n < 10 ? '0' : '') + n; }
+        function fmtDaily(ymd) {
+            var d = new Date(ymd + 'T00:00:00');
+            return pad2(d.getDate()) + '-' + MONTHS[d.getMonth()] + '-' + d.getFullYear();
+        }
+        function fmtMonth(ym) {
+            var m = parseInt(ym.substring(5, 7), 10) - 1;
+            return MONTHS[m] + ' ' + ym.substring(0, 4);
+        }
+        function mondayOf(ymd) {
+            var d = new Date(ymd + 'T00:00:00');
+            var day = d.getDay();
+            d.setDate(d.getDate() + (day === 0 ? -6 : 1 - day));
+            return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+        }
+
+        // Decides day / week / month based on chart plot width vs point count.
+        // Aim for ≥ ~35px per bar so labels stay readable.
+        window.bucketDashboardSeries = function (daily, plotWidth) {
+            if (!daily || !daily.length) return { categories: [], data: [], granularity: '' };
+            var maxBars = Math.max(4, Math.floor((plotWidth || 400) / 35));
+            if (daily.length <= maxBars) {
+                return {
+                    categories: daily.map(function (d) { return fmtDaily(d.date); }),
+                    data: daily.map(function (d) { return d.total; }),
+                    granularity: ''
+                };
+            }
+            var weekMap = {}, weekOrder = [];
+            daily.forEach(function (d) {
+                var k = mondayOf(d.date);
+                if (!(k in weekMap)) { weekMap[k] = 0; weekOrder.push(k); }
+                weekMap[k] += d.total;
+            });
+            if (weekOrder.length <= maxBars) {
+                return {
+                    categories: weekOrder.map(fmtDaily),
+                    data: weekOrder.map(function (k) { return weekMap[k]; }),
+                    granularity: 'Weekly'
+                };
+            }
+            var monthMap = {}, monthOrder = [];
+            daily.forEach(function (d) {
+                var k = d.date.substring(0, 7);
+                if (!(k in monthMap)) { monthMap[k] = 0; monthOrder.push(k); }
+                monthMap[k] += d.total;
+            });
+            return {
+                categories: monthOrder.map(fmtMonth),
+                data: monthOrder.map(function (k) { return monthMap[k]; }),
+                granularity: 'Monthly'
+            };
+        };
+
+        var GRAN_LABELS = {
+            '': '',
+            'Weekly': '<?= _jsTranslate("Weekly"); ?>',
+            'Monthly': '<?= _jsTranslate("Monthly"); ?>'
+        };
+        window.dashboardGranularityLabel = function (g) { return GRAN_LABELS[g] || ''; };
+
+        window.__dashboardCharts = window.__dashboardCharts || [];
+
+        // Re-bucket all registered charts (called on expand/collapse & window resize).
+        window.rebucketDashboardCharts = function () {
+            if (!window.__dashboardCharts.length) return;
+            window.__dashboardCharts.forEach(function (c) {
+                var el = document.getElementById(c.id);
+                if (!el) return;
+                var width = el.clientWidth || c.lastWidth || 400;
+                if (Math.abs(width - c.lastWidth) < 20) return;
+                var chart = jQuery('#' + c.id).highcharts();
+                if (!chart) return;
+                var b = window.bucketDashboardSeries(c.daily, width);
+                chart.xAxis[0].setCategories(b.categories, false);
+                chart.series[0].setData(b.data, false);
+                chart.redraw(false);
+                c.lastWidth = width;
+            });
+        };
+
+        var resizeTimer;
+        jQuery(window).on('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(window.rebucketDashboardCharts, 150);
+        });
+    })();
+
     <?php
     if ($receivedTotal > 0) { ?>
-        $('#<?php echo $samplesReceivedChart; ?>').highcharts({
+        (function () {
+            var id = '<?php echo $samplesReceivedChart; ?>';
+            var daily = [<?php foreach ($tResult as $r) { echo '{date:"' . $r['date'] . '",total:' . (int) $r['total'] . '},'; } ?>];
+            var el = document.getElementById(id);
+            var width = (el && el.clientWidth) || 400;
+            var b = window.bucketDashboardSeries(daily, width);
+        $('#' + id).highcharts({
             chart: {
                 type: 'column',
-                height: 200
+                height: 300
             },
             title: {
                 text: ''
@@ -873,13 +974,7 @@ try {
                 enabled: false
             },
             xAxis: {
-                categories: [
-                    <?php
-                    foreach ($tResult as $tRow) {
-                        echo '"' . ($tRow['date']) . '",';
-                    }
-                    ?>
-                ],
+                categories: b.categories,
                 crosshair: true,
                 scrollbar: {
                     enabled: true
@@ -916,23 +1011,26 @@ try {
             series: [{
                 showInLegend: false,
                 name: '<?= _translate("Samples", escapeTextOrContext: true); ?>',
-                data: [<?php
-                foreach ($tResult as $tRow) {
-                    echo ($tRow['total']) . ",";
-                }
-                ?>]
-
+                data: b.data
             }],
             colors: ['#2ab4c0']
         });
+            window.__dashboardCharts.push({ id: id, daily: daily, lastWidth: width });
+        })();
     <?php }
     if ($acceptedTotal > 0) {
         ?>
 
-        $('#<?php echo $samplesTestedChart; ?>').highcharts({
+        (function () {
+            var id = '<?php echo $samplesTestedChart; ?>';
+            var daily = [<?php foreach ($acceptedResult as $r) { echo '{date:"' . $r['date'] . '",total:' . (int) $r['total'] . '},'; } ?>];
+            var el = document.getElementById(id);
+            var width = (el && el.clientWidth) || 400;
+            var b = window.bucketDashboardSeries(daily, width);
+        $('#' + id).highcharts({
             chart: {
                 type: 'column',
-                height: 200
+                height: 300
             },
             title: {
                 text: ''
@@ -949,11 +1047,7 @@ try {
                 enabled: false
             },
             xAxis: {
-                categories: [<?php
-                foreach ($acceptedResult as $tRow) {
-                    echo "'" . ($tRow['date']) . "',";
-                }
-                ?>],
+                categories: b.categories,
                 crosshair: true,
                 scrollbar: {
                     enabled: true
@@ -983,19 +1077,22 @@ try {
             series: [{
                 showInLegend: false,
                 name: '<?= _translate("Samples", escapeTextOrContext: true); ?>',
-                data: [<?php
-                foreach ($acceptedResult as $tRow) {
-                    echo ($tRow['total']) . ",";
-                }
-                ?>]
-
+                data: b.data
             }],
             colors: ['#7cb72a']
         });
+            window.__dashboardCharts.push({ id: id, daily: daily, lastWidth: width });
+        })();
     <?php }
 
     if ($rejectedTotal > 0) { ?>
-        $('#<?php echo $samplesRejectedChart; ?>').highcharts({
+        (function () {
+            var id = '<?php echo $samplesRejectedChart; ?>';
+            var daily = [<?php foreach ($rejectedResult as $r) { echo '{date:"' . $r['date'] . '",total:' . (int) $r['total'] . '},'; } ?>];
+            var el = document.getElementById(id);
+            var width = (el && el.clientWidth) || 400;
+            var b = window.bucketDashboardSeries(daily, width);
+        $('#' + id).highcharts({
             chart: {
                 type: 'column',
                 height: 300
@@ -1015,11 +1112,7 @@ try {
                 enabled: false
             },
             xAxis: {
-                categories: [<?php
-                foreach ($rejectedResult as $tRow) {
-                    echo "'" . ($tRow['date']) . "',";
-                }
-                ?>],
+                categories: b.categories,
                 crosshair: true,
                 scrollbar: {
                     enabled: true
@@ -1050,15 +1143,12 @@ try {
             series: [{
                 showInLegend: false,
                 name: "<?php echo _translate("Samples", escapeTextOrContext: true); ?>",
-                data: [<?php
-                foreach ($rejectedResult as $tRow) {
-                    echo ($tRow['total']) . ",";
-                }
-                ?>]
-
+                data: b.data
             }],
             colors: ['#5C9BD1']
         });
+            window.__dashboardCharts.push({ id: id, daily: daily, lastWidth: width });
+        })();
     <?php }
     //}
     ?>
@@ -1172,7 +1262,13 @@ try {
                 if ($el && $el.length && typeof $el.highcharts === 'function') {
                     var c = $el.highcharts();
                     if (c && typeof c.reflow === 'function') {
-                        setTimeout(function () { c.reflow(); }, 30);
+                        setTimeout(function () {
+                            c.reflow();
+                            // After reflow, container width may have changed — rebucket the series.
+                            if (typeof window.rebucketDashboardCharts === 'function') {
+                                window.rebucketDashboardCharts();
+                            }
+                        }, 30);
                     }
                 }
             });
