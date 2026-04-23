@@ -167,11 +167,16 @@ dispatch_marker() {
     local logs_dir="$lp/var/logs"
     mkdir -p "$logs_dir" 2>/dev/null || true
 
-    local cmd_id command nonce depends_on
+    local cmd_id command nonce depends_on maintenance maint_arg
     cmd_id=$(json_field "$marker" '.commandId')
     command=$(json_field "$marker" '.command')
     nonce=$(json_field "$marker" '.nonce')
     depends_on=$(json_field "$marker" '.dependsOn')
+    # .params.maintenance is a boolean set by the STS queue UI (checkbox).
+    # jq's `// empty` yields empty for missing/null/false, "true" only for true.
+    maintenance=$(json_field "$marker" '.params.maintenance')
+    maint_arg=""
+    [ "$maintenance" = "true" ] && maint_arg="-M"
 
     if [ -z "$cmd_id" ] || [ -z "$command" ]; then
         log "marker $marker missing commandId or command; discarding"
@@ -238,7 +243,8 @@ dispatch_marker() {
                 log "$cmd_id ($command): deferred (outside quiet window)"
                 return 0
             else
-                intelis-update -p "$lp" -s -b >>"$output_log" 2>&1 || rc=$?
+                # $maint_arg is either empty (silent, the default) or "-M".
+                intelis-update -p "$lp" -s -b $maint_arg >>"$output_log" 2>&1 || rc=$?
             fi
             ;;
 
@@ -313,7 +319,8 @@ dispatch_marker() {
                     log "$cmd_id ($command): deferred (outside quiet window)"
                     return 0
                 else
-                    intelis-update -p "$lp" --apply-prepared "$staging_dir" -s -b >>"$output_log" 2>&1 || rc=$?
+                    # $maint_arg is either empty (silent, the default) or "-M".
+                    intelis-update -p "$lp" --apply-prepared "$staging_dir" -s -b $maint_arg >>"$output_log" 2>&1 || rc=$?
                     if [ "$rc" -eq 0 ]; then
                         rm -f "$prepared_dir/$depends_on.json"
                     fi
