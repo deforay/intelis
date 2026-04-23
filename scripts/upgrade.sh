@@ -9,7 +9,6 @@
 #   -A                 Auto-detect and update ALL intelis installations in /var/www
 #   -i                 Interactive instance selection (use with -A to pick specific instances)
 #   -s                 Skip Ubuntu system updates
-#   -b                 Skip backup prompts
 #   -P, --prepare-only Run only the prepare phase: download + extract + validate into a
 #                      staging directory, print the path, and exit 0. Safe to run
 #                      anytime; no downtime, no apply.
@@ -111,7 +110,6 @@ detect_intelis_installations() {
 
 # Initialize flags
 skip_ubuntu_updates=false
-skip_backup=false
 auto_detect=false
 interactive_select=false
 prepare_only=false
@@ -181,10 +179,9 @@ done
 set -- "${_rewritten_args[@]}"
 
 # Parse command-line options
-while getopts ":sbAiPp:a:k:M" opt; do
+while getopts ":sAiPp:a:k:M" opt; do
     case $opt in
     s) skip_ubuntu_updates=true ;;
-    b) skip_backup=true ;;
     A) auto_detect=true ;;
     i) interactive_select=true ;;
     p) lis_path="$OPTARG" ;;
@@ -852,118 +849,6 @@ log_action "Ubuntu packages updated/installed."
 for p in "${lis_paths[@]}"; do
     set_permissions "$p/var/logs" "full"
 done
-
-# Function to list databases and get the database list
-get_databases() {
-    print info "Fetching available databases..."
-    local IFS=$'\n'
-    # Exclude the databases you do not want to back up from the list
-    databases=($(mysql -u root -p"${mysql_root_password}" -e "SHOW DATABASES;" | sed 1d | egrep -v 'information_schema|mysql|performance_schema|sys|phpmyadmin'))
-    local -i cnt=1
-    for db in "${databases[@]}"; do
-        echo "$cnt) $db"
-        ((cnt++))
-    done
-}
-
-# Function to back up selected databases
-backup_database() {
-    local IFS=$'\n'
-    # Now we use the 'databases' array from 'get_databases' function instead of querying again
-    local db_list=("${databases[@]}")
-    local timestamp=$(date +%Y%m%d-%H%M%S) # Adding timestamp with hours, minutes, and seconds
-    for i in "$@"; do
-        local db="${db_list[$i]}"
-        print info "Backing up database: $db"
-        mysqldump -u root -p"${mysql_root_password}" "$db" | gzip >"${backup_location}/${db}_${timestamp}.sql.gz"
-        if [[ $? -eq 0 ]]; then
-            print success "Backup of $db completed successfully."
-            log_action "Backup of $db completed successfully."
-        else
-            print error "Failed to backup database: $db"
-            log_action "Failed to backup database: $db"
-        fi
-    done
-}
-if [ "$skip_backup" = false ]; then
-
-    # Ask the user if they want to backup the database
-    if ask_yes_no "Do you want to backup the database" "no"; then
-        # Ask for MySQL root password
-        echo "Please enter your MySQL root password:"
-        read -r -s mysql_root_password
-
-        # Ask for the backup location and create it if it doesn't exist
-        read -r -p "Enter the backup location [press enter to select /var/intelis-backup/db/]: " backup_location
-        backup_location="${backup_location:-/var/intelis-backup/db/}"
-
-        # Create the backup directory if it does not exist
-        if [ ! -d "$backup_location" ]; then
-            print info "Backup directory does not exist. Creating it now..."
-            mkdir -p "$backup_location"
-            if [ $? -ne 0 ]; then
-                print error "Failed to create backup directory. Please check your permissions."
-                exit 1
-            fi
-        fi
-
-        # Change to the backup directory
-        cd "$backup_location" || exit
-
-        # List databases and ask for user choice
-        get_databases
-        echo "Enter the numbers of the databases you want to backup, separated by space or comma, or type 'all' for all databases:"
-        read -r input_selections
-
-        # Convert input selection to array indexes
-        selected_indexes=()
-        if [[ "$input_selections" == "all" ]]; then
-            selected_indexes=("${!databases[@]}")
-        else
-            # Split input by space and comma
-            IFS=', ' read -ra selections <<<"$input_selections"
-
-            for selection in "${selections[@]}"; do
-                if [[ "$selection" =~ ^[0-9]+$ ]]; then
-                    # Subtract 1 to convert from human-readable number to zero-indexed array
-                    selected_indexes+=($(($selection - 1)))
-                else
-                    echo "Invalid selection: $selection. Ignoring."
-                fi
-            done
-        fi
-
-        # Backup the selected databases
-        backup_database "${selected_indexes[@]}"
-        log_action "Database backup completed."
-    else
-        print info "Skipping database backup as per user request."
-        log_action "Skipping database backup as per user request."
-    fi
-
-    # Ask the user if they want to backup the LIS folder(s)
-    backup_prompt="Do you want to backup the LIS folder before updating?"
-    if [ ${#lis_paths[@]} -gt 1 ]; then
-        backup_prompt="Do you want to backup all ${#lis_paths[@]} LIS folders before updating?"
-    fi
-
-    if ask_yes_no "$backup_prompt" "no"; then
-        timestamp=$(date +%Y%m%d-%H%M%S)
-        for p in "${lis_paths[@]}"; do
-            folder_name=$(basename "$p")
-            backup_folder="/var/intelis-backup/www/${folder_name}-backup-$timestamp"
-            print info "Backing up $p..."
-            mkdir -p "${backup_folder}"
-            rsync -a --delete --exclude "public/temporary/" --inplace --whole-file --info=progress2 "$p/" "${backup_folder}/" &
-            rsync_pid=$!
-            spinner "${rsync_pid}"
-            log_action "LIS folder $p backed up to ${backup_folder}"
-        done
-    else
-        print info "Skipping LIS folder backup as per user request."
-        log_action "Skipping LIS folder backup as per user request."
-    fi
-fi
 
 # ---------------------------------------------------------------------------
 # Phase split helpers: prepare_phase, maintenance mode, rollback snapshot.
