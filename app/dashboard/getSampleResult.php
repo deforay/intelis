@@ -415,8 +415,69 @@ try {
         color: #000 !important;
         font-family: helvetica, arial, sans-serif;
     }
+
+    .top-stats-toolbar {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 8px;
+    }
+    .top-stats-toggle {
+        background: #fff;
+        border: 1px solid #d4d7e0;
+        color: #555;
+        font-size: 0.8em;
+        padding: 5px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .top-stats-toggle:hover {
+        background: #f5f6fa;
+        color: #2ab4c0;
+        border-color: #bfc4d4;
+    }
+    .top-stats-toggle em { font-size: 0.9em; }
+
+    .top-stats-grid {
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+    .top-stats-grid > .top-stat-col {
+        padding: 0 10px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+    }
+    .top-stats-grid > .top-stat-col > .dashboard-stat2 {
+        flex: 1 1 auto;
+        width: 100%;
+    }
+    .top-stats-grid.compact > .top-stat-col { width: 33.333%; }
+    .top-stats-grid.expanded > .top-stat-col { width: 100%; }
+    @media (max-width: 991px) {
+        .top-stats-grid.compact > .top-stat-col { width: 50%; }
+    }
+    @media (max-width: 767px) {
+        .top-stats-grid.compact > .top-stat-col,
+        .top-stats-grid.expanded > .top-stat-col { width: 100%; }
+    }
 </style>
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 top-stats-toolbar">
+    <button type="button" class="top-stats-toggle" id="topStatsToggleBtn_<?= htmlspecialchars($testType); ?>" data-mode="compact" title="<?= _translate("Toggle compact / expanded view", escapeTextOrContext: true); ?>">
+        <em class="fa-solid fa-expand"></em>
+        <span class="top-stats-toggle-label"><?= _translate("Expand"); ?></span>
+    </button>
+</div>
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div class="top-stats-grid compact" id="topStatsGrid_<?= htmlspecialchars($testType); ?>">
+
+<div class="top-stat-col">
     <div class="dashboard-stat2 bluebox" style="cursor:pointer;">
         <div class="display">
             <div class="number">
@@ -435,10 +496,10 @@ try {
                 <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
-        <div id="<?= $samplesReceivedChart; ?>" width="210" height="200" style="min-height:200px;"></div>
+        <div id="<?= $samplesReceivedChart; ?>" style="min-height:200px;"></div>
     </div>
 </div>
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+<div class="top-stat-col">
     <div class="dashboard-stat2" style="cursor:pointer;">
         <div class="display font-blue-sharp">
             <div class="number">
@@ -457,11 +518,11 @@ try {
                 <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
-        <div id="<?php echo $samplesTestedChart; ?>" width="210" height="200" style="min-height:200px;"></div>
+        <div id="<?php echo $samplesTestedChart; ?>" style="min-height:200px;"></div>
     </div>
 </div>
 
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div class="top-stat-col">
     <div class="dashboard-stat2 " style="cursor:pointer;">
         <div class="display font-red-haze">
             <div class="number">
@@ -480,8 +541,11 @@ try {
                 <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
-        <div id="<?php echo $samplesRejectedChart; ?>" width="210" height="300" style="min-height:300px;"></div>
+        <div id="<?php echo $samplesRejectedChart; ?>" style="min-height:260px;"></div>
     </div>
+</div>
+
+</div>
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2 bluebox" style="cursor:pointer;">
@@ -520,11 +584,16 @@ try {
 ?>
 
 <style>
+    .lab-health-section {
+        background: #f4f6f9;
+        border: 1px solid #e3e7ee;
+        border-radius: 8px;
+        padding: 18px 16px 6px;
+        margin: 22px 0 10px;
+    }
     .lab-health-header {
-        margin: 18px 0 10px;
-        padding: 0 5px;
-        border-top: 1px solid #eceaf2;
-        padding-top: 16px;
+        padding: 0 4px;
+        margin-bottom: 14px;
     }
     .lab-health-header h4 {
         font-weight: 600;
@@ -533,15 +602,24 @@ try {
         letter-spacing: 0.3px;
     }
     .lab-health-header small {
-        color: #999;
+        color: #8a839a;
         font-size: 0.8em;
+    }
+    .lab-health-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .lab-health-row > [class*="col-"] {
+        display: flex;
+        float: none;
+        margin-bottom: 20px;
     }
     .lab-health-card {
         background: #fff;
         border: 1px solid #eceaf2;
         border-radius: 6px;
         padding: 18px 18px 16px;
-        margin-bottom: 20px;
+        width: 100%;
         min-height: 260px;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
         display: flex;
@@ -632,10 +710,15 @@ try {
     }
 </style>
 
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 lab-health-header">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div class="lab-health-section">
+
+<div class="lab-health-header">
     <h4><?= _translate("Lab Health"); ?></h4>
     <small><?= _translate("Last 6 months — independent of the date filter above"); ?></small>
 </div>
+
+<div class="row lab-health-row">
 
 <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
     <div class="lab-health-card">
@@ -761,6 +844,10 @@ try {
             <?php } ?>
         </div>
     </div>
+</div>
+
+</div>
+</div>
 </div>
 
 <script>
@@ -1064,4 +1151,58 @@ try {
             }]
         });
     <?php } ?>
+
+    (function () {
+        var gridId = 'topStatsGrid_<?= htmlspecialchars($testType); ?>';
+        var btnId  = 'topStatsToggleBtn_<?= htmlspecialchars($testType); ?>';
+        var grid = document.getElementById(gridId);
+        var btn  = document.getElementById(btnId);
+        if (!grid || !btn) return;
+
+        var chartIds = [
+            '<?= $samplesReceivedChart; ?>',
+            '<?= $samplesTestedChart; ?>',
+            '<?= $samplesRejectedChart; ?>'
+        ];
+        var storeKey = 'labTopStatsMode';
+
+        function reflowCharts() {
+            chartIds.forEach(function (id) {
+                var $el = window.jQuery ? window.jQuery('#' + id) : null;
+                if ($el && $el.length && typeof $el.highcharts === 'function') {
+                    var c = $el.highcharts();
+                    if (c && typeof c.reflow === 'function') {
+                        setTimeout(function () { c.reflow(); }, 30);
+                    }
+                }
+            });
+        }
+
+        function apply(mode) {
+            var expanded = (mode === 'expanded');
+            grid.classList.toggle('expanded', expanded);
+            grid.classList.toggle('compact', !expanded);
+            btn.setAttribute('data-mode', mode);
+            var icon  = btn.querySelector('em');
+            var label = btn.querySelector('.top-stats-toggle-label');
+            if (icon)  icon.className  = expanded ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+            if (label) label.textContent = expanded
+                ? '<?= _translate("Compact", escapeTextOrContext: true); ?>'
+                : '<?= _translate("Expand", escapeTextOrContext: true); ?>';
+            reflowCharts();
+        }
+
+        var saved = 'compact';
+        try { saved = localStorage.getItem(storeKey) || 'compact'; } catch (e) {}
+        apply(saved);
+
+        btn.addEventListener('click', function () {
+            var next = btn.getAttribute('data-mode') === 'expanded' ? 'compact' : 'expanded';
+            try { localStorage.setItem(storeKey, next); } catch (e) {}
+            apply(next);
+        });
+
+        // Initial reflow after Highcharts finishes rendering
+        setTimeout(reflowCharts, 150);
+    })();
 </script>
