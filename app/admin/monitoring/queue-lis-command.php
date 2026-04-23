@@ -131,6 +131,14 @@ if ($command === 'upgrade-apply') {
     }
 }
 
+// Optional maintenance flag — only meaningful for commands that invoke the
+// upgrade script. Drives the -M / --maintenance flag on intelis-update so the
+// lab shows a 503 "upgrade in progress" page during the apply window.
+// Default is silent (omit from params) matching the upgrade.sh default.
+if (in_array($command, ['upgrade', 'upgrade-apply'], true) && !empty($post['maintenance'])) {
+    $params['maintenance'] = true;
+}
+
 // Optional notBefore — earliest time the runner may pick up this command.
 // Accepts ISO 8601 / datetime-local format. Never accept past values.
 if (!empty($post['notBefore'])) {

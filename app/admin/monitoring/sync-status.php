@@ -514,6 +514,17 @@ $stateNameList = $geolocationService->getProvinces("yes");
                         <small
                             class="text-muted"><?= _translate('Earliest time the runner may start this command. Apply also waits for the quiet window if configured.'); ?></small>
                     </div>
+                    <div class="form-group command-params upgrade-params upgrade-apply-params"
+                        style="display:none;">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="queueCommandMaintenance">
+                                <?= _translate('Show maintenance page to users during apply'); ?>
+                            </label>
+                        </div>
+                        <small
+                            class="text-muted"><?= _translate('Unchecked (default) = silent upgrade; users see no interruption. Check this when the upgrade runs DB migrations or changes composer dependencies — requests mid-apply would fail otherwise.'); ?></small>
+                    </div>
                     <p class="help-block" style="margin-top: 15px;">
                         <i class="fa fa-info-circle"></i>
                         <?= _translate('The lab picks up queued commands on its next sync tick (typically every 5 minutes). Upgrade and apply commands additionally wait for the configured quiet window at the lab.'); ?>
@@ -591,6 +602,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 $('#queueCommandModule').val('');
                 $('#queueCommandDays').val('');
                 $('#queueCommandNotBefore').val('');
+                $('#queueCommandMaintenance').prop('checked', false);
 
                 // Populate the "Prepared staging to apply" dropdown from the row's data.
                 const $dep = $('#queueCommandDependsOn');
@@ -638,6 +650,11 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 if (command === 'upgrade' || command === 'upgrade-prepare' || command === 'upgrade-apply') {
                     const nb = $('#queueCommandNotBefore').val();
                     if (nb) payload.notBefore = nb;
+                }
+                if (command === 'upgrade' || command === 'upgrade-apply') {
+                    if ($('#queueCommandMaintenance').is(':checked')) {
+                        payload.maintenance = 1;
+                    }
                 }
 
                 $btn.html('<i class="fa fa-spinner fa-spin"></i> <?= _translate('Queueing...'); ?>').prop('disabled', true);
