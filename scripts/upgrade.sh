@@ -1024,7 +1024,7 @@ prepare_phase() {
         fi
         if [ ! -f "$master_tar" ]; then
             echo "master: downloading from $MASTER_TARBALL_URL"
-            wget --quiet -O "$master_tar" "$MASTER_TARBALL_URL"
+            download_file "$master_tar" "$MASTER_TARBALL_URL" "master: downloading tarball"
         else
             echo "master: tarball already present, skipping download"
         fi
@@ -1080,9 +1080,9 @@ prepare_phase() {
         fi
         if [ ! -f "$vendor_tar" ] || [ ! -f "$vendor_md5" ]; then
             echo "vendor: downloading tarball"
-            wget --quiet -O "$vendor_tar" "$VENDOR_TARBALL_URL"
+            download_file "$vendor_tar" "$VENDOR_TARBALL_URL" "vendor: downloading tarball"
             echo "vendor: downloading checksum"
-            wget --quiet -O "$vendor_md5" "$VENDOR_TARBALL_MD5_URL"
+            download_file "$vendor_md5" "$VENDOR_TARBALL_MD5_URL" "vendor: downloading checksum"
         else
             echo "vendor: tarball + checksum already present"
         fi
