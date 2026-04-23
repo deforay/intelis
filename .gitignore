@@ -102,3 +102,7 @@ backup/*
 
 # Local dump files
 dump-*
+
+# Per-install commit SHA stamp written by scripts/upgrade.sh on tarball
+# installs. Must never be committed — it's specific to each deployment.
+VERSION.txt

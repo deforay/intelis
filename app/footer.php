@@ -31,8 +31,13 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 			<small class="text-muted"><a href="javascript:void(0);" onclick="clearCache();" style="font-size:0.8em;"><?= _translate("Clear Cache"); ?></a></small>
 		</div>
 		<div class=" col-lg-4 col-sm-4">
-			<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;
-				<?= "v" . VERSION; ?>
+			<?php
+			$commitShaFull = $general->getCommitSha();
+			$commitShaShort = $general->getCommitShaShort();
+			?>
+			<small class="pull-right" style="font-weight:bold;<?= $commitShaFull ? 'cursor:help;' : ''; ?>"
+				<?php if ($commitShaFull): ?>title="Commit <?= htmlspecialchars($commitShaFull, ENT_QUOTES, 'UTF-8'); ?>"<?php endif; ?>>
+				&nbsp;&nbsp;<?= "v" . VERSION; ?><?php if ($commitShaShort): ?> <span class="text-muted" style="font-weight:normal;">(<?= htmlspecialchars($commitShaShort, ENT_QUOTES, 'UTF-8'); ?>)</span><?php endif; ?>
 			</small>
 			<?php
 

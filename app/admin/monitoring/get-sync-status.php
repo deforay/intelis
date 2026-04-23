@@ -31,6 +31,7 @@ $query = "SELECT
     f.facility_id,
     f.facility_name,
     f.facility_attributes->>'$.version' as version,
+    f.facility_attributes->>'$.commitSha' as commitSha,
     f.facility_attributes->>'$.lastHeartBeat' as lastHeartBeat,
     f.facility_attributes->>'$.lastResultsSync' as lastResultsSync,
     f.facility_attributes->>'$.lastRequestsSync' as lastRequestsSync,
@@ -162,7 +163,19 @@ if (empty($resultSet)) {
                 <?= DateUtility::humanReadableDateFormat($aRow['lastRequestsSync'] ?? '', true) ?: '-'; ?>
             </td>
             <td class="text-center">
-                <?= htmlspecialchars($aRow['version'] ?? '-'); ?>
+                <?php
+                $_rowSha = $aRow['commitSha'] ?? null;
+                if (is_string($_rowSha) && preg_match('/^[0-9a-f]{40}$/', $_rowSha)) {
+                    $_rowShaShort = substr($_rowSha, 0, 7);
+                } else {
+                    $_rowSha = null;
+                    $_rowShaShort = null;
+                }
+                ?>
+                <?= htmlspecialchars($aRow['version'] ?? '-'); ?><?php if ($_rowShaShort): ?>
+                    <small class="text-muted" style="cursor:help;"
+                        title="Commit <?= htmlspecialchars($_rowSha, ENT_QUOTES, 'UTF-8'); ?>">(<?= htmlspecialchars($_rowShaShort, ENT_QUOTES, 'UTF-8'); ?>)</small>
+                <?php endif; ?>
                 <?php if ($showActions) {
                     // Heartbeat freshness — report on the two background loops
                     // that actually drive remote commands. Both are "eventually

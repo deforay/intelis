@@ -159,6 +159,71 @@ final class CommonService
         });
     }
 
+    /**
+     * Resolve the git commit SHA of the currently-running code.
+     *
+     * Resolution order (first hit wins):
+     *   1. .git/HEAD of the install root — dev clones / any git-based install.
+     *      A live read, so always current with HEAD.
+     *   2. VERSION.txt at the install root — written by scripts/upgrade.sh when
+     *      it prepares a tarball install (no .git present in tarballs).
+     *
+     * Returns null if neither source resolves.
+     */
+    public function getCommitSha(): ?string
+    {
+        return $this->fileCache->get('commitSha', function (): ?string {
+            $gitHead = ROOT_PATH . '/.git/HEAD';
+            if (is_file($gitHead) && is_readable($gitHead)) {
+                $head = trim((string) @file_get_contents($gitHead));
+                // Detached HEAD stores the SHA directly.
+                if (preg_match('/^[0-9a-f]{40}$/', $head)) {
+                    return $head;
+                }
+                // Attached HEAD: "ref: refs/heads/<branch>" — resolve that ref.
+                if (str_starts_with($head, 'ref: ')) {
+                    $refPath = ROOT_PATH . '/.git/' . trim(substr($head, 5));
+                    if (is_file($refPath) && is_readable($refPath)) {
+                        $sha = trim((string) @file_get_contents($refPath));
+                        if (preg_match('/^[0-9a-f]{40}$/', $sha)) {
+                            return $sha;
+                        }
+                    }
+                    // Packed refs fallback — large repos move refs into .git/packed-refs.
+                    $packed = ROOT_PATH . '/.git/packed-refs';
+                    if (is_file($packed) && is_readable($packed)) {
+                        $ref = trim(substr($head, 5));
+                        foreach (file($packed, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
+                            if (isset($line[0]) && $line[0] === '#') {
+                                continue;
+                            }
+                            if (preg_match('/^([0-9a-f]{40})\s+' . preg_quote($ref, '/') . '$/', $line, $m)) {
+                                return $m[1];
+                            }
+                        }
+                    }
+                }
+            }
+
+            $versionTxt = ROOT_PATH . '/VERSION.txt';
+            if (is_file($versionTxt) && is_readable($versionTxt)) {
+                $sha = trim((string) @file_get_contents($versionTxt));
+                if (preg_match('/^[0-9a-f]{7,40}$/', $sha)) {
+                    return $sha;
+                }
+            }
+
+            return null;
+        });
+    }
+
+    /** Short form of getCommitSha() suitable for UI display. Null if unknown. */
+    public function getCommitShaShort(): ?string
+    {
+        $sha = $this->getCommitSha();
+        return $sha ? substr($sha, 0, 7) : null;
+    }
+
     public function getRemoteURL(): ?string
     {
         return $this->fileCache->get('remoteURL', function (): ?string {

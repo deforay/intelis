@@ -179,6 +179,7 @@ $payload = [
     'labId' => $labId,
     'instanceId' => $general->getInstanceId(),
     'currentVersion' => defined('VERSION') ? VERSION : null,
+    'commitSha' => $general->getCommitSha(),
     'statusUpdates' => $statusUpdates,
     'heartbeats' => $heartbeats,
 ];
