@@ -2,6 +2,29 @@
 
 declare(strict_types=1);
 
+// Upgrade-in-progress bounce. Must run before any require so a half-replaced
+// codebase cannot be loaded. Marker files are dropped/removed by scripts/upgrade.sh
+// when invoked with --maintenance.
+if (is_file(__DIR__ . '/.maintenance')) {
+    http_response_code(503);
+    header('Retry-After: 120');
+    header('Cache-Control: no-store');
+    header('Content-Type: text/html; charset=utf-8');
+    $__maintPage = __DIR__ . '/.intelis-maintenance.html';
+    if (is_file($__maintPage)) {
+        readfile($__maintPage);
+    } else {
+        echo '<!doctype html><html><head><meta charset="utf-8">'
+            . '<title>Upgrade in progress</title>'
+            . '<meta http-equiv="refresh" content="15"></head>'
+            . '<body style="font-family:sans-serif;max-width:640px;margin:3em auto;padding:1em;">'
+            . '<h1>Upgrade in progress</h1>'
+            . '<p>This Intelis instance is being updated. Please retry in a moment.</p>'
+            . '</body></html>';
+    }
+    exit;
+}
+
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
 use Slim\ResponseEmitter;

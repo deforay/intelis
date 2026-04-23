@@ -2,6 +2,22 @@
 
 declare(strict_types=1);
 
+// Upgrade-in-progress bounce. Must run before any require so a half-replaced
+// codebase cannot be loaded. Marker files live at public/.maintenance (one dir
+// up from public/api/) and are managed by scripts/upgrade.sh --maintenance.
+if (is_file(dirname(__DIR__) . '/.maintenance')) {
+    http_response_code(503);
+    header('Retry-After: 120');
+    header('Cache-Control: no-store');
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'status' => 'maintenance',
+        'message' => 'Upgrade in progress. Please retry in a moment.',
+        'retryAfter' => 120,
+    ]);
+    exit;
+}
+
 require_once dirname(__DIR__) . '/../bootstrap.php';
 
 use Slim\Factory\AppFactory;
