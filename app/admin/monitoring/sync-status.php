@@ -294,14 +294,14 @@ $stateNameList = $geolocationService->getProvinces("yes");
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><em class="fa-solid fa-traffic-light"></em>
-            <?php echo _translate("Lab Sync Status"); ?>
+            <?= _translate("Lab Sync Status"); ?>
         </h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em>
-                    <?php echo _translate("Home"); ?>
+                    <?= _translate("Home"); ?>
                 </a></li>
             <li class="active">
-                <?php echo _translate("Lab Sync Status"); ?>
+                <?= _translate("Lab Sync Status"); ?>
             </li>
         </ol>
     </section>
@@ -316,22 +316,22 @@ $stateNameList = $geolocationService->getProvinces("yes");
                         <div class="col-md-4">
                             <div class="status-card active">
                                 <h3 id="activeCount">0</h3>
-                                <p><?php echo _translate("Active Labs"); ?></p>
-                                <small><?php echo _translate("Synced within 2 weeks"); ?></small>
+                                <p><?= _translate("Active Labs"); ?></p>
+                                <small><?= _translate("Synced within 2 weeks"); ?></small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="status-card warning">
                                 <h3 id="warningCount">0</h3>
-                                <p><?php echo _translate("Warning Labs"); ?></p>
-                                <small><?php echo _translate("Synced 2-4 weeks ago"); ?></small>
+                                <p><?= _translate("Warning Labs"); ?></p>
+                                <small><?= _translate("Synced 2-4 weeks ago"); ?></small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="status-card critical">
                                 <h3 id="criticalCount">0</h3>
-                                <p><?php echo _translate("Critical Labs"); ?></p>
-                                <small><?php echo _translate("Not synced for 4+ weeks"); ?></small>
+                                <p><?= _translate("Critical Labs"); ?></p>
+                                <small><?= _translate("Not synced for 4+ weeks"); ?></small>
                             </div>
                         </div>
                     </div>
@@ -345,24 +345,24 @@ $stateNameList = $geolocationService->getProvinces("yes");
                                 <label for="province"><?php echo _translate("Province/State"); ?></label>
                                 <select name="province" id="province" onchange="getDistrictByProvince(this.value)"
                                     class="form-control"
-                                    title="<?php echo _translate('Please choose Province/State/Region'); ?>">
+                                    title="<?= _translate('Please choose Province/State/Region'); ?>">
                                     <?= $general->generateSelectOptions($stateNameList, null, _translate("-- Select --")); ?>
                                 </select>
                             </div>
 
                             <div class="filter-group">
-                                <label for="district"><?php echo _translate("District/County"); ?></label>
+                                <label for="district"><?= _translate("District/County"); ?></label>
                                 <select class="form-control" id="district" name="district"
-                                    title="<?php echo _translate('Please select Province/State'); ?>">
-                                    <option value=""><?php echo _translate("-- Select Province First --"); ?></option>
+                                    title="<?= _translate('Please select Province/State'); ?>">
+                                    <option value=""><?= _translate("-- Select Province First --"); ?></option>
                                 </select>
                             </div>
 
                             <div class="filter-group">
-                                <label for="labName"><?php echo _translate("Lab Name"); ?></label>
+                                <label for="labName"><?= _translate("Lab Name"); ?></label>
                                 <select class="form-control select2" id="labName" name="labName"
-                                    title="<?php echo _translate('Please select the Lab name'); ?>">
-                                    <?php echo $general->generateSelectOptions($labNameList, null, _translate('-- Select --')); ?>
+                                    title="<?= _translate('Please select the Lab name'); ?>">
+                                    <?= $general->generateSelectOptions($labNameList, null, _translate('-- Select --')); ?>
                                 </select>
                             </div>
                         </div>
@@ -375,12 +375,12 @@ $stateNameList = $geolocationService->getProvinces("yes");
                                 <i class="fa fa-refresh"></i> <?= _translate('Reset'); ?>
                             </button>
                             <button type="button" class="btn btn-success" onclick="exportSyncStatus();">
-                                <i class="fa-solid fa-file-excel"></i> <?php echo _translate("Export Excel"); ?>
+                                <i class="fa-solid fa-file-excel"></i> <?= _translate("Export Excel"); ?>
                             </button>
                             <div class="auto-refresh-toggle" style="margin-left: auto;">
                                 <label>
                                     <input type="checkbox" id="autoRefresh" checked>
-                                    <?php echo _translate("Auto-refresh (5 min)"); ?>
+                                    <?= _translate("Auto-refresh (5 min)"); ?>
                                 </label>
                             </div>
                         </div>
@@ -395,24 +395,24 @@ $stateNameList = $geolocationService->getProvinces("yes");
                                     <thead>
                                         <tr>
                                             <th class="center">
-                                                <?php echo _translate("Lab Name"); ?>
+                                                <?= _translate("Lab Name"); ?>
                                             </th>
                                             <th class="center">
-                                                <?php echo _translate("Last Synced on"); ?>
+                                                <?= _translate("Last Synced on"); ?>
                                             </th>
                                             <th class="center">
-                                                <?php echo _translate("Last Results Sync from Lab"); ?>
+                                                <?= _translate("Last Results Sync from Lab"); ?>
                                             </th>
                                             <th class="center">
-                                                <?php echo _translate("Last Requests Sync from STS"); ?>
+                                                <?= _translate("Last Requests Sync from STS"); ?>
                                             </th>
                                             <th class="center">
-                                                <?php echo _translate("Version"); ?>
+                                                <?= _translate("Version"); ?>
                                             </th>
                                             <?php if ($showActions) { ?>
-                                            <th class="center">
-                                                <?php echo _translate("Actions"); ?>
-                                            </th>
+                                                <th class="center">
+                                                    <?= _translate("Actions"); ?>
+                                                </th>
                                             <?php } ?>
                                         </tr>
                                     </thead>
@@ -420,7 +420,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                                         <tr>
                                             <td colspan="<?= $showActions ? 6 : 5; ?>" class="dataTables_empty center">
                                                 <i class="fa fa-spinner fa-spin"></i>
-                                                <?php echo _translate("Loading data..."); ?>
+                                                <?= _translate("Loading data..."); ?>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -440,88 +440,94 @@ $stateNameList = $geolocationService->getProvinces("yes");
 
 <!-- Auto-refresh indicator -->
 <div class="refresh-indicator" id="refreshIndicator">
-    <i class="fa fa-refresh fa-spin"></i> <?php echo _translate("Auto-refreshing data..."); ?>
+    <i class="fa fa-refresh fa-spin"></i> <?= _translate("Auto-refreshing data..."); ?>
 </div>
 
 <?php if ($canQueue) { ?>
-<!-- Queue Lab Command modal -->
-<div class="modal fade" id="queueCommandModal" tabindex="-1" role="dialog" aria-labelledby="queueCommandModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="queueCommandModalLabel"><?= _translate('Queue command for lab'); ?></h4>
-            </div>
-            <div class="modal-body">
-                <p class="text-muted" id="queueCommandLabName" style="margin-bottom: 15px;"></p>
-                <div class="form-group">
-                    <label for="queueCommandType"><?= _translate('Command'); ?></label>
-                    <select class="form-control" id="queueCommandType">
-                        <optgroup label="<?= _translate('Diagnostics'); ?>">
-                            <option value="ping"><?= _translate('Ping (self-test, no side effects)'); ?></option>
-                        </optgroup>
-                        <optgroup label="<?= _translate('Data sync'); ?>">
-                            <option value="resend-results"><?= _translate('Resend results'); ?></option>
-                            <option value="resend-requests"><?= _translate('Resend requests'); ?></option>
-                            <option value="metadata-resync"><?= _translate('Metadata resync (force)'); ?></option>
-                        </optgroup>
-                        <optgroup label="<?= _translate('Lab maintenance'); ?>">
-                            <option value="refresh-cache"><?= _translate('Refresh cache'); ?></option>
-                            <option value="rotate-token"><?= _translate('Rotate STS token'); ?></option>
-                            <option value="refresh-perms"><?= _translate('Refresh permissions'); ?></option>
-                            <option value="restart-apache"><?= _translate('Restart Apache'); ?></option>
-                        </optgroup>
-                        <optgroup label="<?= _translate('Upgrade'); ?>">
-                            <option value="upgrade"><?= _translate('Upgrade (prepare + auto-apply)'); ?></option>
-                            <option value="upgrade-prepare"><?= _translate('Prepare upgrade only'); ?></option>
-                            <option value="upgrade-apply"><?= _translate('Apply a prepared upgrade'); ?></option>
-                        </optgroup>
-                    </select>
+    <!-- Queue Lab Command modal -->
+    <div class="modal fade" id="queueCommandModal" tabindex="-1" role="dialog" aria-labelledby="queueCommandModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="queueCommandModalLabel"><?= _translate('Queue command for lab'); ?></h4>
                 </div>
-                <div class="form-group command-params resend-results-params resend-requests-params">
-                    <label for="queueCommandModule"><?= _translate('Module (optional)'); ?></label>
-                    <select class="form-control" id="queueCommandModule">
-                        <option value=""><?= _translate('All enabled modules'); ?></option>
-                        <option value="vl">VL</option>
-                        <option value="eid">EID</option>
-                        <option value="covid19">COVID-19</option>
-                        <option value="hepatitis"><?= _translate('Hepatitis'); ?></option>
-                        <option value="tb">TB</option>
-                        <option value="cd4">CD4</option>
-                        <option value="generic-tests"><?= _translate('Generic tests'); ?></option>
-                    </select>
+                <div class="modal-body">
+                    <p class="text-muted" id="queueCommandLabName" style="margin-bottom: 15px;"></p>
+                    <div class="form-group">
+                        <label for="queueCommandType"><?= _translate('Command'); ?></label>
+                        <select class="form-control" id="queueCommandType">
+                            <optgroup label="<?= _translate('Diagnostics'); ?>">
+                                <option value="ping"><?= _translate('Ping (self-test, no side effects)'); ?></option>
+                            </optgroup>
+                            <optgroup label="<?= _translate('Data sync'); ?>">
+                                <option value="resend-results"><?= _translate('Resend results'); ?></option>
+                                <option value="resend-requests"><?= _translate('Resend requests'); ?></option>
+                                <option value="metadata-resync"><?= _translate('Metadata resync (force)'); ?></option>
+                            </optgroup>
+                            <optgroup label="<?= _translate('Lab maintenance'); ?>">
+                                <option value="refresh-cache"><?= _translate('Refresh cache'); ?></option>
+                                <option value="rotate-token"><?= _translate('Rotate STS token'); ?></option>
+                                <option value="refresh-perms"><?= _translate('Refresh permissions'); ?></option>
+                                <option value="restart-apache"><?= _translate('Restart Apache'); ?></option>
+                            </optgroup>
+                            <optgroup label="<?= _translate('Upgrade'); ?>">
+                                <option value="upgrade"><?= _translate('Upgrade (prepare + auto-apply)'); ?></option>
+                                <option value="upgrade-prepare"><?= _translate('Prepare upgrade only'); ?></option>
+                                <option value="upgrade-apply"><?= _translate('Apply a prepared upgrade'); ?></option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group command-params resend-results-params resend-requests-params">
+                        <label for="queueCommandModule"><?= _translate('Module (optional)'); ?></label>
+                        <select class="form-control" id="queueCommandModule">
+                            <option value=""><?= _translate('All enabled modules'); ?></option>
+                            <option value="vl">VL</option>
+                            <option value="eid">EID</option>
+                            <option value="covid19">COVID-19</option>
+                            <option value="hepatitis"><?= _translate('Hepatitis'); ?></option>
+                            <option value="tb">TB</option>
+                            <option value="cd4">CD4</option>
+                            <option value="generic-tests"><?= _translate('Generic tests'); ?></option>
+                        </select>
+                    </div>
+                    <div class="form-group command-params resend-results-params resend-requests-params">
+                        <label for="queueCommandDays"><?= _translate('Resend data from last N days'); ?></label>
+                        <input type="number" class="form-control" id="queueCommandDays" min="1" max="3650"
+                            placeholder="<?= _translate('e.g. 45'); ?>">
+                        <small class="text-muted"><?= _translate('Leave blank to send only unsynced records.'); ?></small>
+                    </div>
+                    <div class="form-group command-params upgrade-apply-params" style="display:none;">
+                        <label for="queueCommandDependsOn"><?= _translate('Prepared staging to apply'); ?></label>
+                        <select class="form-control" id="queueCommandDependsOn">
+                            <option value=""><?= _translate('-- No prepared upgrades available for this lab --'); ?>
+                            </option>
+                        </select>
+                        <small
+                            class="text-muted"><?= _translate('Queue "Prepare upgrade only" first, then come back here.'); ?></small>
+                    </div>
+                    <div class="form-group command-params upgrade-params upgrade-prepare-params upgrade-apply-params"
+                        style="display:none;">
+                        <label for="queueCommandNotBefore"><?= _translate('Not before (optional)'); ?></label>
+                        <input type="datetime-local" class="form-control" id="queueCommandNotBefore">
+                        <small
+                            class="text-muted"><?= _translate('Earliest time the runner may start this command. Apply also waits for the quiet window if configured.'); ?></small>
+                    </div>
+                    <p class="help-block" style="margin-top: 15px;">
+                        <i class="fa fa-info-circle"></i>
+                        <?= _translate('The lab picks up queued commands on its next sync tick (typically every 5 minutes). Upgrade and apply commands additionally wait for the configured quiet window at the lab.'); ?>
+                    </p>
                 </div>
-                <div class="form-group command-params resend-results-params resend-requests-params">
-                    <label for="queueCommandDays"><?= _translate('Resend data from last N days'); ?></label>
-                    <input type="number" class="form-control" id="queueCommandDays" min="1" max="3650" placeholder="<?= _translate('e.g. 45'); ?>">
-                    <small class="text-muted"><?= _translate('Leave blank to send only unsynced records.'); ?></small>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><?= _translate('Cancel'); ?></button>
+                    <button type="button" class="btn btn-primary" id="queueCommandSubmit">
+                        <i class="fa fa-paper-plane"></i> <?= _translate('Queue command'); ?>
+                    </button>
                 </div>
-                <div class="form-group command-params upgrade-apply-params" style="display:none;">
-                    <label for="queueCommandDependsOn"><?= _translate('Prepared staging to apply'); ?></label>
-                    <select class="form-control" id="queueCommandDependsOn">
-                        <option value=""><?= _translate('-- No prepared upgrades available for this lab --'); ?></option>
-                    </select>
-                    <small class="text-muted"><?= _translate('Queue "Prepare upgrade only" first, then come back here.'); ?></small>
-                </div>
-                <div class="form-group command-params upgrade-params upgrade-prepare-params upgrade-apply-params" style="display:none;">
-                    <label for="queueCommandNotBefore"><?= _translate('Not before (optional)'); ?></label>
-                    <input type="datetime-local" class="form-control" id="queueCommandNotBefore">
-                    <small class="text-muted"><?= _translate('Earliest time the runner may start this command. Apply also waits for the quiet window if configured.'); ?></small>
-                </div>
-                <p class="help-block" style="margin-top: 15px;">
-                    <i class="fa fa-info-circle"></i>
-                    <?= _translate('The lab picks up queued commands on its next sync tick (typically every 5 minutes). Upgrade and apply commands additionally wait for the configured quiet window at the lab.'); ?>
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"><?= _translate('Cancel'); ?></button>
-                <button type="button" class="btn btn-primary" id="queueCommandSubmit">
-                    <i class="fa fa-paper-plane"></i> <?= _translate('Queue command'); ?>
-                </button>
             </div>
         </div>
     </div>
-</div>
 <?php } ?>
 
 <script src="/assets/js/moment.min.js"></script>
@@ -568,143 +574,143 @@ $stateNameList = $geolocationService->getProvinces("yes");
         });
 
         <?php if ($canQueue) { ?>
-        // Queue-command modal: open, toggle params by command type, submit.
-        $('#syncStatusDataTable tbody').on('click', '.queue-command-btn', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const labId = $(this).data('labId');
-            const labName = $(this).data('labName') || '';
-            const prepared = $(this).data('prepared') || [];
-            $('#queueCommandModal').data('labId', labId);
-            $('#queueCommandModal').data('prepared', prepared);
-            $('#queueCommandLabName').text(labName ? ('<?= _translate('Lab'); ?>: ' + labName) : '');
-            $('#queueCommandType').val('resend-results').trigger('change');
-            $('#queueCommandModule').val('');
-            $('#queueCommandDays').val('');
-            $('#queueCommandNotBefore').val('');
+            // Queue-command modal: open, toggle params by command type, submit.
+            $('#syncStatusDataTable tbody').on('click', '.queue-command-btn', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const labId = $(this).data('labId');
+                const labName = $(this).data('labName') || '';
+                const prepared = $(this).data('prepared') || [];
+                $('#queueCommandModal').data('labId', labId);
+                $('#queueCommandModal').data('prepared', prepared);
+                $('#queueCommandLabName').text(labName ? ('<?= _translate('Lab'); ?>: ' + labName) : '');
+                $('#queueCommandType').val('resend-results').trigger('change');
+                $('#queueCommandModule').val('');
+                $('#queueCommandDays').val('');
+                $('#queueCommandNotBefore').val('');
 
-            // Populate the "Prepared staging to apply" dropdown from the row's data.
-            const $dep = $('#queueCommandDependsOn');
-            $dep.empty();
-            if (Array.isArray(prepared) && prepared.length > 0) {
-                $dep.append('<option value=""><?= _translate('-- Select a prepared staging --'); ?></option>');
-                prepared.forEach(function (p) {
-                    const label = p.stagedVersion + '  (' + (p.requestedAt || '') + ')';
-                    $dep.append($('<option>').val(p.commandId).text(label));
-                });
-            } else {
-                $dep.append('<option value=""><?= _translate('-- No prepared upgrades available for this lab --'); ?></option>');
-            }
-
-            $('#queueCommandModal').modal('show');
-        });
-
-        $('#queueCommandType').on('change', function () {
-            const cmd = $(this).val();
-            $('.command-params').hide();
-            $('.' + cmd + '-params').show();
-        }).trigger('change');
-
-        $('#queueCommandSubmit').on('click', function () {
-            const $btn = $(this);
-            const originalHtml = $btn.html();
-            const labId = $('#queueCommandModal').data('labId');
-            const command = $('#queueCommandType').val();
-
-            const payload = { labId: labId, command: command };
-            if (command === 'resend-results' || command === 'resend-requests') {
-                const module = $('#queueCommandModule').val();
-                const days = $('#queueCommandDays').val();
-                if (module) payload.module = module;
-                if (days) payload.days = days;
-            }
-            if (command === 'upgrade-apply') {
-                const dep = $('#queueCommandDependsOn').val();
-                if (!dep) {
-                    showNotification('<?= _translate('Select a prepared staging to apply.'); ?>', 'error');
-                    return;
+                // Populate the "Prepared staging to apply" dropdown from the row's data.
+                const $dep = $('#queueCommandDependsOn');
+                $dep.empty();
+                if (Array.isArray(prepared) && prepared.length > 0) {
+                    $dep.append('<option value=""><?= _translate('-- Select a prepared staging --'); ?></option>');
+                    prepared.forEach(function (p) {
+                        const label = p.stagedVersion + '  (' + (p.requestedAt || '') + ')';
+                        $dep.append($('<option>').val(p.commandId).text(label));
+                    });
+                } else {
+                    $dep.append('<option value=""><?= _translate('-- No prepared upgrades available for this lab --'); ?></option>');
                 }
-                payload.dependsOn = dep;
-            }
-            if (command === 'upgrade' || command === 'upgrade-prepare' || command === 'upgrade-apply') {
-                const nb = $('#queueCommandNotBefore').val();
-                if (nb) payload.notBefore = nb;
-            }
 
-            $btn.html('<i class="fa fa-spinner fa-spin"></i> <?= _translate('Queueing...'); ?>').prop('disabled', true);
-            $.ajax({
-                url: '/admin/monitoring/queue-lis-command.php',
-                type: 'POST',
-                dataType: 'json',
-                data: payload,
-                timeout: 15000,
-                success: function (res) {
-                    if (res && res.status === 'success') {
-                        $('#queueCommandModal').modal('hide');
-                        showNotification('<?= _translate('Command queued.'); ?> <code>' + (res.commandId || '') + '</code>', 'success');
-                        loadData(true);
-                    } else {
-                        showNotification((res && res.error) ? res.error : '<?= _translate('Failed to queue command'); ?>', 'error');
-                    }
-                },
-                error: function (xhr) {
-                    let msg = '<?= _translate('Failed to queue command'); ?>';
-                    try {
-                        const body = JSON.parse(xhr.responseText);
-                        if (body && body.error) msg = body.error;
-                    } catch (_) {}
-                    showNotification(msg, 'error');
-                },
-                complete: function () {
-                    $btn.html(originalHtml).prop('disabled', false);
-                }
+                $('#queueCommandModal').modal('show');
             });
-        });
+
+            $('#queueCommandType').on('change', function () {
+                const cmd = $(this).val();
+                $('.command-params').hide();
+                $('.' + cmd + '-params').show();
+            }).trigger('change');
+
+            $('#queueCommandSubmit').on('click', function () {
+                const $btn = $(this);
+                const originalHtml = $btn.html();
+                const labId = $('#queueCommandModal').data('labId');
+                const command = $('#queueCommandType').val();
+
+                const payload = { labId: labId, command: command };
+                if (command === 'resend-results' || command === 'resend-requests') {
+                    const module = $('#queueCommandModule').val();
+                    const days = $('#queueCommandDays').val();
+                    if (module) payload.module = module;
+                    if (days) payload.days = days;
+                }
+                if (command === 'upgrade-apply') {
+                    const dep = $('#queueCommandDependsOn').val();
+                    if (!dep) {
+                        showNotification('<?= _translate('Select a prepared staging to apply.'); ?>', 'error');
+                        return;
+                    }
+                    payload.dependsOn = dep;
+                }
+                if (command === 'upgrade' || command === 'upgrade-prepare' || command === 'upgrade-apply') {
+                    const nb = $('#queueCommandNotBefore').val();
+                    if (nb) payload.notBefore = nb;
+                }
+
+                $btn.html('<i class="fa fa-spinner fa-spin"></i> <?= _translate('Queueing...'); ?>').prop('disabled', true);
+                $.ajax({
+                    url: '/admin/monitoring/queue-lis-command.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: payload,
+                    timeout: 15000,
+                    success: function (res) {
+                        if (res && res.status === 'success') {
+                            $('#queueCommandModal').modal('hide');
+                            showNotification('<?= _translate('Command queued.'); ?> <code>' + (res.commandId || '') + '</code>', 'success');
+                            loadData(true);
+                        } else {
+                            showNotification((res && res.error) ? res.error : '<?= _translate('Failed to queue command'); ?>', 'error');
+                        }
+                    },
+                    error: function (xhr) {
+                        let msg = '<?= _translate('Failed to queue command'); ?>';
+                        try {
+                            const body = JSON.parse(xhr.responseText);
+                            if (body && body.error) msg = body.error;
+                        } catch (_) { }
+                        showNotification(msg, 'error');
+                    },
+                    complete: function () {
+                        $btn.html(originalHtml).prop('disabled', false);
+                    }
+                });
+            });
         <?php } ?>
 
         <?php if ($canCancel) { ?>
-        // Cancel a pending command directly from the badge's "x" link.
-        $('#syncStatusDataTable tbody').on('click', '.cancel-command-link', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
+            // Cancel a pending command directly from the badge's "x" link.
+            $('#syncStatusDataTable tbody').on('click', '.cancel-command-link', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-            const $link = $(this);
-            const commandId = $link.data('commandId');
-            const commandName = $link.data('command') || 'command';
-            if (!commandId) return;
+                const $link = $(this);
+                const commandId = $link.data('commandId');
+                const commandName = $link.data('command') || 'command';
+                if (!commandId) return;
 
-            if (!window.confirm("<?= _translate('Cancel this pending'); ?> '" + commandName + "' <?= _translate('command? The lab has not yet picked it up.'); ?>")) {
-                return;
-            }
+                if (!window.confirm("<?= _translate('Cancel this pending'); ?> '" + commandName + "' <?= _translate('command? The lab has not yet picked it up.'); ?>")) {
+                    return;
+                }
 
-            $link.css('pointer-events', 'none').text('...');
+                $link.css('pointer-events', 'none').text('...');
 
-            $.ajax({
-                url: '/admin/monitoring/cancel-lis-command.php',
-                type: 'POST',
-                dataType: 'json',
-                data: { commandId: commandId },
-                timeout: 15000,
-                success: function (res) {
-                    if (res && res.status === 'success') {
-                        showNotification('<?= _translate('Command cancelled.'); ?>', 'success');
-                        loadData(true);
-                    } else {
-                        showNotification((res && res.error) ? res.error : '<?= _translate('Failed to cancel command'); ?>', 'error');
+                $.ajax({
+                    url: '/admin/monitoring/cancel-lis-command.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { commandId: commandId },
+                    timeout: 15000,
+                    success: function (res) {
+                        if (res && res.status === 'success') {
+                            showNotification('<?= _translate('Command cancelled.'); ?>', 'success');
+                            loadData(true);
+                        } else {
+                            showNotification((res && res.error) ? res.error : '<?= _translate('Failed to cancel command'); ?>', 'error');
+                            $link.text('×').css('pointer-events', 'auto');
+                        }
+                    },
+                    error: function (xhr) {
+                        let msg = '<?= _translate('Failed to cancel command'); ?>';
+                        try {
+                            const body = JSON.parse(xhr.responseText);
+                            if (body && body.error) msg = body.error;
+                        } catch (_) { }
+                        showNotification(msg, 'error');
                         $link.text('×').css('pointer-events', 'auto');
                     }
-                },
-                error: function (xhr) {
-                    let msg = '<?= _translate('Failed to cancel command'); ?>';
-                    try {
-                        const body = JSON.parse(xhr.responseText);
-                        if (body && body.error) msg = body.error;
-                    } catch (_) {}
-                    showNotification(msg, 'error');
-                    $link.text('×').css('pointer-events', 'auto');
-                }
+                });
             });
-        });
         <?php } ?>
 
         // Debounced search on filter changes
@@ -844,18 +850,18 @@ $stateNameList = $geolocationService->getProvinces("yes");
 
     function resetFilters() {
         $('#province').val('').trigger('change');
-        $('#district').html('<option value=""><?php echo _translate("-- Select Province First --"); ?></option>').val('').trigger('change');
+        $('#district').html('<option value=""><?= _jsTranslate("-- Select Province First --"); ?></option>').val('').trigger('change');
         $('#labName').val('').trigger('change');
         loadData();
     }
 
     function getDistrictByProvince(provinceId) {
         if (!provinceId) {
-            $("#district").html('<option value=""><?php echo _translate("-- Select Province First --"); ?></option>').prop('disabled', false);
+            $("#district").html('<option value=""><?= _jsTranslate("-- Select Province First --"); ?></option>').prop('disabled', false);
             return;
         }
 
-        $("#district").html('<option value=""><?php echo _translate("Loading..."); ?></option>').prop('disabled', true);
+        $("#district").html('<option value=""><?= _jsTranslate("Loading..."); ?></option>').prop('disabled', true);
 
         $.ajax({
             url: "/common/get-by-province-id.php",
@@ -871,13 +877,13 @@ $stateNameList = $geolocationService->getProvinces("yes");
                     $('#district').select2('val', ''); // Clear selection
                 } catch (e) {
                     console.error('Failed to parse district data:', e);
-                    $("#district").html('<option value=""><?php echo _translate("Error loading districts"); ?></option>');
-                    showNotification('<?php echo _translate("Error loading districts"); ?>', 'error');
+                    $("#district").html('<option value=""><?= _jsTranslate("Error loading districts"); ?></option>');
+                    showNotification('<?= _jsTranslate("Error loading districts"); ?>', 'error');
                 }
             },
             error: function () {
-                $("#district").html('<option value=""><?php echo _translate("Error loading districts"); ?></option>').prop('disabled', false);
-                showNotification('<?php echo _translate("Error loading districts"); ?>', 'error');
+                $("#district").html('<option value=""><?= _jsTranslate("Error loading districts"); ?></option>').prop('disabled', false);
+                showNotification('<?= _jsTranslate("Error loading districts"); ?>', 'error');
             }
         });
     }
@@ -886,7 +892,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
         const exportButton = $('[onclick="exportSyncStatus();"]');
         const originalButtonHtml = exportButton.html();
 
-        exportButton.html('<i class="fa fa-spinner fa-spin"></i> <?php echo _translate("Generating..."); ?>').prop('disabled', true);
+        exportButton.html('<i class="fa fa-spinner fa-spin"></i> <?= _jsTranslate("Generating..."); ?>').prop('disabled', true);
 
         $.ajax({
             url: "/admin/monitoring/generate-lab-sync-status-report.php",
@@ -900,13 +906,13 @@ $stateNameList = $geolocationService->getProvinces("yes");
             success: function (data) {
                 if (data && data.trim()) {
                     window.open('/download.php?f=' + data, '_blank');
-                    showNotification('<?php echo _translate("Export generated successfully"); ?>', 'success');
+                    showNotification('<?= _jsTranslate("Export generated successfully"); ?>', 'success');
                 } else {
-                    showNotification('<?php echo _translate("Unable to generate the excel file. Please try again."); ?>', 'error');
+                    showNotification('<?= _jsTranslate("Unable to generate the excel file. Please try again."); ?>', 'error');
                 }
             },
             error: function () {
-                showNotification('<?php echo _translate("Failed to generate export. Please try again."); ?>', 'error');
+                showNotification('<?= _jsTranslate("Failed to generate export. Please try again."); ?>', 'error');
             },
             complete: function () {
                 exportButton.html(originalButtonHtml).prop('disabled', false);
