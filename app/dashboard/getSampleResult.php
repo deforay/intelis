@@ -37,6 +37,15 @@ $acceptedTotal = 0;
 $waitingDate = '';
 $rejectedDate = '';
 
+$waitingCategories = [];
+$waitingCounts = [];
+$topRejectionReasons = [];
+$topRejectionReasonsTotal = 0;
+$backlogRegisteredAtTestingLab = 0;
+$backlogAwaitingApproval = 0;
+$backlogOnHold = 0;
+$backlogTotal = 0;
+
 if ($testType === 'eid') {
     $samplesReceivedChart = "eidSamplesReceivedChart";
     $samplesTestedChart = "eidSamplesTestedChart";
@@ -138,6 +147,18 @@ try {
 
     // Normalized rejection flag
     $notRejectedExpr = "LOWER(COALESCE(NULLIF(TRIM(t.is_sample_rejected), ''), 'no')) = 'no'";
+
+    // Rejection-reason reference table per sample table
+    $rejectionReasonTable = match ($table) {
+        'form_vl' => 'r_vl_sample_rejection_reasons',
+        'form_eid' => 'r_eid_sample_rejection_reasons',
+        'form_covid19' => 'r_covid19_sample_rejection_reasons',
+        'form_hepatitis' => 'r_hepatitis_sample_rejection_reasons',
+        'form_cd4' => 'r_cd4_sample_rejection_reasons',
+        'form_tb' => 'r_tb_sample_rejection_reasons',
+        'form_generic_tests' => 'r_generic_sample_rejection_reasons',
+        default => null,
+    };
 
     // Common builder for WHERE
     $W = fn(array $extra = []): string => implode(' AND ', array_values(array_filter([
@@ -304,6 +325,57 @@ try {
             $statusResult['status'][$row['status_name']][$row['collection_date']] = (int) $row['count'];
         }
     }
+
+    // ======================================================
+    // G) Top Rejection Reasons (last 6 months)
+    // ======================================================
+    $topRejectionReasons = [];
+    $topRejectionReasonsTotal = 0;
+    if (!empty($rejectionReasonTable)) {
+        $rejectionReasonsWhere = $W([
+            "t.result_status = " . SAMPLE_STATUS\REJECTED,
+            "t.sample_collection_date >= DATE_SUB('$currentDateTime', INTERVAL 6 MONTH)",
+            "t.reason_for_sample_rejection IS NOT NULL",
+            "TRIM(t.reason_for_sample_rejection) != ''",
+        ]);
+        $topRejectionReasonsQuery = "SELECT
+                rr.rejection_reason_name,
+                COUNT(t.$primaryKey) AS cnt
+            FROM $table AS t
+            INNER JOIN $rejectionReasonTable AS rr
+                ON rr.rejection_reason_id = t.reason_for_sample_rejection
+            WHERE $rejectionReasonsWhere
+            GROUP BY rr.rejection_reason_id, rr.rejection_reason_name
+            ORDER BY cnt DESC
+            LIMIT 5";
+        $rejectionReasonRows = $db->rawQuery($topRejectionReasonsQuery);
+        foreach ($rejectionReasonRows as $r) {
+            $count = (int) $r['cnt'];
+            $topRejectionReasons[] = [
+                'name' => (string) ($r['rejection_reason_name'] ?? 'Unknown'),
+                'count' => $count,
+            ];
+            $topRejectionReasonsTotal += $count;
+        }
+    }
+
+    // ======================================================
+    // H) Current Backlog (lab-side queue, last 6 months, no date filter)
+    // ======================================================
+    $backlogWhere = $W([
+        "t.sample_collection_date >= DATE_SUB('$currentDateTime', INTERVAL 6 MONTH)",
+    ]);
+    $backlogQuery = "SELECT
+            SUM(CASE WHEN t.result_status = " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . " THEN 1 ELSE 0 END) AS registeredAtTestingLab,
+            SUM(CASE WHEN t.result_status = " . SAMPLE_STATUS\PENDING_APPROVAL . " THEN 1 ELSE 0 END) AS awaitingApproval,
+            SUM(CASE WHEN t.result_status = " . SAMPLE_STATUS\ON_HOLD . " THEN 1 ELSE 0 END) AS onHold
+        FROM $table AS t
+        WHERE $backlogWhere";
+    $backlogResult = $db->rawQueryOne($backlogQuery) ?: [];
+    $backlogRegisteredAtTestingLab = (int) ($backlogResult['registeredAtTestingLab'] ?? 0);
+    $backlogAwaitingApproval = (int) ($backlogResult['awaitingApproval'] ?? 0);
+    $backlogOnHold = (int) ($backlogResult['onHold'] ?? 0);
+    $backlogTotal = $backlogRegisteredAtTestingLab + $backlogAwaitingApproval + $backlogOnHold;
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
     LoggerUtility::logError($e->getMessage(), [
@@ -389,7 +461,7 @@ try {
     </div>
 </div>
 
-<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
     <div class="dashboard-stat2 " style="cursor:pointer;">
         <div class="display font-red-haze">
             <div class="number">
@@ -411,30 +483,6 @@ try {
         <div id="<?php echo $samplesRejectedChart; ?>" width="210" height="300" style="min-height:300px;"></div>
     </div>
 </div>
-
-<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-    <div class="dashboard-stat2" style="cursor:pointer;">
-        <div class="display font-purple-soft">
-            <div class="number">
-                <h3 class="font-purple-soft">
-                    <span data-counter="counterup"
-                        data-value="<?php echo $waitingTotal; ?>"><?php echo $waitingTotal; ?></span>
-                </h3>
-                <small class="font-purple-soft">
-                    <?php echo _translate("SAMPLES WITH NO RESULTS"); ?>
-                </small><br>
-                <small class="font-purple-soft" style="font-size:0.75em;">
-                    <?= DateUtility::lastMonthsLabel(6) . " " . _translate("(LAST 6 MONTHS)"); ?>
-                </small>
-
-            </div>
-            <div class="icon">
-                <em class="fa-solid fa-chart-simple"></em>
-            </div>
-        </div>
-        <div id="<?php echo $samplesWaitingChart; ?>" width="210" height="300" style="min-height:300px;"></div>
-    </div>
-</div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2 bluebox" style="cursor:pointer;">
         <div class="display font-purple-soft">
@@ -453,6 +501,268 @@ try {
         <div id="<?php echo $samplesOverviewChart; ?>" width="210" height="200" style="min-height:200px;"></div>
     </div>
 </div>
+
+<?php
+    $backlogItems = [
+        ['label' => _translate("Registered at Testing Lab"), 'count' => $backlogRegisteredAtTestingLab, 'color' => '#039BE6'],
+        ['label' => _translate("Awaiting Approval"),         'count' => $backlogAwaitingApproval,         'color' => '#26a69a'],
+        ['label' => _translate("On Hold"),                   'count' => $backlogOnHold,                   'color' => '#f39c12'],
+    ];
+    $backlogMax = max(1, $backlogRegisteredAtTestingLab, $backlogAwaitingApproval, $backlogOnHold);
+
+    $rejectionMax = 0;
+    foreach ($topRejectionReasons as $r) {
+        if ($r['count'] > $rejectionMax) {
+            $rejectionMax = $r['count'];
+        }
+    }
+    $rejectionMax = max(1, $rejectionMax);
+?>
+
+<style>
+    .lab-health-header {
+        margin: 18px 0 10px;
+        padding: 0 5px;
+        border-top: 1px solid #eceaf2;
+        padding-top: 16px;
+    }
+    .lab-health-header h4 {
+        font-weight: 600;
+        color: #5a4b7a;
+        margin: 0 0 2px;
+        letter-spacing: 0.3px;
+    }
+    .lab-health-header small {
+        color: #999;
+        font-size: 0.8em;
+    }
+    .lab-health-card {
+        background: #fff;
+        border: 1px solid #eceaf2;
+        border-radius: 6px;
+        padding: 18px 18px 16px;
+        margin-bottom: 20px;
+        min-height: 260px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+        display: flex;
+        flex-direction: column;
+    }
+    .lab-health-card .lh-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+    }
+    .lab-health-card .lh-title {
+        font-size: 0.78em;
+        font-weight: 600;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: #888;
+    }
+    .lab-health-card .lh-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+    }
+    .lab-health-card .lh-metric {
+        font-size: 2.4em;
+        font-weight: 300;
+        line-height: 1;
+        margin: 0 0 4px;
+    }
+    .lab-health-card .lh-sublabel {
+        color: #999;
+        font-size: 0.8em;
+        margin-bottom: 14px;
+    }
+    .lab-health-card .lh-body {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    .lh-bar-row {
+        margin-bottom: 10px;
+    }
+    .lh-bar-row:last-child { margin-bottom: 0; }
+    .lh-bar-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.82em;
+        color: #555;
+        margin-bottom: 4px;
+        line-height: 1.25;
+    }
+    .lh-bar-label strong {
+        color: #333;
+        font-weight: 600;
+        margin-left: 8px;
+    }
+    .lh-bar-track {
+        background: #f2f0f6;
+        border-radius: 3px;
+        height: 6px;
+        overflow: hidden;
+    }
+    .lh-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.3s ease;
+    }
+    .lh-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #aaa;
+        font-size: 0.88em;
+        flex: 1;
+        padding: 20px 10px;
+    }
+    .lh-empty em {
+        font-size: 28px;
+        color: #60d18f;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 lab-health-header">
+    <h4><?= _translate("Lab Health"); ?></h4>
+    <small><?= _translate("Last 6 months — independent of the date filter above"); ?></small>
+</div>
+
+<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+    <div class="lab-health-card">
+        <div class="lh-head">
+            <span class="lh-title"><?= _translate("Samples with No Results"); ?></span>
+            <span class="lh-icon" style="background:#f1ecf7; color:#8877a9;">
+                <em class="fa-solid fa-hourglass-half"></em>
+            </span>
+        </div>
+        <div class="lh-metric" style="color:#8877a9;">
+            <span data-counter="counterup" data-value="<?= $waitingTotal; ?>"><?= $waitingTotal; ?></span>
+        </div>
+        <div class="lh-sublabel"><?= _translate("awaiting results"); ?></div>
+        <div class="lh-body">
+            <?php if ($waitingTotal > 0) {
+                $waitingPalette = ['#8877a9', '#b39ddb', '#c5b4dc', '#6a5a8a', '#d6c9e6', '#9b87c1', '#e0d4ef'];
+                $waitingMax = 1;
+                foreach ($waitingCounts as $c) {
+                    if ((int) $c > $waitingMax) {
+                        $waitingMax = (int) $c;
+                    }
+                }
+                foreach ($waitingCategories as $i => $label) {
+                    $count = (int) ($waitingCounts[$i] ?? 0);
+                    $pct = (int) round(($count / $waitingMax) * 100);
+                    $color = $waitingPalette[$i % count($waitingPalette)];
+            ?>
+                <div class="lh-bar-row">
+                    <div class="lh-bar-label">
+                        <span title="<?= htmlspecialchars((string) $label); ?>" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%;">
+                            <?= htmlspecialchars((string) $label); ?>
+                        </span>
+                        <strong><?= $count; ?></strong>
+                    </div>
+                    <div class="lh-bar-track">
+                        <div class="lh-bar-fill" style="width:<?= $pct; ?>%; background:<?= $color; ?>;"></div>
+                    </div>
+                </div>
+            <?php }
+            } else { ?>
+                <div class="lh-empty">
+                    <em class="fa-solid fa-circle-check"></em>
+                    <?= _translate("No pending samples."); ?>
+                </div>
+            <?php } ?>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+    <div class="lab-health-card">
+        <div class="lh-head">
+            <span class="lh-title"><?= _translate("Top Rejection Reasons"); ?></span>
+            <span class="lh-icon" style="background:<?= $topRejectionReasonsTotal > 0 ? '#fdecea' : '#e9f7ef'; ?>; color:<?= $topRejectionReasonsTotal > 0 ? '#c0392b' : '#2ecc71'; ?>;">
+                <em class="fa-solid <?= $topRejectionReasonsTotal > 0 ? 'fa-triangle-exclamation' : 'fa-circle-check'; ?>"></em>
+            </span>
+        </div>
+        <?php if ($topRejectionReasonsTotal > 0) { ?>
+            <div class="lh-metric" style="color:#c0392b;">
+                <span data-counter="counterup" data-value="<?= $topRejectionReasonsTotal; ?>"><?= $topRejectionReasonsTotal; ?></span>
+            </div>
+            <div class="lh-sublabel"><?= _translate("rejections across top reasons"); ?></div>
+            <div class="lh-body">
+                <?php foreach ($topRejectionReasons as $reason) {
+                    $pct = (int) round(($reason['count'] / $rejectionMax) * 100);
+                ?>
+                    <div class="lh-bar-row">
+                        <div class="lh-bar-label">
+                            <span title="<?= htmlspecialchars($reason['name']); ?>" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:75%;">
+                                <?= htmlspecialchars($reason['name']); ?>
+                            </span>
+                            <strong><?= $reason['count']; ?></strong>
+                        </div>
+                        <div class="lh-bar-track">
+                            <div class="lh-bar-fill" style="width:<?= $pct; ?>%; background:#e74c3c;"></div>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+        <?php } else { ?>
+            <div class="lh-body">
+                <div class="lh-empty">
+                    <em class="fa-solid fa-circle-check"></em>
+                    <?= _translate("No rejections recorded in the last 6 months."); ?>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+</div>
+
+<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
+    <div class="lab-health-card">
+        <div class="lh-head">
+            <span class="lh-title"><?= _translate("Current Lab Backlog"); ?></span>
+            <span class="lh-icon" style="background:#e3f2fd; color:#039BE6;">
+                <em class="fa-solid fa-layer-group"></em>
+            </span>
+        </div>
+        <div class="lh-metric" style="color:#039BE6;">
+            <span data-counter="counterup" data-value="<?= $backlogTotal; ?>"><?= $backlogTotal; ?></span>
+        </div>
+        <div class="lh-sublabel"><?= _translate("samples in queue"); ?></div>
+        <div class="lh-body">
+            <?php if ($backlogTotal > 0) {
+                foreach ($backlogItems as $item) {
+                    $pct = (int) round(($item['count'] / $backlogMax) * 100);
+            ?>
+                <div class="lh-bar-row">
+                    <div class="lh-bar-label">
+                        <span><?= htmlspecialchars($item['label']); ?></span>
+                        <strong><?= $item['count']; ?></strong>
+                    </div>
+                    <div class="lh-bar-track">
+                        <div class="lh-bar-fill" style="width:<?= $pct; ?>%; background:<?= $item['color']; ?>;"></div>
+                    </div>
+                </div>
+            <?php }
+            } else { ?>
+                <div class="lh-empty">
+                    <em class="fa-solid fa-circle-check"></em>
+                    <?= _translate("No samples currently in the backlog."); ?>
+                </div>
+            <?php } ?>
+        </div>
+    </div>
+</div>
+
 <script>
     <?php
     if ($receivedTotal > 0) { ?>
@@ -528,69 +838,6 @@ try {
             }],
             colors: ['#2ab4c0']
         });
-    <?php }
-    //waiting result
-    if ($waitingTotal !== 0 && $waitingTotal > 0) { ?>
-
-        $('#<?php echo $samplesWaitingChart; ?>').highcharts({
-            chart: {
-                type: 'column',
-                height: 300
-            },
-            title: {
-                text: ''
-            },
-            exporting: {
-                filename: "samples-with-no-results",
-                sourceWidth: 1200,
-                sourceHeight: 600
-            },
-            subtitle: {
-                text: ''
-            },
-            credits: {
-                enabled: false
-            },
-            xAxis: {
-                categories: [<?= implode(',', array_map(fn($s): string => "'" . addslashes((string) $s) . "'", $waitingCategories)); ?>],
-                crosshair: true,
-                scrollbar: {
-                    enabled: true
-                }
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: null
-                }
-            },
-            tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0"><?= _translate("Samples", escapeTextOrContext: true); ?>: </td>' +
-                    '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
-                footerFormat: '</table>',
-                shared: false,
-                useHTML: true
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0,
-                    cursor: 'pointer'
-                },
-                dataLabels: {
-                    enabled: true
-                }
-            },
-            series: [{
-                showInLegend: false,
-                name: '<?= _translate("Samples", escapeTextOrContext: true); ?>',
-                data: [<?= implode(',', array_map('intval', $waitingCounts)); ?>]
-            }],
-            colors: ['#8877a9']
-        });
-
-
     <?php }
     if ($acceptedTotal > 0) {
         ?>
