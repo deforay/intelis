@@ -22,6 +22,11 @@
 #                      Number of rollback snapshot generations to retain under
 #                      /var/intelis-rollback/ (default: 3). Older snapshots are
 #                      pruned after a successful apply run.
+#   -M, --maintenance  Show a 503 "upgrade in progress" page to users during the
+#                      apply window. Default is silent (no page shown), which is
+#                      usually fine because most upgrades are small PHP/template
+#                      changes that users don't notice. Use this flag when the
+#                      upgrade changes composer.lock or runs DB migrations.
 #
 #   --prepare-only and --apply-prepared are mutually exclusive.
 #
@@ -111,6 +116,10 @@ auto_detect=false
 interactive_select=false
 prepare_only=false
 apply_prepared_dir=""
+# Maintenance mode is OFF by default — most upgrades are small enough that users
+# notice nothing. Pass --maintenance / -M to show a 503 page during the apply
+# window (recommended when the upgrade changes composer.lock or runs migrations).
+show_maintenance=false
 lis_path=""
 declare -a lis_paths=()
 
@@ -155,6 +164,10 @@ while [ $# -gt 0 ]; do
             _rewritten_args+=("${1#--keep-snapshots=}")
             shift
             ;;
+        --maintenance)
+            _rewritten_args+=("-M")
+            shift
+            ;;
         --)
             _rewritten_args+=("$@")
             break
@@ -168,7 +181,7 @@ done
 set -- "${_rewritten_args[@]}"
 
 # Parse command-line options
-while getopts ":sbAiPp:a:k:" opt; do
+while getopts ":sbAiPp:a:k:M" opt; do
     case $opt in
     s) skip_ubuntu_updates=true ;;
     b) skip_backup=true ;;
@@ -184,6 +197,7 @@ while getopts ":sbAiPp:a:k:" opt; do
         fi
         ROLLBACK_KEEP="$OPTARG"
         ;;
+    M) show_maintenance=true ;;
         # Ignore invalid options silently
     esac
 done
@@ -1147,8 +1161,12 @@ maintenance_conf_path() {
 # enable_maintenance_mode — install + enable an Apache conf that serves 503 for
 # all requests into this instance while the apply runs. Best-effort; falls back
 # to a .maintenance marker file under public/ if Apache can't be configured.
+# No-op unless --maintenance / -M was passed; most upgrades are small and silent.
 enable_maintenance_mode() {
     local lp="$1"
+    if [ "${show_maintenance:-false}" != "true" ]; then
+        return 0
+    fi
     local conf_file
     conf_file=$(maintenance_conf_path "$lp")
     local conf_basename
@@ -1202,8 +1220,15 @@ EOF
 }
 
 # disable_maintenance_mode — undo what enable_maintenance_mode did.
+# No-op unless --maintenance / -M was passed. Also removes any stale marker file
+# from a prior interrupted run so users aren't left looking at a 503 forever.
 disable_maintenance_mode() {
     local lp="$1"
+    # Always remove marker files in case a previous run left them behind.
+    rm -f "${lp}/public/.maintenance" "${lp}/public/.intelis-maintenance.html" 2>/dev/null || true
+    if [ "${show_maintenance:-false}" != "true" ]; then
+        return 0
+    fi
     local conf_file
     conf_file=$(maintenance_conf_path "$lp")
     local conf_basename
