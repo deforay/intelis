@@ -60,6 +60,16 @@ select[readonly] {
     font-family: helvetica, arial, sans-serif;
 }
 
+/* Allow long translated sidebar labels to wrap instead of being clipped.
+   AdminLTE defaults to white-space:nowrap, so French/other long translations
+   get truncated. Wrapping is additive and still leaves collapsed-sidebar
+   mini mode working via AdminLTE's own !important rules. */
+.sidebar-menu > li > a,
+.sidebar-menu .treeview-menu > li > a {
+    white-space: normal;
+    line-height: 1.3;
+}
+
 /* Fix sidebar treeview menu z-index issue */
 .sidebar-menu > li.treeview {
     position: relative;
