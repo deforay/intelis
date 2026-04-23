@@ -1039,6 +1039,29 @@ prepare_phase() {
             echo "master: composer.json missing after extract" >&2
             return 1
         fi
+
+        # Best-effort: capture the current master HEAD commit SHA so installs
+        # can report exactly which commit they're running. Written into the
+        # extract dir so it rsyncs through to the live install. Runtime
+        # resolver in CommonService::getCommitSha() reads this as a fallback
+        # when the build-stamped COMMIT_SHA constant is missing (older builds).
+        # A tiny race exists (API response vs. tarball content could differ
+        # by a commit if someone pushes between the two requests) — acceptable
+        # for a "what's deployed" stamp.
+        local _sha_response _master_sha
+        _sha_response=$(curl -sS --max-time 10 \
+            "https://api.github.com/repos/deforay/intelis/commits/master" 2>/dev/null || true)
+        _master_sha=$(printf '%s' "$_sha_response" \
+            | grep -oE '"sha"[[:space:]]*:[[:space:]]*"[0-9a-f]{40}"' \
+            | head -1 \
+            | grep -oE '[0-9a-f]{40}')
+        if [ -n "$_master_sha" ]; then
+            printf '%s\n' "$_master_sha" > "$master_extract_dir/VERSION.txt"
+            echo "master: commit SHA $_master_sha captured"
+        else
+            echo "master: commit SHA lookup skipped (no network or rate-limited)"
+        fi
+
         echo "master: ready"
     }
 

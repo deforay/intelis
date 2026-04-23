@@ -199,6 +199,21 @@ try {
         $db->rawQuery($sql, [$courierHb, $runnerHb, $now, (int) $labId]);
     }
 
+    // 5) Stash the reported commit SHA alongside the version so the
+    //    sync-status UI can show "which commit is this lab running".
+    //    Sanitise to a 40-char hex string to avoid leaking arbitrary data
+    //    into facility_attributes.
+    $reportedSha = $data['commitSha'] ?? null;
+    if (is_string($reportedSha) && preg_match('/^[0-9a-f]{40}$/', $reportedSha)) {
+        $sql = "UPDATE facility_details
+                SET facility_attributes = JSON_SET(
+                    COALESCE(facility_attributes, '{}'),
+                    '$.commitSha', ?
+                )
+                WHERE facility_id = ?";
+        $db->rawQuery($sql, [$reportedSha, (int) $labId]);
+    }
+
     $payload = [
         'status' => 'success',
         'commands' => $commands,
