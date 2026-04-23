@@ -1426,12 +1426,38 @@ if [ -n "$apply_prepared_dir" ]; then
     log_action "Applying from pre-prepared staging dir: ${staging_dir}"
 else
     print header "Downloading LIS"
-    staging_dir="$(prepare_phase)"
-    if [ -z "$staging_dir" ] || [ ! -f "${staging_dir}/READY" ]; then
-        print error "Prepare phase did not produce a valid staging directory."
-        log_action "Prepare phase failed - update aborted"
-        # Best-effort cleanup of partial staging
-        [ -n "$staging_dir" ] && [ -d "$staging_dir" ] && rm -rf "$staging_dir" 2>/dev/null || true
+    # WHY: prepare_phase does its own error reporting (with log file paths).
+    # Suspend the generic ERR trap so a network failure inside $(...) surfaces
+    # as a friendly message instead of the stack-trace-ish "Error on or near
+    # line N; command executed was 'staging_dir=\"\$(prepare_phase)\"'".
+    previous_err_trap="$(trap -p ERR || true)"
+    trap - ERR
+    prepare_rc=0
+    staging_dir="$(prepare_phase)" || prepare_rc=$?
+    if [ -n "${previous_err_trap}" ]; then
+        eval "${previous_err_trap}"
+    fi
+
+    if [ "${prepare_rc}" -ne 0 ] || [ -z "$staging_dir" ] || [ ! -f "${staging_dir}/READY" ]; then
+        echo
+        print error "Could not download the LIS update package."
+        print info "This is almost always a network problem on this server."
+        print info "Things to check:"
+        print info "  • Is the server online?  ping -c2 codeload.github.com"
+        print info "  • Can it reach GitHub?   curl -IL https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master"
+        print info "  • Is a proxy/firewall blocking outbound HTTPS?"
+        if [ -n "$staging_dir" ] && [ -d "$staging_dir" ]; then
+            print info ""
+            print info "Detailed logs (while staging is kept):"
+            [ -f "${staging_dir}/master.log" ] && print info "  ${staging_dir}/master.log"
+            [ -f "${staging_dir}/vendor.log" ] && print info "  ${staging_dir}/vendor.log"
+        fi
+        print info ""
+        print info "Once the network is working, just run the upgrade again."
+        log_action "Prepare phase failed (rc=${prepare_rc}) - update aborted; likely network issue"
+        # Keep the staging dir so the user can inspect the logs. A later rerun
+        # will create a new timestamped staging dir; old ones can be cleaned up
+        # manually from ${STAGING_BASE_DIR} when the upgrade has succeeded.
         exit 1
     fi
 
