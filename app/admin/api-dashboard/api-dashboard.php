@@ -237,7 +237,8 @@ $state = $geolocationService->getProvinces("yes");
                             <td><strong><?= _translate('Test Request Date Range'); ?>&nbsp;:</strong></td>
                             <td>
                                 <input type="text" id="dateRange" name="dateRange" class="form-control daterangefield"
-                                    placeholder="<?php echo _translate('Enter date range'); ?>" style="width:220px;background:#fff;" />
+                                    placeholder="<?php echo _translate('Enter date range'); ?>"
+                                    style="width:220px;background:#fff;" />
                             </td>
                             <td><strong><?= _translate('Test Type'); ?>&nbsp;:</strong></td>
                             <td>
@@ -265,7 +266,8 @@ $state = $geolocationService->getProvinces("yes");
                             <td><strong><?= _translate('Testing Lab'); ?>&nbsp;:</strong></td>
                             <td>
                                 <select class="form-control select2-element" id="labName" name="labName"
-                                    title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:180px;" multiple="multiple">
+                                    title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:180px;"
+                                    multiple="multiple">
                                     <?= $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
                                 </select>
                             </td>
@@ -274,7 +276,8 @@ $state = $geolocationService->getProvinces("yes");
                             <td><strong><?= _translate('Province/State'); ?>&nbsp;:</strong></td>
                             <td>
                                 <select class="form-control select2-element" id="state" name="state"
-                                    onchange="getByProvince()" title="<?php echo _translate('Please select Province/State'); ?>"
+                                    onchange="getByProvince()"
+                                    title="<?php echo _translate('Please select Province/State'); ?>"
                                     style="width:220px;" multiple="multiple">
                                     <?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
                                 </select>
@@ -339,10 +342,12 @@ $state = $geolocationService->getProvinces("yes");
                         </div>
                         <div class="metric-breakdown">
                             <span class="metric-breakdown-item">
-                                <?= _translate('API/EMR'); ?>: <span class="metric-breakdown-number" id="apiRequestsBreakdown">-</span>
+                                <?= _translate('API/EMR'); ?>: <span class="metric-breakdown-number"
+                                    id="apiRequestsBreakdown">-</span>
                             </span>
                             <span class="metric-breakdown-item">
-                                <?= _translate('Non-API/EMR'); ?>: <span class="metric-breakdown-number" id="nonApiRequestsBreakdown">-</span>
+                                <?= _translate('Non-API/EMR'); ?>: <span class="metric-breakdown-number"
+                                    id="nonApiRequestsBreakdown">-</span>
                             </span>
                         </div>
                     </div>
@@ -359,10 +364,12 @@ $state = $geolocationService->getProvinces("yes");
                         </div>
                         <div class="metric-breakdown">
                             <span class="metric-breakdown-item">
-                                <?= _translate('Received'); ?>: <span class="metric-breakdown-number" id="apiReceivedBreakdown">-</span>
+                                <?= _translate('Received'); ?>: <span class="metric-breakdown-number"
+                                    id="apiReceivedBreakdown">-</span>
                             </span>
                             <span class="metric-breakdown-item">
-                                <?= _translate('Not Received'); ?>: <span class="metric-breakdown-number" id="apiNotReceivedBreakdown">-</span>
+                                <?= _translate('Not Received'); ?>: <span class="metric-breakdown-number"
+                                    id="apiNotReceivedBreakdown">-</span>
                             </span>
                         </div>
                     </div>
@@ -379,13 +386,16 @@ $state = $geolocationService->getProvinces("yes");
                         </div>
                         <div class="metric-breakdown">
                             <span class="metric-breakdown-item">
-                                <?= _translate('Tested'); ?>: <span class="metric-breakdown-number" id="receivedTestedBreakdown">-</span>
+                                <?= _translate('Tested'); ?>: <span class="metric-breakdown-number"
+                                    id="receivedTestedBreakdown">-</span>
                             </span>
                             <span class="metric-breakdown-item">
-                                <?= _translate('Rejected'); ?>: <span class="metric-breakdown-number" id="rejectedSamplesBreakdown">-</span>
+                                <?= _translate('Rejected'); ?>: <span class="metric-breakdown-number"
+                                    id="rejectedSamplesBreakdown">-</span>
                             </span>
                             <span class="metric-breakdown-item">
-                                <?= _translate('Pending'); ?>: <span class="metric-breakdown-number" id="receivedPendingBreakdown">-</span>
+                                <?= _translate('Pending'); ?>: <span class="metric-breakdown-number"
+                                    id="receivedPendingBreakdown">-</span>
                             </span>
                         </div>
                     </div>
@@ -402,10 +412,12 @@ $state = $geolocationService->getProvinces("yes");
                         </div>
                         <div class="metric-breakdown">
                             <span class="metric-breakdown-item">
-                                <?= _translate('≤ 7 days'); ?>: <span class="metric-breakdown-number" id="notReceived7DaysBreakdown">-</span>
+                                <?= _translate('≤ 7 days'); ?>: <span class="metric-breakdown-number"
+                                    id="notReceived7DaysBreakdown">-</span>
                             </span>
                             <span class="metric-breakdown-item">
-                                <?= _translate('> 7 days'); ?>: <span class="metric-breakdown-number" id="notReceivedOver7DaysBreakdown">-</span>
+                                <?= _translate('> 7 days'); ?>: <span class="metric-breakdown-number"
+                                    id="notReceivedOver7DaysBreakdown">-</span>
                             </span>
                         </div>
                     </div>
@@ -439,10 +451,12 @@ $state = $geolocationService->getProvinces("yes");
                         </div>
                         <div class="metric-breakdown">
                             <span class="metric-breakdown-item">
-                                <?= _translate('Via API/EMR'); ?>: <span class="metric-breakdown-number" id="resultsApiBreakdown">-</span>
+                                <?= _translate('Via API/EMR'); ?>: <span class="metric-breakdown-number"
+                                    id="resultsApiBreakdown">-</span>
                             </span>
                             <span class="metric-breakdown-item">
-                                <?= _translate('Other'); ?>: <span class="metric-breakdown-number" id="resultsOtherBreakdown">-</span>
+                                <?= _translate('Other'); ?>: <span class="metric-breakdown-number"
+                                    id="resultsOtherBreakdown">-</span>
                             </span>
                         </div>
                     </div>
@@ -458,22 +472,32 @@ $state = $geolocationService->getProvinces("yes");
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title"><?= _translate('Source Distribution by Facility with API/EMR Workflow'); ?></h3>
+                        <h3 class="box-title">
+                            <?= _translate('Source Distribution by Facility with API/EMR Workflow'); ?>
+                        </h3>
                     </div>
                     <div class="box-body">
-                        <table class="table table-striped table-bordered" id="sourceDistributionTable" style="width:100%">
+                        <table class="table table-striped table-bordered" id="sourceDistributionTable"
+                            style="width:100%">
                             <thead>
                                 <tr>
                                     <th rowspan="2"><?= _translate('Facility'); ?></th>
-                                    <th colspan="4" class="text-center" style="background-color: #f8f9fa; text-align: center"><?= _translate('Source of Samples'); ?></th>
-                                    <th colspan="5" class="text-center" style="background-color: #e3f2fd; text-align: center"><?= _translate('API/EMR Workflow'); ?></th>
+                                    <th colspan="4" class="text-center"
+                                        style="background-color: #f8f9fa; text-align: center">
+                                        <?= _translate('Source of Samples'); ?>
+                                    </th>
+                                    <th colspan="5" class="text-center"
+                                        style="background-color: #e3f2fd; text-align: center">
+                                        <?= _translate('API/EMR Workflow'); ?>
+                                    </th>
                                 </tr>
                                 <tr>
                                     <th><?= _translate('API/EMR'); ?></th>
                                     <th><?= _translate('STS'); ?></th>
                                     <th><?= _translate('Direct LIS'); ?></th>
                                     <th><?= _translate('API/EMR %'); ?></th>
-                                    <th><?= _translate('Registered via API/EMR but Not Received at Testing Lab'); ?></th>
+                                    <th><?= _translate('Registered via API/EMR but Not Received at Testing Lab'); ?>
+                                    </th>
                                     <th><?= _translate('Registered via API/EMR and Received at Testing Lab'); ?></th>
                                     <th><?= _translate('Registered via API/EMR and Tested'); ?></th>
                                     <th><?= _translate('Registered vis API/EMR and Not Yet Tested'); ?></th>
@@ -491,7 +515,9 @@ $state = $geolocationService->getProvinces("yes");
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title"><?= _translate('API/EMR Requests Without Sample Receipt - By Facility'); ?></h3>
+                        <h3 class="box-title">
+                            <?= _translate('API/EMR Requests Without Sample Receipt - By Facility'); ?>
+                        </h3>
                         <div class="box-tools pull-right">
                             <button onclick="viewMissingSamples();" class="btn btn-sm btn-primary">
                                 <?= _translate('View All Details'); ?>
@@ -504,7 +530,8 @@ $state = $geolocationService->getProvinces("yes");
                                 <?= _translate('Facilities with API/EMR requests that have not received samples at the lab and are not rejected.'); ?>
                             </small>
                         </div>
-                        <table class="table table-condensed table-striped table-bordered" id="missingSamplesTable" style="width:100%">
+                        <table class="table table-condensed table-striped table-bordered" id="missingSamplesTable"
+                            style="width:100%">
                             <thead>
                                 <tr>
                                     <th><?= _translate('Facility'); ?></th>
@@ -541,7 +568,8 @@ $state = $geolocationService->getProvinces("yes");
                                 <?= _translate('Facilities with samples having same Patient ID/Name within last 7 days (at least one from API/EMR)'); ?>
                             </small>
                         </div>
-                        <table class="table table-condensed table-striped table-bordered" id="duplicatesTable" style="width:100%">
+                        <table class="table table-condensed table-striped table-bordered" id="duplicatesTable"
+                            style="width:100%">
                             <thead>
                                 <tr>
                                     <th><?= _translate('Facility'); ?></th>
@@ -593,7 +621,7 @@ $state = $geolocationService->getProvinces("yes");
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
 
         $("#lis-body").addClass("sidebar-collapse");
         // Initialize Select2 for multi-select dropdowns
@@ -692,7 +720,7 @@ $state = $geolocationService->getProvinces("yes");
                 provinceId: state,
                 districts: true,
                 facilities: true
-            }, function(data) {
+            }, function (data) {
                 const obj = $.parseJSON(data);
                 $("#district").append(obj['districts']).trigger('change');
                 $("#facilityId").append(obj['facilities']).trigger('change');
@@ -708,7 +736,7 @@ $state = $geolocationService->getProvinces("yes");
             $.post("/common/get-by-district-id.php", {
                 districtId: district,
                 facilities: true
-            }, function(data) {
+            }, function (data) {
                 const obj = $.parseJSON(data);
                 $("#facilityId").append(obj['facilities']).trigger('change');
             });
@@ -717,7 +745,7 @@ $state = $geolocationService->getProvinces("yes");
 
     function loadQuickMetrics(params) {
         return $.post("/admin/api-dashboard/get-api-dashboard-metrics.php", params)
-            .done(function(data) {
+            .done(function (data) {
                 try {
                     const metrics = JSON.parse(data);
 
@@ -765,7 +793,7 @@ $state = $geolocationService->getProvinces("yes");
                     errorElements.forEach(el => $(el).text('Error'));
                 }
             })
-            .fail(function() {
+            .fail(function () {
                 // Reset all metrics to 'Error' on request failure
                 const errorElements = [
                     "#totalRequests", "#apiRequestsBreakdown", "#nonApiRequestsBreakdown",
@@ -781,7 +809,7 @@ $state = $geolocationService->getProvinces("yes");
 
     function loadAlerts(params) {
         return $.post("/admin/api-dashboard/get-api-dashboard-alerts.php", params)
-            .done(function(data) {
+            .done(function (data) {
                 $("#alertsContainer").html(data);
             });
     }
@@ -800,7 +828,7 @@ $state = $geolocationService->getProvinces("yes");
                 url: "/admin/api-dashboard/get-missing-samples.php",
                 type: "POST",
                 data: params,
-                dataSrc: function(json) {
+                dataSrc: function (json) {
                     if (json.error) {
                         console.error('Error loading missing samples:', json.error);
                         return [];
@@ -812,7 +840,7 @@ $state = $geolocationService->getProvinces("yes");
                 // Facility Name
                 {
                     data: 'facility_name',
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return '<strong>' + data + '</strong><br><small class="text-muted">Oldest: ' + row.oldest_request + '</small>';
                     }
                 },
@@ -830,7 +858,7 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     data: 'over_7_days',
                     className: 'text-center',
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         if (data > 0) {
                             return '<span class="text-danger"><strong>' + data + '</strong></span>';
                         }
@@ -846,7 +874,7 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     data: 'max_days_pending',
                     className: 'text-center',
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         if (data > 7) {
                             return '<span class="text-danger"><strong>' + data + '</strong></span>';
                         }
@@ -857,7 +885,7 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     data: 'priority',
                     className: 'text-center',
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         let priorityClass = 'text-default';
                         if (data === 'Critical') priorityClass = 'text-danger';
                         else if (data === 'High') priorityClass = 'text-warning';
@@ -879,22 +907,22 @@ $state = $geolocationService->getProvinces("yes");
             ],
             responsive: true,
             language: {
-                search: "<?= _translate('Search facilities'); ?>:",
-                lengthMenu: "<?= _translate('Show'); ?> _MENU_ <?= _translate('facilities'); ?>",
-                info: "<?= _translate('Showing'); ?> _START_ <?= _translate('to'); ?> _END_ <?= _translate('of'); ?> _TOTAL_ <?= _translate('facilities'); ?>",
-                emptyTable: "<?= _translate('No facilities with missing samples found'); ?>",
-                zeroRecords: "<?= _translate('No matching facilities found'); ?>",
+                search: "<?= _jsTranslate('Search facilities'); ?>:",
+                lengthMenu: "<?= _jsTranslate('Show'); ?> _MENU_ <?= _jsTranslate('facilities'); ?>",
+                info: "<?= _jsTranslate('Showing'); ?> _START_ <?= _jsTranslate('to'); ?> _END_ <?= _jsTranslate('of'); ?> _TOTAL_ <?= _jsTranslate('facilities'); ?>",
+                emptyTable: "<?= _jsTranslate('No facilities with missing samples found'); ?>",
+                zeroRecords: "<?= _jsTranslate('No matching facilities found'); ?>",
                 paginate: {
-                    first: "<?= _translate('First'); ?>",
-                    last: "<?= _translate('Last'); ?>",
-                    next: "<?= _translate('Next'); ?>",
-                    previous: "<?= _translate('Previous'); ?>"
+                    first: "<?= _jsTranslate('First'); ?>",
+                    last: "<?= _jsTranslate('Last'); ?>",
+                    next: "<?= _jsTranslate('Next'); ?>",
+                    previous: "<?= _jsTranslate('Previous'); ?>"
                 }
             },
             dom: '<"row"<"col-sm-6"l><"col-sm-6"f>>' +
                 '<"row"<"col-sm-12"tr>>' +
                 '<"row"<"col-sm-5"i><"col-sm-7"p>>',
-            drawCallback: function(settings) {
+            drawCallback: function (settings) {
                 // Re-enable tooltips after table redraw
                 $('[data-toggle="tooltip"]').tooltip();
             }
@@ -915,7 +943,7 @@ $state = $geolocationService->getProvinces("yes");
                 url: "/admin/api-dashboard/get-duplicate-suspects.php",
                 type: "POST",
                 data: params,
-                dataSrc: function(json) {
+                dataSrc: function (json) {
                     if (json.error) {
                         console.error('Error loading duplicates:', json.error);
                         return [];
@@ -927,7 +955,7 @@ $state = $geolocationService->getProvinces("yes");
                 // Facility Name
                 {
                     data: 'facility_name',
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return '<strong>' + data + '</strong><br><small class="text-muted">Latest: ' + row.latest_duplicate + '</small>';
                     }
                 },
@@ -945,7 +973,7 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     data: 'high_risk_groups',
                     className: 'text-center',
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         if (data > 0) {
                             return '<span class="text-danger"><strong>' + data + '</strong></span>';
                         }
@@ -956,7 +984,7 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     data: 'medium_risk_groups',
                     className: 'text-center',
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         if (data > 0) {
                             return '<span class="text-warning"><strong>' + data + '</strong></span>';
                         }
@@ -972,7 +1000,7 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     data: 'risk_level',
                     className: 'text-center',
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         let riskClass = 'label-default';
                         if (data === 'High') riskClass = 'label-danger';
                         else if (data === 'Medium') riskClass = 'label-warning';
@@ -985,7 +1013,7 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     data: 'latest_duplicate',
                     className: 'text-center',
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return '<small>' + data + '</small>';
                     }
                 }
@@ -1002,21 +1030,21 @@ $state = $geolocationService->getProvinces("yes");
             responsive: true,
             language: {
                 search: "<?= _translate('Search facilities'); ?>:",
-                lengthMenu: "<?= _translate('Show'); ?> _MENU_ <?= _translate('facilities'); ?>",
-                info: "<?= _translate('Showing'); ?> _START_ <?= _translate('to'); ?> _END_ <?= _translate('of'); ?> _TOTAL_ <?= _translate('facilities'); ?>",
-                emptyTable: "<?= _translate('No facilities with duplicate suspects found'); ?>",
-                zeroRecords: "<?= _translate('No matching facilities found'); ?>",
+                lengthMenu: "<?= _jsTranslate('Show'); ?> _MENU_ <?= _jsTranslate('facilities'); ?>",
+                info: "<?= _jsTranslate('Showing'); ?> _START_ <?= _jsTranslate('to'); ?> _END_ <?= _jsTranslate('of'); ?> _TOTAL_ <?= _jsTranslate('facilities'); ?>",
+                emptyTable: "<?= _jsTranslate('No facilities with duplicate suspects found'); ?>",
+                zeroRecords: "<?= _jsTranslate('No matching facilities found'); ?>",
                 paginate: {
                     first: "<?= _translate('First'); ?>",
-                    last: "<?= _translate('Last'); ?>",
-                    next: "<?= _translate('Next'); ?>",
-                    previous: "<?= _translate('Previous'); ?>"
+                    last: "<?= _jsTranslate('Last'); ?>",
+                    next: "<?= _jsTranslate('Next'); ?>",
+                    previous: "<?= _jsTranslate('Previous'); ?>"
                 }
             },
             dom: '<"row"<"col-sm-6"l><"col-sm-6"f>>' +
                 '<"row"<"col-sm-12"tr>>' +
                 '<"row"<"col-sm-5"i><"col-sm-7"p>>',
-            drawCallback: function(settings) {
+            drawCallback: function (settings) {
                 // Re-enable tooltips after table redraw
                 $('[data-toggle="tooltip"]').tooltip();
             }
@@ -1037,7 +1065,7 @@ $state = $geolocationService->getProvinces("yes");
                 url: "/admin/api-dashboard/get-source-distribution.php",
                 type: "POST",
                 data: params,
-                dataSrc: function(json) {
+                dataSrc: function (json) {
                     if (json.error) {
                         console.error('Error loading source distribution:', json.error);
                         return [];
@@ -1049,7 +1077,7 @@ $state = $geolocationService->getProvinces("yes");
                 // Facility Name
                 {
                     data: 'facility_name',
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return data || 'Unknown Facility #' + row.facility_id;
                     }
                 },
@@ -1072,7 +1100,7 @@ $state = $geolocationService->getProvinces("yes");
                 {
                     data: 'api_percentage',
                     className: 'text-center',
-                    render: function(data, type, row) {
+                    render: function (data, type, row) {
                         return data + '%';
                     }
                 },
@@ -1113,22 +1141,22 @@ $state = $geolocationService->getProvinces("yes");
             responsive: true,
             scrollX: true, // Enable horizontal scrolling for many columns
             language: {
-                search: "<?= _translate('Search facilities'); ?>:",
-                lengthMenu: "<?= _translate('Show'); ?> _MENU_ <?= _translate('entries', true); ?>",
-                info: "<?= _translate('Showing'); ?> _START_ <?= _translate('to', true); ?> _END_ <?= _translate('of', true); ?> _TOTAL_ <?= _translate('facilities', true); ?>",
-                emptyTable: "<?= _translate('No data available', true); ?>",
-                zeroRecords: "<?= _translate('No matching facilities found', true); ?>",
+                search: "<?= _jsTranslate('Search facilities'); ?>:",
+                lengthMenu: "<?= _jsTranslate('Show'); ?> _MENU_ <?= _jsTranslate('entries', true); ?>",
+                info: "<?= _jsTranslate('Showing'); ?> _START_ <?= _jsTranslate('to', true); ?> _END_ <?= _jsTranslate('of', true); ?> _TOTAL_ <?= _jsTranslate('facilities', true); ?>",
+                emptyTable: "<?= _jsTranslate('No data available', true); ?>",
+                zeroRecords: "<?= _jsTranslate('No matching facilities found', true); ?>",
                 paginate: {
-                    first: "<?= _translate('First', true); ?>",
-                    last: "<?= _translate('Last', true); ?>",
-                    next: "<?= _translate('Next', true); ?>",
-                    previous: "<?= _translate('Previous', true); ?>"
+                    first: "<?= _jsTranslate('First', true); ?>",
+                    last: "<?= _jsTranslate('Last', true); ?>",
+                    next: "<?= _jsTranslate('Next', true); ?>",
+                    previous: "<?= _jsTranslate('Previous', true); ?>"
                 }
             },
             dom: '<"row"<"col-sm-6"l><"col-sm-6"f>>' +
                 '<"row"<"col-sm-12"tr>>' +
                 '<"row"<"col-sm-5"i><"col-sm-7"p>>',
-            drawCallback: function(settings) {
+            drawCallback: function (settings) {
                 // Re-enable tooltips after table redraw
                 $('[data-toggle="tooltip"]').tooltip();
             }
@@ -1137,7 +1165,7 @@ $state = $geolocationService->getProvinces("yes");
 
     function loadNonOriginatingResults(params) {
         return $.post("/admin/api-dashboard/get-non-originating-results.php", params)
-            .done(function(data) {
+            .done(function (data) {
                 const results = JSON.parse(data);
                 let html = '';
                 results.slice(0, 10).forEach(result => {
@@ -1149,7 +1177,7 @@ $state = $geolocationService->getProvinces("yes");
                 </tr>`;
                 });
                 if (results.length === 0) {
-                    html = '<tr><td colspan="4" class="text-center"><?= _translate("No non-originating results found", true); ?></td></tr>';
+                    html = '<tr><td colspan="4" class="text-center"><?= _jsTranslate("No non-originating results found", true); ?></td></tr>';
                 }
                 $("#nonOriginatingBody").html(html);
             });
