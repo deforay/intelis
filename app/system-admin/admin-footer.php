@@ -2,11 +2,9 @@
   <?php
   /** @var \App\Services\CommonService $commonServiceForFooter */
   $commonServiceForFooter = \App\Registries\ContainerRegistry::get(\App\Services\CommonService::class);
-  $commitShaFull = $commonServiceForFooter->getCommitSha();
   $commitShaShort = $commonServiceForFooter->getCommitShaShort();
   ?>
-  <span class="pull-right"
-    <?php if ($commitShaFull): ?>title="Commit <?= htmlspecialchars($commitShaFull, ENT_QUOTES, 'UTF-8'); ?>" style="cursor:help;"<?php endif; ?>>
+  <span class="pull-right">
     v <?php echo VERSION; ?><?php if ($commitShaShort): ?> <small class="text-muted">(<?= htmlspecialchars($commitShaShort, ENT_QUOTES, 'UTF-8'); ?>)</small><?php endif; ?>
   </span>
 </footer>

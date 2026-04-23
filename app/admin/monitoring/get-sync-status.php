@@ -165,16 +165,12 @@ if (empty($resultSet)) {
             <td class="text-center">
                 <?php
                 $_rowSha = $aRow['commitSha'] ?? null;
-                if (is_string($_rowSha) && preg_match('/^[0-9a-f]{40}$/', $_rowSha)) {
-                    $_rowShaShort = substr($_rowSha, 0, 7);
-                } else {
-                    $_rowSha = null;
-                    $_rowShaShort = null;
-                }
+                $_rowShaShort = (is_string($_rowSha) && preg_match('/^[0-9a-f]{40}$/', $_rowSha))
+                    ? substr($_rowSha, 0, 7)
+                    : null;
                 ?>
                 <?= htmlspecialchars($aRow['version'] ?? '-'); ?><?php if ($_rowShaShort): ?>
-                    <small class="text-muted" style="cursor:help;"
-                        title="Commit <?= htmlspecialchars($_rowSha, ENT_QUOTES, 'UTF-8'); ?>">(<?= htmlspecialchars($_rowShaShort, ENT_QUOTES, 'UTF-8'); ?>)</small>
+                    <small class="text-muted">(<?= htmlspecialchars($_rowShaShort, ENT_QUOTES, 'UTF-8'); ?>)</small>
                 <?php endif; ?>
                 <?php if ($showActions) {
                     // Heartbeat freshness — report on the two background loops
