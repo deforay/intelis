@@ -66,6 +66,33 @@ $userModules = $_SESSION['modules'] ?? [];
 		float: left;
 		width: 100%;
 	}
+
+	.dashboard-lazy-loading {
+		background: #fff;
+		border: 1px dashed #d6d9e0;
+		border-radius: 6px;
+		padding: 28px 20px;
+		margin: 10px 0;
+		text-align: center;
+		color: #6c7a89;
+		font-size: 13px;
+	}
+
+	.dashboard-lazy-loading__spinner {
+		display: inline-block;
+		width: 14px;
+		height: 14px;
+		border: 2px solid #d6d9e0;
+		border-top-color: #3598DC;
+		border-radius: 50%;
+		animation: dashboard-lazy-spin 0.7s linear infinite;
+		vertical-align: middle;
+		margin-right: 8px;
+	}
+
+	@keyframes dashboard-lazy-spin {
+		to { transform: rotate(360deg); }
+	}
 </style>
 
 <!-- Content Wrapper. Contains page content -->
@@ -496,6 +523,28 @@ $userModules = $_SESSION['modules'] ?? [];
 	let currentRequests = [];
 	let isGeneratingDashboard = false;
 
+	// Inline, non-blocking loading indicator for lazy-loaded dashboard panels
+	function showLazyLoading(requestType) {
+		var panels = {
+			vl:              ['#vlNoOfSampleCount', '#vlPieChartDiv'],
+			recency:         ['#recencyNoOfSampleCount', '#recencyPieChartDiv'],
+			eid:             ['#eidNoOfSampleCount', '#eidPieChartDiv'],
+			covid19:         ['#covid19NoOfSampleCount', '#covid19PieChartDiv'],
+			hepatitis:       ['#hepatitisNoOfSampleCount', '#hepatitisPieChartDiv'],
+			tb:              ['#tbNoOfSampleCount', '#tbPieChartDiv'],
+			cd4:             ['#cd4NoOfSampleCount', '#cd4PieChartDiv'],
+			'generic-tests': ['#genericTestsNoOfSampleCount', '#genericTestsPieChartDiv']
+		};
+		var ids = panels[requestType] || [];
+		var skeleton = '<div class="dashboard-lazy-loading"><span class="dashboard-lazy-loading__spinner"></span><?= _jsTranslate("Loading charts…"); ?></div>';
+		ids.forEach(function(sel) {
+			var $el = $(sel);
+			if ($el.length && $.trim($el.html()) === '') {
+				$el.html(skeleton);
+			}
+		});
+	}
+
 	// Function to abort all current requests
 	function abortAllRequests() {
 		currentRequests.forEach(xhr => {
@@ -616,16 +665,22 @@ $userModules = $_SESSION['modules'] ?? [];
 				if ($("." + currentRequestType + " .sampleCountsDatatableDiv").isInViewport()) {
 					sampleCountsDatatableCounter++;
 
+					// Non-blocking inline loading indicator for the lazy panels
+					showLazyLoading(currentRequestType);
+
 					// Load charts in parallel using $.when
 					$.when(
 						getSampleCountsForDashboard(currentRequestType),
 						getSamplesOverview(currentRequestType)
 					).done(function() {
 						$.unblockUI();
+						// Clear any leftover skeletons (e.g. empty response kept placeholder)
+						$('.dashboard-lazy-loading').remove();
 					}).fail(function(error) {
 						if (error.statusText !== 'abort') {
 							console.error('Chart loading error:', error);
 						}
+						$('.dashboard-lazy-loading').remove();
 						$.unblockUI();
 					});
 				}

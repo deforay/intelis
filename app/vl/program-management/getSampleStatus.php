@@ -155,16 +155,14 @@ $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
 
 
+/* HIV Viral Load Detection query disabled along with its pie chart (users confused it with VL Suppression).
 $sWhere = [];
-/** Get results that are not blank */
 $sampleResultQuery = "SELECT
             SUM(CASE WHEN vl.result REGEXP '^-?[0-9]+$' THEN 1 ELSE 0 END) AS numberValue,
             SUM(CASE WHEN vl.result like 'TND' OR vl.result like 'Target Not Detected' OR vl.result like 'Below Detection Level' OR vl.result like 'HIV-1 Not Detected' THEN 1 ELSE 0 END) AS charValue
             FROM $table as vl
             LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
-
-
 
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -186,6 +184,7 @@ if ($sWhere !== []) {
 }
 
 $sampleResultQueryResult = $db->rawQueryOne($sampleResultQuery);
+*/
 
 //get LAB TAT
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
@@ -278,11 +277,13 @@ foreach ($tatResult as $sRow) {
             <div id="<?php echo $samplesVlOverview; ?>" style="float:right;width:100%;margin: 0 auto;"></div>
         </div>
     </div>
+    <?php /* HIV Viral Load Detection chart container disabled.
     <div class="box">
         <div class="box-body">
             <div id="<?php echo $samplesResultview; ?>" style="float:right;width:100%;margin: 0 auto;"></div>
         </div>
     </div>
+    */ ?>
 </div>
 </div>
 <div class="col-xs-12 labAverageTatDiv">
@@ -417,7 +418,11 @@ foreach ($tatResult as $sRow) {
         <?php
     }
 
-    /* For new pie chart for not blank results */
+    /* HIV Viral Load Detection pie chart temporarily disabled — users confused it with VL Suppression. */
+    ?>
+    $('#<?php echo $samplesResultview; ?>').hide();
+    <?php
+    /*
     if (!empty($sampleResultQueryResult) && ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue']) > 0) {
         ?>
         Highcharts.setOptions({
@@ -473,6 +478,7 @@ foreach ($tatResult as $sRow) {
     } else { ?>
         $('#<?php echo $samplesResultview; ?>').hide();
     <?php }
+    */
     if (!empty($result)) {
         ?>
         $('#<?php echo $labAverageTat; ?>').highcharts({
