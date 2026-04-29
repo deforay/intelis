@@ -199,6 +199,39 @@ try {
         $db->rawQuery($sql, [$courierHb, $runnerHb, $now, (int) $labId]);
     }
 
+    // 4b) Persist the courier's self-reported capabilities so the STS UI can
+    //     gate the queue/cancel actions to labs that actually speak the
+    //     command plane. Older couriers that don't send the field are
+    //     correctly treated as "no plane" because capabilitiesSeenAt stays
+    //     null. We only accept a small, known shape — anything else is
+    //     dropped to avoid leaking arbitrary JSON into facility_attributes.
+    if (isset($data['capabilities']) && is_array($data['capabilities'])) {
+        $supportsRaw = $data['capabilities']['supports'] ?? [];
+        $supports = [];
+        if (is_array($supportsRaw)) {
+            foreach ($supportsRaw as $verb) {
+                if (is_string($verb) && preg_match('/^[a-z][a-z0-9-]{0,63}$/', $verb)) {
+                    $supports[] = $verb;
+                }
+            }
+        }
+        $caps = [
+            'commandPlane' => !empty($data['capabilities']['commandPlane']),
+            'version' => is_string($data['capabilities']['version'] ?? null)
+                ? mb_substr((string) $data['capabilities']['version'], 0, 32)
+                : null,
+            'supports' => array_values(array_unique($supports)),
+        ];
+        $sql = "UPDATE facility_details
+                SET facility_attributes = JSON_SET(
+                    COALESCE(facility_attributes, '{}'),
+                    '$.capabilities',       CAST(? AS JSON),
+                    '$.capabilitiesSeenAt', ?
+                )
+                WHERE facility_id = ?";
+        $db->rawQuery($sql, [json_encode($caps), $now, (int) $labId]);
+    }
+
     // 5) Stash the reported commit SHA alongside the version so the
     //    sync-status UI can show "which commit is this lab running".
     //    Sanitise to a 40-char hex string to avoid leaking arbitrary data

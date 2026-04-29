@@ -37,6 +37,8 @@ $query = "SELECT
     f.facility_attributes->>'$.lastRequestsSync' as lastRequestsSync,
     f.facility_attributes->>'$.courierHeartbeat' as courierHeartbeat,
     f.facility_attributes->>'$.runnerHeartbeat' as runnerHeartbeat,
+    f.facility_attributes->>'$.capabilities' as capabilitiesJson,
+    f.facility_attributes->>'$.capabilitiesSeenAt' as capabilitiesSeenAt,
     tar.last_requested_on,
     GREATEST(
         COALESCE(UNIX_TIMESTAMP(STR_TO_DATE(f.facility_attributes->>'$.lastHeartBeat', '%Y-%m-%d %H:%i:%s')), 0),
@@ -81,6 +83,10 @@ $resultSet = $db->rawQueryGenerator($query, $params);
 $twoWeeksAgo = strtotime('-2 weeks');
 $fourWeeksAgo = strtotime('-4 weeks');
 
+// Capability staleness — match LabCapabilityService::DEFAULT_STALE_MINUTES.
+// Couriers that haven't reported in this window are treated as "no plane".
+$capabilityStaleAfter = strtotime('-24 hours');
+
 // Pre-fetch pending/in-flight commands for the labs in this result set so we
 // can badge the row and disable duplicate-queueing client-side.
 // Prepared rows are tracked separately so the "Apply prepared upgrade"
@@ -118,6 +124,32 @@ if (empty($resultSet)) {
     echo '<tr><td colspan="' . $colspan . '" class="dataTables_empty">' . _translate("No data available") . '</td></tr>';
 } else {
     foreach ($resultSet as $aRow) {
+        // Decode the lab's reported capabilities (if any). A lab "speaks the
+        // command plane" when capabilitiesSeenAt is fresher than 24h AND the
+        // payload says commandPlane=true. Older couriers (or labs that have
+        // gone silent) fail the freshness check and queueing is disabled.
+        $labCaps = null;
+        $labSupports = [];
+        $labSupportsPlane = false;
+        if (!empty($aRow['capabilitiesJson'])) {
+            $decodedCaps = json_decode((string) $aRow['capabilitiesJson'], true);
+            if (is_array($decodedCaps)) {
+                $labCaps = $decodedCaps;
+                if (is_array($decodedCaps['supports'] ?? null)) {
+                    $labSupports = array_values(array_filter(
+                        $decodedCaps['supports'],
+                        static fn($v) => is_string($v) && $v !== ''
+                    ));
+                }
+                $capsSeenTs = !empty($aRow['capabilitiesSeenAt'])
+                    ? strtotime((string) $aRow['capabilitiesSeenAt'])
+                    : false;
+                $labSupportsPlane = !empty($decodedCaps['commandPlane'])
+                    && $capsSeenTs !== false
+                    && $capsSeenTs >= $capabilityStaleAfter;
+            }
+        }
+
         // Determine sync status color
         $latestSync = (int) $aRow['latest_timestamp'];
         if ($latestSync > $twoWeeksAgo) {
@@ -211,12 +243,24 @@ if (empty($resultSet)) {
                 $labPending = $pendingCommandsByLab[$aRow['facility_id']] ?? [];
                 $labPrepared = $preparedByLab[$aRow['facility_id']] ?? []; ?>
                 <td class="text-center no-row-click">
-                    <?php if ($canQueue) { ?>
+                    <?php if ($canQueue) {
+                        // Disable (don't hide) the button when the lab's
+                        // courier hasn't recently reported the command plane,
+                        // so operators can see *why* queueing isn't available
+                        // for this row instead of a silently-missing button.
+                        if ($labSupportsPlane) {
+                            $queueBtnDisabled = '';
+                            $queueBtnTitle = _translate('Queue a command for this lab');
+                        } else {
+                            $queueBtnDisabled = ' disabled';
+                            $queueBtnTitle = _translate("Lab's courier hasn't reported the remote command plane recently — queueing is disabled.");
+                        } ?>
                         <button type="button" class="btn btn-sm btn-primary row-action queue-command-btn"
                             data-lab-id="<?= (int) $aRow['facility_id']; ?>"
                             data-lab-name="<?= htmlspecialchars((string) $aRow['facility_name'], ENT_QUOTES); ?>"
                             data-prepared='<?= htmlspecialchars(json_encode($labPrepared), ENT_QUOTES); ?>'
-                            title="<?= _translate('Queue a command for this lab'); ?>">
+                            data-supports='<?= htmlspecialchars(json_encode($labSupports), ENT_QUOTES); ?>'
+                            title="<?= htmlspecialchars($queueBtnTitle, ENT_QUOTES); ?>"<?= $queueBtnDisabled; ?>>
                             <i class="fa fa-paper-plane"></i>
                             <?= _translate('Queue'); ?>
                         </button>
