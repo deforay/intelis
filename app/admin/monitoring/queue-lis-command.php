@@ -113,7 +113,7 @@ if ($command === 'resend-results' || $command === 'resend-requests') {
 // a stale or foreign staging dir by tampering with the client payload.
 if ($command === 'upgrade-apply') {
     $dependsOn = $post['dependsOn'] ?? null;
-    if (empty($dependsOn) || !preg_match('/^[A-Z0-9]{26}$/', (string) $dependsOn)) {
+    if (empty($dependsOn) || !preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', (string) $dependsOn)) {
         http_response_code(400);
         echo json_encode(['status' => 'error', 'error' => 'upgrade-apply requires a valid dependsOn commandId']);
         exit;
