@@ -29,3 +29,16 @@ FROM (
   WHERE m.display_text = 'Monitoring' AND m.module = 'admin' AND m.link IS NULL AND m.is_header = 'no'
   LIMIT 1
 ) AS monitoring;
+
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
