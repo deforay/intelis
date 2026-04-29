@@ -175,6 +175,16 @@ $heartbeats = [
     'runner' => is_file($runnerHeartbeatFile) ? date('c', filemtime($runnerHeartbeatFile)) : null,
 ];
 
+// Self-report which command verbs this courier can actually dispatch. STS
+// uses this to hide the Queue UI for labs that don't speak the plane and
+// to filter the command-type dropdown per lab. Root verbs are only
+// advertised when allow_remote_upgrade is on — otherwise the runner
+// refuses to act on them anyway (var/remote-commands/disabled).
+$supportedCommands = array_keys($inProcessHandlers);
+if ($upgradeAllowed) {
+    $supportedCommands = array_merge($supportedCommands, $rootRunnerCommands);
+}
+
 $payload = [
     'labId' => $labId,
     'instanceId' => $general->getInstanceId(),
@@ -182,6 +192,11 @@ $payload = [
     'commitSha' => $general->getCommitSha(),
     'statusUpdates' => $statusUpdates,
     'heartbeats' => $heartbeats,
+    'capabilities' => [
+        'commandPlane' => true,
+        'version' => '1.0',
+        'supports' => array_values(array_unique($supportedCommands)),
+    ],
 ];
 
 try {

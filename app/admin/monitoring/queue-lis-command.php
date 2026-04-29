@@ -9,6 +9,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
+use App\Services\LabCapabilityService;
 
 header('Content-Type: application/json');
 
@@ -75,6 +76,27 @@ if ($labId <= 0) {
 if (!in_array($command, $commandWhitelist, true)) {
     http_response_code(400);
     echo json_encode(['status' => 'error', 'error' => 'Unknown command']);
+    exit;
+}
+
+// Capability gate: refuse to queue if the lab's courier hasn't reported it
+// can handle this verb. Defense in depth — the UI already hides the action,
+// but a stale page or a hand-crafted POST should not bypass it.
+$labCaps = ContainerRegistry::get(LabCapabilityService::class);
+if (!$labCaps->supportsCommandPlane($labId)) {
+    http_response_code(409);
+    echo json_encode([
+        'status' => 'error',
+        'error' => 'Lab does not support the remote command plane (no recent capability report).',
+    ]);
+    exit;
+}
+if (!$labCaps->supportsCommand($labId, $command)) {
+    http_response_code(409);
+    echo json_encode([
+        'status' => 'error',
+        'error' => "Lab's courier does not support the '{$command}' command.",
+    ]);
     exit;
 }
 

@@ -592,13 +592,41 @@ $stateNameList = $geolocationService->getProvinces("yes");
             $('#syncStatusDataTable tbody').on('click', '.queue-command-btn', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
+                if ($(this).is(':disabled')) return;
                 const labId = $(this).data('labId');
                 const labName = $(this).data('labName') || '';
                 const prepared = $(this).data('prepared') || [];
+                const supports = $(this).data('supports') || [];
                 $('#queueCommandModal').data('labId', labId);
                 $('#queueCommandModal').data('prepared', prepared);
                 $('#queueCommandLabName').text(labName ? ('<?= _translate('Lab'); ?>: ' + labName) : '');
-                $('#queueCommandType').val('resend-results').trigger('change');
+
+                // Filter the command-type <select> to only verbs the lab's
+                // courier reported it can handle. Disable + grey out anything
+                // unsupported (rather than removing) so the operator can see
+                // what isn't available and why. The "upgrade" macro requires
+                // BOTH upgrade-prepare and upgrade-apply on the courier side.
+                let firstSupported = null;
+                $('#queueCommandType option').each(function () {
+                    const v = $(this).val();
+                    let ok = Array.isArray(supports) && supports.indexOf(v) !== -1;
+                    if (v === 'upgrade') {
+                        ok = Array.isArray(supports)
+                            && supports.indexOf('upgrade-prepare') !== -1
+                            && supports.indexOf('upgrade-apply') !== -1;
+                    }
+                    $(this).prop('disabled', !ok);
+                    if (ok && firstSupported === null) firstSupported = v;
+                });
+                const initial = (Array.isArray(supports) && supports.indexOf('resend-results') !== -1)
+                    ? 'resend-results'
+                    : firstSupported;
+                if (initial) {
+                    $('#queueCommandType').val(initial).trigger('change');
+                    $('#queueCommandSubmit').prop('disabled', false);
+                } else {
+                    $('#queueCommandSubmit').prop('disabled', true);
+                }
                 $('#queueCommandModule').val('');
                 $('#queueCommandDays').val('');
                 $('#queueCommandNotBefore').val('');

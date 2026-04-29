@@ -12,6 +12,7 @@ use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
+use App\Services\LabCapabilityService;
 
 header('Content-Type: application/json');
 
@@ -73,6 +74,27 @@ try {
         echo json_encode([
             'status' => 'error',
             'error' => 'Can only replay terminal commands; current status is ' . $source['status'],
+        ]);
+        exit;
+    }
+
+    // Capability gate — replay is queueing under the hood, so use the same
+    // contract as queue-lis-command. A lab whose courier has gone silent
+    // shouldn't accumulate fresh pending rows it will never pick up.
+    $labCaps = ContainerRegistry::get(LabCapabilityService::class);
+    if (!$labCaps->supportsCommandPlane((int) $source['lab_id'])) {
+        http_response_code(409);
+        echo json_encode([
+            'status' => 'error',
+            'error' => 'Lab does not support the remote command plane (no recent capability report).',
+        ]);
+        exit;
+    }
+    if (!$labCaps->supportsCommand((int) $source['lab_id'], (string) $source['command'])) {
+        http_response_code(409);
+        echo json_encode([
+            'status' => 'error',
+            'error' => "Lab's courier does not support the '{$source['command']}' command.",
         ]);
         exit;
     }
