@@ -51,7 +51,7 @@ $canQueue = _isAllowed('/admin/monitoring/queue-lis-command.php');
 $terminalStatuses = ['completed', 'failed', 'expired', 'cancelled'];
 
 // Single-command detail mode.
-if (!empty($post['detailFor']) && preg_match('/^[A-Z0-9]{26}$/', (string) $post['detailFor'])) {
+if (!empty($post['detailFor']) && preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', (string) $post['detailFor'])) {
     $db->reset();
     $db->where('command_id', $post['detailFor']);
     $row = $db->getOne(

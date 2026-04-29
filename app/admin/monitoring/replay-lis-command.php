@@ -46,7 +46,7 @@ $request = AppRegistry::get('request');
 $post = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 $sourceId = $post['commandId'] ?? '';
-if (empty($sourceId) || !preg_match('/^[A-Z0-9]{26}$/', (string) $sourceId)) {
+if (empty($sourceId) || !preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', (string) $sourceId)) {
     http_response_code(400);
     echo json_encode(['status' => 'error', 'error' => 'Invalid commandId']);
     exit;
