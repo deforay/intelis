@@ -1,229 +1,411 @@
 #!/usr/bin/env php
 <?php
 
+// Bumps the project version. Dead simple.
+//
+//   php bin/build/generate-version.php           (no arg = interactive menu)
+//   php bin/build/generate-version.php patch     5.4.5 -> 5.4.6
+//   php bin/build/generate-version.php minor     5.4.5 -> 5.5.0
+//   php bin/build/generate-version.php major     5.4.5 -> 6.0.0
+//   php bin/build/generate-version.php 5.6.0     set explicit version
+//
+// Add -y to skip the confirmation prompt. --help for help.
+//
+// On every release bump, the script:
+//   1) shows you what it WILL do,
+//   2) asks "apply? [Y/n]",
+//   3) updates composer.json + app/system/version.php (kept identical),
+//   4) closes out every still-open older migration with EOV markers,
+//   5) creates a new sys/migrations/<x.y.z>.sql stub.
 
-require_once __DIR__ . "/../../bootstrap.php";
+require_once __DIR__ . '/../../bootstrap.php';
 
-// only run from command line
 if (PHP_SAPI !== 'cli') {
-    exit(CLI\ERROR);
+    fwrite(STDERR, "This script must be run from the command line.\n");
+    exit(1);
 }
 
-use App\Services\CommonService;
-use App\Utilities\LoggerUtility;
-use App\Registries\ContainerRegistry;
+const EOV_MARKER = "-- END OF VERSION --";
+const EOV_COUNT  = 12;
 
-$versionFilePath = APPLICATION_PATH . '/system/version.php';
-$composerJsonPath = ROOT_PATH . '/composer.json';
-
-// Function to get current version from composer.json
-function getComposerVersion($composerJsonPath)
-{
-    if (!file_exists($composerJsonPath)) {
-        return null;
-    }
-
-    $composerContent = file_get_contents($composerJsonPath);
-    $composerJson = json_decode($composerContent, true);
-
-    if (json_last_error() !== JSON_ERROR_NONE || !isset($composerJson['version'])) {
-        return null;
-    }
-
-    return $composerJson['version'];
-}
-
-// Get the current major version from composer.json (primary source)
-$currentMajorVersion = getComposerVersion($composerJsonPath);
-
-// Function to extract the version number from the version.php file
-function getCurrentVersion($versionFilePath): ?string
-{
-    if (!file_exists($versionFilePath)) {
-        return null;
-    }
-
-    $versionContent = file_get_contents($versionFilePath);
-    if (preg_match("/define\('VERSION', '([\d\.]+)'\);/", $versionContent, $matches)) {
-        return $matches[1];
-    }
-    return null;
-}
-
-// Function to update composer.json version
-function updateComposerJson($composerJsonPath, $newVersion): bool
-{
-    if (!file_exists($composerJsonPath)) {
-        echo "Warning: composer.json not found at {$composerJsonPath}" . PHP_EOL;
-        return false;
-    }
-
-    // Get the current content of composer.json
-    $composerContent = file_get_contents($composerJsonPath);
-    $composerJson = json_decode($composerContent, true);
-
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        echo "Error parsing composer.json: " . json_last_error_msg() . PHP_EOL;
-        return false;
-    }
-
-    // Extract just the major.minor.patch part for composer.json
-    $versionParts = explode('.', (string) $newVersion);
-    $composerVersion = implode('.', array_slice($versionParts, 0, 3));
-
-    // Update the version in the composer.json array
-    $composerJson['version'] = $composerVersion;
-
-    // Write the updated content back to composer.json with pretty formatting
-    $updatedContent = json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-    file_put_contents($composerJsonPath, $updatedContent);
-
-    echo "Updated composer.json version to " . htmlspecialchars($composerVersion, ENT_QUOTES, 'UTF-8') . PHP_EOL;
-    return true;
-}
+$paths = [
+    'composer'   => ROOT_PATH . '/composer.json',
+    'version'    => APPLICATION_PATH . '/system/version.php',
+    'migrations' => ROOT_PATH . '/sys/migrations/',
+];
 
 try {
-    // Set migrations path
-    $migrationsPath = ROOT_PATH . '/sys/migrations/';
+    [$arg, $skipConfirm, $help] = parseArgs($argv);
+    if ($help) { printUsage(); exit(0); }
 
-    // Get the current version from version.php
-    $currentVersion = getCurrentVersion($versionFilePath);
+    $current = readCurrentState($paths);
+    $action  = resolveAction($arg, $current);
+    $plan    = buildPlan($action, $current, $paths);
 
-    if ($currentMajorVersion === null) {
-        // If composer.json doesn't exist or has no version
-        /** @var CommonService $general */
-        $general = ContainerRegistry::get(CommonService::class);
-        $fallbackVersion = $general->getAppVersion();
+    printHeader($current);
+    printPlan($plan);
 
-        echo "Warning: Could not read version from composer.json, using fallback version: {$fallbackVersion}" . PHP_EOL;
-        $currentMajorVersion = $fallbackVersion;
+    if (!$skipConfirm) {
+        if (!stdinIsTty()) {
+            throw new RuntimeException("No -y given and stdin is not a TTY. Re-run with -y to apply non-interactively.");
+        }
+        if (!confirm("Apply?")) {
+            info("Aborted.");
+            exit(0);
+        }
     }
 
-    if ($currentVersion === null) {
-        // If version.php does not exist or has issues, initialize it with major.minor.patch.1
-        $newVersion = "{$currentMajorVersion}.1";
+    applyPlan($plan, $paths);
+    info("\n✓ Done. Version is now {$plan['newVersion']}.");
+    exit(0);
+} catch (Throwable $e) {
+    fwrite(STDERR, "✗ " . $e->getMessage() . "\n");
+    exit(1);
+}
+
+// ---------------------------------------------------------------------------
+// CLI parsing — one positional, two flags. That's it.
+// ---------------------------------------------------------------------------
+
+function parseArgs(array $argv): array
+{
+    $positional = null;
+    $skipConfirm = false;
+    $help = false;
+    foreach (array_slice($argv, 1) as $arg) {
+        if ($arg === '-y' || $arg === '--yes')              { $skipConfirm = true; continue; }
+        if ($arg === '-h' || $arg === '--help')             { $help = true; continue; }
+        if (str_starts_with($arg, '-')) {
+            throw new InvalidArgumentException("Unknown flag: {$arg} (try --help)");
+        }
+        if ($positional !== null) {
+            throw new InvalidArgumentException("Too many arguments. Pass exactly one of: patch, minor, major, or X.Y.Z");
+        }
+        $positional = $arg;
+    }
+    return [$positional, $skipConfirm, $help];
+}
+
+function printUsage(): void
+{
+    echo <<<TXT
+Bump the project version.
+
+Usage:
+  php bin/build/generate-version.php [<bump>] [-y]
+
+Bumps:
+  patch               5.4.5 -> 5.4.6
+  minor               5.4.5 -> 5.5.0
+  major               5.4.5 -> 6.0.0
+  X.Y.Z               set explicit version (must be greater than current)
+
+Flags:
+  -y, --yes           don't prompt for confirmation
+  -h, --help          show this help
+
+If no bump is given, drops into an interactive menu. The script always
+previews the plan and asks before changing files unless you pass -y.
+composer.json and app/system/version.php are kept identical.
+
+TXT;
+}
+
+// ---------------------------------------------------------------------------
+// Reading current state
+// ---------------------------------------------------------------------------
+
+function readCurrentState(array $paths): array
+{
+    if (!is_file($paths['composer'])) {
+        throw new RuntimeException("composer.json not found at {$paths['composer']}");
+    }
+    $data = json_decode((string) file_get_contents($paths['composer']), true, flags: JSON_THROW_ON_ERROR);
+    if (empty($data['version']) || !preg_match('/^\d+\.\d+\.\d+$/', (string) $data['version'])) {
+        throw new RuntimeException("composer.json 'version' is missing or not in X.Y.Z form.");
+    }
+    $composer = (string) $data['version'];
+
+    // version.php may legitimately be missing (regenerated on every run) or
+    // carry an old four-part shape (X.Y.Z.b) from before this script dropped
+    // the build counter. We only care about the X.Y.Z core for drift detection.
+    $versionFileCore = $composer;
+    if (is_file($paths['version'])
+        && preg_match("/define\\('VERSION',\\s*'([\\d.]+)'\\)/", (string) file_get_contents($paths['version']), $m)) {
+        $parts = explode('.', $m[1]);
+        $versionFileCore = implode('.', array_slice($parts, 0, 3));
+    }
+
+    return [
+        'composer'        => $composer,
+        'versionFileCore' => $versionFileCore,
+        'drifted'         => $versionFileCore !== $composer,
+    ];
+}
+
+// ---------------------------------------------------------------------------
+// What does the user want?
+// ---------------------------------------------------------------------------
+
+function resolveAction(?string $arg, array $current): array
+{
+    if ($arg === null) {
+        if (!stdinIsTty()) {
+            throw new RuntimeException("No bump argument given and stdin is not a TTY. Pass patch / minor / major / X.Y.Z, or run interactively.");
+        }
+        return promptForAction($current);
+    }
+    return parseBumpArg($arg, $current);
+}
+
+function parseBumpArg(string $arg, array $current): array
+{
+    $arg = strtolower($arg);
+    if (in_array($arg, ['patch', 'minor', 'major'], true)) {
+        return ['newVersion' => bumpCore($current['composer'], $arg)];
+    }
+    if (preg_match('/^\d+\.\d+\.\d+$/', $arg)) {
+        return ['newVersion' => $arg];
+    }
+    throw new InvalidArgumentException("Don't know what '{$arg}' means. Try patch, minor, major, or X.Y.Z (e.g. 5.6.0).");
+}
+
+function promptForAction(array $current): array
+{
+    $patch = bumpCore($current['composer'], 'patch');
+    $minor = bumpCore($current['composer'], 'minor');
+    $major = bumpCore($current['composer'], 'major');
+
+    echo "\nWhat do you want to bump?\n";
+    echo "  1) patch   -> {$patch}   (default, press Enter)\n";
+    echo "  2) minor   -> {$minor}\n";
+    echo "  3) major   -> {$major}\n";
+    echo "  4) custom — enter X.Y.Z\n";
+    echo "  q) quit\n";
+
+    $line = strtolower(readLineOrFail("> "));
+    return match ($line) {
+        '', '1', 'patch' => ['newVersion' => $patch],
+        '2', 'minor'     => ['newVersion' => $minor],
+        '3', 'major'     => ['newVersion' => $major],
+        '4', 'custom'    => ['newVersion' => promptForCustomCore($current['composer'])],
+        'q', 'quit'      => throw new RuntimeException('Aborted.'),
+        default          => throw new InvalidArgumentException("Invalid choice: '{$line}'. Press Enter for patch, or 1-4 / q."),
+    };
+}
+
+function promptForCustomCore(string $current): string
+{
+    $value = readLineOrFail("Enter new version (X.Y.Z), must be > {$current}: ");
+    if (!preg_match('/^\d+\.\d+\.\d+$/', $value)) {
+        throw new InvalidArgumentException("Not in X.Y.Z form: '{$value}'");
+    }
+    if (version_compare($value, $current, '<=')) {
+        throw new InvalidArgumentException("New version '{$value}' must be greater than current '{$current}'.");
+    }
+    return $value;
+}
+
+function bumpCore(string $core, string $kind): string
+{
+    [$maj, $min, $pat] = array_map('intval', explode('.', $core));
+    // Parens kept for readability — PHP 8 lowered '.' below '+' so they're
+    // not strictly required, but mixing arithmetic with concatenation is
+    // hard to scan otherwise.
+    return match ($kind) {
+        'major' => ($maj + 1) . '.0.0',
+        'minor' => $maj . '.' . ($min + 1) . '.0',
+        'patch' => $maj . '.' . $min . '.' . ($pat + 1),
+    };
+}
+
+// ---------------------------------------------------------------------------
+// Plan
+// ---------------------------------------------------------------------------
+
+function buildPlan(array $action, array $current, array $paths): array
+{
+    $newVersion = $action['newVersion'];
+    if (version_compare($newVersion, $current['composer'], '<=')) {
+        throw new InvalidArgumentException("Refusing to set version to {$newVersion}: not greater than current composer version {$current['composer']}.");
+    }
+
+    return [
+        'newVersion'        => $newVersion,
+        'closeMigrations'   => findOpenMigrationsBetween($paths['migrations'], $current['composer'], $newVersion),
+        'openMigrationFile' => $paths['migrations'] . $newVersion . '.sql',
+    ];
+}
+
+// Every X.Y.Z.sql with $currentCore <= version < $newCore that doesn't already
+// carry an EOV marker.
+//
+// Two bounds, two reasons:
+//   - lower bound (>= current composer version) — leaves long-historical
+//     migrations alone. They pre-date the EOV convention and shouldn't be
+//     mass-marked retroactively.
+//   - upper bound (< new version) — anything at or above the new version
+//     is "open" by definition; we don't mark it.
+//
+// Fixes the bug we hit earlier: when composer was at 5.4.2 but migrations
+// 5.4.3.sql / 5.4.4.sql had drifted ahead, bumping to 5.4.5 needs to close
+// out all three. The old script closed only one (the version.php prior).
+function findOpenMigrationsBetween(string $migrationsDir, string $currentCore, string $newCore): array
+{
+    if (!is_dir($migrationsDir)) {
+        return [];
+    }
+    $candidates = [];
+    foreach (glob(rtrim($migrationsDir, '/') . '/*.sql') ?: [] as $file) {
+        $name = basename($file, '.sql');
+        if (!preg_match('/^\d+\.\d+\.\d+$/', $name)) {
+            continue;
+        }
+        if (version_compare($name, $currentCore, '<')) {
+            continue;
+        }
+        if (version_compare($name, $newCore, '>=')) {
+            continue;
+        }
+        if (str_contains((string) file_get_contents($file), EOV_MARKER)) {
+            continue;
+        }
+        $candidates[$name] = $file;
+    }
+    uksort($candidates, 'version_compare');
+    return array_values($candidates);
+}
+
+// ---------------------------------------------------------------------------
+// Output
+// ---------------------------------------------------------------------------
+
+function printHeader(array $current): void
+{
+    echo "\nCurrent version: {$current['composer']}";
+    if ($current['drifted']) {
+        echo "  (composer.json and version.php disagree — will reconcile on this run)";
+    }
+    echo "\n";
+}
+
+function printPlan(array $plan): void
+{
+    echo "\nPlan:\n";
+    echo "  composer.json + version.php  -> {$plan['newVersion']}\n";
+    if (!empty($plan['closeMigrations'])) {
+        echo "  close out " . count($plan['closeMigrations']) . " migration file(s):\n";
+        foreach ($plan['closeMigrations'] as $f) {
+            echo "    + " . relPath($f) . "  (append " . EOV_COUNT . " EOV markers)\n";
+        }
+    }
+    $verb = is_file($plan['openMigrationFile']) ? "reuse existing" : "create";
+    echo "  {$verb}                -> " . relPath($plan['openMigrationFile']) . "\n";
+    echo "\n";
+}
+
+// ---------------------------------------------------------------------------
+// Apply
+// ---------------------------------------------------------------------------
+
+function applyPlan(array $plan, array $paths): void
+{
+    foreach ($plan['closeMigrations'] as $f) {
+        appendEovMarkers($f);
+        info("  closed   " . relPath($f));
+    }
+
+    writeComposerVersion($paths['composer'], $plan['newVersion']);
+    info("  updated  composer.json -> {$plan['newVersion']}");
+
+    writeVersionFile($paths['version'], $plan['newVersion']);
+    info("  updated  app/system/version.php -> {$plan['newVersion']}");
+
+    if (!is_file($plan['openMigrationFile'])) {
+        if (!is_dir($paths['migrations'])) {
+            mkdir($paths['migrations'], 0755, true);
+        }
+        writeMigrationStub($plan['openMigrationFile'], $plan['newVersion']);
+        info("  created  " . relPath($plan['openMigrationFile']));
     } else {
-        // Extract the major.minor.patch part and the build number
-        $currentVersionParts = explode('.', (string) $currentVersion);
-
-        // Extract the current major.minor.patch version from the file
-        $currentVersionCore = implode('.', array_slice($currentVersionParts, 0, 3));
-
-        // Extract the current build number
-        $currentBuildNumber = intval(end($currentVersionParts));
-
-        // Ask user for version update preference
-        echo "Current version is: {$currentVersion}\n";
-        echo "Would you like to:\n";
-        echo "1. Change major version (from {$currentVersionCore} to a new major version)\n";
-        echo "2. Just increment the current version (from {$currentVersion} to " .
-            $currentVersionCore . "." . ($currentBuildNumber + 1) . ")\n";
-
-        $choice = null;
-        while ($choice !== '1' && $choice !== '2') {
-            echo "Enter your choice (1 or 2): ";
-            $choice = trim(fgets(STDIN));
-        }
-
-        if ($choice === '1') {
-            // User wants to change major version
-            echo "Enter the new major version (current is {$currentVersionCore}): ";
-            $newMajorVersion = trim(fgets(STDIN));
-            // Validate input (check for x.y.z format)
-            while (!preg_match('/^\d+\.\d+\.\d+$/', $newMajorVersion)) {
-                echo "Invalid format. Please enter in format x.y.z (e.g., 2.0.0): ";
-                $newMajorVersion = trim(fgets(STDIN));
-            }
-            // Validate that new version is greater than current version
-            while (version_compare($newMajorVersion, $currentVersionCore, '<=')) {
-                echo "New version must be greater than the current version ({$currentVersionCore}). Please enter a higher version: ";
-                $newMajorVersion = trim(fgets(STDIN));
-
-                // Re-validate format
-                while (!preg_match('/^\d+\.\d+\.\d+$/', $newMajorVersion)) {
-                    echo "Invalid format. Please enter in format x.y.z (e.g., 2.0.0): ";
-                    $newMajorVersion = trim(fgets(STDIN));
-                }
-            }
-            // When changing major version, start with .0 for the build number
-            $newVersion = "{$newMajorVersion}.0";
-            // Update composer.json with the new major version
-            updateComposerJson($composerJsonPath, $newVersion);
-        } elseif ($currentVersionCore !== $currentMajorVersion) {
-            // User wants to increment build number
-            // If the major.minor.patch version has changed, reset the build number to 1
-            $newVersion = "{$currentMajorVersion}.1";
-            // Update composer.json with the new version
-            updateComposerJson($composerJsonPath, $newVersion);
-        } else {
-            // Otherwise, increment the build number
-            $newVersion = $currentMajorVersion . '.' . ($currentBuildNumber + 1);
-
-            // No need to update composer.json for build number changes
-        }
+        info("  reused   " . relPath($plan['openMigrationFile']));
     }
+}
 
-    // Generate the content for version.php
-    $versionFileContent = <<<PHP
+function appendEovMarkers(string $file): void
+{
+    $body = (string) file_get_contents($file);
+    $needsLeadingNewline = $body !== '' && substr($body, -1) !== "\n";
+    $marker = ($needsLeadingNewline ? "\n" : '') . str_repeat(EOV_MARKER . "\n", EOV_COUNT);
+    file_put_contents($file, $marker, FILE_APPEND);
+}
+
+function writeComposerVersion(string $path, string $newVersion): void
+{
+    $data = json_decode((string) file_get_contents($path), true, flags: JSON_THROW_ON_ERROR);
+    $data['version'] = $newVersion;
+    $encoded = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
+    file_put_contents($path, $encoded);
+}
+
+function writeVersionFile(string $path, string $newVersion): void
+{
+    $contents = <<<PHP
 <?php
 
 // DO NOT MODIFY THIS FILE
 // Version is defined in composer.json
-// This file is automatically generated by the build process
+// This file is automatically generated by bin/build/generate-version.php
 defined('VERSION')
-    || define('VERSION', '$newVersion');
+    || define('VERSION', '{$newVersion}');
 
 PHP;
+    file_put_contents($path, $contents);
+}
 
-    // Write the new version content to version.php
-    file_put_contents($versionFilePath, $versionFileContent);
-
-    // Extract the major.minor.patch portion for the migration filename
-    $versionParts = explode('.', $newVersion);
-    $migrationVersion = implode('.', array_slice($versionParts, 0, min(3, count($versionParts))));
-    $migrationFileName = $migrationsPath . $migrationVersion . '.sql';
-
-    // For the previous version migration file
-    $currentVersionParts = explode('.', (string) $currentVersion);
-    $currentMigrationVersion = implode('.', array_slice($currentVersionParts, 0, min(3, count($currentVersionParts))));
-    $currentMigrationFileName = $migrationsPath . $currentMigrationVersion . '.sql';
-
-    // Check if migrations directory exists, create it if it doesn't
-    if (!is_dir($migrationsPath)) {
-        mkdir($migrationsPath, 0755, true);
+function writeMigrationStub(string $file, string $version): void
+{
+    $real = realpath(dirname($file));
+    if ($real === false || !str_starts_with($real, realpath(ROOT_PATH . '/sys/migrations'))) {
+        throw new RuntimeException("Refusing to write migration outside sys/migrations/: {$file}");
     }
+    $stub = "-- Migration file for version {$version}\n"
+          . "-- Created on " . date('Y-m-d H:i:s') . "\n\n\n"
+          . "UPDATE `system_config` SET `value` = '{$version}' WHERE `system_config`.`name` = 'sc_version';\n\n";
+    file_put_contents($file, $stub);
+}
 
-    // If this is a major version change and the previous migration file exists,
-    // add the END OF VERSION markers to the previous file
-    if ($choice === '1' && file_exists($currentMigrationFileName)) {
-        $endOfVersionMarker = str_repeat("\n-- END OF VERSION --", 12);
-        file_put_contents($currentMigrationFileName, $endOfVersionMarker, FILE_APPEND);
-        echo "Added end markers to previous migration file: $currentMigrationFileName" . PHP_EOL;
+// ---------------------------------------------------------------------------
+// IO helpers
+// ---------------------------------------------------------------------------
+
+function info(string $msg): void { echo $msg . "\n"; }
+
+function stdinIsTty(): bool
+{
+    return function_exists('posix_isatty') ? @posix_isatty(STDIN) : (defined('STDIN') && stream_isatty(STDIN));
+}
+
+function readLineOrFail(string $prompt): string
+{
+    echo $prompt;
+    $line = fgets(STDIN);
+    if ($line === false) {
+        // Fixes the infinite-loop bug in the old script.
+        throw new RuntimeException("Unexpected end of input. Pass a positional argument and -y to run non-interactively.");
     }
+    return trim($line);
+}
 
-    // Create the new migration file only if it doesn't already exist
-    if (!file_exists($migrationFileName)) {
-        // Create migration content with the version update SQL
-        $migrationContent = "-- Migration file for version {$migrationVersion}\n-- Created on " . date('Y-m-d H:i:s') . "\n\n\n";
-        $migrationContent .= "UPDATE `system_config` SET `value` = '{$migrationVersion}' WHERE `system_config`.`name` = 'sc_version';\n\n";
+function confirm(string $prompt): bool
+{
+    // Default: yes (Enter accepts).
+    $line = strtolower(readLineOrFail($prompt . ' [Y/n] '));
+    return $line === '' || $line === 'y' || $line === 'yes';
+}
 
-        // Sanitize migration file path to prevent path traversal
-        $realMigrationsPath = realpath($migrationsPath);
-        $realMigrationFileName = $realMigrationsPath . DIRECTORY_SEPARATOR . basename($migrationFileName);
-
-        if (!str_starts_with(realpath(dirname($realMigrationFileName)), $realMigrationsPath)) {
-            throw new RuntimeException("Invalid migration file path detected.");
-        }
-
-        file_put_contents($realMigrationFileName, $migrationContent);
-        echo "Created migration file: " . htmlspecialchars($realMigrationFileName) . PHP_EOL;
-    }
-
-    echo "version.php has been updated to version " . htmlspecialchars($newVersion) . PHP_EOL;
-} catch (Throwable $e) {
-    LoggerUtility::logError($e->getMessage(), [
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
-        'trace' => $e->getTraceAsString(),
-    ]);
+function relPath(string $abs): string
+{
+    $root = realpath(ROOT_PATH) ?: ROOT_PATH;
+    return str_starts_with($abs, $root) ? ltrim(substr($abs, strlen($root)), '/') : $abs;
 }
