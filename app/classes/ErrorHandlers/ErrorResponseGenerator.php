@@ -48,12 +48,34 @@ class ErrorResponseGenerator
 
         if (
             str_starts_with($request->getUri()->getPath(), '/api/') ||
-            str_starts_with($request->getUri()->getPath(), '/remote/')
+            str_starts_with($request->getUri()->getPath(), '/remote/') ||
+            $this->wantsJsonResponse($request)
         ) {
             return $this->handleApiErrorResponse($exception, $response, $httpCode, $errorId);
         }
 
         return $this->handleGenericErrorResponse($exception, $response, $httpCode, $errorId, $request);
+    }
+
+    /**
+     * Detect AJAX / JSON-expecting requests so that we never return the
+     * styled HTML error page to a caller that cannot render it. Covers:
+     *   - jQuery-style XHRs that set X-Requested-With
+     *   - fetch() callers that send Accept: application/json
+     *   - fetch() callers that announce themselves via Sec-Fetch-Mode: cors
+     */
+    private function wantsJsonResponse(ServerRequestInterface $request): bool
+    {
+        if (strcasecmp($request->getHeaderLine('X-Requested-With'), 'XMLHttpRequest') === 0) {
+            return true;
+        }
+
+        $accept = $request->getHeaderLine('Accept');
+        if ($accept !== '' && stripos($accept, 'application/json') !== false && stripos($accept, 'text/html') === false) {
+            return true;
+        }
+
+        return false;
     }
 
     private function determineHttpCode(Throwable $exception): int
