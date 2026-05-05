@@ -248,7 +248,7 @@ final class VlService extends AbstractTestService
 
     public function processViralLoadResultFromForm(array $params): array
     {
-        $isRejected = '';
+        $isRejected = 'no';
         $params['vlResult'] ??= $params['result'] ?? null;
         $params['vlLog'] ??= $params['result_value_log'] ?? null;
         $finalResult = $params['vlResult'];
@@ -263,7 +263,6 @@ final class VlService extends AbstractTestService
             $resultStatus = REJECTED;
         } elseif (!empty($params['vlResult'])) {
             $resultStatus = PENDING_APPROVAL; // Awaiting Approval
-            $isRejected = 'no';
             //Result is saved as entered
             $finalResult = $params['vlResult'];
 
