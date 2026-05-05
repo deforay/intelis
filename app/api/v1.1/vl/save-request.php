@@ -366,7 +366,7 @@ try {
             'result_dispatched_datetime' => DateUtility::isoDateFormat($data['resultDispatchedOn'] ?? '', true),
             'result_value_hiv_detection' => $hivDetection,
             'reason_for_failure' => $data['reasonForFailure'] ?? null,
-            'is_sample_rejected' => $isRejected ?? null,
+            'is_sample_rejected' => $data['isSampleRejected'] ?? null,
             'reason_for_sample_rejection' => $data['rejectionReason'] ?? null,
             'rejection_on' => DateUtility::isoDateFormat($data['rejectionDate'] ?? ''),
             'result_value_absolute' => $absVal ?? null,
