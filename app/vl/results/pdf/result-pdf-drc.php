@@ -365,7 +365,7 @@ try {
 		$html .= '<table>';
 		$html .= '<tr>';
 		$html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> VL < 1000 copies/mL: Continuer le régime de traitement actuel</td>';
-		$html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
+		$html .= '<td style="font-size:10px;text-align:left;">Imprimé sur : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
 		$html .= '</tr>';
 		$html .= '<tr>';
 		$html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> VL >= 1000 copies/mL: Action clinique et counseling nécessaire</td>';
@@ -404,7 +404,7 @@ try {
 			$concat = ($sampleId !== '' && $sampleId !== '0' && ($patientId !== '' && $patientId !== '0')) ? ' and' : '';
 			//Add event log
 			$eventType = 'print-result';
-			$action = $_SESSION['userName'] . ' printed the test result with ' . $sampleId . $concat . $patientId;
+			$action = $_SESSION['userName'] . ' printed the test result : ' . $sampleId . $concat . $patientId;
 			$resource = 'print-test-result';
 			$data = [
 				'event_type' => $eventType,
