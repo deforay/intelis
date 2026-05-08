@@ -62,12 +62,23 @@ function pmtctEidPositiveExpr(string $alias = 'e'): string
 
 /**
  * SQL fragment that classifies a VL test as a high viral load
- * (>= 1000 cp/mL per WHO PMTCT thresholds).
+ * (>= 1000 cp/mL per WHO PMTCT thresholds). Relies on the precomputed
+ * vl_result_category column ('suppressed' for <1000, 'not suppressed' for
+ * >=1000) so we don't have to interpret the raw result fields here.
  */
 function pmtctHighVlExpr(string $alias = 'v'): string
 {
-    return "(($alias.result_value_absolute IS NOT NULL AND $alias.result_value_absolute >= 1000)"
-        . " OR ($alias.result_value_log IS NOT NULL AND $alias.result_value_log >= 3))";
+    return "$alias.vl_result_category = 'not suppressed'";
+}
+
+/**
+ * SQL fragment for "VL test has a categorised result on file" — i.e. the
+ * lab has classified the value as suppressed/not suppressed. Replaces the
+ * older "v.result IS NOT NULL AND TRIM(v.result) != ''" check.
+ */
+function pmtctVlHasResultExpr(string $alias = 'v'): string
+{
+    return "$alias.vl_result_category IN ('suppressed','not suppressed')";
 }
 
 $action = $_POST['action'] ?? 'linked';
@@ -100,13 +111,12 @@ if ($action === 'summary') {
     // constrained by the EID date filter on purpose: a mother may have
     // tested before the child's EID date window and we still want to
     // surface that history.
+    $hasVlResult = pmtctVlHasResultExpr('v');
     $motherSql = "SELECT
             COUNT(DISTINCT v.patient_art_no) AS distinctMothers,
             COUNT(DISTINCT v.vl_sample_id) AS vlTests,
-            COUNT(DISTINCT CASE WHEN v.result IS NOT NULL AND TRIM(v.result) != ''
-                            THEN v.vl_sample_id END) AS vlTestsWithResult,
-            COUNT(DISTINCT CASE WHEN v.result IS NOT NULL AND TRIM(v.result) != ''
-                            THEN v.patient_art_no END) AS mothersWithResult,
+            COUNT(DISTINCT CASE WHEN $hasVlResult THEN v.vl_sample_id END) AS vlTestsWithResult,
+            COUNT(DISTINCT CASE WHEN $hasVlResult THEN v.patient_art_no END) AS mothersWithResult,
             COUNT(DISTINCT CASE WHEN $highVlExpr THEN v.patient_art_no END) AS mothersHighVl
         FROM form_eid e
         INNER JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)

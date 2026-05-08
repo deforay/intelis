@@ -61,8 +61,12 @@ function pmtctExportEidPositiveExpr(string $alias = 'e'): string
 
 function pmtctExportHighVlExpr(string $alias = 'v'): string
 {
-    return "(($alias.result_value_absolute IS NOT NULL AND $alias.result_value_absolute >= 1000)"
-        . " OR ($alias.result_value_log IS NOT NULL AND $alias.result_value_log >= 3))";
+    return "$alias.vl_result_category = 'not suppressed'";
+}
+
+function pmtctExportVlHasResultExpr(string $alias = 'v'): string
+{
+    return "$alias.vl_result_category IN ('suppressed','not suppressed')";
 }
 
 function pmtctExportFormatDate($v): string
@@ -97,13 +101,12 @@ $childRow = $db->rawQueryOne("SELECT
     LEFT JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
     WHERE $whereSql");
 
+$hasVlResult = pmtctExportVlHasResultExpr('v');
 $motherRow = $db->rawQueryOne("SELECT
         COUNT(DISTINCT v.patient_art_no) AS distinctMothers,
         COUNT(DISTINCT v.vl_sample_id) AS vlTests,
-        COUNT(DISTINCT CASE WHEN v.result IS NOT NULL AND TRIM(v.result) != ''
-                        THEN v.vl_sample_id END) AS vlTestsWithResult,
-        COUNT(DISTINCT CASE WHEN v.result IS NOT NULL AND TRIM(v.result) != ''
-                        THEN v.patient_art_no END) AS mothersWithResult,
+        COUNT(DISTINCT CASE WHEN $hasVlResult THEN v.vl_sample_id END) AS vlTestsWithResult,
+        COUNT(DISTINCT CASE WHEN $hasVlResult THEN v.patient_art_no END) AS mothersWithResult,
         COUNT(DISTINCT CASE WHEN $highVlExpr THEN v.patient_art_no END) AS mothersHighVl
     FROM form_eid e
     INNER JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
@@ -295,6 +298,7 @@ $vlHeaders = [
     _translate('VL Result'),
     _translate('VL Result (Absolute cp/mL)'),
     _translate('VL Result (Log)'),
+    _translate('VL Result Interpretation'),
     _translate('VL Is High (>= 1000 cp/mL)'),
     _translate('VL Test Platform'),
     _translate('VL Testing Lab'),
@@ -316,7 +320,8 @@ $vlSql = "SELECT
         v.result AS vl_result,
         v.result_value_absolute,
         v.result_value_log,
-        $highVlExpr AS vl_is_high,
+        v.vl_result_category,
+        ($highVlExpr) AS vl_is_high,
         v.vl_test_platform,
         fvl.facility_name AS vl_testing_lab,
         fv.facility_name AS vl_facility_name,
@@ -347,6 +352,7 @@ foreach ($db->rawQueryGenerator($vlSql) as $r) {
         $r['vl_result'] ?? '',
         $r['result_value_absolute'] ?? '',
         $r['result_value_log'] ?? '',
+        !empty($r['vl_result_category']) ? ucwords((string) $r['vl_result_category']) : '',
         ((int) ($r['vl_is_high'] ?? 0)) === 1 ? _translate('Yes') : _translate('No'),
         $r['vl_test_platform'] ?? '',
         $r['vl_testing_lab'] ?? '',
