@@ -96,10 +96,15 @@ if ($action === 'summary') {
         LEFT JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
         WHERE $whereSql";
 
-    // Mother / VL-side counts (one row per VL test)
+    // Mother / VL-side counts (one row per VL test). VL tests are NOT
+    // constrained by the EID date filter on purpose: a mother may have
+    // tested before the child's EID date window and we still want to
+    // surface that history.
     $motherSql = "SELECT
             COUNT(DISTINCT v.patient_art_no) AS distinctMothers,
             COUNT(DISTINCT v.vl_sample_id) AS vlTests,
+            COUNT(DISTINCT CASE WHEN v.result IS NOT NULL AND TRIM(v.result) != ''
+                            THEN v.vl_sample_id END) AS vlTestsWithResult,
             COUNT(DISTINCT CASE WHEN v.result IS NOT NULL AND TRIM(v.result) != ''
                             THEN v.patient_art_no END) AS mothersWithResult,
             COUNT(DISTINCT CASE WHEN $highVlExpr THEN v.patient_art_no END) AS mothersHighVl
@@ -118,6 +123,7 @@ if ($action === 'summary') {
         'unmatchedChildren'         => (int) ($childRow['unmatchedChildren'] ?? 0),
         'distinctMothers'           => (int) ($motherRow['distinctMothers'] ?? 0),
         'vlTests'                   => (int) ($motherRow['vlTests'] ?? 0),
+        'vlTestsWithResult'         => (int) ($motherRow['vlTestsWithResult'] ?? 0),
         'mothersWithResult'         => (int) ($motherRow['mothersWithResult'] ?? 0),
         'mothersHighVl'             => (int) ($motherRow['mothersHighVl'] ?? 0),
     ];
