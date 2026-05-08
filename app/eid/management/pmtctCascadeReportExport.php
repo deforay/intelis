@@ -86,6 +86,40 @@ $highVlExpr   = pmtctExportHighVlExpr('v');
 
 
 // ---------------------------------------------------------------------------
+// Precompute mother-keyed counts once. The previous version used correlated
+// subqueries inside the per-row SELECTs, which on large datasets repeatedly
+// scanned form_vl / form_eid with TRIM() on both sides (no index usable) and
+// timed out the export. Two grouped passes here are O(N+M) instead of O(N*M).
+// ---------------------------------------------------------------------------
+$vlCountByMother  = [];
+$eidCountByMother = [];
+
+$vlCountSql = "SELECT TRIM(v.patient_art_no) AS mid, COUNT(*) AS cnt
+    FROM form_vl v
+    INNER JOIN (
+        SELECT DISTINCT TRIM(e.mother_id) AS mid
+        FROM form_eid e
+        WHERE $whereSql
+    ) m ON m.mid = TRIM(v.patient_art_no)
+    GROUP BY TRIM(v.patient_art_no)";
+foreach ($db->rawQueryGenerator($vlCountSql) as $r) {
+    if (!empty($r['mid'])) {
+        $vlCountByMother[$r['mid']] = (int) $r['cnt'];
+    }
+}
+
+$eidCountSql = "SELECT TRIM(e.mother_id) AS mid, COUNT(*) AS cnt
+    FROM form_eid e
+    WHERE $whereSql
+    GROUP BY TRIM(e.mother_id)";
+foreach ($db->rawQueryGenerator($eidCountSql) as $r) {
+    if (!empty($r['mid'])) {
+        $eidCountByMother[$r['mid']] = (int) $r['cnt'];
+    }
+}
+
+
+// ---------------------------------------------------------------------------
 // Summary KPIs
 // ---------------------------------------------------------------------------
 $childRow = $db->rawQueryOne("SELECT
@@ -221,9 +255,7 @@ $eidSql = "SELECT
         e.mother_treatment_initiation_date, e.mother_cd4, e.mother_cd4_test_date,
         e.mother_vl_result AS eid_mother_vl_result,
         e.mother_vl_test_date AS eid_mother_vl_test_date,
-        fe.facility_name AS eid_facility_name,
-        (SELECT COUNT(*) FROM form_vl v
-            WHERE TRIM(v.patient_art_no) = TRIM(e.mother_id)) AS vl_test_count
+        fe.facility_name AS eid_facility_name
     FROM form_eid e
     LEFT JOIN facility_details fe ON fe.facility_id = e.facility_id
     LEFT JOIN facility_details fel ON fel.facility_id = e.lab_id
@@ -233,7 +265,8 @@ $eidSql = "SELECT
 
 $rowCount = 0;
 foreach ($db->rawQueryGenerator($eidSql) as $r) {
-    $vlCount = (int) ($r['vl_test_count'] ?? 0);
+    $motherKey = trim((string) ($r['mother_id'] ?? ''));
+    $vlCount = ($motherKey !== '') ? ($vlCountByMother[$motherKey] ?? 0) : 0;
     $writer->addRow(Row::fromValues([
         // Child
         $r['child_id'] ?? '',
@@ -324,9 +357,7 @@ $vlSql = "SELECT
         ($highVlExpr) AS vl_is_high,
         v.vl_test_platform,
         fvl.facility_name AS vl_testing_lab,
-        fv.facility_name AS vl_facility_name,
-        (SELECT COUNT(*) FROM form_eid e2
-            WHERE TRIM(e2.mother_id) = TRIM(v.patient_art_no)) AS matched_eid_count
+        fv.facility_name AS vl_facility_name
     FROM form_vl v
     INNER JOIN (
         SELECT DISTINCT TRIM(e.mother_id) AS mid
@@ -340,6 +371,8 @@ $vlSql = "SELECT
 $rowCount = 0;
 foreach ($db->rawQueryGenerator($vlSql) as $r) {
     $patientName = trim(($r['patient_first_name'] ?? '') . ' ' . ($r['patient_last_name'] ?? ''));
+    $motherKey = trim((string) ($r['patient_art_no'] ?? ''));
+    $matchedEidCount = ($motherKey !== '') ? ($eidCountByMother[$motherKey] ?? 0) : 0;
     $writer->addRow(Row::fromValues([
         $r['patient_art_no'] ?? '',
         $patientName,
@@ -357,7 +390,7 @@ foreach ($db->rawQueryGenerator($vlSql) as $r) {
         $r['vl_test_platform'] ?? '',
         $r['vl_testing_lab'] ?? '',
         $r['vl_facility_name'] ?? '',
-        (int) ($r['matched_eid_count'] ?? 0),
+        $matchedEidCount,
     ]));
 
     $rowCount++;
