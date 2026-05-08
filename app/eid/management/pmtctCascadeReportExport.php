@@ -101,6 +101,8 @@ $motherRow = $db->rawQueryOne("SELECT
         COUNT(DISTINCT v.patient_art_no) AS distinctMothers,
         COUNT(DISTINCT v.vl_sample_id) AS vlTests,
         COUNT(DISTINCT CASE WHEN v.result IS NOT NULL AND TRIM(v.result) != ''
+                        THEN v.vl_sample_id END) AS vlTestsWithResult,
+        COUNT(DISTINCT CASE WHEN v.result IS NOT NULL AND TRIM(v.result) != ''
                         THEN v.patient_art_no END) AS mothersWithResult,
         COUNT(DISTINCT CASE WHEN $highVlExpr THEN v.patient_art_no END) AS mothersHighVl
     FROM form_eid e
@@ -109,7 +111,10 @@ $motherRow = $db->rawQueryOne("SELECT
 
 
 // ---------------------------------------------------------------------------
-// Open the workbook (3 sheets: Summary, Linked Pairs, Unmatched Children)
+// Open the workbook (3 sheets: Summary, EID Data, VL Data). EID and VL are
+// kept on separate sheets — joining them inline duplicates child/mother
+// demographics whenever a mother has more than one VL test, which makes the
+// file hard to read and easy to double-count from. Mother ID is the link.
 // ---------------------------------------------------------------------------
 $filename = 'InteLIS-PMTCT-Cascade-Report-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 $filepath = TEMP_PATH . DIRECTORY_SEPARATOR . $filename;
@@ -139,7 +144,9 @@ $summaryRows = [
     [_translate('Of those, HIV positive'),                                   (int) ($childRow['positiveChildren'] ?? 0)],
     [_translate('Children NOT matched in VL data'),                          (int) ($childRow['unmatchedChildren'] ?? 0)],
     [_translate('Distinct mothers matched in VL data'),                      (int) ($motherRow['distinctMothers'] ?? 0)],
-    [_translate('VL tests reported for matched mothers'),                    (int) ($motherRow['vlTests'] ?? 0)],
+    [_translate('VL tests on record for matched mothers (all time)'),        (int) ($motherRow['vlTests'] ?? 0)],
+    [_translate('VL tests with result reported'),                            (int) ($motherRow['vlTestsWithResult'] ?? 0)],
+    [_translate('VL tests pending result'),                                  max(0, (int) ($motherRow['vlTests'] ?? 0) - (int) ($motherRow['vlTestsWithResult'] ?? 0))],
     [_translate('Mothers with VL result available'),                         (int) ($motherRow['mothersWithResult'] ?? 0)],
     [_translate('Mothers with high VL (>= 1000 cp/mL)'),                     (int) ($motherRow['mothersHighVl'] ?? 0)],
 ];
@@ -148,11 +155,12 @@ foreach ($summaryRows as $r) {
 }
 
 
-// --- Sheet 2: Linked Pairs -------------------------------------------------
-$linkedSheet = $writer->addNewSheetAndMakeItCurrent();
-$linkedSheet->setName(_translate('Linked Pairs'));
+// --- Sheet 2: EID Data -----------------------------------------------------
+// One row per EID record (no duplication if the mother has multiple VL tests).
+$eidSheet = $writer->addNewSheetAndMakeItCurrent();
+$eidSheet->setName(_translate('EID Data'));
 
-$linkedHeaders = [
+$eidHeaders = [
     // Child block
     _translate('Child ID'),
     _translate('Child DOB'),
@@ -162,7 +170,7 @@ $linkedHeaders = [
     _translate('Infant ART Status'),
     _translate('Infant on PMTCT Prophylaxis'),
     _translate('Infant on CTX Prophylaxis'),
-    // Mother block
+    // Mother block (as declared on EID form)
     _translate('Mother ID'),
     _translate('Mother Alive'),
     _translate('Mother DOB'),
@@ -176,7 +184,7 @@ $linkedHeaders = [
     _translate('Mother CD4 Test Date'),
     _translate('Mother VL Result (declared on EID)'),
     _translate('Mother VL Test Date (declared on EID)'),
-    // EID block
+    // EID test block
     _translate('EID Sample Code'),
     _translate('Remote EID Sample Code'),
     _translate('EID Sample Collection Date'),
@@ -186,19 +194,14 @@ $linkedHeaders = [
     _translate('EID Test Platform'),
     _translate('EID Testing Lab'),
     _translate('EID Facility'),
-    // VL block
-    _translate('VL Sample Code'),
-    _translate('VL Sample Collection Date'),
-    _translate('VL Sample Tested Date'),
-    _translate('VL Result'),
-    _translate('VL Result (Absolute cp/mL)'),
-    _translate('VL Is High (>= 1000 cp/mL)'),
-    _translate('VL Test Platform'),
-    _translate('VL Testing Lab'),
+    // Link indicator
+    _translate('Mother Has VL Match'),
+    _translate('VL Tests for Mother'),
 ];
-$writer->addRow(Row::fromValuesWithStyle($linkedHeaders, $headerStyle));
+$writer->addRow(Row::fromValuesWithStyle($eidHeaders, $headerStyle));
 
-$linkedSql = "SELECT
+$eidSql = "SELECT
+        e.eid_id,
         e.sample_code AS eid_sample_code,
         e.remote_sample_code AS eid_remote_sample_code,
         e.sample_collection_date AS eid_collection_date,
@@ -210,34 +213,24 @@ $linkedSql = "SELECT
         e.child_id, e.child_dob, e.child_age, e.child_age_in_weeks, e.child_gender,
         e.infant_art_status, e.infant_on_pmtct_prophylaxis, e.infant_on_ctx_prophylaxis,
         e.mother_id, e.is_mother_alive, e.mother_dob, e.mother_age_in_years,
-        e.mother_marital_status, e.mother_hiv_test_date, e.mother_hiv_status,
-        e.mother_art_status, e.mother_regimen, e.mother_mtct_risk,
+        e.mother_marital_status, e.mother_hiv_test_date,
+        e.mother_regimen, e.mother_mtct_risk,
         e.mother_treatment_initiation_date, e.mother_cd4, e.mother_cd4_test_date,
         e.mother_vl_result AS eid_mother_vl_result,
         e.mother_vl_test_date AS eid_mother_vl_test_date,
-        v.sample_code AS vl_sample_code,
-        v.sample_collection_date AS vl_collection_date,
-        v.sample_tested_datetime AS vl_tested_date,
-        v.result AS vl_result,
-        v.result_value_log,
-        v.result_value_absolute,
-        $highVlExpr AS vl_is_high,
-        v.vl_test_platform,
-        fvl.facility_name AS vl_testing_lab,
-        fv.facility_name AS vl_facility_name,
-        fe.facility_name AS eid_facility_name
+        fe.facility_name AS eid_facility_name,
+        (SELECT COUNT(*) FROM form_vl v
+            WHERE TRIM(v.patient_art_no) = TRIM(e.mother_id)) AS vl_test_count
     FROM form_eid e
-    INNER JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
-    LEFT JOIN facility_details fv ON fv.facility_id = v.facility_id
     LEFT JOIN facility_details fe ON fe.facility_id = e.facility_id
     LEFT JOIN facility_details fel ON fel.facility_id = e.lab_id
-    LEFT JOIN facility_details fvl ON fvl.facility_id = v.lab_id
     LEFT JOIN r_sample_status rs ON rs.status_id = e.result_status
     WHERE $whereSql
-    ORDER BY e.sample_collection_date DESC, e.eid_id, v.sample_collection_date";
+    ORDER BY e.sample_collection_date DESC, e.eid_id";
 
 $rowCount = 0;
-foreach ($db->rawQueryGenerator($linkedSql) as $r) {
+foreach ($db->rawQueryGenerator($eidSql) as $r) {
+    $vlCount = (int) ($r['vl_test_count'] ?? 0);
     $writer->addRow(Row::fromValues([
         // Child
         $r['child_id'] ?? '',
@@ -262,7 +255,7 @@ foreach ($db->rawQueryGenerator($linkedSql) as $r) {
         pmtctExportFormatDate($r['mother_cd4_test_date'] ?? null),
         $r['eid_mother_vl_result'] ?? '',
         pmtctExportFormatDate($r['eid_mother_vl_test_date'] ?? null),
-        // EID
+        // EID test
         $r['eid_sample_code'] ?? '',
         $r['eid_remote_sample_code'] ?? '',
         pmtctExportFormatDate($r['eid_collection_date'] ?? null),
@@ -272,15 +265,93 @@ foreach ($db->rawQueryGenerator($linkedSql) as $r) {
         $r['eid_test_platform'] ?? '',
         $r['eid_testing_lab'] ?? '',
         $r['eid_facility_name'] ?? '',
-        // VL
+        // Link indicator
+        $vlCount > 0 ? _translate('Yes') : _translate('No'),
+        $vlCount,
+    ]));
+
+    $rowCount++;
+    if ($rowCount % 5000 === 0) {
+        gc_collect_cycles();
+    }
+}
+
+
+// --- Sheet 3: VL Data ------------------------------------------------------
+// One row per VL record whose patient_art_no matches a Mother ID from the
+// EID set above. Same Mother ID column links back to Sheet 2.
+$vlSheet = $writer->addNewSheetAndMakeItCurrent();
+$vlSheet->setName(_translate('VL Data'));
+
+$vlHeaders = [
+    _translate('Mother ID'),
+    _translate('Patient Name'),
+    _translate('Patient DOB'),
+    _translate('Patient Sex'),
+    _translate('VL Sample Code'),
+    _translate('Remote VL Sample Code'),
+    _translate('VL Sample Collection Date'),
+    _translate('VL Sample Tested Date'),
+    _translate('VL Result'),
+    _translate('VL Result (Absolute cp/mL)'),
+    _translate('VL Result (Log)'),
+    _translate('VL Is High (>= 1000 cp/mL)'),
+    _translate('VL Test Platform'),
+    _translate('VL Testing Lab'),
+    _translate('VL Facility'),
+    _translate('Matched EID Records for Mother'),
+];
+$writer->addRow(Row::fromValuesWithStyle($vlHeaders, $headerStyle));
+
+$vlSql = "SELECT
+        v.patient_art_no,
+        v.patient_first_name,
+        v.patient_last_name,
+        v.patient_dob,
+        v.patient_gender,
+        v.sample_code AS vl_sample_code,
+        v.remote_sample_code AS vl_remote_sample_code,
+        v.sample_collection_date AS vl_collection_date,
+        v.sample_tested_datetime AS vl_tested_date,
+        v.result AS vl_result,
+        v.result_value_absolute,
+        v.result_value_log,
+        $highVlExpr AS vl_is_high,
+        v.vl_test_platform,
+        fvl.facility_name AS vl_testing_lab,
+        fv.facility_name AS vl_facility_name,
+        (SELECT COUNT(*) FROM form_eid e2
+            WHERE TRIM(e2.mother_id) = TRIM(v.patient_art_no)) AS matched_eid_count
+    FROM form_vl v
+    INNER JOIN (
+        SELECT DISTINCT TRIM(e.mother_id) AS mid
+        FROM form_eid e
+        WHERE $whereSql
+    ) m ON m.mid = TRIM(v.patient_art_no)
+    LEFT JOIN facility_details fv ON fv.facility_id = v.facility_id
+    LEFT JOIN facility_details fvl ON fvl.facility_id = v.lab_id
+    ORDER BY v.patient_art_no, v.sample_collection_date DESC";
+
+$rowCount = 0;
+foreach ($db->rawQueryGenerator($vlSql) as $r) {
+    $patientName = trim(($r['patient_first_name'] ?? '') . ' ' . ($r['patient_last_name'] ?? ''));
+    $writer->addRow(Row::fromValues([
+        $r['patient_art_no'] ?? '',
+        $patientName,
+        pmtctExportFormatDate($r['patient_dob'] ?? null),
+        $r['patient_gender'] ?? '',
         $r['vl_sample_code'] ?? '',
+        $r['vl_remote_sample_code'] ?? '',
         pmtctExportFormatDate($r['vl_collection_date'] ?? null),
         pmtctExportFormatDate($r['vl_tested_date'] ?? null),
         $r['vl_result'] ?? '',
         $r['result_value_absolute'] ?? '',
+        $r['result_value_log'] ?? '',
         ((int) ($r['vl_is_high'] ?? 0)) === 1 ? _translate('Yes') : _translate('No'),
         $r['vl_test_platform'] ?? '',
         $r['vl_testing_lab'] ?? '',
+        $r['vl_facility_name'] ?? '',
+        (int) ($r['matched_eid_count'] ?? 0),
     ]));
 
     $rowCount++;

@@ -162,7 +162,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="pmtct-kpi-card">
-                    <div class="pmtct-kpi-label"><?= _translate("VL Tests Reported for Matched Mothers"); ?></div>
+                    <div class="pmtct-kpi-label"><?= _translate("VL Tests on Record for Matched Mothers (all time)"); ?></div>
                     <div class="pmtct-kpi-value" id="kpiVlTests">&mdash;</div>
                     <div class="pmtct-kpi-sub" id="kpiVlTestsSub">&nbsp;</div>
                 </div>
@@ -267,7 +267,11 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                 $("#kpiUnmatchedChildren").text(s.unmatchedChildren);
                 $("#kpiDistinctMothers").text(s.distinctMothers);
                 $("#kpiVlTests").text(s.vlTests);
-                $("#kpiVlTestsSub").text(s.distinctMothers > 0 ? (s.vlTests / s.distinctMothers).toFixed(2) + " <?= _jsTranslate('avg per mother'); ?>" : "");
+                var vlPending = Math.max(0, (s.vlTests || 0) - (s.vlTestsWithResult || 0));
+                $("#kpiVlTestsSub").text(
+                    (s.vlTestsWithResult || 0) + " <?= _jsTranslate('with result'); ?>" +
+                    " · " + vlPending + " <?= _jsTranslate('pending'); ?>"
+                );
                 $("#kpiMothersWithResult").text(s.mothersWithResult);
                 $("#kpiMothersHighVl").text(s.mothersHighVl);
                 $("#kpiMothersHighVlSub").text(s.mothersWithResult > 0 ? Math.round(100 * s.mothersHighVl / s.mothersWithResult) + "% <?= _jsTranslate('of mothers with VL result'); ?>" : "");
