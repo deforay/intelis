@@ -4,3 +4,15 @@
 
 UPDATE `system_config` SET `value` = '5.4.5' WHERE `system_config`.`name` = 'sc_version';
 
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
