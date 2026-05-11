@@ -18,10 +18,10 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$sarr = $general->getSystemConfig();
+$labId = $general->getSystemConfig('sc_testing_lab_id') ?? null;
 
-if ($general->isLISInstance() && !empty($sarr['sc_testing_lab_id'])) {
-    $testingLabs = $facilitiesService->getTestingLabs('eid', true, false, "facility_id = " . $sarr['sc_testing_lab_id']);
+if ($general->isLISInstance() && !empty($labId)) {
+    $testingLabs = $facilitiesService->getTestingLabs('eid', true, false, "facility_id = " . $labId);
 } else {
     $testingLabs = $facilitiesService->getTestingLabs('eid');
 }
@@ -30,38 +30,59 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_details ORDER BY province_name");
 ?>
 <style>
-    .pmtct-kpi-row { margin-top: 10px; }
+    .pmtct-kpi-row {
+        margin-top: 10px;
+    }
+
     .pmtct-kpi-card {
         background: #fff;
         border-left: 4px solid #3c8dbc;
         border-radius: 3px;
-        box-shadow: 0 1px 1px rgba(0,0,0,.05);
+        box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
         padding: 12px 14px;
         margin-bottom: 12px;
         min-height: 92px;
     }
+
     .pmtct-kpi-card .pmtct-kpi-label {
         font-size: 12px;
         color: #888;
         text-transform: uppercase;
         letter-spacing: .4px;
     }
+
     .pmtct-kpi-card .pmtct-kpi-value {
         font-size: 26px;
         font-weight: 600;
         color: #222;
         line-height: 1.2;
     }
+
     .pmtct-kpi-card .pmtct-kpi-sub {
         font-size: 11px;
         color: #999;
         margin-top: 4px;
     }
-    .pmtct-kpi-card.kpi-warn { border-left-color: #f39c12; }
-    .pmtct-kpi-card.kpi-danger { border-left-color: #dd4b39; }
-    .pmtct-kpi-card.kpi-good { border-left-color: #00a65a; }
-    .pmtct-tabs { margin-top: 18px; }
-    .select2-selection__choice { color: black !important; }
+
+    .pmtct-kpi-card.kpi-warn {
+        border-left-color: #f39c12;
+    }
+
+    .pmtct-kpi-card.kpi-danger {
+        border-left-color: #dd4b39;
+    }
+
+    .pmtct-kpi-card.kpi-good {
+        border-left-color: #00a65a;
+    }
+
+    .pmtct-tabs {
+        margin-top: 18px;
+    }
+
+    .select2-selection__choice {
+        color: black !important;
+    }
 </style>
 
 <div class="content-wrapper">
@@ -77,18 +98,24 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         <div class="row">
             <div class="col-xs-12">
                 <div class="box" id="filterDiv">
-                    <table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table aria-describedby="table" class="table pageFilters" aria-hidden="true"
+                        style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                             <td><strong><?= _translate("EID Sample Collection Date"); ?>&nbsp;:</strong></td>
                             <td>
-                                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?= _translate('Select Collection Date'); ?>" readonly style="background:#fff;" />
+                                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate"
+                                    class="form-control daterangefield"
+                                    placeholder="<?= _translate('Select Collection Date'); ?>" readonly
+                                    style="background:#fff;" />
                             </td>
                             <td><strong><?= _translate("Province"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select class="form-control" id="provinceId" name="provinceId" style="width:100%;">
                                     <option value=""><?= _translate("-- Select --"); ?></option>
                                     <?php foreach ($provinces as $p) { ?>
-                                        <option value="<?= $p['province_id']; ?>"><?= htmlspecialchars((string) $p['province_name']); ?></option>
+                                        <option value="<?= $p['province_id']; ?>">
+                                            <?= htmlspecialchars((string) $p['province_name']); ?>
+                                        </option>
                                     <?php } ?>
                                 </select>
                             </td>
@@ -104,16 +131,21 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                             <td>
                                 <select class="form-control" id="matchStatus" name="matchStatus" style="width:100%;">
                                     <option value="all"><?= _translate("All children"); ?></option>
-                                    <option value="matched" selected><?= _translate("Matched (mother has VL test)"); ?></option>
+                                    <option value="matched" selected><?= _translate("Matched (mother has VL test)"); ?>
+                                    </option>
                                     <option value="unmatched"><?= _translate("Not matched"); ?></option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="4">
-                                <input type="button" onclick="searchPmtctCascade()" value="<?= _translate("Search"); ?>" class="btn btn-success btn-sm">
-                                &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-                                &nbsp;<button class="btn btn-primary btn-sm pull-right" type="button" onclick="exportPmtctCascade()"><em class="fa-solid fa-cloud-arrow-down"></em>&nbsp;<?= _translate("Export to Excel"); ?></button>
+                                <input type="button" onclick="searchPmtctCascade()" value="<?= _translate("Search"); ?>"
+                                    class="btn btn-success btn-sm">
+                                &nbsp;<button class="btn btn-danger btn-sm"
+                                    onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+                                &nbsp;<button class="btn btn-primary btn-sm pull-right" type="button"
+                                    onclick="exportPmtctCascade()"><em
+                                        class="fa-solid fa-cloud-arrow-down"></em>&nbsp;<?= _translate("Export to Excel"); ?></button>
                             </td>
                         </tr>
                     </table>
@@ -162,7 +194,8 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
             </div>
             <div class="col-md-3 col-sm-6">
                 <div class="pmtct-kpi-card">
-                    <div class="pmtct-kpi-label"><?= _translate("VL Tests on Record for Matched Mothers (all time)"); ?></div>
+                    <div class="pmtct-kpi-label"><?= _translate("VL Tests on Record for Matched Mothers (all time)"); ?>
+                    </div>
                     <div class="pmtct-kpi-value" id="kpiVlTests">&mdash;</div>
                     <div class="pmtct-kpi-sub" id="kpiVlTestsSub">&nbsp;</div>
                 </div>
@@ -193,7 +226,8 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                         </div>
                     </div>
                     <div class="box-body table-responsive">
-                        <table id="pmtctTable" class="table table-bordered table-striped" aria-describedby="pmtct-line-level" aria-hidden="true" style="width:100%;">
+                        <table id="pmtctTable" class="table table-bordered table-striped"
+                            aria-describedby="pmtct-line-level" aria-hidden="true" style="width:100%;">
                             <thead>
                                 <tr>
                                     <th><?= _translate("Child ID"); ?></th>
@@ -219,7 +253,9 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="19" class="dataTables_empty"><?= _translate("Loading data from server"); ?></td>
+                                    <td colspan="19" class="dataTables_empty">
+                                        <?= _translate("Loading data from server"); ?>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
