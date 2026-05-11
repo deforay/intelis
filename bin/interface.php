@@ -143,7 +143,12 @@ try {
             $db->connection('interface')
                 ->where(" lims_sync_status = 0 ");
         }
-        $db->connection('interface')->where('result_status', 1);
+        // result_status = 1 means Final (F). Failed runs (ASTM 'X') are stored with
+        // result_status = 0 by vlsm-interfacing but carry results = 'Failed' — pull
+        // those in too so the VL/EID/Hepatitis branches can mark them TEST_FAILED.
+        $db->connection('interface')->where(
+            "(result_status = 1 OR LOWER(TRIM(IFNULL(results,''))) IN ('failed','fail','failure','invalid','inconclusive','error','err'))"
+        );
         $db->connection('interface')->orderBy('analysed_date_time', 'asc');
         $mysqlData = $db->connection('interface')->get('orders');
         if ($isCli) {
@@ -157,7 +162,10 @@ try {
             echo "Connected to sqlite" . PHP_EOL;
         }
         $where = [];
-        $where[] = " result_status = 1 ";
+        // result_status = 1 means Final (F). Failed runs (ASTM 'X') are stored with
+        // result_status = 0 by vlsm-interfacing but carry results = 'Failed' — pull
+        // those in too so the VL/EID/Hepatitis branches can mark them TEST_FAILED.
+        $where[] = " (result_status = 1 OR LOWER(TRIM(IFNULL(results,''))) IN ('failed','fail','failure','invalid','inconclusive','error','err')) ";
         if (!empty($lastInterfaceSync)) {
             $where[] = " (added_on > '$lastInterfaceSync' OR lims_sync_status = 0) ";
         }
