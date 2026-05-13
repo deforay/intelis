@@ -520,6 +520,12 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									</option>
 								</select>
 							</td>
+							<td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'vl', 'collection'); ?>
+							</td>
 						</tr>
 
 						<tr>
@@ -1180,6 +1186,10 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 				aoData.push({
 					"name": "rejectedSamples",
 					"value": $("#rejectedSamples").val()
+				});
+				aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',

@@ -171,6 +171,9 @@ try {
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
+     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
+          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+     }
      if (!empty($_POST['sampleCollectionDate'])) {
           [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '', includeTime: true);
           $sWhere[] = " vl.sample_collection_date BETWEEN '$startDate' AND '$endDate'";

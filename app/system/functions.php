@@ -527,3 +527,52 @@ function _logdump($data, $useVardump = true): void
 {
     MiscUtility::dumpToErrorLog($data, $useVardump);
 }
+
+/**
+ * Render an autocomplete-backed manifest code filter input (and its init JS).
+ *
+ * Both arguments are optional. `$module` scopes suggestions to a test type
+ * (e.g. 'vl', 'eid', 'covid19') and `$manifestType` to a manifest_type
+ * (e.g. 'collection', 'referral'). Pass null/empty to leave unfiltered.
+ *
+ * The input id/name defaults to `manifestCode` so server-side handlers can
+ * read `$_POST['manifestCode']` consistently.
+ */
+function _manifestFilter(
+    string $inputId = 'manifestCode',
+    ?string $module = null,
+    ?string $manifestType = null,
+    ?string $placeholder = null
+): string {
+    $placeholder ??= _translate('Enter Manifest Code');
+    $idAttr = htmlspecialchars($inputId, ENT_QUOTES, 'UTF-8');
+    $phAttr = htmlspecialchars($placeholder, ENT_QUOTES, 'UTF-8');
+    $jsId = json_encode($inputId);
+    $jsModule = json_encode((string) $module);
+    $jsManifestType = json_encode((string) $manifestType);
+
+    return <<<HTML
+<input type="text" id="{$idAttr}" name="{$idAttr}" class="form-control autocomplete"
+    placeholder="{$phAttr}" style="background:#fff;" autocomplete="off" />
+<script>
+$(function () {
+    $("#" + {$jsId}).autocomplete({
+        minLength: 0,
+        source: function (request, response) {
+            $.ajax({
+                url: "/specimen-referral-manifest/getManifestCodeHelper.php",
+                type: 'post',
+                dataType: "json",
+                data: {
+                    search: request.term,
+                    module: {$jsModule},
+                    manifestType: {$jsManifestType}
+                },
+                success: function (data) { response(data); }
+            });
+        }
+    });
+});
+</script>
+HTML;
+}
