@@ -186,6 +186,10 @@ try {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
 
+     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
+          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+     }
+
      if (isset($_POST['childId']) && $_POST['childId'] != "") {
           $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
      }
