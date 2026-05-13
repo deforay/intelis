@@ -221,6 +221,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<td>
 								<input type="text" id="motherName" name="motherName" class="form-control" placeholder="<?php echo _translate('Enter Mother Name'); ?>" style="background:#fff;" />
 							</td>
+							<td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'eid', 'collection'); ?>
+							</td>
 						</tr>
 
 						<tr>
@@ -588,7 +594,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					"name": "status",
 					"value": $("#status").val()
 				});
-
+				aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
+				});
 				aoData.push({
 					"name": "fundingSource",
 					"value": $("#fundingSource").val()

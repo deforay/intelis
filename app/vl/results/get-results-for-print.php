@@ -125,6 +125,10 @@ try {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
 
+     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
+          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+     }
+
      if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
           $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
      }

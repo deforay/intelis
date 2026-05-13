@@ -359,7 +359,12 @@ if ($formId == COUNTRY\CAMEROON) {
 							<td>
 								<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
 							</td>
-
+							<td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'vl', 'collection'); ?>
+							</td>
 						</tr>
 						<tr>
 							<td colspan="6">
