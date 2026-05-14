@@ -381,6 +381,14 @@ foreach ($sourceOfRequests as $value => $displayText) {
 							</td>
 
 						</tr>
+						<tr>
+							<td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'covid19', 'collection'); ?>
+							</td>
+						</tr>
 
 						<tr>
 							<td colspan="2"><input type="button" onclick="searchVlRequestData();"
@@ -832,6 +840,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 				aoData.push({
 					"name": "hidesrcofreq",
 					"value": '<?php echo $hidesrcofreq; ?>'
+				});
+				aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',

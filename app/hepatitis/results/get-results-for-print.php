@@ -213,6 +213,9 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 
+if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
+    $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+}
 
 if (!isset($_POST['status']) || trim((string) $_POST['status']) === '') {
     if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {

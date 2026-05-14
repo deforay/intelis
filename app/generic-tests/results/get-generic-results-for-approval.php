@@ -100,6 +100,9 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS *, vl.last_modified_datetime FROM form_gen
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
      $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
+if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
+     $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+}
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 [$tested_start_date, $tested_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
 if (!empty($_POST['sampleCollectionDate'])) {
