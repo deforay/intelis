@@ -189,7 +189,9 @@ if (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPa
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
-
+if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
+    $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+}
 
 // Only approved results can be printed
 if (!isset($_POST['status']) || trim((string) $_POST['status']) === '') {

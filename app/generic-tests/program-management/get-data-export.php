@@ -235,6 +235,9 @@ try {
      if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
           $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
      }
+     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
+          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+     }
      /* Assign date time filters */
      if (!empty($_POST['sampleCollectionDate'])) {
           if (trim((string) $start_date) === trim((string) $end_date)) {

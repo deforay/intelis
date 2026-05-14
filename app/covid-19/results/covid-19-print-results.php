@@ -135,14 +135,18 @@ $state = $geolocationService->getProvinces("yes");
                                                         <input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
                                                     </td>
 
-
                                                 </tr>
                                                 <tr>
                                                     <td><strong><?php echo _translate("Patient Name"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                                                     </td>
-
+                                                    <td><strong>
+                                                            <?php echo _translate("Manifest Code"); ?>&nbsp;:
+                                                        </strong></td>
+                                                    <td>
+                                                        <?= _manifestFilter('manifestCode', 'covid19', 'collection'); ?>
+                                                    </td>
                                                 </tr>
 
                                                 <tr>
@@ -319,6 +323,12 @@ $state = $geolocationService->getProvinces("yes");
                                                         </strong></td>
                                                     <td>
                                                         <input type="text" id="printBatchCode" name="printBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+                                                    </td>
+                                                     <td><strong>
+                                                            <?php echo _translate("Manifest Code"); ?>&nbsp;:
+                                                        </strong></td>
+                                                    <td>
+                                                        <?= _manifestFilter('printManifestCode', 'covid19', 'collection'); ?>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -697,7 +707,10 @@ $state = $geolocationService->getProvinces("yes");
                     "name": "batchCode",
                     "value": $("#batchCode").val()
                 });
-
+                aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
+				});
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
@@ -836,6 +849,10 @@ $state = $geolocationService->getProvinces("yes");
                     "name": "batchCode",
                     "value": $("#printBatchCode").val()
                 });
+                aoData.push({
+					"name": "manifestCode",
+					"value": $("#printManifestCode").val()
+				});
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",

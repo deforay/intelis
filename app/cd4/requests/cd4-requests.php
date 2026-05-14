@@ -473,7 +473,14 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									style="background:#fff;" />
 							</td>
 						</tr>
-
+						<tr>
+							<td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'cd4', 'collection'); ?>
+							</td>
+						</tr>
 
 
 						<tr>
@@ -1088,6 +1095,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 				aoData.push({
 					"name": "rejectedSamples",
 					"value": $("#rejectedSamples").val()
+				});
+				aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',
