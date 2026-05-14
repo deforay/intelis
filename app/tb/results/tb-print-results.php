@@ -139,6 +139,12 @@ $state = $geolocationService->getProvinces("yes");
                                                     <td>
                                                         <input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
                                                     </td>
+                                                    <td><strong>
+                                                            <?php echo _translate("Manifest Code"); ?>&nbsp;:
+                                                        </strong></td>
+                                                    <td>
+                                                        <?= _manifestFilter('manifestCode', 'tb', 'collection'); ?>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
@@ -308,6 +314,12 @@ $state = $geolocationService->getProvinces("yes");
                                                         </strong></td>
                                                     <td>
                                                         <input type="text" id="printBatchCode" name="printBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+                                                    </td>
+                                                    <td><strong>
+                                                            <?php echo _translate("Manifest Code"); ?>&nbsp;:
+                                                        </strong></td>
+                                                    <td>
+                                                        <?= _manifestFilter('printManifestCode', 'tb', 'collection'); ?>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -668,7 +680,10 @@ $state = $geolocationService->getProvinces("yes");
                     "name": "batchCode",
                     "value": $("#batchCode").val()
                 });
-
+                aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
+				});
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
@@ -802,6 +817,10 @@ $state = $geolocationService->getProvinces("yes");
                     "name": "batchCode",
                     "value": $("#printBatchCode").val()
                 });
+                aoData.push({
+					"name": "manifestCode",
+					"value": $("#printManifestCode").val()
+				});
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",

@@ -302,7 +302,14 @@ foreach ($sourceOfRequests as $value => $displayText) {
                                     <option value="no"><?php echo _translate("No"); ?></option>
                                 </select>
                             </td>
+                            <td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'tb', 'collection'); ?>
+							</td>
                         </tr>
+                       
                         <tr>
                             <td colspan="2"><input type="button" onclick="searchVlRequestData();"
                                     value="<?php echo _translate("Search"); ?>" class="btn btn-default btn-sm">
@@ -687,6 +694,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
                     "name": "rejectedSamples",
                     "value": $("#rejectedSamples").val()
                 });
+                aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
+				});
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",

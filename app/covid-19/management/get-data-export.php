@@ -173,6 +173,9 @@ try {
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
+     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
+          $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+     }
      if (isset($_POST['patientId']) && trim((string) $_POST['patientId']) !== '') {
           $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
      }

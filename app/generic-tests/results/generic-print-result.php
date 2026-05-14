@@ -177,6 +177,12 @@ $state = $geolocationService->getProvinces("yes");
 													<td>
 														<input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
 													</td>
+													<td><strong>
+														<?php echo _translate("Manifest Code"); ?>&nbsp;:
+														</strong></td>
+													<td>
+													<?= _manifestFilter('manifestCode', 'generic-test', 'collection'); ?>
+													</td>
 												</tr>
 												<tr>
 													<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
@@ -403,6 +409,12 @@ $state = $geolocationService->getProvinces("yes");
 														</strong></td>
 													<td>
 														<input type="text" id="printPatientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
+													</td>
+													<td><strong>
+														<?php echo _translate("Manifest Code"); ?>&nbsp;:
+														</strong></td>
+													<td>
+													<?= _manifestFilter('printManifestCode', 'generic-test', 'collection'); ?>
 													</td>
 												</tr>
 												<tr>
@@ -801,6 +813,10 @@ $state = $geolocationService->getProvinces("yes");
 				aoData.push({
 					"name": "implementingPartner",
 					"value": $("#implementingPartner").val()
+				});
+				aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',
