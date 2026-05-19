@@ -327,7 +327,7 @@ if (!empty($result)) {
 
      $resultValue = $result['result'] ?? '';
      $decodedResult = is_numeric($resultValue) ? $resultValue : html_entity_decode((string) $resultValue, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-     $displayResult = is_numeric($decodedResult) ? round((float) $decodedResult) : $decodedResult;
+     $displayResult = is_numeric($decodedResult) ? round((float) $decodedResult, 2) : $decodedResult;
 
      $resultSection = '&nbsp;&nbsp;Viral Load Result (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $displayResult, ENT_QUOTES | ENT_HTML5, 'UTF-8');
      if (!empty($logValue)) {
