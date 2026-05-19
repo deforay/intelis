@@ -147,6 +147,12 @@ foreach ($rejectionTypeResult as $type) {
 							<td>
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
+							<td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'hepatitis', 'collection'); ?>
+							</td>
 						</tr>
 						<tr>
 							<td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
@@ -445,6 +451,10 @@ foreach ($rejectionTypeResult as $type) {
 				aoData.push({
 					"name": "statusFilter",
 					"value": $("#statusFilter").val()
+				});
+				aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',

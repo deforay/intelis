@@ -1,4 +1,3 @@
-"
 <?php
 
 use App\Services\DatabaseService;
@@ -154,6 +153,14 @@ $sResult = $db->rawQuery($sQuery);
                             <td>
                                 <input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                             </td>
+                        </tr>
+                        <tr>
+                            <td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'tb', 'collection'); ?>
+							</td>
                         </tr>
 
                         <tr>
@@ -465,6 +472,10 @@ $sResult = $db->rawQuery($sQuery);
                     "name": "patientName",
                     "value": $("#patientName").val()
                 });
+                aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
+				});
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",

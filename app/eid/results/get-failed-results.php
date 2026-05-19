@@ -158,6 +158,9 @@ try {
     if (isset($_POST['motherName']) && $_POST['motherName'] != "") {
         $sWhere[] = " CONCAT(COALESCE(vl.mother_name,''), COALESCE(vl.mother_surname,'')) like '%" . $_POST['motherName'] . "%'";
     }
+    if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
+        $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+    }
 
 
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {

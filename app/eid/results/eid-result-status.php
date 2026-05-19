@@ -174,6 +174,12 @@ foreach ($rejectionTypeResult as $type) {
 									<option value="approvedOrRejected"> <?php echo _translate("Already Approved/Rejected"); ?> </option>
 								</select>
 							</td>
+							<td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'eid', 'collection'); ?>
+							</td>
 						</tr>
 						<tr>
 							<td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
@@ -505,6 +511,10 @@ foreach ($rejectionTypeResult as $type) {
 				aoData.push({
 					"name": "statusFilter",
 					"value": $("#statusFilter").val()
+				});
+				aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',
