@@ -170,6 +170,12 @@ $sResult = $db->rawQuery($sQuery);
                             <td>
                                 <input type="text" id="motherName" name="motherName" class="form-control" placeholder="<?php echo _translate('Enter Mother Name'); ?>" style="background:#fff;" />
                             </td>
+                            <td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'eid', 'collection'); ?>
+							</td>
                         </tr>
                         <tr>
                             <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-primary btn-sm">

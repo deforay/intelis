@@ -177,6 +177,14 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 							</td>
 						</tr>
 						<tr>
+							<td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'tb', 'collection'); ?>
+							</td>
+						</tr>
+						<tr>
 							<td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 

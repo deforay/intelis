@@ -216,6 +216,14 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 							</td>
 						</tr>
 						<tr>
+							<td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'generic-test', 'collection'); ?>
+							</td>
+						</tr>
+						<tr>
 							<td colspan="3">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
 										<?= _translate('Reset'); ?>
@@ -575,6 +583,10 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 				aoData.push({
 					"name": "statusFilter",
 					"value": $("#statusFilter").val()
+				});
+				aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',

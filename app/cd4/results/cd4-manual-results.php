@@ -169,6 +169,14 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 							</td>
 						</tr>
 						<tr>
+							<td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'cd4', 'collection'); ?>
+							</td>
+						</tr>
+						<tr>
 							<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();"
 									value="<?= _translate('Search'); ?>" class="btn btn-default btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="reset();"><span>
@@ -515,6 +523,10 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 				aoData.push({
 					"name": "from",
 					"value": "enterresult"
+				});
+				aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',

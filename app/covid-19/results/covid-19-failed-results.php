@@ -155,6 +155,14 @@ $sResult = $db->rawQuery($sQuery);
                                 <input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                             </td>
                         </tr>
+                        <tr>
+                            <td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'covid19', 'collection'); ?>
+							</td>
+                        </tr>
 
                         <tr>
                             <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-primary btn-sm">

@@ -121,6 +121,12 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
+							<td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'hepatitis', 'collection'); ?>
+							</td>
 						</tr>
 						<tr>
 							<td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();"
@@ -415,6 +421,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 				aoData.push({
 					"name": "from",
 					"value": "enterresult"
+				});
+				aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',
