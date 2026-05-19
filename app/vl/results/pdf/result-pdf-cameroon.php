@@ -411,7 +411,7 @@ if (!empty($result)) {
      }
      $resultValue = $result['result'] ?? '';
      $decodedResult = is_numeric($resultValue) ? $resultValue : html_entity_decode((string) $resultValue, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-     $displayResult = is_numeric($decodedResult) ? round((float) $decodedResult) : $decodedResult;
+     $displayResult = is_numeric($decodedResult) ? round((float) $decodedResult, 2) : $decodedResult;
 
      $vlFinalResult = '&nbsp;&nbsp;' . _translate("Viral Load Result") . ' (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' .
           htmlspecialchars((string) $displayResult, ENT_QUOTES | ENT_HTML5, 'UTF-8');
@@ -420,7 +420,7 @@ if (!empty($result)) {
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;' . _translate("Rejection Reason") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
      }
      $instrumentMachineName = $result['instrument_machine_name'] ?? $result['vl_test_platform'] ?? '';
-    if (str_contains(strtolower((string) $instrumentMachineName), 'm2000')) {
+     if (str_contains(strtolower((string) $instrumentMachineName), 'm2000')) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="font-size:10px;padding-top:10px;">' . _translate("Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR (Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)") . '</td>';
           $html .= '</tr>';
