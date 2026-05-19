@@ -120,6 +120,14 @@ $state = $geolocationService->getProvinces("yes");
                                 <input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                             </td>
                         </tr>
+                        <tr>
+                            <td><strong>
+									<?php echo _translate("Manifest Code"); ?>&nbsp;:
+								</strong></td>
+							<td>
+								<?= _manifestFilter('manifestCode', 'generic-test', 'collection'); ?>
+							</td>
+                        </tr>
 
                         <tr>
                             <td colspan="2"><input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-primary btn-sm">
@@ -468,6 +476,10 @@ $state = $geolocationService->getProvinces("yes");
                     "name": "patientName",
                     "value": $("#patientName").val()
                 });
+                aoData.push({
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
+				});
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",

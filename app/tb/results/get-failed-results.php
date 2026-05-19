@@ -150,6 +150,9 @@ try {
     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
         $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
     }
+    if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
+        $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
+    }
     //$sFilter = '';
 
     if (!empty($_SESSION['facilityMap'])) {
