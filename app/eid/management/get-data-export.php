@@ -121,7 +121,22 @@ try {
                          r_f_s.funding_source_name,
                          r_i_p.i_partner_name,
                          rs.rejection_reason_name as rejection_reason,
-                         r_c_a.recommended_corrective_action_name
+                         r_c_a.recommended_corrective_action_name,
+                         CASE
+                              WHEN TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.result_approved_datetime) < 1
+                              THEN TIMESTAMPDIFF(HOUR, vl.sample_collection_date, vl.result_approved_datetime)
+                              ELSE TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.result_approved_datetime)
+                         END AS turnaround_collection,
+                         CASE
+                              WHEN TIMESTAMPDIFF(DAY, vl.sample_received_at_lab_datetime, vl.result_approved_datetime) < 1
+                              THEN  TIMESTAMPDIFF(HOUR, vl.sample_received_at_lab_datetime, vl.result_approved_datetime)
+                              ELSE  TIMESTAMPDIFF(DAY, vl.sample_received_at_lab_datetime, vl.result_approved_datetime)
+                         END AS turnaround_reception,
+                         CASE
+                              WHEN TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.sample_received_at_lab_datetime) < 1
+                              THEN  TIMESTAMPDIFF(HOUR, vl.sample_collection_date, vl.sample_received_at_lab_datetime)
+                              ELSE TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.sample_received_at_lab_datetime)
+                         END AS collection_lab_reception_delay
 
                          FROM form_eid as vl
 

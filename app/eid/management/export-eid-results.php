@@ -2,6 +2,7 @@
 
 use const COUNTRY\CAMEROON;
 use const COUNTRY\DRC;
+use const COUNTRY\BURKINA_FASO;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -37,9 +38,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExportResultQuery']) !== "") {
 
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Health Facility"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Testing Lab Name (Hub)"), _translate("Lab Assigned Code"), _translate("Sample Received On"), _translate("Child ID"), _translate("Child Name"), _translate("Mother ID"), _translate("Child Date of Birth"), _translate("Child Age in Months"), _translate("Child Age in Weeks"), _translate("Child Age in Days"), _translate("Child Sex"), _translate("Breastfeeding"), _translate("Clinician's Phone Number"), _translate("PCR Test Performed Before"), _translate("Last PCR Test results"), _translate("Reason For PCR Test"), _translate("Sample Collection Date"), _translate("Sample Requestor Phone Number"), _translate("Sample Type"), _translate("EID Number"), _translate("Testing Platform"), _translate("Is Sample Rejected?"), _translate("Freezer"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Rejection Reason"), _translate("Recommended Corrective Action"), _translate("Sample Tested On"), _translate("Result"), _translate("Date Result Dispatched"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Reviewed By"), _translate("Reviewed On"), _translate("Approved By"), _translate("Approved On"), _translate("Request Created On")];
+		$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Health Facility"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Testing Lab Name (Hub)"), _translate("Lab Assigned Code"), _translate("Sample Received On"), _translate("Child ID"), _translate("Child Name"), _translate("Mother ID"), _translate("Child Date of Birth"), _translate("Child Age in Months"), _translate("Child Age in Weeks"), _translate("Child Age in Days"), _translate("Child Sex"), _translate("Breastfeeding"), _translate("Clinician's Phone Number"), _translate("PCR Test Performed Before"), _translate("Last PCR Test results"), _translate("Reason For PCR Test"), _translate("Sample Collection Date"), _translate("Sample Requestor Phone Number"), _translate("Sample Type"), _translate("EID Number"), _translate("Testing Platform"), _translate("Is Sample Rejected?"), _translate("Freezer"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Rejection Reason"), _translate("Recommended Corrective Action"), _translate("Sample Tested On"), _translate("Result"), _translate("Result Turnaround Time - Reception"), _translate("Result Turnaround Time - Collection"), _translate("Collection to Lab Reception Delay"), _translate("Date Result Dispatched"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Reviewed By"), _translate("Reviewed On"), _translate("Approved By"), _translate("Approved On"), _translate("Request Created On")];
 	} else {
-		$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Health Facility"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Testing Lab Name (Hub)"), _translate("Lab Assigned Code"), _translate("Sample Received On"), _translate("Child Date of Birth"), _translate("Child Age in Months"), _translate("Child Age in Weeks"), _translate("Child Age in Days"), _translate("Child Sex"), _translate("Breastfeeding"), _translate("Clinician's Phone Number"), _translate("PCR Test Performed Before"), _translate("Last PCR Test results"), _translate("Reason For PCR Test"), _translate("Sample Collection Date"), _translate("Sample Requestor Phone Number"), _translate("Sample Type"), _translate("EID Number"), _translate("Testing Platform"), _translate("Is Sample Rejected?"), _translate("Freezer"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Rejection Reason"), _translate("Recommended Corrective Action"), _translate("Sample Tested On"), _translate("Result"), _translate("Date Result Dispatched"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Reviewed By"), _translate("Reviewed On"), _translate("Approved By"), _translate("Approved On"), _translate("Request Created On")];
+		$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Health Facility"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Testing Lab Name (Hub)"), _translate("Lab Assigned Code"), _translate("Sample Received On"), _translate("Child Date of Birth"), _translate("Child Age in Months"), _translate("Child Age in Weeks"), _translate("Child Age in Days"), _translate("Child Sex"), _translate("Breastfeeding"), _translate("Clinician's Phone Number"), _translate("PCR Test Performed Before"), _translate("Last PCR Test results"), _translate("Reason For PCR Test"), _translate("Sample Collection Date"), _translate("Sample Requestor Phone Number"), _translate("Sample Type"), _translate("EID Number"), _translate("Testing Platform"), _translate("Is Sample Rejected?"), _translate("Freezer"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Rejection Reason"), _translate("Recommended Corrective Action"), _translate("Sample Tested On"), _translate("Result"),_translate("Result Turnaround Time - Reception"), _translate("Result Turnaround Time - Collection"), _translate("Collection to Lab Reception Delay"), _translate("Date Result Dispatched"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Reviewed By"), _translate("Reviewed On"), _translate("Approved By"), _translate("Approved On"), _translate("Request Created On")];
 	}
 	if ($general->isStandaloneInstance() && ($key = array_search(_translate("Remote Sample ID"), $headings)) !== false) {
 		unset($headings[$key]);
@@ -52,6 +53,10 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 
 	if ($formId != DRC) {
 		$headings = MiscUtility::removeMatchingElements($headings, [_translate("Freezer"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume (ml)"), _translate("Child Age in Weeks"), _translate("Child Age in Days"), _translate("Testing Platform"), _translate("Reviewed By"), _translate("Reviewed On"), _translate("Approved By"), _translate("Approved On")]);
+	}
+
+	if ($formId != BURKINA_FASO) {
+		$headings = MiscUtility::removeMatchingElements($headings, [_translate("Result Turnaround Time - Reception"), _translate("Result Turnaround Time - Collection")]);
 	}
 
 	$testPlatformResult = $general->getTestingPlatforms('eid');
@@ -146,6 +151,9 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$row[] = $aRow['recommended_corrective_action_name'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 		$row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
+		$row[] = $aRow['turnaround_reception'];
+		$row[] = $aRow['turnaround_collection'];
+		$row[] = $aRow['collection_lab_reception_delay'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 		$row[] = $aRow['lab_tech_comments'];
 		$row[] = $aRow['funding_source_name'] ?? null;

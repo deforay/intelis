@@ -96,6 +96,7 @@ try {
                vl.is_sample_rejected,
                vl.reason_for_sample_rejection,
                vl.result_value_log,
+               vl.result_value_text,
                vl.result_value_absolute,
                vl.result,
                vl.current_regimen,
@@ -123,6 +124,21 @@ try {
                vl.vl_result_category,
                vl.result_value_hiv_detection,
                vl.lab_assigned_code,
+               CASE
+                    WHEN TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.result_approved_datetime) < 1
+                    THEN TIMESTAMPDIFF(HOUR, vl.sample_collection_date, vl.result_approved_datetime)
+                    ELSE TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.result_approved_datetime)
+               END AS turnaround_collection,
+               CASE
+                    WHEN TIMESTAMPDIFF(DAY, vl.sample_received_at_lab_datetime, vl.result_approved_datetime) < 1
+                    THEN  TIMESTAMPDIFF(HOUR, vl.sample_received_at_lab_datetime, vl.result_approved_datetime)
+                    ELSE  TIMESTAMPDIFF(DAY, vl.sample_received_at_lab_datetime, vl.result_approved_datetime)
+               END AS turnaround_reception,
+               CASE
+                    WHEN TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.sample_received_at_lab_datetime) < 1
+                    THEN  TIMESTAMPDIFF(HOUR, vl.sample_collection_date, vl.sample_received_at_lab_datetime)
+                    ELSE TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.sample_received_at_lab_datetime)
+               END AS collection_lab_reception_delay,
                s.sample_name as sample_name,
                b.batch_code,
                ts.status_name,
