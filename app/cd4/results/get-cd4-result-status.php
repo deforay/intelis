@@ -207,7 +207,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['sample_name'];
      $row[] = $aRow['cd4_result'];
      $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
-     //$row[] = $status;
+     $row[] = $status;
 
      $output['aaData'][] = $row;
 }
