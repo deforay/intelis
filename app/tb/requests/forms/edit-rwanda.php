@@ -1214,8 +1214,8 @@ if ($isLisInstance) {
                                         </label>
                                         <div class="resultInputContainer">
                                             <?php $resultValues = implode(',',$tbResults); ?>
-                                            <input id="finalResult" name="finalResult" value="<?php echo $resultValues; ?>" title="<?php echo _translate('Please enter the final interpretation'); ?>" autocomplete="off" 
-                                            placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>" onchange="if(confirmFinalInterpretation(this)) { (this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show(); }">
+                                            <input id="finalResult" name="finalResult" value="<?php echo $resultValues; ?>" title="<?php echo _translate('Please enter the final interpretation'); ?>" autocomplete="off"
+                                            placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>" onchange="handleFinalInterpretationChange(this);">
                                         </div>
                                     </div>
 
@@ -1246,6 +1246,27 @@ if ($isLisInstance) {
         </div>
     </section>
 </div>
+
+<div class="modal fade" id="finalInterpretationConfirmModal" tabindex="-1" role="dialog" aria-labelledby="finalInterpretationConfirmModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="finalInterpretationConfirmModalLabel"><?php echo _translate('Confirm Final Interpretation'); ?></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?php echo _translate('Close'); ?>"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p id="finalInterpretationConfirmMessage"><?php echo _translate('Tests with Final Interpretation cannot be referred to other labs. Are you sure you want to continue?'); ?></p>
+                <p style="margin-bottom:8px;"><?php echo _translate('Type the word below to proceed:'); ?> <strong>CONFIRM</strong></p>
+                <input type="text" class="form-control" id="finalInterpretationConfirmInput" autocomplete="off" placeholder="CONFIRM" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo _translate('Cancel'); ?></button>
+                <button type="button" class="btn btn-primary" id="finalInterpretationConfirmBtn" disabled><?php echo _translate('Confirm'); ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript"
     src="/assets/js/tom-select.complete.min.js"></script>
 <script type="text/javascript">
@@ -1480,10 +1501,16 @@ if ($isLisInstance) {
     // Add new test section
     function addTestSection() {
         if ($('#isResultFinalized').val() === 'yes' && $('#finalResult').val()) {
-            if (!confirm('<?= _translate("The Final Interpretation is already recorded. Do you still want to add a new test?"); ?>')) {
-                return;
-            }
+            showFinalInterpretationConfirmModal({
+                message: '<?= _translate("The Final Interpretation is already recorded. Do you still want to add a new test?"); ?>',
+                onConfirm: function () { _appendTestSection(); }
+            });
+            return;
         }
+        _appendTestSection();
+    }
+
+    function _appendTestSection() {
         testCount++;
         const container = document.getElementById('testSections');
         const firstSection = container.querySelector('.test-section');
@@ -1773,12 +1800,12 @@ if ($isLisInstance) {
 
     // Document ready initialization
     $(document).ready(function () {
-         var TS = new TomSelect("#finalResult",{
+        window.finalResultTS = new TomSelect("#finalResult",{
             maxItems: 1,
             closeAfterSelect: true,
             allowEmptyOption: true
         });
-        TS.setValue("<?php echo $tbInfo['result']; ?>");
+        window.finalResultTS.setValue("<?php echo $tbInfo['result']; ?>");
         //TS.clear();
         // Initialize Select2 for main form elements
         $("#facilityId, #province, #district").select2({
@@ -1887,22 +1914,84 @@ if ($isLisInstance) {
         getfacilityProvinceDetails($('facilityId'));
     });
 
-    function confirmFinalInterpretation(input) {
-
-    if (isFirstChange) {
-        isFirstChange = false;
-        return; // skip first change
-    }
-        if (input.value !== '' && input.value !== input.dataset.previousValue) {
-            if (!confirm('<?php echo _translate("Tests with Final Interpretation cannot be referred to other labs. Are you sure you want to continue?"); ?>')) {
-                input.value = input.dataset.previousValue || '';
-                (input.value != '') ? $('.refer-inputs').hide() : $('.refer-inputs').show();
-                return false;
-            }
+    function handleFinalInterpretationChange(input) {
+        if (isFirstChange) {
+            isFirstChange = false;
+            input.dataset.previousValue = input.value;
+            (input.value !== '') ? $('.refer-inputs').hide() : $('.refer-inputs').show();
+            return;
         }
-        input.dataset.previousValue = input.value;
-        return true;
+        var newVal = input.value;
+        var prevVal = input.dataset.previousValue || '';
 
+        if (newVal === '' || newVal === prevVal) {
+            input.dataset.previousValue = newVal;
+            (newVal !== '') ? $('.refer-inputs').hide() : $('.refer-inputs').show();
+            return;
+        }
+
+        showFinalInterpretationConfirmModal({
+            onConfirm: function () {
+                input.dataset.previousValue = newVal;
+                $('.refer-inputs').hide();
+            },
+            onCancel: function () {
+                if (window.finalResultTS) {
+                    window.finalResultTS.setValue(prevVal, true);
+                } else {
+                    input.value = prevVal;
+                }
+                input.dataset.previousValue = prevVal;
+                (prevVal !== '') ? $('.refer-inputs').hide() : $('.refer-inputs').show();
+            }
+        });
+    }
+
+    function showFinalInterpretationConfirmModal(opts) {
+        var $modal = $('#finalInterpretationConfirmModal');
+        var $input = $('#finalInterpretationConfirmInput');
+        var $btn = $('#finalInterpretationConfirmBtn');
+        var $msg = $('#finalInterpretationConfirmMessage');
+        var confirmed = false;
+
+        if (opts.message) {
+            $msg.text(opts.message);
+        }
+        $input.val('');
+        $btn.prop('disabled', true);
+
+        $input.off('input.fic keypress.fic')
+            .on('input.fic', function () {
+                $btn.prop('disabled', $(this).val().trim() !== 'CONFIRM');
+            })
+            .on('keypress.fic', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    if ($(this).val().trim() === 'CONFIRM') {
+                        $btn.trigger('click');
+                    }
+                }
+            });
+
+        $btn.off('click.fic').on('click.fic', function () {
+            if ($input.val().trim() !== 'CONFIRM') return;
+            confirmed = true;
+            $modal.modal('hide');
+        });
+
+        $modal.off('shown.bs.modal.fic hidden.bs.modal.fic')
+            .on('shown.bs.modal.fic', function () {
+                $input.trigger('focus');
+            })
+            .on('hidden.bs.modal.fic', function () {
+                if (confirmed) {
+                    opts.onConfirm && opts.onConfirm();
+                } else {
+                    opts.onCancel && opts.onCancel();
+                }
+            });
+
+        $modal.modal('show');
     }
 
     // Store initial value on focus
