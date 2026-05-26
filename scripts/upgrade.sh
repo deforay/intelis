@@ -1541,6 +1541,11 @@ upgrade_instance() {
     print info "Running database migrations..."
     sudo -u www-data composer post-update
 
+    # Reload Apache before long-running repairs so any stale workers holding
+    # old opcache / DB connections are recycled and don't fight the repair.
+    print info "Reloading Apache before database repairs..."
+    apache2ctl -k graceful || systemctl reload apache2 || systemctl restart apache2
+
     print info "Running database repairs..."
     sudo -u www-data composer db:repair
 
