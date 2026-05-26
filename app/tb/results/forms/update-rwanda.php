@@ -1650,12 +1650,14 @@ if ($isLisInstance) {
 
     // Document ready function
     $(document).ready(function () {
-        window.finalResultTS = new TomSelect("#finalResult",{
-            maxItems: 1,
-            closeAfterSelect: true,
-            allowEmptyOption: true
-        });
-        window.finalResultTS.setValue("<?php echo $tbInfo['result']; ?>");
+        if (document.getElementById('finalResult')) {
+            window.finalResultTS = new TomSelect("#finalResult",{
+                maxItems: 1,
+                closeAfterSelect: true,
+                allowEmptyOption: true
+            });
+            window.finalResultTS.setValue("<?php echo $tbInfo['result']; ?>");
+        }
         // Initialize Select2 for main form elements
         $("#facilityId").select2({
             placeholder: "<?php echo _translate('Select option'); ?>",
