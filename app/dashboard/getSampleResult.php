@@ -215,8 +215,13 @@ try {
 
     $aggregateWhere = $W([$rangeExpr]);
 
+    // "samplesTested" is the broad count of samples that had a test attempted
+    // in this range (any sample_tested_datetime); "tested" stays narrow and
+    // counts only the ones that landed on an Accepted result. The chart
+    // surfaces both as "Samples Tested" vs "Samples with Accepted Results".
     $aggregateQuery = "SELECT
             COUNT(t.$primaryKey) AS totalCollected,
+            SUM(CASE WHEN (t.sample_tested_datetime IS NOT NULL) THEN 1 ELSE 0 END) AS samplesTested,
             SUM(CASE WHEN ($testedExpr) THEN 1 ELSE 0 END) AS tested,
             SUM(CASE WHEN (t.result_status = " . SAMPLE_STATUS\ON_HOLD . ") THEN 1 ELSE 0 END) AS hold,
             SUM(CASE WHEN (t.result_status = " . SAMPLE_STATUS\REJECTED . ") THEN 1 ELSE 0 END) AS rejected,
@@ -554,7 +559,7 @@ try {
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
     <div class="dashboard-stat2 bluebox" style="cursor:pointer;">
-        <div class="display font-purple-soft">
+        <div class="display font-purple-soft" style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:12px;">
             <div class="number">
                 <h4 class="font-purple-soft" style="font-weight:600;">
                     <?= _translate("CURRENT SAMPLES STATUS - OVERALL"); ?>
@@ -563,9 +568,27 @@ try {
                     <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>
                 </small>
             </div>
-            <div class="icon">
-                <em class="fa-solid fa-chart-simple"></em>
-            </div>
+            <?php if (!empty($aggregateResult)) { ?>
+                <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-left:auto;">
+                    <?php
+                    $overviewKpis = [
+                        ['label' => _translate("Collected"), 'count' => (int) ($aggregateResult['totalCollected'] ?? 0), 'color' => '#2C3333'],
+                        ['label' => _translate("Tested"),    'count' => (int) ($aggregateResult['samplesTested'] ?? 0), 'color' => '#039BE6'],
+                        ['label' => _translate("Rejected"),  'count' => (int) ($aggregateResult['rejected'] ?? 0),      'color' => '#c0392b'],
+                    ];
+                    foreach ($overviewKpis as $kpi) { ?>
+                        <span style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:12px; background:#f4f6f9; border:1px solid #e3e7ed; font-size:12px; color:#555;">
+                            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:<?= htmlspecialchars($kpi['color']); ?>;"></span>
+                            <?= htmlspecialchars($kpi['label']); ?>
+                            <strong style="color:#222;"><?= number_format($kpi['count']); ?></strong>
+                        </span>
+                    <?php } ?>
+                </div>
+            <?php } else { ?>
+                <div class="icon">
+                    <em class="fa-solid fa-chart-simple"></em>
+                </div>
+            <?php } ?>
         </div>
         <div id="<?php echo $samplesOverviewChart; ?>" width="210" height="200" style="min-height:200px;"></div>
     </div>
@@ -1178,12 +1201,13 @@ try {
             },
             xAxis: {
                 categories: [
-                    "<?= _translate("Samples Tested", escapeTextOrContext: true); ?>",
-                    "<?= _translate("Samples Rejected", escapeTextOrContext: true); ?>",
-                    "<?= _translate("Samples on Hold", escapeTextOrContext: true); ?>",
+                    "<?= _translate("Samples Registered at Collection Sites", escapeTextOrContext: true); ?>",
                     "<?= _translate("Samples Registered at Testing Lab", escapeTextOrContext: true); ?>",
+                    "<?= _translate("Samples Rejected", escapeTextOrContext: true); ?>",
+                    "<?= _translate("Samples Failed", escapeTextOrContext: true); ?>",
+                    "<?= _translate("Samples on Hold", escapeTextOrContext: true); ?>",
                     "<?= _translate("Samples Awaiting Approval", escapeTextOrContext: true); ?>",
-                    "<?= _translate("Samples Registered at Collection Sites", escapeTextOrContext: true); ?>"
+                    "<?= _translate("Samples with Accepted Results", escapeTextOrContext: true); ?>"
                 ]
             },
 
@@ -1217,28 +1241,32 @@ try {
                 name: 'Sample',
                 showInLegend: false,
                 data: [{
-                    y: <?php echo $aggregateResult['tested'] ?? 0; ?>,
-                    color: '#039BE6'
-                },
-                {
-                    y: <?php echo $aggregateResult['rejected'] ?? 0; ?>,
-                    color: '#492828'
-                },
-                {
-                    y: <?php echo $aggregateResult['hold'] ?? 0; ?>,
-                    color: '#60d18f'
+                    y: <?php echo $aggregateResult['registeredAtCollectionPoint'] ?? 0; ?>,
+                    color: '#2C3333'
                 },
                 {
                     y: <?php echo $aggregateResult['registeredAtTestingLab'] ?? 0; ?>,
                     color: '#ff1900'
                 },
                 {
+                    y: <?php echo $aggregateResult['rejected'] ?? 0; ?>,
+                    color: '#492828'
+                },
+                {
+                    y: <?php echo $aggregateResult['invalid'] ?? 0; ?>,
+                    color: '#E67E22'
+                },
+                {
+                    y: <?php echo $aggregateResult['hold'] ?? 0; ?>,
+                    color: '#60d18f'
+                },
+                {
                     y: <?php echo $aggregateResult['awaitingApproval'] ?? 0; ?>,
                     color: '#395B64'
                 },
                 {
-                    y: <?php echo $aggregateResult['registeredAtCollectionPoint'] ?? 0; ?>,
-                    color: '#2C3333'
+                    y: <?php echo $aggregateResult['tested'] ?? 0; ?>,
+                    color: '#039BE6'
                 }
                 ],
                 stack: 'total',
