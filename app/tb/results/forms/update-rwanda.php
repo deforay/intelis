@@ -12,14 +12,6 @@ use App\Registries\ContainerRegistry;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-// Nationality
-$nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
-$nationalityResult = $db->query($nationalityQry);
-
-foreach ($nationalityResult as $nrow) {
-    $nationalityList[$nrow['id']] = ($nrow['iso_name']) . ' (' . $nrow['iso3'] . ')';
-}
-
 $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 
 // Getting the list of Provinces, Districts and Facilities
