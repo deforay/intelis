@@ -362,11 +362,16 @@ try {
     // ======================================================
     // H) Current Backlog (lab-side queue, last 6 months, no date filter)
     // ======================================================
+    // Reconcile with the "waiting" query above: exclude rejected samples from
+    // the whole backlog, and exclude already-resulted samples from the
+    // "Registered at Testing Lab" bucket (Pending Approval has a result by
+    // definition, so the no-result filter only applies to one bucket).
     $backlogWhere = $W([
         "t.sample_collection_date >= DATE_SUB('$currentDateTime', INTERVAL 6 MONTH)",
+        $notRejectedExpr,
     ]);
     $backlogQuery = "SELECT
-            SUM(CASE WHEN t.result_status = " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . " THEN 1 ELSE 0 END) AS registeredAtTestingLab,
+            SUM(CASE WHEN t.result_status = " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . " AND $noResultExpr THEN 1 ELSE 0 END) AS registeredAtTestingLab,
             SUM(CASE WHEN t.result_status = " . SAMPLE_STATUS\PENDING_APPROVAL . " THEN 1 ELSE 0 END) AS awaitingApproval,
             SUM(CASE WHEN t.result_status = " . SAMPLE_STATUS\ON_HOLD . " THEN 1 ELSE 0 END) AS onHold
         FROM $table AS t
