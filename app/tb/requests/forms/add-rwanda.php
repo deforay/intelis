@@ -1363,15 +1363,17 @@ if ($isLisInstance) {
     // Document ready function
     $(document).ready(function () {
         
-        window.finalResultTS = new TomSelect("#finalResult",{
-            persist: false,
-            createOnBlur: true,
-            create: true,
-            maxItems: 1,
-            closeAfterSelect: true,
-            allowEmptyOption: true
-        });
-        window.finalResultTS.clear();
+        if (document.getElementById('finalResult')) {
+            window.finalResultTS = new TomSelect("#finalResult",{
+                persist: false,
+                createOnBlur: true,
+                create: true,
+                maxItems: 1,
+                closeAfterSelect: true,
+                allowEmptyOption: true
+            });
+            window.finalResultTS.clear();
+        }
         // Initialize Select2 for main form elements
         $("#facilityId, #province, #district").select2({
             placeholder: "<?php echo _translate('Select'); ?>",
