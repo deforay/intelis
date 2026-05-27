@@ -8,6 +8,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\LabCapabilityService;
 
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -39,6 +40,7 @@ $query = "SELECT
     f.facility_attributes->>'$.runnerHeartbeat' as runnerHeartbeat,
     f.facility_attributes->>'$.capabilities' as capabilitiesJson,
     f.facility_attributes->>'$.capabilitiesSeenAt' as capabilitiesSeenAt,
+    f.facility_attributes->>'$.commandPlaneSeenAt' as commandPlaneSeenAt,
     tar.last_requested_on,
     GREATEST(
         COALESCE(UNIX_TIMESTAMP(STR_TO_DATE(f.facility_attributes->>'$.lastHeartBeat', '%Y-%m-%d %H:%i:%s')), 0),
@@ -83,10 +85,6 @@ $resultSet = $db->rawQueryGenerator($query, $params);
 $twoWeeksAgo = strtotime('-2 weeks');
 $fourWeeksAgo = strtotime('-4 weeks');
 
-// Capability staleness — match LabCapabilityService::DEFAULT_STALE_MINUTES.
-// Couriers that haven't reported in this window are treated as "no plane".
-$capabilityStaleAfter = strtotime('-24 hours');
-
 // Pre-fetch pending/in-flight commands for the labs in this result set so we
 // can badge the row and disable duplicate-queueing client-side.
 // Prepared rows are tracked separately so the "Apply prepared upgrade"
@@ -124,31 +122,24 @@ if (empty($resultSet)) {
     echo '<tr><td colspan="' . $colspan . '" class="dataTables_empty">' . _translate("No data available") . '</td></tr>';
 } else {
     foreach ($resultSet as $aRow) {
-        // Decode the lab's reported capabilities (if any). A lab "speaks the
-        // command plane" when capabilitiesSeenAt is fresher than 24h AND the
-        // payload says commandPlane=true. Older couriers (or labs that have
-        // gone silent) fail the freshness check and queueing is disabled.
-        $labCaps = null;
-        $labSupports = [];
-        $labSupportsPlane = false;
-        if (!empty($aRow['capabilitiesJson'])) {
-            $decodedCaps = json_decode((string) $aRow['capabilitiesJson'], true);
-            if (is_array($decodedCaps)) {
-                $labCaps = $decodedCaps;
-                if (is_array($decodedCaps['supports'] ?? null)) {
-                    $labSupports = array_values(array_filter(
-                        $decodedCaps['supports'],
-                        static fn($v) => is_string($v) && $v !== ''
-                    ));
-                }
-                $capsSeenTs = !empty($aRow['capabilitiesSeenAt'])
-                    ? strtotime((string) $aRow['capabilitiesSeenAt'])
-                    : false;
-                $labSupportsPlane = !empty($decodedCaps['commandPlane'])
-                    && $capsSeenTs !== false
-                    && $capsSeenTs >= $capabilityStaleAfter;
-            }
-        }
+        // Grade how far we trust this lab for remote commands (see
+        // LabCapabilityService::evaluate()):
+        //   'full'  -> lab reported commandPlane=true recently: offer every
+        //              advertised verb (incl. upgrade/root when allowed).
+        //   'basic' -> lab is actively polling the command plane but on a
+        //              courier that predates capability reporting: offer only
+        //              the safe non-root verbs.
+        //   'none'  -> neither signal fresh: queueing disabled.
+        $decodedCaps = !empty($aRow['capabilitiesJson'])
+            ? json_decode((string) $aRow['capabilitiesJson'], true)
+            : null;
+        $capEval = LabCapabilityService::evaluate(
+            is_array($decodedCaps) ? $decodedCaps : null,
+            $aRow['capabilitiesSeenAt'] ?? null,
+            $aRow['commandPlaneSeenAt'] ?? null
+        );
+        $labTier = $capEval['tier'];
+        $labSupports = $capEval['supports'];
 
         // Determine sync status color
         $latestSync = (int) $aRow['latest_timestamp'];
@@ -248,9 +239,12 @@ if (empty($resultSet)) {
                         // courier hasn't recently reported the command plane,
                         // so operators can see *why* queueing isn't available
                         // for this row instead of a silently-missing button.
-                        if ($labSupportsPlane) {
+                        if ($labTier === 'full') {
                             $queueBtnDisabled = '';
                             $queueBtnTitle = _translate('Queue a command for this lab');
+                        } elseif ($labTier === 'basic') {
+                            $queueBtnDisabled = '';
+                            $queueBtnTitle = _translate("Basic command set only — lab hasn't reported full capabilities yet, so upgrade/maintenance commands stay disabled.");
                         } else {
                             $queueBtnDisabled = ' disabled';
                             $queueBtnTitle = _translate("Lab's courier hasn't reported the remote command plane recently — queueing is disabled.");
