@@ -10,6 +10,7 @@
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -50,8 +51,17 @@ $canCancel = _isAllowed('/admin/monitoring/cancel-lis-command.php');
 $canQueue = _isAllowed('/admin/monitoring/queue-lis-command.php');
 $terminalStatuses = ['completed', 'failed', 'expired', 'cancelled'];
 
-// Single-command detail mode.
-if (!empty($post['detailFor']) && preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', (string) $post['detailFor'])) {
+$isDetailMode = !empty($post['detailFor'])
+    && preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', (string) $post['detailFor']);
+
+// Buffer + try/catch so a failure (a class skew after a partial/failed upgrade,
+// a malformed row, a DB hiccup) degrades to a logged error message instead of a
+// raw 500. Any partial output already echoed is discarded before the error.
+ob_start();
+try {
+
+    // Single-command detail mode.
+    if ($isDetailMode) {
     $db->reset();
     $db->where('command_id', $post['detailFor']);
     $row = $db->getOne(
@@ -220,4 +230,22 @@ foreach ($rows as $r) {
         </td>
     </tr>
     <?php
+}
+
+    echo ob_get_clean();
+} catch (Throwable $e) {
+    ob_end_clean();
+    LoggerUtility::logError('Failed to render LIS command history', [
+        'message' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+    ]);
+    if ($isDetailMode) {
+        echo '<p class="text-danger">' . _translate('Failed to load command details. Please try again.') . '</p>';
+    } else {
+        echo '<tr><td colspan="8" class="text-center text-danger">'
+            . '<i class="fa fa-exclamation-triangle"></i> '
+            . _translate('Failed to load command history. Please try again.')
+            . '</td></tr>';
+    }
 }
