@@ -368,7 +368,7 @@ try {
 		$html .= '<td style="font-size:10px;text-align:left;">Imprimé sur : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
 		$html .= '</tr>';
 		$html .= '<tr>';
-		$html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> VL >= 1000 copies/mL: Action clinique et counseling nécessaire</td>';
+		$html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> VL >= 1000 copies/mL: Action clinique et counseling nécessaire, Différence significative entre 2 mesures : <= à 0,5 log copies/mL</td>';
 		$html .= '</tr>';
 		$html .= '</table>';
 		$html .= '</td>';
