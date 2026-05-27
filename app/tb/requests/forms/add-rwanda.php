@@ -756,9 +756,9 @@ if ($isLisInstance) {
                 <button type="button" class="close" data-dismiss="modal" aria-label="<?php echo _translate('Close'); ?>"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                <p id="finalInterpretationConfirmMessage"><?php echo _translate('Tests with Final Interpretation cannot be referred to other labs. Are you sure you want to continue?'); ?></p>
-                <p style="margin-bottom:8px;"><?php echo _translate('Type the word below to proceed:'); ?> <strong>CONFIRM</strong></p>
-                <input type="text" class="form-control" id="finalInterpretationConfirmInput" autocomplete="off" placeholder="CONFIRM" />
+                <p id="finalInterpretationConfirmMessage"><?php echo _translate('Once a Final Interpretation is entered, this test can no longer be referred to another lab. Are you sure you want to continue?'); ?></p>
+                <p style="margin-bottom:8px;"><?php echo _translate('Type the word below to proceed:'); ?> <strong>Yes</strong></p>
+                <input type="text" class="form-control" id="finalInterpretationConfirmInput" autocomplete="off" />
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><?php echo _translate('Cancel'); ?></button>
@@ -1506,19 +1506,19 @@ if ($isLisInstance) {
 
         $input.off('input.fic keypress.fic')
             .on('input.fic', function () {
-                $btn.prop('disabled', $(this).val().trim() !== 'CONFIRM');
+                $btn.prop('disabled', $(this).val().trim().toLowerCase() !== 'yes');
             })
             .on('keypress.fic', function (e) {
                 if (e.which === 13) {
                     e.preventDefault();
-                    if ($(this).val().trim() === 'CONFIRM') {
+                    if ($(this).val().trim().toLowerCase() === 'yes') {
                         $btn.trigger('click');
                     }
                 }
             });
 
         $btn.off('click.fic').on('click.fic', function () {
-            if ($input.val().trim() !== 'CONFIRM') return;
+            if ($input.val().trim().toLowerCase() !== 'yes') return;
             confirmed = true;
             $modal.modal('hide');
         });
