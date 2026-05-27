@@ -9,6 +9,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\LabCapabilityService;
+use App\Utilities\LoggerUtility;
 
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -79,7 +80,13 @@ $query .= " ORDER BY latest_timestamp DESC";
 $_SESSION['labSyncStatus'] = $query;
 $_SESSION['labSyncStatusParams'] = $params;
 
-$resultSet = $db->rawQueryGenerator($query, $params);
+// Render the table body inside a buffer + try/catch so a transient failure
+// (a class skew mid-deploy, a malformed row, a DB hiccup) degrades to a single
+// logged error row instead of a raw 500 that blanks the whole table.
+ob_start();
+try {
+
+    $resultSet = $db->rawQueryGenerator($query, $params);
 
 // Calculate thresholds once
 $twoWeeksAgo = strtotime('-2 weeks');
@@ -296,4 +303,18 @@ if (empty($resultSet)) {
         </tr>
         <?php
     }
+}
+
+    echo ob_get_clean();
+} catch (Throwable $e) {
+    ob_end_clean();
+    LoggerUtility::logError('Failed to render lab sync status', [
+        'message' => $e->getMessage(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+    ]);
+    echo '<tr><td colspan="' . $colspan . '" class="text-center text-danger">'
+        . '<i class="fa fa-exclamation-triangle"></i> '
+        . _translate('Failed to load sync status. Please try again.')
+        . '</td></tr>';
 }
