@@ -166,6 +166,18 @@ $state = $geolocationService->getProvinces("yes");
         color: #1abc9c;
     }
 
+    .metric-box.sites .metric-main-number {
+        color: #34495e;
+    }
+
+    .metric-box.sts .metric-main-number {
+        color: #e67e22;
+    }
+
+    .metric-box.lis .metric-main-number {
+        color: #8e44ad;
+    }
+
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .metric-box {
@@ -477,6 +489,96 @@ $state = $geolocationService->getProvinces("yes");
                         </h3>
                     </div>
                     <div class="box-body">
+                        <div class="row" style="margin-bottom: 10px;">
+                            <!-- Site Adoption Card 1: Total Requesting Sites -->
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="metric-box sites">
+                                    <div class="metric-header"><?= _translate('Requesting Sites'); ?></div>
+                                    <div class="metric-content">
+                                        <div class="metric-main">
+                                            <div class="metric-main-number" id="totalRequestingSites">-</div>
+                                        </div>
+                                        <div class="metric-breakdown">
+                                            <span class="metric-breakdown-item">
+                                                <?= _translate('Using API/EMR'); ?>: <span
+                                                    class="metric-breakdown-number" id="totalSitesApiBreakdown">-</span>
+                                            </span>
+                                            <span class="metric-breakdown-item">
+                                                <?= _translate('Not Using API/EMR'); ?>: <span
+                                                    class="metric-breakdown-number"
+                                                    id="totalSitesNonApiBreakdown">-</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Site Adoption Card 2: Sites Using API/EMR -->
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="metric-box api">
+                                    <div class="metric-header"><?= _translate('Sites Using API/EMR'); ?></div>
+                                    <div class="metric-content">
+                                        <div class="metric-main">
+                                            <div class="metric-main-number" id="apiRequestingSites">-</div>
+                                        </div>
+                                        <div class="metric-breakdown">
+                                            <span class="metric-breakdown-item">
+                                                <?= _translate('of'); ?> <span class="metric-breakdown-number"
+                                                    id="apiSitesTotalBreakdown">-</span> <?= _translate('sites'); ?>
+                                            </span>
+                                            <span class="metric-breakdown-item">
+                                                <?= _translate('Adoption'); ?>: <span class="metric-breakdown-number"
+                                                    id="apiSitesAdoptionBreakdown">-</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Site Adoption Card 3: Sites Using STS -->
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="metric-box sts">
+                                    <div class="metric-header"><?= _translate('Sites Using STS'); ?></div>
+                                    <div class="metric-content">
+                                        <div class="metric-main">
+                                            <div class="metric-main-number" id="stsRequestingSites">-</div>
+                                        </div>
+                                        <div class="metric-breakdown">
+                                            <span class="metric-breakdown-item">
+                                                <?= _translate('of'); ?> <span class="metric-breakdown-number"
+                                                    id="stsSitesTotalBreakdown">-</span> <?= _translate('sites'); ?>
+                                            </span>
+                                            <span class="metric-breakdown-item">
+                                                <?= _translate('Adoption'); ?>: <span class="metric-breakdown-number"
+                                                    id="stsSitesAdoptionBreakdown">-</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Site Adoption Card 4: Sites Using Direct LIS -->
+                            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="metric-box lis">
+                                    <div class="metric-header"><?= _translate('Sites Using Direct LIS'); ?></div>
+                                    <div class="metric-content">
+                                        <div class="metric-main">
+                                            <div class="metric-main-number" id="lisRequestingSites">-</div>
+                                        </div>
+                                        <div class="metric-breakdown">
+                                            <span class="metric-breakdown-item">
+                                                <?= _translate('of'); ?> <span class="metric-breakdown-number"
+                                                    id="lisSitesTotalBreakdown">-</span> <?= _translate('sites'); ?>
+                                            </span>
+                                            <span class="metric-breakdown-item">
+                                                <?= _translate('Adoption'); ?>: <span class="metric-breakdown-number"
+                                                    id="lisSitesAdoptionBreakdown">-</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <table class="table table-striped table-bordered" id="sourceDistributionTable"
                             style="width:100%">
                             <thead>
@@ -779,6 +881,26 @@ $state = $geolocationService->getProvinces("yes");
                     $("#resultsApiBreakdown").text(parseInt(metrics.resultsSentViaApi || 0));
                     $("#resultsOtherBreakdown").text(parseInt(metrics.resultsSentOtherMethods || 0));
 
+                    // Card 7: Total Requesting Sites
+                    $("#totalRequestingSites").text(metrics.totalRequestingSites || 0);
+                    $("#totalSitesApiBreakdown").text(metrics.apiRequestingSites || 0);
+                    $("#totalSitesNonApiBreakdown").text(metrics.nonApiRequestingSites || 0);
+
+                    // Card 8: Sites Using API/EMR
+                    $("#apiRequestingSites").text(metrics.apiRequestingSites || 0);
+                    $("#apiSitesTotalBreakdown").text(metrics.totalRequestingSites || 0);
+                    $("#apiSitesAdoptionBreakdown").text((metrics.apiSiteAdoptionPct || 0) + '%');
+
+                    // Card 9: Sites Using STS
+                    $("#stsRequestingSites").text(metrics.stsRequestingSites || 0);
+                    $("#stsSitesTotalBreakdown").text(metrics.totalRequestingSites || 0);
+                    $("#stsSitesAdoptionBreakdown").text((metrics.stsSiteAdoptionPct || 0) + '%');
+
+                    // Card 10: Sites Using Direct LIS
+                    $("#lisRequestingSites").text(metrics.lisRequestingSites || 0);
+                    $("#lisSitesTotalBreakdown").text(metrics.totalRequestingSites || 0);
+                    $("#lisSitesAdoptionBreakdown").text((metrics.lisSiteAdoptionPct || 0) + '%');
+
                 } catch (e) {
                     console.error('Error parsing metrics data:', e);
                     // Reset all metrics to 'Error' on parsing failure
@@ -801,7 +923,11 @@ $state = $geolocationService->getProvinces("yes");
                     "#totalReceivedAtLab", "#receivedTestedBreakdown", "#rejectedSamplesBreakdown",
                     "#receivedPendingBreakdown", "#totalNotReceivedAtLab", "#notReceived7DaysBreakdown",
                     "#notReceivedOver7DaysBreakdown", "#duplicateSuspects", "#totalResultsSent",
-                    "#resultsApiBreakdown", "#resultsOtherBreakdown"
+                    "#resultsApiBreakdown", "#resultsOtherBreakdown",
+                    "#totalRequestingSites", "#totalSitesApiBreakdown", "#totalSitesNonApiBreakdown",
+                    "#apiRequestingSites", "#apiSitesTotalBreakdown", "#apiSitesAdoptionBreakdown",
+                    "#stsRequestingSites", "#stsSitesTotalBreakdown", "#stsSitesAdoptionBreakdown",
+                    "#lisRequestingSites", "#lisSitesTotalBreakdown", "#lisSitesAdoptionBreakdown"
                 ];
                 errorElements.forEach(el => $(el).text('Error'));
             });
