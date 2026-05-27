@@ -64,6 +64,10 @@ try {
     // Quick metrics query
     $metricsQuery = "SELECT
             COUNT(*) as totalRequests,
+            COUNT(DISTINCT t.facility_id) as totalRequestingSites,
+            COUNT(DISTINCT CASE WHEN t.source_of_request = 'api' THEN t.facility_id END) as apiRequestingSites,
+            COUNT(DISTINCT CASE WHEN t.source_of_request = 'vlsts' THEN t.facility_id END) as stsRequestingSites,
+            COUNT(DISTINCT CASE WHEN COALESCE(t.source_of_request, 'manual') IN ('vlsm', 'manual') THEN t.facility_id END) as lisRequestingSites,
             SUM(CASE WHEN t.source_of_request = 'api' THEN 1 ELSE 0 END) as apiRequests,
             SUM(CASE WHEN t.source_of_request != 'api' OR t.source_of_request IS NULL THEN 1 ELSE 0 END) as nonApiRequests,
             SUM(CASE WHEN t.source_of_request = 'api' AND t.sample_received_at_lab_datetime IS NOT NULL THEN 1 ELSE 0 END) as apiReceivedAtLab,
@@ -84,6 +88,22 @@ SUM(CASE WHEN t.result_pulled_via_api_datetime IS NOT NULL AND (t.source_of_requ
 
     // Calculate derived metrics
     $metrics['totalNotReceivedAtLab'] = $metrics['notReceivedWithin7Days'] + $metrics['notReceivedOver7Days'];
+
+    // Site adoption metrics (distinct requesting facilities)
+    $metrics['totalRequestingSites'] = (int) ($metrics['totalRequestingSites'] ?? 0);
+    $metrics['apiRequestingSites'] = (int) ($metrics['apiRequestingSites'] ?? 0);
+    $metrics['nonApiRequestingSites'] = $metrics['totalRequestingSites'] - $metrics['apiRequestingSites'];
+    $metrics['stsRequestingSites'] = (int) ($metrics['stsRequestingSites'] ?? 0);
+    $metrics['lisRequestingSites'] = (int) ($metrics['lisRequestingSites'] ?? 0);
+    $metrics['apiSiteAdoptionPct'] = $metrics['totalRequestingSites'] > 0
+        ? round(($metrics['apiRequestingSites'] / $metrics['totalRequestingSites']) * 100, 1)
+        : 0;
+    $metrics['stsSiteAdoptionPct'] = $metrics['totalRequestingSites'] > 0
+        ? round(($metrics['stsRequestingSites'] / $metrics['totalRequestingSites']) * 100, 1)
+        : 0;
+    $metrics['lisSiteAdoptionPct'] = $metrics['totalRequestingSites'] > 0
+        ? round(($metrics['lisRequestingSites'] / $metrics['totalRequestingSites']) * 100, 1)
+        : 0;
 
     // DUPLICATE DETECTION LOGIC - Simplified approach
     $duplicatesWhere = [];
