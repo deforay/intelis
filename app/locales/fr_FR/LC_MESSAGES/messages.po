@@ -27818,11 +27818,11 @@ msgstr "Sélectionner un laboratoire de test"
 #: app/tb/requests/forms/edit-rwanda.php:1897
 #: app/tb/results/forms/update-rwanda.php:1762
 msgid ""
-"Tests with Final Interpretation cannot be referred to other labs. Are you "
-"sure you want to continue?"
+"Once a Final Interpretation is entered, this test can no longer be referred "
+"to another lab. Are you sure you want to continue?"
 msgstr ""
-"Les analyses avec interprétation finale ne peuvent pas être transmises à "
-"d'autres laboratoires. Voulez-vous vraiment continuer ?"
+"Une fois l'interprétation finale saisie, cette analyse ne peut plus être "
+"transmise à un autre laboratoire. Voulez-vous vraiment continuer ?"
 
 #: app/tb/requests/forms/add-sierraleone.php:177
 #: app/tb/requests/forms/edit-sierraleone.php:207
