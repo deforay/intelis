@@ -408,8 +408,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         );
         $("#heroHighVl").text(mHighVl.toLocaleString());
         $("#heroHighVlSub").text(
-            (mWithResult > 0 ? highPct + "% <?= _jsTranslate('of mothers with a VL result'); ?> · " : "") +
-            "<?= _jsTranslate('need follow-up to protect their babies'); ?>"
+            mWithResult > 0 ? highPct + "% <?= _jsTranslate('of mothers with a VL result'); ?>" : ""
         );
 
         // Outcome hero — infants who tested HIV-positive (the harm PMTCT prevents).
