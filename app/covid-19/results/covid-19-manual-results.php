@@ -17,6 +17,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$healthFacilites = $facilitiesService->getHealthFacilities('covid19');
 
 
 // Sanitized values from $request object
@@ -29,8 +30,10 @@ $tsResult = $db->rawQuery($tsQuery);
 
 $sQuery = "SELECT * FROM r_covid19_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
-$fQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
-$fResult = $db->rawQuery($fQuery);
+//$fQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
+//$fResult = $db->rawQuery($fQuery);
+$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
+
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='covid19' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 //check filters
@@ -104,11 +107,12 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 								<select class="form-control" id="facilityName" name="facilityName"
 									title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple"
 									style="width:220px;">
-									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-									<?php foreach ($fResult as $name) { ?>
-										<option value="<?php echo $name['facility_id']; ?>" <?php echo (in_array($name['facility_id'], $facilityName)) ? "selected='selected'" : "" ?>>
-											<?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
-									<?php } ?>
+									<!--<option value=""> <?php echo _translate("-- Select --"); ?> </option>
+									< ?php foreach ($fResult as $name) { ?>
+										<option value="< ?php echo $name['facility_id']; ?>" < ?php echo (in_array($name['facility_id'], $facilityName)) ? "selected='selected'" : "" ?>>
+											< ?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
+									< ?php } ?>-->
+									<?=  $facilitiesDropdown; ?>
 								</select>
 							</td>
 						</tr>

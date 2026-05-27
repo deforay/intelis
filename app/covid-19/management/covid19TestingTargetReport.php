@@ -196,7 +196,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
               </td>
               <td><strong><?php echo _translate("Lab Name"); ?> :</strong></td>
               <td style="width: 30%;">
-                <select id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple>
+                <select id="facilityName" name="facilityName" title="<?php echo _translate('Please select lab name'); ?>" multiple>
                   <?= $testingLabsDropdown; ?>
                 </select>
               </td>

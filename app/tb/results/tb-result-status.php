@@ -3,6 +3,8 @@
 use App\Services\UsersService;
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -14,10 +16,14 @@ $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT * FROM r_tb_sample_type";
 $sResult = $db->rawQuery($sQuery);
-$fQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
-$fResult = $db->rawQuery($fQuery);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$healthFacilites = $facilitiesService->getHealthFacilities('tb');
+
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='tb' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
+$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_tb_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
@@ -159,13 +165,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-									<?php
-									foreach ($fResult as $name) {
-									?>
-										<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
-									<?php
-									}
-									?>
+									<?=  $facilitiesDropdown; ?>
 								</select>
 							</td>
 							<td>&nbsp;<strong><?php echo _translate("Show Samples that are"); ?> &nbsp;:</strong></td>

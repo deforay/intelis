@@ -3,6 +3,7 @@
 use App\Services\UsersService;
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -11,8 +12,11 @@ $title = _translate("Manage Result Status");
 
 require_once APPLICATION_PATH . '/header.php';
 
-$fQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
-$fResult = $db->rawQuery($fQuery);
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$healthFacilites = $facilitiesService->getHealthFacilities('hepatitis');
+$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
+
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='hepatitis' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 
@@ -22,6 +26,7 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
+
 
 //sample rejection reason
 $rejectionQuery = "SELECT * FROM r_hepatitis_sample_rejection_reasons where rejection_reason_status = 'active'";
@@ -127,11 +132,7 @@ foreach ($rejectionTypeResult as $type) {
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-									<?php
-									foreach ($fResult as $name) { ?>
-										<option value="<?php echo $name['facility_id']; ?>"><?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?></option>
-									<?php
-									} ?>
+									<?=  $facilitiesDropdown; ?> ?>
 								</select>
 							</td>
 							<td>&nbsp;<strong><?php echo _translate("Show Samples that are"); ?> &nbsp;:</strong></td>
