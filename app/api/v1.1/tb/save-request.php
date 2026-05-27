@@ -404,6 +404,16 @@ try {
             'reason_for_sample_rejection' => (isset($data['sampleRejectionReason']) && $data['isSampleRejected'] == 'yes') ? $data['sampleRejectionReason'] : null,
             'source_of_request' => $data['sourceOfRequest'] ?? "API"
         ];
+
+        // Mirror is_result_finalized to the result text presence.
+        // The API used to write the result (and even bump status to ACCEPTED
+        // under auto-approve) without flipping the flag, which surfaced as the
+        // "Accepted without result entered" hygiene anomaly on the TB Cascade
+        // Report. Set only when a non-empty result is actually present so we
+        // don't disturb the flag on request-only updates.
+        if (!empty($tbData['result']) && trim((string) $tbData['result']) !== '') {
+            $tbData['is_result_finalized'] = 'yes';
+        }
         if (!empty($rowData)) {
             $tbData['last_modified_datetime'] = (empty($data['updatedOn'])) ? DateUtility::getCurrentDateTime() : DateUtility::isoDateFormat($data['updatedOn'], true);
             $tbData['last_modified_by'] = $user['user_id'];

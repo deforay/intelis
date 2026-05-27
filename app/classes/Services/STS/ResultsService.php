@@ -225,6 +225,17 @@ final class ResultsService
                     $resultFromLab['data_sync'] = 1;
                     $resultFromLab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
+                    // Mirror is_result_finalized to the result text presence.
+                    // Historically STS sync wrote the result without flipping the
+                    // flag, which surfaced as the "Accepted without result entered"
+                    // hygiene anomaly on the TB Cascade Report.
+                    if ($testType === 'tb'
+                        && isset($resultFromLab['result'])
+                        && trim((string) $resultFromLab['result']) !== ''
+                    ) {
+                        $resultFromLab['is_result_finalized'] = 'yes';
+                    }
+
                     // if (
                     //     $resultFromLab['result_status'] != SAMPLE_STATUS\ACCEPTED &&
                     //     $resultFromLab['result_status'] != SAMPLE_STATUS\REJECTED
