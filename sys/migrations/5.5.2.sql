@@ -37,6 +37,26 @@ WHERE `status` NOT IN ('completed', 'failed', 'expired', 'cancelled')
   AND CHAR_LENGTH(`command_id`) <> 36;
 
 
+-- ----------------------------------------------------------------------------
+-- 3. Enroll instances into the remote command plane by default.
+--    The courier (app/tasks/remote/pending-commands.php) is gated behind
+--    global_config.remote_commands_enabled, which was never seeded — so it read
+--    as off on every lab and the STS "Queue" actions stayed disabled fleet-wide
+--    (no capability report / command-plane poll was ever recorded). Seed it so
+--    every instance enrolls on its next upgrade without per-lab SQL.
+--
+--    INSERT IGNORE: only creates the row when absent (PRIMARY KEY is `name`), so
+--    a lab that has deliberately set 'no' keeps its value and re-runs never
+--    override an operator's choice.
+--
+--    Scope: this enables the command plane + the safe non-root commands only.
+--    Root / upgrade commands stay separately gated behind allow_remote_upgrade
+--    (also default off), which this migration deliberately does NOT touch.
+-- ----------------------------------------------------------------------------
+INSERT IGNORE INTO `global_config` (`name`, `display_name`, `value`, `category`, `status`)
+VALUES ('remote_commands_enabled', 'Remote Commands Enabled', 'yes', 'general', 'active');
+
+
 UPDATE `system_config` SET `value` = '5.5.2' WHERE `system_config`.`name` = 'sc_version';
 
 -- END OF VERSION --
