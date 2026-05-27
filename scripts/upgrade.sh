@@ -599,6 +599,22 @@ fi
 
 print info "RAM detected: ${total_mem_gb}GB - Configuring MySQL with buffer pool: ${buffer_pool_size}"
 
+# Wait for mysqld's socket to come back after a (re)start. A freshly restarted
+# server can take a few seconds to recreate its unix socket; connecting in that
+# window fails with "No such file or directory". `mysqladmin ping` reports the
+# server alive even on auth errors, so it's a pure reachability probe and needs
+# no credentials.
+wait_for_mysql() {
+    local tries="${1:-30}" i
+    for ((i = 1; i <= tries; i++)); do
+        if mysqladmin ping --silent >/dev/null 2>&1; then
+            return 0
+        fi
+        sleep 1
+    done
+    return 1
+}
+
 changes_needed=false
 
 # --- dry-run check first ---
@@ -630,6 +646,13 @@ if [ "$changes_needed" = true ]; then
         restart_service mysql
         exit 1
     }
+
+    # Don't proceed into the instance loop until the socket is back, or the
+    # first instance's DB steps race the restart and fail with ENOENT.
+    if ! wait_for_mysql 30; then
+        print error "MySQL did not become reachable after restart. Aborting."
+        exit 1
+    fi
 
     print success "MySQL configuration updated successfully."
 
@@ -1396,6 +1419,18 @@ upgrade_instance() {
         disable_maintenance_mode "$lis_path"
     }
 
+    # Like _apply_failure but WITHOUT restoring the snapshot — the new files stay
+    # in place for debugging, and maintenance mode is left ON (503). Used for
+    # DB-step failures: the instance can't safely serve traffic against an
+    # un-migrated schema, so keep it dark and surface the failure loudly rather
+    # than reverting code or (worse) declaring success.
+    _apply_failure_no_rollback() {
+        local reason="$1"
+        print error "Apply failed for ${lis_path}: ${reason}"
+        print error "  Left in MAINTENANCE mode (503) pending manual fix; code NOT rolled back."
+        log_action "Apply failed (no rollback) for ${lis_path}: ${reason}; left in maintenance mode"
+    }
+
     # Remove old run-once directory
     if [ -d "${lis_path}/run-once" ]; then
         rm -rf "${lis_path}/run-once"
@@ -1525,6 +1560,12 @@ upgrade_instance() {
         chown -R www-data:www-data "${lis_path}/vendor" 2>/dev/null || true
         chmod -R 755 "${lis_path}/vendor" 2>/dev/null || true
 
+        # Reconcile the staged vendor against this instance's composer.lock. The
+        # staged dir seeds vendor/ (so there's little/nothing to download), but
+        # we still run install — no scripts, no autoloader (dump-autoload runs
+        # below) — so a vendor-latest release that lags master's lock can't leave
+        # the instance with mismatched dependencies. A fast no-op when they match.
+        print info "Reconciling staged vendor against composer.lock..."
         sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev --no-interaction
     else
         print info "Staged vendor not available; running composer install..."
@@ -1534,20 +1575,48 @@ upgrade_instance() {
     sudo -u www-data composer dump-autoload -o --no-interaction
     print success "Composer operations completed."
 
-    # Database connectivity and migrations
+    # Database connectivity, migrations and repairs. These mutate the schema, so
+    # a failure here means the instance is NOT safely upgraded — surface it
+    # instead of falling through to a "success" report (the old code ignored
+    # every exit code and declared success even when migrations never ran).
+    #
+    # Connectivity is retried with backoff: during multi-instance runs MySQL can
+    # be briefly unreachable just after a config reload / restart (socket being
+    # recreated), and a transient blip shouldn't fail a healthy instance. Probe
+    # as www-data so we exercise the same credentials/socket the migrations use.
     print info "Checking database connectivity..."
-    php "${lis_path}/vendor/bin/db-tools" db:test --all
+    local db_ok=0 db_try
+    for db_try in 1 2 3 4 5; do
+        if sudo -u www-data php "${lis_path}/vendor/bin/db-tools" db:test --all >/dev/null 2>&1; then
+            db_ok=1
+            break
+        fi
+        print warning "Database not reachable (attempt ${db_try}/5); retrying in $((db_try * 3))s..."
+        sleep $((db_try * 3))
+    done
+    if [ "$db_ok" -ne 1 ]; then
+        _apply_failure_no_rollback "database connectivity check failed after 5 attempts"
+        return 1
+    fi
 
     print info "Running database migrations..."
-    sudo -u www-data composer post-update
+    if ! sudo -u www-data composer post-update; then
+        _apply_failure_no_rollback "database migrations (composer post-update) failed"
+        return 1
+    fi
 
     # Reload Apache before long-running repairs so any stale workers holding
     # old opcache / DB connections are recycled and don't fight the repair.
     print info "Reloading Apache before database repairs..."
     apache2ctl -k graceful || systemctl reload apache2 || systemctl restart apache2
 
+    # Repairs are best-effort hygiene (audit tables etc.); they must not fail an
+    # instance whose schema migrations already succeeded. Warn and continue.
     print info "Running database repairs..."
-    sudo -u www-data composer db:repair
+    if ! sudo -u www-data composer db:repair; then
+        print warning "Database repairs reported errors; continuing (migrations already applied). Review the upgrade log."
+        log_action "db:repair failed for ${lis_path} (non-fatal)"
+    fi
 
     # Wait for directory migrations
     if [ "${#dir_migration_pids[@]}" -gt 0 ]; then
