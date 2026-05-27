@@ -27,6 +27,8 @@ $provinces = $geolocationService->getProvinces("yes");
 $activeTests = TestsService::getActiveTests();
 ?>
 <link rel="stylesheet" href="/assets/plugins/leaflet/leaflet.css" />
+<link rel="stylesheet" href="/assets/plugins/leaflet/MarkerCluster.css" />
+<link rel="stylesheet" href="/assets/plugins/leaflet/MarkerCluster.Default.css" />
 <link rel="stylesheet" href="/assets/css/tom-select.css" />
 <style>
     #referralMap {
@@ -279,6 +281,7 @@ $activeTests = TestsService::getActiveTests();
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/plugins/leaflet/leaflet.js"></script>
+<script src="/assets/plugins/leaflet/leaflet.markercluster.js"></script>
 <script src="/assets/js/tom-select.complete.min.js"></script>
 <script src="/assets/js/dom-to-image-more.min.js"></script>
 <script type="text/javascript">
@@ -321,10 +324,25 @@ $activeTests = TestsService::getActiveTests();
         };
     }
 
+    // bringToFront throws if the marker is currently inside a cluster (not on
+    // the map), so guard it.
+    function safeFront(marker) {
+        try { marker.bringToFront(); } catch (e) { /* clustered / not rendered */ }
+    }
+
     function initMap() {
         map = L.map('referralMap', { worldCopyJump: true }).setView([0, 20], 2);
         L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTR, crossOrigin: true }).addTo(map);
-        markerLayer = L.layerGroup().addTo(map);
+        // Cluster markers so dense city points (hundreds of facilities on the
+        // same coarse coordinate) collapse into count bubbles when zoomed out,
+        // and separate as you zoom in.
+        markerLayer = L.markerClusterGroup({
+            chunkedLoading: true,
+            showCoverageOnHover: false,
+            maxClusterRadius: 50,
+            spiderfyOnMaxZoom: true,
+            disableClusteringAtZoom: 13
+        }).addTo(map);
         flowLayer = L.layerGroup().addTo(map);
 
         // Clicking empty map clears any focused catchment.
@@ -507,7 +525,7 @@ $activeTests = TestsService::getActiveTests();
             var item = mapNodesById[k];
             if (connected[item.n.id]) {
                 item.marker.setStyle(markerStyle(item.n.isLab));
-                item.marker.bringToFront();
+                safeFront(item.marker);
             } else {
                 item.marker.setStyle({ opacity: 0.12, fillOpacity: 0.08 });
             }
@@ -540,7 +558,7 @@ $activeTests = TestsService::getActiveTests();
         Object.keys(mapNodesById).forEach(function (k) {
             var item = mapNodesById[k];
             item.marker.setStyle(markerStyle(item.n.isLab));
-            if (item.n.isLab) { item.marker.bringToFront(); }
+            if (item.n.isLab) { safeFront(item.marker); }
         });
         redrawLines();
         if (focusHintEl) { focusHintEl.style.display = 'none'; }
@@ -576,7 +594,7 @@ $activeTests = TestsService::getActiveTests();
                     .bindPopup(popup).addTo(markerLayer);
                 marker.on('click', function () { focusNode(n.id); });
                 mapNodesById[n.id] = { n: n, marker: marker };
-                if (n.isLab) { marker.bringToFront(); }
+                if (n.isLab) { safeFront(marker); }
             });
 
             mapFlows.forEach(function (f) { totalSamples += f.count; });
@@ -659,7 +677,8 @@ $activeTests = TestsService::getActiveTests();
                 'Last 90 Days': [moment().subtract(89, 'days'), moment()],
                 'Last 180 Days': [moment().subtract(179, 'days'), moment()],
                 'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-                'Current Year To Date': [moment().startOf('year'), moment()]
+                'Current Year To Date': [moment().startOf('year'), moment()],
+                'All Time': [moment('2000-01-01'), moment()]
             }
         });
 
