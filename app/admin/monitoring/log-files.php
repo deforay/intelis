@@ -637,8 +637,6 @@ require_once APPLICATION_PATH . '/header.php';
 	let estimatedLines = null;
 	let fileSizeBytes = null;
 
-	const STORAGE_KEY = 'vlsm_log_viewer_state';
-
 	// Performance settings - increased for better performance
 	const LINES_PER_PAGE = 50;
 	const SEARCH_DEBOUNCE_TIME = 500;
@@ -1201,58 +1199,6 @@ require_once APPLICATION_PATH . '/header.php';
 		$('#logSummary').html(summaryHtml).show();
 	}
 
-	function saveViewerState() {
-		const state = {
-			logType,
-			currentFilter,
-			searchTerm,
-			date: $('#userDate').val()
-		};
-
-		try {
-			localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-		} catch (e) {
-			// Non-critical: ignore storage failures (e.g., private mode)
-		}
-	}
-
-	function loadViewerState() {
-		try {
-			const raw = localStorage.getItem(STORAGE_KEY);
-			if (!raw) return;
-
-			const state = JSON.parse(raw);
-			if (!state || typeof state !== 'object') return;
-
-			if (state.date) {
-				$('#userDate').val(state.date);
-			}
-			if (state.searchTerm) {
-				$('#logSearchInput').val(state.searchTerm);
-				searchTerm = state.searchTerm;
-			}
-			if (state.currentFilter) {
-				currentFilter = state.currentFilter;
-				$('#logLevelFilters button').removeClass('active');
-				$('#logLevelFilters button[data-level="' + currentFilter + '"]').addClass('active');
-			}
-			if (state.logType) {
-				logType = state.logType;
-				if (logType === 'php_error') {
-					$('#logTypePhp').addClass('active');
-					$('#logTypeApplication').removeClass('active');
-				} else {
-					$('#logTypeApplication').addClass('active');
-					$('#logTypePhp').removeClass('active');
-				}
-			} else {
-				$('#logTypeApplication').addClass('active');
-			}
-		} catch (e) {
-			// Non-critical: ignore parse/storage errors
-		}
-	}
-
 	function clearFilters() {
 		searchTerm = '';
 		currentFilter = 'all';
@@ -1260,7 +1206,6 @@ require_once APPLICATION_PATH . '/header.php';
 		$('#logLevelFilters button').removeClass('active');
 		$('#logLevelFilters button[data-level="all"]').addClass('active');
 		applyFilters();
-		saveViewerState();
 	}
 
 	function removeSearchTermAtIndex(index) {
@@ -1273,7 +1218,6 @@ require_once APPLICATION_PATH . '/header.php';
 		searchTerm = rebuilt;
 		$('#logSearchInput').val(rebuilt);
 		applyFilters();
-		saveViewerState();
 	}
 
 	// Optimized log loading function
@@ -1535,7 +1479,6 @@ require_once APPLICATION_PATH . '/header.php';
 		logType = 'php_error';
 		$('#logTypePhp').addClass('active');
 		$('#logTypeApplication').removeClass('active');
-		saveViewerState();
 		resetAndLoadLogs();
 	}
 
@@ -1543,7 +1486,6 @@ require_once APPLICATION_PATH . '/header.php';
 		logType = 'application';
 		$('#logTypeApplication').addClass('active');
 		$('#logTypePhp').removeClass('active');
-		saveViewerState();
 		resetAndLoadLogs();
 	}
 
@@ -1586,7 +1528,6 @@ require_once APPLICATION_PATH . '/header.php';
 		}
 
 		applyFilters();
-		saveViewerState();
 	}, SEARCH_DEBOUNCE_TIME);
 
 	// Virtual scrolling for better performance
@@ -1621,24 +1562,21 @@ require_once APPLICATION_PATH . '/header.php';
 
 		$('#viewLogButton').click(function () {
 			showLoadingIndicator();
-			saveViewerState();
-			resetAndLoadLogs();
+				resetAndLoadLogs();
 		});
 
 		$('#searchLogsButton').on('click', function () {
 			clearTimeout(searchTimeout);
 			searchTerm = $('#logSearchInput').val();
 			applyFilters();
-			saveViewerState();
-		});
+			});
 
 		$('#logSearchInput').on('keydown', function (e) {
 			if (e.keyCode === 13) {
 				clearTimeout(searchTimeout);
 				searchTerm = $('#logSearchInput').val();
 				applyFilters();
-				saveViewerState();
-			}
+					}
 		});
 
 		$('#logLevelFilters button').click(function () {
@@ -1646,8 +1584,7 @@ require_once APPLICATION_PATH . '/header.php';
 			$(this).addClass('active');
 			currentFilter = $(this).data('level');
 			applyFilters();
-			saveViewerState();
-		});
+			});
 
 		$('#exportTxtButton').click(exportLogFile);
 		$('#clearFiltersButton').click(clearFilters);
@@ -1702,8 +1639,7 @@ require_once APPLICATION_PATH . '/header.php';
 				$('#logLevelFilters button').removeClass('active');
 				$('#logLevelFilters button[data-level="all"]').addClass('active');
 				applyFilters();
-				saveViewerState();
-				return;
+						return;
 			}
 
 			if (chipType === 'search') {
@@ -1713,15 +1649,14 @@ require_once APPLICATION_PATH . '/header.php';
 		});
 
 		$('#userDate').on('change', function () {
-			saveViewerState();
-			resetAndLoadLogs();
+				resetAndLoadLogs();
 		});
 
 		addSearchHelp();
 		addSearchExamples();
 		initVirtualScrolling();
 
-		loadViewerState();
+		$('#logTypeApplication').addClass('active');
 		resetAndLoadLogs();
 	});
 </script>
