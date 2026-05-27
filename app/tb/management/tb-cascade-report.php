@@ -624,7 +624,7 @@ $testTypes = $db->rawQuery("SELECT DISTINCT test_type FROM tb_tests WHERE test_t
 
             // Main cascade funnel — mark Tested as the branch origin for referrals
             renderFunnel('cascadeFunnel', [
-                { label: "<?= _jsTranslate('Registered at CS'); ?>", count: s.total },
+                { label: "<?= _jsTranslate('Registered'); ?>", count: s.total },
                 { label: "<?= _jsTranslate('Received at Lab'); ?>", count: (s.total || 0) - (s.atCollectionSite || 0) },
                 { label: "<?= _jsTranslate('Tested'); ?>", count: s.tested },
                 { label: "<?= _jsTranslate('Result Entered'); ?>", count: s.resultEntered },
