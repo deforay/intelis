@@ -109,7 +109,7 @@ $mapTileSources = "https://*.tile.openstreetmap.org https://tile.openstreetmap.o
 $csp = "default-src 'self'; "
     . "script-src 'self' 'unsafe-inline'; "
     . "style-src 'self' 'unsafe-inline'; "
-    . "connect-src 'self' $allowedDomainsString; "
+    . "connect-src 'self' $allowedDomainsString $mapTileSources; "
     . "img-src 'self' data: blob: $allowedDomainsString $mapTileSources; "
     . "font-src 'self'; "
     . "object-src 'none'; "

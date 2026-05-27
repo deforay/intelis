@@ -92,8 +92,45 @@ $activeTests = TestsService::getActiveTests();
     }
 
     .referral-focus-hint {
-        max-width: 240px;
+        width: 250px;
         font-size: 13px;
+    }
+
+    .referral-focus-hint .rl-head {
+        color: #777;
+        font-size: 12px;
+        margin: 2px 0 4px;
+    }
+
+    .referral-focus-hint .rl-list {
+        max-height: 260px;
+        overflow-y: auto;
+        margin-bottom: 6px;
+    }
+
+    .referral-focus-hint .rl-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 1px 0;
+        border-bottom: 1px solid #f0f0f0;
+        line-height: 18px;
+    }
+
+    .referral-focus-hint .rl-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .referral-focus-hint .rl-count {
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .referral-focus-hint .rl-more {
+        color: #777;
+        padding-top: 2px;
     }
 
     .referral-stat {
@@ -243,6 +280,7 @@ $activeTests = TestsService::getActiveTests();
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/plugins/leaflet/leaflet.js"></script>
 <script src="/assets/js/tom-select.complete.min.js"></script>
+<script src="/assets/js/dom-to-image-more.min.js"></script>
 <script type="text/javascript">
     // Base tile layer — OpenStreetMap. Swap this URL for a self-hosted/offline
     // tile server in deployments without internet access.
@@ -251,7 +289,7 @@ $activeTests = TestsService::getActiveTests();
     var MAX_FLOWS_RENDERED = 600; // keep the map responsive on large networks
     var LAB_COLOR = '#dd4b39', SITE_COLOR = '#3c8dbc';
 
-    var map, flowLayer, markerLayer, summaryTable, fsBtn, focusHintEl;
+    var map, flowLayer, markerLayer, summaryTable, fsBtn, snapBtn, focusHintEl;
     var mapNodesById = {}, mapFlows = [], focusedId = null, showAllLines = false;
     var tsState, tsDistrict, tsLab, tsTest;
 
@@ -285,7 +323,7 @@ $activeTests = TestsService::getActiveTests();
 
     function initMap() {
         map = L.map('referralMap', { worldCopyJump: true }).setView([0, 20], 2);
-        L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTR }).addTo(map);
+        L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTR, crossOrigin: true }).addTo(map);
         markerLayer = L.layerGroup().addTo(map);
         flowLayer = L.layerGroup().addTo(map);
 
@@ -318,18 +356,66 @@ $activeTests = TestsService::getActiveTests();
         };
         focusControl.addTo(map);
 
-        // Expand / collapse control.
-        var fsControl = L.control({ position: 'topleft' });
-        fsControl.onAdd = function () {
+        // Expand + snapshot controls (stacked, top-left).
+        var toolControl = L.control({ position: 'topleft' });
+        toolControl.onAdd = function () {
             var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+
             fsBtn = L.DomUtil.create('a', 'referral-ctrl-btn', div);
             fsBtn.href = '#';
             fsBtn.title = '<?= _translate("Toggle expanded view", true); ?>';
             fsBtn.innerHTML = '<em class="fa-solid fa-expand"></em>';
             L.DomEvent.on(fsBtn, 'click', function (e) { L.DomEvent.stop(e); toggleFullscreen(); });
+
+            snapBtn = L.DomUtil.create('a', 'referral-ctrl-btn', div);
+            snapBtn.href = '#';
+            snapBtn.title = '<?= _translate("Download map as image", true); ?>';
+            snapBtn.innerHTML = '<em class="fa-solid fa-camera"></em>';
+            L.DomEvent.on(snapBtn, 'click', function (e) { L.DomEvent.stop(e); captureSnapshot(); });
+
             return div;
         };
-        fsControl.addTo(map);
+        toolControl.addTo(map);
+    }
+
+    // Capture the map exactly as shown and download it as a PNG. The Leaflet
+    // button bars are excluded so the snapshot stays clean (legend is kept).
+    function captureSnapshot() {
+        var node = document.getElementById('referralMap');
+        if (typeof domtoimage === 'undefined') {
+            alert('<?= _translate("Image capture library not loaded.", true); ?>');
+            return;
+        }
+        snapBtn.innerHTML = '<em class="fa-solid fa-spinner fa-spin"></em>';
+        // Render at 2x for a crisp image (dom-to-image rasterises at 1x by default).
+        var scale = 2;
+        var w = node.offsetWidth, h = node.offsetHeight;
+        domtoimage.toBlob(node, {
+            bgcolor: '#ffffff',
+            width: w * scale,
+            height: h * scale,
+            style: {
+                transform: 'scale(' + scale + ')',
+                transformOrigin: 'top left',
+                width: w + 'px',
+                height: h + 'px'
+            },
+            filter: function (el) {
+                return !(el.classList && el.classList.contains('leaflet-bar'));
+            }
+        }).then(function (blob) {
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'sample-referral-network-' + moment().format('YYYY-MM-DD-HHmm') + '.png';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(a.href);
+            snapBtn.innerHTML = '<em class="fa-solid fa-camera"></em>';
+        }).catch(function () {
+            snapBtn.innerHTML = '<em class="fa-solid fa-camera"></em>';
+            alert('<?= _translate("Could not capture the map image.", true); ?>');
+        });
     }
 
     function nativeFsElement() {
@@ -407,11 +493,14 @@ $activeTests = TestsService::getActiveTests();
         flowLayer.clearLayers();
         var connected = {};
         connected[id] = true;
+        var links = [];   // the other endpoint of each incident flow + its count
         mapFlows.forEach(function (f) {
             if (f.from === id || f.to === id) {
                 connected[f.from] = true;
                 connected[f.to] = true;
                 drawFlow(f, { opacity: 0.75, color: '#00695c' });
+                var other = mapNodesById[f.from === id ? f.to : f.from];
+                if (other) { links.push({ name: other.n.name, count: f.count }); }
             }
         });
         Object.keys(mapNodesById).forEach(function (k) {
@@ -423,13 +512,26 @@ $activeTests = TestsService::getActiveTests();
                 item.marker.setStyle({ opacity: 0.12, fillOpacity: 0.08 });
             }
         });
+
         var node = mapNodesById[id].n;
-        var linked = Object.keys(connected).length - 1;
-        var role = node.isLab
-            ? linked + ' <?= _translate("referring facilities", true); ?>'
-            : linked + ' <?= _translate("testing lab(s)", true); ?>';
-        focusHintEl.innerHTML = '<strong>' + esc(node.name) + '</strong><br>' + role
-            + '<br><a href="#" onclick="clearFocus();return false;"><?= _translate("Show all", true); ?></a>';
+        // A referring facility lists the labs it sends to; a lab lists the
+        // facilities it receives from. Names + counts, busiest first.
+        var heading = node.isLab
+            ? '<?= _translate("Receives from", true); ?>'
+            : '<?= _translate("Refers to", true); ?>';
+        links.sort(function (a, b) { return b.count - a.count; });
+        var cap = 15, rows = '';
+        links.slice(0, cap).forEach(function (l) {
+            rows += '<div class="rl-row"><span class="rl-name">' + esc(l.name) + '</span>'
+                + '<span class="rl-count">' + Number(l.count).toLocaleString() + '</span></div>';
+        });
+        if (links.length > cap) {
+            rows += '<div class="rl-more">… ' + (links.length - cap) + ' <?= _translate("more", true); ?></div>';
+        }
+        focusHintEl.innerHTML = '<strong>' + esc(node.name) + '</strong>'
+            + '<div class="rl-head">' + heading + ' (' + links.length + ')</div>'
+            + '<div class="rl-list">' + rows + '</div>'
+            + '<a href="#" onclick="clearFocus();return false;"><?= _translate("Show all", true); ?></a>';
         focusHintEl.style.display = 'block';
     }
 
