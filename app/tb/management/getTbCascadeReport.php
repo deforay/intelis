@@ -153,7 +153,7 @@ if ($action === 'summary') { try {
                           AND f.result_status = " . SAMPLE_STATUS\ACCEPTED . " THEN 1 ELSE 0 END) AS accepted,
             SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\REJECTED . " THEN 1 ELSE 0 END) AS rejected,
             SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\TEST_FAILED . " THEN 1 ELSE 0 END) AS testFailed,
-            SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\REFERRED . " THEN 1 ELSE 0 END) AS referred,
+            SUM(CASE WHEN lr.last_ref IS NOT NULL OR f.referred_to_lab_id IS NOT NULL THEN 1 ELSE 0 END) AS referred,
             SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\ACCEPTED . "
                           AND (f.result IS NULL OR TRIM(f.result) = '')
                           AND f.is_result_finalized <> 'yes' THEN 1 ELSE 0 END) AS acceptedWithoutResultEntered,
@@ -167,10 +167,23 @@ if ($action === 'summary') { try {
                      END) AS avgDaysRecvToTested,
             COUNT(DISTINCT f.lab_id) AS distinctLabs,
             COUNT(DISTINCT f.facility_id) AS distinctFacilities,
-            SUM(CASE WHEN f.referred_to_lab_id IS NOT NULL AND f.samples_referred_datetime IS NOT NULL THEN 1 ELSE 0 END) AS referralReceived,
-            SUM(CASE WHEN f.referred_to_lab_id IS NOT NULL AND f.sample_tested_datetime IS NOT NULL THEN 1 ELSE 0 END) AS referralTested,
-            SUM(CASE WHEN f.referred_to_lab_id IS NOT NULL AND f.result_status = " . SAMPLE_STATUS\ACCEPTED . " THEN 1 ELSE 0 END) AS referralAccepted
+            SUM(CASE WHEN (lr.last_ref IS NOT NULL OR f.referred_to_lab_id IS NOT NULL)
+                          AND f.sample_received_at_lab_datetime IS NOT NULL
+                          AND f.sample_received_at_lab_datetime >= COALESCE(lr.last_ref, f.samples_referred_datetime)
+                     THEN 1 ELSE 0 END) AS referralReceived,
+            SUM(CASE WHEN (lr.last_ref IS NOT NULL OR f.referred_to_lab_id IS NOT NULL)
+                          AND f.sample_tested_datetime IS NOT NULL
+                          AND f.sample_tested_datetime >= COALESCE(lr.last_ref, f.samples_referred_datetime)
+                     THEN 1 ELSE 0 END) AS referralTested,
+            SUM(CASE WHEN (lr.last_ref IS NOT NULL OR f.referred_to_lab_id IS NOT NULL)
+                          AND f.result_status = " . SAMPLE_STATUS\ACCEPTED . "
+                     THEN 1 ELSE 0 END) AS referralAccepted
         FROM form_tb f $ttJoin
+        LEFT JOIN (
+            SELECT tb_id, MAX(referred_on_datetime) AS last_ref
+            FROM tb_referral_history
+            GROUP BY tb_id
+        ) lr ON lr.tb_id = f.tb_id
         WHERE $whereSql";
 
     $row = $db->rawQueryOne($sql);
@@ -269,17 +282,25 @@ if ($action === 'per-lab') { try {
                      THEN GREATEST(DATEDIFF(f.sample_tested_datetime, f.sample_received_at_lab_datetime), 0) END AS daysRecvToTested
             FROM form_tb f $ttJoin
             WHERE $whereSql AND f.lab_id IS NOT NULL
-            UNION ALL
-            SELECT
+            UNION
+            SELECT DISTINCT
                 f.tb_id,
-                f.referred_to_lab_id AS lab_id,
+                hop.to_lab_id AS lab_id,
                 'referred-in' AS lab_role,
                 f.result_status,
                 NULL AS daysCollToRecv,
-                CASE WHEN f.sample_tested_datetime IS NOT NULL AND f.samples_referred_datetime IS NOT NULL
-                     THEN GREATEST(DATEDIFF(f.sample_tested_datetime, f.samples_referred_datetime), 0) END AS daysRecvToTested
+                CASE WHEN f.sample_tested_datetime IS NOT NULL AND hop.referred_on IS NOT NULL
+                     THEN GREATEST(DATEDIFF(f.sample_tested_datetime, hop.referred_on), 0) END AS daysRecvToTested
             FROM form_tb f $ttJoin
-            WHERE $whereSql AND f.referred_to_lab_id IS NOT NULL
+            INNER JOIN (
+                SELECT tb_id, to_lab_id, referred_on_datetime AS referred_on
+                FROM tb_referral_history
+                UNION
+                SELECT tb_id, referred_to_lab_id, samples_referred_datetime
+                FROM form_tb
+                WHERE referred_to_lab_id IS NOT NULL
+            ) hop ON hop.tb_id = f.tb_id AND hop.to_lab_id IS NOT NULL
+            WHERE $whereSql
         ) x
         INNER JOIN facility_details fl ON fl.facility_id = x.lab_id
         LEFT JOIN (
@@ -337,8 +358,6 @@ if ($action === 'per-lab') { try {
 if ($action === 'referral-matrix') { try {
     $where = tbcBuildFilterConditions($_POST);
     [$ttJoin, $_unused] = tbcTestTypeJoinAndWhere($_POST);
-    $where[] = "f.referred_by_lab_id IS NOT NULL";
-    $where[] = "f.referred_to_lab_id IS NOT NULL";
     $whereSql = implode(' AND ', $where);
 
     $aColumns = [
@@ -359,20 +378,31 @@ if ($action === 'referral-matrix') { try {
         $sLimit = " LIMIT " . (int) $_POST['iDisplayStart'] . "," . (int) $_POST['iDisplayLength'];
     }
 
+    /* Each row in tb_referral_history is one hop; samples that traverse
+       Lab A -> B -> C contribute two pairs (A-B and B-C). The form_tb
+       fallback only fires for samples that have a referral pair set but
+       no history rows yet (legacy data path). */
     $matrixSql = "
         SELECT
             frm.facility_id AS from_lab_id,
             frm.facility_name AS from_lab_name,
             tol.facility_id AS to_lab_id,
             tol.facility_name AS to_lab_name,
-            COUNT(*) AS referred,
-            SUM(CASE WHEN f.sample_received_at_lab_datetime IS NULL THEN 1 ELSE 0 END) AS awaitingReceipt,
-            SUM(CASE WHEN f.sample_received_at_lab_datetime IS NOT NULL AND f.sample_tested_datetime IS NULL THEN 1 ELSE 0 END) AS receivedNotTested,
-            SUM(CASE WHEN f.result_status = " . SAMPLE_STATUS\ACCEPTED . " THEN 1 ELSE 0 END) AS acceptedAtTo,
-            SUM(CASE WHEN f.result_status IN (" . SAMPLE_STATUS\REJECTED . ", " . SAMPLE_STATUS\TEST_FAILED . ") THEN 1 ELSE 0 END) AS rejFailAtTo
-        FROM form_tb f $ttJoin
-        INNER JOIN facility_details frm ON frm.facility_id = f.referred_by_lab_id
-        INNER JOIN facility_details tol ON tol.facility_id = f.referred_to_lab_id
+            COUNT(DISTINCT hop.tb_id) AS referred,
+            COUNT(DISTINCT CASE WHEN f.sample_received_at_lab_datetime IS NULL THEN f.tb_id END) AS awaitingReceipt,
+            COUNT(DISTINCT CASE WHEN f.sample_received_at_lab_datetime IS NOT NULL AND f.sample_tested_datetime IS NULL THEN f.tb_id END) AS receivedNotTested,
+            COUNT(DISTINCT CASE WHEN f.result_status = " . SAMPLE_STATUS\ACCEPTED . " THEN f.tb_id END) AS acceptedAtTo,
+            COUNT(DISTINCT CASE WHEN f.result_status IN (" . SAMPLE_STATUS\REJECTED . ", " . SAMPLE_STATUS\TEST_FAILED . ") THEN f.tb_id END) AS rejFailAtTo
+        FROM (
+            SELECT tb_id, from_lab_id, to_lab_id FROM tb_referral_history
+            UNION
+            SELECT tb_id, referred_by_lab_id, referred_to_lab_id
+            FROM form_tb
+            WHERE referred_by_lab_id IS NOT NULL AND referred_to_lab_id IS NOT NULL
+        ) hop
+        INNER JOIN form_tb f ON f.tb_id = hop.tb_id $ttJoin
+        INNER JOIN facility_details frm ON frm.facility_id = hop.from_lab_id
+        INNER JOIN facility_details tol ON tol.facility_id = hop.to_lab_id
         WHERE $whereSql
         GROUP BY frm.facility_id, frm.facility_name, tol.facility_id, tol.facility_name
     ";
