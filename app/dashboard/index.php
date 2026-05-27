@@ -389,6 +389,25 @@ $userModules = $_SESSION['modules'] ?? [];
 							<div class="row tb">
 								<div class="searchVlRequestDataDiv" id="tbSampleResultDetails"></div>
 								<div class="box-body sampleCountsDatatableDiv" id="tbNoOfSampleCount"></div>
+
+								<!-- TB Cascade Funnel — reusable component shared with /tb/management/tb-cascade-report.php -->
+								<?php require_once APPLICATION_PATH . '/tb/management/_tbCascadeFunnel.php'; ?>
+								<div class="col-xs-12 tbc-section">
+									<div class="box">
+										<div class="box-header">
+											<h3 class="box-title"><?= _translate("Cascade Funnel"); ?></h3>
+											<div class="pull-right" style="font-size:12px;color:#666;">
+												<?= _translate("Counts at each stage for the selected date range. Drop-off % shown below each stage relative to the previous stage."); ?>
+												&nbsp;·&nbsp;
+												<a href="/tb/management/tb-cascade-report.php"><?= _translate("Full Cascade Report"); ?></a>
+											</div>
+										</div>
+										<div class="box-body">
+											<?php tbCascadeFunnelMarkup('tbDash'); ?>
+										</div>
+									</div>
+								</div>
+
 								<div class="samplePieChartDiv" id="tbPieChartDiv"></div>
 							</div>
 
@@ -651,6 +670,13 @@ $userModules = $_SESSION['modules'] ?? [];
 				}
 				isGeneratingDashboard = false;
 			});
+
+		// TB cascade funnel — independent of the lazy-loaded panels; uses the TB date filter.
+		if (requestType === 'tb' && typeof tbcLoadCascade === 'function') {
+			tbcLoadCascade('tbDash', '/tb/management/getTbCascadeReport.php', {
+				sampleCollectionDate: $("#tbSampleCollectionDate").val()
+			});
+		}
 
 		// Lazy load charts when they come into viewport
 		// Remove any existing scroll handlers first to prevent duplicates
