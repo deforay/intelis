@@ -59,6 +59,38 @@ VALUES
   ('remote_commands_enabled', 'Remote Commands Enabled', 'yes', 'general', 'yes', CURRENT_TIMESTAMP, 'active');
 
 
+-- ----------------------------------------------------------------------------
+-- 4. Sample Referral Network report (Admin -> Monitoring).
+--    A Leaflet/OpenStreetMap map of which facility refers samples to which
+--    testing lab, plus a per-lab / per-test-type breakdown table. Wire up the
+--    privilege, role grants and sidebar menu item. All statements are
+--    idempotent so re-running the migration cannot create duplicates.
+--
+--    Facility coordinates are populated separately (and country-agnostically)
+--    by `php bin/geocode-facilities.php`, which uses OpenStreetMap Nominatim
+--    with a district/province centroid + sunflower-spread fallback.
+-- ----------------------------------------------------------------------------
+INSERT IGNORE INTO `privileges` (`resource_id`, `privilege_name`, `display_name`, `show_mode`)
+VALUES ('monitoring', '/admin/monitoring/sample-referral-network.php', 'Sample Referral Network', 'always');
+
+-- Grant the new report to every role that can already see the Sources of Requests report.
+INSERT INTO `roles_privileges_map` (`role_id`, `privilege_id`)
+SELECT rp.`role_id`, np.`privilege_id`
+  FROM `roles_privileges_map` rp
+  JOIN `privileges` sp ON sp.`privilege_id` = rp.`privilege_id`
+                      AND sp.`privilege_name` = '/admin/monitoring/sources-of-requests.php'
+  JOIN `privileges` np ON np.`privilege_name` = '/admin/monitoring/sample-referral-network.php'
+ WHERE NOT EXISTS (
+     SELECT 1 FROM `roles_privileges_map` x
+      WHERE x.`role_id` = rp.`role_id` AND x.`privilege_id` = np.`privilege_id`
+ );
+
+INSERT IGNORE INTO `s_app_menu`
+  (`module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`)
+VALUES
+  ('admin', NULL, 'no', 'Sample Referral Network', '/admin/monitoring/sample-referral-network.php', NULL, 'always', 'fa-solid fa-diagram-project', 'no', 'allMenu  sample-referral-network-menu', 7, 21, 'active', CURRENT_TIMESTAMP);
+
+
 UPDATE `system_config` SET `value` = '5.5.2' WHERE `system_config`.`name` = 'sc_version';
 
 -- END OF VERSION --

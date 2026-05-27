@@ -101,11 +101,16 @@ if (!isset($_SESSION['allowedDomains'])) {
 
 $allowedDomainsString = implode(" ", $allowedDomains);
 
+// Raster map-tile servers for the Sample Referral Network map. These serve only
+// tile images, so they are whitelisted in img-src only. Swap/extend this list if
+// you point the map at a self-hosted or offline tile server.
+$mapTileSources = "https://*.tile.openstreetmap.org https://tile.openstreetmap.org";
+
 $csp = "default-src 'self'; "
     . "script-src 'self' 'unsafe-inline'; "
     . "style-src 'self' 'unsafe-inline'; "
     . "connect-src 'self' $allowedDomainsString; "
-    . "img-src 'self' data: blob: $allowedDomainsString; "
+    . "img-src 'self' data: blob: $allowedDomainsString $mapTileSources; "
     . "font-src 'self'; "
     . "object-src 'none'; "
     . "frame-src 'self'; "
