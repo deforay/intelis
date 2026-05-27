@@ -57,6 +57,19 @@ try {
     $now = DateUtility::getCurrentDateTime();
     $terminalStatuses = ['completed', 'failed', 'expired', 'cancelled'];
 
+    // 0) Record that this lab just polled the command plane. Written on EVERY
+    //    authenticated poll, independent of whether the courier also sent
+    //    heartbeats/capabilities, so the STS can treat any actively-polling
+    //    lab as command-plane-capable for the safe non-root command set — even
+    //    couriers that predate capability reporting. Drives the 'basic' trust
+    //    tier in LabCapabilityService::evaluate().
+    $db->rawQuery(
+        "UPDATE facility_details
+            SET facility_attributes = JSON_SET(COALESCE(facility_attributes, '{}'), '$.commandPlaneSeenAt', ?)
+          WHERE facility_id = ?",
+        [$now, (int) $labId]
+    );
+
     // 0a) Sweep expired rows for this lab so we never hand out commands that
     //     are past their deadline. Any non-terminal row whose expires_at has
     //     passed moves to 'expired'.
