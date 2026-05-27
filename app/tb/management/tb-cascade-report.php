@@ -32,6 +32,9 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_details ORDER BY province_name");
 
 $testTypes = $db->rawQuery("SELECT DISTINCT test_type FROM tb_tests WHERE test_type IS NOT NULL AND test_type <> '' ORDER BY test_type");
+
+// Reusable cascade funnel (main cascade + referral branch) — shared with the TB dashboard.
+require_once __DIR__ . '/_tbCascadeFunnel.php';
 ?>
 <style>
     .tbc-kpi-row {
@@ -88,109 +91,7 @@ $testTypes = $db->rawQuery("SELECT DISTINCT test_type FROM tb_tests WHERE test_t
         margin-top: 18px;
     }
 
-    .tbc-funnel {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: stretch;
-        padding: 12px 4px;
-    }
-
-    .tbc-funnel-step {
-        flex: 1 1 0;
-        min-width: 110px;
-        background: #f4f6f9;
-        border: 1px solid #e1e5eb;
-        border-radius: 4px;
-        padding: 10px 8px;
-        text-align: center;
-        position: relative;
-    }
-
-    .tbc-funnel-step .tbc-funnel-stage {
-        font-size: 11px;
-        color: #666;
-        text-transform: uppercase;
-        letter-spacing: .3px;
-        margin-bottom: 4px;
-    }
-
-    .tbc-funnel-step .tbc-funnel-count {
-        font-size: 22px;
-        font-weight: 600;
-        color: #222;
-    }
-
-    .tbc-funnel-step .tbc-funnel-pct {
-        font-size: 11px;
-        color: #999;
-        margin-top: 2px;
-    }
-
-    .tbc-funnel-arrow {
-        display: flex;
-        align-items: center;
-        color: #ccc;
-        font-size: 18px;
-    }
-
-    .tbc-empty-panel {
-        padding: 24px;
-        background: #fafbfc;
-        border: 1px dashed #d0d6de;
-        border-radius: 4px;
-        text-align: center;
-        color: #888;
-        font-size: 13px;
-    }
-
-    /* Branch-point marker — visually highlights the funnel stage referrals split off from. */
-    .tbc-funnel-step.tbc-branch-origin {
-        border-color: #3c8dbc;
-        box-shadow: 0 2px 0 #3c8dbc;
-    }
-    .tbc-funnel-step.tbc-branch-origin::after {
-        content: "";
-        position: absolute;
-        bottom: -14px;
-        left: 50%;
-        margin-left: -7px;
-        width: 0;
-        height: 0;
-        border-left: 7px solid transparent;
-        border-right: 7px solid transparent;
-        border-top: 10px solid #3c8dbc;
-    }
-    .tbc-funnel-step .tbc-branch-badge {
-        position: absolute;
-        top: -8px;
-        right: 4px;
-        background: #3c8dbc;
-        color: #fff;
-        font-size: 10px;
-        padding: 2px 6px;
-        border-radius: 10px;
-        white-space: nowrap;
-    }
-
-    /* Sub-funnel container — visually indented so it reads as a tributary off the main cascade. */
-    .tbc-subfunnel {
-        position: relative;
-        margin: 22px 0 4px 12px;
-        padding: 12px 12px 8px 18px;
-        background: #f8fbfd;
-        border-left: 4px solid #3c8dbc;
-        border-radius: 0 4px 4px 0;
-    }
-    .tbc-subfunnel-header {
-        font-size: 12px;
-        color: #3c8dbc;
-        font-weight: 600;
-        margin-bottom: 6px;
-    }
-    .tbc-subfunnel .tbc-funnel {
-        padding: 0;
-    }
+    /* Cascade funnel + referral branch styles live in _tbCascadeFunnel.php (shared with the dashboard). */
 
     .select2-selection__choice {
         color: black !important;
@@ -333,25 +234,7 @@ $testTypes = $db->rawQuery("SELECT DISTINCT test_type FROM tb_tests WHERE test_t
                         </div>
                     </div>
                     <div class="box-body">
-                        <div class="tbc-funnel" id="cascadeFunnel">
-                            <div class="tbc-empty-panel"><?= _translate("Loading…"); ?></div>
-                        </div>
-
-                        <div class="tbc-subfunnel" id="referralBranchWrap">
-                            <div class="tbc-subfunnel-header">
-                                <em class="fa-solid fa-code-branch"></em>
-                                <?= _translate("Referral branch — splits off from Tested"); ?>
-                                &nbsp;·&nbsp;
-                                <span id="referralBranchSummary" style="font-weight:400; color:#666;">
-                                    <?= _translate("checking referral status…"); ?>
-                                </span>
-                            </div>
-                            <div class="tbc-funnel" id="referralBranchFunnel"></div>
-                            <div id="referralBranchNote" style="display:none; margin-top:6px; font-size:11px; color:#999; text-align:center;">
-                                <em class="fa-solid fa-circle-info"></em>
-                                <?= _translate("No referrals recorded in the selected period."); ?>
-                            </div>
-                        </div>
+                        <?php tbCascadeFunnelMarkup('tbc'); ?>
                     </div>
                 </div>
             </div>
@@ -522,57 +405,8 @@ $testTypes = $db->rawQuery("SELECT DISTINCT test_type FROM tb_tests WHERE test_t
         return Math.round((num / denom) * 100) + "%";
     }
 
-    function renderFunnel(containerId, stages, opts) {
-        opts = opts || {};
-        var $c = $('#' + containerId).empty();
-        if (!stages || !stages.length) {
-            $c.append('<div class="tbc-empty-panel"><?= _jsTranslate('No data in selected period.'); ?></div>');
-            return;
-        }
-        var prevCount = null;
-        stages.forEach(function (s, i) {
-            var pct = '';
-            if (prevCount !== null && prevCount > 0) {
-                pct = Math.round((s.count / prevCount) * 100) + '% <?= _jsTranslate("of previous stage"); ?>';
-            }
-            var $step = $('<div class="tbc-funnel-step"></div>');
-            if (opts.branchAt && opts.branchAt === s.label) {
-                $step.addClass('tbc-branch-origin');
-                if (opts.branchBadge) {
-                    $step.append('<span class="tbc-branch-badge"><em class="fa-solid fa-code-branch"></em> ' + opts.branchBadge + '</span>');
-                }
-            }
-            $step.append('<div class="tbc-funnel-stage">' + s.label + '</div>');
-            $step.append('<div class="tbc-funnel-count">' + (s.count || 0).toLocaleString() + '</div>');
-            if (pct) { $step.append('<div class="tbc-funnel-pct">' + pct + '</div>'); }
-            $c.append($step);
-            if (i < stages.length - 1) {
-                $c.append('<div class="tbc-funnel-arrow"><em class="fa-solid fa-chevron-right"></em></div>');
-            }
-            prevCount = s.count;
-        });
-    }
-
-    function renderReferralFunnel(s) {
-        var allZero = (!s.referred && !s.referralReceived && !s.referralTested && !s.referralAccepted);
-        var pctOfTested = (s.tested && s.tested > 0) ? Math.round((s.referred / s.tested) * 100) : 0;
-        var summary;
-        if ((s.referred || 0) === 0) {
-            summary = "<?= _jsTranslate('0 samples referred onward.'); ?>";
-        } else {
-            summary = (s.referred || 0).toLocaleString()
-                    + " (" + pctOfTested + "% <?= _jsTranslate('of tested'); ?>) "
-                    + "<?= _jsTranslate('went to another lab'); ?>";
-        }
-        $('#referralBranchSummary').text(summary);
-        renderFunnel('referralBranchFunnel', [
-            { label: "<?= _jsTranslate('Referred'); ?>", count: s.referred || 0 },
-            { label: "<?= _jsTranslate('Received at Target'); ?>", count: s.referralReceived || 0 },
-            { label: "<?= _jsTranslate('Tested at Target'); ?>", count: s.referralTested || 0 },
-            { label: "<?= _jsTranslate('Accepted at Target'); ?>", count: s.referralAccepted || 0 }
-        ]);
-        $('#referralBranchNote').toggle(allZero);
-    }
+    // renderFunnel / renderReferralFunnel now live in _tbCascadeFunnel.php as
+    // tbcRenderFunnel / tbcRenderCascade (shared with the TB dashboard).
 
     function loadSummary() {
         $.blockUI();
@@ -622,20 +456,8 @@ $testTypes = $db->rawQuery("SELECT DISTINCT test_type FROM tb_tests WHERE test_t
             }
             $('#tbcSecondaryStats').html(stripBits.join(' &nbsp;|&nbsp; '));
 
-            // Main cascade funnel — mark Tested as the branch origin for referrals
-            renderFunnel('cascadeFunnel', [
-                { label: "<?= _jsTranslate('Registered'); ?>", count: s.total },
-                { label: "<?= _jsTranslate('Received at Lab'); ?>", count: (s.total || 0) - (s.atCollectionSite || 0) },
-                { label: "<?= _jsTranslate('Tested'); ?>", count: s.tested },
-                { label: "<?= _jsTranslate('Final Result Entered'); ?>", count: s.resultEntered },
-                { label: "<?= _jsTranslate('Accepted'); ?>", count: s.accepted },
-                { label: "<?= _jsTranslate('Dispatched / Printed'); ?>", count: dispatched }
-            ], {
-                branchAt: "<?= _jsTranslate('Tested'); ?>",
-                branchBadge: (s.referred || 0) + " <?= _jsTranslate('referred'); ?>"
-            });
-
-            renderReferralFunnel(s);
+            // Main cascade funnel + referral branch (shared renderer)
+            tbcRenderCascade('tbc', s);
 
             // Refresh any open drilldown panes against the new filter context
             if (perLabTable) { perLabTable.fnDraw(); }
