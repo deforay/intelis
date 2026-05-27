@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -20,14 +21,13 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 
+
+
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
 
-$facilityQuery = "SELECT * FROM facility_details WHERE `status`='active' order by facility_name ASC";
-$facilityResult = $db->rawQuery($facilityQuery);
 
 $formId = (int) $general->getGlobalConfig('vl_form');
-
 //main query
 //$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE 1=0 AND is_result_mail_sent ='no' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
 //$result = $db->rawQuery($query);
@@ -102,7 +102,7 @@ $batchResult = $db->rawQuery($batchQuery);
 										<select class="form-control isRequired" id="facility" name="facility" title="<?php echo _translate('Please select facility name'); ?>">
 											<option></option>
 											<?php
-											foreach ($facilityResult as $facility) { ?>
+											foreach ($healthFacilites as $facility) { ?>
 
 												<option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" data-id="<?= $facility['facility_id'] ?>" value="<?php echo base64_encode((string) $facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
 											<?php } ?>
@@ -165,7 +165,7 @@ $batchResult = $db->rawQuery($batchQuery);
 												<?php echo _translate("Facility Name"); ?>&nbsp;:
 											</strong></td>
 										<td>
-											<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>">
+											<select style="width: 275px;" class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
 												<?= $facilitiesDropdown; ?>
 											</select>
 										</td>
