@@ -127,6 +127,10 @@ try {
 
     $currentDateTime = DateUtility::getCurrentDateTime();
 
+    // Lab Health window: last 6 months up to now (independent of the date filter above)
+    $labHealthStartLabel = date('d-M-Y', strtotime('-6 months', strtotime($currentDateTime)));
+    $labHealthEndLabel = date('d-M-Y', strtotime($currentDateTime));
+
     // ---------- Table-specific fields/predicates ----------
     // Result field per table (null means “special case”)
     $resultField = match ($table) {
@@ -743,7 +747,7 @@ try {
 
 <div class="lab-health-header">
     <h4><?= _translate("Lab Health"); ?></h4>
-    <small><?= _translate("Last 6 months — independent of the date filter above"); ?></small>
+    <small><?= sprintf(_translate("Last 6 months (%s to %s) — independent of the date filter above"), $labHealthStartLabel, $labHealthEndLabel); ?></small>
 </div>
 
 <div class="row lab-health-row">
