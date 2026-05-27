@@ -1699,86 +1699,6 @@ else
     log_action "Skipping runner install (installer not found at $runner_installer)"
 fi
 
-# ---------------------------------------------------------------------------
-# Pinned status footer for multi-instance runs. Reserves the bottom terminal
-# line via a DECSTBM scroll region so the "currently updating" line stays put
-# while everything else scrolls above it, and mirrors it into the title bar.
-# Entirely no-op unless stdout is an interactive TTY, so non-interactive
-# (-s/-b) runs and piped logs stay clean. Every terminal write is individually
-# guarded (`|| true`) so a tput hiccup can't trip the ERR trap, which exits.
-# ---------------------------------------------------------------------------
-FOOTER_ACTIVE=0
-FOOTER_MSG=""
-
-_footer_supported() {
-    [ -t 1 ] && [ -n "${TERM:-}" ] && [ "${TERM:-}" != "dumb" ] && command -v tput >/dev/null 2>&1
-}
-
-# Repaint the footer line (and title bar) from FOOTER_MSG. Saves/restores the
-# cursor so scrolling output above is unaffected.
-_footer_paint() {
-    [ "${FOOTER_ACTIVE:-0}" -eq 1 ] || return 0
-    local rows cols
-    rows=$(tput lines 2>/dev/null) || return 0
-    cols=$(tput cols 2>/dev/null) || cols=80
-    tput sc 2>/dev/null || true
-    tput cup "$((rows - 1))" 0 2>/dev/null || true
-    tput el 2>/dev/null || true
-    printf '\033[7m%-*.*s\033[0m' "$cols" "$cols" "$FOOTER_MSG" 2>/dev/null || true
-    tput rc 2>/dev/null || true
-    printf '\033]0;intelis-update: %s\007' "$FOOTER_MSG" 2>/dev/null || true
-    return 0
-}
-
-# Re-assert the scroll region (terminal was resized) then repaint.
-_footer_resize() {
-    [ "${FOOTER_ACTIVE:-0}" -eq 1 ] || return 0
-    local rows
-    rows=$(tput lines 2>/dev/null) || return 0
-    tput sc 2>/dev/null || true
-    tput csr 0 "$((rows - 2))" 2>/dev/null || true
-    tput rc 2>/dev/null || true
-    _footer_paint
-    return 0
-}
-
-footer_start() {
-    _footer_supported || return 0
-    local rows
-    rows=$(tput lines 2>/dev/null) || return 0
-    [ "${rows:-0}" -ge 3 ] || return 0          # need room to scroll + a footer
-    FOOTER_ACTIVE=1
-    printf '\n'                                  # don't carve the region on the last line
-    tput sc 2>/dev/null || true
-    tput csr 0 "$((rows - 2))" 2>/dev/null || true
-    tput rc 2>/dev/null || true
-    # Restore the terminal on exit (incl. error_handling's exit 1) or resize.
-    trap 'footer_stop' EXIT
-    trap '_footer_resize' WINCH
-    return 0
-}
-
-footer_set() {
-    FOOTER_MSG="$1"
-    _footer_paint
-    return 0
-}
-
-footer_stop() {
-    [ "${FOOTER_ACTIVE:-0}" -eq 1 ] || return 0
-    FOOTER_ACTIVE=0
-    trap - WINCH
-    local rows
-    rows=$(tput lines 2>/dev/null) || rows=24
-    tput sc 2>/dev/null || true
-    tput csr 0 "$((rows - 1))" 2>/dev/null || true   # reset to full-screen scroll region
-    tput cup "$((rows - 1))" 0 2>/dev/null || true
-    tput el 2>/dev/null || true
-    tput rc 2>/dev/null || true
-    printf '\033]0;\007' 2>/dev/null || true          # clear title
-    return 0
-}
-
 # Process each instance
 total_instances=${#lis_paths[@]}
 
@@ -1790,7 +1710,6 @@ done
 
 # Show initial status board for multi-instance runs
 if [ "$total_instances" -gt 1 ]; then
-    footer_start                                 # pin the bottom line before output starts scrolling
     print_instance_status lis_paths instance_statuses
 fi
 
@@ -1799,7 +1718,6 @@ for i in "${!lis_paths[@]}"; do
     if [ "$total_instances" -gt 1 ]; then
         instance_statuses[$i]="running"
         print_instance_status lis_paths instance_statuses
-        footer_set "  ▶ Updating [$((i + 1))/${total_instances}]: ${lis_paths[$i]}"
     fi
 
     if upgrade_instance "${lis_paths[$i]}" "$((i+1))" "$total_instances" "$temp_dir"; then
@@ -1815,9 +1733,6 @@ for i in "${!lis_paths[@]}"; do
         print_instance_status lis_paths instance_statuses
     fi
 done
-
-# Tear down the pinned footer (also runs via the EXIT trap on an early abort).
-footer_stop
 
 # Prune old rollback snapshots, keeping the N most recent (including this run's).
 prune_rollback_snapshots
