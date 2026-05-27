@@ -17,16 +17,15 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-
+$healthFacilites = $facilitiesService->getHealthFacilities('tb');
 
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_COOKIE = _sanitizeInput($request->getCookieParams());
 
+$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
-$fQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
-$fResult = $db->rawQuery($fQuery);
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='tb' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
@@ -105,11 +104,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
                                     title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple"
                                     style="width:220px;">
                                     <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                                    <?php foreach ($fResult as $name) { ?>
-                                        <option value="<?php echo $name['facility_id']; ?>" <?php echo (in_array($name['facility_id'], $facilityName)) ? "selected='selected'" : "" ?>>
-                                            <?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?>
-                                        </option>
-                                    <?php } ?>
+                                    <?= $facilitiesDropdown; ?>
                                 </select>
                             </td>
                         </tr>

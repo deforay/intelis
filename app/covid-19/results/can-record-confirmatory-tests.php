@@ -3,6 +3,7 @@
 use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
 
 $title = "Enter Covid-19 Result";
 
@@ -17,13 +18,19 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $request = AppRegistry::get('request');
 $_COOKIE = _sanitizeInput($request->getCookieParams());
 
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$healthFacilites = $facilitiesService->getHealthFacilities('covid19');
+
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 
 $sQuery = "SELECT * FROM r_covid19_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
-$fQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";
-$fResult = $db->rawQuery($fQuery);
+
+$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
+
+
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='covid19' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 //check filters
@@ -98,12 +105,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									title="Please select facility name" multiple="multiple" style="width:220px;">
 									<option value=""> -- Select -- </option>
 									<?php
-									foreach ($fResult as $name) { ?>
-										<option value="<?php echo $name['facility_id']; ?>" <?php echo (in_array($name['facility_id'], $facilityName)) ? "selected='selected'" : "" ?>>
-											<?php echo ($name['facility_name'] . "-" . $name['facility_code']); ?>
-										</option>
-										<?php
-									} ?>
+									echo $facilitiesDropdown; ?>
 								</select>
 							</td>
 						</tr>
