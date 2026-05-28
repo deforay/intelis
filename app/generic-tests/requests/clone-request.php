@@ -31,7 +31,7 @@ $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
 $reasonForFailure = $genericTestsService->getReasonForFailure();
 
-if ($general->isSTSInstance()) {
+if ($general->isSTSInstance() && ($_SESSION['accessType'] ?? '') !== 'testing-lab') {
 	$labFieldDisabled = 'disabled="disabled"';
 }
 
