@@ -9,6 +9,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -34,6 +35,18 @@ $user = $usersService->findUserByApiToken($authToken);
 try {
     $labId = !empty($_GET['labId']) ? $_GET['labId'] : null;
     $detailed = !empty($_GET['detailed']);
+
+    // STS-as-LIS hardening: posted labId must be in the API user's
+    // facilityMap. Observe-only by default (global_config
+    // 'api_facility_scope_enforce'='no' -> log and proceed); flip to
+    // 'yes' to reject out-of-scope lookups with 403.
+    if ($labId !== null) {
+        $apiUserFacilityMap = ContainerRegistry::get(\App\Services\FacilitiesService::class)->getUserFacilityMap($user['user_id']);
+        if (!$general->checkApiFacilityAllowed((int) $labId, $apiUserFacilityMap, $user['user_id'] ?? null, 'api/instruments')
+            && $general->isApiFacilityScopeEnforced()) {
+            throw new SystemException(_translate('Lab not in your scope'), 403);
+        }
+    }
 
     $params = [];
     $labFilter = '';
@@ -97,6 +110,16 @@ try {
         'timestamp' => time(),
         'transactionId' => $transactionId,
         'instruments' => $instruments,
+    ];
+} catch (SystemException $exc) {
+    $statusCode = $exc->getCode() ?: 500;
+    http_response_code($statusCode);
+    $payload = [
+        'status' => 'failed',
+        'timestamp' => time(),
+        'transactionId' => $transactionId,
+        'error' => $exc->getMessage(),
+        'instruments' => [],
     ];
 } catch (Throwable $exc) {
     http_response_code(500);
