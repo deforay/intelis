@@ -179,12 +179,12 @@ final class AuditTriggersCommand extends Command
         $verb = $mode === self::MODE_INSTALL ? 'installed' : 'cleared';
 
         if ($failed === []) {
-            $output->writeln("Audit triggers {$verb}.");
-            if ($output->isVerbose()) {
-                foreach ($successful as $t) {
-                    $output->writeln("  - {$t}");
-                }
-            }
+            $tableCount = count($successful);
+            $summary    = $mode === self::MODE_INSTALL
+                ? "{$tableCount} form table(s), " . ($tableCount * 3) . " triggers"
+                : "{$tableCount} form table(s)";
+            $output->writeln("Audit triggers {$verb} ({$summary}).");
+            $output->writeln("  " . implode(', ', $successful));
             return Command::SUCCESS;
         }
 
@@ -193,7 +193,7 @@ final class AuditTriggersCommand extends Command
             $output->writeln("  {$f['table']}: {$f['error']}");
         }
         if ($successful !== []) {
-            $output->writeln("(succeeded on " . count($successful) . " form(s))");
+            $output->writeln("(succeeded: " . implode(', ', $successful) . ")");
         }
         return Command::FAILURE;
     }
