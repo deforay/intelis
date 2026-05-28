@@ -68,11 +68,6 @@ INSERT IGNORE INTO `global_config`
 VALUES
   ('allow_remote_upgrade', 'Allow Remote Upgrade', 'yes', 'general', 'yes', CURRENT_TIMESTAMP, 'active');
 
-INSERT IGNORE INTO `global_config`
-  (`name`, `display_name`, `value`, `category`, `remote_sync_needed`, `updated_datetime`, `status`)
-VALUES
-  ('remote_upgrade_window', 'Remote Upgrade Window (HH:MM-HH:MM)', '', 'general', 'yes', CURRENT_TIMESTAMP, 'active');
-
 
 UPDATE `system_config` SET `value` = '5.5.3' WHERE `system_config`.`name` = 'sc_version';
 

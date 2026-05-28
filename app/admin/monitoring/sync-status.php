@@ -512,7 +512,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                         <label for="queueCommandNotBefore"><?= _translate('Not before (optional)'); ?></label>
                         <input type="datetime-local" class="form-control" id="queueCommandNotBefore">
                         <small
-                            class="text-muted"><?= _translate('Earliest time the runner may start this command. Apply also waits for the quiet window if configured.'); ?></small>
+                            class="text-muted"><?= _translate('Earliest time the runner may start this command. Leave blank to run on the next sync tick.'); ?></small>
                     </div>
                     <div class="form-group command-params upgrade-params upgrade-apply-params"
                         style="display:none;">
@@ -527,7 +527,7 @@ $stateNameList = $geolocationService->getProvinces("yes");
                     </div>
                     <p class="help-block" style="margin-top: 15px;">
                         <i class="fa fa-info-circle"></i>
-                        <?= _translate('The lab picks up queued commands on its next sync tick (typically every 5 minutes). Upgrade and apply commands additionally wait for the configured quiet window at the lab.'); ?>
+                        <?= _translate('The lab picks up queued commands on its next sync tick (typically every 5 minutes). Use "Not before" to schedule an upgrade for a specific time.'); ?>
                     </p>
                 </div>
                 <div class="modal-footer">

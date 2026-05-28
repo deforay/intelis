@@ -124,36 +124,6 @@ is_disabled() {
     [ -f "$lp/var/remote-commands/disabled" ]
 }
 
-# True (0) if we are inside the configured quiet window. Window is read from
-# var/remote-commands/runner.conf as a `QUIET_WINDOW=HH:MM-HH:MM` line; the
-# window may wrap past midnight (e.g. 22:00-05:00). Missing config => always
-# inside window (i.e. all upgrades allowed any time).
-in_quiet_window() {
-    local lp="$1"
-    local conf="$lp/var/remote-commands/runner.conf"
-    [ -f "$conf" ] || return 0
-
-    local raw
-    raw=$(grep -E '^QUIET_WINDOW=' "$conf" | tail -n1 | cut -d= -f2- | tr -d '"' | tr -d "'")
-    [ -n "$raw" ] || return 0
-
-    local start end now
-    start="${raw%-*}"
-    end="${raw#*-}"
-    now=$(date +%H:%M)
-
-    # Reject malformed input rather than fail-open on a misconfig.
-    [[ "$start" =~ ^[0-2][0-9]:[0-5][0-9]$ ]] || return 1
-    [[ "$end"   =~ ^[0-2][0-9]:[0-5][0-9]$ ]] || return 1
-
-    if [[ "$start" < "$end" ]]; then
-        [[ "$now" > "$start" || "$now" == "$start" ]] && [[ "$now" < "$end" ]]
-    else
-        # Wraps past midnight.
-        [[ "$now" > "$start" || "$now" == "$start" ]] || [[ "$now" < "$end" ]]
-    fi
-}
-
 #############
 # Dispatch
 #############
@@ -232,16 +202,6 @@ dispatch_marker() {
             # updates; -b skips backup prompts (operator-triggered upgrade).
             if ! command -v intelis-update >/dev/null 2>&1; then
                 echo "intelis-update is not installed" >>"$output_log"; rc=127
-            elif ! in_quiet_window "$lp"; then
-                echo "outside quiet window; deferring upgrade" >>"$output_log"; rc=64
-                status='pending'
-                # Don't delete marker; try again on the next tick.
-                build_result_json "$rc" "$output_log" | {
-                    read -r rjson
-                    write_result "$results_dir" "$cmd_id" "$nonce" "$status" "$rjson"
-                }
-                log "$cmd_id ($command): deferred (outside quiet window)"
-                return 0
             else
                 # $maint_arg is either empty (silent, the default) or "-M".
                 intelis-update -p "$lp" -s -b $maint_arg >>"$output_log" 2>&1 || rc=$?
@@ -308,16 +268,6 @@ dispatch_marker() {
                     echo "staging dir invalid or READY sentinel missing: $staging_dir" >>"$output_log"; rc=64
                 elif ! command -v intelis-update >/dev/null 2>&1; then
                     echo "intelis-update is not installed" >>"$output_log"; rc=127
-                elif ! in_quiet_window "$lp"; then
-                    echo "outside quiet window; deferring apply" >>"$output_log"
-                    rc=64
-                    status='pending'
-                    build_result_json "$rc" "$output_log" | {
-                        read -r rjson
-                        write_result "$results_dir" "$cmd_id" "$nonce" "$status" "$rjson"
-                    }
-                    log "$cmd_id ($command): deferred (outside quiet window)"
-                    return 0
                 else
                     # $maint_arg is either empty (silent, the default) or "-M".
                     intelis-update -p "$lp" --apply-prepared "$staging_dir" -s -b $maint_arg >>"$output_log" 2>&1 || rc=$?

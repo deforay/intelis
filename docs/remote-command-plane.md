@@ -151,7 +151,7 @@ When the runner picks up `upgrade` or `upgrade-prepare`:
 4. `composer validate` against the extracted tree
 5. Write `READY` sentinel
 6. Write `result.json` with `status: prepared, version: X.Y.Z`
-7. For `upgrade` — proceed directly to Phase B when the quiet window is open
+7. For `upgrade` — proceed directly to Phase B
 8. For `upgrade-prepare` — stop here, runner exits
 
 Prepare can take 5–30 min on slow links with **zero user impact** — the live LIS keeps serving.
@@ -162,7 +162,7 @@ Starts only when:
 
 - `READY` sentinel exists
 - `global_config.allow_remote_upgrade = true` (kill switch)
-- Current time is inside `global_config.remote_upgrade_window` (e.g. `02:00-05:00` local), overridable per-command via `not_before`
+- Command's `not_before` (if any) has passed — STS withholds the command until then
 - No in-flight upgrade for this instance
 
 Steps:
@@ -194,8 +194,7 @@ Operator workflow for a version that needs approval:
 ## 6. Safety rails
 
 - **Kill switch:** `global_config.allow_remote_upgrade` (bool). Lab can opt out at any time.
-- **Quiet window:** `global_config.remote_upgrade_window` = `"HH:MM-HH:MM"` local. Runner refuses apply outside it; prepare ignores it.
-- **Scheduled apply:** `not_before` on the command row.
+- **Scheduled apply:** `not_before` on the command row — STS gates delivery to the lab until that timestamp.
 - **Command whitelist:** runner has a hardcoded dispatch map. Unknown command → `failed: unknown command`. Never interprets shell strings from marker files.
 - **Nonce enforcement:** runner tracks processed nonces in `var/remote-commands/nonces.db`. Refuses re-runs.
 - **Expiry:** commands with `expires_at < now` never fire; status moves to `expired` on next tick.
@@ -255,7 +254,7 @@ Each step ships value on its own; each is testable without the next.
 4. **LIS: more www-data handlers** — `metadata-resync`, `refresh-cache`, `rotate-token`, `resend-requests`. No new infrastructure.
 5. **Root runner + systemd timer** — dispatch the simpler root commands first (`refresh-perms`, `restart-apache`).
 6. **Upgrade through the runner** — `upgrade`, `upgrade-prepare`, `upgrade-apply`. Runner just invokes `intelis-update --prepare-only` and `--apply-prepared <dir>` from step 1. Smoke check. Nonce enforcement.
-7. **Safety rails** — kill switch, quiet window, `not_before`, `expires_at`, dependency gating.
+7. **Safety rails** — kill switch, `not_before`, `expires_at`, dependency gating.
 8. **Gated-apply UI** — admin UI shows `prepared` labs with staged version; operator picks from that list to queue `upgrade-apply`.
 
 Step 1 is the critical one and pure win — it benefits 100% of existing manual users even if remote commands never ship. Steps 2–4 deliver a remote-control plane for non-root operations. Steps 5+ extend it to root-privileged ops. Stop at any point and what shipped still works.
