@@ -1036,6 +1036,71 @@ final class CommonService
         return $this->getInstanceType() === 'standalone';
     }
 
+    /**
+     * Whether the current user may act as the testing lab for $facilityId.
+     *
+     * LIS: single-lab install — true iff $facilityId equals sc_testing_lab_id.
+     * STS: multi-lab — user must have access_type='testing-lab' AND the
+     *      facility must be in their session facilityMap.
+     *
+     * Route every "acts as lab" UI/business decision through this method so
+     * the rule can be tightened (e.g. to a per-facility lab designation table)
+     * in one place without touching call sites.
+     */
+    public function userActsAsLabForFacility(int $facilityId): bool
+    {
+        if ($facilityId <= 0) {
+            return false;
+        }
+        if ($this->isLISInstance()) {
+            return $facilityId === (int) ($this->getSystemConfig('sc_testing_lab_id') ?? 0);
+        }
+        if ($this->isSTSInstance()) {
+            if (($_SESSION['accessType'] ?? null) !== 'testing-lab') {
+                return false;
+            }
+            $facilityMap = $_SESSION['facilityMap'] ?? '';
+            if ($facilityMap === '') {
+                return false;
+            }
+            return in_array(
+                $facilityId,
+                array_map('intval', explode(',', (string) $facilityMap)),
+                true
+            );
+        }
+        return false;
+    }
+
+    /**
+     * Defense-in-depth guard for handlers that accept a facility/lab id from
+     * the client. No-op in LIS (single-lab install) and for system admins;
+     * in STS the facility must be in the session facilityMap or the request
+     * is rejected with 403.
+     */
+    public function assertFacilityAllowed(int $facilityId): void
+    {
+        if ($this->isLISInstance()) {
+            return;
+        }
+        if ((int) ($_SESSION['roleId'] ?? 0) === 1) {
+            return;
+        }
+        if (!$this->isSTSInstance()) {
+            return;
+        }
+        $facilityMap = $_SESSION['facilityMap'] ?? '';
+        $allowed = $facilityId > 0
+            && $facilityMap !== ''
+            && in_array(
+                $facilityId,
+                array_map('intval', explode(',', (string) $facilityMap)),
+                true
+            );
+        if (!$allowed) {
+            throw new SystemException(_translate('You are not authorized for this facility'), 403);
+        }
+    }
 
     public function getInstanceName(): ?string
     {

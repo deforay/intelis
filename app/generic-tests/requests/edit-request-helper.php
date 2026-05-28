@@ -46,6 +46,13 @@ $absVal = null;
 $txtVal = null;
 $resultStatus = null;
 try {
+     $db->where('generic_id', $_POST['vlSampleId'] ?? 0);
+     $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
+     $general->assertFacilityAllowed($sampleFacilityId);
+     if (!empty($_POST['facilityId'])) {
+          $general->assertFacilityAllowed((int) $_POST['facilityId']);
+     }
+
      $mandatoryFields = [
           $_POST['sampleCode'],
           $_POST['sampleCollectionDate']

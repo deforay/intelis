@@ -41,6 +41,8 @@ $testTableName = 'covid19_tests';
 
 try {
 
+	$general->assertFacilityAllowed((int) ($_POST['facilityId'] ?? 0));
+
 	$instanceId = '';
 	if (!empty($_SESSION['instanceId'])) {
 		$instanceId = $_SESSION['instanceId'];

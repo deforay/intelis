@@ -26,6 +26,10 @@ $tableName1 = "activity_log";
 $tableName2 = "log_result_updates";
 $testTableName = 'covid19_tests';
 try {
+	$db->where('covid19_id', $_POST['covid19SampleId'] ?? 0);
+	$sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
+	$general->assertFacilityAllowed($sampleFacilityId);
+
 	//Set sample received date
 	if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) !== "") {
 		$sampleReceivedDate = explode(" ", (string) $_POST['sampleReceivedDate']);

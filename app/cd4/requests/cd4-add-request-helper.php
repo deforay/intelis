@@ -40,6 +40,8 @@ $instanceId = $general->getInstanceId();
 
 try {
 
+    $general->assertFacilityAllowed((int) ($_POST['facilityId'] ?? 0));
+
     $db->beginTransaction();
 
     $mandatoryFields = [

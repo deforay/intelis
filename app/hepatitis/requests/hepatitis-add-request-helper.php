@@ -31,6 +31,8 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 try {
+	$general->assertFacilityAllowed((int) ($_POST['facilityId'] ?? 0));
+
 	$instanceId = '';
 	if (isset($_SESSION['instanceId'])) {
 		$instanceId = $_SESSION['instanceId'];
