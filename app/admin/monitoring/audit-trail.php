@@ -287,7 +287,9 @@ try {
                 $currentData = [];
                 if (!empty($uniqueId)) {
                     $filePath = $auditArchiveService->resolveAuditFilePath($_POST['testType'], $uniqueId);
-                    $posts = $filePath ? $auditArchiveService->readAuditDataFromCsvFlexible($filePath) : [];
+                    // Pass testType so v2 read-time rename aliases (audit_column_aliases)
+                    // surface historical revisions under the column's CURRENT name.
+                    $posts = $filePath ? $auditArchiveService->readAuditDataFromCsvFlexible($filePath, $_POST['testType']) : [];
                     // Sort the records by revision ID
                     usort($posts, fn($a, $b): int => (int)($a['revision'] ?? 0) <=> (int)($b['revision'] ?? 0));
 

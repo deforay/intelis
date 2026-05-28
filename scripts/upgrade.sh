@@ -1599,19 +1599,35 @@ upgrade_instance() {
         return 1
     fi
 
+    # Audit Trail v2 — drop ALL audit triggers (legacy <form>_data__* AND v2
+    # <form>_audit_*) BEFORE migrations run. Schema changes in the migration set
+    # (ADD/DROP/CHANGE COLUMN) would otherwise break writes against a stale
+    # trigger; with triggers absent the migration can rename/drop columns
+    # freely. The instance is under maintenance mode here so no live writes
+    # hit a trigger-less form. Idempotent (DROP IF EXISTS).
+    print info "Audit Trail v2: dropping audit triggers before migrations..."
+    if ! sudo -u www-data php "${lis_path}/bin/setup/regenerate-audit-triggers.php" --apply drop-all; then
+        print warning "Pre-migration audit-trigger drop reported errors (continuing — DROP IF EXISTS is idempotent)."
+    fi
+
     print info "Running database migrations..."
     if ! sudo -u www-data composer post-update; then
         _apply_failure_no_rollback "database migrations (composer post-update) failed"
         return 1
     fi
 
-    # NOTE: the per-instance `composer db:repair` (audit_form_* schema sync +
-    # legacy trigger rebuild via bin/setup/fix-audit-tables.php) used to run here.
-    # It's been removed: Audit Trail v2 (audit_log + JSON-snapshot triggers) is
-    # replacing the heavy per-form columnar audit, so the table-rewriting sync is
-    # no longer needed on every upgrade. The lightweight v2 trigger regeneration
-    # will land in a later step as part of the cutover; until then, the existing
-    # legacy <form>_data__* triggers stay in place exactly as they are.
+    # Audit Trail v2 — rebuild v2 triggers from the live schema. This is THE only
+    # ongoing audit maintenance the new architecture needs: trigger bodies are
+    # machine-generated from information_schema (no hand-maintained column
+    # lists), so this also auto-picks-up any columns the migrations just added /
+    # removed / renamed. Cheap (DDL only, no table rewrites). On the first
+    # upgrade after the v2 cutover ships, this is the moment legacy capture
+    # ends and audit_log capture begins.
+    print info "Audit Trail v2: rebuilding v2 audit triggers from live schema..."
+    if ! sudo -u www-data php "${lis_path}/bin/setup/regenerate-audit-triggers.php" --apply rebuild; then
+        _apply_failure_no_rollback "audit trigger rebuild failed"
+        return 1
+    fi
 
     # Wait for directory migrations
     if [ "${#dir_migration_pids[@]}" -gt 0 ]; then

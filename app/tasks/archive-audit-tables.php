@@ -42,8 +42,16 @@ $progress = static function (string $msg) use ($cliMode): void {
 };
 
 try {
-    // Delegate to the service; bulk run, no internal lock (we already hold script lock)
+    // Legacy path: archive any remaining audit_form_* tables. After the Audit
+    // Trail v2 cutover + run-once prune drops those tables, this becomes a fast
+    // no-op (skipping missing tables internally).
     $auditArchiveService->run(sampleCode: null, progress: $progress, useLock: false);
+
+    // v2 path: drain audit_log → files (precision keying + self-prune). Safe to
+    // call even pre-cutover — it no-ops if audit_log doesn't exist yet
+    // (instances that haven't reached the 5.5.3 migration). The outer script
+    // lock above covers both calls; no second internal lock needed.
+    $auditArchiveService->runFromAuditLog(progress: $progress, useLock: false);
 
     if ($cliMode) {
         echo "Archiving process completed." . PHP_EOL;
