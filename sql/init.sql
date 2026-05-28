@@ -2755,6 +2755,7 @@ CREATE TABLE `queue_sample_code_generation` (
   `province_code` varchar(32) DEFAULT NULL,
   `sample_code_format` varchar(32) DEFAULT NULL,
   `prefix` varchar(32) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
   `created_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `processed` tinyint(1) DEFAULT '0',
