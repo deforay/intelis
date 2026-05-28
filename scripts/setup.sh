@@ -21,6 +21,10 @@
 #       May also be supplied via the INTELIS_DB_STRATEGY env var.
 #       If omitted and a non-empty 'vlsm' DB is found, the script will prompt.
 #
+#   --php=<version>
+#       PHP major.minor version to install via lamp-setup.sh (e.g. 8.4, 8.5).
+#       Defaults to 8.4. Equivalent long form: --php <version>
+#
 #   --resume
 #       Skip the database setup/import step (only allowed after a previous
 #       successful import; requires the setup-db-complete.checkpoint file).
@@ -28,6 +32,7 @@
 # Examples:
 #   sudo ./intelis-setup.sh --database=/root/backup.sql.gz
 #   sudo ./intelis-setup.sh --db ./dump.sql --db-strategy=drop
+#   sudo ./intelis-setup.sh --php=8.5 --database=/root/backup.sql.gz
 #   sudo INTELIS_DB_STRATEGY=use ./intelis-setup.sh
 
 # Check if running as root
@@ -612,6 +617,7 @@ collect_user_inputs() {
 intelis_sql_file=""
 DB_STRATEGY_FLAG=""
 resume_setup=false
+PHP_VERSION="8.4"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -631,6 +637,14 @@ while [[ $# -gt 0 ]]; do
         DB_STRATEGY_FLAG="$2"
         shift 2
         ;;
+        --php=*)
+        PHP_VERSION="${1#*=}"
+        shift
+        ;;
+        --php)
+        PHP_VERSION="$2"
+        shift 2
+        ;;
         --resume)
         resume_setup=true
         shift
@@ -642,9 +656,13 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-collect_user_inputs
+# Validate PHP_VERSION format (e.g. 8.4, 8.5) — must be major.minor digits.
+if [[ ! "$PHP_VERSION" =~ ^[0-9]+\.[0-9]+$ ]]; then
+    echo "Invalid --php value: '$PHP_VERSION'. Expected format like 8.4 or 8.5."
+    exit 1
+fi
 
-PHP_VERSION=8.4
+collect_user_inputs
 
 # Download and install lamp-setup script
 download_file  "lamp-setup.sh" "https://raw.githubusercontent.com/deforay/utility-scripts/master/lamp/lamp-setup.sh" "Downloading lamp-setup.sh..." || {
