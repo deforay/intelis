@@ -1021,6 +1021,10 @@ configure_php_ini() {
     local desired_opcache_jit="opcache.jit=disable"
     local desired_opcache_interned="opcache.interned_strings_buffer=16"
     local desired_opcache_override="opcache.enable_file_override=1"
+    # PCRE JIT needs to mmap executable memory, which AppArmor on Ubuntu 26.06+
+    # and other hardened kernels refuse. Disabling avoids "Allocation of JIT
+    # memory failed" fatals from RegexIterator / preg_* at request time.
+    local desired_pcre_jit="pcre.jit=0"
 
     # Inner function to update a single PHP ini file
     _update_php_ini_file() {
@@ -1036,6 +1040,7 @@ configure_php_ini() {
         local er_set de_set le_set pms_set umf_set sm_set sid_len_set sid_bits_set gc_maxlifetime_set expose_set
         local opcache_enable_set opcache_enable_cli_set opcache_memory_set opcache_max_files_set
         local opcache_validate_set opcache_save_comments_set opcache_jit_set opcache_interned_set opcache_override_set
+        local pcre_jit_set
 
         er_set=$(grep -q "^${desired_error_reporting}$" "$ini_file" && echo true || echo false)
         de_set=$(grep -q "^${desired_display_errors}$" "$ini_file" && echo true || echo false)
@@ -1056,6 +1061,7 @@ configure_php_ini() {
         opcache_jit_set=$(grep -q "^${desired_opcache_jit}$" "$ini_file" && echo true || echo false)
         opcache_interned_set=$(grep -q "^${desired_opcache_interned}$" "$ini_file" && echo true || echo false)
         opcache_override_set=$(grep -q "^${desired_opcache_override}$" "$ini_file" && echo true || echo false)
+        pcre_jit_set=$(grep -q "^${desired_pcre_jit}$" "$ini_file" && echo true || echo false)
 
         # If ANY are missing, we need to rewrite
         if [ "$er_set" = false ] || [ "$de_set" = false ] || [ "$le_set" = false ] || [ "$pms_set" = false ] || [ "$umf_set" = false ] || [ "$sm_set" = false ] \
@@ -1063,7 +1069,8 @@ configure_php_ini() {
             || [ "$expose_set" = false ] \
             || [ "$opcache_enable_set" = false ] || [ "$opcache_enable_cli_set" = false ] || [ "$opcache_memory_set" = false ] \
             || [ "$opcache_max_files_set" = false ] || [ "$opcache_validate_set" = false ] || [ "$opcache_save_comments_set" = false ] || [ "$opcache_jit_set" = false ] \
-            || [ "$opcache_interned_set" = false ] || [ "$opcache_override_set" = false ]; then
+            || [ "$opcache_interned_set" = false ] || [ "$opcache_override_set" = false ] \
+            || [ "$pcre_jit_set" = false ]; then
             changes_needed=true
             cp "$ini_file" "$backup_file"
             print info "Changes needed. Backup created at $backup_file"
@@ -1113,6 +1120,8 @@ configure_php_ini() {
                     echo ";$line" >>"$temp_file"; echo "$desired_opcache_interned" >>"$temp_file"; opcache_interned_set=true
                 elif [[ "$line" =~ ^[[:space:]]*opcache\.enable_file_override[[:space:]]*= ]] && [ "$opcache_override_set" = false ]; then
                     echo ";$line" >>"$temp_file"; echo "$desired_opcache_override" >>"$temp_file"; opcache_override_set=true
+                elif [[ "$line" =~ ^[[:space:]]*pcre\.jit[[:space:]]*= ]] && [ "$pcre_jit_set" = false ]; then
+                    echo ";$line" >>"$temp_file"; echo "$desired_pcre_jit" >>"$temp_file"; pcre_jit_set=true
                 else
                     echo "$line" >>"$temp_file"
                 fi
@@ -1138,6 +1147,7 @@ configure_php_ini() {
             [ "$opcache_jit_set" = true ] || echo "$desired_opcache_jit" >>"$temp_file"
             [ "$opcache_interned_set" = true ] || echo "$desired_opcache_interned" >>"$temp_file"
             [ "$opcache_override_set" = true ] || echo "$desired_opcache_override" >>"$temp_file"
+            [ "$pcre_jit_set" = true ] || echo "$desired_pcre_jit" >>"$temp_file"
 
             mv "$temp_file" "$ini_file"
             print success "Updated PHP settings in $ini_file"
