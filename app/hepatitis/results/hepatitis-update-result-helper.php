@@ -23,6 +23,10 @@ $testTableName = 'hepatitis_tests';
 $resultSentToSource = null;
 
 try {
+	$db->where('hepatitis_id', $_POST['hepatitisSampleId'] ?? 0);
+	$sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
+	$general->assertFacilityAllowed($sampleFacilityId);
+
 	//Set sample received date
 
 	$resultSentToSource = 'pending';

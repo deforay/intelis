@@ -80,6 +80,8 @@ $genericTestInfo = $db->rawQuery($genericTestQuery, [$id]);
 $vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
 $genericResultInfo = $db->rawQueryOne($vlQuery, [$id]);
 
+$general->assertFacilityAllowed((int) ($genericResultInfo['facility_id'] ?? 0));
+
 if (isset($genericResultInfo['patient_dob']) && trim((string) $genericResultInfo['patient_dob']) !== '' && $genericResultInfo['patient_dob'] != '0000-00-00') {
 	$genericResultInfo['patient_dob'] = DateUtility::humanReadableDateFormat($genericResultInfo['patient_dob']);
 } else {

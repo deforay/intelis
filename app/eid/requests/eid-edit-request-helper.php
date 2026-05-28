@@ -33,6 +33,13 @@ $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 
 try {
+	$db->where('eid_id', $_POST['eidSampleId'] ?? 0);
+	$sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
+	$general->assertFacilityAllowed($sampleFacilityId);
+	if (!empty($_POST['facilityId'])) {
+		$general->assertFacilityAllowed((int) $_POST['facilityId']);
+	}
+
 	$instanceId = '';
 	if (isset($_SESSION['instanceId'])) {
 		$instanceId = $_SESSION['instanceId'];

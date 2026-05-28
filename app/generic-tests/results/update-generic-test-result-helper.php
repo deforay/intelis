@@ -27,6 +27,9 @@ $absVal = null;
 $txtVal = null;
 try {
 
+    $db->where('generic_id', $_POST['vlSampleId'] ?? 0);
+    $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
+    $general->assertFacilityAllowed($sampleFacilityId);
 
     if (isset($_POST['subTestResult']) && is_array($_POST['subTestResult']) && !empty($_POST['subTestResult'][0])) {
         $_POST['subTestResult'] = implode("##", $_POST['subTestResult']);

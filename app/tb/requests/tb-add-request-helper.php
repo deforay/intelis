@@ -36,6 +36,7 @@ try {
     $tableName1 = "activity_log";
     $testTableName = 'tb_tests';
 
+    $general->assertFacilityAllowed((int) ($_POST['facilityId'] ?? 0));
 
     $instanceId = '';
     if (!empty($_SESSION['instanceId'])) {

@@ -44,6 +44,13 @@ $instanceId = $general->getInstanceId();
 
 try {
 
+     $db->where('cd4_id', $_POST['cd4SampleId'] ?? 0);
+     $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
+     $general->assertFacilityAllowed($sampleFacilityId);
+     if (!empty($_POST['facilityId'])) {
+          $general->assertFacilityAllowed((int) $_POST['facilityId']);
+     }
+
      $mandatoryFields = [
           $_POST['cd4SampleId'],
           $_POST['sampleCode'],

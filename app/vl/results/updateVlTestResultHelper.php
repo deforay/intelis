@@ -40,6 +40,10 @@ $txtVal = null;
 $finalResult = null;
 try {
 
+    $db->where('vl_sample_id', $_POST['vlSampleId'] ?? 0);
+    $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
+    $general->assertFacilityAllowed($sampleFacilityId);
+
     $instanceId = $general->getInstanceId();
 
     $testingPlatform = null;

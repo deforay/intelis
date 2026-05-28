@@ -23,6 +23,10 @@ $tableName2 = "log_result_updates";
 
 
 try {
+  $db->where('eid_id', $_POST['eidSampleId'] ?? 0);
+  $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
+  $general->assertFacilityAllowed($sampleFacilityId);
+
   $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true);
   $_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($_POST['sampleTestedDateTime'] ?? '', true);
   $_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
