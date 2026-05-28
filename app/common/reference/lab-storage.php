@@ -28,7 +28,11 @@ $general = ContainerRegistry::get(CommonService::class);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("/common/reference/add-lab-storage.php") && $general->isLISInstance()) { ?>
+						<?php
+						$canAddLabStorage = _isAllowed("/common/reference/add-lab-storage.php")
+							&& ($general->isLISInstance()
+								|| ($general->isSTSInstance() && ($_SESSION['accessType'] ?? '') === 'testing-lab'));
+						if ($canAddLabStorage) { ?>
 							<a href="/common/reference/add-lab-storage.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Lab Freezer/Storage"); ?></a>
 						<?php } ?>
 					</div>
