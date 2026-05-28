@@ -41,7 +41,10 @@ final class AppMenuService
         }
 
         if ($this->commonService->isSTSInstance()) {
-            $mode = "(IFNULL(show_mode,'') = '' OR show_mode = 'sts' OR show_mode = 'always')";
+            $actsAsLab = ($_SESSION['accessType'] ?? '') === 'testing-lab';
+            $mode = $actsAsLab
+                ? "(IFNULL(show_mode,'') IN ('', 'sts', 'lis', 'always'))"
+                : "(IFNULL(show_mode,'') = '' OR show_mode = 'sts' OR show_mode = 'always')";
         } elseif ($this->commonService->isLISInstance()) {
             $mode = "(IFNULL(show_mode,'') = '' OR show_mode = 'lis' OR show_mode = 'always')";
         } else {
