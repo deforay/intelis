@@ -913,12 +913,21 @@ final class MiscUtility
         }
         $logFile = $logDir . '/' . $logName . '-' . date('Ymd-His') . '.log';
 
+        // Forward the parent's argv to the child so positional args (e.g.
+        // `php cleanup.php 30` where 30 is retention days) survive the fork.
+        // --child is APPENDED — original positions stay intact for the
+        // script's $argv[N] lookups; in_array() finds --child wherever it is.
+        $origArgs    = array_slice($_SERVER['argv'] ?? [], 1);
+        $forwardArgs = [...$origArgs, '--child'];
+        $argString   = implode(' ', array_map('escapeshellarg', $forwardArgs));
+
         // nohup + redirect + & detaches the child from the controlling TTY so
         // PHP's shell_exec returns immediately rather than waiting on the job.
         $cmd = sprintf(
-            'nohup %s %s --child >> %s 2>&1 &',
+            'nohup %s %s %s >> %s 2>&1 &',
             escapeshellarg(PHP_BINARY),
             escapeshellarg($scriptFile),
+            $argString,
             escapeshellarg($logFile)
         );
         @shell_exec($cmd);
