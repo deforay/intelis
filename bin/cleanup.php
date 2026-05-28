@@ -20,6 +20,14 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Process\Process;
 
+// Self-fork into the background. Cleanup walks the whole filesystem under the
+// instance scanning for old temp files / logs; on a busy install this can take
+// many minutes. Called from `composer post-update` (@cleanup), so blocking it
+// blocks every upgrade. forkToBackground returns immediately in the parent
+// (after printing where the log lives); we continue here only as the detached
+// child, with output redirected to var/logs/cleanup-<ts>.log.
+MiscUtility::forkToBackground(__FILE__, 'cleanup');
+
 // Create output instance
 $output = new ConsoleOutput();
 
