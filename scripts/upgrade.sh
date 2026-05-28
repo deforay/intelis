@@ -1605,29 +1605,13 @@ upgrade_instance() {
         return 1
     fi
 
-    # Reload Apache before long-running repairs so any stale workers holding
-    # old opcache / DB connections are recycled and don't fight the repair.
-    print info "Reloading Apache before database repairs..."
-    apache2ctl -k graceful || systemctl reload apache2 || systemctl restart apache2
-
-    # Repairs are best-effort, non-destructive hygiene (audit_form_* table sync +
-    # trigger rebuild). On large databases this can take a very long time, and it
-    # never affects whether the instance is correctly upgraded — so run it in the
-    # background and let the upgrade finish (smoke check + maintenance-off) without
-    # waiting. Output and pass/fail go to the upgrade log for later review.
-    # Caveat: the trigger rebuild has a brief window with audit triggers dropped;
-    # since this can now overlap live traffic after maintenance lifts, audit rows
-    # for writes during that window may be missed. Acceptable for hygiene repairs.
-    print info "Starting database repairs in background (audit table sync; logs -> ${log_file})..."
-    (
-        cd "${lis_path}" || exit 0
-        if sudo -u www-data composer db:repair >>"$log_file" 2>&1; then
-            log_action "db:repair completed for ${lis_path} (background)"
-        else
-            log_action "db:repair failed for ${lis_path} (non-fatal, background)"
-        fi
-    ) &
-    disown
+    # NOTE: the per-instance `composer db:repair` (audit_form_* schema sync +
+    # legacy trigger rebuild via bin/setup/fix-audit-tables.php) used to run here.
+    # It's been removed: Audit Trail v2 (audit_log + JSON-snapshot triggers) is
+    # replacing the heavy per-form columnar audit, so the table-rewriting sync is
+    # no longer needed on every upgrade. The lightweight v2 trigger regeneration
+    # will land in a later step as part of the cutover; until then, the existing
+    # legacy <form>_data__* triggers stay in place exactly as they are.
 
     # Wait for directory migrations
     if [ "${#dir_migration_pids[@]}" -gt 0 ]; then
