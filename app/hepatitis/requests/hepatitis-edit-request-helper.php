@@ -32,6 +32,13 @@ $tableName = "form_hepatitis";
 $tableName1 = "activity_log";
 
 try {
+	$db->where('hepatitis_id', $_POST['hepatitisSampleId'] ?? 0);
+	$sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
+	$general->assertFacilityAllowed($sampleFacilityId);
+	if (!empty($_POST['facilityId'])) {
+		$general->assertFacilityAllowed((int) $_POST['facilityId']);
+	}
+
 	$instanceId = '';
 	if (isset($_SESSION['instanceId'])) {
 		$instanceId = $_SESSION['instanceId'];

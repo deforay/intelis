@@ -24,6 +24,10 @@ $tableName1 = "activity_log";
 $testTableName = 'tb_tests';
 
 try {
+    $db->where('tb_id', $_POST['tbSampleId'] ?? 0);
+    $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
+    $general->assertFacilityAllowed($sampleFacilityId);
+
     $instanceId = '';
     if (!empty($_SESSION['instanceId'])) {
         $instanceId = $_SESSION['instanceId'];

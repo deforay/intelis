@@ -44,6 +44,8 @@ $vl_result_category = null;
 
 try {
 
+    $general->assertFacilityAllowed((int) ($_POST['facilityId'] ?? 0));
+
     $mandatoryFields = [
         $_POST['sampleCode'],
         $_POST['sampleCollectionDate']

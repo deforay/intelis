@@ -29,6 +29,10 @@ $tableName = "form_cd4";
 $tableName2 = "log_result_updates";
 
 try {
+    $db->where('cd4_id', $_POST['cd4SampleId'] ?? 0);
+    $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
+    $general->assertFacilityAllowed($sampleFacilityId);
+
     $instanceId = $general->getInstanceId();
     $testingPlatform = null;
     $instrumentId = null;

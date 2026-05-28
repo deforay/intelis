@@ -33,6 +33,8 @@ $tableName = "form_eid";
 $tableName1 = "activity_log";
 
 try {
+	$general->assertFacilityAllowed((int) ($_POST['facilityId'] ?? 0));
+
 	$instanceId = '';
 	if (isset($_SESSION['instanceId'])) {
 		$instanceId = $_SESSION['instanceId'];

@@ -45,6 +45,13 @@ $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 
 try {
+	$db->where('covid19_id', $_POST['covid19SampleId'] ?? 0);
+	$sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
+	$general->assertFacilityAllowed($sampleFacilityId);
+	if (!empty($_POST['facilityId'])) {
+		$general->assertFacilityAllowed((int) $_POST['facilityId']);
+	}
+
 	$sarr = $general->getSystemConfig();
 	$instanceId = '';
 	if (isset($_SESSION['instanceId'])) {
