@@ -6,132 +6,200 @@ declare(strict_types=1);
 /**
  * bin/setup/regenerate-audit-triggers.php
  *
- * Audit Trail v2 trigger lifecycle for upgrade.sh:
+ * Manage the audit triggers that record every form_* insert/update/delete
+ * into the `audit_log` staging table.
  *
- *   php bin/setup/regenerate-audit-triggers.php                     # dry-run (default)
- *   php bin/setup/regenerate-audit-triggers.php form_vl             # dry-run, scoped
- *   php bin/setup/regenerate-audit-triggers.php --apply drop-all    # drop BOTH legacy
- *                                                                     <form>_data__* and
- *                                                                     v2 <form>_audit_*
- *                                                                     triggers. Called by
- *                                                                     upgrade.sh BEFORE
- *                                                                     migrations so renames
- *                                                                     / drops never break a
- *                                                                     write against a stale
- *                                                                     trigger.
- *   php bin/setup/regenerate-audit-triggers.php --apply rebuild     # (re)create v2 triggers
- *                                                                     from the live schema.
- *                                                                     Called by upgrade.sh
- *                                                                     AFTER migrations.
+ *   IMPORTANT: this command only manages TRIGGERS. It does NOT alter, rebuild
+ *   or touch any table or row of data — purely DDL on triggers.
  *
- * Triggers are generated from information_schema (no hand-maintained column
- * lists). Each form's three triggers (ai/au/bd) are emitted as a fresh DROP +
- * CREATE pair. Idempotent: safe to re-run.
+ * Usage:
+ *   php bin/setup/regenerate-audit-triggers.php                  # dry-run (print SQL)
+ *   php bin/setup/regenerate-audit-triggers.php form_vl          # dry-run, one form
+ *   php bin/setup/regenerate-audit-triggers.php --apply install  # (re)install triggers
+ *   php bin/setup/regenerate-audit-triggers.php --apply drop-all # drop all audit triggers
+ *
+ * Use -v / -vv for more detail. Default output is intentionally minimal —
+ * `composer post-install` / `composer post-update` calls this on every deploy
+ * and operators don't want a wall of text.
  */
+
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+
+use App\Registries\ContainerRegistry;
+use App\Services\AuditTriggerService;
+use App\Services\DatabaseService;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
-use App\Services\AuditTriggerService;
-use App\Services\DatabaseService;
-use App\Registries\ContainerRegistry;
-
-[$mode, $only] = parseArgs(array_slice($argv, 1));
-
-/** @var AuditTriggerService $svc */
-$svc = ContainerRegistry::get(AuditTriggerService::class);
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-$mysqli = $db->mysqli();
-
-$forms = $svc->trackedForms();
-if ($only !== null) {
-    $forms = array_values(array_filter($forms, static fn(array $f) => $f['table'] === $only));
-    if ($forms === []) {
-        fwrite(STDERR, "No tracked form matches '{$only}'.\n");
-        exit(1);
-    }
-}
-
-if ($forms === []) {
-    fwrite(STDERR, "No tracked form tables found on this instance.\n");
-    exit(0);
-}
-
-// --apply rebuild also requires the v5.5.3 audit_log table — without it the
-// trigger body references a non-existent table and capture would fail.
-if ($mode === 'rebuild' && !$svc->auditLogReady()) {
-    fwrite(STDERR, "Audit Trail v2: audit_log not present yet — run sys/migrations through 5.5.3 first.\n");
-    exit(1);
-}
-
-$exitCode = 0;
-foreach ($forms as $f) {
-    $statements = collectStatements($svc, $f['table'], $f['pk'], $mode);
-    if ($mode === null) {
-        // dry-run print
-        echo "-- ============================================================\n";
-        echo "-- {$f['table']}  (pk: {$f['pk']})\n";
-        echo "-- ============================================================\n";
-        foreach ($statements as $sql) {
-            echo $sql . ";\n\n";
-        }
-        continue;
-    }
-
-    fwrite(STDERR, "[" . strtoupper($mode) . "] {$f['table']}\n");
-    foreach ($statements as $sql) {
-        if (!$mysqli->query($sql)) {
-            fwrite(STDERR, "  FAIL: " . $mysqli->error . "\n");
-            fwrite(STDERR, "  --- sql ---\n{$sql}\n");
-            $exitCode = 1;
-            // Keep going across the remaining forms — partial success on a
-            // mixed-state cutover is still better than aborting.
-        }
-    }
-}
-
-exit($exitCode);
-
-
-// ---- helpers ----
-
-/**
- * @return array{0:?string, 1:?string}  [mode, onlyForm]
- *   mode: null (dry-run), 'drop-all', 'rebuild'
- */
-function parseArgs(array $args): array
+#[AsCommand(
+    name: 'intelis:audit-triggers',
+    description: 'Manage the audit triggers (TRIGGERS only — does not touch tables or data).'
+)]
+final class AuditTriggersCommand extends Command
 {
-    $mode = null;
-    $only = null;
-    while ($args !== []) {
-        $a = array_shift($args);
-        if ($a === '--apply') {
-            $next = array_shift($args);
-            if (!in_array($next, ['drop-all', 'rebuild'], true)) {
-                fwrite(STDERR, "Usage: --apply drop-all | --apply rebuild\n");
-                exit(2);
+    private const MODE_INSTALL  = 'install';
+    private const MODE_DROP_ALL = 'drop-all';
+
+    #[\Override]
+    protected function configure(): void
+    {
+        $this
+            ->addArgument(
+                'form',
+                InputArgument::OPTIONAL,
+                "Limit to one form_* table (e.g. 'form_vl'); applies to dry-run."
+            )
+            ->addOption(
+                'apply',
+                null,
+                InputOption::VALUE_REQUIRED,
+                "'install' (idempotent re-create) or 'drop-all'. Omit to dry-run."
+            );
+    }
+
+    #[\Override]
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io   = new SymfonyStyle($input, $output);
+        $mode = $input->getOption('apply');
+        $only = $input->getArgument('form');
+
+        if ($mode !== null && !in_array($mode, [self::MODE_INSTALL, self::MODE_DROP_ALL], true)) {
+            $io->error("--apply must be 'install' or 'drop-all'.");
+            return Command::FAILURE;
+        }
+
+        /** @var AuditTriggerService $svc */
+        $svc = ContainerRegistry::get(AuditTriggerService::class);
+        /** @var DatabaseService $db */
+        $db = ContainerRegistry::get(DatabaseService::class);
+        $mysqli = $db->mysqli();
+
+        $forms = $this->resolveForms($svc, $only, $io);
+        if ($forms === null) {
+            return Command::FAILURE;
+        }
+        if ($forms === []) {
+            return Command::SUCCESS;
+        }
+
+        if ($mode === self::MODE_INSTALL && !$svc->auditLogReady()) {
+            $io->error('audit_log is not present yet — run pending migrations first.');
+            return Command::FAILURE;
+        }
+
+        if ($mode === null) {
+            return $this->dryRun($output, $svc, $forms);
+        }
+        return $this->apply($output, $svc, $mysqli, $forms, $mode);
+    }
+
+    /**
+     * @return list<array{table:string, pk:string}>|null  null = error already reported
+     */
+    private function resolveForms(AuditTriggerService $svc, ?string $only, SymfonyStyle $io): ?array
+    {
+        $forms = $svc->trackedForms();
+        if ($only !== null) {
+            $forms = array_values(array_filter($forms, static fn(array $f): bool => $f['table'] === $only));
+            if ($forms === []) {
+                $io->error("No tracked form table matches '{$only}'.");
+                return null;
             }
-            $mode = $next;
-            continue;
         }
-        // Positional: the optional form-table filter (e.g. 'form_vl').
-        if ($only === null) {
-            $only = $a;
+        if ($forms === []) {
+            $io->warning('No tracked form tables found on this instance.');
         }
+        return $forms;
     }
-    return [$mode, $only];
+
+    /**
+     * Dry-run: emit the SQL. Developers running this explicitly want to see
+     * everything, so we don't truncate.
+     *
+     * @param list<array{table:string, pk:string}> $forms
+     */
+    private function dryRun(OutputInterface $output, AuditTriggerService $svc, array $forms): int
+    {
+        $output->writeln('-- dry-run: nothing applied. Re-run with `--apply install` to execute.');
+        foreach ($forms as $f) {
+            $output->writeln('');
+            $output->writeln("-- {$f['table']}");
+            foreach ($svc->buildTriggersFor($f['table'], $f['pk']) as $sql) {
+                $output->writeln($sql . ';');
+                $output->writeln('');
+            }
+        }
+        return Command::SUCCESS;
+    }
+
+    /**
+     * Apply install or drop-all. Minimal output on success; details on -v;
+     * clear per-table errors on failure.
+     *
+     * @param list<array{table:string, pk:string}> $forms
+     */
+    private function apply(
+        OutputInterface $output,
+        AuditTriggerService $svc,
+        \mysqli $mysqli,
+        array $forms,
+        string $mode
+    ): int {
+        $successful = [];
+        $failed     = [];
+
+        foreach ($forms as $f) {
+            $statements = $mode === self::MODE_INSTALL
+                ? $svc->buildTriggersFor($f['table'], $f['pk'])
+                : [...$svc->buildDropLegacyTriggers($f['table']), ...$svc->buildDropTriggersFor($f['table'])];
+
+            $err = null;
+            foreach ($statements as $sql) {
+                if (!$mysqli->query($sql)) {
+                    $err = $mysqli->error;
+                    break;
+                }
+            }
+
+            if ($err !== null) {
+                $failed[] = ['table' => $f['table'], 'error' => $err];
+                continue;
+            }
+            $successful[] = $f['table'];
+        }
+
+        $verb = $mode === self::MODE_INSTALL ? 'installed' : 'cleared';
+
+        if ($failed === []) {
+            $output->writeln("Audit triggers {$verb}.");
+            if ($output->isVerbose()) {
+                foreach ($successful as $t) {
+                    $output->writeln("  - {$t}");
+                }
+            }
+            return Command::SUCCESS;
+        }
+
+        $output->writeln("<error>Audit trigger {$verb} reported errors:</error>");
+        foreach ($failed as $f) {
+            $output->writeln("  {$f['table']}: {$f['error']}");
+        }
+        if ($successful !== []) {
+            $output->writeln("(succeeded on " . count($successful) . " form(s))");
+        }
+        return Command::FAILURE;
+    }
 }
 
-/**
- * @return list<string>
- */
-function collectStatements(AuditTriggerService $svc, string $formTable, string $pk, ?string $mode): array
-{
-    // drop-all: drop BOTH legacy <form>_data__* and v2 <form>_audit_* triggers.
-    if ($mode === 'drop-all') {
-        return [...$svc->buildDropLegacyTriggers($formTable), ...$svc->buildDropTriggersFor($formTable)];
-    }
-    // rebuild / dry-run: idempotent re-create of v2 triggers (DROP IF EXISTS + CREATE).
-    return $svc->buildTriggersFor($formTable, $pk);
-}
+$application = new Application();
+$application->addCommand(new AuditTriggersCommand());
+$application->setDefaultCommand('intelis:audit-triggers', true);
+$application->run();

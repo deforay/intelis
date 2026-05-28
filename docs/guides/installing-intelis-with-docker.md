@@ -52,7 +52,7 @@ The entrypoint script automatically handles everything that `setup.sh` does manu
 - Installs Composer dependencies with optimized autoloading
 - Runs database migrations (`composer post-update`) then generates Audit Trail v2
   triggers (`composer db:repair`, which calls `bin/setup/regenerate-audit-triggers.php
-  --apply rebuild` + `bin/reset-seq.php`)
+  --apply install` + `bin/reset-seq.php`)
 - Executes any run-once scripts
 - Starts the cron service for background tasks
 - Starts Apache in the foreground
