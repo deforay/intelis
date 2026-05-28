@@ -1073,6 +1073,58 @@ final class CommonService
     }
 
     /**
+     * Whether API facility-scope enforcement is currently on.
+     *
+     * Operators flip the global_config flag to 'yes' once the observe-mode
+     * logs (see checkApiFacilityAllowed) confirm no legitimate flow is
+     * being mis-flagged. Default: 'no' (observe-only).
+     */
+    public function isApiFacilityScopeEnforced(): bool
+    {
+        return ($this->getGlobalConfig('api_facility_scope_enforce') ?? 'no') === 'yes';
+    }
+
+    /**
+     * Check whether an API-supplied facility/lab id is within the
+     * authenticated API user's facilityMap. Returns true on LIS and
+     * non-STS instances (no facility-map concept). On STS, returns true
+     * iff $facilityId is in $facilityMap; on a mismatch it logs a warning
+     * so operators can audit observe-mode behaviour before flipping
+     * isApiFacilityScopeEnforced() to 'yes'.
+     *
+     * Unlike assertFacilityAllowed(), this does NOT throw -- API
+     * endpoints typically process batches and decide per-item whether
+     * to skip or reject based on isApiFacilityScopeEnforced().
+     */
+    public function checkApiFacilityAllowed(int $facilityId, ?string $facilityMap, $userId = null, string $context = ''): bool
+    {
+        if ($this->isLISInstance()) {
+            return true;
+        }
+        if (!$this->isSTSInstance()) {
+            return true;
+        }
+        $allowed = $facilityId > 0
+            && !empty($facilityMap)
+            && in_array(
+                $facilityId,
+                array_map('intval', explode(',', (string) $facilityMap)),
+                true
+            );
+        if ($allowed) {
+            return true;
+        }
+        LoggerUtility::logWarning('API facility-scope check failed', [
+            'userId' => $userId,
+            'facilityId' => $facilityId,
+            'facilityMap' => $facilityMap,
+            'context' => $context,
+            'enforce' => $this->isApiFacilityScopeEnforced() ? 'yes' : 'no',
+        ]);
+        return false;
+    }
+
+    /**
      * Defense-in-depth guard for handlers that accept a facility/lab id from
      * the client. No-op in LIS (single-lab install) and for system admins;
      * in STS the facility must be in the session facilityMap or the request

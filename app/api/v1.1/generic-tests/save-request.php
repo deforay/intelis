@@ -90,6 +90,7 @@ try {
     $requestUrl .= $_SERVER['REQUEST_URI'];
     $authToken = ApiService::extractBearerToken($request);
     $user = $usersService->findUserByApiToken($authToken);
+    $apiUserFacilityMap = ContainerRegistry::get(\App\Services\FacilitiesService::class)->getUserFacilityMap($user['user_id']);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
     $uniqueIdsForSampleCodeGeneration = [];
@@ -170,6 +171,22 @@ try {
                 continue;
             }
 
+            // STS-as-LIS hardening: posted facilityId must be in the API
+            // user's facilityMap. Observe-only by default (global_config
+            // 'api_facility_scope_enforce'='no' -> log and proceed). Flip
+            // the flag to 'yes' to reject out-of-scope items.
+            if (!$general->checkApiFacilityAllowed((int) ($data['facilityId'] ?? 0), $apiUserFacilityMap, $user['user_id'] ?? null, 'api/generic-tests/save-request')
+                && $general->isApiFacilityScopeEnforced()) {
+                $noOfFailedRecords++;
+                $responseData[$rootKey] = [
+                    'transactionId' => $transactionId,
+                    'appSampleCode' => $data['appSampleCode'] ?? null,
+                    'status' => 'failed',
+                    'action' => 'skipped',
+                    'message' => _translate("Facility not in your scope")
+                ];
+                continue;
+            }
 
             if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
                 $province = explode("##", (string) $data['provinceId']);
