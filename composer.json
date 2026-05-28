@@ -100,7 +100,7 @@
             "@php bin/setup/update-privileges.php",
             "@php bin/setup/fix-app-menu.php"
         ],
-        "audit-triggers-rebuild": "@php bin/setup/regenerate-audit-triggers.php --apply rebuild",
+        "audit-triggers-install": "@php bin/setup/regenerate-audit-triggers.php --apply install",
         "archive-audit-tables": "@php app/tasks/archive-audit-tables.php",
         "token": "@php bin/token.php",
         "sts-setup": [
@@ -135,7 +135,7 @@
         ],
         "post-install": [
             "@migrate",
-            "@audit-triggers-rebuild",
+            "@audit-triggers-install",
             "@fixes",
             "@purge-cache",
             "@db:collation",
@@ -144,7 +144,7 @@
         "post-update": [
             "@purge-cache",
             "@migrate",
-            "@audit-triggers-rebuild",
+            "@audit-triggers-install",
             "@fixes",
             "@db:collation",
             "@token",
@@ -153,7 +153,7 @@
             "@purge-cache"
         ],
         "db:repair": [
-            "@php bin/setup/regenerate-audit-triggers.php --apply rebuild",
+            "@php bin/setup/regenerate-audit-triggers.php --apply install",
             "@php bin/reset-seq.php"
         ]
     },
