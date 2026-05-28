@@ -36,11 +36,10 @@ echo "Persisting sql_mode=''..."
 mysql -h "$main_db_host" -u "$main_db_user" -p"$main_db_password" \
     -e "SET PERSIST sql_mode = '';" 2>/dev/null || echo "Warning: SET PERSIST sql_mode failed (non-fatal)"
 
-# Import audit-triggers.sql if it exists
-if [ -f /var/www/html/sql/audit-triggers.sql ]; then
-    echo "Importing audit-triggers.sql..."
-    mysql -h "$main_db_host" -u "$main_db_user" -p"$main_db_password" "$main_db_name" </var/www/html/sql/audit-triggers.sql 2>/dev/null || true
-fi
+# Audit Trail v2 triggers are generated later by `composer db:repair` (run after
+# `composer post-update`, which executes the migrations that create audit_log).
+# The legacy sql/audit-triggers.sql was retired with v2 and is no longer in the
+# tree; nothing to import here.
 
 # Set up interfacing database if enabled
 if [ "$interfacing_enabled" = "true" ]; then
