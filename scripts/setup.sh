@@ -5,6 +5,30 @@
 # wget -O intelis-setup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh
 # sudo chmod u+x intelis-setup.sh;
 # sudo ./intelis-setup.sh;
+#
+# Options:
+#   --database=<path>, --db=<path>
+#       Import the given SQL dump into the 'vlsm' database instead of the
+#       bundled sql/init.sql seed. Accepts absolute or relative paths.
+#       Supported formats: .sql, .sql.gz, .sql.zst
+#       Equivalent long forms also work: --database <path> | --db <path>
+#
+#   --db-strategy=<drop|rename|use>
+#       What to do if a 'vlsm' database already exists:
+#         drop   - delete the existing database and create a fresh one
+#         rename - back it up to vlsm_YYYYMMDD_HHMMSS, then create fresh (default)
+#         use    - keep it as-is and skip the import entirely
+#       May also be supplied via the INTELIS_DB_STRATEGY env var.
+#       If omitted and a non-empty 'vlsm' DB is found, the script will prompt.
+#
+#   --resume
+#       Skip the database setup/import step (only allowed after a previous
+#       successful import; requires the setup-db-complete.checkpoint file).
+#
+# Examples:
+#   sudo ./intelis-setup.sh --database=/root/backup.sql.gz
+#   sudo ./intelis-setup.sh --db ./dump.sql --db-strategy=drop
+#   sudo INTELIS_DB_STRATEGY=use ./intelis-setup.sh
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -147,25 +171,120 @@ handle_database_setup_and_import() {
         mysql_exec "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
     }
 
+    # Inspect magic bytes (and tar header at offset 257) to figure out what
+    # the file actually is, rather than trusting the extension. This catches
+    # tar.gz archives renamed to .sql.gz, truncated dumps, and other lies.
+    detect_dump_format() {
+        local file="$1"
+        local hex2 hex4
+
+        hex2=$(head -c 2 "$file" 2>/dev/null | od -An -tx1 | tr -d ' \n')
+        hex4=$(head -c 4 "$file" 2>/dev/null | od -An -tx1 | tr -d ' \n')
+
+        # gzip: 1f 8b — could be a gzipped SQL dump, or a tar.gz archive.
+        if [[ "$hex2" == "1f8b" ]]; then
+            local inner_magic
+            inner_magic=$(gunzip -c "$file" 2>/dev/null | dd bs=1 skip=257 count=5 2>/dev/null)
+            if [[ "$inner_magic" == "ustar" ]]; then
+                echo "tar.gz"
+            else
+                echo "gzip"
+            fi
+            return
+        fi
+
+        # zstd: 28 b5 2f fd
+        if [[ "$hex4" == "28b52ffd" ]]; then
+            echo "zstd"
+            return
+        fi
+
+        # Uncompressed tar: "ustar" at offset 257
+        if [[ "$(dd if="$file" bs=1 skip=257 count=5 2>/dev/null)" == "ustar" ]]; then
+            echo "tar"
+            return
+        fi
+
+        # Plain SQL heuristic: look for typical mysqldump tokens in the head.
+        if head -c 2048 "$file" 2>/dev/null \
+            | grep -aqiE '(^|[[:space:]])(--[[:space:]]|/\*|CREATE[[:space:]]|INSERT[[:space:]]|DROP[[:space:]]|SET[[:space:]]|USE[[:space:]]|LOCK[[:space:]]|START[[:space:]]+TRANSACTION)'; then
+            echo "sql"
+            return
+        fi
+
+        echo "unknown"
+    }
+
     import_sql_dump_into_vlsm() {
         local import_file="$1"
-        local import_pid import_status
+        local import_pid import_status detected
+
+        detected="$(detect_dump_format "$import_file")"
+
+        # Reject archives outright — these are not SQL dumps and would feed
+        # mysql binary garbage.
+        case "$detected" in
+            tar|tar.gz)
+                print error "Refusing to import ${detected} archive: ${import_file}"
+                print info  "Expected a mysqldump-style file (.sql, .sql.gz, or .sql.zst), not a tar archive."
+                log_action "Refused archive (${detected}) presented as SQL dump: ${import_file}"
+                return 1
+                ;;
+            unknown)
+                print error "Could not identify ${import_file} as SQL, gzip, or zstd."
+                print info  "File may be truncated, encrypted, or in an unsupported format."
+                log_action "Unrecognized dump format: ${import_file}"
+                return 1
+                ;;
+        esac
+
+        # Cross-check the declared extension against the detected content so
+        # mislabeled files fail loudly before we touch the database.
+        case "$import_file" in
+            *.sql.gz|*.gz)
+                if [[ "$detected" != "gzip" ]]; then
+                    print error "${import_file} has a .gz extension but is not gzip-compressed (detected: ${detected})."
+                    log_action "Extension/content mismatch (.gz vs ${detected}): ${import_file}"
+                    return 1
+                fi
+                ;;
+            *.sql.zst|*.zst)
+                if [[ "$detected" != "zstd" ]]; then
+                    print error "${import_file} has a .zst extension but is not zstd-compressed (detected: ${detected})."
+                    log_action "Extension/content mismatch (.zst vs ${detected}): ${import_file}"
+                    return 1
+                fi
+                ;;
+            *.sql)
+                if [[ "$detected" != "sql" ]]; then
+                    print error "${import_file} has a .sql extension but content looks like ${detected}."
+                    log_action "Extension/content mismatch (.sql vs ${detected}): ${import_file}"
+                    return 1
+                fi
+                ;;
+        esac
+
+        # Ensure required decompressor is available before kicking off the import.
+        if [[ "$detected" == "zstd" ]] && ! command -v zstd >/dev/null 2>&1; then
+            print error "zstd is not installed but ${import_file} is zstd-compressed."
+            print info  "Install zstd (e.g. 'apt-get install -y zstd') and retry."
+            log_action "Missing zstd binary for import of ${import_file}"
+            return 1
+        fi
 
         # Run the import in a child process so we can show progress for large dumps.
         (
             set -o pipefail
 
-            if [[ "$import_file" == *".gz" ]]; then
-                gunzip -c "$import_file" | mysql vlsm
-            elif [[ "$import_file" == *".zst" ]]; then
-                zstd -dc "$import_file" | mysql vlsm
-            else
-                mysql vlsm < "$import_file"
-            fi
+            case "$detected" in
+                gzip) gunzip -c "$import_file" | mysql vlsm ;;
+                zstd) zstd -dc  "$import_file" | mysql vlsm ;;
+                sql)  mysql vlsm < "$import_file" ;;
+            esac
         ) &
         import_pid=$!
 
-        spinner "${import_pid}" "Importing database dump..."
+        spinner "${import_pid}" "Importing database dump (${detected})..."
         wait "${import_pid}"
         import_status=$?
 
@@ -277,55 +396,219 @@ handle_database_setup_and_import() {
 }
 
 
-# Save the current trap settings
-current_trap=$(trap -p ERR)
+# Gather every interactive answer up front so the rest of the run is
+# unattended. Anything that needs MySQL or extracted files (password
+# verification, ~/.my.cnf write, vhost config, picking individual maintenance
+# scripts) is deferred to its original place but uses the values collected here.
+collect_user_inputs() {
+    # The ERR trap is fatal on any non-zero exit. read can legitimately return
+    # non-zero (timeout, EOF, etc.), so disable the trap across the whole
+    # collection phase and restore it before returning.
+    local saved_trap
+    saved_trap=$(trap -p ERR)
+    trap - ERR
 
-# Disable the error trap temporarily
-trap - ERR
+    print header "Setup configuration — please answer the following prompts"
+    echo "After this, setup will run unattended. (lamp-setup.sh may still"
+    echo "prompt internally; that sub-script is out of our control.)"
+    echo
 
-echo "Enter the LIS installation path [press enter to select /var/www/intelis]: "
-read -t 60 lis_path
-
-# Check if read command timed out or no input was provided
-if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
-    lis_path="/var/www/intelis"
-    echo "Using default path: $lis_path"
-else
-    echo "LIS installation path is set to ${lis_path}."
-fi
-
-log_action "LIS installation path is set to ${lis_path}."
-
-db_setup_checkpoint_file="${lis_path}/var/run/setup-db-complete.checkpoint"
-
-# Check if InteLIS is already installed at this path
-if [ -d "${lis_path}" ] && [ -n "$(ls -A ${lis_path} 2>/dev/null)" ]; then
-    # Check for key InteLIS files to confirm it's an existing installation
-    if [ -f "${lis_path}/composer.json" ] || [ -f "${lis_path}/bootstrap.php" ]; then
-        print warning "InteLIS installation detected at ${lis_path}"
-        
-        # Save the current trap settings
-        current_trap_temp=$(trap -p ERR)
-        trap - ERR
-        
-        if ask_yes_no "An existing InteLIS installation was found. Do you want to proceed with setup (this will update/overwrite the installation)?" "yes"; then
-            print info "Proceeding with setup. Existing installation will be backed up."
-            log_action "User chose to proceed with setup over existing installation"
-        else
-            print info "Setup cancelled by user."
-            log_action "Setup cancelled - existing installation found"
-            exit 0
-        fi
-        
-        # Restore the error trap
-        eval "$current_trap_temp"
+    # --- 1. LIS installation path ---
+    echo "Enter the LIS installation path [press enter to select /var/www/intelis]: "
+    read -t 60 lis_path
+    if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
+        lis_path="/var/www/intelis"
+        echo "Using default path: $lis_path"
+    else
+        echo "LIS installation path is set to ${lis_path}."
     fi
-fi
+    log_action "LIS installation path is set to ${lis_path}."
+    db_setup_checkpoint_file="${lis_path}/var/run/setup-db-complete.checkpoint"
 
-# Restore the previous error trap
-eval "$current_trap"
+    # --- 2. Resume-mode preflight (needs the path) ---
+    if $resume_setup; then
+        intelis_sql_file=""
+        DB_STRATEGY_FLAG=""
+        if [ ! -f "${db_setup_checkpoint_file}" ]; then
+            print error "Resume mode is only available after a successful database setup/import. No checkpoint was found at ${db_setup_checkpoint_file}."
+            log_action "Resume mode rejected because the database setup checkpoint was missing."
+            exit 1
+        fi
+        print info "Resume mode enabled. Database setup/import will be skipped."
+        log_action "Resume mode enabled. Skipping database setup/import."
+    fi
 
-# Initialize variable for database file path
+    # --- 3. Existing-install confirmation ---
+    if [ -d "${lis_path}" ] && [ -n "$(ls -A ${lis_path} 2>/dev/null)" ]; then
+        if [ -f "${lis_path}/composer.json" ] || [ -f "${lis_path}/bootstrap.php" ]; then
+            print warning "InteLIS installation detected at ${lis_path}"
+            if ask_yes_no "An existing InteLIS installation was found. Do you want to proceed with setup (this will update/overwrite the installation)?" "yes"; then
+                print info "Proceeding with setup. Existing installation will be backed up."
+                log_action "User chose to proceed with setup over existing installation"
+            else
+                print info "Setup cancelled by user."
+                log_action "Setup cancelled - existing installation found"
+                exit 0
+            fi
+        fi
+    fi
+
+    # --- 4. SQL dump file validation (path came from --database/--db) ---
+    if [[ -n "$intelis_sql_file" ]]; then
+        if [[ "$intelis_sql_file" != /* ]]; then
+            intelis_sql_file="$(pwd)/$intelis_sql_file"
+        fi
+        if [[ ! -f "$intelis_sql_file" ]]; then
+            echo "SQL file not found: $intelis_sql_file. Please check the path."
+            log_action "SQL file not found: $intelis_sql_file. Please check the path."
+            exit 1
+        fi
+        if [[ ! "$intelis_sql_file" =~ \.(sql|sql\.gz|sql\.zst)$ ]]; then
+            echo "Unsupported SQL file format: $intelis_sql_file. Use .sql, .sql.gz, or .sql.zst"
+            log_action "Unsupported SQL file format: $intelis_sql_file"
+            exit 1
+        fi
+    fi
+
+    # --- 5. Hostname ---
+    read -p "Enter domain name (press enter to use 'intelis'): " hostname
+    if [[ -n "$hostname" ]]; then
+        hostname=$(echo "$hostname" | sed -E 's|^https?://||i')
+        hostname=$(echo "$hostname" | sed -E 's|/*$||')
+        hostname=$(echo "$hostname" | sed -E 's|:[0-9]+$||')
+        hostname=$(echo "$hostname" | cut -d'/' -f1)
+        if [[ -z "$hostname" ]]; then
+            hostname="intelis"
+            print info "Using default hostname: $hostname"
+        else
+            print info "Using cleaned hostname: $hostname"
+        fi
+    else
+        hostname="intelis"
+        print info "Using default hostname: $hostname"
+    fi
+    log_action "Hostname: $hostname"
+
+    # --- 6. Installation type (LIS vs STS) ---
+    read -p "Is this an LIS or STS installation? [LIS/STS] (press enter for default: LIS): " installation_type
+    installation_type="${installation_type:-LIS}"
+    local first_char
+    first_char=$(echo "$installation_type" | cut -c1 | tr '[:upper:]' '[:lower:]')
+    is_lis=false
+    is_sts=false
+    if [[ "$first_char" == "l" ]]; then
+        is_lis=true
+        log_action "Will install InteLIS as the default host"
+    elif [[ "$first_char" == "s" ]]; then
+        is_sts=true
+        log_action "Will install InteLIS alongside other apps"
+    else
+        is_lis=true
+        log_action "Invalid installation type '$installation_type'; defaulting to LIS"
+    fi
+
+    # --- 7. MySQL root password (collect only; verify+persist after lamp-setup) ---
+    mysql_password_needs_persisting=false
+    if [ -f ~/.my.cnf ]; then
+        mysql_root_password=$(awk -F= '/password/ {print $2}' ~/.my.cnf | xargs)
+        echo "MySQL root password extracted from ~/.my.cnf"
+    else
+        echo "MySQL password not yet configured. Please provide a root password to set."
+        while true; do
+            read -sp "Enter MySQL root password: " mysql_root_password
+            echo
+            read -sp "Confirm MySQL root password: " mysql_root_password_confirm
+            echo
+            if [ "$mysql_root_password" != "$mysql_root_password_confirm" ]; then
+                print error "Passwords do not match. Please try again."
+            elif [ -z "$mysql_root_password" ]; then
+                print error "Password cannot be empty. Please try again."
+            else
+                break
+            fi
+        done
+        mysql_password_needs_persisting=true
+    fi
+
+    # --- 8. DB-collision strategy (skip if --db-strategy / env supplied or resuming) ---
+    if ! $resume_setup && [[ -z "$DB_STRATEGY_FLAG" ]]; then
+        echo
+        echo "If an existing 'vlsm' database is detected, what should setup do?"
+        echo "  1) DROP   – delete current database and create a fresh one"
+        echo "  2) RENAME – back up to vlsm_YYYYMMDD_HHMMSS and create fresh (default)"
+        echo "  3) USE    – keep existing 'vlsm' as-is and skip import"
+        read -r -p "Enter choice [1=DROP, 2=RENAME(default), 3=USE]: " _dbchoice
+        case "${_dbchoice:-2}" in
+            1) DB_STRATEGY_FLAG="drop"   ;;
+            2) DB_STRATEGY_FLAG="rename" ;;
+            3) DB_STRATEGY_FLAG="use"    ;;
+            *) DB_STRATEGY_FLAG="rename" ;;
+        esac
+        log_action "DB strategy chosen upfront: ${DB_STRATEGY_FLAG}"
+    fi
+
+    # --- 9. Remote STS URL (LIS only; validated with curl, no local setup needed) ---
+    remote_sts_url=""
+    if $is_lis; then
+        local max_sts_url_attempts=3
+        local sts_url_attempts=0
+        while true; do
+            read -p "Please enter the Remote STS URL (or press Enter to skip): " remote_sts_url
+            log_action "Remote STS URL entered: $remote_sts_url"
+            if [ -z "$remote_sts_url" ]; then
+                echo "No STS URL provided. Skipping validation."
+                log_action "No STS URL provided. Skipping validation."
+                break
+            fi
+            remote_sts_url="${remote_sts_url%/}"
+            echo "Validating the provided STS URL..."
+            local response_code
+            response_code=$(curl -s -o /dev/null -w "%{http_code}" "$remote_sts_url/api/version.php" || true)
+            if [[ "$response_code" =~ ^[0-9]+$ ]] && [ "$response_code" -eq 200 ]; then
+                print success "STS URL validation successful."
+                log_action "STS URL validation successful."
+                break
+            fi
+            sts_url_attempts=$((sts_url_attempts + 1))
+            log_action "STS URL validation failed with response code $response_code."
+            if [ "$sts_url_attempts" -ge "$max_sts_url_attempts" ]; then
+                print warning "Failed to validate the provided STS URL ${max_sts_url_attempts} times (last HTTP response code: $response_code). Skipping STS configuration."
+                log_action "Skipping STS configuration after ${max_sts_url_attempts} failed validation attempts."
+                remote_sts_url=""
+                break
+            fi
+            local remaining_sts_url_attempts=$((max_sts_url_attempts - sts_url_attempts))
+            print error "Failed to validate the provided STS URL (HTTP response code: $response_code). Attempts remaining: $remaining_sts_url_attempts."
+        done
+    fi
+
+    # --- 10. Maintenance scripts policy ---
+    # The full file list isn't known until the codebase is extracted, so the
+    # "pick individual scripts" mode is the only one that still has to prompt
+    # at the end. "all" and "none" run unattended.
+    run_maintenance_scripts=false
+    maintenance_scripts_mode="none"
+    if ask_yes_no "Do you want to run maintenance scripts after setup completes?" "no"; then
+        run_maintenance_scripts=true
+        echo "  1) ALL  – run every maintenance script automatically (default, unattended)"
+        echo "  2) PICK – list the scripts at the end and let me choose (interactive)"
+        read -r -p "Enter choice [1=ALL(default), 2=PICK]: " _mchoice
+        case "${_mchoice:-1}" in
+            2) maintenance_scripts_mode="pick" ;;
+            *) maintenance_scripts_mode="all"  ;;
+        esac
+        log_action "Maintenance scripts policy: ${maintenance_scripts_mode}"
+    fi
+
+    print success "All inputs collected. Setup will now run unattended."
+    print info "Log file: ${log_file}"
+    echo
+
+    eval "$saved_trap"
+}
+
+
+# --- Parse CLI flags before any prompts so collect_user_inputs sees them ---
 intelis_sql_file=""
 DB_STRATEGY_FLAG=""
 resume_setup=false
@@ -353,47 +636,13 @@ while [[ $# -gt 0 ]]; do
         shift
         ;;
         *)
-        # unrecognized -> keep or discard; here we just shift
+        # unrecognized -> discard
         shift
         ;;
     esac
 done
 
-if $resume_setup; then
-    # Resume mode is meant for late-stage reruns where re-importing the DB would be risky.
-    intelis_sql_file=""
-    DB_STRATEGY_FLAG=""
-    if [ ! -f "${db_setup_checkpoint_file}" ]; then
-        print error "Resume mode is only available after a successful database setup/import. No checkpoint was found at ${db_setup_checkpoint_file}."
-        log_action "Resume mode rejected because the database setup checkpoint was missing."
-        exit 1
-    fi
-
-    print info "Resume mode enabled. Database setup/import will be skipped."
-    log_action "Resume mode enabled. Skipping database setup/import."
-fi
-
-# Check if the specified SQL file exists
-if [[ -n "$intelis_sql_file" ]]; then
-    # Check if the file path is absolute or relative
-    if [[ "$intelis_sql_file" != /* ]]; then
-        # File path is relative, check in the current directory
-        intelis_sql_file="$(pwd)/$intelis_sql_file"
-    fi
-
-    if [[ ! -f "$intelis_sql_file" ]]; then
-        echo "SQL file not found: $intelis_sql_file. Please check the path."
-        log_action "SQL file not found: $intelis_sql_file. Please check the path."
-        exit 1
-    fi
-
-    # Restrict accepted dump formats so setup behavior stays predictable.
-    if [[ ! "$intelis_sql_file" =~ \.(sql|sql\.gz|sql\.zst)$ ]]; then
-        echo "Unsupported SQL file format: $intelis_sql_file. Use .sql, .sql.gz, or .sql.zst"
-        log_action "Unsupported SQL file format: $intelis_sql_file"
-        exit 1
-    fi
-fi
+collect_user_inputs
 
 PHP_VERSION=8.4
 
@@ -628,37 +877,7 @@ configure_vhost() {
     fi
 }
 
-# Ask user for the hostname
-read -p "Enter domain name (press enter to use 'intelis'): " hostname
-
-# Clean up the hostname: remove protocol and trailing slashes
-if [[ -n "$hostname" ]]; then
-    # Remove http:// or https:// if present
-    hostname=$(echo "$hostname" | sed -E 's|^https?://||i')
-
-    # Remove trailing slashes
-    hostname=$(echo "$hostname" | sed -E 's|/*$||')
-
-    # Remove any port number if present
-    hostname=$(echo "$hostname" | sed -E 's|:[0-9]+$||')
-
-    # Remove any path components
-    hostname=$(echo "$hostname" | cut -d'/' -f1)
-
-    # If user entered something that became empty after cleanup, use default
-    if [[ -z "$hostname" ]]; then
-        hostname="intelis"
-        print info "Using default hostname: $hostname"
-    else
-        print info "Using cleaned hostname: $hostname"
-    fi
-else
-    hostname="intelis"
-    print info "Using default hostname: $hostname"
-fi
-
-log_action "Hostname: $hostname"
-
+# Hostname was collected upfront in collect_user_inputs.
 # Check if the hostname entry is already in /etc/hosts
 if ! grep -q "127.0.0.1 ${hostname}" /etc/hosts; then
     print info "Adding ${hostname} to hosts file..."
@@ -689,26 +908,16 @@ else
 fi
 
 
-# Ask user if they're installing LIS or STS
-read -p "Is this an LIS or STS installation? [LIS/STS] (press enter for default: LIS): " installation_type
-# Default to LIS if empty
-installation_type="${installation_type:-LIS}"
-# Convert to lowercase first character for case-insensitive comparison
-first_char=$(echo "$installation_type" | cut -c1 | tr '[:upper:]' '[:lower:]')
-
-is_lis=false
-is_sts=false
-if [[ "$first_char" == "l" ]]; then
+# Installation type (is_lis / is_sts) was collected upfront. Write the vhost.
+if $is_lis; then
     echo "Installing InteLIS as the default host..."
     log_action "Installing InteLIS as the default host..."
-    is_lis=true
     apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
     cp "$apache_vhost_file" "${apache_vhost_file}.bak"
     configure_vhost "$apache_vhost_file"
-elif [[ "$first_char" == "s" ]]; then
+else
     echo "Installing InteLIS alongside other apps..."
     log_action "Installing InteLIS alongside other apps..."
-    is_sts=true
     vhost_file="/etc/apache2/sites-available/${hostname}.conf"
     echo "<VirtualHost *:80>
     ServerName ${hostname}
@@ -723,12 +932,6 @@ elif [[ "$first_char" == "s" ]]; then
     </Directory>
 </VirtualHost>" >"$vhost_file"
     a2ensite "${hostname}.conf"
-else
-    echo "Invalid installation type '$installation_type'. Defaulting Intelis to LIS installation..."
-    log_action "Invalid installation type '$installation_type'. Defaulting Intelis to LIS installation..."
-    apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
-    cp "$apache_vhost_file" "${apache_vhost_file}.bak"
-    configure_vhost "$apache_vhost_file"
 fi
 
 # Restart Apache to apply changes
@@ -755,38 +958,16 @@ else
     log_action "File config.production.php already exists. Skipping renaming."
 fi
 
-# Extract MySQL root password or create ~/.my.cnf if missing
-
-if [ -f ~/.my.cnf ]; then
-    # Extract password from .my.cnf
-    mysql_root_password=$(awk -F= '/password/ {print $2}' ~/.my.cnf | xargs)
-    echo "MySQL root password extracted"
-else
-    # Prompt user for MySQL root password
-    echo "Warning: mysql password not found. Please provide the MySQL root password to create one."
-    while true; do
-        read -sp "Enter MySQL root password: " mysql_root_password
-        echo
-        read -sp "Confirm MySQL root password: " mysql_root_password_confirm
-        echo
-
-        if [ "$mysql_root_password" != "$mysql_root_password_confirm" ]; then
-            print error "Passwords do not match. Please try again."
-        elif [ -z "$mysql_root_password" ]; then
-            print error "Password cannot be empty. Please try again."
-        else
-            break
-        fi
-    done
-
-    # Verify the password
+# MySQL root password was collected upfront. If it was prompted (not read
+# from a pre-existing ~/.my.cnf), verify it against the now-running MySQL
+# instance and persist it to ~/.my.cnf for future logins.
+if [ "${mysql_password_needs_persisting:-false}" = true ]; then
     echo "Verifying MySQL root password..."
     if ! mysqladmin ping -u root -p"$mysql_root_password" &>/dev/null; then
         print error "Unable to verify the password. Please check and try again."
         exit 1
     fi
 
-    # Create ~/.my.cnf
     echo "Storing MySQL password for secure login..."
     cat <<EOF >~/.my.cnf
 [client]
@@ -795,8 +976,9 @@ password=${mysql_root_password}
 host=localhost
 EOF
     chmod 600 ~/.my.cnf
-
     echo "MySQL credentials saved in secure file."
+else
+    echo "MySQL root password already configured via ~/.my.cnf."
 fi
 
 # Escape password for sed replacement and PHP single-quoted strings
@@ -918,63 +1100,17 @@ fi
 chmod 644 "$mysql_cnf"
 restart_service mysql
 
-# Only prompt for Remote STS URL for LIS nodes
-if $is_lis; then
-    # Keep STS setup resilient to typos without trapping the installer in an endless loop.
-    max_sts_url_attempts=3
-    sts_url_attempts=0
-    # Prompt for Remote STS URL
-    while true; do
-        read -p "Please enter the Remote STS URL (or press Enter to skip): " remote_sts_url
+# Remote STS URL was collected (and validated) upfront for LIS nodes.
+if $is_lis && [ -n "$remote_sts_url" ]; then
+    desired_sts_url="\$systemConfig['remoteURL'] = '$remote_sts_url';"
+    config_file="${lis_path}/configs/config.production.php"
 
-        log_action "Remote STS URL entered: $remote_sts_url"
-
-        if [ -z "$remote_sts_url" ]; then
-            echo "No STS URL provided. Skipping validation."
-            log_action "No STS URL provided. Skipping validation."
-            break
-        fi
-
-        # Normalize the URL once so validation and saved config use the same value.
-        remote_sts_url="${remote_sts_url%/}"
-
-        echo "Validating the provided STS URL..."
-        response_code=$(curl -s -o /dev/null -w "%{http_code}" "$remote_sts_url/api/version.php" || true)
-
-        # curl transport failures return "000". Keep this retryable instead of
-        # triggering the global ERR trap so setup can continue prompting.
-        if [[ "$response_code" =~ ^[0-9]+$ ]] && [ "$response_code" -eq 200 ]; then
-            print success "STS URL validation successful."
-            log_action "STS URL validation successful."
-
-            # Define desired_sts_url
-            desired_sts_url="\$systemConfig['remoteURL'] = '$remote_sts_url';"
-
-            config_file="${lis_path}/configs/config.production.php"
-
-            # Check if the desired configuration already exists in the file
-            if ! grep -qF "$desired_sts_url" "${config_file}"; then
-                # The desired configuration does not exist, so update the file
-                sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|$desired_sts_url|" "${config_file}"
-                print info "Remote STS URL updated in the configuration file."
-            else
-                print info "Remote STS URL is already set as desired in the configuration file."
-            fi
-            break
-        else
-            sts_url_attempts=$((sts_url_attempts + 1))
-            log_action "STS URL validation failed with response code $response_code."
-
-            if [ "$sts_url_attempts" -ge "$max_sts_url_attempts" ]; then
-                print warning "Failed to validate the provided STS URL ${max_sts_url_attempts} times (last HTTP response code: $response_code). Skipping STS configuration."
-                log_action "Skipping STS configuration after ${max_sts_url_attempts} failed validation attempts."
-                break
-            fi
-
-            remaining_sts_url_attempts=$((max_sts_url_attempts - sts_url_attempts))
-            print error "Failed to validate the provided STS URL (HTTP response code: $response_code). Please enter the STS URL again or press Enter to skip. Attempts remaining: $remaining_sts_url_attempts."
-        fi
-    done
+    if ! grep -qF "$desired_sts_url" "${config_file}"; then
+        sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|$desired_sts_url|" "${config_file}"
+        print info "Remote STS URL updated in the configuration file."
+    else
+        print info "Remote STS URL is already set as desired in the configuration file."
+    fi
 fi
 
 if grep -q "\['cache_di'\] => false" "${config_file}"; then
@@ -1013,42 +1149,46 @@ cd "${lis_path}"
 # (right after the migrate step), so no separate invocation is needed here.
 sudo -u www-data composer post-install
 
-if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
-    # List the files in maintenance directory
-    echo "Available maintenance scripts to run:"
+# Maintenance scripts policy was decided upfront in collect_user_inputs.
+if [ "${run_maintenance_scripts:-false}" = true ]; then
     files=("${lis_path}/maintenance/"*.php)
-    for i in "${!files[@]}"; do
-        filename=$(basename "${files[$i]}")
-        echo "$((i + 1))) $filename"
-    done
 
-    # Ask which files to run
-    echo "Enter the numbers of the scripts you want to run separated by commas (e.g., 1,2,4) or type 'all' to run them all."
-    read -r files_to_run
-
-    # Run selected files
-    if [[ "$files_to_run" == "all" ]]; then
+    if [ "$maintenance_scripts_mode" = "all" ]; then
+        echo "Running all maintenance scripts..."
         for file in "${files[@]}"; do
             echo "Running $file..."
             sudo -u www-data php "$file"
         done
-    else
-        IFS=',' read -ra ADDR <<<"$files_to_run"
-        for i in "${ADDR[@]}"; do
-            # Remove any spaces in the input and correct the array index
-            i=$(echo "$i" | xargs)
-            file_index=$((i - 1))
+    elif [ "$maintenance_scripts_mode" = "pick" ]; then
+        echo "Available maintenance scripts:"
+        for i in "${!files[@]}"; do
+            filename=$(basename "${files[$i]}")
+            echo "$((i + 1))) $filename"
+        done
 
-            # Check if the selected index is within the range of available files
-            if [[ $file_index -ge 0 ]] && [[ $file_index -lt ${#files[@]} ]]; then
-                file="${files[$file_index]}"
+        echo "Enter the numbers of the scripts you want to run separated by commas (e.g., 1,2,4) or type 'all' to run them all."
+        read -r files_to_run
+
+        if [[ "$files_to_run" == "all" ]]; then
+            for file in "${files[@]}"; do
                 echo "Running $file..."
                 sudo -u www-data php "$file"
-            else
-                echo "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
-                log_action "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
-            fi
-        done
+            done
+        else
+            IFS=',' read -ra ADDR <<<"$files_to_run"
+            for i in "${ADDR[@]}"; do
+                i=$(echo "$i" | xargs)
+                file_index=$((i - 1))
+                if [[ $file_index -ge 0 ]] && [[ $file_index -lt ${#files[@]} ]]; then
+                    file="${files[$file_index]}"
+                    echo "Running $file..."
+                    sudo -u www-data php "$file"
+                else
+                    echo "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
+                    log_action "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
+                fi
+            done
+        fi
     fi
 fi
 
