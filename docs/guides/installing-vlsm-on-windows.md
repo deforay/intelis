@@ -79,7 +79,9 @@
   CREATE DATABASE `vlsm` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
   ```
 - Import `sql/init.sql` into the vlsm database
-- Run SQL commands from https://github.com/deforay/vlsm/blob/master/sql/audit-triggers.sql
+- After running migrations (`composer post-install`), generate the audit triggers with:
+  `php bin/setup/regenerate-audit-triggers.php --apply rebuild`
+  (the Audit Trail v2 trigger generator emits them from the live schema; no static SQL to import)
 
 **Configuration:**
 - Rename `configs/config.production.dist.php` to `configs/config.production.php`

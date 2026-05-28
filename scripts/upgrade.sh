@@ -1616,18 +1616,11 @@ upgrade_instance() {
         return 1
     fi
 
-    # Audit Trail v2 — rebuild v2 triggers from the live schema. This is THE only
-    # ongoing audit maintenance the new architecture needs: trigger bodies are
-    # machine-generated from information_schema (no hand-maintained column
-    # lists), so this also auto-picks-up any columns the migrations just added /
-    # removed / renamed. Cheap (DDL only, no table rewrites). On the first
-    # upgrade after the v2 cutover ships, this is the moment legacy capture
-    # ends and audit_log capture begins.
-    print info "Audit Trail v2: rebuilding v2 audit triggers from live schema..."
-    if ! sudo -u www-data php "${lis_path}/bin/setup/regenerate-audit-triggers.php" --apply rebuild; then
-        _apply_failure_no_rollback "audit trigger rebuild failed"
-        return 1
-    fi
+    # NOTE: Audit Trail v2 trigger rebuild is no longer invoked here — it now
+    # runs INSIDE `composer post-update` (right after `@migrate`), so it's
+    # already happened above and we don't double-invoke. The pre-migration
+    # `--apply drop-all` above remains because composer can't drop triggers
+    # *before* it runs migrations on its own.
 
     # Wait for directory migrations
     if [ "${#dir_migration_pids[@]}" -gt 0 ]; then

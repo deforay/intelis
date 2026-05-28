@@ -27,15 +27,18 @@ use App\Registries\ContainerRegistry;
  * `~/.claude/.../memory/project_audit_trail_v2.md` (off-repo by design).
  *
  * Why two trigger name conventions:
- *   - Legacy (kept here so the cutover knows what to drop):
+ *   - Legacy (still recognised here so the upgrade flow's drop-all step
+ *     retires them on the first v2-aware upgrade):
  *       `<form>_data__ai`, `<form>_data__au`, `<form>_data__bd`
- *     emitted by the existing `bin/setup/fix-audit-tables.php`, writing into
- *     per-form columnar `audit_form_*` tables.
+ *     — historically emitted by the retired `bin/setup/fix-audit-tables.php`
+ *     and the obsolete `sql/audit-triggers.sql`, both of which wrote into the
+ *     per-form columnar `audit_form_*` tables (those tables are drained and
+ *     dropped by `run-once/prune-legacy-audit-tables.php`).
  *   - v2 (this generator):
  *       `<form>_audit_ai`, `<form>_audit_au`, `<form>_audit_bd`
  *     writing into the generic `audit_log` table with a JSON snapshot.
  *   Distinct names so v2 triggers can be created without colliding with the
- *   legacy ones (drop-legacy / create-new orchestrated by the cutover).
+ *   legacy ones (drop-legacy / create-new orchestrated by the upgrade flow).
  */
 final class AuditTriggerService
 {

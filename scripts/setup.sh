@@ -263,7 +263,9 @@ handle_database_setup_and_import() {
         fi
     fi
 
-    [[ -f "${lis_path}/sql/audit-triggers.sql"   ]] && mysql vlsm        < "${lis_path}/sql/audit-triggers.sql"
+    # Audit Trail v2 triggers are created later (after `composer post-install`
+    # runs migrations so audit_log exists). The legacy sql/audit-triggers.sql
+    # was retired with v2.
     [[ -f "${lis_path}/sql/interface-init.sql"   ]] && mysql interfacing  < "${lis_path}/sql/interface-init.sql"
 
     echo "Database setup/import completed."
@@ -1007,9 +1009,9 @@ php "${lis_path}/vendor/bin/db-tools" db:test --all
 
 print header "Running database migrations and other post-install tasks"
 cd "${lis_path}"
+# Audit Trail v2 triggers are generated inside `composer post-install`
+# (right after the migrate step), so no separate invocation is needed here.
 sudo -u www-data composer post-install
-print header "Syncing audit tables"
-sudo -u www-data php "${lis_path}/bin/setup/fix-audit-tables.php"
 
 if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
     # List the files in maintenance directory
