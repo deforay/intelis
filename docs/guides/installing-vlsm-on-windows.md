@@ -80,7 +80,7 @@
   ```
 - Import `sql/init.sql` into the vlsm database
 - After running migrations (`composer post-install`), generate the audit triggers with:
-  `php bin/setup/regenerate-audit-triggers.php --apply rebuild`
+  `php bin/setup/regenerate-audit-triggers.php --apply install`
   (the Audit Trail v2 trigger generator emits them from the live schema; no static SQL to import)
 
 **Configuration:**
