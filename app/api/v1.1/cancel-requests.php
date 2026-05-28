@@ -52,6 +52,7 @@ $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
 $authToken = ApiService::extractBearerToken($request);
 $user = $usersService->findUserByApiToken($authToken);
+$apiUserFacilityMap = ContainerRegistry::get(\App\Services\FacilitiesService::class)->getUserFacilityMap($user['user_id']);
 
 $tableName = TestsService::getTestTableName($input['testType']);
 $primaryKeyName = TestsService::getPrimaryColumn($input['testType']);
@@ -87,6 +88,19 @@ try {
     $rowData = $db->rawQuery($sQuery);
     $response = [];
     foreach ($rowData as $key => $row) {
+
+        // STS-as-LIS hardening: only cancel samples whose facility is in
+        // the API user's facilityMap. Observe-only by default
+        // (global_config 'api_facility_scope_enforce'='no' -> log and
+        // proceed); flip to 'yes' to actually skip out-of-scope cancels.
+        if (!$general->checkApiFacilityAllowed((int) ($row['facility_id'] ?? 0), $apiUserFacilityMap, $user['user_id'] ?? null, 'api/cancel-requests')
+            && $general->isApiFacilityScopeEnforced()) {
+            $response[$key]['status'] = 'fail';
+            $response[$key]['message'] = _translate('Facility not in your scope');
+            $response[$key]['sampleCode'] = $row['sample_code'] ?? null;
+            $response[$key]['remoteSampleCode'] = $row['remote_sample_code'] ?? null;
+            continue;
+        }
 
         $status = $testTypeService->cancelSample($row['unique_id'], $user['user_id']);
 
