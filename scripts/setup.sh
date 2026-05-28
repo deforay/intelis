@@ -1028,15 +1028,45 @@ fi
 mysql_cnf="/etc/mysql/mysql.conf.d/mysqld.cnf"
 backup_timestamp=$(date +%Y%m%d%H%M%S)
 
+# Detect server flavor + version so we don't append options that the running
+# server has dropped. MySQL 8.4 removed default_authentication_plugin and
+# disabled mysql_native_password by default; MariaDB never had that option.
+mysql_version_string="$(mysql --version 2>/dev/null || true)"
+mysql_is_mariadb=false
+if [[ "$mysql_version_string" == *MariaDB* ]]; then
+    mysql_is_mariadb=true
+    mysql_major_minor="$(echo "$mysql_version_string" | grep -oE 'Distrib [0-9]+\.[0-9]+' | awk '{print $2}')"
+else
+    mysql_major_minor="$(echo "$mysql_version_string" | grep -oE 'Ver [0-9]+\.[0-9]+' | awk '{print $2}')"
+fi
+
+# Returns 0 (true) if $1 is strictly less than $2 (semver-ish).
+version_lt() {
+    [[ "$1" != "$2" ]] && [[ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | head -1)" == "$1" ]]
+}
+
 # --- define what we want ---
 declare -A mysql_settings=(
     ["sql_mode"]=""
     ["innodb_strict_mode"]="0"
     ["character-set-server"]="utf8mb4"
     ["collation-server"]="utf8mb4_unicode_ci"
-    ["default_authentication_plugin"]="mysql_native_password"
     ["max_connect_errors"]="10000"
 )
+
+# Only set default_authentication_plugin on MySQL < 8.4. Skip on MySQL 8.4+
+# (removed) and on MariaDB (never existed).
+if ! $mysql_is_mariadb && [[ -n "$mysql_major_minor" ]] && version_lt "$mysql_major_minor" "8.4"; then
+    mysql_settings["default_authentication_plugin"]="mysql_native_password"
+fi
+
+# Settings the script may have written on an older MySQL that the running
+# server no longer accepts. We comment these out before restarting so an
+# upgrade-in-place (e.g. 8.0 -> 8.4) doesn't leave a broken cnf behind.
+declare -a mysql_obsolete_keys=()
+if $mysql_is_mariadb || ([[ -n "$mysql_major_minor" ]] && ! version_lt "$mysql_major_minor" "8.4"); then
+    mysql_obsolete_keys+=("default_authentication_plugin")
+fi
 
 changes_needed=false
 
@@ -1048,9 +1078,27 @@ for setting in "${!mysql_settings[@]}"; do
     fi
 done
 
+if [ "$changes_needed" = false ]; then
+    for obsolete in "${mysql_obsolete_keys[@]}"; do
+        if grep -qE "^[[:space:]]*$obsolete[[:space:]]*=" "$mysql_cnf"; then
+            changes_needed=true
+            break
+        fi
+    done
+fi
+
 if [ "$changes_needed" = true ]; then
     print info "Changes needed. Backing up and updating MySQL config..."
+    print info "Detected MySQL flavor: $([ "$mysql_is_mariadb" = true ] && echo MariaDB || echo MySQL) ${mysql_major_minor:-unknown}"
     cp "$mysql_cnf" "${mysql_cnf}.bak.${backup_timestamp}"
+
+    # Comment out any obsolete-on-this-version keys first.
+    for obsolete in "${mysql_obsolete_keys[@]}"; do
+        if grep -qE "^[[:space:]]*$obsolete[[:space:]]*=" "$mysql_cnf"; then
+            print info "Disabling obsolete option for this server: $obsolete"
+            sed -i "/^[[:space:]]*$obsolete[[:space:]]*=.*/s/^/#/" "$mysql_cnf"
+        fi
+    done
 
     for setting in "${!mysql_settings[@]}"; do
         if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$mysql_cnf"; then
