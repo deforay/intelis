@@ -30,19 +30,25 @@ final class TbService extends AbstractTestService
             $params['sampleCodeFormat'] = $globalConfig['tb_sample_code'] ?? 'MMYY';
             $params['prefix'] ??= $globalConfig['tb_sample_code_prefix'] ?? $this->shortCode;
             $postFix = '';
+            $labId = null;
             if ($this->commonService->isLISInstance()) {
-                $labId = $this->commonService->getSystemConfig('sc_testing_lab_id');
-                if (!empty($labId)) {
-                    /** @var FileCacheUtility $fileCache */
-                    $fileCache = ContainerRegistry::get(FileCacheUtility::class);
-                    $code = $fileCache->get("tb_lab_facility_code_$labId", function () use ($labId) {
-                        $facilityCode = $this->db->rawQueryOne("SELECT facility_code FROM facility_details WHERE facility_id = ?", [$labId]);
-                        return !empty($facilityCode['facility_code'])
-                            ? $facilityCode['facility_code']
-                            : strtoupper(substr(md5((string) $labId), 0, 4));
-                    }, ['facility']);
-                    $postFix = "-" . $code;
+                $labId = (int) ($this->commonService->getSystemConfig('sc_testing_lab_id') ?? 0) ?: null;
+            } else {
+                $candidateLabId = (int) ($params['labId'] ?? 0);
+                if ($candidateLabId > 0 && $this->commonService->userActsAsLabForFacility($candidateLabId)) {
+                    $labId = $candidateLabId;
                 }
+            }
+            if (!empty($labId)) {
+                /** @var FileCacheUtility $fileCache */
+                $fileCache = ContainerRegistry::get(FileCacheUtility::class);
+                $code = $fileCache->get("tb_lab_facility_code_$labId", function () use ($labId) {
+                    $facilityCode = $this->db->rawQueryOne("SELECT facility_code FROM facility_details WHERE facility_id = ?", [$labId]);
+                    return !empty($facilityCode['facility_code'])
+                        ? $facilityCode['facility_code']
+                        : strtoupper(substr(md5((string) $labId), 0, 4));
+                }, ['facility']);
+                $postFix = "-" . $code;
             }
             $params['postfix'] ??= $postFix;
 
@@ -217,7 +223,8 @@ final class TbService extends AbstractTestService
                 $params['provinceCode'] ?? null,
                 $params['sampleCodeFormat'] ?? null,
                 $params['prefix'] ?? $this->shortCode,
-                $accessType
+                $accessType,
+                (int) ($params['labId'] ?? 0) ?: null
             );
 
             // Prepare test request data

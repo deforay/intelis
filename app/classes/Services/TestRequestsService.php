@@ -32,7 +32,7 @@ final class TestRequestsService
     {
     }
 
-    public function addToSampleCodeQueue(?string $uniqueId, string $testType, string $sampleCollectionDate, ?string $provinceCode = null, ?string $sampleCodeFormat = null, ?string $prefix = null, ?string $accessType = null): bool
+    public function addToSampleCodeQueue(?string $uniqueId, string $testType, string $sampleCollectionDate, ?string $provinceCode = null, ?string $sampleCodeFormat = null, ?string $prefix = null, ?string $accessType = null, ?int $labId = null): bool
     {
         return $this->db->insert("queue_sample_code_generation", [
             'unique_id' => $uniqueId,
@@ -41,6 +41,7 @@ final class TestRequestsService
             'province_code' => $provinceCode,
             'sample_code_format' => $sampleCodeFormat,
             'prefix' => $prefix,
+            'lab_id' => $labId,
             'access_type' => $accessType
         ]);
     }
@@ -198,6 +199,7 @@ final class TestRequestsService
                                 'testType' => $item['test_type'],
                                 'sampleCodeFormat' => $item['sample_code_format'] ?? 'MMYY',
                                 'prefix' => $item['prefix'] ?? $testTypeService->shortCode ?? 'T',
+                                'labId' => isset($item['lab_id']) ? (int) $item['lab_id'] : null,
                                 'insertOperation' => true,
                             ];
 
