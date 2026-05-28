@@ -863,6 +863,72 @@ final class MiscUtility
     }
 
     /**
+     * Self-fork a long-running CLI script into a detached background process so
+     * the caller (e.g. an upgrade flow / `composer post-update` sequence) is
+     * not blocked while the script runs.
+     *
+     * Call this at the top of the script, right after `require_once bootstrap`:
+     *
+     *     MiscUtility::forkToBackground(__FILE__, 'cleanup');
+     *
+     * On the first invocation (parent), this:
+     *   1. Skips if another instance is already running (lock file).
+     *   2. Claims the lock BEFORE forking so a racing parent invocation sees it.
+     *   3. shell_execs `php <scriptFile> --child` with output redirected to
+     *      `var/logs/<name>-<timestamp>.log`, detached via nohup + & so the
+     *      shell returns immediately.
+     *   4. Prints a one-line "started in background" message and exits 0.
+     *
+     * The detached child re-enters the script with `--child` in argv, this
+     * function returns to the caller, and the caller proceeds with the actual
+     * work. Output goes to the log file. The child is expected to refresh and
+     * release the same lock (see setupSignalHandler() / deleteLockFile()).
+     *
+     * Manual sync debug invocation: pass `--child` yourself to skip the fork
+     * and run inline (output to the terminal).
+     */
+    public static function forkToBackground(string $scriptFile, string $logName): void
+    {
+        if (PHP_SAPI !== 'cli') {
+            return;
+        }
+        // Already the detached child — caller continues with the real work.
+        if (in_array('--child', $_SERVER['argv'] ?? [], true)) {
+            return;
+        }
+
+        $lockFile = self::getLockFile($scriptFile);
+        if (!self::isLockFileExpired($lockFile)) {
+            echo "{$logName} is already running in background — skipping.\n";
+            exit(0);
+        }
+        // Claim the lock BEFORE forking so a near-simultaneous second parent
+        // invocation sees it and exits cleanly. The child refreshes the same
+        // lock as it runs.
+        self::touchLockFile($lockFile);
+
+        $logDir = defined('VAR_PATH') ? VAR_PATH . '/logs' : sys_get_temp_dir();
+        if (!is_dir($logDir)) {
+            @mkdir($logDir, 0755, true);
+        }
+        $logFile = $logDir . '/' . $logName . '-' . date('Ymd-His') . '.log';
+
+        // nohup + redirect + & detaches the child from the controlling TTY so
+        // PHP's shell_exec returns immediately rather than waiting on the job.
+        $cmd = sprintf(
+            'nohup %s %s --child >> %s 2>&1 &',
+            escapeshellarg(PHP_BINARY),
+            escapeshellarg($scriptFile),
+            escapeshellarg($logFile)
+        );
+        @shell_exec($cmd);
+
+        echo "{$logName} started in background.\n";
+        echo "  Log: {$logFile}\n";
+        exit(0);
+    }
+
+    /**
      * Checks if the given string is base64 encoded.
      *
      * @param string $data The string to check.

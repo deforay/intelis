@@ -46,7 +46,24 @@ use App\Services\TestsService;
 use App\Utilities\LoggerUtility;
 use App\Utilities\MiscUtility;
 
-$cliMode = php_sapi_name() === 'cli';
+// On a real install this archives every revision of every legacy audit_form_*
+// row into compressed CSV files; with months of accumulated audit history it
+// can run for many minutes. The run-once loop in upgrade.sh runs scripts
+// synchronously, so without this fork the whole upgrade hangs on the prune.
+// forkToBackground returns immediately in the parent (after printing where the
+// log lives); we continue here only as the detached child.
+MiscUtility::forkToBackground(__FILE__, 'prune-legacy-audit');
+
+// Child path — hold the lock the parent claimed (refresh it as we run, and
+// release it on signals / shutdown).
+$cliMode  = php_sapi_name() === 'cli';
+$lockFile = MiscUtility::getLockFile(__FILE__);
+MiscUtility::touchLockFile($lockFile);
+MiscUtility::setupSignalHandler($lockFile);
+register_shutdown_function(static function () use ($lockFile): void {
+    MiscUtility::deleteLockFile($lockFile);
+});
+
 $log = static function (string $msg) use ($cliMode): void {
     if ($cliMode) {
         echo "[prune-legacy-audit] {$msg}\n";
