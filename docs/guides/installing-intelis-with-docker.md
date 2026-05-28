@@ -46,11 +46,13 @@ This starts two services:
 The entrypoint script automatically handles everything that `setup.sh` does manually:
 
 - Configures Apache virtual host and `/etc/hosts`
-- Initializes the main database from `sql/init.sql` and imports audit triggers
+- Initializes the main database from `sql/init.sql`
 - Creates and configures the interfacing database (if enabled)
 - Generates `config.production.php` with the correct database credentials
 - Installs Composer dependencies with optimized autoloading
-- Runs database migrations and repairs (`composer post-update`, `composer db:repair`)
+- Runs database migrations (`composer post-update`) then generates Audit Trail v2
+  triggers (`composer db:repair`, which calls `bin/setup/regenerate-audit-triggers.php
+  --apply rebuild` + `bin/reset-seq.php`)
 - Executes any run-once scripts
 - Starts the cron service for background tasks
 - Starts Apache in the foreground
