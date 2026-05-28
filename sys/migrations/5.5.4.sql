@@ -1,0 +1,48 @@
+-- Migration file for version 5.5.4
+-- Created on 2026-05-28 10:19:08
+--
+-- Audit Trail v2 — cutover release.
+--
+-- No schema changes in this migration: the v2 tables (audit_log,
+-- audit_column_aliases) were already created in 5.5.3. The cutover itself
+-- happens at upgrade-time, not via SQL:
+--
+--   - scripts/upgrade.sh, around the migration step, now does:
+--       (1) drop ALL audit triggers (legacy <form>_data__*  AND  v2
+--           <form>_audit_*) BEFORE composer post-update,
+--       (2) run migrations (renames / drops / backfills run unhindered, no
+--           stale trigger to break a write),
+--       (3) regenerate v2 triggers from live information_schema AFTER
+--           migrations — the only ongoing audit maintenance v2 needs.
+--
+--   - run-once/prune-legacy-audit-tables.php drains every legacy audit_form_*
+--     into the existing CSV file store, DELETEs the archived rows, DROPs the
+--     emptied tables, and marks `global_config.audit_legacy_prune_done='yes'`
+--     once every legacy table is gone. Idempotent, resumes across upgrades,
+--     never drops a table that still has rows.
+--
+--   - app/tasks/archive-audit-tables.php now calls
+--     AuditArchiveService::runFromAuditLog() after the legacy archive run so
+--     audit_log self-prunes continuously (DB only ever holds the un-archived
+--     tail).
+--
+-- Effect for the operator: on the first upgrade after this release lands,
+-- legacy capture stops, v2 (audit_log JSON-snapshot triggers) takes over, the
+-- legacy backlog drains to CSV files over one or more upgrades, and the
+-- expensive per-upgrade audit_form_* schema sync (fix-audit-tables) is gone.
+
+
+UPDATE `system_config` SET `value` = '5.5.4' WHERE `system_config`.`name` = 'sc_version';
+
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

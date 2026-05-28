@@ -86,6 +86,14 @@ final readonly class AuditArchiveService
 
 
             foreach ($auditToKey as $auditTable => $testKey) {
+                // Post-cutover (after run-once/prune-legacy-audit-tables.php has
+                // dropped the legacy table), this table simply won't exist. Skip
+                // silently so the cron task keeps draining audit_log instead of
+                // throwing on the missing table.
+                if (!$this->tableExists($auditTable)) {
+                    continue;
+                }
+
                 $lastProcessedDate = $sampleCode ? null : ($metadata[$auditTable]['last_processed_date'] ?? null);
 
                 // Folder is the test key, normalized to filesystem-friendly
@@ -332,10 +340,259 @@ final readonly class AuditArchiveService
         }
 
         $formTable  = $tests[$testType]['tableName'];
+        $primaryKey = $tests[$testType]['primaryKey'] ?? null;
         $auditTable = 'audit_' . $formTable;
 
-        // Reuse run() plumbing but only for this table + sample
+        // Legacy path: archive remaining rows from audit_form_* for this sample.
+        // runForTables skips the table if it no longer exists (post-prune).
         $this->runForTables([$auditTable => $testType], $sampleCode, $progress);
+
+        // v2 path: drain audit_log → file for THIS sample's record_id so the
+        // view sees the latest revisions even between cron drains. Look up the
+        // record_id by sample_code on the form table (we accept sample_code,
+        // remote_sample_code or external_sample_code — mirroring how
+        // getUniqueIdFromSampleCode resolves a sample).
+        if ($primaryKey !== null && $this->tableExists('audit_log')) {
+            $recordId = $this->db->rawQueryValue(
+                "SELECT `{$primaryKey}` FROM `{$formTable}`
+                  WHERE sample_code = ? OR remote_sample_code = ? OR external_sample_code = ?
+                  LIMIT 1",
+                [$sampleCode, $sampleCode, $sampleCode]
+            );
+            if ($recordId !== null && $recordId !== false && $recordId !== '') {
+                $this->runFromAuditLog($formTable, (string) $recordId, $progress, false);
+            }
+        }
+    }
+
+    /**
+     * Audit Trail v2 drain — read the generic `audit_log` table → write per-sample
+     * compressed CSV files (same format the view already reads) → DELETE the
+     * archived rows from `audit_log`. Self-pruning: the DB only ever holds the
+     * un-archived tail. Re-archiving is impossible (rows are gone after write),
+     * so we don't need de-dup-by-dt_datetime here.
+     *
+     * Optional (formTable, recordId) filter scopes the drain to one record (for
+     * on-demand archive-then-view from audit-trail.php). Otherwise drains
+     * everything in id-order batches.
+     *
+     * Revision in the file is renumbered to CONTINUE the existing file's max,
+     * not the DB revision — this preserves a contiguous display timeline even
+     * when legacy pre-cutover history and post-cutover audit_log rows share the
+     * same file. DB precision (for safe DELETE) lives on `audit_log.id`.
+     */
+    public function runFromAuditLog(
+        ?string $formTableFilter = null,
+        ?string $recordIdFilter = null,
+        ?callable $progress = null,
+        bool $useLock = false
+    ): void {
+        $lockFile = null;
+        try {
+            if ($useLock) {
+                $lockFile = MiscUtility::getLockFile(__FILE__ . '.audit-log-drain');
+                if (!MiscUtility::isLockFileExpired($lockFile)) {
+                    $this->log($progress, 'Another audit_log drain is already active; exiting.');
+                    return;
+                }
+                MiscUtility::touchLockFile($lockFile);
+                MiscUtility::setupSignalHandler($lockFile);
+            }
+
+            MiscUtility::makeDirectory($this->archiveRoot);
+
+            // No-op on instances that haven't reached v5.5.3 yet (audit_log absent).
+            if (!$this->tableExists('audit_log')) {
+                return;
+            }
+
+            // form_table → testKey, for the file folder layout.
+            $formToKey = [];
+            foreach (TestsService::getTestTypes() as $key => $meta) {
+                $tbl = $meta['tableName'] ?? null;
+                if (!is_string($tbl) || $tbl === '') {
+                    continue;
+                }
+                if (!isset($formToKey[$tbl])) {
+                    $formToKey[$tbl] = $key;
+                }
+            }
+
+            $batchSize = 500;
+            while (true) {
+                // Build the batch query. Use a small id-anchored window so a
+                // concurrent insert during the drain doesn't deadlock the
+                // DELETE that follows.
+                $where  = '1=1';
+                $params = [];
+                if ($formTableFilter !== null) {
+                    $where  .= ' AND form_table = ?';
+                    $params[] = $formTableFilter;
+                }
+                if ($recordIdFilter !== null) {
+                    $where  .= ' AND record_id = ?';
+                    $params[] = $recordIdFilter;
+                }
+                $batch = $this->db->rawQuery(
+                    "SELECT id, form_table, record_id, revision, action, dt_datetime, row_data
+                       FROM audit_log
+                      WHERE $where
+                      ORDER BY id ASC
+                      LIMIT $batchSize",
+                    $params
+                );
+                if (!$batch || count($batch) === 0) {
+                    break;
+                }
+
+                // Group rows by (folder, uniqueId-from-row_data). Rows without a
+                // unique_id (or an unknown form_table) can't be filed — we delete
+                // them so the queue still drains.
+                $groups    = [];
+                $orphanIds = [];
+                foreach ($batch as $r) {
+                    $form = (string) $r['form_table'];
+                    if (!isset($formToKey[$form])) {
+                        $orphanIds[] = (int) $r['id'];
+                        continue;
+                    }
+                    $data = json_decode((string) $r['row_data'], true);
+                    if (!is_array($data) || empty($data['unique_id'])) {
+                        $orphanIds[] = (int) $r['id'];
+                        continue;
+                    }
+                    $folder = preg_replace('/[^\w\-]+/', '-', (string) $formToKey[$form]);
+                    $uid    = (string) $data['unique_id'];
+                    $groups[$folder][$uid][] = ['row' => $r, 'data' => $data];
+                }
+
+                $archivedIds = [];
+                foreach ($groups as $folder => $byUid) {
+                    $targetDir = $this->archiveRoot . DIRECTORY_SEPARATOR . $folder;
+                    MiscUtility::makeDirectory($targetDir);
+
+                    foreach ($byUid as $uniqueId => $entries) {
+                        // Derive a "current" header set: standards first, then the
+                        // union of all columns we have on hand (existing file
+                        // headers ∪ row_data keys from new entries). Union semantics
+                        // are important: dropping a column from the form must NOT
+                        // erase that column's history from older revisions.
+                        $stdCols  = ['action', 'revision', 'dt_datetime'];
+                        $dataCols = [];
+                        foreach ($entries as $e) {
+                            foreach (array_keys($e['data']) as $k) {
+                                if (!in_array($k, $stdCols, true)) {
+                                    $dataCols[$k] = true;
+                                }
+                            }
+                        }
+
+                        $existing      = $this->resolveExistingCompressed($targetDir, $uniqueId);
+                        $existingRows  = [];
+                        $existingHeaders = [];
+                        if ($existing) {
+                            $old = $this->readCompressedCsv($existing);
+                            $existingHeaders = $old['headers'];
+                            $existingRows    = $old['rows'];
+                            foreach ($existingHeaders as $h) {
+                                if (!in_array($h, $stdCols, true)) {
+                                    $dataCols[$h] = true;
+                                }
+                            }
+                        }
+
+                        $currentHeaders = array_merge($stdCols, array_keys($dataCols));
+
+                        // Align old rows to current headers (additive — never drops cells).
+                        $reheaderedExisting = $existingHeaders === []
+                            ? []
+                            : $this->reheaderIfNeeded($existingHeaders, $currentHeaders, $existingRows);
+
+                        // Compute the file's max revision so we can renumber the
+                        // new rows to continue the sequence — keeps display
+                        // contiguous across legacy + post-cutover history.
+                        $idxRev = $this->idx($currentHeaders, 'revision') ?? 1;
+                        $maxRev = 0;
+                        foreach ($reheaderedExisting as $r) {
+                            if (isset($r[$idxRev])) {
+                                $v = $this->jsonishScalar((string) $r[$idxRev]);
+                                if (is_numeric($v)) {
+                                    $maxRev = max($maxRev, (int) $v);
+                                }
+                            }
+                        }
+
+                        // Append new entries in id order (chronological).
+                        $newRows = [];
+                        foreach ($entries as $e) {
+                            $r    = $e['row'];
+                            $data = $e['data'];
+                            $maxRev++;
+                            $record = $data + [
+                                'action'      => $r['action'],
+                                'revision'    => $maxRev,
+                                'dt_datetime' => $r['dt_datetime'],
+                            ];
+                            $newRows[]      = $this->buildRow($currentHeaders, $record);
+                            $archivedIds[]  = (int) $r['id'];
+                        }
+
+                        if ($newRows !== []) {
+                            $allRows = [...$reheaderedExisting, ...$newRows];
+                            // Normalize to preferred compression — remove any
+                            // existing file in another extension first.
+                            $dstBaseNoExt = $targetDir . DIRECTORY_SEPARATOR . $uniqueId;
+                            MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$uniqueId.csv.zst");
+                            MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$uniqueId.csv.gz");
+                            MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$uniqueId.csv.zip");
+                            MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$uniqueId.csv");
+                            $this->writeCompressedCsv($dstBaseNoExt, $currentHeaders, $allRows);
+                        }
+                    }
+                }
+
+                // DELETE everything we processed in this batch. Files were
+                // synced to disk above, so this is the point of no return for
+                // these rows. Orphans (no unique_id / unknown form_table) are
+                // dropped too so the queue keeps draining.
+                $toDelete = array_merge($archivedIds, $orphanIds);
+                if ($toDelete !== []) {
+                    $placeholders = implode(',', array_fill(0, count($toDelete), '?'));
+                    $this->db->rawQuery("DELETE FROM audit_log WHERE id IN ($placeholders)", $toDelete);
+                }
+
+                if ($useLock) {
+                    MiscUtility::touchLockFile($lockFile);
+                }
+                if (count($batch) < $batchSize) {
+                    break;
+                }
+            }
+            $this->log($progress, 'audit_log drain completed.');
+        } catch (Throwable $e) {
+            $this->log($progress, 'audit_log drain error: ' . $e->getMessage());
+            LoggerUtility::logError($e->getMessage(), [
+                'file'  => $e->getFile(),
+                'line'  => $e->getLine(),
+                'last_db_error' => $this->db?->getLastError(),
+                'last_db_query' => $this->db?->getLastQuery(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        } finally {
+            if ($useLock && $lockFile) {
+                MiscUtility::deleteLockFile($lockFile);
+            }
+        }
+    }
+
+    /** Used by runFromAuditLog (and the legacy run() in case audit_form_* tables are gone). */
+    private function tableExists(string $table): bool
+    {
+        return (bool) $this->db->rawQueryValue(
+            "SELECT 1 FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?",
+            [$table]
+        );
     }
 
     // factor the core loop so run() and archiveSample() can share it
@@ -344,6 +601,13 @@ final readonly class AuditArchiveService
         $metadata = $sampleCode === null || $sampleCode === '' || $sampleCode === '0' ? MiscUtility::loadMetadata($this->metadataPath) : [];
 
         foreach ($auditToKey as $auditTable => $testKey) {
+            // Post-cutover the legacy table may be gone — skip silently so
+            // archiveSample() still works (the v2 audit_log drain happens
+            // separately at the caller).
+            if (!$this->tableExists($auditTable)) {
+                continue;
+            }
+
             $lastProcessedDate = $sampleCode ? null : ($metadata[$auditTable]['last_processed_date'] ?? null);
 
             $folderName = preg_replace('/[^\w\-]+/', '-', (string) $testKey);
@@ -615,7 +879,18 @@ final readonly class AuditArchiveService
         return null;
     }
 
-    public function readAuditDataFromCsvFlexible(string $filePath): array
+    /**
+     * Read an archived audit CSV into rows keyed by column name.
+     *
+     * If $testType is provided, applies the v2 read-time rename aliases
+     * (audit_column_aliases) so historical revisions stored under an old column
+     * name are surfaced under the column's CURRENT name. Without $testType the
+     * raw historical headers are returned unchanged (back-compat for any caller
+     * that doesn't yet pass it). The alias map is empty on a fresh v5.5.3
+     * install, so behavior is identical to today's until a rename migration
+     * registers an alias.
+     */
+    public function readAuditDataFromCsvFlexible(string $filePath, ?string $testType = null): array
     {
         if (!is_file($filePath)) {
             return [];
@@ -645,12 +920,27 @@ final readonly class AuditArchiveService
             return [];
         }
 
+        // Resolve historical header names → current names via audit_column_aliases,
+        // scoped to the form table that backs this $testType. Alias service returns
+        // the original name unchanged when there's no mapping, so this is safe
+        // (and a near-no-op) when the table is empty.
+        $resolvedHeaders = $headers;
+        if ($testType !== null) {
+            $formTable = (string) (TestsService::getTestTypes()[$testType]['tableName'] ?? '');
+            if ($formTable !== '') {
+                $aliasService = AuditColumnAliasService::instance();
+                $resolvedHeaders = $aliasService->resolveMany($formTable, $headers);
+            }
+        }
+
         $rows = [];
         while (($row = fgetcsv($fp)) !== false) {
             $assoc = [];
-            foreach ($headers as $i => $h) {
+            foreach ($resolvedHeaders as $i => $h) {
                 // original archiver writes json_encode() values; fgetcsv already unquotes;
                 // we’ll show as-is (including literal "null" when used).
+                // When two old names alias to the same current name (rename
+                // collision), last write wins — acceptable edge for renames.
                 $assoc[$h] = $row[$i] ?? '';
             }
             $rows[] = $assoc;
