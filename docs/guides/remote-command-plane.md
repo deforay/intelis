@@ -27,22 +27,25 @@ Commands in the whitelist:
 | `rotate-token`     | www-data PHP  | Drops + re-fetches the STS bearer token |
 | `refresh-perms`    | root runner   | `intelis-refresh -p <lis> -m full` |
 | `restart-apache`   | root runner   | `apache2ctl -k graceful` |
-| `upgrade`          | root runner   | Prepare + auto-apply in the next quiet window |
+| `upgrade`          | root runner   | Prepare + auto-apply back-to-back in one shot |
 | `upgrade-prepare`  | root runner   | Download + extract + validate; does not apply |
 | `upgrade-apply`    | root runner   | Apply a previously prepared upgrade |
 
 ## Enabling remote commands on a lab
 
-By default the whole channel is off. To opt a lab in, set three
+By default the whole channel is off. To opt a lab in, set two
 `global_config` values on that lab's LIS DB:
 
 ```sql
 INSERT INTO global_config (name, value) VALUES
   ('remote_commands_enabled', 'yes'),     -- master switch for the courier
-  ('allow_remote_upgrade',    'yes'),     -- per-lab kill switch for root commands
-  ('remote_upgrade_window',   '02:00-05:00')  -- optional; when apply may run (local time)
+  ('allow_remote_upgrade',    'yes')      -- per-lab kill switch for root commands
 ON DUPLICATE KEY UPDATE value = VALUES(value);
 ```
+
+To schedule an upgrade for a specific time, use the **Not before** field
+when queueing the command from STS (see below). There is no global
+"quiet window" — every command's timing is per-command.
 
 The next scheduled LIS upgrade (or a fresh `sudo intelis-update`)
 installs the privileged runner + its systemd timer automatically — no
@@ -74,8 +77,9 @@ Disable again at any time:
    - **Resend results / Resend requests:** optional module (VL, EID,
      etc.) + optional "last N days". Leave both blank to only send
      unsynced records.
-   - **Upgrade / Upgrade-prepare:** optional `Not before` time. The
-     apply phase also waits for the lab's `remote_upgrade_window`.
+   - **Upgrade / Upgrade-prepare / Upgrade-apply:** optional `Not before`
+     time — leave blank to run on the next sync tick (~5 min) or pick a
+     specific datetime to schedule it (e.g. tonight at 23:00).
    - **Upgrade-apply:** pick from the dropdown of staged upgrades for
      this lab (populated only if a prior `upgrade-prepare` completed).
 4. Click **Queue command**. The row's badge updates within a few seconds
@@ -138,10 +142,9 @@ exceptions. For root commands, check `/var/log/intelis-runner/runner-*.log`
 and `systemctl status intelis-runner.service`.
 
 ### Upgrade gets to `prepared` and waits
-Either `remote_upgrade_window` is configured and we're outside it (the
-runner will fire when the window opens, assuming the machine is on), or
-the command's `not_before` hasn't arrived yet. Check the details pane
-of the row on Lab Command History.
+The command's `not_before` hasn't arrived yet. STS withholds the
+command from the lab until that timestamp passes. Check the details
+pane of the row on Lab Command History.
 
 ### Rolling back a bad upgrade
 The apply phase always takes a hardlink snapshot at

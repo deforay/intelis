@@ -58,7 +58,6 @@ INSERT IGNORE INTO `global_config`
 VALUES
   ('remote_commands_enabled', 'Remote Commands Enabled', 'yes', 'general', 'yes', CURRENT_TIMESTAMP, 'active');
 
-
 -- ----------------------------------------------------------------------------
 -- 4. Sample Referral Network report (Admin -> Monitoring).
 --    A Leaflet/OpenStreetMap map of which facility refers samples to which
