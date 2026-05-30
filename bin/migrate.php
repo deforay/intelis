@@ -189,6 +189,14 @@ function add_column_if_missing(DatabaseService $db, string $table, string $colum
     )['c'] ?? 0);
 
     if ($exists === 0) {
+        // Schema drifts across installs: if the column is positioned `AFTER <anchor>`
+        // and that anchor column doesn't exist here, drop the AFTER clause so the ADD
+        // still lands (column order is cosmetic). Prevents a 1054 "Unknown column" on
+        // `AFTER <missing>` — the failure mode when an earlier migration that should
+        // have created the anchor never landed on this install.
+        if (preg_match('/\bafter\s+`?([a-z0-9_]+)`?\s*;?\s*$/i', $ddl, $am) && !column_exists($db, $table, $am[1])) {
+            $ddl = preg_replace('/\s+after\s+`?[a-z0-9_]+`?(\s*;?\s*)$/i', '$1', $ddl);
+        }
         $db->rawQuery($ddl);
         assert_no_errno($db, $ddl);
         return MIG_EXECUTED;
@@ -406,6 +414,15 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
         return _apply_change_column($db, $m[1], $m[2], $m[3], $q);
     }
 
+    // ALTER TABLE ... RENAME COLUMN `old` TO `new` (MySQL 8.0+ syntax). Idempotent:
+    // if the rename already applied (old gone, new present), skip. Otherwise fall
+    // through to raw exec so the rename runs (or surfaces a real error).
+    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+rename\s+column\s+`?([a-z0-9_]+)`?\s+to\s+`?([a-z0-9_]+)`?/i', (string) $q, $m)) {
+        if (!column_exists($db, $m[1], $m[2]) && column_exists($db, $m[1], $m[3])) {
+            return MIG_SKIPPED;
+        }
+    }
+
     // ALTER TABLE ... DROP FOREIGN KEY `fk` (must precede the DROP shorthand,
     // which would otherwise capture "foreign" as a column name and no-op).
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+foreign\s+key\s+`?([a-z0-9_]+)`?/i', (string) $q, $m)) {
@@ -505,9 +522,14 @@ foreach ($versions as $version) {
             $io->section($dryRun ? "DRY RUN: version $version" : "Migrating to version $version");
         }
         $totalMigrations++;
+        $versionErrors = 0;
 
         // Parse and pre-build statements, filtering out empties, so we know the total
         $sql_contents = file_get_contents($file);
+        // Normalize SQL comments: "-- comment" requires a space after "--" per the
+        // SQL standard, but migration files sometimes omit it (e.g. "--Insert ...").
+        // Without the space the parser treats the line as a statement, causing errors.
+        $sql_contents = preg_replace('/^(\s*--)(?=\S)/m', '$1 ', $sql_contents);
         $parser = new Parser($sql_contents);
 
         $builtStatements = [];
@@ -563,7 +585,10 @@ foreach ($versions as $version) {
                         if ($errno > 0) {
                             // Benign idempotence codes: 1050 table exists, 1060 dup column,
                             // 1061 dup key, 1068 multi PK, 1091 can't-drop-missing, 1826 dup FK.
-                            if (in_array($errno, [1050, 1060, 1061, 1068, 1091, 1826], true)) {
+                            // 1062 (duplicate entry) is benign only for seed-style INSERTs,
+                            // which are re-runnable; elsewhere it's a real constraint violation.
+                            $isInsertDupBenign = $errno === 1062 && strpos(strtolower(trim($query)), 'insert') === 0;
+                            if (in_array($errno, [1050, 1060, 1061, 1068, 1091, 1826], true) || $isInsertDupBenign) {
                                 if (!$quietMode && getenv('MIG_VERBOSE')) {
                                     if ($bar instanceof ProgressBar) {
                                         MiscUtility::spinnerPausePrint($bar, function () use ($db): void {
@@ -576,6 +601,7 @@ foreach ($versions as $version) {
                                 $skippedQueries++;
                             } else {
                                 $totalErrors++;
+                                $versionErrors++;
                                 $msg = "Error executing query ({$errno}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
                                 if (!$quietMode) {
                                     if ($bar instanceof ProgressBar) {
@@ -616,7 +642,9 @@ foreach ($versions as $version) {
                         (stripos($msgStr, 'already exists') !== false && str_contains($msgStr, '1050')) ||
                         (stripos($msgStr, "Can't DROP") !== false && stripos($msgStr, 'check that column/key exists') !== false) ||
                         stripos($msgStr, 'Multiple primary key defined') !== false || str_contains($msgStr, '1068') ||
-                        stripos($msgStr, 'Duplicate foreign key') !== false || str_contains($msgStr, '1826');
+                        stripos($msgStr, 'Duplicate foreign key') !== false || str_contains($msgStr, '1826') ||
+                        (str_contains($msgStr, '1062') || stripos($msgStr, 'Duplicate entry') !== false)
+                            && strpos(strtolower(trim($query)), 'insert') === 0;
 
                     if ($isBenign) {
                         if (!$quietMode && getenv('MIG_VERBOSE')) {
@@ -633,6 +661,7 @@ foreach ($versions as $version) {
                         $skippedQueries++;
                     } else {
                         $totalErrors++;
+                        $versionErrors++;
                         if (!$quietMode) {
                             $toPrint = "";
                             if ($bar instanceof ProgressBar) {
@@ -686,12 +715,30 @@ foreach ($versions as $version) {
                 exit("Migration aborted by user.\n");
             }
 
-            // Persist the version only if the run wasn't aborted
-            $db->where('name', 'sc_version');
-            $db->update('system_config', ['value' => $version]);
+            // Persist the version only if the run wasn't aborted AND no non-benign
+            // errors occurred. Previously the version was bumped unconditionally, so a
+            // migration with a failed/skipped DDL marked itself "done" while silently
+            // missing schema (the silent-drift bug). Commit either way so the work that
+            // did succeed lands, but only advance sc_version on a clean run.
+            $shouldBumpVersion = $versionErrors === 0;
+            if ($shouldBumpVersion) {
+                $db->where('name', 'sc_version');
+                $db->update('system_config', ['value' => $version]);
+                $lastVersion = $version;
+            } elseif (!$quietMode) {
+                $io->warning("app_version NOT bumped to $version: $versionErrors non-benign error(s) occurred. Fix the issue(s) above and re-run migrate.php.");
+            }
 
             $db->commitTransaction();
-            $lastVersion = $version;
+        }
+
+        // Halt the migration chain on unresolved errors: downstream migrations often
+        // assume prior versions applied cleanly, so continuing risks cascading damage.
+        if ($versionErrors > 0) {
+            if (!$quietMode) {
+                $io->warning("Halting further migrations after $version due to unresolved errors.");
+            }
+            break;
         }
     }
 
