@@ -300,7 +300,7 @@ foreach ($rejectionTypeResult as $type) {
 										</div>
 
 										<!-- Approver -->
-										<div class="col-md-2 col-sm-4">
+										<div class="col-md-2 col-sm-4 approverDiv">
 											<label><?php echo _translate("Approver"); ?></label>
 											<select class="form-control" id="approver" name="approver"
 												title="<?php echo _translate('Please select approver'); ?>"
@@ -338,7 +338,7 @@ foreach ($rejectionTypeResult as $type) {
 										</div>
 
 										<!-- Reviewer -->
-										<div class="col-md-2 col-sm-4">
+										<div class="col-md-2 col-sm-4 reviewerDiv">
 											<label><?php echo _translate("Reviewer"); ?></label>
 											<select class="form-control" id="reviewer" name="reviewer"
 												title="<?php echo _translate('Please select reviewer'); ?>"
@@ -642,7 +642,7 @@ foreach ($rejectionTypeResult as $type) {
 		$("#bulkRejectionReason").val('').trigger('change');
 		$("#overwriteApprover, #overwriteTester, #overwriteReviewer").prop('checked', false);
 		$(".bulkRejectionReason").hide();
-		$(".testerDiv").show();
+		$(".approverDiv, .testerDiv, .reviewerDiv").show();
 		toggleBulkActionControls(true);
 	}
 
@@ -853,13 +853,23 @@ foreach ($rejectionTypeResult as $type) {
 	}
 
 	function showSampleRejectionReason() {
-		if ($("#status").val() == '4') {
+		var statusVal = $("#status").val();
+		if (statusVal == '4') {
+			// Rejected: ask for rejection reason, no tester needed
 			$(".bulkRejectionReason").show();
 			$(".testerDiv").hide();
+			$(".approverDiv, .reviewerDiv").show();
+		} else if (statusVal == '12') {
+			// Cancelled: no testing required, so no tester/approver/reviewer
+			$("#bulkRejectionReason").val('');
+			$(".bulkRejectionReason").hide();
+			$(".approverDiv, .testerDiv, .reviewerDiv").hide();
+			$("#approver, #tester, #reviewer").val('').trigger('change');
+			$("#overwriteApprover, #overwriteTester, #overwriteReviewer").prop('checked', false);
 		} else {
 			$("#bulkRejectionReason").val('');
 			$(".bulkRejectionReason").hide();
-			$(".testerDiv").show();
+			$(".approverDiv, .testerDiv, .reviewerDiv").show();
 		}
 	}
 
