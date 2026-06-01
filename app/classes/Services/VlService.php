@@ -14,6 +14,7 @@ use App\Abstracts\AbstractTestService;
 
 use const COUNTRY\PNG;
 use const COUNTRY\SOUTH_SUDAN;
+use const COUNTRY\SIERRA_LEONE;
 
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\REJECTED;
@@ -371,6 +372,18 @@ final class VlService extends AbstractTestService
         }, 3600);
     }
 
+    /**
+     * The analyzer's lower limit of detection ("titer min"), in copies/mL.
+     * This is country/assay-specific — add new countries to the match below.
+     */
+    private function lowerTiterLimit(): int
+    {
+        return match ((int) $this->commonService->getGlobalConfig('vl_form')) {
+            SIERRA_LEONE => 790,
+            default => 20,
+        };
+    }
+
     public function interpretViralLoadTextResult($result, ?string $unit = null, $defaultLowVlResultText = null): ?array
     {
 
@@ -400,35 +413,51 @@ final class VlService extends AbstractTestService
             $result = "Target Not Detected";
         }
 
-        $strToLowerresult = strtolower((string) $result);
-        switch ($strToLowerresult) {
-            case 'bdl':
-                //case '< 839':
-                $vlResult = $txtVal = 'Below Detection Limit';
-                break;
-            case 'target not detected':
-            case 'not detected':
-            case 'tnd':
-                $vlResult = $txtVal = $vlDefaultTextResult;
-                break;
-            case '< 2.00E+1':
-            case '< titer min':
-                $absDecimalVal = 20;
-                $txtVal = $vlResult = $absVal = "< 20";
-                break;
-            case '> titer max"':
-                $absDecimalVal = 10000000;
-                $txtVal = $vlResult = $absVal = "> 1000000";
-                break;
-            case '< inf':
-                $absDecimalVal = 839;
-                $vlResult = $absVal = 839;
-                $logVal = 2.92;
-                $txtVal = null;
-                break;
-            default:
-                $vlResult = $txtVal = $result;
-                break;
+        // Normalise: lowercase, trim, and collapse internal whitespace so that
+        // spacing/case variations from the analyzer all compare equal.
+        $strToLowerresult = preg_replace('/\s+/', ' ', strtolower(trim((string) $result)));
+
+        // "titer min" / "titer max" are symbolic limits some analyzers emit
+        // instead of a number when a result is below the lower limit of
+        // detection or above the upper limit of quantification. Match them
+        // loosely (substring) so we keep working even if the analyzer tweaks the
+        // exact wording, drops the operator, or prefixes it (e.g.
+        // "HIV-1 < Titer Min", a trailing quote, etc.). The operator is implied
+        // by which limit it is, so we don't rely on "<"/">" being present.
+        if (str_contains($strToLowerresult, 'titer min')) {
+            // Lower limit of detection — varies by country/assay.
+            $titerMin = $this->lowerTiterLimit();
+            $absDecimalVal = $titerMin;
+            $txtVal = $vlResult = $absVal = "< $titerMin";
+        } elseif (str_contains($strToLowerresult, 'titer max')) {
+            // Upper limit of quantification.
+            $absDecimalVal = 10000000;
+            $txtVal = $vlResult = $absVal = "> 1000000";
+        } else {
+            switch ($strToLowerresult) {
+                case 'bdl':
+                    //case '< 839':
+                    $vlResult = $txtVal = 'Below Detection Limit';
+                    break;
+                case 'target not detected':
+                case 'not detected':
+                case 'tnd':
+                    $vlResult = $txtVal = $vlDefaultTextResult;
+                    break;
+                case '< 2.00e+1':
+                    $absDecimalVal = 20;
+                    $txtVal = $vlResult = $absVal = "< 20";
+                    break;
+                case '< inf':
+                    $absDecimalVal = 839;
+                    $vlResult = $absVal = 839;
+                    $logVal = 2.92;
+                    $txtVal = null;
+                    break;
+                default:
+                    $vlResult = $txtVal = $result;
+                    break;
+            }
         }
 
         $vlResult = $this->countrySpecificInterpretations($vlResult);
