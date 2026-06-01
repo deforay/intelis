@@ -14,7 +14,6 @@ use App\Abstracts\AbstractTestService;
 
 use const COUNTRY\PNG;
 use const COUNTRY\SOUTH_SUDAN;
-use const COUNTRY\SIERRA_LEONE;
 
 use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\REJECTED;
@@ -401,62 +400,66 @@ final class VlService extends AbstractTestService
     /**
      * The analyzer's lower limit of detection ("titer min"), in copies/mL.
      *
-     * Some assays read different floors depending on the specimen type. In
-     * Sierra Leone the 790 floor applies only to specimens we positively know
-     * are non-plasma (e.g. Plasma Separation Card); plasma — and any unknown
-     * specimen — fall back to the default 20 floor. Every other country always
-     * uses 20.
+     * The assay reads down to 20 copies/mL for every specimen type except the
+     * Plasma Separation Card (PSC), whose lower limit of quantitation is 790.
+     * Anything we can't positively identify as a PSC therefore defaults to 20.
+     * This is specimen-driven, not country-driven, so it applies wherever a PSC
+     * specimen is used.
      *
      * NOTE: the assay also defines 200 µL plasma as 50 copies/mL (vs 20 for
      * 500 µL). We can't distinguish the two without a sample-volume signal,
      * which the interface does not currently provide, so all plasma is treated
-     * as the 500 µL / 20 floor. Add a volume check here once that is available.
+     * as the 500 µL / 20 floor. isPlasmaSpecimen() is kept ready for that split.
      *
      * @param int|string|null $specimenType r_vl_sample_type.sample_id, or its name.
      */
     private function lowerTiterLimit(int|string|null $specimenType = null): int
     {
-        if ((int) $this->commonService->getGlobalConfig('vl_form') !== SIERRA_LEONE) {
-            return 20;
-        }
-
-        // Default to 20 (plasma / unknown specimen); only a known non-plasma
-        // specimen reads the higher 790 floor.
-        $specimen = trim((string) $specimenType);
-        if ($specimen === '' || $this->isPlasmaSpecimen($specimen)) {
-            return 20;
-        }
-
-        return 790;
+        return $this->isPlasmaSeparationCard($specimenType) ? 790 : 20;
     }
 
     /**
-     * Whether a specimen type is (liquid) plasma. Accepts either an
+     * Resolve a specimen type to its sample-type name. Accepts either an
      * r_vl_sample_type id (as submitted by the request/result forms and the
      * API) or the name itself, so callers don't have to resolve it first.
-     *
-     * NB: a Plasma Separation Card (PSC) is NOT plasma for titer purposes — it
-     * has its own, higher lower-limit-of-detection — so it is excluded even
-     * though its name contains the word "plasma".
+     * Returns '' when blank/unknown.
      */
-    private function isPlasmaSpecimen(int|string|null $specimenType): bool
+    private function resolveSpecimenName(int|string|null $specimenType): string
     {
         $specimenType = trim((string) $specimenType);
         if ($specimenType === '') {
-            return false;
+            return '';
         }
-
         // Numeric values are sample-type ids — resolve them to their name.
-        $name = is_numeric($specimenType)
+        return is_numeric($specimenType)
             ? (string) ($this->getVlSampleTypes()[(int) $specimenType] ?? '')
             : $specimenType;
-        $name = strtolower($name);
+    }
 
-        if (str_contains($name, 'psc') || str_contains($name, 'separation card')) {
+    /**
+     * Whether a specimen type is a Plasma Separation Card (PSC), which has a
+     * higher lower limit of quantitation (790) than other specimens.
+     */
+    private function isPlasmaSeparationCard(int|string|null $specimenType): bool
+    {
+        $name = strtolower($this->resolveSpecimenName($specimenType));
+        return $name !== '' && (str_contains($name, 'psc') || str_contains($name, 'separation card'));
+    }
+
+    /**
+     * Whether a specimen type is (liquid) plasma. NB: a Plasma Separation Card
+     * is NOT plasma for titer purposes, so it is excluded even though its name
+     * contains the word "plasma".
+     *
+     * Currently unused — kept ready for the 200 µL (50) vs 500 µL (20) plasma
+     * split, which we can implement once a sample-volume signal is available.
+     */
+    private function isPlasmaSpecimen(int|string|null $specimenType): bool
+    {
+        if ($this->isPlasmaSeparationCard($specimenType)) {
             return false;
         }
-
-        return str_contains($name, 'plasma');
+        return str_contains(strtolower($this->resolveSpecimenName($specimenType)), 'plasma');
     }
 
     public function interpretViralLoadTextResult($result, ?string $unit = null, $defaultLowVlResultText = null, $specimenType = null): ?array
