@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\CANCELLED;
 use const SAMPLE_STATUS\TEST_FAILED;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
@@ -45,11 +46,14 @@ try {
                 'data_sync' => 0
             ];
             // Preserve the historic auto-fill behavior on status updates for VL.
-            if (empty($vlRow['result_reviewed_by'])) {
-                $status['result_reviewed_by'] = $_SESSION['userId'];
-            }
-            if (empty($vlRow['result_approved_by'])) {
-                $status['result_approved_by'] = $_SESSION['userId'];
+            // Skip for Cancelled samples since no testing/approval took place.
+            if ($_POST['status'] != CANCELLED) {
+                if (empty($vlRow['result_reviewed_by'])) {
+                    $status['result_reviewed_by'] = $_SESSION['userId'];
+                }
+                if (empty($vlRow['result_approved_by'])) {
+                    $status['result_approved_by'] = $_SESSION['userId'];
+                }
             }
             if ($_POST['status'] == REJECTED) {
                 $status['result_value_log'] = '';
