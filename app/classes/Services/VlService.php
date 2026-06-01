@@ -202,6 +202,32 @@ final class VlService extends AbstractTestService
         return $response;
     }
 
+    /**
+     * Resolve the registered specimen type (r_vl_sample_type id) of a sample by
+     * its sample code. Used by instrument file imports, where the analyzer
+     * output carries the result but not the specimen type — the specimen type
+     * was recorded on the request and is needed to interpret specimen-dependent
+     * limits (e.g. "< Titer Min"). Returns null when not found.
+     */
+    public function getSpecimenTypeBySampleCode(?string $sampleCode): ?int
+    {
+        $sampleCode = trim((string) $sampleCode);
+        if ($sampleCode === '') {
+            return null;
+        }
+        try {
+            $row = $this->db->rawQueryOne(
+                "SELECT specimen_type FROM form_vl WHERE sample_code = ? ORDER BY vl_sample_id DESC LIMIT 1",
+                [$sampleCode]
+            );
+        } catch (Throwable) {
+            return null;
+        }
+        return isset($row['specimen_type']) && $row['specimen_type'] !== '' && $row['specimen_type'] !== null
+            ? (int) $row['specimen_type']
+            : null;
+    }
+
     public function getVLResultCategory($resultStatus, $finalResult): ?string
     {
         return MemoUtility::remember(function () use ($resultStatus, $finalResult): ?string {
@@ -276,7 +302,7 @@ final class VlService extends AbstractTestService
                 $resultStatus = NO_RESULT; // No Result
             } else {
 
-                $interpretedResults = $this->interpretViralLoadResult($params['vlResult']);
+                $interpretedResults = $this->interpretViralLoadResult($params['vlResult'], null, null, $params['specimenType'] ?? null);
 
                 $logVal = $interpretedResults['logVal'] ?? null;
                 $absDecimalVal = $interpretedResults['absDecimalVal'] ?? null;
@@ -315,9 +341,9 @@ final class VlService extends AbstractTestService
         return MiscUtility::arrayEmptyStringsToNull($response);
     }
 
-    public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null): ?array
+    public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null, int|string|null $specimenType = null): ?array
     {
-        return MemoUtility::remember(function () use ($result, $unit, $defaultLowVlResultText): ?array {
+        return MemoUtility::remember(function () use ($result, $unit, $defaultLowVlResultText, $specimenType): ?array {
 
             // Remove copy number units like cp/mL, copies/mL, etc.
             $result = str_ireplace($this->copiesPatterns, '', $result);
@@ -351,7 +377,7 @@ final class VlService extends AbstractTestService
             } elseif ($vlResultType == 'numeric') {
                 $interpretedData = $this->interpretViralLoadNumericResult($result, $unit);
             } else {
-                $interpretedData = $this->interpretViralLoadTextResult($result, $unit, $defaultLowVlResultText);
+                $interpretedData = $this->interpretViralLoadTextResult($result, $unit, $defaultLowVlResultText, $specimenType);
             }
 
             return $interpretedData;
@@ -374,17 +400,66 @@ final class VlService extends AbstractTestService
 
     /**
      * The analyzer's lower limit of detection ("titer min"), in copies/mL.
-     * This is country/assay-specific — add new countries to the match below.
+     *
+     * Some assays read different floors depending on the specimen type. In
+     * Sierra Leone the 790 floor applies only to specimens we positively know
+     * are non-plasma (e.g. Plasma Separation Card); plasma — and any unknown
+     * specimen — fall back to the default 20 floor. Every other country always
+     * uses 20.
+     *
+     * NOTE: the assay also defines 200 µL plasma as 50 copies/mL (vs 20 for
+     * 500 µL). We can't distinguish the two without a sample-volume signal,
+     * which the interface does not currently provide, so all plasma is treated
+     * as the 500 µL / 20 floor. Add a volume check here once that is available.
+     *
+     * @param int|string|null $specimenType r_vl_sample_type.sample_id, or its name.
      */
-    private function lowerTiterLimit(): int
+    private function lowerTiterLimit(int|string|null $specimenType = null): int
     {
-        return match ((int) $this->commonService->getGlobalConfig('vl_form')) {
-            SIERRA_LEONE => 790,
-            default => 20,
-        };
+        if ((int) $this->commonService->getGlobalConfig('vl_form') !== SIERRA_LEONE) {
+            return 20;
+        }
+
+        // Default to 20 (plasma / unknown specimen); only a known non-plasma
+        // specimen reads the higher 790 floor.
+        $specimen = trim((string) $specimenType);
+        if ($specimen === '' || $this->isPlasmaSpecimen($specimen)) {
+            return 20;
+        }
+
+        return 790;
     }
 
-    public function interpretViralLoadTextResult($result, ?string $unit = null, $defaultLowVlResultText = null): ?array
+    /**
+     * Whether a specimen type is (liquid) plasma. Accepts either an
+     * r_vl_sample_type id (as submitted by the request/result forms and the
+     * API) or the name itself, so callers don't have to resolve it first.
+     *
+     * NB: a Plasma Separation Card (PSC) is NOT plasma for titer purposes — it
+     * has its own, higher lower-limit-of-detection — so it is excluded even
+     * though its name contains the word "plasma".
+     */
+    private function isPlasmaSpecimen(int|string|null $specimenType): bool
+    {
+        $specimenType = trim((string) $specimenType);
+        if ($specimenType === '') {
+            return false;
+        }
+
+        // Numeric values are sample-type ids — resolve them to their name.
+        $name = is_numeric($specimenType)
+            ? (string) ($this->getVlSampleTypes()[(int) $specimenType] ?? '')
+            : $specimenType;
+        $name = strtolower($name);
+
+        if (str_contains($name, 'psc') || str_contains($name, 'separation card')) {
+            return false;
+        }
+
+        return str_contains($name, 'plasma');
+    }
+
+    public function interpretViralLoadTextResult($result, ?string $unit = null, $defaultLowVlResultText = null, $specimenType = null): ?array
     {
 
         // If result is blank, then return null
@@ -425,8 +500,8 @@ final class VlService extends AbstractTestService
         // "HIV-1 < Titer Min", a trailing quote, etc.). The operator is implied
         // by which limit it is, so we don't rely on "<"/">" being present.
         if (str_contains($strToLowerresult, 'titer min')) {
-            // Lower limit of detection — varies by country/assay.
-            $titerMin = $this->lowerTiterLimit();
+            // Lower limit of detection — varies by assay/specimen type.
+            $titerMin = $this->lowerTiterLimit($specimenType);
             $absDecimalVal = $titerMin;
             $txtVal = $vlResult = $absVal = "< $titerMin";
         } elseif (str_contains($strToLowerresult, 'titer max')) {
