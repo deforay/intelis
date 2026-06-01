@@ -86,7 +86,7 @@ try {
             if (empty($row['C'])) {
                 continue;
             }
-            $interpretedResults = $vlService->interpretViralLoadResult($row['D']);
+            $interpretedResults = $vlService->interpretViralLoadResult($row['D'], null, null, $vlService->getSpecimenTypeBySampleCode($row['C'] ?? null));
             // dump($row['C']);
             // dump($row['D']);
             // dump($interpretedResults);

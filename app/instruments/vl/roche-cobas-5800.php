@@ -50,7 +50,7 @@ try {
             continue;
         }
 
-        $interpretedResults = $vlService->interpretViralLoadResult($row['Result'] ?? null);
+        $interpretedResults = $vlService->interpretViralLoadResult($row['Result'] ?? null, null, null, $vlService->getSpecimenTypeBySampleCode($row['Sample ID'] ?? null));
         $testingDate = DateUtility::isoDateFormat($row['Released date/time'] ?? null, true);
 
         $infoFromFile[$row['Sample ID']] = [
