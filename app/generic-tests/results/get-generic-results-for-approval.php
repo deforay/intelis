@@ -125,11 +125,16 @@ if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
 if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
      $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
+$cancellableFilter = (isset($_POST['statusFilter']) && $_POST['statusFilter'] == 'cancellable');
 if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
      if ($_POST['statusFilter'] == 'approvedOrRejected') {
          $sWhere[] = ' vl.result_status IN (4,7)';
      } elseif ($_POST['statusFilter'] == 'notApprovedOrRejected') {
          $sWhere[] = ' vl.result_status IN (6,8)';
+     } elseif ($cancellableFilter) {
+         // Cancellation is allowed for any sample that is not already Expired (10) or Cancelled (12),
+         // regardless of whether it has been tested yet.
+         $sWhere[] = ' vl.result_status NOT IN (10,12)';
      }
 }
 
@@ -137,7 +142,10 @@ if (!empty($_SESSION['facilityMap'])) {
      $sWhere[] =  " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
 }
 
-$sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
+// Untested samples (no result yet) are still cancellable.
+if (!$cancellableFilter) {
+     $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
+}
 
 if ($sWhere !== []) {
      $sWhere = ' WHERE ' . implode(" AND ", $sWhere);

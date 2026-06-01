@@ -140,6 +140,7 @@ foreach ($rejectionTypeResult as $type) {
 								<select class="form-control" id="statusFilter" name="statusFilter" title="<?php echo _translate('Please choose a status'); ?>" style="width:220px;">
 									<option value="notApprovedOrRejected"> <?php echo _translate("Not Approved/Rejected"); ?> </option>
 									<option value="approvedOrRejected"> <?php echo _translate("Already Approved/Rejected"); ?> </option>
+									<option value="cancellable"> <?php echo _translate("Available for Cancellation"); ?> </option>
 								</select>
 							</td>
 						</tr>
@@ -179,6 +180,7 @@ foreach ($rejectionTypeResult as $type) {
 												<option value="7"><?php echo _translate("Accepted"); ?></option>
 												<option value="4"><?php echo _translate("Rejected"); ?></option>
 												<option value="2"><?php echo _translate("Lost"); ?></option>
+												<option value="<?= SAMPLE_STATUS\CANCELLED; ?>"><?php echo _translate("Cancelled"); ?></option>
 											</select>
 										</div>
 
@@ -190,7 +192,7 @@ foreach ($rejectionTypeResult as $type) {
 											</select>
 										</div>
 
-										<div class="col-md-2">
+										<div class="col-md-2 approverDiv">
 											<label><?php echo _translate("Approver"); ?></label>
 											<select class="form-control" id="approver" name="approver" disabled="disabled">
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
@@ -222,7 +224,7 @@ foreach ($rejectionTypeResult as $type) {
 											</label>
 										</div>
 
-										<div class="col-md-2">
+										<div class="col-md-2 reviewerDiv">
 											<label><?php echo _translate("Reviewer"); ?></label>
 											<select class="form-control" id="reviewer" name="reviewer" disabled="disabled">
 												<option value=""><?php echo _translate("-- Select --"); ?></option>
@@ -487,7 +489,7 @@ foreach ($rejectionTypeResult as $type) {
 		$("#bulkRejectionReason").val('').trigger('change');
 		$("#overwriteApprover, #overwriteTester, #overwriteReviewer").prop('checked', false);
 		$(".bulkRejectionReason").hide();
-		$(".testerDiv").show();
+		$(".approverDiv, .testerDiv, .reviewerDiv").show();
 		toggleBulkActionControls(true);
 	}
 
@@ -585,8 +587,7 @@ foreach ($rejectionTypeResult as $type) {
 			} else if (!confirmDuplicateBulkRoles(approver, tester, reviewer)) {
 				return;
 			} else {
-				conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
-				if (conf) {
+				var doStatusUpdate = function() {
 					$.post("/hepatitis/results/update-status.php", {
 							status: stValue,
 							approver: approver,
@@ -609,6 +610,16 @@ foreach ($rejectionTypeResult as $type) {
 								alert("<?= _translate("Updated successfully."); ?>");
 							}
 						});
+				};
+				if (stValue == '12') {
+					showCancelConfirmModal({
+						onConfirm: doStatusUpdate
+					});
+				} else {
+					conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
+					if (conf) {
+						doStatusUpdate();
+					}
 				}
 			}
 		} else {
@@ -647,19 +658,94 @@ foreach ($rejectionTypeResult as $type) {
 	}
 
 	function showSampleRejectionReason() {
-		if ($("#status").val() == '4') {
+		var statusVal = $("#status").val();
+		if (statusVal == '4') {
+			// Rejected: ask for rejection reason, no tester needed
 			$(".bulkRejectionReason").show();
 			$(".testerDiv").hide();
+			$(".approverDiv, .reviewerDiv").show();
+		} else if (statusVal == '12') {
+			// Cancelled: no testing required, so no tester/approver/reviewer
+			$("#bulkRejectionReason").val('');
+			$(".bulkRejectionReason").hide();
+			$(".approverDiv, .testerDiv, .reviewerDiv").hide();
+			$("#approver, #tester, #reviewer").val('').trigger('change');
+			$("#overwriteApprover, #overwriteTester, #overwriteReviewer").prop('checked', false);
 		} else {
 			$("#bulkRejectionReason").val('');
 			$(".bulkRejectionReason").hide();
-			$(".testerDiv").show();
+			$(".approverDiv, .testerDiv, .reviewerDiv").show();
 		}
 	}
 
 	function hideReasonDiv(id) {
 		$("#" + id).hide();
 	}
+
+	// Type-to-confirm modal for cancellation. User must type CANCEL to enable the confirm button.
+	function showCancelConfirmModal(opts) {
+		opts = opts || {};
+		var $modal = $('#cancelConfirmModal');
+		var $input = $('#cancelConfirmInput');
+		var $btn = $('#cancelConfirmBtn');
+		var requiredWord = 'cancel';
+		var confirmed = false;
+
+		$input.val('');
+		$btn.prop('disabled', true);
+
+		$input.off('input.ccc keypress.ccc')
+			.on('input.ccc', function() {
+				$btn.prop('disabled', $(this).val().trim().toLowerCase() !== requiredWord);
+			})
+			.on('keypress.ccc', function(e) {
+				if (e.which === 13) {
+					e.preventDefault();
+					if ($(this).val().trim().toLowerCase() === requiredWord) {
+						$btn.trigger('click');
+					}
+				}
+			});
+
+		$btn.off('click.ccc').on('click.ccc', function() {
+			if ($input.val().trim().toLowerCase() !== requiredWord) return;
+			confirmed = true;
+			$modal.modal('hide');
+		});
+
+		$modal.off('shown.bs.modal.ccc hidden.bs.modal.ccc')
+			.on('shown.bs.modal.ccc', function() {
+				$input.trigger('focus');
+			})
+			.on('hidden.bs.modal.ccc', function() {
+				if (confirmed) {
+					opts.onConfirm && opts.onConfirm();
+				} else {
+					opts.onCancel && opts.onCancel();
+				}
+			});
+
+		$modal.modal('show');
+	}
 </script>
+<div class="modal fade" id="cancelConfirmModal" tabindex="-1" role="dialog" aria-labelledby="cancelConfirmModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" id="cancelConfirmModalLabel"><?php echo _translate('Confirm Cancellation'); ?></h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="<?php echo _translate('Close'); ?>"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<p><?php echo _translate('Cancelling means the selected sample(s) will not be tested. This action should only be used when testing will not be performed.'); ?></p>
+				<p style="margin-bottom:8px;"><?php echo _translate('Type the word below to proceed:'); ?> <strong>CANCEL</strong></p>
+				<input type="text" class="form-control" id="cancelConfirmInput" autocomplete="off" />
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo _translate('Back'); ?></button>
+				<button type="button" class="btn btn-danger" id="cancelConfirmBtn" disabled><?php echo _translate('Confirm Cancellation'); ?></button>
+			</div>
+		</div>
+	</div>
+</div>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

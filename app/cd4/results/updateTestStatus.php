@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\REJECTED;
+use const SAMPLE_STATUS\CANCELLED;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -42,11 +43,14 @@ try {
                 'data_sync' => 0
             ];
             // Preserve the historic auto-fill behavior on status updates for CD4.
-            if (empty($vlRow['result_reviewed_by'])) {
-                $status['result_reviewed_by'] = $_SESSION['userId'];
-            }
-            if (empty($vlRow['result_approved_by'])) {
-                $status['result_approved_by'] = $_SESSION['userId'];
+            // Skip for Cancelled samples since no testing/approval took place.
+            if ($_POST['status'] != CANCELLED) {
+                if (empty($vlRow['result_reviewed_by'])) {
+                    $status['result_reviewed_by'] = $_SESSION['userId'];
+                }
+                if (empty($vlRow['result_approved_by'])) {
+                    $status['result_approved_by'] = $_SESSION['userId'];
+                }
             }
             if ($_POST['status'] == REJECTED) {
                 $status['cd4_result'] = '';

@@ -90,18 +90,26 @@ try {
     if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
         $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
     }
+    $cancellableFilter = (isset($_POST['statusFilter']) && $_POST['statusFilter'] == 'cancellable');
     if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
         if ($_POST['statusFilter'] == 'approvedOrRejected') {
             $sWhere[] = ' vl.result_status IN (4,7)';
         } elseif ($_POST['statusFilter'] == 'notApprovedOrRejected') {
             $sWhere[] = ' vl.result_status IN (6,8)';
+        } elseif ($cancellableFilter) {
+            // Cancellation is allowed for any sample that is not already Expired (10) or Cancelled (12),
+            // regardless of whether it has been tested yet.
+            $sWhere[] = ' vl.result_status NOT IN (10,12)';
         }
     }
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
     }
 
-    $sWhere[] = ' (vl.hcv_vl_count !="" OR vl.hbv_vl_count !="") ';
+    // Untested samples (no viral load count yet) are still cancellable.
+    if (!$cancellableFilter) {
+        $sWhere[] = ' (vl.hcv_vl_count !="" OR vl.hbv_vl_count !="") ';
+    }
 
     /* Implode all the where fields for filtering the data */
     if ($sWhere !== []) {
