@@ -364,7 +364,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 								</select>
 							</td>
 							<td><strong>
-									<?php echo _translate("Sample Type"); ?> :
+									<?php echo _translate("Sample Result Status"); ?> :
 								</strong></td>
 							<td>
 								<select class="form-control" id="requestSampleType" name="requestSampleType"
@@ -373,10 +373,10 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 										<?php echo _translate("All"); ?>
 									</option>
 									<option value="result">
-										<?php echo _translate("Samples with result"); ?>
+										<?php echo _translate("Show samples with result"); ?>
 									</option>
 									<option value="noresult">
-										<?php echo _translate("Samples without result"); ?>
+										<?php echo _translate("Show samples without result"); ?>
 									</option>
 								</select>
 							</td>
