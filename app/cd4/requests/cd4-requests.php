@@ -88,17 +88,17 @@ foreach ($sourceOfRequests as $value => $displayText) {
 	}
 
 	<?php if (!empty($_GET['id'])) { ?>
-		header {
-			display: none;
-		}
+			header {
+				display: none;
+			}
 
-		.main-sidebar {
-			z-index: -9;
-		}
+			.main-sidebar {
+				z-index: -9;
+			}
 
-		.content-wrapper {
-			margin-left: 0px;
-		}
+			.content-wrapper {
+				margin-left: 0px;
+			}
 
 	<?php } ?>
 </style>
@@ -106,20 +106,20 @@ foreach ($sourceOfRequests as $value => $displayText) {
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<?php if (!$hidesrcofreq) { ?>
-		<!-- Content Header (Page header) -->
-		<section class="content-header">
-			<h1><em class="fa-solid fa-pen-to-square"></em>
-				<?php echo _translate("CD4 Test Requests"); ?>
-			</h1>
-			<ol class="breadcrumb">
-				<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
-						<?php echo _translate("Home"); ?>
-					</a></li>
-				<li class="active">
-					<?php echo _translate("Test Request"); ?>
-				</li>
-			</ol>
-		</section>
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<h1><em class="fa-solid fa-pen-to-square"></em>
+					<?php echo _translate("CD4 Test Requests"); ?>
+				</h1>
+				<ol class="breadcrumb">
+					<li><a href="/"><em class="fa-solid fa-chart-pie"></em>
+							<?php echo _translate("Home"); ?>
+						</a></li>
+					<li class="active">
+						<?php echo _translate("Test Request"); ?>
+					</li>
+				</ol>
+			</section>
 	<?php } ?>
 
 	<!-- Main content -->
@@ -160,8 +160,8 @@ foreach ($sourceOfRequests as $value => $displayText) {
 										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<?php foreach ($sResult as $type) { ?>
-										<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?>
-										</option>
+											<option value="<?php echo $type['sample_id']; ?>"><?= $type['sample_name']; ?>
+											</option>
 									<?php } ?>
 								</select>
 							</td>
@@ -221,7 +221,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 									onchange="checkSampleCollectionDate();">
 									<option value="" selected=selected><?php echo _translate("All Status"); ?></option>
 									<?php foreach ($sampleStatusData as $sample) { ?>
-										<option value="<?= $sample['status_id']; ?>"><?= $sample['status_name'] ?></option>
+											<option value="<?= $sample['status_id']; ?>"><?= $sample['status_name'] ?></option>
 									<?php } ?>
 								</select>
 							</td>
@@ -252,10 +252,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 										<?php echo _translate("All"); ?>
 									</option>
 									<option value="result">
-										<?php echo _translate("Samples with result"); ?>
+										<?php echo _translate("Show samples with result"); ?>
 									</option>
 									<option value="noresult">
-										<?php echo _translate("Samples without result"); ?>
+										<?php echo _translate("Show samples without result"); ?>
 									</option>
 								</select>
 							</td>
@@ -278,10 +278,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<?php foreach ($fundingSourceList as $fundingSource) { ?>
-										<option
-											value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
-											<?= $fundingSource['funding_source_name']; ?>
-										</option>
+											<option
+												value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
+												<?= $fundingSource['funding_source_name']; ?>
+											</option>
 									<?php } ?>
 								</select>
 							</td>
@@ -300,10 +300,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 										<?php echo _translate("-- Select --"); ?>
 									</option>
 									<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
-										<option
-											value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
-											<?= $implementingPartner['i_partner_name']; ?>
-										</option>
+											<option
+												value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>">
+												<?= $implementingPartner['i_partner_name']; ?>
+											</option>
 									<?php } ?>
 								</select>
 							</td>
@@ -498,10 +498,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 							<td colspan="4">
 								<?php
 								if (_isAllowed("/cd4/requests/cd4-add-request.php") && !$hidesrcofreq) { ?>
-									<a href="/cd4/requests/cd4-add-request.php" class="btn btn-primary btn-sm pull-right">
-										<em class="fa-solid fa-plus"></em>
-										<?php echo _translate("Add CD4 Request Form"); ?>
-									</a>
+										<a href="/cd4/requests/cd4-add-request.php" class="btn btn-primary btn-sm pull-right">
+											<em class="fa-solid fa-plus"></em>
+											<?php echo _translate("Add CD4 Request Form"); ?>
+										</a>
 								<?php }
 								?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
@@ -512,11 +512,11 @@ foreach ($sourceOfRequests as $value => $displayText) {
 								<?php
 								if (_isAllowed("/cd4/requests/export-cd4-requests.php")) {
 									?>
-									<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
-										href="javascript:void(0);" onclick="exportTestRequests();"><em
-											class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
-										<?php echo _translate("Export Excel"); ?>
-									</a>
+										<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
+											href="javascript:void(0);" onclick="exportTestRequests();"><em
+												class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
+											<?php echo _translate("Export Excel"); ?>
+										</a>
 								<?php } ?>
 							</td>
 						</tr>
@@ -528,10 +528,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 
 								<?php
 								if (_isAllowed("/cd4/requests/cd4-add-request.php") && !$hidesrcofreq) { ?>
-									<a href="/cd4/requests/cd4-add-request.php" class="btn btn-primary btn-sm pull-right">
-										<em class="fa-solid fa-plus"></em>
-										<?php echo _translate("Add CD4 Request Form"); ?>
-									</a>
+										<a href="/cd4/requests/cd4-add-request.php" class="btn btn-primary btn-sm pull-right">
+											<em class="fa-solid fa-plus"></em>
+											<?php echo _translate("Add CD4 Request Form"); ?>
+										</a>
 								<?php }
 								?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
@@ -539,24 +539,24 @@ foreach ($sourceOfRequests as $value => $displayText) {
 										<?php echo _translate("Manage Columns"); ?>
 									</span></button>
 								<?php if (_isAllowed("/cd4/requests/export-cd4-requests.php")) { ?>
-									&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
-										href="javascript:void(0);" onclick="exportTestRequests();"><em
-											class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
-										<?php echo _translate("Export Excel"); ?>
-									</a>
+										&nbsp;<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;"
+											href="javascript:void(0);" onclick="exportTestRequests();"><em
+												class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
+											<?php echo _translate("Export Excel"); ?>
+										</a>
 								<?php } ?>
 
 								<?php if (!empty($interopConfig['FHIR']['url'])) { ?>
-									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;"
-										href="javascript:void(0);" onclick="sendEMRDataToFHIR();"><em
-											class="fa-solid fa-paper-plane"></em>
-										<?php echo _translate("EMR/FHIR - SEND RESULTS"); ?>
-									</a>
-									&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;"
-										href="javascript:void(0);" onclick="receiveEMRDataFromFHIR();"><em
-											class="fa-solid fa-download"></em>
-										<?php echo _translate("EMR/FHIR - GET TESTS"); ?>
-									</a>
+										&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;"
+											href="javascript:void(0);" onclick="sendEMRDataToFHIR();"><em
+												class="fa-solid fa-paper-plane"></em>
+											<?php echo _translate("EMR/FHIR - SEND RESULTS"); ?>
+										</a>
+										&nbsp;<a class="btn btn-warning btn-sm pull-right" style="margin-right:5px;"
+											href="javascript:void(0);" onclick="receiveEMRDataFromFHIR();"><em
+												class="fa-solid fa-download"></em>
+											<?php echo _translate("EMR/FHIR - GET TESTS"); ?>
+										</a>
 								<?php } ?>
 								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;"
 									onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
@@ -578,12 +578,12 @@ foreach ($sourceOfRequests as $value => $displayText) {
 								<?php $i = 0;
 								if (!$general->isStandaloneInstance()) {
 									$i = 1; ?>
-									<div class="col-md-3">
-										<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>"
-											id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code"
-											class="showhideCheckBox" /> <label
-											for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
-									</div>
+										<div class="col-md-3">
+											<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i; ?>"
+												id="iCol<?php echo $i; ?>" data-showhide="remote_sample_code"
+												class="showhideCheckBox" /> <label
+												for="iCol<?php echo $i; ?>"><?php echo _translate("Remote Sample ID"); ?></label>
+										</div>
 								<?php } ?>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);"
@@ -672,9 +672,9 @@ foreach ($sourceOfRequests as $value => $displayText) {
 										<?php echo _translate("Sample ID"); ?>
 									</th>
 									<?php if (!$general->isStandaloneInstance()) { ?>
-										<th>
-											<?php echo _translate("Remote Sample ID"); ?>
-										</th>
+											<th>
+												<?php echo _translate("Remote Sample ID"); ?>
+											</th>
 									<?php } ?>
 									<th>
 										<?php echo _translate("Sample Collection Date"); ?>
@@ -713,9 +713,9 @@ foreach ($sourceOfRequests as $value => $displayText) {
 										<?php echo _translate("Status"); ?>
 									</th>
 									<?php if ((_isAllowed("/cd4/requests/cd4-edit-request.php")) && !$hidesrcofreq) { ?>
-										<th>
-											<?php echo _translate("Action"); ?>
-										</th>
+											<th>
+												<?php echo _translate("Action"); ?>
+											</th>
 									<?php } ?>
 								</tr>
 							</thead>
@@ -729,27 +729,27 @@ foreach ($sourceOfRequests as $value => $displayText) {
 						</table>
 						<?php if (isset($global['bar_code_printing']) && $global['bar_code_printing'] == 'zebra-printer') { ?>
 
-							<div id="printer_data_loading" style="display:none"><span id="loading_message">
-									<?php echo _translate("Loading Printer Details"); ?>...
-								</span><br />
-								<div class="progress" style="width:100%">
-									<div class="progress-bar progress-bar-striped active" role="progressbar"
-										aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+								<div id="printer_data_loading" style="display:none"><span id="loading_message">
+										<?php echo _translate("Loading Printer Details"); ?>...
+									</span><br />
+									<div class="progress" style="width:100%">
+										<div class="progress-bar progress-bar-striped active" role="progressbar"
+											aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+										</div>
 									</div>
-								</div>
-							</div> <!-- /printer_data_loading -->
-							<div id="printer_details" style="display:none">
-								<span id="selected_printer">
-									<?php echo _translate("No printer selected!"); ?>
-								</span>
-								<button type="button" class="btn btn-success" onclick="changePrinter()">
-									<?php echo _translate("Change/Retry"); ?>
-								</button>
-							</div><br /> <!-- /printer_details -->
-							<div id="printer_select" style="display:none">
-								<?php echo _translate("Zebra Printer Options"); ?><br />
-								<?php echo _translate("Printer"); ?>: <select id="printers"></select>
-							</div> <!-- /printer_select -->
+								</div> <!-- /printer_data_loading -->
+								<div id="printer_details" style="display:none">
+									<span id="selected_printer">
+										<?php echo _translate("No printer selected!"); ?>
+									</span>
+									<button type="button" class="btn btn-success" onclick="changePrinter()">
+										<?php echo _translate("Change/Retry"); ?>
+									</button>
+								</div><br /> <!-- /printer_details -->
+								<div id="printer_select" style="display:none">
+									<?php echo _translate("Zebra Printer Options"); ?><br />
+									<?php echo _translate("Printer"); ?>: <select id="printers"></select>
+								</div> <!-- /printer_select -->
 
 						<?php } ?>
 					</div>
@@ -859,10 +859,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 			});
 
 		<?php if ((!empty($_GET['daterange']) && isset($_GET['type']) && $_GET['type'] == 'rejection')) { ?>
-			$('#sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
-			$('#sampleCollectionDate').val('<?php echo $_GET['daterange']; ?>');
+				$('#sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
+				$('#sampleCollectionDate').val('<?php echo $_GET['daterange']; ?>');
 		<?php } else { ?>
-			$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
+				$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
 		<?php } ?>
 		$(".showhideCheckBox").change(function () {
 			if ($(this).attr('checked')) {
@@ -911,8 +911,8 @@ foreach ($sourceOfRequests as $value => $displayText) {
 					"sClass": "center"
 				},
 				<?php if (!$general->isStandaloneInstance()) { ?> {
-						"sClass": "center"
-					},
+							"sClass": "center"
+						},
 				<?php } ?> {
 					"sClass": "center"
 				},
@@ -950,9 +950,9 @@ foreach ($sourceOfRequests as $value => $displayText) {
 					"sClass": "center"
 				},
 				<?php if (_isAllowed("/cd4/requests/cd4-edit-request.php") && !$hidesrcofreq) { ?> {
-						"sClass": "center",
-						"bSortable": false
-					},
+							"sClass": "center",
+							"bSortable": false
+						},
 				<?php } ?>
 			],
 			"order": [
@@ -1223,30 +1223,30 @@ foreach ($sourceOfRequests as $value => $displayText) {
 	}
 
 	<?php if (!empty($remoteURL) && $general->isLISInstance()) { ?>
-		var remoteURL = '<?= $remoteURL; ?>';
+			var remoteURL = '<?= $remoteURL; ?>';
 
-		function forceResultSync(sampleCode) {
-			$.blockUI({
-				message: "<h3><?php echo _translate("Trying to sync"); ?> " + sampleCode + "<br><?php echo _translate("Please wait", true); ?>...</h3>"
-			});
+			function forceResultSync(sampleCode) {
+				$.blockUI({
+					message: "<h3><?php echo _translate("Trying to sync"); ?> " + sampleCode + "<br><?php echo _translate("Please wait", true); ?>...</h3>"
+				});
 
-			if (remoteSync && remoteURL != null && remoteURL != '') {
-				var jqxhr = $.ajax({
-					url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=cd4",
-				})
-					.done(function (data) {
-						////console.log(data);
-						//alert( "success" );
+				if (remoteSync && remoteURL != null && remoteURL != '') {
+					var jqxhr = $.ajax({
+						url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=cd4",
 					})
-					.fail(function () {
-						$.unblockUI();
-					})
-					.always(function () {
-						oTable.fnDraw();
-						$.unblockUI();
-					});
+						.done(function (data) {
+							////console.log(data);
+							//alert( "success" );
+						})
+						.fail(function () {
+							$.unblockUI();
+						})
+						.always(function () {
+							oTable.fnDraw();
+							$.unblockUI();
+						});
+				}
 			}
-		}
 	<?php } ?>
 
 	function receiveEMRDataFromFHIR() {
