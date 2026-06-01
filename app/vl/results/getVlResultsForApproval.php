@@ -4,6 +4,7 @@ use const SAMPLE_STATUS\ACCEPTED;
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\LOST_OR_MISSING;
 use const SAMPLE_STATUS\CANCELLED;
+use const SAMPLE_STATUS\EXPIRED;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -60,38 +61,47 @@ $sQuery = "SELECT vl.*,
 
 
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-     $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
+     $sWhere[] = '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
 if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) !== '') {
      $sWhere[] = ' vl.sample_package_code = "' . $_POST['manifestCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-     $sWhere[] =  "  DATE(vl.sample_collection_date) BEWTEEN '$start_date' AND '$end_date' ";
+     $sWhere[] = "  DATE(vl.sample_collection_date) BEWTEEN '$start_date' AND '$end_date' ";
 }
 if (!empty($_POST['sampleTestDate'])) {
      [$tested_start_date, $tested_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
-     $sWhere[] =  " DATE(vl.sample_tested_datetime) BETWEEN '$tested_start_date' AND '$tested_end_date' ";
+     $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$tested_start_date' AND '$tested_end_date' ";
 }
 if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
-     $sWhere[] =  ' s.sample_id = "' . $_POST['sampleType'] . '"';
+     $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
 if (isset($_POST['facilityName']) && $_POST['facilityName'] != '') {
-     $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
+     $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
+$cancellableFilter = (isset($_POST['statusFilter']) && $_POST['statusFilter'] == 'cancellable');
 if (isset($_POST['statusFilter']) && $_POST['statusFilter'] != '') {
      if ($_POST['statusFilter'] == 'approvedOrRejected') {
           $sWhere[] = ' vl.result_status IN (4,7)';
      } elseif ($_POST['statusFilter'] == 'notApprovedOrRejected') {
           $sWhere[] = ' vl.result_status IN (6,8)';
+     } elseif ($cancellableFilter) {
+          // Cancellation is allowed for any sample that is not already Expired or Cancelled,
+          // regardless of whether it has been tested yet.
+          $sWhere[] = ' vl.result_status NOT IN (' . EXPIRED . ',' . CANCELLED . ')';
      }
 }
 
 if (!empty($_SESSION['facilityMap'])) {
-     $sWhere[] =  " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
+     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
 }
 
-$sWhere[] =  ' vl.result not like "" AND vl.result is not null ';
+// Untested samples (no result yet) are still cancellable, so only require a result
+// for the approve/reject workflow buckets.
+if (!$cancellableFilter) {
+     $sWhere[] = ' vl.result not like "" AND vl.result is not null ';
+}
 
 if ($sWhere !== []) {
      $sWhere = ' WHERE ' . implode(" AND ", $sWhere);
@@ -121,9 +131,9 @@ foreach ($rResult as $aRow) {
      $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
                <option value="">' . _translate("-- Select --") . '</option>
                <option value="' . ACCEPTED . '" ' . ($aRow['status_id'] == ACCEPTED ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
-               <option value="' . REJECTED . '" ' . ($aRow['status_id'] == REJECTED  ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
-               <option value="' . LOST_OR_MISSING . '" ' . ($aRow['status_id'] == LOST_OR_MISSING  ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
-               <option value="' . CANCELLED . '" ' . ($aRow['status_id'] == CANCELLED  ? "selected=selected" : "") . '>' . _translate("Cancelled") . '</option>
+               <option value="' . REJECTED . '" ' . ($aRow['status_id'] == REJECTED ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
+               <option value="' . LOST_OR_MISSING . '" ' . ($aRow['status_id'] == LOST_OR_MISSING ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
+               <option value="' . CANCELLED . '" ' . ($aRow['status_id'] == CANCELLED ? "selected=selected" : "") . '>' . _translate("Cancelled") . '</option>
                </select><br><br>';
 
      $row = [];
