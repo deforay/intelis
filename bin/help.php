@@ -61,6 +61,7 @@ $CATEGORY_MAP = [
     'token.php' => 'Sync & remote',
 
     // Setup & install.
+    'provision.php' => 'Setup & install',
     'setup/setup-sts.php' => 'Setup & install',
     'setup/system-admin.php' => 'Setup & install',
     'setup/update-privileges.php' => 'Setup & install',

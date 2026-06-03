@@ -95,6 +95,7 @@
         "interface": "@php bin/interface.php",
         "lock-samples": "@php bin/update-sample-status.php",
         "purge-cache": "@php app/includes/purge-cache.php",
+        "provision": "@php bin/provision.php",
         "clear-logs": "@php bin/clear-logs.php",
         "fixes": [
             "@php bin/setup/update-privileges.php",
@@ -135,6 +136,7 @@
             "@pending-commands"
         ],
         "post-install": [
+            "@provision",
             "@audit-triggers-drop",
             "@migrate",
             "@audit-triggers-install",
@@ -144,6 +146,7 @@
             "@sts-setup"
         ],
         "post-update": [
+            "@provision",
             "@purge-cache",
             "@audit-triggers-drop",
             "@migrate",
