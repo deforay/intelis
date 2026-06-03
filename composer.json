@@ -100,6 +100,7 @@
             "@php bin/setup/update-privileges.php",
             "@php bin/setup/fix-app-menu.php"
         ],
+        "audit-triggers-drop": "@php bin/setup/regenerate-audit-triggers.php --apply drop-all",
         "audit-triggers-install": "@php bin/setup/regenerate-audit-triggers.php --apply install",
         "archive-audit-tables": "@php app/tasks/archive-audit-tables.php",
         "token": "@php bin/token.php",
@@ -134,6 +135,7 @@
             "@pending-commands"
         ],
         "post-install": [
+            "@audit-triggers-drop",
             "@migrate",
             "@audit-triggers-install",
             "@fixes",
@@ -143,6 +145,7 @@
         ],
         "post-update": [
             "@purge-cache",
+            "@audit-triggers-drop",
             "@migrate",
             "@audit-triggers-install",
             "@fixes",
