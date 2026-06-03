@@ -1,4 +1,7 @@
+#!/usr/bin/env php
 <?php
+
+// Send queued VL result-notification emails (one batch per run).
 
 use App\Utilities\DateUtility;
 use App\Services\CommonService;

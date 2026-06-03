@@ -1,4 +1,8 @@
+#!/usr/bin/env php
 <?php
+
+// Refresh sample statuses (expired / on-hold / accepted / rejected / failed,
+// etc.) across all test types. Cron-invoked.
 
 require_once __DIR__ . "/../bootstrap.php";
 

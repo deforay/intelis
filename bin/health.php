@@ -1,5 +1,9 @@
+#!/usr/bin/env php
 <?php
-// bin/health.php
+
+// Report on disk usage, MySQL responsiveness, and key application paths.
+// Designed for monitoring / oncall — non-zero exit on critical thresholds.
+
 declare(strict_types=1);
 
 use App\Utilities\MiscUtility;

@@ -1,4 +1,7 @@
+#!/usr/bin/env php
 <?php
+
+// Dispatch pending rows from the scheduled_jobs queue (one process per job).
 
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;

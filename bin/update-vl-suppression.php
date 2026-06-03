@@ -1,4 +1,7 @@
+#!/usr/bin/env php
 <?php
+
+// Recompute VL suppression flags from result data across recent samples. Cron-invoked.
 
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;

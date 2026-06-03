@@ -34,10 +34,9 @@ if ($isCli) {
 $ok = $fileCache->clear();
 if ($isCli) {
     if ($ok) {
-        MiscUtility::console()->writeln('Application cache cleared.');
+        MiscUtility::consoleSuccess('Application cache cleared.');
     } else {
-        MiscUtility::console()->getErrorOutput()
-            ->writeln('<error>Could not clear the application cache.</error>');
+        MiscUtility::consoleError('Could not clear the application cache.');
         exit(1);
     }
 } elseif (!$ok) {

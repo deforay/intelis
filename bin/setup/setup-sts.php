@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
-// bin/setup-sts.php
+
+// Interactive setup for connecting this LIS instance to an STS server.
 
 declare(strict_types=1);
 

@@ -1,4 +1,7 @@
+#!/usr/bin/env php
 <?php
+
+// Smart Connect: push pending COVID-19 sample data to the configured upstream API.
 
 $cliMode = PHP_SAPI === 'cli';
 if ($cliMode) {

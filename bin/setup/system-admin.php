@@ -1,6 +1,7 @@
+#!/usr/bin/env php
 <?php
 
-//bin/setup/system-admin.php
+// Create or reset the system administrator account (interactive).
 
 use App\Services\UsersService;
 use App\Utilities\MiscUtility;

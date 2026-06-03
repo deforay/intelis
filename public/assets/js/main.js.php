@@ -563,7 +563,7 @@ $remoteURL = $general->getRemoteURL();
 
     function clearCache() {
         $.ajax({
-            url: '/includes/clear-cache.php',
+            url: '/includes/purge-cache.php',
             cache: false,
             success: function(data) {
                 toast.success("<?= _jsTranslate("Cache cleared successfully"); ?>");

@@ -1,5 +1,8 @@
+#!/usr/bin/env php
 <?php
 
+// Smart Connect: pull metadata (facilities, users, geo) from the configured
+// upstream and merge it into local reference tables.
 
 $cliMode = PHP_SAPI === 'cli';
 if ($cliMode) {

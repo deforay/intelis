@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-// bin/migrate.php
+// Run pending database migrations.
 //
 // Usage:
 //   php bin/migrate.php                  run pending migrations

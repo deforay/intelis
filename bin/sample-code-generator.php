@@ -1,4 +1,7 @@
+#!/usr/bin/env php
 <?php
+
+// Generate sample codes for queued test requests. Pass `-f` to run in parallel.
 
 use App\Services\CommonService;
 use App\Services\DatabaseService;
