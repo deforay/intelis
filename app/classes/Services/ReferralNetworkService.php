@@ -154,6 +154,73 @@ final class ReferralNetworkService
         return $meta;
     }
 
+    /**
+     * Configured instruments (analysers) per testing lab, keyed by lab facility id.
+     *
+     * The same analyser can be modelled two ways in the data: as several physical
+     * machines under one instrument config (instrument_machines sub-table), or as
+     * several separate instrument rows that happen to share a name. We collapse
+     * both into one line per analyser name (case-insensitive) with a total machine
+     * count, so e.g. three "GeneXpert"/"Genexpert" rows become "GeneXpert × 3".
+     * A config with no sub-machine rows still counts as one machine.
+     * Active analysers are listed first, then by name.
+     *
+     * @param int[] $labIds
+     * @return array<int, list<array{name:string, status:string, machines:int}>>
+     */
+    public function getInstrumentsByLab(array $labIds): array
+    {
+        $labIds = $this->intList($labIds);
+        if ($labIds === []) {
+            return [];
+        }
+
+        // One row per instrument config, with its physical-machine count.
+        $sql = "SELECT i.lab_id, i.machine_name, i.status,
+                       COUNT(im.config_machine_id) AS machine_rows
+                  FROM instruments i
+                  LEFT JOIN instrument_machines im ON im.instrument_id = i.instrument_id
+                 WHERE i.lab_id IN (" . implode(',', $labIds) . ")
+                   AND i.machine_name IS NOT NULL AND i.machine_name != ''
+                 GROUP BY i.instrument_id, i.lab_id, i.machine_name, i.status";
+
+        // Collapse same-named analysers per lab, summing machine counts.
+        $grouped = [];
+        foreach ($this->db->rawQuery($sql) ?: [] as $r) {
+            $labId = (int) $r['lab_id'];
+            $name = trim((string) $r['machine_name']);
+            $key = mb_strtolower($name);
+            // A config with sub-machines counts each one; otherwise it is one machine.
+            $machines = max(1, (int) $r['machine_rows']);
+            $isActive = ((string) ($r['status'] ?? '')) === 'active';
+
+            if (!isset($grouped[$labId][$key])) {
+                $grouped[$labId][$key] = ['name' => $name, 'machines' => 0, 'active' => false];
+            }
+            $grouped[$labId][$key]['machines'] += $machines;
+            $grouped[$labId][$key]['active'] = $grouped[$labId][$key]['active'] || $isActive;
+        }
+
+        $out = [];
+        foreach ($grouped as $labId => $byName) {
+            $list = [];
+            foreach ($byName as $g) {
+                $list[] = [
+                    'name' => $g['name'],
+                    'status' => $g['active'] ? 'active' : 'inactive',
+                    'machines' => $g['machines'],
+                ];
+            }
+            // Active first, then by name.
+            usort($list, static function ($a, $b) {
+                $byStatus = ($b['status'] === 'active' ? 1 : 0) <=> ($a['status'] === 'active' ? 1 : 0);
+                return $byStatus !== 0 ? $byStatus : strcasecmp($a['name'], $b['name']);
+            });
+            $out[$labId] = $list;
+        }
+        return $out;
+    }
+
     /** @param mixed[] $values @return int[] */
     private function intList(array $values): array
     {
