@@ -511,6 +511,7 @@ if ($isLisInstance) {
                                         padding-bottom: 5px;
                                         border-bottom: 2px solid #3c8dbc;
                                     }
+
                                     datalist {
                                         position: absolute;
                                         z-index: 9999;
@@ -691,8 +692,8 @@ if ($isLisInstance) {
                                         <select class="form-control" name="isResultFinalized" id="isResultFinalized"
                                             title="<?php echo _translate("Is result finalized"); ?>"
                                             onchange="$('.finalResult').toggle();">
-                                            <option value="no"><?php echo _translate("No"); ?></option>
                                             <option value="yes"><?php echo _translate("Yes"); ?></option>
+                                            <option value="no"><?php echo _translate("No"); ?></option>
                                         </select>
                                     </div>
                                     <!--<div class="col-md-6 finalResult" style="display: none;">
@@ -715,9 +716,9 @@ if ($isLisInstance) {
                                         <label class="label-control"
                                             for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
                                         <div class="resultInputContainer">
-                                            <?php $resultValues = implode(',',$tbResults); ?>
+                                            <?php $resultValues = implode(',', $tbResults); ?>
                                             <input id="finalResult" name="finalResult" value="<?php echo $resultValues; ?>" title="<?php echo _translate('Please enter the final interpretation'); ?>" autocomplete="off"
-                                            placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>" onchange="handleFinalInterpretationChange(this);">
+                                                placeholder="<?php echo _translate('Select or Type Final Interpretation'); ?>" onchange="handleFinalInterpretationChange(this);">
                                         </div>
                                     </div>
                                 </div>
@@ -768,7 +769,7 @@ if ($isLisInstance) {
     </div>
 </div>
 
-  <script type="text/javascript"
+<script type="text/javascript"
     src="/assets/js/tom-select.complete.min.js"></script>
 <script type="text/javascript">
     let provinceName = true;
@@ -828,14 +829,14 @@ if ($isLisInstance) {
         ]
     };
 
-    $('#riskFactors').on('change', function () {
+    $('#riskFactors').on('change', function() {
         let selectedValues = $(this).val(); // array
         if (selectedValues && selectedValues.includes('No information provided')) {
             // Keep only "No information provided"
             $(this).val(['No information provided']).trigger('change.select2');
 
             // Disable other options
-            $(this).find('option').each(function () {
+            $(this).find('option').each(function() {
                 if (this.value !== 'No information provided') {
                     $(this).prop('disabled', true);
                 }
@@ -859,7 +860,7 @@ if ($isLisInstance) {
         const $section = $(section);
 
         // Initialize Select2 for dropdowns
-        $section.find('.resultSelect2, .select2').each(function () {
+        $section.find('.resultSelect2, .select2').each(function() {
             const $this = $(this);
             if (!$this.hasClass('select2-hidden-accessible')) {
                 $this.select2({
@@ -870,42 +871,42 @@ if ($isLisInstance) {
         });
 
         // Initialize date pickers
-        $('.date:not(.hasDatePicker)').each(function () {
+        $('.date:not(.hasDatePicker)').each(function() {
             $(this).datepicker({
                 changeMonth: true,
                 changeYear: true,
-                onSelect: function () {
+                onSelect: function() {
                     $(this).change();
                 },
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 maxDate: "Today",
                 yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function () {
+            }).click(function() {
                 $('.ui-datepicker-calendar').show();
             });
         });
 
         // Initialize datetime pickers  
-        $('.dateTime:not(.hasDateTimePicker), .date-time:not(.hasDateTimePicker)').each(function () {
+        $('.dateTime:not(.hasDateTimePicker), .date-time:not(.hasDateTimePicker)').each(function() {
             $(this).datetimepicker({
                 changeMonth: true,
                 changeYear: true,
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
                 maxDate: "Today",
-                onChangeMonthYear: function (year, month, widget) {
-                    setTimeout(function () {
+                onChangeMonthYear: function(year, month, widget) {
+                    setTimeout(function() {
                         $('.ui-datepicker-calendar').show();
                     });
                 },
                 yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function () {
+            }).click(function() {
                 $('.ui-datepicker-calendar').show();
             });
         });
 
         // Bind sample rejection change event
-        $section.find('.sample-rejection-select').off('change').on('change', function () {
+        $section.find('.sample-rejection-select').off('change').on('change', function() {
             const $row = $(this).closest('.test-section');
             updateTestFieldsRequired(this);
             if ($(this).val() === 'yes') {
@@ -923,13 +924,13 @@ if ($isLisInstance) {
         });
 
         // Bind test type change event
-        $section.find('.test-type-select').on('change', function () {
+        $section.find('.test-type-select').on('change', function() {
             updateTestResults(count);
             updateTestFieldsRequired(this);
         });
 
         // Bind test result change event
-        $section.find('.test-result-select').on('change', function () {
+        $section.find('.test-result-select').on('change', function() {
             updateTestFieldsRequired(this);
             updateFinalInterpretationVisibility();
         });
@@ -937,7 +938,7 @@ if ($isLisInstance) {
 
     function updateFinalInterpretationVisibility() {
         var hasAnyResult = false;
-        $('.test-result-select').each(function () {
+        $('.test-result-select').each(function() {
             if ($(this).val()) hasAnyResult = true;
         });
         if (hasAnyResult) {
@@ -1003,7 +1004,9 @@ if ($isLisInstance) {
         if ($('#isResultFinalized').val() === 'yes' && $('#finalResult').val()) {
             showFinalInterpretationConfirmModal({
                 message: '<?= _translate("The Final Interpretation is already recorded. Do you still want to add a new test?"); ?>',
-                onConfirm: function () { _appendTestSection(); }
+                onConfirm: function() {
+                    _appendTestSection();
+                }
             });
             return;
         }
@@ -1070,7 +1073,7 @@ if ($isLisInstance) {
             const lastSection = container.querySelector('.test-section:last-child');
             if (lastSection) {
                 // Destroy Select2 instances before removing
-                $(lastSection).find('select.select2-hidden-accessible').each(function () {
+                $(lastSection).find('select.select2-hidden-accessible').each(function() {
                     $(this).select2('destroy');
                 });
                 lastSection.remove();
@@ -1142,13 +1145,13 @@ if ($isLisInstance) {
         var removeDots = obj.value.replace(/\./g, "").replace(/\,/g, "").replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-            tableName: tableName,
-            fieldName: fieldName,
-            value: removeDots.trim(),
-            fnct: fnct,
-            format: "html"
-        },
-            function (data) {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: removeDots.trim(),
+                fnct: fnct,
+                format: "html"
+            },
+            function(data) {
                 if (data === '1') {
                     alert(alrt);
                     document.getElementById(obj.id).value = "";
@@ -1166,10 +1169,10 @@ if ($isLisInstance) {
 
         if ($.trim(pName) != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                pName: pName,
-                testType: 'tb'
-            },
-                function (data) {
+                    pName: pName,
+                    testType: 'tb'
+                },
+                function(data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -1195,11 +1198,11 @@ if ($isLisInstance) {
 
         if (dName != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                dName: dName,
-                cliName: cName,
-                testType: 'tb'
-            },
-                function (data) {
+                    dName: dName,
+                    cliName: cName,
+                    testType: 'tb'
+                },
+                function(data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#facilityId").html(details[0]);
@@ -1221,10 +1224,10 @@ if ($isLisInstance) {
 
         if (cName != '' && facilityName) {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                cName: cName,
-                testType: 'tb'
-            },
-                function (data) {
+                    cName: cName,
+                    testType: 'tb'
+                },
+                function(data) {
                     if (data != "") {
                         details = data.split("###");
                         $("#province").html(details[0]);
@@ -1258,10 +1261,10 @@ if ($isLisInstance) {
 
         if (pName != '' && sDate != '') {
             $.post("/tb/requests/generate-sample-code.php", {
-                sampleCollectionDate: sDate,
-                provinceCode: provinceCode
-            },
-                function (data) {
+                    sampleCollectionDate: sDate,
+                    provinceCode: provinceCode
+                },
+                function(data) {
                     var sCodeKey = JSON.parse(data);
                     $("#sampleCode").val(sCodeKey.sampleCode);
                     $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
@@ -1361,10 +1364,10 @@ if ($isLisInstance) {
     }
 
     // Document ready function
-    $(document).ready(function () {
-        
+    $(document).ready(function() {
+
         if (document.getElementById('finalResult')) {
-            window.finalResultTS = new TomSelect("#finalResult",{
+            window.finalResultTS = new TomSelect("#finalResult", {
                 persist: false,
                 createOnBlur: true,
                 create: true,
@@ -1410,7 +1413,7 @@ if ($isLisInstance) {
         initializePluginsForSection(document.querySelector('.test-section'), 1);
 
         // Treatment initiation change handler
-        $('#isPatientInitiatedTreatment').on('change', function () {
+        $('#isPatientInitiatedTreatment').on('change', function() {
             if (this.value === 'yes') {
                 $('.treatmentSelected').show();
                 $('#currentRegimen').addClass('isRequired');
@@ -1431,29 +1434,29 @@ if ($isLisInstance) {
         });
 
         // Lab and facility change handlers
-        $("#labId, #facilityId, #sampleCollectionDate").on('change', function () {
+        $("#labId, #facilityId, #sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
         });
 
         <?php if (isset($arr['tb_positive_confirmatory_tests_required_by_central_lab']) && $arr['tb_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
-            $(document).on('change', '.test-result, #result', function (e) {
+            $(document).on('change', '.test-result, #result', function(e) {
                 checkPostive();
             });
         <?php } ?>
 
-        $("#labId").change(function (e) {
+        $("#labId").change(function(e) {
             let labVal = $(this).val();
             if (labVal != "") {
                 $.post("/tb/requests/get-attributes-data.php", {
-                    id: labVal,
-                },
-                    function (data) {
+                        id: labVal,
+                    },
+                    function(data) {
                         if (data != "" && data != false) {
                             _data = jQuery.parseJSON(data);
                             $(".platform").hide();
-                            $.each(_data, function (index, value) {
+                            $.each(_data, function(index, value) {
                                 $("." + value).show();
                             });
                         }
@@ -1470,23 +1473,23 @@ if ($isLisInstance) {
 
         if (newVal === '' || newVal === prevVal) {
             input.dataset.previousValue = newVal;
-            (newVal !== '') ? $('.refer-inputs').hide() : $('.refer-inputs').show();
+            (newVal !== '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();
             return;
         }
 
         showFinalInterpretationConfirmModal({
-            onConfirm: function () {
+            onConfirm: function() {
                 input.dataset.previousValue = newVal;
                 $('.refer-inputs').hide();
             },
-            onCancel: function () {
+            onCancel: function() {
                 if (window.finalResultTS) {
                     window.finalResultTS.setValue(prevVal, true);
                 } else {
                     input.value = prevVal;
                 }
                 input.dataset.previousValue = prevVal;
-                (prevVal !== '') ? $('.refer-inputs').hide() : $('.refer-inputs').show();
+                (prevVal !== '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();
             }
         });
     }
@@ -1505,10 +1508,10 @@ if ($isLisInstance) {
         $btn.prop('disabled', true);
 
         $input.off('input.fic keypress.fic')
-            .on('input.fic', function () {
+            .on('input.fic', function() {
                 $btn.prop('disabled', $(this).val().trim().toLowerCase() !== 'yes');
             })
-            .on('keypress.fic', function (e) {
+            .on('keypress.fic', function(e) {
                 if (e.which === 13) {
                     e.preventDefault();
                     if ($(this).val().trim().toLowerCase() === 'yes') {
@@ -1517,17 +1520,17 @@ if ($isLisInstance) {
                 }
             });
 
-        $btn.off('click.fic').on('click.fic', function () {
+        $btn.off('click.fic').on('click.fic', function() {
             if ($input.val().trim().toLowerCase() !== 'yes') return;
             confirmed = true;
             $modal.modal('hide');
         });
 
         $modal.off('shown.bs.modal.fic hidden.bs.modal.fic')
-            .on('shown.bs.modal.fic', function () {
+            .on('shown.bs.modal.fic', function() {
                 $input.trigger('focus');
             })
-            .on('hidden.bs.modal.fic', function () {
+            .on('hidden.bs.modal.fic', function() {
                 if (confirmed) {
                     opts.onConfirm && opts.onConfirm();
                 } else {
@@ -1539,10 +1542,9 @@ if ($isLisInstance) {
     }
 
     // Store initial value on focus
-    document.getElementById('finalResult')?.addEventListener('focus', function () {
+    document.getElementById('finalResult')?.addEventListener('focus', function() {
         this.dataset.previousValue = this.value;
     });
 </script>
 <!--<script type="text/javascript"
     src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>-->
-  
