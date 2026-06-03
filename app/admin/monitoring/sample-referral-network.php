@@ -76,6 +76,15 @@ $activeTests = TestsService::getActiveTests();
         vertical-align: middle;
     }
 
+    .referral-legend .line {
+        display: inline-block;
+        width: 16px;
+        height: 3px;
+        margin-right: 6px;
+        vertical-align: middle;
+        border-radius: 2px;
+    }
+
     .referral-legend label {
         display: block;
         font-weight: normal;
@@ -83,6 +92,59 @@ $activeTests = TestsService::getActiveTests();
         padding-top: 6px;
         border-top: 1px solid #eee;
         cursor: pointer;
+    }
+
+    /* Larger, more readable marker popup. */
+    .leaflet-popup-content {
+        font-size: 13.5px;
+        line-height: 1.5;
+        min-width: 200px;
+        margin: 12px 16px;
+    }
+
+    .referral-popup strong {
+        font-size: 15px;
+    }
+
+    .referral-popup .rp-instr {
+        margin-top: 8px;
+        padding-top: 6px;
+        border-top: 1px solid #eee;
+    }
+
+    .referral-popup .rp-instr-head {
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+
+    .referral-popup .rp-instr ul {
+        margin: 0;
+        padding-left: 18px;
+        max-height: 160px;
+        overflow-y: auto;
+    }
+
+    .referral-popup .rp-instr li {
+        margin: 1px 0;
+    }
+
+    .referral-popup .rp-instr-count {
+        font-weight: 700;
+        color: #00695c;
+    }
+
+    .referral-popup .rp-instr-off {
+        color: #b71c1c;
+        font-size: 11px;
+        font-style: italic;
+    }
+
+    .referral-popup .rp-instr-none {
+        margin-top: 8px;
+        padding-top: 6px;
+        border-top: 1px solid #eee;
+        color: #888;
+        font-style: italic;
     }
 
     /* Larger, easier-to-hit map control buttons (expand, etc.). */
@@ -155,6 +217,13 @@ $activeTests = TestsService::getActiveTests();
         box-shadow: none;
     }
 
+    /* The Test Type list sits just above the map; Leaflet panes/controls have a
+       high z-index, so lift the open dropdown above them or it renders behind
+       the map. */
+    .referral-filters .ts-dropdown {
+        z-index: 10001;
+    }
+
     .select2-selection__choice {
         color: black !important;
     }
@@ -219,7 +288,15 @@ $activeTests = TestsService::getActiveTests();
                                     } ?>
                                 </select>
                             </div>
-                            <div class="col-md-9 col-sm-6 form-group">
+                            <div class="col-md-3 col-sm-6 form-group">
+                                <label for="markerFilter"><?= _translate("Show on map"); ?></label>
+                                <select id="markerFilter" name="markerFilter" class="form-control">
+                                    <option value="all"><?= _translate("All"); ?></option>
+                                    <option value="labs"><?= _translate("Testing Labs only"); ?></option>
+                                    <option value="sites"><?= _translate("Referring Facilities only"); ?></option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-sm-6 form-group">
                                 <div class="hidden-xs" style="height:27px;" aria-hidden="true"></div>
                                 <button onclick="applyFilters();" class="btn btn-primary">
                                     <em class="fa-solid fa-magnifying-glass"></em>&nbsp;<?php echo _translate("Search"); ?>
@@ -291,9 +368,14 @@ $activeTests = TestsService::getActiveTests();
     var TILE_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
     var MAX_FLOWS_RENDERED = 600; // keep the map responsive on large networks
     var LAB_COLOR = '#dd4b39', SITE_COLOR = '#3c8dbc';
+    // Default flow colour, and a distinct colour for lab -> lab referrals
+    // (one testing lab onward-referring to another).
+    var FLOW_COLOR = '#00838f', LAB_FLOW_COLOR = '#8e24aa';
 
     var map, flowLayer, markerLayer, summaryTable, fsBtn, snapBtn, focusHintEl;
     var mapNodesById = {}, mapFlows = [], focusedId = null, showAllLines = false;
+    // 'all' | 'labs' | 'sites' — restricts which marker type is shown on the map.
+    var markerFilter = 'all';
     var tsState, tsDistrict, tsLab, tsTest;
 
     // Escape DB-sourced text before it goes into Leaflet popup/tooltip HTML.
@@ -330,18 +412,60 @@ $activeTests = TestsService::getActiveTests();
         try { marker.bringToFront(); } catch (e) { /* clustered / not rendered */ }
     }
 
+    // Render a lab's configured instruments for the marker popup. Each line is
+    // the analyser name, with a "× N" badge when more than one physical machine
+    // of that type is configured (from the instrument_machines sub-table).
+    function instrumentsHtml(instruments) {
+        if (!instruments || !instruments.length) {
+            return '<div class="rp-instr rp-instr-none"><?= _translate("No instruments configured", true); ?></div>';
+        }
+        var rows = '';
+        instruments.forEach(function (ins) {
+            var count = (ins.machines && ins.machines > 1)
+                ? ' <span class="rp-instr-count">&times; ' + Number(ins.machines) + '</span>'
+                : '';
+            var inactive = (ins.status && ins.status !== 'active')
+                ? ' <span class="rp-instr-off"><?= _translate("inactive", true); ?></span>'
+                : '';
+            rows += '<li>' + esc(ins.name) + count + inactive + '</li>';
+        });
+        return '<div class="rp-instr"><div class="rp-instr-head"><?= _translate("Instruments", true); ?></div>'
+            + '<ul>' + rows + '</ul></div>';
+    }
+
+    function nodeVisible(n) {
+        return markerFilter === 'all'
+            || (markerFilter === 'labs' && n.isLab)
+            || (markerFilter === 'sites' && !n.isLab);
+    }
+
+    // (Re)populate the cluster layer with only the markers allowed by the
+    // current Show filter. Markers are built once in loadMap and kept in
+    // mapNodesById, so switching the filter never re-fetches data.
+    function renderMarkers() {
+        markerLayer.clearLayers();
+        Object.keys(mapNodesById).forEach(function (k) {
+            var item = mapNodesById[k];
+            if (nodeVisible(item.n)) {
+                markerLayer.addLayer(item.marker);
+                if (item.n.isLab) { safeFront(item.marker); }
+            }
+        });
+    }
+
     function initMap() {
         map = L.map('referralMap', { worldCopyJump: true }).setView([0, 20], 2);
         L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTR, crossOrigin: true }).addTo(map);
         // Cluster markers so dense city points (hundreds of facilities on the
-        // same coarse coordinate) collapse into count bubbles when zoomed out,
-        // and separate as you zoom in.
+        // same coarse coordinate) collapse into count bubbles only when very
+        // zoomed out (continent/country view), and separate as soon as you zoom
+        // in to regional level.
         markerLayer = L.markerClusterGroup({
             chunkedLoading: true,
             showCoverageOnHover: false,
-            maxClusterRadius: 50,
+            maxClusterRadius: 35,
             spiderfyOnMaxZoom: true,
-            disableClusteringAtZoom: 13
+            disableClusteringAtZoom: 7
         }).addTo(map);
         flowLayer = L.layerGroup().addTo(map);
 
@@ -357,7 +481,8 @@ $activeTests = TestsService::getActiveTests();
         legend.onAdd = function () {
             var div = L.DomUtil.create('div', 'referral-legend');
             div.innerHTML = '<span class="dot" style="background:' + LAB_COLOR + '"></span><?= _translate("Testing Lab", true); ?><br>'
-                + '<span class="dot" style="background:' + SITE_COLOR + '"></span><?= _translate("Referring Facility", true); ?>'
+                + '<span class="dot" style="background:' + SITE_COLOR + '"></span><?= _translate("Referring Facility", true); ?><br>'
+                + '<span class="line" style="background:' + LAB_FLOW_COLOR + '"></span><?= _translate("Lab-to-lab referral", true); ?>'
                 + '<label><input type="checkbox" id="toggleLines"> <?= _translate("Show all referral lines", true); ?></label>';
             L.DomEvent.disableClickPropagation(div);
             return div;
@@ -473,8 +598,15 @@ $activeTests = TestsService::getActiveTests();
     function drawFlow(f, opts) {
         var a = mapNodesById[f.from], b = mapNodesById[f.to];
         if (!a || !b) { return; }
+        // A line is only drawn when both endpoints are visible under the current
+        // Show filter, so "Testing Labs only" drops facility -> lab lines and
+        // leaves just the lab -> lab referrals.
+        if (!nodeVisible(a.n) || !nodeVisible(b.n)) { return; }
+        // Lab -> lab onward-referrals get their own colour regardless of context.
+        var labToLab = a.n.isLab && b.n.isLab;
+        var color = labToLab ? LAB_FLOW_COLOR : (opts.color || FLOW_COLOR);
         var line = L.polyline([[a.n.lat, a.n.lng], [b.n.lat, b.n.lng]], {
-            color: opts.color || '#00838f', weight: flowWeight(f.count), opacity: opts.opacity || 0.3,
+            color: color, weight: flowWeight(f.count), opacity: opts.opacity || 0.3,
             bubblingMouseEvents: false
         });
         line.bindTooltip(esc(a.n.name) + ' &rarr; ' + esc(b.n.name) + '<br>'
@@ -581,21 +713,25 @@ $activeTests = TestsService::getActiveTests();
                 bounds.push([n.lat, n.lng]);
                 if (n.isLab) { labs++; } else { sites++; }
 
-                var popup = '<strong>' + esc(n.name) + '</strong><br>'
+                var popup = '<div class="referral-popup"><strong>' + esc(n.name) + '</strong><br>'
                     + (n.district ? esc(n.district) + ', ' : '') + esc(n.province || '') + '<br>'
                     + '<?= _translate("Samples referred out", true); ?>: ' + Number(n.samplesSent).toLocaleString();
                 if (n.isLab) {
                     popup += '<br><?= _translate("Samples received for testing", true); ?>: '
                         + Number(n.samplesReceived).toLocaleString();
+                    popup += instrumentsHtml(n.instruments);
                 }
+                popup += '</div>';
 
                 var marker = L.circleMarker([n.lat, n.lng],
                     Object.assign({ bubblingMouseEvents: false }, markerStyle(n.isLab)))
-                    .bindPopup(popup).addTo(markerLayer);
+                    .bindPopup(popup);
                 marker.on('click', function () { focusNode(n.id); });
                 mapNodesById[n.id] = { n: n, marker: marker };
-                if (n.isLab) { safeFront(marker); }
             });
+
+            // Add markers to the cluster layer honouring the current Show filter.
+            renderMarkers();
 
             mapFlows.forEach(function (f) { totalSamples += f.count; });
 
@@ -687,6 +823,16 @@ $activeTests = TestsService::getActiveTests();
         $(document).on('change', '#toggleLines', function () {
             showAllLines = this.checked;
             if (focusedId === null) { redrawLines(); }
+        });
+
+        $(document).on('change', '#markerFilter', function () {
+            markerFilter = this.value;
+            // Drop any active focus so a now-hidden node can't stay highlighted.
+            // clearFocus() redraws lines itself; otherwise redraw so the new
+            // visibility filter is applied (e.g. labs-only leaves only lab->lab lines).
+            if (focusedId !== null) { clearFocus(); }
+            else { redrawLines(); }
+            renderMarkers();
         });
 
         // Esc exits the expanded map view.

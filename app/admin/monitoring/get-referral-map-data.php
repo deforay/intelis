@@ -62,6 +62,18 @@ try {
         $received[$f['to']] = ($received[$f['to']] ?? 0) + $f['count'];
     }
 
+    // Identify lab nodes first so we can pull their configured instruments in one query.
+    $labIds = [];
+    foreach ($meta as $id => $m) {
+        if ($m['lat'] === null || $m['lng'] === null) {
+            continue;
+        }
+        if ($m['type'] === 2 || ($received[$id] ?? 0) > 0) {
+            $labIds[] = $id;
+        }
+    }
+    $instrumentsByLab = $referralService->getInstrumentsByLab($labIds);
+
     $nodes = [];
     $unmapped = 0;
     foreach ($meta as $id => $m) {
@@ -80,6 +92,7 @@ try {
             'isLab' => $isLab,
             'samplesSent' => $sent[$id] ?? 0,
             'samplesReceived' => $received[$id] ?? 0,
+            'instruments' => $isLab ? ($instrumentsByLab[$id] ?? []) : [],
         ];
     }
 
