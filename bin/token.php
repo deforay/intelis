@@ -1,6 +1,7 @@
+#!/usr/bin/env php
 <?php
 
-// bin/token.php
+// Generate / refresh the STS API auth token. No-op on non-LIS instances.
 
 require_once __DIR__ . "/../bootstrap.php";
 

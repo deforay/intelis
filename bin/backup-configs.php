@@ -1,10 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-use App\Utilities\MiscUtility;
-// bin/backup-configs.php
 // Recursively tar+gzip CONFIG_PATH plus runtime info into BACKUP_PATH/config.
 // Keeps last BACKUP_KEEP archives (default 7).
+
+use App\Utilities\MiscUtility;
 
 require_once __DIR__ . "/../bootstrap.php";
 

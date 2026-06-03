@@ -1,5 +1,9 @@
 #!/usr/bin/env php
 <?php
+
+// Test Apache config and reload gracefully. Skips the reload if `apachectl -t`
+// fails (so a broken config doesn't take the site down on deploy).
+
 if (PHP_SAPI !== 'cli') {
     exit(0);
 }

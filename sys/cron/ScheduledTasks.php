@@ -79,12 +79,12 @@ $schedule->run(PHP_BINARY . ' ' . BIN_PATH . '/backup-configs.php')
     ->timezone($timezone);
 
 
-// Cleanup Old Files
-$schedule->run(PHP_BINARY . ' ' . BIN_PATH . '/cleanup.php 30')
+// Housekeeping — prune old backups, temporary files, logs, and stale DB rows
+$schedule->run(PHP_BINARY . ' ' . BIN_PATH . '/housekeeping.php 30')
     ->cron('45 0 * * *')
     ->timezone($timezone)
     ->preventOverlapping()
-    ->description('Cleaning Up Old Backups and Temporary files');
+    ->description('Housekeeping: prune old backups, temp files, and stale rows');
 
 // Expiring/Locking Samples
 $schedule->run(PHP_BINARY . " " . BIN_PATH . "/update-sample-status.php")

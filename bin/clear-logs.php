@@ -1,13 +1,12 @@
 #!/usr/bin/env php
 <?php
 
-use App\Utilities\MiscUtility;
-
-// bin/clear-logs.php
-// Removes generated log files while keeping sentinel files intact.
+// Remove generated log files; keep sentinel files (.gitkeep, .htaccess) intact.
 // Options:
 //   --keep=<number>   Keep the newest N log files (default: 0)
 //   --days=<number>   Keep log files newer than N days (default: 0)
+
+use App\Utilities\MiscUtility;
 
 require_once __DIR__ . '/../bootstrap.php';
 

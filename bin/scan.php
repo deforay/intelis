@@ -1,6 +1,8 @@
+#!/usr/bin/env php
 <?php
 
-//bin/scan.php
+// Print a configuration / connectivity diagnostic report for this instance
+// (paths, DB connectivity, recent activity timestamps, key config values).
 
 use App\Utilities\DateUtility;
 use App\Services\CommonService;

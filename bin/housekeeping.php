@@ -1,7 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-// bin/cleanup.php
+// Daily housekeeping: prune old backups, temporary files, logs, and stale DB rows.
+
 require_once __DIR__ . "/../bootstrap.php";
 
 
@@ -20,13 +21,13 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Process\Process;
 
-// Self-fork into the background. Cleanup walks the whole filesystem under the
-// instance scanning for old temp files / logs; on a busy install this can take
-// many minutes. Called from `composer post-update` (@cleanup), so blocking it
-// blocks every upgrade. forkToBackground returns immediately in the parent
-// (after printing where the log lives); we continue here only as the detached
-// child, with output redirected to var/logs/cleanup-<ts>.log.
-MiscUtility::forkToBackground(__FILE__, 'cleanup');
+// Self-fork into the background. Housekeeping walks the whole filesystem under
+// the instance scanning for old temp files / logs; on a busy install this can
+// take many minutes. Called from `composer post-update` (@housekeeping), so
+// blocking it blocks every upgrade. forkToBackground returns immediately in
+// the parent (after printing where the log lives); we continue here only as
+// the detached child, with output redirected to var/logs/housekeeping-<ts>.log.
+MiscUtility::forkToBackground(__FILE__, 'housekeeping');
 
 // Create output instance
 $output = new ConsoleOutput();
@@ -455,7 +456,7 @@ $defaultDuration = (isset($argv[1]) && is_numeric($argv[1])) ? (int) $argv[1] : 
 // ============================================================================
 
 $output->writeln('');
-$output->writeln('<success>CLEANUP SCRIPT STARTED: ' . date('Y-m-d H:i:s') . '</success>');
+$output->writeln('<success>HOUSEKEEPING STARTED: ' . date('Y-m-d H:i:s') . '</success>');
 $output->writeln(str_repeat('=', 80));
 $output->writeln('');
 
@@ -613,7 +614,7 @@ $table->render();
 
 // FINAL SUMMARY
 $output->writeln('');
-$output->writeln('<success>CLEANUP COMPLETED: ' . date('Y-m-d H:i:s') . '</success>');
+$output->writeln('<success>HOUSEKEEPING COMPLETED: ' . date('Y-m-d H:i:s') . '</success>');
 $output->writeln(str_repeat('=', 80));
 $output->writeln('');
 
