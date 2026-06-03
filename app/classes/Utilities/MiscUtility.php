@@ -1237,6 +1237,17 @@ final class MiscUtility
     }
 
     /**
+     * Render a yellow "[WARNING] …" block to the console (CLI only).
+     * Accepts a single line or an array of lines.
+     *
+     * @param string|string[] $message
+     */
+    public static function consoleWarn(string|array $message): void
+    {
+        self::consoleStyle()->warning($message);
+    }
+
+    /**
      * Start a reusable spinner/progress bar.
      * - If $maxSteps is null → indeterminate spinner
      * - If $maxSteps is int   → determinate progress
