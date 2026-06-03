@@ -29,5 +29,17 @@ if ($isCli) {
     MiscUtility::deleteFile($compiledContainerPath);
 }
 
-// Clear the file cache and echo the result
-echo (ContainerRegistry::get(FileCacheUtility::class))->clear();
+// Clear the file cache. Signal failure via exit code (CLI) / HTTP status (web)
+// instead of echoing a bare boolean to stdout.
+$ok = $fileCache->clear();
+if ($isCli) {
+    if ($ok) {
+        MiscUtility::console()->writeln('Application cache cleared.');
+    } else {
+        MiscUtility::console()->getErrorOutput()
+            ->writeln('<error>Could not clear the application cache.</error>');
+        exit(1);
+    }
+} elseif (!$ok) {
+    http_response_code(500);
+}
