@@ -890,7 +890,14 @@ ROLLBACK_BASE_DIR="/var/intelis-rollback"
 # --keep-snapshots N. Older snapshots are pruned after a successful apply run.
 ROLLBACK_KEEP="${ROLLBACK_KEEP:-3}"
 
-# prepare_phase — download + extract + verify master and vendor tarballs in parallel.
+# prepare_phase — download + extract + verify the master tarball, then the
+# vendor tarball ONLY if at least one target instance actually needs it (its
+# vendor/ is missing/incomplete, or its committed composer.lock differs from the
+# new master's). Vendor contents are fully determined by composer.lock, so when
+# every instance is already in sync we skip the (large) vendor download and the
+# apply phase's per-instance "composer install" fallback becomes a fast no-op.
+# All network I/O still happens here (live + retryable), keeping the apply window
+# offline-safe — which matters for unattended / remote-triggered upgrades.
 # Echoes the staging dir on stdout (captured by caller). All informational
 # output is sent to stderr so stdout is clean.
 prepare_phase() {
@@ -1022,17 +1029,15 @@ prepare_phase() {
         echo "vendor: ready"
     }
 
-    # Launch both workers in parallel, each logging to its own file.
+    # ---- Step 1: master first ----
+    # Vendor is gated on master's composer.lock, so master must land before we
+    # can decide whether any instance actually needs a fresh vendor tarball.
     ( _prepare_master_worker ) >"$master_log" 2>&1 &
     local master_pid=$!
-    ( _prepare_vendor_worker ) >"$vendor_log" 2>&1 &
-    local vendor_pid=$!
+    print info "Downloading master (pid ${master_pid})" >&2
 
-    print info "Downloading master and vendor in parallel (pids ${master_pid}, ${vendor_pid})" >&2
-
-    local master_status=0 vendor_status=0
+    local master_status=0
     wait "$master_pid" || master_status=$?
-    wait "$vendor_pid" || vendor_status=$?
 
     if [ "$master_status" -ne 0 ]; then
         print error "Master download/extract failed. See ${master_log}" >&2
@@ -1041,15 +1046,65 @@ prepare_phase() {
     fi
     print success "Master ready at ${master_extract_dir}" >&2
 
-    if [ "$vendor_status" -ne 0 ]; then
-        print error "Vendor download/extract failed. See ${vendor_log}" >&2
-        log_action "Prepare: vendor failed (status $vendor_status)"
-        return 1
+    # ---- Step 2: decide whether any instance needs a fresh vendor ----
+    # vendor/ is fully determined by composer.lock, so the precise "outdated"
+    # signal is: vendor/ absent or incomplete, OR the instance's committed
+    # composer.lock differs from the new master's lock. We inspect each target
+    # instance's CURRENT on-disk state (apply hasn't rsync'd master over them
+    # yet), so this compares old-vs-new exactly. First mismatch wins — we only
+    # need one outdated instance to justify the download, and a single staged
+    # vendor is reused across every instance in the apply phase.
+    local master_lock_md5=""
+    if [ -f "$master_extract_dir/composer.lock" ]; then
+        master_lock_md5=$(md5sum "$master_extract_dir/composer.lock" | awk '{print $1}')
     fi
-    if [ -d "$vendor_extract_dir" ] && [ -d "$vendor_extract_dir/composer" ]; then
-        print success "Vendor ready at ${vendor_extract_dir}" >&2
+
+    local vendor_needed=false
+    local _gate_reason=""
+    if [ -z "$master_lock_md5" ]; then
+        # No lock in master (unexpected) — be safe and fetch vendor.
+        vendor_needed=true
+        _gate_reason="master tarball has no composer.lock"
     else
-        print warning "Vendor staging not populated; apply will fall back to composer install" >&2
+        local _lp _inst_lock_md5
+        for _lp in "${lis_paths[@]}"; do
+            if [ ! -d "${_lp}/vendor" ] || [ ! -d "${_lp}/vendor/composer" ]; then
+                vendor_needed=true
+                _gate_reason="${_lp}: vendor/ missing or incomplete"
+                break
+            fi
+            _inst_lock_md5=""
+            [ -f "${_lp}/composer.lock" ] && _inst_lock_md5=$(md5sum "${_lp}/composer.lock" | awk '{print $1}')
+            if [ "$_inst_lock_md5" != "$master_lock_md5" ]; then
+                vendor_needed=true
+                _gate_reason="${_lp}: composer.lock differs from new master"
+                break
+            fi
+        done
+    fi
+
+    # ---- Step 3: download vendor only if needed ----
+    local vendor_status=0
+    if [ "$vendor_needed" = true ]; then
+        print info "Vendor download needed (${_gate_reason}); fetching vendor tarball" >&2
+        log_action "Prepare: vendor needed (${_gate_reason})"
+        ( _prepare_vendor_worker ) >"$vendor_log" 2>&1 &
+        local vendor_pid=$!
+        wait "$vendor_pid" || vendor_status=$?
+
+        if [ "$vendor_status" -ne 0 ]; then
+            print error "Vendor download/extract failed. See ${vendor_log}" >&2
+            log_action "Prepare: vendor failed (status $vendor_status)"
+            return 1
+        fi
+        if [ -d "$vendor_extract_dir" ] && [ -d "$vendor_extract_dir/composer" ]; then
+            print success "Vendor ready at ${vendor_extract_dir}" >&2
+        else
+            print warning "Vendor staging not populated; apply will fall back to composer install" >&2
+        fi
+    else
+        print success "All target instance(s) already match the new composer.lock — skipping vendor download" >&2
+        log_action "Prepare: vendor skipped — all instances in sync with master composer.lock"
     fi
 
     # Sanity-check composer.json
