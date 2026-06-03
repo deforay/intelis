@@ -39,6 +39,7 @@ $CATEGORIES = [
     'Ops' => 70,
     'Subsystems' => 80,
     'Build & release' => 85,
+    'Dev tools' => 87,
     'Help' => 90,
     'Other' => 99,
 ];
@@ -95,6 +96,9 @@ $CATEGORY_MAP = [
     // Build / release.
     'build/generate-version.php' => 'Build & release',
 
+    // Dev tools (hidden by default; dev machines only).
+    'dev/switch-mode.php' => 'Dev tools',
+
     // Help.
     'help.php' => 'Help',
 
@@ -118,11 +122,11 @@ if ($arg !== null) {
 
 // Default view hides subsystem dispatchers + build helpers — they're machine-
 // invoked, not human-invoked. Filter mode searches everything.
-$HIDDEN_IN_DEFAULT = ['Subsystems', 'Build & release'];
+$HIDDEN_IN_DEFAULT = ['Subsystems', 'Build & release', 'Dev tools'];
 
 // 1. Discover scripts (top-level + curated subdirs).
 $scripts = [];
-$SUBDIRS_TO_SCAN = ['setup', 'smart-connect', 'tb', 'external', 'build'];
+$SUBDIRS_TO_SCAN = ['setup', 'smart-connect', 'tb', 'external', 'build', 'dev'];
 
 foreach (scandir($BIN_DIR) as $entry) {
     if ($entry === '.' || $entry === '..') {
