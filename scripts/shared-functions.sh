@@ -380,7 +380,20 @@ to_absolute_path() {
 }
 
 
-# Set ACL-based permissions (async by default; pass third arg "sync" to wait)
+# Set ACL-based permissions (async by default; pass third arg "sync" to wait).
+#
+# Performance notes:
+#   - Batched: setfacl is called with up to $ACL_BATCH paths per invocation
+#     (~200 by default), not one fork per file. On a typical instance this
+#     turns ~15k forks into ~75 and cuts wall-clock from minutes to seconds.
+#   - Excludes .git and node_modules across ALL modes (was previously only
+#     excluded in `full`).
+#   - Probes ACL support upfront: filesystems that reject ACLs (overlayfs,
+#     some NFS mounts) fall back to chown/chmod once instead of every file
+#     bouncing through setfacl + the failures log.
+#   - Truncates /tmp/acl_failures.log at start so the warning at the end
+#     reflects ONLY this run's failures (was previously cumulative across
+#     every upgrade).
 set_permissions() {
     local path=$1
     local mode=${2:-"full"}          # full | quick | minimal
@@ -389,6 +402,9 @@ set_permissions() {
     # Who to grant (robust under sudo/non-interactive)
     local who="${SUDO_USER:-${USER:-root}}"
 
+    # Only THIS run's failures should drive the warning at the end.
+    : > /tmp/acl_failures.log
+
     if ! command -v setfacl &>/dev/null; then
         print warning "setfacl not found. Falling back to chown/chmod..."
         chown -R "$who":www-data "$path"
@@ -396,57 +412,60 @@ set_permissions() {
         return
     fi
 
+    # Probe: does this filesystem accept ACLs at all? If not, every setfacl
+    # below would fail; fall back once instead of churning through thousands
+    # of forks.
+    if ! setfacl -m "u:${who}:rwx" "$path" 2>/dev/null; then
+        print warning "Filesystem at ${path} does not support ACLs. Falling back to chown/chmod..."
+        chown -R "$who":www-data "$path"
+        chmod -R u+rwX,g+rwX "$path"
+        return
+    fi
+
     # Tunables
     local PARALLEL=${PARALLEL:-$(nproc)}
-    local ACL_TIMEOUT_SEC=${ACL_TIMEOUT_SEC:-3}      # per-file timeout
+    local BATCH=${ACL_BATCH:-200}                      # files per setfacl call
     local CPU_NICE="nice -n 10"
     local IO_NICE=""
     command -v ionice >/dev/null 2>&1 && IO_NICE="ionice -c3"
-    command -v timeout >/dev/null 2>&1 || ACL_TIMEOUT_SEC=0  # if no timeout, disable
 
     print info "Setting permissions for ${path} (${mode}, ${wait_mode})..."
 
-    # Export env so subshells (xargs sh -c) can use them
-    export ACL_TIMEOUT_SEC CPU_NICE IO_NICE who
-
-    # Helper executed in subshell (sh -c), single file per invocation
-    _acl_apply_cmd='
-        target="$1"; perms="$2";
-        if [ -n "$ACL_TIMEOUT_SEC" ] && [ "$ACL_TIMEOUT_SEC" -gt 0 ]; then
-            $CPU_NICE $IO_NICE timeout "${ACL_TIMEOUT_SEC}s" setfacl -m "$perms" "$target" 2>/dev/null \
-            || printf "%s\t%s\n" "ACL_TIMEOUT_OR_FAIL" "$target" >>/tmp/acl_failures.log
-        else
-            $CPU_NICE $IO_NICE setfacl -m "$perms" "$target" 2>/dev/null \
-            || printf "%s\t%s\n" "ACL_FAIL" "$target" >>/tmp/acl_failures.log
-        fi
-    '
+    # Common excludes — keep .git and node_modules out of the sweep across
+    # all modes. .git alone can be 5k–30k files on a long-running repo.
+    local -a EXCLUDES=(-not -path "*/.git*" -not -path "*/node_modules*")
 
     local pids=()
 
     case "$mode" in
         full)
             # Directories: rwx to user + www-data
-            find "$path" -type d -not -path "*/.git*" -not -path "*/node_modules*" -print0 \
-            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
+            find "$path" -type d "${EXCLUDES[@]}" -print0 \
+                | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
+                    setfacl -m "u:${who}:rwx,u:www-data:rwx" 2>>/tmp/acl_failures.log &
             pids+=($!)
 
             # Files: rw to user + www-data
-            find "$path" -type f -not -path "*/.git*" -not -path "*/node_modules*" -print0 \
-            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rw,u:www-data:rw" &
+            find "$path" -type f "${EXCLUDES[@]}" -print0 \
+                | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
+                    setfacl -m "u:${who}:rw,u:www-data:rw" 2>>/tmp/acl_failures.log &
             pids+=($!)
         ;;
         quick)
-            find "$path" -type d -print0 \
-            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
+            find "$path" -type d "${EXCLUDES[@]}" -print0 \
+                | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
+                    setfacl -m "u:${who}:rwx,u:www-data:rwx" 2>>/tmp/acl_failures.log &
             pids+=($!)
 
-            find "$path" -type f -name "*.php" -print0 \
-            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rw,u:www-data:rw" &
+            find "$path" -type f -name "*.php" "${EXCLUDES[@]}" -print0 \
+                | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
+                    setfacl -m "u:${who}:rw,u:www-data:rw" 2>>/tmp/acl_failures.log &
             pids+=($!)
         ;;
         minimal)
-            find "$path" -type d -print0 \
-            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
+            find "$path" -type d "${EXCLUDES[@]}" -print0 \
+                | $CPU_NICE $IO_NICE xargs -0 -n "$BATCH" -P "$PARALLEL" \
+                    setfacl -m "u:${who}:rwx,u:www-data:rwx" 2>>/tmp/acl_failures.log &
             pids+=($!)
         ;;
       *)
@@ -458,7 +477,11 @@ set_permissions() {
 
     if [[ "$wait_mode" == "sync" ]]; then
         for pid in "${pids[@]}"; do wait "$pid"; done
-        [[ -s /tmp/acl_failures.log ]] && print warning "Some ACL operations timed out/failed. See /tmp/acl_failures.log"
+        if [[ -s /tmp/acl_failures.log ]]; then
+            local n_fail
+            n_fail=$(wc -l </tmp/acl_failures.log | tr -d ' ')
+            print warning "Some ACL operations failed (${n_fail} line(s)). See /tmp/acl_failures.log"
+        fi
         print success "Permissions applied (sync)."
     else
         print info "ACLs applying in background (async)."
