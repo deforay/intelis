@@ -27,7 +27,7 @@
         "ext-sodium": "*",
         "ext-zip": "*",
         "ext-zlib": "*",
-        "amitdugar/db-tools": "^2.1",
+        "amitdugar/db-tools": "^3.0",
         "brick/phonenumber": "^0.6.0",
         "crunzphp/crunz": "^3.9",
         "ezyang/htmlpurifier": "^4.19",
@@ -52,10 +52,10 @@
         "slim/slim": "^4.15",
         "sqids/sqids": "^0.4.1",
         "symfony/cache": "^8.0",
-        "symfony/console": "^7.4",
+        "symfony/console": "^8.0",
         "symfony/filesystem": "^8.0",
-        "symfony/process": "^7.4",
-        "symfony/string": "^7.4",
+        "symfony/process": "^8.0",
+        "symfony/string": "^8.0",
         "symfony/uid": "^8.0",
         "tecnickcom/tcpdf": "^6.11",
         "thingengineer/mysqli-database-class": "dev-master"
@@ -73,14 +73,14 @@
         "sort-packages": true,
         "secure-http": true,
         "platform": {
-            "php": "8.4"
+            "php": "8.4.1"
         }
     },
     "require-dev": {
         "kint-php/kint": "^5.1",
         "rector/rector": "^1.1",
         "squizlabs/php_codesniffer": "^3.11",
-        "symfony/var-dumper": "^7.1"
+        "symfony/var-dumper": "^8.0"
     },
     "scripts": {
         "scan": "@php bin/scan.php",
