@@ -84,7 +84,7 @@
     },
     "scripts": {
         "scan": "@php bin/scan.php",
-        "cleanup": "@php bin/cleanup.php 30",
+        "housekeeping": "@php bin/housekeeping.php 30",
         "version": "@php bin/build/generate-version.php",
         "db:collation": "@php vendor/bin/db-tools collation --all",
         "db:backup": "@php vendor/bin/db-tools backup --all",
@@ -94,7 +94,7 @@
         ],
         "interface": "@php bin/interface.php",
         "lock-samples": "@php bin/update-sample-status.php",
-        "purge-cache": "@php app/includes/clear-cache.php",
+        "purge-cache": "@php app/includes/purge-cache.php",
         "clear-logs": "@php bin/clear-logs.php",
         "fixes": [
             "@php bin/setup/update-privileges.php",
@@ -152,7 +152,7 @@
             "@db:collation",
             "@token",
             "@metadata-sync",
-            "@cleanup",
+            "@housekeeping",
             "@purge-cache"
         ],
         "db:repair": [
@@ -181,6 +181,6 @@
         "generate-translation-strings": "Generate translation strings from source code",
         "fix-app-menu": "Fix application menu entries",
         "lock-samples": "Lock sample records that have been completed",
-        "cleanup": "Cleanup old temporary files and logs"
+        "housekeeping": "Housekeeping — remove old backups, temporary files, logs, and stale DB rows"
     }
 }

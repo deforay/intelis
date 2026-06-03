@@ -1,4 +1,8 @@
+#!/usr/bin/env php
 <?php
+
+// Re-sync the app menu / privileges registry from the on-disk module
+// definitions. Idempotent — safe to run on every deploy.
 
 use App\Utilities\DateUtility;
 use App\Services\CommonService;

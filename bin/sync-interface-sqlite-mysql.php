@@ -1,6 +1,9 @@
 #!/usr/bin/env php
 <?php
 
+// Replay rows from the local SQLite interface DB into the central MySQL
+// interface DB (recovers from offline / lossy lab connectivity).
+
 require_once __DIR__ . "/../bootstrap.php";
 
 $isCli = PHP_SAPI === 'cli';
@@ -9,6 +12,7 @@ if (!$isCli) {
 }
 
 use App\Utilities\LoggerUtility;
+use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -100,4 +104,4 @@ foreach ($records as $record) {
     }
 }
 
-echo "✅ Resync process completed.\n";
+MiscUtility::consoleSuccess('Resync process completed.');

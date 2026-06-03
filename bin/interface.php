@@ -1,7 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-// bin/interface.php
+// Auto-import interface results from connected analyzer / middleware databases.
+
 require_once __DIR__ . "/../bootstrap.php";
 
 // only run from command line

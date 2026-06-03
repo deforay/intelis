@@ -1,9 +1,10 @@
+#!/usr/bin/env php
 <?php
+
+// Push completed result rows to an external API (e.g. an EMR).
 
 use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\ACCEPTED;
-
-// This script is used to send results to an external API for e.g. EMR
 
 $cliMode = PHP_SAPI === 'cli';
 $forceRun = false;

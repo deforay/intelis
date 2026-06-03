@@ -1,4 +1,7 @@
+#!/usr/bin/env php
 <?php
+
+// Smart Connect: push pending EID sample data to the configured upstream API.
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;

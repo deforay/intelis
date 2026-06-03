@@ -63,8 +63,7 @@ if ($resetToken) {
         exit(CLI\ERROR);
     }
 
-    echo "API token reset successfully." . PHP_EOL;
-    echo PHP_EOL;
+    MiscUtility::consoleSuccess('API token reset successfully.');
     echo "  User ID:   {$existing['user_id']}" . PHP_EOL;
     echo "  Name:      {$existing['user_name']}" . PHP_EOL;
     echo "  Login ID:  $loginId" . PHP_EOL;
@@ -111,8 +110,7 @@ if ($resetToken) {
         ]);
     }
 
-    echo "API user created successfully." . PHP_EOL;
-    echo PHP_EOL;
+    MiscUtility::consoleSuccess('API user created successfully.');
     echo "  User ID:   $userId" . PHP_EOL;
     echo "  Name:      $userName" . PHP_EOL;
     echo "  Login ID:  $loginId" . PHP_EOL;

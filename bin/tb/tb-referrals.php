@@ -1,5 +1,7 @@
+#!/usr/bin/env php
 <?php
 
+// Push outbound TB referrals (REFERRED status) to the configured partner system.
 
 use const SAMPLE_STATUS\REFERRED;
 use App\Services\TestsService;

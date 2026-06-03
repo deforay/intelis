@@ -12,7 +12,9 @@ use Symfony\Component\Uid\Uuid;
 use App\Exceptions\SystemException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use function strlen;
 
 final class MiscUtility
@@ -914,7 +916,7 @@ final class MiscUtility
         $logFile = $logDir . '/' . $logName . '-' . date('Ymd-His') . '.log';
 
         // Forward the parent's argv to the child so positional args (e.g.
-        // `php cleanup.php 30` where 30 is retention days) survive the fork.
+        // `php housekeeping.php 30` where 30 is retention days) survive the fork.
         // --child is APPENDED — original positions stay intact for the
         // script's $argv[N] lookups; in_array() finds --child wherever it is.
         $origArgs    = array_slice($_SERVER['argv'] ?? [], 1);
@@ -1210,6 +1212,28 @@ final class MiscUtility
             $out = new ConsoleOutput();
         }
         return $out;
+    }
+
+    /** Lazily-created SymfonyStyle wrapper around the global console output (CLI only). */
+    public static function consoleStyle(): SymfonyStyle
+    {
+        static $io = null;
+        if (!$io) {
+            $io = new SymfonyStyle(new ArgvInput(), self::console());
+        }
+        return $io;
+    }
+
+    /** Render a green "[OK] …" success block to the console (CLI only). */
+    public static function consoleSuccess(string $message): void
+    {
+        self::consoleStyle()->success($message);
+    }
+
+    /** Render a red "[ERROR] …" error block to the console (CLI only). */
+    public static function consoleError(string $message): void
+    {
+        self::consoleStyle()->error($message);
     }
 
     /**

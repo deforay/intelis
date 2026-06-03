@@ -74,7 +74,7 @@ journalctl -u resource-monitor.service -n 50 --no-pager
 A CLI utility for database backup, restore, maintenance, and diagnostics.
 
 ```bash
-php bin/db-tools.php <command> [options]
+vendor/bin/db-tools <command> [options]
 ```
 
 **Commands:**
@@ -98,11 +98,11 @@ php bin/db-tools.php <command> [options]
 **Examples:**
 
 ```bash
-php bin/db-tools.php backup all
-php bin/db-tools.php clean --days=30
-php bin/db-tools.php maintain all
-php bin/db-tools.php size
-php bin/db-tools.php restore
+vendor/bin/db-tools backup all
+vendor/bin/db-tools clean --days=30
+vendor/bin/db-tools maintain all
+vendor/bin/db-tools size
+vendor/bin/db-tools restore
 ```
 
 **Automated schedules:**
@@ -116,14 +116,14 @@ php bin/db-tools.php restore
 
 ---
 
-## Cleanup
+## Housekeeping
 
-### cleanup.php
+### housekeeping.php
 
 Cleans database backups, temporary files, logs, and old database records.
 
 ```bash
-php bin/cleanup.php [DAYS]
+php bin/housekeeping.php [DAYS]
 ```
 
 `DAYS` sets the retention period (default: 30). Runs automatically at 00:45 daily.

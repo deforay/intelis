@@ -1,6 +1,9 @@
 #!/usr/bin/env php
 <?php
 
+// Insert/refresh shared (implicit) privilege mappings used by the access-
+// control layer to grant module privileges via parent / sibling URLs.
+
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
