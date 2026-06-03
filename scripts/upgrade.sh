@@ -1599,28 +1599,11 @@ upgrade_instance() {
         return 1
     fi
 
-    # Audit Trail v2 — drop ALL audit triggers (legacy <form>_data__* AND v2
-    # <form>_audit_*) BEFORE migrations run. Schema changes in the migration set
-    # (ADD/DROP/CHANGE COLUMN) would otherwise break writes against a stale
-    # trigger; with triggers absent the migration can rename/drop columns
-    # freely. The instance is under maintenance mode here so no live writes
-    # hit a trigger-less form. Idempotent (DROP IF EXISTS).
-    print info "Audit Trail v2: dropping audit triggers before migrations..."
-    if ! sudo -u www-data php "${lis_path}/bin/setup/regenerate-audit-triggers.php" --apply drop-all; then
-        print warning "Pre-migration audit-trigger drop reported errors (continuing — DROP IF EXISTS is idempotent)."
-    fi
-
     print info "Running database migrations..."
     if ! sudo -u www-data composer post-update; then
         _apply_failure_no_rollback "database migrations (composer post-update) failed"
         return 1
     fi
-
-    # NOTE: Audit Trail v2 trigger rebuild is no longer invoked here — it now
-    # runs INSIDE `composer post-update` (right after `@migrate`), so it's
-    # already happened above and we don't double-invoke. The pre-migration
-    # `--apply drop-all` above remains because composer can't drop triggers
-    # *before* it runs migrations on its own.
 
     # Wait for directory migrations
     if [ "${#dir_migration_pids[@]}" -gt 0 ]; then
