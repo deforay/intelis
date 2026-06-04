@@ -34,6 +34,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<?php }
 						if (_isAllowed("/generic-tests/configuration/add-test-type.php") && $general->isLISInstance() === false) { ?>
 							<a href="add-test-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Type"); ?></a>
+							<a href="import-test-type.php" class="btn btn-default pull-right" style="margin-right: 10px;"> <em class="fa-solid fa-file-import"></em> <?php echo _translate("Import Test Type"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -46,9 +47,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th><?php echo _translate("Short Code"); ?></th>
 									<th><?php echo _translate("LOINC Code"); ?></th>
 									<th><?php echo _translate("Status"); ?></th>
-									<?php if (_isAllowed("/generic-tests/configuration/edit-test-type.php") && $general->isLISInstance() === false) { ?>
-										<th><?php echo _translate("Action"); ?></th>
-									<?php } ?>
+									<th><?php echo _translate("Action"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -93,13 +92,11 @@ require_once APPLICATION_PATH . '/header.php';
 				},
 				{
 					"sClass": "center"
+				},
+				{
+					"sClass": "center",
+					"bSortable": false
 				}
-				<?php if (_isAllowed("/generic-tests/configuration/edit-test-type.php") && $general->isLISInstance() === false) { ?>,
-					{
-						"sClass": "center",
-						"bSortable": false
-					}
-				<?php } ?>
 			],
 			"aaSorting": [
 				[0, "asc"]
