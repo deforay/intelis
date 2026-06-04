@@ -48,8 +48,14 @@ ALTER TABLE `hold_sample_import` ADD `instrument_id` VARCHAR(128) NULL DEFAULT N
 -- Thana 02-Jul-2025
 ALTER TABLE `form_eid` ADD `specific_infant_treatment` VARCHAR(128) NULL DEFAULT NULL AFTER `is_infant_receiving_treatment`;
 ALTER TABLE `audit_form_eid` ADD `specific_infant_treatment` VARCHAR(128) NULL DEFAULT NULL AFTER `is_infant_receiving_treatment`;
-ALTER TABLE `form_eid` ADD `child_age_in_days` INT NULL DEFAULT NULL AFTER `child_treatment_initiation_date`, ADD `test_request_date` DATE NULL DEFAULT NULL AFTER `child_age_in_days`, ADD `infant_email` VARCHAR(256) NULL DEFAULT NULL AFTER `test_request_date`, ADD `infant_phone` INT NULL DEFAULT NULL AFTER `infant_email`;
-ALTER TABLE `audit_form_eid` ADD `child_age_in_days` INT NULL DEFAULT NULL AFTER `child_treatment_initiation_date`, ADD `test_request_date` DATE NULL DEFAULT NULL AFTER `child_age_in_days`, ADD `infant_email` VARCHAR(256) NULL DEFAULT NULL AFTER `test_request_date`, ADD `infant_phone` INT NULL DEFAULT NULL AFTER `infant_email`;
+ALTER TABLE `form_eid` ADD `child_age_in_days` INT NULL DEFAULT NULL AFTER `child_treatment_initiation_date`;
+ALTER TABLE `form_eid` ADD `test_request_date` DATE NULL DEFAULT NULL AFTER `child_age_in_days`;
+ALTER TABLE `form_eid` ADD `infant_email` VARCHAR(256) NULL DEFAULT NULL AFTER `test_request_date`;
+ALTER TABLE `form_eid` ADD `infant_phone` INT NULL DEFAULT NULL AFTER `infant_email`;
+ALTER TABLE `audit_form_eid` ADD `child_age_in_days` INT NULL DEFAULT NULL AFTER `child_treatment_initiation_date`;
+ALTER TABLE `audit_form_eid` ADD `test_request_date` DATE NULL DEFAULT NULL AFTER `child_age_in_days`;
+ALTER TABLE `audit_form_eid` ADD `infant_email` VARCHAR(256) NULL DEFAULT NULL AFTER `test_request_date`;
+ALTER TABLE `audit_form_eid` ADD `infant_phone` INT NULL DEFAULT NULL AFTER `infant_email`;
 
 -- Thana 17-Jul-2025
 ALTER TABLE `form_vl` ADD `test_request_date` VARCHAR(128) NULL DEFAULT NULL AFTER `test_requested_on`;
@@ -150,58 +156,61 @@ ALTER TABLE `form_generic`
 
 
 -- Thana 03-Aug-2025
-ALTER TABLE `tb_tests` 
-ADD `lab_id` INT NULL DEFAULT NULL AFTER `tb_id`, 
-ADD `specimen_type` VARCHAR(255) NULL DEFAULT NULL AFTER `lab_id`, 
-ADD `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL AFTER `specimen_type`, 
-ADD `is_sample_rejected` VARCHAR(255) NULL DEFAULT NULL AFTER `sample_received_at_lab_datetime`, 
-ADD `reason_for_sample_rejection` VARCHAR(255) NULL DEFAULT NULL AFTER `is_sample_rejected`, 
-ADD `rejection_on` DATETIME NULL DEFAULT NULL AFTER `reason_for_sample_rejection`, 
-ADD `test_type` VARCHAR(255) NULL DEFAULT NULL AFTER `rejection_on`, 
-ADD `sample_tested_datetime` DATETIME NULL DEFAULT NULL AFTER `test_type`, 
-ADD `result_reviewed_by` VARCHAR(255) NULL DEFAULT NULL AFTER `test_result`, 
-ADD `result_reviewed_datetime` DATETIME NULL DEFAULT NULL AFTER `result_reviewed_by`, 
-ADD `result_approved_by` VARCHAR(255) NULL DEFAULT NULL AFTER `result_reviewed_datetime`, 
-ADD `result_approved_datetime` DATETIME NULL DEFAULT NULL AFTER `result_approved_by`;
+ALTER TABLE `tb_tests` ADD `lab_id` INT NULL DEFAULT NULL AFTER `tb_id`;
+ALTER TABLE `tb_tests` ADD `specimen_type` VARCHAR(255) NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `tb_tests` ADD `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL AFTER `specimen_type`;
+ALTER TABLE `tb_tests` ADD `is_sample_rejected` VARCHAR(255) NULL DEFAULT NULL AFTER `sample_received_at_lab_datetime`;
+ALTER TABLE `tb_tests` ADD `reason_for_sample_rejection` VARCHAR(255) NULL DEFAULT NULL AFTER `is_sample_rejected`;
+ALTER TABLE `tb_tests` ADD `rejection_on` DATETIME NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `tb_tests` ADD `test_type` VARCHAR(255) NULL DEFAULT NULL AFTER `rejection_on`;
+ALTER TABLE `tb_tests` ADD `sample_tested_datetime` DATETIME NULL DEFAULT NULL AFTER `test_type`;
+ALTER TABLE `tb_tests` ADD `result_reviewed_by` VARCHAR(255) NULL DEFAULT NULL AFTER `test_result`;
+ALTER TABLE `tb_tests` ADD `result_reviewed_datetime` DATETIME NULL DEFAULT NULL AFTER `result_reviewed_by`;
+ALTER TABLE `tb_tests` ADD `result_approved_by` VARCHAR(255) NULL DEFAULT NULL AFTER `result_reviewed_datetime`;
+ALTER TABLE `tb_tests` ADD `result_approved_datetime` DATETIME NULL DEFAULT NULL AFTER `result_approved_by`;
 
 -- Thana 04-Aug-2025
-ALTER TABLE `form_tb` ADD `risk_factors` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_tb_test`, ADD `purpose_of_test` VARCHAR(256) NULL DEFAULT NULL AFTER `risk_factors`;
-ALTER TABLE `audit_form_tb` ADD `risk_factors` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_tb_test`, ADD `purpose_of_test` VARCHAR(256) NULL DEFAULT NULL AFTER `risk_factors`;
-ALTER TABLE `tb_tests` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL, CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `reason_for_sample_rejection` `reason_for_sample_rejection` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `rejection_on` `rejection_on` DATETIME NULL DEFAULT NULL, CHANGE `test_type` `test_type` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `sample_tested_datetime` `sample_tested_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `form_tb` ADD `risk_factors` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_tb_test`;
+ALTER TABLE `form_tb` ADD `purpose_of_test` VARCHAR(256) NULL DEFAULT NULL AFTER `risk_factors`;
+ALTER TABLE `audit_form_tb` ADD `risk_factors` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_tb_test`;
+ALTER TABLE `audit_form_tb` ADD `purpose_of_test` VARCHAR(256) NULL DEFAULT NULL AFTER `risk_factors`;
+ALTER TABLE `tb_tests` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `tb_tests` CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `tb_tests` CHANGE `reason_for_sample_rejection` `reason_for_sample_rejection` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `tb_tests` CHANGE `rejection_on` `rejection_on` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `tb_tests` CHANGE `test_type` `test_type` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `tb_tests` CHANGE `sample_tested_datetime` `sample_tested_datetime` DATETIME NULL DEFAULT NULL;
 
 -- Thana 08-Aug-2025
 ALTER TABLE `form_tb` DROP `risk_factors`;
 ALTER TABLE `audit_form_tb` DROP `risk_factors`;
 
-ALTER TABLE `form_tb` 
-  ADD `affiliated_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, 
-  ADD `etb_tracker_number` VARCHAR(24) NULL DEFAULT NULL AFTER `external_sample_code`, 
-  ADD `is_patient_initiated_on_tb_treatment` ENUM('yes','no','','') NULL DEFAULT NULL AFTER `hiv_status`,
-  ADD `date_of_treatment_initiation` DATE NULL DEFAULT NULL AFTER `is_patient_initiated_on_tb_treatment`, 
-  ADD `current_regimen` VARCHAR(24) NULL DEFAULT NULL AFTER `date_of_treatment_initiation`, 
-  ADD `date_of_initiation_of_current_regimen` DATE NULL DEFAULT NULL AFTER `current_regimen`, 
-  ADD `risk_factors` VARCHAR(36) NULL DEFAULT NULL AFTER `date_of_initiation_of_current_regimen`, 
-  ADD `risk_factor_other` VARCHAR(36) NULL DEFAULT NULL AFTER `risk_factors`, 
-  ADD `is_specimen_reordered` ENUM('yes','no','','') NULL AFTER `risk_factor_other`; 
+ALTER TABLE `form_tb` ADD `affiliated_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `form_tb` ADD `etb_tracker_number` VARCHAR(24) NULL DEFAULT NULL AFTER `external_sample_code`;
+ALTER TABLE `form_tb` ADD `is_patient_initiated_on_tb_treatment` ENUM('yes','no','','') NULL DEFAULT NULL AFTER `hiv_status`;
+ALTER TABLE `form_tb` ADD `date_of_treatment_initiation` DATE NULL DEFAULT NULL AFTER `is_patient_initiated_on_tb_treatment`;
+ALTER TABLE `form_tb` ADD `current_regimen` VARCHAR(24) NULL DEFAULT NULL AFTER `date_of_treatment_initiation`;
+ALTER TABLE `form_tb` ADD `date_of_initiation_of_current_regimen` DATE NULL DEFAULT NULL AFTER `current_regimen`;
+ALTER TABLE `form_tb` ADD `risk_factors` VARCHAR(36) NULL DEFAULT NULL AFTER `date_of_initiation_of_current_regimen`;
+ALTER TABLE `form_tb` ADD `risk_factor_other` VARCHAR(36) NULL DEFAULT NULL AFTER `risk_factors`;
+ALTER TABLE `form_tb` ADD `is_specimen_reordered` ENUM('yes','no','','') NULL AFTER `risk_factor_other`;
 
-ALTER TABLE `audit_form_tb` 
-  ADD `affiliated_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, 
-  ADD `etb_tracker_number` VARCHAR(24) NULL DEFAULT NULL AFTER `external_sample_code`, 
-  ADD `is_patient_initiated_on_tb_treatment` ENUM('yes','no','','') NULL DEFAULT NULL AFTER `hiv_status`,
-  ADD `date_of_treatment_initiation` DATE NULL DEFAULT NULL AFTER `is_patient_initiated_on_tb_treatment`, 
-  ADD `current_regimen` VARCHAR(24) NULL DEFAULT NULL AFTER `date_of_treatment_initiation`, 
-  ADD `date_of_initiation_of_current_regimen` DATE NULL DEFAULT NULL AFTER `current_regimen`, 
-  ADD `risk_factors` VARCHAR(36) NULL DEFAULT NULL AFTER `date_of_initiation_of_current_regimen`, 
-  ADD `risk_factor_other` VARCHAR(36) NULL DEFAULT NULL AFTER `risk_factors`, 
-  ADD `is_specimen_reordered` ENUM('yes','no','','') NULL AFTER `risk_factor_other`; 
+ALTER TABLE `audit_form_tb` ADD `affiliated_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `audit_form_tb` ADD `etb_tracker_number` VARCHAR(24) NULL DEFAULT NULL AFTER `external_sample_code`;
+ALTER TABLE `audit_form_tb` ADD `is_patient_initiated_on_tb_treatment` ENUM('yes','no','','') NULL DEFAULT NULL AFTER `hiv_status`;
+ALTER TABLE `audit_form_tb` ADD `date_of_treatment_initiation` DATE NULL DEFAULT NULL AFTER `is_patient_initiated_on_tb_treatment`;
+ALTER TABLE `audit_form_tb` ADD `current_regimen` VARCHAR(24) NULL DEFAULT NULL AFTER `date_of_treatment_initiation`;
+ALTER TABLE `audit_form_tb` ADD `date_of_initiation_of_current_regimen` DATE NULL DEFAULT NULL AFTER `current_regimen`;
+ALTER TABLE `audit_form_tb` ADD `risk_factors` VARCHAR(36) NULL DEFAULT NULL AFTER `date_of_initiation_of_current_regimen`;
+ALTER TABLE `audit_form_tb` ADD `risk_factor_other` VARCHAR(36) NULL DEFAULT NULL AFTER `risk_factors`;
+ALTER TABLE `audit_form_tb` ADD `is_specimen_reordered` ENUM('yes','no','','') NULL AFTER `risk_factor_other`;
 
 -- Thana 09-Aug-2025
-ALTER TABLE `tb_tests` 
-ADD `tested_by` VARCHAR(255) NULL DEFAULT NULL AFTER `test_result`,
-ADD `revised_by` VARCHAR(255) NULL DEFAULT NULL AFTER `result_approved_datetime`, 
-ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`, 
-ADD `reason_for_result_change` VARCHAR(255) NULL DEFAULT NULL AFTER `revised_on`,
-ADD `comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `reason_for_result_change`;
+ALTER TABLE `tb_tests` ADD `tested_by` VARCHAR(255) NULL DEFAULT NULL AFTER `test_result`;
+ALTER TABLE `tb_tests` ADD `revised_by` VARCHAR(255) NULL DEFAULT NULL AFTER `result_approved_datetime`;
+ALTER TABLE `tb_tests` ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
+ALTER TABLE `tb_tests` ADD `reason_for_result_change` VARCHAR(255) NULL DEFAULT NULL AFTER `revised_on`;
+ALTER TABLE `tb_tests` ADD `comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `reason_for_result_change`;
 
 -- END OF VERSION --
 -- END OF VERSION --

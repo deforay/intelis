@@ -13,7 +13,10 @@ VALUES
 
 
 -- Amit 25-Sep-2025
-ALTER TABLE `hold_sample_import` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_vl_lab_datetime` DATETIME NULL DEFAULT NULL, CHANGE `sample_tested_datetime` `sample_tested_datetime` DATETIME NULL DEFAULT NULL, CHANGE `result_dispatched_datetime` `result_dispatched_datetime` DATETIME NULL DEFAULT NULL, CHANGE `result_reviewed_datetime` `result_reviewed_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `hold_sample_import` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_vl_lab_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `hold_sample_import` CHANGE `sample_tested_datetime` `sample_tested_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `hold_sample_import` CHANGE `result_dispatched_datetime` `result_dispatched_datetime` DATETIME NULL DEFAULT NULL;
+ALTER TABLE `hold_sample_import` CHANGE `result_reviewed_datetime` `result_reviewed_datetime` DATETIME NULL DEFAULT NULL;
 
 
 ALTER TABLE `form_vl` DROP `sample_registered_at_lab`;
@@ -41,19 +44,17 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `ca
 VALUES ('Result PDF Report Format', 'report_format', null, null, 'general', 'yes', '2025-09-19 17:58:53', null, 'active');
 
 -- Thana 29-Sep-2025
-ALTER TABLE `form_tb` 
-ADD `referred_by_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, 
-ADD `referred_to_lab_id` INT NULL DEFAULT NULL AFTER `referred_by_lab_id`, 
-ADD `reason_for_referral` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_to_lab_id`, 
-ADD `referred_on_datetime` DATETIME NULL DEFAULT NULL AFTER `reason_for_referral`, 
-ADD `referred_by` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_on_datetime`;
+ALTER TABLE `form_tb` ADD `referred_by_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `form_tb` ADD `referred_to_lab_id` INT NULL DEFAULT NULL AFTER `referred_by_lab_id`;
+ALTER TABLE `form_tb` ADD `reason_for_referral` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_to_lab_id`;
+ALTER TABLE `form_tb` ADD `referred_on_datetime` DATETIME NULL DEFAULT NULL AFTER `reason_for_referral`;
+ALTER TABLE `form_tb` ADD `referred_by` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_on_datetime`;
 
-ALTER TABLE `audit_form_tb` 
-ADD `referred_by_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, 
-ADD `referred_to_lab_id` INT NULL DEFAULT NULL AFTER `referred_by_lab_id`, 
-ADD `reason_for_referral` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_to_lab_id`, 
-ADD `referred_on_datetime` DATETIME NULL DEFAULT NULL AFTER `reason_for_referral`, 
-ADD `referred_by` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_on_datetime`;
+ALTER TABLE `audit_form_tb` ADD `referred_by_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `audit_form_tb` ADD `referred_to_lab_id` INT NULL DEFAULT NULL AFTER `referred_by_lab_id`;
+ALTER TABLE `audit_form_tb` ADD `reason_for_referral` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_to_lab_id`;
+ALTER TABLE `audit_form_tb` ADD `referred_on_datetime` DATETIME NULL DEFAULT NULL AFTER `reason_for_referral`;
+ALTER TABLE `audit_form_tb` ADD `referred_by` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_on_datetime`;
 
 -- Thana 02-Oct-2025
 ALTER TABLE `audit_form_vl` DROP `sample_registered_at_lab`;
@@ -117,12 +118,16 @@ ALTER TABLE `audit_form_tb` ADD `referral_manifest_code` VARCHAR(64) NULL DEFAUL
 
 
 -- Thana 31-Oct-2025
-ALTER TABLE `form_vl` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
-ALTER TABLE `audit_form_vl` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
+ALTER TABLE `form_vl` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `form_vl` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
+ALTER TABLE `audit_form_vl` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `audit_form_vl` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
 
 -- Thana 03-Nov-2025
-ALTER TABLE `form_tb` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
-ALTER TABLE `audit_form_tb` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
+ALTER TABLE `form_tb` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `form_tb` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
+ALTER TABLE `audit_form_tb` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `audit_form_tb` ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
 
 -- Amit 18-Nov-2025
 DELETE FROM roles_privileges_map WHERE privilege_id in (SELECT privilege_id FROM privileges WHERE `privilege_name` = '/admin/monitoring/sync-history.php');

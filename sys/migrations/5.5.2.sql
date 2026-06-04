@@ -17,10 +17,9 @@
 -- 1. Widen the identifier columns to fit a full 36-char RFC 4122 string.
 --    Idempotent: re-running MODIFY to the same type is a no-op.
 -- ----------------------------------------------------------------------------
-ALTER TABLE `s_lis_remote_commands`
-  MODIFY COLUMN `command_id` CHAR(36) NOT NULL,
-  MODIFY COLUMN `depends_on` CHAR(36) NULL,
-  MODIFY COLUMN `nonce`      CHAR(36) NOT NULL;
+ALTER TABLE `s_lis_remote_commands` MODIFY COLUMN `command_id` CHAR(36) NOT NULL;
+ALTER TABLE `s_lis_remote_commands` MODIFY COLUMN `depends_on` CHAR(36) NULL;
+ALTER TABLE `s_lis_remote_commands` MODIFY COLUMN `nonce`      CHAR(36) NOT NULL;
 
 
 -- ----------------------------------------------------------------------------
