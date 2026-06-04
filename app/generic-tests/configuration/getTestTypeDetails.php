@@ -111,6 +111,7 @@ foreach ($rResult as $aRow) {
     $row = [];
     $edit = '';
     $clone = '';
+    $export = '';
     $row[] = ($aRow['test_standard_name']);
     $row[] = ($aRow['test_generic_name']);
     $row[] = ($aRow['test_short_code']);
@@ -122,8 +123,11 @@ foreach ($rResult as $aRow) {
     if (_isAllowed("/generic-tests/configuration/edit-test-type.php") && $general->isLISInstance() === false) {
         $clone = '<a href="clone-test-type.php?id=' . base64_encode((string) $aRow['test_type_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Clone") . '"><em class="fa-solid fa-copy"></em> ' . _translate("Clone") . '</em></a>';
     }
-    if (($edit !== '' && $edit !== '0') || $clone !== '' && $clone !== '0') {
-        $row[] = $edit . $clone;
+    // Export is read-only, so it is offered on every instance type (including LIS)
+    // so a configured test can be carried to another instance and imported there.
+    $export = '<a href="export-test-type.php?id=' . base64_encode((string) $aRow['test_type_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Export") . '"><em class="fa-solid fa-download"></em> ' . _translate("Export") . '</a>';
+    if (($edit !== '' && $edit !== '0') || ($clone !== '' && $clone !== '0') || ($export !== '' && $export !== '0')) {
+        $row[] = $edit . $clone . $export;
     }
     $output['aaData'][] = $row;
 }
