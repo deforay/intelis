@@ -80,20 +80,36 @@ try {
         $where[] = " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode') ) ";
     }
 
-    $whereString = '';
-    if ($where !== []) {
-        $whereString = " WHERE " . implode(" AND ", $where);
+    // Defense-in-depth: never run an unfiltered cancel. A sampleCode or
+    // uniqueId is validated up front, but if neither produced a WHERE
+    // clause the query would match -- and cancel -- every row in the
+    // table. Reject instead of nuking the whole test type.
+    if ($where === []) {
+        throw new SystemException(_translate('A sample code or unique id is required to cancel a request'), 400);
     }
-    $sQuery .= $whereString;
+    $sQuery .= " WHERE " . implode(" AND ", $where);
     $rowData = $db->rawQuery($sQuery);
     $response = [];
     foreach ($rowData as $key => $row) {
+
+        $rowFacilityId = (int) ($row['facility_id'] ?? 0);
+
+        // A sample with no facility cannot be scope-checked, so it must never
+        // be cancelled blindly -- fail the row regardless of observe/enforce
+        // mode. This is a data-integrity guard, not the multi-tenant policy.
+        if ($rowFacilityId <= 0) {
+            $response[$key]['status'] = 'fail';
+            $response[$key]['message'] = _translate('Sample has no associated facility and cannot be cancelled');
+            $response[$key]['sampleCode'] = $row['sample_code'] ?? null;
+            $response[$key]['remoteSampleCode'] = $row['remote_sample_code'] ?? null;
+            continue;
+        }
 
         // STS-as-LIS hardening: only cancel samples whose facility is in
         // the API user's facilityMap. Observe-only by default
         // (global_config 'api_facility_scope_enforce'='no' -> log and
         // proceed); flip to 'yes' to actually skip out-of-scope cancels.
-        if (!$general->checkApiFacilityAllowed((int) ($row['facility_id'] ?? 0), $apiUserFacilityMap, $user['user_id'] ?? null, 'api/cancel-requests')
+        if (!$general->checkApiFacilityAllowed($rowFacilityId, $apiUserFacilityMap, $user['user_id'] ?? null, 'api/cancel-requests')
             && $general->isApiFacilityScopeEnforced()) {
             $response[$key]['status'] = 'fail';
             $response[$key]['message'] = _translate('Facility not in your scope');
@@ -117,6 +133,16 @@ try {
         'status' => 'success',
         'timestamp' => time(),
         'data' => $response
+    ];
+} catch (SystemException $exc) {
+    $statusCode = $exc->getCode() ?: 500;
+    http_response_code($statusCode);
+    $payload = [
+        'status' => 'failed',
+        'timestamp' => time(),
+        'transactionId' => $transactionId,
+        'error' => $exc->getMessage(),
+        'data' => []
     ];
 } catch (Throwable $e) {
 
