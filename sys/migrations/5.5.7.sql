@@ -35,3 +35,15 @@ ALTER TABLE `form_generic` ADD `reason_for_referral` VARCHAR(128) NULL DEFAULT N
 ALTER TABLE `form_generic` ADD `referred_on_datetime` DATETIME NULL DEFAULT NULL AFTER `reason_for_referral`;
 ALTER TABLE `form_generic` ADD `referred_by` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_on_datetime`;
 ALTER TABLE `form_generic` ADD `instrument_id` VARCHAR(128) NULL AFTER `test_platform`;
+
+-- Thana 05-May-2026
+CREATE TABLE `generic_referral_history` (
+  `history_id` int NOT NULL AUTO_INCREMENT,
+  `generic_id` int DEFAULT NULL,
+  `from_lab_id` int NOT NULL,
+  `to_lab_id` int NOT NULL,
+  `reason_for_referral` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `referred_on_datetime` datetime NOT NULL,
+  `referred_by` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  PRIMARY KEY (`history_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
