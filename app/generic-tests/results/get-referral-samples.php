@@ -48,7 +48,6 @@ $query = "SELECT
             AND (vl.sample_code IS NOT NULL AND vl.sample_code != '')
             AND (vl.lab_id IS NOT NULL AND vl.lab_id = '$lisLabId')
           ORDER BY vl.sample_code ASC";
-die($query);
 $result = $db->rawQuery($query);
 
 // Output options for the select box
