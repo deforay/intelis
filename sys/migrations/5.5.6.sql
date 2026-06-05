@@ -21,6 +21,7 @@ INSERT IGNORE INTO `global_config` (`name`, `display_name`, `value`, `category`,
 VALUES ('api_facility_scope_enforce', 'Enforce API facility scope (vs observe-only)', 'no', 'api', 'active');
 
 
+<<<<<<< Updated upstream
 UPDATE `system_config` SET `value` = '5.5.6' WHERE `system_config`.`name` = 'sc_version';
 
 -- Thana 04-May-2026
@@ -43,3 +44,6 @@ ALTER TABLE `form_generic` ADD `reason_for_referral` VARCHAR(128) NULL DEFAULT N
 ALTER TABLE `form_generic` ADD `referred_on_datetime` DATETIME NULL DEFAULT NULL AFTER `reason_for_referral`;
 ALTER TABLE `form_generic` ADD `referred_by` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_on_datetime`;
 ALTER TABLE `form_generic` ADD `instrument_id` VARCHAR(128) NULL AFTER `test_platform`;
+=======
+UPDATE `system_config` SET `value` = '5.5.6' WHERE `system_config`.`name` = 'sc_version';
+>>>>>>> Stashed changes
