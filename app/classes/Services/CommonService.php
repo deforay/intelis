@@ -1018,7 +1018,7 @@ final class CommonService
 
     public function getInstanceType(): ?string
     {
-        return $_SESSION['instance']['type'] ?? $this->getSystemConfig('sc_user_type') ?? $this->db->getValue("s_vlsm_instance", "instance_type");
+        return $_SESSION['instance']['type'] ?? $this->getSystemConfig('sc_user_type');
     }
 
     public function isSTSInstance(): bool
