@@ -1,0 +1,30 @@
+name: No Conflict Markers
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Check for conflict markers
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Fail if conflict markers are present
+        run: |
+          # Match the conflict opener/closer at start of line (with a space or
+          # end-of-line after the 7 chars). Bare "=======" is skipped on purpose
+          # -- it appears legitimately in Markdown/reST underlines.
+          if grep -rnE '^(<{7}|>{7})( |$)' \
+               --binary-files=without-match \
+               --exclude-dir=.git \
+               --exclude-dir=vendor \
+               --exclude-dir=node_modules \
+               .; then
+            echo "::error::Merge conflict markers found — resolve them before merging."
+            exit 1
+          fi
+          echo "No conflict markers found."
