@@ -69,43 +69,65 @@ $query = "(SELECT vl.sample_code,
                     FROM $table as vl
                     INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
 
+// Build the filter conditions ONCE as parameterized fragments. Both the main
+// SELECT and the UNION SELECT below reuse them, so the bind values are appended
+// to $bindParams in the same order the placeholders appear in the final query.
+$conds = [];
+$bind = [];
+
 if (!empty($_POST['facilityId']) && is_array($_POST['facilityId'])) {
-    $where[] = $swhere[] = " vl.facility_id IN (" . implode(',', $_POST['facilityId']) . ")";
+    $facilityIds = array_filter(array_map('intval', $_POST['facilityId']));
+    if (!empty($facilityIds)) {
+        $conds[] = " vl.facility_id IN (" . implode(',', $facilityIds) . ")";
+    }
 }
 
 if (!empty($_POST['sName'])) {
-    $swhere[] = $where[] = " vl.$sampleTypeColumn='" . $_POST['sName'] . "'";
+    $conds[] = " vl.$sampleTypeColumn = ?";
+    $bind[] = $_POST['sName'];
 }
 
 if (!empty($_POST['testType'])) {
-    $swhere[] = $where[] = " vl.test_type = '" . $_POST['testType'] . "'";
+    $conds[] = " vl.test_type = ?";
+    $bind[] = $_POST['testType'];
 }
 
 if (!empty($_POST['sampleCollectionDate'])) {
     [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-    $swhere[] = $where[] = " DATE(sample_collection_date) BETWEEN '$startDate' AND '$endDate' ";
+    $conds[] = " DATE(sample_collection_date) BETWEEN ? AND ? ";
+    $bind[] = $startDate;
+    $bind[] = $endDate;
 }
 
 if (!empty($_POST['sampleReceivedAtLab']) && trim((string) $_POST['sampleReceivedAtLab']) != '') {
     [$sampleReceivedStartDate, $sampleReceivedEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedAtLab'] ?? '');
-    $swhere[] = $where[] = " DATE(sample_received_at_lab_datetime) BETWEEN '$sampleReceivedStartDate' AND '$sampleReceivedEndDate' ";
+    $conds[] = " DATE(sample_received_at_lab_datetime) BETWEEN ? AND ? ";
+    $bind[] = $sampleReceivedStartDate;
+    $bind[] = $sampleReceivedEndDate;
 }
 
 if (!empty($_POST['lastModifiedDateTime']) && trim((string) $_POST['lastModifiedDateTime']) != '') {
     [$lastModifiedStartDate, $lastModifiedEndDate] = DateUtility::convertDateRange($_POST['lastModifiedDateTime'] ?? '');
-    $swhere[] = $where[] = " DATE(last_modified_datetime) BETWEEN '$lastModifiedStartDate' AND '$lastModifiedEndDate' ";
+    $conds[] = " DATE(last_modified_datetime) BETWEEN ? AND ? ";
+    $bind[] = $lastModifiedStartDate;
+    $bind[] = $lastModifiedEndDate;
 }
 
 if (!empty($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {
-    $swhere[] = $where[] = ' funding_source = "' . $_POST['fundingSource'] . '"';
+    $conds[] = ' funding_source = ?';
+    $bind[] = $_POST['fundingSource'];
 }
 
 if (!empty($_POST['userId']) && trim((string) $_POST['userId']) != '') {
-    $swhere[] = $where[] = ' vl.request_created_by = "' . $_POST['userId'] . '"';
+    $conds[] = ' vl.request_created_by = ?';
+    $bind[] = $_POST['userId'];
 }
 
-if (!empty($where)) {
-    $query = $query . ' WHERE ' . implode(" AND ", $where) . " ORDER BY vl." . $orderBy;
+$bindParams = [];
+
+if (!empty($conds)) {
+    $query = $query . ' WHERE ' . implode(" AND ", $conds) . " ORDER BY vl." . $orderBy;
+    $bindParams = $bind;
 }
 $query .= ")";
 
@@ -124,6 +146,7 @@ if (isset($_POST['batchId'])) {
         FROM $table as vl
         INNER JOIN facility_details as f ON vl.facility_id=f.facility_id ";
 
+    $swhere = $conds;
     $swhere[] = "(COALESCE(vl.sample_batch_id, '') = ''
             AND (COALESCE(vl.is_sample_rejected, '') = '' OR vl.is_sample_rejected = 'no')
             AND (COALESCE(vl.reason_for_sample_rejection, '') = '' OR vl.reason_for_sample_rejection = 0)
@@ -131,12 +154,12 @@ if (isset($_POST['batchId'])) {
             AND (vl.sample_code IS NOT NULL AND vl.sample_code != '')
             AND vl.result_status IN (" . SAMPLE_STATUS\REORDERED_FOR_TESTING . ", " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . "))";
 
-    if (!empty($swhere)) {
-        $squery = $squery . ' WHERE ' . implode(" AND ", $swhere);
-    }
+    $squery = $squery . ' WHERE ' . implode(" AND ", $swhere);
     $query .= "$squery ORDER BY vl.$orderBy)";
+    // UNION SELECT repeats the same parameterized conditions -> repeat their binds.
+    $bindParams = array_merge($bindParams, $bind);
 }
-$result = $db->rawQuery($query);
+$result = $db->rawQuery($query, $bindParams);
 if (isset($_POST['batchId'])) {
 
     foreach ($result as $sample) {

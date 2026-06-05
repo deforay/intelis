@@ -2,6 +2,7 @@
 
 use App\Services\TestsService;
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -13,6 +14,9 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 if (empty($_POST['type'])) {
     echo "";
@@ -26,19 +30,21 @@ $primaryKeyColumn = TestsService::getPrimaryColumn($testType);
 $patientIdColumn = TestsService::getPatientIdColumn($testType);
 $lisLabId = $general->getSystemConfig('sc_testing_lab_id');
 
+$bindParams = [];
 $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '')";
-if (isset($packageCodeId) && !empty($packageCodeId)) {
-    $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '' OR vl.referred_to_lab_id = '$labId')";
+if (!empty($packageCodeId)) {
+    $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '' OR vl.referred_to_lab_id = ?)";
+    $bindParams[] = $labId;
 }
 // Query to get samples that are eligible for referral
 // Samples should be received at lab but not yet referred
-$query = "SELECT 
+$query = "SELECT
             vl.sample_code,
             vl.$primaryKeyColumn,
             vl.$patientIdColumn,
             vl.facility_id,
-            vl.referred_to_lab_id, 
-            vl.referral_manifest_code, 
+            vl.referred_to_lab_id,
+            vl.referral_manifest_code,
             f.facility_name,
             f.facility_code
           FROM $table as vl
@@ -46,9 +52,10 @@ $query = "SELECT
           WHERE $condition
             AND (COALESCE(vl.is_sample_rejected, '') = '' OR vl.is_sample_rejected = 'no')
             AND (vl.sample_code IS NOT NULL AND vl.sample_code != '')
-            AND (vl.lab_id IS NOT NULL AND vl.lab_id = '$lisLabId')
+            AND (vl.lab_id IS NOT NULL AND vl.lab_id = ?)
           ORDER BY vl.sample_code ASC";
-$result = $db->rawQuery($query);
+$bindParams[] = $lisLabId;
+$result = $db->rawQuery($query, $bindParams);
 
 // Output options for the select box
 foreach ($result as $sample) {

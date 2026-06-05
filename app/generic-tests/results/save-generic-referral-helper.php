@@ -82,6 +82,19 @@ try {
             $errorCount++;
             continue;
         }
+
+        // Facility-scope guard (IDOR protection): only refer samples the user is
+        // allowed to touch. No-op on LIS and for admins; on STS the sample's
+        // facility must be in the user's facilityMap. Skip + count violations
+        // instead of aborting the whole batch.
+        $sampleFacilityId = (int) $db->where($primaryKeyColumn, $sampleId)->getValue($table, 'facility_id');
+        try {
+            $general->assertFacilityAllowed($sampleFacilityId);
+        } catch (Throwable $scopeEx) {
+            $errorCount++;
+            continue;
+        }
+
         // Update the sample with referral information
         $updateData = [
             'referral_manifest_code' => $_POST['packageCode'],
