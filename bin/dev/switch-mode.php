@@ -5,10 +5,10 @@
  * Switch this instance between LIS mode and STS mode (developer convenience).
  *
  * Flips the instance type used by CommonService::isLISInstance() /
- * isSTSInstance() — i.e. the `sc_user_type` system_config row and the
- * `s_vlsm_instance.instance_type` column — then clears the application cache
- * so the new mode is picked up. Config changes only fully take effect after a
- * `composer post-update`, which this script offers to run for you.
+ * isSTSInstance() — i.e. the `sc_user_type` system_config row — then clears
+ * the application cache so the new mode is picked up. Config changes only
+ * fully take effect after a `composer post-update`, which this script offers
+ * to run for you.
  *
  * Intended for DEV machines only. It refuses to run in production unless you
  * pass --force.
@@ -115,10 +115,7 @@ try {
     $db->where('name', 'sc_user_type');
     $db->update('system_config', ['value' => $target]);
 
-    // Keep the s_vlsm_instance fallback column in sync (single instance row).
-    $db->update('s_vlsm_instance', ['instance_type' => $target]);
-
-    $io->text("Updated <info>sc_user_type</info> and <info>s_vlsm_instance.instance_type</info> → <info>$target</info>");
+    $io->text("Updated <info>sc_user_type</info> → <info>$target</info>");
 
     // When moving to STS, make sure an STS API key exists in the config file.
     if ($target === 'stsmode') {
@@ -142,13 +139,6 @@ try {
     if ($skipPostUpdate) {
         $io->success("Switched to $target.");
         $io->note("Skipped post-update. Run it yourself for config to fully take effect:\n    composer post-update");
-        exit(CLI\OK);
-    }
-
-    $runPostUpdate = $assumeYes || $io->confirm('Run `composer post-update` now so the config takes effect?', true);
-    if (!$runPostUpdate) {
-        $io->success("Switched to $target.");
-        $io->note("Remember to run `composer post-update` for the config to fully take effect.");
         exit(CLI\OK);
     }
 
