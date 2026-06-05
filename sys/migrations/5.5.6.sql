@@ -36,20 +36,10 @@ INSERT IGNORE INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `dis
 UPDATE `s_app_menu` SET `inner_pages` = '/generic-tests/results/add-generic-referral.php,/generic-tests/results/edit-generic-referral.php' WHERE `s_app_menu`.`id` = 528;
 
 
-ALTER TABLE `form_generic` 
-ADD `referral_manifest_code` VARCHAR(64) NULL DEFAULT NULL AFTER `sample_package_code`,
-ADD `referred_by_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, 
-ADD `referred_to_lab_id` INT NULL DEFAULT NULL AFTER `referred_by_lab_id`, 
-ADD `reason_for_referral` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_to_lab_id`, 
-ADD `referred_on_datetime` DATETIME NULL DEFAULT NULL AFTER `reason_for_referral`, 
-ADD `referred_by` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_on_datetime`;
-
-ALTER TABLE `audit_form_generic` 
-ADD `referral_manifest_code` VARCHAR(64) NULL DEFAULT NULL AFTER `sample_package_code`,
-ADD `referred_by_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, 
-ADD `referred_to_lab_id` INT NULL DEFAULT NULL AFTER `referred_by_lab_id`, 
-ADD `reason_for_referral` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_to_lab_id`, 
-ADD `referred_on_datetime` DATETIME NULL DEFAULT NULL AFTER `reason_for_referral`, 
-ADD `referred_by` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_on_datetime`;
-
-ALTER TABLE form_generic ADD COLUMN `instrument_id` VARCHAR(128) NULL AFTER `test_platform`;
+ALTER TABLE `form_generic` ADD `referral_manifest_code` VARCHAR(64) NULL DEFAULT NULL AFTER `sample_package_code`;
+ALTER TABLE `form_generic` ADD `referred_by_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`;
+ALTER TABLE `form_generic` ADD `referred_to_lab_id` INT NULL DEFAULT NULL AFTER `referred_by_lab_id`;
+ALTER TABLE `form_generic` ADD `reason_for_referral` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_to_lab_id`;
+ALTER TABLE `form_generic` ADD `referred_on_datetime` DATETIME NULL DEFAULT NULL AFTER `reason_for_referral`;
+ALTER TABLE `form_generic` ADD `referred_by` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_on_datetime`;
+ALTER TABLE `form_generic` ADD `instrument_id` VARCHAR(128) NULL AFTER `test_platform`;
