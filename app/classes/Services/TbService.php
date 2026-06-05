@@ -29,26 +29,18 @@ final class TbService extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['tb_sample_code'] ?? 'MMYY';
             $params['prefix'] ??= $globalConfig['tb_sample_code_prefix'] ?? $this->shortCode;
+            // Lab-aware postfix. LIS: single lab from sc_testing_lab_id. STS: trust the
+            // queued lab_id + access_type (see AbstractTestService::stsLabPostfix). The
+            // session-based userActsAsLabForFacility() check does NOT work here because
+            // the code-minting paths (API, CLI worker, activation) have no $_SESSION.
             $postFix = '';
-            $labId = null;
             if ($this->commonService->isLISInstance()) {
-                $labId = (int) ($this->commonService->getSystemConfig('sc_testing_lab_id') ?? 0) ?: null;
-            } else {
-                $candidateLabId = (int) ($params['labId'] ?? 0);
-                if ($candidateLabId > 0 && $this->commonService->userActsAsLabForFacility($candidateLabId)) {
-                    $labId = $candidateLabId;
+                $code = $this->labFacilityCode((int) ($this->commonService->getSystemConfig('sc_testing_lab_id') ?? 0));
+                if ($code !== '') {
+                    $postFix = "-" . $code;
                 }
-            }
-            if (!empty($labId)) {
-                /** @var FileCacheUtility $fileCache */
-                $fileCache = ContainerRegistry::get(FileCacheUtility::class);
-                $code = $fileCache->get("tb_lab_facility_code_$labId", function () use ($labId) {
-                    $facilityCode = $this->db->rawQueryOne("SELECT facility_code FROM facility_details WHERE facility_id = ?", [$labId]);
-                    return !empty($facilityCode['facility_code'])
-                        ? $facilityCode['facility_code']
-                        : strtoupper(substr(md5((string) $labId), 0, 4));
-                }, ['facility']);
-                $postFix = "-" . $code;
+            } else {
+                $postFix = $this->stsLabPostfix($params);
             }
             $params['postfix'] ??= $postFix;
 

@@ -19,7 +19,9 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use App\Utilities\FileCacheUtility;
 use App\Services\TestRequestsService;
+use App\Registries\ContainerRegistry;
 
 abstract class AbstractTestService
 {
@@ -105,6 +107,56 @@ abstract class AbstractTestService
         ]);
 
         return $nextValue;
+    }
+
+    /**
+     * Resolve a testing lab's sample-code postfix component.
+     *
+     * Returns the lab's facility_code (or a stable md5-derived fallback) ONLY when
+     * $labId points to a real testing lab (facility_type = 2); returns '' otherwise.
+     * Cached per lab. Used to build the "-<labcode>" postfix appended to sample codes.
+     */
+    protected function labFacilityCode(int $labId): string
+    {
+        if ($labId <= 0) {
+            return '';
+        }
+        /** @var FileCacheUtility $fileCache */
+        $fileCache = ContainerRegistry::get(FileCacheUtility::class);
+        return $fileCache->get("lab_facility_code_$labId", function () use ($labId) {
+            $row = $this->db->rawQueryOne(
+                "SELECT facility_code, facility_type FROM facility_details WHERE facility_id = ?",
+                [$labId]
+            );
+            if (empty($row) || (int) ($row['facility_type'] ?? 0) !== 2) {
+                return ''; // not a testing lab -> no postfix
+            }
+            return !empty($row['facility_code'])
+                ? $row['facility_code']
+                : strtoupper(substr(md5((string) $labId), 0, 4));
+        }, ['facility']);
+    }
+
+    /**
+     * STS-only lab-aware sample-code postfix.
+     *
+     * On STS, when the queued request was made by a testing lab and carries a valid
+     * lab id, append "-<labFacilityCode>" so each lab's sample codes are distinguishable.
+     * Returns '' on LIS / standalone (so pure-LIS sample-code format is never changed)
+     * and whenever the lab cannot be resolved. Session-independent by design: the
+     * code-minting paths (API, CLI worker, activation) have no $_SESSION, so the gate
+     * trusts the queue row's access_type + lab_id (set server-side at enqueue time).
+     */
+    protected function stsLabPostfix(array $params): string
+    {
+        if (!$this->commonService->isSTSInstance()) {
+            return '';
+        }
+        if (($params['accessType'] ?? '') !== 'testing-lab') {
+            return '';
+        }
+        $code = $this->labFacilityCode((int) ($params['labId'] ?? 0));
+        return $code !== '' ? "-$code" : '';
     }
 
     // $testTable is the table where the sample code is to be generated - form_vl, form_eid etc.
