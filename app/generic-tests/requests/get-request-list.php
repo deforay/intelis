@@ -1,5 +1,6 @@
 <?php
 
+use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Services\CommonService;
@@ -45,6 +46,11 @@ try {
 
      if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
+     }
+
+     // Testing-lab users work the lab side only: hide samples still at the clinic.
+     if ($general->isSTSInstance() && ($_SESSION['accessType'] ?? '') === 'testing-lab') {
+          $sWhere[] = ' vl.result_status != ' . RECEIVED_AT_CLINIC;
      }
 
      $sQuery = "SELECT vl.*,
