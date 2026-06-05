@@ -460,7 +460,7 @@ $reasonForChange = $reasonForChangeArr[1];
 									<div class="col-lg-7">
 										<select class="form-control isRequired" id="facilityId" name="facilityId"
 											title="<?= _translate('Please select clinic/health center name'); ?>"
-											style="width:100%;" onchange="fillFacilityDetails(this);">
+											style="width:100%;">
 
 											<?= $facility; ?>
 										</select>
@@ -922,7 +922,7 @@ $reasonForChange = $reasonForChangeArr[1];
 																		<?php echo ($genericResultInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
 																		<?php echo ($reject['rejection_reason_name']); ?>
 																	</option>
-																<?php }
+															<?php }
 															} ?>
 														</optgroup>
 													<?php }
@@ -1143,7 +1143,7 @@ $reasonForChange = $reasonForChangeArr[1];
 	let __clone = null;
 	let reason = null;
 	let resultValue = null;
-	$(document).ready(function () {
+	$(document).ready(function() {
 		$("#subTestResult").multipleSelect({
 			placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
 			width: '100%'
@@ -1157,9 +1157,9 @@ $reasonForChange = $reasonForChangeArr[1];
 		$('.date').mask(dateFormatMask);
 		$('.dateTime').mask(dateFormatMask + ' 99:99');
 
-		$('.result-focus').change(function (e) {
+		$('.result-focus').change(function(e) {
 			var status = false;
-			$(".result-focus").each(function (index) {
+			$(".result-focus").each(function(index) {
 				if ($(this).val() != "") {
 					status = true;
 				}
@@ -1173,14 +1173,14 @@ $reasonForChange = $reasonForChangeArr[1];
 			}
 		});
 
-		$("#labId,#facilityId,#sampleCollectionDate").on('change', function () {
+		$("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
 
 			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $(
-				"#sampleDispatchedDate").val() == "") {
+					"#sampleDispatchedDate").val() == "") {
 				$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
 			}
 			if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $(
-				"#sampleReceivedDate").val() == "") {
+					"#sampleReceivedDate").val() == "") {
 				$('#sampleReceivedDate').val($('#sampleCollectionDate').val());
 				$('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
 			}
@@ -1242,7 +1242,7 @@ $reasonForChange = $reasonForChangeArr[1];
 
 		getfacilityProvinceDetails($("#facilityId").val());
 
-		setTimeout(function () {
+		setTimeout(function() {
 			$("#vlResult").trigger('change');
 			$("#isSampleRejected").trigger('change');
 			// just triggering sample collection date is enough,
@@ -1252,7 +1252,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
 			resultValue = $("#vlResult").val();
 
-			$(".labSection").on("change", function () {
+			$(".labSection").on("change", function() {
 				if ($.trim(resultValue) != '') {
 					if ($(".labSection").serialize() === $(__clone).serialize()) {
 						$(".reasonForResultChanges").css("display", "none");
@@ -1273,7 +1273,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			minimumInputLength: 0,
 			width: '100%',
 			allowClear: true,
-			id: function (bond) {
+			id: function(bond) {
 				return bond._id;
 			},
 			ajax: {
@@ -1281,7 +1281,7 @@ $reasonForChange = $reasonForChangeArr[1];
 				url: "/includes/get-data-list.php",
 				dataType: 'json',
 				delay: 250,
-				data: function (params) {
+				data: function(params) {
 					return {
 						fieldName: 'request_clinician_name',
 						tableName: 'form_generic',
@@ -1289,7 +1289,7 @@ $reasonForChange = $reasonForChangeArr[1];
 						page: params.page
 					};
 				},
-				processResults: function (data, params) {
+				processResults: function(data, params) {
 					params.page = params.page || 1;
 					return {
 						results: data.result,
@@ -1300,23 +1300,23 @@ $reasonForChange = $reasonForChangeArr[1];
 				},
 				//cache: true
 			},
-			escapeMarkup: function (markup) {
+			escapeMarkup: function(markup) {
 				return markup;
 			}
 		});
 
-		$("#reqClinician").change(function () {
+		$("#reqClinician").change(function() {
 			$.blockUI();
 			var search = $(this).val();
 			if ($.trim(search) != '') {
 				$.get("/includes/get-data-list.php", {
-					fieldName: 'request_clinician_name',
-					tableName: 'form_generic',
-					returnField: 'request_clinician_phone_number',
-					limit: 1,
-					q: search,
-				},
-					function (data) {
+						fieldName: 'request_clinician_name',
+						tableName: 'form_generic',
+						returnField: 'request_clinician_phone_number',
+						limit: 1,
+						q: search,
+					},
+					function(data) {
 						if (data != "") {
 							$("#reqClinicianPhoneNumber").val(data);
 						}
@@ -1330,7 +1330,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			minimumInputLength: 0,
 			width: '100%',
 			allowClear: true,
-			id: function (bond) {
+			id: function(bond) {
 				return bond._id;
 			},
 			ajax: {
@@ -1338,7 +1338,7 @@ $reasonForChange = $reasonForChangeArr[1];
 				url: "/includes/get-data-list.php",
 				dataType: 'json',
 				delay: 250,
-				data: function (params) {
+				data: function(params) {
 					return {
 						fieldName: 'testing_lab_focal_person',
 						tableName: 'form_generic',
@@ -1346,7 +1346,7 @@ $reasonForChange = $reasonForChangeArr[1];
 						page: params.page
 					};
 				},
-				processResults: function (data, params) {
+				processResults: function(data, params) {
 					params.page = params.page || 1;
 					return {
 						results: data.result,
@@ -1357,23 +1357,23 @@ $reasonForChange = $reasonForChangeArr[1];
 				},
 				//cache: true
 			},
-			escapeMarkup: function (markup) {
+			escapeMarkup: function(markup) {
 				return markup;
 			}
 		});
 
-		$("#vlFocalPerson").change(function () {
+		$("#vlFocalPerson").change(function() {
 			$.blockUI();
 			var search = $(this).val();
 			if ($.trim(search) != '') {
 				$.get("/includes/get-data-list.php", {
-					fieldName: 'testing_lab_focal_person',
-					tableName: 'form_generic',
-					returnField: 'testing_lab_focal_person_phone_number',
-					limit: 1,
-					q: search,
-				},
-					function (data) {
+						fieldName: 'testing_lab_focal_person',
+						tableName: 'form_generic',
+						returnField: 'testing_lab_focal_person_phone_number',
+						limit: 1,
+						q: search,
+					},
+					function(data) {
 						if (data != "") {
 							$("#vlFocalPersonPhoneNumber").val(data);
 						}
@@ -1382,7 +1382,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			$.unblockUI();
 		});
 
-		$('#vlResult').on('change', function () {
+		$('#vlResult').on('change', function() {
 			if ($(this).val().trim().toLowerCase() == 'failed' || $(this).val().trim().toLowerCase() ==
 				'error') {
 				if ($(this).val().trim().toLowerCase() == 'failed') {
@@ -1403,14 +1403,14 @@ $reasonForChange = $reasonForChangeArr[1];
 		if ($.trim($("#" + id).val()) != '') {
 			$.blockUI();
 			$.post("/generic-tests/requests/checkSampleDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: $("#" + id).val(),
-				fnct: fnct,
-				format: "html"
-			},
-				function (data) {
-					if (data != 0) { }
+					tableName: tableName,
+					fieldName: fieldName,
+					value: $("#" + id).val(),
+					fnct: fnct,
+					format: "html"
+				},
+				function(data) {
+					if (data != 0) {}
 				});
 			$.unblockUI();
 		}
@@ -1427,9 +1427,9 @@ $reasonForChange = $reasonForChangeArr[1];
 		$("#showEmptyResult").hide();
 		if ($.trim($("#artPatientNo").val()) != '') {
 			$.post("/generic-tests/requests/search-patients.php", {
-				artPatientNo: $.trim($("#artPatientNo").val())
-			},
-				function (data) {
+					artPatientNo: $.trim($("#artPatientNo").val())
+				},
+				function(data) {
 					if (data >= '1') {
 						showModal('patientModal.php?artNo=' + $.trim($("#artPatientNo").val()), 900, 520);
 					} else {
@@ -1440,147 +1440,128 @@ $reasonForChange = $reasonForChangeArr[1];
 	}
 
 	function getfacilityProvinceDetails(obj) {
-		$.blockUI();
-		//check facility name`
-		var cName = $("#facilityId").val();
-		var pName = $("#province").val();
-		if (cName != '' && provinceName && facilityName) {
-			provinceName = false;
-		}
-		if (cName != '' && facilityName) {
-			$.post("/includes/siteInformationDropdownOptions.php", {
-				cName: cName,
-				testType: 'generic-tests'
-			},
-				function (data) {
-					if (data != "") {
-						details = data.split("###");
-						$("#province").html(details[0]);
-						$("#district").html(details[1]);
-					}
-				});
-		} else if (pName == '' && cName == '') {
-			provinceName = true;
-			facilityName = true;
-			$("#province").html("<?php echo $province; ?>");
-			$("#facilityId").html("<?php echo $facility; ?>");
-		}
-		$.unblockUI();
+		// $.blockUI();
+		// //check facility name`
+		// var cName = $("#facilityId").val();
+		// var pName = $("#province").val();
+		// if (cName != '' && provinceName && facilityName) {
+		// 	provinceName = false;
+		// }
+		// if (cName != '' && facilityName) {
+		// 	$.post("/includes/siteInformationDropdownOptions.php", {
+		// 			cName: cName,
+		// 			testType: 'generic-tests'
+		// 		},
+		// 		function(data) {
+		// 			if (data != "") {
+		// 				details = data.split("###");
+		// 				$("#province").html(details[0]);
+		// 				$("#district").html(details[1]);
+		// 			}
+		// 		});
+		// } else if (pName == '' && cName == '') {
+		// 	provinceName = true;
+		// 	facilityName = true;
+		// 	$("#province").html("<?php echo $province; ?>");
+		// 	$("#facilityId").html("<?php echo $facility; ?>");
+		// }
+		// $.unblockUI();
 	}
 
 	function getProvinceDistricts(obj) {
-		$.blockUI();
-		var cName = $("#facilityId").val();
-		var pName = $("#province").val();
-		if (pName != '' && provinceName && facilityName) {
-			facilityName = false;
-		}
-		if ($.trim(pName) != '') {
-			//if (provinceName) {
-			$.post("/includes/siteInformationDropdownOptions.php", {
-				pName: pName,
-				testType: 'generic-tests'
-			},
-				function (data) {
-					if (data != "") {
-						details = data.split("###");
-						$("#facilityId").html(details[0]);
-						$("#district").html(details[1]);
-						$("#facilityCode").val('');
-						$(".facilityDetails").hide();
-						$(".facilityEmails").html('');
-						$(".facilityMobileNumbers").html('');
-						$(".facilityContactPerson").html('');
-					}
-				});
-			//}
-		} else if (pName == '' && cName == '') {
-			provinceName = true;
-			facilityName = true;
-			$("#province").html("<?php echo $province; ?>");
-			$("#facilityId").html(
-				"<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> -- Select -- </option>"
-			);
-		}
-		$.unblockUI();
+		// $.blockUI();
+		// var cName = $("#facilityId").val();
+		// var pName = $("#province").val();
+		// if (pName != '' && provinceName && facilityName) {
+		// 	facilityName = false;
+		// }
+		// if ($.trim(pName) != '') {
+		// 	//if (provinceName) {
+		// 	$.post("/includes/siteInformationDropdownOptions.php", {
+		// 			pName: pName,
+		// 			testType: 'generic-tests'
+		// 		},
+		// 		function(data) {
+		// 			if (data != "") {
+		// 				details = data.split("###");
+		// 				$("#facilityId").html(details[0]);
+		// 				$("#district").html(details[1]);
+		// 				$("#facilityCode").val('');
+		// 				$(".facilityDetails").hide();
+		// 				$(".facilityEmails").html('');
+		// 				$(".facilityMobileNumbers").html('');
+		// 				$(".facilityContactPerson").html('');
+		// 			}
+		// 		});
+		// 	//}
+		// } else if (pName == '' && cName == '') {
+		// 	provinceName = true;
+		// 	facilityName = true;
+		// 	$("#province").html("<?php echo $province; ?>");
+		// 	$("#facilityId").html(
+		// 		"<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> -- Select -- </option>"
+		// 	);
+		// }
+		// $.unblockUI();
 	}
 
 	function getFacilities(obj) {
-		$.blockUI();
-		var dName = $("#district").val();
-		var cName = $("#facilityId").val();
-		if (dName != '') {
-			$.post("/includes/siteInformationDropdownOptions.php", {
-				dName: dName,
-				cliName: cName,
-				fType: 2,
-				testType: 'generic-tests'
-			},
-				function (data) {
-					if (data != "") {
-						details = data.split("###");
-						$("#facilityId").html(details[0]);
-						//$("#labId").html(details[1]);
-						$(".facilityDetails").hide();
-						$(".facilityEmails").html('');
-						$(".facilityMobileNumbers").html('');
-						$(".facilityContactPerson").html('');
-					}
-				});
-		}
-		$.unblockUI();
+		// $.blockUI();
+		// var dName = $("#district").val();
+		// var cName = $("#facilityId").val();
+		// if (dName != '') {
+		// 	$.post("/includes/siteInformationDropdownOptions.php", {
+		// 			dName: dName,
+		// 			cliName: cName,
+		// 			fType: 2,
+		// 			testType: 'generic-tests'
+		// 		},
+		// 		function(data) {
+		// 			if (data != "") {
+		// 				details = data.split("###");
+		// 				$("#facilityId").html(details[0]);
+		// 				//$("#labId").html(details[1]);
+		// 				$(".facilityDetails").hide();
+		// 				$(".facilityEmails").html('');
+		// 				$(".facilityMobileNumbers").html('');
+		// 				$(".facilityContactPerson").html('');
+		// 			}
+		// 		});
+		// }
+		// $.unblockUI();
 	}
 
 	function getfacilityProvinceDetails(obj) {
-		$.blockUI();
-		//check facility name
-		var cName = $("#facilityId").val();
-		var pName = $("#province").val();
-		if (cName != '' && provinceName && facilityName) {
-			provinceName = false;
-		}
-		if (cName != '' && facilityName) {
-			$.post("/includes/siteInformationDropdownOptions.php", {
-				cName: cName,
-				testType: 'generic-tests'
-			},
-				function (data) {
-					if (data != "") {
-						details = data.split("###");
-						$("#province").html(details[0]);
-						$("#district").html(details[1]);
-						$("#clinicianName").val(details[2]);
-					}
-				});
-		} else if (pName == '' && cName == '') {
-			provinceName = true;
-			facilityName = true;
-			$("#province").html("<?php echo $province; ?>");
-			$("#facilityId").html("<?php echo $facility; ?>");
-		}
-		$.unblockUI();
+		// $.blockUI();
+		// //check facility name
+		// var cName = $("#facilityId").val();
+		// var pName = $("#province").val();
+		// if (cName != '' && provinceName && facilityName) {
+		// 	provinceName = false;
+		// }
+		// if (cName != '' && facilityName) {
+		// 	$.post("/includes/siteInformationDropdownOptions.php", {
+		// 			cName: cName,
+		// 			testType: 'generic-tests'
+		// 		},
+		// 		function(data) {
+		// 			if (data != "") {
+		// 				details = data.split("###");
+		// 				$("#province").html(details[0]);
+		// 				$("#district").html(details[1]);
+		// 				$("#clinicianName").val(details[2]);
+		// 			}
+		// 		});
+		// } else if (pName == '' && cName == '') {
+		// 	provinceName = true;
+		// 	facilityName = true;
+		// 	$("#province").html("<?php echo $province; ?>");
+		// 	$("#facilityId").html("<?php echo $facility; ?>");
+		// }
+		// $.unblockUI();
 	}
 
-	function fillFacilityDetails(obj) {
-		getfacilityProvinceDetails(obj)
-		$("#facilityCode").val($('#facilityId').find(':selected').data('code'));
-		var femails = $('#facilityId').find(':selected').data('emails');
-		var fmobilenos = $('#facilityId').find(':selected').data('mobile-nos');
-		var fContactPerson = $('#facilityId').find(':selected').data('contact-person');
-		if ($.trim(femails) != '' || $.trim(fmobilenos) != '' || fContactPerson != '') {
-			$(".facilityDetails").show();
-		} else {
-			$(".facilityDetails").hide();
-		}
-		($.trim(femails) != '') ? $(".femails").show() : $(".femails").hide();
-		($.trim(femails) != '') ? $(".facilityEmails").html(femails) : $(".facilityEmails").html('');
-		($.trim(fmobilenos) != '') ? $(".fmobileNumbers").show() : $(".fmobileNumbers").hide();
-		($.trim(fmobilenos) != '') ? $(".facilityMobileNumbers").html(fmobilenos) : $(".facilityMobileNumbers").html('');
-		($.trim(fContactPerson) != '') ? $(".fContactPerson").show() : $(".fContactPerson").hide();
-		($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson) : $(".facilityContactPerson").html(
-			'');
-	}
-	$("input:radio[name=gender]").click(function () {
+	$("input:radio[name=gender]").click(function() {
 		if ($(this).val() == 'male' || $(this).val() == 'unreported') {
 			$('.femaleSection').hide();
 			$('input[name="breastfeeding"]').prop('checked', false);
@@ -1589,7 +1570,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			$('.femaleSection').show();
 		}
 	});
-	$("#sampleTestingDateTimeAtLab").change(function () {
+	$("#sampleTestingDateTimeAtLab").change(function() {
 		if ($(this).val() != "") {
 			$(".result-fields").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
@@ -1603,7 +1584,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			$("#isSampleRejected").trigger('change');
 		}
 	});
-	$("#isSampleRejected").on("change", function () {
+	$("#isSampleRejected").on("change", function() {
 
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
@@ -1657,7 +1638,7 @@ $reasonForChange = $reasonForChangeArr[1];
 	});
 
 
-	$('#testingPlatform').on("change", function () {
+	$('#testingPlatform').on("change", function() {
 		$(".vlResult").show();
 		//$('#vlResult, #isSampleRejected').addClass('isRequired');
 		$("#isSampleRejected").val("");
@@ -1719,40 +1700,40 @@ $reasonForChange = $reasonForChangeArr[1];
 			var testResultUnit = '<?php echo $genericResultInfo['result_unit']; ?>';
 			$(".requestForm").show();
 			$.post("/generic-tests/requests/getTestTypeForm.php", {
-				testType: testType,
-				vlSampleId: editId,
-				result: resultVal,
-				testTypeForm: testedTypeForm,
-				// resultInterpretation: '< ?php echo $genericResultInfo['final_result_interpretation']; ?>',
-				resultUnit: testResultUnit,
-			},
-				function (data) {
+					testType: testType,
+					vlSampleId: editId,
+					result: resultVal,
+					testTypeForm: testedTypeForm,
+					// resultInterpretation: '< ?php echo $genericResultInfo['final_result_interpretation']; ?>',
+					resultUnit: testResultUnit,
+				},
+				function(data) {
 					data = JSON.parse(data);
-					if (typeof (data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
+					if (typeof(data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
 						$("#facilitySection").html(data.facilitySection);
 						$('#facilitySection input, #facilitySection select , #facilitySection textarea').attr('disabled', true);
 						$('#facilitySection input, #facilitySection select , #facilitySection textarea').removeClass("isRequired");
 					}
-					if (typeof (data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
+					if (typeof(data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
 						$("#patientSection").after(data.patientSection);
 						$('.patientSectionInput input, .patientSectionInput select , .patientSectionInput textarea').attr('disabled', true);
 						$('.patientSectionInput input, .patientSectionInput select , .patientSectionInput textarea').removeClass("isRequired");
 					}
-					if (typeof (data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
+					if (typeof(data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
 						$("#labSection").html(data.labSection);
 					}
-					if (typeof (data.result) != "undefined" && data.result !== null && data.result.length > 0) {
+					if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
 						$("#resultSection").html(data.result);
 						$('#resultSection').show();
 					} else {
 						$('#resultSection').hide();
 					}
-					if (typeof (data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
+					if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
 						$("#specimenSection").after(data.specimenSection);
 						$('#specimenSection input, #specimenSection select , #specimenSection textarea').attr('disabled', true);
 						$('#specimenSection input, #specimenSection select , #specimenSection textarea').removeClass("isRequired");
 					}
-					if (typeof (data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
+					if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
 						$("#otherSection").html(data.otherSection);
 						$('#otherSection input, #otherSection select , #otherSection textarea').attr('disabled', true);
 						$('#otherSection input, #otherSection select , #otherSection textarea').removeClass("isRequired");
@@ -1794,12 +1775,12 @@ $reasonForChange = $reasonForChangeArr[1];
 	function getTestTypeConfigList(testTypeId) {
 
 		$.post("/includes/get-test-type-config.php", {
-			testTypeId: testTypeId,
-			sampleTypeId: '<?php echo $genericResultInfo['specimen_type']; ?>',
-			testReasonId: '<?php echo $genericResultInfo['reason_for_testing']; ?>',
-			//testMethodId: '< ?php echo $genericResultInfo['reason_for_testing']; ?>'
-		},
-			function (data) {
+				testTypeId: testTypeId,
+				sampleTypeId: '<?php echo $genericResultInfo['specimen_type']; ?>',
+				testReasonId: '<?php echo $genericResultInfo['reason_for_testing']; ?>',
+				//testMethodId: '< ?php echo $genericResultInfo['reason_for_testing']; ?>'
+			},
+			function(data) {
 				Obj = $.parseJSON(data);
 				if (data != "") {
 					$("#specimenType").html(Obj['sampleTypes']);
@@ -1826,17 +1807,17 @@ $reasonForChange = $reasonForChangeArr[1];
 			var testResultUnit = '<?php echo $genericResultInfo['result_unit']; ?>';
 			$(".requestForm").show();
 			$.post("/generic-tests/requests/getTestTypeForm.php", {
-				testType: testType,
-				vlSampleId: editId,
-				result: resultVal,
-				testTypeForm: testedTypeForm,
-				subTests: subTestResult
-				// resultInterpretation: '< ?php echo $genericResultInfo['final_result_interpretation']; ?>',
-			},
-				function (data) {
+					testType: testType,
+					vlSampleId: editId,
+					result: resultVal,
+					testTypeForm: testedTypeForm,
+					subTests: subTestResult
+					// resultInterpretation: '< ?php echo $genericResultInfo['final_result_interpretation']; ?>',
+				},
+				function(data) {
 					data = JSON.parse(data);
 					$("#resultSection").html('');
-					if (typeof (data.result) != "undefined" && data.result !== null && data.result.length > 0) {
+					if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
 						$("#resultSection").html(data.result);
 						$('#resultSection').show();
 					} else {
@@ -1861,10 +1842,10 @@ $reasonForChange = $reasonForChangeArr[1];
 
 	function getSubTestList(testType) {
 		$.post("/generic-tests/requests/get-sub-test-list.php", {
-			subTests: '<?php echo base64_encode((string) $genericResultInfo['sub_tests']); ?>',
-			testTypeId: testType
-		},
-			function (data) {
+				subTests: '<?php echo base64_encode((string) $genericResultInfo['sub_tests']); ?>',
+				testTypeId: testType
+			},
+			function(data) {
 				if (data != "") {
 					$("#subTestResult").append(data);
 					$("#subTestResult").multipleSelect({
@@ -1921,28 +1902,28 @@ $reasonForChange = $reasonForChangeArr[1];
 		$('.date').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			onSelect: function () {
+			onSelect: function() {
 				$(this).change();
 			},
 			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			maxDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function () {
+		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
 
 		$('.expDate').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			onSelect: function () {
+			onSelect: function() {
 				$(this).change();
 			},
 			dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
 			timeFormat: "HH:mm",
 			// minDate: "Today",
 			yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
-		}).click(function () {
+		}).click(function() {
 			$('.ui-datepicker-calendar').show();
 		});
 
@@ -1963,7 +1944,7 @@ $reasonForChange = $reasonForChangeArr[1];
 	function removeTestRow(el, row, subrow) {
 		$('.ins-row-' + row + subrow).attr('disabled', false);
 		$('.ins-row-' + row + subrow).removeClass('disabled');
-		$(el).fadeOut("slow", function () {
+		$(el).fadeOut("slow", function() {
 			el.parentNode.removeChild(el);
 			rl = document.getElementById("testKitNameTable" + row).rows.length;
 			if (rl == 0) {
@@ -1976,11 +1957,11 @@ $reasonForChange = $reasonForChangeArr[1];
 	function updateInterpretationResult(obj, subTest) {
 		if (obj.value) {
 			$.post("/generic-tests/requests/get-result-interpretation.php", {
-				result: obj.value,
-				resultType: $('#resultType').val(),
-				testType: $('#testType').val()
-			},
-				function (interpretation) {
+					result: obj.value,
+					resultType: $('#resultType').val(),
+					testType: $('#testType').val()
+				},
+				function(interpretation) {
 					if (interpretation != "") {
 						$('#resultInterpretation' + subTest).val(interpretation);
 					} else {

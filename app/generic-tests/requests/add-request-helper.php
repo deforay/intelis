@@ -41,7 +41,6 @@ $tableName1 = "activity_log";
 $vlTestReasonTable = "r_generic_test_reasons";
 $fDetails = "facility_details";
 $vl_result_category = null;
-
 try {
 
     $general->assertFacilityAllowed((int) ($_POST['facilityId'] ?? 0));
@@ -243,7 +242,7 @@ try {
         'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
         'reason_for_testing' => (isset($_POST['reasonForTesting']) && $_POST['reasonForTesting'] != '') ? $_POST['reasonForTesting'] : null,
         'result_dispatched_datetime' => $_POST['resultDispatchedOn'],
-        'is_sample_rejected' => (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] != '') ? $_POST['isSampleRejected'] : null,
+        'is_sample_rejected' => ($isRejected) ? 'yes' : 'no',
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : null,
         'rejection_on' => (empty($_POST['rejectionDate'])) ? null : DateUtility::isoDateFormat($_POST['rejectionDate']),
         'result' => $_POST['result'] ?? null,
@@ -283,7 +282,7 @@ try {
     //dynamicFields[_7ccf3703a3e2adea][]    "_7ccf3703a3e2adea":["AFP","Cholera"]
     //Update patient Information in Patients Table
     // $patientsService->savePatient($_POST,'form_generic');
-    if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
+    if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && (!$isRejected)) {
         if (!empty($_POST['testName'])) {
             $finalResult = "";
             if (isset($_POST['subTestResult']) && (isset($_POST['subTestResult']) && ($_POST['subTestResult'] !== '' && $_POST['subTestResult'] !== '0'))) {
@@ -327,7 +326,6 @@ try {
         $db->delete($testTableName);
         $genericData['sample_tested_datetime'] = null;
     }
-
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db->where('sample_id', $_POST['vlSampleId']);
         $id = $db->update($tableName, $genericData);
