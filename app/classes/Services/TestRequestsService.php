@@ -200,6 +200,7 @@ final class TestRequestsService
                                 'sampleCodeFormat' => $item['sample_code_format'] ?? 'MMYY',
                                 'prefix' => $item['prefix'] ?? $testTypeService->shortCode ?? 'T',
                                 'labId' => isset($item['lab_id']) ? (int) $item['lab_id'] : null,
+                                'accessType' => $item['access_type'] ?? null,
                                 'insertOperation' => true,
                             ];
 
@@ -565,6 +566,11 @@ final class TestRequestsService
 
             $formId = (int) $this->commonService->getGlobalConfig('vl_form');
 
+            // The lab activating this manifest -> drives the lab-aware sample-code
+            // postfix on STS (see AbstractTestService::stsLabPostfix). Looked up once.
+            $manifestRow = $this->db->rawQueryOne("SELECT lab_id FROM specimen_manifests WHERE manifest_code = ?", [$manifestCode]);
+            $manifestLabId = (int) ($manifestRow['lab_id'] ?? 0) ?: null;
+
             $uniqueIdsForSampleCodeGeneration = [];
             foreach ($sampleResult as $sampleRow) {
 
@@ -603,7 +609,8 @@ final class TestRequestsService
                         $provinceCode,
                         $sampleCodeFormat ?? 'MMYY',
                         $prefix,
-                        'testing-lab'
+                        'testing-lab',
+                        $manifestLabId
                     );
 
                     $uniqueIdsForSampleCodeGeneration[] = $sampleRow['unique_id'];

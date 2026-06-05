@@ -31,7 +31,7 @@ final class GenericTestsService extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
             $params['prefix'] ??= $params['testType'] ?? $this->shortCode;
-            $params['postfix'] ??= '';
+            $params['postfix'] ??= $this->stsLabPostfix($params);
 
             try {
                 return $this->generateSampleCode($this->table, $params);
@@ -96,7 +96,8 @@ final class GenericTestsService extends AbstractTestService
                 $params['provinceCode'] ?? null,
                 $params['sampleCodeFormat'] ?? null,
                 $params['prefix'] ?? $this->shortCode,
-                $accessType
+                $accessType,
+                (int) ($params['labId'] ?? 0) ?: null
             );
 
             $id = 0;
