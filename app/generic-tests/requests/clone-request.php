@@ -293,8 +293,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 $testTypeForm = json_decode((string) $genericResultInfo['test_type_form'], true);
 
-$reasonForChangeArr = explode('##', (string) $genericResultInfo['reason_for_test_result_changes']);
-$reasonForChange = $reasonForChangeArr[1];
+// A clone is a brand-new request, so it deliberately starts with an empty result-change history --
+// the original sample's edit history must not be carried over to the clone.
+$resultChangeHistory = [];
+$latestChangeReason = '';
+$resultChangeHistoryHtml = '';
 $mandatoryClass = "";
 if (!empty($_SESSION['instance']['type']) && $general->isLISInstance()) {
 	$mandatoryClass = "isRequired";
@@ -1281,7 +1284,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 										</div>
 										<div class="row">
 											<div class="col-md-6 change-reason"
-												style="display:<?php echo ($reasonForChange === '' || $reasonForChange === '0') ? "none" : "block"; ?>;">
+												style="display:<?php echo ($latestChangeReason === '' || $latestChangeReason === '0') ? "none" : "block"; ?>;">
 												<label class="col-lg-5 control-label" for="reasonForResultChanges">Reason
 													For Changes in Result<span class="mandatory">*</span></label>
 												<div class="col-lg-7">
@@ -1289,14 +1292,14 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 														id="reasonForResultChanges"
 														placeholder="Enter Reason For Result Changes"
 														title="Please enter reason for result changes"
-														style="width:100%;"><?= $reasonForChange; ?></textarea>
+														style="width:100%;"><?= htmlspecialchars($latestChangeReason); ?></textarea>
 												</div>
 											</div>
 										</div>
-										<?php if (!empty($allChange)) { ?>
+										<?php if (!empty($resultChangeHistory)) { ?>
 											<div class="row">
 												<div class="col-md-12">
-													<?php echo $rch; ?>
+													<?php echo $resultChangeHistoryHtml; ?>
 												</div>
 											</div>
 										<?php } ?>
@@ -1314,7 +1317,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 						<input type="hidden" name="isRemoteSample"
 							value="<?= htmlspecialchars((string) $genericResultInfo['remote_sample']); ?>" />
 						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory"
-							value="<?php echo base64_encode((string) $genericResultInfo['reason_for_testing']); ?>" />
+							value="<?php echo base64_encode((string) json_encode($resultChangeHistory)); ?>" />
 						<input type="hidden" name="oldStatus"
 							value="<?= htmlspecialchars((string) $genericResultInfo['result_status']); ?>" />
 						<input type="hidden" name="countryFormId" id="countryFormId"

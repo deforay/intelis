@@ -106,17 +106,15 @@ try {
     $resultStatus = $processedResults['resultStatus'] ?? null;
 
 
-    $reasonForChanges = null;
-    $allChange = [];
-    if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
-        $allChange = json_decode(base64_decode((string) $_POST['reasonForResultChangesHistory']), true);
-    }
+    // parseResultChangeHistory guards against a scalar/null decode (e.g. a malformed hidden field),
+    // which would otherwise throw "Cannot use a scalar value as an array" on the append below.
+    $resultChangeHistory = MiscUtility::parseResultChangeHistory(
+        base64_decode((string) ($_POST['reasonForResultChangesHistory'] ?? ''))
+    );
     if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) !== '') {
-        $allChange[] = ['usr' => $_SESSION['userId'] ?? $_POST['userId'], 'msg' => $_POST['reasonForResultChanges'], 'dtime' => DateUtility::getCurrentDateTime()];
+        $resultChangeHistory[] = ['usr' => $_SESSION['userId'] ?? $_POST['userId'], 'msg' => $_POST['reasonForResultChanges'], 'dtime' => DateUtility::getCurrentDateTime()];
     }
-    if (!empty($allChange)) {
-        $reasonForChanges = json_encode($allChange);
-    }
+    $reasonForChanges = !empty($resultChangeHistory) ? json_encode($resultChangeHistory) : null;
 
     if ($_POST['failedTestingTech'] != '') {
         $platForm = explode("##", (string) $_POST['failedTestingTech']);

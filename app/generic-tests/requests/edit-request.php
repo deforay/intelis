@@ -6,6 +6,7 @@ use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
 
@@ -285,8 +286,34 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 $testTypeForm = json_decode((string) $genericResultInfo['test_type_form'], true);
 
-$reasonForChangeArr = explode('##', (string) $genericResultInfo['reason_for_test_result_changes']);
-$reasonForChange = $reasonForChangeArr[1];
+// Result-change history: a normalized list of {usr, msg, dtime} entries, oldest first.
+// MiscUtility::parseResultChangeHistory tolerates both the current JSON format and legacy "##"/"vlsm" rows.
+$resultChangeHistory = MiscUtility::parseResultChangeHistory($genericResultInfo['reason_for_test_result_changes'] ?? null);
+$latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChangeHistory)['msg'] ?? '') : '';
+
+// Read-only history table rendered above the "Reason For Changes" box (newest first).
+$resultChangeHistoryHtml = '';
+if (!empty($resultChangeHistory)) {
+    $resultChangeHistoryHtml = '<h4>' . _translate('Result Changes History') . '</h4>'
+        . '<table style="width:100%;"><thead><tr style="border-bottom:2px solid #d3d3d3;">'
+        . '<th style="width:20%;">' . _translate('User') . '</th>'
+        . '<th style="width:60%;">' . _translate('Message') . '</th>'
+        . '<th style="width:20%;text-align:center;">' . _translate('Date') . '</th>'
+        . '</tr></thead><tbody>';
+    foreach (array_reverse($resultChangeHistory) as $change) {
+        $changedBy = is_numeric($change['usr'] ?? null)
+            ? ($usersService->getUserByID($change['usr'])['user_name'] ?? '')
+            : (string) ($change['usr'] ?? '');
+        $changedOnParts = explode(' ', trim((string) ($change['dtime'] ?? '')));
+        $changedOn = ($changedOnParts[0] ?? '') !== ''
+            ? DateUtility::humanReadableDateFormat($changedOnParts[0]) . ' ' . ($changedOnParts[1] ?? '')
+            : '';
+        $resultChangeHistoryHtml .= '<tr><td>' . htmlspecialchars($changedBy) . '</td>'
+            . '<td>' . htmlspecialchars((string) ($change['msg'] ?? '')) . '</td>'
+            . '<td style="text-align:center;">' . htmlspecialchars(trim($changedOn)) . '</td></tr>';
+    }
+    $resultChangeHistoryHtml .= '</tbody></table>';
+}
 $mandatoryClass = "";
 if (!empty($_SESSION['instance']['type']) && $general->isLISInstance()) {
 	$mandatoryClass = "isRequired";
@@ -1163,7 +1190,7 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 									</div>
 									<div class="row">
 										<div class="col-md-6 change-reason"
-											style="display:<?php echo ($reasonForChange === '' || $reasonForChange === '0') ? "none" : "block"; ?>;">
+											style="display:<?php echo ($latestChangeReason === '' || $latestChangeReason === '0') ? "none" : "block"; ?>;">
 											<label class="col-lg-5 control-label" for="reasonForResultChanges">
 												<?= _translate("Reason For Changes in Result"); ?><span
 													class="mandatory">*</span>
@@ -1173,14 +1200,14 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 													id="reasonForResultChanges"
 													placeholder="<?= _translate('Enter Reason For Result Changes'); ?>"
 													title="<?= _translate('Please enter reason for result changes'); ?>"
-													style="width:100%;"><?= $reasonForChange; ?></textarea>
+													style="width:100%;"><?= htmlspecialchars($latestChangeReason); ?></textarea>
 											</div>
 										</div>
 									</div>
-									<?php if (!empty($allChange)) { ?>
+									<?php if (!empty($resultChangeHistory)) { ?>
 									<div class="row">
 										<div class="col-md-12">
-											<?php echo $rch; ?>
+											<?php echo $resultChangeHistoryHtml; ?>
 										</div>
 									</div>
 									<?php } ?>
@@ -1197,7 +1224,7 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 						<input type="hidden" name="isRemoteSample"
 							value="<?= htmlspecialchars((string) $genericResultInfo['remote_sample']); ?>" />
 						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory"
-							value="<?php echo base64_encode((string) $genericResultInfo['reason_for_testing']); ?>" />
+							value="<?php echo base64_encode((string) json_encode($resultChangeHistory)); ?>" />
 						<input type="hidden" name="oldStatus"
 							value="<?= htmlspecialchars((string) $genericResultInfo['result_status']); ?>" />
 						<input type="hidden" name="countryFormId" id="countryFormId"
