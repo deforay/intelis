@@ -1338,4 +1338,46 @@ final class MiscUtility
         return number_format(microtime(true) - $startTimer, 2);
     }
 
+    /**
+     * Parse the result-change history stored in form_generic.reason_for_test_result_changes.
+     *
+     * Returns a normalized, oldest-first list of entries:
+     *   [['usr' => mixed, 'msg' => string, 'dtime' => string], ...]
+     *
+     * The current storage format is a JSON array of {usr, msg, dtime} objects. Older rows used a
+     * legacy string format -- "user##message##datetime" entries joined by the literal separator
+     * "vlsm", newest first -- so this also decodes those to keep them rendering during/after the
+     * migration to JSON. The "usr" value may be a numeric user id (current) or a user name string
+     * (legacy); callers should resolve it accordingly.
+     */
+    public static function parseResultChangeHistory(?string $raw): array
+    {
+        $raw = trim((string) $raw);
+        if ($raw === '') {
+            return [];
+        }
+
+        // Current format: JSON array of {usr, msg, dtime} objects (already oldest-first).
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded)) {
+            return array_values(array_filter($decoded, 'is_array'));
+        }
+
+        // Legacy format: "userName##message##datetime" entries joined by "vlsm", newest first.
+        // Reverse so the returned list is oldest-first like the JSON format.
+        $history = [];
+        foreach (array_reverse(explode('vlsm', $raw)) as $entry) {
+            $parts = explode('##', $entry);
+            if (count($parts) < 2) {
+                continue;
+            }
+            $history[] = [
+                'usr' => $parts[0],
+                'msg' => $parts[1],
+                'dtime' => $parts[2] ?? '',
+            ];
+        }
+        return $history;
+    }
+
 }

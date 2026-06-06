@@ -4,6 +4,7 @@ use const SAMPLE_STATUS\PENDING_APPROVAL;
 use const SAMPLE_STATUS\REJECTED;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -103,19 +104,16 @@ try {
         $resultStatus = REJECTED; // Rejected
     }
 
-    $reasonForChanges = '';
-    $allChange = '';
-    if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
-        $allChange = $_POST['reasonForResultChangesHistory'];
-    }
+    // Result-change history is stored as a JSON array of {usr, msg, dtime} entries. The hidden field
+    // carries the base64-encoded existing history; MiscUtility::parseResultChangeHistory tolerates both
+    // the JSON format and any legacy "##"/"vlsm" rows that predate the migration.
+    $resultChangeHistory = MiscUtility::parseResultChangeHistory(
+        base64_decode((string) ($_POST['reasonForResultChangesHistory'] ?? ''))
+    );
     if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) !== '') {
-        $reasonForChanges = $_SESSION['userName'] . '##' . $_POST['reasonForResultChanges'] . '##' . DateUtility::getCurrentDateTime();
+        $resultChangeHistory[] = ['usr' => $_SESSION['userId'], 'msg' => $_POST['reasonForResultChanges'], 'dtime' => DateUtility::getCurrentDateTime()];
     }
-    if (!empty($allChange) && ($reasonForChanges !== '' && $reasonForChanges !== '0')) {
-        $allChange = $reasonForChanges . 'vlsm' . $allChange;
-    } elseif (trim($reasonForChanges) !== '') {
-        $allChange = $reasonForChanges;
-    }
+    $resultChangeHistoryJson = !empty($resultChangeHistory) ? json_encode($resultChangeHistory) : null;
 
     $_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
 	$_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
@@ -150,7 +148,7 @@ try {
         'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : null,
         'result_approved_datetime' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedOn'] : null,
         'lab_tech_comments' => (isset($_POST['labComments']) && trim((string) $_POST['labComments']) !== '') ? trim((string) $_POST['labComments']) : null,
-        'reason_for_test_result_changes' => $allChange,
+        'reason_for_test_result_changes' => $resultChangeHistoryJson,
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
         'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
         'last_modified_by' => $_SESSION['userId'],
