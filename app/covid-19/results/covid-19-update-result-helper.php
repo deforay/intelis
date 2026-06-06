@@ -96,7 +96,7 @@ try {
 		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
 		'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",
 		'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-		'reason_for_changing' => (empty($_POST['reasonForChanging'])) ? null : $_POST['reasonForChanging'],
+		// reason_for_changing is set below as a JSON object once the previous result is known.
 		'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
 		'result_status' => PENDING_APPROVAL,
 		'data_sync' => 0,
@@ -112,8 +112,18 @@ try {
 	$getPrevResult = $db->getOne('form_covid19');
 	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
 		$covid19Data['result_modified'] = "yes";
+		// Store the change as the same JSON object the request-edit path writes, so the PDF/readers
+		// that json_decode reason_for_changing keep working.
+		$covid19Data['reason_for_changing'] = json_encode([
+			'user' => $_SESSION['userId'] ?? $_POST['userId'] ?? null,
+			'dateOfChange' => DateUtility::getCurrentDateTime(),
+			'previousResult' => $getPrevResult['result'],
+			'previousResultStatus' => $getPrevResult['result_status'],
+			'reasonForChange' => $_POST['reasonForChanging'] ?? null,
+		]);
 	} else {
 		$covid19Data['result_modified'] = "no";
+		$covid19Data['reason_for_changing'] = null;
 	}
 
 	if (!empty($_POST['labId'])) {
