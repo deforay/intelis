@@ -9,6 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Exceptions\SystemException;
+use App\Utilities\MiscUtility;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
@@ -187,17 +188,16 @@ try {
           $genericData['result_status'] = REJECTED;
      }
 
-     $reasonForChanges = '';
-     $allChange = [];
-     if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
-          $allChange = json_decode(base64_decode((string) $_POST['reasonForResultChangesHistory']), true);
-     }
+     // Result-change history is stored as a JSON array of {usr, msg, dtime} entries.
+     // The hidden field carries the base64-encoded existing history; MiscUtility::parseResultChangeHistory
+     // tolerates both the JSON format and any legacy "##"/"vlsm" rows that predate the migration.
+     $resultChangeHistory = MiscUtility::parseResultChangeHistory(
+          base64_decode((string) ($_POST['reasonForResultChangesHistory'] ?? ''))
+     );
      if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) !== '') {
-          $allChange[] = ['usr' => $_SESSION['userId'], 'msg' => $_POST['reasonForResultChanges'], 'dtime' => DateUtility::getCurrentDateTime()];
+          $resultChangeHistory[] = ['usr' => $_SESSION['userId'], 'msg' => $_POST['reasonForResultChanges'], 'dtime' => DateUtility::getCurrentDateTime()];
      }
-     if (!empty($allChange)) {
-          $reasonForChanges = json_encode($allChange);
-     }
+     $resultChangeHistoryJson = !empty($resultChangeHistory) ? json_encode($resultChangeHistory) : null;
 
      $_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
      $_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
@@ -285,6 +285,12 @@ try {
      // only if result status has changed, let us update
      if ($resultStatus !== null) {
           $genericData['result_status'] = $resultStatus;
+     }
+
+     // Persist the result-change history (only when there is something to store, so an
+     // unparseable legacy value is left untouched instead of being wiped).
+     if ($resultChangeHistoryJson !== null) {
+          $genericData['reason_for_test_result_changes'] = $resultChangeHistoryJson;
      }
 
      $genericData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
