@@ -42,27 +42,47 @@ if ($general->isLISInstance()) {
 
 $importError = null;
 $test = null;
+$importMode = null;     // null = fresh upload (not yet decided); 'new' | 'update' = user's choice
+$rawPayloadJson = '';   // raw JSON, carried through the update/new decision screen
 
+// Validate a decoded payload and return its 'test' array, or null on failure.
+$readPayload = static function (string $raw) use (&$importError): ?array {
+    $payload = json_decode($raw, true);
+    if (
+        !is_array($payload)
+        || ($payload['format'] ?? '') !== 'intelis.custom-test'
+        || empty($payload['test'])
+        || !is_array($payload['test'])
+    ) {
+        $importError = _translate("This file is not a valid Custom Test export.");
+        return null;
+    }
+    return $payload['test'];
+};
+
+$decisionPresent = !empty($_POST['payloadJson']);
 $uploadPresent = isset($_FILES['importFile']) && is_array($_FILES['importFile'])
     && (($_FILES['importFile']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE);
 
-if ($uploadPresent) {
+if ($decisionPresent) {
+    // Returning from the "update existing vs import new" choice; the payload
+    // rides along in a hidden field so we stay stateless across the round-trip.
+    $importMode = (($_POST['importMode'] ?? '') === 'update') ? 'update' : 'new';
+    $rawPayloadJson = (string) base64_decode((string) $_POST['payloadJson'], true);
+    $test = $readPayload($rawPayloadJson);
+    if ($test === null) {
+        $rawPayloadJson = '';
+    }
+} elseif ($uploadPresent) {
     if (($_FILES['importFile']['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
         $importError = _translate("The file could not be uploaded. Please try again.");
     } elseif (($_FILES['importFile']['size'] ?? 0) > 5 * 1024 * 1024) {
         $importError = _translate("The file is too large to be a valid Custom Test export.");
     } else {
-        $raw = file_get_contents($_FILES['importFile']['tmp_name']);
-        $payload = json_decode((string) $raw, true);
-        if (
-            !is_array($payload)
-            || ($payload['format'] ?? '') !== 'intelis.custom-test'
-            || empty($payload['test'])
-            || !is_array($payload['test'])
-        ) {
-            $importError = _translate("This file is not a valid Custom Test export.");
-        } else {
-            $test = $payload['test'];
+        $rawPayloadJson = (string) file_get_contents($_FILES['importFile']['tmp_name']);
+        $test = $readPayload($rawPayloadJson);
+        if ($test === null) {
+            $rawPayloadJson = '';
         }
     }
 }
@@ -126,6 +146,95 @@ if ($test === null) {
     require_once APPLICATION_PATH . '/footer.php';
     return;
 }
+
+// ---------------------------------------------------------------
+// Does this export correspond to an existing local test?
+//
+// The portable test_type_uuid is the authoritative key: a match means the SAME
+// test, on any instance, and an in-place update is offered. Exports made before
+// the UUID existed fall back to matching the same row by test_type_id + short
+// code (same-instance only). No match at all -> import as a brand-new test.
+// ---------------------------------------------------------------
+$normShort = static fn($v): string => (string) preg_replace('/[^A-Z0-9-]/', '', strtoupper(trim((string) $v)));
+$selectCols = "test_type_id, test_type_uuid, test_short_code, test_standard_name";
+
+$existingTest = null;
+$exportUuid = trim((string) ($test['test_type_uuid'] ?? ''));
+if ($exportUuid !== '') {
+    $row = $db->rawQueryOne("SELECT $selectCols FROM r_test_types WHERE test_type_uuid = ? LIMIT 1", [$exportUuid]);
+    if (!empty($row)) {
+        $existingTest = $row;
+    }
+} else {
+    // Pre-UUID export: match the same row by id + short code on this instance.
+    $sourceTypeId = (int) ($test['test_type_id'] ?? 0);
+    $exportShortCode = $normShort($test['test_short_code'] ?? '');
+    if ($sourceTypeId > 0 && $exportShortCode !== '') {
+        $row = $db->rawQueryOne("SELECT $selectCols FROM r_test_types WHERE test_type_id = ? LIMIT 1", [$sourceTypeId]);
+        if (!empty($row) && $normShort($row['test_short_code']) === $exportShortCode) {
+            $existingTest = $row;
+        }
+    }
+}
+
+// First arrival from the upload step (no decision yet) and the export matches
+// an existing test -> ask whether to update it in place or import a new copy.
+if ($importMode === null && $existingTest !== null) {
+    $payloadB64 = base64_encode($rawPayloadJson);
+    ?>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1><em class="fa-solid fa-file-import"></em> <?php echo _translate("Import Test Type"); ?></h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
+                <li><a href="test-type.php"><?php echo _translate("Test Type Configuration"); ?></a></li>
+                <li class="active"><?php echo _translate("Import Test Type"); ?></li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="box box-warning">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><?php echo _translate("This test already exists here"); ?></h3>
+                        </div>
+                        <form method="post" action="import-test-type.php">
+                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>" />
+                            <input type="hidden" name="payloadJson" value="<?php echo htmlspecialchars($payloadB64, ENT_QUOTES, 'UTF-8'); ?>" />
+                            <div class="box-body">
+                                <p>
+                                    <?php echo sprintf(
+                                        _translate("The uploaded file matches an existing test on this instance: %1\$s (short code %2\$s)."),
+                                        '<strong>' . htmlspecialchars((string) $existingTest['test_standard_name']) . '</strong>',
+                                        '<strong>' . htmlspecialchars((string) $existingTest['test_short_code']) . '</strong>'
+                                    ); ?>
+                                </p>
+                                <p class="text-muted">
+                                    <?php echo _translate("Choose Update to overwrite that test's configuration with the imported one, or Import as new to create a separate copy. You can review and edit the form before saving either way."); ?>
+                                </p>
+                            </div>
+                            <div class="box-footer">
+                                <button type="submit" name="importMode" value="update" class="btn btn-primary">
+                                    <em class="fa-solid fa-rotate"></em> <?php echo _translate("Update the existing test"); ?>
+                                </button>
+                                <button type="submit" name="importMode" value="new" class="btn btn-default">
+                                    <em class="fa-solid fa-plus"></em> <?php echo _translate("Import as a new test"); ?>
+                                </button>
+                                <a href="test-type.php" class="btn btn-link"><?php echo _translate("Cancel"); ?></a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <?php
+    require_once APPLICATION_PATH . '/footer.php';
+    return;
+}
+
+// The user explicitly chose to update, and the same test still matches.
+$isUpdate = ($importMode === 'update' && $existingTest !== null);
 
 // ---------------------------------------------------------------
 // Step 2: resolve names -> local ids (creating any that are missing)
@@ -218,33 +327,46 @@ $uniqueText = function (string $field, string $base) use ($nameExists): string {
 
 $importNotices = [];
 
-$prefillStandardName = $uniqueText('test_standard_name', (string) ($test['test_standard_name'] ?? ''));
-$prefillGenericName = $uniqueText('test_generic_name', (string) ($test['test_generic_name'] ?? ''));
-
-$shortBase = preg_replace('/[^A-Z0-9-]/', '', strtoupper((string) ($test['test_short_code'] ?? '')));
-if ($shortBase === '' || !$nameExists('test_short_code', $shortBase)) {
-    $prefillShortCode = $shortBase;
+if ($isUpdate) {
+    // Updating the same test in place: keep its identity exactly as exported —
+    // no suffixing, no LOINC clearing. The row it overwrites is its own.
+    $prefillStandardName = (string) ($test['test_standard_name'] ?? '');
+    $prefillGenericName = (string) ($test['test_generic_name'] ?? '');
+    $prefillShortCode = $normShort($test['test_short_code'] ?? '');
+    $prefillLoincCode = (string) ($test['test_loinc_code'] ?? '');
+    $importNotices[] = sprintf(
+        _translate("Saving will overwrite the existing test \"%s\" with this imported configuration."),
+        (string) $existingTest['test_standard_name']
+    );
 } else {
-    $i = 1;
-    do {
-        $candidate = $shortBase . '-IMP' . ($i > 1 ? $i : '');
-        $i++;
-    } while ($nameExists('test_short_code', $candidate) && $i < 1000);
-    $prefillShortCode = $candidate;
-}
+    $prefillStandardName = $uniqueText('test_standard_name', (string) ($test['test_standard_name'] ?? ''));
+    $prefillGenericName = $uniqueText('test_generic_name', (string) ($test['test_generic_name'] ?? ''));
 
-if (
-    $prefillStandardName !== (string) ($test['test_standard_name'] ?? '')
-    || $prefillGenericName !== (string) ($test['test_generic_name'] ?? '')
-    || $prefillShortCode !== $shortBase
-) {
-    $importNotices[] = _translate("A test with the same name or short code already exists, so the imported values were adjusted. Review and rename as needed before saving.");
-}
+    $shortBase = preg_replace('/[^A-Z0-9-]/', '', strtoupper((string) ($test['test_short_code'] ?? '')));
+    if ($shortBase === '' || !$nameExists('test_short_code', $shortBase)) {
+        $prefillShortCode = $shortBase;
+    } else {
+        $i = 1;
+        do {
+            $candidate = $shortBase . '-IMP' . ($i > 1 ? $i : '');
+            $i++;
+        } while ($nameExists('test_short_code', $candidate) && $i < 1000);
+        $prefillShortCode = $candidate;
+    }
 
-$prefillLoincCode = (string) ($test['test_loinc_code'] ?? '');
-if ($prefillLoincCode !== '' && $nameExists('test_loinc_code', $prefillLoincCode)) {
-    $prefillLoincCode = '';
-    $importNotices[] = _translate("The LOINC code was already in use and has been cleared.");
+    if (
+        $prefillStandardName !== (string) ($test['test_standard_name'] ?? '')
+        || $prefillGenericName !== (string) ($test['test_generic_name'] ?? '')
+        || $prefillShortCode !== $shortBase
+    ) {
+        $importNotices[] = _translate("A test with the same name or short code already exists, so the imported values were adjusted. Review and rename as needed before saving.");
+    }
+
+    $prefillLoincCode = (string) ($test['test_loinc_code'] ?? '');
+    if ($prefillLoincCode !== '' && $nameExists('test_loinc_code', $prefillLoincCode)) {
+        $prefillLoincCode = '';
+        $importNotices[] = _translate("The LOINC code was already in use and has been cleared.");
+    }
 }
 
 // ---------------------------------------------------------------
@@ -252,7 +374,13 @@ if ($prefillLoincCode !== '' && $nameExists('test_loinc_code', $prefillLoincCode
 // ---------------------------------------------------------------
 $status = (($test['test_status'] ?? 'active') === 'inactive') ? 'inactive' : 'active';
 $testTypeInfo = [
-    'test_type_id' => 0,
+    // On update the form carries the existing id so editTestTypeHelper.php
+    // overwrites that exact row; on a fresh import it stays 0 (new INSERT).
+    'test_type_id' => $isUpdate ? (int) $existingTest['test_type_id'] : 0,
+    // Identity travels with the test: update keeps the matched row's UUID; a new
+    // import keeps the incoming UUID (so a later re-import recognises it), unless
+    // it is already taken here, in which case addTestTypeHelper.php mints a fresh one.
+    'test_type_uuid' => $isUpdate ? (string) $existingTest['test_type_uuid'] : $exportUuid,
     'test_category' => $categoryId,
     'test_status' => $status,
 ];
@@ -263,9 +391,17 @@ $testResultAttribute = $resultsConfig;
 $testResultAttribute['result'] = $testResultAttribute['result'] ?? [];
 $testResultAttribute['quantitative_result'] = $testResultAttribute['quantitative_result'] ?? [];
 
-$formHeading = _translate("Import Test Type");
-// No local source row to exclude from the uniqueness check on import.
-$uniqueExclusion = 'null';
+if ($isUpdate) {
+    $formHeading = _translate("Update Test Type");
+    $formAction = 'editTestTypeHelper.php';
+    // Exclude the row being updated from the name-uniqueness check.
+    $uniqueExclusion = 'test_type_id##' . (int) $existingTest['test_type_id'];
+} else {
+    $formHeading = _translate("Import Test Type");
+    $formAction = 'addTestTypeHelper.php';
+    // No local source row to exclude from the uniqueness check on import.
+    $uniqueExclusion = 'null';
+}
 
 if (!empty($importNotices)) {
     $noticeJs = json_encode(implode("\n", $importNotices), JSON_UNESCAPED_UNICODE);
