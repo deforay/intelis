@@ -45,7 +45,7 @@ $testTypeQuery = "SELECT * FROM r_test_types WHERE test_type_id= ?";
 $testTypeResult = $db->rawQueryOne($testTypeQuery, [$_POST['testType']]);
 $testTypeAttributes = json_decode((string) $testTypeResult['test_form_config'], true);
 // echo "<pre>";print_r($testTypeAttributes);die;
-$sections = ['facilitySection', 'patientSection', 'specimenSection', 'labSection', 'otherSection', 'result'];
+$sections = ['facilitySection', 'patientSection', 'caseInformation', 'specimenSection', 'labSection', 'otherSection', 'result'];
 $result = array_fill_keys($sections, []);
 
 $testResultsAttribute = json_decode((string) $testTypeResult['test_results_config'], true);
@@ -151,7 +151,7 @@ function getField(array $testAttribute, string $testAttributeId, $value, $inputC
 
 if (!empty($testTypeAttributes)) {
     $i = 1;
-    $arraySection = ['facilitySection', 'patientSection', 'specimenSection', 'labSection'];
+    $arraySection = ['facilitySection', 'patientSection', 'caseInformation', 'specimenSection', 'labSection'];
     foreach ($testTypeAttributes as $currentSectionName => $testAttributeDetails) {
         $recentData = null;
         if (in_array($currentSectionName, $arraySection)) {
@@ -254,7 +254,7 @@ print_r($testResultsAttribute);die; */
 if (!empty($testResultsAttribute)) {
     foreach ($testResultsAttribute['result_type'] as $key => $resultType) {
         if (isset($_POST['subTests']) && !empty($_POST['subTests']) && in_array($testResultsAttribute['sub_test_name'][$key], $_POST['subTests'])) {
-            $testResultsAttribute['sub_test_name'][$key] = $testResultsAttribute['sub_test_name'][$key] ?: 'default';
+            $testResultsAttribute['sub_test_name'][$key] = $testResultsAttribute['sub_test_name'][$key] ?: '';
             $subTest = strtolower((string) $testResultsAttribute['sub_test_name'][$key]);
             $n = 1;
             $resultSection = "";

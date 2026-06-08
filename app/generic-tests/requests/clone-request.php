@@ -347,12 +347,14 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 
 	.facilitySectionInput,
 	.patientSectionInput,
+	.caseInformationInput,
 	#otherSection .col-md-6 {
 		margin: 3px 0px;
 	}
 
 	.facilitySectionInput,
 	.patientSectionInput .select2,
+	.caseInformationInput .select2,
 	#otherSection .col-md-6 .select2 {
 		margin: 3px 0px;
 	}
@@ -748,6 +750,14 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 												value="<?= htmlspecialchars((string) $genericResultInfo['treatment_initiation']); ?>" />
 										</div>
 									</div>
+								</div>
+							</div>
+							<div class="box box-primary caseInformationBox" id="caseInformationBox" style="display:none;">
+								<div class="box-header with-border">
+									<h3 class="box-title"><?= _translate("Case Information"); ?></h3>
+								</div>
+								<div class="box-body">
+									<div class="row" id="caseInformation"></div>
 								</div>
 							</div>
 							<div class="box box-primary">
@@ -2003,6 +2013,12 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 					if (typeof (data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
 						$("#facilitySection").html(data.facilitySection);
 					}
+					if (typeof (data.caseInformation) != "undefined" && data.caseInformation !== null && data.caseInformation.length > 0) {
+						$("#caseInformation").html(data.caseInformation);
+						$("#caseInformationBox").show();
+					} else {
+						$("#caseInformationBox").hide();
+					}
 					if (typeof (data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
 						$("#patientSection").after(data.patientSection);
 					}
@@ -2047,6 +2063,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		$(".patientSectionInput").remove();
 		$("#labSection").html('');
 		$(".specimenSectionInput").remove();
+		$("#caseInformation").html('');
+		$("#caseInformationBox").hide();
 		$("#otherSection").html('');
 		$(".requestForm").hide();
 	}

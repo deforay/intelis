@@ -311,7 +311,7 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 								</thead>
 								<tbody id="attributeTable">
 									<?php
-									$arraySection = ['facilitySection', 'patientSection', 'specimenSection', 'labSection'];
+									$arraySection = ['facilitySection', 'patientSection', 'caseInformation', 'specimenSection', 'labSection'];
 									$eCount = count($testAttr);
 									if ($eCount > 0) {
 										$i = 1;
@@ -397,6 +397,7 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 																</option>
 																<option value="specimenSection" <?php echo ($testAttribute['section'] == 'specimenSection') ? "selected='selected'" : "" ?>><?php echo _translate("Specimen"); ?>
 																</option>
+																<option value="caseInformation" <?php echo ($testAttribute['section'] == 'caseInformation') ? "selected='selected'" : "" ?>><?php echo _translate("Case Information"); ?></option>
 																<option value="labSection" <?php echo ($testAttribute['section'] == 'labSection') ? "selected='selected'" : "" ?>><?php echo _translate("Lab"); ?></option>
 																<option value="otherSection" <?php echo ($testAttribute['section'] == 'otherSection') ? "selected='selected'" : "" ?>><?php echo _translate("Other"); ?></option>
 															</select>
@@ -510,6 +511,7 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 																	</option>
 																	<option value="specimenSection" <?php echo ($testAttribute['section'] == 'specimenSection') ? "selected='selected'" : "" ?>><?php echo _translate("Specimen"); ?>
 																	</option>
+																	<option value="caseInformation" <?php echo ($testAttribute['section'] == 'caseInformation') ? "selected='selected'" : "" ?>><?php echo _translate("Case Information"); ?></option>
 																	<option value="labSection" <?php echo ($testAttribute['section'] == 'labSection') ? "selected='selected'" : "" ?>><?php echo _translate("Lab"); ?></option>
 																	<option value="otherSection" <?php echo ($testAttribute['section'] == 'otherSection') ? "selected='selected'" : "" ?>><?php echo _translate("Other"); ?></option>
 																</select>
@@ -605,6 +607,7 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 													</option>
 													<option value="specimenSection"><?php echo _translate("Specimen"); ?>
 													</option>
+													<option value="caseInformation"><?php echo _translate("Case Information"); ?></option>
 													<option value="labSection"><?php echo _translate("Lab"); ?></option>
 													<option value="otherSection"><?php echo _translate("Other"); ?></option>
 												</select>
@@ -1108,6 +1111,7 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 						<option value="facilitySection"><?php echo _translate("Facility"); ?></option>\
 						<option value="patientSection"><?php echo _translate("Patient"); ?></option>\
 						<option value="specimenSection"><?php echo _translate("Specimen"); ?></option>\
+						<option value="caseInformation"><?php echo _translate("Case Information"); ?></option>\
 						<option value="labSection"><?php echo _translate("Lab"); ?></option>\
 						<option value="otherSection"><?php echo _translate("Other"); ?></option>\
 					</select>\
