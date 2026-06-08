@@ -143,7 +143,7 @@ foreach ($result as $row) {
     // Edit Button
     $encodedId = base64_encode((string) $row['referred_to_lab_id']);
     $encodedCode = base64_encode((string) $row['referral_manifest_code']);
-    $editBtn = '<a href="edit-tb-referral.php?id=' . $encodedId . '&code=' . $encodedCode . '" class="btn btn-sm btn-primary" title="Edit Package">
+    $editBtn = '<a href="edit-generic-referral.php?id=' . $encodedId . '&code=' . $encodedCode . '" class="btn btn-sm btn-primary" title="Edit Package">
                     <i class="fa fa-edit"></i>
                 </a>';
 

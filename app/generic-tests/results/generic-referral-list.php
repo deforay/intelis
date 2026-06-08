@@ -5,8 +5,8 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
-$testType = 'tb';
-$title = "TB | Referral List";
+$testType = 'generic-tests';
+$title = "Other Lab Tests | Referral List";
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
@@ -19,7 +19,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /* Testing lab list for bulk update */
-$testingLabs = $facilitiesService->getTestingLabs('tb');
+$testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 ?>
 
 <style>
@@ -30,10 +30,10 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
 
 <div class="content-wrapper">
     <section class="content-header">
-        <h1><em class="fa-solid fa-list"></em> <?php echo _translate("TB Referral List"); ?></h1>
+        <h1><em class="fa-solid fa-list"></em> <?php echo _translate("Other Lab Tests Referral List"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-            <li class="active"><?php echo _translate("TB Referral List"); ?></li>
+            <li class="active"><?php echo _translate("Other Lab Tests Referral List"); ?></li>
         </ol>
     </section>
 
