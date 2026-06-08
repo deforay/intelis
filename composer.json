@@ -114,6 +114,7 @@
             "@sts-setup"
         ],
         "system-admin": "@php bin/setup/system-admin.php",
+        "dev:switch-mode": "@php bin/dev/switch-mode.php",
         "migrate": "@php bin/migrate.php -y",
         "reset-metadata": [
             "@php app/tasks/remote/sts-metadata-receiver.php -ft",
@@ -177,6 +178,7 @@
         "db:backup": "Backup all databases",
         "backup": "Backup application configurations and databases",
         "system-admin": "Create or update system administrator account",
+        "dev:switch-mode": "Switch this dev instance between LIS and STS mode (e.g. composer dev:switch-mode lis|sts)",
         "reset-metadata": "Reset STS metadata to force full sync",
         "metadata-sync": "Sync metadata with connected STS server",
         "send-results": "Send test results to connected STS server",
