@@ -28,7 +28,7 @@ $absVal = null;
 $txtVal = null;
 try {
 
-    $db->where('generic_id', $_POST['vlSampleId'] ?? 0);
+    $db->where('sample_id', $_POST['vlSampleId'] ?? 0);
     $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
     $general->assertFacilityAllowed($sampleFacilityId);
 
@@ -116,7 +116,7 @@ try {
     $resultChangeHistoryJson = !empty($resultChangeHistory) ? json_encode($resultChangeHistory) : null;
 
     $_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
-	$_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
+    $_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
 
     $interpretationResult = null;
     if (!empty($_POST['resultInterpretation'])) {
