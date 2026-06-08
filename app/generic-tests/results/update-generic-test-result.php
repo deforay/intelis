@@ -289,8 +289,6 @@ $testTypeForm = json_decode((string) $genericResultInfo['test_type_form'], true)
 $resultChangeHistory = MiscUtility::parseResultChangeHistory($genericResultInfo['reason_for_test_result_changes'] ?? null);
 $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChangeHistory)['msg'] ?? '') : '';
 
-// Read-only history table rendered above the "Reason For Changes" box (newest first).
-$resultChangeHistoryHtml = '';
 ?><!-- Content Wrapper. Contains page content -->
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
 <style>
@@ -1103,13 +1101,6 @@ $resultChangeHistoryHtml = '';
 											</div>
 										</div>
 									</div>
-									<?php if (!empty($resultChangeHistory)) { ?>
-										<div class="row">
-											<div class="col-md-12">
-												<?php echo $resultChangeHistoryHtml; ?>
-											</div>
-										</div>
-									<?php } ?>
 									<div class="row" id="labSection"></div>
 								</div>
 							</div>

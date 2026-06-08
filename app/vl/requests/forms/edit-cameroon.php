@@ -80,7 +80,6 @@ if (trim((string) $facilityResult[0]['facility_state']) !== '') {
 
 
 // Result-change history table (tolerant of canonical JSON array + every legacy shape).
-$rch = ''; // inline history removed -- see audit-trail screen
 $testReasonsResultDetails = $general->getDataByTableAndFields("r_vl_test_reasons", ['test_reason_id', 'test_reason_name', 'parent_reason'], false, " test_reason_status like 'active' ");
 $subTestReasons = $testReasonsResult = [];
 foreach ($testReasonsResultDetails as $row) {

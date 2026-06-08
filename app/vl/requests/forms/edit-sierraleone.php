@@ -76,9 +76,6 @@ if ($facilityResult[0]['contact_person'] != '') {
 		$user = $contactUser['user_name'];
 	}
 }
-//set reason for changes history
-$rch = '';
-$allChange = [];
 
 //var_dump($vlQueryInfo['sample_received_at_hub_datetime']);die;
 $isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp((string) $vlQueryInfo['vl_test_platform'], "genexpert") === 0);
@@ -979,11 +976,6 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] === "Other") {
 												</div>
 											</div>
 										</div>
-										<?php if (!empty($allChange)) { ?>
-											<div class="row">
-												<div class="col-md-12"><?php echo $rch; ?></div>
-											</div>
-										<?php } ?>
 								</div>
 							<?php } ?>
 							</div>
