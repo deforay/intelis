@@ -103,6 +103,93 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 	}
 	?>
 </script>
+
+<?php // Uniform "reason for result/rejection change" capture across every single-result test form. ?>
+<script type="text/javascript">
+	(function () {
+		var CHANGE_REASON_LABEL = <?= json_encode(_htmlTranslate('Reason For Change in Result / Rejection Status')) ?>;
+		var CHANGE_REASON_PLACEHOLDER = <?= json_encode(_htmlTranslate('Please enter the reason for this change')) ?>;
+
+		function initChangeReasonCapture() {
+			$('form').each(function () {
+				var $form = $(this);
+				// Only result-entry / edit forms expose the rejection selector.
+				if (!$form.find('#isSampleRejected').length) return;
+				// TB multi-test uses its own per-test reason fields.
+				if ($form.find('[name="testResult[reasonForChange][]"]').length) return;
+				// Rollout gate: VL first. Widen this to other test types' result fields
+				// (#cd4Result, [name="result"], ...) after each is validated in-browser.
+				if (!$form.find('#vlResult').length) return;
+				if ($form.data('changeReasonInit')) return;
+				$form.data('changeReasonInit', true);
+
+				// Neutralize any bespoke inline reason field so only the injected one submits / is required.
+				$form.find('[name="reasonForResultChanges"], [name="reasonForChanging"]').each(function () {
+					$(this).removeAttr('name').removeAttr('id').prop('disabled', true).removeClass('isRequired')
+						.closest('.reasonForResultChanges, .change-reason').removeClass('reasonForResultChanges change-reason').hide();
+				});
+
+				// Inject the single standard mandatory reason field just above the Save button.
+				var $section = $(
+					'<div class="row changeReasonSection" style="display:none;margin:10px 0;">' +
+						'<div class="col-md-12">' +
+							'<label class="control-label">' + CHANGE_REASON_LABEL + ' <span class="mandatory">*</span></label>' +
+							'<textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" rows="2" ' +
+								'placeholder="' + CHANGE_REASON_PLACEHOLDER + '" title="' + CHANGE_REASON_PLACEHOLDER + '" style="width:100%;"></textarea>' +
+						'</div>' +
+					'</div>'
+				);
+				var $save = $form.find('a[onclick*="validateNow"], button[type="submit"], input[type="submit"]').first();
+				var $footer = $save.closest('.box-footer');
+				if ($footer.length) { $footer.before($section); }
+				else if ($save.length) { $save.before($section); }
+				else { $form.append($section); }
+
+				var $reason = $section.find('#reasonForResultChanges');
+				// Fields whose change requires a reason: result, rejection status, and final interpretation.
+				var watch = '#vlResult, #cd4Result, [name="result"], [name="cd4Result"], [name="vlResult"], ' +
+					'.result-fields, .specialResults, #isSampleRejected, #rejectionReason, ' +
+					'[name="resultInterpretation"], [name^="resultInterpretation"], [name="finalResultInterpretation"]';
+
+				function valOf(el) {
+					return (el.type === 'checkbox' || el.type === 'radio') ? (el.checked ? el.value : '') : ($(el).val() || '');
+				}
+
+				// Baseline of each watched field at load. A reason is required only when a field that
+				// ALREADY had a value gets changed -- so first-time result entry / new requests don't trigger.
+				var baseline = [];
+				function captureBaseline() {
+					baseline = $form.find(watch).map(function () { return { el: this, val: valOf(this) }; }).get();
+				}
+				function existingValueChanged() {
+					for (var i = 0; i < baseline.length; i++) {
+						var b = baseline[i];
+						if (b.val !== '' && document.body.contains(b.el) && valOf(b.el) !== b.val) return true;
+					}
+					return false;
+				}
+
+				var ready = false;
+				function check() {
+					if (!ready) return;
+					if (existingValueChanged()) {
+						$section.show();
+						$reason.addClass('isRequired');
+					} else {
+						$section.hide();
+						$reason.removeClass('isRequired');
+					}
+				}
+
+				$form.on('change keyup', watch, function () { setTimeout(check, 0); });
+				// Capture the baseline only after the form's own on-load triggers have settled.
+				setTimeout(function () { captureBaseline(); ready = true; check(); }, 600);
+			});
+		}
+
+		if (window.jQuery) { jQuery(initChangeReasonCapture); }
+	})();
+</script>
 </body>
 
 </html>
