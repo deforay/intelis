@@ -191,7 +191,12 @@ try {
     $hasMultipleTests = !empty($_POST['testResult']['labId']) && is_array($_POST['testResult']['labId']);
 
     if ($hasMultipleTests) {
-        // Delete existing tests
+        // tb_tests rows are delete-recreated on save, so capture each test's prior reason history
+        // server-side (keyed by tb_test_id) BEFORE deleting -- never trust client-sent history.
+        $priorReasonByTestId = [];
+        foreach ($db->rawQuery("SELECT tb_test_id, reason_for_result_change FROM tb_tests WHERE tb_id = ?", [$_POST['tbSampleId']]) as $prevTest) {
+            $priorReasonByTestId[$prevTest['tb_test_id']] = $prevTest['reason_for_result_change'];
+        }
         $db->where('tb_id', $_POST['tbSampleId']);
         $db->delete($testTableName);
 
@@ -199,12 +204,12 @@ try {
         $testResult = $_POST['testResult'];
         foreach ($testResult['labId'] as $key => $labid) {
             if (!empty($labid)) {
-                // tb_tests rows are delete-recreated, so the prior per-test reason history is carried
-                // forward via the hidden testResult[reasonHistory][] field and the new reason appended.
-                $tbReasonHistory = MiscUtility::parseResultChangeHistory(base64_decode((string) ($testResult['reasonHistory'][$key] ?? '')));
+                // Append the new reason to the server-fetched prior history (matched by tb_test_id).
+                // The client only supplies the lookup key, not the history content, so it cannot be forged.
+                $tbReasonHistory = MiscUtility::parseResultChangeHistory($priorReasonByTestId[$testResult['testId'][$key] ?? ''] ?? null);
                 $tbReasonText = trim((string) ($testResult['reasonForChange'][$key] ?? ''));
                 if ($tbReasonText !== '') {
-                    $tbReasonHistory[] = ['usr' => $_SESSION['userId'] ?? $_POST['userId'] ?? null, 'dtime' => DateUtility::getCurrentDateTime(), 'msg' => $tbReasonText];
+                    $tbReasonHistory[] = ['usr' => $_SESSION['userId'] ?? null, 'dtime' => DateUtility::getCurrentDateTime(), 'msg' => $tbReasonText];
                 }
                 $db->insert($testTableName, [
                     'tb_id' => $_POST['tbSampleId'] ?? null,
