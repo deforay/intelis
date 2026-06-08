@@ -55,28 +55,48 @@ $targets = [
 ];
 
 try {
+    // Pre-count across all target tables so the single bar reflects real
+    // overall progress rather than restarting per table.
+    $grandTotal = 0;
     foreach ($targets as $t) {
-        $rows = $db->rawQuery(
-            "SELECT `{$t['pk']}` AS id, `{$t['col']}` AS val FROM `{$t['table']}` "
+        $countRow = $db->rawQueryOne(
+            "SELECT COUNT(*) AS c FROM `{$t['table']}` "
                 . "WHERE `{$t['col']}` IS NOT NULL AND TRIM(`{$t['col']}`) <> ''"
         );
+        $grandTotal += (int) ($countRow['c'] ?? 0);
+    }
+
+    if ($grandTotal === 0) {
+        MiscUtility::safeCliEcho("Normalizing change history… nothing to normalize." . PHP_EOL);
+    } else {
+        // spinnerStart renders this message on its own line directly above the
+        // bar, so it is the single "what's running" line followed by the bar.
+        $bar = MiscUtility::spinnerStart($grandTotal, 'Normalizing change history…');
 
         $updated = 0;
-        foreach ($rows as $row) {
-            $history = MiscUtility::parseResultChangeHistory($row['val']);
-            $normalized = empty($history) ? null : json_encode($history);
+        foreach ($targets as $t) {
+            $rows = $db->rawQuery(
+                "SELECT `{$t['pk']}` AS id, `{$t['col']}` AS val FROM `{$t['table']}` "
+                    . "WHERE `{$t['col']}` IS NOT NULL AND TRIM(`{$t['col']}`) <> ''"
+            );
 
-            // Skip rows that are already in canonical form.
-            if ((string) $normalized === (string) $row['val']) {
-                continue;
+            foreach ($rows as $row) {
+                $history = MiscUtility::parseResultChangeHistory($row['val']);
+                $normalized = empty($history) ? null : json_encode($history);
+
+                // Rewrite only rows that aren't already in canonical form.
+                if ((string) $normalized !== (string) $row['val']) {
+                    $db->where($t['pk'], $row['id']);
+                    $db->update($t['table'], [$t['col'] => $normalized]);
+                    $updated++;
+                }
+
+                MiscUtility::spinnerAdvance($bar);
             }
-
-            $db->where($t['pk'], $row['id']);
-            $db->update($t['table'], [$t['col'] => $normalized]);
-            $updated++;
         }
 
-        MiscUtility::safeCliEcho("{$t['table']}.{$t['col']}: normalized {$updated} of " . count($rows) . " row(s)" . PHP_EOL);
+        MiscUtility::spinnerFinish($bar);
+        MiscUtility::safeCliEcho("Normalized {$updated} of {$grandTotal} row(s)." . PHP_EOL);
     }
 
     $scriptSucceeded = true;
