@@ -31,17 +31,17 @@ if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) === 'pk2') {
 }
 if (trim((string) $id) !== '') {
 
-    $sQuery = "SELECT vl.sample_id, remote_sample_code, fd.facility_name as clinic_name, fd.facility_district, 
-                TRIM(CONCAT(COALESCE(vl.patient_name, ''), ' ', COALESCE(vl.patient_surname, ''))) as `patient_fullname`,
-                patient_dob, patient_age, sample_collection_date, patient_gender, patient_id, 
+    $sQuery = "SELECT vl.sample_id, rtt.test_standard_name as test_name, remote_sample_code, fd.facility_name as clinic_name, fd.facility_district, 
+                TRIM(CONCAT(COALESCE(vl.patient_first_name, ''), ' ', COALESCE(vl.patient_last_name, ''))) as `patient_fullname`,
+                patient_dob, patient_age_in_years, sample_collection_date, patient_gender, patient_id, 
                 pd.manifest_code, l.facility_name as lab_name 
                 FROM specimen_manifests as pd 
                 JOIN form_generic as vl ON vl.referral_manifest_code = pd.manifest_code 
+                JOIN r_test_types as rtt ON vl.test_type = rtt.test_type_id 
                 JOIN facility_details as fd ON fd.facility_id = vl.facility_id 
                 JOIN facility_details as l ON l.facility_id = vl.lab_id 
                 WHERE pd.manifest_code IN('$id')";
     $result = $db->query($sQuery);
-
     $labname = $result[0]['lab_name'] ?? "";
 
     $showPatientName = $general->getGlobalConfig('generic_show_participant_name_in_manifest');
@@ -64,14 +64,12 @@ if (trim((string) $id) !== '') {
             // Query to get previous test results for this patient from tb_tests table
             $prevQuery = "SELECT tt.generic_id, l.facility_name as testing_lab, 
                             tt.testing_platform,
-                            tt.test_type,
-                            tt.specimen_type,
-                            tt.test_result,
-                            tt.sample_tested_datetime,
-                            tt.comments 
+                            tt.result_type,
+                            tt.testing_platform,
+                            tt.result,
+                            tt.sample_tested_datetime 
                         FROM generic_test_results as tt  
                         INNER JOIN facility_details as l ON l.facility_id = tt.facility_id 
-                        INNER JOIN r_tb_sample_type as ss ON ss.sample_id = tt.specimen_type 
                         AND tt.generic_id != ?
                         ORDER BY tt.sample_tested_datetime DESC, tt.sample_tested_datetime DESC";
             $prevResults = $db->rawQuery($prevQuery, [$sample['generic_id']]);
@@ -80,7 +78,7 @@ if (trim((string) $id) !== '') {
             }
         }
         // Create new PDF document
-        $pdf = new ManifestPdfHelper(_translate('TB Sample Referral Manifest'), PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new ManifestPdfHelper(_translate($result[0]['test_name'] . ' Sample Referral Manifest'), PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         $pdf->setHeading($general->getGlobalConfig('logo'), $general->getGlobalConfig('header'), $labname);
 
@@ -181,10 +179,9 @@ if (trim((string) $id) !== '') {
                     $tbl .= '<th style="font-size:5px;width:4%;border:1px solid #333;">S.No</th>';
                     $tbl .= '<th style="font-size:9px;width:12%;border:1px solid #333;"><strong>Platform</strong></th>';
                     $tbl .= '<th style="font-size:9px;width:18%;border:1px solid #333;"><strong>Lab</strong></th>';
-                    $tbl .= '<th style="font-size:9px;width:15%;border:1px solid #333;"><strong>Test Type</strong></th>';
+                    $tbl .= '<th style="font-size:9px;width:15%;border:1px solid #333;"><strong>Result Type</strong></th>';
                     $tbl .= '<th style="font-size:9px;width:15%;border:1px solid #333;"><strong>Result</strong></th>';
                     $tbl .= '<th style="font-size:9px;width:18%;border:1px solid #333;"><strong>Date of Testing</strong></th>';
-                    $tbl .= '<th style="font-size:9px;width:18%;border:1px solid #333;">Comments</th>';
                     $tbl .= '</tr>';
 
 
@@ -199,10 +196,9 @@ if (trim((string) $id) !== '') {
                         $tbl .= '<td style="font-size:5px;width:4%;border:1px solid #333;">' . ($key + 1) . '</td>';
                         $tbl .= '<td style="font-size:9px;width:12%;border:1px solid #333;">' . ($prevResult['testing_platform'] ?? 'N/A') . '</td>';
                         $tbl .= '<td style="font-size:9px;width:18%;border:1px solid #333;">' . ($prevResult['testing_lab'] ?? 'N/A') . '</td>';
-                        $tbl .= '<td style="font-size:9px;width:15%;border:1px solid #333;">' . ($prevResult['test_type'] ?? 'N/A') . '</td>';
-                        $tbl .= '<td style="font-size:9px;width:15%;border:1px solid #333;">' . ($prevResult['test_result'] ?? 'N/A') . '</td>';
+                        $tbl .= '<td style="font-size:9px;width:15%;border:1px solid #333;">' . ($prevResult['result_type'] ?? 'N/A') . '</td>';
+                        $tbl .= '<td style="font-size:9px;width:15%;border:1px solid #333;">' . ($prevResult['result'] ?? 'N/A') . '</td>';
                         $tbl .= '<td style="font-size:9px;width:18%;border:1px solid #333;">' . $prevTestedDate . '</td>';
-                        $tbl .= '<td style="font-size:9px;width:18%;border:1px solid #333;">' . ($prevResult['comments'] ?? 'N/A') . '</td>';
                         $tbl .= '</tr>';
                     }
                 }
