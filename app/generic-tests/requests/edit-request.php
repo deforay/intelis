@@ -1723,6 +1723,12 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 	});
 	$("#isSampleRejected").on("change", function () {
 
+		// Prompt for a change reason when the rejection status differs from what was saved.
+		if ($(this).val() !== <?= json_encode((string) ($genericResultInfo['is_sample_rejected'] ?? '')) ?>) {
+			$('.change-reason, .reasonForResultChanges').show();
+			$('#reasonForResultChanges').addClass('isRequired');
+		}
+
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult').css('display', 'none');
