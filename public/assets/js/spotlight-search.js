@@ -567,11 +567,18 @@
             $('#spotlightInput').attr('aria-activedescendant', activeId);
         },
 
+        // Escapes for both element-content AND double-quoted attribute contexts.
+        // Quotes must be escaped too: escapeHtml output is interpolated into
+        // attributes (data-url, class, aria-label), so leaving " unescaped would
+        // allow attribute breakout / event-handler injection.
         escapeHtml: function(text) {
             if (!text) return '';
-            var div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
         },
 
         handleKeyNavigation: function(e) {
