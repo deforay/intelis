@@ -47,7 +47,7 @@ $absVal = null;
 $txtVal = null;
 $resultStatus = null;
 try {
-     $db->where('generic_id', $_POST['vlSampleId'] ?? 0);
+     $db->where('sample_id', $_POST['vlSampleId'] ?? 0);
      $sampleFacilityId = (int) ($db->getValue($tableName, 'facility_id') ?? 0);
      $general->assertFacilityAllowed($sampleFacilityId);
      if (!empty($_POST['facilityId'])) {
@@ -67,14 +67,14 @@ try {
      $sarr = $general->getSystemConfig();
 
      //add province
-     $splitProvince = explode("##", (string) $_POST['province']);
-     if (isset($splitProvince[0]) && trim($splitProvince[0]) !== '') {
-          $provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $splitProvince[0] . "'";
-          $provinceInfo = $db->query($provinceQuery);
-          if (empty($provinceInfo)) {
-               $db->insert('geographical_divisions', ['geo_name' => $splitProvince[0], 'geo_code' => $splitProvince[1]]);
-          }
-     }
+     // $splitProvince = explode("##", (string) $_POST['province']);
+     // if (isset($splitProvince[0]) && trim($splitProvince[0]) !== '') {
+     //      $provinceQuery = "SELECT * from geographical_divisions where geo_name='" . $splitProvince[0] . "'";
+     //      $provinceInfo = $db->query($provinceQuery);
+     //      if (empty($provinceInfo)) {
+     //           $db->insert('geographical_divisions', ['geo_name' => $splitProvince[0], 'geo_code' => $splitProvince[1]]);
+     //      }
+     // }
      if (isset($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) !== "") {
           $sampleDate = explode(" ", (string) $_POST['sampleCollectionDate']);
           $_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($sampleDate[0]) . " " . $sampleDate[1];
