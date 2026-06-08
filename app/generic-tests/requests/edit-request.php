@@ -291,8 +291,6 @@ $testTypeForm = json_decode((string) $genericResultInfo['test_type_form'], true)
 $resultChangeHistory = MiscUtility::parseResultChangeHistory($genericResultInfo['reason_for_test_result_changes'] ?? null);
 $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChangeHistory)['msg'] ?? '') : '';
 
-// Read-only history table rendered above the "Reason For Changes" box (newest first).
-$resultChangeHistoryHtml = '';
 $mandatoryClass = "";
 if (!empty($_SESSION['instance']['type']) && $general->isLISInstance()) {
 	$mandatoryClass = "isRequired";
@@ -1183,13 +1181,6 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 											</div>
 										</div>
 									</div>
-									<?php if (!empty($resultChangeHistory)) { ?>
-									<div class="row">
-										<div class="col-md-12">
-											<?php echo $resultChangeHistoryHtml; ?>
-										</div>
-									</div>
-									<?php } ?>
 									<div class="row" id="labSection"></div>
 								</div>
 								<?php } ?>
