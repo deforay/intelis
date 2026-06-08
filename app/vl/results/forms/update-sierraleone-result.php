@@ -1010,6 +1010,12 @@ if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty
 
 		hivDetectionChange();
 
+		// Prompt for a change reason when the rejection status differs from what was saved.
+		if ($(this).val() !== <?= json_encode((string) ($vlQueryInfo['is_sample_rejected'] ?? '')) ?>) {
+			$(".reasonForResultChanges").css("display", "block");
+			$("#reasonForResultChanges").addClass("isRequired");
+		}
+
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult, .hivDetection').css('display', 'none');
