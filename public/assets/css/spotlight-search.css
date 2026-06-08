@@ -390,3 +390,24 @@ body.spotlight-open {
 .skin-red .spotlight-action-item.selected {
     background-color: #dd4b39;
 }
+
+/* Search match highlight */
+.spotlight-highlight {
+    background-color: rgba(60, 141, 188, 0.16);
+    color: inherit;
+    font-weight: 700;
+    border-radius: 2px;
+    padding: 0 1px;
+}
+
+.spotlight-result-item.selected .spotlight-highlight,
+.spotlight-mouse-active .spotlight-result-item:hover .spotlight-highlight,
+.spotlight-action-item.selected .spotlight-highlight,
+.spotlight-mouse-active .spotlight-action-item:hover .spotlight-highlight {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+.skin-red .spotlight-highlight {
+    background-color: rgba(221, 75, 57, 0.16);
+}

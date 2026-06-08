@@ -11,6 +11,7 @@
         expandedIndex: -1,
         selectedActionIndex: -1,
         filteredResults: [],
+        currentQueryWords: [],
         maxHistoryItems: 5,
         isMouseMoving: false,
         mouseMovementTimeout: null,
@@ -208,7 +209,7 @@
             this.isMouseMoving = false;
             $('.spotlight-dialog').removeClass('spotlight-mouse-active');
             $('#spotlightModal').fadeIn(150);
-            $('#spotlightInput').val('').focus();
+            $('#spotlightInput').val('').attr('aria-expanded', 'true').focus();
             this.showDefaultResults();
             $('body').addClass('spotlight-open');
         },
@@ -217,8 +218,9 @@
             this.isOpen = false;
             this.expandedIndex = -1;
             this.selectedActionIndex = -1;
+            this.currentQueryWords = [];
             $('#spotlightModal').fadeOut(150);
-            $('#spotlightInput').val('');
+            $('#spotlightInput').val('').attr('aria-expanded', 'false').attr('aria-activedescendant', '');
             $('#spotlightResults').empty();
             $('body').removeClass('spotlight-open');
         },
@@ -238,6 +240,7 @@
 
         showDefaultResults: function() {
             var self = this;
+            this.currentQueryWords = [];
             var recentItems = this.getRecentItems();
 
             if (recentItems.length === 0) {
@@ -266,12 +269,24 @@
 
             var queryWords = query.split(/\s+/).filter(function(w) { return w.length > 0; });
             var queryNormalized = queryWords.join(' ');
+            this.currentQueryWords = queryWords;
 
             this.filteredResults = this.searchData.filter(function(item) {
                 return queryWords.every(function(word) {
                     return item.searchText.indexOf(word) !== -1;
                 });
             });
+
+            // Typo / fuzzy fallback: only when a strict substring match found nothing
+            // and the query is long enough that fuzzy results stay meaningful.
+            if (this.filteredResults.length === 0 && query.replace(/\s+/g, '').length >= 3) {
+                this.filteredResults = this.fuzzySearch(queryWords);
+                if (this.filteredResults.length > 0) {
+                    this.selectedIndex = 0;
+                    this.renderResults();
+                    return;
+                }
+            }
 
             var hasExactModuleMatch = this.filteredResults.some(function(item) {
                 return (item.module || '').toLowerCase() === queryNormalized;
@@ -318,6 +333,120 @@
 
             this.selectedIndex = this.filteredResults.length > 0 ? 0 : -1;
             this.renderResults();
+        },
+
+        // Typo-tolerant fallback. Each query word must match some token of an item
+        // by prefix, subsequence, or small edit distance. Lower score = better match.
+        fuzzySearch: function(queryWords) {
+            var self = this;
+            var scored = [];
+
+            this.searchData.forEach(function(item) {
+                var tokens = item.searchText.split(/[^a-z0-9]+/).filter(Boolean);
+                var total = 0;
+                var matchedAll = queryWords.every(function(word) {
+                    var best = self.bestWordScore(word, tokens, item.searchText);
+                    if (best === null) return false;
+                    total += best;
+                    return true;
+                });
+                if (matchedAll) {
+                    scored.push({ item: item, score: total });
+                }
+            });
+
+            scored.sort(function(a, b) {
+                if (a.score !== b.score) return a.score - b.score;
+                return (a.item._originalIndex || 0) - (b.item._originalIndex || 0);
+            });
+
+            return scored.slice(0, 20).map(function(s) { return s.item; });
+        },
+
+        bestWordScore: function(word, tokens, searchText) {
+            var best = null;
+            var maxDist = word.length <= 4 ? 1 : 2;
+
+            for (var i = 0; i < tokens.length; i++) {
+                var token = tokens[i];
+                var score = null;
+
+                if (token === word) {
+                    score = 0;
+                } else if (token.indexOf(word) === 0) {
+                    score = 1;
+                } else {
+                    var dist = this.levenshtein(word, token, maxDist);
+                    if (dist <= maxDist) {
+                        score = 3 + dist;
+                    }
+                }
+
+                if (score !== null && (best === null || score < best)) {
+                    best = score;
+                    if (best === 0) break;
+                }
+            }
+
+            // Subsequence over the whole searchText catches dropped letters across tokens
+            if (best === null && this.isSubsequence(word, searchText)) {
+                best = 6;
+            }
+
+            return best;
+        },
+
+        isSubsequence: function(needle, haystack) {
+            var j = 0;
+            for (var i = 0; i < haystack.length && j < needle.length; i++) {
+                if (haystack[i] === needle[j]) j++;
+            }
+            return j === needle.length;
+        },
+
+        // Bounded Levenshtein — bails out early once the best possible distance
+        // on a row exceeds maxDist, keeping it cheap for the no-match case.
+        levenshtein: function(a, b, maxDist) {
+            if (Math.abs(a.length - b.length) > maxDist) return maxDist + 1;
+            var prev = [];
+            for (var j = 0; j <= b.length; j++) prev[j] = j;
+
+            for (var i = 1; i <= a.length; i++) {
+                var curr = [i];
+                var rowMin = i;
+                for (var k = 1; k <= b.length; k++) {
+                    var cost = a.charAt(i - 1) === b.charAt(k - 1) ? 0 : 1;
+                    curr[k] = Math.min(prev[k] + 1, curr[k - 1] + 1, prev[k - 1] + cost);
+                    if (curr[k] < rowMin) rowMin = curr[k];
+                }
+                if (rowMin > maxDist) return maxDist + 1;
+                prev = curr;
+            }
+            return prev[b.length];
+        },
+
+        // Escape text, then wrap any literal query-word occurrences in <mark>.
+        highlight: function(text, queryWords) {
+            if (!text) return '';
+            if (!queryWords || !queryWords.length) return this.escapeHtml(text);
+
+            var patterns = queryWords
+                .map(function(w) { return w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); })
+                .filter(Boolean);
+            if (!patterns.length) return this.escapeHtml(text);
+
+            var re = new RegExp('(' + patterns.join('|') + ')', 'gi');
+            var result = '';
+            var lastIndex = 0;
+            var m;
+            while ((m = re.exec(text)) !== null) {
+                result += this.escapeHtml(text.slice(lastIndex, m.index));
+                result += '<mark class="spotlight-highlight">' + this.escapeHtml(m[0]) + '</mark>';
+                lastIndex = m.index + m[0].length;
+                if (m.index === re.lastIndex) re.lastIndex++;
+            }
+            result += this.escapeHtml(text.slice(lastIndex));
+            return result;
         },
 
         renderResults: function() {
@@ -367,8 +496,8 @@
             });
 
             sortedCategories.forEach(function(category) {
-                html += '<div class="spotlight-category">';
-                html += '<div class="spotlight-category-title">' + self.escapeHtml(category) + '</div>';
+                html += '<div class="spotlight-category" role="group" aria-label="' + self.escapeHtml(category) + '">';
+                html += '<div class="spotlight-category-title" aria-hidden="true">' + self.escapeHtml(category) + '</div>';
 
                 grouped[category].forEach(function(item) {
                     var isSelected = item._globalIndex === self.selectedIndex;
@@ -380,15 +509,17 @@
                     if (isExpanded) itemClass += ' expanded';
                     if (isExpandable) itemClass += ' spotlight-expandable';
 
-                    html += '<div class="' + itemClass + '" ' +
+                    html += '<div class="' + itemClass + '" role="option" ' +
+                            'id="spotlight-opt-' + item._globalIndex + '" ' +
+                            'aria-selected="' + (isSelected ? 'true' : 'false') + '" ' +
                             'data-url="' + self.escapeHtml(item.url) + '" ' +
                             'data-index="' + item._globalIndex + '" ' +
                             'data-item-id="' + self.escapeHtml(item.id) + '">';
                     html += '<div class="spotlight-item-icon"><i class="' + self.escapeHtml(item.icon || 'fa-solid fa-file') + '"></i></div>';
                     html += '<div class="spotlight-item-content">';
-                    html += '<span class="spotlight-item-title">' + self.escapeHtml(item.title) + '</span>';
+                    html += '<span class="spotlight-item-title">' + self.highlight(item.title, self.currentQueryWords) + '</span>';
                     if (item.subcategory) {
-                        html += '<span class="spotlight-item-path">' + self.escapeHtml(item.subcategory) + '</span>';
+                        html += '<span class="spotlight-item-path">' + self.highlight(item.subcategory, self.currentQueryWords) + '</span>';
                     }
                     html += '</div>';
 
@@ -404,11 +535,13 @@
                         html += '<div class="spotlight-actions" data-parent-id="' + self.escapeHtml(item.id) + '">';
                         item.actions.forEach(function(action, actionIdx) {
                             var isActionSelected = actionIdx === self.selectedActionIndex;
-                            html += '<div class="spotlight-action-item' + (isActionSelected ? ' selected' : '') + '" ' +
+                            html += '<div class="spotlight-action-item' + (isActionSelected ? ' selected' : '') + '" role="option" ' +
+                                    'id="spotlight-act-' + actionIdx + '" ' +
+                                    'aria-selected="' + (isActionSelected ? 'true' : 'false') + '" ' +
                                     'data-url="' + self.escapeHtml(action.url) + '" ' +
                                     'data-action-index="' + actionIdx + '">';
                             html += '<i class="' + self.escapeHtml(action.icon || 'fa-solid fa-arrow-right') + ' spotlight-action-icon"></i>';
-                            html += '<span class="spotlight-action-label">' + self.escapeHtml(action.label) + '</span>';
+                            html += '<span class="spotlight-action-label">' + self.highlight(action.label, self.currentQueryWords) + '</span>';
                             html += '</div>';
                         });
                         html += '</div>';
@@ -419,6 +552,19 @@
             });
 
             $container.html(html);
+            this.syncAria();
+        },
+
+        // Point the combobox's aria-activedescendant at the focused option so
+        // screen readers announce the current selection as the user navigates.
+        syncAria: function() {
+            var activeId = '';
+            if (this.expandedIndex >= 0 && this.selectedActionIndex >= 0) {
+                activeId = 'spotlight-act-' + this.selectedActionIndex;
+            } else if (this.selectedIndex >= 0) {
+                activeId = 'spotlight-opt-' + this.selectedIndex;
+            }
+            $('#spotlightInput').attr('aria-activedescendant', activeId);
         },
 
         escapeHtml: function(text) {
@@ -523,9 +669,10 @@
 
         updateSelection: function(scroll) {
             var $items = $('.spotlight-result-item');
-            $items.removeClass('selected');
+            $items.removeClass('selected').attr('aria-selected', 'false');
             var $selected = $items.filter('[data-index="' + this.selectedIndex + '"]');
-            $selected.addClass('selected');
+            $selected.addClass('selected').attr('aria-selected', 'true');
+            this.syncAria();
 
             if (scroll !== false && $selected.length) {
                 this.scrollIntoView($selected);
@@ -534,9 +681,10 @@
 
         updateActionSelection: function(scroll) {
             var $actions = $('.spotlight-action-item');
-            $actions.removeClass('selected');
+            $actions.removeClass('selected').attr('aria-selected', 'false');
             var $selected = $actions.filter('[data-action-index="' + this.selectedActionIndex + '"]');
-            $selected.addClass('selected');
+            $selected.addClass('selected').attr('aria-selected', 'true');
+            this.syncAria();
 
             if (scroll !== false && $selected.length) {
                 this.scrollIntoView($selected);
