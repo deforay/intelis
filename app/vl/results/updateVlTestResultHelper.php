@@ -106,15 +106,8 @@ try {
     $resultStatus = $processedResults['resultStatus'] ?? null;
 
 
-    // parseResultChangeHistory guards against a scalar/null decode (e.g. a malformed hidden field),
-    // which would otherwise throw "Cannot use a scalar value as an array" on the append below.
-    $resultChangeHistory = MiscUtility::parseResultChangeHistory(
-        base64_decode((string) ($_POST['reasonForResultChangesHistory'] ?? ''))
-    );
-    if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) !== '') {
-        $resultChangeHistory[] = ['usr' => $_SESSION['userId'] ?? $_POST['userId'], 'msg' => $_POST['reasonForResultChanges'], 'dtime' => DateUtility::getCurrentDateTime()];
-    }
-    $reasonForChanges = !empty($resultChangeHistory) ? json_encode($resultChangeHistory) : null;
+    // The result-change reason is appended (preserving prior history) further below, after the
+    // previous row is fetched -- see appendResultChangeReason near the result_modified check.
 
     if ($_POST['failedTestingTech'] != '') {
         $platForm = explode("##", (string) $_POST['failedTestingTech']);
@@ -153,7 +146,7 @@ try {
         'result_approved_by' => $_POST['approvedBy'] ?? null,
         'result_approved_datetime' => $_POST['approvedOnDateTime'] ?? null,
         'lab_tech_comments' => $_POST['labComments'] ?? null,
-        'reason_for_result_changes' => $reasonForChanges ?? null,
+        // reason_for_result_changes set below (after the previous row is fetched)
         'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? ($_SESSION['userId'] ?? $_POST['userId']) : null,
         'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
         'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'],
@@ -253,6 +246,18 @@ try {
     $db->where('vl_sample_id', $_POST['vlSampleId']);
     $getPrevResult = $db->getOne('form_vl');
     $vlData['result_modified'] = $getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult ? "yes" : "no";
+
+    // Append the change reason (preserving prior history) whenever the result or rejection changed.
+    $reasonForChanges = MiscUtility::appendResultChangeReason(
+        $getPrevResult['reason_for_result_changes'] ?? null,
+        $_SESSION['userId'] ?? $_POST['userId'] ?? null,
+        $_POST['reasonForResultChanges'] ?? null,
+        ['result' => $getPrevResult['result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null],
+        ['result' => $finalResult, 'is_sample_rejected' => $isRejected]
+    );
+    if ($reasonForChanges !== null) {
+        $vlData['reason_for_result_changes'] = $reasonForChanges;
+    }
 
 
     // only if result status has changed, let us update

@@ -2,6 +2,7 @@
 
 use const SAMPLE_STATUS\PENDING_APPROVAL;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -78,10 +79,18 @@ try {
 
 	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 	$getPrevResult = $db->getOne('form_hepatitis');
-	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
-		$hepatitisData['result_modified'] = "yes";
-	} else {
-		$hepatitisData['result_modified'] = "no";
+	$hepatitisData['result_modified'] = ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) ? "yes" : "no";
+
+	// Append the change reason (preserving prior history) whenever the result or rejection changed.
+	$reasonForChanges = MiscUtility::appendResultChangeReason(
+		$getPrevResult['reason_for_changing'] ?? null,
+		$_SESSION['userId'] ?? $_POST['userId'] ?? null,
+		$_POST['reasonForChanging'] ?? null,
+		['result' => $getPrevResult['result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null],
+		['result' => $_POST['result'] ?? null, 'is_sample_rejected' => $_POST['isSampleRejected'] ?? null]
+	);
+	if ($reasonForChanges !== null) {
+		$hepatitisData['reason_for_changing'] = $reasonForChanges;
 	}
 
 	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);

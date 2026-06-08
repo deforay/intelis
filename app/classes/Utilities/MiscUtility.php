@@ -1339,16 +1339,21 @@ final class MiscUtility
     }
 
     /**
-     * Parse the result-change history stored in form_generic.reason_for_test_result_changes.
+     * Parse the result-change history stored in the various reason columns
+     * (reason_for_test_result_changes / reason_for_result_changes / reason_for_changing /
+     * tb_tests.reason_for_result_change).
      *
      * Returns a normalized, oldest-first list of entries:
-     *   [['usr' => mixed, 'msg' => string, 'dtime' => string], ...]
+     *   [['usr' => mixed, 'msg' => string, 'dtime' => string, ...], ...]
      *
-     * The current storage format is a JSON array of {usr, msg, dtime} objects. Older rows used a
-     * legacy string format -- "user##message##datetime" entries joined by the literal separator
-     * "vlsm", newest first -- so this also decodes those to keep them rendering during/after the
-     * migration to JSON. The "usr" value may be a numeric user id (current) or a user name string
-     * (legacy); callers should resolve it accordingly.
+     * Tolerates every historical shape so nothing is lost during/after the migration to the canonical
+     * JSON array:
+     *   - canonical JSON array of {usr, msg, dtime, previousResult?, ...} entries;
+     *   - a single JSON object {user, dateOfChange, previousResult, previousResultStatus, reasonForChange}
+     *     (the pre-audit EID/COVID/hepatitis/VL-request format) -> wrapped into one entry;
+     *   - the legacy "userName##message##datetime" entries joined by the literal separator "vlsm".
+     * The "usr" value may be a numeric user id (current) or a user name string (legacy); callers
+     * should resolve it accordingly.
      */
     public static function parseResultChangeHistory(?string $raw): array
     {
@@ -1357,10 +1362,17 @@ final class MiscUtility
             return [];
         }
 
-        // Current format: JSON array of {usr, msg, dtime} objects (already oldest-first).
         $decoded = json_decode($raw, true);
         if (is_array($decoded)) {
-            return array_values(array_filter($decoded, 'is_array'));
+            // A non-list (associative) decode is a single change object; wrap it as one entry.
+            $entries = array_is_list($decoded) ? $decoded : [$decoded];
+            $history = [];
+            foreach ($entries as $entry) {
+                if (is_array($entry)) {
+                    $history[] = self::normalizeChangeEntry($entry);
+                }
+            }
+            return $history;
         }
 
         // Legacy format: "userName##message##datetime" entries joined by "vlsm", newest first.
@@ -1378,6 +1390,105 @@ final class MiscUtility
             ];
         }
         return $history;
+    }
+
+    /**
+     * Normalize a single decoded change entry (either {usr,msg,dtime,...} or the legacy
+     * {user,dateOfChange,reasonForChange,...} object) into the canonical entry shape.
+     */
+    private static function normalizeChangeEntry(array $e): array
+    {
+        $entry = [
+            'usr' => $e['usr'] ?? $e['user'] ?? null,
+            'msg' => (string) ($e['msg'] ?? $e['reasonForChange'] ?? ''),
+            'dtime' => (string) ($e['dtime'] ?? $e['dateOfChange'] ?? ''),
+        ];
+        foreach (['previousResult', 'previousResultStatus', 'previousRejection'] as $k) {
+            if (array_key_exists($k, $e)) {
+                $entry[$k] = $e[$k];
+            }
+        }
+        return $entry;
+    }
+
+    /**
+     * Append a result/rejection change entry to the existing (any-format) reason history and return
+     * the canonical JSON array string. Existing history is preserved (never overwritten).
+     *
+     * A new entry is appended only when the result OR the rejection state actually changed AND a
+     * non-empty reason was provided. Returns null only when there is no history at all to store.
+     *
+     * @param array $previous ['result' => , 'result_status' => , 'is_sample_rejected' => ]
+     * @param array $current  ['result' => , 'is_sample_rejected' => ]
+     */
+    public static function appendResultChangeReason(?string $existingRaw, $userId, ?string $reasonText, array $previous, array $current): ?string
+    {
+        $history = self::parseResultChangeHistory($existingRaw);
+
+        $prevResult = $previous['result'] ?? null;
+        $newResult = $current['result'] ?? null;
+        $resultChanged = $prevResult !== null
+            && trim((string) $prevResult) !== ''
+            && (string) $prevResult !== (string) $newResult;
+
+        // Only a flip between rejected / not-rejected counts (avoids null<->"no" noise).
+        $prevRejected = ((string) ($previous['is_sample_rejected'] ?? '')) === 'yes';
+        $newRejected = ((string) ($current['is_sample_rejected'] ?? '')) === 'yes';
+        $rejectionChanged = $prevRejected !== $newRejected;
+
+        $reasonText = trim((string) $reasonText);
+
+        if (($resultChanged || $rejectionChanged) && $reasonText !== '') {
+            $history[] = [
+                'usr' => $userId,
+                'dtime' => DateUtility::getCurrentDateTime(),
+                'msg' => $reasonText,
+                'previousResult' => $prevResult,
+                'previousResultStatus' => $previous['result_status'] ?? null,
+                'previousRejection' => $previous['is_sample_rejected'] ?? null,
+            ];
+        }
+
+        return empty($history) ? null : json_encode($history);
+    }
+
+    /** Return the most recent change entry (canonical shape), or [] when there is no history. */
+    public static function latestResultChangeReason(?string $raw): array
+    {
+        $history = self::parseResultChangeHistory($raw);
+        return empty($history) ? [] : (array) end($history);
+    }
+
+    /**
+     * Build the read-only "Result Changes History" table (newest first) for the edit/result forms.
+     * Returns '' when there is no history. $usersService resolves numeric user ids to names.
+     */
+    public static function renderResultChangeHistoryHtml(?string $raw, $usersService): string
+    {
+        $history = self::parseResultChangeHistory($raw);
+        if (empty($history)) {
+            return '';
+        }
+
+        $html = '<h4>' . _translate('Result Changes History') . '</h4>'
+            . '<table style="width:100%;"><thead><tr style="border-bottom:2px solid #d3d3d3;">'
+            . '<th style="width:20%;">' . _translate('User') . '</th>'
+            . '<th style="width:60%;">' . _translate('Message') . '</th>'
+            . '<th style="width:20%;text-align:center;">' . _translate('Date') . '</th>'
+            . '</tr></thead><tbody>';
+        foreach (array_reverse($history) as $change) {
+            $changedBy = is_numeric($change['usr'] ?? null)
+                ? ($usersService->getUserByID($change['usr'])['user_name'] ?? '')
+                : (string) ($change['usr'] ?? '');
+            $parts = explode(' ', trim((string) ($change['dtime'] ?? '')));
+            $changedOn = ($parts[0] ?? '') !== ''
+                ? DateUtility::humanReadableDateFormat($parts[0]) . ' ' . ($parts[1] ?? '')
+                : '';
+            $html .= '<tr><td>' . htmlspecialchars($changedBy) . '</td>'
+                . '<td>' . htmlspecialchars((string) ($change['msg'] ?? '')) . '</td>'
+                . '<td style="text-align:center;">' . htmlspecialchars(trim($changedOn)) . '</td></tr>';
+        }
+        return $html . '</tbody></table>';
     }
 
 }

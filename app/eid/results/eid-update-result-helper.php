@@ -91,20 +91,18 @@ try {
 
   $db->where('eid_id', $_POST['eidSampleId']);
   $getPrevResult = $db->getOne('form_eid');
-  if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
-    $eidData['result_modified'] = "yes";
-    // Store the change as the same JSON object the request-edit path writes, so the PDF/readers
-    // that json_decode reason_for_changing keep working.
-    $eidData['reason_for_changing'] = json_encode([
-      'user' => $_SESSION['userId'] ?? $_POST['userId'] ?? null,
-      'dateOfChange' => DateUtility::getCurrentDateTime(),
-      'previousResult' => $getPrevResult['result'],
-      'previousResultStatus' => $getPrevResult['result_status'],
-      'reasonForChange' => $_POST['reasonForChanging'] ?? null,
-    ]);
-  } else {
-    $eidData['result_modified'] = "no";
-    $eidData['reason_for_changing'] = null;
+  $eidData['result_modified'] = ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) ? "yes" : "no";
+
+  // Append the change reason (preserving prior history) whenever the result or rejection changed.
+  $reasonForChanges = MiscUtility::appendResultChangeReason(
+    $getPrevResult['reason_for_changing'] ?? null,
+    $_SESSION['userId'] ?? $_POST['userId'] ?? null,
+    $_POST['reasonForChanging'] ?? null,
+    ['result' => $getPrevResult['result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null],
+    ['result' => $_POST['result'] ?? null, 'is_sample_rejected' => $_POST['isSampleRejected'] ?? null]
+  );
+  if ($reasonForChanges !== null) {
+    $eidData['reason_for_changing'] = $reasonForChanges;
   }
 
 

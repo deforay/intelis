@@ -305,17 +305,19 @@ try {
 
 	$db->where('eid_id', $_POST['eidSampleId']);
 	$getPrevResult = $db->getOne('form_eid');
-	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
-		$eidData['result_modified'] = "yes";
+	$eidData['result_modified'] = ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) ? "yes" : "no";
 
-		$reasonForChangesArr = ['user' => $_SESSION['userId'] ?? $_POST['userId'], 'dateOfChange' => DateUtility::getCurrentDateTime(), 'previousResult' => $getPrevResult['result'], 'previousResultStatus' => $getPrevResult['result_status'], 'reasonForChange' => $_POST['reasonForChanging']];
-
-		$reasonForChanges = json_encode($reasonForChangesArr);
-	} else {
-		$eidData['result_modified'] = "no";
+	// Append the change reason (preserving prior history) whenever the result or rejection changed.
+	$reasonForChanges = MiscUtility::appendResultChangeReason(
+		$getPrevResult['reason_for_changing'] ?? null,
+		$_SESSION['userId'] ?? $_POST['userId'] ?? null,
+		$_POST['reasonForChanging'] ?? null,
+		['result' => $getPrevResult['result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null],
+		['result' => $_POST['result'] ?? null, 'is_sample_rejected' => $_POST['isSampleRejected'] ?? null]
+	);
+	if ($reasonForChanges !== null) {
+		$eidData['reason_for_changing'] = $reasonForChanges;
 	}
-
-	$eidData['reason_for_changing'] = $reasonForChanges ?? null;
 	$eidData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
 
