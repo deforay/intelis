@@ -117,9 +117,9 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 				if (!$form.find('#isSampleRejected').length) return;
 				// TB multi-test uses its own per-test reason fields.
 				if ($form.find('[name="testResult[reasonForChange][]"]').length) return;
-				// Rollout gate: VL first. Widen this to other test types' result fields
-				// (#cd4Result, [name="result"], ...) after each is validated in-browser.
-				if (!$form.find('#vlResult').length) return;
+				// Activate only on single-result test forms (VL/CD4/EID/COVID/hepatitis). Generic
+				// (sub-test results) and TB (per-test fields) are intentionally excluded.
+				if (!$form.find('#vlResult, #cd4Result, [name="result"], [name="HBsAg"], [name="antiHcv"]').length) return;
 				if ($form.data('changeReasonInit')) return;
 				$form.data('changeReasonInit', true);
 
@@ -148,7 +148,7 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 				var $reason = $section.find('#reasonForResultChanges');
 				// Fields whose change requires a reason: result, rejection status, and final interpretation.
 				var watch = '#vlResult, #cd4Result, [name="result"], [name="cd4Result"], [name="vlResult"], ' +
-					'.result-fields, .specialResults, #isSampleRejected, #rejectionReason, ' +
+					'[name="HBsAg"], [name="antiHcv"], .result-fields, .specialResults, #isSampleRejected, #rejectionReason, ' +
 					'[name="resultInterpretation"], [name^="resultInterpretation"], [name="finalResultInterpretation"]';
 
 				function valOf(el) {
