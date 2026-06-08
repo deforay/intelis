@@ -293,27 +293,6 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 
 // Read-only history table rendered above the "Reason For Changes" box (newest first).
 $resultChangeHistoryHtml = '';
-if (!empty($resultChangeHistory)) {
-    $resultChangeHistoryHtml = '<h4>' . _translate('Result Changes History') . '</h4>'
-        . '<table style="width:100%;"><thead><tr style="border-bottom:2px solid #d3d3d3;">'
-        . '<th style="width:20%;">' . _translate('User') . '</th>'
-        . '<th style="width:60%;">' . _translate('Message') . '</th>'
-        . '<th style="width:20%;text-align:center;">' . _translate('Date') . '</th>'
-        . '</tr></thead><tbody>';
-    foreach (array_reverse($resultChangeHistory) as $change) {
-        $changedBy = is_numeric($change['usr'] ?? null)
-            ? ($usersService->getUserByID($change['usr'])['user_name'] ?? '')
-            : (string) ($change['usr'] ?? '');
-        $changedOnParts = explode(' ', trim((string) ($change['dtime'] ?? '')));
-        $changedOn = ($changedOnParts[0] ?? '') !== ''
-            ? DateUtility::humanReadableDateFormat($changedOnParts[0]) . ' ' . ($changedOnParts[1] ?? '')
-            : '';
-        $resultChangeHistoryHtml .= '<tr><td>' . htmlspecialchars($changedBy) . '</td>'
-            . '<td>' . htmlspecialchars((string) ($change['msg'] ?? '')) . '</td>'
-            . '<td style="text-align:center;">' . htmlspecialchars(trim($changedOn)) . '</td></tr>';
-    }
-    $resultChangeHistoryHtml .= '</tbody></table>';
-}
 $mandatoryClass = "";
 if (!empty($_SESSION['instance']['type']) && $general->isLISInstance()) {
 	$mandatoryClass = "isRequired";
