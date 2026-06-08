@@ -97,17 +97,16 @@ try {
     $db->where('lab_id', $labId);
     $manifestRecord = $db->getOne('specimen_manifests');
 
-    if (empty($manifestRecord)) {
+    if (empty($manifestRecord) && ($testType != 'tb' || $testType != 'generic-tests')) {
         http_response_code(404);
         $payload['status'] = 'not-found';
         $payload['message'] = 'Manifest not found.';
     } else {
-
         $tableName = TestsService::getTestTableName($testType);
         $primaryKey = TestsService::getPrimaryColumn($testType);
         $db->reset();
         $db->where('sample_package_code', $manifestCode);
-        if ($testType === 'tb') {
+        if ($testType === 'tb' || $testType === 'generic-tests') {
             $db->orWhere('referral_manifest_code', $manifestCode);
         }
         $selectedSamples = $db->getValue($tableName, $primaryKey, null);
