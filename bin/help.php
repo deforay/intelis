@@ -91,7 +91,7 @@ $CATEGORY_MAP = [
     'smart-connect/vl.php' => 'Subsystems',
     'smart-connect/eid.php' => 'Subsystems',
     'smart-connect/covid19.php' => 'Subsystems',
-    'tb/tb-referrals.php' => 'Subsystems',
+    'referrals.php' => 'Subsystems',
     'external/results.php' => 'Subsystems',
 
     // Build / release.

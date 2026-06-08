@@ -156,24 +156,6 @@ final class TestsService
             ]
         ];
 
-        // Define aliases
-        $aliases = [
-            'custom-tests' => 'generic-tests',
-            'custom-test' => 'generic-tests',
-            'covid-19' => 'covid19',
-            'covid' => 'covid19',
-            'recency' => 'vl'
-        ];
-
-        // Resolve aliases
-        foreach ($aliases as $alias => $original) {
-            if (isset($testTypes[$original])) {
-                if(array_key_exists($original, $testTypes)){
-                    $testTypes[$original] = $testTypes[$original];
-                }
-            }
-        }
-
         return $testTypes;
     }
 
