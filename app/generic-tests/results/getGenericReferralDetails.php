@@ -10,6 +10,7 @@ use App\Utilities\JsonUtility;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
+
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
@@ -19,7 +20,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$testType = 'tb';
+$testType = 'generic-tests';
 $table = TestsService::getTestTableName($testType);
 $primaryKeyColumn = TestsService::getPrimaryColumn($testType);
 
