@@ -25,6 +25,7 @@ if (empty($_POST['type'])) {
 $testType = $_POST['type'];
 $packageCodeId = $_POST['packageCode'];
 $labId = $_POST['referralLabId'];
+$testTypeId = $_POST['testTypeId'] ?? null;
 $table = TestsService::getTestTableName($testType);
 $primaryKeyColumn = TestsService::getPrimaryColumn($testType);
 $patientIdColumn = TestsService::getPatientIdColumn($testType);
@@ -35,6 +36,12 @@ $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id =
 if (!empty($packageCodeId)) {
     $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '' OR vl.referred_to_lab_id = ?)";
     $bindParams[] = $labId;
+}
+
+// Restrict to samples of the selected custom test type so they match the manifest code
+$testTypeCondition = "";
+if (!empty($testTypeId)) {
+    $testTypeCondition = " AND vl.test_type = ?";
 }
 // Query to get samples that are eligible for referral
 // Samples should be received at lab but not yet referred
@@ -53,8 +60,12 @@ $query = "SELECT
             AND (COALESCE(vl.is_sample_rejected, '') = '' OR vl.is_sample_rejected = 'no')
             AND (vl.sample_code IS NOT NULL AND vl.sample_code != '')
             AND (vl.lab_id IS NOT NULL AND vl.lab_id = ?)
+            $testTypeCondition
           ORDER BY vl.sample_code ASC";
 $bindParams[] = $labId;
+if (!empty($testTypeId)) {
+    $bindParams[] = $testTypeId;
+}
 $result = $db->rawQuery($query, $bindParams);
 
 // Output options for the select box
