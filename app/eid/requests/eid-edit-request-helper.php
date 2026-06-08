@@ -311,7 +311,7 @@ try {
 	$reasonForChanges = MiscUtility::appendResultChangeReason(
 		$getPrevResult['reason_for_changing'] ?? null,
 		$_SESSION['userId'] ?? $_POST['userId'] ?? null,
-		$_POST['reasonForChanging'] ?? null,
+		$_POST['reasonForResultChanges'] ?? $_POST['reasonForChanging'] ?? null,
 		['result' => $getPrevResult['result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null],
 		['result' => $_POST['result'] ?? null, 'is_sample_rejected' => $_POST['isSampleRejected'] ?? null]
 	);
