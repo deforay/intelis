@@ -1193,11 +1193,6 @@ $disable = "disabled = 'disabled'";
 
           hivDetectionChange();
 
-          // Prompt for a change reason when the rejection status differs from what was saved.
-          if ($(this).val() !== <?= json_encode((string) ($vlQueryInfo['is_sample_rejected'] ?? '')) ?>) {
-               $(".reasonForResultChanges").css("display", "block");
-               $("#reasonForResultChanges").addClass("isRequired");
-          }
 
           if ($(this).val() == 'yes') {
                $('.rejectionReason').show();
