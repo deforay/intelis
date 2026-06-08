@@ -1076,11 +1076,6 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", ["request_clin
                $('#rejectionReason').val('');
           }
 
-          // Prompt for a change reason when the rejection status differs from what was saved.
-          if ($(this).val() !== <?= json_encode((string) ($vlQueryInfo['is_sample_rejected'] ?? '')) ?>) {
-               $(".reasonForResultChanges").css("display", "block");
-               $("#reasonForResultChanges").addClass("isRequired");
-          }
      });
 
 
