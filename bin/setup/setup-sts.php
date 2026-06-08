@@ -393,36 +393,17 @@ try {
         $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
         echo "Executing: $metadataCommand" . PHP_EOL . PHP_EOL;
 
-        $bar = MiscUtility::spinnerStart(1, 'Refreshing metadata…');
-        $output = [];
+        // Stream the receiver's native output (title, per-table progress, errors)
+        // straight to the terminal so the user sees live progress. The initial STS
+        // request is silent until the server responds, so flag that up front.
+        $io->text('<comment>Requesting metadata from STS — the first/forced sync downloads everything and can take a while with no output until the server responds…</comment>');
+        echo PHP_EOL;
+
         $returnCode = 0;
-
-        $handle = popen($metadataCommand . " 2>&1", 'r');
-        if ($handle) {
-            while (!feof($handle)) {
-                $line = fgets($handle);
-                if ($line !== false) {
-                    $trim = trim($line);
-                    $output[] = $trim;
-                    if (stripos($trim, 'error') !== false || stripos($trim, 'warning') !== false) {
-                        MiscUtility::spinnerPausePrint($bar, function () use ($trim): void {
-                            echo $trim . PHP_EOL;
-                        });
-                    }
-                }
-            }
-            $returnCode = pclose($handle);
-        } else {
-            exec("$metadataCommand 2>&1", $output, $returnCode);
-        }
-
-        MiscUtility::spinnerAdvance($bar, 1);
-        MiscUtility::spinnerFinish($bar);
+        passthru($metadataCommand, $returnCode);
+        echo PHP_EOL;
 
         if ($returnCode !== 0) {
-            echo PHP_EOL . "Full output:" . PHP_EOL;
-            foreach ($output as $l)
-                echo $l . PHP_EOL;
             $io->text([
                 "❌ <error>Metadata refresh failed with return code: $returnCode</error>",
                 '<info>Run manually: php app/tasks/remote/sts-metadata-receiver.php -ft</info>',
