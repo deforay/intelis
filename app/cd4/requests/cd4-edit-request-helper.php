@@ -6,6 +6,7 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\REJECTED;
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -281,10 +282,18 @@ try {
 
      $db->where('cd4_id', $_POST['cd4SampleId']);
      $getPrevResult = $db->getOne('form_cd4');
-     if ($getPrevResult['cd4_result'] != "" && $getPrevResult['cd4_result'] != $_POST['cd4_result']) {
-          $vlData['result_modified'] = "yes";
-     } else {
-          $vlData['result_modified'] = "no";
+     $vlData['result_modified'] = ($getPrevResult['cd4_result'] != "" && $getPrevResult['cd4_result'] != $_POST['cd4_result']) ? "yes" : "no";
+
+     // Append the change reason (preserving prior history) whenever the result or rejection changed.
+     $reasonForChanges = MiscUtility::appendResultChangeReason(
+          $getPrevResult['reason_for_result_changes'] ?? null,
+          $_SESSION['userId'] ?? $_POST['userId'] ?? null,
+          $_POST['reasonForResultChanges'] ?? null,
+          ['result' => $getPrevResult['cd4_result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null],
+          ['result' => $_POST['cd4_result'] ?? null, 'is_sample_rejected' => $_POST['isSampleRejected'] ?? null]
+     );
+     if ($reasonForChanges !== null) {
+          $vlData['reason_for_result_changes'] = $reasonForChanges;
      }
 
      $vlData['patient_first_name'] = $_POST['patientFirstName'] ?? '';

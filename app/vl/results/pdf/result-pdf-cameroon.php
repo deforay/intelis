@@ -451,16 +451,19 @@ if (!empty($result)) {
      $html .= '<td colspan="3" style="line-height:1px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
      $modified = "No";
+     $dateOfModified = "";
+     $prevResult = "";
      if ($result['result_modified'] == "yes") {
           $modified = "Yes";
 
-          $resultHistory = json_decode((string) $result['reason_for_result_changes']);
-          $dateOfModified = $resultHistory->dateOfChange;
-          $prevResult = $resultHistory->previousResult;
+          // Read the most recent change entry; tolerant of the legacy single-object/string format and the array.
+          $latestChange = \App\Utilities\MiscUtility::latestResultChangeReason($result['reason_for_result_changes'] ?? null);
+          $dateOfModified = $latestChange['dtime'] ?? '';
+          $prevResult = $latestChange['previousResult'] ?? '';
      }
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Was the result modified?") . ' : ' . _translate($modified) . '</td>';
-     if ($modified === 'Yes' && ($result['reason_for_result_changes'] != "") && $resultHistory->dateOfChange != "") {
+     if ($modified === 'Yes' && ($result['reason_for_result_changes'] != "") && $dateOfModified != "") {
           $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Result Modification Date") . ' : ' . DateUtility::humanReadableDateFormat($dateOfModified) . '</td>';
           $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Previous Result") . ' : ' . $prevResult . ' cp/mL</td>';
      }

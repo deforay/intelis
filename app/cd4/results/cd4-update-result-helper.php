@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\PENDING_APPROVAL;
 use App\Services\CD4Service;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -79,19 +80,8 @@ try {
 
 
 
-    $reasonForChanges = null;
-    $allChange = null;
-    if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
-        $allChange = $_POST['reasonForResultChangesHistory'];
-    }
-    if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) !== '') {
-        $reasonForChanges = $_SESSION['userName'] . '##' . $_POST['reasonForResultChanges'] . '##' . DateUtility::getCurrentDateTime();
-    }
-    if (!empty($allChange) && ($reasonForChanges !== null && $reasonForChanges !== '' && $reasonForChanges !== '0')) {
-        $allChange = $reasonForChanges . 'vlsm' . $allChange;
-    } elseif ($reasonForChanges !== null && $reasonForChanges !== '' && $reasonForChanges !== '0') {
-        $allChange = $reasonForChanges;
-    }
+    // The result-change reason is appended (preserving prior history) further below, after the
+    // previous row is fetched -- see appendResultChangeReason near the result_modified check.
 
     if ($_POST['failedTestingTech'] != '') {
         $platForm = explode("##", (string) $_POST['failedTestingTech']);
@@ -129,10 +119,18 @@ try {
 
     $db->where('cd4_id', $_POST['cd4SampleId']);
     $getPrevResult = $db->getOne('form_cd4');
-    if ($getPrevResult['cd4_result'] != "" && $getPrevResult['cd4_result'] != $finalResult) {
-        $vlData['result_modified'] = "yes";
-    } else {
-        $vlData['result_modified'] = "no";
+    $vlData['result_modified'] = ($getPrevResult['cd4_result'] != "" && $getPrevResult['cd4_result'] != $finalResult) ? "yes" : "no";
+
+    // Append the change reason (preserving prior history) whenever the result or rejection changed.
+    $reasonForChanges = MiscUtility::appendResultChangeReason(
+        $getPrevResult['reason_for_result_changes'] ?? null,
+        $_SESSION['userId'] ?? $_POST['userId'] ?? null,
+        $_POST['reasonForResultChanges'] ?? null,
+        ['result' => $getPrevResult['cd4_result'], 'result_status' => $getPrevResult['result_status'], 'is_sample_rejected' => $getPrevResult['is_sample_rejected'] ?? null],
+        ['result' => $finalResult, 'is_sample_rejected' => $_POST['isSampleRejected'] ?? null]
+    );
+    if ($reasonForChanges !== null) {
+        $vlData['reason_for_result_changes'] = $reasonForChanges;
     }
 
     $db->where('cd4_id', $_POST['cd4SampleId']);
