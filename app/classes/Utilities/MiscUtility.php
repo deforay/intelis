@@ -1470,11 +1470,11 @@ final class MiscUtility
             return '';
         }
 
-        $html = '<h4>' . _translate('Result Changes History') . '</h4>'
+        $html = '<h4>' . _htmlTranslate('Result Changes History') . '</h4>'
             . '<table style="width:100%;"><thead><tr style="border-bottom:2px solid #d3d3d3;">'
-            . '<th style="width:20%;">' . _translate('User') . '</th>'
-            . '<th style="width:60%;">' . _translate('Message') . '</th>'
-            . '<th style="width:20%;text-align:center;">' . _translate('Date') . '</th>'
+            . '<th style="width:20%;">' . _htmlTranslate('User') . '</th>'
+            . '<th style="width:60%;">' . _htmlTranslate('Message') . '</th>'
+            . '<th style="width:20%;text-align:center;">' . _htmlTranslate('Date') . '</th>'
             . '</tr></thead><tbody>';
         foreach (array_reverse($history) as $change) {
             $changedBy = is_numeric($change['usr'] ?? null)
@@ -1489,6 +1489,77 @@ final class MiscUtility
                 . '<td style="text-align:center;">' . htmlspecialchars(trim($changedOn)) . '</td></tr>';
         }
         return $html . '</tbody></table>';
+    }
+
+    /**
+     * Render the shared "reason for result/rejection change" section used identically by every
+     * single-result test form (VL/EID/COVID/CD4/hepatitis/generic). It outputs:
+     *   - a mandatory reason textarea (name="reasonForResultChanges"), hidden until a change is made;
+     *   - the read-only change history table;
+     *   - one uniform script that snapshots the result/rejection/interpretation fields at load and
+     *     reveals + requires the reason whenever any of them changes (validateNow() enforces it).
+     *
+     * Place a single call to this just above the form's Save button, replacing any bespoke inline
+     * reason field / history / trigger. TB multi-test keeps its own per-test fields.
+     */
+    public static function renderChangeReasonSection(?string $reasonColumnValue, $usersService): string
+    {
+        $history = self::renderResultChangeHistoryHtml($reasonColumnValue, $usersService);
+        $label = _htmlTranslate('Reason For Change in Result / Rejection Status');
+        $placeholder = _htmlTranslate('Please enter the reason for this change');
+        $historyBlock = $history !== '' ? '<div class="col-md-12" style="margin-top:10px;">' . $history . '</div>' : '';
+
+        $html = <<<HTML
+<div class="row change-reason changeReasonSection reasonForResultChanges" style="display:none;margin-top:10px;">
+    <div class="col-md-12">
+        <label class="control-label" for="reasonForResultChanges">{$label} <span class="mandatory">*</span></label>
+        <textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="{$placeholder}" title="{$placeholder}" style="width:100%;"></textarea>
+    </div>
+    {$historyBlock}
+</div>
+HTML;
+
+        // Nowdoc: no PHP interpolation -- the $ below are jQuery, not PHP variables.
+        $script = <<<'JS'
+<script>
+    (function () {
+        function initChangeReasonSection() {
+            var $reason = $('#reasonForResultChanges');
+            if (!$reason.length) return;
+            var $form = $reason.closest('form');
+            if (!$form.length) return;
+            // TB multi-test uses its own per-test reason fields.
+            if ($form.find('[name="testResult[reasonForChange][]"]').length) return;
+            var $section = $('.changeReasonSection', $form);
+            var watch = '#vlResult, #cd4Result, [name="result"], [name="cd4Result"], [name="vlResult"], .result-fields, .specialResults, #isSampleRejected, [name="resultInterpretation"], [name^="resultInterpretation"], [name="finalResultInterpretation"]';
+
+            function snapshot() {
+                return $form.find(watch).map(function () {
+                    return (this.type === 'checkbox' || this.type === 'radio') ? (this.checked ? this.value : '') : $(this).val();
+                }).get().join('||');
+            }
+
+            var original = snapshot();
+
+            function check() {
+                if (snapshot() !== original) {
+                    $section.show();
+                    $reason.addClass('isRequired');
+                } else {
+                    $section.hide();
+                    $reason.removeClass('isRequired');
+                }
+            }
+
+            $form.on('change keyup', watch, function () { setTimeout(check, 0); });
+            check();
+        }
+        if (window.jQuery) { jQuery(initChangeReasonSection); }
+    })();
+</script>
+JS;
+
+        return $html . $script;
     }
 
 }
