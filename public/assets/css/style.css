@@ -80,8 +80,13 @@ select[readonly] {
 }
 
 .sidebar-menu > li.header {
-    position: relative;
-    z-index: 1;
+    /* Stick the section label to the top of the scrolling sidebar so the
+       group you're in stays labelled. z-index sits above open treeviews
+       (which use z-index:1000) so items scroll cleanly underneath. */
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1001;
 }
 
 .skin-blue .sidebar-menu>li.header {
@@ -189,7 +194,111 @@ form table tr td>label,
     top: 50px;
     bottom: 0;
     padding-right: 0;
+    /* Flex column: the toolbar is a fixed zone, the menu scrolls below it.
+       AdminLTE's padding-top:50 still clears the brand. */
+    display: flex;
+    flex-direction: column;
+}
+/* The menu area is the scroll container now (not .main-sidebar), so the
+   toolbar above it stays pinned without any sticky offset. */
+.sidebar {
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
+}
+
+/* ── Sidebar enhancements (slim scrollbar + collapsible sections) ── */
+
+/* Slim scrollbar that suits the dark sidebar instead of the chunky native one. */
+.sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.22);
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+.sidebar:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Clickable section labels + caret. */
+.vlsm-section-toggle {
+    cursor: pointer;
+}
+.vlsm-section-caret {
+    float: right;
+    margin-top: 2px;
+    transition: transform 0.15s ease;
+}
+.vlsm-section-toggle.section-collapsed .vlsm-section-caret {
+    transform: rotate(-90deg);
+}
+
+/* Hide collapsed groups only when the sidebar is expanded — in mini-collapsed
+   mode AdminLTE shows icon-only items, so we must not keep them display:none. */
+body:not(.sidebar-collapse) .sidebar-menu > li.vlsm-section-hidden {
+    display: none !important;
+}
+
+/* Sidebar toolbar: quick search + collapse/expand-all on one line. */
+.vlsm-sidebar-toolbar {
+    flex: 0 0 auto; /* fixed zone above the scrolling menu */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: #222d32;
+}
+.vlsm-sidebar-toolbar .sidebar-spotlight-btn {
+    flex: 1;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #b8c7ce;
+    font-size: 13px;
+}
+.vlsm-sidebar-toolbar .sidebar-spotlight-btn > span {
+    flex: 1;
+}
+.vlsm-sidebar-toolbar .sidebar-spotlight-btn kbd {
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.3);
+    color: #b8c7ce;
+}
+.vlsm-sidebar-allbtn {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #b8c7ce;
+}
+/* Mini-collapsed sidebar: keep just the magnifier icon. */
+body.sidebar-collapse .vlsm-sidebar-toolbar {
+    padding: 8px 4px;
+}
+body.sidebar-collapse .vlsm-sidebar-toolbar .sidebar-spotlight-btn > span,
+body.sidebar-collapse .vlsm-sidebar-toolbar .sidebar-spotlight-btn kbd,
+body.sidebar-collapse .vlsm-sidebar-allbtn {
+    display: none;
 }
 
 .sampleCounterDiv {
