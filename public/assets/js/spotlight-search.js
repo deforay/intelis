@@ -342,10 +342,12 @@
             var scored = [];
 
             this.searchData.forEach(function(item) {
-                var tokens = item.searchText.split(/[^a-z0-9]+/).filter(Boolean);
+                // Unicode-aware split so accented/non-Latin translated text
+                // tokenizes correctly (not just ASCII a-z0-9).
+                var tokens = item.searchText.split(/[^\p{L}\p{N}]+/u).filter(Boolean);
                 var total = 0;
                 var matchedAll = queryWords.every(function(word) {
-                    var best = self.bestWordScore(word, tokens, item.searchText);
+                    var best = self.bestWordScore(word, tokens);
                     if (best === null) return false;
                     total += best;
                     return true;
@@ -363,7 +365,7 @@
             return scored.slice(0, 20).map(function(s) { return s.item; });
         },
 
-        bestWordScore: function(word, tokens, searchText) {
+        bestWordScore: function(word, tokens) {
             var best = null;
             var maxDist = word.length <= 4 ? 1 : 2;
 
@@ -388,20 +390,7 @@
                 }
             }
 
-            // Subsequence over the whole searchText catches dropped letters across tokens
-            if (best === null && this.isSubsequence(word, searchText)) {
-                best = 6;
-            }
-
             return best;
-        },
-
-        isSubsequence: function(needle, haystack) {
-            var j = 0;
-            for (var i = 0; i < haystack.length && j < needle.length; i++) {
-                if (haystack[i] === needle[j]) j++;
-            }
-            return j === needle.length;
         },
 
         // Bounded Levenshtein — bails out early once the best possible distance
