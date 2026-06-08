@@ -82,7 +82,22 @@ try {
         $shortCode = strtoupper((string) $_POST['testShortCode']);
         // Remove all special characters and spaces, except hyphens
         $shortCode = preg_replace('/[^A-Z0-9-]/', '', $shortCode);
-        $data = ['test_standard_name' => $_POST['testStandardName'], 'test_generic_name' => $_POST['testGenericName'], 'test_short_code' => $shortCode, 'test_loinc_code' => empty($_POST['testLoincCode']) ? null : $_POST['testLoincCode'], 'test_category' => empty($_POST['testCategory']) ? null : $_POST['testCategory'], 'test_form_config' => json_encode($testAttribute), 'test_results_config' => json_encode($_POST['resultConfig']), 'test_status' => $_POST['status']];
+
+        // Portable per-test identity. An import carries the source UUID so the test
+        // keeps the same identity across instances (a later re-import then updates
+        // it). Reuse that UUID only when it is genuinely new here; otherwise -- a
+        // plain "Add", a clone, or "import as new" of an already-present test -- mint
+        // a fresh one so it never collides with the unique index.
+        $postedUuid = !empty($_POST['testTypeUuid']) ? trim((string) $_POST['testTypeUuid']) : '';
+        if ($postedUuid !== '') {
+            $uuidTaken = $db->rawQueryOne("SELECT 1 AS x FROM r_test_types WHERE test_type_uuid = ? LIMIT 1", [$postedUuid]);
+            if (!empty($uuidTaken)) {
+                $postedUuid = '';
+            }
+        }
+        $testTypeUuid = $postedUuid !== '' ? $postedUuid : MiscUtility::generateUUID(false);
+
+        $data = ['test_type_uuid' => $testTypeUuid, 'test_standard_name' => $_POST['testStandardName'], 'test_generic_name' => $_POST['testGenericName'], 'test_short_code' => $shortCode, 'test_loinc_code' => empty($_POST['testLoincCode']) ? null : $_POST['testLoincCode'], 'test_category' => empty($_POST['testCategory']) ? null : $_POST['testCategory'], 'test_form_config' => json_encode($testAttribute), 'test_results_config' => json_encode($_POST['resultConfig']), 'test_status' => $_POST['status']];
 
         $id = $db->insert($tableName, $data);
         $lastId = $db->getInsertId();

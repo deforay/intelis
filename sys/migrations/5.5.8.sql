@@ -21,3 +21,15 @@ UPDATE `system_config` SET `value` = '5.5.8' WHERE `system_config`.`name` = 'sc_
 -- Thana 08-May-2026
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`)
 VALUES ('Show Participant Name in Manifest', 'generic_show_participant_name_in_manifest', 'yes', 'generic-tests', 'no', null, null, 'active');
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
