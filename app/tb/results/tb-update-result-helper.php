@@ -4,6 +4,7 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -198,6 +199,13 @@ try {
         $testResult = $_POST['testResult'];
         foreach ($testResult['labId'] as $key => $labid) {
             if (!empty($labid)) {
+                // tb_tests rows are delete-recreated, so the prior per-test reason history is carried
+                // forward via the hidden testResult[reasonHistory][] field and the new reason appended.
+                $tbReasonHistory = MiscUtility::parseResultChangeHistory(base64_decode((string) ($testResult['reasonHistory'][$key] ?? '')));
+                $tbReasonText = trim((string) ($testResult['reasonForChange'][$key] ?? ''));
+                if ($tbReasonText !== '') {
+                    $tbReasonHistory[] = ['usr' => $_SESSION['userId'] ?? $_POST['userId'] ?? null, 'dtime' => DateUtility::getCurrentDateTime(), 'msg' => $tbReasonText];
+                }
                 $db->insert($testTableName, [
                     'tb_id' => $_POST['tbSampleId'] ?? null,
                     'lab_id' => $testResult['labId'][$key] ?? null,
@@ -216,7 +224,7 @@ try {
                     'result_approved_datetime' => DateUtility::isoDateFormat($testResult['approvedOn'][$key] ?? null, true),
                     'revised_by' => $testResult['revisedBy'][$key] ?? null,
                     'revised_on' => DateUtility::isoDateFormat($testResult['revisedOn'][$key] ?? null, true),
-                    'reason_for_result_change' => $testResult['reasonForChange'][$key] ?? null,
+                    'reason_for_result_change' => !empty($tbReasonHistory) ? json_encode($tbReasonHistory) : null,
                     'comments' => $testResult['comments'][$key] ?? null,
                     'updated_datetime' => DateUtility::getCurrentDateTime()
                 ]);

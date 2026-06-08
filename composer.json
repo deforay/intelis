@@ -4,7 +4,7 @@
     "homepage": "https://github.com/deforay/intelis",
     "type": "project",
     "license": "InteLIS-Community-Copyleft-NonCommercial-1.0",
-    "version": "5.5.7",
+    "version": "5.5.8",
     "authors": [
         {
             "name": "Deforay",
@@ -184,6 +184,6 @@
         "generate-translation-strings": "Generate translation strings from source code",
         "fix-app-menu": "Fix application menu entries",
         "lock-samples": "Lock sample records that have been completed",
-        "housekeeping": "Housekeeping — remove old backups, temporary files, logs, and stale DB rows"
+        "housekeeping": "Housekeeping \u2014 remove old backups, temporary files, logs, and stale DB rows"
     }
 }

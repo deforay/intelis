@@ -917,6 +917,8 @@ if ($isLisInstance) {
                                                                 id="reasonForChange<?php echo $n; ?>"
                                                                 placeholder="Enter the reason for result modification"
                                                                 title="Please enter the reason for result modification"></textarea>
+                                                            <input type="hidden" name="testResult[reasonHistory][]" value="<?php echo base64_encode((string) ($test['reason_for_result_change'] ?? '')); ?>" />
+                                                            <?php echo \App\Utilities\MiscUtility::renderResultChangeHistoryHtml($test['reason_for_result_change'] ?? null, $usersService); ?>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -1150,6 +1152,7 @@ if ($isLisInstance) {
                                                             id="reasonForChange1"
                                                             placeholder="Enter the reason for result change"
                                                             title="Please enter the reason for result change"></textarea>
+                                                        <input type="hidden" name="testResult[reasonHistory][]" value="" />
                                                     </td>
                                                 </tr>
                                             </table>
