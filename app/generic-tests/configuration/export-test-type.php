@@ -105,6 +105,11 @@ try {
         'version' => 1,
         'exported_at' => date('c'),
         'test' => [
+            // Portable identity. import-test-type.php matches on test_type_uuid to
+            // offer an in-place update of the same test on ANY instance. test_type_id
+            // is kept only as a same-instance fallback for pre-UUID exports.
+            'test_type_uuid' => (string) ($testType['test_type_uuid'] ?? ''),
+            'test_type_id' => (int) $testType['test_type_id'],
             'test_standard_name' => $testType['test_standard_name'],
             'test_generic_name' => $testType['test_generic_name'],
             'test_short_code' => $testType['test_short_code'],

@@ -17,6 +17,9 @@ $prefillGenericName = $prefillGenericName ?? '';
 $prefillShortCode = $prefillShortCode ?? '';
 $prefillLoincCode = $prefillLoincCode ?? '';
 $uniqueExclusion = $uniqueExclusion ?? ('test_type_id##' . ($testTypeInfo['test_type_id'] ?? ''));
+// Where the form submits. Defaults to creating a new test; import-test-type.php
+// points it at editTestTypeHelper.php when updating an existing test in place.
+$formAction = $formAction ?? 'addTestTypeHelper.php';
 
 // Escape values rendered into HTML/attribute contexts. The form config and
 // result config can originate from an uploaded import file (import-test-type.php),
@@ -81,7 +84,7 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 			<div class="box-body">
 				<!-- form start -->
 				<form class="form-horizontal" method='post' name='cloneTestTypeForm' id='cloneTestTypeForm'
-					autocomplete="off" action="addTestTypeHelper.php">
+					autocomplete="off" action="<?php echo htmlspecialchars((string) $formAction); ?>">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
@@ -98,6 +101,8 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 											onblur="checkNameValidation('r_test_types','test_standard_name',this,'<?php echo $uniqueExclusion; ?>','<?php echo _translate("This test standard name that you entered already exists.Try another name"); ?>',null)" />
 										<input type="hidden" name="testTypeId" id="testTypeId"
 											value="<?php echo base64_encode((string) $testTypeInfo['test_type_id']); ?>" />
+											<input type="hidden" name="testTypeUuid" id="testTypeUuid"
+											value="<?php echo htmlspecialchars((string) ($testTypeInfo['test_type_uuid'] ?? '')); ?>" />
 									</div>
 								</div>
 							</div>
