@@ -257,6 +257,7 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 												<option value="facilitySection"><?php echo _translate("Facility"); ?></option>
 												<option value="patientSection"><?php echo _translate("Patient"); ?></option>
 												<option value="specimenSection"><?php echo _translate("Specimen"); ?></option>
+												<option value="caseInformation"><?php echo _translate("Case Information"); ?></option>
 												<option value="labSection"><?php echo _translate("Lab"); ?></option>
 												<option value="otherSection"><?php echo _translate("Other"); ?></option>
 											</select>
@@ -589,6 +590,7 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
                         <option value="facilitySection"><?php echo _translate("Facility"); ?></option>\
 						<option value="patientSection"><?php echo _translate("Patient"); ?></option>\
 						<option value="specimenSection"><?php echo _translate("Specimen"); ?></option>\
+						<option value="caseInformation"><?php echo _translate("Case Information"); ?></option>\
 						<option value="labSection"><?php echo _translate("Lab"); ?></option>\
 						<option value="otherSection"><?php echo _translate("Other"); ?></option>\
                     </select>\

@@ -807,6 +807,12 @@ $remoteURL = $general->getRemoteURL();
         let url = window.location.pathname + window.location.search;
         let currentMenuItem = $('a[href="' + url + '"]');
 
+        // Fall back to the pathname alone so pages that carry a query string
+        // (e.g. add-request.php?testType=1) still highlight their menu item.
+        if (!currentMenuItem.length && window.location.search) {
+            currentMenuItem = $('a[href="' + window.location.pathname + '"]');
+        }
+
         if (!currentMenuItem.length) {
             let currentPaths = Utilities.splitPath(url).map(path => btoa(path));
             currentMenuItem = $('a[data-inner-pages]').filter(function() {

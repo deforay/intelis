@@ -356,12 +356,14 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 
 	.facilitySectionInput,
 	.patientSectionInput,
+	.caseInformationInput,
 	#otherSection .col-md-6 {
 		margin: 3px 0px;
 	}
 
 	.facilitySectionInput,
 	.patientSectionInput .select2,
+	.caseInformationInput .select2,
 	#otherSection .col-md-6 .select2 {
 		margin: 3px 0px;
 	}
@@ -410,805 +412,21 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 				<!-- form start -->
 				<form class="form-inline" method="post" name="vlRequestFormRwd" id="vlRequestFormRwd" autocomplete="off"
 					action="edit-request-helper.php">
-					<div class="box-body">
-						<div class="box box-primary">
-							<div class="box-header with-border">
-								<h3 class="box-title">
-									<?= _translate("Clinic Information: (To be filled by requesting Clinican/Nurse)"); ?>
-								</h3>
-							</div>
-							<div class="row">
-								<div class="col-md-6">
-									<label class="col-lg-5" for="testType"><?= _translate("Test Type"); ?></label>
-									<div class="col-lg-7">
-										<select class="form-control" name="testType" id="testType"
-											title="Please choose test type" style="width:100%;"
-											onchange="getTestTypeForm()">
-											<option value=""> <?= _translate("-- Select --"); ?> </option>
-											<?php foreach ($testTypeResult as $testType) { ?>
-												<option value="<?php echo $testType['test_type_id'] ?>" <?php echo ($genericResultInfo['test_type'] == $testType['test_type_id']) ? "selected='selected'" : "" ?>>
-													<?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?>
-												</option>
-											<?php } ?>
-										</select>
-									</div>
-								</div>
-							</div>
-							<div class="row requestForm" style="display:none;">
-								<div class="col-md-6">
-									<label class="col-lg-5" for="sampleCode"><?= _translate("Sample ID"); ?> <span
-											class="mandatory">*</span></label>
-									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>"
-											id="sampleCode" name="sampleCode" <?php echo $maxLength; ?>
-											placeholder="<?= _translate('Enter Sample ID'); ?>" readonly="readonly"
-											title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>"
-											value="<?php echo $genericResultInfo[$sampleCode]; ?>" style="width:100%;"
-											onchange="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,'<?php echo "sample_id##" . $genericResultInfo["sample_id"]; ?>','This sample number already exists.Try another number',null)" />
-										<input type="hidden" name="sampleCodeCol"
-											value="<?= htmlspecialchars((string) $genericResultInfo['sample_code']); ?>"
-											style="width:100%;">
-									</div>
-								</div>
-								<div class="col-md-6">
-									<label class="col-lg-5" for="sampleReordered">
-										<?= _translate("Sample Reordered"); ?></label>
-									<div class="col-lg-7">
-										<input type="checkbox" class="" id="sampleReordered" name="sampleReordered"
-											value="yes" <?php echo (trim((string) $genericResultInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> title="Please indicate if this is a reordered sample">
-
-									</div>
-								</div>
-							</div>
-							<div class="requestForm" style="display:none;">
-								<div class="row">
-									<div class="col-md-6">
-										<label class="col-lg-5" for="province"><?= _translate("State/Province"); ?>
-											<span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<select class="form-control isRequired" name="province" id="province"
-												title="Please choose state" style="width:100%;"
-												onchange="getProvinceDistricts(this);">
-												<?php echo $province; ?>
-											</select>
-										</div>
-									</div>
-									<div class="col-md-6">
-										<label class="col-lg-5" for="district"><?= _translate("District/County"); ?>
-											<span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<select class="form-control isRequired" name="district" id="district"
-												title="Please choose county" style="width:100%;"
-												onchange="getFacilities(this);">
-												<option value=""> <?= _translate("-- Select --"); ?> </option>
-											</select>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-6">
-										<label class="col-lg-5"
-											for="facilityId"><?= _translate("Clinic/Health Center"); ?> <span
-												class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<select class="form-control isRequired" id="facilityId" name="facilityId"
-												title="Please select clinic/health center name" style="width:100%;"
-												onchange="fillFacilityDetails(this);">
-
-												<?= $facility; ?>
-											</select>
-										</div>
-									</div>
-									<div class="col-md-6" style="display:none;">
-										<label class="col-lg-5"
-											for="facilityCode"><?= _translate("Clinic/Health Center Code"); ?> </label>
-										<div class="col-lg-7">
-											<input type="text" class="form-control" style="width:100%;"
-												name="facilityCode" id="facilityCode"
-												placeholder="<?= _translate('Clinic/Health Center Code'); ?>"
-												title="<?= _translate('Please enter clinic/health center code'); ?>"
-												value="<?php echo $facilityResult[0]['facility_code']; ?>">
-										</div>
-									</div>
-									<div class="col-md-6">
-										<label class="col-lg-5"
-											for="implementingPartner"><?= _translate("Implementing Partner"); ?></label>
-										<div class="col-lg-7">
-											<select class="form-control" name="implementingPartner"
-												id="implementingPartner"
-												title="<?= _translate('Please choose implementing partner'); ?>"
-												style="width:100%;">
-												<option value=""> <?= _translate("-- Select --"); ?> </option>
-												<?php foreach ($implementingPartnerList as $implementingPartner) { ?>
-													<option
-														value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"
-														<?php echo ($implementingPartner['i_partner_id'] == $genericResultInfo['implementing_partner']) ? 'selected="selected"' : ''; ?>>
-														<?php echo ($implementingPartner['i_partner_name']); ?>
-													</option>
-												<?php } ?>
-											</select>
-										</div>
-									</div>
-								</div>
-								<div class="row facilityDetails"
-									style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '' || trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '' || trim((string) $facilityResult[0]['contact_person']) !== '') ? '' : 'none'; ?>;">
-									<div class="col-xs-2 col-md-2 femails"
-										style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '') ? '' : 'none'; ?>;">
-										<strong><?= _translate("Clinic Email(s)"); ?></strong>
-									</div>
-									<div class="col-xs-2 col-md-2 femails facilityEmails"
-										style="display:<?php echo (trim((string) $facilityResult[0]['facility_emails']) !== '') ? '' : 'none'; ?>;">
-										<?php echo $facilityResult[0]['facility_emails']; ?>
-									</div>
-									<div class="col-xs-2 col-md-2 fmobileNumbers"
-										style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '') ? '' : 'none'; ?>;">
-										<strong><?= _translate("Clinic Mobile No.(s)"); ?></strong>
-									</div>
-									<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers"
-										style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) !== '') ? '' : 'none'; ?>;">
-										<?php echo $facilityResult[0]['facility_mobile_numbers']; ?>
-									</div>
-									<div class="col-xs-2 col-md-2 fContactPerson"
-										style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) !== '') ? '' : 'none'; ?>;">
-										<strong><?= _translate("Clinic Contact Person"); ?> -</strong>
-									</div>
-									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson"
-										style="display:<?php echo (trim((string) $user) !== '') ? '' : 'none'; ?>;">
-										<?php echo ($user); ?>
-									</div>
-								</div>
-
-
-								<div class="row">
-									<div class="col-md-6">
-										<label class="col-lg-5"
-											for="fundingSource"><?= _translate("Funding Source"); ?></label>
-										<div class="col-lg-7">
-											<select class="form-control" name="fundingSource" id="fundingSource"
-												title="Please choose implementing partner" style="width:100%;">
-												<option value=""> <?= _translate("-- Select --"); ?> </option>
-												<?php foreach ($fundingSourceList as $fundingSource) { ?>
-													<option
-														value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"
-														<?php echo ($fundingSource['funding_source_id'] == $genericResultInfo['funding_source']) ? 'selected="selected"' : ''; ?>>
-														<?php echo ($fundingSource['funding_source_name']); ?>
-													</option>
-												<?php } ?>
-											</select>
-										</div>
-									</div>
-									<div class="col-md-6">
-										<label class="col-lg-5" for="labId"><?= _translate("Testing Lab"); ?> <span
-												class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<select name="labId" id="labId" class="form-control isRequired"
-												title="Please choose lab" onchange="autoFillFocalDetails();"
-												style="width:100%;">
-												<option value=""><?= _translate("-- Select --"); ?></option>
-												<?php foreach ($lResult as $labName) { ?>
-													<option data-focalperson="<?php echo $labName['contact_person']; ?>"
-														data-focalphone="<?php echo $labName['facility_mobile_numbers']; ?>"
-														value="<?php echo $labName['facility_id']; ?>" <?php echo (isset($genericResultInfo['lab_id']) && $genericResultInfo['lab_id'] == $labName['facility_id']) ? 'selected="selected"' : ''; ?>>
-														<?php echo ($labName['facility_name']); ?>
-													</option>
-												<?php } ?>
-											</select>
-										</div>
-									</div>
-								</div>
-								<div class="row" id="facilitySection"></div>
-							</div>
-						</div>
-						<div class="box box-primary requestForm" style="display:none;">
-							<div class="box-header with-border">
-								<h3 class="box-title"><?= _translate("Patient Information"); ?></h3>
-							</div>
-							<div class="box-body">
-								<div class="row">
-									<div class="col-md-6">
-										<label class="col-lg-5" for="artNo">EPID Number
-											<?php if ($general->isLISInstance()) { ?><span
-													class="mandatory">*</span><?php } ?></label>
-										<div class="col-lg-7">
-											<input type="text" name="artNo" id="artNo"
-												class="form-control <?= $mandatoryClass; ?> patientId"
-												placeholder="<?= _translate('Enter EPID Number'); ?>"
-												title="<?= _translate('Enter EPID Number'); ?>"
-												value="<?= htmlspecialchars((string) $genericResultInfo['patient_id']); ?>" />
-										</div>
-
-									</div>
-									<div class="col-md-6">
-										<label class="col-lg-5" for="artNo"><?= _translate("Laboratory Number"); ?>
-											<?php if ($general->isLISInstance()) { ?><span
-													class="mandatory">*</span><?php } ?></label>
-										<div class="col-lg-7">
-											<input type="text" name="laboratoryNumber" id="laboratoryNumber"
-												class="form-control <?= $mandatoryClass; ?>"
-												placeholder="<?= _translate('Enter Laboratory Number'); ?>"
-												title="<?= _translate('Enter Laboratory Number'); ?>"
-												value="<?= $genericResultInfo['laboratory_number']; ?>" />
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-6">
-										<label class="col-lg-5" for="dob"><?= _translate("Date of Birth"); ?> </label>
-										<div class="col-lg-7">
-											<input type="text" name="dob" id="dob" class="form-control date"
-												placeholder="<?= _translate('Enter DOB'); ?>"
-												title="<?= _translate('Enter dob'); ?>"
-												value="<?= htmlspecialchars((string) $genericResultInfo['patient_dob']); ?>"
-												onchange="getAge();" />
-										</div>
-									</div>
-									<div class="col-md-6">
-										<label class="col-lg-5"
-											for="ageInYears"><?= _translate("If DOB unknown, Age in Years"); ?> </label>
-										<div class="col-lg-7">
-											<input type="text" name="ageInYears" id="ageInYears"
-												class="form-control forceNumeric" maxlength="3"
-												placeholder="<?= _translate('Age in Years'); ?>"
-												title="<?= _translate('Enter age in years'); ?>"
-												value="<?= htmlspecialchars((string) $genericResultInfo['patient_age_in_years']); ?>" />
-										</div>
-									</div>
-
-								</div>
-								<div class="row">
-									<div class="col-md-6">
-										<label class="col-lg-5"
-											for="ageInMonths"><?= _translate("If Age < 1, Age in Months"); ?> </label>
-										<div class="col-lg-7">
-											<input type="text" name="ageInMonths" id="ageInMonths"
-												class="form-control forceNumeric" maxlength="2"
-												placeholder="<?= _translate('Age in Month'); ?>"
-												title="<?= _translate('Enter age in months'); ?>"
-												value="<?= htmlspecialchars((string) $genericResultInfo['patient_age_in_months']); ?>" />
-										</div>
-									</div>
-									<div class="col-md-6">
-										<label class="col-lg-5"
-											for="patientFirstName"><?= _translate("Patient Name (First Name, Last Name)"); ?>
-											<span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<input type="text" name="patientFirstName" id="patientFirstName"
-												class="form-control isRequired"
-												placeholder="<?= _translate('Enter Patient Name'); ?>"
-												title="<?= _translate('Enter patient name'); ?>"
-												value="<?php echo $patientFullName; ?>" />
-										</div>
-									</div>
-
-								</div>
-								<div class="row">
-									<div class="col-md-6">
-										<label class="col-lg-5" for="gender"><?= _translate("Sex"); ?></label>
-										<div class="col-lg-7">
-											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderMale" name="gender" value="male"
-													title="<?= _translate('Please choose sex'); ?>" <?php echo ($genericResultInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>>
-												<?= _translate("Male"); ?>
-											</label>
-											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderFemale" name="gender"
-													value="female" title="<?= _translate('Please choose sex'); ?>" <?php echo ($genericResultInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>>
-												<?= _translate("Female"); ?>
-											</label>
-											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderUnreported" name="gender"
-													value="unreported" title="<?= _translate('Please choose sex'); ?>"
-													<?php echo ($genericResultInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>>
-												<?= _translate("Unreported"); ?>
-											</label>
-										</div>
-									</div>
-									<div class="col-md-6">
-										<label class="col-lg-5"
-											for="receiveSms"><?= _translate("Patient consent to receive SMS?"); ?></label>
-										<div class="col-lg-7">
-											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="receivesmsYes" name="receiveSms"
-													value="yes"
-													title="<?= _translate('Patient consent to receive SMS'); ?>"
-													onclick="checkPatientReceivesms(this.value);" <?php echo ($genericResultInfo['consent_to_receive_sms'] == 'yes') ? "checked='checked'" : "" ?>>
-												<?= _translate("Yes"); ?>
-											</label>
-											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="receivesmsNo" name="receiveSms"
-													value="no"
-													title="<?= _translate('Patient consent to receive SMS'); ?>"
-													onclick="checkPatientReceivesms(this.value);" <?php echo ($genericResultInfo['consent_to_receive_sms'] == 'no') ? "checked='checked'" : "" ?>>
-												<?= _translate("No"); ?>
-											</label>
-										</div>
-									</div>
-
-								</div>
-								<div class="row ">
-									<div class="col-md-6">
-										<label class="col-lg-5"
-											for="patientPhoneNumber"><?= _translate("Phone Number"); ?></label>
-										<div class="col-lg-7">
-											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber"
-												class="form-control phone-number" maxlength="15"
-												placeholder="<?= _translate('Enter Phone Number'); ?>"
-												title="<?= _translate('Enter phone number'); ?>"
-												value="<?= htmlspecialchars((string) $genericResultInfo['patient_mobile_number']); ?>" />
-										</div>
-									</div>
-									<div class="col-md-6 femaleSection"
-										style="display:<?php echo ($genericResultInfo['patient_gender'] == 'female' || $genericResultInfo['patient_gender'] == '' || $genericResultInfo['patient_gender'] == null) ? "" : "none" ?>"
-										;>
-										<label class="col-lg-5"
-											for="patientPregnant"><?= _translate("Is Patient Pregnant?"); ?> </label>
-										<div class="col-lg-7">
-											<label class="radio-inline">
-												<input type="radio" class="" id="pregYes" name="patientPregnant"
-													value="yes" title="<?= _translate('Is Patient Pregnant?'); ?>" <?php echo ($genericResultInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>>
-												<?= _translate("Yes"); ?>
-											</label>
-											<label class="radio-inline">
-												<input type="radio" class="" id="pregNo" name="patientPregnant"
-													value="no" <?php echo ($genericResultInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>>
-												<?= _translate("No"); ?>
-											</label>
-										</div>
-									</div>
-
-								</div>
-								<div class="row">
-									<div class="col-md-6 femaleSection"
-										style="display:<?php echo ($genericResultInfo['patient_gender'] == 'female' || $genericResultInfo['patient_gender'] == '' || $genericResultInfo['patient_gender'] == null) ? "" : "none" ?>"
-										;>
-										<label class="col-lg-5"
-											for="breastfeeding"><?= _translate('Is Patient Breastfeeding?'); ?> </label>
-										<div class="col-lg-7">
-											<label class="radio-inline">
-												<input type="radio" class="" id="breastfeedingYes" name="breastfeeding"
-													value="yes" title="<?= _translate('Is Patient Breastfeeding?'); ?>"
-													<?php echo ($genericResultInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>>
-												<?= _translate("Yes"); ?>
-											</label>
-											<label class="radio-inline">
-												<input type="radio" class="" id="breastfeedingNo" name="breastfeeding"
-													value="no" <?php echo ($genericResultInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>>
-												<?= _translate("No"); ?>
-											</label>
-										</div>
-									</div>
-									<div class="col-md-6" style="display:none;" id="patientSection">
-										<label class="col-lg-5"
-											for=""><?= _translate("How long has this patient been on treatment ?"); ?>
-										</label>
-										<div class="col-lg-7">
-											<input type="text" class="form-control" id="treatPeriod" name="treatPeriod"
-												placeholder="<?= _translate('Enter Treatment Period'); ?>"
-												title="<?= _translate('Please enter how long has this patient been on treatment'); ?>"
-												value="<?= htmlspecialchars((string) $genericResultInfo['treatment_initiation']); ?>" />
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="box box-primary">
-								<div class="box-header with-border">
-									<h3 class="box-title"><?= _translate("Sample Information"); ?></h3>
-								</div>
-								<div class="box-body">
-									<div class="row">
-										<div class="col-md-6">
-											<label class="col-lg-5"
-												for=""><?= _translate("Date of Sample Collection"); ?> <span
-													class="mandatory">*</span></label>
-											<div class="col-lg-7">
-												<input type="text" class="form-control isRequired dateTime"
-													style="width:100%;" name="sampleCollectionDate"
-													id="sampleCollectionDate"
-													placeholder="<?= _translate('Sample Collection Date'); ?>"
-													title="<?= _translate('Please select sample collection date'); ?>"
-													value="<?php echo $genericResultInfo['sample_collection_date']; ?>"
-													onchange="checkCollectionDate(this.value);">
-												<span class="expiredCollectionDate"
-													style="color:red; display:none;"></span>
-											</div>
-										</div>
-										<div class="col-md-6">
-											<label class="col-lg-5" for=""><?= _translate("Sample Dispatched On"); ?>
-												<span class="mandatory">*</span></label>
-											<div class="col-lg-7">
-												<input type="text" class="form-control isRequired dateTime"
-													style="width:100%;" name="sampleDispatchedDate"
-													id="sampleDispatchedDate"
-													placeholder="<?= _translate('Sample Dispatched On'); ?>"
-													title="<?= _translate('Please select sample dispatched on'); ?>"
-													value="<?php echo $genericResultInfo['sample_dispatched_datetime']; ?>">
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<label class="col-lg-5" for="specimenType"><?= _translate("Sample Type"); ?>
-												<span class="mandatory">*</span></label>
-											<div class="col-lg-7">
-												<select name="specimenType" id="specimenType"
-													class="form-control isRequired"
-													title="<?= _translate('Please choose sample type'); ?>">
-													<option value=""> <?= _translate("-- Select --"); ?> </option>
-													<?php foreach ($sResult as $name) { ?>
-														<option value="<?php echo $name['sample_type_id']; ?>" <?php echo ($genericResultInfo['specimen_type'] == $name['sample_type_id']) ? "selected='selected'" : "" ?>>
-															<?php echo $name['sample_type_name']; ?>
-														</option>
-													<?php } ?>
-												</select>
-											</div>
-										</div>
-
-										<div class="col-md-6">
-											<label class="col-lg-5 control-label labels"
-												for="reasonForTesting"><?= _translate("Reason For Testing"); ?> <span
-													class="mandatory result-span">*</span></label>
-											<div class="col-lg-7">
-												<select name="reasonForTesting" id="reasonForTesting"
-													class="form-control result-optional"
-													title="<?= _translate('Please choose reason for testing'); ?>">
-													<option value=""><?= _translate("-- Select --"); ?></option>
-													<?php foreach ($testReason as $treason) { ?>
-														<option value="<?php echo $treason['test_reason_id']; ?>" <?php echo ($genericResultInfo['reason_for_testing'] == $treason['test_reason_id']) ? 'selected="selected"' : ''; ?>>
-															<?php echo $treason['test_reason']; ?>
-														</option>
-													<?php } ?>
-												</select>
-											</div>
-										</div>
-									</div>
-									<!-- <div id="specimenSection"></div> -->
-								</div>
-							</div>
-							<div id="otherSection"></div>
-							<?php if (_isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
-								<div class="box box-primary">
-									<div class="box-header with-border">
-										<h3 class="box-title"><?= _translate("Laboratory Information"); ?></h3>
-									</div>
-									<div class="box-body labSectionBody">
-										<div class="row">
-											<div class="col-md-6">
-												<label class="col-lg-5" for="vlFocalPerson" class="col-lg-5 control-label">
-													<?= _translate("Focal Person"); ?>
-												</label>
-												<div class="col-lg-7">
-													<select class="form-control ajax-select2" id="vlFocalPerson"
-														name="vlFocalPerson"
-														title="<?= _translate('Please enter Focal Person'); ?>">
-														<option
-															value="<?= htmlspecialchars((string) $genericResultInfo['testing_lab_focal_person']); ?>"
-															selected='selected'>
-															<?= htmlspecialchars((string) $genericResultInfo['testing_lab_focal_person']); ?>
-														</option>
-													</select>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<label class="col-lg-5" for="vlFocalPersonPhoneNumber"
-													class="col-lg-5 control-label">
-													<?= _translate("Focal Person Phone Number"); ?></label>
-												<div class="col-lg-7">
-													<input type="text" class="form-control phone-number labSection"
-														id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber"
-														maxlength="15" placeholder="<?= _translate('Phone Number'); ?>"
-														title="<?= _translate('Please enter focal person phone number'); ?>"
-														value="<?= htmlspecialchars((string) $genericResultInfo['testing_lab_focal_person_phone_number']); ?>" />
-												</div>
-											</div>
-										</div>
-										<div class="row" style="margin-top: 10px;">
-											<div class="col-md-6">
-												<label class="col-lg-5 control-label" for="sampleReceivedAtHubOn"><?= _translate("Date
-													Sample Received at Hub (PHL)"); ?> </label>
-												<div class="col-lg-7">
-													<input type="text" class="form-control dateTime"
-														id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn"
-														placeholder="<?= _translate('Sample Received at HUB Date'); ?>"
-														title="<?= _translate('Please select sample received at HUB date'); ?>"
-														value="<?php echo $genericResultInfo['sample_received_at_hub_datetime']; ?>" />
-												</div>
-											</div>
-
-											<div class="col-md-6">
-												<label class="col-lg-5 control-label" for="sampleReceivedDate"><?= _translate("Date
-													Sample Received at Testing Lab"); ?> </label>
-												<div class="col-lg-7">
-													<input type="text" class="form-control labSection dateTime"
-														id="sampleReceivedDate" name="sampleReceivedDate"
-														placeholder="<?= _translate('Sample Received Date'); ?>"
-														title="<?= _translate('Please select sample received date'); ?>"
-														value="<?php echo $genericResultInfo['sample_received_at_lab_datetime']; ?>" />
-												</div>
-											</div>
-										</div>
-										<div class="row" style="margin-top: 10px;">
-											<div class="col-md-6">
-												<label class="col-lg-5" for="testPlatform" class="col-lg-5 control-label">
-													<?= _translate("Testing Platform"); ?> <span
-														class="mandatory result-span">*</span></label>
-												<div class="col-lg-7">
-													<select name="testPlatform" id="testPlatform"
-														class="form-control result-optional labSection"
-														title="<?= _translate('Please choose VL Testing Platform'); ?>">
-														<option value=""><?= _translate("-- Select --"); ?></option>
-														<?php foreach ($importResult as $mName) { ?>
-															<option
-																value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>"
-																<?php echo ($genericResultInfo['test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>>
-																<?php echo $mName['machine_name']; ?>
-															</option>
-														<?php } ?>
-													</select>
-												</div>
-											</div>
-											<div class="col-md-6">
-												<label class="col-lg-5 control-label"
-													for="isSampleRejected"><?= _translate("Is Sample Rejected?"); ?>
-													<span class="mandatory result-span">*</span></label>
-												<div class="col-lg-7">
-													<select name="isSampleRejected" id="isSampleRejected"
-														class="form-control labSection"
-														title="<?= _translate('Please check if sample is rejected or not'); ?>">
-														<option value=""><?= _translate("-- Select --"); ?></option>
-														<option value="yes" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>>
-															<?= _translate("Yes"); ?>
-														</option>
-														<option value="no" <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>>
-															<?= _translate("No"); ?>
-														</option>
-													</select>
-												</div>
-											</div>
-										</div>
-										<div class="row rejectionReason"
-											style="display:<?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;margin-top: 10px;">
-											<div class="col-md-6 rejectionReason"
-												style="display:<?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
-												<label class="col-lg-5 control-label"
-													for="rejectionReason"><?= _translate("Rejection Reason"); ?> </label>
-												<div class="col-lg-7">
-													<select name="rejectionReason" id="rejectionReason"
-														class="form-control labSection"
-														title="<?= _translate('Please choose reason'); ?>"
-														onchange="checkRejectionReason();">
-														<option value=""><?= _translate("-- Select --"); ?></option>
-														<?php foreach ($rejectionTypeResult as $type) { ?>
-															<optgroup
-																label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
-																<?php
-																foreach ($rejectionResult as $reject) {
-																	if ($type['rejection_type'] == $reject['rejection_type']) { ?>
-																		<option value="<?php echo $reject['rejection_reason_id']; ?>"
-																			<?php echo ($genericResultInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
-																			<?php echo ($reject['rejection_reason_name']); ?>
-																		</option>
-																	<?php }
-																} ?>
-															</optgroup>
-														<?php }
-														if ($general->isLISInstance() === false) { ?>
-															<option value="other"><?= _translate("Other (Please Specify)"); ?>
-															</option>
-														<?php } ?>
-													</select>
-													<input type="text" class="form-control newRejectionReason"
-														name="newRejectionReason" id="newRejectionReason"
-														placeholder="<?= _translate('Rejection Reason'); ?>"
-														title="<?= _translate('Please enter rejection reason'); ?>"
-														style="width:100%;display:none;margin-top:2px;">
-												</div>
-											</div>
-											<div class="col-md-6 rejectionReason"
-												style="display:<?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
-												<label class="col-lg-5 control-label"
-													for="rejectionDate"><?= _translate("Rejection Date"); ?>
-												</label>
-												<div class="col-lg-7">
-													<input
-														value="<?php echo DateUtility::humanReadableDateFormat($genericResultInfo['rejection_on']); ?>"
-														class="form-control date rejection-date" type="text"
-														name="rejectionDate" id="rejectionDate"
-														placeholder="<?= _translate('Select Rejection Date'); ?>"
-														title="<?= _translate('Please select Sample Rejection Date'); ?>" />
-												</div>
-											</div>
-										</div>
-										<div class="row" style="margin-top: 10px;">
-											<div class="col-md-6">
-												<label class="col-lg-5 control-label"
-													for="sampleTestingDateAtLab"><?= _translate("Sample Testing Date"); ?>
-													<span class="mandatory result-span">*</span></label>
-												<div class="col-lg-7">
-													<input type="text"
-														class="form-control labSection dateTime <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>"
-														<?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab"
-														name="sampleTestingDateAtLab"
-														placeholder="<?= _translate('Sample Testing Date'); ?>"
-														title="<?= _translate('Please select sample testing date'); ?>"
-														value="<?php echo $genericResultInfo['sample_tested_datetime']; ?>" />
-												</div>
-											</div>
-										</div>
-
-										<div class="row" style="margin-top: 10px;">
-											<!--<?php if (count($reasonForFailure) > 0) { ?>
-												<div class="col-md-6 labSection" style="<?php echo (!isset($genericResultInfo['result']) || $genericResultInfo['result'] == 'Failed') ? '' : 'display: none;'; ?>">
-													<label class="col-lg-5 control-label" for="reasonForFailure">Reason for
-														Failure </label>
-													<div class="col-lg-7">
-														<select name="reasonForFailure" id="reasonForFailure" class="form-control vlResult" title="Please choose reason for failure" style="width: 100%;">
-															<?= $general->generateSelectOptions($reasonForFailure, $genericResultInfo['reason_for_failure'], '-- Select --'); ?>
-														</select>
-													</div>
-												</div>
-											<?php } ?>--->
-										<div class="col-md-6 vlResult">
-											<label class="col-lg-5 control-label" for="resultDispatchedOn">
-												<?= _translate("Date Results Dispatched"); ?>
-											</label>
-											<div class="col-lg-7">
-												<input type="text" class="form-control labSection dateTime"
-													id="resultDispatchedOn" name="resultDispatchedOn"
-													placeholder="<?= _translate('Result Dispatched Date'); ?>"
-													title="<?= _translate('Please select result dispatched date'); ?>"
-													value="<?php echo $genericResultInfo['result_dispatched_datetime']; ?>" />
-											</div>
-										</div>
-										<div class="col-md-6 vlResult subTestFields">
-											<label class="col-lg-5 control-label subTestFields labels"
-												for="subTestResult">
-												<?= _translate("Tests Performed"); ?>
-											</label>
-											<div class="col-lg-7">
-												<select class="form-control ms-container multiselect subTestFields"
-													id="subTestResult" name="subTestResult[]"
-													title="<?= _translate('Please select sub tests'); ?>" multiple
-													onchange="loadSubTests();">
-												</select>
-											</div>
-										</div>
-									</div>
-									<div class="row" id="resultSection">
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<label class="col-lg-5 control-label" for="reviewedBy">
-												<?= _translate("Reviewed By"); ?>
-												<span class="mandatory review-approve-span"
-													style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span>
-											</label>
-											<div class="col-lg-7">
-												<select name="reviewedBy" id="reviewedBy" class="select2 form-control"
-													title="<?= _translate('Please choose reviewed by'); ?>"
-													style="width: 100%;">
-													<?= $general->generateSelectOptions($userInfo, $genericResultInfo['result_reviewed_by'], '-- Select --'); ?>
-												</select>
-											</div>
-										</div>
-										<div class="col-md-6">
-											<label class="col-lg-5 control-label" for="reviewedOn">
-												<?= _translate("Reviewed On"); ?>
-												<span class="mandatory review-approve-span"
-													style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'inline' : 'none'; ?>;">*</span>
-											</label>
-											<div class="col-lg-7">
-												<input type="text"
-													value="<?php echo $genericResultInfo['result_reviewed_datetime']; ?>"
-													name="reviewedOn" id="reviewedOn" class="dateTime form-control"
-													placeholder="<?= _translate('Reviewed on'); ?>"
-													title="<?= _translate('Please enter the Reviewed on'); ?>" />
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<label class="col-lg-5 control-label" for="testedBy">
-												<?= _translate("Tested By"); ?>
-											</label>
-											<div class="col-lg-7">
-												<select name="testedBy" id="testedBy" class="select2 form-control"
-													title="<?= _translate('Please choose approved by'); ?>">
-													<?= $general->generateSelectOptions($userInfo, $genericResultInfo['tested_by'], '-- Select --'); ?>
-												</select>
-											</div>
-										</div>
-										<?php
-										$styleStatus = '';
-										if ((($_SESSION['accessType'] == 'collection-site') && $genericResultInfo['result_status'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC)) {
-											$styleStatus = "display:none"; ?>
-										<input type="hidden" name="status"
-											value="<?= htmlspecialchars((string) $genericResultInfo['result_status']); ?>" />
-										<?php } ?>
-										<div class="col-md-6" style="margin-top: 10px;">
-											<label class="col-lg-5 control-label" for="approvedBy">
-												<?= _translate("Approved By"); ?>
-												<span class="mandatory review-approve-span"
-													style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span>
-											</label>
-											<div class="col-lg-7">
-												<select name="approvedBy" id="approvedBy"
-													class="form-control labSection"
-													title="<?= _translate('Please choose approved by'); ?>">
-													<?= $general->generateSelectOptions($userInfo, $genericResultInfo['result_approved_by'], '-- Select --'); ?>
-												</select>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-6">
-											<label class="col-lg-5 control-label" for="approvedOn">
-												<?= _translate("Approved On"); ?>
-												<span class="mandatory review-approve-span"
-													style="display: <?php echo ($genericResultInfo['is_sample_rejected'] != '') ? 'block' : 'none'; ?>;">*</span>
-											</label>
-											<div class="col-lg-7">
-												<input type="text"
-													value="<?php echo $genericResultInfo['result_approved_datetime']; ?>"
-													class="form-control dateTime" id="approvedOn" name="approvedOn"
-													placeholder="<?= _translate("Please enter date"); ?>"
-													style="width:100%;" />
-											</div>
-										</div>
-										<div class="col-md-6">
-											<label class="col-lg-5 control-label" for="labComments">
-												<?= _translate("Lab Tech. Comments"); ?>
-											</label>
-											<div class="col-lg-7">
-												<textarea class="form-control labSection" name="labComments"
-													id="labComments" placeholder="<?= _translate('Lab comments'); ?>"
-													style="width:100%"><?php echo trim((string) $genericResultInfo['lab_tech_comments']); ?></textarea>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-6 change-reason"
-											style="display:<?php echo ($latestChangeReason === '' || $latestChangeReason === '0') ? "none" : "block"; ?>;">
-											<label class="col-lg-5 control-label" for="reasonForResultChanges">
-												<?= _translate("Reason For Changes in Result"); ?><span
-													class="mandatory">*</span>
-											</label>
-											<div class="col-lg-7">
-												<textarea class="form-control" name="reasonForResultChanges"
-													id="reasonForResultChanges"
-													placeholder="<?= _translate('Enter Reason For Result Changes'); ?>"
-													title="<?= _translate('Please enter reason for result changes'); ?>"
-													style="width:100%;"><?= htmlspecialchars($latestChangeReason); ?></textarea>
-											</div>
-										</div>
-									</div>
-									<div class="row" id="labSection"></div>
-								</div>
-								<?php } ?>
-							</div>
-						</div>
+					<?php
+					$formMode                 = 'edit';
+					$showBarcode              = false;
+					$showPatientSearch        = false;
+					$showSaveNextClone        = false;
+					$showSubTestPicker        = false;
+					$showChangeReason         = true;
+					$disableNonResult         = false;
+					$onTestTypeChange         = 'getTestTypeForm();';
+					$onFacilityChange         = 'fillFacilityDetails(this);';
+					$onLabChange              = 'autoFillFocalDetails();';
+					$onSampleCollectionChange = 'checkCollectionDate(this.value);';
+					include __DIR__ . '/_request-form-body.php';
+					?>
 					</div>
-					<div class="box-footer">
-						<input type="hidden" name="revised" id="revised" value="no" />
-						<input type="hidden" name="vlSampleId" id="vlSampleId"
-							value="<?= htmlspecialchars((string) $genericResultInfo['sample_id']); ?>" />
-						<input type="hidden" name="isRemoteSample"
-							value="<?= htmlspecialchars((string) $genericResultInfo['remote_sample']); ?>" />
-						<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory"
-							value="<?php echo base64_encode((string) json_encode($resultChangeHistory)); ?>" />
-						<input type="hidden" name="oldStatus"
-							value="<?= htmlspecialchars((string) $genericResultInfo['result_status']); ?>" />
-						<input type="hidden" name="countryFormId" id="countryFormId"
-							value="<?php echo $arr['vl_form']; ?>" />
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
-							<?= _translate("Save"); ?>
-						</a>&nbsp;
-						<a href="view-requests.php" class="btn btn-default">
-							<?= _translate("Cancel"); ?>
-						</a>
-					</div>
-			</div>
-		</div>
-</div>
 </form>
 </div>
 </section>
@@ -1677,7 +895,7 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 			$('.femaleSection').show();
 		}
 	});
-	$("#sampleTestingDateTimeAtLab").change(function () {
+	$("#sampleTestingDateAtLab").change(function () {
 		if ($(this).val() != "") {
 			$(".result-fields").attr("disabled", false);
 			$(".result-fields").addClass("isRequired");
@@ -1702,7 +920,7 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 		if ($(this).val() == 'yes') {
 			$('.rejectionReason').show();
 			$('.vlResult').css('display', 'none');
-			$("#sampleTestingDateTimeAtLab, #vlResult").val("");
+			$("#sampleTestingDateAtLab, #vlResult").val("");
 			$(".result-fields").val("");
 			$(".result-fields").attr("disabled", true);
 			$(".result-fields").removeClass("isRequired");
@@ -1824,6 +1042,12 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 					if (typeof (data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
 						$("#facilitySection").html(data.facilitySection);
 					}
+					if (typeof (data.caseInformation) != "undefined" && data.caseInformation !== null && data.caseInformation.length > 0) {
+						$("#caseInformation").html(data.caseInformation);
+						$("#caseInformationBox").show();
+					} else {
+						$("#caseInformationBox").hide();
+					}
 					if (typeof (data.patientSection) != "undefined" && data.patientSection !== null && data.patientSection.length > 0) {
 						$("#patientSection").after(data.patientSection);
 					}
@@ -1833,9 +1057,7 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 					if (typeof (data.result) != "undefined" && data.result !== null && data.result.length > 0) {
 						$("#resultSection").html(data.result);
 						$('#resultSection').show();
-					} else {
-						$('#resultSection').hide();
-					}
+					} 
 					if (typeof (data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
 						$("#specimenSection").after(data.specimenSection);
 					}
@@ -1874,6 +1096,8 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 		$(".patientSectionInput").remove();
 		$("#labSection").html('');
 		$(".specimenSectionInput").remove();
+		$("#caseInformation").html('');
+		$("#caseInformationBox").hide();
 		$("#otherSection").html('');
 		$(".requestForm").hide();
 	}
@@ -1927,9 +1151,7 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 					if (typeof (data.result) != "undefined" && data.result !== null && data.result.length > 0) {
 						$("#resultSection").html(data.result);
 						$('#resultSection').show();
-					} else {
-						$('#resultSection').hide();
-					}
+					} 
 
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
@@ -1950,6 +1172,8 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 				});
 		} else {
 			$(".specimenSectionInput").remove();
+			$("#caseInformation").html('');
+			$("#caseInformationBox").hide();
 		}
 
 	}
