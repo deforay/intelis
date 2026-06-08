@@ -108,7 +108,7 @@ final class RequestsService
             : "(lab_id = $labId OR facility_id IN ($facilityMapResult))";
 
         if ($manifestCode) {
-            if ($this->testType === 'tb') {
+            if ($this->testType === 'tb' || $this->testType === 'generic-tests') {
                 $condition .= " AND (sample_package_code like '$manifestCode' OR referral_manifest_code like '$manifestCode')";
             } else {
                 $condition .= " AND sample_package_code like '$manifestCode'";

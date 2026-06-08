@@ -17,3 +17,7 @@
 ALTER TABLE `tb_tests` CHANGE `reason_for_result_change` `reason_for_result_change` TEXT CHARACTER SET utf8mb4 NULL DEFAULT NULL;
 
 UPDATE `system_config` SET `value` = '5.5.8' WHERE `system_config`.`name` = 'sc_version';
+
+-- Thana 08-May-2026
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`)
+VALUES ('Show Participant Name in Manifest', 'generic_show_participant_name_in_manifest', 'yes', 'generic-tests', 'no', null, null, 'active');

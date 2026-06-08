@@ -28,9 +28,7 @@ use App\Services\GeoLocationsService;
 
 final class TestRequestsService
 {
-    public function __construct(protected DatabaseService $db, protected CommonService $commonService)
-    {
-    }
+    public function __construct(protected DatabaseService $db, protected CommonService $commonService) {}
 
     public function addToSampleCodeQueue(?string $uniqueId, string $testType, string $sampleCollectionDate, ?string $provinceCode = null, ?string $sampleCodeFormat = null, ?string $prefix = null, ?string $accessType = null, ?int $labId = null): bool
     {
@@ -410,7 +408,7 @@ final class TestRequestsService
             } elseif ($testType !== null && $manifestCode !== null) {
                 $this->db->reset();
                 $this->db->where('sample_package_code', trim((string) $manifestCode));
-                if ($testType == 'tb') {
+                if ($testType == 'tb' || $testType == 'generic-tests') {
                     $this->db->orWhere('referral_manifest_code', trim((string) $manifestCode));
                 }
                 $uniqueIds = $this->db->getValue($tableName, 'unique_id', null);
@@ -459,7 +457,7 @@ final class TestRequestsService
             $primaryKey = TestsService::getPrimaryColumn($testType);
             $this->db->reset();
             $this->db->where('sample_package_code', trim((string) $manifestCode));
-            if ($testType === 'tb') {
+            if ($testType == 'tb' || $testType == 'generic-tests') {
                 $this->db->orWhere('referral_manifest_code', trim((string) $manifestCode));
             }
             $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);

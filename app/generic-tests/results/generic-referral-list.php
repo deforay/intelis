@@ -224,8 +224,8 @@ $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
         $.blockUI();
 
-        $.post("update-tb-referral-helper.php", {
-            type: 'tb',
+        $.post("update-generic-referral-helper.php", {
+            type: 'generic-tests',
             newReferralLabId: newReferralLabId,
             reasonForReferralLabChange: reasonForReferralLabChange,
             sampleIds: selectedSamples
@@ -247,7 +247,7 @@ $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
     function generateManifestPDF(pId) {
 
-        $.post('/tb/results/pdf/generate-tb-manifest.php', {
+        $.post('/generic-tests/results/pdf/generate-generic-manifest.php', {
                 id: pId
             },
             function(data) {
