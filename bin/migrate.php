@@ -480,7 +480,9 @@ $quietMode = isset($options['q']);
 $showStatus = isset($options['status']);
 $dryRun = isset($options['dry-run']);
 $fromVersion = $options['version'] ?? null;
-$showProgress = !$quietMode && !$dryRun && !$showStatus;
+// In verbose mode the bar redraw clobbers any error/benign notice printed via
+// spinnerPausePrint, so drop the bar and let messages print on their own lines.
+$showProgress = !$quietMode && !$dryRun && !$showStatus && !getenv('MIG_VERBOSE');
 
 if ($quietMode) {
     error_reporting(0);
@@ -636,15 +638,29 @@ foreach ($versions as $version) {
                     $msgStr = $e->getMessage() ?? '';
                     $sqlInMsg = $query ?? '';
 
+                    // The mysqli driver runs in exception mode, so SQL errors surface here
+                    // as a mysqli_sql_exception rather than via getLastErrno(). The numeric
+                    // error code rides on the exception (getCode()) but is NOT in the message
+                    // text -- a duplicate table reads "Table 'x' already exists" with no
+                    // "1050" anywhere. Classify on the code first (reliable); fall back to
+                    // message sniffing only for drivers that don't surface one.
+                    $errCode = (int) $e->getCode();
+                    $qlower = strtolower(trim($query));
+
+                    // Benign idempotence codes: 1050 table exists, 1060 dup column,
+                    // 1061 dup key, 1068 multi PK, 1091 can't-drop-missing, 1826 dup FK.
+                    // 1062 (duplicate entry) is benign only for re-runnable seed INSERTs.
+                    $isInsertDupBenign = $errCode === 1062 && strpos($qlower, 'insert') === 0;
                     $isBenign =
+                        in_array($errCode, [1050, 1060, 1061, 1068, 1091, 1826], true) ||
+                        $isInsertDupBenign ||
                         stripos($msgStr, 'Duplicate column name') !== false ||
                         stripos($msgStr, 'Duplicate key name') !== false ||
-                        (stripos($msgStr, 'already exists') !== false && str_contains($msgStr, '1050')) ||
+                        stripos($msgStr, 'already exists') !== false ||
                         (stripos($msgStr, "Can't DROP") !== false && stripos($msgStr, 'check that column/key exists') !== false) ||
-                        stripos($msgStr, 'Multiple primary key defined') !== false || str_contains($msgStr, '1068') ||
-                        stripos($msgStr, 'Duplicate foreign key') !== false || str_contains($msgStr, '1826') ||
-                        (str_contains($msgStr, '1062') || stripos($msgStr, 'Duplicate entry') !== false)
-                            && strpos(strtolower(trim($query)), 'insert') === 0;
+                        stripos($msgStr, 'Multiple primary key defined') !== false ||
+                        stripos($msgStr, 'Duplicate foreign key') !== false ||
+                        ((str_contains($msgStr, '1062') || stripos($msgStr, 'Duplicate entry') !== false) && strpos($qlower, 'insert') === 0);
 
                     if ($isBenign) {
                         if (!$quietMode && getenv('MIG_VERBOSE')) {
