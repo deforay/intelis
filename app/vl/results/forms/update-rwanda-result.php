@@ -1,6 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -66,24 +67,8 @@ if (trim((string) $stateName) !== '') {
 	$lResult = $db->query($facilityQuery);
 }
 
-//set reason for changes history
-$rch = '';
-if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for_result_changes'] != '' && $vlQueryInfo['reason_for_result_changes'] != null) {
-	$rch .= '<h4>Result Changes History</h4>';
-	$rch .= '<table style="width:100%;">';
-	$rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
-	$rch .= '<tbody>';
-	$splitChanges = explode('vlsm', (string) $vlQueryInfo['reason_for_result_changes']);
-	$counter = count($splitChanges);
-	for ($c = 0; $c < $counter; $c++) {
-		$getData = explode("##", $splitChanges[$c]);
-		$expStr = explode(" ", $getData[2]);
-		$changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-		$rch .= '<tr><td>' . ($getData[0]) . '</td><td>' . ($getData[1]) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
-	}
-	$rch .= '</tbody>';
-	$rch .= '</table>';
-}
+// Result-change history table (tolerant of canonical JSON array + every legacy shape).
+$rch = MiscUtility::renderResultChangeHistoryHtml($vlQueryInfo['reason_for_result_changes'] ?? null, $usersService);
 $disable = "disabled = 'disabled'";
 
 ?>
@@ -847,6 +832,12 @@ $disable = "disabled = 'disabled'";
 			if ($('.specialResults:checkbox:checked').length) {
 				$('#vlResult').removeClass('isRequired');
 			}
+		}
+
+		// Prompt for a change reason when the rejection status differs from what was saved.
+		if ($(this).val() !== <?= json_encode((string) ($vlQueryInfo['is_sample_rejected'] ?? '')) ?>) {
+			$(".reasonForResultChanges").css("display", "block");
+			$("#reasonForResultChanges").addClass("isRequired");
 		}
 	});
 
