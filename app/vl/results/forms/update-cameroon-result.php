@@ -78,7 +78,7 @@ if (trim((string) $stateName) !== '') {
 }
 $lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 // Result-change history table (tolerant of canonical JSON array + every legacy shape).
-$rch = MiscUtility::renderResultChangeHistoryHtml($vlQueryInfo['reason_for_result_changes'] ?? null, $usersService);
+$rch = ''; // inline history removed -- see audit-trail screen
 $disable = "disabled = 'disabled'";
 
 $isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp((string) $vlQueryInfo['vl_test_platform'], "genexpert") === 0);

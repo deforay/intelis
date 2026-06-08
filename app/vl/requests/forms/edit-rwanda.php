@@ -79,7 +79,7 @@ if (trim((string) $facilityResult[0]['facility_state']) !== '') {
 
 
 // Result-change history table (tolerant of canonical JSON array + every legacy shape).
-$rch = MiscUtility::renderResultChangeHistoryHtml($vlQueryInfo['reason_for_result_changes'] ?? null, $usersService);
+$rch = ''; // inline history removed -- see audit-trail screen
 ?>
 <style>
      .table>tbody>tr>td {

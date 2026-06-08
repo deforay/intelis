@@ -82,25 +82,6 @@ if ($facilityResult[0]['contact_person'] != '') {
 //set reason for changes history
 $rch = '';
 $allChange = [];
-if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for_result_changes'] != '' && $vlQueryInfo['reason_for_result_changes'] != null) {
-	$allChange = json_decode((string) $vlQueryInfo['reason_for_result_changes'], true);
-	if (!empty($allChange)) {
-		$rch .= '<h4>Result Changes History</h4>';
-		$rch .= '<table style="width:100%;">';
-		$rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
-		$rch .= '<tbody>';
-		$allChange = array_reverse($allChange);
-		foreach ($allChange as $change) {
-			$usrResult = $usersService->getUserByID($change['usr']);
-			$name = $usrResult['user_name'] ?? '';
-			$expStr = explode(" ", (string) $change['dtime']);
-			$changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-			$rch .= '<tr><td>' . $name . '</td><td>' . ($change['msg']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
-		}
-		$rch .= '</tbody>';
-		$rch .= '</table>';
-	}
-}
 
 //var_dump($vlQueryInfo['sample_received_at_hub_datetime']);die;
 $isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp((string) $vlQueryInfo['vl_test_platform'], "genexpert") === 0);

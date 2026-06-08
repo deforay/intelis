@@ -80,22 +80,6 @@ if (trim((string) $facilityResult[0]['facility_state']) !== '') {
 
 //set reason for changes history
 $rch = '';
-if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_for_result_changes'] != '' && $cd4QueryInfo['reason_for_result_changes'] != null) {
-     $rch .= '<h4>Result Changes History</h4>';
-     $rch .= '<table style="width:100%;">';
-     $rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
-     $rch .= '<tbody>';
-     $splitChanges = explode('vlsm', (string) $cd4QueryInfo['reason_for_result_changes']);
-     $counter = count($splitChanges);
-     for ($c = 0; $c < $counter; $c++) {
-          $getData = explode("##", $splitChanges[$c]);
-          $expStr = explode(" ", $getData[2]);
-          $changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-          $rch .= '<tr><td>' . ($getData[0]) . '</td><td>' . ($getData[1]) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
-     }
-     $rch .= '</tbody>';
-     $rch .= '</table>';
-}
 ?>
 <style>
      .table>tbody>tr>td {
