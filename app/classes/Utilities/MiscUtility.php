@@ -1379,15 +1379,21 @@ final class MiscUtility
         // Reverse so the returned list is oldest-first like the JSON format.
         $history = [];
         foreach (array_reverse(explode('vlsm', $raw)) as $entry) {
-            $parts = explode('##', $entry);
-            if (count($parts) < 2) {
+            if (trim($entry) === '') {
                 continue;
             }
-            $history[] = [
-                'usr' => $parts[0],
-                'msg' => $parts[1],
-                'dtime' => $parts[2] ?? '',
-            ];
+            $parts = explode('##', $entry);
+            if (count($parts) >= 2) {
+                $history[] = [
+                    'usr' => $parts[0],
+                    'msg' => $parts[1],
+                    'dtime' => $parts[2] ?? '',
+                ];
+            } else {
+                // Plain reason text with no delimiters (e.g. a legacy raw eid/covid/cd4 value) --
+                // preserve it as the message so nothing is lost during normalization.
+                $history[] = ['usr' => '', 'msg' => trim($entry), 'dtime' => ''];
+            }
         }
         return $history;
     }
