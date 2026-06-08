@@ -1,7 +1,6 @@
 <?php
 
 use Crunz\Schedule;
-use App\Services\TestsService;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -176,12 +175,14 @@ if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['covid19']) && S
 
 
 // Module specific scheduled tasks
-if (TestsService::isTestActive('tb')) {
-    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/tb/tb-referrals.php")
+// Inter-lab referrals run on STS instances; the script self-loops over every
+// active test module that supports referrals.
+if ($general->isSTSInstance()) {
+    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/referrals.php")
         ->everyMinute()
         ->timezone($timezone)
         ->preventOverlapping()
-        ->description('Updating TB referrals and referral history');
+        ->description('Updating inter-lab referrals and referral history across active test modules');
 }
 
 
