@@ -816,25 +816,108 @@ $remoteURL = $general->getRemoteURL();
 
         if (currentMenuItem.length) {
             currentMenuItem.parent().addClass('active');
-            let treeview = currentMenuItem.parents('li.treeview').addClass('active')[0];
-            // currentMenuItem[0].scrollIntoView({
-            //     block: 'nearest',
-            //     inline: 'nearest'
-            // });
-
-            const el = currentMenuItem[0];
-            const container = document.querySelector('.main-sidebar');
-
-            if (el && container) {
-                const elRect = el.getBoundingClientRect();
-                const containerRect = container.getBoundingClientRect();
-                const offset = (elRect.top - containerRect.top) - (containerRect.height / 2) + (elRect.height / 2);
-
-                container.scrollTop += offset;
-            }
-
-
+            currentMenuItem.parents('li.treeview').addClass('active');
         }
+
+        // --- Collapsible sidebar sections -----------------------------------
+        // AdminLTE section labels (<li class="header">) are flat siblings, not
+        // real groups, so we group each header with the items that follow it
+        // (up to the next header) and turn the header into a collapse toggle.
+        // Open/closed state is remembered in localStorage; the section holding
+        // the active page is always opened. Hiding is scoped (in CSS) to the
+        // expanded sidebar so mini-collapsed mode keeps showing every icon.
+        (function initSidebarSections() {
+            const $menu = $('.sidebar-menu');
+            if (!$menu.length) return;
+
+            let stored = {};
+            try { stored = JSON.parse(localStorage.getItem('sidebarSections') || '{}'); } catch (e) { stored = {}; }
+            const save = function () {
+                try { localStorage.setItem('sidebarSections', JSON.stringify(stored)); } catch (e) { /* ignore */ }
+            };
+
+            const apply = function ($header, $group, open) {
+                $header.toggleClass('section-open', open).toggleClass('section-collapsed', !open);
+                $group.toggleClass('vlsm-section-hidden', !open);
+            };
+
+            $menu.children('li.header').each(function (idx) {
+                const $header = $(this);
+                const $group = $header.nextUntil('li.header');
+                if (!$group.length) return;
+
+                const key = $header.text().trim() || ('section-' + idx);
+                $header.attr('data-section', key).addClass('vlsm-section-toggle');
+                if (!$header.find('.vlsm-section-caret').length) {
+                    $header.append('<i class="fa fa-angle-down vlsm-section-caret"></i>');
+                }
+
+                const hasActive = $group.filter('.active').length > 0 || $group.find('.active').length > 0;
+                // Default to open (don't collapse on first visit); stored
+                // choices win; the active section is always revealed.
+                let open = (key in stored) ? stored[key] : true;
+                if (hasActive) open = true;
+                apply($header, $group, open);
+
+                $header.on('click', function () {
+                    const next = !$header.hasClass('section-open');
+                    apply($header, $group, next);
+                    stored[key] = next;
+                    save();
+                });
+            });
+
+            // Toolbar row: quick search + collapse/expand-all on one line.
+            // Injected into .main-sidebar (a sibling above the scrolling .sidebar)
+            // so it stays pinned without overlapping the menu — like rishs.
+            if (!$('.vlsm-sidebar-toolbar').length) {
+                const hasSections = $menu.children('li.header').length > 1;
+                const $bar = $(
+                    '<div class="vlsm-sidebar-toolbar">' +
+                        '<a href="#" class="sidebar-spotlight-btn" title="Quick Search (Ctrl+K)">' +
+                            '<i class="fa-solid fa-magnifying-glass"></i><span>Search</span><kbd>Ctrl K</kbd>' +
+                        '</a>' +
+                        (hasSections ? '<a href="#" class="vlsm-sidebar-allbtn" title="Collapse all"><i class="fa fa-angle-double-up"></i></a>' : '') +
+                    '</div>'
+                );
+                $('.main-sidebar').prepend($bar);
+
+                $bar.find('.vlsm-sidebar-allbtn').on('click', function (e) {
+                    e.preventDefault();
+                    const anyOpen = $menu.children('li.header.section-open').length > 0;
+                    $menu.children('li.header').each(function () {
+                        const $h = $(this);
+                        apply($h, $h.nextUntil('li.header'), !anyOpen);
+                        stored[$h.attr('data-section')] = !anyOpen;
+                    });
+                    save();
+                    $(this).attr('title', anyOpen ? 'Expand all' : 'Collapse all')
+                        .find('i')
+                        .toggleClass('fa-angle-double-up', !anyOpen)
+                        .toggleClass('fa-angle-double-down', anyOpen);
+                });
+            }
+        })();
+
+        // Sidebar quick-search opens the spotlight palette via its Ctrl+K
+        // shortcut (independent of the old navbar trigger element).
+        $(document).on('click', '.sidebar-spotlight-btn', function (e) {
+            e.preventDefault();
+            $(document).trigger($.Event('keydown', { key: 'k', ctrlKey: true }));
+        });
+
+        // --- Scroll the active item into view (desktop only, if off-screen) --
+        (function scrollActiveIntoView() {
+            if (window.innerWidth < 768) return; // skip the mobile slide-over
+            const el = currentMenuItem && currentMenuItem[0];
+            const container = document.querySelector('.sidebar'); // the scroll area
+            if (!el || !container || el.offsetParent === null) return; // skip if hidden
+            const elRect = el.getBoundingClientRect();
+            const cRect = container.getBoundingClientRect();
+            if (elRect.top < cRect.top || elRect.bottom > cRect.bottom) {
+                container.scrollTop += (elRect.top - cRect.top) - (container.clientHeight / 2) + (elRect.height / 2);
+            }
+        })();
 
         // Phone number validation
         const countryCode = "<?= $countryCode ?? ''; ?>";
