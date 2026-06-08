@@ -28,7 +28,7 @@ $labId = $_POST['referralLabId'];
 $table = TestsService::getTestTableName($testType);
 $primaryKeyColumn = TestsService::getPrimaryColumn($testType);
 $patientIdColumn = TestsService::getPatientIdColumn($testType);
-$lisLabId = $general->getSystemConfig('sc_testing_lab_id');
+// $lisLabId = $general->getSystemConfig('sc_testing_lab_id');
 
 $bindParams = [];
 $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '')";
@@ -54,7 +54,7 @@ $query = "SELECT
             AND (vl.sample_code IS NOT NULL AND vl.sample_code != '')
             AND (vl.lab_id IS NOT NULL AND vl.lab_id = ?)
           ORDER BY vl.sample_code ASC";
-$bindParams[] = $lisLabId;
+$bindParams[] = $labId;
 $result = $db->rawQuery($query, $bindParams);
 
 // Output options for the select box
