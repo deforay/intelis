@@ -7,8 +7,9 @@
  * Flips the instance type used by CommonService::isLISInstance() /
  * isSTSInstance() — i.e. the `sc_user_type` system_config row — then clears
  * the application cache so the new mode is picked up. Config changes only
- * fully take effect after a `composer post-update`, which this script offers
- * to run for you.
+ * fully take effect after a `composer post-update`, which this script runs
+ * for you. When switching into LIS mode it also runs `composer sts-setup`
+ * (that step no-ops for STS instances, so it's skipped there).
  *
  * Intended for DEV machines only. It refuses to run in production unless you
  * pass --force.
@@ -135,40 +136,66 @@ try {
     }
     $io->text('Cleared application cache (file cache + compiled container).');
 
-    // ---- composer post-update ----------------------------------------------
+    // ---- composer post-update (+ sts-setup for LIS) ------------------------
+    // sts-setup only makes sense for LIS instances (setup-sts.php no-ops for
+    // STS), so we only run it when switching into LIS mode. It mirrors
+    // post-install ordering, where @sts-setup runs last.
+    $needsStsSetup = ($target === 'lismode');
+
     if ($skipPostUpdate) {
         $io->success("Switched to $target.");
-        $io->note("Skipped post-update. Run it yourself for config to fully take effect:\n    composer post-update");
+        $note = "Skipped post-update. Run this yourself for config to fully take effect:\n    composer post-update";
+        if ($needsStsSetup) {
+            $note .= "\n    composer sts-setup";
+        }
+        $io->note($note);
         exit(CLI\OK);
     }
 
     $composer = findComposer();
     if ($composer === null) {
         $io->success("Switched to $target.");
-        $io->warning("Could not locate the composer binary. Run manually:\n    composer post-update");
+        $warn = "Could not locate the composer binary. Run manually:\n    composer post-update";
+        if ($needsStsSetup) {
+            $warn .= "\n    composer sts-setup";
+        }
+        $io->warning($warn);
         exit(CLI\OK);
     }
 
-    $io->section('Running composer post-update');
-    $process = new Process([$composer, 'post-update'], dirname(__DIR__, 2));
-    $process->setTimeout(null);
-    if (Process::isTtySupported()) {
-        try {
-            $process->setTty(true);
-        } catch (\RuntimeException) {
-            // fall through to streamed output below
+    $runComposer = static function (string $script) use ($composer, $io): bool {
+        $io->section("Running composer $script");
+        $process = new Process([$composer, $script], dirname(__DIR__, 2));
+        $process->setTimeout(null);
+        if (Process::isTtySupported()) {
+            try {
+                $process->setTty(true);
+            } catch (\RuntimeException) {
+                // fall through to streamed output below
+            }
         }
-    }
-    $process->run(function (string $type, string $buffer): void {
-        echo $buffer;
-    });
+        $process->run(function (string $type, string $buffer): void {
+            echo $buffer;
+        });
 
-    if (!$process->isSuccessful()) {
-        $io->error("composer post-update failed (exit {$process->getExitCode()}). The mode is switched; re-run `composer post-update` manually.");
+        if (!$process->isSuccessful()) {
+            $io->error("composer $script failed (exit {$process->getExitCode()}). The mode is switched; re-run `composer $script` manually.");
+            return false;
+        }
+        return true;
+    };
+
+    if (!$runComposer('post-update')) {
+        exit(CLI\ERROR);
+    }
+    if ($needsStsSetup && !$runComposer('sts-setup')) {
         exit(CLI\ERROR);
     }
 
-    $io->success("Switched to $target and ran composer post-update.");
+    $io->success(
+        "Switched to $target and ran composer post-update"
+            . ($needsStsSetup ? ' + sts-setup.' : '.')
+    );
     exit(CLI\OK);
 } catch (Throwable $e) {
     if ($io !== null) {
