@@ -23,6 +23,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+// Only a user who can add users may reach this helper.
+_requirePrivilege('/users/addUser.php');
+
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');

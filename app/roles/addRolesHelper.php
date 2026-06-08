@@ -7,6 +7,9 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+// Only a user who can add roles may reach this helper.
+_requirePrivilege('/roles/addRole.php');
+
 $tableName1 = "roles";
 $tableName2 = "roles_privileges_map";
 try {

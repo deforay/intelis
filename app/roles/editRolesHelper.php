@@ -13,6 +13,9 @@ $_POST = _sanitizeInput($request->getParsedBody());
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+// Only a user who can edit roles may reach this helper.
+_requirePrivilege('/roles/editRole.php');
+
 $tableName1 = "roles";
 $db->beginTransaction();
 try {

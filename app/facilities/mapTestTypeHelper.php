@@ -17,6 +17,10 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+// Mapping test types to facilities is part of facility administration;
+// its only legitimate caller (mapTestType.php) is shared under addFacility.
+_requirePrivilege('/facilities/addFacility.php');
+
 $mappingType = $_POST['mappingType'];
 $testType = $_POST['testType'];
 

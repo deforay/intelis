@@ -19,6 +19,9 @@ use Psr\Http\Message\ServerRequestInterface;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+// Only a user who can edit facilities may reach this helper.
+_requirePrivilege('/facilities/editFacility.php');
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 

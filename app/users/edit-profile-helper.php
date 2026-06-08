@@ -40,7 +40,16 @@ if ($fromRecencyAPI) {
     $_POST['password'] = $_POST['t'];
     $userId = null;
 } else {
-    $userId = base64_decode((string) $_POST['userId']);
+    // A user may only edit their OWN profile. This endpoint is intentionally
+    // open to every authenticated user (it is in the public allow-list so
+    // anyone can change their own password), so we cannot gate it on a
+    // privilege. Instead, ignore any client-supplied userId and bind the
+    // update to the session user -- otherwise a logged-in user could POST
+    // another account's id and reset that account's name/email/password.
+    $userId = $_SESSION['userId'] ?? null;
+    if (empty($userId)) {
+        throw new SystemException(_translate('Your session has expired. Please log in again.'), 401);
+    }
 }
 
 try {
