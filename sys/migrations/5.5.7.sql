@@ -37,7 +37,7 @@ ALTER TABLE `form_generic` ADD `referred_by` VARCHAR(128) NULL DEFAULT NULL AFTE
 ALTER TABLE `form_generic` ADD `instrument_id` VARCHAR(128) NULL AFTER `test_platform`;
 
 -- Thana 05-May-2026
-CREATE TABLE `generic_referral_history` (
+CREATE TABLE IF NOT EXISTS `generic_referral_history` (
   `history_id` int NOT NULL AUTO_INCREMENT,
   `generic_id` int DEFAULT NULL,
   `from_lab_id` int NOT NULL,
