@@ -366,13 +366,6 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 				</ul>
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
-						<!-- Spotlight Search Trigger -->
-						<li class="spotlight-trigger-wrapper">
-							<a href="#" id="spotlightTrigger" title="<?= _translate('Quick Search'); ?> (Ctrl+K)">
-								<i class="fa-solid fa-magnifying-glass"></i>
-								<span class="hidden-xs kbd-hint">Ctrl+K</span>
-							</a>
-						</li>
 						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
 						?>
 							<li class="user-menu">
