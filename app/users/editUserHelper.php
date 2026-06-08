@@ -23,6 +23,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+// Only a user who can edit users may reach this helper.
+_requirePrivilege('/users/editUser.php');
+
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
