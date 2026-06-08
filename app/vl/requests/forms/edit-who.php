@@ -79,9 +79,6 @@ if ($facilityResult[0]['contact_person'] != '') {
 	}
 }
 
-//set reason for changes history
-$rch = '';
-$allChange = [];
 
 //var_dump($vlQueryInfo['sample_received_at_hub_datetime']);die;
 $isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp((string) $vlQueryInfo['vl_test_platform'], "genexpert") === 0);
@@ -837,11 +834,6 @@ if ($isGeneXpert && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty
 													</div>
 												</div>
 											</div>
-											<?php if (!empty($allChange)) { ?>
-												<div class="row">
-													<div class="col-md-12"><?php echo $rch; ?></div>
-												</div>
-											<?php } ?>
 										</div>
 									<?php } ?>
 								</div>

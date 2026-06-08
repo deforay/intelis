@@ -79,7 +79,6 @@ if (trim((string) $facilityResult[0]['facility_state']) !== '') {
 
 
 // Result-change history table (tolerant of canonical JSON array + every legacy shape).
-$rch = ''; // inline history removed -- see audit-trail screen
 ?>
 <style>
      .table>tbody>tr>td {
@@ -766,11 +765,6 @@ $rch = ''; // inline history removed -- see audit-trail screen
                                                                            </div>
                                                                       </div>
                                                                  </div>
-                                                                 <?php if (trim($rch) !== '') { ?>
-                                                                      <div class="row">
-                                                                           <div class="col-md-12"><?php echo $rch; ?></div>
-                                                                      </div>
-                                                                 <?php } ?>
                                                             </div>
                                                        </div>
                                                   <?php } ?>

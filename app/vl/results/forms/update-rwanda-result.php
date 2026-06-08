@@ -68,7 +68,6 @@ if (trim((string) $stateName) !== '') {
 }
 
 // Result-change history table (tolerant of canonical JSON array + every legacy shape).
-$rch = ''; // inline history removed -- see audit-trail screen
 $disable = "disabled = 'disabled'";
 
 ?>
@@ -745,14 +744,6 @@ $disable = "disabled = 'disabled'";
 													</div>
 												</div>
 											</div>
-											<?php
-											if (trim($rch) !== '') { ?>
-												<div class="row">
-													<div class="col-md-12">
-														<?php echo $rch; ?>
-													</div>
-												</div>
-											<?php } ?>
 										</div>
 									</div>
 							</div>
