@@ -23,6 +23,9 @@ $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+// Only a user who can add facilities may reach this helper.
+_requirePrivilege('/facilities/addFacility.php');
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 

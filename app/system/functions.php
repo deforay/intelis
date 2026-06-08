@@ -68,6 +68,26 @@ function _isAllowed($currentRequest, $privileges = null): bool
 }
 
 /**
+ * Hard authorization guard for action/helper (BFF) endpoints.
+ *
+ * The ACL middleware skips AJAX requests, so a state-changing helper that is
+ * only ever reached from a privileged page is otherwise callable by any
+ * authenticated user. Call this at the top of such a helper, passing the
+ * privilege its legitimate caller already holds (i.e. the page that hosts the
+ * form/action). A caller without that privilege is, by definition, not a
+ * legitimate one, so this can deny only illegitimate requests.
+ */
+function _requirePrivilege(string $page, ?string $message = null): void
+{
+    if (!_isAllowed($page)) {
+        throw new SystemException(
+            $message ?? _translate('You do not have permission to perform this action.'),
+            403
+        );
+    }
+}
+
+/**
  * Sanitizes input data against XSS and other injection attacks
  *
  * @param mixed $input The input to sanitize

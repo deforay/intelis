@@ -21,6 +21,10 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilityService */
 $facilityService = ContainerRegistry::get(FacilitiesService::class);
 
+// Bulk facility upload is shared under addFacility; only a user who can add
+// facilities may reach this helper.
+_requirePrivilege('/facilities/addFacility.php');
+
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
