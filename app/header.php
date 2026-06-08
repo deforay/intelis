@@ -140,7 +140,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 		'admin'         => ['settings', 'configuration', 'setup', 'manage'],
 	];
 	$spotlightLinkKeywords = function (string $link, string $title): array {
-		$hay = strtolower($link . ' ' . $title);
+		$hay = _toLowerCase($link . ' ' . $title);
 		$map = [
 			'add-request|addvlrequest|addsamples|add-samples|add new request' => ['register', 'new sample', 'enter sample', 'accession', 'create request'],
 			'requests|view-requests'        => ['worklist', 'pending', 'samples', 'test list'],
