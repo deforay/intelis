@@ -1115,9 +1115,21 @@ prepare_phase() {
     # ---- Step 1: master first ----
     # Vendor is gated on master's composer.lock, so master must land before we
     # can decide whether any instance actually needs a fresh vendor tarball.
+    #
+    # The worker's own progress goes to $master_log (it runs in a backgrounded
+    # subshell), so announce the acquisition mode here on the terminal — without
+    # this the section is silent. This is a prediction of the path the worker
+    # will take; the exact outcome (incl. any fallback) lands in $master_log and
+    # is confirmed by the "Master ready" line below.
+    if command -v git >/dev/null 2>&1 && [ -d "$INTELIS_SRC_DIR/.git" ]; then
+        print info "Updating source mirror (delta fetch — only changed files)..." >&2
+    elif command -v git >/dev/null 2>&1; then
+        print info "Cloning source mirror (first run; shallow clone — future runs are delta-only)..." >&2
+    else
+        print info "Downloading master tarball (git unavailable)..." >&2
+    fi
     ( _prepare_master_worker ) >"$master_log" 2>&1 &
     local master_pid=$!
-    print info "Downloading master (pid ${master_pid})" >&2
 
     local master_status=0
     wait "$master_pid" || master_status=$?
