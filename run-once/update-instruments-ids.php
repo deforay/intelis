@@ -53,6 +53,11 @@ try {
 
     $updatedOn = DateUtility::getCurrentDateTime();
 
+    // spinnerStart renders this message on its own line directly above the bar,
+    // so it is the single "what's running" line followed by the progress bar.
+    $total = count($instrumentResult);
+    $bar = $total > 0 ? MiscUtility::spinnerStart($total, 'Updating instrument IDs…') : null;
+
     foreach ($instrumentResult as $row) {
 
         $oldInstrumentId = null;
@@ -100,6 +105,14 @@ try {
             $db->orWhere("instrument_id", $oldInstrumentId);
         }
         $db->update('form_tb', ['instrument_id' => $instrumentId]);
+
+        if ($bar !== null) {
+            MiscUtility::spinnerAdvance($bar);
+        }
+    }
+
+    if ($bar !== null) {
+        MiscUtility::spinnerFinish($bar);
     }
     $scriptSucceeded = true;
 } catch (Throwable $e) {
