@@ -102,11 +102,11 @@ if ($sWhere !== '' && $sWhere !== '0') {
      if (isset($_POST['manifestCode']) && $_POST['manifestCode'] != '') {
           $manifestCode = $_POST['manifestCode'];
 
-          $sWhere .= " AND vl.sample_package_code IN
+          $sWhere .= " AND (vl.sample_package_code IN
                     (
                         '$manifestCode',
                         (SELECT DISTINCT sample_package_code FROM form_generic WHERE remote_sample_code LIKE '$manifestCode')
-                    )";
+                    )  OR vl.referral_manifest_code = '{$_POST['manifestCode']}')";
      }
 } else {
      $manifestCode = $_POST['manifestCode'];
@@ -114,11 +114,11 @@ if ($sWhere !== '' && $sWhere !== '0') {
           $manifestCode = $_POST['manifestCode'];
 
           $sWhere = ' WHERE ' . $sWhere;
-          $sWhere .= " vl.sample_package_code IN
+          $sWhere .= " (vl.sample_package_code IN
                     (
                         '$manifestCode',
                         (SELECT DISTINCT sample_package_code FROM form_generic WHERE remote_sample_code LIKE '$manifestCode')
-                    )";
+                    ) OR vl.referral_manifest_code = '{$_POST['manifestCode']}')";
      }
 }
 $sFilter = '';

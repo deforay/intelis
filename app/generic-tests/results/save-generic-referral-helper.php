@@ -35,7 +35,7 @@ try {
         exit;
     }
 
-    $testType = $_POST['type'] ?? 'tb';
+    $testType = $_POST['type'] ?? 'generic-tests';
     $referredBy = $_POST['referralLabId'];
     $referralSamples = $_POST['referralSamples'];
     $referredTo = $_POST['referralToLabId'];
@@ -56,7 +56,7 @@ try {
     if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) !== "") {
         $currentDateTime = DateUtility::getCurrentDateTime();
         $data = [
-            'module' => 'tb',
+            'module' => 'generic-tests',
             'lab_id' => $referredTo,
             'number_of_samples' => $numberOfSamples,
             'manifest_type' => 'referral',
