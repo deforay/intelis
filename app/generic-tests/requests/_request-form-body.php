@@ -1004,6 +1004,6 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
           </div>
           <input type="hidden" id="selectedSample" value="" name="selectedSample" class="" />
           <input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
-          <?php // vlSampleId must always render (outside every mode conditional) so the result
+          <?php // requestSampleId must always render (outside every mode conditional) so the result
           // page can submit it -- otherwise the hidden sample id is missing on some flows. ?>
-          <input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= $pf('sample_id') ?>" />
+          <input type="hidden" name="requestSampleId" id="requestSampleId" value="<?= $pf('sample_id') ?>" />

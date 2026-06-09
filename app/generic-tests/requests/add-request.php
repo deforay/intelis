@@ -677,7 +677,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                $.blockUI();
                var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
                <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'auto2' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                    insertSampleCode('vlRequestFormSs', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', '1', 'sampleCollectionDate', provinceCode, $("#province").find(":selected").attr("data-province-id"));
+                    insertSampleCode('vlRequestFormSs', 'requestSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', '1', 'sampleCollectionDate', provinceCode, $("#province").find(":selected").attr("data-province-id"));
                <?php } else { ?>
                     document.getElementById('vlRequestFormSs').submit();
                <?php } ?>
@@ -705,7 +705,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                $.blockUI();
                var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
                <?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'auto2' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-                    insertSampleCode('vlRequestFormSs', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 1, 'sampleCollectionDate', provinceCode, $("#province").find(":selected").attr("data-province-id"));
+                    insertSampleCode('vlRequestFormSs', 'requestSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 1, 'sampleCollectionDate', provinceCode, $("#province").find(":selected").attr("data-province-id"));
                <?php } else { ?>
                     document.getElementById('vlRequestFormSs').submit();
                <?php } ?>
@@ -862,7 +862,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
           }
      }
 
-     function insertSampleCode(formId, vlSampleId = null, sampleCode = null, sampleCodeKey = null, sampleCodeFormat = null, countryId = null, sampleCollectionDate = null, provinceCode = null, provinceId = null) {
+     function insertSampleCode(formId, requestSampleId = null, sampleCode = null, sampleCodeKey = null, sampleCodeFormat = null, countryId = null, sampleCollectionDate = null, provinceCode = null, provinceId = null) {
           $.blockUI();
           let formData = $("#" + formId).serialize();
           formData += "&provinceCode=" + encodeURIComponent(provinceCode);
@@ -874,7 +874,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                     //alert(data);
                     if (data > 0) {
                          $.unblockUI();
-                         document.getElementById("vlSampleId").value = data;
+                         document.getElementById("requestSampleId").value = data;
                          document.getElementById(formId).submit();
                     } else {
                          $.unblockUI();

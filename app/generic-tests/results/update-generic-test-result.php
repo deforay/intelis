@@ -1047,14 +1047,14 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 			getSubTestList(testType);
 		}
 		if (testType != "") {
-			var editId = $('#vlSampleId').val();
+			var editId = $('#requestSampleId').val();
 			var resultVal = $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>';
 			var testedTypeForm = '<?php echo base64_encode((string) $genericResultInfo['test_type_form']); ?>';
 			var testResultUnit = '<?php echo $genericResultInfo['result_unit']; ?>';
 			$(".requestForm").show();
 			$.post("/generic-tests/requests/getTestTypeForm.php", {
 					testType: testType,
-					vlSampleId: editId,
+					requestSampleId: editId,
 					result: resultVal,
 					testTypeForm: testedTypeForm,
 					// resultInterpretation: '< ?php echo $genericResultInfo['final_result_interpretation']; ?>',
@@ -1171,14 +1171,14 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 		var testType = $("#testType").val();
 		var subTestResult = $("#subTestResult").val();
 		if (testType != "") {
-			var editId = $('#vlSampleId').val();
+			var editId = $('#requestSampleId').val();
 			var resultVal = $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>';
 			var testedTypeForm = '<?php echo base64_encode((string) $genericResultInfo['test_type_form']); ?>';
 			var testResultUnit = '<?php echo $genericResultInfo['result_unit']; ?>';
 			$(".requestForm").show();
 			$.post("/generic-tests/requests/getTestTypeForm.php", {
 					testType: testType,
-					vlSampleId: editId,
+					requestSampleId: editId,
 					result: resultVal,
 					testTypeForm: testedTypeForm,
 					subTests: subTestResult
