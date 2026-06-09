@@ -1263,6 +1263,8 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 			formId: 'editTestTypeForm'
 		});
 
+		if (flag && !gtAllGroupsHaveMethod()) { flag = false; }
+
 		if (flag) {
 			$.blockUI();
 			document.getElementById('editTestTypeForm').submit();
@@ -1609,6 +1611,29 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 		if (clr) { clr.addEventListener('click', function () { visible().forEach(function (c) { c.checked = false; }); gtMethodPickerSummary(container); }); }
 		list.addEventListener('change', function () { gtMethodPickerSummary(container); });
 		gtMethodPickerSummary(container);
+	}
+
+	// Every Result Group must have at least one Test Method selected. The method
+	// checkboxes replaced a required <select>, so enforce it here at submit time.
+	function gtAllGroupsHaveMethod() {
+		var ok = true, firstBad = null;
+		document.querySelectorAll('.gtMethodPicker').forEach(function (c) {
+			var any = c.querySelector('.gtmp-list input[type="checkbox"]:checked');
+			var toggle = c.querySelector('.gtmp-toggle');
+			if (!any) {
+				ok = false;
+				if (!firstBad) { firstBad = c; }
+				if (toggle) { toggle.style.borderColor = '#dd4b39'; }
+			} else if (toggle) {
+				toggle.style.borderColor = '';
+			}
+		});
+		if (!ok) {
+			var msg = "<?php echo _jsTranslate('Please select at least one Test Method for every Result Group'); ?>";
+			if (typeof toastr !== 'undefined') { toastr.error(msg); } else { alert(msg); }
+			if (firstBad) { firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+		}
+		return ok;
 	}
 
 	function setResultType(id, row) {
