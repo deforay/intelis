@@ -1103,11 +1103,11 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
-						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
+						placeholder: "<?php echo _translate("-- Select --"); ?>"
 					});
 					$(".dynamicSelect2").select2({
 						width: '100%',
-						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
+						placeholder: "<?php echo _translate("-- Select --"); ?>"
 					});
 
 
@@ -1194,11 +1194,11 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
-						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
+						placeholder: "<?php echo _translate("-- Select --"); ?>"
 					});
 					$(".dynamicSelect2").select2({
 						width: '100%',
-						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
+						placeholder: "<?php echo _translate("-- Select --"); ?>"
 					});
 
 					// Attach date pickers to any date fields just injected.
