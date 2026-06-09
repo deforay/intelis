@@ -215,6 +215,36 @@ try {
                 $value = ['test_method_id' => $val, 'test_type_id' => $testTypeId];
                 $db->insert($tableName8, $value);
             }
+
+            // STS metadata sync selects changed rows by updated_datetime. A config save
+            // can re-point a test at pre-existing methods / units / reasons whose own
+            // timestamps predate the receiver's last sync, so refresh the mapping rows
+            // and the reference rows this test links to -- the whole config then travels
+            // as one current snapshot.
+            $nowDt = DateUtility::getCurrentDateTime();
+            $mapTables = [$tableName2, $tableName3, $tableName4, $tableName5, $tableName6, $tableName7, $tableName8];
+            foreach ($mapTables as $mapTable) {
+                $db->rawQuery("UPDATE `$mapTable` SET updated_datetime = ? WHERE test_type_id = ?", [$nowDt, $testTypeId]);
+            }
+            $refBumps = [
+                ['r_generic_test_methods', $tableName8, 'test_method_id'],
+                ['r_generic_sample_types', $tableName2, 'sample_type_id'],
+                ['r_generic_test_reasons', $tableName3, 'test_reason_id'],
+                ['r_generic_symptoms', $tableName4, 'symptom_id'],
+                ['r_generic_test_failure_reasons', $tableName5, 'test_failure_reason_id'],
+                ['r_generic_sample_rejection_reasons', $tableName6, 'rejection_reason_id'],
+                ['r_generic_test_result_units', $tableName7, 'unit_id'],
+            ];
+            foreach ($refBumps as [$refTable, $mapTable, $idCol]) {
+                $db->rawQuery(
+                    "UPDATE `$refTable` SET updated_datetime = ? WHERE `$idCol` IN (SELECT `$idCol` FROM `$mapTable` WHERE test_type_id = ?)",
+                    [$nowDt, $testTypeId]
+                );
+            }
+            $db->rawQuery(
+                "UPDATE r_generic_test_categories SET updated_datetime = ? WHERE test_category_id = (SELECT test_category FROM r_test_types WHERE test_type_id = ? AND test_category IS NOT NULL)",
+                [$nowDt, $testTypeId]
+            );
         }
         $_SESSION['alertMsg'] = _translate("Test type updated successfully");
     }
