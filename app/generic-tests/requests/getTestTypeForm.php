@@ -34,6 +34,10 @@ $testTypeForm = [];
 if (!empty($_POST['testTypeForm'])) {
     $testTypeForm = json_decode(base64_decode((string) $_POST['testTypeForm']), true);
 }
+// A fresh "Add Request" has no sample context (no saved per-field values, no sample id),
+// so it must start blank: do NOT pull the cross-sample field_code reuse there. Reuse only
+// applies when editing/cloning an existing sample (which carries its own saved values).
+$allowRecentReuse = !empty($_POST['testTypeForm']) || !empty($_POST['vlSampleId']);
 $disabled = "";
 if (!empty($_POST['formType']) && $_POST['formType'] == 'update-form') {
     $disabled = ' disabled ';
@@ -126,7 +130,7 @@ function getDropDownField(array $testAttribute, string $testAttributeId, $value,
 
 function getField(array $testAttribute, string $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth, string $mandatory): string
 {
-    $fieldDiv = "<div class='col-md-6 $sectionClass'>";
+    $fieldDiv = "<div class='col-md-4 $sectionClass'>";
     $fieldDiv .= '<label class="col-lg-5 control-label labels" for="' . $testAttributeId . '">' . $testAttribute['field_name'] . $mandatory . '</label>';
 
     $field = '';
@@ -164,8 +168,9 @@ if (!empty($testTypeAttributes)) {
         $recentData = null;
         if (in_array($currentSectionName, $arraySection)) {
             foreach ($testAttributeDetails as $testAttributeId => $testAttribute) {
-                // To set prefill with fcode
-                $recentData = $genericTestsService->fetchRelaventDataUsingTestAttributeId($testAttribute['field_code']);
+                // Prefill from the most recent matching field_code -- but only with a sample
+                // context (edit/clone). A fresh Add starts blank so dropdowns default to "-- Select --".
+                $recentData = $allowRecentReuse ? $genericTestsService->fetchRelaventDataUsingTestAttributeId($testAttribute['field_code']) : null;
                 if (empty($recentData)) {
                     $recentData = null;
                 }
@@ -197,8 +202,8 @@ if (!empty($testTypeAttributes)) {
                 $counter = 0;
                 $divContent = '';
                 foreach ($otherSectionFields as $testAttributeId => $testAttribute) {
-                    // To set prefill with fcode
-                    $recentData = $genericTestsService->fetchRelaventDataUsingTestAttributeId($testAttribute['field_code']);
+                    // Prefill from field_code only with a sample context (edit/clone); Add starts blank.
+                    $recentData = $allowRecentReuse ? $genericTestsService->fetchRelaventDataUsingTestAttributeId($testAttribute['field_code']) : null;
                     if (empty($recentData)) {
                         $recentData = null;
                     }

@@ -937,7 +937,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
      function applyAdvancedFormConfig(cfg) {
           cfg = cfg || {};
           var toggleField = function (selector, on) {
-               var $wrap = $(selector).first().closest('.col-md-6');
+               var $wrap = $(selector).first().closest('[class*="col-md-"]');
                if (!$wrap.length) { return; }
                $wrap.toggle(on);
                if (!on) { $wrap.find('.isRequired').removeClass('isRequired'); }
@@ -945,7 +945,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
           // Sex-coupled fields: when allowed, keep them under the female-section/sex
           // logic; when hidden by config, detach so a later sex change can't re-show them.
           var toggleFemaleField = function (selector, on) {
-               var $wrap = $(selector).first().closest('.col-md-6');
+               var $wrap = $(selector).first().closest('[class*="col-md-"]');
                if (!$wrap.length) { return; }
                if (on) {
                     var isFemale = $('input:radio[name=gender]:checked').val() === 'female';
@@ -1018,11 +1018,11 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 
                               $(".dynamicFacilitySelect2").select2({
                                    width: '100%',
-                                   placeholder: "<?php echo _translate("Select any one of the option"); ?>"
+                                   placeholder: "<?php echo _translate("-- Select --"); ?>"
                               });
                               $(".dynamicSelect2").select2({
                                    width: '100%',
-                                   placeholder: "<?php echo _translate("Select any one of the option"); ?>"
+                                   placeholder: "<?php echo _translate("-- Select --"); ?>"
                               });
 
                               $(".multipleSelectize").selectize({
