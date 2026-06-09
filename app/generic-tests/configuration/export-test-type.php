@@ -166,7 +166,10 @@ try {
     if ($slug === '') {
         $slug = 'custom-test';
     }
-    $filename = 'custom-test-' . $slug . '-' . date('Ymd') . '.json';
+    // Short UUID fragment disambiguates same-day re-exports and tests that share a
+    // short code, without bloating the name (the full uuid lives inside the file).
+    $uuidFrag = substr(preg_replace('/[^a-f0-9]/i', '', (string) ($testType['test_type_uuid'] ?? '')), 0, 8);
+    $filename = 'custom-test-' . $slug . ($uuidFrag !== '' ? '-' . $uuidFrag : '') . '-' . date('Ymd') . '.json';
 
     header('Content-Type: application/json; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
