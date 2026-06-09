@@ -728,6 +728,13 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                   <div class="subTestResultSection" id="resultSection">
 
                                                   </div>
+                                                  <?php
+                                                  // TB-style multi-test Test Section (only when the page opts in, i.e. the
+                                                  // result-update page). Replaces the single-result widgets above.
+                                                  if (!empty($multiTestResults)) {
+                                                       include __DIR__ . '/_test-section.php';
+                                                  }
+                                                  ?>
                                                   <div class="row">
                                                        <div class="col-md-6">
                                                             <label class="col-lg-5 control-label"
