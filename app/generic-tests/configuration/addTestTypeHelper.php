@@ -97,6 +97,34 @@ try {
         }
         $testTypeUuid = $postedUuid !== '' ? $postedUuid : MiscUtility::generateUUID(false);
 
+        // Per-group Test Methods are the new source of truth (the standalone Test
+        // Methods field was removed). Resolve any newly-typed method names to ids,
+        // rewrite the config so the stored JSON holds ids, and collect the union to
+        // rebuild generic_test_methods_map (kept for getTestMethod/PDF/interop).
+        $resolvedMethodIds = [];
+        if (!empty($_POST['resultConfig']['methods']) && is_array($_POST['resultConfig']['methods'])) {
+            foreach ($_POST['resultConfig']['methods'] as $gKey => $methodList) {
+                if (empty($methodList) || !is_array($methodList)) {
+                    continue;
+                }
+                foreach ($methodList as $mIdx => $mVal) {
+                    if ($mVal === '' || $mVal === null) {
+                        continue;
+                    }
+                    if (!is_numeric($mVal)) {
+                        $db->insert('r_generic_test_methods', [
+                            'test_method_name' => $mVal,
+                            'test_method_status' => 'active'
+                        ]);
+                        $mVal = $db->getInsertId();
+                    }
+                    $mVal = (int) $mVal;
+                    $_POST['resultConfig']['methods'][$gKey][$mIdx] = $mVal;
+                    $resolvedMethodIds[$mVal] = $mVal;
+                }
+            }
+        }
+
         $data = ['test_type_uuid' => $testTypeUuid, 'test_standard_name' => $_POST['testStandardName'], 'test_generic_name' => $_POST['testGenericName'], 'test_short_code' => $shortCode, 'test_loinc_code' => empty($_POST['testLoincCode']) ? null : $_POST['testLoincCode'], 'test_category' => empty($_POST['testCategory']) ? null : $_POST['testCategory'], 'test_form_config' => json_encode($testAttribute), 'test_results_config' => json_encode($_POST['resultConfig']), 'test_status' => $_POST['status']];
 
         $id = $db->insert($tableName, $data);
@@ -171,19 +199,10 @@ try {
                     $db->insert($tableName7, $value);
                 }
             }
-            if (!empty($_POST['testMethod'])) {
-                foreach ($_POST['testMethod'] as $val) {
-                    if (!is_numeric($val)) {
-                        $d = [
-                            'test_method_name' => $val,
-                            'test_method_status' => 'active'
-                        ];
-                        $db->insert('r_generic_test_methods', $d);
-                        $val = $db->getInsertId();
-                    }
-                    $value = ['test_method_id' => $val, 'test_type_id' => $lastId];
-                    $db->insert($tableName8, $value);
-                }
+            // Build the method map from the union of all result-group methods.
+            foreach ($resolvedMethodIds as $val) {
+                $value = ['test_method_id' => $val, 'test_type_id' => $lastId];
+                $db->insert($tableName8, $value);
             }
         }
         $_SESSION['alertMsg'] = _translate("Test type added successfully");

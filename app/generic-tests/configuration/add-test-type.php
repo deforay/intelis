@@ -12,6 +12,12 @@ $generic = ContainerRegistry::get(GenericTestsService::class);
 $sampleTypeInfo = $general->getDataByTableAndFields("r_generic_sample_types", ["sample_type_id", "sample_type_name"], true, "sample_type_status='active'");
 $symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", ["symptom_id", "symptom_name"], true, "symptom_status='active'");
 $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_units", ["unit_id", "unit_name"], true, "unit_status='active'");
+$testMethodInfo = $testMethodInfo ?? $general->getDataByTableAndFields("r_generic_test_methods", ["test_method_id", "test_method_name"], true, "test_method_status='active'");
+$methodOptionsJs = '';
+foreach (($testMethodInfo ?? []) as $__mid => $__mname) {
+    $methodOptionsJs .= '<option value="' . htmlspecialchars((string) $__mid) . '">' . htmlspecialchars((string) $__mname) . '</option>';
+}
+
 ?>
 <style>
 	.tooltip-inner {
@@ -164,16 +170,6 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 						</div>
 
 						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="testMethod" class="col-lg-4 control-label"><?php echo _translate("Test Methods"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
-									<div class="col-lg-7">
-										<select class="form-control isRequired editableSelect" name='testMethod[]' id='testMethod' title="<?php echo _translate('Please select the test methods'); ?>" multiple>
-
-										</select>
-									</div>
-								</div>
-							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="testCategory" class="col-lg-4 control-label"><?php echo _translate("Test Category"); ?> <span class="mandatory">*</span> <em class="fas fa-edit"></em></label>
@@ -346,6 +342,10 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 										<td>
 											<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">
 												<tr>
+								<td style="width:20%;"><lable class="form-label-control"><?php echo _translate("Test Methods"); ?> <span class="mandatory">*</span></lable></td>
+								<td colspan="3" style="width:80%;"><select multiple name="resultConfig[methods][1][]" class="form-control input-sm isRequired resultGroupMethods" title="<?php echo _translate('Select the test method(s) that produce this result'); ?>"><?= $general->generateSelectOptions($testMethodInfo, $testResultAttribute['methods'][1] ?? [], false) ?></select></td>
+							</tr>
+							<tr>
 													<td class="hide firstSubTest" style="width:20%;">
 														<lable for="resultSubGroup1" class="form-label-control"><?php echo _translate("Result name"); ?></lable>
 													</td>
@@ -522,6 +522,12 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 		});
 
 
+
+		$('.resultGroupMethods').each(function () {
+			if (!$(this).hasClass('select2-hidden-accessible')) {
+				$(this).select2({ tags: true, width: '100%', placeholder: "<?php echo _translate('Select test method(s)'); ?>" });
+			}
+		});
 
 		let ajaxSelect = ["testMethod", "testCategory", "testingReason", "testFailureReason", "rejectionReason"];
 		let _p = ["test methods", "test categories", "testing reason", "test failure reason", "rejection reason"];
@@ -822,6 +828,10 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 				<td>\
 					<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">\
 						<tr>\
+								<td style="width:20%;"><lable class="form-label-control"><?php echo _translate("Test Methods"); ?></lable></td>\
+								<td colspan="3" style="width:80%;"><select multiple name="resultConfig[methods][' + sampleCounter + '][]" class="form-control input-sm isRequired resultGroupMethods" title="<?php echo _translate('Select test method(s)'); ?>"><?php echo $methodOptionsJs; ?></select></td>\
+							</tr>\
+							<tr>\
 							<td style="width:20%;"><lable for="resultSubGroup' + sampleCounter + '" class="form-label-control"><?php echo _translate("Result name"); ?></lable></td>\
 							<td style="width:30%;">\
 								<input type="text" name="resultConfig[sub_test_name][' + sampleCounter + ']"id="resultSubGroup' + sampleCounter + '" class="form-control isRequired input-sm" placeholder="<?php echo _translate("Result / assay name, e.g. RT-PCR"); ?>" title="Please ener the sub test name for ' + sampleCounter + ' row"/>\
@@ -890,6 +900,7 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 				</td>\
 			</tr>';
 		$(obj.parentNode.parentNode).after(html);
+		$('.resultGroupMethods').each(function () { if (!$(this).hasClass('select2-hidden-accessible')) { $(this).select2({ tags: true, width: '100%', placeholder: "<?php echo _translate('Select test method(s)'); ?>" }); } });
 	}
 
 	function removeQualitativeRow(obj, row1, row2) {
