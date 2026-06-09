@@ -20,7 +20,7 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
-$genericTestInfo = $db->rawQuery($genericTestQuery, [$_POST['vlSampleId']]);
+$genericTestInfo = $db->rawQuery($genericTestQuery, [$_POST['requestSampleId']]);
 // echo "<pre>";print_r($genericTestInfo);die;
 foreach ($genericTestInfo as $ikey => $row) {
     $subTestLabels[] = $row['sub_test_name'];
@@ -37,7 +37,7 @@ if (!empty($_POST['testTypeForm'])) {
 // A fresh "Add Request" has no sample context (no saved per-field values, no sample id),
 // so it must start blank: do NOT pull the cross-sample field_code reuse there. Reuse only
 // applies when editing/cloning an existing sample (which carries its own saved values).
-$allowRecentReuse = !empty($_POST['testTypeForm']) || !empty($_POST['vlSampleId']);
+$allowRecentReuse = !empty($_POST['testTypeForm']) || !empty($_POST['requestSampleId']);
 $disabled = "";
 if (!empty($_POST['formType']) && $_POST['formType'] == 'update-form') {
     $disabled = ' disabled ';

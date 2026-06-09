@@ -282,14 +282,14 @@ try {
     //dynamicFields[_7ccf3703a3e2adea][]    "_7ccf3703a3e2adea":["AFP","Cholera"]
     //Update patient Information in Patients Table
     // $patientsService->savePatient($_POST,'form_generic');
-    if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && (!$isRejected)) {
+    if (isset($_POST['requestSampleId']) && $_POST['requestSampleId'] != '' && (!$isRejected)) {
         if (!empty($_POST['testName'])) {
             $finalResult = "";
             if (isset($_POST['subTestResult']) && (isset($_POST['subTestResult']) && ($_POST['subTestResult'] !== '' && $_POST['subTestResult'] !== '0'))) {
                 foreach ($_POST['testName'] as $subTestName => $subTests) {
                     foreach ($subTests as $testKey => $testKitName) {
                         if (!empty($testKitName)) {
-                            $testData = ['generic_id' => $_POST['vlSampleId'], 'sub_test_name' => $subTestName, 'result_type' => $_POST['resultType'][$subTestName], 'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName, 'facility_id' => $_POST['labId'] ?? null, 'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? ''), 'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null, 'kit_lot_no' => (str_contains((string) $testKitName, 'RDT')) ? $_POST['lotNo'][$subTestName][$testKey] : null, 'kit_expiry_date' => (str_contains((string) $testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null, 'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey], 'result' => $_POST['testResult'][$subTestName][$testKey], 'final_result' => $_POST['finalResult'][$subTestName], 'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName], 'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]];
+                            $testData = ['generic_id' => $_POST['requestSampleId'], 'sub_test_name' => $subTestName, 'result_type' => $_POST['resultType'][$subTestName], 'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName, 'facility_id' => $_POST['labId'] ?? null, 'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? ''), 'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null, 'kit_lot_no' => (str_contains((string) $testKitName, 'RDT')) ? $_POST['lotNo'][$subTestName][$testKey] : null, 'kit_expiry_date' => (str_contains((string) $testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null, 'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey], 'result' => $_POST['testResult'][$subTestName][$testKey], 'final_result' => $_POST['finalResult'][$subTestName], 'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName], 'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]];
                             $db->insert('generic_test_results', $testData);
                             if (isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName])) {
                                 $finalResult = $_POST['finalResult'][$subTestName];
@@ -300,7 +300,7 @@ try {
             } else {
                 foreach ($_POST['testName'] as $testKey => $testKitName) {
                     if (!empty($_POST['testName'][$testKey][0])) {
-                        $testData = ['generic_id' => $_POST['vlSampleId'] ?? null, 'sub_test_name' => null, 'result_type' => $_POST['resultType'][$testKey][0] ?? null, 'test_name' => ($_POST['testName'][$testKey][0] == 'other') ? $_POST['testNameOther'][$testKey][0] : $_POST['testName'][$testKey][0], 'facility_id' => $_POST['labId'] ?? null, 'sample_tested_datetime' => (isset($_POST['testDate'][$testKey][0]) && !empty($_POST['testDate'][$testKey][0])) ? DateUtility::isoDateFormat($_POST['testDate'][$testKey][0]) : null, 'testing_platform' => $_POST['testingPlatform'][$testKey][0] ?? null, 'kit_lot_no' => (str_contains((string) $_POST['testName'][$testKey][0], 'RDT')) ? $_POST['lotNo'][$testKey][0] : null, 'kit_expiry_date' => (str_contains((string) $_POST['testName'][$testKey][0], 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey][0]) : null, 'result_unit' => $_POST['testResultUnit'][$testKey][0] ?? null, 'result' => $_POST['testResult'][$testKey][0] ?? null];
+                        $testData = ['generic_id' => $_POST['requestSampleId'] ?? null, 'sub_test_name' => null, 'result_type' => $_POST['resultType'][$testKey][0] ?? null, 'test_name' => ($_POST['testName'][$testKey][0] == 'other') ? $_POST['testNameOther'][$testKey][0] : $_POST['testName'][$testKey][0], 'facility_id' => $_POST['labId'] ?? null, 'sample_tested_datetime' => (isset($_POST['testDate'][$testKey][0]) && !empty($_POST['testDate'][$testKey][0])) ? DateUtility::isoDateFormat($_POST['testDate'][$testKey][0]) : null, 'testing_platform' => $_POST['testingPlatform'][$testKey][0] ?? null, 'kit_lot_no' => (str_contains((string) $_POST['testName'][$testKey][0], 'RDT')) ? $_POST['lotNo'][$testKey][0] : null, 'kit_expiry_date' => (str_contains((string) $_POST['testName'][$testKey][0], 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey][0]) : null, 'result_unit' => $_POST['testResultUnit'][$testKey][0] ?? null, 'result' => $_POST['testResult'][$testKey][0] ?? null];
                         foreach ($_POST['finalResult'] as $key => $value) {
                             if (isset($value) && !empty($value)) {
                                 $testData['final_result'] = $value;
@@ -322,12 +322,12 @@ try {
             $genericData['result'] = $finalResult;
         }
     } else {
-        $db->where('generic_id', $_POST['vlSampleId']);
+        $db->where('generic_id', $_POST['requestSampleId']);
         $db->delete($testTableName);
         $genericData['sample_tested_datetime'] = null;
     }
-    if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
-        $db->where('sample_id', $_POST['vlSampleId']);
+    if (isset($_POST['requestSampleId']) && $_POST['requestSampleId'] != '') {
+        $db->where('sample_id', $_POST['requestSampleId']);
         $id = $db->update($tableName, $genericData);
     } else {
         //check existing sample id
@@ -383,7 +383,7 @@ try {
             header("Location:add-request.php");
         }
         if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'clone') {
-            header("Location:clone-request.php?id=" . base64_encode((string) $_POST['vlSampleId']));
+            header("Location:clone-request.php?id=" . base64_encode((string) $_POST['requestSampleId']));
         }
         if (empty($_POST['saveNext'])) {
             header("Location:view-requests.php");

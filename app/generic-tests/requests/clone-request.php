@@ -1323,7 +1323,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 					<div class="box-footer">
 						<input type="hidden" name="revised" id="revised" value="no" />
 						<input type="hidden" name="saveNext" id="saveNext" />
-						<input type="hidden" name="vlSampleId" id="vlSampleId"
+						<input type="hidden" name="requestSampleId" id="requestSampleId"
 							value="<?= htmlspecialchars((string) $genericResultInfo['sample_id']); ?>" />
 						<input type="hidden" name="isRemoteSample"
 							value="<?= htmlspecialchars((string) $genericResultInfo['remote_sample']); ?>" />
@@ -1732,7 +1732,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		}
 	}
 
-	function insertSampleCode(formId, vlSampleId = null, sampleCode = null, sampleCodeKey = null, sampleCodeFormat = null, countryId = null, sampleCollectionDate = null, provinceCode = null, provinceId = null) {
+	function insertSampleCode(formId, requestSampleId = null, sampleCode = null, sampleCodeKey = null, sampleCodeFormat = null, countryId = null, sampleCollectionDate = null, provinceCode = null, provinceId = null) {
 		$.blockUI();
 		let formData = $("#" + formId).serialize();
 		formData += "&provinceCode=" + encodeURIComponent(provinceCode);
@@ -1744,7 +1744,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 				//alert(data);
 				if (data > 0) {
 					$.unblockUI();
-					document.getElementById("vlSampleId").value = data;
+					document.getElementById("requestSampleId").value = data;
 					document.getElementById(formId).submit();
 				} else {
 					$.unblockUI();
@@ -1946,7 +1946,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			$(".btn-disabled").prop("onclick", null).off("click");
 			$.blockUI();
 			<?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-			insertSampleCode('vlRequestFormRwd', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', '1', 'sampleCollectionDate');
+			insertSampleCode('vlRequestFormRwd', 'requestSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', '1', 'sampleCollectionDate');
 			<?php } else { ?>
 			document.getElementById('vlRequestFormRwd').submit();
 			<?php } ?>
@@ -1973,7 +1973,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			$(".btn-disabled").prop("onclick", null).off("click");
 			$.blockUI();
 			<?php if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'YY' || $arr['sample_code'] == 'MMYY') { ?>
-			insertSampleCode('vlRequestFormRwd', 'vlSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 1, 'sampleCollectionDate');
+			insertSampleCode('vlRequestFormRwd', 'requestSampleId', 'sampleCode', 'sampleCodeKey', 'sampleCodeFormat', 1, 'sampleCollectionDate');
 			<?php } else { ?>
 			document.getElementById('vlRequestFormRwd').submit();
 			<?php } ?>
