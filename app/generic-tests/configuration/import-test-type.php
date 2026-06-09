@@ -109,26 +109,116 @@ if ($test === null) {
                             <em class="fa-solid fa-triangle-exclamation"></em> <?php echo htmlspecialchars($importError); ?>
                         </div>
                     <?php } ?>
+                    <style>
+                        .import-dropzone {
+                            position: relative;
+                            display: block;
+                            border: 2px dashed #c3cdd6;
+                            border-radius: 6px;
+                            background: #f7f9fb;
+                            padding: 40px 20px;
+                            text-align: center;
+                            cursor: pointer;
+                            transition: border-color .15s ease, background-color .15s ease;
+                        }
+                        .import-dropzone:hover,
+                        .import-dropzone:focus-within {
+                            border-color: #3c8dbc;
+                            background: #f0f6fb;
+                        }
+                        .import-dropzone.is-dragover {
+                            border-color: #3c8dbc;
+                            border-style: solid;
+                            background: #e8f3fb;
+                        }
+                        .import-dropzone__icon {
+                            font-size: 42px;
+                            color: #9aa7b3;
+                            margin-bottom: 12px;
+                            transition: color .15s ease;
+                        }
+                        .import-dropzone:hover .import-dropzone__icon,
+                        .import-dropzone.is-dragover .import-dropzone__icon {
+                            color: #3c8dbc;
+                        }
+                        .import-dropzone__primary {
+                            font-size: 16px;
+                            color: #333;
+                            margin-bottom: 4px;
+                        }
+                        .import-dropzone__primary a {
+                            color: #3c8dbc;
+                            text-decoration: underline;
+                        }
+                        .import-dropzone__hint {
+                            font-size: 12px;
+                            color: #8a97a3;
+                            margin: 0;
+                        }
+                        .import-dropzone__file {
+                            display: none;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 8px;
+                            margin-top: 16px;
+                            font-size: 14px;
+                            color: #2e6da4;
+                        }
+                        .import-dropzone__file .fa-file-code {
+                            font-size: 18px;
+                        }
+                        .import-dropzone__clear {
+                            color: #a94442;
+                            cursor: pointer;
+                            font-size: 13px;
+                        }
+                        .import-dropzone.has-file {
+                            border-style: solid;
+                            border-color: #00a65a;
+                            background: #f4fbf6;
+                        }
+                        .import-dropzone.has-file .import-dropzone__prompt {
+                            display: none;
+                        }
+                        .import-dropzone.has-file .import-dropzone__file {
+                            display: flex;
+                        }
+                    </style>
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <h3 class="box-title"><?php echo _translate("Upload an exported test"); ?></h3>
                         </div>
-                        <form method="post" action="import-test-type.php" enctype="multipart/form-data"
-                            class="form-horizontal">
+                        <form method="post" action="import-test-type.php" enctype="multipart/form-data" id="importForm">
                             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>" />
                             <div class="box-body">
                                 <p class="text-muted">
                                     <?php echo _translate("Select a Custom Test file (.json) exported from another InteLIS instance. You will be taken to an editable form where you can review and adjust the test before saving it here."); ?>
                                 </p>
-                                <div class="form-group">
-                                    <label for="importFile"
-                                        class="col-lg-3 control-label"><?php echo _translate("Export file"); ?>
-                                        <span class="mandatory">*</span></label>
-                                    <div class="col-lg-7">
-                                        <input type="file" name="importFile" id="importFile" accept=".json,application/json"
-                                            class="form-control" required />
+                                <label for="importFile" class="import-dropzone" id="importDropzone">
+                                    <input type="file" name="importFile" id="importFile" accept=".json,application/json"
+                                        class="sr-only" required style="position:absolute;width:1px;height:1px;opacity:0;" />
+                                    <div class="import-dropzone__prompt">
+                                        <div class="import-dropzone__icon">
+                                            <em class="fa-solid fa-cloud-arrow-up"></em>
+                                        </div>
+                                        <div class="import-dropzone__primary">
+                                            <?php echo sprintf(
+                                                _translate("Drag &amp; drop your export file here, or %s"),
+                                                '<a href="javascript:void(0)">' . _translate("browse to choose a file") . '</a>'
+                                            ); ?>
+                                        </div>
+                                        <p class="import-dropzone__hint">
+                                            <?php echo _translate("Accepts a single .json file (up to 5 MB)"); ?>
+                                        </p>
                                     </div>
-                                </div>
+                                    <div class="import-dropzone__file">
+                                        <em class="fa-solid fa-file-code"></em>
+                                        <span id="importFileName"></span>
+                                        <span class="import-dropzone__clear" id="importFileClear" role="button" tabindex="0">
+                                            <em class="fa-solid fa-xmark"></em> <?php echo _translate("remove"); ?>
+                                        </span>
+                                    </div>
+                                </label>
                             </div>
                             <div class="box-footer">
                                 <button type="submit" class="btn btn-primary">
@@ -138,6 +228,68 @@ if ($test === null) {
                             </div>
                         </form>
                     </div>
+                    <script>
+                        (function () {
+                            var dropzone = document.getElementById('importDropzone');
+                            var input = document.getElementById('importFile');
+                            var nameEl = document.getElementById('importFileName');
+                            var clearEl = document.getElementById('importFileClear');
+                            if (!dropzone || !input) {
+                                return;
+                            }
+
+                            function showFile(file) {
+                                if (file) {
+                                    nameEl.textContent = file.name;
+                                    dropzone.classList.add('has-file');
+                                } else {
+                                    nameEl.textContent = '';
+                                    dropzone.classList.remove('has-file');
+                                }
+                            }
+
+                            input.addEventListener('change', function () {
+                                showFile(input.files && input.files[0] ? input.files[0] : null);
+                            });
+
+                            clearEl.addEventListener('click', function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                input.value = '';
+                                showFile(null);
+                            });
+                            clearEl.addEventListener('keydown', function (e) {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    input.value = '';
+                                    showFile(null);
+                                }
+                            });
+
+                            ['dragenter', 'dragover'].forEach(function (evt) {
+                                dropzone.addEventListener(evt, function (e) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    dropzone.classList.add('is-dragover');
+                                });
+                            });
+                            ['dragleave', 'dragend', 'drop'].forEach(function (evt) {
+                                dropzone.addEventListener(evt, function (e) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    dropzone.classList.remove('is-dragover');
+                                });
+                            });
+                            dropzone.addEventListener('drop', function (e) {
+                                var files = e.dataTransfer && e.dataTransfer.files;
+                                if (files && files.length) {
+                                    input.files = files;
+                                    showFile(files[0]);
+                                }
+                            });
+                        })();
+                    </script>
                 </div>
             </div>
         </section>
