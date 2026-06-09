@@ -142,9 +142,9 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 						<?php if ($gtGroupType === 'quantitative') { ?>
 							<input type="number" step="any" class="form-control isRequired" name="testResult[testResult][]"
 								id="testResult<?= $n; ?>" value="<?= $gtEsc($testResult); ?>"
-								placeholder="<?= _translate("Enter numeric result"); ?>" />
+								placeholder="<?= _htmlTranslate("Enter numeric result"); ?>" />
 							<select class="form-control" name="testResult[resultUnit][]" id="resultUnit<?= $n; ?>" style="margin-top:6px;">
-								<option value=""><?= _translate("Unit"); ?></option>
+								<option value=""><?= _htmlTranslate("Unit"); ?></option>
 								<?php foreach ($gtUnits as $u) { ?>
 									<option value="<?= $gtEsc($u['id']); ?>" <?= ((string) ($row['result_unit'] ?? '') === (string) $u['id']) ? 'selected' : ''; ?>><?= $gtEsc($u['name']); ?></option>
 								<?php } ?>
@@ -152,7 +152,7 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 						<?php } else {
 							$gtResFound = false; ?>
 							<select class="form-control isRequired" name="testResult[testResult][]" id="testResult<?= $n; ?>">
-								<option value=""><?= _translate("Select test result"); ?></option>
+								<option value=""><?= _htmlTranslate("Select test result"); ?></option>
 								<?php foreach ($gtGroupRes as $rv) {
 									$sel = ((string) $testResult === (string) $rv);
 									$gtResFound = $gtResFound || $sel; ?>
@@ -308,9 +308,9 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 	var gtDefaultGroup = <?= json_encode($gtDefaultGroup, JSON_UNESCAPED_UNICODE) ?: '{"result_type":"qualitative","results":[]}'; ?>;
 	var gtUnits = <?= json_encode($gtUnits, JSON_UNESCAPED_UNICODE) ?: '[]'; ?>;
 	var gtI18n = {
-		unit: "<?= _translate("Unit"); ?>",
-		selectResult: "<?= _translate("Select test result"); ?>",
-		numeric: "<?= _translate("Enter numeric result"); ?>"
+		unit: "<?= _jsTranslate("Unit"); ?>",
+		selectResult: "<?= _jsTranslate("Select test result"); ?>",
+		numeric: "<?= _jsTranslate("Enter numeric result"); ?>"
 	};
 
 	// Build the Test Result control for a method's result group -- a qualitative
