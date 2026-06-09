@@ -1115,6 +1115,11 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 						plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 					});
 
+					// Attach date pickers to any date fields just injected
+					// (the document-ready init ran before they existed).
+					if (typeof initDatePicker === 'function') { initDatePicker(); }
+					if (typeof initDateTimePicker === 'function') { initDateTimePicker(); }
+
 				});
 		} else {
 			removeDynamicForm();
@@ -1195,6 +1200,10 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
+
+					// Attach date pickers to any date fields just injected.
+					if (typeof initDatePicker === 'function') { initDatePicker(); }
+					if (typeof initDateTimePicker === 'function') { initDateTimePicker(); }
 
 				});
 		} else {

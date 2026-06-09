@@ -72,7 +72,9 @@ function getClassNameFromFieldType($fieldType): mixed
         if ($fieldType == 'number') {
             return " forceNumeric ";
         } elseif ($fieldType == 'date') {
-            return " dateTime ";
+            // Custom-test fields only offer a "Date" type (no date-time), so use the
+            // date-only picker class. initDatePicker() attaches the calendar.
+            return " date ";
         }
         return "";
     });
