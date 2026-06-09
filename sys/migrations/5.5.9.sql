@@ -21,3 +21,15 @@ ALTER TABLE `r_test_types`
   ADD UNIQUE INDEX `idx_r_test_types_uuid` (`test_type_uuid`);
 
 UPDATE `system_config` SET `value` = '5.5.9' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
