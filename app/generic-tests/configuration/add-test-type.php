@@ -48,6 +48,10 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 		margin-left: 5px;
 		cursor: pointer;
 	}
+	.fieldCode[readonly] {
+		background-color: #f2f2f2;
+		cursor: pointer;
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -404,12 +408,38 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 		});
 
 		$('input').tooltip();
+
+		// Auto-generate the field code from the field name as it is typed, until the
+		// code is edited directly (or it already has a value).
+		$('.fieldCode').each(function () {
+			if ($(this).val() !== '') {
+				$(this).data('codeTouched', true);
+			}
+		});
+		$(document).on('focusout', '.fieldName', function () {
+			var $code = $(this).closest('tr').find('.fieldCode').first();
+			if ($code.length && !$code.data('codeTouched')) {
+				$code.val(Utilities.toSnakeCase(this.value));
+			}
+		});
+		$(document).on('input', '.fieldCode', function () {
+			$(this).data('codeTouched', true);
+		});
+		// Existing field codes are locked -- they are the shared identifier that
+		// links a field to prior samples and to the same field on other test types.
+		// Double-click to deliberately change one (e.g. fix a typo, or align codes).
+		$(document).on('dblclick', '.fieldCode[readonly]', function () {
+			if (confirm('This field code is already in use as a shared identifier across samples and test types. Changing it can break data reuse. Change it anyway?')) {
+				$(this).prop('readonly', false).data('codeTouched', true).focus();
+			}
+		});
 		generateRandomFieldId('1');
 		$("#testingReason").select2({
 			placeholder: "<?php echo _translate("Select Testing Reason"); ?>"
 		});
 		$("#sampleType").select2({
-			placeholder: "<?php echo _translate("Select Testing Reason"); ?>"
+			width: '100%',
+			placeholder: "<?php echo _translate("Select Sample Type"); ?>"
 		});
 		$("#testFailureReason").select2({
 			placeholder: "<?php echo _translate("Select Test Failure Reason"); ?>"

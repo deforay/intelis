@@ -1,31 +1,56 @@
 <?php
 
 /**
- * Shared Custom Test (Test Type) form body.
+ * Shared Custom Test (Test Type) form body -- the single source for
+ * add-test-type.php, edit-test-type.php, clone-test-type.php and
+ * import-test-type.php. Built on the per-sub-test ("nested") result schema that
+ * getTestTypeForm.php and the request/result forms consume, so every flow saves
+ * a faithful test_results_config.
  *
- * Included by clone-test-type.php (clone an existing test) and
- * import-test-type.php (import a test exported from another instance).
- *
- * The including file must define all the data variables ($testTypeInfo,
- * $testAttr, $testResultAttribute and the various *Info / *Id lists). The
- * variables below let the caller tweak the few bits that differ between the
- * two flows; they fall back to clone's original behaviour when unset.
+ * The including page loads the lookup lists / selected ids and sets the few
+ * mode-specific bits below; everything else is shared. Data-derived values pass
+ * through $esc() because import-test-type.php sources them from an uploaded file.
  */
-$formHeading = $formHeading ?? _translate("Edit Test Type");
-$prefillStandardName = $prefillStandardName ?? '';
-$prefillGenericName = $prefillGenericName ?? '';
-$prefillShortCode = $prefillShortCode ?? '';
-$prefillLoincCode = $prefillLoincCode ?? '';
-$uniqueExclusion = $uniqueExclusion ?? ('test_type_id##' . ($testTypeInfo['test_type_id'] ?? ''));
-// Where the form submits. Defaults to creating a new test; import-test-type.php
-// points it at editTestTypeHelper.php when updating an existing test in place.
-$formAction = $formAction ?? 'addTestTypeHelper.php';
+$formMode            = $formMode ?? 'edit';
+$formHeading         = $formHeading ?? _translate("Edit Test Type");
+$formAction          = $formAction ?? 'editTestTypeHelper.php';
 
-// Escape values rendered into HTML/attribute contexts. The form config and
-// result config can originate from an uploaded import file (import-test-type.php),
-// so every config-derived value below is wrapped before echoing. Non-destructive:
-// the browser decodes it back and the form re-posts the original value.
+$testTypeInfo = array_merge(
+    ['test_type_id' => 0, 'test_type_uuid' => '', 'test_category' => '', 'test_status' => 'active',
+     'test_standard_name' => '', 'test_generic_name' => '', 'test_short_code' => '', 'test_loinc_code' => ''],
+    is_array($testTypeInfo ?? null) ? $testTypeInfo : []
+);
+$testAttr            = is_array($testAttr ?? null) ? $testAttr : [];
+$testResultAttribute = is_array($testResultAttribute ?? null) ? $testResultAttribute : [];
+
+$prefillStandardName = $prefillStandardName ?? ($testTypeInfo['test_standard_name'] ?? '');
+$prefillGenericName  = $prefillGenericName ?? ($testTypeInfo['test_generic_name'] ?? '');
+$prefillShortCode    = $prefillShortCode ?? ($testTypeInfo['test_short_code'] ?? '');
+$prefillLoincCode    = $prefillLoincCode ?? ($testTypeInfo['test_loinc_code'] ?? '');
+$uniqueExclusion     = $uniqueExclusion ?? ('test_type_id##' . ($testTypeInfo['test_type_id'] ?? ''));
+
+// Lookup lists / selected ids. edit/clone/import preload these; add leaves the
+// AJAX-driven ones empty. Default everything so the body never warns.
+$testMethodInfo            = $testMethodInfo ?? [];
+$testMethodId              = $testMethodId ?? [];
+$categoryInfo              = $categoryInfo ?? [];
+$sampleTypeInfo            = $sampleTypeInfo ?? [];
+$testSampleId              = $testSampleId ?? [];
+$testReasonInfo            = $testReasonInfo ?? [];
+$testReasonId              = $testReasonId ?? [];
+$testResultUnitInfo        = $testResultUnitInfo ?? [];
+$testResultUnitId          = $testResultUnitId ?? [];
+$testFailureReasonInfo     = $testFailureReasonInfo ?? [];
+$testFailureReasonId       = $testFailureReasonId ?? [];
+$sampleRejectionReasonInfo = $sampleRejectionReasonInfo ?? [];
+$rejectionReasonId         = $rejectionReasonId ?? [];
+$symptomInfo               = $symptomInfo ?? [];
+$testSymptomsId            = $testSymptomsId ?? [];
+
 $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES, 'UTF-8');
+
+// Row counter for the field table; overwritten by the field loop when fields exist.
+$i = 1;
 ?>
 <style>
 	.tooltip-inner {
@@ -62,6 +87,10 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 		margin-left: 5px;
 		cursor: pointer;
 	}
+	.fieldCode[readonly] {
+		background-color: #f2f2f2;
+		cursor: pointer;
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -83,7 +112,7 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='cloneTestTypeForm' id='cloneTestTypeForm'
+				<form class="form-horizontal" method='post' name='testTypeForm' id='testTypeForm'
 					autocomplete="off" action="<?php echo htmlspecialchars((string) $formAction); ?>">
 					<div class="box-body">
 						<div class="row">
@@ -95,14 +124,13 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="testStandardName"
 											name="testStandardName"
-											value="<?php echo htmlspecialchars((string) $prefillStandardName); ?>"
 											placeholder='<?php echo _translate("Test Standard Name"); ?>'
 											title='<?php echo _translate("Please enter standard name"); ?>'
+											value="<?php echo $esc($prefillStandardName); ?>"
 											onblur="checkNameValidation('r_test_types','test_standard_name',this,'<?php echo $uniqueExclusion; ?>','<?php echo _translate("This test standard name that you entered already exists.Try another name"); ?>',null)" />
 										<input type="hidden" name="testTypeId" id="testTypeId"
 											value="<?php echo base64_encode((string) $testTypeInfo['test_type_id']); ?>" />
-											<input type="hidden" name="testTypeUuid" id="testTypeUuid"
-											value="<?php echo htmlspecialchars((string) ($testTypeInfo['test_type_uuid'] ?? '')); ?>" />
+											<input type="hidden" name="testTypeUuid" id="testTypeUuid" value="<?php echo $esc($testTypeInfo['test_type_uuid'] ?? ''); ?>" />
 									</div>
 								</div>
 							</div>
@@ -115,9 +143,9 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="testGenericName"
 											name="testGenericName"
-											value="<?php echo htmlspecialchars((string) $prefillGenericName); ?>"
 											placeholder='<?php echo _translate("Test Generic Name"); ?>'
 											title='<?php echo _translate("Please enter the test generic name"); ?>'
+											value="<?php echo $esc($prefillGenericName); ?>"
 											onblur="checkNameValidation('r_test_types','test_generic_name',this,'<?php echo $uniqueExclusion; ?>','<?php echo _translate("This test generic name that you entered already exists.Try another name"); ?>',null)" />
 									</div>
 								</div>
@@ -133,10 +161,10 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="testShortCode"
 											name="testShortCode"
-											value="<?php echo htmlspecialchars((string) $prefillShortCode); ?>"
 											placeholder='<?php echo _translate("Test Short Code"); ?>'
 											title='<?php echo _translate("Please enter short code"); ?>'
 											onblur="checkNameValidation('r_test_types','test_short_code',this,'<?php echo $uniqueExclusion; ?>','<?php echo _translate("This test short code that you entered already exists.Try another code"); ?>',null)"
+											value="<?php echo $esc($prefillShortCode); ?>"
 											onchange="alphanumericValidation(this.value);" />
 									</div>
 								</div>
@@ -148,10 +176,11 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 										class="col-lg-4 control-label"><?php echo _translate("LOINC Codes"); ?></label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control" id="testLoincCode" name="testLoincCode"
-											value="<?php echo htmlspecialchars((string) $prefillLoincCode); ?>"
 											placeholder='<?php echo _translate("Test LOINC Code"); ?>'
 											title='<?php echo _translate("Please enter test loinc code"); ?>'
-											onblur="checkNameValidation('r_test_types','test_loinc_code',this,'<?php echo $uniqueExclusion; ?>','<?php echo _translate("This test loinc code that you entered already exists.Try another code"); ?>',null)" />
+											value="<?php echo $esc($prefillLoincCode); ?>"
+											onblur="checkNameValidation('r_test_types','test_loinc_code',this,'<?php echo $uniqueExclusion; ?>','<?php echo _translate("This test loinc code that you entered already exists.Try another code"); ?>',null)"
+											value="<?php echo $esc($prefillLoincCode); ?>" />
 									</div>
 								</div>
 							</div>
@@ -257,7 +286,7 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 									<label for="symptoms"
 										class="col-lg-4 control-label"><?php echo _translate("Symptoms"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='symptoms[]' id='symptoms'
+										<select name='symptoms[]' id='symptoms'
 											title="<?php echo _translate('Please select the symptoms'); ?>" multiple>
 											<?= $general->generateSelectOptions($symptomInfo, $testSymptomsId, '-- Select --') ?>
 										</select>
@@ -326,6 +355,7 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 													<tr>
 														<td align="center" style="vertical-align:middle;">
 															<input type="text" name="fieldName[]" id="fieldName<?php echo $i ?>"
+																data-attributenumber="<?= $i ?>"
 																class="form-control fieldName isRequired"
 																placeholder='<?php echo _translate("Field Name"); ?>'
 																title='<?php echo _translate("Please enter field name"); ?>'
@@ -337,16 +367,17 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 														</td>
 														<td align="center" style="vertical-align:middle;">
 															<input type="text" name="fieldCode[]" id="fieldCode<?php echo $i; ?>"
-																class="form-control fieldCode isRequired"
+																data-attributenumber="<?= $i ?>"
+																class="form-control fieldCode isRequired dataClass"
 																placeholder="<?php echo _translate("Field Code"); ?>"
 																title="<?php echo _translate("Please enter field code"); ?>"
 																onblur="checkDuplication(this, \'fieldCode\');"
-																value="<?php echo $esc($testAttribute['field_code']); ?>"
+																value="<?php echo $esc($testAttribute['field_code']); ?>" readonly
 																onchange="this.value=Utilities.toSnakeCase(this.value)" />
 														</td>
 														<td align="center" style="vertical-align:middle;padding-top: 20px;">
 															<select class="form-control isRequired" name="fieldType[]"
-																id="fieldType<?php echo $i ?>"
+																id="fieldType<?php echo $i ?>" data-attributenumber="<?= $i ?>"
 																title="<?php echo _translate('Please select the field type'); ?>"
 																onchange="changeField(this, <?php echo $i ?>)">
 																<option value=""> <?php echo _translate("-- Select --"); ?> </option>
@@ -363,9 +394,10 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 																<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>"
 																	onkeyup="showTags(event,this,'<?php echo $i ?>')"
 																	class="tag-input-field form-control"
-																	placeholder="Enter options..." />
+																	placeholder="<?php echo _translate('Enter options...'); ?>"
+																	title="<?php echo _translate('Please enter the options'); ?>" />
 																<input type="hidden"
-																	value="<?php echo (empty($testAttribute['dropdown_options'])) ? "" : $esc($testAttribute['dropdown_options'] . ',') ?>"
+																	value="<?php echo (empty($testAttribute['dropdown_options'])) ? "" : $esc($testAttribute['dropdown_options']) . ',' ?>"
 																	id="fdropDown<?php echo $i ?>" name="fdropDown[]"
 																	class="fdropDown" />
 																<div class="tag-container container<?php echo $i ?>">
@@ -439,28 +471,28 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 														?>
 														<tr>
 															<td align="center" style="vertical-align:middle;">
-																<input type="text" name="fieldName[]" id="fieldName<?php echo $i ?>"
-																	class="form-control fieldName isRequired"
+																<input type="text" name="fieldName[]" data-attributenumber="<?= $i ?>"
+																	id="fieldName<?php echo $i ?>" class="form-control fieldName isRequired"
 																	placeholder='<?php echo _translate("Field Name"); ?>'
 																	title='<?php echo _translate("Please enter field name"); ?>'
 																	onblur="checkDuplication(this, 'fieldName');"
 																	value="<?php echo $esc($testAttribute['field_name']); ?>" />
 																<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>"
-																	class="form-control isRequired"
-																	value="<?php echo $esc($otherAttributeId); ?>" />
+																	class="form-control" value="<?php echo $esc($otherAttributeId); ?>" />
 															</td>
 															<td align="center" style="vertical-align:middle;">
-																<input type="text" name="fieldCode[]" id="fieldCode<?php echo $i; ?>"
+																<input type="text" name="fieldCode[]" data-attributenumber="<?= $i ?>"
+																	id="fieldCode<?php echo $i; ?>"
 																	class="form-control fieldCode isRequired"
 																	placeholder="<?php echo _translate("Field Code"); ?>"
 																	title="<?php echo _translate("Please enter field code"); ?>"
 																	onblur="checkDuplication(this, \'fieldCode\');"
-																	value="<?php echo $esc($testAttribute['field_code']); ?>"
+																	value="<?php echo $esc($testAttribute['field_code']); ?>" readonly
 																	onchange="this.value=Utilities.toSnakeCase(this.value)" />
 															</td>
 															<td align="center" style="vertical-align:middle;padding-top: 20px;">
-																<select class="form-control isRequired" name="fieldType[]"
-																	id="fieldType<?php echo $i ?>"
+																<select class="form-control isRequired" data-attributenumber="<?= $i ?>"
+																	name="fieldType[]" id="fieldType<?php echo $i ?>"
 																	title="<?php echo _translate('Please select the field type'); ?>"
 																	onchange="changeField(this, <?php echo $i ?>)">
 																	<option value=""> <?php echo _translate("-- Select --"); ?> </option>
@@ -477,9 +509,10 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 																	<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>"
 																		onkeyup="showTags(event,this,'<?php echo $i ?>')"
 																		class="tag-input-field form-control"
-																		placeholder="Enter options..." />
+																		placeholder="<?php echo _translate('Enter options...'); ?>"
+																		title="<?php echo _translate('Please enter the options'); ?>" />
 																	<input type="hidden"
-																		value="<?php echo (empty($testAttribute['dropdown_options'])) ? "" : $esc($testAttribute['dropdown_options'] . ',') ?>"
+																		value="<?php echo (empty($testAttribute['dropdown_options'])) ? "" : $esc($testAttribute['dropdown_options']) . ',' ?>"
 																		id="fdropDown<?php echo $i ?>" name="fdropDown[]"
 																		class="fdropDown" />
 																	<div class="tag-container container<?php echo $i ?>">
@@ -553,15 +586,16 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 										<tr>
 											<td>
 												<input type="text" name="fieldName[]" id="fieldName1"
+													data-attributenumber="<?= $i ?>"
 													class="form-control fieldName isRequired"
 													placeholder='<?php echo _translate("Field Name"); ?>'
 													title='<?php echo _translate("Please enter field name"); ?>'
 													onblur="checkDuplication(this, 'fieldName');" />
-												<input type="hidden" name="fieldId[]" id="fieldId1"
-													class="form-control isRequired" />
+												<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control" />
 											</td>
-											<td align="center" style="vertical-align:middle;">
+											<td align="center">
 												<input type="text" name="fieldCode[]" id="fieldCode1"
+													data-attributenumber="<?= $i ?>"
 													class="form-control fieldCode isRequired"
 													placeholder="<?php echo _translate("Field Code"); ?>"
 													title="<?php echo _translate("Please enter field code"); ?>"
@@ -569,7 +603,8 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 													onchange="this.value=Utilities.toSnakeCase(this.value)" />
 											</td>
 											<td>
-												<select class="form-control isRequired" name="fieldType[]" id="fieldType1"
+												<select class="form-control isRequired" data-attributenumber="<?= $i ?>"
+													name="fieldType[]" id="fieldType1"
 													title="<?php echo _translate('Please select the field type'); ?>"
 													onchange="changeField(this, 1)">
 													<option value=""> <?php echo _translate("-- Select --"); ?> </option>
@@ -586,7 +621,8 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 													<input type="text" name="dropDown[]" id="dropDown1"
 														onkeyup="showTags(event,this,'1')"
 														class="tag-input-field form-control"
-														placeholder="Enter options..." />
+														placeholder="<?php echo _translate('Enter options...'); ?>"
+														title="<?php echo _translate('Please enter the options'); ?>" />
 													<input type="hidden" class="fdropDown" id="fdropDown1"
 														name="fdropDown[]" />
 													<div class="tag-container container1">
@@ -641,275 +677,304 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 								</tbody>
 							</table>
 						</div>
-						<div class="box-header">
-							<h3 class="box-title "><?php echo _translate("Test Results Configuration"); ?></h3>
+						<div class="box-header row">
+							<div class="col-md-4">
+								<h3 class="box-title "><?php echo _translate("Test Results Configuration"); ?></h3>
+							</div>
+							<div class="col-md-8">
+								<label for="resultUnit"
+									class="col-lg-4 control-label"><?php echo _translate("Test Result Unit"); ?>
+								</label>
+								<div class="col-lg-7">
+									<!--<select class="quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='< ?php echo _translate("Enter test result unit"); ?>' title='< ?php echo _translate("Please enter test result unit"); ?>' multiple>-->
+									<select id="testResultUnit" name="resultConfig[test_result_unit][]"
+										placeholder='<?php echo _translate("Enter test result unit"); ?>'
+										title='<?php echo _translate("Please enter test result unit"); ?>' multiple>
+										<?= $general->generateSelectOptions($testResultUnitInfo, $testResultUnitId, true) ?>
+									</select>
+								</div>
+							</div>
 						</div>
+
 						<div class="box-body">
-							<div class="row">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label for="resultType"
-											class="col-lg-3 control-label"><?php echo _translate("Result Type"); ?>
-											<span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<select class="form-control isRequired" name='resultConfig[result_type]'
-												id='resultType' onchange="checkResultType();">
-												<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-												<option value="qualitative" <?php echo ($testResultAttribute['result_type'] == 'qualitative') ? "selected='selected'" : "" ?>>
-													<?php echo _translate("Qualitative"); ?>
-												</option>
-												<option value="quantitative" <?php echo ($testResultAttribute['result_type'] == 'quantitative') ? "selected='selected'" : "" ?>>
-													<?php echo _translate("Quantitative"); ?>
-												</option>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row" id="qualitativeDiv" style="display:none;">
-								<div class="col-md-12">
-									<table aria-describedby="table" class="table table-bordered table-striped"
-										aria-hidden="true">
-										<tbody id="qualitativeTable">
-											<?php
-											if (!empty($testResultAttribute['result']) && count($testResultAttribute['result']) > 0) {
-												foreach ($testResultAttribute['result'] as $qualKey => $row) { ?>
-													<tr>
-														<td class="text-center"><?php echo ($qualKey + 1); ?></td>
-														<th scope="row">Result<span class="mandatory">*</span></th>
-														<td><input type="text" name="resultConfig[result][]"
-																value="<?php echo $esc($row); ?>"
-																id="result<?php echo ($qualKey + 1); ?>"
-																class="form-control qualitativeResult" placeholder="Result"
-																title="Please enter the result" /></td>
-														<th scope="row">Result Interpretation<span class="mandatory">*</span>
-														</th>
-														<td><input type="text"
-																id="resultInterpretation<?php echo ($qualKey + 1); ?>"
-																value="<?php echo $esc($testResultAttribute['result_interpretation'][$qualKey] ?? ''); ?>"
-																name="resultConfig[result_interpretation][]"
-																class="form-control qualitativeResult"
-																placeholder="Enter result interpretation"
-																title="Please enter result interpretation"></td>
-														<td style="vertical-align:middle;text-align: center;width:100px;">
-															<a class="btn btn-xs btn-primary" href="javascript:void(0);"
-																onclick="addResultRow('qualitativeTable');"><em
-																	class="fa-solid fa-plus"></em></a>&nbsp;
-															<a class="btn btn-xs btn-default" href="javascript:void(0);"
-																onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em
-																	class="fa-solid fa-minus"></em></a>
-														</td>
-													</tr>
-												<?php }
-											} else { ?>
-												<tr>
-													<td class="text-center">1</td>
-													<th scope="row">Result<span class="mandatory">*</span></th>
-													<td><input type="text" name="resultConfig[result][]" id="result1"
-															class="form-control" placeholder="Result"
-															title="Please enter the result" /></td>
-													<th scope="row">Result Interpretation<span class="mandatory">*</span>
-													</th>
-													<td><input type="text" id="resultInterpretation1"
-															name="resultConfig[result_interpretation][]"
-															class="form-control" placeholder="Enter result interpretation"
-															title="Please enter result interpretation"></td>
-													<td style="vertical-align:middle;text-align: center;width:100px;">
-														<a class="btn btn-xs btn-primary" href="javascript:void(0);"
-															onclick="addResultRow('qualitativeTable');"><em
-																class="fa-solid fa-plus"></em></a>&nbsp;
-														<a class="btn btn-xs btn-default" href="javascript:void(0);"
-															onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em
-																class="fa-solid fa-minus"></em></a>
-													</td>
-												</tr>
-											<?php } ?>
-										</tbody>
+							<table style="width: 100%;margin: 0 auto;" border="1"
+								class="table table-bordered table-striped clearfix" id="vlSampleTable">
+								<tbody>
+									<?php if (isset($testResultAttribute['sub_test_name']) && !empty($testResultAttribute['sub_test_name'])) {
+										$label = [];
+										$n = count($testResultAttribute['sub_test_name']);
+										foreach ($testResultAttribute['sub_test_name'] as $key => $resultName) { ?>
+											<tr class="result-type">
+												<td>
+													<table style="width: 100%;margin: 0 auto;" border="1"
+														class="table table-bordered table-striped clearfix">
+														<tr>
+															<td class="<?php echo (isset($resultName) && !empty($resultName)) ? '' : 'hide'; ?> firstSubTest"
+																style="width:20%;">
+																<lable for="resultSubGroup<?php echo $key; ?>"
+																	class="form-label-control">Enter the test name</lable>
+															</td>
+															<td class="<?php echo (isset($resultName) && !empty($resultName)) ? '' : 'hide'; ?> firstSubTest"
+																style="width:30%;">
+																<input type="text"
+																	name="resultConfig[sub_test_name][<?php echo $key; ?>]"
+																	id="resultSubGroup<?php echo $key; ?>"
+																	value="<?php echo (isset($resultName) && !empty($resultName)) ? $esc($resultName) : 'Test Level 1'; ?>"
+																	class="form-control input-sm firstSubTest-input"
+																	placeholder="Enter the sub test name"
+																	title="Please ener the sub test name for <?php echo $key; ?> row" />
+															</td>
+															<td style="width:20%;">
+																<lable for="testType<?php echo $key; ?>"
+																	class="form-label-control">Select Result Type</lable>
+															</td>
+															<td style="width:30%;">
+																<select type="text"
+																	name="resultConfig[result_type][<?php echo $key; ?>]"
+																	id="testType<?php echo $key; ?>"
+																	class="form-control input-sm"
+																	title="Please select the type of result"
+																	onchange="setResultType(this.value, <?php echo $key; ?>)">
+																	<option value=""> <?= _translate("-- Select --"); ?>
+																	</option>
+																	<option value="qualitative" <?php echo (isset($testResultAttribute['result_type'][$key]) && !empty($testResultAttribute['result_type'][$key]) && $testResultAttribute['result_type'][$key] == 'qualitative') ? 'selected="selected"' : ''; ?>>
+																		<?= _translate("Qualitative"); ?>
+																	</option>
+																	<option value="quantitative" <?php echo (isset($testResultAttribute['result_type'][$key]) && !empty($testResultAttribute['result_type'][$key]) && $testResultAttribute['result_type'][$key] == 'quantitative') ? 'selected="selected"' : ''; ?>>
+																		<?= _translate("Quantitative"); ?>
+																	</option>
+																</select>
+															</td>
+														</tr>
+														<tr class="qualitative-div <?php echo (isset($testResultAttribute['result_type'][$key]) && !empty($testResultAttribute['result_type'][$key]) && $testResultAttribute['result_type'][$key] == 'qualitative') ? '' : 'hide'; ?>"
+															id="qualitativeRow<?php echo $key; ?>">
+															<td colspan="4">
+																<table style="width:100%;"
+																	class="table table-bordered table-striped clearfix">
+																	<tr>
+																		<th>Expected Result</th>
+																		<th>Result Code</th>
+																		<th>Sort Order</th>
+																		<th>Action</th>
+																	</tr>
+																	<?php
+																	$resultsInnerList = $testResultAttribute[$testResultAttribute['result_type'][$key]];
+																	if (isset($resultsInnerList) && !empty($resultsInnerList)) {
+																		$n = count($resultsInnerList);
+																		foreach ($resultsInnerList['expectedResult'][$key] as $ikey => $value) { ?>
+																			<tr>
+																				<td><input type="text"
+																						value="<?php echo $esc($value); ?>"
+																						name="resultConfig[qualitative][expectedResult][<?php echo $key; ?>][<?php echo $ikey; ?>]"
+																						class="form-control qualitative-input-<?php echo $key; ?><?php echo $ikey; ?> input-sm"
+																						placeholder="Enter the expected result"
+																						title="Please enter the expected result" /></td>
+																				<td><input type="text"
+																						value="<?php echo $esc($resultsInnerList['resultCode'][$key][$ikey] ?? null); ?>"
+																						name="resultConfig[qualitative][resultCode][<?php echo $key; ?>][<?php echo $ikey; ?>]"
+																						class="form-control qualitative-input-<?php echo $key; ?><?php echo $ikey; ?> input-sm"
+																						placeholder="Enter the result code"
+																						title="Please enter the result code" /></td>
+																				<td><input type="text"
+																						value="<?php echo $esc($resultsInnerList['sortOrder'][$key][$ikey] ?? null); ?>"
+																						name="resultConfig[qualitative][sortOrder][<?php echo $key; ?>][<?php echo $ikey; ?>]"
+																						class="form-control qualitative-input-<?php echo $key; ?><?php echo $ikey; ?> input-sm"
+																						placeholder="Enter the sort order"
+																						title="Please enter the sort order" /></td>
+																				<td style="text-align:center;"><a
+																						href="javascript:void(0);"
+																						onclick="addQualitativeRow(this, <?php echo $key; ?>,<?php echo ($ikey + 1); ?>);"
+																						class="btn btn-xs btn-info qualitative-insrow-<?php echo $key; ?><?php echo $ikey; ?>"><i
+																							class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a
+																						href="javascript:void(0);"
+																						onclick="removeQualitativeRow(this, <?php echo $key; ?>, <?php echo ($ikey + 1); ?>)"
+																						class="btn btn-xs btn-danger"
+																						title="Remove this row completely"
+																						alt="Remove this row completely"><i
+																							class="fa-solid fa-minus"></i></a></td>
+																	</td>
+																</tr>
+															<?php }
+																	} ?>
+													</table>
+												</td>
+											</tr>
+											<tr class="quantitative-div <?php echo (isset($testResultAttribute['result_type'][$key]) && !empty($testResultAttribute['result_type'][$key]) && $testResultAttribute['result_type'][$key] == 'quantitative') ? '' : 'hide'; ?>"
+												id="quantitativeRow<?php echo $key; ?>">
+												<td colspan="4">
+													<table style="width:100%;"
+														class="table table-bordered table-striped clearfix">
+														<tr>
+															<th>High Range</th>
+															<th>Threshold Range</th>
+															<th>Low Range</th>
+														</tr>
+														<tr>
+															<td>
+																<input type="text"
+																	value="<?php echo $esc($resultsInnerList['high_range'][$key] ?? null); ?>"
+																	name="resultConfig[quantitative][high_range][<?php echo $key; ?>]"
+																	class="form-control quantitative-input-<?php echo $key; ?>1 input-sm"
+																	placeholder="Enter the high value"
+																	title="Please enter the high value" />
+															</td>
+															<td>
+																<input type="text"
+																	value="<?php echo $esc($resultsInnerList['threshold_range'][$key] ?? null); ?>"
+																	name="resultConfig[quantitative][threshold_range][<?php echo $key; ?>]"
+																	class="form-control quantitative-input-<?php echo $key; ?>1 input-sm"
+																	placeholder="Enter the threshold value"
+																	title="Please enter the threshold value" />
+															</td>
+															<td>
+																<input type="text"
+																	value="<?php echo $esc($resultsInnerList['low_range'][$key] ?? null); ?>"
+																	name="resultConfig[quantitative][low_range][<?php echo $key; ?>]"
+																	class="form-control quantitative-input-<?php echo $key; ?>1 input-sm"
+																	placeholder="Enter the low value"
+																	title="Please enter the low value" />
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
 									</table>
-								</div>
-							</div>
+									</td>
+									<td style=" text-align:center;vertical-align: middle;">
+										<a href="javascript:void(0);" onclick="addTbRow(this);" class="btn btn-xs btn-info"><i
+												class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a href="javascript:void(0);"
+											onclick="removeRow(this)" class="btn btn-xs btn-danger"
+											title="Remove this row completely" alt="Remove this row completely"><i
+												class="fa-solid fa-minus"></i></a>
+									</td>
+									</tr>
 
-							<div class="row quantitativeDiv" style="display:none;">
-								<div class="box-header">
-									<h4 class="box-title "><?php echo _translate("Result Range"); ?></h4>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="highValue"
-											class="col-lg-4 control-label"><?php echo _translate("High Value"); ?> <span
-												class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult"
-												value="<?php echo $esc($testResultAttribute['high_value']); ?>" id="highValue"
-												name="resultConfig[high_value]"
-												placeholder='<?php echo _translate("Enter High Value"); ?>'
-												title='<?php echo _translate("Please enter high value"); ?>'
-												value="<?php echo $esc($testResultAttribute['high_value'] ?? "") ?> " />
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="thresholdValue"
-											class="col-lg-4 control-label"><?php echo _translate("Threshold Value"); ?>
-											<span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult"
-												value="<?php echo $esc($testResultAttribute['threshold_value']); ?>"
-												id="thresholdValue" name="resultConfig[threshold_value]"
-												placeholder='<?php echo _translate("Enter Threshold Value"); ?>'
-												title='<?php echo _translate("Please enter threshold value"); ?>'
-												value="<?php echo $esc($testResultAttribute['threshold_value'] ?? "") ?>" />
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="lowValue"
-											class="col-lg-4 control-label"><?php echo _translate("Low Value"); ?> <span
-												class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<input type="text" class="form-control forceNumeric quantitativeResult"
-												value="<?php echo $esc($testResultAttribute['low_value']); ?>" id="lowValue"
-												name="resultConfig[low_value]"
-												placeholder='<?php echo _translate("Enter Low Value"); ?>'
-												title='<?php echo _translate("Please enter low value"); ?>'
-												value="<?php echo $esc($testResultAttribute['low_value'] ?? "") ?> " />
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row quantitativeDiv" style="display:none;">
-								<div class="box-header">
-									<h4 class="box-title "><?php echo _translate("Result Interpretation"); ?></h4>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="belowThreshold"
-											class="col-lg-4 control-label"><?php echo _translate("Below Threshold"); ?>
-											<span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<input type="text" class="form-control quantitativeResult"
-												value="<?php echo $esc($testResultAttribute['below_threshold']); ?>"
-												id="belowThreshold" name="resultConfig[below_threshold]"
-												placeholder='<?php echo _translate("Enter below threshold"); ?>'
-												title='<?php echo _translate("Please enter below threshold"); ?>'
-												value="<?php echo $esc($testResultAttribute['below_threshold'] ?? "") ?> " />
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="atThreshold"
-											class="col-lg-4 control-label"><?php echo _translate("At Threshold"); ?>
-											<span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<input type="text" class="form-control quantitativeResult"
-												value="<?php echo $esc($testResultAttribute['at_threshold']); ?>"
-												id="atThreshold" name="resultConfig[at_threshold]"
-												placeholder='<?php echo _translate("Enter at threshold"); ?>'
-												title='<?php echo _translate("Please enter at threshold"); ?>'
-												value="<?php echo $esc($testResultAttribute['at_threshold'] ?? "") ?> " />
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="aboveThreshold"
-											class="col-lg-4 control-label"><?php echo _translate("Above Threshold"); ?>
-											<span class="mandatory">*</span></label>
-										<div class="col-lg-7">
-											<input type="text" class="form-control quantitativeResult"
-												value="<?php echo $esc($testResultAttribute['above_threshold']); ?>"
-												id="aboveThreshold" name="resultConfig[above_threshold]"
-												placeholder='<?php echo _translate("Enter above threshold"); ?>'
-												title='<?php echo _translate("Please enter above threshold"); ?>'
-												value="<?php echo $esc($testResultAttribute['above_threshold'] ?? "") ?> " />
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="resultUnit"
-											class="col-lg-4 control-label"><?php echo _translate("Test Result Unit"); ?>
-										</label>
-										<div class="col-lg-7">
-											<select class="form-control quantitativeResult" id="testResultUnit"
-												name="resultConfig[test_result_unit][]"
-												placeholder='<?php echo _translate("Enter test result unit"); ?>'
-												title='<?php echo _translate("Please enter test result unit"); ?>'
-												multiple>
-												<?= $general->generateSelectOptions($testResultUnitInfo, $testResultUnitId, '-- Select --') ?>
-											</select>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row quantitativeDiv" style="display:none;">
-								<div class="col-md-12">
-									<table aria-describedby="table" class="table table-bordered table-striped"
-										aria-hidden="true">
-										<tbody id="quantitativeTable">
-											<?php
-											if (!empty($testResultAttribute['quantitative_result']) && count($testResultAttribute['quantitative_result']) > 0) {
-												foreach ($testResultAttribute['quantitative_result'] as $quanKey => $quanRow) { ?>
-													<tr>
-														<td class="text-center"><?php echo ($quanKey + 1); ?></td>
-														<th scope="row">Result<span class="mandatory">*</span></th>
-														<td><input type="text" name="resultConfig[quantitative_result][]"
-																value="<?php echo $esc($quanRow); ?>"
-																id="quantitativeResult<?php echo ($quanKey + 1); ?>"
-																class="form-control quantitativeResult" placeholder="Result"
-																title="Please enter the result" /></td>
-														<th scope="row">Result Interpretation<span class="mandatory">*</span>
-														</th>
-														<td><input type="text"
-																id="quantitativeResultInterpretation<?php echo ($quanKey + 1); ?>"
-																value="<?php echo $esc($testResultAttribute['quantitative_result_interpretation'][$quanKey] ?? ''); ?>"
-																name="resultConfig[quantitative_result_interpretation][]"
-																class="form-control quantitativeResult"
-																placeholder="Enter result interpretation"
-																title="Please enter result interpretation"></td>
-														<td style="vertical-align:middle;text-align: center;width:100px;">
-															<a class="btn btn-xs btn-primary" href="javascript:void(0);"
-																onclick="addResultRow('quantitativeTable');"><em
-																	class="fa-solid fa-plus"></em></a>&nbsp;
-															<a class="btn btn-xs btn-default" href="javascript:void(0);"
-																onclick="removeResultRow(this.parentNode.parentNode, 'quantitativeTable');"><em
-																	class="fa-solid fa-minus"></em></a>
-														</td>
-													</tr>
-												<?php }
-											} else { ?>
-												<tr>
-													<td class="text-center">1</td>
-													<th scope="row">Result<span class="mandatory">*</span></th>
-													<td><input type="text" name="resultConfig[quantitative_result][]"
-															id="quantitativeResult1" class="form-control quantitativeResult"
-															placeholder="Result" title="Please enter the result" /></td>
-													<th scope="row">Result Interpretation<span class="mandatory">*</span>
-													</th>
-													<td><input type="text" id="quantitativeResultInterpretation1"
-															name="resultConfig[quantitative_result_interpretation][]"
-															class="form-control" placeholder="Enter result interpretation"
-															title="Please enter result interpretation"></td>
-													<td style="vertical-align:middle;text-align: center;width:100px;">
-														<a class="btn btn-xs btn-primary" href="javascript:void(0);"
-															onclick="addResultRow('quantitativeTable');"><em
-																class="fa-solid fa-plus"></em></a>&nbsp;
-														<a class="btn btn-xs btn-default" href="javascript:void(0);"
-															onclick="removeResultRow(this.parentNode.parentNode, 'quantitativeTable');"><em
-																class="fa-solid fa-minus"></em></a>
-													</td>
-												</tr>
-											<?php } ?>
-										</tbody>
-									</table>
-								</div>
-							</div>
+								<?php } ?>
+
+							<?php } else { ?>
+								<tr class="result-type">
+									<td>
+										<table style="width: 100%;margin: 0 auto;" border="1"
+											class="table table-bordered table-striped clearfix">
+											<tr>
+												<td class="hide firstSubTest" style="width:20%;">
+													<lable for="resultSubGroup1" class="form-label-control">Enter the test
+														name</lable>
+												</td>
+												<td class="hide firstSubTest" style="width:30%;">
+													<input type="text" name="resultConfig[sub_test_name][1]"
+														id="resultSubGroup1"
+														class="form-control input-sm firstSubTest-input"
+														placeholder="Enter the sub test name"
+														title="Please ener the sub test name for 1st row" />
+												</td>
+												<td style="width:20%;">
+													<lable for="testType1" class="form-label-control">Select Result Type
+													</lable>
+												</td>
+												<td style="width:30%;">
+													<select type="text" name="resultConfig[result_type][1]" id="testType1"
+														class="form-control input-sm"
+														title="Please select the type of result"
+														onchange="setResultType(this.value, 1)">
+														<option value=""> <?= _translate("-- Select --"); ?> </option>
+														<option value="qualitative"><?= _translate("Qualitative"); ?>
+														</option>
+														<option value="quantitative"><?= _translate("Quantitative"); ?>
+														</option>
+													</select>
+												</td>
+											</tr>
+											<tr class="qualitative-div hide" id="qualitativeRow1">
+												<td colspan="4">
+													<table style="width:100%;"
+														class="table table-bordered table-striped clearfix">
+														<tr>
+															<th>Expected Result</th>
+															<th>Result Code</th>
+															<th>Sort Order</th>
+															<th>Action</th>
+														</tr>
+														<tr>
+															<td>
+																<input type="text"
+																	name="resultConfig[qualitative][expectedResult][1][1]"
+																	class="form-control qualitative-input-11 input-sm"
+																	placeholder="Enter the expected result"
+																	title="Please enter the expected result" />
+															</td>
+															<td>
+																<input type="text"
+																	name="resultConfig[qualitative][resultCode][1][1]"
+																	class="form-control qualitative-input-11 input-sm"
+																	placeholder="Enter the result code"
+																	title="Please enter the result code" />
+															</td>
+															<td>
+																<input type="text"
+																	name="resultConfig[qualitative][sortOrder][1][1]"
+																	class="form-control qualitative-input-11 input-sm"
+																	placeholder="Enter the sort order"
+																	title="Please enter the sort order" />
+															</td>
+															<td style="text-align:center;">
+																<a href="javascript:void(0);"
+																	onclick="addQualitativeRow(this, 1,2);"
+																	class="btn btn-xs btn-info qualitative-insrow-11"><i
+																		class="fa-solid fa-plus"></i></a>
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+											<tr class="quantitative-div hide" id="quantitativeRow1">
+												<td colspan="4">
+													<table style="width:100%;"
+														class="table table-bordered table-striped clearfix">
+														<tr>
+															<th>High Range</th>
+															<th>Threshold Range</th>
+															<th>Low Range</th>
+														</tr>
+														<tr>
+															<td>
+																<input type="text"
+																	name="resultConfig[quantitative][high_range][1]"
+																	class="form-control quantitative-input-11 input-sm"
+																	placeholder="Enter the high value"
+																	title="Please enter the high value" />
+															</td>
+															<td>
+																<input type="text"
+																	name="resultConfig[quantitative][threshold_range][1]"
+																	class="form-control quantitative-input-11 input-sm"
+																	placeholder="Enter the threshold value"
+																	title="Please enter the threshold value" />
+															</td>
+															<td>
+																<input type="text"
+																	name="resultConfig[quantitative][low_range][1]"
+																	class="form-control quantitative-input-11 input-sm"
+																	placeholder="Enter the low value"
+																	title="Please enter the low value" />
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+										</table>
+									</td>
+									<td style=" text-align:center;vertical-align: middle;">
+										<a href="javascript:void(0);" onclick="addTbRow(this);"
+											class="btn btn-xs btn-info"><i class="fa-solid fa-plus"></i></a>
+									</td>
+								</tr>
+							<?php } ?>
+							</tbody>
+							</table>
 						</div>
-
 					</div>
+
 					<!-- /.box-body -->
 					<div class="box-footer">
 						<a class="btn btn-primary" href="javascript:void(0);"
@@ -927,11 +992,9 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 	</section>
 	<!-- /.content -->
 </div>
-
 <script type="text/javascript">
 	tableRowId = <?php echo $i + 1; ?>;
-	testQualCounter = <?php echo count($testResultAttribute['result']); ?>;
-	testQuanCounter = <?php echo count($testResultAttribute['quantitative_result']); ?>;
+	var sampleCounter = <?php echo $i; ?>;
 	var otherSectionNames = [];
 
 	function addNewSection(section, rowId) {
@@ -941,21 +1004,52 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 
 	$(document).ready(function () {
 		addOtherSection();
-
-		function addOtherSection() {
-			$(".auto-complete-tbx").each(function () {
-				if ($(this).val() != "" && ($.inArray($(this).val(), otherSectionNames) == -1))
-					otherSectionNames.push($(this).val());
-			});
-		}
-
+		<?php if ($eCount > 0) { ?>
+			generateRandomFieldId('1');
+		<?php } ?>
 		$(".auto-complete-tbx").autocomplete({
 			source: otherSectionNames
 		});
+		$(".fieldCode").each(function () {
+			if ($(this).val() == "") {
+				let attributenumber = $(this).data('attributenumber');
+				if ($("#fieldName" + attributenumber).val() != "") {
+					$(this).val(Utilities.toSnakeCase($("#fieldName" + attributenumber).val()));
+				}
+			}
+
+		});
+
 
 		$('input').tooltip();
+
+		// Auto-generate the field code from the field name as it is typed, until the
+		// code is edited directly (or it already has a value).
+		$('.fieldCode').each(function () {
+			if ($(this).val() !== '') {
+				$(this).data('codeTouched', true);
+			}
+		});
+		$(document).on('focusout', '.fieldName', function () {
+			var $code = $(this).closest('tr').find('.fieldCode').first();
+			if ($code.length && !$code.data('codeTouched')) {
+				$code.val(Utilities.toSnakeCase(this.value));
+			}
+		});
+		$(document).on('input', '.fieldCode', function () {
+			$(this).data('codeTouched', true);
+		});
+		// Existing field codes are locked -- they are the shared identifier that
+		// links a field to prior samples and to the same field on other test types.
+		// Double-click to deliberately change one (e.g. fix a typo, or align codes).
+		$(document).on('dblclick', '.fieldCode[readonly]', function () {
+			if (confirm('This field code is already in use as a shared identifier across samples and test types. Changing it can break data reuse. Change it anyway?')) {
+				$(this).prop('readonly', false).data('codeTouched', true).focus();
+			}
+		});
 		checkResultType();
 		$("#sampleType").select2({
+			width: '100%',
 			placeholder: "<?php echo _translate("Select Sample Type"); ?>"
 		});
 		$("#testingReason").select2({
@@ -967,11 +1061,11 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 		$("#rejectionReason").select2({
 			placeholder: "<?php echo _translate("Select Rejection Reason"); ?>"
 		});
-		$("#symptoms").select2({
+		$("#symptoms").selectize({
 			placeholder: "<?php echo _translate("Select Symptoms"); ?>"
 		});
-		$("#testResultUnit").select2({
-			placeholder: "<?php echo _translate("Select Test Result Unit"); ?>"
+		$("#testResultUnit").selectize({
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 
 		$(document).on('click', '.remove-tag', function () {
@@ -1032,6 +1126,13 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 		});
 	});
 
+	function addOtherSection() {
+		$(".auto-complete-tbx").each(function () {
+			if ($(this).val() != "" && ($.inArray($(this).val(), otherSectionNames) == -1))
+				otherSectionNames.push($(this).val());
+		});
+	}
+
 	function showTags(e, obj, cls) {
 		let options = new Array();
 		if (e.key === ',' || e.key === 'Enter') {
@@ -1054,12 +1155,12 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 
 	function validateNow() {
 		flag = deforayValidator.init({
-			formId: 'cloneTestTypeForm'
+			formId: 'testTypeForm'
 		});
 
 		if (flag) {
 			$.blockUI();
-			document.getElementById('cloneTestTypeForm').submit();
+			document.getElementById('testTypeForm').submit();
 		}
 	}
 
@@ -1096,8 +1197,8 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 		h.setAttribute("align", "center");
 		h.setAttribute("style", "vertical-align:middle");
 
-		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _translate('Field Name'); ?>" title="<?php echo _translate('Please enter field name'); ?>" onblur="checkDuplication(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control isRequired" />';
-		c.innerHTML = '<input type="text" name="fieldCode[]" id="fieldCode' + tableRowId + '" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDuplication(this, \'fieldCode\');" onchange="this.value=Utilities.toSnakeCase(this.value)"/>';
+		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _translate('Field Name'); ?>" title="<?php echo _translate('Please enter field name'); ?>" onblur="checkDuplication(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control" />';
+		c.innerHTML = '<input type="text" name="fieldCode[]" id="fieldCode' + tableRowId + '" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>"/>';
 		d.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, ' + tableRowId + ')">\
 							<option value=""> <?php echo _translate("-- Select --"); ?> </option>\
 							<option value="number"><?php echo _translate("Number"); ?></option>\
@@ -1106,7 +1207,7 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 							<option value="dropdown"><?php echo _translate("Dropdown"); ?></option>\
 							<option value="multiple"><?php echo _translate("multiple Dropdown"); ?></option>\
 						</select><br>\
-						<div class="tag-input dropDown' + tableRowId + '" style="display:none;"><input type="text" name="dropDown[]" id="dropDown' + tableRowId + '" onkeyup="showTags(event,this,' + tableRowId + ')" class="tag-input-field form-control" placeholder="Enter options..." /><input type="hidden" class="fdropDown" id="fdropDown' + tableRowId + '" name="fdropDown[]" /><div class="tag-container container' + tableRowId + '"></div></div>';
+						<div class="tag-input dropDown' + tableRowId + '" style="display:none;"><input type="text" name="dropDown[]" id="dropDown' + tableRowId + '" onkeyup="showTags(event,this,' + tableRowId + ')" class="tag-input-field form-control" placeholder="<?php echo _translate('Enter options...'); ?>" title="<?php echo _translate('Please enter the options'); ?>" /><input type="hidden" class="fdropDown" id="fdropDown' + tableRowId + '" name="fdropDown[]" /><div class="tag-container container' + tableRowId + '"></div></div>';
 		e.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _translate('Please select is it mandatory'); ?>">\
 							<option value="yes"><?php echo _translate("Yes"); ?></option>\
 							<option value="no" selected><?php echo _translate("No"); ?></option>\
@@ -1196,51 +1297,6 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 		$("#fieldId" + rowId).val("_" + Utilities.generateRandomString(16));
 	}
 
-	function addResultRow(table) {
-		let rowString = '';
-
-		if (table == 'qualitativeTable') {
-			testQualCounter++;
-			rowString = `<tr>
-				<td class="text-center">` + testQualCounter + `</td>
-				<th scope="row">Result<span class="mandatory">*</span></th>
-				<td><input type="text" name="resultConfig[result][]" id="result` + testQualCounter + `" class="form-control qualitativeResult isRequired" placeholder="Result" title="Please enter the result" /></td>
-				<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
-				<td><input type="text" id="resultInterpretation` + testQualCounter + `" name="resultConfig[result_interpretation][]" class="form-control qualitativeResult isRequired" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
-				<td style="vertical-align:middle;text-align: center;width:100px;">
-					<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('qualitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
-					<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'qualitativeTable');"><em class="fa-solid fa-minus"></em></a>
-				</td>
-			</tr>`;
-		} else if (table == 'quantitativeTable') {
-			testQuanCounter++;
-			rowString = `<tr>
-				<td class="text-center">` + testQuanCounter + `</td>
-				<th scope="row">Result<span class="mandatory">*</span></th>
-				<td><input type="text" name="resultConfig[quantitative_result][]" id="quantitativeResult` + testQuanCounter + `" class="form-control quantitativeResult isRequired" placeholder="Result" title="Please enter the result" /></td>
-				<th scope="row">Result Interpretation<span class="mandatory">*</span></th>
-				<td><input type="text" id="quantitativeResultInterpretation` + testQuanCounter + `" name="resultConfig[quantitative_result_interpretation][]" class="form-control quantitativeResult isRequired" placeholder="Enter result interpretation" title="Please enter result interpretation"></td>
-				<td style="vertical-align:middle;text-align: center;width:100px;">
-					<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addResultRow('quantitativeTable');"><em class="fa-solid fa-plus"></em></a>&nbsp;
-					<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeResultRow(this.parentNode.parentNode, 'quantitativeTable');"><em class="fa-solid fa-minus"></em></a>
-				</td>
-			</tr>`;
-		}
-		$("#" + table).append(rowString);
-	}
-
-	function removeResultRow(el, table) {
-		$(el).fadeOut("slow", function () {
-			el.parentNode.removeChild(el);
-			rl = document.getElementById(table).rows.length;
-			if (rl == 0) {
-				testQuanCounter = 0;
-				addResultRow(table);
-			}
-		});
-	}
-
-
 	function changeField(obj, i) {
 		(obj.value == 'dropdown' || obj.value == 'multiple') ? ($('.dropDown' + i).show()) : ($('.dropDown' + i).hide(), $('#dropDown' + i).removeClass('isRequired'));
 	}
@@ -1260,6 +1316,131 @@ $esc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOTES
 		shortCode = shortCode.replace(/[^A-Z0-9-]/g, '');
 
 		$('#testShortCode').val(shortCode);
+	}
+
+	function addQualitativeRow(obj, row1, row2) {
+		$(obj).attr('disabled', true);
+		var html = '<tr align="center"> \
+			<td>\
+				<input type="text" name="resultConfig[qualitative][expectedResult][' + row1 + '][' + row2 + ']" class="form-control qualitative-input-' + row1 + row2 + ' input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />\
+			</td>\
+			<td>\
+				<input type="text" name="resultConfig[qualitative][resultCode][' + row1 + '][' + row2 + ']" class="form-control qualitative-input-' + row1 + row2 + ' input-sm" placeholder="Enter the result code" title="Please enter the result code" />\
+			</td>\
+			<td>\
+				<input type="text" name="resultConfig[qualitative][sortOrder][' + row1 + '][' + row2 + ']" class="form-control qualitative-input-' + row1 + row2 + ' input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />\
+			</td>\
+			<td><a href="javascript:void(0);" onclick="addQualitativeRow(this, ' + row1 + ',' + (row2 + 1) + ');" class="btn btn-xs btn-info qualitative-insrow-' + row1 + row2 + '"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a  href="javascript:void(0);" onclick="removeQualitativeRow(this, ' + row1 + ', ' + (row2 - 1) + ')" class="btn btn-xs btn-danger"  title="Remove this row completely" alt="Remove this row completely"><i class="fa-solid fa-minus"></i></a></td> \
+		</tr>'
+		$(obj.parentNode.parentNode).after(html);
+	}
+
+	function addTbRow(obj) {
+		$('.firstSubTest').removeClass('hide');
+		$('#resultSubGroup1').addClass('isRequired');
+		$('.firstSubTest-input').val('');
+		sampleCounter++;
+		var html = '<tr class="result-type">\
+				<td>\
+					<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">\
+						<tr>\
+							<td style="width:20%;"><lable for="resultSubGroup' + sampleCounter + '" class="form-label-control">Enter the test name</lable></td>\
+							<td style="width:30%;">\
+								<input type="text" name="resultConfig[sub_test_name][' + sampleCounter + ']"id="resultSubGroup' + sampleCounter + '" class="form-control isRequired input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for ' + sampleCounter + ' row"/>\
+							</td>\
+							<td style="width:20%;"><lable for="testType' + sampleCounter + '" class="form-label-control">Select result type</lable></td>\
+							<td style="width:30%;">\
+								<select type="text" name="resultConfig[result_type][' + sampleCounter + ']"id="testType' + sampleCounter + '" class="form-control isRequired input-sm" title="Please select the type of result" onchange="setResultType(this.value, ' + sampleCounter + ')">\
+									<option value=""> <?= _translate("-- Select --"); ?> </option>\
+									<option value="qualitative"><?= _translate("Qualitative"); ?></option>\
+									<option value="quantitative"><?= _translate("Quantitative"); ?></option>\
+								</select>\
+							</td>\
+						</tr>\
+						<tr class="qualitative-div hide" id="qualitativeRow' + sampleCounter + '">\
+							<td colspan="4">\
+								<table style="width:100%;" class="table table-bordered table-striped clearfix">\
+									<tr>\
+										<th>Expected Result</th>\
+										<th>Result Code</th>\
+										<th>Sort Order</th>\
+										<th>Action</th>\
+									</tr>\
+									<tr>\
+										<td>\
+											<input type="text" name="resultConfig[qualitative][expectedResult][' + sampleCounter + '][1]" class="form-control qualitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the expected result" title="Please enter the expected result" />\
+										</td>\
+										<td>\
+											<input type="text" name="resultConfig[qualitative][resultCode][' + sampleCounter + '][1]" class="form-control qualitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the result code" title="Please enter the result code" />\
+										</td>\
+										<td>\
+											<input type="text" name="resultConfig[qualitative][sortOrder][' + sampleCounter + '][1]" class="form-control qualitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the sort order" title="Please enter the sort order" />\
+										</td>\
+										<td style="text-align:center;">\
+											<a href="javascript:void(0);" onclick="addQualitativeRow(this, ' + sampleCounter + ', 2);" class="btn btn-xs btn-info qualitative-insrow-' + sampleCounter + '1"><i class="fa-solid fa-plus"></i></a>\
+										</td>\
+									</tr>\
+								</table>\
+							</td>\
+						</tr>\
+						<tr class="quantitative-div hide" id="quantitativeRow' + sampleCounter + '" class="table table-bordered table-striped clearfix">\
+							<td colspan="4">\
+								<table style="width:100%;" class="table table-bordered table-striped clearfix">\
+									<tr>\
+										<th>High Range</th>\
+										<th>Threshold Range</th>\
+										<th>Low Range</th>\
+									</tr>\
+									<tr>\
+										<td>\
+											<input type="text" name="resultConfig[quantitative][high_range][' + sampleCounter + ']" class="form-control quantitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the high value" title="Please enter the high value" />\
+										</td>\
+										<td>\
+											<input type="text" name="resultConfig[quantitative][threshold_range][' + sampleCounter + ']" class="form-control quantitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the threshold value" title="Please enter the threshold value" />\
+										</td>\
+										<td>\
+											<input type="text" name="resultConfig[quantitative][low_range][' + sampleCounter + ']" class="form-control quantitative-input-' + sampleCounter + '1 input-sm" placeholder="Enter the low value" title="Please enter the low value" />\
+										</td>\
+									</tr>\
+								</table>\
+							</td>\
+						</tr>\
+					</table>\
+				</td>\
+				<td style=" text-align:center;vertical-align: middle;">\
+					<a href="javascript:void(0);" onclick="addTbRow(this);" class="btn btn-xs btn-info"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a  href="javascript:void(0);" onclick="removeRow(this)" class="btn btn-xs btn-danger"  title="Remove this row completely" alt="Remove this row completely"><i class="fa-solid fa-minus"></i></a>\
+				</td>\
+			</tr>';
+		$(obj.parentNode.parentNode).after(html);
+	}
+
+	function removeQualitativeRow(obj, row1, row2) {
+		if (row2 <= 2) {
+			$('.qualitative-insrow-' + row1 + row2).attr('disabled', false);
+		}
+		$(obj.parentNode.parentNode).fadeOut("normal", function () {
+			$(this).remove();
+		});
+	}
+
+	function removeRow(obj) {
+		$(obj.parentNode.parentNode).fadeOut("normal", function () {
+			$(this).remove();
+		});
+	}
+
+	function setResultType(id, row) {
+		if (id == 'qualitative') {
+			$('.quantitative-input' + row).removeClass('isRequired');
+			$('#qualitativeRow' + row).removeClass('hide');
+			$('.qualitative-input' + row).addClass('isRequired');
+			$('#quantitativeRow' + row).addClass('hide');
+		} else if (id == 'quantitative') {
+			$('.qualitative-input' + row).removeClass('isRequired');
+			$('#quantitativeRow' + row).removeClass('hide');
+			$('.quantitative-input' + row).addClass('isRequired');
+			$('#qualitativeRow' + row).addClass('hide');
+		}
 	}
 </script>
 
