@@ -100,6 +100,26 @@ try {
         $resultsConfig['test_result_unit'] = $unitNames;
     }
 
+    // Each Result Group lists the method ids that produce it; translate those to
+    // names so the group -> methods mapping survives the move to an instance with
+    // different ids (import-test-type.php resolves them back).
+    if (!empty($resultsConfig['methods']) && is_array($resultsConfig['methods'])) {
+        $methodNameById = [];
+        foreach ($resultsConfig['methods'] as $groupKey => $methodIds) {
+            $names = [];
+            foreach ((array) $methodIds as $mid) {
+                if (!array_key_exists($mid, $methodNameById)) {
+                    $r = $db->rawQueryOne("SELECT test_method_name FROM r_generic_test_methods WHERE test_method_id = ?", [$mid]);
+                    $methodNameById[$mid] = $r['test_method_name'] ?? null;
+                }
+                if (!empty($methodNameById[$mid])) {
+                    $names[] = $methodNameById[$mid];
+                }
+            }
+            $resultsConfig['methods'][$groupKey] = $names;
+        }
+    }
+
     $export = [
         'format' => 'intelis.custom-test',
         'version' => 1,
