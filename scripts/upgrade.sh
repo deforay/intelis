@@ -1776,9 +1776,21 @@ upgrade_instance() {
     if [ -d "${lis_path}/run-once" ]; then
         local run_once_scripts=("${lis_path}/run-once/"*.php)
         if [ -e "${run_once_scripts[0]}" ]; then
+            local run_once_total=${#run_once_scripts[@]}
+            local run_once_num=0
+            print header "Running ${run_once_total} run-once script(s)"
             for script_path in "${run_once_scripts[@]}"; do
-                php "$script_path" || print warning "Run-once script $script_path exited with status $?"
+                run_once_num=$((run_once_num + 1))
+                local script_name
+                script_name=$(basename "$script_path")
+                print info "[${run_once_num}/${run_once_total}] Running ${script_name}..."
+                if php "$script_path"; then
+                    print success "[${run_once_num}/${run_once_total}] ${script_name} completed."
+                else
+                    print warning "[${run_once_num}/${run_once_total}] ${script_name} exited with status $?"
+                fi
             done
+            print success "Finished run-once scripts."
         fi
     fi
 
