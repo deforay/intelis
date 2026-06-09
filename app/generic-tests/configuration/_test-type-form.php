@@ -11,6 +11,11 @@
  * mode-specific bits below; everything else is shared. Data-derived values pass
  * through $esc() because import-test-type.php sources them from an uploaded file.
  */
+$testMethodInfo = $testMethodInfo ?? $general->getDataByTableAndFields("r_generic_test_methods", ["test_method_id", "test_method_name"], true, "test_method_status='active'");
+$methodOptionsJs = '';
+foreach (($testMethodInfo ?? []) as $__mid => $__mname) {
+    $methodOptionsJs .= '<option value="' . htmlspecialchars((string) $__mid) . '">' . htmlspecialchars((string) $__mname) . '</option>';
+}
 $formMode            = $formMode ?? 'edit';
 $formHeading         = $formHeading ?? _translate("Edit Test Type");
 $formAction          = $formAction ?? 'editTestTypeHelper.php';
@@ -233,21 +238,6 @@ $i = 1;
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="testMethod"
-										class="col-lg-4 control-label"><?php echo _translate("Test Methods"); ?> <span
-											class="mandatory">*</span> <em class="fas fa-edit"></em></label>
-									<div class="col-lg-7">
-										<select class="form-control isRequired editableSelect" name='testMethod[]'
-											id='testMethod'
-											title="<?php echo _translate('Please select the test methods'); ?>"
-											multiple>
-											<?= $general->generateSelectOptions($testMethodInfo, $testMethodId, '-- Select --') ?>
-										</select>
-									</div>
-								</div>
-							</div>
 							<div class="col-md-6">
 								<div class="form-group">
 									<label for="testCategory"
@@ -757,6 +747,10 @@ $i = 1;
 													<table style="width: 100%;margin: 0 auto;" border="1"
 														class="table table-bordered table-striped clearfix">
 														<tr>
+								<td style="width:20%;"><lable class="form-label-control"><?php echo _translate("Test Methods"); ?> <span class="mandatory">*</span></lable></td>
+								<td colspan="3" style="width:80%;"><select multiple name="resultConfig[methods][<?php echo $key; ?>][]" class="form-control input-sm isRequired resultGroupMethods" title="<?php echo _translate('Select the test method(s) that produce this result'); ?>"><?= $general->generateSelectOptions($testMethodInfo, $testResultAttribute['methods'][$key] ?? [], false) ?></select></td>
+							</tr>
+							<tr>
 															<td class="<?php echo (isset($resultName) && !empty($resultName)) ? '' : 'hide'; ?> firstSubTest"
 																style="width:20%;">
 																<lable for="resultSubGroup<?php echo $key; ?>"
@@ -905,6 +899,10 @@ $i = 1;
 										<table style="width: 100%;margin: 0 auto;" border="1"
 											class="table table-bordered table-striped clearfix">
 											<tr>
+								<td style="width:20%;"><lable class="form-label-control"><?php echo _translate("Test Methods"); ?> <span class="mandatory">*</span></lable></td>
+								<td colspan="3" style="width:80%;"><select multiple name="resultConfig[methods][1][]" class="form-control input-sm isRequired resultGroupMethods" title="<?php echo _translate('Select the test method(s) that produce this result'); ?>"><?= $general->generateSelectOptions($testMethodInfo, $testResultAttribute['methods'][1] ?? [], false) ?></select></td>
+							</tr>
+							<tr>
 												<td class="hide firstSubTest" style="width:20%;">
 													<lable for="resultSubGroup1" class="form-label-control">Enter the test
 														name</lable>
@@ -1125,6 +1123,12 @@ $i = 1;
 			curVal = prevVal.replace(htmlVal + ',', "");
 			$(this).parent().parent().prev(".fdropDown").val(curVal);
 			$(this).parent().remove();
+		});
+
+		$('.resultGroupMethods').each(function () {
+			if (!$(this).hasClass('select2-hidden-accessible')) {
+				$(this).select2({ tags: true, width: '100%', placeholder: "<?php echo _translate('Select test method(s)'); ?>" });
+			}
 		});
 
 		let ajaxSelect = ["testMethod", "testCategory", "testingReason", "testFailureReason", "rejectionReason"];
@@ -1394,6 +1398,10 @@ $i = 1;
 				<td>\
 					<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">\
 						<tr>\
+								<td style="width:20%;"><lable class="form-label-control"><?php echo _translate("Test Methods"); ?></lable></td>\
+								<td colspan="3" style="width:80%;"><select multiple name="resultConfig[methods][' + sampleCounter + '][]" class="form-control input-sm isRequired resultGroupMethods" title="<?php echo _translate('Select test method(s)'); ?>"><?php echo $methodOptionsJs; ?></select></td>\
+							</tr>\
+							<tr>\
 							<td style="width:20%;"><lable for="resultSubGroup' + sampleCounter + '" class="form-label-control"><?php echo _translate("Result name"); ?></lable></td>\
 							<td style="width:30%;">\
 								<input type="text" name="resultConfig[sub_test_name][' + sampleCounter + ']"id="resultSubGroup' + sampleCounter + '" class="form-control isRequired input-sm" placeholder="<?php echo _translate("Result / assay name, e.g. RT-PCR"); ?>" title="Please ener the sub test name for ' + sampleCounter + ' row"/>\
@@ -1462,6 +1470,7 @@ $i = 1;
 				</td>\
 			</tr>';
 		$(obj.parentNode.parentNode).after(html);
+		$('.resultGroupMethods').each(function () { if (!$(this).hasClass('select2-hidden-accessible')) { $(this).select2({ tags: true, width: '100%', placeholder: "<?php echo _translate('Select test method(s)'); ?>" }); } });
 	}
 
 	function removeQualitativeRow(obj, row1, row2) {
