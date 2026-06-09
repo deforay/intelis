@@ -482,6 +482,10 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 	let __clone = null;
 	let reason = null;
 	let resultValue = null;
+	// Multi-test (TB-style) result entry is handled per Test card by _test-section.php.
+	// When on, the legacy single-result widgets (#resultSection, #subTestResult / .subTestFields)
+	// must stay hidden -- do not inject the old result table or sub-test picker into them.
+	var gtMultiTest = <?php echo !empty($multiTestResults) ? 'true' : 'false'; ?>;
 	$(document).ready(function() {
 		$("#subTestResult").multipleSelect({
 			placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
@@ -1037,7 +1041,11 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 		removeDynamicForm();
 		var testType = $("#testType").val();
 		getTestTypeConfigList(testType);
-		getSubTestList(testType);
+		// In multi-test mode results are entered per Test card; the legacy sub-test
+		// picker (and the second getTestTypeForm.php it triggers) is not used.
+		if (!gtMultiTest) {
+			getSubTestList(testType);
+		}
 		if (testType != "") {
 			var editId = $('#vlSampleId').val();
 			var resultVal = $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>';
@@ -1075,10 +1083,10 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 					if (typeof(data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
 						$("#labSection").html(data.labSection);
 					}
-					if (typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
+					if (!gtMultiTest && typeof(data.result) != "undefined" && data.result !== null && data.result.length > 0) {
 						$("#resultSection").html(data.result);
 						$('#resultSection').show();
-					} 
+					}
 					if (typeof(data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
 						$("#specimenSection").after(data.specimenSection);
 						$('#specimenSection input, #specimenSection select , #specimenSection textarea').attr('disabled', true);
@@ -1151,6 +1159,10 @@ $latestChangeReason = !empty($resultChangeHistory) ? (string) (end($resultChange
 	}
 
 	function loadSubTests() {
+		// Per-card result entry (multi-test mode) does not use the legacy sub-test flow.
+		if (gtMultiTest) {
+			return;
+		}
 		var testType = $("#testType").val();
 		var subTestResult = $("#subTestResult").val();
 		if (testType != "") {
