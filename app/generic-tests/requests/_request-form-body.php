@@ -53,23 +53,21 @@ $pfChk = static fn(string $k, $v): string => ((string) ($gri[$k] ?? '') === (str
 $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');                         // escape DB-sourced display text
 ?>
                          <div class="box-body">
+                              <?php // Test Type anchors the whole form: it is always visible, and the rest
+                              // of the request form (Clinic / Patient / Sample / Lab boxes, all .requestForm)
+                              // only loads once a type is chosen. On edit/result the value is fixed -- changing
+                              // it would orphan the test's configured methods/results -- so the select is
+                              // disabled and the value is mirrored in a hidden input (a disabled select
+                              // does not submit).
+                              $gtTypeLocked = ($formMode !== 'add'); ?>
                               <div class="box box-primary<?= $dnr ?>">
-                                   <div class="box-header with-border">
-                                        <h3 class="box-title">
-                                             <?= _translate("Clinic Information: (To be filled by requesting Clinican/Nurse)"); ?>
-                                        </h3>
-                                   </div>
-                                   <div class="row">
-                                        <div class="col-md-6">
-                                             <label class="col-lg-5" for="testType"><?= _translate("Test Type"); ?>
+                                   <div class="box-body" style="padding: 12px 15px;">
+                                        <div style="text-align:center;">
+                                             <label for="testType" style="font-weight:600;margin:0 12px 0 0;vertical-align:middle;"><?= _translate("Test Type"); ?>
                                                   <span class="mandatory">*</span></label>
-                                             <div class="col-lg-7">
-                                                  <?php // Test type is fixed once a sample exists -- changing it on edit/result
-                                                  // would orphan the test's configured methods/results, so lock it there. A
-                                                  // disabled select does not submit, so mirror the value in a hidden input.
-                                                  $gtTypeLocked = ($formMode !== 'add'); ?>
+                                             <div style="display:inline-block;width:340px;max-width:80%;text-align:left;vertical-align:middle;">
                                                   <select class="form-control isRequired" name="testType" id="testType"
-                                                       title="Please choose test type"
+                                                       title="Please choose test type" style="width:100%;"
                                                        <?= $gtTypeLocked ? 'disabled' : '' ?>
                                                        onchange="<?= $onTestTypeChange ?>">
                                                        <option value=""> <?= _translate("-- Select --"); ?> </option>
@@ -84,7 +82,20 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                        <input type="hidden" name="testType" value="<?= $pf('test_type') ?>" />
                                                   <?php } ?>
                                              </div>
+                                             <?php if ($formMode === 'add') { ?>
+                                                  <p class="selectTestTypePrompt" style="margin:10px 0 0;font-size:12.5px;color:#8a939b;">
+                                                       <i class="fa-solid fa-circle-info" style="margin-right:4px;"></i>
+                                                       <?= _translate("Choose a test type to load the rest of the request form."); ?>
+                                                  </p>
+                                             <?php } ?>
                                         </div>
+                                   </div>
+                              </div>
+                              <div class="box box-primary requestForm<?= $dnr ?>" style="display:none;">
+                                   <div class="box-header with-border">
+                                        <h3 class="box-title">
+                                             <?= _translate("Clinic Information: (To be filled by requesting Clinican/Nurse)"); ?>
+                                        </h3>
                                    </div>
                                    <div class="row requestForm" style="display:none;">
                                         <div class="col-md-6">

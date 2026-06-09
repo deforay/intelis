@@ -972,6 +972,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
           var testType = $("#testType").val();
           if (testType != "") {
                getTestTypeConfigList(testType);
+               $(".selectTestTypePrompt").slideUp(150);
                $(".requestForm").show();
                $.post("/generic-tests/requests/getTestTypeForm.php", {
                     result: $('#result').val(),
@@ -1047,6 +1048,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                $("#caseInformationBox").hide();
                $("#otherSection").html('');
                $(".requestForm").hide();
+               $(".selectTestTypePrompt").slideDown(150);
           }
 
 
