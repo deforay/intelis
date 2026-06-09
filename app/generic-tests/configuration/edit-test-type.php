@@ -685,9 +685,9 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 							<div class="col-md-4">
 								<h3 class="box-title "><?php echo _translate("Test Results Configuration"); ?></h3>
 							</div>
-							<div class="col-md-8">
+							<div class="col-md-8" id="testResultUnitWrapper">
 								<label for="resultUnit"
-									class="col-lg-4 control-label"><?php echo _translate("Test Result Unit"); ?>
+									class="col-lg-4 control-label"><?php echo _translate("Test Result Unit"); ?> <small class="text-muted">(<?php echo _translate("for quantitative results"); ?>)</small>
 								</label>
 								<div class="col-lg-7">
 									<!--<select class="quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='< ?php echo _translate("Enter test result unit"); ?>' title='< ?php echo _translate("Please enter test result unit"); ?>' multiple>-->
@@ -701,6 +701,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 						</div>
 
 						<div class="box-body">
+							<p class="text-muted" style="margin:0 0 12px;"><?php echo _translate("Define each result this test reports. Most tests report a single result ". "(e.g. Positive / Negative, Present / Absent) -- that is one result group. A test that reports ". "several assays -- e.g. Ebola by RT-PCR and Antigen -- has one result group per assay: name each ". "group and use the + on the far right to add another. For each group choose Qualitative (a fixed ". "list of answers, each with a short Result Code) or Quantitative (a number with High / Threshold / ". "Low ranges; the Test Result Unit above applies here)."); ?></p>
 							<table style="width: 100%;margin: 0 auto;" border="1"
 								class="table table-bordered table-striped clearfix" id="vlSampleTable">
 								<tbody>
@@ -716,7 +717,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 															<td class="<?php echo (isset($resultName) && !empty($resultName)) ? '' : 'hide'; ?> firstSubTest"
 																style="width:20%;">
 																<lable for="resultSubGroup<?php echo $key; ?>"
-																	class="form-label-control">Enter the test name</lable>
+																	class="form-label-control"><?php echo _translate("Result name"); ?></lable>
 															</td>
 															<td class="<?php echo (isset($resultName) && !empty($resultName)) ? '' : 'hide'; ?> firstSubTest"
 																style="width:30%;">
@@ -725,7 +726,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 																	id="resultSubGroup<?php echo $key; ?>"
 																	value="<?php echo (isset($resultName) && !empty($resultName)) ? $resultName : 'Test Level 1'; ?>"
 																	class="form-control input-sm firstSubTest-input"
-																	placeholder="Enter the sub test name"
+																	placeholder="<?php echo _translate("Result / assay name, e.g. RT-PCR"); ?>"
 																	title="Please ener the sub test name for <?php echo $key; ?> row" />
 															</td>
 															<td style="width:20%;">
@@ -869,7 +870,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 													<input type="text" name="resultConfig[sub_test_name][1]"
 														id="resultSubGroup1"
 														class="form-control input-sm firstSubTest-input"
-														placeholder="Enter the sub test name"
+														placeholder="<?php echo _translate("Result / assay name, e.g. RT-PCR"); ?>"
 														title="Please ener the sub test name for 1st row" />
 												</td>
 												<td style="width:20%;">
@@ -1026,6 +1027,8 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 
 
 		$('input').tooltip();
+		toggleResultUnit();
+		$(document).on('change', 'select[name^="resultConfig[result_type]"]', toggleResultUnit);
 
 		// Auto-generate the field code from the field name as it is typed, until the
 		// code is edited directly (or it already has a value).
@@ -1348,9 +1351,9 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 				<td>\
 					<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">\
 						<tr>\
-							<td style="width:20%;"><lable for="resultSubGroup' + sampleCounter + '" class="form-label-control">Enter the test name</lable></td>\
+							<td style="width:20%;"><lable for="resultSubGroup' + sampleCounter + '" class="form-label-control"><?php echo _translate("Result name"); ?></lable></td>\
 							<td style="width:30%;">\
-								<input type="text" name="resultConfig[sub_test_name][' + sampleCounter + ']"id="resultSubGroup' + sampleCounter + '" class="form-control isRequired input-sm" placeholder="Enter the sub test name" title="Please ener the sub test name for ' + sampleCounter + ' row"/>\
+								<input type="text" name="resultConfig[sub_test_name][' + sampleCounter + ']"id="resultSubGroup' + sampleCounter + '" class="form-control isRequired input-sm" placeholder="<?php echo _translate("Result / assay name, e.g. RT-PCR"); ?>" title="Please ener the sub test name for ' + sampleCounter + ' row"/>\
 							</td>\
 							<td style="width:20%;"><lable for="testType' + sampleCounter + '" class="form-label-control">Select result type</lable></td>\
 							<td style="width:30%;">\
@@ -1430,7 +1433,16 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 	function removeRow(obj) {
 		$(obj.parentNode.parentNode).fadeOut("normal", function () {
 			$(this).remove();
+			toggleResultUnit();
 		});
+	}
+
+	function toggleResultUnit() {
+		var hasQuant = $('select[name^="resultConfig[result_type]"]').filter(function () {
+			return this.value === 'quantitative';
+		}).length > 0;
+		// Units only apply to quantitative results.
+		$('#testResultUnitWrapper').toggle(hasQuant);
 	}
 
 	function setResultType(id, row) {
