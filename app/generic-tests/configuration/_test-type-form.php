@@ -195,6 +195,24 @@ $i = 1;
 	.gtmp-option { display: flex; align-items: flex-start; gap: 8px; font-weight: normal; margin: 0; padding: 6px 4px; border-radius: 4px; cursor: pointer; }
 	.gtmp-option:hover { background-color: #f0f7ff; }
 	.gtmp-option input { margin-top: 3px; }
+
+	/* Basic-info fields: stack the label on top of its field (the 2-col grid stays via
+	   .col-md-6), giving a roomier, less-crowded layout. Scoped to .form-group so the
+	   Test Result Unit label (not inside a form-group) keeps its inline layout. */
+	#testTypeForm .form-group > .control-label,
+	#testTypeForm .form-group > div[class*="col-lg-"] {
+		float: none;
+		width: 100%;
+	}
+	#testTypeForm .form-group > .control-label {
+		text-align: left;
+		padding-top: 0;
+		margin-bottom: 5px;
+		font-weight: 600;
+	}
+	#testTypeForm .form-group {
+		margin-bottom: 18px;
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
