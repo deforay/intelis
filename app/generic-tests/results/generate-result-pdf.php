@@ -153,8 +153,35 @@ if (!empty($requestResult)) {
 
 		// $genericTestQuery = "SELECT res.*, m.test_method_name from generic_test_results as res INNER JOIN r_generic_test_methods AS m ON m.test_method_id=res.test_name where res.generic_id=? ORDER BY res.test_id ASC";
 		// $genericTestInfo = $db->rawQuery($genericTestQuery, array($result['sample_id']));
-		$genericTestQuery = "SELECT * FROM generic_test_results WHERE generic_id=? ORDER BY test_id ASC";
+		// Per-test rows. JOIN the lab / tested-reviewed-approved users / rejection reason so
+		// the multi-test (TB-style) layout can name them without per-row lookups. The extra
+		// aliased columns are additive — the legacy sub_test path below still reads res.*.
+		$genericTestQuery = "SELECT res.*,
+						l.facility_name as lab_name,
+						u_test.user_name as testedByName,
+						u_review.user_name as reviewedByName,
+						u_approve.user_name as approvedByName,
+						rsrr.rejection_reason_name as rejectionReasonName
+						FROM generic_test_results as res
+						LEFT JOIN facility_details as l ON res.lab_id = l.facility_id
+						LEFT JOIN user_details as u_test ON u_test.user_id = res.tested_by
+						LEFT JOIN user_details as u_review ON u_review.user_id = res.result_reviewed_by
+						LEFT JOIN user_details as u_approve ON u_approve.user_id = res.result_approved_by
+						LEFT JOIN r_generic_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id = res.reason_for_sample_rejection
+						WHERE res.generic_id=? ORDER BY res.test_id ASC";
 		$genericTestInfo = $db->rawQuery($genericTestQuery, [$result['sample_id']]);
+
+		// Genuine multi-test = more than one test card, none of which is a legacy
+		// quantitative sub-test row (those carry sub_test_name and use the table layout).
+		$isMultiTest = is_array($genericTestInfo) && count($genericTestInfo) > 1;
+		if ($isMultiTest) {
+			foreach ($genericTestInfo as $gtRow) {
+				if (!empty($gtRow['sub_test_name'])) {
+					$isMultiTest = false;
+					break;
+				}
+			}
+		}
 		// $testedBy = null;
 		if (!empty($result['tested_by'])) {
 			$testedByRes = $usersService->getUserByID($result['tested_by'], ['user_name', 'user_signature']);
@@ -504,7 +531,71 @@ if (!empty($requestResult)) {
 		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
 		$html .= '</tr></table>';
 		//echo '<pre>'; print_r($genericTestInfo); die;
-		if (!empty($genericTestInfo) && $showHideTable === 'yes') {
+		if ($isMultiTest) {
+			// Multiple tests done on this sample -> one numbered block per test, mirroring
+			// the TB referral report (Laboratory / Result / Tested / Reviewed / Approved /
+			// Interpretation). Rejected tests show the rejection reason in place of a result.
+			$gtFmt = static fn($d): string => (!empty($d) && trim((string) $d) !== '' && $d != '0000-00-00 00:00:00')
+				? DateUtility::humanReadableDateFormat((string) $d, true) : '';
+			$n = 1;
+			foreach ($genericTestInfo as $row) {
+				$html .= '<br><table border="1" style="padding:3px;">';
+				$html .= '<tr style="font-size:10px;font-weight:bold;width:100%;background-color:#c0c0c0;">';
+				$html .= '<td colspan="4">' . _translate('LABORATORY RESULT') . ' - ' . $n . '</td>';
+				$html .= '</tr>';
+				$html .= '<tr>';
+				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;width:22%;">' . _translate('Laboratory') . ':</td>';
+				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;width:28%;">' . ($row['lab_name'] ?? '') . '</td>';
+				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;width:22%;">' . _translate('Date of reception') . ':</td>';
+				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;width:28%;">' . $gtFmt($row['sample_received_at_lab_datetime']) . '</td>';
+				$html .= '</tr>';
+				if (isset($row['is_sample_rejected']) && $row['is_sample_rejected'] === 'yes') {
+					$html .= '<tr>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Reason for sample rejection') . '</td>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . ($row['rejectionReasonName'] ?? '') . '</td>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Rejection Date') . '</td>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . $gtFmt($row['rejection_on']) . '</td>';
+					$html .= '</tr>';
+				} else {
+					$resultUnitName = (isset($row['result_unit']) && isset($testUnits[$row['result_unit']])) ? ' ' . $testUnits[$row['result_unit']] : '';
+					$html .= '<tr>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Test') . '</td>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . ($row['test_name'] ?? '') . '</td>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Result') . '</td>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;font-weight:bold;">' . ucwords((string) $row['result']) . $resultUnitName . '</td>';
+					$html .= '</tr>';
+				}
+				$html .= '<tr>';
+				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Tested By') . ':</td>';
+				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . ($row['testedByName'] ?? '') . '</td>';
+				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Date Tested') . ':</td>';
+				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . $gtFmt($row['sample_tested_datetime']) . '</td>';
+				$html .= '</tr>';
+				if (!empty($row['reviewedByName']) || !empty($row['result_reviewed_datetime'])) {
+					$html .= '<tr>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Reviewed By') . ':</td>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . ($row['reviewedByName'] ?? '') . '</td>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Date Reviewed') . ':</td>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . $gtFmt($row['result_reviewed_datetime']) . '</td>';
+					$html .= '</tr>';
+				}
+				if (!empty($row['approvedByName']) || !empty($row['result_approved_datetime'])) {
+					$html .= '<tr>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Approved By') . ':</td>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . ($row['approvedByName'] ?? '') . '</td>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Date Approved') . ':</td>';
+					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . $gtFmt($row['result_approved_datetime']) . '</td>';
+					$html .= '</tr>';
+				}
+				if (!empty($row['comments'])) {
+					$html .= '<tr>';
+					$html .= '<td colspan="4" style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Interpretation') . ': ' . $row['comments'] . '</td>';
+					$html .= '</tr>';
+				}
+				$html .= '</table>';
+				$n++;
+			}
+		} elseif (!empty($genericTestInfo) && $showHideTable === 'yes') {
 			$w = 25;
 			$titleTest = isset($result['sub_tests']) && !empty($result['sub_tests']) ? "Range" : "Platform";
 			/* Test Result Section */
@@ -652,7 +743,9 @@ if (!empty($requestResult)) {
 				  $html .= '</tr>';
 			 }
 		} */
-		if (!empty($reviewedBy)) {
+		// Page-level signature tables: only for single-test reports. In multi-test mode each
+		// LABORATORY RESULT block above already carries its own tested/reviewed/approved chain.
+		if (!$isMultiTest && !empty($reviewedBy)) {
 			$html .= '<tr>';
 			$html .= '<td colspan="3" style="line-height:8px;"></td>';
 			$html .= '</tr>';
@@ -674,7 +767,7 @@ if (!empty($requestResult)) {
 			$html .= '</tr>';
 		}
 
-		if (!empty($revisedBy)) {
+		if (!$isMultiTest && !empty($revisedBy)) {
 
 			$html .= '<tr>';
 			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
@@ -696,7 +789,7 @@ if (!empty($requestResult)) {
 		$html .= '<tr>';
 		$html .= '<td colspan="3" style="line-height:8px;"></td>';
 		$html .= '</tr>';
-		if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
+		if (!$isMultiTest && !empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
 			$html .= '<tr>';
 			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
 			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
