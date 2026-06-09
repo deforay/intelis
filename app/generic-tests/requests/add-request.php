@@ -1029,6 +1029,11 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                    plugins: ["restore_on_backspace", "remove_button", "clear_button"],
                               });
 
+                              // Attach date pickers to any date fields just injected
+                              // (the document-ready init ran before they existed).
+                              if (typeof initDatePicker === 'function') { initDatePicker(); }
+                              if (typeof initDateTimePicker === 'function') { initDateTimePicker(); }
+
                               if ($('#resultType').val() == 'qualitative') {
                                    $('.final-result-row').attr('colspan', 4)
                                    $('.testResultUnit').hide();
