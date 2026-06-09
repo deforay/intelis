@@ -143,6 +143,19 @@ if (!empty($requestResult)) {
 		$testTypeQuery = "SELECT * FROM r_test_types WHERE test_type_id= ?";
 		$testTypeResult = $db->rawQueryOne($testTypeQuery, [$result['testType']]);
 		$testResultsAttribute = json_decode((string) $testTypeResult['test_results_config'], true);
+
+		// The request-form field config drives this PDF too: fields the test type hides on the form
+		// must not print here, and the Patient ID label must match whatever the form renamed it to.
+		$advancedFormConfig = (isset($testResultsAttribute['advancedFormConfig']) && is_array($testResultsAttribute['advancedFormConfig']))
+			? $testResultsAttribute['advancedFormConfig'] : [];
+		$advShown = fn($key) => (($advancedFormConfig[$key] ?? '') !== 'no'); // shown unless explicitly "no" (mirrors the form toggles)
+		$showPatientName      = $advShown('showPatientName');
+		$showLaboratoryNumber = $advShown('showLaboratoryNumber');
+		$showPregnancy        = $advShown('showPregnancy');
+		$showBreastfeeding    = $advShown('showBreastfeeding');
+		$patientIdLabel = (!empty($advancedFormConfig['patientIdLabel']))
+			? mb_strtoupper(trim((string) $advancedFormConfig['patientIdLabel']), 'UTF-8') : 'EPID NUMBER';
+
 		$subTestKey = [];
 		foreach ($testResultsAttribute['result_type'] as $key => $resultType) {
 			if ($resultType == 'quantitative') {
@@ -426,9 +439,9 @@ if (!empty($requestResult)) {
 		$html .= '<td colspan="3">';
 		$html .= '<table style="padding:4px 2px 2px 2px;">';
 		$html .= '<tr>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PATIENT NAME</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EPID NUMBER</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REASON FOR VL TESTING</td>';
+		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . ($showPatientName ? 'PATIENT NAME' : '') . '</td>';
+		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . $patientIdLabel . '</td>';
+		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REASON FOR TESTING</td>';
 		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
 		$html .= '</tr>';
 		$html .= '<tr>';
@@ -436,7 +449,7 @@ if (!empty($requestResult)) {
 		$patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_id']));
 
 
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
+		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($showPatientName ? $patientFname : '') . '</td>';
 		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_id'] . '</td>';
 		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['test_reason']) . '</td>';
 		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
@@ -452,8 +465,8 @@ if (!empty($requestResult)) {
 		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">AGE</td>';
 		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SEX</td>';
 		if ($result['patient_gender'] == 'female') {
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">BREAST FEEDING</td>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PREGNANCY STATUS</td>';
+			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . ($showBreastfeeding ? 'BREAST FEEDING' : '') . '</td>';
+			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . ($showPregnancy ? 'PREGNANCY STATUS' : '') . '</td>';
 		} else {
 			//$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">LOINC CODE</td>';
 			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
@@ -464,8 +477,8 @@ if (!empty($requestResult)) {
 		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $age . '</td>';
 		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
 		if ($result['patient_gender'] == 'female') {
-			$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", (string) $result['is_patient_breastfeeding'])) . '</td>';
-			$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (str_replace("_", " ", (string) $result['is_patient_pregnant'])) . '</td>';
+			$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($showBreastfeeding ? str_replace("_", " ", (string) $result['is_patient_breastfeeding']) : '') . '</td>';
+			$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($showPregnancy ? str_replace("_", " ", (string) $result['is_patient_pregnant']) : '') . '</td>';
 		} else {
 			// $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['test_loinc_code'] . '</td>';
 			$html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
@@ -500,12 +513,12 @@ if (!empty($requestResult)) {
 		$html .= '</tr>';
 		$html .= '<tr>';
 		$html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE ID</td>';
-		$html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">LABORATORY NUMBER</td>';
+		$html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">' . ($showLaboratoryNumber ? 'LABORATORY NUMBER' : '') . '</td>';
 		$html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE COLLECTION DATE</td>';
 		$html .= '</tr>';
 		$html .= '<tr>';
 		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_code'] . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['laboratory_number'] . '</td>';
+		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($showLaboratoryNumber ? $result['laboratory_number'] : '') . '</td>';
 		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
 		$html .= '</tr>';
 		$html .= '<tr>';
