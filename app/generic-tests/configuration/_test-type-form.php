@@ -35,11 +35,11 @@ $gtRenderMethodPicker = function ($groupKey, $selected) use ($testMethodInfo) {
             <span class="gtmp-summary"></span><span class="gtmp-caret">&#9662;</span>
         </button>
         <div class="gtmp-panel" hidden>
-            <input type="text" class="form-control input-sm gtmp-search" placeholder="<?php echo _translate('Search methods...'); ?>" autocomplete="off">
+            <input type="text" class="form-control input-sm gtmp-search" placeholder="<?php echo _htmlTranslate('Search methods...'); ?>" autocomplete="off">
             <div class="gtmp-actions">
-                <a href="javascript:void(0);" class="gtmp-all"><?php echo _translate('Select all'); ?></a>
+                <a href="javascript:void(0);" class="gtmp-all"><?php echo _htmlTranslate('Select all'); ?></a>
                 <span class="gtmp-sep">|</span>
-                <a href="javascript:void(0);" class="gtmp-clear"><?php echo _translate('Clear all'); ?></a>
+                <a href="javascript:void(0);" class="gtmp-clear"><?php echo _htmlTranslate('Clear all'); ?></a>
             </div>
             <div class="gtmp-list">
                 <?php foreach (($testMethodInfo ?? []) as $__mid => $__mname) { ?>
@@ -799,7 +799,7 @@ $i = 1;
 													<table style="width: 100%;margin: 0 auto;" border="1"
 														class="table table-bordered table-striped clearfix">
 														<tr>
-								<td style="width:20%;"><lable class="form-label-control"><?php echo _translate("Test Methods"); ?> <span class="mandatory">*</span></lable></td>
+								<td style="width:20%;"><lable class="form-label-control"><?php echo _htmlTranslate("Test Methods"); ?> <span class="mandatory">*</span></lable></td>
 								<td colspan="3" style="width:80%;"><?= $gtRenderMethodPicker($key, $testResultAttribute['methods'][$key] ?? []) ?></td>
 							</tr>
 							<tr>
@@ -951,7 +951,7 @@ $i = 1;
 										<table style="width: 100%;margin: 0 auto;" border="1"
 											class="table table-bordered table-striped clearfix">
 											<tr>
-								<td style="width:20%;"><lable class="form-label-control"><?php echo _translate("Test Methods"); ?> <span class="mandatory">*</span></lable></td>
+								<td style="width:20%;"><lable class="form-label-control"><?php echo _htmlTranslate("Test Methods"); ?> <span class="mandatory">*</span></lable></td>
 								<td colspan="3" style="width:80%;"><?= $gtRenderMethodPicker(1, $testResultAttribute['methods'][1] ?? []) ?></td>
 							</tr>
 							<tr>
@@ -1448,7 +1448,7 @@ $i = 1;
 				<td>\
 					<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">\
 						<tr>\
-								<td style="width:20%;"><lable class="form-label-control"><?php echo _translate("Test Methods"); ?></lable></td>\
+								<td style="width:20%;"><lable class="form-label-control"><?php echo _jsTranslate("Test Methods"); ?></lable></td>\
 								<td colspan="3" style="width:80%;"><div class="gtMethodPicker" data-group="' + sampleCounter + '"></div></td>\
 							</tr>\
 							<tr>\
@@ -1549,8 +1549,8 @@ $i = 1;
 
 	// ---- Result Group Test Methods picker (checkbox dropdown; posts methods[k][]) ----
 	var gtAllMethods = <?php echo $gtAllMethodsJson; ?>;
-	var gtmpSummaryTpl = "<?php echo _translate('%selected of %total selected'); ?>";
-	var gtmpEmptyTpl = "<?php echo _translate('Select methods'); ?>";
+	var gtmpSummaryTpl = "<?php echo _jsTranslate('%selected of %total selected'); ?>";
+	var gtmpEmptyTpl = "<?php echo _jsTranslate('Select methods'); ?>";
 	var gtmpPreviewLimit = 3;
 
 	function gtMethodPickerSummary(container) {
@@ -1583,9 +1583,9 @@ $i = 1;
 			'<button type="button" class="form-control input-sm gtmp-toggle" aria-haspopup="listbox" aria-expanded="false">'
 			+ '<span class="gtmp-summary"></span><span class="gtmp-caret">&#9662;</span></button>'
 			+ '<div class="gtmp-panel" hidden>'
-			+ '<input type="text" class="form-control input-sm gtmp-search" placeholder="<?php echo _translate('Search methods...'); ?>" autocomplete="off">'
-			+ '<div class="gtmp-actions"><a href="javascript:void(0);" class="gtmp-all"><?php echo _translate('Select all'); ?></a>'
-			+ '<span class="gtmp-sep">|</span><a href="javascript:void(0);" class="gtmp-clear"><?php echo _translate('Clear all'); ?></a></div>'
+			+ '<input type="text" class="form-control input-sm gtmp-search" placeholder="<?php echo _jsTranslate('Search methods...'); ?>" autocomplete="off">'
+			+ '<div class="gtmp-actions"><a href="javascript:void(0);" class="gtmp-all"><?php echo _jsTranslate('Select all'); ?></a>'
+			+ '<span class="gtmp-sep">|</span><a href="javascript:void(0);" class="gtmp-clear"><?php echo _jsTranslate('Clear all'); ?></a></div>'
 			+ '<div class="gtmp-list"></div></div>';
 		var list = container.querySelector('.gtmp-list');
 		gtAllMethods.forEach(function (m) {
