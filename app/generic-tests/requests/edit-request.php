@@ -1044,6 +1044,7 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 		toggleField('#implementingPartner', cfg.showImplementingPartner !== 'no');
 		toggleField('#fundingSource', cfg.showFundingSource !== 'no');
 		toggleField('#patientFirstName', cfg.showPatientName !== 'no');
+		toggleField('#laboratoryNumber', cfg.showLaboratoryNumber !== 'no');
 		toggleField('#ageInMonths', cfg.showAgeInMonths !== 'no');
 		toggleFemaleField('#pregYes', cfg.showPregnancy !== 'no');
 		toggleFemaleField('#breastfeedingYes', cfg.showBreastfeeding !== 'no');

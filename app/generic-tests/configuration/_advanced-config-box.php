@@ -130,6 +130,11 @@ $advLabel = (isset($advCfg['patientIdLabel']) && trim((string) $advCfg['patientI
                     <span class="adv-toggle-text"><?= _translate("Capture Patient Name"); ?></span>
                 </label>
                 <label class="adv-toggle">
+                    <input type="hidden" name="resultConfig[advancedFormConfig][showLaboratoryNumber]" value="no">
+                    <input type="checkbox" name="resultConfig[advancedFormConfig][showLaboratoryNumber]" value="yes" <?= $advChecked('showLaboratoryNumber') ?>>
+                    <span class="adv-toggle-text"><?= _translate("Capture Laboratory Number"); ?></span>
+                </label>
+                <label class="adv-toggle">
                     <input type="hidden" name="resultConfig[advancedFormConfig][showPregnancy]" value="no">
                     <input type="checkbox" name="resultConfig[advancedFormConfig][showPregnancy]" value="yes" <?= $advChecked('showPregnancy') ?>>
                     <span class="adv-toggle-text"><?= _translate("Capture Pregnancy status"); ?></span>
