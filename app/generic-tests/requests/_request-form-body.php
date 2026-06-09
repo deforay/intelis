@@ -990,10 +990,6 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                         <?php if ($showSaveNextClone) { ?>
                                         <a class="btn btn-primary btn-disabled" href="javascript:void(0);"
                                              onclick="validateSaveNow('next');return false;"><?= _translate("Save and Next"); ?></a>
-                                        <?php if (_isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
-                                             <a class="btn btn-primary btn-disabled" href="javascript:void(0);"
-                                                  onclick="validateSaveNow('clone');return false;"><?= _translate("Save and Clone"); ?></a>
-                                        <?php } ?>
                                         <?php } ?>
                                         <a href="<?= $cancelUrl ?>" class="btn btn-default">
                                              <?= _translate("Cancel"); ?></a>

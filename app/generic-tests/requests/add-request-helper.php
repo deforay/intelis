@@ -379,11 +379,11 @@ try {
             $barcode = "?barcode=true&s=$s&f=$f&p=$patientId";
         }
 
-        if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-            header("Location:add-request.php");
-        }
-        if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'clone') {
-            header("Location:clone-request.php?id=" . base64_encode((string) $_POST['requestSampleId']));
+        // "Save and Next" reopens a fresh Add form pre-loaded with the same test type, so the
+        // user can register the next sample for that test without re-selecting it. (This also
+        // covers the retired "Save and Clone" -- clone-request.php has been removed.)
+        if (!empty($_POST['saveNext'])) {
+            header("Location:add-request.php?testType=" . urlencode((string) ($_POST['testType'] ?? '')));
         }
         if (empty($_POST['saveNext'])) {
             header("Location:view-requests.php");
