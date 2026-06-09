@@ -957,6 +957,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
           toggleField('#implementingPartner', cfg.showImplementingPartner !== 'no');
           toggleField('#fundingSource', cfg.showFundingSource !== 'no');
           toggleField('#patientFirstName', cfg.showPatientName !== 'no');
+          toggleField('#laboratoryNumber', cfg.showLaboratoryNumber !== 'no');
           toggleField('#ageInMonths', cfg.showAgeInMonths !== 'no');
           toggleFemaleField('#pregYes', cfg.showPregnancy !== 'no');
           toggleFemaleField('#breastfeedingYes', cfg.showBreastfeeding !== 'no');
