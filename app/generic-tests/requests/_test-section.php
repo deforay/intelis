@@ -421,12 +421,16 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 		// Test Section IS the result entry area, so defer past those handlers and keep it editable.
 		setTimeout(function () {
 			$('#genericTestSectionBox').find('input, select, textarea').prop('disabled', false);
-			// These sample-level result fields are now captured PER Test card. Hide them,
-			// drop their required flags, and disable them so they don't submit / block
-			// validation. Sample-level fields the helper still uses (focal person, hub
-			// received, results dispatched, lab comments, reason for testing) are kept.
+			// These sample-level result fields are now captured PER Test card (or no longer
+			// used in the multi-test flow). Hide them, drop their required flags, and disable
+			// them so they don't submit / block validation. Kept: lab comments, reason for
+			// testing, reason-for-changes. Focal person / hub received / testing platform /
+			// result dispatch are removed for now (result dispatch may return after the final
+			// interpretation step).
 			['#isSampleRejected', '#sampleTestingDateAtLab', '#sampleReceivedDate',
-				'#reviewedBy', '#reviewedOn', '#testedBy', '#approvedBy', '#approvedOn'
+				'#reviewedBy', '#reviewedOn', '#testedBy', '#approvedBy', '#approvedOn',
+				'#vlFocalPerson', '#vlFocalPersonPhoneNumber', '#sampleReceivedAtHubOn',
+				'#testPlatform', '#resultDispatchedOn'
 			].forEach(function (sel) {
 				$(sel).removeClass('isRequired').prop('disabled', true)
 					.closest('.col-md-6, .form-group').hide();
