@@ -696,17 +696,19 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                                       title="<?php echo _translate('Please select result dispatched date'); ?>" />
                                                             </div>
                                                        </div>
-                                                       <div class="col-md-6 vlResult subTestFields">
-                                                            <label class="col-lg-5 control-label labels"
-                                                                 for="subTestResult"><?= _translate("Tests Performed"); ?></label>
-                                                            <div class="col-lg-7">
-                                                                 <select class="form-control ms-container multiselect"
-                                                                      id="subTestResult" name="subTestResult[]"
-                                                                      title="<?php echo _translate('Please select sub tests'); ?>"
-                                                                      multiple onchange="loadSubTests();">
-                                                                 </select>
+                                                       <?php if ($showSubTestPicker) { ?>
+                                                            <div class="col-md-6 vlResult subTestFields">
+                                                                 <label class="col-lg-5 control-label labels"
+                                                                      for="subTestResult"><?= _translate("Tests Performed"); ?></label>
+                                                                 <div class="col-lg-7">
+                                                                      <select class="form-control ms-container multiselect"
+                                                                           id="subTestResult" name="subTestResult[]"
+                                                                           title="<?php echo _translate('Please select sub tests'); ?>"
+                                                                           multiple onchange="loadSubTests();">
+                                                                      </select>
+                                                                 </div>
                                                             </div>
-                                                       </div>
+                                                       <?php } ?>
                                                   </div>
                                                   <?php if (count($reasonForFailure) > 0) { ?>
                                                        <div class="row">
