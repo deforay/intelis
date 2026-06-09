@@ -1,6 +1,7 @@
 <?php
 
 use App\Utilities\MiscUtility;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -125,7 +126,7 @@ try {
             }
         }
 
-        $data = ['test_type_uuid' => $testTypeUuid, 'test_standard_name' => $_POST['testStandardName'], 'test_generic_name' => $_POST['testGenericName'], 'test_short_code' => $shortCode, 'test_loinc_code' => empty($_POST['testLoincCode']) ? null : $_POST['testLoincCode'], 'test_category' => empty($_POST['testCategory']) ? null : $_POST['testCategory'], 'test_form_config' => json_encode($testAttribute), 'test_results_config' => json_encode($_POST['resultConfig']), 'test_status' => $_POST['status']];
+        $data = ['test_type_uuid' => $testTypeUuid, 'test_standard_name' => $_POST['testStandardName'], 'test_generic_name' => $_POST['testGenericName'], 'test_short_code' => $shortCode, 'test_loinc_code' => empty($_POST['testLoincCode']) ? null : $_POST['testLoincCode'], 'test_category' => empty($_POST['testCategory']) ? null : $_POST['testCategory'], 'test_form_config' => json_encode($testAttribute), 'test_results_config' => json_encode($_POST['resultConfig']), 'test_status' => $_POST['status'], 'updated_datetime' => DateUtility::getCurrentDateTime()];
 
         $id = $db->insert($tableName, $data);
         $lastId = $db->getInsertId();
