@@ -415,197 +415,127 @@ if (!empty($requestResult)) {
 		if ($result['result_status'] == REJECTED) {
 			$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
 		}
-		$html = '<table style="padding:4px 2px 2px 2px;width:100%;">';
-		$html .= '<tr>';
-
-		$html .= '<td colspan="3">';
-		$html .= '<table style="padding:2px;">';
-		$html .= '<tr>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING HEALTH FACILITY NAME</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">HEALTH FACILITY CODE</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">STATE</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">COUNTY</td>';
-		$html .= '</tr>';
-		$html .= '<tr>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_name']) . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_code']) . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_state']) . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_district']) . '</td>';
-		$html .= '</tr>';
-		$html .= '</table>';
-		$html .= '</td>';
-		$html .= '</tr>';
-		$html .= '<tr>';
-		$html .= '<td colspan="3">';
-		$html .= '<table style="padding:4px 2px 2px 2px;">';
-		$html .= '<tr>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . ($showPatientName ? 'PATIENT NAME' : '') . '</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . $patientIdLabel . '</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REASON FOR TESTING</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-		$html .= '</tr>';
-		$html .= '<tr>';
+		// ---- Professional layout: grouped sections, small grey labels over darker values ----
+		// Reflows only the fields it is handed (4 per row), so config-hidden or empty fields never
+		// leave blank gaps. Uses the two-row label/value table pattern, which renders aligned in TCPDF.
+		$f = static function (string $label, $value): array {
+			$value = trim((string) $value);
+			return ['label' => $label, 'value' => ($value !== '' ? $value : "\xE2\x80\x94")];
+		};
+		$renderSection = static function (string $title, array $fields): string {
+			$fields = array_values(array_filter($fields, static fn($x) => $x !== null));
+			if ($fields === []) {
+				return '';
+			}
+			$perRow = 4;
+			$w = (int) floor(100 / $perRow);
+			// Controlled gap above each section (a bare <br> is the 18px doc font here, too tall/uneven).
+			$out = '<table cellpadding="0" cellspacing="0" style="width:100%;"><tr><td style="font-size:7px;line-height:11px;">&nbsp;</td></tr></table>';
+			$out .= '<table cellpadding="3" cellspacing="0" style="width:100%;">';
+			$out .= '<tr><td colspan="' . $perRow . '" style="font-size:10px;font-weight:bold;color:#1a1a1a;background-color:#e6e6e6;border:0.6px solid #bbbbbb;line-height:16px;">&nbsp;' . mb_strtoupper($title, 'UTF-8') . '</td></tr>';
+			$out .= '</table>';
+			// One table per row, label-tr above value-tr. Pad cells carry an explicit small font
+			// so they don't inherit the 18px document font and balloon the row height.
+			foreach (array_chunk($fields, $perRow) as $chunk) {
+				$out .= '<table cellpadding="2" cellspacing="0" style="width:100%;"><tr>';
+				foreach ($chunk as $item) {
+					$out .= '<td style="width:' . $w . '%;font-size:8px;font-weight:bold;color:#777777;line-height:11px;">' . mb_strtoupper($item['label'], 'UTF-8') . '</td>';
+				}
+				for ($i = count($chunk); $i < $perRow; $i++) {
+					$out .= '<td style="width:' . $w . '%;font-size:8px;line-height:11px;"></td>';
+				}
+				$out .= '</tr><tr>';
+				foreach ($chunk as $item) {
+					$out .= '<td style="width:' . $w . '%;font-size:11px;color:#000000;line-height:14px;">' . $item['value'] . '</td>';
+				}
+				for ($i = count($chunk); $i < $perRow; $i++) {
+					$out .= '<td style="width:' . $w . '%;font-size:11px;line-height:14px;"></td>';
+				}
+				$out .= '</tr></table>';
+				// Breathing room between field rows.
+				$out .= '<table cellpadding="0" cellspacing="0" style="width:100%;"><tr><td style="font-size:4px;line-height:7px;">&nbsp;</td></tr></table>';
+			}
+			return $out;
+		};
 
 		$patientFname = ($general->crypto('doNothing', $result['patient_first_name'], $result['patient_id']));
 
-
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($showPatientName ? $patientFname : '') . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_id'] . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['test_reason']) . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
-		$html .= '</tr>';
-		$html .= '</table>';
-		$html .= '</td>';
-		$html .= '</tr>';
-
-		$html .= '<tr>';
-		$html .= '<td colspan="3">';
-		$html .= '<table style="padding:8px 2px 2px 2px;">';
-		$html .= '<tr>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">AGE</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SEX</td>';
+		// Section 1 - requesting facility & patient
+		$sec1 = [
+			$f(_translate('Requesting Health Facility'), $result['facility_name']),
+			$f(_translate('Facility Code'), $result['facility_code']),
+			$f(_translate('State'), $result['facility_state']),
+			$f(_translate('County'), $result['facility_district']),
+			$showPatientName ? $f(_translate('Patient Name'), $patientFname) : null,
+			$f($patientIdLabel, $result['patient_id']),
+			$f(_translate('Reason for Testing'), $result['test_reason']),
+			$f(_translate('Age'), $age),
+			$f(_translate('Sex'), ucwords(str_replace('_', ' ', (string) $result['patient_gender']))),
+		];
 		if ($result['patient_gender'] == 'female') {
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . ($showBreastfeeding ? 'BREAST FEEDING' : '') . '</td>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . ($showPregnancy ? 'PREGNANCY STATUS' : '') . '</td>';
-		} else {
-			//$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">LOINC CODE</td>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
+			$sec1[] = $showPregnancy ? $f(_translate('Pregnancy Status'), str_replace('_', ' ', (string) $result['is_patient_pregnant'])) : null;
+			$sec1[] = $showBreastfeeding ? $f(_translate('Breast Feeding'), str_replace('_', ' ', (string) $result['is_patient_breastfeeding'])) : null;
 		}
-		$html .= '</tr>';
-		$html .= '<tr>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $age . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
-		if ($result['patient_gender'] == 'female') {
-			$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($showBreastfeeding ? str_replace("_", " ", (string) $result['is_patient_breastfeeding']) : '') . '</td>';
-			$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($showPregnancy ? str_replace("_", " ", (string) $result['is_patient_pregnant']) : '') . '</td>';
-		} else {
-			// $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['test_loinc_code'] . '</td>';
-			$html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
-			$html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
+		if (!empty($result['request_clinician_name'])) {
+			$sec1[] = $f(_translate('Requesting Clinician'), ucwords((string) $result['request_clinician_name']));
 		}
-		$html .= '</tr>';
+		if (!empty($result['request_clinician_phone_number'])) {
+			$sec1[] = $f(_translate('Tel'), $result['request_clinician_phone_number']);
+		}
+		if (!empty($result['facility_emails'])) {
+			$sec1[] = $f(_translate('Email'), $result['facility_emails']);
+		}
 
-		if (
-			(isset($result['request_clinician_name']) && !empty($result['request_clinician_name'])) ||
-			(isset($result['request_clinician_phone_number']) && !empty($result['request_clinician_phone_number'])) ||
-			(isset($result['facility_emails']) && !empty($result['facility_emails']))
-		) {
-			$html .= '<tr>';
-			$html .= '<td colspan="4" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
-			$html .= '</tr>';
-			$html .= '<tr>';
-			$html .= '<td colspan="2" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING CLINICIAN NAME</td>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEL</td>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EMAIL</td>';
-			$html .= '</tr>';
-			$html .= '<tr>';
-			$html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . ucwords((string) $result['request_clinician_name']) . '</td>';
-			$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_phone_number'] . '</td>';
-			$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
-			$html .= '</tr>';
-		}
-		$html .= '</table>';
-		$html .= '</td>';
-		$html .= '</tr>';
-		$html .= '<tr>';
-		$html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
-		$html .= '</tr>';
-		$html .= '<tr>';
-		$html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE ID</td>';
-		$html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">' . ($showLaboratoryNumber ? 'LABORATORY NUMBER' : '') . '</td>';
-		$html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE COLLECTION DATE</td>';
-		$html .= '</tr>';
-		$html .= '<tr>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_code'] . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($showLaboratoryNumber ? $result['laboratory_number'] : '') . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
-		$html .= '</tr>';
-		$html .= '<tr>';
-		$html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE RECEIPT DATE</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE REJECTION STATUS</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE TEST DATE</td>';
-		$html .= '</tr>';
-		$rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected';
-		$html .= '<tr>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $rejectedStatus . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-		$html .= '</tr>';
+		// Section 2 - sample
+		$rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? _translate('Rejected') : _translate('Not Rejected');
+		$sec2 = [
+			$f(_translate('Sample ID'), $result['sample_code']),
+			$showLaboratoryNumber ? $f(_translate('Laboratory Number'), $result['laboratory_number']) : null,
+			$f(_translate('Sample Type'), $result['sample_type_name']),
+			$f(_translate('Collection Date'), trim($result['sample_collection_date'] . ' ' . $sampleCollectionTime)),
+			$f(_translate('Receipt Date'), trim($sampleReceivedDate . ' ' . $sampleReceivedTime)),
+			$f(_translate('Test Date'), $result['sample_tested_datetime']),
+			$f(_translate('Rejection Status'), $rejectedStatus),
+			$f(_translate('Result Release Date'), trim($sampleDispatchDate . ' ' . $sampleDispatchTime)),
+		];
 
-		$html .= '<tr>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">RESULT RELEASE DATE</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE TYPE</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-		$html .= '</tr>';
-		$html .= '<tr>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
-		$html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_type_name']) . '</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
-		$html .= '</tr></table>';
+		$html = $renderSection(_translate('Requesting Facility & Patient Information'), $sec1);
+		$html .= '<br>' . $renderSection(_translate('Sample Information'), $sec2);
 		//echo '<pre>'; print_r($genericTestInfo); die;
 		if ($isMultiTest) {
-			// Multiple tests done on this sample -> one numbered block per test, mirroring
-			// the TB referral report (Laboratory / Result / Tested / Reviewed / Approved /
-			// Interpretation). Rejected tests show the rejection reason in place of a result.
+			// One card per test, harmonised with the sections above: a grey heading bar, then
+			// grey-label / black-value fields (4 per row, empty fields reflow out). Rejected tests
+			// show the rejection reason in place of the result; the result value stays bold.
 			$gtFmt = static fn($d): string => (!empty($d) && trim((string) $d) !== '' && $d != '0000-00-00 00:00:00')
 				? DateUtility::humanReadableDateFormat((string) $d, true) : '';
 			$n = 1;
 			foreach ($genericTestInfo as $row) {
-				$html .= '<br><table border="1" style="padding:3px;">';
-				$html .= '<tr style="font-size:10px;font-weight:bold;width:100%;background-color:#c0c0c0;">';
-				$html .= '<td colspan="4">' . _translate('LABORATORY RESULT') . ' - ' . $n . '</td>';
-				$html .= '</tr>';
-				$html .= '<tr>';
-				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;width:22%;">' . _translate('Laboratory') . ':</td>';
-				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;width:28%;">' . ($row['lab_name'] ?? '') . '</td>';
-				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;width:22%;">' . _translate('Date of reception') . ':</td>';
-				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;width:28%;">' . $gtFmt($row['sample_received_at_lab_datetime']) . '</td>';
-				$html .= '</tr>';
+				$card = [
+					$f(_translate('Laboratory'), $row['lab_name'] ?? ''),
+					$f(_translate('Date of Reception'), $gtFmt($row['sample_received_at_lab_datetime'])),
+				];
 				if (isset($row['is_sample_rejected']) && $row['is_sample_rejected'] === 'yes') {
-					$html .= '<tr>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Reason for sample rejection') . '</td>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . ($row['rejectionReasonName'] ?? '') . '</td>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Rejection Date') . '</td>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . $gtFmt($row['rejection_on']) . '</td>';
-					$html .= '</tr>';
+					$card[] = $f(_translate('Reason for Sample Rejection'), $row['rejectionReasonName'] ?? '');
+					$card[] = $f(_translate('Rejection Date'), $gtFmt($row['rejection_on']));
 				} else {
 					$resultUnitName = (isset($row['result_unit']) && isset($testUnits[$row['result_unit']])) ? ' ' . $testUnits[$row['result_unit']] : '';
-					$html .= '<tr>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Test') . '</td>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . ($row['test_name'] ?? '') . '</td>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Result') . '</td>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;font-weight:bold;">' . ucwords((string) $row['result']) . $resultUnitName . '</td>';
-					$html .= '</tr>';
+					$card[] = $f(_translate('Test'), $row['test_name'] ?? '');
+					$card[] = $f(_translate('Result'), '<b>' . ucwords((string) $row['result']) . $resultUnitName . '</b>');
 				}
-				$html .= '<tr>';
-				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Tested By') . ':</td>';
-				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . ($row['testedByName'] ?? '') . '</td>';
-				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Date Tested') . ':</td>';
-				$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . $gtFmt($row['sample_tested_datetime']) . '</td>';
-				$html .= '</tr>';
+				$card[] = $f(_translate('Tested By'), $row['testedByName'] ?? '');
+				$card[] = $f(_translate('Date Tested'), $gtFmt($row['sample_tested_datetime']));
 				if (!empty($row['reviewedByName']) || !empty($row['result_reviewed_datetime'])) {
-					$html .= '<tr>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Reviewed By') . ':</td>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . ($row['reviewedByName'] ?? '') . '</td>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Date Reviewed') . ':</td>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . $gtFmt($row['result_reviewed_datetime']) . '</td>';
-					$html .= '</tr>';
+					$card[] = $f(_translate('Reviewed By'), $row['reviewedByName'] ?? '');
+					$card[] = $f(_translate('Date Reviewed'), $gtFmt($row['result_reviewed_datetime']));
 				}
 				if (!empty($row['approvedByName']) || !empty($row['result_approved_datetime'])) {
-					$html .= '<tr>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Approved By') . ':</td>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . ($row['approvedByName'] ?? '') . '</td>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Date Approved') . ':</td>';
-					$html .= '<td style="line-height:16px;font-size:11px;text-align:left;">' . $gtFmt($row['result_approved_datetime']) . '</td>';
-					$html .= '</tr>';
+					$card[] = $f(_translate('Approved By'), $row['approvedByName'] ?? '');
+					$card[] = $f(_translate('Date Approved'), $gtFmt($row['result_approved_datetime']));
 				}
+				$html .= $renderSection(_translate('Laboratory Result') . ' ' . $n, $card);
 				if (!empty($row['comments'])) {
-					$html .= '<tr>';
-					$html .= '<td colspan="4" style="line-height:16px;font-size:11px;text-align:left;">' . _translate('Interpretation') . ': ' . $row['comments'] . '</td>';
-					$html .= '</tr>';
+					$html .= '<table cellpadding="2" cellspacing="0" style="width:100%;"><tr><td style="font-size:10px;color:#000000;line-height:14px;"><b>' . _translate('Interpretation') . ':</b> ' . $row['comments'] . '</td></tr></table>';
 				}
-				$html .= '</table>';
 				$n++;
 			}
 		} elseif (!empty($genericTestInfo) && $showHideTable === 'yes') {
@@ -695,19 +625,19 @@ if (!empty($requestResult)) {
 		$html .= '<table style="padding:4px 2px 2px 2px;width:100%;">';
 		$html .= '<tr>';
 
-		$html .= '<td colspan="3"><br><br>';
-		$html .= '<table style="padding:10px 2px 2px 2px;">';
-		$html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $vlResult . '</td><td >' . $smileyContent . '</td></tr>';
+		$html .= '<td colspan="3"><br>';
+		// Result row: same grey-label / black-value language as the sections, just emphasised with a
+		// light tint, a thin border and a larger value. No colour carries meaning (B&W print safe).
+		$html .= '<table cellpadding="5" cellspacing="0" style="width:100%;background-color:#f2f2f2;border:0.6px solid #bbbbbb;"><tr>';
+		$html .= '<td style="width:20%;font-size:8px;font-weight:bold;color:#777777;line-height:18px;">' . mb_strtoupper(_translate('Result'), 'UTF-8') . '</td>';
+		$html .= '<td style="width:80%;font-size:14px;font-weight:bold;color:#000000;text-align:left;line-height:18px;">' . $vlResult . $smileyContent . '</td>';
+		$html .= '</tr></table>';
 		if ($result['reason_for_sample_rejection'] != '') {
-			$html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
+			$html .= '<table cellpadding="2" cellspacing="0" style="width:100%;"><tr><td style="font-size:10px;font-weight:bold;color:#000000;">' . _translate('Rejection Reason') . ': ' . $result['rejection_reason_name'] . '</td></tr></table>';
 		}
 		if (str_contains(strtolower((string) $result['vl_test_platform']), 'abbott')) {
-			$html .= '<tr>';
-			$html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/mL - 10 million copies/mL</td>';
-			$html .= '</tr>';
+			$html .= '<table cellpadding="2" cellspacing="0" style="width:100%;"><tr><td style="font-size:8px;color:#777777;">Abbott Linear Detection range: 839 copies/mL - 10 million copies/mL</td></tr></table>';
 		}
-		//$html .= '<tr><td colspan="3"></td></tr>';
-		$html .= '</table>';
 		$html .= '</td>';
 		$html .= '</tr>';
 		if (trim((string) $showMessage) !== '') {
@@ -728,31 +658,31 @@ if (!empty($requestResult)) {
 		}
 
 		$html .= '<tr>';
-		$html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
+		$html .= '<td colspan="3" style="line-height:2px;border-bottom:0.6px solid #cccccc;"></td>';
 		$html .= '</tr>';
 		/* $html .= '<tr>';
 		$html .= '<td colspan="3" style="line-height:15px;font-size:11px;font-weight:bold;">TEST PLATFORM &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . ($result['test_platform']) . '</span></td>';
 		$html .= '</tr>';
 
 		$html .= '<tr>';
-		$html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
+		$html .= '<td colspan="3" style="line-height:2px;border-bottom:0.6px solid #cccccc;"></td>';
 		$html .= '</tr>';
 		if ($result['is_sample_rejected'] == 'no') {
 			 if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
 				  $html .= '<tr>';
-				  $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
-				  $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-				  $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+				  $html .= '<td style="font-size:8px;font-weight:bold;color:#777777;line-height:13px;text-align:left;">TESTED BY</td>';
+				  $html .= '<td style="font-size:8px;font-weight:bold;color:#777777;line-height:13px;text-align:left;">SIGNATURE</td>';
+				  $html .= '<td style="font-size:8px;font-weight:bold;color:#777777;line-height:13px;text-align:left;">DATE</td>';
 				  $html .= '</tr>';
 
 				  $html .= '<tr>';
-				  $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
+				  $html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;">' . $testedBy . '</td>';
 				  if (!empty($testedBySignaturePath) && MiscUtility::isImageValid(($testedBySignaturePath))) {
-					   $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testedBySignaturePath . '" style="width:50px;" /></td>';
+					   $html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;"><img src="' . $testedBySignaturePath . '" style="width:50px;" /></td>';
 				  } else {
-					   $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+					   $html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;"></td>';
 				  }
-				  $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+				  $html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
 				  $html .= '</tr>';
 			 }
 		} */
@@ -764,38 +694,38 @@ if (!empty($requestResult)) {
 			$html .= '</tr>';
 
 			$html .= '<tr>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REVIEWED BY</td>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+			$html .= '<td style="font-size:8px;font-weight:bold;color:#777777;line-height:13px;text-align:left;">REVIEWED BY</td>';
+			$html .= '<td style="font-size:8px;font-weight:bold;color:#777777;line-height:13px;text-align:left;">SIGNATURE</td>';
+			$html .= '<td style="font-size:8px;font-weight:bold;color:#777777;line-height:13px;text-align:left;">DATE</td>';
 			$html .= '</tr>';
 
 			$html .= '<tr>';
-			$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
+			$html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;">' . $reviewedBy . '</td>';
 			if ($reviewedBySignaturePath !== null && $reviewedBySignaturePath !== '' && $reviewedBySignaturePath !== '0' && MiscUtility::isImageValid($reviewedBySignaturePath)) {
-				$html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:50px;" /></td>';
+				$html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;"><img src="' . $reviewedBySignaturePath . '" style="width:50px;" /></td>';
 			} else {
-				$html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+				$html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;"></td>';
 			}
-			$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . (empty($result['result_reviewed_datetime']) ? $result['sample_tested_datetime'] : $result['result_reviewed_datetime']) . '</td>';
+			$html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;">' . (empty($result['result_reviewed_datetime']) ? $result['sample_tested_datetime'] : $result['result_reviewed_datetime']) . '</td>';
 			$html .= '</tr>';
 		}
 
 		if (!$isMultiTest && !empty($revisedBy)) {
 
 			$html .= '<tr>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+			$html .= '<td style="font-size:8px;font-weight:bold;color:#777777;line-height:13px;text-align:left;">REPORT REVISED BY</td>';
+			$html .= '<td style="font-size:8px;font-weight:bold;color:#777777;line-height:13px;text-align:left;">SIGNATURE</td>';
+			$html .= '<td style="font-size:8px;font-weight:bold;color:#777777;line-height:13px;text-align:left;">DATE</td>';
 			$html .= '</tr>';
 
 			$html .= '<tr>';
-			$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
+			$html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;">' . $revisedBy . '</td>';
 			if ($revisedBySignaturePath !== null && $revisedBySignaturePath !== '' && $revisedBySignaturePath !== '0' && MiscUtility::isImageValid($revisedBySignaturePath)) {
-				$html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedBySignaturePath . '" style="width:70px;" /></td>';
+				$html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;"><img src="' . $revisedBySignaturePath . '" style="width:70px;" /></td>';
 			} else {
-				$html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+				$html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;"></td>';
 			}
-			$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . date('d/M/Y', strtotime((string) $result['revised_on'])) . '</td>';
+			$html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;">' . date('d/M/Y', strtotime((string) $result['revised_on'])) . '</td>';
 			$html .= '</tr>';
 		}
 
@@ -804,20 +734,20 @@ if (!empty($requestResult)) {
 		$html .= '</tr>';
 		if (!$isMultiTest && !empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
 			$html .= '<tr>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-			$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
+			$html .= '<td style="font-size:8px;font-weight:bold;color:#777777;line-height:13px;text-align:left;">APPROVED BY</td>';
+			$html .= '<td style="font-size:8px;font-weight:bold;color:#777777;line-height:13px;text-align:left;">SIGNATURE</td>';
+			$html .= '<td style="font-size:8px;font-weight:bold;color:#777777;line-height:13px;text-align:left;">DATE</td>';
 			$html .= '</tr>';
 
 			$html .= '<tr>';
-			$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
+			$html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;">' . $resultApprovedBy . '</td>';
 			if ($userSignaturePath !== null && $userSignaturePath !== '' && $userSignaturePath !== '0' && MiscUtility::isImageValid(($userSignaturePath))) {
-				$html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
+				$html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
 			} else {
-				$html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
+				$html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;"></td>';
 			}
 
-			$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
+			$html .= '<td style="font-size:11px;color:#000000;line-height:14px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
 			$html .= '</tr>';
 		}
 
@@ -827,7 +757,7 @@ if (!empty($requestResult)) {
 			$html .= '<td colspan="3" style="line-height:20px;"></td>';
 			$html .= '</tr>';
 			$html .= '<tr>';
-			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;text-align:left;"><strong>Lab Comments:</strong> ' . $result['lab_tech_comments'] . '</td>';
+			$html .= '<td colspan="3" style="font-size:11px;color:#000000;line-height:14px;text-align:left;"><strong>Lab Comments:</strong> ' . $result['lab_tech_comments'] . '</td>';
 			$html .= '</tr>';
 
 			$html .= '<tr>';
@@ -835,14 +765,14 @@ if (!empty($requestResult)) {
 			$html .= '</tr>';
 		}
 		$html .= '<tr>';
-		$html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
+		$html .= '<td colspan="3" style="line-height:2px;border-bottom:0.6px solid #cccccc;"></td>';
 		$html .= '</tr>';
 		$html .= '<tr>';
 		$html .= '<td colspan="3">';
 		$html .= '<table>';
 		$html .= '<tr>';
-		$html .= '<td style="font-size:10px;text-align:left;width:75%;"></td>';
-		$html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '</td>';
+		$html .= '<td style="font-size:8px;text-align:left;width:55%;color:#777777;"></td>';
+		$html .= '<td style="font-size:8px;text-align:right;color:#777777;">' . _translate('Printed on') . ' : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . '</td>';
 		$html .= '</tr>';
 		$html .= '</table>';
 		$html .= '</td>';
