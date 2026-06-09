@@ -144,7 +144,9 @@ $gtRenderMethodPicker = function ($groupKey, $selected) use ($testMethodInfo) {
 	}
 	.gtMethodPicker { position: relative; }
 	.gtmp-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; text-align: left; cursor: pointer; background: #fff; }
-	.gtmp-caret { margin-left: 8px; color: #6b7280; font-size: 10px; }
+	.gtmp-caret { margin-left: 8px; color: #6b7280; font-size: 10px; flex: none; }
+	.gtmp-summary { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+	.gtmp-summary-empty { color: #8a97a3; }
 	.gtmp-panel { position: absolute; z-index: 1000; top: calc(100% + 2px); left: 0; right: 0; background: #fff; border: 1px solid #cbd5e0; border-radius: 4px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); padding: 8px; }
 	.gtmp-search { margin-bottom: 6px; }
 	.gtmp-actions { font-size: 12px; padding: 2px 2px 8px; border-bottom: 1px solid #edf2f7; margin-bottom: 6px; }
@@ -978,13 +980,30 @@ $gtRenderMethodPicker = function ($groupKey, $selected) use ($testMethodInfo) {
 	// ---- Result Group Test Methods picker (checkbox dropdown; posts methods[k][]) ----
 	var gtAllMethods = <?php echo $gtAllMethodsJson; ?>;
 	var gtmpSummaryTpl = "<?php echo _translate('%selected of %total selected'); ?>";
+	var gtmpEmptyTpl = "<?php echo _translate('Select methods'); ?>";
+	var gtmpPreviewLimit = 3;
 
 	function gtMethodPickerSummary(container) {
-		var boxes = container.querySelectorAll('.gtmp-list input[type="checkbox"]');
-		var checked = 0;
-		boxes.forEach(function (c) { if (c.checked) { checked++; } });
+		var boxes = Array.prototype.slice.call(container.querySelectorAll('.gtmp-list input[type="checkbox"]'));
+		var checked = boxes.filter(function (c) { return c.checked; });
 		var s = container.querySelector('.gtmp-summary');
-		if (s) { s.textContent = gtmpSummaryTpl.replace('%selected', checked).replace('%total', boxes.length); }
+		if (!s) { return; }
+		if (checked.length === 0) {
+			s.textContent = gtmpEmptyTpl;
+			s.classList.add('gtmp-summary-empty');
+			return;
+		}
+		s.classList.remove('gtmp-summary-empty');
+		if (checked.length <= gtmpPreviewLimit) {
+			// Few selected -> preview the actual method names.
+			s.textContent = checked.map(function (c) {
+				var sp = c.parentNode.querySelector('span');
+				return sp ? sp.textContent : c.value;
+			}).join(', ');
+		} else {
+			// Too many to read -> fall back to a count.
+			s.textContent = gtmpSummaryTpl.replace('%selected', checked.length).replace('%total', boxes.length);
+		}
 	}
 
 	// Fill a freshly added (empty) picker with all methods, unchecked.
