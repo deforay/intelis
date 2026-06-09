@@ -208,6 +208,42 @@ $testMethods = $genericTestsService->getTestMethod($genericResultInfo['test_type
 //$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
 $testResultUnits = $genericTestsService->getTestResultUnit($genericResultInfo['test_type']);
 
+// --- Multi-test result config (drives the per-test "Test Type" / "Test Result") ---
+// Test Type = the test's configured TEST METHODS (the assays, like TB's assay list).
+// Test Result = the test's configured result definition: the qualitative expected
+// results (dropdown) or a numeric value + unit (quantitative). The result control is
+// the same on every card for a given test, so it is decided server-side here.
+$genericTestTypeRow = $db->rawQueryOne("SELECT test_results_config FROM r_test_types WHERE test_type_id = ?", [$genericResultInfo['test_type']]);
+$genericResultConfig = json_decode((string) ($genericTestTypeRow['test_results_config'] ?? ''), true) ?: [];
+
+$genericTestMethods = [];
+foreach (($testMethods ?: []) as $m) {
+	if (trim((string) ($m['test_method_name'] ?? '')) !== '') {
+		$genericTestMethods[] = $m['test_method_name'];
+	}
+}
+
+$genericResultType = 'qualitative';
+if (!empty($genericResultConfig['result_type']) && is_array($genericResultConfig['result_type'])) {
+	$genericResultType = (reset($genericResultConfig['result_type']) === 'quantitative') ? 'quantitative' : 'qualitative';
+}
+$genericQualResults = [];
+if (!empty($genericResultConfig['qualitative']['expectedResult']) && is_array($genericResultConfig['qualitative']['expectedResult'])) {
+	foreach ($genericResultConfig['qualitative']['expectedResult'] as $list) {
+		foreach ((array) $list as $rv) {
+			if (trim((string) $rv) !== '' && !in_array($rv, $genericQualResults, true)) {
+				$genericQualResults[] = $rv;
+			}
+		}
+	}
+}
+$genericResultUnitOptions = [];
+foreach (($testResultUnits ?: []) as $u) {
+	$genericResultUnitOptions[] = ['id' => $u['unit_id'], 'name' => $u['unit_name']];
+}
+// Turn on the new TB-style multi-test Test Section (this page only, for now).
+$multiTestResults = true;
+
 //Funding source list
 $fundingSourceList = $general->getFundingSources();
 
