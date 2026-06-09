@@ -64,8 +64,13 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                              <label class="col-lg-5" for="testType"><?= _translate("Test Type"); ?>
                                                   <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
+                                                  <?php // Test type is fixed once a sample exists -- changing it on edit/result
+                                                  // would orphan the test's configured methods/results, so lock it there. A
+                                                  // disabled select does not submit, so mirror the value in a hidden input.
+                                                  $gtTypeLocked = ($formMode !== 'add'); ?>
                                                   <select class="form-control isRequired" name="testType" id="testType"
                                                        title="Please choose test type"
+                                                       <?= $gtTypeLocked ? 'disabled' : '' ?>
                                                        onchange="<?= $onTestTypeChange ?>">
                                                        <option value=""> <?= _translate("-- Select --"); ?> </option>
                                                        <?php foreach ($testTypeResult as $testType) { ?>
@@ -75,6 +80,9 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                             </option>
                                                        <?php } ?>
                                                   </select>
+                                                  <?php if ($gtTypeLocked) { ?>
+                                                       <input type="hidden" name="testType" value="<?= $pf('test_type') ?>" />
+                                                  <?php } ?>
                                              </div>
                                         </div>
                                    </div>
@@ -531,7 +539,11 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                         </div>
                                    </div>
                                    <div id="otherSection" class="<?= ltrim($dnr) ?>"></div>
-                                   <?php if ($formMode !== 'add' || (_isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site')) { ?>
+                                   <?php // Result entry lives ONLY on the result-update page (the per-Test multi-test
+                                   // cards). The add/edit REQUEST forms register the sample; results are entered
+                                   // later from the result page. So this whole "Laboratory Information" / result box
+                                   // renders only in result mode. (It can be brought back to add/edit later if needed.)
+                                   if ($formMode === 'result') { ?>
                                         <div class="box box-primary">
                                              <?php // Multi-test mode supplies its own "TEST RESULTS INFORMATION" heading
                                              // via _test-section.php, so the box title would be a redundant second heading.
@@ -541,6 +553,12 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                   </div>
                                              <?php } ?>
                                              <div class="box-body">
+                                                  <?php
+                                                  // These are the legacy SINGLE-RESULT sample-level fields. They are still
+                                                  // needed on the add/edit REQUEST forms (sample registration). In the
+                                                  // multi-test RESULT page they are superseded by the per-Test cards from
+                                                  // _test-section.php, so we do not render them there at all (no JS hiding).
+                                                  if (empty($multiTestResults)) { ?>
                                                   <div class="row">
                                                        <div class="col-md-6">
                                                             <label for="vlFocalPerson" class="col-lg-5 control-label labels">
@@ -690,21 +708,16 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                        </div>
                                                   </div>
                                                   <div class="row">
-                                                       <?php // In multi-test mode the result dispatch date is not captured here (may
-                                                       // return after the final interpretation step). Gated server-side because its
-                                                       // .vlResult wrapper is force-shown by the legacy rejected handler.
-                                                       if (empty($multiTestResults)) { ?>
-                                                            <div class="col-md-6 vlResult">
-                                                                 <label class="col-lg-5 control-label labels"
-                                                                      for="resultDispatchedOn"><?= _translate("Date Results Dispatched"); ?></label>
-                                                                 <div class="col-lg-7">
-                                                                      <input type="text" class="form-control dateTime"
-                                                                           id="resultDispatchedOn" name="resultDispatchedOn" value="<?= $pf('result_dispatched_datetime') ?>"
-                                                                           placeholder="<?php echo _translate('Result Dispatch Date'); ?>"
-                                                                           title="<?php echo _translate('Please select result dispatched date'); ?>" />
-                                                                 </div>
+                                                       <div class="col-md-6 vlResult">
+                                                            <label class="col-lg-5 control-label labels"
+                                                                 for="resultDispatchedOn"><?= _translate("Date Results Dispatched"); ?></label>
+                                                            <div class="col-lg-7">
+                                                                 <input type="text" class="form-control dateTime"
+                                                                      id="resultDispatchedOn" name="resultDispatchedOn" value="<?= $pf('result_dispatched_datetime') ?>"
+                                                                      placeholder="<?php echo _translate('Result Dispatch Date'); ?>"
+                                                                      title="<?php echo _translate('Please select result dispatched date'); ?>" />
                                                             </div>
-                                                       <?php } ?>
+                                                       </div>
                                                        <?php if ($showSubTestPicker) { ?>
                                                             <div class="col-md-6 vlResult subTestFields">
                                                                  <label class="col-lg-5 control-label labels"
@@ -719,6 +732,7 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                             </div>
                                                        <?php } ?>
                                                   </div>
+                                                  <?php } // end empty($multiTestResults): legacy single-result fields are not rendered in multi-test mode ?>
                                                   <?php if (count($reasonForFailure) > 0) { ?>
                                                        <div class="row">
                                                             <div class="col-md-6" style="display: none;">
@@ -746,6 +760,11 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                        include __DIR__ . '/_test-section.php';
                                                   }
                                                   ?>
+                                                  <?php // Page-level Reviewed/Tested/Approved By are the legacy single-result
+                                                  // widgets. In multi-test mode review/approval is captured PER Test on the
+                                                  // cards, and the helper derives the sample row from the last Test, so these
+                                                  // are not rendered (and are never read by the save helper) here.
+                                                  if (empty($multiTestResults)) { ?>
                                                   <div class="row">
                                                        <div class="col-md-6">
                                                             <label class="col-lg-5 control-label"
@@ -800,7 +819,9 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                             </div>
                                                        </div>
                                                   </div>
+                                                  <?php } // end legacy page-level review/approve rows (single-result only) ?>
                                                   <div class="row">
+                                                       <?php if (empty($multiTestResults)) { ?>
                                                        <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels"
                                                                  for="approvedOn"><?= _translate("Approved On"); ?> <span
@@ -815,6 +836,7 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                                       style="width:100%;" />
                                                             </div>
                                                        </div>
+                                                       <?php } // end Approved On column (single-result only) ?>
                                                        <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels"
                                                                  for="labComments"><?= _translate("Lab Tech. Comments"); ?>
