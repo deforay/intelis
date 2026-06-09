@@ -369,6 +369,7 @@ final class LoggerUtility
         $detail = $debugMode
             ? '<pre>' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '</pre>'
             : '';
+        $intro = _htmlTranslate("The application could not start. Please check your configuration or contact an administrator.");
 
         echo <<<HTML
         <!DOCTYPE html>
@@ -385,7 +386,7 @@ final class LoggerUtility
         </head>
         <body>
         <h1>{$safeTitle}</h1>
-        <p>The application could not start. Please check your configuration or contact an administrator.</p>
+        <p>{$intro}</p>
         {$detail}
         </body>
         </html>
