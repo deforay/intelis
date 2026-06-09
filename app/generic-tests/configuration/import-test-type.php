@@ -526,6 +526,14 @@ $testSymptomsId = $resolveMany($test['symptoms'] ?? [], 'r_generic_symptoms', 's
 // Result units: the quantitative config carries the selected unit names; fall
 // back to the top-level list. Map them to local ids for the select + config.
 $resultsConfig = (!empty($test['test_results_config']) && is_array($test['test_results_config'])) ? $test['test_results_config'] : [];
+// Version 2+ files carry the clean `sub_tests` shape; convert it back to the DB
+// parallel-arrays shape the form + save helpers expect. Detect by structure (a
+// `sub_tests` array is the v2 marker) so it holds regardless of the version field;
+// version 1 files carry the DB shape and pass through untouched.
+if (isset($resultsConfig['sub_tests']) && is_array($resultsConfig['sub_tests'])) {
+    require_once __DIR__ . '/_portable-results-config.php';
+    $resultsConfig = portableResultsConfigFromV2($resultsConfig);
+}
 $resultUnitNames = (!empty($resultsConfig['test_result_unit']) && is_array($resultsConfig['test_result_unit']))
     ? $resultsConfig['test_result_unit']
     : ($test['result_units'] ?? []);
