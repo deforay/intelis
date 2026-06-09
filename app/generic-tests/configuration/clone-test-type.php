@@ -51,10 +51,16 @@ $rejectionReasonId = $general->getDataByTableAndFields("generic_sample_rejection
 $testSymptomsId = $general->getDataByTableAndFields("generic_test_symptoms_map", ["symptom_id", "symptom_id"], true, "test_type_id=$id");
 $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units_map", ["unit_id", "unit_id"], true, "test_type_id=$id");
 
-// Clone keeps the original "Edit Test Type" heading and leaves the name fields
-// blank so the user is forced to pick a fresh, unique name for the copy. The
-// uniqueness check excludes the source row being cloned.
-$formHeading = _translate("Edit Test Type");
+// Clone creates a brand-new test from an existing one: submit to the ADD helper,
+// and leave the name fields blank so the user must pick a fresh, unique name for
+// the copy. The uniqueness check still excludes the source row being cloned.
+$formMode = 'clone';
+$formHeading = _translate("Clone Test Type");
+$formAction = 'addTestTypeHelper.php';
 $uniqueExclusion = "test_type_id##" . $testTypeInfo['test_type_id'];
+$prefillStandardName = '';
+$prefillGenericName = '';
+$prefillShortCode = '';
+$prefillLoincCode = '';
 
 require __DIR__ . '/_test-type-form.php';
