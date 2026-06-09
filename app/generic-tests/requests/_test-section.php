@@ -406,14 +406,23 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 		if ($('#testSections .test-section').length <= 1) { $('#gtRemoveTestBtn').hide(); }
 	}
 
-	// (Re)initialise pickers for a card. Defined defensively; the page's own
-	// initializers may already cover .select2 / .date-time globally.
+	// (Re)initialise pickers for a freshly cloned card. A clone inherits the
+	// original's already-initialised state: the select2 markup and the jQuery-UI
+	// date-picker flags (hasDatepicker / hasDateTimePicker). Those flags make the
+	// global initializers skip the field, so the date pickers never bind on added
+	// rows. Mirror the TB Rwanda multi-test form: strip the stale flags, then run
+	// the canonical global initializers (initDatePicker / initDateTimePicker from
+	// dates.js.php), which (re)bind any .date / .date-time not yet carrying a flag.
 	function gtInitTestSectionPlugins($scope) {
 		try {
-			$scope.find('.select2').select2({ width: '100%' });
+			$scope.find('.select2').each(function () {
+				$(this).removeClass('select2-hidden-accessible').select2({ width: '100%' });
+			});
 		} catch (e) { }
 		try {
-			if (typeof initDateTimePickers === 'function') { initDateTimePickers($scope); }
+			$scope.find('.date, .date-time').removeClass('hasDatepicker hasDateTimePicker');
+			if (typeof initDatePicker === 'function') { initDatePicker(); }
+			if (typeof initDateTimePicker === 'function') { initDateTimePicker(); }
 		} catch (e) { }
 	}
 
