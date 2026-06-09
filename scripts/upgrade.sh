@@ -921,8 +921,9 @@ ROLLBACK_KEEP="${ROLLBACK_KEEP:-3}"
 # apply phase's per-instance "composer install" fallback becomes a fast no-op.
 # All network I/O still happens here (live + retryable), keeping the apply window
 # offline-safe — which matters for unattended / remote-triggered upgrades.
-# Echoes the staging dir on stdout (captured by caller). All informational
-# output is sent to stderr so stdout is clean.
+# Runs inline in the caller's shell (NOT a $(...) capture) so every progress line
+# prints live to the terminal "by construction" — the staging dir is handed back
+# via the PREPARED_STAGING_DIR global, not stdout.
 prepare_phase() {
     local staging_dir="${STAGING_BASE_DIR}/$(date +%Y%m%d-%H%M%S)-$$"
 
@@ -935,14 +936,18 @@ prepare_phase() {
     local free_mb
     free_mb=$(df -Pm "$STAGING_BASE_DIR" | awk 'NR==2 {print $4}')
     if [ -n "$free_mb" ] && [ "$free_mb" -lt 2048 ]; then
-        print error "Insufficient free space at ${STAGING_BASE_DIR}: ${free_mb}MB free, need at least 2GB." >&2
+        print error "Insufficient free space at ${STAGING_BASE_DIR}: ${free_mb}MB free, need at least 2GB."
         log_action "Prepare aborted — only ${free_mb}MB free at ${STAGING_BASE_DIR}"
         return 1
     fi
 
     mkdir -p "$staging_dir"
+    # Publish the dir to the caller immediately so that even a mid-prepare failure
+    # leaves it pointing at the staging dir (READY is dropped only on success, so
+    # the caller still treats an incomplete run as a failure — see its check).
+    PREPARED_STAGING_DIR="$staging_dir"
 
-    print header "Prepare: staging update at ${staging_dir}" >&2
+    print header "Prepare: staging update at ${staging_dir}"
     log_action "Prepare phase starting at ${staging_dir}"
 
     local master_log="${staging_dir}/master.log"
@@ -1122,11 +1127,11 @@ prepare_phase() {
     # will take; the exact outcome (incl. any fallback) lands in $master_log and
     # is confirmed by the "Master ready" line below.
     if command -v git >/dev/null 2>&1 && [ -d "$INTELIS_SRC_DIR/.git" ]; then
-        print info "Updating source mirror (delta fetch — only changed files)..." >&2
+        print info "Updating source mirror (delta fetch — only changed files)..."
     elif command -v git >/dev/null 2>&1; then
-        print info "Cloning source mirror (first run; shallow clone — future runs are delta-only)..." >&2
+        print info "Cloning source mirror (first run; shallow clone — future runs are delta-only)..."
     else
-        print info "Downloading master tarball (git unavailable)..." >&2
+        print info "Downloading master tarball (git unavailable)..."
     fi
     ( _prepare_master_worker ) >"$master_log" 2>&1 &
     local master_pid=$!
@@ -1135,11 +1140,11 @@ prepare_phase() {
     wait "$master_pid" || master_status=$?
 
     if [ "$master_status" -ne 0 ]; then
-        print error "Master download/extract failed. See ${master_log}" >&2
+        print error "Master download/extract failed. See ${master_log}"
         log_action "Prepare: master failed (status $master_status)"
         return 1
     fi
-    print success "Master ready at ${master_extract_dir}" >&2
+    print success "Master ready at ${master_extract_dir}"
 
     # ---- Step 2: decide whether any instance needs a fresh vendor ----
     # vendor/ is fully determined by composer.lock, so the precise "outdated"
@@ -1181,31 +1186,31 @@ prepare_phase() {
     # ---- Step 3: download vendor only if needed ----
     local vendor_status=0
     if [ "$vendor_needed" = true ]; then
-        print info "Vendor download needed (${_gate_reason}); fetching vendor tarball" >&2
+        print info "Vendor download needed (${_gate_reason}); fetching vendor tarball"
         log_action "Prepare: vendor needed (${_gate_reason})"
         ( _prepare_vendor_worker ) >"$vendor_log" 2>&1 &
         local vendor_pid=$!
         wait "$vendor_pid" || vendor_status=$?
 
         if [ "$vendor_status" -ne 0 ]; then
-            print error "Vendor download/extract failed. See ${vendor_log}" >&2
+            print error "Vendor download/extract failed. See ${vendor_log}"
             log_action "Prepare: vendor failed (status $vendor_status)"
             return 1
         fi
         if [ -d "$vendor_extract_dir" ] && [ -d "$vendor_extract_dir/composer" ]; then
-            print success "Vendor ready at ${vendor_extract_dir}" >&2
+            print success "Vendor ready at ${vendor_extract_dir}"
         else
-            print warning "Vendor staging not populated; apply will fall back to composer install" >&2
+            print warning "Vendor staging not populated; apply will fall back to composer install"
         fi
     else
-        print success "All target instance(s) already match the new composer.lock — skipping vendor download" >&2
+        print success "All target instance(s) already match the new composer.lock — skipping vendor download"
         log_action "Prepare: vendor skipped — all instances in sync with master composer.lock"
     fi
 
     # Sanity-check composer.json
     if command -v composer >/dev/null 2>&1; then
         if ! (cd "$master_extract_dir" && COMPOSER_ALLOW_SUPERUSER=1 composer validate --no-check-publish --no-check-all --no-interaction >/dev/null 2>&1); then
-            print warning "composer validate flagged issues in staged composer.json (continuing)" >&2
+            print warning "composer validate flagged issues in staged composer.json (continuing)"
             log_action "Prepare: composer validate flagged issues (non-fatal)"
         fi
     fi
@@ -1225,11 +1230,12 @@ prepare_phase() {
     # Drop READY sentinel last.
     printf 'version=%s\nprepared_at=%s\n' "$staged_version" "$(date -Iseconds)" > "$staging_dir/READY"
 
-    print success "Staging ready (version ${staged_version})" >&2
+    print success "Staging ready (version ${staged_version})"
     log_action "Prepare phase complete at ${staging_dir} (version ${staged_version})"
 
-    # Caller captures the staging dir from stdout.
-    echo "$staging_dir"
+    # Path already published to the caller via PREPARED_STAGING_DIR (set right
+    # after the staging dir was created); READY above is what flips this run from
+    # "in progress" to "done" in the caller's eyes.
     return 0
 }
 
@@ -1484,14 +1490,18 @@ if [ -n "$apply_prepared_dir" ]; then
     log_action "Applying from pre-prepared staging dir: ${staging_dir}"
 else
     print header "Downloading LIS"
-    # WHY: prepare_phase does its own error reporting (with log file paths).
-    # Suspend the generic ERR trap so a network failure inside $(...) surfaces
-    # as a friendly message instead of the stack-trace-ish "Error on or near
-    # line N; command executed was 'staging_dir=\"\$(prepare_phase)\"'".
+    # Run prepare_phase INLINE (not in $(...)) so its progress prints live to the
+    # terminal — the section would otherwise look frozen during the download. It
+    # hands the staging dir back via the PREPARED_STAGING_DIR global and does its
+    # own error reporting (with log file paths). Suspend the generic ERR trap so a
+    # network failure surfaces as a friendly message instead of a stack-trace-ish
+    # "Error on or near line N".
     previous_err_trap="$(trap -p ERR || true)"
     trap - ERR
     prepare_rc=0
-    staging_dir="$(prepare_phase)" || prepare_rc=$?
+    PREPARED_STAGING_DIR=""
+    prepare_phase || prepare_rc=$?
+    staging_dir="$PREPARED_STAGING_DIR"
     if [ -n "${previous_err_trap}" ]; then
         eval "${previous_err_trap}"
     fi
