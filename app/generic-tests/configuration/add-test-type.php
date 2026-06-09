@@ -52,6 +52,53 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 		background-color: #f2f2f2;
 		cursor: pointer;
 	}
+
+	/* Test Results Configuration -- present each result group as a numbered card */
+	#vlSampleTable {
+		border: none;
+		border-collapse: separate;
+		border-spacing: 0 16px;
+		counter-reset: resultGroup;
+	}
+	#vlSampleTable > tbody > tr.result-type > td {
+		border: none;
+		vertical-align: top;
+	}
+	#vlSampleTable > tbody > tr.result-type > td:first-child {
+		border: 1px solid #cfe0f1;
+		border-radius: 6px;
+		background: #f7fbff;
+		padding: 0 14px 14px;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+	}
+	#vlSampleTable > tbody > tr.result-type > td:first-child::before {
+		counter-increment: resultGroup;
+		content: "Result group " counter(resultGroup);
+		display: block;
+		margin: 0 -14px 14px;
+		padding: 9px 14px;
+		background: #e9f2fb;
+		border-bottom: 1px solid #cfe0f1;
+		border-radius: 6px 6px 0 0;
+		font-weight: 600;
+		font-size: 13px;
+		letter-spacing: .3px;
+		color: #34495e;
+	}
+	#vlSampleTable > tbody > tr.result-type > td:last-child {
+		width: 140px;
+		text-align: center;
+		vertical-align: middle;
+		padding-left: 14px;
+	}
+	#vlSampleTable > tbody > tr.result-type > td:last-child::before {
+		content: "Add / remove this whole result group";
+		display: block;
+		font-size: 11px;
+		line-height: 1.3;
+		color: #8a9bad;
+		margin-bottom: 6px;
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
