@@ -441,6 +441,22 @@ $resultUnitNames = (!empty($resultsConfig['test_result_unit']) && is_array($resu
 $testResultUnitId = $resolveMany($resultUnitNames, 'r_generic_test_result_units', 'unit_id', 'unit_name', static fn() => ['unit_status' => 'active']);
 $resultsConfig['test_result_unit'] = $testResultUnitId;
 
+// Each Result Group's methods were exported by name; resolve them back to local
+// ids (creating any that are missing) so the group -> methods mapping and the
+// method pickers render against this instance. editTestTypeHelper/addTestTypeHelper
+// then rebuild generic_test_methods_map from the union of these.
+if (!empty($resultsConfig['methods']) && is_array($resultsConfig['methods'])) {
+    foreach ($resultsConfig['methods'] as $groupKey => $methodNames) {
+        $resultsConfig['methods'][$groupKey] = $resolveMany(
+            (array) $methodNames,
+            'r_generic_test_methods',
+            'test_method_id',
+            'test_method_name',
+            static fn() => ['test_method_status' => 'active']
+        );
+    }
+}
+
 // ---------------------------------------------------------------
 // Active lookup lists for the form (now include anything just created)
 // ---------------------------------------------------------------
