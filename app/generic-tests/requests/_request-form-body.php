@@ -533,9 +533,13 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                    <div id="otherSection" class="<?= ltrim($dnr) ?>"></div>
                                    <?php if ($formMode !== 'add' || (_isAllowed('/generic-tests/results/generic-test-results.php') && $_SESSION['accessType'] != 'collection-site')) { ?>
                                         <div class="box box-primary">
-                                             <div class="box-header with-border">
-                                                  <h3 class="box-title"><?= _translate("Laboratory Information"); ?></h3>
-                                             </div>
+                                             <?php // Multi-test mode supplies its own "TEST RESULTS INFORMATION" heading
+                                             // via _test-section.php, so the box title would be a redundant second heading.
+                                             if (empty($multiTestResults)) { ?>
+                                                  <div class="box-header with-border">
+                                                       <h3 class="box-title"><?= _translate("Laboratory Information"); ?></h3>
+                                                  </div>
+                                             <?php } ?>
                                              <div class="box-body">
                                                   <div class="row">
                                                        <div class="col-md-6">
@@ -686,16 +690,21 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                        </div>
                                                   </div>
                                                   <div class="row">
-                                                       <div class="col-md-6 vlResult">
-                                                            <label class="col-lg-5 control-label labels"
-                                                                 for="resultDispatchedOn"><?= _translate("Date Results Dispatched"); ?></label>
-                                                            <div class="col-lg-7">
-                                                                 <input type="text" class="form-control dateTime"
-                                                                      id="resultDispatchedOn" name="resultDispatchedOn" value="<?= $pf('result_dispatched_datetime') ?>"
-                                                                      placeholder="<?php echo _translate('Result Dispatch Date'); ?>"
-                                                                      title="<?php echo _translate('Please select result dispatched date'); ?>" />
+                                                       <?php // In multi-test mode the result dispatch date is not captured here (may
+                                                       // return after the final interpretation step). Gated server-side because its
+                                                       // .vlResult wrapper is force-shown by the legacy rejected handler.
+                                                       if (empty($multiTestResults)) { ?>
+                                                            <div class="col-md-6 vlResult">
+                                                                 <label class="col-lg-5 control-label labels"
+                                                                      for="resultDispatchedOn"><?= _translate("Date Results Dispatched"); ?></label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control dateTime"
+                                                                           id="resultDispatchedOn" name="resultDispatchedOn" value="<?= $pf('result_dispatched_datetime') ?>"
+                                                                           placeholder="<?php echo _translate('Result Dispatch Date'); ?>"
+                                                                           title="<?php echo _translate('Please select result dispatched date'); ?>" />
+                                                                 </div>
                                                             </div>
-                                                       </div>
+                                                       <?php } ?>
                                                        <?php if ($showSubTestPicker) { ?>
                                                             <div class="col-md-6 vlResult subTestFields">
                                                                  <label class="col-lg-5 control-label labels"
