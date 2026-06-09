@@ -7,20 +7,22 @@
  * each with its own receipt / rejection / tested / reviewed / approved chain --
  * mirroring tb_tests. Each card maps to one generic_test_results row.
  *
- * "Test Type" options are the test's configured TEST METHODS ($genericTestMethods,
- * the assays). "Test Result" is the test's single result definition -- its
- * qualitative answers ($genericQualResults, a dropdown) or a numeric value + unit
- * ($genericResultType === 'quantitative'). Real tests have one result group, so the
- * result control is the same on every card. A stored value not in the configured
- * list is still shown as a selected option, so old data never blanks.
+ * "Test Type" options are the test's configured TEST METHODS ($genericMethodOptions,
+ * the assays). Each method resolves to its Result Group ($genericMethodGroups, keyed
+ * by method name), and that group decides "Test Result": a qualitative dropdown of
+ * the group's answers, or a numeric value + unit (group result_type 'quantitative').
+ * Picking a Test Type rebuilds the result control live (gtOnTypeChange). A test can
+ * have several groups (e.g. Ebola RT-PCR vs Antigen); many methods can share a group.
+ * A stored value not in the configured list is still shown as a selected option, so
+ * old data never blanks.
  *
  * Backward compatible: existing rows ($genericTestInfo) render as cards; a row's
  * per-test column (lab/tested/reviewed/approved) that is NULL -- i.e. entered
  * before release 5.5.10 -- is backfilled from the parent form_generic.
  *
  * Expects: $general, $testingLabs, $userInfo, $rejectionResult, $rejectionTypeResult,
- * $genericTestInfo (rows), $genericResultInfo (parent), $genericTestMethods,
- * $genericResultType, $genericQualResults, $genericResultUnitOptions.
+ * $genericTestInfo (rows), $genericResultInfo (parent), $genericMethodOptions,
+ * $genericMethodGroups, $genericDefaultGroup, $genericResultUnitOptions.
  */
 
 use App\Utilities\DateUtility;
@@ -29,13 +31,13 @@ $gtEsc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOT
 
 $gtParent = is_array($genericResultInfo ?? null) ? $genericResultInfo : [];
 $gtRows = (isset($genericTestInfo) && is_array($genericTestInfo) && !empty($genericTestInfo)) ? $genericTestInfo : [[]];
-$gtMethods = is_array($genericTestMethods ?? null) ? $genericTestMethods : [];
-$gtResultType = (($genericResultType ?? 'qualitative') === 'quantitative') ? 'quantitative' : 'qualitative';
-$gtQualResults = is_array($genericQualResults ?? null) ? $genericQualResults : [];
+$gtMethodOptions = is_array($genericMethodOptions ?? null) ? $genericMethodOptions : [];
+$gtMethodGroups = is_array($genericMethodGroups ?? null) ? $genericMethodGroups : [];
+$gtDefaultGroup = is_array($genericDefaultGroup ?? null) ? $genericDefaultGroup : ['result_type' => 'qualitative', 'results' => []];
 $gtUnits = is_array($genericResultUnitOptions ?? null) ? $genericResultUnitOptions : [];
 
 /** Render one test card. $row may be empty (blank card). */
-$gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $userInfo, $rejectionResult, $rejectionTypeResult, $gtParent, $gtMethods, $gtResultType, $gtQualResults, $gtUnits, $gtEsc) {
+$gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $userInfo, $rejectionResult, $rejectionTypeResult, $gtParent, $gtMethodOptions, $gtMethodGroups, $gtDefaultGroup, $gtUnits, $gtEsc) {
 	// Backfill per-test fields from the parent for rows that predate per-test columns.
 	$labId        = $row['lab_id'] ?? null ?: ($gtParent['lab_id'] ?? null);
 	$received     = !empty($row['sample_received_at_lab_datetime']) ? $row['sample_received_at_lab_datetime'] : ($gtParent['sample_received_at_lab_datetime'] ?? '');
@@ -43,6 +45,10 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 	$rejReason    = $row['reason_for_sample_rejection'] ?? '';
 	$rejOn        = $row['rejection_on'] ?? '';
 	$testType     = $row['test_name'] ?? ($row['sub_test_name'] ?? '');   // the method/assay
+	// The chosen method resolves to its result group, which decides the result control.
+	$gtGroup      = $gtMethodGroups[$testType] ?? $gtDefaultGroup;
+	$gtGroupType  = (($gtGroup['result_type'] ?? 'qualitative') === 'quantitative') ? 'quantitative' : 'qualitative';
+	$gtGroupRes   = is_array($gtGroup['results'] ?? null) ? $gtGroup['results'] : [];
 	$testResult   = $row['result'] ?? ($row['final_result'] ?? '');
 	$comments     = $row['comments'] ?? '';
 	$testedBy     = $row['tested_by'] ?? null ?: ($gtParent['tested_by'] ?? null);
@@ -114,14 +120,15 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 			<tr class="gtResultRow" style="<?= $isRejected ? 'display:none;' : ''; ?>">
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Test Type"); ?></label>
-					<select class="form-control isRequired gtType" name="testResult[testType][]" id="testType<?= $n; ?>">
+					<select class="form-control isRequired gtType" name="testResult[testType][]" id="testType<?= $n; ?>" onchange="gtOnTypeChange(this);">
 						<option value=""><?= _translate("Select test type"); ?></option>
 						<?php
 						$gtTypeFound = false;
-						foreach ($gtMethods as $m) {
-							$sel = ((string) $testType === (string) $m);
+						foreach ($gtMethodOptions as $m) {
+							$mName = (string) ($m['name'] ?? '');
+							$sel = ((string) $testType === $mName);
 							$gtTypeFound = $gtTypeFound || $sel; ?>
-							<option value="<?= $gtEsc($m); ?>" <?= $sel ? 'selected' : ''; ?>><?= $gtEsc($m); ?></option>
+							<option value="<?= $gtEsc($mName); ?>" <?= $sel ? 'selected' : ''; ?>><?= $gtEsc($mName); ?></option>
 						<?php }
 						// Keep a stored value that is no longer in the configured method list.
 						if (!$gtTypeFound && trim((string) $testType) !== '') { ?>
@@ -131,30 +138,34 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 				</td>
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Test Result"); ?></label>
-					<?php if ($gtResultType === 'quantitative') { ?>
-						<input type="number" step="any" class="form-control isRequired" name="testResult[testResult][]"
-							id="testResult<?= $n; ?>" value="<?= $gtEsc($testResult); ?>"
-							placeholder="<?= _translate("Enter numeric result"); ?>" />
-						<select class="form-control" name="testResult[resultUnit][]" id="resultUnit<?= $n; ?>" style="margin-top:6px;">
-							<option value=""><?= _translate("Unit"); ?></option>
-							<?php foreach ($gtUnits as $u) { ?>
-								<option value="<?= $gtEsc($u['id']); ?>" <?= ((string) ($row['result_unit'] ?? '') === (string) $u['id']) ? 'selected' : ''; ?>><?= $gtEsc($u['name']); ?></option>
-							<?php } ?>
-						</select>
-					<?php } else {
-						$gtResFound = false; ?>
-						<select class="form-control isRequired" name="testResult[testResult][]" id="testResult<?= $n; ?>">
-							<option value=""><?= _translate("Select test result"); ?></option>
-							<?php foreach ($gtQualResults as $rv) {
-								$sel = ((string) $testResult === (string) $rv);
-								$gtResFound = $gtResFound || $sel; ?>
-								<option value="<?= $gtEsc($rv); ?>" <?= $sel ? 'selected' : ''; ?>><?= $gtEsc($rv); ?></option>
-							<?php }
-							if (!$gtResFound && trim((string) $testResult) !== '') { ?>
-								<option value="<?= $gtEsc($testResult); ?>" selected><?= $gtEsc($testResult); ?></option>
-							<?php } ?>
-						</select>
-					<?php } ?>
+					<span class="gtResultControl">
+						<?php if ($gtGroupType === 'quantitative') { ?>
+							<input type="number" step="any" class="form-control isRequired" name="testResult[testResult][]"
+								id="testResult<?= $n; ?>" value="<?= $gtEsc($testResult); ?>"
+								placeholder="<?= _translate("Enter numeric result"); ?>" />
+							<select class="form-control" name="testResult[resultUnit][]" id="resultUnit<?= $n; ?>" style="margin-top:6px;">
+								<option value=""><?= _translate("Unit"); ?></option>
+								<?php foreach ($gtUnits as $u) { ?>
+									<option value="<?= $gtEsc($u['id']); ?>" <?= ((string) ($row['result_unit'] ?? '') === (string) $u['id']) ? 'selected' : ''; ?>><?= $gtEsc($u['name']); ?></option>
+								<?php } ?>
+							</select>
+						<?php } else {
+							$gtResFound = false; ?>
+							<select class="form-control isRequired" name="testResult[testResult][]" id="testResult<?= $n; ?>">
+								<option value=""><?= _translate("Select test result"); ?></option>
+								<?php foreach ($gtGroupRes as $rv) {
+									$sel = ((string) $testResult === (string) $rv);
+									$gtResFound = $gtResFound || $sel; ?>
+									<option value="<?= $gtEsc($rv); ?>" <?= $sel ? 'selected' : ''; ?>><?= $gtEsc($rv); ?></option>
+								<?php }
+								if (!$gtResFound && trim((string) $testResult) !== '') { ?>
+									<option value="<?= $gtEsc($testResult); ?>" selected><?= $gtEsc($testResult); ?></option>
+								<?php } ?>
+							</select>
+							<?php // Keep resultUnit[] index-aligned across cards even when this one has no unit. ?>
+							<input type="hidden" name="testResult[resultUnit][]" value="" />
+						<?php } ?>
+					</span>
 				</td>
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Comments"); ?></label>
@@ -292,6 +303,59 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 
 <script type="text/javascript">
 	var gtTestCount = <?= count($gtRows); ?>;
+	// method name -> { result_type, results[] }; picking a Test Type shows its group's result options.
+	var gtMethodGroups = <?= json_encode($gtMethodGroups, JSON_UNESCAPED_UNICODE) ?: '{}'; ?>;
+	var gtDefaultGroup = <?= json_encode($gtDefaultGroup, JSON_UNESCAPED_UNICODE) ?: '{"result_type":"qualitative","results":[]}'; ?>;
+	var gtUnits = <?= json_encode($gtUnits, JSON_UNESCAPED_UNICODE) ?: '[]'; ?>;
+	var gtI18n = {
+		unit: "<?= _translate("Unit"); ?>",
+		selectResult: "<?= _translate("Select test result"); ?>",
+		numeric: "<?= _translate("Enter numeric result"); ?>"
+	};
+
+	// Build the Test Result control for a method's result group -- a qualitative
+	// dropdown or a numeric input + unit. Built with DOM nodes (not innerHTML) so
+	// configured result/unit values can't inject markup.
+	function gtBuildResultControl(group, n, currentVal) {
+		var nodes = [];
+		if (group && group.result_type === 'quantitative') {
+			var $num = $('<input>', {
+				type: 'number', step: 'any', 'class': 'form-control isRequired',
+				name: 'testResult[testResult][]', id: 'testResult' + n,
+				value: (currentVal == null ? '' : currentVal), placeholder: gtI18n.numeric
+			});
+			var $unit = $('<select>', { 'class': 'form-control', name: 'testResult[resultUnit][]', id: 'resultUnit' + n })
+				.css('margin-top', '6px');
+			$unit.append($('<option>').val('').text(gtI18n.unit));
+			gtUnits.forEach(function (u) { $unit.append($('<option>').val(u.id).text(u.name)); });
+			nodes.push($num, $unit);
+		} else {
+			var $sel = $('<select>', { 'class': 'form-control isRequired', name: 'testResult[testResult][]', id: 'testResult' + n });
+			$sel.append($('<option>').val('').text(gtI18n.selectResult));
+			var found = false;
+			(((group && group.results) || [])).forEach(function (rv) {
+				var $o = $('<option>').val(rv).text(rv);
+				if (String(currentVal) === String(rv)) { $o.prop('selected', true); found = true; }
+				$sel.append($o);
+			});
+			if (!found && currentVal != null && String(currentVal).trim() !== '') {
+				$sel.append($('<option>').val(currentVal).text(currentVal).prop('selected', true));
+			}
+			// Keep resultUnit[] index-aligned across cards even when this one has no unit.
+			nodes.push($sel, $('<input>', { type: 'hidden', name: 'testResult[resultUnit][]', value: '' }));
+		}
+		return nodes;
+	}
+
+	// Swap the Test Result control to match the chosen Test Type (method -> group).
+	function gtOnTypeChange(typeSel) {
+		var $card = $(typeSel).closest('.test-section');
+		var n = $card.attr('data-count');
+		var group = gtMethodGroups[$(typeSel).val()] || gtDefaultGroup;
+		var $control = $card.find('.gtResultControl');
+		$control.empty();
+		gtBuildResultControl(group, n, '').forEach(function (node) { $control.append(node); });
+	}
 
 	function gtToggleRejection(sel) {
 		var $card = $(sel).closest('.test-section');
@@ -325,6 +389,8 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 		$clone.find('.gtResultRow, .gtWorkflowRow').show();
 		$('#testSections').append($clone);
 		gtInitTestSectionPlugins($clone);
+		// Test Type was reset to blank -- rebuild the Test Result control to the default group.
+		gtOnTypeChange($clone.find('.gtType')[0]);
 		$('#gtRemoveTestBtn').show();
 	}
 

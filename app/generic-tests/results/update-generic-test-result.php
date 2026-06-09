@@ -209,34 +209,67 @@ $testMethods = $genericTestsService->getTestMethod($genericResultInfo['test_type
 $testResultUnits = $genericTestsService->getTestResultUnit($genericResultInfo['test_type']);
 
 // --- Multi-test result config (drives the per-test "Test Type" / "Test Result") ---
-// Test Type = the test's configured TEST METHODS (the assays, like TB's assay list).
-// Test Result = the test's configured result definition: the qualitative expected
-// results (dropdown) or a numeric value + unit (quantitative). The result control is
-// the same on every card for a given test, so it is decided server-side here.
+// Each Result Group in test_results_config now declares the TEST METHODS (assays)
+// that produce it, plus its result definition (qualitative answers, or numeric +
+// unit). So a method resolves to its group, and that group decides the Test Result
+// control. "Test Type" lists the test's methods; picking one shows its group's
+// result options. Many methods can share a group; a test can have several groups
+// (e.g. Ebola RT-PCR vs Antigen). Resolved server-side and mirrored to JS so the
+// control updates live as the user changes the Test Type on a card.
 $genericTestTypeRow = $db->rawQueryOne("SELECT test_results_config FROM r_test_types WHERE test_type_id = ?", [$genericResultInfo['test_type']]);
 $genericResultConfig = json_decode((string) ($genericTestTypeRow['test_results_config'] ?? ''), true) ?: [];
 
-$genericTestMethods = [];
+// Method id -> name (the test's configured methods).
+$genericMethodNameById = [];
 foreach (($testMethods ?: []) as $m) {
-	if (trim((string) ($m['test_method_name'] ?? '')) !== '') {
-		$genericTestMethods[] = $m['test_method_name'];
+	$mid = (int) ($m['test_method_id'] ?? 0);
+	$mname = trim((string) ($m['test_method_name'] ?? ''));
+	if ($mid > 0 && $mname !== '') {
+		$genericMethodNameById[$mid] = $mname;
 	}
 }
 
-$genericResultType = 'qualitative';
-if (!empty($genericResultConfig['result_type']) && is_array($genericResultConfig['result_type'])) {
-	$genericResultType = (reset($genericResultConfig['result_type']) === 'quantitative') ? 'quantitative' : 'qualitative';
-}
-$genericQualResults = [];
-if (!empty($genericResultConfig['qualitative']['expectedResult']) && is_array($genericResultConfig['qualitative']['expectedResult'])) {
-	foreach ($genericResultConfig['qualitative']['expectedResult'] as $list) {
-		foreach ((array) $list as $rv) {
-			if (trim((string) $rv) !== '' && !in_array($rv, $genericQualResults, true)) {
-				$genericQualResults[] = $rv;
+// Per-group result definition: groupKey => [result_type, results[]].
+$genericGroupDefs = [];
+foreach ((array) ($genericResultConfig['result_type'] ?? []) as $gk => $rt) {
+	$type = ($rt === 'quantitative') ? 'quantitative' : 'qualitative';
+	$results = [];
+	if ($type === 'qualitative' && !empty($genericResultConfig['qualitative']['expectedResult'][$gk])) {
+		foreach ((array) $genericResultConfig['qualitative']['expectedResult'][$gk] as $rv) {
+			$rv = trim((string) $rv);
+			if ($rv !== '' && !in_array($rv, $results, true)) {
+				$results[] = $rv;
 			}
 		}
 	}
+	$genericGroupDefs[$gk] = ['result_type' => $type, 'results' => $results];
 }
+if (empty($genericGroupDefs)) {
+	$genericGroupDefs[1] = ['result_type' => 'qualitative', 'results' => []];
+}
+$genericFirstGroupKey = array_key_first($genericGroupDefs);
+$genericDefaultGroup = $genericGroupDefs[$genericFirstGroupKey];
+
+// Invert config['methods'] (groupKey => [methodId]) to methodId => groupKey.
+$genericMethodIdGroup = [];
+foreach ((array) ($genericResultConfig['methods'] ?? []) as $gk => $mids) {
+	foreach ((array) $mids as $mid) {
+		$genericMethodIdGroup[(int) $mid] = $gk;
+	}
+}
+
+// Resolve each method (keyed by NAME -- what the card stores and submits) to its group.
+$genericMethodGroups = [];
+$genericMethodOptions = [];
+foreach ($genericMethodNameById as $mid => $mname) {
+	$gk = $genericMethodIdGroup[$mid] ?? $genericFirstGroupKey;
+	if (!isset($genericGroupDefs[$gk])) {
+		$gk = $genericFirstGroupKey;
+	}
+	$genericMethodGroups[$mname] = $genericGroupDefs[$gk];
+	$genericMethodOptions[] = ['id' => $mid, 'name' => $mname];
+}
+
 $genericResultUnitOptions = [];
 foreach (($testResultUnits ?: []) as $u) {
 	$genericResultUnitOptions[] = ['id' => $u['unit_id'], 'name' => $u['unit_name']];
