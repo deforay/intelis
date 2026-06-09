@@ -180,62 +180,6 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                   </div>
                                              </div>
                                              <div class="col-md-6">
-                                                  <label class="col-lg-5"
-                                                       for="implementingPartner"><?= _translate("Implementing Partner"); ?></label>
-                                                  <div class="col-lg-7">
-                                                       <select class="form-control" name="implementingPartner"
-                                                            id="implementingPartner"
-                                                            title="Please choose implementing partner"
-                                                            style="width:100%;">
-                                                            <option value=""> <?= _translate("-- Select --"); ?>
-                                                            </option>
-                                                            <?php
-                                                            foreach ($implementingPartnerList as $implementingPartner) {
-                                                                 ?>
-                                                                 <option
-                                                                      value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?= $pfSel('implementing_partner', $implementingPartner['i_partner_id']) ?>>
-                                                                      <?= $e($implementingPartner['i_partner_name']) ?></option>
-                                                            <?php } ?>
-                                                       </select>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                        <div class="row facilityDetails" style="display:none;">
-                                             <div class="col-xs-2 col-md-2 femails" style="display:none;">
-                                                  <strong><?= _translate("Clinic Email(s)"); ?> -</strong></div>
-                                             <div class="col-xs-2 col-md-2 femails facilityEmails"
-                                                  style="display:none;"></div>
-                                             <div class="col-xs-2 col-md-2 fmobileNumbers" style="display:none;">
-                                                  <strong>Clinic Mobile No.(s) -</strong></div>
-                                             <div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers"
-                                                  style="display:none;"></div>
-                                             <div class="col-xs-2 col-md-2 fContactPerson" style="display:none;">
-                                                  <strong>Clinic Contact Person -</strong></div>
-                                             <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson"
-                                                  style="display:none;"></div>
-                                        </div>
-                                        <div class="row">
-                                             <div class="col-md-6">
-                                                  <label class="col-lg-5"
-                                                       for="fundingSource"><?= _translate("Funding Source"); ?></label>
-                                                  <div class="col-lg-7">
-                                                       <select class="form-control" name="fundingSource"
-                                                            id="fundingSource"
-                                                            title="<?= _translate('Please choose implementing partner'); ?>"
-                                                            style="width:100%;">
-                                                            <option value=""> <?= _translate("-- Select --"); ?>
-                                                            </option>
-                                                            <?php
-                                                            foreach ($fundingSourceList as $fundingSource) {
-                                                                 ?>
-                                                                 <option
-                                                                      value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?= $pfSel('funding_source', $fundingSource['funding_source_id']) ?>>
-                                                                      <?= $e($fundingSource['funding_source_name']) ?></option>
-                                                            <?php } ?>
-                                                       </select>
-                                                  </div>
-                                             </div>
-                                             <div class="col-md-6">
                                                   <label class="col-lg-5" for="labId"><?= _translate("Testing Lab"); ?>
                                                        <span class="mandatory">*</span></label>
                                                   <div class="col-lg-7">
@@ -256,6 +200,65 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                   </div>
                                              </div>
                                         </div>
+                                        <div class="row facilityDetails" style="display:none;">
+                                             <div class="col-xs-2 col-md-2 femails" style="display:none;">
+                                                  <strong><?= _translate("Clinic Email(s)"); ?> -</strong></div>
+                                             <div class="col-xs-2 col-md-2 femails facilityEmails"
+                                                  style="display:none;"></div>
+                                             <div class="col-xs-2 col-md-2 fmobileNumbers" style="display:none;">
+                                                  <strong>Clinic Mobile No.(s) -</strong></div>
+                                             <div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers"
+                                                  style="display:none;"></div>
+                                             <div class="col-xs-2 col-md-2 fContactPerson" style="display:none;">
+                                                  <strong>Clinic Contact Person -</strong></div>
+                                             <div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson"
+                                                  style="display:none;"></div>
+                                        </div>
+                                        <?php // Implementing Partner + Funding Source are the LAST two clinic fields and
+                                        // are optional (toggled via the test type's Advanced Configuration). Keeping them
+                                        // trailing means hiding them just drops a clean row -- no holes in the grid above. ?>
+                                        <div class="row">
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5"
+                                                       for="implementingPartner"><?= _translate("Implementing Partner"); ?></label>
+                                                  <div class="col-lg-7">
+                                                       <select class="form-control" name="implementingPartner"
+                                                            id="implementingPartner"
+                                                            title="Please choose implementing partner"
+                                                            style="width:100%;">
+                                                            <option value=""> <?= _translate("-- Select --"); ?>
+                                                            </option>
+                                                            <?php
+                                                            foreach ($implementingPartnerList as $implementingPartner) {
+                                                                 ?>
+                                                                 <option
+                                                                      value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?= $pfSel('implementing_partner', $implementingPartner['i_partner_id']) ?>>
+                                                                      <?= $e($implementingPartner['i_partner_name']) ?></option>
+                                                            <?php } ?>
+                                                       </select>
+                                                  </div>
+                                             </div>
+                                             <div class="col-md-6">
+                                                  <label class="col-lg-5"
+                                                       for="fundingSource"><?= _translate("Funding Source"); ?></label>
+                                                  <div class="col-lg-7">
+                                                       <select class="form-control" name="fundingSource"
+                                                            id="fundingSource"
+                                                            title="<?= _translate('Please choose implementing partner'); ?>"
+                                                            style="width:100%;">
+                                                            <option value=""> <?= _translate("-- Select --"); ?>
+                                                            </option>
+                                                            <?php
+                                                            foreach ($fundingSourceList as $fundingSource) {
+                                                                 ?>
+                                                                 <option
+                                                                      value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?= $pfSel('funding_source', $fundingSource['funding_source_id']) ?>>
+                                                                      <?= $e($fundingSource['funding_source_name']) ?></option>
+                                                            <?php } ?>
+                                                       </select>
+                                                  </div>
+                                             </div>
+                                        </div>
                                         <div class="row" id="facilitySection"></div>
                                    </div>
                               </div>
@@ -265,8 +268,8 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                         <?php if ($showPatientSearch) { ?>
                                         &nbsp;&nbsp;&nbsp;
                                         <input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo"
-                                             class="" placeholder="<?php echo _translate('Enter EPID Number'); ?>"
-                                             title="<?php echo _translate('Please enter the Enter EPID Number'); ?>" />&nbsp;&nbsp;
+                                             class="" placeholder="<?php echo _translate('Enter Patient Identifier'); ?>"
+                                             title="<?php echo _translate('Please enter the Enter Patient Identifier'); ?>" />&nbsp;&nbsp;
                                         <a style="margin-top:-0.35%;" href="javascript:void(0);"
                                              class="btn btn-default btn-sm" onclick="showPatientList();"><em
                                                   class="fa-solid fa-magnifying-glass"></em>Search</a><span
@@ -278,14 +281,14 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                    <div class="box-body">
                                         <div class="row">
                                              <div class="col-md-6">
-                                                  <label class="col-lg-5" for="artNo"><?= _translate("EPID Number"); ?>
+                                                  <label class="col-lg-5" for="artNo"><span id="artNoLabelText"><?= _translate("EPID Number"); ?></span>
                                                        <?php if ($general->isLISInstance()) { ?><span
                                                                  class="mandatory">*</span><?php } ?></label>
                                                   <div class="col-lg-7">
                                                        <input type="text" name="artNo" id="artNo" value="<?= $pf('patient_id') ?>"
                                                             class="form-control <?= $mandatoryClass; ?> patientId"
-                                                            placeholder="<?php echo _translate('Enter EPID Number'); ?>"
-                                                            title="<?php echo _translate('Enter EPID Number'); ?>"
+                                                            placeholder="<?php echo _translate('Enter Patient Identifier'); ?>"
+                                                            title="<?php echo _translate('Enter Patient Identifier'); ?>"
                                                             onchange="checkPatientDetails('form_generic','patient_id',this,null)" />
                                                   </div>
                                              </div>

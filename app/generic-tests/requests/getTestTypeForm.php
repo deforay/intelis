@@ -50,6 +50,12 @@ $result = array_fill_keys($sections, []);
 
 $testResultsAttribute = json_decode((string) $testTypeResult['test_results_config'], true);
 
+// Optional per-test "Advanced Configuration": toggles a few non-dynamic request-form
+// fields and overrides the Patient ID label. Returned as an object so the request
+// page JS can apply it on test-type selection. Empty object => all defaults.
+$result['advancedFormConfig'] = (isset($testResultsAttribute['advancedFormConfig']) && is_array($testResultsAttribute['advancedFormConfig']))
+    ? (object) $testResultsAttribute['advancedFormConfig'] : (object) [];
+
 $testMethodQuery = " SELECT rgtm.test_method_id, rgtm.test_method_name FROM r_generic_test_methods AS rgtm INNER JOIN generic_test_methods_map as gtmm ON rgtm.test_method_id=gtmm.test_method_id WHERE test_type_id= ? GROUP BY rgtm.test_method_id ";
 $testMethodResult = $db->rawQuery($testMethodQuery, [$_POST['testType']]);
 if (isset($testMethodResult) && !empty($testMethodResult)) {
