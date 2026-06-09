@@ -266,7 +266,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
           var urlTestType = new URLSearchParams(window.location.search).get('testType');
           if (urlTestType && $("#testType option[value='" + urlTestType + "']").length > 0) {
                // Triggering 'change' updates the select2 display and runs the dropdown's
-               // onchange handlers (getTestTypeForm/getSubTestList/loadSubTests) exactly once.
+               // onchange handler (getSubTestList -> getTestTypeForm) exactly once.
                $("#testType").val(urlTestType).trigger('change');
           }
           $('#labId').select2({
@@ -939,6 +939,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                $.post("/generic-tests/requests/getTestTypeForm.php", {
                     result: $('#result').val(),
                     testType: testType,
+                    subTests: $('#subTestResult').val(),
                },
                     function (data) {
                          if (data != undefined && data !== null) {
@@ -963,7 +964,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                    $("#labSection").html(data.labSection);
                               }
                               if (typeof (data.result) != "undefined" && data.result !== null && data.result.length > 0) {
-                                   $(".subTestResultSection").html(data.result);
+                                   $(".subTestResultSection").html(data.result).show();
                               } else {
                                    $('.subTestResultSection').hide();
                               }
@@ -1014,6 +1015,13 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
      }
 
      function loadSubTests() {
+          // While getSubTestList() populates the picker, multipleSelect fires a
+          // change on #subTestResult. Ignore it -- getTestTypeForm() (called right
+          // after, with the selected sub-tests) already loads the result table, so
+          // acting on this change would be a redundant second getTestTypeForm.php hit.
+          if (window.subTestPickerLoading) {
+               return;
+          }
           var testType = $("#testType").val();
           var subTestResult = $("#subTestResult").val();
           console.log(subTestResult);
@@ -1058,10 +1066,19 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 
      function getSubTestList(testType) {
 
+          // No test type selected -> just let getTestTypeForm() clear the form.
+          if (testType == "") {
+               getTestTypeForm();
+               return;
+          }
+
           $.post("/generic-tests/requests/get-sub-test-list.php", {
                testTypeId: testType
           },
                function (data) {
+                    // Suppress the change multipleSelect fires while we populate the
+                    // picker, so loadSubTests() doesn't fire a redundant fetch.
+                    window.subTestPickerLoading = true;
                     if (data != "") {
                          $("#subTestResult").append(data);
                          $("#subTestResult").multipleSelect({
@@ -1075,6 +1092,14 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                               $('.subTestFields').hide();
                          }
                     }
+                    // Picker is populated (first sub-test auto-selected server-side),
+                    // so now load sections + result table in one getTestTypeForm.php call.
+                    getTestTypeForm();
+                    // Release the guard on the next tick, after any change multipleSelect
+                    // may fire (sync or deferred) from the populate above has been swallowed.
+                    setTimeout(function () {
+                         window.subTestPickerLoading = false;
+                    }, 0);
                });
      }
 

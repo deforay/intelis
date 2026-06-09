@@ -34,7 +34,12 @@ $arr               = $arr ?? $general->getGlobalConfig();
 $mandatoryClass    = $mandatoryClass ?? '';
 $dnr               = $disableNonResult ? ' disabledForm' : '';  // read-only marker for non-result boxes (result mode)
 $cancelUrl         = $cancelUrl ?? 'view-requests.php';
-$onTestTypeChange         = $onTestTypeChange ?? "getTestTypeForm();getSubTestList(this.value);loadSubTests();updateTestTypeUrl(this.value);";
+// getSubTestList() loads the sub-test picker, then (in its callback, once the
+// picker is populated) calls getTestTypeForm() ONCE with the selected sub-tests
+// so the sections and the result table arrive in a single getTestTypeForm.php
+// request -- instead of the old getTestTypeForm()+loadSubTests() double call,
+// whose loadSubTests() raced ahead of the (async) picker and fetched nothing.
+$onTestTypeChange         = $onTestTypeChange ?? "getSubTestList(this.value);updateTestTypeUrl(this.value);";
 $onFacilityChange         = $onFacilityChange ?? "getfacilityProvinceDetails(this);fillFacilityDetails();setSampleDispatchDate();";
 $onLabChange              = $onLabChange ?? "autoFillFocalDetails();setSampleDispatchDate();";
 $onSampleCollectionChange = $onSampleCollectionChange ?? "checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();checkCollectionDate(this.value);";
