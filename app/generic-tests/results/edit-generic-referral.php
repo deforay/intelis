@@ -172,7 +172,7 @@ if ($isLisInstance) {
                         <button type="submit" class="btn btn-primary" onclick="return validateForm();">
                             <em class="fa-solid fa-save"></em> <?php echo _translate("Save Referral"); ?>
                         </button>
-                        <a href="/tb/results/tb-referral-list.php" class="btn btn-default">
+                        <a href="/generic-tests/results/generic-referral-list.php" class="btn btn-default">
                             <em class="fa-solid fa-times"></em> <?php echo _translate("Cancel"); ?>
                         </a>
                     </div>
