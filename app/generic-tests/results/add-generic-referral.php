@@ -22,7 +22,15 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /* Testing lab list */
 $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
-$sampleManifestCode = strtoupper('RTB' . date('ymdH') . MiscUtility::generateRandomString(4));
+
+/* Active custom test types - the selected test drives the manifest code prefix */
+$testTypeResult = $db->rawQuery("SELECT test_type_id, test_short_code, test_standard_name
+                                 FROM r_test_types
+                                 WHERE test_status = 'active'
+                                 ORDER BY test_standard_name ASC");
+
+/* Random suffix shared by the generated manifest code (prefix is set on test selection) */
+$manifestCodeSuffix = strtoupper(date('ymdH') . MiscUtility::generateRandomString(4));
 
 $isLisInstance = $general->isLISInstance();
 
@@ -63,12 +71,19 @@ if ($isLisInstance) {
                     <div class="row">
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
-                                <label for="referralLabId" class="control-label">
-                                    <?php echo _translate("Referred By"); ?>
+                                <label for="testType" class="control-label">
+                                    <?php echo _translate("Test Type"); ?>
                                     <span class="mandatory">*</span></label>
-                                <select name="referralLabId" id="referralLabId" class="form-control select2 isRequired"
-                                    title="<?php echo _translate("Please select sending lab"); ?>" required>
-                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                <select name="testType" id="testType" class="form-control select2 isRequired"
+                                    title="<?php echo _translate("Please select test type"); ?>"
+                                    onchange="updateManifestCode();" required>
+                                    <option value=""> -- <?php echo _translate("Select"); ?> -- </option>
+                                    <?php foreach ($testTypeResult as $row) { ?>
+                                        <option value="<?php echo $row['test_type_id']; ?>"
+                                            data-short="<?php echo htmlspecialchars((string) $row['test_short_code']); ?>">
+                                            <?php echo htmlspecialchars((string) $row['test_standard_name']); ?>
+                                        </option>
+                                    <?php } ?>
                                 </select>
                             </div>
                         </div>
@@ -78,13 +93,33 @@ if ($isLisInstance) {
                                     <?php echo _translate("Referral Manifest Code"); ?> <span
                                         class="mandatory">*</span></label>
                                 <input type="text" class="form-control isRequired" id="packageCode" name="packageCode"
-                                    placeholder="Manifest Code" title="Please enter manifest code" readonly
-                                    value="<?php echo strtoupper(htmlspecialchars($sampleManifestCode)); ?>" />
+                                    placeholder="<?php echo _htmlTranslate("Select a test type to generate the code"); ?>"
+                                    title="<?php echo _htmlTranslate("Please enter manifest code"); ?>" readonly
+                                    value="" />
                                 <input type="hidden" class="form-control isRequired" id="module" name="module"
-                                    placeholder="" title="" readonly value="tb" />
+                                    placeholder="" title="" readonly value="generic-tests" />
                             </div>
                         </div>
                     </div>
+                    <?php if ($isLisInstance && !empty($fromLabId)) { ?>
+                        <input type="hidden" name="referralLabId" id="referralLabId"
+                            value="<?php echo htmlspecialchars((string) $fromLabId); ?>" />
+                    <?php } else { ?>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <div style="margin-left:3%;">
+                                    <label for="referralLabId" class="control-label">
+                                        <?php echo _translate("Referred By"); ?>
+                                        <span class="mandatory">*</span></label>
+                                    <select name="referralLabId" id="referralLabId"
+                                        class="form-control select2 isRequired"
+                                        title="<?php echo _translate("Please select sending lab"); ?>" required>
+                                        <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
                     <div class="row" style="margin-top: 30px;">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-primary btn-sm" onclick="loadSamples();">
@@ -168,28 +203,45 @@ if ($isLisInstance) {
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#referralLabId").select2({
+        $("#testType").select2({
             width: '100%',
-            placeholder: "<?php echo _translate("Select Referral Lab"); ?>"
+            placeholder: "<?php echo _translate("Select Test Type"); ?>"
         });
+        <?php if (!($isLisInstance && !empty($fromLabId))) { ?>
+            $("#referralLabId").select2({
+                width: '100%',
+                placeholder: "<?php echo _translate("Select Referral Lab"); ?>"
+            });
+        <?php } ?>
         $("#referralToLabId").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Receiving Lab"); ?>"
         });
-        <?php
-        if ($isLisInstance && !empty($fromLabId)) {
-        ?>
-            $("#referralLabId").val("<?php echo $fromLabId; ?>");
-            $("#referralLabId").trigger('change');
-            $("#referralLabId").prop('disabled', true);
-            loadSamples();
-        <?php
-        }
-        ?>
     });
 
+    function updateManifestCode() {
+        const shortCode = $("#testType").find(":selected").attr("data-short") || "";
+        // Hide any previously loaded samples since they may belong to another test type
+        $(".sampleSelectionArea").hide();
+        if (shortCode !== "") {
+            $("#packageCode").val("R" + shortCode.toUpperCase() + "<?php echo $manifestCodeSuffix; ?>");
+            <?php if ($isLisInstance && !empty($fromLabId)) { ?>
+                // On a LIS instance the sending lab is fixed, so load samples as soon as a test type is chosen
+                loadSamples();
+            <?php } ?>
+        } else {
+            $("#packageCode").val("");
+        }
+    }
+
     function loadSamples() {
+        const testTypeId = $("#testType").val();
         const referralLabId = $("#referralLabId").val();
+
+        if (!testTypeId) {
+            alert("<?php echo _translate("Please select the test type"); ?>");
+            return;
+        }
 
         if (!referralLabId) {
             alert("<?php echo _translate("Please select the sending laboratory"); ?>");
@@ -200,6 +252,7 @@ if ($isLisInstance) {
 
         $.post("/generic-tests/results/get-referral-samples.php", {
             type: 'generic-tests',
+            testTypeId: testTypeId,
             referralLabId: referralLabId
         }, function(data) {
             if (data && data.trim() !== "") {
