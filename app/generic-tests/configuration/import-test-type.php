@@ -311,21 +311,38 @@ $normShort = static fn($v): string => (string) preg_replace('/[^A-Z0-9-]/', '', 
 $selectCols = "test_type_id, test_type_uuid, test_short_code, test_standard_name";
 
 $existingTest = null;
+$matchBy = null;                 // 'uuid' | 'legacy' | 'short_code'
 $exportUuid = trim((string) ($test['test_type_uuid'] ?? ''));
+$exportShortCode = $normShort($test['test_short_code'] ?? '');
 if ($exportUuid !== '') {
     $row = $db->rawQueryOne("SELECT $selectCols FROM r_test_types WHERE test_type_uuid = ? LIMIT 1", [$exportUuid]);
     if (!empty($row)) {
         $existingTest = $row;
+        $matchBy = 'uuid';
     }
 } else {
     // Pre-UUID export: match the same row by id + short code on this instance.
     $sourceTypeId = (int) ($test['test_type_id'] ?? 0);
-    $exportShortCode = $normShort($test['test_short_code'] ?? '');
     if ($sourceTypeId > 0 && $exportShortCode !== '') {
         $row = $db->rawQueryOne("SELECT $selectCols FROM r_test_types WHERE test_type_id = ? LIMIT 1", [$sourceTypeId]);
         if (!empty($row) && $normShort($row['test_short_code']) === $exportShortCode) {
             $existingTest = $row;
+            $matchBy = 'legacy';
         }
+    }
+}
+
+// Fallback: a uuid-bearing export whose uuid is unknown here can still be the SAME
+// test if it was created independently on this instance -- e.g. an earlier import
+// of a pre-UUID file minted its own uuid, so the uuids never line up. Match by
+// short code so the user can still choose to update it (this is what makes pushing
+// one config out to many sites work). It is only ever a suggestion -- the user
+// picks Update vs Import-new, so nothing is overwritten silently.
+if ($existingTest === null && $exportShortCode !== '') {
+    $row = $db->rawQueryOne("SELECT $selectCols FROM r_test_types WHERE test_short_code = ? LIMIT 1", [$exportShortCode]);
+    if (!empty($row)) {
+        $existingTest = $row;
+        $matchBy = 'short_code';
     }
 }
 
@@ -361,6 +378,12 @@ if ($importMode === null && $existingTest !== null) {
                                         '<strong>' . htmlspecialchars((string) $existingTest['test_short_code']) . '</strong>'
                                     ); ?>
                                 </p>
+                                <?php if ($matchBy === 'short_code') { ?>
+                                    <p class="text-warning">
+                                        <em class="fa-solid fa-circle-info"></em>
+                                        <?php echo _htmlTranslate("This was matched by short code, not an exact identity match (the file and this test have different identifiers). Confirm it is really the same test before choosing Update."); ?>
+                                    </p>
+                                <?php } ?>
                                 <p class="text-muted">
                                     <?php echo _translate("Choose Update to overwrite that test's configuration with the imported one, or Import as new to create a separate copy. You can review and edit the form before saving either way."); ?>
                                 </p>
@@ -373,6 +396,59 @@ if ($importMode === null && $existingTest !== null) {
                                     <em class="fa-solid fa-plus"></em> <?php echo _translate("Import as a new test"); ?>
                                 </button>
                                 <a href="test-type.php" class="btn btn-link"><?php echo _translate("Cancel"); ?></a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <?php
+    require_once APPLICATION_PATH . '/footer.php';
+    return;
+}
+
+// No existing test matched (neither by identity nor short code). Confirm before
+// creating a brand-new test, so an import is never a silent "new test" surprise.
+if ($importMode === null && $existingTest === null) {
+    $payloadB64 = base64_encode($rawPayloadJson);
+    ?>
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1><em class="fa-solid fa-file-import"></em> <?php echo _htmlTranslate("Import Test Type"); ?></h1>
+            <ol class="breadcrumb">
+                <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _htmlTranslate("Home"); ?></a></li>
+                <li><a href="test-type.php"><?php echo _htmlTranslate("Test Type Configuration"); ?></a></li>
+                <li class="active"><?php echo _htmlTranslate("Import Test Type"); ?></li>
+            </ol>
+        </section>
+        <section class="content">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="box box-info">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><?php echo _htmlTranslate("This will be imported as a new test"); ?></h3>
+                        </div>
+                        <form method="post" action="import-test-type.php">
+                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>" />
+                            <input type="hidden" name="payloadJson" value="<?php echo htmlspecialchars($payloadB64, ENT_QUOTES, 'UTF-8'); ?>" />
+                            <div class="box-body">
+                                <p>
+                                    <?php echo sprintf(
+                                        _translate("No existing test here matches %1\$s (short code %2\$s) -- not by identity, and not by short code. Continuing will create it as a brand-new test."),
+                                        '<strong>' . htmlspecialchars((string) ($test['test_standard_name'] ?? '')) . '</strong>',
+                                        '<strong>' . htmlspecialchars((string) ($test['test_short_code'] ?? '')) . '</strong>'
+                                    ); ?>
+                                </p>
+                                <p class="text-muted">
+                                    <?php echo _htmlTranslate("You will be taken to an editable form to review the test before it is saved. If the name or short code is already in use, it will be adjusted so nothing existing is overwritten."); ?>
+                                </p>
+                            </div>
+                            <div class="box-footer">
+                                <button type="submit" name="importMode" value="new" class="btn btn-primary">
+                                    <em class="fa-solid fa-plus"></em> <?php echo _htmlTranslate("Continue -- create a new test"); ?>
+                                </button>
+                                <a href="test-type.php" class="btn btn-default"><?php echo _htmlTranslate("Cancel"); ?></a>
                             </div>
                         </form>
                     </div>
