@@ -594,7 +594,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 										<div class="col-lg-7">
 											<input type="text" name="artNo" id="artNo"
 												class="form-control <?= $mandatoryClass; ?> patientId"
-												placeholder="Enter EPID Number" title="Enter EPID Number"
+												placeholder="Enter Patient Identifier" title="Enter Patient Identifier"
 												value="<?= htmlspecialchars((string) $genericResultInfo['patient_id']); ?>" />
 										</div>
 
@@ -752,7 +752,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 									</div>
 								</div>
 							</div>
-							<div class="box box-primary caseInformationBox" id="caseInformationBox" style="display:none;">
+							<div class="box box-primary caseInformationBox" id="caseInformationBox"
+								style="display:none;">
 								<div class="box-header with-border">
 									<h3 class="box-title"><?= _translate("Case Information"); ?></h3>
 								</div>
@@ -2119,8 +2120,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 					<?php
 					foreach ($testResultUnits as $unit) {
 						?>
-							<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
-							<?php
+									<option value="<?php echo $unit['unit_id']; ?>"><?php echo $unit['unit_name']; ?></option>
+									<?php
 					}
 					?>
 			</select>
