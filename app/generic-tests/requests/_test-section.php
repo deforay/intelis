@@ -176,7 +176,7 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 			<tr class="gtWorkflowRow" style="<?= $isRejected ? 'display:none;' : ''; ?>">
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Tested By"); ?></label>
-					<select name="testResult[testedBy][]" id="testedBy<?= $n; ?>" class="form-control isRequired">
+					<select name="testResult[testedBy][]" id="testedBy<?= $n; ?>" class="form-control select2 isRequired">
 						<?= $general->generateSelectOptions($userInfo, $testedBy, '-- ' . _translate("Select") . ' --'); ?>
 					</select>
 				</td>
@@ -188,7 +188,7 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 				</td>
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Reviewed By"); ?></label>
-					<select name="testResult[reviewedBy][]" id="reviewedBy<?= $n; ?>" class="form-control isRequired">
+					<select name="testResult[reviewedBy][]" id="reviewedBy<?= $n; ?>" class="form-control select2 isRequired">
 						<?= $general->generateSelectOptions($userInfo, $reviewedBy, '-- ' . _translate("Select") . ' --'); ?>
 					</select>
 				</td>
@@ -202,7 +202,7 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 				</td>
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Approved By"); ?></label>
-					<select name="testResult[approvedBy][]" id="approvedBy<?= $n; ?>" class="form-control isRequired">
+					<select name="testResult[approvedBy][]" id="approvedBy<?= $n; ?>" class="form-control select2 isRequired">
 						<?= $general->generateSelectOptions($userInfo, $approvedBy, '-- ' . _translate("Select") . ' --'); ?>
 					</select>
 				</td>
