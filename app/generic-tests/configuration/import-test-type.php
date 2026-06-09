@@ -412,6 +412,15 @@ if ($importMode === null && $existingTest !== null) {
 // creating a brand-new test, so an import is never a silent "new test" surprise.
 if ($importMode === null && $existingTest === null) {
     $payloadB64 = base64_encode($rawPayloadJson);
+    // Even with no identity/short-code match, a test with the same NAME (or code)
+    // may exist here -- flag it so the user can stop and check before duplicating.
+    $clashStdName = trim((string) ($test['test_standard_name'] ?? ''));
+    $clashGenName = trim((string) ($test['test_generic_name'] ?? ''));
+    $clashRow = $db->rawQueryOne(
+        "SELECT test_standard_name FROM r_test_types WHERE test_standard_name = ? OR test_generic_name = ? OR test_short_code = ? LIMIT 1",
+        [$clashStdName, $clashGenName, $exportShortCode]
+    );
+    $hasNameClash = !empty($clashRow);
     ?>
     <div class="content-wrapper">
         <section class="content-header">
@@ -433,6 +442,12 @@ if ($importMode === null && $existingTest === null) {
                             <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>" />
                             <input type="hidden" name="payloadJson" value="<?php echo htmlspecialchars($payloadB64, ENT_QUOTES, 'UTF-8'); ?>" />
                             <div class="box-body">
+                                <?php if ($hasNameClash) { ?>
+                                    <div class="alert alert-warning">
+                                        <em class="fa-solid fa-triangle-exclamation"></em>
+                                        <?php echo _htmlTranslate("A test with the same name or short code already exists here, but it is not recognised as the same test (its identity differs). If it is meant to be the same test, Cancel and check it first -- otherwise continue and the name/short code will be adjusted so nothing existing is overwritten."); ?>
+                                    </div>
+                                <?php } ?>
                                 <p>
                                     <?php echo sprintf(
                                         _translate("No existing test here matches %1\$s (short code %2\$s) -- not by identity, and not by short code. Continuing will create it as a brand-new test."),
