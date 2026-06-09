@@ -12,10 +12,47 @@
  * through $esc() because import-test-type.php sources them from an uploaded file.
  */
 $testMethodInfo = $testMethodInfo ?? $general->getDataByTableAndFields("r_generic_test_methods", ["test_method_id", "test_method_name"], true, "test_method_status='active'");
-$methodOptionsJs = '';
-foreach (($testMethodInfo ?? []) as $__mid => $__mname) {
-    $methodOptionsJs .= '<option value="' . htmlspecialchars((string) $__mid) . '">' . htmlspecialchars((string) $__mname) . '</option>';
-}
+$gtAllMethodsJson = json_encode(
+    array_map(
+        fn($__mid, $__mname) => ['id' => (string) $__mid, 'name' => (string) $__mname],
+        array_keys($testMethodInfo ?? []),
+        array_values($testMethodInfo ?? [])
+    ),
+    JSON_UNESCAPED_UNICODE
+) ?: '[]';
+
+/**
+ * Render a Result Group's Test Methods picker: a compact dropdown that summarises
+ * "X of Y selected" and opens a searchable checkbox list. The checkboxes post as
+ * resultConfig[methods][<groupKey>][] directly -- no select2, so nothing desyncs.
+ */
+$gtRenderMethodPicker = function ($groupKey, $selected) use ($testMethodInfo) {
+    $sel = array_map('strval', is_array($selected) ? $selected : []);
+    $name = 'resultConfig[methods][' . $groupKey . '][]';
+    ob_start(); ?>
+    <div class="gtMethodPicker">
+        <button type="button" class="form-control input-sm gtmp-toggle" aria-haspopup="listbox" aria-expanded="false">
+            <span class="gtmp-summary"></span><span class="gtmp-caret">&#9662;</span>
+        </button>
+        <div class="gtmp-panel" hidden>
+            <input type="text" class="form-control input-sm gtmp-search" placeholder="<?php echo _translate('Search methods...'); ?>" autocomplete="off">
+            <div class="gtmp-actions">
+                <a href="javascript:void(0);" class="gtmp-all"><?php echo _translate('Select all'); ?></a>
+                <span class="gtmp-sep">|</span>
+                <a href="javascript:void(0);" class="gtmp-clear"><?php echo _translate('Clear all'); ?></a>
+            </div>
+            <div class="gtmp-list">
+                <?php foreach (($testMethodInfo ?? []) as $__mid => $__mname) { ?>
+                    <label class="gtmp-option">
+                        <input type="checkbox" name="<?php echo htmlspecialchars($name); ?>" value="<?php echo htmlspecialchars((string) $__mid); ?>" <?php echo in_array((string) $__mid, $sel, true) ? 'checked' : ''; ?>>
+                        <span><?php echo htmlspecialchars((string) $__mname); ?></span>
+                    </label>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+<?php return ob_get_clean();
+};
 $formMode            = $formMode ?? 'edit';
 $formHeading         = $formHeading ?? _translate("Edit Test Type");
 $formAction          = $formAction ?? 'editTestTypeHelper.php';
@@ -143,6 +180,19 @@ $i = 1;
 		color: #8a9bad;
 		margin-bottom: 6px;
 	}
+	.gtMethodPicker { position: relative; }
+	.gtmp-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; text-align: left; cursor: pointer; background: #fff; }
+	.gtmp-caret { margin-left: 8px; color: #6b7280; font-size: 10px; }
+	.gtmp-panel { position: absolute; z-index: 1000; top: calc(100% + 2px); left: 0; right: 0; background: #fff; border: 1px solid #cbd5e0; border-radius: 4px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); padding: 8px; }
+	.gtmp-search { margin-bottom: 6px; }
+	.gtmp-actions { font-size: 12px; padding: 2px 2px 8px; border-bottom: 1px solid #edf2f7; margin-bottom: 6px; }
+	.gtmp-actions a { color: #4a6fa5; cursor: pointer; }
+	.gtmp-actions a:hover { text-decoration: underline; }
+	.gtmp-sep { color: #cbd5e0; margin: 0 4px; }
+	.gtmp-list { max-height: 220px; overflow-y: auto; }
+	.gtmp-option { display: flex; align-items: flex-start; gap: 8px; font-weight: normal; margin: 0; padding: 6px 4px; border-radius: 4px; cursor: pointer; }
+	.gtmp-option:hover { background-color: #f0f7ff; }
+	.gtmp-option input { margin-top: 3px; }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -748,7 +798,7 @@ $i = 1;
 														class="table table-bordered table-striped clearfix">
 														<tr>
 								<td style="width:20%;"><lable class="form-label-control"><?php echo _translate("Test Methods"); ?> <span class="mandatory">*</span></lable></td>
-								<td colspan="3" style="width:80%;"><select multiple name="resultConfig[methods][<?php echo $key; ?>][]" class="form-control input-sm isRequired resultGroupMethods" title="<?php echo _translate('Select the test method(s) that produce this result'); ?>"><?= $general->generateSelectOptions($testMethodInfo, $testResultAttribute['methods'][$key] ?? [], false) ?></select></td>
+								<td colspan="3" style="width:80%;"><?= $gtRenderMethodPicker($key, $testResultAttribute['methods'][$key] ?? []) ?></td>
 							</tr>
 							<tr>
 															<td class="<?php echo (isset($resultName) && !empty($resultName)) ? '' : 'hide'; ?> firstSubTest"
@@ -900,7 +950,7 @@ $i = 1;
 											class="table table-bordered table-striped clearfix">
 											<tr>
 								<td style="width:20%;"><lable class="form-label-control"><?php echo _translate("Test Methods"); ?> <span class="mandatory">*</span></lable></td>
-								<td colspan="3" style="width:80%;"><select multiple name="resultConfig[methods][1][]" class="form-control input-sm isRequired resultGroupMethods" title="<?php echo _translate('Select the test method(s) that produce this result'); ?>"><?= $general->generateSelectOptions($testMethodInfo, $testResultAttribute['methods'][1] ?? [], false) ?></select></td>
+								<td colspan="3" style="width:80%;"><?= $gtRenderMethodPicker(1, $testResultAttribute['methods'][1] ?? []) ?></td>
 							</tr>
 							<tr>
 												<td class="hide firstSubTest" style="width:20%;">
@@ -1125,11 +1175,7 @@ $i = 1;
 			$(this).parent().remove();
 		});
 
-		$('.resultGroupMethods').each(function () {
-			if (!$(this).hasClass('select2-hidden-accessible')) {
-				$(this).select2({ tags: true, width: '100%', placeholder: "<?php echo _translate('Select test method(s)'); ?>" });
-			}
-		});
+		$('.gtMethodPicker').each(function () { gtInitMethodPicker(this); });
 
 		let ajaxSelect = ["testMethod", "testCategory", "testingReason", "testFailureReason", "rejectionReason"];
 		let _p = ["test methods", "test categories", "testing reason", "test failure reason", "rejection reason"];
@@ -1399,7 +1445,7 @@ $i = 1;
 					<table style="width: 100%;margin: 0 auto;" border="1" class="table table-bordered table-striped clearfix">\
 						<tr>\
 								<td style="width:20%;"><lable class="form-label-control"><?php echo _translate("Test Methods"); ?></lable></td>\
-								<td colspan="3" style="width:80%;"><select multiple name="resultConfig[methods][' + sampleCounter + '][]" class="form-control input-sm isRequired resultGroupMethods" title="<?php echo _translate('Select test method(s)'); ?>"><?php echo $methodOptionsJs; ?></select></td>\
+								<td colspan="3" style="width:80%;"><div class="gtMethodPicker" data-group="' + sampleCounter + '"></div></td>\
 							</tr>\
 							<tr>\
 							<td style="width:20%;"><lable for="resultSubGroup' + sampleCounter + '" class="form-label-control"><?php echo _translate("Result name"); ?></lable></td>\
@@ -1470,7 +1516,7 @@ $i = 1;
 				</td>\
 			</tr>';
 		$(obj.parentNode.parentNode).after(html);
-		$('.resultGroupMethods').each(function () { if (!$(this).hasClass('select2-hidden-accessible')) { $(this).select2({ tags: true, width: '100%', placeholder: "<?php echo _translate('Select test method(s)'); ?>" }); } });
+		(function () { var c = document.querySelector('.gtMethodPicker[data-group="' + sampleCounter + '"]'); if (c) { gtBuildMethodPicker(c, sampleCounter); gtInitMethodPicker(c); } })();
 	}
 
 	function removeQualitativeRow(obj, row1, row2) {
@@ -1495,6 +1541,69 @@ $i = 1;
 		}).length > 0;
 		// Units only apply to quantitative results.
 		$('#testResultUnitWrapper').toggle(hasQuant);
+	}
+
+	// ---- Result Group Test Methods picker (checkbox dropdown; posts methods[k][]) ----
+	var gtAllMethods = <?php echo $gtAllMethodsJson; ?>;
+	var gtmpSummaryTpl = "<?php echo _translate('%selected of %total selected'); ?>";
+
+	function gtMethodPickerSummary(container) {
+		var boxes = container.querySelectorAll('.gtmp-list input[type="checkbox"]');
+		var checked = 0;
+		boxes.forEach(function (c) { if (c.checked) { checked++; } });
+		var s = container.querySelector('.gtmp-summary');
+		if (s) { s.textContent = gtmpSummaryTpl.replace('%selected', checked).replace('%total', boxes.length); }
+	}
+
+	// Fill a freshly added (empty) picker with all methods, unchecked.
+	function gtBuildMethodPicker(container, groupKey) {
+		var name = 'resultConfig[methods][' + groupKey + '][]';
+		container.innerHTML =
+			'<button type="button" class="form-control input-sm gtmp-toggle" aria-haspopup="listbox" aria-expanded="false">'
+			+ '<span class="gtmp-summary"></span><span class="gtmp-caret">&#9662;</span></button>'
+			+ '<div class="gtmp-panel" hidden>'
+			+ '<input type="text" class="form-control input-sm gtmp-search" placeholder="<?php echo _translate('Search methods...'); ?>" autocomplete="off">'
+			+ '<div class="gtmp-actions"><a href="javascript:void(0);" class="gtmp-all"><?php echo _translate('Select all'); ?></a>'
+			+ '<span class="gtmp-sep">|</span><a href="javascript:void(0);" class="gtmp-clear"><?php echo _translate('Clear all'); ?></a></div>'
+			+ '<div class="gtmp-list"></div></div>';
+		var list = container.querySelector('.gtmp-list');
+		gtAllMethods.forEach(function (m) {
+			var label = document.createElement('label');
+			label.className = 'gtmp-option';
+			var cb = document.createElement('input');
+			cb.type = 'checkbox'; cb.name = name; cb.value = m.id;
+			var span = document.createElement('span'); span.textContent = m.name;
+			label.appendChild(cb); label.appendChild(span);
+			list.appendChild(label);
+		});
+	}
+
+	// Wire one picker's toggle / search / bulk / summary. Idempotent per container.
+	function gtInitMethodPicker(container) {
+		if (!container || container.getAttribute('data-gtmp-ready') === '1') { return; }
+		container.setAttribute('data-gtmp-ready', '1');
+		var toggle = container.querySelector('.gtmp-toggle');
+		var panel = container.querySelector('.gtmp-panel');
+		var search = container.querySelector('.gtmp-search');
+		var list = container.querySelector('.gtmp-list');
+		if (!toggle || !panel || !list) { return; }
+		function boxes() { return Array.prototype.slice.call(list.querySelectorAll('input[type="checkbox"]')); }
+		function visible() { return boxes().filter(function (c) { return c.closest('.gtmp-option').style.display !== 'none'; }); }
+		function setOpen(open) { panel.hidden = !open; toggle.setAttribute('aria-expanded', open ? 'true' : 'false'); if (open && search) { search.focus(); } }
+		toggle.addEventListener('click', function (e) { e.stopPropagation(); setOpen(panel.hidden); });
+		document.addEventListener('click', function (e) { if (!container.contains(e.target)) { setOpen(false); } });
+		document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { setOpen(false); } });
+		if (search) {
+			search.addEventListener('input', function () {
+				var q = this.value.toLowerCase();
+				boxes().forEach(function (c) { var o = c.closest('.gtmp-option'); o.style.display = o.textContent.toLowerCase().indexOf(q) > -1 ? '' : 'none'; });
+			});
+		}
+		var all = container.querySelector('.gtmp-all'), clr = container.querySelector('.gtmp-clear');
+		if (all) { all.addEventListener('click', function () { visible().forEach(function (c) { c.checked = true; }); gtMethodPickerSummary(container); }); }
+		if (clr) { clr.addEventListener('click', function () { visible().forEach(function (c) { c.checked = false; }); gtMethodPickerSummary(container); }); }
+		list.addEventListener('change', function () { gtMethodPickerSummary(container); });
+		gtMethodPickerSummary(container);
 	}
 
 	function setResultType(id, row) {
