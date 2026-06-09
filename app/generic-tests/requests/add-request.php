@@ -931,6 +931,42 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
           window.history.replaceState({}, '', url.toString());
      }
 
+     // Apply a test type's optional "Advanced Configuration" (from getTestTypeForm.php):
+     // toggle a few non-dynamic fields and override the Patient ID label. Missing/empty
+     // config => every field shown, label unchanged (backward compatible).
+     function applyAdvancedFormConfig(cfg) {
+          cfg = cfg || {};
+          var toggleField = function (selector, on) {
+               var $wrap = $(selector).first().closest('.col-md-6');
+               if (!$wrap.length) { return; }
+               $wrap.toggle(on);
+               if (!on) { $wrap.find('.isRequired').removeClass('isRequired'); }
+          };
+          // Sex-coupled fields: when allowed, keep them under the female-section/sex
+          // logic; when hidden by config, detach so a later sex change can't re-show them.
+          var toggleFemaleField = function (selector, on) {
+               var $wrap = $(selector).first().closest('.col-md-6');
+               if (!$wrap.length) { return; }
+               if (on) {
+                    var isFemale = $('input:radio[name=gender]:checked').val() === 'female';
+                    $wrap.addClass('femaleSection').toggle(isFemale);
+               } else {
+                    $wrap.removeClass('femaleSection').hide().find('.isRequired').removeClass('isRequired');
+               }
+          };
+          toggleField('#implementingPartner', cfg.showImplementingPartner !== 'no');
+          toggleField('#fundingSource', cfg.showFundingSource !== 'no');
+          toggleField('#patientFirstName', cfg.showPatientName !== 'no');
+          toggleField('#ageInMonths', cfg.showAgeInMonths !== 'no');
+          toggleFemaleField('#pregYes', cfg.showPregnancy !== 'no');
+          toggleFemaleField('#breastfeedingYes', cfg.showBreastfeeding !== 'no');
+          if (cfg.patientIdLabel && String(cfg.patientIdLabel).trim() !== '') {
+               var lbl = String(cfg.patientIdLabel).trim();
+               $('#artNoLabelText').text(lbl);
+               $('#artNo').attr('placeholder', '<?= _jsTranslate('Enter') ?> ' + lbl).attr('title', lbl);
+          }
+     }
+
      function getTestTypeForm() {
           var testType = $("#testType").val();
           if (testType != "") {
@@ -946,6 +982,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 
                               console.log(data.result);
                               data = JSON.parse(data);
+                              applyAdvancedFormConfig(data.advancedFormConfig);
                               $("#facilitySection,#labSection,#caseInformation,.subTestResultSection,#otherSection").html('');
                               $('.patientSectionInput').remove();
                               if (typeof (data.facilitySection) != "undefined" && data.facilitySection !== null && data.facilitySection.length > 0) {
@@ -1034,6 +1071,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                },
                     function (data) {
                          data = JSON.parse(data);
+                         applyAdvancedFormConfig(data.advancedFormConfig);
                          $(".subTestResultSection").html('');
                          if (typeof (data.result) != "undefined" && data.result !== null && data.result.length > 0) {
                               $(".subTestResultSection").html(data.result);

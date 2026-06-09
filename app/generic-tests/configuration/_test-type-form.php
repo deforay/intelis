@@ -766,6 +766,7 @@ $i = 1;
 								</tbody>
 							</table>
 						</div>
+						<?php include __DIR__ . '/_advanced-config-box.php'; ?>
 						<div class="box-header row">
 							<div class="col-md-4">
 								<h3 class="box-title "><?php echo _translate("Test Results Configuration"); ?></h3>
