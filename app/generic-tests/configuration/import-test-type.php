@@ -534,6 +534,12 @@ if (isset($resultsConfig['sub_tests']) && is_array($resultsConfig['sub_tests']))
     require_once __DIR__ . '/_portable-results-config.php';
     $resultsConfig = portableResultsConfigFromV2($resultsConfig);
 }
+// advancedFormConfig is hoisted to its own top-level key in the file; fold it back
+// into the results config, where the DB + runtime expect it. (Older v1 files keep
+// it inline inside test_results_config, so this is a no-op for them.)
+if (!empty($test['advanced_form_config']) && is_array($test['advanced_form_config'])) {
+    $resultsConfig['advancedFormConfig'] = $test['advanced_form_config'];
+}
 $resultUnitNames = (!empty($resultsConfig['test_result_unit']) && is_array($resultsConfig['test_result_unit']))
     ? $resultsConfig['test_result_unit']
     : ($test['result_units'] ?? []);

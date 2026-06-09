@@ -120,6 +120,12 @@ try {
         }
     }
 
+    // advancedFormConfig is form config that only piggybacks inside test_results_config
+    // in the DB; hoist it to its own top-level key in the file (import folds it back).
+    $advancedFormConfig = (isset($resultsConfig['advancedFormConfig']) && is_array($resultsConfig['advancedFormConfig']))
+        ? $resultsConfig['advancedFormConfig'] : [];
+    unset($resultsConfig['advancedFormConfig']);
+
     // Portable result-group shape: collapse the DB's parallel-arrays into clean
     // self-contained sub-test objects (version 2). import-test-type.php converts
     // it back; older (v1) files that carry the DB shape verbatim still import.
@@ -143,6 +149,7 @@ try {
             'test_status' => $testType['test_status'],
             'category' => $categoryName,
             'test_form_config' => $formConfig,
+            'advanced_form_config' => (object) $advancedFormConfig,
             'test_results_config' => $resultsConfig,
             'sample_types' => $sampleTypes,
             'testing_reasons' => $testingReasons,
