@@ -248,7 +248,10 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 	}
 </style>
 
-<div class="box box-primary" id="genericTestSectionBox">
+<?php // No box framing here: this section is rendered INSIDE the result page's
+// Laboratory Information box, so its own box-primary would be a redundant
+// nested box. Keep the id (JS hook) and box-body padding only. ?>
+<div id="genericTestSectionBox">
 	<div class="box-body">
 		<div class="box-header with-border">
 			<h3 class="box-title"><?= _translate("TEST RESULTS INFORMATION"); ?></h3>
