@@ -120,9 +120,15 @@ try {
         }
     }
 
+    // Portable result-group shape: collapse the DB's parallel-arrays into clean
+    // self-contained sub-test objects (version 2). import-test-type.php converts
+    // it back; older (v1) files that carry the DB shape verbatim still import.
+    require_once __DIR__ . '/_portable-results-config.php';
+    $resultsConfig = portableResultsConfigToV2($resultsConfig);
+
     $export = [
         'format' => 'intelis.custom-test',
-        'version' => 1,
+        'version' => 2,
         'exported_at' => date('c'),
         'test' => [
             // Portable identity. import-test-type.php matches on test_type_uuid to
