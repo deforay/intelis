@@ -239,20 +239,13 @@ try {
         'instrument_id' => $instrumentId ?? null,
         'sample_received_at_hub_datetime' => $_POST['sampleReceivedAtHubOn'],
         'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
-        'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
         'reason_for_testing' => (isset($_POST['reasonForTesting']) && $_POST['reasonForTesting'] != '') ? $_POST['reasonForTesting'] : null,
         'result_dispatched_datetime' => $_POST['resultDispatchedOn'],
         'is_sample_rejected' => ($isRejected) ? 'yes' : 'no',
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && $_POST['rejectionReason'] != '') ? $_POST['rejectionReason'] : null,
         'rejection_on' => (empty($_POST['rejectionDate'])) ? null : DateUtility::isoDateFormat($_POST['rejectionDate']),
-        'result' => $_POST['result'] ?? null,
-        // 'result_unit' => (isset($_POST['finalTestResultUnit']) && $_POST['finalTestResultUnit'] != "") ? implode("##",$_POST['finalTestResultUnit']) : null,
-        'final_result_interpretation' => $interpretationResult,
-        'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
-        'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-        'tested_by' => (isset($_POST['testedBy']) && $_POST['testedBy'] != '') ? $_POST['testedBy'] : null,
-        'result_approved_by' => (isset($_POST['approvedBy']) && $_POST['approvedBy'] != '') ? $_POST['approvedBy'] : null,
-        'result_approved_datetime' => (isset($_POST['approvedOn']) && $_POST['approvedOn'] != '') ? $_POST['approvedOn'] : null,
+        // result, interpretation, tested_by and reviewed/approved fields are owned by the result page
+        // (update-generic-test-result-helper.php), not request creation. A new request has no result yet.
         'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
         'lab_tech_comments' => (isset($_POST['labComments']) && trim((string) $_POST['labComments']) !== '') ? trim((string) $_POST['labComments']) : null,
         'result_status' => $resultStatus,
@@ -261,7 +254,6 @@ try {
         'test_number' => (isset($_POST['viralLoadNo']) && $_POST['viralLoadNo'] != '') ? $_POST['viralLoadNo'] : null,
         'request_created_datetime' => DateUtility::getCurrentDateTime(),
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-        'manual_result_entry' => 'yes',
         //'vl_result_category'                    => $vl_result_category
         'test_type' => $_POST['testType'],
         'sub_tests' => (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) ? implode("##", $_POST['subTestResult']) : $_POST['subTestResult'],
@@ -282,50 +274,6 @@ try {
     //dynamicFields[_7ccf3703a3e2adea][]    "_7ccf3703a3e2adea":["AFP","Cholera"]
     //Update patient Information in Patients Table
     // $patientsService->savePatient($_POST,'form_generic');
-    if (isset($_POST['requestSampleId']) && $_POST['requestSampleId'] != '' && (!$isRejected)) {
-        if (!empty($_POST['testName'])) {
-            $finalResult = "";
-            if (isset($_POST['subTestResult']) && (isset($_POST['subTestResult']) && ($_POST['subTestResult'] !== '' && $_POST['subTestResult'] !== '0'))) {
-                foreach ($_POST['testName'] as $subTestName => $subTests) {
-                    foreach ($subTests as $testKey => $testKitName) {
-                        if (!empty($testKitName)) {
-                            $testData = ['generic_id' => $_POST['requestSampleId'], 'sub_test_name' => $subTestName, 'result_type' => $_POST['resultType'][$subTestName], 'test_name' => ($testKitName == 'other') ? $_POST['testNameOther'][$subTestName][$testKey] : $testKitName, 'facility_id' => $_POST['labId'] ?? null, 'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['testDate'][$subTestName][$testKey] ?? ''), 'testing_platform' => $_POST['testingPlatform'][$subTestName][$testKey] ?? null, 'kit_lot_no' => (str_contains((string) $testKitName, 'RDT')) ? $_POST['lotNo'][$subTestName][$testKey] : null, 'kit_expiry_date' => (str_contains((string) $testKitName, 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$subTestName][$testKey]) : null, 'result_unit' => $_POST['testResultUnit'][$subTestName][$testKey], 'result' => $_POST['testResult'][$subTestName][$testKey], 'final_result' => $_POST['finalResult'][$subTestName], 'final_result_unit' => $_POST['finalTestResultUnit'][$subTestName], 'final_result_interpretation' => $_POST['resultInterpretation'][$subTestName]];
-                            $db->insert('generic_test_results', $testData);
-                            if (isset($_POST['finalResult'][$subTestName]) && !empty($_POST['finalResult'][$subTestName])) {
-                                $finalResult = $_POST['finalResult'][$subTestName];
-                            }
-                        }
-                    }
-                }
-            } else {
-                foreach ($_POST['testName'] as $testKey => $testKitName) {
-                    if (!empty($_POST['testName'][$testKey][0])) {
-                        $testData = ['generic_id' => $_POST['requestSampleId'] ?? null, 'sub_test_name' => null, 'result_type' => $_POST['resultType'][$testKey][0] ?? null, 'test_name' => ($_POST['testName'][$testKey][0] == 'other') ? $_POST['testNameOther'][$testKey][0] : $_POST['testName'][$testKey][0], 'facility_id' => $_POST['labId'] ?? null, 'sample_tested_datetime' => (isset($_POST['testDate'][$testKey][0]) && !empty($_POST['testDate'][$testKey][0])) ? DateUtility::isoDateFormat($_POST['testDate'][$testKey][0]) : null, 'testing_platform' => $_POST['testingPlatform'][$testKey][0] ?? null, 'kit_lot_no' => (str_contains((string) $_POST['testName'][$testKey][0], 'RDT')) ? $_POST['lotNo'][$testKey][0] : null, 'kit_expiry_date' => (str_contains((string) $_POST['testName'][$testKey][0], 'RDT')) ? DateUtility::isoDateFormat($_POST['expDate'][$testKey][0]) : null, 'result_unit' => $_POST['testResultUnit'][$testKey][0] ?? null, 'result' => $_POST['testResult'][$testKey][0] ?? null];
-                        foreach ($_POST['finalResult'] as $key => $value) {
-                            if (isset($value) && !empty($value)) {
-                                $testData['final_result'] = $value;
-                            }
-                            if (isset($_POST['finalTestResultUnit'][$key]) && !empty($_POST['finalTestResultUnit'][$key])) {
-                                $testData['final_result_unit'] = $_POST['finalTestResultUnit'][$key];
-                            }
-                            if (isset($_POST['resultInterpretation'][$key]) && !empty($_POST['resultInterpretation'][$key])) {
-                                $testData['final_result_interpretation'] = $_POST['resultInterpretation'][$key];
-                            }
-                        }
-                        $db->insert('generic_test_results', $testData);
-                        if (isset($testData['final_result']) && !empty($testData['final_result'])) {
-                            $finalResult = $testData['final_result'];
-                        }
-                    }
-                }
-            }
-            $genericData['result'] = $finalResult;
-        }
-    } else {
-        $db->where('generic_id', $_POST['requestSampleId']);
-        $db->delete($testTableName);
-        $genericData['sample_tested_datetime'] = null;
-    }
     if (isset($_POST['requestSampleId']) && $_POST['requestSampleId'] != '') {
         $db->where('sample_id', $_POST['requestSampleId']);
         $id = $db->update($tableName, $genericData);
