@@ -46,10 +46,10 @@ $sampleInfo = $db->query($sampleQuery);
                   <div class="col-lg-7">
                     <input type="text" class="form-control isRequired" id="sampleName" name="sampleName"
                       placeholder="sample Name" title="Please enter Sample name"
-                      value="<?php echo $sampleInfo[0]['sample_name']; ?>"
+                      value="<?php echo _sanitizeOutput($sampleInfo[0]['sample_name']); ?>"
                       onblur="checkNameValidation('r_eid_sample_type','sample_name',this,'<?php echo "sample_id##" . $sampleInfo[0]['sample_id']; ?>','The sample name that you entered already exists.Enter another name',null)" />
                     <input type="hidden" class="form-control isRequired" id="sampleId" name="sampleId"
-                      value="<?php echo $_GET['id']; ?>" />
+                      value="<?php echo _sanitizeOutput($_GET['id']); ?>" />
                   </div>
                 </div>
               </div>

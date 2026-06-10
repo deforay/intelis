@@ -359,7 +359,9 @@ final class MiscUtility
                 return false;
             }
 
-            return @simplexml_load_string($svgContent) !== false;
+            // LIBXML_NONET disables network access during parsing, hardening
+            // against XXE/SSRF via external entities in a malicious SVG.
+            return @simplexml_load_string($svgContent, SimpleXMLElement::class, LIBXML_NONET) !== false;
         }
 
         // For raster images, use getimagesize() to validate the image data

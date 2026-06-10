@@ -71,7 +71,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											onchange="getBatchForm(this)">
 											<option value=""> -- Select -- </option>
 											<?php foreach ($testTypeResult as $testType) { ?>
-												<option value="<?php echo $testType['test_type_id']; ?>">
+												<option value="<?php echo _sanitizeOutput($testType['test_type_id']); ?>">
 													<?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?>
 												</option>
 											<?php } ?>
@@ -82,7 +82,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 								<div class="col-xs-6 col-md-6">
 									<div class="box-header with-border">
 										<?php if (_isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
-											<a href="add-batch.php?type=<?php echo $_GET['type']; ?>"
+											<a href="add-batch.php?type=<?php echo _sanitizeOutput($_GET['type']); ?>"
 												class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em>
 												<?php echo _translate("Create New Batch"); ?></a>
 										<?php } ?>
@@ -93,7 +93,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					<?php } else { ?>
 						<div class="box-header with-border">
 							<?php if (_isAllowed("/batch/add-batch.php?type=" . $_GET['type'])) { ?>
-								<a href="add-batch.php?type=<?php echo $_GET['type']; ?>" class="btn btn-primary pull-right">
+								<a href="add-batch.php?type=<?php echo _sanitizeOutput($_GET['type']); ?>" class="btn btn-primary pull-right">
 									<em class="fa-solid fa-plus"></em> <?php echo _translate("Create New Batch"); ?></a>
 							<?php } ?>
 						</div>
@@ -221,7 +221,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		if (conf) {
 			$.post("/batch/delete-batch.php", {
 				id: bId,
-				type: '<?php echo $_GET['type']; ?>'
+				type: <?= _jsEscape($_GET['type'] ?? '') ?>
 			},
 				function (data) {
 					let toastMessage = "";

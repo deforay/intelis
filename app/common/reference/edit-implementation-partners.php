@@ -56,7 +56,7 @@ $partnerInfo = $db->rawQuery($query, [$id]);
                                     <label for="partnerName" class="col-lg-4 control-label">Province Name <span
                                             class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo $partnerInfo[0]['i_partner_name']; ?>"
+                                        <input type="text" value="<?php echo _sanitizeOutput($partnerInfo[0]['i_partner_name']); ?>"
                                             class="form-control isRequired" id="partnerName" name="partnerName"
                                             placeholder="Partner Name" title="Please enter Partner name"
                                             onblur="checkNameValidation('r_implementation_partners','i_partner_name',this,'<?php echo "i_partner_id##" . $id; ?>','The partner name that you entered already exists.Enter another name',null)" />
@@ -84,7 +84,7 @@ $partnerInfo = $db->rawQuery($query, [$id]);
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <input type="hidden" name="partnerId" name="partnerId" value="<?php echo $_GET['id']; ?>">
+                        <input type="hidden" name="partnerId" name="partnerId" value="<?php echo _sanitizeOutput($_GET['id']); ?>">
                         <a class="btn btn-primary" href="javascript:void(0);"
                             onclick="validateNow();return false;">Submit</a>
                         <a href="implementation-partners.php" class="btn btn-default"> Cancel</a>

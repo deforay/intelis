@@ -45,7 +45,7 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
                                         class="col-lg-4 control-label"><?php echo _translate("Test Failure Reason"); ?>
                                         <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo $failureReasonInfo['failure_reason']; ?>"
+                                        <input type="text" value="<?php echo _sanitizeOutput($failureReasonInfo['failure_reason']); ?>"
                                             class="form-control isRequired" id="failureReason" name="failureReason"
                                             placeholder="<?php echo _translate('Enter Test Failure Reason'); ?>"
                                             title="<?php echo _translate('Please enter Test Failure Reason'); ?>"
@@ -75,7 +75,7 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
-                    <input type="hidden" name="failureId" value="<?php echo $_GET['id']; ?>" />
+                    <input type="hidden" name="failureId" value="<?php echo _sanitizeOutput($_GET['id']); ?>" />
                     <a class="btn btn-primary" href="javascript:void(0);"
                         onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
                     <a href="vl-art-code-details.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>

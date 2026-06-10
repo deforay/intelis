@@ -57,12 +57,12 @@ $rsnInfo = $db->query($rsnQuery);
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="rejectionReasonName"
 											name="rejectionReasonName"
-											value="<?php echo $rsnInfo[0]['rejection_reason_name']; ?>"
+											value="<?php echo _sanitizeOutput($rsnInfo[0]['rejection_reason_name']); ?>"
 											placeholder="Rejection Reason Name"
 											title="Please enter Rejection Reason name"
 											onblur="checkNameValidation('r_cd4_sample_rejection_reasons','rejection_reason_name',this,'<?php echo "rejection_reason_id##" . htmlspecialchars((string) $id); ?>','This Rejection reason name that you entered already exists.Try another Rejection reason name',null)" />
 										<input type="hidden" class="form-control isRequired" id="rejectionReasonId"
-											name="rejectionReasonId" value="<?php echo $_GET['id']; ?>" />
+											name="rejectionReasonId" value="<?php echo _sanitizeOutput($_GET['id']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -86,7 +86,7 @@ $rsnInfo = $db->query($rsnQuery);
 										Code <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired"
-											value="<?php echo $rsnInfo[0]['rejection_reason_code']; ?>"
+											value="<?php echo _sanitizeOutput($rsnInfo[0]['rejection_reason_code']); ?>"
 											id="rejectionReasonCode" name="rejectionReasonCode"
 											placeholder="Rejection Reason Code"
 											title="Please enter Rejection Reason Code"
