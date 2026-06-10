@@ -229,7 +229,7 @@ class ManifestPdfHelper extends TCPDF
     public function outputManifest(?string $manifestCode): string
     {
         $filename = trim((string) $manifestCode) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
-        $manifestsPath = MiscUtility::buildSafePath(TEMP_PATH, ["sample-manifests"]);
+        $manifestsPath = MiscUtility::buildSafePath(VAR_TEMP_PATH, ["sample-manifests"]);
         $filename = MiscUtility::cleanFileName($filename);
         $this->Output($manifestsPath . DIRECTORY_SEPARATOR . $filename, "F");
         return $filename;
