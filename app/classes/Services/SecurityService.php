@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -104,6 +105,19 @@ final class SecurityService
         $tokenMatches = $hasToken
             && isset($_SESSION['csrf_token'])
             && hash_equals($_SESSION['csrf_token'], (string) $csrfToken);
+
+        // Monitor mode: log every state-changing request that arrives without a
+        // token so token-less forms/endpoints can be found (via the Referer)
+        // and fixed before enforcement is switched on.
+        if (!$hasToken) {
+            LoggerUtility::logWarning('CSRF token missing on state-changing request', [
+                'enforced' => $enforce,
+                'method'   => $request->getMethod(),
+                'path'     => $request->getUri()->getPath(),
+                'referer'  => $request->getHeaderLine('Referer'),
+                'ajax'     => CommonService::isAjaxRequest($request),
+            ]);
+        }
 
         // Reject a present-but-invalid token always; reject a missing token
         // only when enforcement is enabled.
