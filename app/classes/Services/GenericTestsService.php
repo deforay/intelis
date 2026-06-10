@@ -304,16 +304,9 @@ final class GenericTestsService extends AbstractTestService
             $finalInterp = null;
         }
 
-        // Sample-level fields that are NOT per-test still come from the shared form body.
-        $gtDt = static fn($v) => (isset($v) && trim((string) $v) !== '') ? DateUtility::isoDateFormat((string) $v, true) : null;
-
+        // Always-written columns: the result + the per-test-derived chain (from the latest
+        // card). These are owned by the result writer in every mode.
         $formUpdate = [
-            'testing_lab_focal_person' => (isset($post['vlFocalPerson']) && $post['vlFocalPerson'] !== '') ? $post['vlFocalPerson'] : null,
-            'testing_lab_focal_person_phone_number' => (isset($post['vlFocalPersonPhoneNumber']) && $post['vlFocalPersonPhoneNumber'] !== '') ? $post['vlFocalPersonPhoneNumber'] : null,
-            'sample_received_at_hub_datetime' => $gtDt($post['sampleReceivedAtHubOn'] ?? null),
-            'result_dispatched_datetime' => $gtDt($post['resultDispatchedOn'] ?? null),
-            'lab_tech_comments' => (isset($post['labComments']) && trim((string) $post['labComments']) !== '') ? trim((string) $post['labComments']) : null,
-            'reason_for_testing' => (isset($post['reasonForTesting']) && $post['reasonForTesting'] !== '') ? $post['reasonForTesting'] : null,
             'lab_id' => $latestRow['lab_id'] ?? null,
             'sample_received_at_lab_datetime' => $latestRow['sample_received_at_lab_datetime'] ?? null,
             'is_sample_rejected' => $latestRow['is_sample_rejected'] ?? null,
@@ -333,6 +326,26 @@ final class GenericTestsService extends AbstractTestService
             'last_modified_by' => $userId,
             'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         ];
+
+        // Sample-level fields that come straight from a form input are written ONLY when the
+        // form actually submitted them. A field absent from POST (e.g. not rendered in this
+        // mode -- focal person no longer renders in multi-test) is LEFT UNCHANGED, never
+        // nulled. This is what keeps the helper safe across add/edit/result, which each
+        // submit a different subset of the form.
+        $gtDt = static fn($v): ?string => (trim((string) ($v ?? '')) !== '') ? DateUtility::isoDateFormat((string) $v, true) : null;
+        $setIfPresent = static function (string $col, string $key, callable $map) use (&$formUpdate, $post): void {
+            if (array_key_exists($key, $post)) {
+                $formUpdate[$col] = $map($post[$key]);
+            }
+        };
+        $nz = static fn($v) => (trim((string) ($v ?? '')) !== '') ? $v : null;
+        $setIfPresent('testing_lab_focal_person', 'vlFocalPerson', $nz);
+        $setIfPresent('testing_lab_focal_person_phone_number', 'vlFocalPersonPhoneNumber', $nz);
+        $setIfPresent('sample_received_at_hub_datetime', 'sampleReceivedAtHubOn', $gtDt);
+        $setIfPresent('result_dispatched_datetime', 'resultDispatchedOn', $gtDt);
+        $setIfPresent('lab_tech_comments', 'labComments', static fn($v) => (trim((string) ($v ?? '')) !== '') ? trim((string) $v) : null);
+        $setIfPresent('reason_for_testing', 'reasonForTesting', $nz);
+
         $this->db->where('sample_id', $sampleId);
         $this->db->update($tableName, $formUpdate);
     }
