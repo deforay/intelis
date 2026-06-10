@@ -31,7 +31,7 @@ if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) === 'pk2') {
 }
 if (trim((string) $id) !== '') {
 
-    $sQuery = "SELECT vl.tb_id, remote_sample_code, fd.facility_name as clinic_name, fd.facility_district, 
+    $sQuery = "SELECT vl.tb_id, COALESCE(NULLIF(vl.remote_sample_code, ''), vl.sample_code) as remote_sample_code, fd.facility_name as clinic_name, fd.facility_district,
                 TRIM(CONCAT(COALESCE(vl.patient_name, ''), ' ', COALESCE(vl.patient_surname, ''))) as `patient_fullname`,
                 patient_dob, patient_age, sample_collection_date, patient_gender, patient_id, 
                 pd.manifest_code, l.facility_name as lab_name 
@@ -58,25 +58,20 @@ if (trim((string) $id) !== '') {
 
         $reasonHistory = json_decode((string) $bResult[0]['manifest_change_history']);
 
-        // Fetch previous test results for all samples
-        $previousResults = [];
+        // Tests done on this sample so far. TB allows multiple tests per sample,
+        // so a sample can have several rows in tb_tests.
+        $sampleTests = [];
         foreach ($result as $sample) {
-            // Query to get previous test results for this patient from tb_tests table
-            $prevQuery = "SELECT tt.tb_test_id, l.facility_name as testing_lab, 
-                            ss.sample_name,
-                            tt.test_type,
-                            tt.specimen_type,
-                            tt.test_result,
-                            tt.sample_tested_datetime,
-                            tt.comments 
-                        FROM tb_tests as tt  
-                        INNER JOIN facility_details as l ON l.facility_id = tt.lab_id 
-                        INNER JOIN r_tb_sample_type as ss ON ss.sample_id = tt.specimen_type 
-                        AND tt.tb_id != ?
-                        ORDER BY tt.sample_tested_datetime DESC, tt.sample_tested_datetime DESC";
-            $prevResults = $db->rawQuery($prevQuery, [$sample['tb_id']]);
-            if (!empty($prevResults)) {
-                $previousResults[$sample['tb_id']] = $prevResults;
+            $sampleTestQuery = "SELECT ss.sample_name, l.facility_name as testing_lab,
+                                tt.test_type, tt.test_result, tt.sample_tested_datetime, tt.comments
+                            FROM tb_tests as tt
+                            LEFT JOIN facility_details as l ON l.facility_id = tt.lab_id
+                            LEFT JOIN r_tb_sample_type as ss ON ss.sample_id = tt.specimen_type
+                            WHERE tt.tb_id = ?
+                            ORDER BY tt.sample_tested_datetime ASC, tt.tb_test_id ASC";
+            $rows = $db->rawQuery($sampleTestQuery, [$sample['tb_id']]);
+            if (!empty($rows)) {
+                $sampleTests[$sample['tb_id']] = $rows;
             }
         }
         // Create new PDF document
@@ -172,42 +167,34 @@ if (trim((string) $id) !== '') {
                 $tbl .= '<td align="center" style="font-size:10px;border:1px solid #333;"><img style="width:140px;height:22px;" src="' . $general->getBarcodeImageContent($sample['remote_sample_code']) . '"/></td>';
                 $tbl .= '</tr>';
 
-                // Previous test results section
-                if (isset($previousResults[$sample['tb_id']]) && !empty($previousResults[$sample['tb_id']])) {
-                    $tbl .= '<tr style="background-color:#f5f5f5;">';
-                    $tbl .= '<td colspan="7" style="font-size:9px;border:1px solid #333;padding-left:30px;"><strong><em>Previous Test Results:</em></strong></td>';
-                    $tbl .= '</tr>';
-                    $tbl .= '<tr>';
-                    $tbl .= '<th style="font-size:5px;width:4%;border:1px solid #333;">S.No</th>';
-                    $tbl .= '<th style="font-size:9px;width:12%;border:1px solid #333;"><strong>Sample Type</strong></th>';
-                    $tbl .= '<th style="font-size:9px;width:18%;border:1px solid #333;"><strong>Lab</strong></th>';
-                    $tbl .= '<th style="font-size:9px;width:15%;border:1px solid #333;"><strong>Test Type</strong></th>';
-                    $tbl .= '<th style="font-size:9px;width:15%;border:1px solid #333;"><strong>Result</strong></th>';
-                    $tbl .= '<th style="font-size:9px;width:18%;border:1px solid #333;"><strong>Date of Testing</strong></th>';
-                    $tbl .= '<th style="font-size:9px;width:18%;border:1px solid #333;">Comments</th>';
-                    $tbl .= '</tr>';
+                // Tests done on this sample, shown as a simple list in one full-width
+                // cell directly under the sample row it belongs to.
+                if (!empty($sampleTests[$sample['tb_id']])) {
+                    $list = '<strong style="font-size:9px;">Tests Done</strong>';
 
-
-                    foreach ($previousResults[$sample['tb_id']] as $key => $prevResult) {
-                        $prevTestedDate = '';
-                        if (isset($prevResult['sample_tested_datetime']) && $prevResult['sample_tested_datetime'] != '' && $prevResult['sample_tested_datetime'] != null) {
-                            $prevTDate = explode(" ", (string) $prevResult['sample_tested_datetime']);
-                            $prevTestedDate = DateUtility::humanReadableDateFormat($prevTDate[0]);
+                    foreach ($sampleTests[$sample['tb_id']] as $key => $testRow) {
+                        $testedDate = '';
+                        if (!empty($testRow['sample_tested_datetime'])) {
+                            $tDate = explode(" ", (string) $testRow['sample_tested_datetime']);
+                            $testedDate = DateUtility::humanReadableDateFormat($tDate[0]);
                         }
 
-                        $tbl .= '<tr>';
-                        $tbl .= '<td style="font-size:5px;width:4%;border:1px solid #333;">' . ($key + 1) . '</td>';
-                        $tbl .= '<td style="font-size:9px;width:12%;border:1px solid #333;">' . ($prevResult['sample_name'] ?? 'N/A') . '</td>';
-                        $tbl .= '<td style="font-size:9px;width:18%;border:1px solid #333;">' . ($prevResult['testing_lab'] ?? 'N/A') . '</td>';
-                        $tbl .= '<td style="font-size:9px;width:15%;border:1px solid #333;">' . ($prevResult['test_type'] ?? 'N/A') . '</td>';
-                        $tbl .= '<td style="font-size:9px;width:15%;border:1px solid #333;">' . ($prevResult['test_result'] ?? 'N/A') . '</td>';
-                        $tbl .= '<td style="font-size:9px;width:18%;border:1px solid #333;">' . $prevTestedDate . '</td>';
-                        $tbl .= '<td style="font-size:9px;width:18%;border:1px solid #333;">' . ($prevResult['comments'] ?? 'N/A') . '</td>';
-                        $tbl .= '</tr>';
+                        $tbTitle = (string) ($testRow['test_type'] ?? '');
+                        $line = ($key + 1) . '. <strong>' . ($tbTitle !== '' ? $tbTitle : 'Test') . '</strong> &nbsp; Sample Type: ' . ($testRow['sample_name'] ?? '-') . ' &nbsp; Lab: ' . ($testRow['testing_lab'] ?? '-') . ' &nbsp; Result: ' . (($testRow['test_result'] ?? '') !== '' ? $testRow['test_result'] : '-') . ' &nbsp; Tested: ' . ($testedDate !== '' ? $testedDate : '-');
+                        if (!empty($testRow['comments'])) {
+                            $line .= ' &nbsp; Comments: ' . $testRow['comments'];
+                        }
+                        $list .= '<br><span style="font-size:9px;">' . $line . '</span>';
                     }
+
+                    $tbl .= '<tr nobr="true">';
+                    $tbl .= '<td colspan="7" style="font-size:9px;border:1px solid #333;padding-left:18px;background-color:#f7f9fb;">' . $list . '</td>';
+                    $tbl .= '</tr>';
                 }
 
-                $tbl .= '<br><br>';
+                // Gap between samples. Replaces a stray <br><br> that TCPDF rendered
+                // as an oversized empty band inside the table.
+                $tbl .= '<tr nobr="true"><td colspan="7" style="font-size:8px;"> </td></tr>';
                 $sampleCounter++;
             }
             $tbl .= '</table>';
