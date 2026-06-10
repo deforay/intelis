@@ -129,6 +129,100 @@ $remoteURL = $general->getRemoteURL();
         }
     });
 
+    // ---- CSRF token hardening -------------------------------------------------
+    // Ensure the CSRF token reaches the server for every state-changing,
+    // same-origin request, regardless of how it is made: jQuery AJAX (above),
+    // native fetch/XMLHttpRequest, and any form submission (including forms
+    // submitted programmatically via the native HTMLFormElement.submit()).
+    (function() {
+        var UNSAFE_METHOD = /^(POST|PUT|PATCH|DELETE)$/i;
+
+        function isSameOrigin(url) {
+            try {
+                return new URL(url, window.location.href).origin === window.location.origin;
+            } catch (e) {
+                return true; // relative path -> same origin
+            }
+        }
+
+        // --- Forms: add/refresh a hidden csrf_token field on non-GET forms.
+        function injectCsrfIntoForm(form) {
+            if (!form || form.tagName !== 'FORM') {
+                return;
+            }
+            var method = (form.getAttribute('method') || 'GET').toUpperCase();
+            if (method === 'GET') {
+                return; // GET is not CSRF-checked; avoid leaking the token in the URL
+            }
+            var field = form.querySelector('input[name="csrf_token"]');
+            if (field) {
+                field.value = window.csrf_token;
+            } else {
+                field = document.createElement('input');
+                field.type = 'hidden';
+                field.name = 'csrf_token';
+                field.value = window.csrf_token;
+                form.appendChild(field);
+            }
+        }
+        window.injectCsrfIntoForm = injectCsrfIntoForm;
+
+        // Native programmatic submit (e.g. document.getElementById('x').submit())
+        // does NOT trigger submit-event handlers, so inject before it fires.
+        if (window.HTMLFormElement && HTMLFormElement.prototype.submit) {
+            var originalSubmit = HTMLFormElement.prototype.submit;
+            HTMLFormElement.prototype.submit = function() {
+                injectCsrfIntoForm(this);
+                return originalSubmit.apply(this, arguments);
+            };
+        }
+
+        // --- Native fetch(): add the header for unsafe, same-origin requests.
+        if (window.fetch) {
+            var originalFetch = window.fetch.bind(window);
+            window.fetch = function(input, init) {
+                init = init || {};
+                var url = (typeof input === 'string') ? input : (input && input.url) || '';
+                var method = init.method || (typeof input === 'object' && input.method) || 'GET';
+                if (UNSAFE_METHOD.test(method) && isSameOrigin(url)) {
+                    var headers = new Headers(init.headers || (typeof input === 'object' ? input.headers : undefined) || {});
+                    if (!headers.has('X-CSRF-Token')) {
+                        headers.set('X-CSRF-Token', window.csrf_token);
+                    }
+                    init.headers = headers;
+                }
+                return originalFetch(input, init);
+            };
+        }
+
+        // --- Native XMLHttpRequest: add the header on send() for unsafe,
+        // same-origin requests, unless the caller (e.g. jQuery) already set it.
+        var origSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
+        XMLHttpRequest.prototype.setRequestHeader = function(name, value) {
+            if (String(name).toLowerCase() === 'x-csrf-token') {
+                this.__csrfHeaderSet = true;
+            }
+            return origSetRequestHeader.apply(this, arguments);
+        };
+        var origOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function(method, url) {
+            this.__csrfUnsafe = UNSAFE_METHOD.test(method || '') && isSameOrigin(url || '');
+            return origOpen.apply(this, arguments);
+        };
+        var origSend = XMLHttpRequest.prototype.send;
+        XMLHttpRequest.prototype.send = function() {
+            if (this.__csrfUnsafe && !this.__csrfHeaderSet) {
+                try {
+                    this.setRequestHeader('X-CSRF-Token', window.csrf_token);
+                } catch (e) {
+                    /* headers already sent; ignore */
+                }
+            }
+            return origSend.apply(this, arguments);
+        };
+    })();
+    // ---------------------------------------------------------------------------
+
 
     function setCrossLogin() {
         StorageHelper.storeInSessionStorage('crosslogin', 'true');
@@ -775,16 +869,31 @@ $remoteURL = $general->getRemoteURL();
             existingPatientId = $('.patientId').val();
         }
 
-        // Automatically inject CSRF token into any form (static or dynamically added)
+        // Automatically inject CSRF token into every non-GET form. Covers three
+        // cases: (1) forms already in the DOM, (2) forms added dynamically later,
+        // (3) the submit event itself (refreshes the value just before sending).
+        // Native programmatic submit() is handled by the prototype patch above.
+        document.querySelectorAll('form').forEach(window.injectCsrfIntoForm);
+
+        if (window.MutationObserver) {
+            new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType !== 1) {
+                            return;
+                        }
+                        if (node.tagName === 'FORM') {
+                            window.injectCsrfIntoForm(node);
+                        } else if (node.querySelectorAll) {
+                            node.querySelectorAll('form').forEach(window.injectCsrfIntoForm);
+                        }
+                    });
+                });
+            }).observe(document.documentElement, { childList: true, subtree: true });
+        }
+
         $(document).on('submit', 'form', function() {
-            const $form = $(this);
-            if (!$form.find('input[name="csrf_token"]').length) {
-                $('<input>', {
-                    type: 'hidden',
-                    name: 'csrf_token',
-                    value: window.csrf_token
-                }).appendTo($form);
-            }
+            window.injectCsrfIntoForm(this);
         });
 
 
