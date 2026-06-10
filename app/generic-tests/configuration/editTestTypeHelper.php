@@ -50,6 +50,7 @@ try {
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_code'] = $_POST['fieldCode'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_type'] = $_POST['fieldType'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['mandatory_field'] = $_POST['mandatoryField'][$index];
+                $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['show_on_report'] = $_POST['showOnReport'][$index] ?? 'no';
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['section'] = $_POST['section'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['section_name'] = trim($_POST['sectionOther'][$index]);
                 $testAttribute[$_POST['section'][$index]][$_POST['sectionOther'][$index]][$_POST['fieldId'][$index]]['field_order'] = $_POST['fieldOrder'][$index];
@@ -61,6 +62,7 @@ try {
                 $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['field_code'] = $_POST['fieldCode'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['field_type'] = $_POST['fieldType'][$index];
                 $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['mandatory_field'] = $_POST['mandatoryField'][$index];
+                $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['show_on_report'] = $_POST['showOnReport'][$index] ?? 'no';
                 $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['section'] = $_POST['section'][$index];
                 //$testAttr[$_POST['section'][$i]][$_POST['fieldId'][$i]]['section_other']=$_POST['sectionOther'][$i];
                 $testAttribute[$_POST['section'][$index]][$_POST['fieldId'][$index]]['field_order'] = $_POST['fieldOrder'][$index];
