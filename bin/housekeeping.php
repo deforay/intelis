@@ -496,6 +496,12 @@ $cleanup = [
         'duration' => 3,
         'max_size_mb' => 500
     ],
+    // Non-public temp home (manifests, etc.). Same policy as public/temporary,
+    // which previously held the manifests under sample-manifests/.
+    VAR_TEMP_PATH => [
+        'duration' => 3,
+        'max_size_mb' => 500
+    ],
     VAR_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' => [
         'duration' => 120,
         'max_size_mb' => 1000
