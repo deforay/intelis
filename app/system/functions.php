@@ -523,10 +523,12 @@ function _sanitizeOutput($string): string
  */
 function _jsEscape($value): string
 {
+    // json_encode returns false on invalid UTF-8 (e.g. attacker-supplied bytes);
+    // fall back to an empty JS string so the output is always a valid literal.
     return json_encode(
         $value ?? '',
         JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE
-    );
+    ) ?: '""';
 }
 
 function _getFromFileCache(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600)
