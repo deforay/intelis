@@ -97,51 +97,20 @@ try {
     $db->where('lab_id', $labId);
     $manifestRecord = $db->getOne('specimen_manifests');
 
-    // TB and Custom (generic) tests track manifests via referral_manifest_code, so
-    // a lab can legitimately hold a manifest's samples without owning the
-    // lab-scoped specimen_manifests row (e.g. the sending lab). For these we can't
-    // short-circuit on an empty record — we must first try to confirm the manifest
-    // by its local samples, and only disambiguate wrong-lab/not-found if that fails.
-    $isReferralModule = ($testType === 'tb' || $testType === 'generic-tests');
-
-    // Try to confirm the manifest locally via its samples. Runs when this lab owns
-    // the record, or always for referral modules (which may have local samples
-    // without owning the row).
-    $resolvedLocally = false;
-    if (!empty($manifestRecord) || $isReferralModule) {
-        $tableName = TestsService::getTestTableName($testType);
-        $primaryKey = TestsService::getPrimaryColumn($testType);
-        $db->reset();
-        $db->where('sample_package_code', $manifestCode);
-        if ($isReferralModule) {
-            $db->orWhere('referral_manifest_code', $manifestCode);
-        }
-        $selectedSamples = $db->getValue($tableName, $primaryKey, null);
-        $currentHash = $testRequestsService->getManifestHash($selectedSamples, $testType, $manifestCode);
-
-        if ($currentHash !== '') {
-            $resolvedLocally = true;
-            if (hash_equals($currentHash, $providedHash)) {
-                $payload['status'] = 'match';
-            } else {
-                $payload['status'] = 'mismatch';
-                $payload['message'] = 'Manifest hash mismatch.';
-            }
-        }
-    }
-
-    // Couldn't confirm the manifest locally (no owned record with samples, and no
-    // local referral samples). Tell apart "no such manifest anywhere" from
-    // "registered to a different testing lab" so the LIS can show a precise message
-    // instead of a generic failure. Applies to referral modules too.
-    if (!$resolvedLocally && $payload['status'] === 'not-found') {
+    if (empty($manifestRecord)) {
+        // The requesting lab does not own this manifest. Whether wrong-lab or
+        // not-found is a question of OWNERSHIP, not of whether samples exist:
+        // this endpoint runs on STS, which holds every lab's samples, so a sample
+        // lookup would happily match an other-lab manifest and mask the real
+        // answer. Referral-ness (tb/generic) is irrelevant here — it only changes
+        // how samples are linked for the hash check below, not who owns the code.
         $db->reset();
         $db->where('manifest_code', $manifestCode);
         $db->where('module', $testType);
         $otherLabManifest = $db->getOne('specimen_manifests', ['lab_id']);
 
         http_response_code(404);
-        if (!empty($otherLabManifest['lab_id']) && (int) $otherLabManifest['lab_id'] !== $labId) {
+        if (!empty($otherLabManifest['lab_id'])) {
             $otherLab = $facilitiesService->getFacilityById((int) $otherLabManifest['lab_id']);
             $payload['status'] = 'wrong-lab';
             $payload['message'] = 'Manifest is registered to a different testing lab.';
@@ -149,6 +118,28 @@ try {
         } else {
             $payload['status'] = 'not-found';
             $payload['message'] = 'Manifest not found.';
+        }
+    } else {
+        // The requesting lab owns the manifest — compare hashes to decide match
+        // vs. mismatch (sync). TB/generic referral samples link via
+        // referral_manifest_code, so widen the lookup for those.
+        $tableName = TestsService::getTestTableName($testType);
+        $primaryKey = TestsService::getPrimaryColumn($testType);
+        $db->reset();
+        $db->where('sample_package_code', $manifestCode);
+        if ($testType === 'tb' || $testType === 'generic-tests') {
+            $db->orWhere('referral_manifest_code', $manifestCode);
+        }
+        $selectedSamples = $db->getValue($tableName, $primaryKey, null);
+        $currentHash = $testRequestsService->getManifestHash($selectedSamples, $testType, $manifestCode);
+
+        if ($currentHash !== '') {
+            if (hash_equals($currentHash, $providedHash)) {
+                $payload['status'] = 'match';
+            } else {
+                $payload['status'] = 'mismatch';
+                $payload['message'] = 'Manifest hash mismatch.';
+            }
         }
     }
 } catch (Throwable $exc) {
