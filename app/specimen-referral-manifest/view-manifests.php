@@ -153,7 +153,7 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 	});
 
 	function generateManifestPDF(pId) {
-		var module = '<?= $_GET['t']; ?>';
+		var module = <?= _jsEscape($_GET['t'] ?? '') ?>;
 		if (module == 'vl') {
 			manifestFileName = "generateVLManifest.php";
 		} else if (module == 'eid') {

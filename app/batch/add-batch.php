@@ -548,7 +548,7 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
             sampleCollectionDate: $("#sampleCollectionDate").val(),
             sampleReceivedAtLab: $("#sampleReceivedAtLab").val(),
             lastModifiedDateTime: $("#lastModifiedDateTime").val(),
-            type: '<?= $_GET['type']; ?>',
+            type: <?= _jsEscape($_GET['type'] ?? '') ?>,
             testType: $('#testType').val(),
             facilityId: facilityId,
             sName: $("#sampleType").val(),
