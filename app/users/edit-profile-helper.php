@@ -81,6 +81,7 @@ try {
                 if ($usersService->passwordVerify((string) $_SESSION['loginId'], (string) $_POST['password'], (string) $userRow['password'])) {
                     $_SESSION['alertMsg'] = _translate("Your new password cannot be same as the current password. Please try another password.");
                     header("Location:edit-profile.php");
+                    exit;
                 }
 
                 if (SYSTEM_CONFIG['recency']['crosslogin']) {

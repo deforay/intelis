@@ -1,0 +1,20 @@
+Options -Indexes
+
+Header set X-Content-Type-Options "nosniff"
+
+# Never execute scripts or serve sensitive file types from this directory.
+# Legitimate static files (pdf, xlsx, xls, csv, txt, images) are still served.
+<FilesMatch "\.(php|phtml|phtm|php3|php4|php5|php7|php8|pht|perl|py|cgi|htaccess|htpasswd|ini|psd|log|sh|json|lock|phar|yml|md|sql|hgignore|hg|hgtags|DS_Store)$">
+  Require all denied
+</FilesMatch>
+
+# Defense-in-depth: disable the PHP engine entirely for this directory.
+<IfModule mod_php.c>
+  php_admin_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+  php_admin_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+  php_admin_flag engine off
+</IfModule>
