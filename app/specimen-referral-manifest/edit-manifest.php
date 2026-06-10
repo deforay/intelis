@@ -137,8 +137,8 @@ if ($module == 'generic-tests') {
 											onchange="getManifestCodeForm(this.value)">
 											<option value=""> -- Select -- </option>
 											<?php foreach ($testTypeResult as $testTypeInfo) { ?>
-												<option value="<?php echo $testTypeInfo['test_type_id'] ?>"
-													data-short="<?php echo $testTypeInfo['test_short_code']; ?>" <?php echo ($testType['test_type'] == $testTypeInfo['test_type_id']) ? "selected='selected'" : ""; ?>>
+												<option value="<?php echo _sanitizeOutput($testTypeInfo['test_type_id']) ?>"
+													data-short="<?php echo _sanitizeOutput($testTypeInfo['test_short_code']); ?>" <?php echo ($testType['test_type'] == $testTypeInfo['test_type_id']) ? "selected='selected'" : ""; ?>>
 													<?php echo $testTypeInfo['test_standard_name'] ?>
 												</option>
 											<?php } ?>
@@ -159,7 +159,7 @@ if ($module == 'generic-tests') {
 									<input type="text" class="form-control isRequired" id="packageCode"
 										name="packageCode" placeholder="<?= _htmlTranslate("Manifest Code"); ?>" title="
 									<?= _htmlTranslate("Please enter manifest code"); ?>" readonly
-										value="<?php echo strtoupper((string) $pResult['manifest_code']); ?>" />
+										value="<?php echo _sanitizeOutput(strtoupper((string) $pResult['manifest_code'])); ?>" />
 								</div>
 							</div>
 						</div>
@@ -290,9 +290,9 @@ if ($module == 'generic-tests') {
 		<!-- /.box-body -->
 		<div class="box-footer">
 			<input type="hidden" name="selectedSample" id="selectedSample" />
-			<input type="hidden" name="packageId" id="packageId" value="<?php echo $pResult['manifest_id']; ?>" />
+			<input type="hidden" name="packageId" id="packageId" value="<?php echo _sanitizeOutput($pResult['manifest_id']); ?>" />
 			<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title=""
-				readonly value="<?= htmlspecialchars((string) $module); ?>" />
+				readonly value="<?= _sanitizeOutput((string) $module); ?>" />
 			<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);"
 				onclick="validateNow();return false;">Submit</a>
 			<a href="/specimen-referral-manifest/view-manifests.php" class="btn btn-default"> Cancel</a>

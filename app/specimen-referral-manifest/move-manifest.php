@@ -123,7 +123,7 @@ if ($module == 'generic-tests') {
                                     onchange="getManifestCodeForm(this.value)">
                                     <option value=""> <?= _translate('-- Select --'); ?> </option>
                                     <?php foreach ($testTypeResult as $testType) { ?>
-                                        <option value="<?php echo $testType['test_type_id'] ?>">
+                                        <option value="<?php echo _sanitizeOutput($testType['test_type_id']) ?>">
                                             <?php echo $testType['test_standard_name'] ?></option>
                                     <?php } ?>
                                 </select>
@@ -183,7 +183,7 @@ if ($module == 'generic-tests') {
                         onclick="getManifestCodeDetails();return false;">
                         <em class="fa-solid fa-search"></em> Search Manifests
                     </a>
-                    <a href="move-manifest.php?t=<?= htmlspecialchars((string) $_GET['t']); ?>" class="btn btn-default">
+                    <a href="move-manifest.php?t=<?= _sanitizeOutput((string) $_GET['t']); ?>" class="btn btn-default">
                         <em class="fa-solid fa-refresh"></em> Clear
                     </a>
                 </div>
@@ -250,7 +250,7 @@ if ($module == 'generic-tests') {
 
                     <div class="row" id="alertText" style="font-size:18px; margin-top: 20px;"></div>
                     <input type="hidden" class="form-control isRequired" id="testType" name="testType" placeholder=""
-                        title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
+                        title="" readonly value="<?= _sanitizeOutput((string) $module); ?>" />
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
@@ -259,7 +259,7 @@ if ($module == 'generic-tests') {
                             onclick="validateNow();return false;" style="pointer-events:none;" disabled>
                             <em class="fa-solid fa-save"></em> Save Changes
                         </a>
-                        <a href="view-manifests.php?t=<?= $_GET['t']; ?>" class="btn btn-default">
+                        <a href="view-manifests.php?t=<?= _sanitizeOutput($_GET['t']); ?>" class="btn btn-default">
                             <em class="fa-solid fa-times"></em> Cancel
                         </a>
                     </div>

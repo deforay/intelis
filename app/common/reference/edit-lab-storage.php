@@ -55,7 +55,7 @@ $sInfo = $db->rawQueryOne($sQuery, [$id]);
                                 <div class="form-group">
                                     <label for="storageCode" class="col-lg-4 control-label"><?php echo _translate("Freezer/Storage Code"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="storageCode" name="storageCode" value="<?= $sInfo['storage_code']; ?>" placeholder="<?php echo _translate('Storage Code'); ?>" title="<?php echo _translate('Please enter Storage Code'); ?>" onblur='checkNameValidation("lab_storage","storage_code",this,null,"<?php echo _translate("The Storage Code that you entered already exists.Enter another Storage Code"); ?>",null)' />
+                                        <input type="text" class="form-control isRequired" id="storageCode" name="storageCode" value="<?= _sanitizeOutput($sInfo['storage_code']); ?>" placeholder="<?php echo _translate('Storage Code'); ?>" title="<?php echo _translate('Please enter Storage Code'); ?>" onblur='checkNameValidation("lab_storage","storage_code",this,null,"<?php echo _translate("The Storage Code that you entered already exists.Enter another Storage Code"); ?>",null)' />
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +87,7 @@ $sInfo = $db->rawQueryOne($sQuery, [$id]);
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <input type="hidden" name="storageId" name="storageId" value="<?php echo $_GET['id']; ?>">
+                        <input type="hidden" name="storageId" name="storageId" value="<?php echo _sanitizeOutput($_GET['id']); ?>">
                         <a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
                         <a href="/common/reference/lab-storage.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
                     </div>

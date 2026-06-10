@@ -147,7 +147,7 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                                     style="width:100%;" onchange="getBatchForm(this)">
                                     <option value=""> -- Select -- </option>
                                     <?php foreach ($testTypeResult as $testType) { ?>
-                                        <option value="<?php echo $testType['test_type_id']; ?>">
+                                        <option value="<?php echo _sanitizeOutput($testType['test_type_id']); ?>">
                                             <?php echo $testType['test_standard_name'] . ' (' . $testType['test_loinc_code'] . ')' ?>
                                         </option>
                                     <?php } ?>
@@ -185,9 +185,9 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                             </option>
                             <?php foreach ($testPlatformResult as $machine) {
                                 $labelOrder = $machinesLabelOrder[$machine['instrument_id']]; ?>
-                                <option value="<?php echo $machine['instrument_id']; ?>"
+                                <option value="<?php echo _sanitizeOutput($machine['instrument_id']); ?>"
                                     <?= ($previousMachine == $machine['instrument_id']) ? 'selected' : '' ?>
-                                    data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>">
+                                    data-no-of-samples="<?php echo _sanitizeOutput($machine['max_no_of_samples_in_a_batch']); ?>">
                                     <?= $machine['machine_name']; ?>
                                 </option>
                             <?php } ?>
@@ -205,7 +205,7 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                 </span></button>
 
             <table aria-describedby="table" id="advanceFilter" class="table batchDiv" aria-hidden="true"
-                style="display: none;margin-top:20px;width: 100%;<?php echo $genericHide; ?>">
+                style="display: none;margin-top:20px;width: 100%;<?php echo _sanitizeOutput($genericHide); ?>">
 
                 <tr>
                     <th style="width: 20%;" scope="col">
@@ -278,7 +278,7 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                             <?php
                             foreach ($sResult as $type) {
                                 ?>
-                                <option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?>
+                                <option value="<?php echo _sanitizeOutput($type['sample_id']); ?>"><?php echo ($type['sample_name']); ?>
                                 </option>
                                 <?php
                             }
@@ -293,7 +293,7 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                             <?php
                             foreach ($fundingSourceList as $fundingSource) {
                                 ?>
-                                <option value="<?php echo $fundingSource['funding_source_id']; ?>">
+                                <option value="<?php echo _sanitizeOutput($fundingSource['funding_source_id']); ?>">
                                     <?= $fundingSource['funding_source_name']; ?>
                                 </option>
                             <?php } ?>
@@ -335,7 +335,7 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
             </table>
 
             <!-- /.box-header -->
-            <div class="box-body batchDiv" style="<?php echo $genericHide; ?>">
+            <div class="box-body batchDiv" style="<?php echo _sanitizeOutput($genericHide); ?>">
                 <!-- form start -->
                 <form class="form-horizontal" method="post" style="display:none;" name="addBatchForm" id="addBatchForm"
                     autocomplete="off" action="save-batch-helper.php">
@@ -352,10 +352,10 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                                             id="batchCode" name="batchCode"
                                             placeholder="<?php echo _translate('Batch Code'); ?>"
                                             title="<?php echo _translate('Please enter batch code'); ?>"
-                                            value="<?= $batchCode; ?>"
+                                            value="<?= _sanitizeOutput($batchCode); ?>"
                                             onblur='checkNameValidation("batch_details","batch_code",this,null,"<?php echo _translate("This batch code already exists.Try another batch code"); ?>",null)' />
                                         <input type="hidden" name="batchCodeKey" id="batchCodeKey"
-                                            value="<?php echo $maxId; ?>" />
+                                            value="<?php echo _sanitizeOutput($maxId); ?>" />
                                         <input type="hidden" name="platform" id="platform" value="" />
                                         <input type="hidden" name="positions" id="positions" value="" />
                                     </div>
@@ -395,10 +395,10 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                         <input type="hidden" name="batchedSamples" id="batchedSamples" />
                         <input type="hidden" name="sortBy" class="sortBy" />
                         <input type="hidden" name="sortType" class="sortType" />
-                        <input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
+                        <input type="hidden" name="type" id="type" value="<?php echo _sanitizeOutput($_GET['type']); ?>" />
                         <a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);"
                             onclick="validateNow();return false;"><?php echo _translate("Save and Next"); ?></a>
-                        <a href="batches.php?type=<?php echo $_GET['type']; ?>" class="btn btn-default">
+                        <a href="batches.php?type=<?php echo _sanitizeOutput($_GET['type']); ?>" class="btn btn-default">
                             <?php echo _translate("Cancel"); ?></a>
                     </div>
                     <!-- /.box-footer -->

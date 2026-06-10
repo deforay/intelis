@@ -54,10 +54,10 @@ $tstInfo = $db->query($tstQuery);
 										<input type="text" class="form-control isRequired" id="testReasonName"
 											name="testReasonName" placeholder="Test Reason Name"
 											title="Please enter Test Reason name"
-											value="<?php echo $tstInfo[0]['test_reason_name']; ?>"
+											value="<?php echo _sanitizeOutput($tstInfo[0]['test_reason_name']); ?>"
 											onblur="checkNameValidation('r_eid_test_reasons','test_reason_name',this,'<?php echo "test_reason_id##" . $id; ?>','The Test Reason name that you entered already exists.Enter another name',null)" />
 										<input type="hidden" class="form-control" id="testReasonId" name="testReasonId"
-											value="<?php echo $_GET['id']; ?>" />
+											value="<?php echo _sanitizeOutput($_GET['id']); ?>" />
 									</div>
 								</div>
 							</div>

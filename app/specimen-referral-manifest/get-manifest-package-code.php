@@ -68,7 +68,7 @@ if (empty($manifestResults)) {
 				</div><br /><br />
 				<select id="packageCode" name="packageCode[]" multiple="multiple" class="search">
 					<?php foreach ($manifestResults as $manifest) { ?>
-						<option value="'<?= $manifest['manifest_code']; ?>'">
+						<option value="'<?= _sanitizeOutput($manifest['manifest_code']); ?>'">
 							<?= $manifest["manifest_code"] . " (" . DateUtility::humanReadableDateFormat($manifest["request_created_datetime"]) . ")"; ?>
 						</option>
 					<?php } ?>
