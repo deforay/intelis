@@ -72,9 +72,9 @@ if (trim((string) $id) !== '') {
                         INNER JOIN facility_details as l ON l.facility_id = tt.facility_id 
                         AND tt.generic_id != ?
                         ORDER BY tt.sample_tested_datetime DESC, tt.sample_tested_datetime DESC";
-            $prevResults = $db->rawQuery($prevQuery, [$sample['generic_id']]);
+            $prevResults = $db->rawQuery($prevQuery, [$sample['sample_id']]);
             if (!empty($prevResults)) {
-                $previousResults[$sample['generic_id']] = $prevResults;
+                $previousResults[$sample['sample_id']] = $prevResults;
             }
         }
         // Create new PDF document
@@ -171,7 +171,7 @@ if (trim((string) $id) !== '') {
                 $tbl .= '</tr>';
 
                 // Previous test results section
-                if (isset($previousResults[$sample['generic_id']]) && !empty($previousResults[$sample['generic_id']])) {
+                if (isset($previousResults[$sample['sample_id']]) && !empty($previousResults[$sample['sample_id']])) {
                     $tbl .= '<tr style="background-color:#f5f5f5;">';
                     $tbl .= '<td colspan="7" style="font-size:9px;border:1px solid #333;padding-left:30px;"><strong><em>Previous Test Results:</em></strong></td>';
                     $tbl .= '</tr>';
@@ -185,7 +185,7 @@ if (trim((string) $id) !== '') {
                     $tbl .= '</tr>';
 
 
-                    foreach ($previousResults[$sample['generic_id']] as $key => $prevResult) {
+                    foreach ($previousResults[$sample['sample_id']] as $key => $prevResult) {
                         $prevTestedDate = '';
                         if (isset($prevResult['sample_tested_datetime']) && $prevResult['sample_tested_datetime'] != '' && $prevResult['sample_tested_datetime'] != null) {
                             $prevTDate = explode(" ", (string) $prevResult['sample_tested_datetime']);
