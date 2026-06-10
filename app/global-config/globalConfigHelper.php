@@ -53,8 +53,13 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 try {
 
 
-    $removedImage = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage']);
-    if (isset($_POST['removedLogoImage']) && trim((string) $_POST['removedLogoImage']) !== "" && !($removedImage === '' || $removedImage === '0' || $removedImage === false) && file_exists($removedImage)) {
+    // basename() prevents the user-supplied name from escaping the logo directory
+    // via traversal sequences; the realpath prefix check is a second guard before delete.
+    $logoDir = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo");
+    $removedImage = ($logoDir !== false && isset($_POST['removedLogoImage']) && trim((string) $_POST['removedLogoImage']) !== "")
+        ? realpath($logoDir . DIRECTORY_SEPARATOR . basename((string) $_POST['removedLogoImage']))
+        : false;
+    if ($removedImage !== false && str_starts_with($removedImage, $logoDir . DIRECTORY_SEPARATOR) && file_exists($removedImage)) {
         MiscUtility::deleteFile($removedImage);
         $data = ['value' => null];
         $db->where('name', 'logo');
@@ -126,8 +131,15 @@ try {
             MiscUtility::makeDirectory($currentPath, 0777); // will just skip if exists
         }
         if (isset($_POST['reportFormat']['deleteTemplate']) && !empty($_POST['reportFormat']['deleteTemplate'])) {
-            foreach (explode(',', (string) $_POST['reportFormat']['deleteTemplate']) as $testToRemove)
+            foreach (explode(',', (string) $_POST['reportFormat']['deleteTemplate']) as $testToRemove) {
+                // basename() confines deletion to a single template folder, blocking
+                // traversal (e.g. "../../..") out of the report-template directory.
+                $testToRemove = basename(trim($testToRemove));
+                if ($testToRemove === '' || $testToRemove === '.' || $testToRemove === '..') {
+                    continue;
+                }
                 MiscUtility::removeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $testToRemove);
+            }
         }
         foreach ($_POST['reportFormat']['test_type'] as $key => $test) {
             $sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportFormat']['report_template'][$key], ['pdf']);
