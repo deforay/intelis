@@ -28,6 +28,17 @@ use App\Services\GeoLocationsService;
 
 final class TestRequestsService
 {
+    /**
+     * Sentinel manifest hash used when this LIS holds no local samples for a
+     * manifest. It is deliberately NOT a 64-char SHA-256, so it can never equal
+     * a real manifest hash. Effect: STS answers 'mismatch' for a manifest this
+     * lab owns (LIS then syncs), while still being free to classify the code as
+     * not-found / wrong-lab. The "skip sync when already 100% in sync"
+     * optimization is unaffected -- this value is only ever sent when there are
+     * no local samples to match against in the first place.
+     */
+    private const MANIFEST_HASH_NONE = 'no-local-samples';
+
     public function __construct(protected DatabaseService $db, protected CommonService $commonService) {}
 
     public function addToSampleCodeQueue(?string $uniqueId, string $testType, string $sampleCollectionDate, ?string $provinceCode = null, ?string $sampleCodeFormat = null, ?string $prefix = null, ?string $accessType = null, ?int $labId = null): bool
@@ -466,9 +477,13 @@ final class TestRequestsService
         $localHash = $this->getManifestHash($selectedSamples, $testType, $manifestCode);
 
         if ($localHash === '') {
-            $result['status'] = 'mismatch';
-            $result['message'] = 'Unable to compute local manifest hash.';
-            return $result;
+            // No local samples for this manifest yet. Instead of assuming a
+            // mismatch and blindly syncing (which produces a generic "couldn't
+            // sync" error for an unknown or other-lab code), send a sentinel hash
+            // so STS still classifies the code as not-found / wrong-lab / ours.
+            // A sentinel never equals a real hash, so a valid-but-unsynced
+            // manifest still comes back 'mismatch' and proceeds to sync.
+            $localHash = self::MANIFEST_HASH_NONE;
         }
 
         $result['localHash'] = $localHash;
@@ -514,6 +529,9 @@ final class TestRequestsService
                 $result['remoteResponse'] = $decodedResponse;
                 if (!empty($decodedResponse['message'])) {
                     $result['message'] = (string) $decodedResponse['message'];
+                }
+                if (!empty($decodedResponse['labName'])) {
+                    $result['labName'] = (string) $decodedResponse['labName'];
                 }
             } else {
                 $result['status'] = 'error';
