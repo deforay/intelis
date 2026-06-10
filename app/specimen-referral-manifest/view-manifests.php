@@ -43,12 +43,12 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if (_isAllowed("/specimen-referral-manifest/move-manifest.php?t=" . $_GET['t'])) { ?>
-							<a href="move-manifest.php?t=<?php echo ($_GET['t']); ?>" class="btn btn-primary pull-right"
+							<a href="move-manifest.php?t=<?php echo _sanitizeOutput($_GET['t']); ?>" class="btn btn-primary pull-right"
 								style=" margin-left: 10px; "> <em class="fa-solid fa-angles-right"></em>
 								<?= _translate("Move Manifest"); ?></a>
 						<?php }
 						if (_isAllowed("/specimen-referral-manifest/add-manifest.php?t=" . $_GET['t'])) { ?>
-							<a href="/specimen-referral-manifest/add-manifest.php?t=<?php echo ($_GET['t']); ?>"
+							<a href="/specimen-referral-manifest/add-manifest.php?t=<?php echo _sanitizeOutput($_GET['t']); ?>"
 								class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em>
 								<?php echo _translate("Add Specimen Referral Manifest"); ?></a>
 						<?php } ?>

@@ -88,7 +88,7 @@ $districtOptions = $db->rawQuery(
                                     class="form-control select2-element" multiple
                                     data-placeholder="<?php echo _translate("Choose one or more provinces"); ?>">
                                     <?php foreach ($provinceOptions as $province) { ?>
-                                        <option value="<?php echo $province['geo_id']; ?>">
+                                        <option value="<?php echo _sanitizeOutput($province['geo_id']); ?>">
                                             <?php echo htmlspecialchars((string) $province['geo_name']); ?>
                                             (<?php echo htmlspecialchars((string) $province['geo_status']); ?>)
                                         </option>
@@ -122,8 +122,8 @@ $districtOptions = $db->rawQuery(
                                     class="form-control select2-element" multiple
                                     data-placeholder="<?php echo _translate("Choose one or more districts"); ?>">
                                     <?php foreach ($districtOptions as $district) { ?>
-                                        <option value="<?php echo $district['geo_id']; ?>"
-                                            data-province="<?php echo $district['province_id']; ?>">
+                                        <option value="<?php echo _sanitizeOutput($district['geo_id']); ?>"
+                                            data-province="<?php echo _sanitizeOutput($district['province_id']); ?>">
                                             <?php echo htmlspecialchars((string) $district['geo_name']); ?> -
                                             <?php echo htmlspecialchars((string) ($district['province_name'] ?? _translate("No Province"))); ?>
                                             (<?php echo htmlspecialchars((string) $district['geo_status']); ?>)
