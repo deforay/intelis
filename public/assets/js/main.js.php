@@ -229,6 +229,13 @@ $remoteURL = $general->getRemoteURL();
     }
 
 
+    // Manifest activation errors need to linger so labs can read the full
+    // reason (e.g. "registered to a different testing lab"). Success toasts stay
+    // at the default short timeout. The toast has a close button, so a long
+    // duration is safe -- it can be dismissed early. Used only by the manifest
+    // verify/sync flow below, which runs solely on the Add Samples pages.
+    const MANIFEST_ERROR_TOAST_MS = 15000;
+
     function verifyManifest(testType) {
         let manifestCode = $("#manifestCode").val().trim();
         if (!manifestCode) {
@@ -248,7 +255,7 @@ $remoteURL = $general->getRemoteURL();
                 try {
                     if (typeof data === 'string') data = data.trim();
                     if (!data) {
-                        toast.error("<?= _jsTranslate('Unable to verify manifest'); ?>");
+                        toast.error("<?= _jsTranslate('Unable to verify manifest'); ?>", '', MANIFEST_ERROR_TOAST_MS);
                         if (typeof reportError === 'function') {
                             reportError('Unable to verify manifest: ' + manifestCode + ' (empty response)', { type: 'sync_error' });
                         }
@@ -267,14 +274,14 @@ $remoteURL = $general->getRemoteURL();
                     // Object response with status
                     if (typeof response === 'object' && response !== null) {
                         if (response.status === 'not-found') {
-                            toast.error("<?= _jsTranslate('No manifest found with code'); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _jsTranslate('No manifest found with code'); ?>" + ' ' + manifestCode, '', MANIFEST_ERROR_TOAST_MS);
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                             return;
                         }
                         if (response.status === 'wrong-lab') {
                             let otherLab = response.labName ? (' (' + response.labName + ')') : '';
-                            toast.error("<?= _jsTranslate('Manifest'); ?>" + ' ' + manifestCode + ' ' + "<?= _jsTranslate('is registered to a different testing lab and cannot be activated here'); ?>" + otherLab + '.');
+                            toast.error("<?= _jsTranslate('Manifest'); ?>" + ' ' + manifestCode + ' ' + "<?= _jsTranslate('is registered to a different testing lab and cannot be activated here'); ?>" + otherLab + '.', '', MANIFEST_ERROR_TOAST_MS);
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                             return;
@@ -295,7 +302,7 @@ $remoteURL = $general->getRemoteURL();
                     }
                 } catch (e) {
                     console.error(e);
-                    toast.error("<?= _jsTranslate('Some error occurred while processing the manifest'); ?>");
+                    toast.error("<?= _jsTranslate('Some error occurred while processing the manifest'); ?>", '', MANIFEST_ERROR_TOAST_MS);
                     if (typeof reportError === 'function') {
                         reportError(e, { type: 'sync_error', context: 'verifyManifest for ' + manifestCode });
                     }
@@ -321,7 +328,7 @@ $remoteURL = $general->getRemoteURL();
                     try {
 
                         if (!data) {
-                            toast.error("<?= _jsTranslate('Unable to sync manifest'); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _jsTranslate('Unable to sync manifest'); ?>" + ' ' + manifestCode, '', MANIFEST_ERROR_TOAST_MS);
                             if (typeof reportError === 'function') {
                                 reportError('Unable to sync manifest: ' + manifestCode + ' (empty response from STS)', { type: 'sync_error' });
                             }
@@ -333,7 +340,7 @@ $remoteURL = $general->getRemoteURL();
                         try {
                             parsed = JSON.parse(data);
                         } catch (err) {
-                            toast.error("<?= _jsTranslate('Invalid server response while processing manifest'); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _jsTranslate('Invalid server response while processing manifest'); ?>" + ' ' + manifestCode, '', MANIFEST_ERROR_TOAST_MS);
                             if (typeof reportError === 'function') {
                                 reportError(err, { type: 'sync_error', context: 'Invalid server response for manifest ' + manifestCode + '\nServer response: ' + String(data).substring(0, 2000) });
                             }
@@ -345,7 +352,7 @@ $remoteURL = $general->getRemoteURL();
                             parsed == null ||
                             (typeof parsed === 'object' && Object.keys(parsed).length === 0)
                         ) {
-                            toast.error("<?= _jsTranslate('Could not retrieve samples for manifest'); ?>" + ' ' + manifestCode + '. ' + "<?= _jsTranslate('Please try again or contact support'); ?>");
+                            toast.error("<?= _jsTranslate('Could not retrieve samples for manifest'); ?>" + ' ' + manifestCode + '. ' + "<?= _jsTranslate('Please try again or contact support'); ?>", '', MANIFEST_ERROR_TOAST_MS);
                             if (typeof reportError === 'function') {
                                 reportError('Unable to find or sync samples from manifest: ' + manifestCode, { type: 'sync_error', context: 'Parsed value: ' + JSON.stringify(parsed) });
                             }
@@ -358,7 +365,7 @@ $remoteURL = $general->getRemoteURL();
                         }
                         loadRequestData();
                     } catch (e) {
-                        toast.error("<?= _jsTranslate("Some error occurred while processing the manifest"); ?>" + ' ' + manifestCode);
+                        toast.error("<?= _jsTranslate("Some error occurred while processing the manifest"); ?>" + ' ' + manifestCode, '', MANIFEST_ERROR_TOAST_MS);
                         if (typeof reportError === 'function') {
                             reportError(e, { type: 'sync_error', context: 'syncManifestFromSTS for ' + manifestCode });
                         }
