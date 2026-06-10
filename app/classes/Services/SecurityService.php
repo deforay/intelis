@@ -89,13 +89,21 @@ final class SecurityService
     {
         // Retrieve CSRF token from header or body
         $csrfToken = $request->getHeaderLine('X-CSRF-Token')
-            ?: $request->getParsedBody()['csrf_token'] ?? null;
+            ?: ($request->getParsedBody()['csrf_token'] ?? null);
 
-        // Validate the CSRF token
-        if ($csrfToken !== null && (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken))) {
+        // Fail closed: the request is valid only when a token is present and
+        // matches the session token. A missing token is rejected too, so a
+        // forged cross-site request cannot bypass the check by omitting it.
+        $isValid = !empty($csrfToken)
+            && isset($_SESSION['csrf_token'])
+            && hash_equals($_SESSION['csrf_token'], (string) $csrfToken);
+
+        if (!$isValid) {
             if (CommonService::isAjaxRequest($request) === false) {
                 $_SESSION['alertMsg'] = _translate('Your session has expired or is invalid. Please try again.');
                 header("Location: /login/login.php");
+            } else {
+                http_response_code(403);
             }
             exit;
         }
