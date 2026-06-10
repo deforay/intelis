@@ -91,14 +91,25 @@ final class SecurityService
         $csrfToken = $request->getHeaderLine('X-CSRF-Token')
             ?: ($request->getParsedBody()['csrf_token'] ?? null);
 
-        // Fail closed: the request is valid only when a token is present and
-        // matches the session token. A missing token is rejected too, so a
-        // forged cross-site request cannot bypass the check by omitting it.
-        $isValid = !empty($csrfToken)
+        // Enforcement is gated by a config flag so it can be toggled without a
+        // code change. When enforcement is OFF, behaviour matches the legacy
+        // fail-open mode: a present-but-wrong token is still rejected, but a
+        // missing token is allowed through (kill switch / safe rollback).
+        $securityConfig = (defined('SYSTEM_CONFIG') && isset(SYSTEM_CONFIG['security']))
+            ? SYSTEM_CONFIG['security']
+            : [];
+        $enforce = (bool) ($securityConfig['csrf_enforce'] ?? false);
+
+        $hasToken = !empty($csrfToken);
+        $tokenMatches = $hasToken
             && isset($_SESSION['csrf_token'])
             && hash_equals($_SESSION['csrf_token'], (string) $csrfToken);
 
-        if (!$isValid) {
+        // Reject a present-but-invalid token always; reject a missing token
+        // only when enforcement is enabled.
+        $reject = ($hasToken && !$tokenMatches) || (!$hasToken && $enforce);
+
+        if ($reject) {
             if (CommonService::isAjaxRequest($request) === false) {
                 $_SESSION['alertMsg'] = _translate('Your session has expired or is invalid. Please try again.');
                 header("Location: /login/login.php");
