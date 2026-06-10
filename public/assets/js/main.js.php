@@ -267,7 +267,14 @@ $remoteURL = $general->getRemoteURL();
                     // Object response with status
                     if (typeof response === 'object' && response !== null) {
                         if (response.status === 'not-found') {
-                            toast.error("<?= _jsTranslate('Unable to find manifest'); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _jsTranslate('No manifest found with code'); ?>" + ' ' + manifestCode);
+                            $('.activateSample').hide();
+                            $('#sampleId').val('');
+                            return;
+                        }
+                        if (response.status === 'wrong-lab') {
+                            let otherLab = response.labName ? (' (' + response.labName + ')') : '';
+                            toast.error("<?= _jsTranslate('Manifest'); ?>" + ' ' + manifestCode + ' ' + "<?= _jsTranslate('is registered to a different testing lab and cannot be activated here'); ?>" + otherLab + '.');
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                             return;
@@ -338,7 +345,7 @@ $remoteURL = $general->getRemoteURL();
                             parsed == null ||
                             (typeof parsed === 'object' && Object.keys(parsed).length === 0)
                         ) {
-                            toast.error("<?= _jsTranslate('Unable to find or sync samples from manifest'); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _jsTranslate('Could not retrieve samples for manifest'); ?>" + ' ' + manifestCode + '. ' + "<?= _jsTranslate('Please try again or contact support'); ?>");
                             if (typeof reportError === 'function') {
                                 reportError('Unable to find or sync samples from manifest: ' + manifestCode, { type: 'sync_error', context: 'Parsed value: ' + JSON.stringify(parsed) });
                             }

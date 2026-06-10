@@ -97,10 +97,30 @@ try {
     $db->where('lab_id', $labId);
     $manifestRecord = $db->getOne('specimen_manifests');
 
-    if (empty($manifestRecord) && ($testType != 'tb' || $testType != 'generic-tests')) {
+    // TB and Custom (generic) tests track manifests via referral_manifest_code and
+    // may have no specimen_manifests row for this lab, so they skip the
+    // not-found/wrong-lab short-circuit and fall through to the hash check.
+    $isReferralModule = ($testType === 'tb' || $testType === 'generic-tests');
+
+    if (empty($manifestRecord) && !$isReferralModule) {
+        // This lab does not own the manifest. Tell apart "no such manifest
+        // anywhere" from "registered to a different testing lab" so the LIS can
+        // show a precise message instead of a generic failure.
+        $db->reset();
+        $db->where('manifest_code', $manifestCode);
+        $db->where('module', $testType);
+        $otherLabManifest = $db->getOne('specimen_manifests', ['lab_id']);
+
         http_response_code(404);
-        $payload['status'] = 'not-found';
-        $payload['message'] = 'Manifest not found.';
+        if (!empty($otherLabManifest['lab_id'])) {
+            $otherLab = $facilitiesService->getFacilityById((int) $otherLabManifest['lab_id']);
+            $payload['status'] = 'wrong-lab';
+            $payload['message'] = 'Manifest is registered to a different testing lab.';
+            $payload['labName'] = $otherLab['facility_name'] ?? null;
+        } else {
+            $payload['status'] = 'not-found';
+            $payload['message'] = 'Manifest not found.';
+        }
     } else {
         $tableName = TestsService::getTestTableName($testType);
         $primaryKey = TestsService::getPrimaryColumn($testType);
