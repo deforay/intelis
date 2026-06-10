@@ -345,7 +345,9 @@ final class GenericTestsService extends AbstractTestService
             'result' => $finalInterp,
             'final_result_interpretation' => $finalInterp,
             'manual_result_entry' => 'yes',
-            'result_status' => $latestRejected ? REJECTED : PENDING_APPROVAL,
+            // Awaiting Approval only once there is a final interpretation to approve; until then
+            // the sample stays at the testing-lab status so it remains on the result-entry list.
+            'result_status' => $latestRejected ? REJECTED : ($finalInterp !== null ? PENDING_APPROVAL : RECEIVED_AT_TESTING_LAB),
             'data_sync' => 0,
             'last_modified_by' => $userId,
             'last_modified_datetime' => DateUtility::getCurrentDateTime(),
