@@ -254,7 +254,9 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
                 if (data == "" || data == null || data == undefined) {
                     alert('Unable to generate manifest PDF');
                 } else {
-                    window.open('/temporary/sample-manifests/' + data, '_blank');
+                    // Serve through the masked, web-root-validated download handler
+                    // instead of exposing the raw /temporary/ path.
+                    window.open('/download.php?f=' + encodeURIComponent(btoa('sample-manifests/' + String(data).trim())), '_blank');
                 }
 
             });

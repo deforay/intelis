@@ -56,6 +56,10 @@ define('APPLICATION_PATH', ROOT_PATH . '/app');
 define('BIN_PATH', ROOT_PATH . '/bin');
 define('UPLOAD_PATH', WEB_ROOT . '/uploads');
 define('TEMP_PATH', WEB_ROOT . '/temporary');
+// Non-public temp home (outside the web root). Sensitive generated files
+// (manifests today; more to follow as public/temporary is phased out) live
+// here and are served only through download.php, never via a direct URL.
+define('VAR_TEMP_PATH', VAR_PATH . '/temporary');
 define('VENDOR_BIN', ROOT_PATH . '/vendor/bin');
 
 // Set up autoloading
