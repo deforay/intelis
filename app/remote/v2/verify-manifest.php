@@ -97,37 +97,52 @@ try {
     $db->where('lab_id', $labId);
     $manifestRecord = $db->getOne('specimen_manifests');
 
+    // TB and Custom (generic) tests are the only modules with a referral flow;
+    // their samples link via referral_manifest_code (regular manifests use
+    // sample_package_code). The same page activates both kinds, so widen the
+    // sample lookup for these modules without assuming a given manifest is referral.
+    $isReferralModule = ($testType === 'tb' || $testType === 'generic-tests');
+
+    // Whether this lab owns the manifest is a question of OWNERSHIP, not of whether
+    // samples exist: this endpoint runs on STS, which holds every lab's samples, so
+    // a sample lookup would match an other-lab manifest and mask the real answer.
+    $runHashCheck = !empty($manifestRecord);
+
     if (empty($manifestRecord)) {
-        // The requesting lab does not own this manifest. Whether wrong-lab or
-        // not-found is a question of OWNERSHIP, not of whether samples exist:
-        // this endpoint runs on STS, which holds every lab's samples, so a sample
-        // lookup would happily match an other-lab manifest and mask the real
-        // answer. Referral-ness (tb/generic) is irrelevant here — it only changes
-        // how samples are linked for the hash check below, not who owns the code.
+        // This lab does not own the lab-scoped row. Is the manifest registered to a
+        // different lab, or does it not exist at all?
         $db->reset();
         $db->where('manifest_code', $manifestCode);
         $db->where('module', $testType);
         $otherLabManifest = $db->getOne('specimen_manifests', ['lab_id']);
 
-        http_response_code(404);
         if (!empty($otherLabManifest['lab_id'])) {
+            // Definitively registered to a different testing lab.
+            http_response_code(404);
             $otherLab = $facilitiesService->getFacilityById((int) $otherLabManifest['lab_id']);
             $payload['status'] = 'wrong-lab';
             $payload['message'] = 'Manifest is registered to a different testing lab.';
             $payload['labName'] = $otherLab['facility_name'] ?? null;
+        } elseif ($isReferralModule) {
+            // No manifest row anywhere yet. For referral modules the row may not
+            // have synced even though the samples have, so fall through to the hash
+            // check and let a valid manifest still sync (preserves prior behavior).
+            $runHashCheck = true;
         } else {
+            http_response_code(404);
             $payload['status'] = 'not-found';
             $payload['message'] = 'Manifest not found.';
         }
-    } else {
-        // The requesting lab owns the manifest — compare hashes to decide match
-        // vs. mismatch (sync). TB/generic referral samples link via
-        // referral_manifest_code, so widen the lookup for those.
+    }
+
+    if ($runHashCheck) {
+        // Compare hashes to decide match vs. mismatch (sync). Referral samples link
+        // via referral_manifest_code, so widen the lookup for tb/generic.
         $tableName = TestsService::getTestTableName($testType);
         $primaryKey = TestsService::getPrimaryColumn($testType);
         $db->reset();
         $db->where('sample_package_code', $manifestCode);
-        if ($testType === 'tb' || $testType === 'generic-tests') {
+        if ($isReferralModule) {
             $db->orWhere('referral_manifest_code', $manifestCode);
         }
         $selectedSamples = $db->getValue($tableName, $primaryKey, null);
