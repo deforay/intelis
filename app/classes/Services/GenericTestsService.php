@@ -6,6 +6,8 @@ use Override;
 use const COUNTRY\PNG;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use const SAMPLE_STATUS\PENDING_APPROVAL;
+use const SAMPLE_STATUS\REJECTED;
 use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
@@ -192,6 +194,147 @@ final class GenericTestsService extends AbstractTestService
             $return = ['dynamicValue' => $dynamicJson, 'dynamicLabel' => $labelsResponse, 'testDetails' => $testTypes];
         }
         return $return;
+    }
+
+    /**
+     * Persist multi-test (TB-style) results for a sample: one generic_test_results
+     * row per test card, then sync the LATEST test + the sample-level Final
+     * Interpretation onto form_generic. This is the SINGLE source of truth for
+     * multi-test result writes — called from the result-update page and the
+     * add/edit request flow alike, so results are never written in two places.
+     *
+     * Re-asserts facility authorization for $sampleId before the destructive
+     * delete, so every caller is guarded independently of any prior check.
+     *
+     * $post is the submitted payload (the $_POST array); it must carry
+     * $post['testResult'] (the per-card arrays) plus the sample-level fields.
+     * The caller owns the HTTP response (activity log, alert, redirect).
+     */
+    public function saveMultiTestResults(int $sampleId, array $post, int $userId): void
+    {
+        $tableName = 'form_generic';
+        $testTableName = 'generic_test_results';
+
+        // Re-assert authorization for the exact sample this will DELETE/UPDATE:
+        // resolve the facility from sample_id and confirm it is allowed. A missing
+        // sample (facility 0) is refused so the destructive delete can never run on
+        // an unauthorized / non-existent id.
+        $this->db->where('sample_id', $sampleId);
+        $targetFacilityId = (int) ($this->db->getValue($tableName, 'facility_id') ?? 0);
+        if ($sampleId <= 0 || $targetFacilityId <= 0) {
+            throw new SystemException(_translate('Invalid or unknown sample.'), 400);
+        }
+        $this->commonService->assertFacilityAllowed($targetFacilityId);
+
+        $tr = $post['testResult'];
+
+        // Prior per-test change history keyed by existing test_id, read server-side
+        // so the accumulating reason log cannot be spoofed/truncated by the client.
+        $priorReasonByTestId = [];
+        foreach ($this->db->rawQuery("SELECT test_id, reason_for_result_change FROM $testTableName WHERE generic_id = ?", [$sampleId]) as $r) {
+            $priorReasonByTestId[(string) $r['test_id']] = $r['reason_for_result_change'];
+        }
+
+        $this->db->where('generic_id', $sampleId);
+        $this->db->delete($testTableName);
+
+        $lastValidIndex = -1;
+        foreach ($tr['labId'] as $k => $labId) {
+            if (!empty($labId)) {
+                $lastValidIndex = $k;
+            }
+        }
+
+        $latestRow = [];
+        $latestRejected = false;
+        foreach ($tr['labId'] as $k => $labId) {
+            if (empty($labId)) {
+                continue;
+            }
+            $rejected = $tr['isSampleRejected'][$k] ?? null;
+            $isRej = ($rejected === 'yes');
+
+            $hist = MiscUtility::parseResultChangeHistory($priorReasonByTestId[(string) ($tr['testId'][$k] ?? '')] ?? null);
+            $reasonText = trim((string) ($tr['reasonForChange'][$k] ?? ''));
+            $revisedBy = null;
+            $revisedOn = null;
+            if ($reasonText !== '') {
+                $hist[] = ['usr' => $userId, 'dtime' => DateUtility::getCurrentDateTime(), 'msg' => $reasonText];
+                $revisedBy = $userId;
+                $revisedOn = DateUtility::getCurrentDateTime();
+            }
+
+            $resultVal = $isRej ? '' : trim((string) ($tr['testResult'][$k] ?? ''));
+            $row = [
+                'generic_id' => $sampleId,
+                'lab_id' => $labId ?: null,
+                'facility_id' => $labId ?: null,
+                'test_name' => (string) ($tr['testType'][$k] ?? ''),   // the method / assay (Test Type)
+                'sub_test_name' => null,
+                'result' => $resultVal,
+                'final_result' => $isRej ? null : ($resultVal ?: null),
+                'result_unit' => (isset($tr['resultUnit'][$k]) && $tr['resultUnit'][$k] !== '') ? $tr['resultUnit'][$k] : null,
+                'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($tr['sampleReceivedDate'][$k] ?? '', true),
+                'is_sample_rejected' => $rejected ?: null,
+                'reason_for_sample_rejection' => $isRej ? ($tr['sampleRejectionReason'][$k] ?? null) : null,
+                'rejection_on' => $isRej ? DateUtility::isoDateFormat($tr['rejectionDate'][$k] ?? '') : null,
+                'comments' => (isset($tr['comments'][$k]) && trim((string) $tr['comments'][$k]) !== '') ? trim((string) $tr['comments'][$k]) : null,
+                'tested_by' => $tr['testedBy'][$k] ?? null,
+                'sample_tested_datetime' => DateUtility::isoDateFormat($tr['sampleTestedDateTime'][$k] ?? '', true),
+                'result_reviewed_by' => $tr['reviewedBy'][$k] ?? null,
+                'result_reviewed_datetime' => DateUtility::isoDateFormat($tr['reviewedOn'][$k] ?? '', true),
+                'result_approved_by' => $tr['approvedBy'][$k] ?? null,
+                'result_approved_datetime' => DateUtility::isoDateFormat($tr['approvedOn'][$k] ?? '', true),
+                'revised_by' => $revisedBy,
+                'revised_on' => $revisedOn,
+                'reason_for_result_change' => !empty($hist) ? json_encode($hist) : null,
+                'updated_datetime' => DateUtility::getCurrentDateTime(),
+                'data_sync' => 0,
+            ];
+            $this->db->insert($testTableName, $row);
+            if ($k === $lastValidIndex) {
+                $latestRow = $row;
+                $latestRejected = $isRej;
+            }
+        }
+
+        // Final interpretation = sample-level conclusion (also locks Add Test/referral in the form).
+        $finalInterp = (($post['isResultFinalized'] ?? '') === 'yes') ? trim((string) ($post['finalResult'] ?? '')) : null;
+        if ($finalInterp === '') {
+            $finalInterp = null;
+        }
+
+        // Sample-level fields that are NOT per-test still come from the shared form body.
+        $gtDt = static fn($v) => (isset($v) && trim((string) $v) !== '') ? DateUtility::isoDateFormat((string) $v, true) : null;
+
+        $formUpdate = [
+            'testing_lab_focal_person' => (isset($post['vlFocalPerson']) && $post['vlFocalPerson'] !== '') ? $post['vlFocalPerson'] : null,
+            'testing_lab_focal_person_phone_number' => (isset($post['vlFocalPersonPhoneNumber']) && $post['vlFocalPersonPhoneNumber'] !== '') ? $post['vlFocalPersonPhoneNumber'] : null,
+            'sample_received_at_hub_datetime' => $gtDt($post['sampleReceivedAtHubOn'] ?? null),
+            'result_dispatched_datetime' => $gtDt($post['resultDispatchedOn'] ?? null),
+            'lab_tech_comments' => (isset($post['labComments']) && trim((string) $post['labComments']) !== '') ? trim((string) $post['labComments']) : null,
+            'reason_for_testing' => (isset($post['reasonForTesting']) && $post['reasonForTesting'] !== '') ? $post['reasonForTesting'] : null,
+            'lab_id' => $latestRow['lab_id'] ?? null,
+            'sample_received_at_lab_datetime' => $latestRow['sample_received_at_lab_datetime'] ?? null,
+            'is_sample_rejected' => $latestRow['is_sample_rejected'] ?? null,
+            'reason_for_sample_rejection' => $latestRow['reason_for_sample_rejection'] ?? null,
+            'rejection_on' => $latestRow['rejection_on'] ?? null,
+            'tested_by' => $latestRow['tested_by'] ?? null,
+            'sample_tested_datetime' => $latestRow['sample_tested_datetime'] ?? null,
+            'result_reviewed_by' => $latestRow['result_reviewed_by'] ?? null,
+            'result_reviewed_datetime' => $latestRow['result_reviewed_datetime'] ?? null,
+            'result_approved_by' => $latestRow['result_approved_by'] ?? null,
+            'result_approved_datetime' => $latestRow['result_approved_datetime'] ?? null,
+            'result' => $finalInterp,
+            'final_result_interpretation' => $finalInterp,
+            'manual_result_entry' => 'yes',
+            'result_status' => $latestRejected ? REJECTED : PENDING_APPROVAL,
+            'data_sync' => 0,
+            'last_modified_by' => $userId,
+            'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+        ];
+        $this->db->where('sample_id', $sampleId);
+        $this->db->update($tableName, $formUpdate);
     }
 
     public function getReasonForFailure($option = true, $updatedDateTime = null)
