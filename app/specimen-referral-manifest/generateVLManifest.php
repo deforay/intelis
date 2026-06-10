@@ -61,8 +61,6 @@ if (!empty($id)) {
 
     $labname = $result[0]['lab_name'] ?? "";
 
-    MiscUtility::makeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests", 0777, true);
-
     $globalConfig = $general->getGlobalConfig();
     $showPatientName = $globalConfig['vl_show_participant_name_in_manifest'];
 

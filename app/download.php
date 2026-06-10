@@ -18,17 +18,30 @@ if ($fileName !== null && MiscUtility::isBase64($fileName)) {
     $fileName = base64_decode((string) $fileName);
 }
 
-// Check if the file exists in the given path or the temporary path
+// Trusted base directories that a relative `f` value may resolve against
+// (first existing match wins). These hold app-generated downloads. As files
+// move out of public/temporary into var/, add the specific var/ subdirectory
+// here -- keep it to named dirs, never the whole var/ tree, which also holds
+// logs and cache that must not be downloadable.
+$resolveRoots = [
+    TEMP_PATH,      // public/temporary (legacy public files)
+    VAR_TEMP_PATH,  // var/temporary (manifests + future non-public files)
+];
+
+// Resolve the requested file: an absolute path as-is, otherwise the first
+// trusted root it exists under.
 if (!empty($fileName)) {
     $fileName = urldecode((string) $fileName);
-    if (file_exists($fileName)) {
-        // $fileName is already set
-    } elseif (file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . $fileName)) {
-        // The file exists in the temporary path
-        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . $fileName;
-    } else {
-        // File does not exist in any path
-        $fileName = null;
+    if (!file_exists($fileName)) {
+        $resolved = null;
+        foreach ($resolveRoots as $root) {
+            $candidate = $root . DIRECTORY_SEPARATOR . $fileName;
+            if (file_exists($candidate)) {
+                $resolved = $candidate;
+                break;
+            }
+        }
+        $fileName = $resolved;
     }
 } else {
     // No file name provided
@@ -50,18 +63,31 @@ $allowedMimeTypes = [
 ];
 
 $file = realpath($fileName);
-$webRootPath = realpath(WEB_ROOT);
+
+// A download may live under the public web root (legacy temp files) or the
+// non-public var/temporary dir (manifests, and progressively other sensitive
+// files). The realpath must resolve within one of these trusted roots.
+$allowedRoots = array_values(array_filter([realpath(WEB_ROOT), realpath(VAR_TEMP_PATH)]));
+$withinAllowedRoot = false;
+if ($file !== false) {
+    foreach ($allowedRoots as $root) {
+        if (str_starts_with($file, $root)) {
+            $withinAllowedRoot = true;
+            break;
+        }
+    }
+}
 
 $fileExists = MiscUtility::fileExists($file);
 if (
     $file === false ||
-    !str_starts_with($file, $webRootPath) ||
+    !$withinAllowedRoot ||
     $fileExists === false
 ) {
     LoggerUtility::logError('File download failed due to missing or invalid path', [
         'requested_file' => $fileName,
         'resolved_path' => $file ?: 'NOT FOUND',
-        'web_root' => $webRootPath,
+        'allowed_roots' => $allowedRoots,
         'file_exists' => $fileExists ? 'yes' : 'no',
     ]);
 
