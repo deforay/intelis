@@ -529,3 +529,81 @@ div.dataTables_processing>div:last-child {
     animation: spin 0.8s linear infinite;
     vertical-align: middle;
 }
+/* === Custom Tests: modern select2 multiselect (moved from _test-type-form.php to apply app-wide) === */
+/* Modernise the select2 multiselect chips (Sample Types, Reasons, Symptoms, etc.) to match
+   the rounded option pills in the Form Configuration table -- light pill, remove "x" after
+   the label. The container is flex-wrap so chips pack left and wrap cleanly (select2's
+   default float layout drops wide chips and leaves gaps). */
+.select2-container--default .select2-selection--multiple {
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	min-height: 38px;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 5px;
+	padding: 4px 6px;
+	margin: 0;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+	display: inline-flex;
+	flex-direction: row-reverse;
+	align-items: center;
+	background-color: #eef2f7;
+	color: #2c3e50;
+	border: 1px solid #d6dee6;
+	border-radius: 12px;
+	padding: 2px 10px;
+	margin: 0;
+	font-size: 12px;
+	line-height: 1.7;
+	float: none;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+	color: #8a97a3 !important;
+	font-weight: bold;
+	margin: 0 0 0 6px;
+	border: none;
+	float: none;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+	color: #e74c3c !important;
+	background: transparent;
+}
+/* Inline search field flows with the chips. */
+.select2-container--default .select2-selection--multiple .select2-search--inline {
+	display: flex;
+	align-items: center;
+	float: none;
+	margin: 0;
+}
+.select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
+	margin-top: 0;
+	height: 24px;
+}
+/* Hide select2's stray clear-all "x" -- it lands top-left and looks out of place; each chip
+   already has its own remove control. */
+.select2-container--default .select2-selection--multiple .select2-selection__clear {
+	display: none;
+}
+/* Dropdown results in the same palette: soft border, muted highlight, selected rows tinted
+   like the chips instead of select2's default bright blue. */
+.select2-dropdown {
+	border-color: #cbd5e0;
+	background-color: #fff;
+}
+.select2-container--default .select2-results__option {
+	padding: 7px 12px;
+	color: #2c3e50;
+	font-size: 13px;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+	background-color: #4a6fa5;
+	color: #fff;
+}
+.select2-container--default .select2-results__option[aria-selected=true] {
+	background-color: #eef2f7;
+	color: #2c3e50;
+}

@@ -501,6 +501,66 @@ if (!empty($requestResult)) {
 
 		$html = $renderSection(_translate('Requesting Facility & Patient Information'), $sec1);
 		$html .= '<br>' . $renderSection(_translate('Sample Information'), $sec2);
+
+		// --- Opt-in custom (dynamic) fields ---
+		// A dynamic field appears here only when the admin flagged it show_on_report = 'yes' on the
+		// test-type form builder (default off). Fields render grouped by their form section, reusing
+		// the same section styling; values come from form_generic.test_type_form. Enabled-but-empty
+		// fields are skipped so the report doesn't fill with blanks.
+		$testFormConfig = json_decode((string) ($testTypeResult['test_form_config'] ?? ''), true);
+		$dynamicValues = json_decode((string) ($result['test_type_form'] ?? ''), true);
+		if (is_array($testFormConfig) && is_array($dynamicValues) && $dynamicValues !== []) {
+			$sectionTitles = [
+				'facilitySection' => _translate('Facility Information'),
+				'patientSection'  => _translate('Patient Information'),
+				'caseInformation' => _translate('Case Information'),
+				'specimenSection' => _translate('Specimen Information'),
+				'labSection'      => _translate('Laboratory Information'),
+			];
+			$fmtDynamic = static function (array $def, $val): string {
+				$val = trim((string) ($val ?? ''));
+				if ($val === '') {
+					return '';
+				}
+				if (($def['field_type'] ?? '') === 'date') {
+					return DateUtility::humanReadableDateFormat($val);
+				}
+				if (($def['field_type'] ?? '') === 'multiple') {
+					return trim(str_replace(['##', ','], ', ', $val), ', ');
+				}
+				return $val;
+			};
+			// Keep only enabled + filled fields for a section, ordered by field_order.
+			$buildDynamicFields = static function (array $defs) use ($dynamicValues, $fmtDynamic, $f): array {
+				uasort($defs, static fn($a, $b): int => ((int) ($a['field_order'] ?? 0)) <=> ((int) ($b['field_order'] ?? 0)));
+				$fields = [];
+				foreach ($defs as $fieldId => $def) {
+					if (!is_array($def) || ($def['show_on_report'] ?? 'no') !== 'yes') {
+						continue;
+					}
+					$value = $fmtDynamic($def, $dynamicValues[$fieldId] ?? null);
+					if ($value === '') {
+						continue;
+					}
+					$fields[] = $f($def['field_name'] ?? '', $value);
+				}
+				return $fields;
+			};
+			foreach ($sectionTitles as $sectionKey => $sectionTitle) {
+				if (empty($testFormConfig[$sectionKey]) || !is_array($testFormConfig[$sectionKey])) {
+					continue;
+				}
+				$html .= $renderSection($sectionTitle, $buildDynamicFields($testFormConfig[$sectionKey]));
+			}
+			// otherSection holds custom-named groups: {sectionName: {fieldId: def}}
+			if (!empty($testFormConfig['otherSection']) && is_array($testFormConfig['otherSection'])) {
+				foreach ($testFormConfig['otherSection'] as $otherName => $defs) {
+					if (is_array($defs)) {
+						$html .= $renderSection((string) $otherName, $buildDynamicFields($defs));
+					}
+				}
+			}
+		}
 		//echo '<pre>'; print_r($genericTestInfo); die;
 		if ($isMultiTest) {
 			// One card per test, harmonised with the sections above: a grey heading bar, then

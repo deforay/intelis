@@ -103,32 +103,54 @@ $i = 1;
 
 	.tag-input {
 		width: 100%;
-		padding: 10px;
+		padding: 6px 8px;
 		box-sizing: border-box;
 		background-color: #f9f9f9;
 		border: 1px solid #ccc;
+		border-radius: 4px;
 	}
 
 	.tag-input .tag-input-field {
 		border: none;
 		background-color: transparent;
 		width: 100%;
+		font-size: 12px;
+	}
+
+	/* Options as compact wrapping pills; the box scrolls instead of ballooning the row. */
+	.tag-container {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px;
+		max-height: 84px;
+		overflow-y: auto;
+		margin-top: 6px;
 	}
 
 	.tag {
-		display: inline-block;
-		padding: 5px 10px;
-		margin-right: 5px;
-		background-color: #007bff;
-		color: #fff;
-		border-radius: 3px;
-		margin-bottom: 5px;
+		display: inline-flex;
+		align-items: center;
+		padding: 2px 8px;
+		background-color: #eef2f7;
+		color: #2c3e50;
+		border: 1px solid #d6dee6;
+		border-radius: 10px;
+		font-size: 11px;
+		line-height: 1.5;
+		margin: 0;
 	}
 
 	.remove-tag {
 		margin-left: 5px;
 		cursor: pointer;
+		color: #8a97a3;
+		font-weight: bold;
 	}
+
+	.remove-tag:hover {
+		color: #e74c3c;
+	}
+
 	.fieldCode[readonly] {
 		background-color: #f2f2f2;
 		cursor: pointer;
@@ -427,31 +449,124 @@ $i = 1;
 								style="width:100%;">
 								<thead>
 									<tr>
-										<th style="text-align:center;width:20%;"><?php echo _translate("Field Name"); ?>
-											<span class="mandatory">*</span>
-										</th>
-										<th style="text-align:center;width:15%;"><?php echo _translate("Field Code"); ?>
-											<span class="mandatory">*</span>
-										</th>
-										<th style="text-align:center;width:15%;"><?php echo _translate("Field Type"); ?>
-											<span class="mandatory">*</span>
-										</th>
-										<th style="text-align:center;width:10%;">
-											<?php echo _translate("Is it Mandatory?"); ?> <span
-												class="mandatory">*</span>
-										</th>
-										<th style="text-align:center;width:20%;"><?php echo _translate("Section"); ?>
-											<span class="mandatory">*</span>
-										</th>
-										<th style="text-align:center;width:10%;">
-											<?php echo _translate("Field Order"); ?>
-										</th>
-										<th style="text-align:center;width:10%;"><?php echo _translate("Action"); ?>
-										</th>
+										<th style="text-align:center;width:26%;"><?php echo _translate("Field"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:20%;"><?php echo _translate("Field Type"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:8%;"><?php echo _translate("Mandatory?"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:9%;"><?php echo _translate("Show on Result PDF"); ?></th>
+										<th style="text-align:center;width:18%;"><?php echo _translate("Section"); ?> <span class="mandatory">*</span></th>
+										<th style="text-align:center;width:7%;"><?php echo _translate("Order"); ?></th>
+										<th style="text-align:center;width:7%;"><?php echo _translate("Action"); ?></th>
 									</tr>
 								</thead>
 								<tbody id="attributeTable">
 									<?php
+
+		// Single source for a field-config row (used by the existing-field loop below and the
+		// empty add row). insRow() mirrors this markup for client-side rows. Columns:
+		// Field (name + code), Type (+ options), Mandatory, Show on Result PDF, Section, Order, Action.
+		$renderFieldRow = function (int $i, string $fieldId, array $def) use ($esc): string {
+			$name = $def['field_name'] ?? '';
+			$code = $def['field_code'] ?? '';
+			$type = $def['field_type'] ?? '';
+			$mand = $def['mandatory_field'] ?? 'no';
+			$sec = $def['section'] ?? '';
+			$secName = $def['section_name'] ?? '';
+			$order = $def['field_order'] ?? '';
+			$opts = (string) ($def['dropdown_options'] ?? '');
+			$showPdf = $def['show_on_report'] ?? 'no';
+			$readonly = ($fieldId !== '') ? 'readonly' : '';
+			$isDrop = ($type === 'dropdown' || $type === 'multiple');
+			$selType = static fn($v): string => $type === $v ? "selected='selected'" : '';
+			$selSec = static fn($v): string => $sec === $v ? "selected='selected'" : '';
+			ob_start(); ?>
+<tr>
+	<td align="center" style="vertical-align:middle;text-align:left;">
+		<input type="text" name="fieldName[]" id="fieldName<?php echo $i; ?>" data-attributenumber="<?php echo $i; ?>"
+			class="form-control fieldName isRequired" placeholder="<?php echo _translate('Field Name'); ?>"
+			title="<?php echo _translate('Please enter field name'); ?>" onblur="checkDuplication(this, 'fieldName');"
+			value="<?php echo $esc($name); ?>" />
+		<input type="text" name="fieldCode[]" id="fieldCode<?php echo $i; ?>" data-attributenumber="<?php echo $i; ?>"
+			class="form-control input-sm fieldCode isRequired dataClass" placeholder="<?php echo _translate('Field Code'); ?>"
+			title="<?php echo $readonly !== '' ? _translate('Double-click to edit the field code') : _translate('Auto-filled from the field name'); ?>"
+			onblur="checkDuplication(this, 'fieldCode');" onchange="this.value=Utilities.toSnakeCase(this.value)"
+			value="<?php echo $esc($code); ?>" <?php echo $readonly; ?>
+			style="margin-top:6px;font-size:11px;color:#5a636b;" />
+		<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i; ?>" value="<?php echo $esc($fieldId); ?>" />
+	</td>
+	<td align="center" style="vertical-align:middle;">
+		<select class="form-control isRequired" name="fieldType[]" id="fieldType<?php echo $i; ?>"
+			data-attributenumber="<?php echo $i; ?>" title="<?php echo _translate('Please select the field type'); ?>"
+			onchange="changeField(this, <?php echo $i; ?>)">
+			<option value=""> <?php echo _translate('-- Select --'); ?> </option>
+			<option value="number" <?php echo $selType('number'); ?>><?php echo _translate('Number'); ?></option>
+			<option value="text" <?php echo $selType('text'); ?>><?php echo _translate('Text'); ?></option>
+			<option value="date" <?php echo $selType('date'); ?>><?php echo _translate('Date'); ?></option>
+			<option value="dropdown" <?php echo $selType('dropdown'); ?>><?php echo _translate('Dropdown'); ?></option>
+			<option value="multiple" <?php echo $selType('multiple'); ?>><?php echo _translate('Multiselect Dropdown'); ?></option>
+		</select>
+		<div class="tag-input dropDown<?php echo $i; ?>" style="<?php echo $isDrop ? '' : 'display:none;'; ?>">
+			<input type="text" name="dropDown[]" id="dropDown<?php echo $i; ?>" onkeyup="showTags(event,this,'<?php echo $i; ?>')"
+				class="tag-input-field form-control" placeholder="<?php echo _translate('Enter options...'); ?>"
+				title="<?php echo _translate('Please enter the options'); ?>" />
+			<input type="hidden" value="<?php echo $opts === '' ? '' : $esc($opts) . ','; ?>" id="fdropDown<?php echo $i; ?>"
+				name="fdropDown[]" class="fdropDown" />
+			<div class="tag-container container<?php echo $i; ?>">
+				<?php
+				if ($opts !== '') {
+					foreach (explode(',', $opts) as $v) {
+						if (trim($v) === '') {
+							continue;
+						}
+						echo '<div class="tag">' . $esc($v) . '<span class="remove-tag">x</span></div>';
+					}
+				}
+				?>
+			</div>
+		</div>
+	</td>
+	<td align="center" style="vertical-align:middle;">
+		<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField<?php echo $i; ?>"
+			title="<?php echo _translate('Please select is it mandatory'); ?>">
+			<option value="yes" <?php echo $mand === 'yes' ? "selected='selected'" : ''; ?>><?php echo _translate('Yes'); ?></option>
+			<option value="no" <?php echo $mand !== 'yes' ? "selected='selected'" : ''; ?>><?php echo _translate('No'); ?></option>
+		</select>
+	</td>
+	<td align="center" style="vertical-align:middle;">
+		<select class="form-control" name="showOnReport[]" id="showOnReport<?php echo $i; ?>"
+			title="<?php echo _translate('Show this field on the result PDF'); ?>">
+			<option value="no" <?php echo $showPdf !== 'yes' ? "selected='selected'" : ''; ?>><?php echo _translate('No'); ?></option>
+			<option value="yes" <?php echo $showPdf === 'yes' ? "selected='selected'" : ''; ?>><?php echo _translate('Yes'); ?></option>
+		</select>
+	</td>
+	<td align="center" style="vertical-align:middle;">
+		<select class="form-control isRequired" name="section[]" id="section<?php echo $i; ?>"
+			title="<?php echo _translate('Please select the section'); ?>" onchange="checkSection('<?php echo $i; ?>')">
+			<option value=""> <?php echo _translate('-- Select --'); ?> </option>
+			<option value="facilitySection" <?php echo $selSec('facilitySection'); ?>><?php echo _translate('Facility'); ?></option>
+			<option value="patientSection" <?php echo $selSec('patientSection'); ?>><?php echo _translate('Patient'); ?></option>
+			<option value="specimenSection" <?php echo $selSec('specimenSection'); ?>><?php echo _translate('Specimen'); ?></option>
+			<option value="caseInformation" <?php echo $selSec('caseInformation'); ?>><?php echo _translate('Case Information'); ?></option>
+			<option value="labSection" <?php echo $selSec('labSection'); ?>><?php echo _translate('Lab'); ?></option>
+			<option value="otherSection" <?php echo $selSec('otherSection'); ?>><?php echo _translate('Other'); ?></option>
+		</select>
+		<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i; ?>" onchange="addNewSection(this.value)"
+			class="form-control auto-complete-tbx" placeholder="<?php echo _translate('Section Other'); ?>"
+			title="<?php echo _translate('Please enter section other'); ?>"
+			style="<?php echo $sec === 'otherSection' ? '' : 'display:none;'; ?>"
+			value="<?php echo $sec === 'otherSection' ? $esc($secName) : ''; ?>" />
+	</td>
+	<td align="center" style="vertical-align:middle;">
+		<input type="text" name="fieldOrder[]" id="fieldOrder<?php echo $i; ?>" class="form-control forceNumeric"
+			placeholder="<?php echo _translate('Order'); ?>" title="<?php echo _translate('Please enter field order'); ?>"
+			value="<?php echo $esc($order); ?>" />
+	</td>
+	<td align="center" style="vertical-align:middle;">
+		<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+	</td>
+</tr>
+<?php return ob_get_clean();
+		};
+
 									$arraySection = ['facilitySection', 'patientSection', 'caseInformation', 'specimenSection', 'labSection'];
 									$eCount = count($testAttr);
 									if ($eCount > 0) {
@@ -459,115 +574,7 @@ $i = 1;
 										foreach ($testAttr as $testAttrkey => $testAttributeDetails) {
 											if (in_array($testAttrkey, $arraySection)) {
 												foreach ($testAttributeDetails as $testAttributeId => $testAttribute) { ?>
-													<tr>
-														<td align="center" style="vertical-align:middle;">
-															<input type="text" name="fieldName[]" id="fieldName<?php echo $i ?>"
-																data-attributenumber="<?= $i ?>"
-																class="form-control fieldName isRequired"
-																placeholder='<?php echo _translate("Field Name"); ?>'
-																title='<?php echo _translate("Please enter field name"); ?>'
-																onblur="checkDuplication(this, 'fieldName');"
-																value="<?php echo $esc($testAttribute['field_name']); ?>" />
-															<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>"
-																class="form-control isRequired"
-																value="<?php echo $esc($testAttributeId); ?>" />
-														</td>
-														<td align="center" style="vertical-align:middle;">
-															<input type="text" name="fieldCode[]" id="fieldCode<?php echo $i; ?>"
-																data-attributenumber="<?= $i ?>"
-																class="form-control fieldCode isRequired dataClass"
-																placeholder="<?php echo _translate("Field Code"); ?>"
-																title="<?php echo _translate("Please enter field code"); ?>"
-																onblur="checkDuplication(this, \'fieldCode\');"
-																value="<?php echo $esc($testAttribute['field_code']); ?>" readonly
-																onchange="this.value=Utilities.toSnakeCase(this.value)" />
-														</td>
-														<td align="center" style="vertical-align:middle;padding-top: 20px;">
-															<select class="form-control isRequired" name="fieldType[]"
-																id="fieldType<?php echo $i ?>" data-attributenumber="<?= $i ?>"
-																title="<?php echo _translate('Please select the field type'); ?>"
-																onchange="changeField(this, <?php echo $i ?>)">
-																<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-																<option value="number" <?php echo ($testAttribute['field_type'] == 'number') ? "selected='selected'" : "" ?>><?php echo _translate("Number"); ?></option>
-																<option value="text" <?php echo ($testAttribute['field_type'] == 'text') ? "selected='selected'" : "" ?>><?php echo _translate("Text"); ?>
-																</option>
-																<option value="date" <?php echo ($testAttribute['field_type'] == 'date') ? "selected='selected'" : "" ?>><?php echo _translate("Date"); ?>
-																</option>
-																<option value="dropdown" <?php echo ($testAttribute['field_type'] == 'dropdown') ? "selected='selected'" : "" ?>><?php echo _translate("Dropdown"); ?></option>
-																<option value="multiple" <?php echo ($testAttribute['field_type'] == 'multiple') ? "selected='selected'" : "" ?>><?php echo _translate("Multiselect Dropdown"); ?></option>
-															</select><br>
-															<div class="tag-input dropDown<?php echo $i ?>"
-																style="<?php echo ($testAttribute['field_type'] == 'multiple' || $testAttribute['field_type'] == 'dropdown') ? "" : "display:none;" ?>">
-																<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>"
-																	onkeyup="showTags(event,this,'<?php echo $i ?>')"
-																	class="tag-input-field form-control"
-																	placeholder="<?php echo _translate('Enter options...'); ?>"
-																	title="<?php echo _translate('Please enter the options'); ?>" />
-																<input type="hidden"
-																	value="<?php echo (empty($testAttribute['dropdown_options'])) ? "" : $esc($testAttribute['dropdown_options']) . ',' ?>"
-																	id="fdropDown<?php echo $i ?>" name="fdropDown[]"
-																	class="fdropDown" />
-																<div class="tag-container container<?php echo $i ?>">
-																	<?php
-																	if (!empty($testAttribute['dropdown_options'])) {
-																		$val = explode(",", (string) $testAttribute['dropdown_options']);
-																		foreach ($val as $v) {
-																			?>
-																			<div class="tag"><?php echo $esc($v); ?><span class="remove-tag">x</span>
-																			</div>
-																		<?php }
-																	} ?>
-																</div>
-															</div>
-														</td>
-														<td align="center" style="vertical-align:middle;">
-															<select class="form-control isRequired" name="mandatoryField[]"
-																id="mandatoryField<?php echo $i ?>"
-																title="<?php echo _translate('Please select is it mandatory'); ?>">
-																<option value="yes" <?php echo ($testAttribute['mandatory_field'] == 'yes') ? "selected='selected'" : "" ?>><?php echo _translate("Yes"); ?></option>
-																<option value="no" <?php echo ($testAttribute['mandatory_field'] == 'no') ? "selected='selected'" : "" ?>><?php echo _translate("No"); ?>
-																</option>
-															</select>
-														</td>
-														<td align="center" style="vertical-align:middle;">
-															<select class="form-control isRequired" name="section[]"
-																id="section<?php echo $i ?>"
-																title="<?php echo _translate('Please select the section'); ?>"
-																onchange="checkSection('<?php echo $i ?>')">
-																<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-																<option value="facilitySection" <?php echo ($testAttribute['section'] == 'facilitySection') ? "selected='selected'" : "" ?>><?php echo _translate("Facility"); ?>
-																</option>
-																<option value="patientSection" <?php echo ($testAttribute['section'] == 'patientSection') ? "selected='selected'" : "" ?>><?php echo _translate("Patient"); ?>
-																</option>
-																<option value="specimenSection" <?php echo ($testAttribute['section'] == 'specimenSection') ? "selected='selected'" : "" ?>><?php echo _translate("Specimen"); ?>
-																</option>
-																<option value="caseInformation" <?php echo ($testAttribute['section'] == 'caseInformation') ? "selected='selected'" : "" ?>><?php echo _translate("Case Information"); ?></option>
-																<option value="labSection" <?php echo ($testAttribute['section'] == 'labSection') ? "selected='selected'" : "" ?>><?php echo _translate("Lab"); ?></option>
-																<option value="otherSection" <?php echo ($testAttribute['section'] == 'otherSection') ? "selected='selected'" : "" ?>><?php echo _translate("Other"); ?></option>
-															</select>
-															<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i ?>"
-																onchange="addNewSection(this.value)"
-																class="form-control auto-complete-tbx"
-																placeholder='<?php echo _translate("Section Other"); ?>'
-																title='<?php echo _translate("Please enter section other"); ?>'
-																style="<?php echo ($testAttribute['section'] == 'otherSection') ? "" : "display:none;" ?>"
-																value="<?php echo ($testAttribute['section'] == 'otherSection') ? $esc($testAttribute['section_name']) : "" ?>" />
-														</td>
-														<td align="center" style="vertical-align:middle;">
-															<input type="text" name="fieldOrder[]" id="fieldOrder1"
-																class="form-control forceNumeric"
-																placeholder="<?php echo _translate("Field Order"); ?>"
-																title="<?php echo _translate("Please enter field order"); ?>"
-																value="<?php echo $esc($testAttribute['field_order']); ?>" />
-														</td>
-														<td align="center" style="vertical-align:middle;">
-															<a class="btn btn-xs btn-primary" href="javascript:void(0);"
-																onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a
-																class="btn btn-xs btn-default" href="javascript:void(0);"
-																onclick="removeAttributeRow(this.parentNode.parentNode);"><em
-																	class="fa-solid fa-minus"></em></a>
-														</td>
-													</tr>
+									<?php echo $renderFieldRow($i, (string) $testAttributeId, $testAttribute); ?>
 
 													<?php
 													$i++;
@@ -576,113 +583,7 @@ $i = 1;
 												foreach ($testAttributeDetails as $key => $otherAttributeDetails) {
 													foreach ($otherAttributeDetails as $otherAttributeId => $testAttribute) {
 														?>
-														<tr>
-															<td align="center" style="vertical-align:middle;">
-																<input type="text" name="fieldName[]" data-attributenumber="<?= $i ?>"
-																	id="fieldName<?php echo $i ?>" class="form-control fieldName isRequired"
-																	placeholder='<?php echo _translate("Field Name"); ?>'
-																	title='<?php echo _translate("Please enter field name"); ?>'
-																	onblur="checkDuplication(this, 'fieldName');"
-																	value="<?php echo $esc($testAttribute['field_name']); ?>" />
-																<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>"
-																	class="form-control" value="<?php echo $esc($otherAttributeId); ?>" />
-															</td>
-															<td align="center" style="vertical-align:middle;">
-																<input type="text" name="fieldCode[]" data-attributenumber="<?= $i ?>"
-																	id="fieldCode<?php echo $i; ?>"
-																	class="form-control fieldCode isRequired"
-																	placeholder="<?php echo _translate("Field Code"); ?>"
-																	title="<?php echo _translate("Please enter field code"); ?>"
-																	onblur="checkDuplication(this, \'fieldCode\');"
-																	value="<?php echo $esc($testAttribute['field_code']); ?>" readonly
-																	onchange="this.value=Utilities.toSnakeCase(this.value)" />
-															</td>
-															<td align="center" style="vertical-align:middle;padding-top: 20px;">
-																<select class="form-control isRequired" data-attributenumber="<?= $i ?>"
-																	name="fieldType[]" id="fieldType<?php echo $i ?>"
-																	title="<?php echo _translate('Please select the field type'); ?>"
-																	onchange="changeField(this, <?php echo $i ?>)">
-																	<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-																	<option value="number" <?php echo ($testAttribute['field_type'] == 'number') ? "selected='selected'" : "" ?>><?php echo _translate("Number"); ?></option>
-																	<option value="text" <?php echo ($testAttribute['field_type'] == 'text') ? "selected='selected'" : "" ?>><?php echo _translate("Text"); ?>
-																	</option>
-																	<option value="date" <?php echo ($testAttribute['field_type'] == 'date') ? "selected='selected'" : "" ?>><?php echo _translate("Date"); ?>
-																	</option>
-																	<option value="dropdown" <?php echo ($testAttribute['field_type'] == 'dropdown') ? "selected='selected'" : "" ?>><?php echo _translate("Dropdown"); ?></option>
-																	<option value="multiple" <?php echo ($testAttribute['field_type'] == 'multiple') ? "selected='selected'" : "" ?>><?php echo _translate("Multiselect Dropdown"); ?></option>
-																</select><br>
-																<div class="tag-input dropDown<?php echo $i ?>"
-																	style="<?php echo ($testAttribute['field_type'] == 'multiple' || $testAttribute['field_type'] == 'dropdown') ? "" : "display:none;" ?>">
-																	<input type="text" name="dropDown[]" id="dropDown<?php echo $i ?>"
-																		onkeyup="showTags(event,this,'<?php echo $i ?>')"
-																		class="tag-input-field form-control"
-																		placeholder="<?php echo _translate('Enter options...'); ?>"
-																		title="<?php echo _translate('Please enter the options'); ?>" />
-																	<input type="hidden"
-																		value="<?php echo (empty($testAttribute['dropdown_options'])) ? "" : $esc($testAttribute['dropdown_options']) . ',' ?>"
-																		id="fdropDown<?php echo $i ?>" name="fdropDown[]"
-																		class="fdropDown" />
-																	<div class="tag-container container<?php echo $i ?>">
-																		<?php
-																		if (!empty($testAttribute['dropdown_options'])) {
-																			$val = explode(",", (string) $testAttribute['dropdown_options']);
-																			foreach ($val as $v) {
-																				?>
-																				<div class="tag"><?php echo $esc($v); ?><span class="remove-tag">x</span>
-																				</div>
-																			<?php }
-																		} ?>
-																	</div>
-																</div>
-															</td>
-															<td align="center" style="vertical-align:middle;">
-																<select class="form-control isRequired" name="mandatoryField[]"
-																	id="mandatoryField<?php echo $i ?>"
-																	title="<?php echo _translate('Please select is it mandatory'); ?>">
-																	<option value="yes" <?php echo ($testAttribute['mandatory_field'] == 'yes') ? "selected='selected'" : "" ?>><?php echo _translate("Yes"); ?></option>
-																	<option value="no" <?php echo ($testAttribute['mandatory_field'] == 'no') ? "selected='selected'" : "" ?>><?php echo _translate("No"); ?>
-																	</option>
-																</select>
-															</td>
-															<td align="center" style="vertical-align:middle;">
-																<select class="form-control isRequired" name="section[]"
-																	id="section<?php echo $i ?>"
-																	title="<?php echo _translate('Please select the section'); ?>"
-																	onchange="checkSection('<?php echo $i ?>')">
-																	<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-																	<option value="facilitySection" <?php echo ($testAttribute['section'] == 'facilitySection') ? "selected='selected'" : "" ?>><?php echo _translate("Facility"); ?>
-																	</option>
-																	<option value="patientSection" <?php echo ($testAttribute['section'] == 'patientSection') ? "selected='selected'" : "" ?>><?php echo _translate("Patient"); ?>
-																	</option>
-																	<option value="specimenSection" <?php echo ($testAttribute['section'] == 'specimenSection') ? "selected='selected'" : "" ?>><?php echo _translate("Specimen"); ?>
-																	</option>
-																	<option value="caseInformation" <?php echo ($testAttribute['section'] == 'caseInformation') ? "selected='selected'" : "" ?>><?php echo _translate("Case Information"); ?></option>
-																	<option value="labSection" <?php echo ($testAttribute['section'] == 'labSection') ? "selected='selected'" : "" ?>><?php echo _translate("Lab"); ?></option>
-																	<option value="otherSection" <?php echo ($testAttribute['section'] == 'otherSection') ? "selected='selected'" : "" ?>><?php echo _translate("Other"); ?></option>
-																</select>
-																<input type="text" name="sectionOther[]" id="sectionOther<?php echo $i ?>"
-																	onchange="addNewSection(this.value)"
-																	class="form-control auto-complete-tbx"
-																	placeholder='<?php echo _translate("Section Other"); ?>'
-																	title='<?php echo _translate("Please enter section other"); ?>'
-																	style="<?php echo ($testAttribute['section'] == 'otherSection') ? "" : "display:none;" ?>"
-																	value="<?php echo ($testAttribute['section'] == 'otherSection') ? $esc($testAttribute['section_name']) : "" ?>" />
-															</td>
-															<td align="center" style="vertical-align:middle;">
-																<input type="text" name="fieldOrder[]" id="fieldOrder1"
-																	class="form-control forceNumeric"
-																	placeholder="<?php echo _translate("Field Order"); ?>"
-																	title="<?php echo _translate("Please enter field order"); ?>"
-																	value="<?php echo $esc($testAttribute['field_order']); ?>" />
-															</td>
-															<td align="center" style="vertical-align:middle;">
-																<a class="btn btn-xs btn-primary" href="javascript:void(0);"
-																	onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a
-																	class="btn btn-xs btn-default" href="javascript:void(0);"
-																	onclick="removeAttributeRow(this.parentNode.parentNode);"><em
-																		class="fa-solid fa-minus"></em></a>
-															</td>
-														</tr>
+											<?php echo $renderFieldRow($i, (string) $otherAttributeId, $testAttribute); ?>
 														<?php
 														$i++;
 													}
@@ -690,96 +591,7 @@ $i = 1;
 											}
 										}
 									} else { ?>
-										<tr>
-											<td>
-												<input type="text" name="fieldName[]" id="fieldName1"
-													data-attributenumber="<?= $i ?>"
-													class="form-control fieldName isRequired"
-													placeholder='<?php echo _translate("Field Name"); ?>'
-													title='<?php echo _translate("Please enter field name"); ?>'
-													onblur="checkDuplication(this, 'fieldName');" />
-												<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control" />
-											</td>
-											<td align="center">
-												<input type="text" name="fieldCode[]" id="fieldCode1"
-													data-attributenumber="<?= $i ?>"
-													class="form-control fieldCode isRequired"
-													placeholder="<?php echo _translate("Field Code"); ?>"
-													title="<?php echo _translate("Please enter field code"); ?>"
-													onblur="checkDuplication(this, \'fieldCode\');"
-													onchange="this.value=Utilities.toSnakeCase(this.value)" />
-											</td>
-											<td>
-												<select class="form-control isRequired" data-attributenumber="<?= $i ?>"
-													name="fieldType[]" id="fieldType1"
-													title="<?php echo _translate('Please select the field type'); ?>"
-													onchange="changeField(this, 1)">
-													<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-													<option value="number"><?php echo _translate("Number"); ?></option>
-													<option value="text"><?php echo _translate("Text"); ?></option>
-													<option value="date"><?php echo _translate("Date"); ?></option>
-													<option value="dropdown"><?php echo _translate("Dropdown"); ?></option>
-													<option value="multiple">
-														<?php echo _translate("Multiselect Dropdown"); ?>
-													</option>
-												</select><br>
-												<!--<textarea name="dropDown[]" id="dropDown1" class="form-control" placeholder='<?php echo _translate("Drop down values as , separated"); ?>' title='<?php echo _translate("Please drop down values as comma separated"); ?>' style="display:none;"></textarea>-->
-												<div class="tag-input dropDown1" style="display:none;">
-													<input type="text" name="dropDown[]" id="dropDown1"
-														onkeyup="showTags(event,this,'1')"
-														class="tag-input-field form-control"
-														placeholder="<?php echo _translate('Enter options...'); ?>"
-														title="<?php echo _translate('Please enter the options'); ?>" />
-													<input type="hidden" class="fdropDown" id="fdropDown1"
-														name="fdropDown[]" />
-													<div class="tag-container container1">
-													</div>
-												</div>
-											</td>
-											<td>
-												<select class="form-control isRequired" name="mandatoryField[]"
-													id="mandatoryField1"
-													title="<?php echo _translate('Please select is it mandatory'); ?>">
-													<option value="yes"><?php echo _translate("Yes"); ?></option>
-													<option value="no" selected><?php echo _translate("No"); ?></option>
-												</select>
-											</td>
-											<td>
-												<select class="form-control isRequired" name="section[]" id="section1"
-													title="<?php echo _translate('Please select the section'); ?>"
-													onchange="checkSection('1')">
-													<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-													<option value="facilitySection"><?php echo _translate("Facility"); ?>
-													</option>
-													<option value="patientSection"><?php echo _translate("Patient"); ?>
-													</option>
-													<option value="specimenSection"><?php echo _translate("Specimen"); ?>
-													</option>
-													<option value="caseInformation"><?php echo _translate("Case Information"); ?></option>
-													<option value="labSection"><?php echo _translate("Lab"); ?></option>
-													<option value="otherSection"><?php echo _translate("Other"); ?></option>
-												</select>
-												<input type="text" name="sectionOther[]" id="sectionOther1"
-													class="form-control auto-complete-tbx"
-													onchange="addNewSection(this.value)"
-													placeholder='<?php echo _translate("Section Other"); ?>'
-													title='<?php echo _translate("Please enter section other"); ?>'
-													style="display:none;" />
-											</td>
-											<td>
-												<input type="text" name="fieldOrder[]" id="fieldOrder1"
-													class="form-control forceNumeric"
-													placeholder="<?php echo _translate("Field Order"); ?>"
-													title="<?php echo _translate("Please enter field order"); ?>" />
-											</td>
-											<td align="center" style="vertical-align:middle;">
-												<a class="btn btn-xs btn-primary" href="javascript:void(0);"
-													onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a
-													class="btn btn-xs btn-default" href="javascript:void(0);"
-													onclick="removeAttributeRow(this.parentNode.parentNode);"><em
-														class="fa-solid fa-minus"></em></a>
-											</td>
-										</tr>
+							<?php echo $renderFieldRow(1, "", []); ?>
 									<?php } ?>
 								</tbody>
 							</table>
@@ -1320,32 +1132,12 @@ $i = 1;
 		h.setAttribute("align", "center");
 		h.setAttribute("style", "vertical-align:middle");
 
-		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _translate('Field Name'); ?>" title="<?php echo _translate('Please enter field name'); ?>" onblur="checkDuplication(this, \'fieldName\');"/ ><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" class="form-control" />';
-		c.innerHTML = '<input type="text" name="fieldCode[]" id="fieldCode' + tableRowId + '" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>"/>';
-		d.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, ' + tableRowId + ')">\
-							<option value=""> <?php echo _translate("-- Select --"); ?> </option>\
-							<option value="number"><?php echo _translate("Number"); ?></option>\
-							<option value="text"><?php echo _translate("Text"); ?></option>\
-							<option value="date"><?php echo _translate("Date"); ?></option>\
-							<option value="dropdown"><?php echo _translate("Dropdown"); ?></option>\
-							<option value="multiple"><?php echo _translate("multiple Dropdown"); ?></option>\
-						</select><br>\
-						<div class="tag-input dropDown' + tableRowId + '" style="display:none;"><input type="text" name="dropDown[]" id="dropDown' + tableRowId + '" onkeyup="showTags(event,this,' + tableRowId + ')" class="tag-input-field form-control" placeholder="<?php echo _translate('Enter options...'); ?>" title="<?php echo _translate('Please enter the options'); ?>" /><input type="hidden" class="fdropDown" id="fdropDown' + tableRowId + '" name="fdropDown[]" /><div class="tag-container container' + tableRowId + '"></div></div>';
-		e.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _translate('Please select is it mandatory'); ?>">\
-							<option value="yes"><?php echo _translate("Yes"); ?></option>\
-							<option value="no" selected><?php echo _translate("No"); ?></option>\
-						</select>';
-		f.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _translate('Please select the section'); ?>" onchange="checkSection(' + tableRowId + ')">\
-						<option value=""> <?php echo _translate("-- Select --"); ?> </option>\
-						<option value="facilitySection"><?php echo _translate("Facility"); ?></option>\
-						<option value="patientSection"><?php echo _translate("Patient"); ?></option>\
-						<option value="specimenSection"><?php echo _translate("Specimen"); ?></option>\
-						<option value="caseInformation"><?php echo _translate("Case Information"); ?></option>\
-						<option value="labSection"><?php echo _translate("Lab"); ?></option>\
-						<option value="otherSection"><?php echo _translate("Other"); ?></option>\
-					</select>\
-					<input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder="<?php echo _translate("Section Other"); ?>" title="<?php echo _translate("Please enter section other"); ?>" style="display:none;"/>';
-		g.innerHTML = '<input type="text" name="fieldOrder[]" id="fieldOrder' + tableRowId + '" class="form-control forceNumeric" placeholder="<?php echo _translate("Field Order"); ?>" title="<?php echo _translate("Please enter field order"); ?>" />';
+		b.innerHTML = '<input type="text" name="fieldName[]" id="fieldName' + tableRowId + '" data-attributenumber="' + tableRowId + '" class="isRequired fieldName form-control" placeholder="<?php echo _translate('Field Name'); ?>" title="<?php echo _translate('Please enter field name'); ?>" onblur="checkDuplication(this, \'fieldName\');" /><input type="text" name="fieldCode[]" id="fieldCode' + tableRowId + '" data-attributenumber="' + tableRowId + '" class="form-control input-sm fieldCode isRequired dataClass" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Auto-filled from the field name"); ?>" onblur="checkDuplication(this, \'fieldCode\');" onchange="this.value=Utilities.toSnakeCase(this.value)" style="margin-top:6px;font-size:11px;color:#5a636b;" /><input type="hidden" name="fieldId[]" id="fieldId' + tableRowId + '" />';
+		c.innerHTML = '<select class="form-control isRequired" name="fieldType[]" id="fieldType' + tableRowId + '" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, ' + tableRowId + ')"><option value=""> <?php echo _translate("-- Select --"); ?> </option><option value="number"><?php echo _translate("Number"); ?></option><option value="text"><?php echo _translate("Text"); ?></option><option value="date"><?php echo _translate("Date"); ?></option><option value="dropdown"><?php echo _translate("Dropdown"); ?></option><option value="multiple"><?php echo _translate("Multiselect Dropdown"); ?></option></select><div class="tag-input dropDown' + tableRowId + '" style="display:none;"><input type="text" name="dropDown[]" id="dropDown' + tableRowId + '" onkeyup="showTags(event,this,' + tableRowId + ')" class="tag-input-field form-control" placeholder="<?php echo _translate('Enter options...'); ?>" title="<?php echo _translate('Please enter the options'); ?>" /><input type="hidden" class="fdropDown" id="fdropDown' + tableRowId + '" name="fdropDown[]" /><div class="tag-container container' + tableRowId + '"></div></div>';
+		d.innerHTML = '<select class="form-control isRequired" name="mandatoryField[]" id="mandatoryField' + tableRowId + '" title="<?php echo _translate('Please select is it mandatory'); ?>"><option value="yes"><?php echo _translate("Yes"); ?></option><option value="no" selected><?php echo _translate("No"); ?></option></select>';
+		e.innerHTML = '<select class="form-control" name="showOnReport[]" id="showOnReport' + tableRowId + '" title="<?php echo _translate('Show on result PDF'); ?>"><option value="no" selected><?php echo _translate("No"); ?></option><option value="yes"><?php echo _translate("Yes"); ?></option></select>';
+		f.innerHTML = '<select class="form-control isRequired" name="section[]" id="section' + tableRowId + '" title="<?php echo _translate('Please select the section'); ?>" onchange="checkSection(' + tableRowId + ')"><option value=""> <?php echo _translate("-- Select --"); ?> </option><option value="facilitySection"><?php echo _translate("Facility"); ?></option><option value="patientSection"><?php echo _translate("Patient"); ?></option><option value="specimenSection"><?php echo _translate("Specimen"); ?></option><option value="caseInformation"><?php echo _translate("Case Information"); ?></option><option value="labSection"><?php echo _translate("Lab"); ?></option><option value="otherSection"><?php echo _translate("Other"); ?></option></select><input type="text" name="sectionOther[]" id="sectionOther' + tableRowId + '" class="form-control auto-complete-tbx" onchange="addNewSection(this.value)" placeholder="<?php echo _translate("Section Other"); ?>" title="<?php echo _translate("Please enter section other"); ?>" style="display:none;"/>';
+		g.innerHTML = '<input type="text" name="fieldOrder[]" id="fieldOrder' + tableRowId + '" class="form-control forceNumeric" placeholder="<?php echo _translate("Order"); ?>" title="<?php echo _translate("Please enter field order"); ?>" />';
 		h.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
 		$(a).fadeIn(800);
 
