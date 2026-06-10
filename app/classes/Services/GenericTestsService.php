@@ -228,15 +228,13 @@ final class GenericTestsService extends AbstractTestService
 
         $tr = $post['testResult'];
 
-        // Prior per-test change history keyed by existing test_id, read server-side
-        // so the accumulating reason log cannot be spoofed/truncated by the client.
-        $priorReasonByTestId = [];
-        foreach ($this->db->rawQuery("SELECT test_id, reason_for_result_change FROM $testTableName WHERE generic_id = ?", [$sampleId]) as $r) {
-            $priorReasonByTestId[(string) $r['test_id']] = $r['reason_for_result_change'];
+        // Existing rows keyed by test_id -- drives three things: server-side accumulation of
+        // the per-test change history (cannot be spoofed by the client), upserting each card
+        // in place (stable test_id), and the recoverable snapshot before a confirmed delete.
+        $existingById = [];
+        foreach ($this->db->rawQuery("SELECT * FROM $testTableName WHERE generic_id = ?", [$sampleId]) as $r) {
+            $existingById[(string) $r['test_id']] = $r;
         }
-
-        $this->db->where('generic_id', $sampleId);
-        $this->db->delete($testTableName);
 
         $lastValidIndex = -1;
         foreach ($tr['labId'] as $k => $labId) {
@@ -247,6 +245,7 @@ final class GenericTestsService extends AbstractTestService
 
         $latestRow = [];
         $latestRejected = false;
+        $keptIds = [];   // existing test_ids updated in place this save (so we never delete them)
         foreach ($tr['labId'] as $k => $labId) {
             if (empty($labId)) {
                 continue;
@@ -254,7 +253,10 @@ final class GenericTestsService extends AbstractTestService
             $rejected = $tr['isSampleRejected'][$k] ?? null;
             $isRej = ($rejected === 'yes');
 
-            $hist = MiscUtility::parseResultChangeHistory($priorReasonByTestId[(string) ($tr['testId'][$k] ?? '')] ?? null);
+            $submittedTestId = trim((string) ($tr['testId'][$k] ?? ''));
+            $isExisting = ($submittedTestId !== '' && isset($existingById[$submittedTestId]));
+
+            $hist = MiscUtility::parseResultChangeHistory($isExisting ? ($existingById[$submittedTestId]['reason_for_result_change'] ?? null) : null);
             $reasonText = trim((string) ($tr['reasonForChange'][$k] ?? ''));
             $revisedBy = null;
             $revisedOn = null;
@@ -291,11 +293,33 @@ final class GenericTestsService extends AbstractTestService
                 'updated_datetime' => DateUtility::getCurrentDateTime(),
                 'data_sync' => 0,
             ];
-            $this->db->insert($testTableName, $row);
+            // Upsert: update the existing row in place (test_id preserved) or insert a new one.
+            // No blanket delete -- a card the user did not touch is updated, never recreated.
+            if ($isExisting) {
+                $this->db->where('test_id', (int) $submittedTestId);
+                $this->db->update($testTableName, $row);
+                $keptIds[$submittedTestId] = true;
+            } else {
+                $this->db->insert($testTableName, $row);
+            }
             if ($k === $lastValidIndex) {
                 $latestRow = $row;
                 $latestRejected = $isRej;
             }
+        }
+
+        // Targeted delete: ONLY the existing tests the user explicitly confirmed removing
+        // (client sends deletedTestIds[]). Snapshot each to audit_log first so it stays
+        // recoverable (generic_test_results has no audit triggers). An existing test that was
+        // neither updated nor confirmed-deleted is PRESERVED -- never silently wiped. Ids that
+        // do not belong to THIS sample are ignored.
+        foreach (array_unique(array_map('strval', (array) ($post['deletedTestIds'] ?? []))) as $delId) {
+            if ($delId === '' || !isset($existingById[$delId]) || isset($keptIds[$delId])) {
+                continue;
+            }
+            $this->snapshotToAuditLog($testTableName, (int) $delId, $existingById[$delId]);
+            $this->db->where('test_id', (int) $delId);
+            $this->db->delete($testTableName);
         }
 
         // Final interpretation = sample-level conclusion (also locks Add Test/referral in the form).
@@ -348,6 +372,31 @@ final class GenericTestsService extends AbstractTestService
 
         $this->db->where('sample_id', $sampleId);
         $this->db->update($tableName, $formUpdate);
+    }
+
+    /**
+     * Snapshot a row into audit_log (action='delete') just before a hard delete, matching the
+     * Audit Trail v2 format (form_table, record_id, revision, action, dt_datetime, row_data).
+     * generic_test_results has no audit triggers, so this is how a deleted per-test result
+     * stays recoverable.
+     */
+    private function snapshotToAuditLog(string $formTable, int $recordId, array $row): void
+    {
+        if ($recordId <= 0) {
+            return;
+        }
+        $rev = $this->db->rawQueryOne(
+            "SELECT COALESCE(MAX(revision),0)+1 AS next_rev FROM audit_log WHERE form_table = ? AND record_id = ?",
+            [$formTable, (string) $recordId]
+        );
+        $this->db->insert('audit_log', [
+            'form_table' => $formTable,
+            'record_id' => (string) $recordId,
+            'revision' => (int) ($rev['next_rev'] ?? 1),
+            'action' => 'delete',
+            'dt_datetime' => DateUtility::getCurrentDateTime(),
+            'row_data' => json_encode($row, JSON_UNESCAPED_UNICODE),
+        ]);
     }
 
     public function getReasonForFailure($option = true, $updatedDateTime = null)

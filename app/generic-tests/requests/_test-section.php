@@ -270,6 +270,10 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 			} ?>
 		</div>
 
+		<?php // Confirmed deletions of already-saved tests are recorded here as deletedTestIds[]
+		// so the server deletes exactly those (and snapshots them to audit_log first). ?>
+		<div id="gtDeletedTestIds" style="display:none;"></div>
+
 		<div style="margin:6px 0 18px;">
 			<button type="button" id="gtAddTestBtn" class="btn btn-success" onclick="gtAddTest();">
 				<em class="fa-solid fa-plus"></em> <?= _translate("Add Test"); ?>
@@ -313,7 +317,8 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 	var gtI18n = {
 		unit: "<?= _jsTranslate("Unit"); ?>",
 		selectResult: "<?= _jsTranslate("Select test result"); ?>",
-		numeric: "<?= _jsTranslate("Enter numeric result"); ?>"
+		numeric: "<?= _jsTranslate("Enter numeric result"); ?>",
+		confirmDelete: "<?= _jsTranslate("Are you sure you want to delete this test? Its saved result will be permanently removed."); ?>"
 	};
 
 	// Build the Test Result control for a method's result group -- a qualitative
@@ -399,10 +404,20 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 
 	function gtRemoveTest() {
 		var $sections = $('#testSections .test-section');
-		if ($sections.length > 1) {
-			$sections.last().remove();
-			gtTestCount--;
+		if ($sections.length <= 1) { return; }
+		var $last = $sections.last();
+		// An already-saved test (non-empty test_id) is a real deletion: confirm, and record its
+		// id so the server deletes exactly that row (after snapshotting it to audit_log). A new,
+		// unsaved card just disappears.
+		var testId = ($last.find('input[name="testResult[testId][]"]').val() || '').trim();
+		if (testId !== '') {
+			if (!confirm(gtI18n.confirmDelete)) { return; }
+			$('#gtDeletedTestIds').append(
+				$('<input>', { type: 'hidden', name: 'deletedTestIds[]', value: testId })
+			);
 		}
+		$last.remove();
+		gtTestCount--;
 		if ($('#testSections .test-section').length <= 1) { $('#gtRemoveTestBtn').hide(); }
 	}
 
