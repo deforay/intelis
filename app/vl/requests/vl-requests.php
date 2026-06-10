@@ -930,7 +930,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 			});
 		<?php if ((!empty($_GET['daterange']) && isset($_GET['type']) && $_GET['type'] == 'rejection')) { ?>
 			$('#sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
-			$('#sampleCollectionDate').val('<?php echo $_GET['daterange']; ?>');
+			$('#sampleCollectionDate').val(<?= _jsEscape($_GET['daterange'] ?? '') ?>);
 		<?php } else { ?>
 			$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate, #printDate, #requestCreatedDatetime').val("");
 		<?php } ?>
