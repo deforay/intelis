@@ -156,7 +156,7 @@ if (isset($_POST['batchId'])) {
             $labCode = ' - ' . $sample['lab_assigned_code'];
         }
         if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
-            <option value="<?php echo $sample[$primaryKeyColumn]; ?>">
+            <option value="<?php echo _sanitizeOutput($sample[$primaryKeyColumn]); ?>">
                 <?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . $labCode; ?>
             </option>
         <?php }
@@ -170,7 +170,7 @@ if (isset($_POST['batchId'])) {
                     $labCode = ' - ' . $sample['lab_assigned_code'];
                 }
                 if (!isset($_POST['batchId']) || $_POST['batchId'] != $sample['sample_batch_id']) { ?>
-                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) ? "selected='selected'" : ""; ?>>
+                    <option value="<?php echo _sanitizeOutput($sample[$primaryKeyColumn]); ?>" <?php echo (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) ? "selected='selected'" : ""; ?>>
                         <?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . ($sample['facility_name']) . $labCode; ?>
                     </option>
                 <?php }
@@ -201,7 +201,7 @@ if (isset($_POST['batchId'])) {
                     $labCode = ' - ' . $sample['lab_assigned_code'];
                 }
                 if (isset($_POST['batchId']) && $_POST['batchId'] == $sample['sample_batch_id']) { ?>
-                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>">
+                    <option value="<?php echo _sanitizeOutput($sample[$primaryKeyColumn]); ?>">
                         <?= $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . $sample['facility_name'] . '-----' . $labCode; ?>
                     </option>
                 <?php }

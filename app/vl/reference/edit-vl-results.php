@@ -67,13 +67,13 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 											class="mandatory">*</span></label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="resultName"
-											name="resultName" value="<?php echo $resultInfo[0]['result']; ?>"
+											name="resultName" value="<?php echo _sanitizeOutput($resultInfo[0]['result']); ?>"
 											placeholder="Viral Load Result" title="Please enter Result name" readonly
 											onblur="checkNameValidation('r_vl_results','result',this,'<?php echo "result_id##" . htmlspecialchars((string) $id); ?>','The Result name that you entered already exists.Enter another name',null)" />
 										<input type="hidden" class="form-control" id="resultId" name="resultId"
-											value="<?php echo base64_encode((string) $id); ?>" />
+											value="<?php echo _sanitizeOutput(base64_encode((string) $id)); ?>" />
 										<input type="hidden" class="form-control" id="oldResultName"
-											name="oldResultName" value="<?php echo $resultInfo[0]['result']; ?>" />
+											name="oldResultName" value="<?php echo _sanitizeOutput($resultInfo[0]['result']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -134,7 +134,7 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 												echo "";
 											} else {
 												?>
-												<option value="<?php echo $key; ?>"><?php echo $ins; ?> </option>
+												<option value="<?php echo _sanitizeOutput($key); ?>"><?php echo $ins; ?> </option>
 												<?php
 											}
 										} ?>
@@ -159,7 +159,7 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 										multiple="multiple">
 										<?php foreach ($selectedInstruments as $value) {
 											if (!empty($activeInstruments) && array_key_exists($value, $activeInstruments)) { ?>
-												<option value="<?php echo $value; ?>"><?php echo $activeInstruments[$value]; ?>
+												<option value="<?php echo _sanitizeOutput($value); ?>"><?php echo $activeInstruments[$value]; ?>
 												</option>
 											<?php }
 										} ?>

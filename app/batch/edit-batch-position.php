@@ -180,15 +180,15 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 						</div>
 					</div>
 					<div class="box-footer">
-						<input type="hidden" name="type" id="type" value="<?php echo $type; ?>" />
-						<input type="hidden" name="sortType" id="typeSort" value="<?= $_GET['sortType']; ?>" />
-						<input type="hidden" name="sortBy" id="bySort" value="<?= $_GET['sortBy']; ?>" />
+						<input type="hidden" name="type" id="type" value="<?php echo _sanitizeOutput($type); ?>" />
+						<input type="hidden" name="sortType" id="typeSort" value="<?= _sanitizeOutput($_GET['sortType']); ?>" />
+						<input type="hidden" name="sortBy" id="bySort" value="<?= _sanitizeOutput($_GET['sortBy']); ?>" />
 						<input type="hidden" name="sortOrders" id="sortOrders"
-							value="<?= implode(",", $content['displayOrder']); ?>" />
+							value="<?= _sanitizeOutput(implode(",", $content['displayOrder'])); ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo htmlspecialchars($id); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);"
 							onclick="validateNow();return false;">Submit</a>
-						<a href="batches.php?type=<?php echo $type; ?>" class="btn btn-default"> Cancel</a>
+						<a href="batches.php?type=<?php echo _sanitizeOutput($type); ?>" class="btn btn-default"> Cancel</a>
 					</div>
 				</form>
 			</div>

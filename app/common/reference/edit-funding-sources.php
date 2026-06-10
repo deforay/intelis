@@ -50,7 +50,7 @@ $partnerInfo = $db->rawQuery($query, [$id]);
                                     <label for="fundingSrcName" class="col-lg-4 control-label">Funding Source Name <span
                                             class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" value="<?php echo $partnerInfo[0]['funding_source_name']; ?>"
+                                        <input type="text" value="<?php echo _sanitizeOutput($partnerInfo[0]['funding_source_name']); ?>"
                                             class="form-control isRequired" id="fundingSrcName" name="fundingSrcName"
                                             placeholder="Funding Source" title="Please enter Funding Source"
                                             onblur="checkNameValidation('r_funding_sources','funding_source_name',this,'<?php echo "funding_source_id##" . $id; ?>','The Funding Source that you entered already exists.Enter another Funding Source',null)" />
@@ -76,7 +76,7 @@ $partnerInfo = $db->rawQuery($query, [$id]);
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer">
-                        <input type="hidden" name="fundingId" name="fundingId" value="<?php echo $_GET['id']; ?>">
+                        <input type="hidden" name="fundingId" name="fundingId" value="<?php echo _sanitizeOutput($_GET['id']); ?>">
                         <a class="btn btn-primary" href="javascript:void(0);"
                             onclick="validateNow();return false;">Submit</a>
                         <a href="funding-sources.php" class="btn btn-default"> Cancel</a>
