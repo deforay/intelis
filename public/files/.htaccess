@@ -10,11 +10,11 @@ Header set X-Content-Type-Options "nosniff"
 
 # Defense-in-depth: disable the PHP engine entirely for this directory.
 <IfModule mod_php.c>
-  php_admin_flag engine off
+  php_flag engine off
 </IfModule>
 <IfModule mod_php7.c>
-  php_admin_flag engine off
+  php_flag engine off
 </IfModule>
 <IfModule mod_php8.c>
-  php_admin_flag engine off
+  php_flag engine off
 </IfModule>
