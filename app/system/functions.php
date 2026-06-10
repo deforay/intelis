@@ -511,6 +511,26 @@ function _sanitizeOutput($string): string
     return htmlspecialchars((string) $string, ENT_QUOTES, 'UTF-8');
 }
 
+/**
+ * Escape a value for safe output inside a JavaScript context (inside a
+ * <script> block or an inline handler). Returns a complete, quoted JS literal
+ * via json_encode, so do NOT wrap the output in additional quotes.
+ *
+ * The JSON_HEX_* flags make the output safe inside <script> (no </script>
+ * breakout) and inside single- or double-quoted HTML attributes.
+ *
+ * Example:  $('#field').val(<?= _jsEscape($_GET['daterange'] ?? '') ?>);
+ */
+function _jsEscape($value): string
+{
+    // json_encode returns false on invalid UTF-8 (e.g. attacker-supplied bytes);
+    // fall back to an empty JS string so the output is always a valid literal.
+    return json_encode(
+        $value ?? '',
+        JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE
+    ) ?: '""';
+}
+
 function _getFromFileCache(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600)
 {
     /** @var FileCacheUtility $fileCache */

@@ -162,8 +162,8 @@ if ($module == 'generic-tests') {
 											onchange="getManifestCodeForm(this.value)">
 											<option value=""> -- Select -- </option>
 											<?php foreach ($testTypeResult as $testType) { ?>
-												<option value="<?php echo $testType['test_type_id'] ?>"
-													data-short="<?php echo $testType['test_short_code']; ?>">
+												<option value="<?php echo _sanitizeOutput($testType['test_type_id']) ?>"
+													data-short="<?php echo _sanitizeOutput($testType['test_short_code']); ?>">
 													<?php echo $testType['test_standard_name'] ?>
 												</option>
 											<?php } ?>
@@ -184,10 +184,10 @@ if ($module == 'generic-tests') {
 									<input type="text" class="form-control isRequired" id="packageCode"
 										name="packageCode" placeholder="<?= _htmlTranslate("Manifest Code"); ?>" title="
 									<?= _htmlTranslate("Please enter manifest code"); ?>" readonly
-										value="<?php echo strtoupper(htmlspecialchars($sampleManifestCode)); ?>" />
+										value="<?php echo _sanitizeOutput(strtoupper($sampleManifestCode)); ?>" />
 									<input type="hidden" class="form-control isRequired" id="module" name="module"
 										placeholder="" title="" readonly
-										value="<?= htmlspecialchars((string) $module); ?>" />
+										value="<?= _sanitizeOutput((string) $module); ?>" />
 								</div>
 							</div>
 						</div>
@@ -283,11 +283,11 @@ if ($module == 'generic-tests') {
 		<!-- /.box-body -->
 		<div class="box-footer">
 			<input type="hidden" name="selectedSample" id="selectedSample" />
-			<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
+			<input type="hidden" name="type" id="type" value="<?php echo _sanitizeOutput($_GET['type']); ?>" />
 			<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine"
 				onclick="validateNow();return false;" style="pointer-events:none;" disabled><?= _translate("Save"); ?>
 			</a>
-			<a href="view-manifests.php?t=<?= ($_GET['t']); ?>" class="btn btn-default">
+			<a href="view-manifests.php?t=<?= _sanitizeOutput($_GET['t']); ?>" class="btn btn-default">
 				<?= _translate(text: "Cancel"); ?></a>
 		</div>
 		<!-- /.box-footer -->

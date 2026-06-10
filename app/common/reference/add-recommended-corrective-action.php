@@ -83,10 +83,10 @@ if (!empty($_GET['testType'])) {
                     <div class="box-footer">
                         <a class="btn btn-primary" href="javascript:void(0);"
                             onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-                        <a href="recommended-corrective-actions.php?testType=<?= $testType; ?>" class="btn btn-default">
+                        <a href="recommended-corrective-actions.php?testType=<?= _sanitizeOutput($testType); ?>" class="btn btn-default">
                             <?php echo _translate("Cancel"); ?></a>
                     </div>
-                    <input type="hidden" class="form-control" id="testType" name="testType" value="<?= $testType; ?>" />
+                    <input type="hidden" class="form-control" id="testType" name="testType" value="<?= _sanitizeOutput($testType); ?>" />
 
 
                     <!-- /.box-footer -->
