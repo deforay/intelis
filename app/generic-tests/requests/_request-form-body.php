@@ -909,6 +909,9 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                             </div>
                                                        </div>
                                                        <?php } // end Approved On column (single-result only) ?>
+                                                       <?php // Multi-test mode renders Lab Tech. Comments inside the SAMPLE OUTCOME
+                                                       // grid (_test-section.php); only the legacy single-result layout uses this one. ?>
+                                                       <?php if (empty($multiTestResults)) { ?>
                                                        <div class="col-md-6">
                                                             <label class="col-lg-5 control-label labels"
                                                                  for="labComments"><?= _translate("Lab Tech. Comments"); ?>
@@ -920,6 +923,7 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                                       title="<?php echo _translate('Please enter LabComments'); ?>"><?= $pf('lab_tech_comments') ?></textarea>
                                                             </div>
                                                        </div>
+                                                       <?php } ?>
                                                   </div>
                                                   <?php if ($showChangeReason) { ?>
                                                        <div class="row change-reason reasonForResultChanges"

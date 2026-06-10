@@ -95,7 +95,7 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 			<tr class="gtRejectionRow" style="<?= $isRejected ? '' : 'display:none;'; ?>">
 				<td style="width:33.33%;">
 					<label class="label-control"><?= _translate("Reason for Rejection"); ?></label>
-					<select class="form-control gtRejectionReason" name="testResult[sampleRejectionReason][]" id="sampleRejectionReason<?= $n; ?>">
+					<select class="form-control gtRejectionReason" name="testResult[sampleRejectionReason][]" id="sampleRejectionReason<?= $n; ?>" onchange="gtOfferSampleReject(this);">
 						<option value=""> -- <?= _translate("Select"); ?> --</option>
 						<?php foreach ($rejectionTypeResult as $type) { ?>
 							<optgroup label="<?= $gtEsc(strtoupper((string) $type['rejection_type'])); ?>">
@@ -283,25 +283,77 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 			</button>
 		</div>
 
+		<?php
+		// SAMPLE OUTCOME (sample-level): either the whole sample is rejected OR a final interpretation
+		// is given -- mutually exclusive. Distinct from per-card rejection/results. Rejection drives
+		// form_generic.is_sample_rejected + REJECTED status; a final interpretation drives the result +
+		// Awaiting Approval. Rejecting a card offers to mirror the rejection here.
+		$gtSampleRejected  = (($gtParent['is_sample_rejected'] ?? '') === 'yes');
+		$gtSampleRejReason = $gtParent['reason_for_sample_rejection'] ?? '';
+		$gtSampleRejOn     = (!empty($gtParent['rejection_on']) && $gtParent['rejection_on'] != '0000-00-00 00:00:00')
+			? DateUtility::humanReadableDateFormat((string) $gtParent['rejection_on'], false) : '';
+		$gtHasFinal        = (trim((string) ($gtParent['result'] ?? '')) !== '');
+		?>
 		<div class="box-header with-border">
-			<h3 class="box-title"><?= _translate("FINAL INTERPRETATION"); ?></h3>
+			<h3 class="box-title"><?= _translate("SAMPLE OUTCOME"); ?></h3>
 		</div>
 		<table class="table" style="width:100%;">
 			<tr>
 				<td style="width:33.33%;">
-					<label class="label-control"><?= _translate("Enter the Final Interpretation?"); ?></label>
-					<select class="form-control" id="isResultFinalized" name="isResultFinalized" onchange="gtToggleFinal();">
-						<option value="no"><?= _translate("No"); ?></option>
-						<option value="yes" <?= (trim((string) ($gtParent['result'] ?? '')) !== '') ? 'selected' : ''; ?>><?= _translate("Yes"); ?></option>
+					<label class="label-control"><?= _translate("Is the sample rejected?"); ?></label>
+					<select class="form-control" id="gtSampleRejected" name="sampleRejected" onchange="gtToggleSampleRejection();">
+						<option value="no" <?= $gtSampleRejected ? '' : 'selected'; ?>><?= _translate("No"); ?></option>
+						<option value="yes" <?= $gtSampleRejected ? 'selected' : ''; ?>><?= _translate("Yes"); ?></option>
 					</select>
 				</td>
-				<td style="width:66.66%;">
-					<label class="label-control"><?= _translate("Final Interpretation"); ?>
-						<small class="text-muted">(<?= _translate("locks Add Test and referral once saved"); ?>)</small></label>
-					<input type="text" class="form-control" id="finalResult" name="finalResult"
-						value="<?= $gtEsc($gtParent['result'] ?? ''); ?>"
-						placeholder="<?= _translate("Enter the final interpretation"); ?>"
-						style="<?= (trim((string) ($gtParent['result'] ?? '')) !== '') ? '' : 'display:none;'; ?>" />
+				<td style="width:33.33%;">
+					<?php // Cell 2: the Final-Interpretation toggle by default; swapped for the Reason when rejected. ?>
+					<div class="gtFinalToggle" style="<?= $gtSampleRejected ? 'display:none;' : ''; ?>">
+						<label class="label-control"><?= _translate("Enter the Final Interpretation?"); ?></label>
+						<select class="form-control" id="isResultFinalized" name="isResultFinalized" onchange="gtToggleFinal();">
+							<option value="no" <?= $gtHasFinal ? '' : 'selected'; ?>><?= _translate("No"); ?></option>
+							<option value="yes" <?= $gtHasFinal ? 'selected' : ''; ?>><?= _translate("Yes"); ?></option>
+						</select>
+					</div>
+					<div class="gtRejReason" style="<?= $gtSampleRejected ? '' : 'display:none;'; ?>">
+						<label class="label-control"><?= _translate("Reason for Rejection"); ?></label>
+						<select class="form-control" id="gtSampleRejectionReason" name="sampleRejectionReason">
+							<option value=""> -- <?= _translate("Select"); ?> --</option>
+							<?php foreach ($rejectionTypeResult as $type) { ?>
+								<optgroup label="<?= $gtEsc(strtoupper((string) $type['rejection_type'])); ?>">
+									<?php foreach ($rejectionResult as $reject) {
+										if ($type['rejection_type'] === $reject['rejection_type']) { ?>
+											<option value="<?= $gtEsc($reject['rejection_reason_id']); ?>" <?= ((string) $gtSampleRejReason === (string) $reject['rejection_reason_id']) ? 'selected' : ''; ?>>
+												<?= $gtEsc($reject['rejection_reason_name']); ?>
+											</option>
+										<?php }
+									} ?>
+								</optgroup>
+							<?php } ?>
+						</select>
+					</div>
+				</td>
+				<td style="width:33.33%;">
+					<?php // Cell 3: the Final Interpretation field (when finalized) or the Rejection Date (when rejected). ?>
+					<div class="gtFinalField" style="<?= ($gtHasFinal && !$gtSampleRejected) ? '' : 'display:none;'; ?>">
+						<label class="label-control"><?= _translate("Final Interpretation"); ?>
+							<small class="text-muted">(<?= _translate("locks Add Test and referral once saved"); ?>)</small></label>
+						<input type="text" class="form-control" id="finalResult" name="finalResult"
+							value="<?= $gtEsc($gtParent['result'] ?? ''); ?>"
+							placeholder="<?= _translate("Enter the final interpretation"); ?>" />
+					</div>
+					<div class="gtRejDate" style="<?= $gtSampleRejected ? '' : 'display:none;'; ?>">
+						<label class="label-control"><?= _translate("Rejection Date"); ?></label>
+						<input class="form-control date" type="text" id="gtSampleRejectionDate" name="sampleRejectionDate"
+							value="<?= $gtEsc($gtSampleRejOn); ?>" placeholder="<?= _translate("Select rejection date"); ?>" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+					<label class="label-control"><?= _translate("Lab Tech. Comments"); ?></label>
+					<textarea class="form-control" name="labComments" id="labComments" rows="2"
+						placeholder="<?= _translate('Lab comments'); ?>"><?= $gtEsc($gtParent['lab_tech_comments'] ?? ''); ?></textarea>
 				</td>
 			</tr>
 		</table>
@@ -318,7 +370,8 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 		unit: "<?= _jsTranslate("Unit"); ?>",
 		selectResult: "<?= _jsTranslate("Select test result"); ?>",
 		numeric: "<?= _jsTranslate("Enter numeric result"); ?>",
-		confirmDelete: "<?= _jsTranslate("Are you sure you want to delete this test? Its saved result will be permanently removed."); ?>"
+		confirmDelete: "<?= _jsTranslate("Are you sure you want to delete this test? Its saved result will be permanently removed."); ?>",
+		offerSampleReject: "<?= _jsTranslate("This test is rejected. Reject the whole sample for the same reason? You can change the reason after."); ?>"
 	};
 
 	// Build the Test Result control for a method's result group -- a qualitative
@@ -374,10 +427,38 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 
 	function gtToggleFinal() {
 		var on = $('#isResultFinalized').val() === 'yes';
-		$('#finalResult').toggle(on);
+		$('.gtFinalField').toggle(on);
 		// Final interpretation locks adding more tests / referral.
 		$('#gtAddTestBtn').prop('disabled', on);
 		$('.referSampleBtn, #referToLab, .genericReferralBtn').prop('disabled', on).toggleClass('disabled', on);
+	}
+
+	// Sample-level rejection (the whole sample), distinct from per-card rejection. When rejected,
+	// cell 2 swaps the Final-Interpretation toggle for the Reason and cell 3 shows the Date; a
+	// rejected sample cannot have a final interpretation, so that is hidden/reset.
+	function gtToggleSampleRejection() {
+		var on = $('#gtSampleRejected').val() === 'yes';
+		$('.gtRejReason, .gtRejDate').toggle(on);
+		$('.gtFinalToggle').toggle(!on);
+		if (on) {
+			$('#isResultFinalized').val('no');
+			$('.gtFinalField').hide();
+			$('#gtAddTestBtn').prop('disabled', false);
+		} else {
+			gtToggleFinal();
+		}
+	}
+
+	// Rejecting a test (choosing its reason) offers to reject the whole sample with the same
+	// reason. Only prompts when the sample is not already marked rejected; the reason can be changed.
+	function gtOfferSampleReject(reasonSel) {
+		var reason = $(reasonSel).val();
+		if (!reason || $('#gtSampleRejected').val() === 'yes') { return; }
+		if (confirm(gtI18n.offerSampleReject)) {
+			$('#gtSampleRejected').val('yes');
+			gtToggleSampleRejection();
+			$('#gtSampleRejectionReason').val(reason);
+		}
 	}
 
 	function gtAddTest() {
