@@ -16,6 +16,8 @@ use Monolog\Handler\RotatingFileHandler;
 final class LoggerUtility
 {
     private static ?Logger $logger = null;
+    /** @var array<string, Logger> Cached per-channel loggers (separate files) */
+    private static array $channelLoggers = [];
     private const string LOG_FILENAME = 'logfile.log';
     private const int LOG_ROTATIONS = 30;
     private const int MAX_FILE_SIZE_MB = 100; // Maximum size per log file in MB
@@ -242,6 +244,73 @@ final class LoggerUtility
             // CRITICAL: Never let logging crash the application
             self::logToPhpErrorLog("LoggerUtility::log() failed: {$e->getMessage()} | Original message: " . substr($message, 0, 200));
         }
+    }
+
+    /**
+     * Log to a dedicated channel that writes to its own rotating file
+     * (<channel>.log) in the log directory, keeping these entries out of the
+     * main application log. Falls back to the PHP error log if the file
+     * handler cannot be configured.
+     */
+    public static function logToChannel(string $channel, Level|string $level, string $message, array $context = []): void
+    {
+        try {
+            self::$logCallCount++;
+            if (self::$logCallCount > self::$maxLogsPerRequest) {
+                self::logToPhpErrorLog("WARNING: Maximum logs per request exceeded. Possible logging loop detected.");
+                return;
+            }
+
+            if (strlen($message) > self::MAX_MESSAGE_LENGTH) {
+                $message = substr($message, 0, self::MAX_MESSAGE_LENGTH) . '... [message truncated - exceeded ' . self::MAX_MESSAGE_LENGTH . ' chars]';
+            }
+
+            $logger = self::getChannelLogger($channel);
+            $callerInfo = self::getCallerInfo(1);
+            $context['file'] ??= $callerInfo['file'];
+            $context['line'] ??= $callerInfo['line'];
+            $context = self::sanitizeContext($context);
+
+            $logger->log($level, MiscUtility::toUtf8($message), $context);
+        } catch (Throwable $e) {
+            self::logToPhpErrorLog("LoggerUtility::logToChannel() failed: {$e->getMessage()} | Original message: " . substr($message, 0, 200));
+        }
+    }
+
+    private static function getChannelLogger(string $channel): Logger
+    {
+        $safeChannel = preg_replace('/[^a-zA-Z0-9._-]/', '-', $channel) ?: 'channel';
+
+        if (isset(self::$channelLoggers[$safeChannel])) {
+            return self::$channelLoggers[$safeChannel];
+        }
+
+        $logger = new Logger($safeChannel);
+        $logDir = defined('LOG_PATH') ? LOG_PATH : VAR_PATH . '/logs';
+        $logLevel = defined('LOG_LEVEL') ? self::parseLogLevel(LOG_LEVEL) : Level::Debug;
+
+        try {
+            if (MiscUtility::makeDirectory($logDir, 0775) && is_writable($logDir)) {
+                $handler = new RotatingFileHandler(
+                    $logDir . '/' . $safeChannel . '.log',
+                    self::LOG_ROTATIONS,
+                    $logLevel,
+                    true,
+                    0664,
+                    false
+                );
+                $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
+                $logger->pushHandler($handler);
+            } else {
+                $logger->pushHandler(new ErrorLogHandler());
+            }
+        } catch (Throwable $e) {
+            $logger->pushHandler(new ErrorLogHandler());
+            self::logToPhpErrorLog("Failed to configure channel logger '{$safeChannel}': {$e->getMessage()}");
+        }
+
+        self::$channelLoggers[$safeChannel] = $logger;
+        return $logger;
     }
 
     private static function sanitizeContext(array $context): array

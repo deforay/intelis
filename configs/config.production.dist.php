@@ -76,4 +76,15 @@ $systemConfig['system'] = [
     'cache_di' => true, // set to true to enable DI Container caching
 ];
 
+
+// Security settings
+$systemConfig['security'] = [
+    // Enforce CSRF token validation on state-changing requests (POST/PUT/PATCH/DELETE).
+    // true  => reject requests that do not carry a valid CSRF token (recommended)
+    // false => legacy mode: only reject requests that send an *incorrect* token;
+    //          requests with no token are allowed through. Use this to roll back
+    //          quickly if a token-less form is discovered in production.
+    'csrf_enforce' => true,
+];
+
 return $systemConfig;
