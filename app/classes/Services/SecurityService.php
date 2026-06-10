@@ -110,7 +110,7 @@ final class SecurityService
         // token so token-less forms/endpoints can be found (via the Referer)
         // and fixed before enforcement is switched on.
         if (!$hasToken) {
-            LoggerUtility::logWarning('CSRF token missing on state-changing request', [
+            LoggerUtility::logToChannel('csrf', 'warning', 'CSRF token missing on state-changing request', [
                 'enforced' => $enforce,
                 'method'   => $request->getMethod(),
                 'path'     => $request->getUri()->getPath(),
