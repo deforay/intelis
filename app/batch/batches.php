@@ -221,7 +221,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		if (conf) {
 			$.post("/batch/delete-batch.php", {
 				id: bId,
-				type: '<?php echo $_GET['type']; ?>'
+				type: <?= _jsEscape($_GET['type'] ?? '') ?>
 			},
 				function (data) {
 					let toastMessage = "";
