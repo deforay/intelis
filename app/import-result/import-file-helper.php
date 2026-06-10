@@ -47,9 +47,20 @@ if (!isset($directoryMap[$type])) {
 }
 
 $directoryName = $directoryMap[$type];
-$machineImportScript = realpath(APPLICATION_PATH . "/instruments") . "/$directoryName/$machineImportScript";
 
-if (!is_file($machineImportScript) || !is_readable($machineImportScript)) {
+// basename() strips any path-traversal sequences (../, absolute paths) from the
+// user-supplied filename before it is used to build the include path.
+$instrumentsBase = realpath(APPLICATION_PATH . "/instruments");
+$expectedDir = $instrumentsBase . DIRECTORY_SEPARATOR . $directoryName . DIRECTORY_SEPARATOR;
+$machineImportScript = realpath($expectedDir . basename((string) $machineImportScript));
+
+// Re-validate the resolved path stays within the expected instrument directory.
+if (
+    $machineImportScript === false
+    || !str_starts_with($machineImportScript, $expectedDir)
+    || !is_file($machineImportScript)
+    || !is_readable($machineImportScript)
+) {
     throw new SystemException(_translate("Import Script not found"), 404);
 }
 
