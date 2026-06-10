@@ -150,7 +150,7 @@ if (!$isProvince) {
                                         <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <input type="text" class="form-control isRequired"
-                                            value="<?php echo $geoInfo['geo_name']; ?>" id="geoName" name="geoName"
+                                            value="<?php echo _sanitizeOutput($geoInfo['geo_name']); ?>" id="geoName" name="geoName"
                                             placeholder="<?php echo _translate('Geo Division Name'); ?>"
                                             title="<?php echo _translate('Please enter Geographical Division name'); ?>"
                                             onblur="checkNameValidation('geographical_divisions','geo_name',this,'<?php echo 'geo_id##' . htmlspecialchars((string) $id); ?>','<?php echo _translate("The Geographical Division name that you entered already exists. Please enter another name"); ?>',null)" />
@@ -164,7 +164,7 @@ if (!$isProvince) {
                                         <span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
                                         <input type="text" class="form-control isRequired"
-                                            value="<?php echo $geoInfo['geo_code']; ?>" id="geoCode" name="geoCode"
+                                            value="<?php echo _sanitizeOutput($geoInfo['geo_code']); ?>" id="geoCode" name="geoCode"
                                             placeholder="<?php echo _translate('Geographical Divisions code'); ?>"
                                             title="<?php echo _translate('Please enter Geographical Division code'); ?>"
                                             onblur="checkNameValidation('geographical_divisions','geo_code',this,'<?php echo 'geo_id##' . htmlspecialchars((string) $id); ?>','<?php echo _translate("The Geographical Division code that you entered already exists. Please enter another code"); ?>',null)" />
@@ -243,7 +243,7 @@ if (!$isProvince) {
                         <?php } ?>
                     </div>
                     <div class="box-footer">
-                        <input type="hidden" name="geoId" name="geoId" value="<?php echo $_GET['id']; ?>">
+                        <input type="hidden" name="geoId" name="geoId" value="<?php echo _sanitizeOutput($_GET['id']); ?>">
                         <a class="btn btn-primary" href="javascript:void(0);"
                             onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
                         <a href="geographical-divisions-details.php" class="btn btn-default">

@@ -287,7 +287,7 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
     function loadData() {
         $.blockUI();
         $.post("/admin/monitoring/get-sync-status-details.php", {
-            labId: '<?php echo $_GET['labId']; ?>',
+            labId: <?= _jsEscape($_GET['labId'] ?? '') ?>,
             testType: $('#testType').val(),
             province: $('#province').val(),
             district: $('#district').val(),

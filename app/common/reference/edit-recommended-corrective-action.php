@@ -68,7 +68,7 @@ $correctiveInfo = $db->rawQuery($query, [$id]);
                                         <input type="text" class="form-control isRequired" id="correctiveAction"
                                             name="correctiveAction"
                                             placeholder="<?php echo _translate('Recommended Corrective Action Name'); ?>"
-                                            value="<?php echo $correctiveInfo[0]['recommended_corrective_action_name']; ?>"
+                                            value="<?php echo _sanitizeOutput($correctiveInfo[0]['recommended_corrective_action_name']); ?>"
                                             title="<?php echo _translate('Please enter Recommended Corrective Action'); ?>"
                                             onblur='checkNameValidation("r_recommended_corrective_actions","recommended_corrective_action_name",this,'
                                             <?php echo "test_type##" . $testType; ?>',"<?php echo _translate("The Corrective action that you entered already exists.Enter another Corrective action"); ?>",null)' />
@@ -99,12 +99,12 @@ $correctiveInfo = $db->rawQuery($query, [$id]);
                     <div class="box-footer">
                         <a class="btn btn-primary" href="javascript:void(0);"
                             onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-                        <a href="recommended-corrective-actions.php?testType=<?= $testType; ?>" class="btn btn-default">
+                        <a href="recommended-corrective-actions.php?testType=<?= _sanitizeOutput($testType); ?>" class="btn btn-default">
                             <?php echo _translate("Cancel"); ?></a>
                     </div>
-                    <input type="hidden" class="form-control" id="testType" name="testType" value="<?= $testType; ?>" />
+                    <input type="hidden" class="form-control" id="testType" name="testType" value="<?= _sanitizeOutput($testType); ?>" />
                     <input type="hidden" class="form-control" id="correctiveActionId" name="correctiveActionId"
-                        value="<?= $_GET['id']; ?>" />
+                        value="<?= _sanitizeOutput($_GET['id']); ?>" />
 
 
                     <!-- /.box-footer -->

@@ -202,7 +202,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<?php
 							foreach ($sResult as $type) {
 								?>
-								<option value="<?php echo $type['sample_id']; ?>"><?php echo ($type['sample_name']); ?>
+								<option value="<?php echo _sanitizeOutput($type['sample_id']); ?>"><?php echo ($type['sample_name']); ?>
 								</option>
 								<?php
 							}
@@ -227,7 +227,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<?php
 							foreach ($fundingSourceList as $fundingSource) {
 								?>
-								<option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>">
+								<option value="<?php echo _sanitizeOutput(base64_encode((string) $fundingSource['funding_source_id'])); ?>">
 									<?= $fundingSource['funding_source_name']; ?></option>
 							<?php } ?>
 						</select>
@@ -285,7 +285,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											name="batchCode" readonly="readonly"
 											placeholder="<?php echo _translate('Batch Code'); ?>"
 											title="<?php echo _translate('Please enter batch code'); ?>"
-											value="<?php echo $batchInfo[0]['batch_code']; ?>"
+											value="<?php echo _sanitizeOutput($batchInfo[0]['batch_code']); ?>"
 											onblur="checkNameValidation('batch_details','batch_code',this,'<?php echo "batch_id##" . $id; ?>','<?php echo _translate("This batch code already exists.Try another code"); ?>',null)" />
 									</div>
 								</div>
@@ -302,9 +302,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											title="<?php echo _translate('Please choose machine'); ?>">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<?php foreach ($testPlatformResult as $machine) { ?>
-												<option value="<?= $machine['instrument_id'] ?>"
+												<option value="<?= _sanitizeOutput($machine['instrument_id']) ?>"
 													<?= ($batchInfo[0]['machine'] == $machine['instrument_id']) ? 'selected' : '' ?>
-													data-no-of-samples="<?= $machine['max_no_of_samples_in_a_batch'] ?>">
+													data-no-of-samples="<?= _sanitizeOutput($machine['max_no_of_samples_in_a_batch']) ?>">
 													<?= $machine['machine_name'] ?></option>
 											<?php } ?>
 										</select>
@@ -323,7 +323,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											<input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode"
 												class="form-control"
 												placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>"
-												value="<?php echo $batchInfo[0]['lab_assigned_batch_code'] ?>" />
+												value="<?php echo _sanitizeOutput($batchInfo[0]['lab_assigned_batch_code']) ?>" />
 										</div>
 									</div>
 								</div>
@@ -357,7 +357,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											$labCode = ' - ' . $sample['lab_assigned_code'];
 										}
 										if (trim((string) $sample['sample_batch_id']) == $id) { ?>
-											<option value="<?php echo $sample[$refPrimaryColumn]; ?>">
+											<option value="<?php echo _sanitizeOutput($sample[$refPrimaryColumn]); ?>">
 												<?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " . ($sample['facility_name']) . $labCode; ?>
 											</option>
 										<?php }
@@ -371,15 +371,15 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					</div>
 					<!-- /.box-body -->
 					<div class="box-footer">
-						<input type="hidden" name="type" id="type" value="<?php echo $testType; ?>" />
+						<input type="hidden" name="type" id="type" value="<?php echo _sanitizeOutput($testType); ?>" />
 						<input type="hidden" name="batchId" id="batchId"
-							value="<?php echo $batchInfo[0]['batch_id']; ?>" />
+							value="<?php echo _sanitizeOutput($batchInfo[0]['batch_id']); ?>" />
 						<input type="hidden" name="batchedSamples" id="batchedSamples" />
 						<input type="hidden" name="positions" id="positions"
-							value="<?php echo $batchInfo[0]['position_type']; ?>" />
+							value="<?php echo _sanitizeOutput($batchInfo[0]['position_type']); ?>" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);"
 							onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-						<a href="/batch/batches.php?type=<?php echo $testType; ?>" class="btn btn-default">
+						<a href="/batch/batches.php?type=<?php echo _sanitizeOutput($testType); ?>" class="btn btn-default">
 							<?php echo _translate("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->

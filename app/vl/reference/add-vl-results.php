@@ -111,7 +111,7 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null)
 									<select name="instruments[]" id="search" class="form-control" size="8" multiple="multiple">
 										<?php foreach ($activeInstruments as $key => $ins) {
 										?>
-											<option value="<?php echo $key; ?>"><?php echo $ins; ?> </option>
+											<option value="<?php echo _sanitizeOutput($key); ?>"><?php echo $ins; ?> </option>
 										<?php
 										} ?>
 									</select>
@@ -129,7 +129,7 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null)
 									<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 										<?php foreach ($selectedInstruments as $value) {
 											if (!empty($activeInstruments) && array_key_exists($value, $activeInstruments)) { ?>
-												<option value="<?php echo $value; ?>"><?php echo $activeInstruments[$value]; ?> </option>
+												<option value="<?php echo _sanitizeOutput($value); ?>"><?php echo $activeInstruments[$value]; ?> </option>
 										<?php }
 										} ?>
 									</select>
