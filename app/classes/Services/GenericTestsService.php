@@ -322,20 +322,22 @@ final class GenericTestsService extends AbstractTestService
             $this->db->delete($testTableName);
         }
 
-        // Final interpretation = sample-level conclusion (also locks Add Test/referral in the form).
-        $finalInterp = (($post['isResultFinalized'] ?? '') === 'yes') ? trim((string) ($post['finalResult'] ?? '')) : null;
+        // Sample-level outcome (from the SAMPLE OUTCOME section, NOT inferred from a card):
+        // rejecting the whole sample and entering a final interpretation are mutually exclusive --
+        // a rejected sample has no final interpretation.
+        $sampleRejected = (($post['sampleRejected'] ?? '') === 'yes');
+        $finalInterp = (!$sampleRejected && ($post['isResultFinalized'] ?? '') === 'yes')
+            ? trim((string) ($post['finalResult'] ?? '')) : null;
         if ($finalInterp === '') {
             $finalInterp = null;
         }
 
-        // Always-written columns: the result + the per-test-derived chain (from the latest
-        // card). These are owned by the result writer in every mode.
+        // Always-written columns: the result + the per-test-derived chain (from the latest card).
+        // Sample-level rejection is NOT derived from the latest card -- it is written below from the
+        // SAMPLE OUTCOME control (present-only).
         $formUpdate = [
             'lab_id' => $latestRow['lab_id'] ?? null,
             'sample_received_at_lab_datetime' => $latestRow['sample_received_at_lab_datetime'] ?? null,
-            'is_sample_rejected' => $latestRow['is_sample_rejected'] ?? null,
-            'reason_for_sample_rejection' => $latestRow['reason_for_sample_rejection'] ?? null,
-            'rejection_on' => $latestRow['rejection_on'] ?? null,
             'tested_by' => $latestRow['tested_by'] ?? null,
             'sample_tested_datetime' => $latestRow['sample_tested_datetime'] ?? null,
             'result_reviewed_by' => $latestRow['result_reviewed_by'] ?? null,
@@ -345,9 +347,9 @@ final class GenericTestsService extends AbstractTestService
             'result' => $finalInterp,
             'final_result_interpretation' => $finalInterp,
             'manual_result_entry' => 'yes',
-            // Awaiting Approval only once there is a final interpretation to approve; until then
-            // the sample stays at the testing-lab status so it remains on the result-entry list.
-            'result_status' => $latestRejected ? REJECTED : ($finalInterp !== null ? PENDING_APPROVAL : RECEIVED_AT_TESTING_LAB),
+            // REJECTED when the sample is rejected; Awaiting Approval once there is a final
+            // interpretation; otherwise stay at the testing-lab status (remains on the entry list).
+            'result_status' => $sampleRejected ? REJECTED : ($finalInterp !== null ? PENDING_APPROVAL : RECEIVED_AT_TESTING_LAB),
             'data_sync' => 0,
             'last_modified_by' => $userId,
             'last_modified_datetime' => DateUtility::getCurrentDateTime(),
@@ -371,6 +373,16 @@ final class GenericTestsService extends AbstractTestService
         $setIfPresent('result_dispatched_datetime', 'resultDispatchedOn', $gtDt);
         $setIfPresent('lab_tech_comments', 'labComments', static fn($v) => (trim((string) ($v ?? '')) !== '') ? trim((string) $v) : null);
         $setIfPresent('reason_for_testing', 'reasonForTesting', $nz);
+
+        // Sample-level rejection: the deliberate "the whole sample is rejected" decision from the
+        // SAMPLE OUTCOME control -- present-only, and NOT inferred from a card. When rejected, the
+        // reason/date come from the sample-level inputs; when not, they are cleared.
+        if (array_key_exists('sampleRejected', $post)) {
+            $rej = ($post['sampleRejected'] === 'yes');
+            $formUpdate['is_sample_rejected'] = $rej ? 'yes' : 'no';
+            $formUpdate['reason_for_sample_rejection'] = $rej ? $nz($post['sampleRejectionReason'] ?? null) : null;
+            $formUpdate['rejection_on'] = $rej ? $gtDt($post['sampleRejectionDate'] ?? null) : null;
+        }
 
         $this->db->where('sample_id', $sampleId);
         $this->db->update($tableName, $formUpdate);
