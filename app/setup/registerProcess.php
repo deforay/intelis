@@ -46,6 +46,15 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var ConfigService $configService */
 $configService = ContainerRegistry::get(ConfigService::class);
 
+// Refuse to (re)run setup once an admin account already exists. This guard
+// mirrors the one on the setup landing page (app/setup/index.php) and prevents
+// the unauthenticated processor from being replayed to create a new admin.
+$db->where("role_id=1");
+if ((int) $db->getValue("user_details", "count(*)") !== 0) {
+    header("Location:/login/login.php");
+    exit;
+}
+
 $activeModulesArr = SystemService::getActiveModules();
 
 $stsURL = $general->getRemoteURL();

@@ -22,9 +22,19 @@ try {
     $scheduledJobs = $db->get('scheduled_jobs');
 
     if (!empty($scheduledJobs)) {
+        $binPath = realpath(BIN_PATH);
         foreach ($scheduledJobs as $job) {
             $db->update('scheduled_jobs', ['status' => "processing"], "job_id = " . $job['job_id']);
-            exec($phpPath . " " . realpath(BIN_PATH) . DIRECTORY_SEPARATOR .  $job['job']);
+
+            // Resolve and validate the job script stays within BIN_PATH, and pass
+            // every argument through escapeshellarg() so a tampered scheduled_jobs
+            // row cannot inject shell commands into exec().
+            $jobScript = ($binPath !== false) ? realpath($binPath . DIRECTORY_SEPARATOR . $job['job']) : false;
+            if ($jobScript === false || !str_starts_with($jobScript, $binPath . DIRECTORY_SEPARATOR) || !is_file($jobScript)) {
+                LoggerUtility::logError("Skipping scheduled job with invalid script path: " . ($job['job'] ?? ''));
+                continue;
+            }
+            exec(escapeshellarg($phpPath) . " " . escapeshellarg($jobScript));
             $db->where("job_id = " . $job['job_id']);
             $db->update('scheduled_jobs', [
                 "completed_on" => DateUtility::getCurrentDateTime(),

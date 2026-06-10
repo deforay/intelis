@@ -38,8 +38,8 @@ try {
     // Get the expected API key from the environment
     $intelisSyncApiKey = $general->getIntelisSyncAPIKey();
 
-    // Check if the API key is missing or doesn't match
-    if (empty($apiKey) || $apiKey !== $intelisSyncApiKey) {
+    // Check if the API key is missing or doesn't match (constant-time comparison)
+    if (empty($apiKey) || empty($intelisSyncApiKey) || !hash_equals((string) $intelisSyncApiKey, (string) $apiKey)) {
         throw new SystemException('Unauthorized: Invalid API Key', 401);
     }
 
