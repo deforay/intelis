@@ -20,6 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use App\Helpers\ResultPDFHelpers\GenericTestsResultPDFHelper;
 
 // Sanitized values from $request object
+
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
@@ -594,7 +595,7 @@ if (!empty($requestResult)) {
 				}
 				$html .= $renderSection(_translate('Laboratory Result') . ' ' . $n, $card);
 				if (!empty($row['comments'])) {
-					$html .= '<table cellpadding="2" cellspacing="0" style="width:100%;"><tr><td style="font-size:10px;color:#000000;line-height:14px;"><b>' . _translate('Interpretation') . ':</b> ' . $row['comments'] . '</td></tr></table>';
+					$html .= '<table cellpadding="2" cellspacing="0" style="width:100%;"><tr><td style="font-size:10px;color:#000000;line-height:14px;">' . _translate('Lab Comment') . ': ' . $row['comments'] . '</td></tr></table>';
 				}
 				$n++;
 			}
