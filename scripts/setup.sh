@@ -1306,7 +1306,10 @@ else
     log_action "intelis setup skipped — source missing"
 fi
 
-php "${lis_path}/vendor/bin/db-tools" db:test --all
+# Run as www-data (not root): db-tools bootstraps the app and warms var/cache,
+# so running it as root leaves root-owned cache files that the subsequent
+# www-data `composer post-install` (purge-cache) can't clear.
+sudo -u www-data php "${lis_path}/vendor/bin/db-tools" db:test --all
 
 print header "Running database migrations and other post-install tasks"
 cd "${lis_path}"
