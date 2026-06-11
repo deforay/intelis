@@ -590,7 +590,12 @@ foreach ($versions as $version) {
                             // 1062 (duplicate entry) is benign only for seed-style INSERTs,
                             // which are re-runnable; elsewhere it's a real constraint violation.
                             $isInsertDupBenign = $errno === 1062 && strpos(strtolower(trim($query)), 'insert') === 0;
-                            if (in_array($errno, [1050, 1060, 1061, 1068, 1091, 1826], true) || $isInsertDupBenign) {
+                            // Legacy audit tables (audit_form_*) were removed by Audit Trail v2; their
+                            // historical ALTER/DROP statements in pre-v2 migrations are no-ops on a fresh
+                            // install (the tables are never created), so a 1146 "table doesn't exist" on
+                            // such a statement is benign.
+                            $isLegacyAuditMissing = $errno === 1146 && stripos($query, 'audit_form_') !== false;
+                            if (in_array($errno, [1050, 1060, 1061, 1068, 1091, 1826], true) || $isInsertDupBenign || $isLegacyAuditMissing) {
                                 if (!$quietMode && getenv('MIG_VERBOSE')) {
                                     if ($bar instanceof ProgressBar) {
                                         MiscUtility::spinnerPausePrint($bar, function () use ($db): void {
@@ -651,9 +656,15 @@ foreach ($versions as $version) {
                     // 1061 dup key, 1068 multi PK, 1091 can't-drop-missing, 1826 dup FK.
                     // 1062 (duplicate entry) is benign only for re-runnable seed INSERTs.
                     $isInsertDupBenign = $errCode === 1062 && strpos($qlower, 'insert') === 0;
+                    // Legacy audit_form_* tables were removed by Audit Trail v2; a 1146
+                    // "table doesn't exist" on such a statement is a no-op on fresh installs.
+                    $isLegacyAuditMissing =
+                        ($errCode === 1146 || stripos($msgStr, "doesn't exist") !== false) &&
+                        (strpos($qlower, 'audit_form_') !== false || stripos($msgStr, 'audit_form_') !== false);
                     $isBenign =
                         in_array($errCode, [1050, 1060, 1061, 1068, 1091, 1826], true) ||
                         $isInsertDupBenign ||
+                        $isLegacyAuditMissing ||
                         stripos($msgStr, 'Duplicate column name') !== false ||
                         stripos($msgStr, 'Duplicate key name') !== false ||
                         stripos($msgStr, 'already exists') !== false ||
@@ -679,7 +690,7 @@ foreach ($versions as $version) {
                         $totalErrors++;
                         $versionErrors++;
                         if (!$quietMode) {
-                            $toPrint = "";
+                            $toPrint = "Error executing query ({$errCode}): {$msgStr}\n{$sqlInMsg}\n";
                             if ($bar instanceof ProgressBar) {
                                 MiscUtility::spinnerPausePrint($bar, fn() => print $toPrint);
                             } else {
