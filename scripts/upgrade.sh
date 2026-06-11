@@ -879,32 +879,12 @@ done
 # safe to run with the live LIS still serving traffic.
 # ---------------------------------------------------------------------------
 
-MASTER_TARBALL_URL="https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master"
 VENDOR_TARBALL_URL="https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz"
 VENDOR_TARBALL_MD5_URL="https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.md5"
 
-# Persistent shallow git mirror of master. After the first clone, prepare_phase
-# advances it with DELTA fetches (only the changed objects, usually tens of KB)
-# instead of re-downloading the full ~20MB codeload tarball every upgrade — the
-# difference between seconds and minutes on a slow link. The tarball URL above
-# stays as the last-resort fallback when git is unavailable.
-MASTER_GIT_URL="https://github.com/deforay/intelis.git"
-INTELIS_SRC_DIR="${INTELIS_SRC_DIR:-/usr/local/lib/intelis/src}"
-
-# git network ops get a generous wall-clock backstop so a hung connection can't
-# stall the whole upgrade, plus a low-speed abort (below 1KB/s for 60s) that
-# fails a truly dead link fast. The cap is large on purpose: it only ever bounds
-# a transfer that is still making progress — the low-speed abort already handles
-# dead links — so a legitimately slow-but-working link on a remote lab survives.
-git_timeout=2400
-git_timeout_cmd=""
-command -v timeout >/dev/null 2>&1 && git_timeout_cmd="timeout --kill-after=15 ${git_timeout}"
-
-# safe.directory='*' avoids git's "dubious ownership" refusal if the mirror's
-# owner ever differs from root.
-run_git() {
-    $git_timeout_cmd git -c safe.directory='*' -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=60 "$@"
-}
+# MASTER_GIT_URL, MASTER_TARBALL_URL, INTELIS_SRC_DIR (the persistent shallow
+# mirror), run_git, and fetch_master_tree now live in shared-functions.sh so
+# setup.sh and this prepare phase acquire the master tree identically.
 
 STAGING_BASE_DIR="/var/intelis-staging"
 ROLLBACK_BASE_DIR="/var/intelis-rollback"
@@ -959,113 +939,14 @@ prepare_phase() {
     local vendor_extract_dir="${staging_dir}/vendor"
 
     # ---- master worker ----
-    # Acquire the master tree via a PERSISTENT shallow git mirror at
-    # $INTELIS_SRC_DIR plus DELTA fetches: after the first clone each run
-    # transfers only the changed objects instead of the full codeload tarball.
-    # The mirror's working tree is rsynced (sans .git) into intelis-master/, so
-    # the rest of the pipeline (vendor gating, apply rsync, READY sentinel) is
-    # unchanged. Fallbacks: a fresh shallow clone, then the codeload tarball.
+    # Acquisition (shallow mirror + delta fetch, clone fallback, tarball fallback,
+    # VERSION.txt stamp) lives in shared-functions.sh's fetch_master_tree so
+    # setup.sh and this prepare phase stay identical. master_extract_dir's parent
+    # is $staging_dir, so the helper's tarball fallback (master.tar.gz beside the
+    # extract dir) matches $master_tar exactly.
     _prepare_master_worker() {
         set -e
-        if [ -d "$master_extract_dir" ] && [ -f "$master_extract_dir/composer.json" ]; then
-            echo "master: already extracted, skipping"
-            return 0
-        fi
-
-        local src_ready=false
-
-        # Attempt 1: delta-fetch the persistent mirror (cheap — changed objects only).
-        if command -v git >/dev/null 2>&1 && [ -d "$INTELIS_SRC_DIR/.git" ]; then
-            echo "master: updating source mirror (delta fetch — only changed files)"
-            if run_git -C "$INTELIS_SRC_DIR" fetch --depth 1 origin master &&
-                git -c safe.directory='*' -C "$INTELIS_SRC_DIR" reset --hard FETCH_HEAD &&
-                git -c safe.directory='*' -C "$INTELIS_SRC_DIR" clean -fd; then
-                # Shallow fetch/reset orphans the previous tip's objects; --prune=now
-                # sweeps them immediately so the mirror doesn't bloat over many runs.
-                git -c safe.directory='*' -C "$INTELIS_SRC_DIR" gc --prune=now --quiet 2>/dev/null || true
-                src_ready=true
-                echo "master: mirror updated via delta fetch"
-            else
-                echo "master: delta fetch failed; will re-clone the mirror"
-                rm -rf "$INTELIS_SRC_DIR"
-            fi
-        fi
-
-        # Attempt 2: fresh shallow clone into the mirror.
-        if [ "$src_ready" = false ] && command -v git >/dev/null 2>&1; then
-            echo "master: cloning master into source mirror (shallow)"
-            local attempt
-            for attempt in 1 2 3; do
-                rm -rf "$INTELIS_SRC_DIR"
-                if run_git clone --depth 1 --single-branch --branch master \
-                    "$MASTER_GIT_URL" "$INTELIS_SRC_DIR"; then
-                    src_ready=true
-                    echo "master: cloned (attempt ${attempt}); future updates will be delta-only"
-                    break
-                fi
-                echo "master: clone attempt ${attempt}/3 failed"
-                sleep 3
-            done
-        fi
-
-        if [ "$src_ready" = true ]; then
-            # Stage the working tree (minus .git, which must never reach an
-            # instance) into intelis-master/.
-            echo "master: staging tree from mirror"
-            rm -rf "$master_extract_dir"
-            mkdir -p "$master_extract_dir"
-            rsync -a --exclude='.git' --exclude='.git/' "$INTELIS_SRC_DIR/" "$master_extract_dir/"
-
-            # Commit SHA straight from the mirror — exact, and free of GitHub API
-            # rate limits / the tarball's API-vs-content race. Read at runtime by
-            # CommonService::getCommitSha() as the "what's deployed" stamp.
-            local _master_sha
-            _master_sha=$(git -c safe.directory='*' -C "$INTELIS_SRC_DIR" rev-parse HEAD 2>/dev/null || true)
-            if [ -n "$_master_sha" ]; then
-                printf '%s\n' "$_master_sha" > "$master_extract_dir/VERSION.txt"
-                echo "master: commit SHA $_master_sha captured"
-            fi
-        else
-            # Attempt 3: tarball fallback (git missing/unreachable). No mirror is
-            # created, so this run gets no future deltas — next run retries git.
-            echo "master: git unavailable; falling back to codeload tarball"
-            if [ ! -f "$master_tar" ]; then
-                echo "master: downloading from $MASTER_TARBALL_URL"
-                download_file "$master_tar" "$MASTER_TARBALL_URL" "master: downloading tarball"
-            else
-                echo "master: tarball already present, skipping download"
-            fi
-            echo "master: extracting"
-            rm -rf "$master_extract_dir"
-            mkdir -p "$master_extract_dir"
-            # GitHub codeload tarballs wrap contents in intelis-master/, matching
-            # our extract dir name — nothing else to strip.
-            tar -xzf "$master_tar" -C "$staging_dir"
-
-            # No local git to rev-parse; capture HEAD SHA via the GitHub API
-            # (best-effort). Tiny race: API HEAD vs. tarball content can differ
-            # by a commit if someone pushes between the two requests.
-            local _sha_response _master_sha
-            _sha_response=$(curl -sS --max-time 10 \
-                "https://api.github.com/repos/deforay/intelis/commits/master" 2>/dev/null || true)
-            _master_sha=$(printf '%s' "$_sha_response" \
-                | grep -oE '"sha"[[:space:]]*:[[:space:]]*"[0-9a-f]{40}"' \
-                | head -1 \
-                | grep -oE '[0-9a-f]{40}')
-            if [ -n "$_master_sha" ]; then
-                printf '%s\n' "$_master_sha" > "$master_extract_dir/VERSION.txt"
-                echo "master: commit SHA $_master_sha captured"
-            else
-                echo "master: commit SHA lookup skipped (no network or rate-limited)"
-            fi
-        fi
-
-        if [ ! -f "$master_extract_dir/composer.json" ]; then
-            echo "master: composer.json missing after staging" >&2
-            return 1
-        fi
-
-        echo "master: ready"
+        fetch_master_tree "$master_extract_dir"
     }
 
     # ---- vendor worker ----
