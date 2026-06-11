@@ -305,7 +305,11 @@ set_time_limit(0);
 $options = getopt('', ['country::', 'limit::', 'redo', 'sleep::', 'dry-run', 'quiet', 'all', 'csv::', 'spread']);
 $csvPath = isset($options['csv']) ? trim((string) $options['csv']) : '';
 // Fan out facilities that share identical coordinates (e.g. LLM-filled district
-// guesses) so they don't stack on one point. Applies to --csv import.
+// guesses) so they don't stack on one point. OFF by default: the phyllotaxis
+// disc fabricates distinct GPS points and, with a multi-km radius, can push
+// fallback facilities across borders / onto water. The map's marker clustering
+// + spiderfy handles co-located centroid points honestly instead. Pass --spread
+// to opt back in (applies to both the centroid fallbacks and --csv import).
 $spread = isset($options['spread']);
 $country = isset($options['country']) ? trim((string) $options['country']) : null;
 $limit = isset($options['limit']) ? max(0, (int) $options['limit']) : 0;
@@ -463,15 +467,19 @@ foreach ($facilities as $f) {
         $dParts = array_values(array_filter([$district, $province, $country], static fn($p) => $p !== ''));
         $centroid = $cachedGeocode($key, implode(', ', $dParts));
         if ($centroid !== null) {
-            $dKey = strtolower("$province|$district");
-            $spread = NominatimGeocoderUtility::sunflowerOffset(
-                $centroid['lat'],
-                $centroid['lon'],
-                $slotIndex[$fid] ?? 0,
-                $slotCount[$dKey] ?? 1
-            );
-            $lat = $spread['lat'];
-            $lon = $spread['lon'];
+            $lat = $centroid['lat'];
+            $lon = $centroid['lon'];
+            if ($spread) {
+                $dKey = strtolower("$province|$district");
+                $offset = NominatimGeocoderUtility::sunflowerOffset(
+                    $centroid['lat'],
+                    $centroid['lon'],
+                    $slotIndex[$fid] ?? 0,
+                    $slotCount[$dKey] ?? 1
+                );
+                $lat = $offset['lat'];
+                $lon = $offset['lon'];
+            }
             $source = 'district';
         }
     }
@@ -482,15 +490,19 @@ foreach ($facilities as $f) {
         $pParts = array_values(array_filter([$province, $country], static fn($p) => $p !== ''));
         $centroid = $cachedGeocode($key, implode(', ', $pParts));
         if ($centroid !== null) {
-            $spread = NominatimGeocoderUtility::sunflowerOffset(
-                $centroid['lat'],
-                $centroid['lon'],
-                $fid % 360,
-                max(50, $total),
-                0.12
-            );
-            $lat = $spread['lat'];
-            $lon = $spread['lon'];
+            $lat = $centroid['lat'];
+            $lon = $centroid['lon'];
+            if ($spread) {
+                $offset = NominatimGeocoderUtility::sunflowerOffset(
+                    $centroid['lat'],
+                    $centroid['lon'],
+                    $fid % 360,
+                    max(50, $total),
+                    0.12
+                );
+                $lat = $offset['lat'];
+                $lon = $offset['lon'];
+            }
             $source = 'province';
         }
     }
