@@ -147,6 +147,43 @@ $activeTests = TestsService::getActiveTests();
         font-style: italic;
     }
 
+    /* A testing lab sitting inside a clubbed point — called out in the popup. */
+    .referral-popup .rp-lab-note {
+        color: #dd4b39;
+        font-weight: 600;
+    }
+
+    .referral-popup .rp-lab-badge {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1;
+        color: #fff;
+        background: #dd4b39;
+        border-radius: 3px;
+        padding: 2px 5px;
+        margin-left: 4px;
+        vertical-align: middle;
+    }
+
+    /* The site count drawn over a clubbed (co-located) marker. Styled as plain
+       centred text so it reads as a label on the circle, not a tooltip box. */
+    .leaflet-tooltip.referral-cluster-label {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        color: #fff;
+        font-weight: 700;
+        font-size: 11px;
+        padding: 0;
+        white-space: nowrap;
+        pointer-events: none;
+    }
+
+    .leaflet-tooltip.referral-cluster-label::before {
+        display: none;
+    }
+
     /* Larger, easier-to-hit map control buttons (expand, etc.). */
     .leaflet-bar a.referral-ctrl-btn {
         font-size: 17px;
@@ -404,6 +441,33 @@ $activeTests = TestsService::getActiveTests();
             fillColor: isLab ? LAB_COLOR : SITE_COLOR,
             fillOpacity: 0.9
         };
+    }
+
+    // A clubbed marker (several sites on the exact same point) is drawn larger,
+    // sized by how many sites collapse onto it, and carries the count as a label.
+    // The fill follows the dominant type; if any testing lab sits in the pile it
+    // also gets a red ring so the lab is never hidden behind a facility colour.
+    function aggStyle(n) {
+        return {
+            radius: Math.min(22, 9 + Math.log10(n.memberCount) * 6),
+            color: n.hasLab ? LAB_COLOR : '#fff',
+            weight: n.hasLab ? 3 : 1.5,
+            fillColor: n.isLab ? LAB_COLOR : SITE_COLOR,
+            fillOpacity: 0.92
+        };
+    }
+
+    // The normal (un-dimmed) style for a node, single or clubbed.
+    function nodeStyle(n) {
+        return (n.memberCount > 1) ? aggStyle(n) : markerStyle(n.isLab);
+    }
+
+    // Fade the count label of a clubbed marker in step with its circle when
+    // focusing/dimming (single markers have no label, so this is a no-op).
+    function setLabelOpacity(marker, op) {
+        var tt = marker.getTooltip && marker.getTooltip();
+        var el = tt && tt.getElement && tt.getElement();
+        if (el) { el.style.opacity = op; }
     }
 
     // bringToFront throws if the marker is currently inside a cluster (not on
@@ -671,10 +735,12 @@ $activeTests = TestsService::getActiveTests();
         Object.keys(mapNodesById).forEach(function (k) {
             var item = mapNodesById[k];
             if (connected[item.n.id]) {
-                item.marker.setStyle(markerStyle(item.n.isLab));
+                item.marker.setStyle(nodeStyle(item.n));
+                setLabelOpacity(item.marker, '');
                 safeFront(item.marker);
             } else {
                 item.marker.setStyle({ opacity: 0.12, fillOpacity: 0.08 });
+                setLabelOpacity(item.marker, '0.15');
             }
         });
 
@@ -704,7 +770,8 @@ $activeTests = TestsService::getActiveTests();
         focusedId = null;
         Object.keys(mapNodesById).forEach(function (k) {
             var item = mapNodesById[k];
-            item.marker.setStyle(markerStyle(item.n.isLab));
+            item.marker.setStyle(nodeStyle(item.n));
+            setLabelOpacity(item.marker, '');
             if (item.n.isLab) { safeFront(item.marker); }
         });
         redrawLines();
@@ -719,28 +786,135 @@ $activeTests = TestsService::getActiveTests();
             focusedId = null;
             if (focusHintEl) { focusHintEl.style.display = 'none'; }
 
-            var nodes = resp.nodes || [];
-            mapFlows = resp.flows || [];
-            var totalSamples = 0, labs = 0, sites = 0;
-            var bounds = [];
+            var rawNodes = resp.nodes || [];
+            var rawFlows = resp.flows || [];
 
+            // Headline stats reflect the true network — every facility, every
+            // lab, and every facility -> lab relationship — before co-located
+            // sites are clubbed together for display.
+            var totalSamples = 0, labs = 0, sites = 0;
+            rawNodes.forEach(function (n) { if (n.isLab) { labs++; } else { sites++; } });
+            rawFlows.forEach(function (f) { totalSamples += f.count; });
+            var trueLinks = rawFlows.length;
+
+            // Club nodes sharing the exact same point — typically sites geocoded
+            // to a shared admin-area centroid for lack of GPS — into one marker.
+            // Nodes with a unique point are kept exactly as before.
+            var groups = {};
+            rawNodes.forEach(function (n) {
+                var key = n.lat.toFixed(5) + ',' + n.lng.toFixed(5);
+                (groups[key] || (groups[key] = [])).push(n);
+            });
+
+            var nodes = [];   // what actually gets drawn
+            var idMap = {};   // original node id -> drawn node id
+            Object.keys(groups).forEach(function (key) {
+                var g = groups[key];
+                if (g.length === 1) {
+                    g[0].memberCount = 1;
+                    idMap[g[0].id] = g[0].id;
+                    nodes.push(g[0]);
+                    return;
+                }
+                var aggId = 'grp:' + key;
+                var labCount = 0, sent = 0, recv = 0, members = [], instruments = [];
+                g.forEach(function (m) {
+                    idMap[m.id] = aggId;
+                    if (m.isLab) { labCount++; }
+                    sent += m.samplesSent || 0;
+                    recv += m.samplesReceived || 0;
+                    members.push({ name: m.name, isLab: !!m.isLab });
+                    if (m.instruments && m.instruments.length) {
+                        instruments = instruments.concat(m.instruments);
+                    }
+                });
+                // List labs first, then alphabetically, so a lab in the pile is
+                // the first thing seen in the popup.
+                members.sort(function (a, b) {
+                    if (a.isLab !== b.isLab) { return a.isLab ? -1 : 1; }
+                    return a.name.localeCompare(b.name);
+                });
+                // Colour/treat the clubbed marker by its dominant type: a pile of
+                // referring facilities with one or two that happen to have
+                // received a sample should still read as facilities (blue), not
+                // a testing lab (red). Only a genuine lab-majority point is a lab.
+                // Presence of any lab is still flagged separately (red ring).
+                var isLab = labCount * 2 > g.length;
+                nodes.push({
+                    id: aggId,
+                    name: g.length + ' <?= _translate("sites at this location", true); ?>',
+                    district: g[0].district, province: g[0].province,
+                    lat: g[0].lat, lng: g[0].lng,
+                    isLab: isLab, samplesSent: sent, samplesReceived: recv,
+                    instruments: instruments, memberCount: g.length,
+                    members: members, labCount: labCount, hasLab: labCount > 0
+                });
+            });
+
+            // Re-point every flow at its drawn node and merge duplicates, so
+            // several co-located sites referring to the same lab collapse to a
+            // single line (and one row in the focus panel) instead of stacking.
+            var fmap = {};
+            rawFlows.forEach(function (f) {
+                var from = idMap[f.from], to = idMap[f.to];
+                if (from === undefined || to === undefined || from === to) { return; }
+                var k = from + '|' + to;
+                if (!fmap[k]) { fmap[k] = { from: from, to: to, count: 0, latest: null }; }
+                fmap[k].count += f.count;
+                if (f.latest && (!fmap[k].latest || f.latest > fmap[k].latest)) {
+                    fmap[k].latest = f.latest;
+                }
+            });
+            mapFlows = Object.keys(fmap).map(function (k) { return fmap[k]; });
+            mapFlows.sort(function (a, b) { return b.count - a.count; });
+
+            var bounds = [];
             nodes.forEach(function (n) {
                 bounds.push([n.lat, n.lng]);
-                if (n.isLab) { labs++; } else { sites++; }
+                var isAgg = n.memberCount > 1;
+                var popup;
 
-                var popup = '<div class="referral-popup"><strong>' + esc(n.name) + '</strong><br>'
-                    + (n.district ? esc(n.district) + ', ' : '') + esc(n.province || '') + '<br>'
-                    + '<?= _translate("Samples referred out", true); ?>: ' + Number(n.samplesSent).toLocaleString();
-                if (n.isLab) {
-                    popup += '<br><?= _translate("Samples received for testing", true); ?>: '
-                        + Number(n.samplesReceived).toLocaleString();
-                    popup += instrumentsHtml(n.instruments);
+                if (isAgg) {
+                    var cap = 15, list = '';
+                    n.members.slice(0, cap).forEach(function (m) {
+                        list += '<li>' + esc(m.name)
+                            + (m.isLab ? ' <span class="rp-lab-badge"><?= _translate("Lab", true); ?></span>' : '')
+                            + '</li>';
+                    });
+                    if (n.members.length > cap) {
+                        list += '<li>… ' + (n.members.length - cap) + ' <?= _translate("more", true); ?></li>';
+                    }
+                    // Make any testing lab in the pile impossible to miss.
+                    var labLine = n.hasLab
+                        ? '<br><span class="rp-lab-note"><em class="fa-solid fa-flask"></em> '
+                            + n.labCount + ' <?= _translate("testing lab(s) at this point", true); ?></span>'
+                        : '';
+                    popup = '<div class="referral-popup"><strong>' + n.memberCount
+                        + ' <?= _translate("sites at this location", true); ?></strong><br>'
+                        + (n.district ? esc(n.district) + ', ' : '') + esc(n.province || '')
+                        + labLine + '<br>'
+                        + '<?= _translate("Samples referred out", true); ?>: ' + Number(n.samplesSent).toLocaleString()
+                        + '<div class="rp-instr"><div class="rp-instr-head"><?= _translate("Sites at this point", true); ?></div>'
+                        + '<ul>' + list + '</ul></div></div>';
+                } else {
+                    popup = '<div class="referral-popup"><strong>' + esc(n.name) + '</strong><br>'
+                        + (n.district ? esc(n.district) + ', ' : '') + esc(n.province || '') + '<br>'
+                        + '<?= _translate("Samples referred out", true); ?>: ' + Number(n.samplesSent).toLocaleString();
+                    if (n.isLab) {
+                        popup += '<br><?= _translate("Samples received for testing", true); ?>: '
+                            + Number(n.samplesReceived).toLocaleString();
+                        popup += instrumentsHtml(n.instruments);
+                    }
+                    popup += '</div>';
                 }
-                popup += '</div>';
 
                 var marker = L.circleMarker([n.lat, n.lng],
-                    Object.assign({ bubblingMouseEvents: false }, markerStyle(n.isLab)))
+                    Object.assign({ bubblingMouseEvents: false }, nodeStyle(n)))
                     .bindPopup(popup);
+                if (isAgg) {
+                    marker.bindTooltip(String(n.memberCount),
+                        { permanent: true, direction: 'center', className: 'referral-cluster-label' });
+                }
                 // Focus is wired through the cluster group's own 'click' event
                 // (see initMap), which only fires for a genuine standalone /
                 // spiderfied marker — never for a cluster bubble. Stash the node
@@ -752,12 +926,10 @@ $activeTests = TestsService::getActiveTests();
             // Add markers to the cluster layer honouring the current Show filter.
             renderMarkers();
 
-            mapFlows.forEach(function (f) { totalSamples += f.count; });
-
             $('#statSamples').text(totalSamples.toLocaleString());
             $('#statSites').text(sites.toLocaleString());
             $('#statLabs').text(labs.toLocaleString());
-            $('#statFlows').text(mapFlows.length.toLocaleString());
+            $('#statFlows').text(trueLinks.toLocaleString());
 
             redrawLines();
             if (bounds.length) {
