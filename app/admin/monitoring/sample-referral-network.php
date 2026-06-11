@@ -167,8 +167,12 @@ $activeTests = TestsService::getActiveTests();
     }
 
     /* The site count drawn over a clubbed (co-located) marker. Styled as plain
-       centred text so it reads as a label on the circle, not a tooltip box. */
+       centred text so it reads as a label on the circle, not a tooltip box.
+       Hidden while zoomed out (cluster mode): the clubbed marker folds into the
+       normal spatial clusters until the map is zoomed in past the de-cluster
+       threshold, at which point #referralMap gets the .referral-revealed class. */
     .leaflet-tooltip.referral-cluster-label {
+        display: none;
         background: transparent;
         border: none;
         box-shadow: none;
@@ -178,6 +182,10 @@ $activeTests = TestsService::getActiveTests();
         padding: 0;
         white-space: nowrap;
         pointer-events: none;
+    }
+
+    #referralMap.referral-revealed .leaflet-tooltip.referral-cluster-label {
+        display: block;
     }
 
     .leaflet-tooltip.referral-cluster-label::before {
@@ -457,9 +465,37 @@ $activeTests = TestsService::getActiveTests();
         };
     }
 
-    // The normal (un-dimmed) style for a node, single or clubbed.
+    // Markers de-cluster (and clubbed markers reveal their full count form) at
+    // this zoom; must match disableClusteringAtZoom on the cluster group.
+    var DECLUSTER_ZOOM = 7;
+
+    function clubbedRevealed() {
+        return !!map && map.getZoom() >= DECLUSTER_ZOOM;
+    }
+
+    // The normal (un-dimmed) style for a node. A clubbed marker only takes its
+    // larger count form once zoomed in; while zoomed out it folds into the
+    // spatial clusters as an ordinary point.
     function nodeStyle(n) {
-        return (n.memberCount > 1) ? aggStyle(n) : markerStyle(n.isLab);
+        return (n.memberCount > 1 && clubbedRevealed()) ? aggStyle(n) : markerStyle(n.isLab);
+    }
+
+    // Keep the clubbed markers in step with the current zoom: reveal/hide their
+    // count labels (via a container class the CSS keys off) and swap their style
+    // between the folded-in dot and the full count marker. Re-applies the active
+    // focus so a zoom mid-focus doesn't lose the highlight.
+    function applyZoomMode() {
+        var revealed = clubbedRevealed();
+        var el = document.getElementById('referralMap');
+        if (el) { el.classList.toggle('referral-revealed', revealed); }
+        if (focusedId !== null) { focusNode(focusedId); return; }
+        Object.keys(mapNodesById).forEach(function (k) {
+            var item = mapNodesById[k];
+            if (item.n.memberCount > 1) {
+                item.marker.setStyle(nodeStyle(item.n));
+                if (item.n.isLab) { safeFront(item.marker); }
+            }
+        });
     }
 
     // Fade the count label of a clubbed marker in step with its circle when
@@ -550,6 +586,9 @@ $activeTests = TestsService::getActiveTests();
 
         // Clicking empty map clears any focused catchment.
         map.on('click', function () { if (focusedId !== null) { clearFocus(); } });
+
+        // Reveal/fold clubbed markers as the zoom crosses the de-cluster level.
+        map.on('zoomend', applyZoomMode);
 
         // Keep the button icon and map size in sync with native fullscreen
         // (covers the browser's own Esc-to-exit too).
@@ -935,6 +974,8 @@ $activeTests = TestsService::getActiveTests();
             if (bounds.length) {
                 map.fitBounds(bounds, { padding: [30, 30], maxZoom: 12 });
             }
+            // Set the initial folded/revealed state for the resulting zoom.
+            applyZoomMode();
         }, 'json').fail(function () {
             $('#mapNote').html('<?= _translate("Unable to load the referral map data.", true); ?>').show();
         });
