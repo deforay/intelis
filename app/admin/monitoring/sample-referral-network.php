@@ -726,7 +726,16 @@ $activeTests = TestsService::getActiveTests();
                 var marker = L.circleMarker([n.lat, n.lng],
                     Object.assign({ bubblingMouseEvents: false }, markerStyle(n.isLab)))
                     .bindPopup(popup);
-                marker.on('click', function () { focusNode(n.id); });
+                // Only focus when the marker is genuinely standalone (or
+                // spiderfied). When it is collapsed inside a cluster bubble its
+                // SVG circle can still sit under the bubble and capture a click
+                // meant for the cluster — getVisibleParent returns the cluster
+                // in that case, so we ignore the click and let the cluster
+                // zoom/spiderfy as usual.
+                marker.on('click', function () {
+                    if (markerLayer.getVisibleParent(marker) !== marker) { return; }
+                    focusNode(n.id);
+                });
                 mapNodesById[n.id] = { n: n, marker: marker };
             });
 
