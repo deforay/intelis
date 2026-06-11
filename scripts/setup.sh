@@ -68,6 +68,19 @@ log_file="/tmp/intelis-setup-$(date +'%Y%m%d-%H%M%S').log"
 # Error trap
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 
+# Capture the directory we were launched from so the EXIT cleanup can still find
+# transient downloads after we cd into the install path mid-run.
+SETUP_CWD="$(pwd)"
+
+# Best-effort cleanup of transient artifacts so an aborted run doesn't leave
+# half-downloaded tarballs or temp dirs behind for the next attempt.
+cleanup_on_exit() {
+    [ -n "${temp_dir:-}" ] && rm -rf "${temp_dir}" 2>/dev/null || true
+    rm -f "${SETUP_CWD}/master.tar.gz" "${SETUP_CWD}/lamp-setup.sh" 2>/dev/null || true
+    [ -n "${lis_path:-}" ] && rm -f "${lis_path}/vendor.tar.gz" "${lis_path}/vendor.tar.gz.md5" 2>/dev/null || true
+}
+trap cleanup_on_exit EXIT
+
 # --- DB strategy resolution: env/flag/prompt ---
 resolve_db_strategy() {
     local strategy="$1"        # from flag (optional)
@@ -168,7 +181,16 @@ handle_database_setup_and_import() {
         mysql_exec "DROP DATABASE vlsm;"
         mysql_exec "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
         echo "Backup complete: ${new_db_name}"
-        
+
+        # Prune old renamed backups (keep the most recent BACKUP_KEEP) so repeated
+        # rename-strategy runs don't accumulate full DB copies and fill the disk.
+        mapfile -t _old_db_backups < <(mysql -Nse "SELECT schema_name FROM information_schema.schemata WHERE schema_name REGEXP '^vlsm_[0-9]{8}_[0-9]{6}$' ORDER BY schema_name DESC;" | tail -n +$((BACKUP_KEEP + 1)))
+        for _old_db in "${_old_db_backups[@]}"; do
+            [ -z "$_old_db" ] && continue
+            print info "Pruning old database backup: ${_old_db}"
+            mysql_exec "DROP DATABASE \`${_old_db}\`;"
+            log_action "Pruned old database backup: ${_old_db}"
+        done
     }
 
     recreate_vlsm_database() {
@@ -413,19 +435,42 @@ collect_user_inputs() {
     saved_trap=$(trap -p ERR)
     trap - ERR
 
+    # If a previous run saved its answers, offer to reuse them so a retry after
+    # a mid-run failure doesn't re-ask everything (and can run unattended).
+    local answers_file="/usr/local/lib/intelis/setup-answers.env"
+    local _cli_db_strategy="$DB_STRATEGY_FLAG"
+    if [ -f "$answers_file" ]; then
+        print info "Found saved answers from a previous run: ${answers_file}"
+        if ask_yes_no "Reuse your previous setup answers and skip the prompts?" "yes"; then
+            # shellcheck disable=SC1090
+            source "$answers_file"
+            reuse_saved_answers=true
+            log_action "Reusing saved setup answers from ${answers_file}"
+        else
+            rm -f "$answers_file"
+            reuse_saved_answers=false
+        fi
+    fi
+    # An explicit --db-strategy on the command line always wins over a saved one.
+    [ -n "$_cli_db_strategy" ] && DB_STRATEGY_FLAG="$_cli_db_strategy"
+
     print header "Setup configuration — please answer the following prompts"
     echo "After this, setup will run unattended. (lamp-setup.sh may still"
     echo "prompt internally; that sub-script is out of our control.)"
     echo
 
     # --- 1. LIS installation path ---
-    echo "Enter the LIS installation path [press enter to select /var/www/intelis]: "
-    read -t 60 lis_path
-    if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
-        lis_path="/var/www/intelis"
-        echo "Using default path: $lis_path"
+    if ! $reuse_saved_answers; then
+        echo "Enter the LIS installation path [press enter to select /var/www/intelis]: "
+        read -t 60 lis_path
+        if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
+            lis_path="/var/www/intelis"
+            echo "Using default path: $lis_path"
+        else
+            echo "LIS installation path is set to ${lis_path}."
+        fi
     else
-        echo "LIS installation path is set to ${lis_path}."
+        print info "Reusing saved LIS path: ${lis_path}"
     fi
     log_action "LIS installation path is set to ${lis_path}."
     db_setup_checkpoint_file="${lis_path}/var/run/setup-db-complete.checkpoint"
@@ -443,8 +488,8 @@ collect_user_inputs() {
         log_action "Resume mode enabled. Skipping database setup/import."
     fi
 
-    # --- 3. Existing-install confirmation ---
-    if [ -d "${lis_path}" ] && [ -n "$(ls -A ${lis_path} 2>/dev/null)" ]; then
+    # --- 3. Existing-install confirmation (skipped when reusing saved answers) ---
+    if ! $reuse_saved_answers && [ -d "${lis_path}" ] && [ -n "$(ls -A ${lis_path} 2>/dev/null)" ]; then
         if [ -f "${lis_path}/composer.json" ] || [ -f "${lis_path}/bootstrap.php" ]; then
             print warning "InteLIS installation detected at ${lis_path}"
             if ask_yes_no "An existing InteLIS installation was found. Do you want to proceed with setup (this will update/overwrite the installation)?" "yes"; then
@@ -476,40 +521,48 @@ collect_user_inputs() {
     fi
 
     # --- 5. Hostname ---
-    read -p "Enter domain name (press enter to use 'intelis'): " hostname
-    if [[ -n "$hostname" ]]; then
-        hostname=$(echo "$hostname" | sed -E 's|^https?://||i')
-        hostname=$(echo "$hostname" | sed -E 's|/*$||')
-        hostname=$(echo "$hostname" | sed -E 's|:[0-9]+$||')
-        hostname=$(echo "$hostname" | cut -d'/' -f1)
-        if [[ -z "$hostname" ]]; then
+    if ! $reuse_saved_answers; then
+        read -p "Enter domain name (press enter to use 'intelis'): " hostname
+        if [[ -n "$hostname" ]]; then
+            hostname=$(echo "$hostname" | sed -E 's|^https?://||i')
+            hostname=$(echo "$hostname" | sed -E 's|/*$||')
+            hostname=$(echo "$hostname" | sed -E 's|:[0-9]+$||')
+            hostname=$(echo "$hostname" | cut -d'/' -f1)
+            if [[ -z "$hostname" ]]; then
+                hostname="intelis"
+                print info "Using default hostname: $hostname"
+            else
+                print info "Using cleaned hostname: $hostname"
+            fi
+        else
             hostname="intelis"
             print info "Using default hostname: $hostname"
-        else
-            print info "Using cleaned hostname: $hostname"
         fi
     else
-        hostname="intelis"
-        print info "Using default hostname: $hostname"
+        print info "Reusing saved hostname: ${hostname}"
     fi
     log_action "Hostname: $hostname"
 
     # --- 6. Installation type (LIS vs STS) ---
-    read -p "Is this an LIS or STS installation? [LIS/STS] (press enter for default: LIS): " installation_type
-    installation_type="${installation_type:-LIS}"
-    local first_char
-    first_char=$(echo "$installation_type" | cut -c1 | tr '[:upper:]' '[:lower:]')
-    is_lis=false
-    is_sts=false
-    if [[ "$first_char" == "l" ]]; then
-        is_lis=true
-        log_action "Will install InteLIS as the default host"
-    elif [[ "$first_char" == "s" ]]; then
-        is_sts=true
-        log_action "Will install InteLIS alongside other apps"
+    if ! $reuse_saved_answers; then
+        read -p "Is this an LIS or STS installation? [LIS/STS] (press enter for default: LIS): " installation_type
+        installation_type="${installation_type:-LIS}"
+        local first_char
+        first_char=$(echo "$installation_type" | cut -c1 | tr '[:upper:]' '[:lower:]')
+        is_lis=false
+        is_sts=false
+        if [[ "$first_char" == "l" ]]; then
+            is_lis=true
+            log_action "Will install InteLIS as the default host"
+        elif [[ "$first_char" == "s" ]]; then
+            is_sts=true
+            log_action "Will install InteLIS alongside other apps"
+        else
+            is_lis=true
+            log_action "Invalid installation type '$installation_type'; defaulting to LIS"
+        fi
     else
-        is_lis=true
-        log_action "Invalid installation type '$installation_type'; defaulting to LIS"
+        print info "Reusing saved installation type: $([ "$is_lis" = true ] && echo LIS || echo STS)"
     fi
 
     # --- 7. MySQL root password (collect only; verify+persist after lamp-setup) ---
@@ -553,8 +606,10 @@ collect_user_inputs() {
     fi
 
     # --- 9. Remote STS URL (LIS only; validated with curl, no local setup needed) ---
-    remote_sts_url=""
-    if $is_lis; then
+    if $reuse_saved_answers; then
+        [ -n "${remote_sts_url:-}" ] && print info "Reusing saved Remote STS URL: ${remote_sts_url}"
+    elif $is_lis; then
+        remote_sts_url=""
         local max_sts_url_attempts=3
         local sts_url_attempts=0
         while true; do
@@ -591,19 +646,40 @@ collect_user_inputs() {
     # The full file list isn't known until the codebase is extracted, so the
     # "pick individual scripts" mode is the only one that still has to prompt
     # at the end. "all" and "none" run unattended.
-    run_maintenance_scripts=false
-    maintenance_scripts_mode="none"
-    if ask_yes_no "Do you want to run maintenance scripts after setup completes?" "no"; then
-        run_maintenance_scripts=true
-        echo "  1) ALL  – run every maintenance script automatically (default, unattended)"
-        echo "  2) PICK – list the scripts at the end and let me choose (interactive)"
-        read -r -p "Enter choice [1=ALL(default), 2=PICK]: " _mchoice
-        case "${_mchoice:-1}" in
-            2) maintenance_scripts_mode="pick" ;;
-            *) maintenance_scripts_mode="all"  ;;
-        esac
-        log_action "Maintenance scripts policy: ${maintenance_scripts_mode}"
+    if ! $reuse_saved_answers; then
+        run_maintenance_scripts=false
+        maintenance_scripts_mode="none"
+        if ask_yes_no "Do you want to run maintenance scripts after setup completes?" "no"; then
+            run_maintenance_scripts=true
+            echo "  1) ALL  – run every maintenance script automatically (default, unattended)"
+            echo "  2) PICK – list the scripts at the end and let me choose (interactive)"
+            read -r -p "Enter choice [1=ALL(default), 2=PICK]: " _mchoice
+            case "${_mchoice:-1}" in
+                2) maintenance_scripts_mode="pick" ;;
+                *) maintenance_scripts_mode="all"  ;;
+            esac
+            log_action "Maintenance scripts policy: ${maintenance_scripts_mode}"
+        fi
+    else
+        print info "Reusing saved maintenance policy: ${maintenance_scripts_mode:-none}"
     fi
+
+    # Persist the answers so a re-run after a mid-setup failure can skip the
+    # prompts. The MySQL password is deliberately NOT stored here (it lives in
+    # ~/.my.cnf at 0600); this file holds only non-secret choices.
+    mkdir -p "$(dirname "$answers_file")"
+    cat >"$answers_file" <<EOF
+lis_path='${lis_path}'
+hostname='${hostname}'
+is_lis=${is_lis}
+is_sts=${is_sts}
+DB_STRATEGY_FLAG='${DB_STRATEGY_FLAG}'
+remote_sts_url='${remote_sts_url}'
+run_maintenance_scripts=${run_maintenance_scripts}
+maintenance_scripts_mode='${maintenance_scripts_mode}'
+EOF
+    chmod 600 "$answers_file"
+    log_action "Saved setup answers to ${answers_file}"
 
     print success "All inputs collected. Setup will now run unattended."
     print info "Log file: ${log_file}"
@@ -617,7 +693,12 @@ collect_user_inputs() {
 intelis_sql_file=""
 DB_STRATEGY_FLAG=""
 resume_setup=false
+reuse_saved_answers=false
+remote_sts_url=""
 PHP_VERSION="8.4"
+
+# How many timestamped code/DB backups to retain when re-running setup.
+BACKUP_KEEP="${BACKUP_KEEP:-3}"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -731,6 +812,13 @@ elif [ -n "$(ls -A ${lis_path} 2>/dev/null)" ]; then
         --exclude 'public/uploads/' \
         "${lis_path}/" "${backup_dir}/"
     log_action "Selective backup created: ${backup_dir}"
+
+    # Keep only the most recent code backups so repeated re-runs can't fill the disk.
+    ls -dt "${lis_path}"-[0-9]* 2>/dev/null | tail -n +$((BACKUP_KEEP + 1)) | while read -r _old_backup; do
+        print info "Pruning old code backup: ${_old_backup}"
+        rm -rf "$_old_backup"
+        log_action "Pruned old code backup: ${_old_backup}"
+    done
 fi
 
 # Copy the unzipped content to the LIS PATH, overwriting any existing files
@@ -931,7 +1019,9 @@ if $is_lis; then
     echo "Installing InteLIS as the default host..."
     log_action "Installing InteLIS as the default host..."
     apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
-    cp "$apache_vhost_file" "${apache_vhost_file}.bak"
+    # Only snapshot the pristine original once; a re-run must not overwrite the
+    # backup with an already-modified vhost.
+    [ -f "${apache_vhost_file}.bak" ] || cp "$apache_vhost_file" "${apache_vhost_file}.bak"
     configure_vhost "$apache_vhost_file"
 else
     echo "Installing InteLIS alongside other apps..."
@@ -1015,6 +1105,14 @@ sed -i "s|\$systemConfig\['interfacing'\]\['database'\]\['password'\]\s*=.*|\$sy
 if $resume_setup; then
     print info "Skipping database setup/import in resume mode."
     log_action "Database setup/import skipped due to resume mode."
+elif [ -f "${db_setup_checkpoint_file}" ] && \
+     [ "$(mysql -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='vlsm';" 2>/dev/null || echo 0)" -gt 0 ]; then
+    # A prior run completed the import (checkpoint is written only on success and
+    # cleared at the start of every import). Re-running must NOT re-reset or
+    # re-import over an already-populated database.
+    print info "Database already imported in a previous run (checkpoint present); skipping DB setup/import."
+    print info "Delete ${db_setup_checkpoint_file} to force a fresh import."
+    log_action "Auto-skipped DB import: checkpoint present at ${db_setup_checkpoint_file}."
 elif [[ -n "$intelis_sql_file" && -f "$intelis_sql_file" ]]; then
     handle_database_setup_and_import "$intelis_sql_file"
 elif [[ -n "$intelis_sql_file" ]]; then
