@@ -367,6 +367,19 @@ if ($country === null || $country === '') {
     }
 }
 
+// Long official names ("Republic of Cameroon") poison Nominatim's free-text
+// search — they match unrelated places (a Singapore restaurant) or nothing at
+// all, so every lookup fails. Normalise to the recognised short name and, where
+// known, an ISO code we pass as a hard `countrycodes` filter (which also stops
+// facility names matching a same-named place in another country).
+$norm = NominatimGeocoderUtility::normalizeCountry($country);
+$countryName = $norm['name'];
+$countryCode = $norm['iso'];
+if ($countryName !== $country && $countryName !== '') {
+    echo "Normalised for geocoding: \"{$country}\" -> \"{$countryName}\""
+        . ($countryCode ? " (countrycodes={$countryCode})" : '') . "\n";
+}
+
 // Build the candidate filter.
 $conditions = [];
 if (!$redo) {
@@ -425,11 +438,11 @@ $stats = ['facility' => 0, 'district' => 0, 'province' => 0, 'failed' => 0];
 $processed = 0;
 
 /** Geocode a place name once and cache the result. Returns [lat,lon] or null. */
-$cachedGeocode = static function (string $cacheKey, string $query) use (&$centroidCache, $sleep): ?array {
+$cachedGeocode = static function (string $cacheKey, string $query) use (&$centroidCache, $sleep, $countryCode): ?array {
     if (array_key_exists($cacheKey, $centroidCache)) {
         return $centroidCache[$cacheKey] ?: null;
     }
-    $hit = NominatimGeocoderUtility::geocode($query);
+    $hit = NominatimGeocoderUtility::geocode($query, $countryCode);
     usleep((int) ($sleep * 1_000_000));
     $centroidCache[$cacheKey] = $hit ?: false;
     return $hit;
@@ -446,14 +459,14 @@ foreach ($facilities as $f) {
     $district = trim((string) $f['facility_district']);
     $province = trim((string) $f['facility_state']);
 
-    $parts = array_values(array_filter([$name, $district, $province, $country], static fn($p) => $p !== ''));
+    $parts = array_values(array_filter([$name, $district, $province, $countryName], static fn($p) => $p !== ''));
     $query = implode(', ', $parts);
 
     $lat = $lon = null;
     $source = 'failed';
 
     // 1. Facility-level lookup.
-    $hit = NominatimGeocoderUtility::geocode($query);
+    $hit = NominatimGeocoderUtility::geocode($query, $countryCode);
     usleep((int) ($sleep * 1_000_000));
     if ($hit !== null) {
         $lat = $hit['lat'];
@@ -463,8 +476,8 @@ foreach ($facilities as $f) {
 
     // 2. District centroid + sunflower spread.
     if ($lat === null && $district !== '') {
-        $key = strtolower("$district|$province|$country");
-        $dParts = array_values(array_filter([$district, $province, $country], static fn($p) => $p !== ''));
+        $key = strtolower("$district|$province|$countryName");
+        $dParts = array_values(array_filter([$district, $province, $countryName], static fn($p) => $p !== ''));
         $centroid = $cachedGeocode($key, implode(', ', $dParts));
         if ($centroid !== null) {
             $lat = $centroid['lat'];
@@ -486,8 +499,8 @@ foreach ($facilities as $f) {
 
     // 3. Province centroid + sunflower spread.
     if ($lat === null && $province !== '') {
-        $key = strtolower("|$province|$country");
-        $pParts = array_values(array_filter([$province, $country], static fn($p) => $p !== ''));
+        $key = strtolower("|$province|$countryName");
+        $pParts = array_values(array_filter([$province, $countryName], static fn($p) => $p !== ''));
         $centroid = $cachedGeocode($key, implode(', ', $pParts));
         if ($centroid !== null) {
             $lat = $centroid['lat'];
