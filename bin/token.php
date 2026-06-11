@@ -44,10 +44,13 @@ $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
 // Set the URL for the token generation endpoint
 $remoteURL = rtrim((string) $general->getRemoteURL(), '/');
 
-// Check connectivity
-if ($remoteURL === '' || $remoteURL === '0' || $remoteURL === '') {
-    LoggerUtility::logError("Please check if STS URL is set");
-    exit(CLI\ERROR);
+// No STS URL configured — there is nothing to generate a token against. This is
+// not an error: a LIS may run standalone or have STS configured later, and this
+// script runs from install/upgrade post hooks that must not fail because of it.
+// (Mirrors the no-op-on-non-LIS behavior above.)
+if ($remoteURL === '' || $remoteURL === '0') {
+    $io->note('No STS URL configured — skipping STS token generation.');
+    exit(CLI\OK);
 }
 
 // Parse CLI arguments to get the API key using either `-key` or `--key`
