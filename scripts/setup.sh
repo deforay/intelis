@@ -778,20 +778,16 @@ fi
 # LIS Setup
 print header "Downloading LIS"
 
-download_file "master.tar.gz" "https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master" "Downloading LIS package..." || {
-    print error "LIS download failed - cannot continue with setup"
-    log_action "LIS download failed - setup aborted"
-    exit 1
-}
-
-# Extract the tar.gz file into temporary directory
+# Acquire the master tree via the shared helper: a persistent shallow git mirror
+# (so a re-run delta-fetches only changed objects, the mirror primes the first
+# `intelis upgrade`, and we stamp the exact commit SHA into VERSION.txt), with a
+# shallow-clone and codeload-tarball fallback. Progress goes to the terminal.
 temp_dir=$(mktemp -d)
-print info "Extracting files from master.tar.gz..."
-
-tar -xzf master.tar.gz -C "$temp_dir" &
-tar_pid=$!           # Save tar PID
-spinner "${tar_pid}" # Spinner tracks extraction
-wait ${tar_pid}      # Wait for extraction to finish
+if ! fetch_master_tree "${temp_dir}/intelis-master"; then
+    print error "Failed to acquire the LIS source tree - cannot continue with setup."
+    log_action "fetch_master_tree failed - setup aborted"
+    exit 1
+fi
 
 log_action "LIS downloaded."
 
@@ -825,15 +821,17 @@ fi
 # cp -R "$temp_dir/intelis-master/"* "${lis_path}"
 rsync -a --info=progress2 "$temp_dir/intelis-master/" "$lis_path/"
 
-# Remove the empty directory and the downloaded zip file
+# Remove the staged tree (the temp dir itself is swept by the EXIT cleanup trap,
+# along with any tarball-fallback master.tar.gz that lived inside it).
 rm -rf "$temp_dir/intelis-master/"
-rm master.tar.gz
 
 log_action "LIS copied to ${lis_path}."
 
 # Set proper permissions
 set_permissions "${lis_path}" "quick" "sync"
-find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true
+# Batch the ownership pass (one chown call per ~argmax files) instead of forking
+# chown once per file — orders of magnitude faster on a full tree.
+find "${lis_path}" -exec chown www-data:www-data {} + 2>/dev/null || true
 
 # Run Composer Install as www-data
 print header "Running composer operations"
@@ -935,7 +933,7 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
 
         # Fix permissions on the vendor directory
         print info "Setting permissions on vendor directory..."
-        find "${lis_path}/vendor" -exec chown www-data:www-data {} \; 2>/dev/null || true
+        find "${lis_path}/vendor" -exec chown www-data:www-data {} + 2>/dev/null || true
         chmod -R 755 "${lis_path}/vendor" 2>/dev/null || true
 
         print success "Vendor files successfully installed"
@@ -1368,7 +1366,7 @@ download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com
 chmod +x /usr/local/bin/intelis-refresh
 (print success "Setting final permissions in the background..." &&
     intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
-    find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
+    find "${lis_path}" -exec chown www-data:www-data {} + 2>/dev/null || true) &
 disown
 
 restart_service apache

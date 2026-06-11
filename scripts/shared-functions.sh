@@ -85,7 +85,7 @@ escape_php_string_for_sed() {
 
 # Install required packages
 install_packages() {
-    local required_pkgs=(aria2 wget lsb-release bc pigz gpg fzf zstd)
+    local required_pkgs=(aria2 wget lsb-release bc pigz gpg fzf zstd git rsync)
     # Map package names to their actual command names
     declare -A pkg_to_cmd=(
         ["aria2"]="aria2c"
@@ -96,6 +96,8 @@ install_packages() {
         ["gpg"]="gpg"
         ["fzf"]="fzf"
         ["zstd"]="zstd"
+        ["git"]="git"
+        ["rsync"]="rsync"
     )
     
     local missing_pkgs=()
@@ -377,6 +379,166 @@ to_absolute_path() {
         /*) printf '%s\n' "$p" ;;
         *)  printf '%s\n' "$(pwd)/$p" ;;
     esac
+}
+
+
+# ---------------------------------------------------------------------------
+# Source acquisition — shared by setup.sh (first install) and upgrade.sh's
+# prepare phase. Keeping it here means both fetch the master tree the same way:
+# a persistent shallow git mirror with cheap delta fetches, a fresh shallow
+# clone as fallback, and the codeload tarball as the last resort.
+# ---------------------------------------------------------------------------
+MASTER_GIT_URL="${MASTER_GIT_URL:-https://github.com/deforay/intelis.git}"
+MASTER_TARBALL_URL="${MASTER_TARBALL_URL:-https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master}"
+
+# Persistent shallow mirror of master. After the first clone, callers advance it
+# with DELTA fetches (only changed objects, usually tens of KB) instead of
+# re-downloading the full codeload tarball every time.
+INTELIS_SRC_DIR="${INTELIS_SRC_DIR:-/usr/local/lib/intelis/src}"
+
+# git network wrapper: a generous wall-clock backstop so a hung connection can't
+# stall forever, plus a low-speed abort (below ~1KB/s for 60s) that fails a truly
+# dead link fast while a slow-but-working one survives. safe.directory='*' avoids
+# git's "dubious ownership" refusal if the mirror's owner ever differs from root.
+run_git() {
+    local _timeout_cmd=""
+    command -v timeout >/dev/null 2>&1 && _timeout_cmd="timeout --kill-after=15 ${GIT_NET_TIMEOUT:-2400}"
+    $_timeout_cmd git -c safe.directory='*' -c http.lowSpeedLimit=1000 -c http.lowSpeedTime=60 "$@"
+}
+
+# fetch_master_tree <extract_dir>
+#   Populate <extract_dir> with the deforay/intelis master working tree — the
+#   equivalent of the codeload tarball's intelis-master/ contents at the top
+#   level. <extract_dir>'s basename MUST be "intelis-master" so the tarball
+#   fallback (which extracts into the parent) lands in the right place.
+#
+#   Strategy, cheapest first:
+#     1. delta-fetch an existing shallow mirror at $INTELIS_SRC_DIR
+#     2. fresh shallow clone into the mirror (3 attempts)
+#     3. codeload tarball (git missing/unreachable) — no mirror, so no future
+#        deltas; the next run re-establishes it
+#
+#   Writes <extract_dir>/VERSION.txt with the commit SHA when it can determine
+#   one (rev-parse on the git paths; best-effort GitHub API on the tarball path).
+#   Echoes progress to stdout so callers may redirect it to a log. Returns 0 only
+#   when <extract_dir>/composer.json exists afterward.
+fetch_master_tree() {
+    local extract_dir="$1"
+    if [ -z "$extract_dir" ]; then
+        echo "fetch_master_tree: no extract dir given" >&2
+        return 2
+    fi
+
+    local staging_dir
+    staging_dir="$(dirname "$extract_dir")"
+    local master_tar="${staging_dir}/master.tar.gz"
+    local src_ready=false
+
+    # Already staged (resumable callers) — skip.
+    if [ -d "$extract_dir" ] && [ -f "$extract_dir/composer.json" ]; then
+        echo "master: already staged at ${extract_dir}, skipping"
+        return 0
+    fi
+
+    # Attempt 1: delta-fetch an existing mirror (cheap; changed objects only).
+    if command -v git >/dev/null 2>&1 && [ -d "$INTELIS_SRC_DIR/.git" ]; then
+        echo "master: updating source mirror (delta fetch — only changed files)"
+        if run_git -C "$INTELIS_SRC_DIR" fetch --depth 1 origin master &&
+            git -c safe.directory='*' -C "$INTELIS_SRC_DIR" reset --hard FETCH_HEAD &&
+            git -c safe.directory='*' -C "$INTELIS_SRC_DIR" clean -fd; then
+            # Shallow fetch/reset orphans the previous tip; sweep it now so the
+            # mirror doesn't bloat over many runs.
+            git -c safe.directory='*' -C "$INTELIS_SRC_DIR" gc --prune=now --quiet 2>/dev/null || true
+            src_ready=true
+            echo "master: mirror updated via delta fetch"
+        else
+            echo "master: delta fetch failed; will re-clone the mirror"
+            rm -rf "$INTELIS_SRC_DIR"
+        fi
+    fi
+
+    # Attempt 2: fresh shallow clone into the mirror.
+    if [ "$src_ready" = false ] && command -v git >/dev/null 2>&1; then
+        echo "master: shallow-cloning master into source mirror"
+        local attempt
+        for attempt in 1 2 3; do
+            rm -rf "$INTELIS_SRC_DIR"
+            mkdir -p "$(dirname "$INTELIS_SRC_DIR")"
+            if run_git clone --depth 1 --single-branch --branch master \
+                "$MASTER_GIT_URL" "$INTELIS_SRC_DIR"; then
+                src_ready=true
+                echo "master: cloned (attempt ${attempt}); future updates will be delta-only"
+                break
+            fi
+            echo "master: clone attempt ${attempt}/3 failed"
+            sleep 3
+        done
+    fi
+
+    if [ "$src_ready" = true ]; then
+        # Stage the working tree (minus .git, which must never reach an instance).
+        echo "master: staging tree from mirror"
+        rm -rf "$extract_dir"
+        mkdir -p "$extract_dir"
+        rsync -a --exclude='.git' --exclude='.git/' "$INTELIS_SRC_DIR/" "$extract_dir/"
+
+        local _master_sha
+        _master_sha=$(git -c safe.directory='*' -C "$INTELIS_SRC_DIR" rev-parse HEAD 2>/dev/null || true)
+        if [ -n "$_master_sha" ]; then
+            printf '%s\n' "$_master_sha" >"$extract_dir/VERSION.txt"
+            echo "master: commit SHA $_master_sha captured"
+        fi
+    else
+        # Attempt 3: tarball fallback (git missing/unreachable).
+        echo "master: git unavailable; falling back to codeload tarball"
+        if [ ! -f "$master_tar" ]; then
+            echo "master: downloading from $MASTER_TARBALL_URL"
+            download_file "$master_tar" "$MASTER_TARBALL_URL" "master: downloading tarball" || {
+                echo "master: tarball download failed" >&2
+                return 1
+            }
+        else
+            echo "master: tarball already present, skipping download"
+        fi
+        # Verify it's a valid gzip tarball before extracting so a truncated or
+        # corrupt download fails loudly instead of extracting a partial tree.
+        if ! tar -tzf "$master_tar" >/dev/null 2>&1; then
+            echo "master: ${master_tar} is not a valid archive (truncated/corrupt)" >&2
+            return 1
+        fi
+        echo "master: extracting"
+        rm -rf "$extract_dir"
+        # codeload wraps contents in intelis-master/, matching extract_dir's
+        # basename — extract into the parent so it lands at $extract_dir.
+        tar -xzf "$master_tar" -C "$staging_dir" || {
+            echo "master: tarball extraction failed" >&2
+            return 1
+        }
+
+        # No local git to rev-parse; capture HEAD SHA via the GitHub API
+        # (best-effort). Tiny race: API HEAD vs. tarball content can differ by a
+        # commit if someone pushes between the two requests.
+        local _sha_response _master_sha
+        _sha_response=$(curl -sS --max-time 10 \
+            "https://api.github.com/repos/deforay/intelis/commits/master" 2>/dev/null || true)
+        _master_sha=$(printf '%s' "$_sha_response" \
+            | grep -oE '"sha"[[:space:]]*:[[:space:]]*"[0-9a-f]{40}"' \
+            | head -1 \
+            | grep -oE '[0-9a-f]{40}')
+        if [ -n "$_master_sha" ]; then
+            printf '%s\n' "$_master_sha" >"$extract_dir/VERSION.txt"
+            echo "master: commit SHA $_master_sha captured"
+        else
+            echo "master: commit SHA lookup skipped (no network or rate-limited)"
+        fi
+    fi
+
+    if [ ! -f "$extract_dir/composer.json" ]; then
+        echo "master: composer.json missing after staging" >&2
+        return 1
+    fi
+    echo "master: ready"
+    return 0
 }
 
 
