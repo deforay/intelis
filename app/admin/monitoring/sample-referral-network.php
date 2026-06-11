@@ -464,10 +464,25 @@ $activeTests = TestsService::getActiveTests();
             chunkedLoading: true,
             showCoverageOnHover: false,
             maxClusterRadius: 35,
-            spiderfyOnMaxZoom: true,
+            spiderfyOnMaxZoom: false,
+            zoomToBoundsOnClick: false,
             disableClusteringAtZoom: 7
         }).addTo(map);
         flowLayer = L.layerGroup().addTo(map);
+
+        // Referral links are shown only when a single, real marker is clicked.
+        // The group 'click' event fires exclusively for a standalone marker
+        // (never a cluster bubble), so a cluster bubble can never trigger focus.
+        markerLayer.on('click', function (e) {
+            if (e.layer && e.layer.nodeId != null) { focusNode(e.layer.nodeId); }
+        });
+        // Clicking a cluster just zooms in. Frame the cluster's members, capped
+        // so an identical-coordinate pile (many facilities on one centroid)
+        // steps past the de-cluster threshold instead of slamming to street
+        // level. zoomToBoundsOnClick is off so this is the only zoom that runs.
+        markerLayer.on('clusterclick', function (e) {
+            map.fitBounds(e.layer.getBounds(), { padding: [40, 40], maxZoom: 12 });
+        });
 
         // Clicking empty map clears any focused catchment.
         map.on('click', function () { if (focusedId !== null) { clearFocus(); } });
@@ -726,16 +741,11 @@ $activeTests = TestsService::getActiveTests();
                 var marker = L.circleMarker([n.lat, n.lng],
                     Object.assign({ bubblingMouseEvents: false }, markerStyle(n.isLab)))
                     .bindPopup(popup);
-                // Only focus when the marker is genuinely standalone (or
-                // spiderfied). When it is collapsed inside a cluster bubble its
-                // SVG circle can still sit under the bubble and capture a click
-                // meant for the cluster — getVisibleParent returns the cluster
-                // in that case, so we ignore the click and let the cluster
-                // zoom/spiderfy as usual.
-                marker.on('click', function () {
-                    if (markerLayer.getVisibleParent(marker) !== marker) { return; }
-                    focusNode(n.id);
-                });
+                // Focus is wired through the cluster group's own 'click' event
+                // (see initMap), which only fires for a genuine standalone /
+                // spiderfied marker — never for a cluster bubble. Stash the node
+                // id so that handler knows which node was clicked.
+                marker.nodeId = n.id;
                 mapNodesById[n.id] = { n: n, marker: marker };
             });
 
