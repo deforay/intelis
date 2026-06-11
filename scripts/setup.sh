@@ -1315,7 +1315,10 @@ print header "Running database migrations and other post-install tasks"
 cd "${lis_path}"
 # Audit Trail v2 triggers are generated inside `composer post-install`
 # (right after the migrate step), so no separate invocation is needed here.
-sudo -u www-data composer post-install
+# INTELIS_NONINTERACTIVE tells post-install hooks (e.g. sts-setup) not to prompt:
+# the STS URL was already collected upfront, so they use the configured value
+# instead of re-asking. Set it later from Admin or via `composer sts-setup`.
+sudo -u www-data env INTELIS_NONINTERACTIVE=1 composer post-install
 
 # Maintenance scripts policy was decided upfront in collect_user_inputs.
 if [ "${run_maintenance_scripts:-false}" = true ]; then
