@@ -77,6 +77,60 @@ final class NominatimGeocoderUtility
         ];
     }
 
+    /**
+     * Normalise a configured country name (or slug) into something Nominatim
+     * recognises, plus its ISO 3166-1 alpha-2 code.
+     *
+     * Long official names poison free-text geocoding: "Republic of Cameroon"
+     * matches a restaurant in Singapore and "<place>, Republic of Cameroon"
+     * returns nothing, so every lookup fails. The short common name ("Cameroon")
+     * resolves correctly, and the ISO code lets us pass `countrycodes` as a hard
+     * filter. Known VLSM countries (form names and slugs) are mapped explicitly;
+     * anything else falls back to stripping common state-form prefixes.
+     *
+     * @return array{iso: ?string, name: string}
+     */
+    public static function normalizeCountry(string $country): array
+    {
+        $key = strtolower(trim($country));
+        if ($key === '') {
+            return ['iso' => null, 'name' => ''];
+        }
+
+        // Keyed by both the official form_name and the slug used in
+        // s_available_country_forms, plus a few obvious aliases.
+        static $map = [
+            'south sudan' => ['ss', 'South Sudan'],
+            'ssudan' => ['ss', 'South Sudan'],
+            'sierra leone' => ['sl', 'Sierra Leone'],
+            'sierra-leone' => ['sl', 'Sierra Leone'],
+            'democratic republic of the congo' => ['cd', 'Democratic Republic of the Congo'],
+            'dr congo' => ['cd', 'Democratic Republic of the Congo'],
+            'drc' => ['cd', 'Democratic Republic of the Congo'],
+            'republic of cameroon' => ['cm', 'Cameroon'],
+            'cameroon' => ['cm', 'Cameroon'],
+            'cameroun' => ['cm', 'Cameroon'],
+            'papua new guinea' => ['pg', 'Papua New Guinea'],
+            'png' => ['pg', 'Papua New Guinea'],
+            'rwanda' => ['rw', 'Rwanda'],
+            'burkina faso' => ['bf', 'Burkina Faso'],
+            'burkina-faso' => ['bf', 'Burkina Faso'],
+        ];
+        if (isset($map[$key])) {
+            return ['iso' => $map[$key][0], 'name' => $map[$key][1]];
+        }
+
+        // Unknown country: best-effort strip of "Republic of", "Kingdom of",
+        // etc. so a long official name still geocodes. No ISO code available.
+        $clean = preg_replace(
+            '/^(the\s+)?(democratic\s+|federal\s+|united\s+)?(people\'?s\s+)?(republic\s+of\s+(the\s+)?|kingdom\s+of\s+|state\s+of\s+)/i',
+            '',
+            trim($country)
+        );
+        $clean = trim((string) $clean);
+        return ['iso' => null, 'name' => $clean !== '' ? $clean : trim($country)];
+    }
+
     /** Reject coordinates that are out of range or the (0,0) "null island". */
     public static function isValidCoord(float $lat, float $lon): bool
     {
