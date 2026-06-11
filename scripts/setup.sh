@@ -754,7 +754,10 @@ download_file  "lamp-setup.sh" "https://raw.githubusercontent.com/deforay/utilit
 
 chmod u+x ./lamp-setup.sh
 
-./lamp-setup.sh $PHP_VERSION
+# Hand lamp-setup the MySQL root password we already collected so it doesn't
+# prompt a second time. lamp-setup falls back to its own prompt if this is empty
+# or an older lamp-setup that ignores the variable.
+MYSQL_ROOT_PASSWORD="${mysql_root_password}" ./lamp-setup.sh $PHP_VERSION
 
 rm -f ./lamp-setup.sh
 
