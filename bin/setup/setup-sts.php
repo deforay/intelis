@@ -34,7 +34,19 @@ try {
     ini_set('memory_limit', '-1');
     set_time_limit(0);
 
-    $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+    $input = new ArgvInput();
+    // Don't prompt for the STS URL when:
+    //   - INTELIS_NONINTERACTIVE=1 is set (setup.sh's post-install: the URL was
+    //     already collected upfront, so re-asking here is redundant), or
+    //   - there is no interactive terminal (unattended run) — otherwise Symfony
+    //     throws "Aborted." on EOF.
+    // In both cases honour whatever is already in config; it can be (re)configured
+    // later from Admin → System Config or by running `composer sts-setup` directly.
+    $stsNoPrompt = getenv('INTELIS_NONINTERACTIVE') === '1'
+        || !function_exists('stream_isatty')
+        || !@stream_isatty(STDIN);
+    $input->setInteractive(!$stsNoPrompt);
+    $io = new SymfonyStyle($input, new ConsoleOutput());
 
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
@@ -55,6 +67,19 @@ try {
 
 
     $io->title('STS Configuration Setup');
+
+    // In a non-interactive / setup-driven run, skip the interactive STS wizard and
+    // keep whatever is already configured. STS setup is optional and can be run on
+    // demand later with `composer sts-setup`.
+    if ($stsNoPrompt) {
+        $configuredStsUrl = rtrim((string) $general->getRemoteURL(), '/');
+        if ($configuredStsUrl === '') {
+            $io->note('Non-interactive run — no STS URL configured; skipping STS setup. Configure it later from Admin → System Config or run `composer sts-setup`.');
+        } else {
+            $io->text("Non-interactive run — keeping the configured STS URL: <info>{$configuredStsUrl}</info>.");
+        }
+        exit(CLI\OK);
+    }
 
     // ---- helpers -----------------------------------------------------------
     /**
