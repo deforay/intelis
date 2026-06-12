@@ -35,6 +35,20 @@
 #   sudo ./intelis-setup.sh --php=8.5 --database=/root/backup.sql.gz
 #   sudo INTELIS_DB_STRATEGY=use ./intelis-setup.sh
 
+# Refuse to run when piped into a shell (curl ... | bash). With a pipe the
+# shell's stdin IS the script, so the interactive prompts below would consume the
+# script's own lines instead of the operator's input — corrupting the hostname,
+# the STS URL, etc., and eventually failing with a confusing "syntax error".
+# Download the script to a file first, then run it. (A real file argument makes
+# BASH_SOURCE[0] point at an existing file; a piped run leaves it empty.)
+if [ ! -f "${BASH_SOURCE[0]:-/dev/null}" ]; then
+    echo "ERROR: Do not pipe this script into bash — the prompts will read the script itself."
+    echo "Download it first, then run it:"
+    echo "  wget -O setup.sh \"https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=\$(date +%s)\""
+    echo "  sudo bash setup.sh"
+    exit 1
+fi
+
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
     print error "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
