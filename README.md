@@ -67,12 +67,8 @@ See the full license text in [LICENSE.md](LICENSE.md).
 **Supports Ubuntu 22.04 and above (LTS versions only)**
 
 ```bash
-cd ~
-sudo wget -O setup.sh https://github.com/deforay/intelis/raw/master/scripts/setup.sh
-sudo chmod +x setup.sh
-sudo ./setup.sh
-sudo rm setup.sh
-exit
+# Download the script to a file, then run it. Do NOT pipe it (curl ... | bash).
+cd ~ && wget -O setup.sh "https://github.com/deforay/intelis/raw/master/scripts/setup.sh?v=$(date +%s)" && sudo bash setup.sh
 ```
 
 When prompted, enter:
