@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# To use this script:
-# cd ~;
-# wget -O intelis-setup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh
-# sudo chmod u+x intelis-setup.sh;
-# sudo ./intelis-setup.sh;
+# To install (download to a file, then run it):
+#   cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)" && sudo bash setup.sh
+#
+# Do NOT pipe it (curl ... | bash): the interactive prompts would read the
+# script's own text from stdin and corrupt the run. The script detects a piped
+# invocation and refuses to start.
 #
 # Options:
 #   --database=<path>, --db=<path>
@@ -30,10 +31,10 @@
 #       successful import; requires the setup-db-complete.checkpoint file).
 #
 # Examples:
-#   sudo ./intelis-setup.sh --database=/root/backup.sql.gz
-#   sudo ./intelis-setup.sh --db ./dump.sql --db-strategy=drop
-#   sudo ./intelis-setup.sh --php=8.5 --database=/root/backup.sql.gz
-#   sudo INTELIS_DB_STRATEGY=use ./intelis-setup.sh
+#   sudo bash setup.sh --database=/root/backup.sql.gz
+#   sudo bash setup.sh --db ./dump.sql --db-strategy=drop
+#   sudo bash setup.sh --php=8.5 --database=/root/backup.sql.gz
+#   sudo INTELIS_DB_STRATEGY=use bash setup.sh
 
 # Refuse to run when piped into a shell (curl ... | bash). With a pipe the
 # shell's stdin IS the script, so the interactive prompts below would consume the
