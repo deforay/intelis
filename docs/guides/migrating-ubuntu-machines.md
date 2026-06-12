@@ -1,48 +1,61 @@
 # Migrating From One Ubuntu Machine to Another
 
-## Backup Database on Old System
+InteLIS backs up its databases automatically every 6 hours to
+`<install-path>/backups/db/` — compressed `.sql.zst` files for both the main
+(`intelis-…`) and, if used, the interfacing (`interfacing-…`) database. Migration
+reuses those backups directly; there is no separate manual export step.
 
-Open a terminal and execute these commands sequentially:
+## 1. Put the backups on the new machine
 
-```bash
-cd ~;
-sudo -s;
-wget -O db-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/db-backup.sh
-sudo chmod u+x db-backup.sh;
-sudo ./db-backup.sh;
+Connect the drive that holds the old machine's `backups` folder, or copy that
+folder onto the new machine (USB/external drive, or by mounting the old disk).
+You only need `backups/db/`. A main-database backup is named like:
+
+```text
+intelis-YYYYMMDD-HHMM.sql.zst
 ```
 
-During execution:
-- Provide MySQL username and password when requested
-- Select which database(s) to export
-- Allow the script to complete fully
-- Transfer the resulting database file(s) to removable media
+> Want the freshest possible snapshot and the old machine still runs? Force one
+> first, then copy the new file across:
+>
+> ```bash
+> cd /var/www/intelis && sudo -u www-data composer db:backup
+> ```
 
-## Restore Database and Install VLSM on New System
+## 2. Install on the new machine and restore the latest backup
 
-**System requirement:** Ubuntu 22.04 LTS or newer
+**Requirement:** Ubuntu 22.04 LTS or newer.
 
-Transfer the backup file from removable media to the Desktop folder, then run these terminal commands in sequence:
+Point `--db latest:` at the folder where you placed the backups (e.g. the mounted
+drive). setup.sh installs the stack and restores the newest backup it finds there
+— `.sql.zst` / `.sql.gz` are imported as-is, no need to decompress or rename:
 
 ```bash
-cd ~/Desktop;
-sudo -s;
-rm -f *.sql
-gzip -d vlsm-*.sql.gz && mv vlsm-*.sql vlsm.sql
-wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)"
-bash setup.sh --db vlsm.sql
-exit; exit;
+cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)" && sudo bash setup.sh --db latest:/media/USB/backups/db
 ```
 
-When prompted, enter MySQL credentials and STS URL accurately.
+- Replace `/media/USB/backups/db` with the actual path to your copied folder, e.g.
+  `/media/<user>/<drive>/backups/db`, `~/Desktop/backups/db`, or
+  `/mnt/old-disk/var/www/intelis/backups/db`.
+- To restore one specific file instead of the newest, pass it directly:
+  `sudo bash setup.sh --db /media/USB/intelis-20260608-0100.sql.zst`
 
-## VLSM Setup
+When prompted, enter the **new** machine's MySQL credentials and the STS URL.
 
-- Edit the production configuration: `sudo gedit /var/www/vlsm/configs/config.production.php`
-- Update MySQL details and other settings
-- Access http://vlsm/ in your browser
-- Create a new administrator account
-- Log in with administrator credentials
-- In the popup, configure instance details and select **LIS with Remote Ordering Enabled**
-- Choose your laboratory from the available options
-- Initiate Force Sync and monitor until completion
+## 3. After install
+
+The restored database already contains your users, lab/instance settings, and
+data, so you do **not** create a new admin or re-select the lab:
+
+- Browse to the instance and log in with your existing administrator account.
+- Verify instance/lab settings under **Admin → System Config**.
+- If connected to an STS, run a **Force Sync** and monitor until complete.
+
+### Interfacing database (only if you use it)
+
+`--db` restores the main database. If the interfacing database is in use, restore
+its backup separately after install:
+
+```bash
+cd /var/www/intelis && sudo -u www-data php vendor/bin/db-tools restore /media/USB/backups/db/interfacing-YYYYMMDD-HHMM.sql.zst
+```
