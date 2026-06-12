@@ -519,6 +519,26 @@ collect_user_inputs() {
     fi
 
     # --- 4. SQL dump file validation (path came from --database/--db) ---
+    # Resolve the "latest" keyword to the newest db-tools backup so you can feed a
+    # routine backup straight into a (re)install without hunting for a timestamp:
+    #   --db latest            -> newest backup in <lis_path>/backups/db
+    #   --db latest:/some/dir  -> newest backup in /some/dir (e.g. a mounted disk)
+    if [[ "$intelis_sql_file" == "latest" || "$intelis_sql_file" == latest:* ]]; then
+        local _bkdir="${lis_path}/backups/db"
+        [[ "$intelis_sql_file" == latest:* ]] && _bkdir="${intelis_sql_file#latest:}"
+        local _newest
+        _newest="$(ls -1t "${_bkdir}"/intelis-*.sql.zst "${_bkdir}"/intelis-*.sql.gz 2>/dev/null | head -1)"
+        [[ -z "$_newest" ]] && _newest="$(ls -1t "${_bkdir}"/*.sql.zst "${_bkdir}"/*.sql.gz "${_bkdir}"/*.sql 2>/dev/null | head -1)"
+        if [[ -z "$_newest" ]]; then
+            echo "No db-tools backup found in ${_bkdir}. Pass an explicit file with --db <path>."
+            log_action "--db latest: no backup found in ${_bkdir}"
+            exit 1
+        fi
+        intelis_sql_file="$_newest"
+        print info "Using latest backup: ${intelis_sql_file}"
+        log_action "Resolved --db latest to ${intelis_sql_file}"
+    fi
+
     if [[ -n "$intelis_sql_file" ]]; then
         if [[ "$intelis_sql_file" != /* ]]; then
             intelis_sql_file="$(pwd)/$intelis_sql_file"
