@@ -29,10 +29,8 @@ cd ~/Desktop;
 sudo -s;
 rm -f *.sql
 gzip -d vlsm-*.sql.gz && mv vlsm-*.sql vlsm.sql
-wget -O setup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh
-chmod +x setup.sh;
-./setup.sh --db vlsm.sql
-rm setup.sh;
+wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)"
+bash setup.sh --db vlsm.sql
 exit; exit;
 ```
 
