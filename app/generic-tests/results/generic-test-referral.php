@@ -208,7 +208,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
             <!-- /.box-header -->
             <div class="box-body referralDiv" style="<?php echo $genericHide; ?>">
                 <!-- form start -->
-                <form class="form-horizontal" method="post" style="display:none;" name="referralForm" id="referralForm" autocomplete="off" action="save-tb-referral-helper.php">
+                <form class="form-horizontal" method="post" style="display:none;" name="referralForm" id="referralForm" autocomplete="off" action="save-generic-referral-helper.php">
                     <div class="box-body">
                         <div class="row" id="sampleDetails">
                         </div>

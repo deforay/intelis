@@ -179,19 +179,7 @@ $genericResult = $db->rawQuery($sQuery);
                             <label><?php echo _translate("Selected Samples for Referral"); ?></label>
                             <select name="referralSamples[]" id="search_to" class="form-control" size="10"
                                 multiple="multiple">
-                              <?php  foreach ($genericResult as $sample) {
-                                    $displayText = $sample['sample_code'];
-                                    if (!empty($sample[$patientIdColumn])) {
-                                        $displayText .= " - " . $sample[$patientIdColumn];
-                                    }
-                                    if (!empty($sample['facility_name'])) {
-                                        $displayText .= " - " . $sample['facility_name'];
-                                    }
-                                ?>
-                                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($packageCodeId) && isset($sample['referral_manifest_code']) && $sample['referral_manifest_code'] == $packageCodeId) ? 'selected="selected"' : ''; ?>><?php echo htmlspecialchars((string) $displayText); ?></option>
-                                <?php
-                                }
-                                ?>
+                             
                             </select>
                             <div class="sampleCounterDiv">
                                 <?= _translate("Selected samples"); ?> : <span id="selectedCount">0</span>
@@ -273,7 +261,7 @@ $genericResult = $db->rawQuery($sQuery);
                 $("#search").html(data);
                 $(".sampleSelectionArea").show();
 
-                // Move pre-selected items to the right box BEFORE initializing the plugin
+               // Move pre-selected items to the right box BEFORE initializing the plugin
                 $("#search option[selected='selected']").each(function() {
                     $(this).prop('selected', false).removeAttr('selected');
                     $("#search_to").html($(this));

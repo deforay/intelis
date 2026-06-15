@@ -3,6 +3,7 @@
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
+use App\Utilities\JsonUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -24,17 +25,16 @@ $general = ContainerRegistry::get(CommonService::class);
 try {
     // Validate required fields
     if (empty($_POST['referralToLabId'])) {
-        $_SESSION['alertMsg'] = _translate("Please select a referral to lab");
-        header("Location: /generic-tests/results/generic-referral.php");
+        $response['message'] = _translate("Please select a referral lab");
+        echo JsonUtility::encodeUtf8Json($response);
         exit;
     }
 
     if (empty($_POST['referralSamples']) || !is_array($_POST['referralSamples'])) {
-        $_SESSION['alertMsg'] = _translate("Please select at least one sample");
-        header("Location: /generic-tests/results/generic-referral.php");
+        $response['message'] = _translate("Please select at least one sample");
+        echo JsonUtility::encodeUtf8Json($response);
         exit;
     }
-    echo "<pre>"; print_r($_POST); die;
 
     $testType = $_POST['type'] ?? 'generic-tests';
     $referredBy = $_POST['referralLabId'];
