@@ -121,11 +121,14 @@ foreach ($rResult as $aRow) {
     $provinceStatus = strtolower((string) ($aRow['province_status'] ?? ''));
     $districtStatus = strtolower((string) ($aRow['district_status'] ?? ''));
 
-    // District is "mis-parented" when it resolves to a geo row that is not parented
-    // under the facility's province. The name still shows (id resolves), but it is
-    // detached in the province -> district hierarchy, so the Edit form can't select it.
+    // The district name resolves purely by id, independent of the province. So a
+    // district can show even when its hierarchy link is broken. Two broken cases:
+    //  - mis-parented: district exists but is parented under a different province.
+    //  - no province: the facility has a district but no province set at all.
+    // In both, the Edit form can't select the district, so we flag it on the list.
     $stateId = $aRow['facility_state_id'] ?? null;
     $districtParent = $aRow['district_parent'] ?? null;
+    $districtNoProvince = !empty($districtName) && empty($stateId);
     $districtMisparented = !empty($districtName) && !empty($stateId)
         && (string) $districtParent !== (string) $stateId;
 
@@ -136,12 +139,14 @@ foreach ($rResult as $aRow) {
         $districtName .= ' (' . _translate(ucwords($districtStatus ?: 'missing')) . ')';
     } elseif ($districtMisparented) {
         $districtName .= ' (' . _translate('Not under this province') . ')';
+    } elseif ($districtNoProvince) {
+        $districtName .= ' (' . _translate('No province set') . ')';
     }
 
     $isOrphan = ($aRow['status'] === 'active') && (
         empty($provinceStatus) || $provinceStatus !== 'active' ||
         empty($districtStatus) || $districtStatus !== 'active' ||
-        $districtMisparented
+        $districtMisparented || $districtNoProvince
     );
 
     $row = [];
