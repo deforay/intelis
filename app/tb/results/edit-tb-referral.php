@@ -27,6 +27,10 @@ $_GET = _sanitizeInput($request->getQueryParams());
 
 $id = base64_decode((string) $_GET['id']);
 $codeId = base64_decode((string) $_GET['code']);
+// The encoded id is a lab facility id -> reject anything non-numeric.
+if (!is_numeric($id)) {
+    $id = '';
+}
 $db->where('referral_manifest_code', $codeId);
 $db->where('reason_for_referral != ""');
 $db->where('reason_for_referral IS NOT NULL');
@@ -88,10 +92,10 @@ if ($isLisInstance) {
                                     <?php echo _translate("Referral Manifest Code"); ?> <span
                                         class="mandatory">*</span></label>
                                 <input type="hidden" id="manifestId" name="manifestId"
-                                    value="<?php echo $tbResult['RTB25110418QAHO']; ?>" />
+                                    value="<?php echo htmlspecialchars((string) ($tbResult['RTB25110418QAHO'] ?? ''), ENT_QUOTES); ?>" />
                                 <input type="text" class="form-control isRequired" id="packageCode" name="packageCode"
                                     placeholder="Manifest Code" title="Please enter manifest code" readonly
-                                    value="<?php echo $tbResult['referral_manifest_code']; ?>" />
+                                    value="<?php echo htmlspecialchars((string) ($tbResult['referral_manifest_code'] ?? ''), ENT_QUOTES); ?>" />
                                 <input type="hidden" class="form-control isRequired" id="module" name="module"
                                     placeholder="" title="" readonly
                                     value="<?= htmlspecialchars((string) $module); ?>" />
@@ -160,7 +164,7 @@ if ($isLisInstance) {
                                     class="mandatory">*</span></label>
                             <textarea type="text" class="form-control isRequired" id="referralReason"
                                 name="referralReason" placeholder="Enter referral reason"
-                                title="Please enter reerral reason"><?php echo $tbResult['reason_for_referral']; ?></textarea>
+                                title="Please enter reerral reason"><?php echo htmlspecialchars((string) ($tbResult['reason_for_referral'] ?? ''), ENT_QUOTES); ?></textarea>
                         </div>
                     </div>
                     <div class="box-footer sampleSelectionArea" style="margin-top: 20px;display:none;">
@@ -204,8 +208,8 @@ if ($isLisInstance) {
 
         $.post("/tb/results/get-referral-samples.php", {
             type: 'tb',
-            labId: '<?php echo $id; ?>',
-            packageCode: '<?php echo $codeId; ?>',
+            labId: <?php echo json_encode($id, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>,
+            packageCode: <?php echo json_encode($codeId, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>,
             referralLabId: referralLabId
         }, function(data) {
             if (data && data.trim() !== "") {
