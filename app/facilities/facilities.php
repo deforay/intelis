@@ -144,7 +144,7 @@ $state = $geolocationService->getProvinces("yes");
                     <div class="form-check" style="margin-top:5px;">
                       <input type="checkbox" class="form-check-input" id="orphanFacility" value="yes">
                       <label class="form-check-label" for="orphanFacility">
-                        <?= _translate("Active facilities whose province or district is missing, inactive, or not linked to its province"); ?>
+                        <?= _translate("Facilities whose province or district is missing, inactive, or not linked to its province"); ?>
                       </label>
                     </div>
                   </td>
