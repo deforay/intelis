@@ -73,54 +73,61 @@ if ($stsToken === '' || $stsToken === '0') {
     exit(CLI\OK);
 }
 
-$labId = $general->getSystemConfig('sc_testing_lab_id');
-$instanceId = $general->getInstanceId();
-
-// Generate the key on first run; capture whether this run created it so the
-// one-time recovery code is shown exactly once.
-$freshlyCreated = !$keyService->localKeyExists();
-$backupKey = $keyService->getOrCreateLocalKey();
-$fingerprint = $keyService->fingerprint($backupKey);
-$keyVersion = $keyService->getKeyVersion();
-
-if ($freshlyCreated) {
-    $io->warning('A new backup encryption key was generated for this instance.');
-    $io->block(
-        [
-            'RECOVERY CODE (shown only once — store it somewhere safe and offline):',
-            '',
-            $backupKey,
-            '',
-            'This code can restore encrypted backups if the machine and the STS are both unavailable.',
-        ],
-        'RECOVERY CODE',
-        'fg=black;bg=yellow',
-        ' ',
-        true
-    );
-}
-
-$tokenURL = "$remoteURL/remote/v2/backup-key-recovery.php";
-
-// The key travels in cleartext at the application layer, protected by TLS + the
-// Bearer token; the STS re-encrypts it at rest with its own instance key. (A
-// shared app-layer secret is impossible here and unnecessary — the STS must be
-// able to read the key to ever return it for recovery.)
-$payload = [
-    'labId'       => $labId,
-    'instanceId'  => $instanceId,
-    'keyVersion'  => $keyVersion,
-    'fingerprint' => $fingerprint,
-    'backupKey'   => $backupKey,
-];
-
+// Everything below (key generation, filesystem, crypto, network, STS) can fail.
+// This script rides the `sync-sts` composer chain, and composer ABORTS the chain
+// on a non-zero exit — which would silently stop the steps that follow (metadata,
+// results, requests sync). So we FAIL OPEN: any error is logged and we exit OK,
+// never breaking the chain, exactly like bin/token.php. A failed run simply
+// retries on the next sync. The instance only records success once the STS has
+// verifiably stored the current key.
 try {
+    $labId = $general->getSystemConfig('sc_testing_lab_id');
+    $instanceId = $general->getInstanceId();
+
+    // Generate the key on first run; capture whether this run created it so the
+    // one-time recovery code is shown exactly once.
+    $freshlyCreated = !$keyService->localKeyExists();
+    $backupKey = $keyService->getOrCreateLocalKey();
+    $fingerprint = $keyService->fingerprint($backupKey);
+    $keyVersion = $keyService->getKeyVersion();
+
+    if ($freshlyCreated) {
+        $io->warning('A new backup encryption key was generated for this instance.');
+        $io->block(
+            [
+                'RECOVERY CODE (shown only once — store it somewhere safe and offline):',
+                '',
+                $backupKey,
+                '',
+                'This code can restore encrypted backups if the machine and the STS are both unavailable.',
+            ],
+            'RECOVERY CODE',
+            'fg=black;bg=yellow',
+            ' ',
+            true
+        );
+    }
+
+    $tokenURL = "$remoteURL/remote/v2/backup-key-recovery.php";
+
+    // The key travels in cleartext at the application layer, protected by TLS + the
+    // Bearer token; the STS re-encrypts it at rest with its own instance key. (A
+    // shared app-layer secret is impossible here and unnecessary — the STS must be
+    // able to read the key to ever return it for recovery.)
+    $payload = [
+        'labId'       => $labId,
+        'instanceId'  => $instanceId,
+        'keyVersion'  => $keyVersion,
+        'fingerprint' => $fingerprint,
+        'backupKey'   => $backupKey,
+    ];
+
     $apiService->setBearerToken($stsToken);
 
     $jsonResponse = $apiService->post($tokenURL, json_encode($payload), gzip: true);
     if (empty($jsonResponse) || $jsonResponse === '[]') {
-        $io->error('Empty response from STS during backup key recovery save.');
-        exit(CLI\ERROR);
+        $io->warning('Empty response from STS during backup key recovery save — will retry next sync.');
+        exit(CLI\OK);
     }
 
     $response = JsonUtility::decodeJson($jsonResponse, true);
@@ -137,8 +144,8 @@ try {
         $io->success("Backup key saved to STS and verified for recovery (version {$keyVersion}).");
     } else {
         $errMsg = $response['message'] ?? ($response['error'] ?? 'fingerprint mismatch or unexpected response');
-        $io->error('Backup key recovery save failed: ' . (is_array($errMsg) ? implode(' | ', $errMsg) : $errMsg));
-        exit(CLI\ERROR);
+        $io->warning('Backup key recovery save failed (will retry next sync): ' . (is_array($errMsg) ? implode(' | ', $errMsg) : $errMsg));
+        exit(CLI\OK);
     }
 } catch (Throwable $e) {
     LoggerUtility::logError(
@@ -149,6 +156,7 @@ try {
             'trace' => $e->getTraceAsString(),
         ]
     );
-    $io->error('Error in backup key recovery save. Please check logs for details.');
-    exit(CLI\ERROR);
+    // Fail open: never break the sync-sts chain because key recovery had a hiccup.
+    $io->warning('Backup key recovery save error (will retry next sync). See logs for details.');
+    exit(CLI\OK);
 }
