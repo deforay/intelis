@@ -42,4 +42,29 @@ if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && !empty(SYSTEM_CONFIG['int
     ];
 }
 
+// Backup encryption (gated, default OFF). When `backup_encryption_enabled` is
+// 'yes', db-tools encrypts each dump with this instance's saved backup key, used
+// as a fixed passphrase. db-tools >= 3.1.0 honors an explicit encryption_password
+// verbatim (3.0.x ignored it), so the key the STS escrows is the one that decrypts
+// the backup on a replacement machine. The flag defaults to 'no' (Phase C turns it
+// on, per-lab canary first), so this is a no-op until then. See BackupEncryptionService.
+try {
+    /** @var \App\Services\CommonService $general */
+    $general = \App\Registries\ContainerRegistry::get(\App\Services\CommonService::class);
+    if ($general->getGlobalConfig('backup_encryption_enabled') === 'yes') {
+        /** @var \App\Services\BackupEncryptionService $keyService */
+        $keyService = \App\Registries\ContainerRegistry::get(\App\Services\BackupEncryptionService::class);
+        $backupKey = $keyService->getLocalKey();
+        if (!empty($backupKey)) {
+            foreach ($profiles as &$profile) {
+                $profile['encryption_password'] = $backupKey;
+            }
+            unset($profile);
+        }
+    }
+} catch (\Throwable $e) {
+    // Never let encryption wiring break plain backups; fall through unencrypted.
+    \App\Utilities\LoggerUtility::logError('db-tools backup encryption setup skipped: ' . $e->getMessage());
+}
+
 return $profiles;
