@@ -52,16 +52,17 @@ class FileCacheUtility
         $prefixedKey = $this->applyPrefix($key);
 
         try {
-            // Fixed: Use tagAwareAdapter for set operations with tags
-            $this->tagAwareAdapter->get($prefixedKey, function (ItemInterface $item) use ($value, $tags, $expiration) {
-                $item->set($value);
-                $item->expiresAfter($expiration);
-                if ($tags !== null && $tags !== []) {
-                    $item->tag($tags);
-                }
-                return $value;
-            });
-            return true;
+            // Use PSR-6 getItem()/save() so this truly OVERWRITES the key. The
+            // contracts get() only runs its callback on a cache MISS, so using it
+            // here silently no-ops whenever the key already exists (a set() that
+            // can't update is not a set()).
+            $item = $this->tagAwareAdapter->getItem($prefixedKey);
+            $item->set($value);
+            $item->expiresAfter($expiration);
+            if ($tags !== null && $tags !== []) {
+                $item->tag($tags);
+            }
+            return $this->tagAwareAdapter->save($item);
         } catch (Exception $e) {
             LoggerUtility::logError('Cache set failed', ['key' => $key, 'exception' => $e]);
             return false;
