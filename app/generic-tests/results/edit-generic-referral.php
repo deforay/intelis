@@ -2,6 +2,7 @@
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\TestsService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -25,26 +26,54 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
+$table = TestsService::getTestTableName($testType);
+$primaryKeyColumn = TestsService::getPrimaryColumn($testType);
+$patientIdColumn = TestsService::getPatientIdColumn($testType);
+
+
 $id = base64_decode((string) $_GET['id']);
 $codeId = base64_decode((string) $_GET['code']);
 // The encoded id is a lab facility id -> reject anything non-numeric.
 if (!is_numeric($id)) {
     $id = '';
 }
-$db->where('referral_manifest_code', $codeId);
+/*$db->where('referral_manifest_code', $codeId);
 $db->where('reason_for_referral != ""');
 $db->where('reason_for_referral IS NOT NULL');
-$tbResult = $db->getOne('form_tb');
+$genericResult = $db->getOne('form_generic');*/
+
 /* Testing lab list */
 $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
 
 $isLisInstance = $general->isLISInstance();
-
 $fromLabId = null;
 if ($isLisInstance) {
     $fromLabId = $general->getSystemConfig('sc_testing_lab_id');
 }
+
+//get samples
+$sQuery = "SELECT 
+vl.referred_to_lab_id, 
+vl.reason_for_referral, 
+vl.referral_manifest_code, 
+vl.$primaryKeyColumn,
+vl.$patientIdColumn,
+f2.facility_name as referral_lab_name, 
+f2.facility_code as referral_lab_code, 
+MAX(vl.last_modified_datetime) as referral_date,
+vl.sample_code,
+vl.facility_id
+            FROM $table as vl 
+LEFT JOIN facility_details as f2 ON vl.referred_to_lab_id = f2.facility_id 
+WHERE vl.referred_to_lab_id IS NOT NULL 
+    AND vl.referred_to_lab_id != '' 
+    AND vl.referred_to_lab_id != 0 
+    AND vl.referral_manifest_code = '$codeId' 
+GROUP BY vl.referral_manifest_code, f2.facility_name, f2.facility_code";
+
+$genericResult = $db->rawQuery($sQuery);
+
 
 ?>
 
@@ -72,33 +101,43 @@ if ($isLisInstance) {
     <section class="content">
         <div class="box box-default">
             <form class="form-horizontal" method="post" name="referralForm" id="referralForm" autocomplete="off"
-                action="save-tb-referral-helper.php">
+                action="/generic-tests/results/save-generic-referral-helper.php">
                 <div class="box-body" style="margin-top:20px;">
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            <div style="margin-left:3%;">
-                                <label for="referralLabId" class="control-label">
-                                    <?php echo _translate("Referred By"); ?>
-                                    <span class="mandatory">*</span></label>
-                                <select name="referralLabId" id="referralLabId" class="form-control select2 isRequired"
-                                    title="<?php echo _translate("Please select sending lab"); ?>" required>
-                                    <?= $general->generateSelectOptions($testingLabs, $id, '-- Select --'); ?>
-                                </select>
+                        <?php if ($isLisInstance && !empty($fromLabId)) { ?>
+                        <input type="hidden" name="referralLabId" id="referralLabId"
+                            value="<?php echo htmlspecialchars((string) $fromLabId); ?>" />
+                    <?php } else { ?>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <div style="margin-left:3%;">
+                                    <label for="referralLabId" class="control-label">
+                                        <?php echo _translate("Referred By"); ?>
+                                        <span class="mandatory">*</span></label>
+                                    <select name="referralLabId" id="referralLabId"
+                                        class="form-control select2 isRequired"
+                                        title="<?php echo _translate("Please select sending lab"); ?>" required>
+                                        <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                    </select>
+                                </div>
                             </div>
                         </div>
+                    <?php } ?>
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
                                 <label for="packageCode" class="control-label">
                                     <?php echo _translate("Referral Manifest Code"); ?> <span
                                         class="mandatory">*</span></label>
-                                <input type="hidden" id="manifestId" name="manifestId"
-                                    value="<?php echo htmlspecialchars((string) ($tbResult['RTB25110418QAHO'] ?? ''), ENT_QUOTES); ?>" />
+                               
                                 <input type="text" class="form-control isRequired" id="packageCode" name="packageCode"
                                     placeholder="Manifest Code" title="Please enter manifest code" readonly
-                                    value="<?php echo htmlspecialchars((string) ($tbResult['referral_manifest_code'] ?? ''), ENT_QUOTES); ?>" />
+                                    value="<?php echo htmlspecialchars((string) ($genericResult[0]['referral_manifest_code'] ?? ''), ENT_QUOTES); ?>" />
                                 <input type="hidden" class="form-control isRequired" id="module" name="module"
                                     placeholder="" title="" readonly
                                     value="generic-tests" />
+                                 <input type="hidden" class="form-control isRequired" id="testType" name="testType"
+                                    placeholder="" title="" readonly
+                                    value="<?php echo $genericResult[0]['test_type'] ?>" />
                             </div>
                         </div>
                     </div>
@@ -140,13 +179,26 @@ if ($isLisInstance) {
                             <label><?php echo _translate("Selected Samples for Referral"); ?></label>
                             <select name="referralSamples[]" id="search_to" class="form-control" size="10"
                                 multiple="multiple">
+                              <?php  foreach ($genericResult as $sample) {
+                                    $displayText = $sample['sample_code'];
+                                    if (!empty($sample[$patientIdColumn])) {
+                                        $displayText .= " - " . $sample[$patientIdColumn];
+                                    }
+                                    if (!empty($sample['facility_name'])) {
+                                        $displayText .= " - " . $sample['facility_name'];
+                                    }
+                                ?>
+                                    <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($packageCodeId) && isset($sample['referral_manifest_code']) && $sample['referral_manifest_code'] == $packageCodeId) ? 'selected="selected"' : ''; ?>><?php echo htmlspecialchars((string) $displayText); ?></option>
+                                <?php
+                                }
+                                ?>
                             </select>
                             <div class="sampleCounterDiv">
                                 <?= _translate("Selected samples"); ?> : <span id="selectedCount">0</span>
                             </div>
                         </div>
                     </div>
-                    <div class="row sampleSelectionArea" style="margin-top: 30px;display:none;">
+                    <div class="row sampleSelectionArea" style="margin-top: 30px;">
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
                                 <label for="referralToLabId" class="control-label">
@@ -154,7 +206,7 @@ if ($isLisInstance) {
                                 <select name="referralToLabId" id="referralToLabId"
                                     class="form-control select2 isRequired"
                                     title="<?php echo _translate("Please select receiving lab"); ?>" required>
-                                    <?= $general->generateSelectOptions($testingLabs, $tbResult['referred_to_lab_id'], '-- Select --'); ?>
+                                    <?= $general->generateSelectOptions($testingLabs, $genericResult[0]['referred_to_lab_id'], '-- Select --'); ?>
                                 </select>
                             </div>
                         </div>
@@ -164,10 +216,10 @@ if ($isLisInstance) {
                                     class="mandatory">*</span></label>
                             <textarea type="text" class="form-control isRequired" id="referralReason"
                                 name="referralReason" placeholder="Enter referral reason"
-                                title="Please enter reerral reason"><?php echo htmlspecialchars((string) ($tbResult['reason_for_referral'] ?? ''), ENT_QUOTES); ?></textarea>
+                                title="Please enter reerral reason"><?php echo htmlspecialchars((string) ($genericResult[0]['reason_for_referral'] ?? ''), ENT_QUOTES); ?></textarea>
                         </div>
                     </div>
-                    <div class="box-footer sampleSelectionArea" style="margin-top: 20px;display:none;">
+                    <div class="box-footer sampleSelectionArea" style="margin-top: 20px;">
                         <input type="hidden" name="type" id="type" value="<?php echo $testType; ?>" />
                         <button type="submit" class="btn btn-primary" onclick="return validateForm();">
                             <em class="fa-solid fa-save"></em> <?php echo _translate("Save Referral"); ?>
@@ -185,10 +237,12 @@ if ($isLisInstance) {
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#referralLabId").select2({
-            width: '100%',
-            placeholder: "<?php echo _translate("Select Referral Lab"); ?>"
-        });
+        <?php if (!($isLisInstance && !empty($fromLabId))) { ?>
+            $("#referralLabId").select2({
+                width: '100%',
+                placeholder: "<?php echo _translate("Select Referral Lab"); ?>"
+            });
+        <?php } ?>
         $("#referralToLabId").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Receiving Lab"); ?>"
@@ -197,7 +251,9 @@ if ($isLisInstance) {
     });
 
     function loadSamples() {
+        const testTypeId = $("#testType").val();
         const referralLabId = $("#referralLabId").val();
+
 
         if (!referralLabId) {
             alert("<?php echo _translate("Please select the sending lab first"); ?>");
@@ -207,10 +263,11 @@ if ($isLisInstance) {
         $.blockUI();
 
         $.post("/generic-tests/results/get-referral-samples.php", {
-            type: 'tb',
+            type: 'generic-tests',
             labId: <?php echo json_encode($id); ?>,
             packageCode: <?php echo json_encode($codeId); ?>,
-            referralLabId: referralLabId
+            referralLabId: referralLabId,
+            testTypeId: testTypeId
         }, function(data) {
             if (data && data.trim() !== "") {
                 $("#search").html(data);
@@ -255,8 +312,10 @@ if ($isLisInstance) {
         $("#selectedCount").text(selectedCount);
     }
 
+
     function validateForm() {
-        const referralLabId = $("#referralLabId").val();
+        const referralLabId = $("#referralToLabId").val();
+        const referralReason = $("#referralReason").val();
         const selectedSamples = $("#search_to option").length;
 
         if (!referralLabId) {
@@ -264,13 +323,15 @@ if ($isLisInstance) {
             return false;
         }
 
+        if (!referralReason) {
+            alert("<?php echo _translate("Please enter the referral reason"); ?>");
+            return false;
+        }
+
         if (selectedSamples === 0) {
             alert("<?php echo _translate("Please select at least one sample"); ?>");
             return false;
         }
-
-        // Select all options in the right box before submitting
-        $("#search_to option").prop('selected', true);
 
         $.blockUI();
         return true;

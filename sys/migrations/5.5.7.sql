@@ -46,3 +46,6 @@ CREATE TABLE IF NOT EXISTS `generic_referral_history` (  `history_id` int NOT NU
   `referred_by` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   PRIMARY KEY (`history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--Jeyabanu 15-Jun-2026
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'generic-results', '/generic-tests/results/edit-generic-referral.php', NULL, 'Edit Referral', '2', 'always');
