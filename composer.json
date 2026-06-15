@@ -106,6 +106,7 @@
         "archive-audit-tables": "@php app/tasks/archive-audit-tables.php",
         "token": "@php bin/token.php",
         "backup-key": "@php bin/backup-key.php",
+        "backup-key-admin": "@php bin/backup-key-admin.php",
         "sts-setup": [
             "@php bin/setup/setup-sts.php",
             "@purge-cache",
@@ -172,6 +173,7 @@
         "sync-sts": "Sync data with a connected STS server",
         "pending-commands": "Pick up and dispatch remote commands queued at STS (gated behind global_config.remote_commands_enabled)",
         "backup-key": "Generate and save this instance's backup encryption key to the STS for recovery (gated behind global_config.backup_key_recovery_enabled)",
+        "backup-key-admin": "STS admin tool: approve a backup key release (mint a one-time recovery token) or print the offline recovery code for a lab",
         "sts-setup": "Setup connection with a STS server",
         "setup-sts": "Setup connection with a STS server",
         "migrate": "Run database migrations",
