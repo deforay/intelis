@@ -144,7 +144,7 @@ $state = $geolocationService->getProvinces("yes");
                     <div class="form-check" style="margin-top:5px;">
                       <input type="checkbox" class="form-check-input" id="orphanFacility" value="yes">
                       <label class="form-check-label" for="orphanFacility">
-                        <?= _translate("Active facilities whose province or district is missing/inactive"); ?>
+                        <?= _translate("Active facilities whose province or district is missing, inactive, or not linked to its province"); ?>
                       </label>
                     </div>
                   </td>
@@ -190,7 +190,7 @@ $state = $geolocationService->getProvinces("yes");
                     for="iCol2"><?php echo _translate("Facility Type"); ?></label>
                 </div>
                 <div class="col-md-4">
-                  <input type="checkbox" onclick="fnShowHide(this.value);" value="3" id="iCol3" data-showhide="status"
+                  <input type="checkbox" onclick="fnShowHide(this.value);" value="5" id="iCol3" data-showhide="status"
                     class="showhideCheckBox" /> <label for="iCol3"><?php echo _translate("Status"); ?></label> <br>
                 </div>
               </div>
@@ -239,9 +239,9 @@ $state = $geolocationService->getProvinces("yes");
                   <th><?php echo _translate("Facility Code"); ?></th>
                   <th scope="row"><?php echo _translate("Facility Name"); ?></th>
                   <th><?php echo _translate("Facility Type"); ?></th>
-                  <th scope="row"><?php echo _translate("Status"); ?></th>
                   <th><?php echo _translate("Province"); ?></th>
                   <th><?php echo _translate("District"); ?></th>
+                  <th scope="row"><?php echo _translate("Status"); ?></th>
                   <?php if (_isAllowed("editFacility.php") && ($general->isSTSInstance() || $general->isStandaloneInstance())) { ?>
                     <th><?php echo _translate("Action"); ?></th>
                   <?php } ?>
@@ -302,7 +302,7 @@ $state = $geolocationService->getProvinces("yes");
       "bRetrieve": true,
       "iDisplayLength": 25,
       "aaSorting": [
-        [3, "asc"],
+        [5, "asc"],
         [1, "asc"]
       ],
       "aoColumns": [{
