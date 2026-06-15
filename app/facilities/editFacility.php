@@ -121,6 +121,22 @@ $formats = json_decode((string) $facilityInfo['report_format'], true);
 
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations();
 $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo['facility_state_id']);
+// The district dropdown is filtered by province (geo_parent = facility_state_id).
+// If this facility's saved district isn't parented to its province (broken hierarchy)
+// or is inactive, it would be missing from the list, show as "-- Select --", and be
+// silently dropped on the next save. Always include the saved district so it displays
+// and is preserved.
+$savedDistrictId = $facilityInfo['facility_district_id'] ?? null;
+if (!empty($savedDistrictId) && !isset($geoLocationChildArray[$savedDistrictId])) {
+	$savedDistrict = $geolocation->getGeoLocationById($savedDistrictId);
+	if (!empty($savedDistrict['geo_name'])) {
+		$savedDistrictLabel = $savedDistrict['geo_name'];
+		if (strtolower((string) ($savedDistrict['geo_status'] ?? '')) !== 'active') {
+			$savedDistrictLabel .= ' (' . _translate(ucwords((string) ($savedDistrict['geo_status'] ?: 'inactive'))) . ')';
+		}
+		$geoLocationChildArray[$savedDistrictId] = $savedDistrictLabel;
+	}
+}
 $formId = (int) $general->getGlobalConfig('vl_form');
 ?>
 <style>

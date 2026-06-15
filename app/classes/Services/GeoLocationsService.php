@@ -77,6 +77,21 @@ final class GeoLocationsService
         });
     }
 
+    // Fetch a single geolocation row by id, regardless of parent or status.
+    // Useful when a saved district/province must be displayed even if its
+    // hierarchy link (geo_parent) is broken or it is inactive.
+    public function getGeoLocationById($geoId): ?array
+    {
+        if ($this->db == null || empty($geoId)) {
+            return null;
+        }
+        $row = $this->db->rawQueryOne(
+            "SELECT geo_id, geo_name, geo_parent, geo_status FROM geographical_divisions WHERE geo_id = ?",
+            [$geoId]
+        );
+        return $row ?: null;
+    }
+
     // get province id from the province table
     public function getProvinceIDFromCode($code)
     {
