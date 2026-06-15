@@ -83,8 +83,8 @@ if (isset($_POST['activeFacility']) && trim((string) $_POST['activeFacility']) !
 }
 $orphanFacility = $_POST['orphanFacility'] ?? '';
 if ($orphanFacility === 'yes') {
-    $sWhere[] = "(f_d.status = 'active' AND (p.geo_status IS NULL OR p.geo_status != 'active' OR d.geo_status IS NULL OR d.geo_status != 'active'"
-        . " OR (d.geo_id IS NOT NULL AND f_d.facility_state_id IS NOT NULL AND (d.geo_parent IS NULL OR d.geo_parent <> f_d.facility_state_id))))";
+    $sWhere[] = "(p.geo_status IS NULL OR p.geo_status != 'active' OR d.geo_status IS NULL OR d.geo_status != 'active'"
+        . " OR (d.geo_id IS NOT NULL AND f_d.facility_state_id IS NOT NULL AND (d.geo_parent IS NULL OR d.geo_parent <> f_d.facility_state_id)))";
 }
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS f_d.*, f_t.*,p.geo_name as province ,d.geo_name as district,
@@ -143,7 +143,10 @@ foreach ($rResult as $aRow) {
         $districtName .= ' (' . _translate('No province set') . ')';
     }
 
-    $isOrphan = ($aRow['status'] === 'active') && (
+    // Incorrect geolocation data is a problem regardless of whether the facility is
+    // active, so this is intentionally NOT gated on facility status (matches the
+    // orphan filter WHERE clause below).
+    $isOrphan = (
         empty($provinceStatus) || $provinceStatus !== 'active' ||
         empty($districtStatus) || $districtStatus !== 'active' ||
         $districtMisparented || $districtNoProvince
