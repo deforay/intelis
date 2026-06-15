@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "66ba3ce450104405149c117f257409ee",
+    "content-hash": "cb8a50d247039240407ee27ccc14e7fd",
     "packages": [
         {
             "name": "amitdugar/archiveutil",
@@ -62,16 +62,16 @@
         },
         {
             "name": "amitdugar/db-tools",
-            "version": "3.0.1",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amitdugar/db-tools.git",
-                "reference": "7d7629e75c3e23f7bce3b87411dd4505488fb143"
+                "reference": "f80eb51b9f57c91f31b7eb3e902f1d7e24f1432f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amitdugar/db-tools/zipball/7d7629e75c3e23f7bce3b87411dd4505488fb143",
-                "reference": "7d7629e75c3e23f7bce3b87411dd4505488fb143",
+                "url": "https://api.github.com/repos/amitdugar/db-tools/zipball/f80eb51b9f57c91f31b7eb3e902f1d7e24f1432f",
+                "reference": "f80eb51b9f57c91f31b7eb3e902f1d7e24f1432f",
                 "shasum": ""
             },
             "require": {
@@ -116,7 +116,7 @@
                 "issues": "https://github.com/amitdugar/db-tools/issues",
                 "source": "https://github.com/amitdugar/db-tools"
             },
-            "time": "2026-06-03T08:43:18+00:00"
+            "time": "2026-06-15T11:03:21+00:00"
         },
         {
             "name": "brick/phonenumber",
