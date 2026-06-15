@@ -55,6 +55,13 @@ try {
         throw new SystemException('Not available on this instance', 404);
     }
 
+    // Throttle recovery attempts per source IP. Tokens are single-use, expiring and
+    // high-entropy, so guessing is already infeasible; this just blunts flooding.
+    if (\App\Utilities\RateLimitUtility::exceeded('backup-key-release:' . \App\Utilities\RateLimitUtility::clientIp(), 20, 60)) {
+        http_response_code(429);
+        throw new SystemException('Too many recovery attempts; please retry shortly.', 429);
+    }
+
     $rawToken = trim((string) ($input['recoveryToken'] ?? ''));
     // Normalize identically to bin/backup-key-admin.php: strip separators,
     // uppercase, fold look-alike characters (Crockford base32).

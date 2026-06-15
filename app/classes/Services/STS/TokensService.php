@@ -61,7 +61,8 @@ final class TokensService
 
             $this->db->where('facility_id', $facilityId);
             $result = $this->db->getOne($this->facilitiesTable, ['sts_token', 'sts_token_expiry']);
-            if ($result && $result['sts_token'] === $token) {
+            // Constant-time comparison so token validity can't be probed by timing.
+            if ($result && !empty($result['sts_token']) && hash_equals((string) $result['sts_token'], (string) $token)) {
                 // Directly check if the current time is less than the stored expiry
                 if (time() < strtotime((string) $result['sts_token_expiry'])) {
                     return true;
