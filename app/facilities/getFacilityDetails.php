@@ -5,7 +5,7 @@
 $tableName = "facility_details";
 $primaryKey = "facility_id";
 
-$aColumns = ['facility_code', 'facility_name', 'facility_type_name', 'status', 'p.geo_name', 'd.geo_name'];
+$aColumns = ['facility_code', 'facility_name', 'facility_type_name', 'p.geo_name', 'd.geo_name', 'status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -83,11 +83,12 @@ if (isset($_POST['activeFacility']) && trim((string) $_POST['activeFacility']) !
 }
 $orphanFacility = $_POST['orphanFacility'] ?? '';
 if ($orphanFacility === 'yes') {
-    $sWhere[] = "(f_d.status = 'active' AND (p.geo_status IS NULL OR p.geo_status != 'active' OR d.geo_status IS NULL OR d.geo_status != 'active'))";
+    $sWhere[] = "(f_d.status = 'active' AND (p.geo_status IS NULL OR p.geo_status != 'active' OR d.geo_status IS NULL OR d.geo_status != 'active'"
+        . " OR (d.geo_id IS NOT NULL AND f_d.facility_state_id IS NOT NULL AND (d.geo_parent IS NULL OR d.geo_parent <> f_d.facility_state_id))))";
 }
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS f_d.*, f_t.*,p.geo_name as province ,d.geo_name as district,
-            p.geo_status as province_status, d.geo_status as district_status
+            p.geo_status as province_status, d.geo_status as district_status, d.geo_parent as district_parent
             FROM facility_details as f_d
             LEFT JOIN facility_type as f_t ON f_t.facility_type_id=f_d.facility_type
             LEFT JOIN geographical_divisions as p ON f_d.facility_state_id = p.geo_id
@@ -120,25 +121,36 @@ foreach ($rResult as $aRow) {
     $provinceStatus = strtolower((string) ($aRow['province_status'] ?? ''));
     $districtStatus = strtolower((string) ($aRow['district_status'] ?? ''));
 
+    // District is "mis-parented" when it resolves to a geo row that is not parented
+    // under the facility's province. The name still shows (id resolves), but it is
+    // detached in the province -> district hierarchy, so the Edit form can't select it.
+    $stateId = $aRow['facility_state_id'] ?? null;
+    $districtParent = $aRow['district_parent'] ?? null;
+    $districtMisparented = !empty($districtName) && !empty($stateId)
+        && (string) $districtParent !== (string) $stateId;
+
     if (!empty($provinceName) && $provinceStatus !== 'active') {
         $provinceName .= ' (' . _translate(ucwords($provinceStatus ?: 'missing')) . ')';
     }
     if (!empty($districtName) && $districtStatus !== 'active') {
         $districtName .= ' (' . _translate(ucwords($districtStatus ?: 'missing')) . ')';
+    } elseif ($districtMisparented) {
+        $districtName .= ' (' . _translate('Not under this province') . ')';
     }
 
     $isOrphan = ($aRow['status'] === 'active') && (
         empty($provinceStatus) || $provinceStatus !== 'active' ||
-        empty($districtStatus) || $districtStatus !== 'active'
+        empty($districtStatus) || $districtStatus !== 'active' ||
+        $districtMisparented
     );
 
     $row = [];
     $row[] = $aRow['facility_code'];
     $row[] = ($aRow['facility_name']);
     $row[] = ($aRow['facility_type_name']);
-    $row[] = ($aRow['status']);
     $row[] = $provinceName;
     $row[] = $districtName;
+    $row[] = ($aRow['status']);
     if (_isAllowed("editFacility.php") && ($general->isSTSInstance() || $general->isStandaloneInstance())) {
         $row[] = '<a href="editFacility.php?id=' . base64_encode((string) $aRow['facility_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
