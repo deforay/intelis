@@ -93,6 +93,8 @@ cleanup_on_exit() {
     [ -n "${temp_dir:-}" ] && rm -rf "${temp_dir}" 2>/dev/null || true
     rm -f "${SETUP_CWD}/master.tar.gz" "${SETUP_CWD}/lamp-setup.sh" 2>/dev/null || true
     [ -n "${lis_path:-}" ] && rm -f "${lis_path}/vendor.tar.gz" "${lis_path}/vendor.tar.gz.md5" 2>/dev/null || true
+    # Plaintext decrypted from an encrypted backup must never be left on disk.
+    [ -n "${_GPG_DECRYPT_TMP:-}" ] && rm -rf "${_GPG_DECRYPT_TMP}" 2>/dev/null || true
 }
 trap cleanup_on_exit EXIT
 
@@ -260,6 +262,67 @@ handle_database_setup_and_import() {
     import_sql_dump_into_vlsm() {
         local import_file="$1"
         local import_pid import_status detected
+
+        # Encrypted (.gpg) backup: decrypt to a temp file with its inner name, then
+        # fall through to the normal detect/validate/import path unchanged. db-tools
+        # encrypts with gpg --symmetric AES256. The passphrase is resolved in order:
+        #   1) --encryption-password  (offline recovery code / fixed key),
+        #   2) --recovery-token       (exchanged with the STS for the key),
+        #   3) legacy backups         (this machine's DB password + the 32-char
+        #      filename token — works for a same-machine reinstall).
+        if [[ "$import_file" == *.gpg ]]; then
+            if ! command -v gpg >/dev/null 2>&1; then
+                print error "Backup ${import_file} is encrypted but gpg is not installed."
+                log_action "gpg missing for encrypted import: ${import_file}"
+                return 1
+            fi
+
+            local _pp="" _base
+            _base="$(basename "$import_file")"
+            if [[ -n "$intelis_enc_password" ]]; then
+                _pp="$intelis_enc_password"
+            elif [[ -n "$intelis_recovery_token" ]]; then
+                if [[ -z "$remote_sts_url" ]]; then
+                    print error "--recovery-token needs an STS URL, but none is configured."
+                    log_action "recovery-token given without STS URL"
+                    return 1
+                fi
+                print info "Retrieving backup key from STS using the recovery token..."
+                _pp="$(curl -fsS -X POST "${remote_sts_url%/}/remote/v2/backup-key-release.php" \
+                        -H 'Content-Type: application/json' \
+                        --data "{\"recoveryToken\":\"${intelis_recovery_token}\"}" 2>/dev/null \
+                        | sed -n 's/.*"key"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p')"
+                if [[ -z "$_pp" ]]; then
+                    print error "Could not retrieve the backup key from the STS."
+                    print info  "Check the STS URL, and that the token is approved and not expired or already used."
+                    log_action "STS backup key release failed for ${import_file}"
+                    return 1
+                fi
+            elif [[ "$_base" =~ -[0-9]{8}-[0-9]{6}-([A-Za-z0-9]{32})\. ]]; then
+                _pp="${mysql_root_password}${BASH_REMATCH[1]}"
+            else
+                print error "Encrypted backup needs a key: ${import_file}"
+                print info  "Re-run with --recovery-token=<token from your STS admin> or --encryption-password=<recovery code>."
+                log_action "Encrypted backup without key material: ${import_file}"
+                return 1
+            fi
+
+            _GPG_DECRYPT_TMP="$(mktemp -d)"
+            local _decrypted="${_GPG_DECRYPT_TMP}/$(basename "${import_file%.gpg}")"
+            if ! printf '%s' "$_pp" | gpg --batch --yes --pinentry-mode loopback \
+                    --passphrase-fd 0 -o "$_decrypted" --decrypt "$import_file" 2>/dev/null; then
+                print error "Failed to decrypt ${import_file} (wrong key, or corrupt file)."
+                if [[ -z "${intelis_enc_password}${intelis_recovery_token}" ]]; then
+                    print info "This may be a legacy encrypted backup from another machine."
+                    print info "Pass that machine's key as --encryption-password=<code>, or use --recovery-token."
+                fi
+                log_action "gpg decryption failed for ${import_file}"
+                return 1
+            fi
+            print info "Decrypted ${_base} for import."
+            log_action "Decrypted encrypted backup ${_base}"
+            import_file="$_decrypted"
+        fi
 
         detected="$(detect_dump_format "$import_file")"
 
@@ -527,8 +590,10 @@ collect_user_inputs() {
         local _bkdir="${lis_path}/backups/db"
         [[ "$intelis_sql_file" == latest:* ]] && _bkdir="${intelis_sql_file#latest:}"
         local _newest
-        _newest="$(ls -1t "${_bkdir}"/intelis-*.sql.zst "${_bkdir}"/intelis-*.sql.gz 2>/dev/null | head -1)"
-        [[ -z "$_newest" ]] && _newest="$(ls -1t "${_bkdir}"/*.sql.zst "${_bkdir}"/*.sql.gz "${_bkdir}"/*.sql 2>/dev/null | head -1)"
+        # Include encrypted (.gpg) backups — db-tools encrypts by default — so a
+        # routine encrypted backup is picked up like any other.
+        _newest="$(ls -1t "${_bkdir}"/intelis-*.sql.zst "${_bkdir}"/intelis-*.sql.gz "${_bkdir}"/intelis-*.sql.zst.gpg "${_bkdir}"/intelis-*.sql.gz.gpg 2>/dev/null | head -1)"
+        [[ -z "$_newest" ]] && _newest="$(ls -1t "${_bkdir}"/*.sql.zst "${_bkdir}"/*.sql.gz "${_bkdir}"/*.sql "${_bkdir}"/*.sql.zst.gpg "${_bkdir}"/*.sql.gz.gpg "${_bkdir}"/*.sql.gpg 2>/dev/null | head -1)"
         if [[ -z "$_newest" ]]; then
             echo "No db-tools backup found in ${_bkdir}. Pass an explicit file with --db <path>."
             log_action "--db latest: no backup found in ${_bkdir}"
@@ -548,8 +613,10 @@ collect_user_inputs() {
             log_action "SQL file not found: $intelis_sql_file. Please check the path."
             exit 1
         fi
-        if [[ ! "$intelis_sql_file" =~ \.(sql|sql\.gz|sql\.zst)$ ]]; then
-            echo "Unsupported SQL file format: $intelis_sql_file. Use .sql, .sql.gz, or .sql.zst"
+        # Accept an optional .gpg suffix — encrypted backups are decrypted at import
+        # time (see import_sql_dump_into_vlsm) before the normal restore runs.
+        if [[ ! "$intelis_sql_file" =~ \.(sql|sql\.gz|sql\.zst)(\.gpg)?$ ]]; then
+            echo "Unsupported SQL file format: $intelis_sql_file. Use .sql, .sql.gz, or .sql.zst (optionally .gpg)"
             log_action "Unsupported SQL file format: $intelis_sql_file"
             exit 1
         fi
@@ -641,7 +708,11 @@ collect_user_inputs() {
     fi
 
     # --- 9. Remote STS URL (LIS only; validated with curl, no local setup needed) ---
-    if $reuse_saved_answers; then
+    if [ -n "$intelis_sts_url_flag" ]; then
+        remote_sts_url="${intelis_sts_url_flag%/}"
+        print info "Using STS URL from --sts-url: ${remote_sts_url}"
+        log_action "STS URL from --sts-url flag: ${remote_sts_url}"
+    elif $reuse_saved_answers; then
         [ -n "${remote_sts_url:-}" ] && print info "Reusing saved Remote STS URL: ${remote_sts_url}"
     elif $is_lis; then
         remote_sts_url=""
@@ -732,6 +803,18 @@ reuse_saved_answers=false
 remote_sts_url=""
 PHP_VERSION="8.4"
 
+# Decryption inputs for encrypted (.gpg) backups. Both optional and never
+# persisted to the saved-answers file. --encryption-password is the full
+# passphrase (e.g. an offline recovery code); --recovery-token is a one-time
+# token the new machine exchanges with the STS for the key.
+intelis_enc_password=""
+intelis_recovery_token=""
+
+# Optional STS URL for non-interactive (re)installs and migrations. When set it is
+# used verbatim and the STS-URL prompt is skipped. Needed by --recovery-token to
+# reach the key-release endpoint without an operator at the keyboard.
+intelis_sts_url_flag=""
+
 # How many timestamped code/DB backups to retain when re-running setup.
 BACKUP_KEEP="${BACKUP_KEEP:-3}"
 
@@ -759,6 +842,30 @@ while [[ $# -gt 0 ]]; do
         ;;
         --php)
         PHP_VERSION="$2"
+        shift 2
+        ;;
+        --encryption-password=*)
+        intelis_enc_password="${1#*=}"
+        shift
+        ;;
+        --encryption-password)
+        intelis_enc_password="$2"
+        shift 2
+        ;;
+        --recovery-token=*)
+        intelis_recovery_token="${1#*=}"
+        shift
+        ;;
+        --recovery-token)
+        intelis_recovery_token="$2"
+        shift 2
+        ;;
+        --sts-url=*)
+        intelis_sts_url_flag="${1#*=}"
+        shift
+        ;;
+        --sts-url)
+        intelis_sts_url_flag="$2"
         shift 2
         ;;
         --resume)
