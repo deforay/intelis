@@ -35,10 +35,6 @@ final class RateLimitUtility
 
             $rec['count'] = (int) $rec['count'] + 1;
             $remaining = max(1, $windowSeconds - ($now - (int) $rec['start']));
-            // FileCacheUtility::set() wraps the contracts get(), which only writes on
-            // a cache MISS — so it silently no-ops on an existing key. Delete first to
-            // force the updated counter to persist.
-            $cache->delete($key);
             $cache->set($key, $rec, [], $remaining);
 
             return $rec['count'] > $maxHits;
