@@ -54,6 +54,26 @@ final class TokensService
     }
 
 
+    /**
+     * Constant-time check that $token is THIS facility's stored sts_token, ignoring
+     * expiry. Used by get-token.php as "possession proof": a LIS that already holds
+     * its token has proven its identity, so it may mint/refresh without the legacy
+     * derivable API key. Expiry is intentionally not checked here -- a just-expired
+     * token still proves identity, and the caller refreshes it via createToken().
+     */
+    public function tokenBelongsToFacility(?string $token, int $facilityId): bool
+    {
+        if (empty($token) || $facilityId <= 0) {
+            return false;
+        }
+        $this->db->where('facility_id', $facilityId);
+        $result = $this->db->getOne($this->facilitiesTable, ['sts_token']);
+
+        return $result
+            && !empty($result['sts_token'])
+            && hash_equals((string) $result['sts_token'], (string) $token);
+    }
+
     public function validateToken(?string $token, int $facilityId): bool
     {
 
