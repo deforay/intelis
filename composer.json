@@ -105,6 +105,7 @@
         "audit-triggers-install": "@php bin/setup/regenerate-audit-triggers.php --apply install",
         "archive-audit-tables": "@php app/tasks/archive-audit-tables.php",
         "token": "@php bin/token.php",
+        "backup-key": "@php bin/backup-key.php",
         "sts-setup": [
             "@php bin/setup/setup-sts.php",
             "@purge-cache",
@@ -131,6 +132,7 @@
         "fix-app-menu": "@php bin/setup/fix-app-menu.php",
         "sync-sts": [
             "@token",
+            "@backup-key",
             "@metadata-sync",
             "@send-results",
             "@receive-requests",
@@ -169,6 +171,7 @@
         "post-update": "Tasks to run after InteLIS update",
         "sync-sts": "Sync data with a connected STS server",
         "pending-commands": "Pick up and dispatch remote commands queued at STS (gated behind global_config.remote_commands_enabled)",
+        "backup-key": "Generate and save this instance's backup encryption key to the STS for recovery (gated behind global_config.backup_key_recovery_enabled)",
         "sts-setup": "Setup connection with a STS server",
         "setup-sts": "Setup connection with a STS server",
         "migrate": "Run database migrations",
