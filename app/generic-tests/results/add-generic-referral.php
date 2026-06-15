@@ -1,6 +1,5 @@
 <?php
 
-use App\Services\TestsService;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -203,6 +202,7 @@ if ($isLisInstance) {
 
 <script type="text/javascript">
     $(document).ready(function() {
+        loadSamples();
         $("#testType").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Test Type"); ?>"

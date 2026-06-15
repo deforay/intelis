@@ -34,6 +34,7 @@ try {
         header("Location: /generic-tests/results/generic-referral.php");
         exit;
     }
+    echo "<pre>"; print_r($_POST); die;
 
     $testType = $_POST['type'] ?? 'generic-tests';
     $referredBy = $_POST['referralLabId'];
