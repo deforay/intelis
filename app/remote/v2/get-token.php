@@ -32,6 +32,14 @@ try {
     /** @var ServerRequestInterface $request */
     $request = AppRegistry::get('request');
 
+    // Throttle token minting per source IP. The mint gate (X-API-KEY) is derivable
+    // from the domain, so cap how fast anyone can ask for tokens. Legitimate LIS
+    // instances mint rarely (createToken returns a cached token while valid), so
+    // this limit is generous and only bites abuse/flooding.
+    if (\App\Utilities\RateLimitUtility::exceeded('get-token:' . \App\Utilities\RateLimitUtility::clientIp(), 30, 60)) {
+        throw new SystemException('Too many token requests; please retry shortly.', 429);
+    }
+
     // Retrieve the API key from the request header
     $apiKey = $request->getHeaderLine('X-API-Key');
 

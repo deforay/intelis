@@ -337,6 +337,15 @@ try {
         }
     }
 
+    if (!empty($newRemoteURL) && str_starts_with((string) $newRemoteURL, 'http://')) {
+        $io->warning([
+            'This STS URL uses plain HTTP — the connection is NOT encrypted.',
+            'The auth token and all synced data would travel in cleartext over the network.',
+            'Use an https:// URL as soon as the STS has a TLS certificate.',
+        ]);
+        LoggerUtility::logError('STS configured over insecure HTTP: ' . $newRemoteURL);
+    }
+
     if ($urlChanged && $newRemoteURL !== '') {
         $io->text('Updating STS URL in configuration…');
         try {
