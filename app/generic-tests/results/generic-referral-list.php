@@ -8,7 +8,7 @@ $referralListPage = [
     'heading'    => _translate("Other Lab Tests Referral List"),
     'referUrl'   => '/generic-tests/results/add-generic-referral.php',
     'ajaxSource' => 'getGenericReferralDetails.php',
-    'updateUrl'  => 'update-generic-referral-helper.php',
+    'updateUrl'  => 'save-generic-referral-helper.php',
     'pdfUrl'     => '/generic-tests/results/pdf/generate-generic-manifest.php',
 ];
 
