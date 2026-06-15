@@ -69,10 +69,10 @@ LEFT JOIN facility_details as f2 ON vl.referred_to_lab_id = f2.facility_id
 WHERE vl.referred_to_lab_id IS NOT NULL 
     AND vl.referred_to_lab_id != '' 
     AND vl.referred_to_lab_id != 0 
-    AND vl.referral_manifest_code = '$codeId' 
+    AND vl.referral_manifest_code = ?
 GROUP BY vl.referral_manifest_code, f2.facility_name, f2.facility_code";
 
-$genericResult = $db->rawQuery($sQuery);
+$genericResult = $db->rawQuery($sQuery, [$codeId]);
 
 
 ?>
@@ -137,7 +137,7 @@ $genericResult = $db->rawQuery($sQuery);
                                     value="generic-tests" />
                                  <input type="hidden" class="form-control isRequired" id="testType" name="testType"
                                     placeholder="" title="" readonly
-                                    value="<?php echo $genericResult[0]['test_type'] ?>" />
+                                    value="<?php echo htmlspecialchars((string) ($genericResult[0]['test_type'] ?? ''), ENT_QUOTES); ?>" />
                             </div>
                         </div>
                     </div>
@@ -252,8 +252,8 @@ $genericResult = $db->rawQuery($sQuery);
 
         $.post("/generic-tests/results/get-referral-samples.php", {
             type: 'generic-tests',
-            labId: <?php echo json_encode($id); ?>,
-            packageCode: <?php echo json_encode($codeId); ?>,
+            labId: <?php echo json_encode($id, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>,
+            packageCode: <?php echo json_encode($codeId, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>,
             referralLabId: referralLabId,
             testTypeId: testTypeId
         }, function(data) {
