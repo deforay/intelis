@@ -452,15 +452,26 @@ total_mem_kb=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 total_mem_mb=$((total_mem_kb / 1024))
 total_mem_gb=$((total_mem_mb / 1024))
 
-# Calculate buffer pool size (70% of total RAM)
-buffer_pool_size_gb=$((total_mem_gb * 70 / 100))
+# Calculate InnoDB buffer pool size.
+# These are NOT dedicated DB servers — Apache/PHP (and sometimes multiple LIS
+# instances) share the box — so we deliberately avoid innodb_dedicated_server
+# (which grabs ~75% of RAM) and size the pool conservatively ourselves, in MB for
+# accuracy on small boxes.
+buffer_pool_mb=$((total_mem_mb * 50 / 100))
 
-# Safety check for small RAM systems
-if [ "$buffer_pool_size_gb" -lt 1 ]; then
-    buffer_pool_size="512M"
-else
-    buffer_pool_size="${buffer_pool_size_gb}G"
-fi
+# Always leave headroom for the OS, the web stack, and MySQL's own per-connection
+# and global buffers: keep at least max(1024MB, 35% of RAM) free.
+reserve_mb=$((total_mem_mb * 35 / 100))
+[ "$reserve_mb" -lt 1024 ] && reserve_mb=1024
+max_pool_mb=$((total_mem_mb - reserve_mb))
+[ "$max_pool_mb" -lt 0 ] && max_pool_mb=0
+[ "$buffer_pool_mb" -gt "$max_pool_mb" ] && buffer_pool_mb=$max_pool_mb
+
+# Floor so the pool is never uselessly small (also covers tiny/heavily-capped boxes,
+# where this lands on MySQL's 128M default).
+[ "$buffer_pool_mb" -lt 128 ] && buffer_pool_mb=128
+
+buffer_pool_size="${buffer_pool_mb}M"
 
 # Calculate other memory-related settings
 # Scale these settings based on available memory
@@ -605,9 +616,16 @@ if [[ $(echo "$mysql_version < 8.0" | bc -l) -eq 1 ]]; then
     mysql_settings["innodb_read_io_threads"]="8"
     mysql_settings["innodb_write_io_threads"]="8"
 else
-    # MySQL 8.0+ settings
-    # Query cache is removed in 8.0+
-    mysql_settings["innodb_dedicated_server"]="1"  # Auto-tunes several parameters in MySQL 8+
+    # MySQL 8.0+ settings (query cache is removed in 8.0+).
+    # Do NOT enable innodb_dedicated_server: it assumes the whole box is the DB
+    # server and sizes the buffer pool to ~75% of RAM, which OOM-kills mysqld on
+    # these shared LAMP boxes. We size innodb_buffer_pool_size explicitly instead,
+    # so scrub any innodb_dedicated_server left by an earlier run (otherwise it
+    # overrides our explicit sizing and keeps over-allocating).
+    if grep -qE "^[[:space:]]*innodb_dedicated_server[[:space:]]*=" "$MYSQL_CONFIG_FILE"; then
+        sed -i "/^[[:space:]]*innodb_dedicated_server[[:space:]]*=.*/s/^/#/" "$MYSQL_CONFIG_FILE"
+        print info "Disabled innodb_dedicated_server (sizing buffer pool explicitly to avoid OOM)"
+    fi
 
     # Additional settings for large workloads in MySQL 8.0+
     mysql_settings["innodb_buffer_pool_instances"]="16"
