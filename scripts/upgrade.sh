@@ -64,6 +64,19 @@ fi
 # Source the shared functions
 source "$SHARED_FN_PATH"
 
+# Belt-and-suspenders: whatever happens — normal completion, an ERR-trap abort, or
+# an explicit early exit — make sure MySQL is running before we leave. The MySQL
+# config rewrite restarts the server and can occasionally leave it down (a bad/
+# removed option, OOM, or a package upgrade restarting it badly), and the LIS is
+# useless without the DB. ensure_mysql_running is a no-op when MySQL is already up.
+on_exit_restore_mysql() {
+    local rc=$?
+    trap - EXIT ERR
+    ensure_mysql_running "/etc/mysql/mysql.conf.d/mysqld.cnf" || true
+    exit "$rc"
+}
+trap on_exit_restore_mysql EXIT
+
 
 prepare_system
 
@@ -549,7 +562,6 @@ declare -A mysql_settings=(
     ["innodb_strict_mode"]="0"
     ["character-set-server"]="utf8mb4"
     ["collation-server"]="${mysql_collation}"
-    ["default_authentication_plugin"]="mysql_native_password"
     ["max_connect_errors"]="10000"
     ["innodb_buffer_pool_size"]="${buffer_pool_size}"
     ["innodb_file_per_table"]="1"
@@ -570,6 +582,17 @@ declare -A mysql_settings=(
     ["slow_query_log_file"]="/var/log/mysql/mysql-slow.log"
     ["long_query_time"]="2"
 )
+
+# default_authentication_plugin was deprecated in MySQL 8.0.34 and REMOVED in 8.4.
+# Leaving it in the config makes mysqld on 8.4+ refuse to start ("unknown variable"),
+# a common reason MySQL "goes away" after an upgrade. Only set it where it's valid;
+# on 8.4+ scrub any stale entry left by an earlier run so it can't keep mysqld down.
+if [[ $(echo "$mysql_version < 8.4" | bc -l) -eq 1 ]]; then
+    mysql_settings["default_authentication_plugin"]="mysql_native_password"
+elif grep -qE "^[[:space:]]*default_authentication_plugin[[:space:]]*=" "$MYSQL_CONFIG_FILE"; then
+    sed -i "/^[[:space:]]*default_authentication_plugin[[:space:]]*=.*/s/^/#/" "$MYSQL_CONFIG_FILE"
+    print info "Commented out removed option 'default_authentication_plugin' (MySQL ${mysql_version})"
+fi
 
 # MySQL version-specific settings
 if [[ $(echo "$mysql_version < 8.0" | bc -l) -eq 1 ]]; then
@@ -660,9 +683,20 @@ else
     print success "MySQL configuration already correct. No changes needed."
 fi
 
-# --- Always clean up old .bak files ---
-find "$(dirname "$MYSQL_CONFIG_FILE")" -maxdepth 1 -type f -name "$(basename "$MYSQL_CONFIG_FILE").bak.*" -exec rm -f {} \;
-print info "Removed all MySQL backup files matching *.bak.*"
+# --- Prune old MySQL config backups, but KEEP the most recent one ---
+# The newest backup is retained so the end-of-run recovery (ensure_mysql_running)
+# can restore a known-good config if MySQL disappears later in the run (e.g. an
+# apt upgrade restarts it into a bad state).
+mysql_cnf_dir="$(dirname "$MYSQL_CONFIG_FILE")"
+mysql_cnf_base="$(basename "$MYSQL_CONFIG_FILE")"
+newest_cnf_bak="$(ls -1t "${mysql_cnf_dir}/${mysql_cnf_base}".bak.* 2>/dev/null | head -1)"
+if [ -n "$newest_cnf_bak" ]; then
+    find "$mysql_cnf_dir" -maxdepth 1 -type f -name "${mysql_cnf_base}.bak.*" \
+        ! -name "$(basename "$newest_cnf_bak")" -exec rm -f {} \;
+    print info "Pruned old MySQL config backups; kept newest for recovery: $(basename "$newest_cnf_bak")"
+else
+    print info "No MySQL config backups to prune."
+fi
 
 print info "Applying SET PERSIST sql_mode='' to override MySQL defaults..."
 

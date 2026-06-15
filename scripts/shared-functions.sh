@@ -687,6 +687,85 @@ restart_service() {
 }
 
 
+# Resolve the MySQL/MariaDB systemd unit name on this host.
+mysql_unit_name() {
+    local unit
+    for unit in mysql mysqld mariadb; do
+        if systemctl list-unit-files "${unit}.service" >/dev/null 2>&1; then
+            echo "$unit"
+            return 0
+        fi
+    done
+    echo "mysql"
+}
+
+# Reachability probe. `mysqladmin ping` reports the server alive even on auth
+# errors, so this needs no credentials.
+mysql_is_up() {
+    mysqladmin ping --silent >/dev/null 2>&1
+}
+
+# Best-effort recovery: make sure MySQL is running. Safe to call multiple times
+# and on hosts without MySQL (returns 0 quietly). Strategy:
+#   1) if already reachable, do nothing;
+#   2) try to start/restart the unit and wait for the socket;
+#   3) if a recent mysqld.cnf backup exists, the live config is probably the
+#      culprit (e.g. a removed option that makes mysqld refuse to start) — restore
+#      the newest backup and retry once;
+#   4) on continued failure, dump recent journal lines to help the operator.
+# Returns 0 if MySQL ends up reachable, 1 otherwise.
+ensure_mysql_running() {
+    local cnf="${1:-/etc/mysql/mysql.conf.d/mysqld.cnf}"
+    local unit i newest_bak
+
+    # Nothing to restore if MySQL isn't installed on this host.
+    command -v mysqladmin >/dev/null 2>&1 || return 0
+
+    if mysql_is_up; then
+        return 0
+    fi
+
+    unit="$(mysql_unit_name)"
+    print warning "MySQL is not reachable. Attempting to bring it back up (unit: ${unit})..."
+    log_action "ensure_mysql_running: MySQL down, attempting recovery"
+
+    # 1) Plain start, then restart as a fallback.
+    systemctl start "$unit" 2>/dev/null || systemctl restart "$unit" 2>/dev/null || true
+    for ((i = 1; i <= 30; i++)); do
+        if mysql_is_up; then
+            print success "MySQL is back up."
+            log_action "ensure_mysql_running: recovered via start/restart"
+            return 0
+        fi
+        sleep 1
+    done
+
+    # 2) Live config may be bad. Restore the newest backup and retry.
+    newest_bak="$(ls -1t "${cnf}".bak.* 2>/dev/null | head -1)"
+    if [ -n "$newest_bak" ] && [ -f "$newest_bak" ]; then
+        print warning "Restoring MySQL config from backup: ${newest_bak}"
+        log_action "ensure_mysql_running: restoring config from ${newest_bak}"
+        cp "$cnf" "${cnf}.failed.$(date +%Y%m%d%H%M%S)" 2>/dev/null || true
+        cp "$newest_bak" "$cnf" 2>/dev/null || true
+        systemctl restart "$unit" 2>/dev/null || true
+        for ((i = 1; i <= 30; i++)); do
+            if mysql_is_up; then
+                print success "MySQL recovered after restoring config from backup."
+                log_action "ensure_mysql_running: recovered via config restore"
+                return 0
+            fi
+            sleep 1
+        done
+    fi
+
+    # 3) Give up, but leave breadcrumbs.
+    print error "MySQL is still down after recovery attempts. Recent service log:"
+    journalctl -u "$unit" -n 30 --no-pager 2>/dev/null | sed 's/^/    /' || true
+    log_action "ensure_mysql_running: FAILED to recover MySQL"
+    return 1
+}
+
+
 # Ask user yes/no
 ask_yes_no() {
     local prompt="$1"
