@@ -40,17 +40,6 @@ try {
         throw new SystemException('Too many token requests; please retry shortly.', 429);
     }
 
-    // Retrieve the API key from the request header
-    $apiKey = $request->getHeaderLine('X-API-Key');
-
-    // Get the expected API key from the environment
-    $intelisSyncApiKey = $general->getIntelisSyncAPIKey();
-
-    // Check if the API key is missing or doesn't match (constant-time comparison)
-    if (empty($apiKey) || empty($intelisSyncApiKey) || !hash_equals((string) $intelisSyncApiKey, (string) $apiKey)) {
-        throw new SystemException('Unauthorized: Invalid API Key', 401);
-    }
-
     $data = $apiService->getJsonFromRequest($request, true);
 
     $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
@@ -60,6 +49,37 @@ try {
 
     if (empty($labId)) {
         throw new SystemException('Lab ID is missing in the request', 400);
+    }
+    $labId = (int) $labId;
+
+    // Authorize the mint request, strongest proof first. Both are automatic and the
+    // existing fleet (which only sends X-API-KEY) keeps working unchanged:
+    //   1. Possession proof -- the LIS returns its current sts_token in X-STS-Token,
+    //      so a lab that already holds its token authenticates with that token rather
+    //      than the shared, domain-derivable key.
+    //   2. Legacy X-API-KEY  -- the domain-derived key (unchanged behaviour), so older
+    //      LIS instances and brand-new installs still work.
+    $authorized = false;
+
+    $presentedStsToken = trim((string) $request->getHeaderLine('X-STS-Token'));
+    if ($presentedStsToken !== '' && $stsTokensService->tokenBelongsToFacility($presentedStsToken, $labId)) {
+        $authorized = true;
+    }
+
+    if (!$authorized) {
+        $apiKey = $request->getHeaderLine('X-API-Key');
+        $intelisSyncApiKey = $general->getIntelisSyncAPIKey();
+        if (
+            !empty($apiKey)
+            && !empty($intelisSyncApiKey)
+            && hash_equals((string) $intelisSyncApiKey, (string) $apiKey)
+        ) {
+            $authorized = true;
+        }
+    }
+
+    if (!$authorized) {
+        throw new SystemException('Unauthorized: Invalid API Key', 401);
     }
 
     $token = $stsTokensService->createToken($labId);

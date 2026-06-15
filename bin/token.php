@@ -57,7 +57,6 @@ if ($remoteURL === '' || $remoteURL === '0') {
 $options = getopt('', ['key:']);
 $apiKey = $options['key'] ?? null;
 
-
 if ($apiKey === '' || $apiKey === '0' || $apiKey === [] || $apiKey === false || $apiKey === null) {
     $apiKey = ConfigService::generateAPIKeyForSTS($remoteURL);
 }
@@ -68,7 +67,7 @@ if (!$cliMode) {
 
 $tokenURL = "$remoteURL/remote/v2/get-token.php";
 
-// Prepare payload with API key and lab ID
+// Prepare payload with lab ID
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $payload = [
     'labId' => $labId,
@@ -76,10 +75,18 @@ $payload = [
 
 // Send the request to generate a token
 try {
+    // Always send the legacy X-API-KEY so an older STS still authorises us. A newer
+    // STS prefers stronger proof: if we already hold an sts_token, present it in
+    // X-STS-Token (possession proof) so we no longer depend on the derivable key.
+    // Both are automatic -- nothing for the operator to enter.
     $headers = [
         'X-API-KEY' => $apiKey,
         'Content-Type' => 'application/json',
     ];
+    $existingToken = trim((string) ($general->getSTSToken() ?? ''));
+    if ($existingToken !== '') {
+        $headers['X-STS-Token'] = $existingToken;
+    }
 
     $apiService->setHeaders($headers);
 
