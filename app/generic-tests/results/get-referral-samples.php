@@ -25,6 +25,7 @@ if (empty($_POST['type'])) {
 $testType = $_POST['type'];
 $packageCodeId = $_POST['packageCode'];
 $labId = $_POST['referralLabId'];
+$referToLab = $_POST['labId'];
 $testTypeId = $_POST['testTypeId'] ?? null;
 $table = TestsService::getTestTableName($testType);
 $primaryKeyColumn = TestsService::getPrimaryColumn($testType);
@@ -35,7 +36,7 @@ $bindParams = [];
 $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '')";
 if (!empty($packageCodeId)) {
     $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '' OR vl.referred_to_lab_id = ?)";
-    $bindParams[] = $labId;
+    $bindParams[] = $referToLab;
 }
 
 // Restrict to samples of the selected custom test type so they match the manifest code
