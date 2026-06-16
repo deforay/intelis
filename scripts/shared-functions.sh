@@ -1258,6 +1258,92 @@ EOF
     return 1
 }
 
+# Verify the CLI PHP that Composer will use has every extension we depend on,
+# and self-heal the most common failure: a hardening profile that blacklists
+# the (compiled-in) "phar" extension via disable_classes/disable_functions,
+# which makes Composer abort with "PHP's phar extension is missing." before it
+# can do anything. Call this BEFORE any composer invocation.
+#
+# Usage: ensure_php_cli_extensions <php_version>
+# Returns 0 when all required extensions are loaded, 1 (after attempting a fix)
+# when "phar" still cannot be loaded — callers should treat that as fatal.
+ensure_php_cli_extensions() {
+    local php_version="${1:-8.4}"
+    # Extensions Composer + VLSM need at the CLI. "phar" is the one Composer
+    # itself refuses to start without; the rest fail later and more obscurely.
+    local required=(phar mbstring openssl curl json zip)
+
+    print info "Verifying CLI PHP extensions for Composer..."
+
+    # Helper: is a single extension loaded in the *CLI* php on PATH?
+    _php_cli_has_ext() {
+        php -r "exit(extension_loaded('$1') ? 0 : 1);" >/dev/null 2>&1
+    }
+
+    # First pass: collect what's missing.
+    local missing=()
+    local ext
+    for ext in "${required[@]}"; do
+        _php_cli_has_ext "$ext" || missing+=("$ext")
+    done
+
+    if [ ${#missing[@]} -eq 0 ]; then
+        print success "All required CLI PHP extensions are present."
+        return 0
+    fi
+
+    print warning "Missing CLI PHP extension(s): ${missing[*]}"
+
+    # Self-heal phar: it ships compiled into php-cli, so if it's "missing" it is
+    # almost always blacklisted in an ini under the CLI conf.d/ tree. Find and
+    # neutralise any disable_classes/disable_functions line that names Phar/phar.
+    local cli_ini_dirs=(
+        "/etc/php/${php_version}/cli/conf.d"
+        "/etc/php/${php_version}/cli"
+    )
+    if printf '%s\n' "${missing[@]}" | grep -qx 'phar'; then
+        local ini
+        while IFS= read -r ini; do
+            [ -n "$ini" ] || continue
+            print warning "Found phar blacklisted in ${ini}; commenting it out."
+            cp "$ini" "${ini}.bak.$(date +%Y%m%d%H%M%S)" 2>/dev/null || true
+            # Comment any disable_classes/disable_functions line mentioning phar.
+            sed -i -E '/^[[:space:]]*disable_(classes|functions)[[:space:]]*=.*[Pp]har/ s/^/;/' "$ini"
+        done < <(grep -rEil 'disable_(classes|functions)[[:space:]]*=.*phar' "${cli_ini_dirs[@]}" 2>/dev/null)
+    fi
+
+    # Re-check after the heal attempt.
+    missing=()
+    for ext in "${required[@]}"; do
+        _php_cli_has_ext "$ext" || missing+=("$ext")
+    done
+
+    if [ ${#missing[@]} -eq 0 ]; then
+        print success "CLI PHP extensions resolved."
+        return 0
+    fi
+
+    # phar still missing is fatal — Composer cannot run. Give an actionable map
+    # instead of letting the raw "phar extension is missing" error fly by.
+    if printf '%s\n' "${missing[@]}" | grep -qx 'phar'; then
+        print error "Composer cannot run: the 'phar' extension is not loaded in the CLI PHP."
+        print info  "Diagnose and fix on this machine, then re-run:"
+        print info  "  1. php --ini                       # which ini files load"
+        print info  "  2. php -i | grep -Ei 'disable_(functions|classes)|suhosin'"
+        print info  "  3. Remove 'Phar'/phar from any disable_classes/disable_functions line in"
+        print info  "     /etc/php/${php_version}/cli/ (and conf.d/), or: apt-get install --reinstall php${php_version}-cli"
+        print info  "  4. Confirm: php -r 'var_dump(extension_loaded(\"phar\"));'  # expect bool(true)"
+        print info  "  Also check 'which -a php' / 'update-alternatives --config php' — a stray older php may be first on PATH."
+        return 1
+    fi
+
+    # Non-phar extensions missing: warn but let Composer proceed (it may surface
+    # a clearer per-package requirement, and these are usually apt-installable).
+    print warning "Composer will proceed, but these extensions are still missing: ${missing[*]}"
+    print info    "Install with: apt-get install $(printf 'php%s-%s ' "${php_version}" "${missing[@]}")"
+    return 0
+}
+
 # Configure PHP INI settings for production use
 # Usage: configure_php_ini <php_version>
 # Example: configure_php_ini 8.4
