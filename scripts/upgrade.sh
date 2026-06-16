@@ -1636,6 +1636,13 @@ upgrade_instance() {
     # Ensure composer files are writable by www-data before running composer commands
     chown www-data:www-data "${lis_path}/composer.json" "${lis_path}/composer.lock" 2>/dev/null || true
 
+    # Make sure the CLI PHP Composer uses has phar (and friends) before we call it —
+    # a phar blacklist here otherwise aborts Composer with a cryptic error.
+    if ! ensure_php_cli_extensions "${php_version:-8.4}"; then
+        print error "Aborting: required PHP CLI extensions are unavailable for Composer."
+        exit 1
+    fi
+
     sudo -u www-data composer config process-timeout 30000 --no-interaction
     sudo -u www-data composer clear-cache --no-interaction
 
