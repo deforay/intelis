@@ -296,6 +296,10 @@ $activeTests = TestsService::getActiveTests();
                         <button id="toggleFilters" class="btn btn-default btn-sm pull-right">
                             <em class="fa-solid fa-filter"></em>&nbsp;<?= _translate("Filters"); ?>
                         </button>
+                        <button id="refreshData" class="btn btn-default btn-sm pull-right" style="margin-right:6px;"
+                            title="<?= _translate('This data is cached for faster loading. Click to fetch the latest.', true); ?>">
+                            <em class="fa-solid fa-rotate"></em>&nbsp;<?= _translate("Refresh"); ?>
+                        </button>
                     </div>
 
                     <div class="box-body referral-filters" id="filterPanel" style="display:none;">
@@ -817,8 +821,10 @@ $activeTests = TestsService::getActiveTests();
         if (focusHintEl) { focusHintEl.style.display = 'none'; }
     }
 
-    function loadMap() {
-        $.post('/admin/monitoring/get-referral-map-data.php', filterPayload(), function (resp) {
+    function loadMap(forceRefresh) {
+        var payload = filterPayload();
+        if (forceRefresh) { payload.refresh = 'true'; }
+        return $.post('/admin/monitoring/get-referral-map-data.php', payload, function (resp) {
             markerLayer.clearLayers();
             flowLayer.clearLayers();
             mapNodesById = {};
@@ -1000,9 +1006,17 @@ $activeTests = TestsService::getActiveTests();
         });
     }
 
-    function applyFilters() {
-        loadMap();
-        loadTable();
+    // forceRefresh bypasses the server-side cache (Refresh button). The map call
+    // busts and recomputes the shared cache entry; on a refresh the table is
+    // redrawn only after that completes, so it reads the freshly recomputed data
+    // for the same filters (a normal Search loads both in parallel from cache).
+    function applyFilters(forceRefresh) {
+        if (forceRefresh) {
+            loadMap(true).always(function () { loadTable(); });
+        } else {
+            loadMap(false);
+            loadTable();
+        }
     }
 
     // Replace a Tom Select's options from a server-rendered <option> HTML string.
@@ -1051,6 +1065,17 @@ $activeTests = TestsService::getActiveTests();
         });
 
         $('#toggleFilters').on('click', function () { $('#filterPanel').slideToggle(150); });
+
+        // Refresh: re-fetch the current filters bypassing the server-side cache.
+        $('#refreshData').on('click', function () {
+            var $btn = $(this).prop('disabled', true);
+            var orig = $btn.html();
+            $btn.html('<em class="fa-solid fa-rotate fa-spin"></em>&nbsp;<?= _translate("Refreshing…", true); ?>');
+            loadMap(true).always(function () {
+                loadTable();
+                $btn.prop('disabled', false).html(orig);
+            });
+        });
 
         $(document).on('change', '#toggleLines', function () {
             showAllLines = this.checked;

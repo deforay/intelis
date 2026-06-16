@@ -30,7 +30,9 @@ try {
         'facilityIds' => (array) ($_POST['facilityId'] ?? []),
     ];
 
-    $rows = $referralService->aggregate($filters);
+    // A "Refresh" click bypasses the cached aggregate and recomputes from the DB.
+    $forceRefresh = !empty($_POST['refresh']) && $_POST['refresh'] !== 'false';
+    $rows = $referralService->aggregate($filters, $forceRefresh);
 
     // Collapse per-test rows into one directed flow per (facility -> lab).
     $flows = [];
