@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Services\TestsService;
 use App\Services\DatabaseService;
+use App\Utilities\FileCacheUtility;
 
 /**
  * Aggregates the "which facility sends samples to which testing lab" referral
@@ -15,12 +16,25 @@ use App\Services\DatabaseService;
  */
 final class ReferralNetworkService
 {
-    public function __construct(private DatabaseService $db)
+    /**
+     * How long an aggregated referral network stays cached. The referral data is
+     * a slow, full-history roll-up that does not change minute to minute, so it is
+     * served from cache and only recomputed on expiry or an explicit refresh.
+     */
+    public const CACHE_TTL = 1800; // 30 minutes
+    private const CACHE_TAG = 'referral_network';
+
+    public function __construct(private DatabaseService $db, private FileCacheUtility $fileCache)
     {
     }
 
     /**
      * Per-(facility, lab, test type) referral rows matching the given filters.
+     *
+     * The result is cached (see self::CACHE_TTL) keyed by the filter set, so a
+     * page refresh or re-running the same filters is served from cache instead of
+     * re-scanning every active test table. Pass $forceRefresh = true to bypass and
+     * recompute (the "Refresh" action on the map page).
      *
      * @param array{
      *   testTypes?: string[], dateRange?: string,
@@ -30,7 +44,47 @@ final class ReferralNetworkService
      *
      * @return list<array{facility_id:int, lab_id:int, test_type:string, test_name:string, samples:int, latest:?string}>
      */
-    public function aggregate(array $filters): array
+    public function aggregate(array $filters, bool $forceRefresh = false): array
+    {
+        $cacheKey = $this->cacheKey($filters);
+        if ($forceRefresh) {
+            $this->fileCache->delete($cacheKey);
+        }
+        return $this->fileCache->get(
+            $cacheKey,
+            fn() => $this->computeAggregate($filters),
+            [self::CACHE_TAG],
+            self::CACHE_TTL
+        );
+    }
+
+    /**
+     * Build a stable cache key from the (normalised) filter set, so equivalent
+     * filters share one cache entry regardless of incoming order or formatting.
+     *
+     * @param array<string, mixed> $filters
+     */
+    private function cacheKey(array $filters): string
+    {
+        $normalised = [
+            'testTypes' => $this->sortedStrings((array) ($filters['testTypes'] ?? [])),
+            'dateRange' => trim((string) ($filters['dateRange'] ?? '')),
+            'provinceIds' => $this->intList($filters['provinceIds'] ?? []),
+            'districtIds' => $this->intList($filters['districtIds'] ?? []),
+            'labIds' => $this->intList($filters['labIds'] ?? []),
+            'facilityIds' => $this->intList($filters['facilityIds'] ?? []),
+        ];
+        sort($normalised['provinceIds']);
+        sort($normalised['districtIds']);
+        sort($normalised['labIds']);
+        sort($normalised['facilityIds']);
+        return 'referral_network_' . md5((string) json_encode($normalised));
+    }
+
+    /**
+     * @return list<array{facility_id:int, lab_id:int, test_type:string, test_name:string, samples:int, latest:?string}>
+     */
+    private function computeAggregate(array $filters): array
     {
         $testTypes = !empty($filters['testTypes'])
             ? array_values(array_intersect($filters['testTypes'], TestsService::getActiveTests()))
@@ -218,6 +272,14 @@ final class ReferralNetworkService
             });
             $out[$labId] = $list;
         }
+        return $out;
+    }
+
+    /** @param mixed[] $values @return string[] */
+    private function sortedStrings(array $values): array
+    {
+        $out = array_values(array_unique(array_filter(array_map('strval', $values), static fn($s) => $s !== '')));
+        sort($out);
         return $out;
     }
 
