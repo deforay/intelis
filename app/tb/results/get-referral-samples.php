@@ -27,12 +27,14 @@ $primaryKeyColumn = TestsService::getPrimaryColumn($testType);
 $patientIdColumn = TestsService::getPatientIdColumn($testType);
 $lisLabId = $general->getSystemConfig('sc_testing_lab_id');
 
+$queryParams = [];
 $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '')";
 if (isset($packageCodeId) && !empty($packageCodeId)) {
     if(isset($referToLab) && !empty($referToLab)){
         $labId = $referToLab;
     }
-    $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '' OR vl.referred_to_lab_id = '$labId')";
+    $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '' OR vl.referred_to_lab_id = ?)";
+    $queryParams[] = (int) $labId;
 }
 // Query to get samples that are eligible for referral
 // Samples should be received at lab but not yet referred
@@ -50,9 +52,10 @@ $query = "SELECT
           WHERE $condition
             AND (COALESCE(vl.is_sample_rejected, '') = '' OR vl.is_sample_rejected = 'no')
             AND (vl.sample_code IS NOT NULL AND vl.sample_code != '')
-            AND (vl.lab_id IS NOT NULL AND vl.lab_id = '$lisLabId')
+            AND (vl.lab_id IS NOT NULL AND vl.lab_id = ?)
           ORDER BY vl.sample_code ASC";
-$result = $db->rawQuery($query);
+$queryParams[] = (int) $lisLabId;
+$result = $db->rawQuery($query, $queryParams);
 
 // Output options for the select box
 foreach ($result as $sample) {

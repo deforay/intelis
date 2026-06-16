@@ -568,15 +568,27 @@ final class TestRequestsService
 
     public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat = 'MMYY', $prefix = null): int
     {
+        if (empty($manifestCode)) {
+            return 0;
+        }
+        $tableName = TestsService::getTestTableName($testType);
+
+        // Referred samples carry the manifest in referral_manifest_code, while the
+        // standard manifest workflow uses sample_package_code. TB / Custom (generic)
+        // tests have both columns and use both; the other modules only have
+        // sample_package_code. Match whichever applies so referral manifests
+        // actually activate (otherwise their result_status stayed REFERRED).
+        $manifestWhere = "sample_package_code = ?";
+        $manifestParams = [$manifestCode];
+        if (TestsService::hasReferralManifest($testType)) {
+            $manifestWhere = "(sample_package_code = ? OR referral_manifest_code = ?)";
+            $manifestParams = [$manifestCode, $manifestCode];
+        }
+
         try {
-            if (empty($manifestCode)) {
-                return 0;
-            }
-            $tableName = TestsService::getTestTableName($testType);
+            $sampleQuery = "SELECT * FROM $tableName WHERE $manifestWhere ORDER BY remote_sample_code ASC";
 
-            $sampleQuery = "SELECT * FROM $tableName WHERE sample_package_code = '$manifestCode' ORDER BY remote_sample_code ASC";
-
-            $sampleResult = $this->db->rawQuery($sampleQuery);
+            $sampleResult = $this->db->rawQuery($sampleQuery, $manifestParams);
 
             $status = 0;
 
@@ -680,7 +692,7 @@ final class TestRequestsService
             $this->db->reset();
             $this->db->where('result_status IN (' . RECEIVED_AT_CLINIC . ', ' . REFERRED . ')');
             $this->db->where('sample_code IS NOT NULL');
-            $this->db->where('sample_package_code', $manifestCode);
+            $this->db->where($manifestWhere, $manifestParams);
             $this->db->update($tableName, $buildUpdateData(true));
 
             // This is to allow users to just update the SAMPLE RECEIVED AT LAB DATETIME in bulk
@@ -688,7 +700,7 @@ final class TestRequestsService
             $this->db->reset();
             $this->db->where('result_status NOT IN (' . RECEIVED_AT_CLINIC . ', ' . REFERRED . ')');
             $this->db->where('sample_code IS NOT NULL');
-            $this->db->where('sample_package_code', $manifestCode);
+            $this->db->where($manifestWhere, $manifestParams);
             $this->db->update($tableName, $buildUpdateData(false));
 
             return $status;
