@@ -75,17 +75,23 @@ if ($isLisInstance) {
                 action="save-tb-referral-helper.php">
                 <div class="box-body" style="margin-top:20px;">
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            <div style="margin-left:3%;">
-                                <label for="referralLabId" class="control-label">
-                                    <?php echo _translate("Referred By"); ?>
-                                    <span class="mandatory">*</span></label>
-                                <select name="referralLabId" id="referralLabId" class="form-control select2 isRequired"
-                                    title="<?php echo _translate("Please select sending lab"); ?>" required>
-                                    <?= $general->generateSelectOptions($testingLabs, $id, '-- Select --'); ?>
-                                </select>
+                         <?php if ($isLisInstance && !empty($fromLabId)) { ?>
+                        <input type="hidden" name="referralLabId" id="referralLabId"
+                            value="<?php echo htmlspecialchars((string) $fromLabId); ?>" />
+                    <?php } else { ?>
+                            <div class="form-group col-md-6">
+                                <div style="margin-left:3%;">
+                                    <label for="referralLabId" class="control-label">
+                                        <?php echo _translate("Referred By"); ?>
+                                        <span class="mandatory">*</span></label>
+                                    <select name="referralLabId" id="referralLabId"
+                                        class="form-control select2 isRequired"
+                                        title="<?php echo _translate("Please select sending lab"); ?>" required>
+                                        <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
+                    <?php } ?>
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
                                 <label for="packageCode" class="control-label">
@@ -185,10 +191,12 @@ if ($isLisInstance) {
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#referralLabId").select2({
-            width: '100%',
-            placeholder: "<?php echo _translate("Select Referral Lab"); ?>"
-        });
+         <?php if (!($isLisInstance && !empty($fromLabId))) { ?>
+            $("#referralLabId").select2({
+                width: '100%',
+                placeholder: "<?php echo _translate("Select Referral Lab"); ?>"
+            });
+        <?php } ?>
         $("#referralToLabId").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Receiving Lab"); ?>"
@@ -208,9 +216,15 @@ if ($isLisInstance) {
 
         $.post("/tb/results/get-referral-samples.php", {
             type: 'tb',
+<<<<<<< Updated upstream
             labId: <?php echo json_encode($id, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>,
             packageCode: <?php echo json_encode($codeId, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>,
             referralLabId: referralLabId
+=======
+            labId: '<?php echo $id; ?>',
+            packageCode: '<?php echo $codeId; ?>',
+            referralLabId: referralLabId,
+>>>>>>> Stashed changes
         }, function(data) {
             if (data && data.trim() !== "") {
                 $("#search").html(data);

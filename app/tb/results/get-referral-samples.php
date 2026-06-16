@@ -21,6 +21,7 @@ if (empty($_POST['type'])) {
 $testType = $_POST['type'];
 $packageCodeId = $_POST['packageCode'];
 $labId = $_POST['referralLabId'];
+$referToLab = $_POST['labId'];
 $table = TestsService::getTestTableName($testType);
 $primaryKeyColumn = TestsService::getPrimaryColumn($testType);
 $patientIdColumn = TestsService::getPatientIdColumn($testType);
@@ -28,6 +29,9 @@ $lisLabId = $general->getSystemConfig('sc_testing_lab_id');
 
 $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '')";
 if (isset($packageCodeId) && !empty($packageCodeId)) {
+    if(isset($referToLab) && !empty($referToLab)){
+        $labId = $referToLab;
+    }
     $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '' OR vl.referred_to_lab_id = '$labId')";
 }
 // Query to get samples that are eligible for referral
