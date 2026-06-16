@@ -19,6 +19,7 @@ $isSTS = $general->isSTSInstance();
 $canQueue = $isSTS && _isAllowed('/admin/monitoring/queue-lis-command.php');
 $canCancel = $isSTS && _isAllowed('/admin/monitoring/cancel-lis-command.php');
 $showActions = $isSTS && ($canQueue || $canCancel);
+$canViewHistory = $isSTS && _isAllowed('/admin/monitoring/lis-command-history.php');
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -377,6 +378,12 @@ $stateNameList = $geolocationService->getProvinces("yes");
                             <button type="button" class="btn btn-success" onclick="exportSyncStatus();">
                                 <i class="fa-solid fa-file-excel"></i> <?= _translate("Export Excel"); ?>
                             </button>
+                            <?php if ($canViewHistory) { ?>
+                                <a href="/admin/monitoring/lis-command-history.php" target="_blank"
+                                    class="btn btn-default">
+                                    <i class="fa-solid fa-clock-rotate-left"></i> <?= _translate("Lab Command History"); ?>
+                                </a>
+                            <?php } ?>
                             <div class="auto-refresh-toggle" style="margin-left: auto;">
                                 <label>
                                     <input type="checkbox" id="autoRefresh" checked>
