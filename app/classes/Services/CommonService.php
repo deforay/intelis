@@ -1876,10 +1876,23 @@ final class CommonService
         // Get VERSION constant or default
         $version = defined('VERSION') ? VERSION : '1.0';
 
+        // Append the build (commit SHA from VERSION.txt / .git) so STS knows
+        // exactly which build a lab is on, not just the semver. Format: "5.5.14+abc1234".
+        try {
+            /** @var CommonService $general */
+            $general = ContainerRegistry::get(CommonService::class);
+            $build = $general->getCommitShaShort();
+            if (!empty($build)) {
+                $version .= '+' . $build;
+            }
+        } catch (Throwable $e) {
+            // Non-fatal: fall back to the bare semver if the build can't be resolved.
+        }
+
         // Use current lab ID if available
         $testLabId = $labId ?: 'unset';
 
-        $apiUrl = rtrim((string) $url, '/') . "/api/version.php?labId=" . $testLabId . "&version=" . $version;
+        $apiUrl = rtrim((string) $url, '/') . "/api/version.php?labId=" . urlencode((string) $testLabId) . "&version=" . urlencode($version);
 
         try {
             $client = new Client([
