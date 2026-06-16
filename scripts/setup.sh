@@ -1455,6 +1455,15 @@ else
     log_action "intelis setup skipped — source missing"
 fi
 
+# Ensure www-data owns the var/ (cache) tree before anything runs as www-data.
+# The rsync above excludes var/cache/, so on a re-run an existing cache is
+# preserved and may still hold root-owned files from an earlier run; the
+# www-data `composer post-install` (purge-cache) then fails to clear them with
+# "[ERROR] Could not clear the application cache." The whole-tree chown only
+# runs at the very end of setup, which is too late for this step.
+mkdir -p "${lis_path}/var" 2>/dev/null || true
+chown -R www-data:www-data "${lis_path}/var" 2>/dev/null || true
+
 # Run as www-data (not root): db-tools bootstraps the app and warms var/cache,
 # so running it as root leaves root-owned cache files that the subsequent
 # www-data `composer post-install` (purge-cache) can't clear.
