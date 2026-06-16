@@ -68,8 +68,9 @@ if ($general->isStandaloneInstance()) {
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-    $sOffset = $_POST['iDisplayStart'];
-    $sLimit = $_POST['iDisplayLength'];
+    // Cast to int: these are interpolated raw into the LIMIT clause below.
+    $sOffset = (int) $_POST['iDisplayStart'];
+    $sLimit = (int) $_POST['iDisplayLength'];
 }
 
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
