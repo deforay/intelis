@@ -992,6 +992,13 @@ cd "${lis_path}"
 # Ensure composer files are writable by www-data before running composer commands
 chown www-data:www-data "${lis_path}/composer.json" "${lis_path}/composer.lock" 2>/dev/null || true
 
+# Make sure the CLI PHP Composer uses has phar (and friends) before we call it —
+# a phar blacklist here otherwise aborts Composer with a cryptic error.
+if ! ensure_php_cli_extensions "${PHP_VERSION}"; then
+    print error "Aborting: required PHP CLI extensions are unavailable for Composer."
+    exit 1
+fi
+
 # Configure composer timeout regardless of installation path
 sudo -u www-data composer config process-timeout 30000
 sudo -u www-data composer clear-cache
