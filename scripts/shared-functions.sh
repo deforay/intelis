@@ -85,9 +85,10 @@ escape_php_string_for_sed() {
 
 # Install required packages
 install_packages() {
-    local required_pkgs=(aria2 wget lsb-release bc pigz gpg fzf zstd git rsync)
+    local required_pkgs=(curl aria2 wget lsb-release bc pigz gpg fzf zstd git rsync)
     # Map package names to their actual command names
     declare -A pkg_to_cmd=(
+        ["curl"]="curl"
         ["aria2"]="aria2c"
         ["wget"]="wget"
         ["lsb-release"]="lsb_release"
