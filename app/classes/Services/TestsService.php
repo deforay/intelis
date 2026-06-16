@@ -139,7 +139,8 @@ final class TestsService
                 'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_tb_sample_type',
-                'serviceClass' => TbService::class
+                'serviceClass' => TbService::class,
+                'referralManifest' => true
             ],
             'generic-tests' => [
                 'testName' => _translate('Other Tests', escapeTextOrContext: true),
@@ -152,7 +153,8 @@ final class TestsService
                 'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_generic_sample_types',
-                'serviceClass' => GenericTestsService::class
+                'serviceClass' => GenericTestsService::class,
+                'referralManifest' => true
             ]
         ];
 
@@ -172,6 +174,16 @@ final class TestsService
     public static function getPrimaryColumn(string $testType): string
     {
         return self::getTestTypes()[$testType]['primaryKey'] ?? throw new SystemException("Invalid test type key");
+    }
+
+    /**
+     * Whether this test type's table carries a referral_manifest_code column
+     * (the per-sample referral workflow). Only TB and Custom/Generic tests do;
+     * the other modules use sample_package_code only.
+     */
+    public static function hasReferralManifest(string $testType): bool
+    {
+        return !empty(self::getTestTypes()[$testType]['referralManifest']);
     }
 
     public static function getTestName(string $testType): string
