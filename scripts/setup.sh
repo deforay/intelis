@@ -729,7 +729,14 @@ collect_user_inputs() {
             remote_sts_url="${remote_sts_url%/}"
             echo "Validating the provided STS URL..."
             local response_code
-            response_code=$(curl -s -o /dev/null -w "%{http_code}" "$remote_sts_url/api/version.php" || true)
+            if command -v curl >/dev/null 2>&1; then
+                response_code=$(curl -s -o /dev/null -w "%{http_code}" "$remote_sts_url/api/version.php" || true)
+            else
+                # curl should be installed by prepare_system; fall back to wget
+                # (always present) so a missing curl can't dead-end the install.
+                response_code=$(wget -q -S -O /dev/null "$remote_sts_url/api/version.php" 2>&1 \
+                    | awk '/^  HTTP\//{code=$2} END{print code}' || true)
+            fi
             if [[ "$response_code" =~ ^[0-9]+$ ]] && [ "$response_code" -eq 200 ]; then
                 print success "STS URL validation successful."
                 log_action "STS URL validation successful."
