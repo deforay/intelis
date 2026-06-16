@@ -216,15 +216,9 @@ if ($isLisInstance) {
 
         $.post("/tb/results/get-referral-samples.php", {
             type: 'tb',
-<<<<<<< Updated upstream
             labId: <?php echo json_encode($id, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>,
             packageCode: <?php echo json_encode($codeId, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>,
             referralLabId: referralLabId
-=======
-            labId: '<?php echo $id; ?>',
-            packageCode: '<?php echo $codeId; ?>',
-            referralLabId: referralLabId,
->>>>>>> Stashed changes
         }, function(data) {
             if (data && data.trim() !== "") {
                 $("#search").html(data);
