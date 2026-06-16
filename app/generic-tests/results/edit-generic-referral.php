@@ -69,7 +69,7 @@ LEFT JOIN facility_details as f2 ON vl.referred_to_lab_id = f2.facility_id
 WHERE vl.referred_to_lab_id IS NOT NULL 
     AND vl.referred_to_lab_id != '' 
     AND vl.referred_to_lab_id != 0 
-    AND vl.referral_manifest_code = ?
+    AND vl.referral_manifest_code = ? 
 GROUP BY vl.referral_manifest_code, f2.facility_name, f2.facility_code";
 
 $genericResult = $db->rawQuery($sQuery, [$codeId]);
@@ -105,37 +105,37 @@ $genericResult = $db->rawQuery($sQuery, [$codeId]);
                 <div class="box-body" style="margin-top:20px;">
                     <div class="row">
                         <?php if ($isLisInstance && !empty($fromLabId)) { ?>
-                        <input type="hidden" name="referralLabId" id="referralLabId"
-                            value="<?php echo htmlspecialchars((string) $fromLabId); ?>" />
-                    <?php } else { ?>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <div style="margin-left:3%;">
-                                    <label for="referralLabId" class="control-label">
-                                        <?php echo _translate("Referred By"); ?>
-                                        <span class="mandatory">*</span></label>
-                                    <select name="referralLabId" id="referralLabId"
-                                        class="form-control select2 isRequired"
-                                        title="<?php echo _translate("Please select sending lab"); ?>" required>
-                                        <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                    </select>
+                            <input type="hidden" name="referralLabId" id="referralLabId"
+                                value="<?php echo htmlspecialchars((string) $fromLabId); ?>" />
+                        <?php } else { ?>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <div style="margin-left:3%;">
+                                        <label for="referralLabId" class="control-label">
+                                            <?php echo _translate("Referred By"); ?>
+                                            <span class="mandatory">*</span></label>
+                                        <select name="referralLabId" id="referralLabId"
+                                            class="form-control select2 isRequired"
+                                            title="<?php echo _translate("Please select sending lab"); ?>" required>
+                                            <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    <?php } ?>
+                        <?php } ?>
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
                                 <label for="packageCode" class="control-label">
                                     <?php echo _translate("Referral Manifest Code"); ?> <span
                                         class="mandatory">*</span></label>
-                               
+
                                 <input type="text" class="form-control isRequired" id="packageCode" name="packageCode"
                                     placeholder="Manifest Code" title="Please enter manifest code" readonly
                                     value="<?php echo htmlspecialchars((string) ($genericResult[0]['referral_manifest_code'] ?? ''), ENT_QUOTES); ?>" />
                                 <input type="hidden" class="form-control isRequired" id="module" name="module"
                                     placeholder="" title="" readonly
                                     value="generic-tests" />
-                                 <input type="hidden" class="form-control isRequired" id="testType" name="testType"
+                                <input type="hidden" class="form-control isRequired" id="testType" name="testType"
                                     placeholder="" title="" readonly
                                     value="<?php echo htmlspecialchars((string) ($genericResult[0]['test_type'] ?? ''), ENT_QUOTES); ?>" />
                             </div>
@@ -179,7 +179,7 @@ $genericResult = $db->rawQuery($sQuery, [$codeId]);
                             <label><?php echo _translate("Selected Samples for Referral"); ?></label>
                             <select name="referralSamples[]" id="search_to" class="form-control" size="10"
                                 multiple="multiple">
-                             
+
                             </select>
                             <div class="sampleCounterDiv">
                                 <?= _translate("Selected samples"); ?> : <span id="selectedCount">0</span>
@@ -261,7 +261,7 @@ $genericResult = $db->rawQuery($sQuery, [$codeId]);
                 $("#search").html(data);
                 $(".sampleSelectionArea").show();
 
-               // Move pre-selected items to the right box BEFORE initializing the plugin
+                // Move pre-selected items to the right box BEFORE initializing the plugin
                 $("#search option[selected='selected']").each(function() {
                     $(this).prop('selected', false).removeAttr('selected');
                     $("#search_to").html($(this));
