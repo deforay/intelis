@@ -33,6 +33,11 @@ if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) !== '') {
 if (!empty($_SESSION['facilityMap'])) {
 	$where[] = " vl.facility_id IN(" . $_SESSION['facilityMap'] . ")";
 }
+// Lab isolation (cloud-LIS): scope to this user's lab. No-op unless the session
+// carries a lab id, so byte-identical for every existing LIS/STS user.
+if ($labScope = $general->labScopeWhere('vl')) {
+	$where[] = $labScope;
+}
 
 if (!empty($_POST['testingLab'])) {
 	$where[] = " p.lab_id IN(" . $_POST['testingLab'] . ")";

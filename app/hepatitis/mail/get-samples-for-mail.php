@@ -43,6 +43,11 @@ if (isset($facility) && array_filter($facility) !== []) {
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
   $query .= " AND hepatitis.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
+// Lab isolation (cloud-LIS): scope to this user's lab. No-op unless the session
+// carries a lab id, so byte-identical for every existing LIS/STS user.
+if ($labScope = $general->labScopeWhere('hepatitis')) {
+  $query .= " AND $labScope";
+}
 if (trim((string) $sampleType) !== '') {
   $query = $query . " AND hepatitis.specimen_type='" . $sampleType . "'";
 }

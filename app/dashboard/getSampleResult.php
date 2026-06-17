@@ -112,6 +112,11 @@ try {
     } elseif (!empty($_SESSION['facilityMap'])) {
         $whereParts[] = "t.facility_id IN (" . $_SESSION['facilityMap'] . ")";
     }
+    // Lab isolation (cloud-LIS): scope to this user's lab. Outside the LIS/STS branch
+    // so both get it. No-op unless the session carries a lab id (existing users unaffected).
+    if ($labScope = $general->labScopeWhere('t')) {
+        $whereParts[] = $labScope;
+    }
     $baseWhere = implode(' AND ', $whereParts);
 
     // ---------- Date range selection ----------

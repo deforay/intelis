@@ -64,6 +64,11 @@ if (!$general->isSTSInstance()) {
 } elseif (!empty($_SESSION['facilityMap'])) {
     $whereConditionArray[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
+// Lab isolation (cloud-LIS): scope to this user's lab. Outside the LIS/STS branch
+// so both get it. No-op unless the session carries a lab id (existing users unaffected).
+if ($labScope = $general->labScopeWhere('vl')) {
+    $whereConditionArray[] = $labScope;
+}
 
 $whereCondition = implode(' AND ', $whereConditionArray);
 
