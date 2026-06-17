@@ -251,4 +251,8 @@ try {
 		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
+	// Don't leave the user on a blank page: surface a message and send them
+	// back to the form instead of dying silently after logging.
+	$_SESSION['alertMsg'] = _translate("Unable to add this Hepatitis sample. Please try again later");
+	header("Location:/hepatitis/requests/hepatitis-add-request.php");
 }
