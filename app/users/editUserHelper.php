@@ -138,6 +138,26 @@ try {
             $data['force_password_reset'] = 1;
         }
 
+        // Resolve the user's testing-lab assignment (distinct from facilityMap).
+        // The role's access_type is read from the DB, never trusted from POST.
+        $roleAccessType = $db->where('role_id', $_POST['role'])->getValue('roles', 'access_type');
+        if ($general->isSTSInstance()) {
+            // STS: only a testing-lab user gets a lab, and only a real
+            // facility_type=2 facility is accepted; everything else is null.
+            $data['testing_lab_id'] = null;
+            if ($roleAccessType === 'testing-lab' && !empty($_POST['testingLabId'])) {
+                $validLab = $db->where('facility_id', (int) $_POST['testingLabId'])
+                    ->where('facility_type', 2)
+                    ->getValue('facility_details', 'facility_id');
+                $data['testing_lab_id'] = !empty($validLab) ? (int) $validLab : null;
+            }
+        } else {
+            // LIS / standalone: single-lab install. Force the install's lab
+            // server-side so the form cannot spoof a different lab.
+            $scLab = (int) ($general->getSystemConfig('sc_testing_lab_id') ?? 0);
+            $data['testing_lab_id'] = $scLab > 0 ? $scLab : null;
+        }
+
         $db->where('user_id', $userId);
         $db->update("user_details", $data);
 
