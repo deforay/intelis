@@ -21,8 +21,14 @@ $general = ContainerRegistry::get(CommonService::class);
 $contactInfo = "SELECT * from vl_contact_notes where treament_contact_id=$id";
 $contact = $db->query($contactInfo);
 //get patient info
-$vlInfo = "SELECT sample_code,patient_first_name,patient_last_name,patient_art_no,sample_collection_date from form_vl where vl_sample_id=$id";
+$vlInfo = "SELECT sample_code,patient_first_name,patient_last_name,patient_art_no,sample_collection_date,facility_id from form_vl where vl_sample_id=$id";
 $vlResult = $db->query($vlInfo);
+
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($vlResult[0]['facility_id'])) {
+    $general->assertFacilityAllowed((int) $vlResult[0]['facility_id']);
+}
 
 if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0]['sample_collection_date']) !== '' && $vlResult[0]['sample_collection_date'] != '0000-00-00 00:00:00') {
   $vlResult[0]['sample_collection_date'] = DateUtility::humanReadableDateFormat($vlResult[0]['sample_collection_date']);

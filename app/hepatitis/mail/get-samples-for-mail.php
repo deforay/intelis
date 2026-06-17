@@ -40,6 +40,9 @@ $query = "SELECT hepatitis.sample_code,hepatitis.hepatitis_id,hepatitis.facility
 if (isset($facility) && array_filter($facility) !== []) {
   $query = $query . " AND hepatitis.facility_id IN (" . implode(',', $facility) . ")";
 }
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+  $query .= " AND hepatitis.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+}
 if (trim((string) $sampleType) !== '') {
   $query = $query . " AND hepatitis.specimen_type='" . $sampleType . "'";
 }

@@ -51,6 +51,9 @@ if (trim((string) $lName) !== '') {
 if ($_POST['facilityId'] != '') {
 	$query = $query . " AND vl.facility_id='" . $facilityId . "'";
 }
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+	$query .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+}
 if (isset($scDate) && trim((string) $scDate) !== '') {
 	$s_c_date = explode("to", (string) $scDate);
 

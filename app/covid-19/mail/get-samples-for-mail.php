@@ -1,8 +1,12 @@
 <?php
 
 use App\Registries\AppRegistry;
+use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Utilities\DateUtility;
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
@@ -37,6 +41,9 @@ $query = "SELECT vl.sample_code,
                 OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = '')))";
 if (isset($facility) && array_filter($facility) !== []) {
   $query = $query . " AND vl.facility_id IN (" . implode(',', $facility) . ")";
+}
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+  $query .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 if (trim((string) $sampleType) !== '') {
   $query = $query . " AND vl.specimen_type='" . $sampleType . "'";
