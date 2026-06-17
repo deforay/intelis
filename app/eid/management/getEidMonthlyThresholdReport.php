@@ -138,6 +138,10 @@ $sWhere[] = ' vl.result!="" AND vl.result_status != ' . RECEIVED_AT_CLINIC;
 
 $sWhere[] = "  tl.test_type = 'eid'";
 
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+}
+
 if ($sWhere !== []) {
      $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
 }

@@ -155,6 +155,10 @@ if ($sWhere !== '') {
 // HAVING COUNT(c2.sid) >= 2)
 $sWhere .= " AND tl.test_type = 'vl'";
 
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+     $sWhere .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+}
+
 
 $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 if ($_POST['targetType'] == 1) {

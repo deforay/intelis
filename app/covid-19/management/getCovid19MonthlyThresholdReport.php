@@ -127,6 +127,10 @@ $sWhere[] = ' vl.result!="" AND vl.result_status != ' . RECEIVED_AT_CLINIC;
 
 $sWhere[] = " tl.test_type = 'covid19'";
 
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+}
+
 $sWhere = $sWhere === [] ? [] : ' WHERE ' . implode(' AND ', $sWhere);
 $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 if ($_POST['targetType'] == 1) {

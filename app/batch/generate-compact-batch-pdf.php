@@ -440,6 +440,9 @@ try {
                             $patientIdColumn
                             FROM $table
                             WHERE sample_batch_id=$id  AND $resultColumn IS NULL";
+                if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+                    $sQuery .= " AND facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+                }
 
                 $result = $db->query($sQuery);
                 $sampleCounter = 1;

@@ -106,6 +106,10 @@ try {
           $sWhere[] = ' f.facility_id = "' . $_POST['facilityName'] . '"';
      }
 
+     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+          $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+     }
+
      if ($sWhere !== []) {
           $sWhere[] = ' vl.result_status = "' . $_POST['status'] . '"';
      } else {
