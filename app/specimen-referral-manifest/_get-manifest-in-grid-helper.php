@@ -16,6 +16,9 @@
  *   orderColumns  string[] sortable columns, same order as aColumns.
  *   manifestWhere callable (string $escapedCode): string -- the per-module
  *                          manifest filter SQL. Receives an already-escaped code.
+ *   referrable    bool     optional; true only for referral modules (tb,
+ *                          generic-tests) whose table has referred_to_lab_id.
+ *                          Gates the cloud-LIS "referred to my lab" admittance.
  *   rowMapper     callable (array $aRow): array -- builds one DataTables row from
  *                          a result row, reproducing the module's exact column
  *                          order, result decoding and name handling. It owns the
@@ -93,7 +96,11 @@ $sWhere[] = $cfg['manifestWhere']($db->escape($manifestCode));
 // this lab via an additive OR.
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $facilityClause = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
-    if (!empty($_SESSION['labId'])) {
+    // The referred-to-lab admittance only applies to referral modules (tb,
+    // generic-tests) -- only their tables carry referred_to_lab_id. Gate it on
+    // the per-module 'referrable' config flag; without it, other modules would
+    // 1054 on the missing column, so fall back to the facility clause alone.
+    if (!empty($_SESSION['labId']) && !empty($cfg['referrable'])) {
         $sWhere[] = " ( $facilityClause OR vl.referred_to_lab_id = " . (int) $_SESSION['labId'] . " ) ";
     } else {
         $sWhere[] = $facilityClause;
