@@ -63,13 +63,10 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-// Cloud-LIS lab operators only see their OWN lab's instruments. This endpoint is
-// AJAX (so it bypasses the ACL middleware) -- it must self-guard. No-op otherwise.
-$instrLabScope = '';
+// Lab scope (instruments): LIS = own lab + unassigned; cloud-LIS = strictly own
+// lab (fail closed); STS = all. AJAX endpoint -- bypasses ACL, so it self-guards.
 $generalSvc = \App\Registries\ContainerRegistry::get(\App\Services\CommonService::class);
-if ($generalSvc->isCloudLisNonAdmin() && !empty($_SESSION['labId'])) {
-    $instrLabScope = " lab_id = " . (int) $_SESSION['labId'] . " ";
-}
+$instrLabScope = $generalSvc->labAdminScopeWhere('lab_id');
 
 $whereParts = [];
 if ($sWhere !== '' && $sWhere !== '0') {
