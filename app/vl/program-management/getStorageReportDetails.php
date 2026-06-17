@@ -41,6 +41,10 @@ try {
      INNER JOIN lab_storage as s ON h.freezer_id = s.storage_id
      INNER JOIN form_vl as vl ON vl.unique_id = h.sample_unique_id ";
           $sWhere[] = ' h.freezer_id = "' . $_POST['freezerId'] . '"';
+          // Facility isolation: mapped STS users only see their facilities' samples
+          if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+               $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+          }
           if (!empty($sWhere)) {
                $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
           }
@@ -84,6 +88,10 @@ try {
           $sWhere[] = ' vl.sample_code = "' . $_POST['sampleCode'] . '"';
           if (isset($_POST['labId']) && $_POST['labId'] != "") {
                $sWhere[] = ' vl.lab_id = "' . $_POST['labId'] . '"';
+          }
+          // Facility isolation: mapped STS users only see their facilities' samples
+          if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+               $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
           }
           if (!empty($sWhere)) {
                $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);

@@ -42,6 +42,11 @@ $type = $_POST['type'];
 $query = "SELECT vl.sample_code,vl.tb_id,vl.facility_id,f.facility_name,f.facility_code
         FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         WHERE sample_code is not null ";
+// Facility isolation: a mapped STS user only sees their own facilities' samples.
+// No-op on LIS and for unmapped (all-access) users.
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+  $query .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+}
 if (!empty($facility)) {
   $query .= " AND vl.facility_id = $facility";
 }

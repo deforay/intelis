@@ -1,6 +1,7 @@
 <?php
 
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -11,6 +12,9 @@ ini_set('max_execution_time', 20000);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
@@ -28,8 +32,13 @@ if (!empty($_POST['batchOrManifestCodeValue'])) {
         $query = "SELECT vl.sample_code,vl.patient_art_no  FROM form_vl as vl
                     LEFT JOIN specimen_manifests as pd ON vl.sample_package_code = pd.manifest_code
                     LEFT JOIN batch_details as b ON b.batch_id = vl.sample_batch_id
-                    WHERE pd.manifest_code = '{$_POST['batchOrManifestCodeValue']}'
-                            OR b.batch_code = '{$_POST['batchOrManifestCodeValue']}'";
+                    WHERE (pd.manifest_code = '{$_POST['batchOrManifestCodeValue']}'
+                            OR b.batch_code = '{$_POST['batchOrManifestCodeValue']}')";
+
+        // Facility isolation: mapped STS users only see their facilities' samples
+        if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+            $query .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+        }
 
         $sampleResult = $db->rawQuery($query);
 

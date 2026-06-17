@@ -89,6 +89,11 @@ if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '
 	$sWhere[] = ' f.facility_id IN (' . implode(',', $_POST['facilityName']) . ')';
 }
 
+// Facility isolation: mapped STS users only see their facilities' samples
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+	$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+}
+
 $sWhere = isset($sWhere) && !empty($sWhere) ? ' AND ' . implode(" AND ", $sWhere) : "";
 $vlQuery = "SELECT vl.*,f.facility_name,s.storage_code,h.*,r.removal_reason_name FROM form_vl as vl
             LEFT JOIN lab_storage_history as h ON h.sample_unique_id = vl.unique_id

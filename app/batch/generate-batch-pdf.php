@@ -451,6 +451,9 @@ if (!empty($id)) {
                             $patientIdColumn
                             FROM $table
                             WHERE sample_batch_id=$id";
+            if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+                $sQuery .= " AND facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+            }
             $result = $db->query($sQuery);
             $sampleCounter = 1;
             if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
