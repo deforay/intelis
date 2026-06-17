@@ -1047,6 +1047,41 @@ final class CommonService
     }
 
     /**
+     * SQL predicate that scopes a sample query to the current user's testing lab.
+     *
+     * This is the lab axis (which testing lab owns/processes the sample), a
+     * distinct concern from the facilityMap axis (which collection sites' data a
+     * user may see). Apply it IN ADDITION to any facilityMap filter.
+     *
+     * Returns '' (no scoping) for everyone who does not act as a single lab, and
+     * for any session that has no resolved lab id (e.g. a session predating the
+     * per-user lab feature, or an STS collection-site user). Because of that, the
+     * clause is a strict no-op for every existing LIS/STS user and only narrows
+     * results for a user with a concrete operating lab (LIS install, or a
+     * testing-lab user on STS = cloud-LIS).
+     *
+     * NULL-tolerant by design: lab_id is only populated once a sample is
+     * processed/activated at a lab, so ~half of pre-result samples have none.
+     * Including `lab_id IS NULL` keeps a single-lab LIS seeing freshly-registered
+     * and in-progress samples (its worklist), while never exposing another lab's
+     * assigned (non-NULL, different-lab) samples.
+     *
+     * @param string $alias table alias that holds lab_id (e.g. 'vl'); '' for none
+     */
+    public function labScopeWhere(string $alias = 'vl'): string
+    {
+        if (!$this->treatAsLIS()) {
+            return '';
+        }
+        $labId = (int) ($_SESSION['labId'] ?? 0);
+        if ($labId <= 0) {
+            return '';
+        }
+        $col = $alias !== '' ? "$alias.lab_id" : 'lab_id';
+        return " ($col = $labId OR $col IS NULL) ";
+    }
+
+    /**
      * Whether the current user may act as the testing lab for $facilityId.
      *
      * LIS: single-lab install — true iff $facilityId equals sc_testing_lab_id.

@@ -53,6 +53,13 @@ try {
           $sWhere[] = ' vl.result_status != ' . RECEIVED_AT_CLINIC;
      }
 
+     // Lab axis: a user who acts as a single lab (LIS / cloud-LIS) sees only their
+     // own lab's samples, plus not-yet-assigned (NULL lab_id) ones. Additive to
+     // the facilityMap filter; a no-op for collection-site and pre-feature sessions.
+     if ($labScope = $general->labScopeWhere('vl')) {
+          $sWhere[] = $labScope;
+     }
+
      $sQuery = "SELECT vl.*,
           ty.test_standard_name,
           s.sample_type_name,
