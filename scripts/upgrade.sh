@@ -1480,6 +1480,8 @@ print success "LIS package ready for deployment to ${#lis_paths[@]} instance(s).
 # Track which instances were updated for summary
 declare -a updated_instances=()
 declare -a failed_instances=()
+# Per-instance commit-to-commit change, keyed by lis_path (set in upgrade_instance).
+declare -A instance_commit_change=()
 
 # Shared timestamp for rollback snapshots across all instances in this run.
 apply_run_ts="$(date +%Y%m%d-%H%M%S)"
@@ -1493,6 +1495,18 @@ upgrade_instance() {
 
     print header "Upgrading instance ${instance_num}/${total_instances}: ${lis_path}"
     log_action "Starting upgrade for instance: ${lis_path}"
+
+    # --- Capture the commit SHA this instance is on BEFORE we overwrite its
+    # files. fetch_master_tree stamps VERSION.txt with the master commit SHA and
+    # the apply rsync copies it into each instance, so the VERSION.txt already on
+    # disk is the SHA of the version currently running here. The new SHA is the
+    # one staged this run. Reported at the end of the instance update so operators
+    # can see exactly which commit-to-commit jump happened. Unknown ("first run
+    # before this feature existed", or no network to resolve the SHA) is handled
+    # gracefully in the report.
+    local _old_sha="" _new_sha=""
+    [ -f "${lis_path}/VERSION.txt" ] && _old_sha=$(head -n1 "${lis_path}/VERSION.txt" | tr -d '\r\n')
+    [ -f "${temp_dir}/intelis-master/VERSION.txt" ] && _new_sha=$(head -n1 "${temp_dir}/intelis-master/VERSION.txt" | tr -d '\r\n')
 
     # --- Rollback snapshot (before any destructive change) ---
     local _snapshot_dir=""
@@ -1806,6 +1820,27 @@ upgrade_instance() {
         chown -R www-data:www-data "${lis_path}" 2>/dev/null || true) &
     disown
 
+    # --- Report which commit-to-commit jump this update made ---
+    local _change_summary=""
+    if [ -n "$_old_sha" ] && [ -n "$_new_sha" ]; then
+        if [ "$_old_sha" = "$_new_sha" ]; then
+            _change_summary="commit ${_new_sha:0:12} (no code change — already current)"
+            print info "Already at commit ${_new_sha:0:12} (no code change)."
+        else
+            _change_summary="${_old_sha:0:12} -> ${_new_sha:0:12}"
+            print success "Updated commit ${_old_sha:0:12} -> ${_new_sha:0:12}"
+            print info "  Compare: https://github.com/deforay/intelis/compare/${_old_sha}...${_new_sha}"
+        fi
+    elif [ -n "$_new_sha" ]; then
+        _change_summary="now at ${_new_sha:0:12} (previous commit unknown)"
+        print info "Now at commit ${_new_sha:0:12} (previous commit not recorded)."
+    else
+        _change_summary="commit unknown (no VERSION.txt)"
+        print info "Commit SHA not available for this update (no VERSION.txt stamped)."
+    fi
+    instance_commit_change["${lis_path}"]="${_change_summary}"
+    log_action "Instance ${lis_path} commit change: ${_change_summary}"
+
     print success "Instance ${lis_path} updated successfully."
     log_action "Instance ${lis_path} update complete."
 
@@ -1945,7 +1980,11 @@ print header "Upgrade Summary"
 if [ ${#updated_instances[@]} -gt 0 ]; then
     print success "Successfully updated ${#updated_instances[@]} instance(s):"
     for p in "${updated_instances[@]}"; do
-        print info "  ✓ $p"
+        if [ -n "${instance_commit_change[$p]:-}" ]; then
+            print info "  ✓ $p  [${instance_commit_change[$p]}]"
+        else
+            print info "  ✓ $p"
+        fi
     done
 fi
 if [ ${#failed_instances[@]} -gt 0 ]; then
