@@ -170,7 +170,7 @@ final class TestRequestsService
 
                     // Check if sample code already exists
                     try {
-                        $sQuery = "SELECT `result_status`, {$sampleCodeColumn} FROM {$formTable} WHERE unique_id = ?";
+                        $sQuery = "SELECT `result_status`, `sample_code`, `remote_sample_code` FROM {$formTable} WHERE unique_id = ?";
                         $rowData = $this->db->rawQueryOne($sQuery, [$item['unique_id']]);
 
                         if (!empty($rowData) && !empty($rowData[$sampleCodeColumn])) {
@@ -240,10 +240,9 @@ final class TestRequestsService
 
                             if ($this->commonService->isSTSInstance() && $accessType === 'testing-lab') {
                                 // Cloud-LIS: the testing lab mints its own LIS-series
-                                // code (no R) into sample_code -- a separate series
-                                // from any collection-site/remote code. remote_sample_code
-                                // is left untouched: preserved when the sample came
-                                // from a site, NULL when the lab added it directly.
+                                // code (no R, may carry a lab postfix) into sample_code
+                                // -- a separate series, on its own counter, from the
+                                // collection-site/network code.
                                 $tesRequestData = [
                                     'remote_sample' => 'yes',
                                     'sample_code' => $sampleData['sampleCode'],
@@ -251,6 +250,24 @@ final class TestRequestsService
                                     'sample_code_key' => $sampleData['sampleCodeKey'],
                                     'result_status' => $presetStatus ?? RECEIVED_AT_TESTING_LAB
                                 ];
+
+                                // On STS every sample also carries a network code. When
+                                // it came from a collection site (case 2) remote_sample_code
+                                // is already set; when the lab added it directly (case 3)
+                                // it is empty, so mint the STS-series code here too -- from
+                                // its OWN counter, always R-prefixed, never a postfix.
+                                if (empty($rowData['remote_sample_code'])) {
+                                    $stsParams = $sampleCodeParams;
+                                    $stsParams['codeSeries'] = 'sts';
+                                    $stsParams['postfix'] = '';
+                                    $stsJson = $testTypeService->getSampleCode($stsParams);
+                                    $stsData = json_decode((string) $stsJson, true);
+                                    if (!empty($stsData) && !empty($stsData['sampleCode'])) {
+                                        $tesRequestData['remote_sample_code'] = $stsData['sampleCode'];
+                                        $tesRequestData['remote_sample_code_format'] = $stsData['sampleCodeFormat'];
+                                        $tesRequestData['remote_sample_code_key'] = $stsData['sampleCodeKey'];
+                                    }
+                                }
                             } elseif ($this->commonService->isSTSInstance()) {
                                 // Collection-site (or unset/legacy) actor on STS -> network
                                 // "sts" series. Legacy non-collection-site rows keep the
