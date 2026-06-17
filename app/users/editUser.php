@@ -24,7 +24,7 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 $userInfo = $db->rawQueryOne(
-     'SELECT ud.*, r.role_id, r.role_name, r.role_code
+     'SELECT ud.*, r.role_id, r.role_name, r.role_code, r.access_type
           FROM user_details as ud LEFT JOIN roles as r ON ud.role_id=r.role_id
           WHERE user_id= ?',
      [$id]
@@ -40,6 +40,15 @@ $result = $db->rawQuery($query);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+// Testing-lab assignment is STS-only (see addUser.php). Preselect the user's
+// current lab; the row is only shown for testing-lab roles.
+$testingLabs = [];
+if ($general->isSTSInstance()) {
+     $testingLabs = $facilitiesService->getTestingLabs();
+}
+$initialAccessType = $userInfo['access_type'] ?? '';
+$currentTestingLabId = $userInfo['testing_lab_id'] ?? '';
 
 $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 
@@ -163,7 +172,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                        <?php foreach ($result as $row) {
                                                             ?>
                                                             <option value="<?= $row['role_id']; ?>"
-                                                                 data-code="<?= $row['role_code']; ?>" <?php echo (isset($userInfo['role_id']) && $userInfo['role_id'] == $row['role_id']) ? "selected='selected'" : ""; ?>>
+                                                                 data-code="<?= $row['role_code']; ?>"
+                                                                 data-access-type="<?= $row['access_type'] ?? ''; ?>" <?php echo (isset($userInfo['role_id']) && $userInfo['role_id'] == $row['role_id']) ? "selected='selected'" : ""; ?>>
                                                                  <?= $row['role_name']; ?>
                                                             </option>
                                                        <?php } ?>
@@ -172,6 +182,24 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                         </div>
                                    </div>
                               </div>
+                              <?php if ($general->isSTSInstance()): ?>
+                              <div class="row testing-lab-row" id="testingLabRow"
+                                   style="display: <?php echo ($initialAccessType === 'testing-lab') ? 'flex' : 'none'; ?>;">
+                                   <div class="col-md-6">
+                                        <div class="form-group">
+                                             <label for="testingLabId" class="col-lg-4 control-label"><?= _translate("Testing Lab"); ?>
+                                                  <span class="mandatory">*</span></label>
+                                             <div class="col-lg-7">
+                                                  <select class="form-control<?php echo ($initialAccessType === 'testing-lab') ? ' isRequired' : ''; ?>"
+                                                       name="testingLabId" id="testingLabId"
+                                                       title="<?= _translate("Select the testing lab this user operates as"); ?>">
+                                                       <?= $general->generateSelectOptions($testingLabs, $currentTestingLabId, _translate("-- Select --")); ?>
+                                                  </select>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+                              <?php endif; ?>
 
 
                               <div class="row show-token"
@@ -555,13 +583,24 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
           });
 
           $('#role').change(function (e) {
-               var selectedText = $(this).find("option:selected").attr('data-code');
+               var selectedOption = $(this).find("option:selected");
+               var selectedText = selectedOption.attr('data-code');
                if (selectedText == "API") {
                     $('.show-token').show();
                     $('#authToken').addClass('isRequired');
                } else {
                     $('.show-token').hide();
                     $('#authToken').removeClass('isRequired');
+               }
+
+               // Testing Lab applies only to testing-lab roles (STS / cloud-LIS).
+               var accessType = selectedOption.attr('data-access-type');
+               if (accessType === 'testing-lab') {
+                    $('#testingLabRow').show();
+                    $('#testingLabId').addClass('isRequired');
+               } else {
+                    $('#testingLabRow').hide();
+                    $('#testingLabId').removeClass('isRequired').val('').trigger('change');
                }
           });
 
@@ -590,6 +629,12 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
           $("#role").select2({
                placeholder: '<?php echo _translate("Select Role", true); ?>',
+               allowClear: true,
+               width: '100%'
+          });
+
+          $("#testingLabId").select2({
+               placeholder: '<?php echo _translate("Select Testing Lab", true); ?>',
                allowClear: true,
                width: '100%'
           });

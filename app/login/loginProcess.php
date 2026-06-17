@@ -110,6 +110,21 @@ try {
         $_SESSION['roleCode'] = $userRow['role_code'];
         $_SESSION['roleId'] = $userRow['role_id'];
         $_SESSION['accessType'] = $userRow['access_type'];
+        // The single testing lab this user operates as -- a distinct axis from
+        // facilityMap (data scope). Resolve the effective operating lab once,
+        // here, so every consumer can just read $_SESSION['labId']:
+        //   LIS / standalone -> sc_testing_lab_id (install's single lab; covers
+        //                       users whose column is still NULL pre-feature)
+        //   cloud-LIS (STS + testing-lab) -> the admin-assigned per-user lab
+        //   STS + collection-site -> null (does not act as a lab)
+        if ($general->isLISInstance() || $general->isStandaloneInstance()) {
+            $scLab = (int) ($general->getSystemConfig('sc_testing_lab_id') ?? 0);
+            $_SESSION['labId'] = $scLab > 0 ? $scLab : null;
+        } elseif ($general->isCloudLISMode()) {
+            $_SESSION['labId'] = !empty($userRow['testing_lab_id']) ? (int) $userRow['testing_lab_id'] : null;
+        } else {
+            $_SESSION['labId'] = null;
+        }
         $_SESSION['email'] = $userRow['email'];
         $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'] ?? 0;
         $_SESSION['facilityMap'] = $facilitiesService->getUserFacilityMap($userRow['user_id']);

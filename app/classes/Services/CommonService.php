@@ -1178,12 +1178,22 @@ final class CommonService
 
     public function getInstanceName(): ?string
     {
-        return $this->fileCache->get('lisLabName', function () {
+        // Show the operating lab's name when the user is acting as a lab (LIS,
+        // or a testing-lab user on STS = cloud-LIS); otherwise the STS label.
+        // $_SESSION['labId'] is the effective lab resolved at login; fall back
+        // to the install's configured lab so a LIS footer still resolves for a
+        // session that predates the per-user lab feature. It is per-user on STS,
+        // so the cache key must include the lab id -- a single global key would
+        // leak one lab's name to another.
+        $labId = $this->treatAsLIS()
+            ? ((int) ($_SESSION['labId'] ?? 0) ?: (int) ($this->getSystemConfig('sc_testing_lab_id') ?? 0) ?: null)
+            : null;
+        $cacheKey = 'lisLabName_' . ($labId ?? ($this->isSTSInstance() ? 'sts' : 'plain'));
+        return $this->fileCache->get($cacheKey, function () use ($labId) {
             $instanceName = [];
-            if ($this->isLISInstance()) {
-                $labId = $this->getSystemConfig('sc_testing_lab_id') ?? null;
-                if ($labId !== '' && $labId !== '0' && $labId !== []) {
-                    $lab = $this->facilitiesService->getFacilityById($labId);
+            if (!empty($labId)) {
+                $lab = $this->facilitiesService->getFacilityById($labId);
+                if (!empty($lab['facility_name'])) {
                     $instanceName[] = $lab['facility_name'];
                 }
             } elseif ($this->isSTSInstance()) {
