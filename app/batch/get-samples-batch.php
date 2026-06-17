@@ -83,6 +83,13 @@ if (!empty($_POST['facilityId']) && is_array($_POST['facilityId'])) {
     $where[] = $swhere[] = " vl.facility_id IN (" . implode(',', $_POST['facilityId']) . ")";
 }
 
+// Facility isolation: a mapped STS user only sees their own facilities' samples
+// in the batch picker (both the main list and the UNION'd already-batched set).
+// No-op on LIS and for unmapped (all-access) users.
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+    $where[] = $swhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+}
+
 if (!empty($_POST['sName'])) {
     $swhere[] = $where[] = " vl.$sampleTypeColumn='" . $_POST['sName'] . "'";
 }
