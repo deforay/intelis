@@ -109,6 +109,11 @@ try {
      if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
      }
+     // Lab isolation (cloud-LIS): scope to this user's lab. No-op unless the session
+     // carries a lab id, so byte-identical for every existing LIS/STS user.
+     if ($labScope = $general->labScopeWhere('vl')) {
+          $sWhere[] = $labScope;
+     }
 
      if ($sWhere !== []) {
           $sWhere[] = ' vl.result_status = "' . $_POST['status'] . '"';
