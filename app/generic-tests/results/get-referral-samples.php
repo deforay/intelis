@@ -63,7 +63,10 @@ $query = "SELECT
             AND (vl.lab_id IS NOT NULL AND vl.lab_id = ?)
             $testTypeCondition
           ORDER BY vl.sample_code ASC";
-$bindParams[] = $labId;
+// Eligible-for-referral samples belong to the current user's own (sending) lab.
+// A user with a definite operating lab (LIS / cloud-LIS) is scoped to it from the
+// session (authoritative, not the POST value); regular STS keeps the posted lab.
+$bindParams[] = $_SESSION['labId'] ?? $labId;
 if (!empty($testTypeId)) {
     $bindParams[] = $testTypeId;
 }
