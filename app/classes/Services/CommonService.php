@@ -1142,8 +1142,13 @@ final class CommonService
             return;
         }
         $facilityMap = $_SESSION['facilityMap'] ?? '';
+        // Unmapped users have access to all facilities, so there is nothing to
+        // assert. This mirrors the list-view behaviour, which only adds the
+        // facility_id filter when a facilityMap is actually present.
+        if (empty($facilityMap)) {
+            return;
+        }
         $allowed = $facilityId > 0
-            && $facilityMap !== ''
             && in_array(
                 $facilityId,
                 array_map('intval', explode(',', (string) $facilityMap)),

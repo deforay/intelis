@@ -81,6 +81,12 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 $cd4Query = "SELECT * from form_cd4 where cd4_id=?";
 $cd4QueryInfo = $db->rawQueryOne($cd4Query, [$id]);
 
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($cd4QueryInfo['facility_id'])) {
+    $general->assertFacilityAllowed((int) $cd4QueryInfo['facility_id']);
+}
+
 if (isset($cd4QueryInfo['patient_dob']) && trim((string) $cd4QueryInfo['patient_dob']) !== '' && $cd4QueryInfo['patient_dob'] != '0000-00-00') {
 	$cd4QueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['patient_dob']);
 } else {

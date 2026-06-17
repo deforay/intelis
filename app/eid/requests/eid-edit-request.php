@@ -96,6 +96,12 @@ $id = (isset($_GET['id'])) ? MiscUtility::desqid($_GET['id']) : null;
 $eidQuery = "SELECT * from form_eid where eid_id=?";
 $eidInfo = $db->rawQueryOne($eidQuery, [$id]);
 
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($eidInfo['facility_id'])) {
+    $general->assertFacilityAllowed((int) $eidInfo['facility_id']);
+}
+
 
 $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'active'");
 

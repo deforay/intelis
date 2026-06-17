@@ -81,6 +81,12 @@ $covid19TestInfo = $db->rawQuery($covid19TestQuery, [$id]);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($covid19Info['facility_id'])) {
+    $general->assertFacilityAllowed((int) $covid19Info['facility_id']);
+}
+
 $userId = $_SESSION['userId'];
 $checkNonAdminUser = $general->isNonAdmin($userId);
 

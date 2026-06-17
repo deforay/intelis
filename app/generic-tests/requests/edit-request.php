@@ -80,6 +80,12 @@ $testReason = $db->query($vlTestReasonQuery);
 $vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
 $genericResultInfo = $db->rawQueryOne($vlQuery, [$id]);
 
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($genericResultInfo['facility_id'])) {
+    $general->assertFacilityAllowed((int) $genericResultInfo['facility_id']);
+}
+
 $genericResultInfo['patient_dob'] = DateUtility::humanReadableDateFormat($genericResultInfo['patient_dob'] ?? null);
 
 if (isset($genericResultInfo['sample_collection_date']) && trim((string) $genericResultInfo['sample_collection_date']) !== '' && $genericResultInfo['sample_collection_date'] != '0000-00-00 00:00:00') {

@@ -82,6 +82,13 @@ if (!empty($columnSearch) && $columnSearch != '') {
 }
 $sWhere[] = $cfg['manifestWhere']($db->escape($manifestCode));
 
+// Facility isolation: on a multi-lab STS, a mapped user only sees samples for
+// the facilities in their facilityMap. Unmapped users (empty map) see all,
+// matching the request-list behaviour. No-op on LIS/standalone.
+if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+    $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+}
+
 $sQuery = $cfg['select'] . ' WHERE ' . implode(' AND ', $sWhere);
 
 if (!empty($sOrder) && $sOrder !== '') {

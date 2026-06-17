@@ -79,8 +79,15 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 						AND i.machine_name = vl.hepatitis_test_platform
 					)
 				)
-				WHERE vl.hepatitis_id IN(" . $_POST['id'] . ")
-			GROUP BY vl.hepatitis_id";
+				WHERE vl.hepatitis_id IN(" . $_POST['id'] . ")";
+
+	// Facility isolation: a mapped STS user only gets PDFs for their own
+	// facilities. No-op on LIS and for unmapped (all-access) users.
+	if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+		$searchQuery .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+	}
+
+	$searchQuery .= " GROUP BY vl.hepatitis_id";
 } else {
 	$searchQuery = $allQuery;
 }
