@@ -80,8 +80,9 @@ try {
 	$healthFacilityTable = "health_facilities";
 	$signTableName = "lab_report_signatories";
 
-	$facilityRow = $db->rawQueryOne('SELECT facility_attributes from facility_details where facility_id= ?', [$facilityId]);
+	$facilityRow = $db->rawQueryOne('SELECT facility_attributes, facility_code from facility_details where facility_id= ?', [$facilityId]);
 	$facilityAttributes = json_decode((string) $facilityRow['facility_attributes'], true);
+	$storedFacilityCode = $facilityRow['facility_code'] ?? null;
 
 
 	//Province Table
@@ -133,13 +134,18 @@ try {
 			$_POST['testingPoints'] = null;
 		}
 
-		// Normalise any entered code to plain uppercase Latin letters (A-Z only).
-		$facilityCode = $facilityService->sanitizeFacilityCode($_POST['facilityCode'] ?? null);
-
-		// Auto-generate a unique code from the name when none was entered.
-		// Scoped to testing labs (type 2): their code becomes the STS sample-code postfix.
-		if ($facilityCode === '' && (int) ($_POST['facilityType'] ?? 0) === 2) {
-			$facilityCode = $facilityService->generateFacilityCode((string) $_POST['facilityName'], (int) $facilityId);
+		// Preserve an existing code the admin left untouched, so legacy non-alphabetic
+		// codes (e.g. "CSL2", "102207") are kept verbatim. Only normalise to A-Z when
+		// the code was actually changed, and only auto-generate when it is left blank.
+		$submittedCode = $_POST['facilityCode'] ?? null;
+		if (!empty($storedFacilityCode) && (string) $submittedCode === (string) $storedFacilityCode) {
+			$facilityCode = $storedFacilityCode;
+		} else {
+			$facilityCode = $facilityService->sanitizeFacilityCode($submittedCode);
+			// Scoped to testing labs (type 2): their code becomes the STS sample-code postfix.
+			if ($facilityCode === '' && (int) ($_POST['facilityType'] ?? 0) === 2) {
+				$facilityCode = $facilityService->generateFacilityCode((string) $_POST['facilityName'], (int) $facilityId);
+			}
 		}
 
 		$data = [
