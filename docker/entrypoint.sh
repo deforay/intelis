@@ -120,8 +120,20 @@ if [ -d run-once ]; then
     run_once_ran=0
     run_once_skipped=0
     run_once_failed=0
+    run_once_bg=0
+    mkdir -p var/logs 2>/dev/null || true
     for script in run-once/*.php; do
         [ -f "$script" ] || continue
+        # Scripts tagged "@run-once-background" are launched detached so a long
+        # migration never blocks container start-up. They own their own
+        # concurrency + skip logic, so we fire and forget.
+        if grep -q '@run-once-background' "$script"; then
+            bg_log="var/logs/$(basename "${script%.php}")-$(date +%Y%m%d-%H%M%S).log"
+            nohup php "$script" >>"$bg_log" 2>&1 &
+            run_once_bg=$((run_once_bg + 1))
+            echo "Launched run-once script in background: $script (log: $bg_log)"
+            continue
+        fi
         php "$script"
         run_once_rc=$?
         case "$run_once_rc" in
@@ -136,7 +148,7 @@ if [ -d run-once ]; then
                 ;;
         esac
     done
-    echo "Run-once: ${run_once_ran} ran, ${run_once_skipped} already applied, ${run_once_failed} failed."
+    echo "Run-once: ${run_once_ran} ran, ${run_once_skipped} already applied, ${run_once_bg} launched in background, ${run_once_failed} failed."
 fi
 
 # Start the cron service

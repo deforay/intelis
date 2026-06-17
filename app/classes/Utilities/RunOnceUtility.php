@@ -35,6 +35,12 @@ use App\Registries\ContainerRegistry;
  * marks the script applied (ledger row written so it never re-runs); throwing
  * leaves the ledger untouched so the next upgrade retries.
  *
+ * Async opt-in: a long-running script can add a "@run-once-background" marker
+ * comment near its top. upgrade.sh / docker/entrypoint.sh detect it and launch
+ * the script detached (nohup … &) so it never blocks the upgrade. Such a script
+ * still works through this harness normally — its skip-check + ledger write just
+ * happen in the detached process, and the loop does not observe its exit code.
+ *
  * This method never returns — it always exit()s with the contract code above.
  */
 final class RunOnceUtility

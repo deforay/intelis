@@ -45,47 +45,26 @@ use App\Services\DatabaseService;
 use App\Services\TestsService;
 use App\Utilities\LoggerUtility;
 use App\Utilities\MiscUtility;
-use App\Utilities\RunOnceUtility;
 
-// Silent short-circuit BEFORE forking: if the prune already finished on this
-// instance, produce no output at all (no "started in background" line). The
-// child path below repeats this check, but doing it here too means an
-// already-complete install stays completely quiet on every subsequent upgrade
-// instead of announcing a background job that immediately no-ops.
-if (PHP_SAPI === 'cli' && !in_array('--child', $_SERVER['argv'] ?? [], true)) {
-    try {
-        /** @var DatabaseService $dbPrecheck */
-        $dbPrecheck = ContainerRegistry::get(DatabaseService::class);
-        // rawQueryOne()['value'], not rawQueryValue(): the latter returns an
-        // ARRAY of the column unless the query ends in "limit 1", so a string
-        // comparison against it would never match.
-        $flagRow = $dbPrecheck->rawQueryOne(
-            "SELECT value FROM global_config WHERE name = 'audit_legacy_prune_done'"
-        );
-        $doneFlag = is_array($flagRow) ? ($flagRow['value'] ?? null) : null;
-        if (is_string($doneFlag) && strtolower(trim($doneFlag)) === 'yes') {
-            // Already applied — exit SKIPPED so upgrade.sh counts this as
-            // "already applied" in its run-once summary (and prints nothing).
-            exit(RunOnceUtility::EXIT_SKIPPED);
-        }
-    } catch (Throwable) {
-        // global_config absent on extremely minimal installs — fall through and
-        // let the normal (forked) path handle it.
-    }
-}
+// @run-once-background
+// upgrade.sh / docker/entrypoint.sh detect this marker and launch this script
+// DETACHED (nohup … &), then continue immediately. On a big instance the
+// archive can move 100K+ legacy audit rows and take many minutes; firing it in
+// the background guarantees the upgrade is never blocked — not even for the
+// second it takes PHP to boot. Because the loop fires-and-forgets, this script
+// owns its concurrency (lock file) and self-skips when complete; its exit code
+// is not observed by the loop.
 
-// On a real install this archives every revision of every legacy audit_form_*
-// row into compressed CSV files; with months of accumulated audit history it
-// can run for many minutes. The run-once loop in upgrade.sh runs scripts
-// synchronously, so without this fork the whole upgrade hangs on the prune.
-// forkToBackground returns immediately in the parent (after printing where the
-// log lives); we continue here only as the detached child.
-MiscUtility::forkToBackground(__FILE__, 'prune-legacy-audit');
+$cliMode = php_sapi_name() === 'cli';
 
-// Child path — hold the lock the parent claimed (refresh it as we run, and
-// release it on signals / shutdown).
-$cliMode  = php_sapi_name() === 'cli';
+// Concurrency guard (previously the lock was claimed by forkToBackground): if a
+// prune launched by a prior or overlapping upgrade is still running, don't start
+// a second one on top of it. The lock is refreshed by the archive as it works
+// and released on signals / shutdown.
 $lockFile = MiscUtility::getLockFile(__FILE__);
+if (!MiscUtility::isLockFileExpired($lockFile)) {
+    exit(0);
+}
 MiscUtility::touchLockFile($lockFile);
 MiscUtility::setupSignalHandler($lockFile);
 register_shutdown_function(static function () use ($lockFile): void {
