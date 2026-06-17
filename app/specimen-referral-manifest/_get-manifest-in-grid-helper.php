@@ -85,8 +85,19 @@ $sWhere[] = $cfg['manifestWhere']($db->escape($manifestCode));
 // Facility isolation: on a multi-lab STS, a mapped user only sees samples for
 // the facilities in their facilityMap. Unmapped users (empty map) see all,
 // matching the request-list behaviour. No-op on LIS/standalone.
+//
+// Referral receiving (cloud-LIS): a sample referred to this user's lab keeps the
+// SENDING site's facility_id, so the facilityMap filter alone would hide it.
+// When the session carries a lab id (cloud-LIS only -- null for every existing
+// LIS/STS user, so this is a no-op for them), also admit samples referred TO
+// this lab via an additive OR.
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
-    $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+    $facilityClause = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+    if (!empty($_SESSION['labId'])) {
+        $sWhere[] = " ( $facilityClause OR vl.referred_to_lab_id = " . (int) $_SESSION['labId'] . " ) ";
+    } else {
+        $sWhere[] = $facilityClause;
+    }
 }
 
 $sQuery = $cfg['select'] . ' WHERE ' . implode(' AND ', $sWhere);

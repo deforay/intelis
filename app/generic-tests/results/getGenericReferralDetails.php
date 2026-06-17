@@ -74,23 +74,33 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $params[] = $like;
 }
 
+// Lab isolation (cloud-LIS): the referral list is the SENDING lab's view of the
+// referrals it created, so scope to referrals this user's lab sent out. Fires only
+// when the session carries a lab id (null for every existing LIS/STS user, so a
+// no-op for them; those installs keep their current all-referrals view).
+$labFilter = '';
+if (!empty($_SESSION['labId'])) {
+    $labFilter = ' AND vl.referred_by_lab_id = ' . (int) $_SESSION['labId'] . ' ';
+}
+
 // Main query - grouped by referral_manifest_code
-$sQuery = "SELECT 
-vl.referred_to_lab_id, 
-vl.reason_for_referral, 
-vl.referral_manifest_code, 
-COUNT(vl.$primaryKeyColumn) as sample_count, 
-f2.facility_name as referral_lab_name, 
-f2.facility_code as referral_lab_code, 
-MAX(vl.last_modified_datetime) as referral_date 
-FROM $table as vl 
-LEFT JOIN facility_details as f2 ON vl.referred_to_lab_id = f2.facility_id 
-WHERE vl.referred_to_lab_id IS NOT NULL 
-    AND vl.referred_to_lab_id != '' 
-    AND vl.referred_to_lab_id != 0 
-    AND vl.referral_manifest_code IS NOT NULL 
-    AND vl.referral_manifest_code != '' 
-    $sWhere 
+$sQuery = "SELECT
+vl.referred_to_lab_id,
+vl.reason_for_referral,
+vl.referral_manifest_code,
+COUNT(vl.$primaryKeyColumn) as sample_count,
+f2.facility_name as referral_lab_name,
+f2.facility_code as referral_lab_code,
+MAX(vl.last_modified_datetime) as referral_date
+FROM $table as vl
+LEFT JOIN facility_details as f2 ON vl.referred_to_lab_id = f2.facility_id
+WHERE vl.referred_to_lab_id IS NOT NULL
+    AND vl.referred_to_lab_id != ''
+    AND vl.referred_to_lab_id != 0
+    AND vl.referral_manifest_code IS NOT NULL
+    AND vl.referral_manifest_code != ''
+    $labFilter
+    $sWhere
 GROUP BY vl.referral_manifest_code, f2.facility_name, f2.facility_code";
 
 if (!empty($sOrder)) {
