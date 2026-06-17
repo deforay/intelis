@@ -118,6 +118,9 @@ try {
         if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
             $searchQuery .= " AND tb.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
         }
+        if ($labScope = $general->labScopeWhere('tb')) {
+            $searchQuery .= " AND $labScope";
+        }
     } else {
         $searchQuery = $allQuery;
     }

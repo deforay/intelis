@@ -111,6 +111,9 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
         $searchQuery .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
     }
+    if ($labScope = $general->labScopeWhere('vl')) {
+        $searchQuery .= " AND $labScope";
+    }
     $searchQuery .= " GROUP BY vl.eid_id";
 } else {
     $searchQuery = $allQuery;

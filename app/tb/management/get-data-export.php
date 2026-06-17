@@ -238,6 +238,9 @@ try {
      if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
      }
+     if ($labScope = $general->labScopeWhere('vl')) {
+          $sWhere[] = $labScope;
+     }
      $sQuery = $sQuery . ' WHERE result_status is NOT NULL AND' . implode(" AND ", $sWhere);
 
      if (!empty($sOrder) && $sOrder !== '') {

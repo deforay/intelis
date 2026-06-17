@@ -217,6 +217,10 @@ try {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
      }
 
+     if ($labScope = $general->labScopeWhere('vl')) {
+          $sWhere[] = $labScope;
+     }
+
      $sWhere[] = " result_status is NOT NULL";
 
      if ($sWhere !== []) {

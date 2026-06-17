@@ -85,6 +85,9 @@ if ((isset($_POST['id']) && !in_array(trim((string) $_POST['id']), ['', '0'], tr
 	if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
 		$searchQueryWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 	}
+	if ($labScope = $general->labScopeWhere('vl')) {
+		$searchQueryWhere[] = $labScope;
+	}
 	if ($searchQueryWhere !== []) {
 		$searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
 	}
