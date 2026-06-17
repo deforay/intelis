@@ -642,13 +642,24 @@ final class CommonService
         }
     }
 
-    public function getTestingPlatforms($testType = null): mixed
+    public function getTestingPlatforms($testType = null, bool $scopeToLab = false): mixed
     {
-        return MemoUtility::remember(function () use ($testType) {
+        // When asked to scope (e.g. the batch instrument picker), restrict to the
+        // current user's lab. $_SESSION['labId'] is only non-null for a user who
+        // acts as a single lab, so a non-lab user contributes 0 = no scoping. The
+        // captured $labScopeId is part of the memo cache key, so per-lab results
+        // never bleed across labs.
+        $labScopeId = $scopeToLab ? (int) ($_SESSION['labId'] ?? 0) : 0;
+        return MemoUtility::remember(function () use ($testType, $labScopeId) {
             if (!empty($testType)) {
                 $this->db->where("(JSON_SEARCH(supported_tests, 'all', '$testType') IS NOT NULL) OR (supported_tests IS NULL)");
             }
             $this->db->where("status", "active");
+            // Lab axis (NULL-tolerant): own lab's instruments plus any not bound to a
+            // lab, so existing installs (instruments with no lab_id) are unaffected.
+            if ($labScopeId > 0) {
+                $this->db->where("(lab_id = $labScopeId OR lab_id IS NULL)");
+            }
             $this->db->orderBy('machine_name', "ASC");
             return $this->db->get('instruments');
         });

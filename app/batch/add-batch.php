@@ -61,7 +61,7 @@ $userNameList = $usersService->getAllUsers(null, 'active', 'drop-down');
 
 
 //Get active machines
-$testPlatformResult = $general->getTestingPlatforms($_GET['type']);
+$testPlatformResult = $general->getTestingPlatforms($_GET['type'], scopeToLab: true);
 
 [$maxId, $batchCode] = $batchService->createBatchCode();
 //Set last machine label order

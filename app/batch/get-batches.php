@@ -80,6 +80,13 @@ try {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
     }
 
+    // Lab axis: a single-lab user (LIS / cloud-LIS) only sees batches containing
+    // their own lab's samples (plus not-yet-assigned ones). Additive; a no-op for
+    // collection-site STS users and sessions without a resolved lab id.
+    if ($labScope = $general->labScopeWhere('vl')) {
+        $sWhere[] = $labScope;
+    }
+
     if (isset($_POST['testType']) && ($_POST['testType'] != "")) {
         $sWhere[] = " vl.test_type = '" . $_POST['testType'] . "'";
     }

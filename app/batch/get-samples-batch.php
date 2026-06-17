@@ -90,6 +90,14 @@ if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $where[] = $swhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
+// Lab axis: a single-lab user (LIS / cloud-LIS) only batches their own lab's
+// samples (plus not-yet-assigned ones). Additive to the facilityMap filter and
+// applied to both the main list and the UNION'd already-batched set; a no-op for
+// collection-site STS users and sessions without a resolved lab id.
+if ($labScope = $general->labScopeWhere('vl')) {
+    $where[] = $swhere[] = $labScope;
+}
+
 if (!empty($_POST['sName'])) {
     $swhere[] = $where[] = " vl.$sampleTypeColumn='" . $_POST['sName'] . "'";
 }

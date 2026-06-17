@@ -102,7 +102,7 @@ $bQuery .= ") UNION
                         AND vl.sample_code!=''
                         ORDER BY vl.last_modified_datetime ASC)";
 $result = $db->rawQuery($bQuery, [$id]);
-$testPlatformResult = $general->getTestingPlatforms($testType);
+$testPlatformResult = $general->getTestingPlatforms($testType, scopeToLab: true);
 
 $sQuery = "SELECT * FROM $sampleTypeTable where status='active'";
 $sResult = $db->rawQuery($sQuery);
