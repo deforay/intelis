@@ -64,22 +64,22 @@ select[readonly] {
    AdminLTE defaults to white-space:nowrap, so French/other long translations
    get truncated. Wrapping is additive and still leaves collapsed-sidebar
    mini mode working via AdminLTE's own !important rules. */
-.sidebar-menu > li > a,
-.sidebar-menu .treeview-menu > li > a {
+.sidebar-menu>li>a,
+.sidebar-menu .treeview-menu>li>a {
     white-space: normal;
     line-height: 1.3;
 }
 
 /* Fix sidebar treeview menu z-index issue */
-.sidebar-menu > li.treeview {
+.sidebar-menu>li.treeview {
     position: relative;
 }
 
-.sidebar-menu > li.treeview.menu-open {
+.sidebar-menu>li.treeview.menu-open {
     z-index: 1000;
 }
 
-.sidebar-menu > li.header {
+.sidebar-menu>li.header {
     /* Stick the section label to the top of the scrolling sidebar so the
        group you're in stays labelled. z-index sits above open treeviews
        (which use z-index:1000) so items scroll cleanly underneath. */
@@ -89,15 +89,11 @@ select[readonly] {
     z-index: 1001;
 }
 
-.skin-blue .sidebar-menu>li.header {
-    background: #ddd;
-    color: #333;
-    font-weight: bold;
-}
-
-.skin-red .sidebar-menu>li.header {
-    background: #ddd;
-    color: #333;
+.skin-red .sidebar-menu>li.header,
+.skin-blue .sidebar-menu>li.header,
+.skin-purple .sidebar-menu>li.header {
+    background: #dddddd2b;
+    color: #ddd;
     font-weight: bold;
 }
 
@@ -199,6 +195,7 @@ form table tr td>label,
     display: flex;
     flex-direction: column;
 }
+
 /* The menu area is the scroll container now (not .main-sidebar), so the
    toolbar above it stays pinned without any sticky offset. */
 .sidebar {
@@ -214,18 +211,22 @@ form table tr td>label,
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
+
 .sidebar::-webkit-scrollbar {
     width: 8px;
 }
+
 .sidebar::-webkit-scrollbar-track {
     background: transparent;
 }
+
 .sidebar::-webkit-scrollbar-thumb {
     background-color: rgba(255, 255, 255, 0.22);
     border-radius: 9999px;
     border: 2px solid transparent;
     background-clip: content-box;
 }
+
 .sidebar:hover::-webkit-scrollbar-thumb {
     background-color: rgba(255, 255, 255, 0.4);
 }
@@ -234,30 +235,34 @@ form table tr td>label,
 .vlsm-section-toggle {
     cursor: pointer;
 }
+
 .vlsm-section-caret {
     float: right;
     margin-top: 2px;
     transition: transform 0.15s ease;
 }
+
 .vlsm-section-toggle.section-collapsed .vlsm-section-caret {
     transform: rotate(-90deg);
 }
 
 /* Hide collapsed groups only when the sidebar is expanded — in mini-collapsed
    mode AdminLTE shows icon-only items, so we must not keep them display:none. */
-body:not(.sidebar-collapse) .sidebar-menu > li.vlsm-section-hidden {
+body:not(.sidebar-collapse) .sidebar-menu>li.vlsm-section-hidden {
     display: none !important;
 }
 
 /* Sidebar toolbar: quick search + collapse/expand-all on one line. */
 .vlsm-sidebar-toolbar {
-    flex: 0 0 auto; /* fixed zone above the scrolling menu */
+    flex: 0 0 auto;
+    /* fixed zone above the scrolling menu */
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 8px;
     background: #222d32;
 }
+
 .vlsm-sidebar-toolbar .sidebar-spotlight-btn {
     flex: 1;
     display: flex !important;
@@ -269,9 +274,11 @@ body:not(.sidebar-collapse) .sidebar-menu > li.vlsm-section-hidden {
     color: #b8c7ce;
     font-size: 13px;
 }
-.vlsm-sidebar-toolbar .sidebar-spotlight-btn > span {
+
+.vlsm-sidebar-toolbar .sidebar-spotlight-btn>span {
     flex: 1;
 }
+
 .vlsm-sidebar-toolbar .sidebar-spotlight-btn kbd {
     font-size: 10px;
     padding: 1px 5px;
@@ -279,6 +286,7 @@ body:not(.sidebar-collapse) .sidebar-menu > li.vlsm-section-hidden {
     background: rgba(0, 0, 0, 0.3);
     color: #b8c7ce;
 }
+
 .vlsm-sidebar-allbtn {
     flex-shrink: 0;
     width: 34px;
@@ -291,11 +299,13 @@ body:not(.sidebar-collapse) .sidebar-menu > li.vlsm-section-hidden {
     background: rgba(255, 255, 255, 0.08);
     color: #b8c7ce;
 }
+
 /* Mini-collapsed sidebar: keep just the magnifier icon. */
 body.sidebar-collapse .vlsm-sidebar-toolbar {
     padding: 8px 4px;
 }
-body.sidebar-collapse .vlsm-sidebar-toolbar .sidebar-spotlight-btn > span,
+
+body.sidebar-collapse .vlsm-sidebar-toolbar .sidebar-spotlight-btn>span,
 body.sidebar-collapse .vlsm-sidebar-toolbar .sidebar-spotlight-btn kbd,
 body.sidebar-collapse .vlsm-sidebar-allbtn {
     display: none;
@@ -529,81 +539,93 @@ div.dataTables_processing>div:last-child {
     animation: spin 0.8s linear infinite;
     vertical-align: middle;
 }
+
 /* === Custom Tests: modern select2 multiselect (moved from _test-type-form.php to apply app-wide) === */
 /* Modernise the select2 multiselect chips (Sample Types, Reasons, Symptoms, etc.) to match
    the rounded option pills in the Form Configuration table -- light pill, remove "x" after
    the label. The container is flex-wrap so chips pack left and wrap cleanly (select2's
    default float layout drops wide chips and leaves gaps). */
 .select2-container--default .select2-selection--multiple {
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	min-height: 38px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    min-height: 38px;
 }
+
 .select2-container--default .select2-selection--multiple .select2-selection__rendered {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 5px;
-	padding: 4px 6px;
-	margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 6px;
+    margin: 0;
 }
+
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
-	display: inline-flex;
-	flex-direction: row-reverse;
-	align-items: center;
-	background-color: #eef2f7;
-	color: #2c3e50;
-	border: 1px solid #d6dee6;
-	border-radius: 12px;
-	padding: 2px 10px;
-	margin: 0;
-	font-size: 12px;
-	line-height: 1.7;
-	float: none;
+    display: inline-flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    background-color: #eef2f7;
+    color: #2c3e50;
+    border: 1px solid #d6dee6;
+    border-radius: 12px;
+    padding: 2px 10px;
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.7;
+    float: none;
 }
+
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
-	color: #8a97a3 !important;
-	font-weight: bold;
-	margin: 0 0 0 6px;
-	border: none;
-	float: none;
+    color: #8a97a3 !important;
+    font-weight: bold;
+    margin: 0 0 0 6px;
+    border: none;
+    float: none;
 }
+
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
-	color: #e74c3c !important;
-	background: transparent;
+    color: #e74c3c !important;
+    background: transparent;
 }
+
 /* Inline search field flows with the chips. */
 .select2-container--default .select2-selection--multiple .select2-search--inline {
-	display: flex;
-	align-items: center;
-	float: none;
-	margin: 0;
+    display: flex;
+    align-items: center;
+    float: none;
+    margin: 0;
 }
+
 .select2-container--default .select2-selection--multiple .select2-search--inline .select2-search__field {
-	margin-top: 0;
-	height: 24px;
+    margin-top: 0;
+    height: 24px;
 }
+
 /* Hide select2's stray clear-all "x" -- it lands top-left and looks out of place; each chip
    already has its own remove control. */
 .select2-container--default .select2-selection--multiple .select2-selection__clear {
-	display: none;
+    display: none;
 }
+
 /* Dropdown results in the same palette: soft border, muted highlight, selected rows tinted
    like the chips instead of select2's default bright blue. */
 .select2-dropdown {
-	border-color: #cbd5e0;
-	background-color: #fff;
+    border-color: #cbd5e0;
+    background-color: #fff;
 }
+
 .select2-container--default .select2-results__option {
-	padding: 7px 12px;
-	color: #2c3e50;
-	font-size: 13px;
+    padding: 7px 12px;
+    color: #2c3e50;
+    font-size: 13px;
 }
+
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-	background-color: #4a6fa5;
-	color: #fff;
+    background-color: #4a6fa5;
+    color: #fff;
 }
+
 .select2-container--default .select2-results__option[aria-selected=true] {
-	background-color: #eef2f7;
-	color: #2c3e50;
+    background-color: #eef2f7;
+    color: #2c3e50;
 }
