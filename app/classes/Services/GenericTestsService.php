@@ -33,7 +33,9 @@ final class GenericTestsService extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
             $params['prefix'] ??= $params['testType'] ?? $this->shortCode;
-            $params['postfix'] ??= $this->stsLabPostfix($params);
+            // Custom/Generic tests are referable to other labs, so encode the testing lab on
+            // BOTH LIS and STS (see AbstractTestService::referableLabPostfix).
+            $params['postfix'] ??= $this->referableLabPostfix($params);
 
             try {
                 return $this->generateSampleCode($this->table, $params);

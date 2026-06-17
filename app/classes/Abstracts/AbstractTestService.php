@@ -174,6 +174,24 @@ abstract class AbstractTestService
         return $code !== '' ? "-$code" : '';
     }
 
+    /**
+     * Lab-aware postfix for test types that are referable to other labs (TB and
+     * Custom/Generic Tests): append "-<labFacilityCode>" on BOTH LIS and STS so the
+     * originating/testing lab is always encoded in the sample code.
+     *
+     * On a LIS the single lab comes from sc_testing_lab_id; on STS it comes from the
+     * queued lab_id + access_type (see stsLabPostfix). Returns '' when no lab resolves.
+     * Unlike stsLabPostfix(), this does NOT short-circuit on LIS.
+     */
+    protected function referableLabPostfix(array $params): string
+    {
+        if ($this->commonService->isLISInstance()) {
+            $code = $this->labFacilityCode((int) ($this->commonService->getSystemConfig('sc_testing_lab_id') ?? 0));
+            return $code !== '' ? "-$code" : '';
+        }
+        return $this->stsLabPostfix($params);
+    }
+
     // $testTable is the table where the sample code is to be generated - form_vl, form_eid etc.
     public function generateSampleCode($testTable, $params, $tryCount = 0)
     {
@@ -250,8 +268,12 @@ abstract class AbstractTestService
                     $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $postfix;
                 }
 
-                $sampleCodeGenerator['sampleCode'] = $sampleCodeGenerator['sampleCodeFormat'] . $sampleCodeGenerator['maxId'];
-                $sampleCodeGenerator['sampleCodeInText'] = $sampleCodeGenerator['sampleCodeFormat'] . $sampleCodeGenerator['maxId'];
+                // When a lab postfix is present, separate it from the running number with a
+                // hyphen ("RVL0626-NMC-19233") so the lab code never blurs into the sequence.
+                // Codes without a postfix are unchanged.
+                $sequenceSeparator = ($postfix !== '') ? '-' : '';
+                $sampleCodeGenerator['sampleCode'] = $sampleCodeGenerator['sampleCodeFormat'] . $sequenceSeparator . $sampleCodeGenerator['maxId'];
+                $sampleCodeGenerator['sampleCodeInText'] = $sampleCodeGenerator['sampleCodeFormat'] . $sequenceSeparator . $sampleCodeGenerator['maxId'];
 
                 // Check for duplication only if we are inserting
                 if ($insertOperation) {
