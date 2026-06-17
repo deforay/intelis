@@ -1731,9 +1731,24 @@ upgrade_instance() {
             local run_once_ran=0
             local run_once_skipped=0
             local run_once_failed=0
+            local run_once_bg=0
+            local run_once_logdir="${lis_path}/var/logs"
+            mkdir -p "$run_once_logdir" 2>/dev/null || true
             for script_path in "${run_once_scripts[@]}"; do
                 local script_name
                 script_name=$(basename "$script_path")
+                # Scripts tagged "@run-once-background" are launched detached so a
+                # long migration (e.g. archiving 100K+ legacy audit rows) never
+                # blocks the upgrade — not even for the time it takes PHP to boot.
+                # They own their own concurrency + skip logic, so we fire and
+                # forget and never wait on their exit code.
+                if grep -q '@run-once-background' "$script_path"; then
+                    local bg_log="${run_once_logdir}/${script_name%.php}-$(date +%Y%m%d-%H%M%S).log"
+                    nohup php "$script_path" >>"$bg_log" 2>&1 &
+                    run_once_bg=$((run_once_bg + 1))
+                    print info "Launched run-once script in background: ${script_name} (log: ${bg_log})"
+                    continue
+                fi
                 php "$script_path"
                 local run_once_rc=$?
                 case "$run_once_rc" in
@@ -1748,10 +1763,14 @@ upgrade_instance() {
                         ;;
                 esac
             done
+            local run_once_summary="Run-once: ${run_once_ran} ran, ${run_once_skipped} already applied"
+            if [ "$run_once_bg" -gt 0 ]; then
+                run_once_summary="${run_once_summary}, ${run_once_bg} launched in background"
+            fi
             if [ "$run_once_failed" -gt 0 ]; then
-                print warning "Run-once: ${run_once_ran} ran, ${run_once_skipped} already applied, ${run_once_failed} failed (of ${run_once_total} script(s))."
+                print warning "${run_once_summary}, ${run_once_failed} failed (of ${run_once_total} script(s))."
             else
-                print success "Run-once: ${run_once_ran} ran, ${run_once_skipped} already applied (of ${run_once_total} script(s))."
+                print success "${run_once_summary} (of ${run_once_total} script(s))."
             fi
         fi
     fi
