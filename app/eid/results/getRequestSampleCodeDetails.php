@@ -47,6 +47,10 @@ $query = "SELECT vl.sample_code,vl.eid_id,vl.facility_id,f.facility_name,f.facil
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
   $query .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
+
+if ($labScope = $general->labScopeWhere('vl')) {
+    $query .= " AND $labScope";
+}
 if (!empty($facility)) {
   $query .= " AND vl.facility_id = $facility";
 }

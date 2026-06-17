@@ -142,6 +142,10 @@ try {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
     }
 
+    if ($labScope = $general->labScopeWhere('vl')) {
+        $sWhere[] = $labScope;
+    }
+
     if ($sWhere !== []) {
         $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
         $sQuery = "$sQuery $sWhere";

@@ -124,6 +124,10 @@ $sWhere[] = '  vl.result_status != ' . RECEIVED_AT_CLINIC;
 if (!empty($_SESSION['facilityMap'])) {
      $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
+
+if ($labScope = $general->labScopeWhere('vl')) {
+    $sWhere[] = $labScope;
+}
 $sWhere[] = " hf.test_type = 'hepatitis'";
 $sWhere = $sWhere === [] ? [] : ' where ' . implode(' AND ', $sWhere);
 $sQuery = $sQuery . ' ' . $sWhere;

@@ -136,6 +136,10 @@ try {
           // $dWhere = $dWhere . " AND vl.facility_id IN (" . $userfacilityMapresult[0]['facility_id'] . ") ";
      }
 
+     if ($labScope = $general->labScopeWhere('vl')) {
+         $sWhere[] = $labScope;
+     }
+
      $sWhere = $sWhere === [] ? "" : ' WHERE ' . implode(' AND ', $sWhere);
 
      $sQuery .= $sWhere;

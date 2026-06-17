@@ -59,6 +59,10 @@ if (!empty($_POST['sampleCollectionDate'])) {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
     }
 
+    if ($labScope = $general->labScopeWhere('vl')) {
+        $sWhere[] = $labScope;
+    }
+
     $vlQuery = $vlQuery . ' where ' . implode(' AND ', $sWhere) . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
     $_SESSION['rejectedSamples'] = $vlQuery;
     // echo $vlQuery; die;

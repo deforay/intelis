@@ -66,6 +66,10 @@ try {
 		if (!empty($_SESSION['facilityMap'])) {
 			$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 		}
+
+		if ($labScope = $general->labScopeWhere('vl')) {
+		    $sWhere[] = $labScope;
+		}
 	} else {
 		$sWhere[] = " vl.result_status != " . RECEIVED_AT_CLINIC;
 	}
