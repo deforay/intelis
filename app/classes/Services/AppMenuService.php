@@ -57,13 +57,19 @@ final class AppMenuService
         $this->db->orderBy("display_order", "asc");
         $menuData = $this->db->get($this->table);
 
-        // Cloud-LIS non-admin operators get a stripped admin section: only User
-        // management and Instruments. This is a WHITELIST (fails closed), so any
-        // future admin page is hidden by default until explicitly allowed here.
-        // No-op for the super-admin and every non-cloud-LIS user. Headers with no
-        // surviving child are pruned by the empty-children check below.
+        // Cloud-LIS non-admin operators get a stripped admin section: User
+        // management, Instruments, Audit Trail (lab-scoped) and the Log File Viewer
+        // (instance-wide). This is a WHITELIST (fails closed), so any future admin
+        // page is hidden by default until explicitly allowed here. No-op for the
+        // super-admin and every non-cloud-LIS user. Headers with no surviving child
+        // are pruned by the empty-children check below.
         $restrictAdmin = $this->commonService->isCloudLisNonAdmin();
-        $allowedAdminLinks = ['/users/users.php', '/instruments/instruments.php'];
+        $allowedAdminLinks = [
+            '/users/users.php',
+            '/instruments/instruments.php',
+            '/admin/monitoring/audit-trail.php',
+            '/admin/monitoring/log-files.php',
+        ];
 
         $response = [];
         foreach ($menuData as $key => $menu) {
