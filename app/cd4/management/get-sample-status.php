@@ -26,6 +26,10 @@ if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 
+if ($labScope = $general->labScopeWhere('vl')) {
+    $whereCondition = (string) $whereCondition === '' ? $labScope : $whereCondition . " AND " . $labScope;
+}
+
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
 

@@ -100,6 +100,10 @@ function tbcBuildFilterConditions(array $post): array
         }
     }
 
+    if ($labScope = $general->labScopeWhere('f')) {
+        $where[] = $labScope;
+    }
+
     return $where;
 }
 

@@ -30,6 +30,10 @@ try {
         }
     }
 
+    if ($labScope = $general->labScopeWhere('cd4')) {
+        $whereCondition .= " AND $labScope";
+    }
+
     if (!empty($_POST['sampleCollectionDate'])) {
         [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
     } else {

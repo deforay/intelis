@@ -87,6 +87,9 @@ $sQuery = "SELECT vl.sample_collection_date,
                         AND (vl.sample_tested_datetime IS NOT NULL)
                         AND vl.result is not null
                         AND vl.result != ''";
+if ($labScope = $general->labScopeWhere('vl')) {
+	$sQuery .= " AND $labScope";
+}
 if ($general->isSTSInstance()) {
 	$whereCondition = '';
 	if (!empty($_SESSION['facilityMap'])) {
