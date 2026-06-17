@@ -1712,25 +1712,44 @@ upgrade_instance() {
         done
     fi
 
-    # Run run-once scripts
+    # Run run-once scripts.
+    #
+    # Each script self-guards against re-execution (ledger-based ones via
+    # s_run_once_scripts_log; prune-legacy-audit-tables via its own
+    # global_config flag) and signals its outcome through its EXIT CODE, so we
+    # print a single summary line at the end — proof the run-once machinery is
+    # alive — without re-announcing every no-op. Already-applied scripts stay
+    # completely silent individually; a script that actually runs prints its own
+    # progress. Exit-code contract:
+    #   0  -> ran this upgrade
+    #   3  -> already applied on this instance (silent skip)
+    #   *  -> hard failure (surfaced as a warning; details in the app log)
     if [ -d "${lis_path}/run-once" ]; then
         local run_once_scripts=("${lis_path}/run-once/"*.php)
         if [ -e "${run_once_scripts[0]}" ]; then
             local run_once_total=${#run_once_scripts[@]}
-            local run_once_num=0
-            print header "Running ${run_once_total} run-once script(s)"
+            local run_once_ran=0
+            local run_once_skipped=0
+            local run_once_failed=0
             for script_path in "${run_once_scripts[@]}"; do
-                run_once_num=$((run_once_num + 1))
                 local script_name
                 script_name=$(basename "$script_path")
-                print info "[${run_once_num}/${run_once_total}] Running ${script_name}..."
-                if php "$script_path"; then
-                    print success "[${run_once_num}/${run_once_total}] ${script_name} completed."
-                else
-                    print warning "[${run_once_num}/${run_once_total}] ${script_name} exited with status $?"
-                fi
+                php "$script_path"
+                local run_once_rc=$?
+                case "$run_once_rc" in
+                    0) run_once_ran=$((run_once_ran + 1)) ;;
+                    3) run_once_skipped=$((run_once_skipped + 1)) ;;
+                    *)
+                        run_once_failed=$((run_once_failed + 1))
+                        print warning "run-once script ${script_name} exited with status ${run_once_rc}"
+                        ;;
+                esac
             done
-            print success "Finished run-once scripts."
+            if [ "$run_once_failed" -gt 0 ]; then
+                print warning "Run-once: ${run_once_ran} ran, ${run_once_skipped} already applied, ${run_once_failed} failed (of ${run_once_total} script(s))."
+            else
+                print success "Run-once: ${run_once_ran} ran, ${run_once_skipped} already applied (of ${run_once_total} script(s))."
+            fi
         fi
     fi
 

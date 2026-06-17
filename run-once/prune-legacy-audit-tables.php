@@ -45,6 +45,30 @@ use App\Services\DatabaseService;
 use App\Services\TestsService;
 use App\Utilities\LoggerUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\RunOnceUtility;
+
+// Silent short-circuit BEFORE forking: if the prune already finished on this
+// instance, produce no output at all (no "started in background" line). The
+// child path below repeats this check, but doing it here too means an
+// already-complete install stays completely quiet on every subsequent upgrade
+// instead of announcing a background job that immediately no-ops.
+if (PHP_SAPI === 'cli' && !in_array('--child', $_SERVER['argv'] ?? [], true)) {
+    try {
+        /** @var DatabaseService $dbPrecheck */
+        $dbPrecheck = ContainerRegistry::get(DatabaseService::class);
+        $doneFlag = $dbPrecheck->rawQueryValue(
+            "SELECT value FROM global_config WHERE name = 'audit_legacy_prune_done'"
+        );
+        if (is_string($doneFlag) && strtolower(trim($doneFlag)) === 'yes') {
+            // Already applied — exit SKIPPED so upgrade.sh counts this as
+            // "already applied" in its run-once summary (and prints nothing).
+            exit(RunOnceUtility::EXIT_SKIPPED);
+        }
+    } catch (Throwable) {
+        // global_config absent on extremely minimal installs — fall through and
+        // let the normal (forked) path handle it.
+    }
+}
 
 // On a real install this archives every revision of every legacy audit_form_*
 // row into compressed CSV files; with months of accumulated audit history it

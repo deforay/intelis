@@ -109,13 +109,31 @@ composer post-update
 # Run database repairs
 composer db:repair 2>/dev/null || true
 
-# Run any run-once scripts
+# Run any run-once scripts.
+#
+# Each script self-guards against re-execution and signals its outcome through
+# its exit code (see App\Utilities\RunOnceUtility):
+#   0 = ran this start-up, 3 = already applied (silent skip), other = failure.
+# Already-applied scripts stay silent; a single summary at the end confirms the
+# run-once machinery actually ran.
 if [ -d run-once ]; then
+    run_once_ran=0
+    run_once_skipped=0
+    run_once_failed=0
     for script in run-once/*.php; do
         [ -f "$script" ] || continue
-        echo "Running run-once script: $script"
-        php "$script" || echo "Warning: $script exited with status $?"
+        php "$script"
+        run_once_rc=$?
+        case "$run_once_rc" in
+            0) run_once_ran=$((run_once_ran + 1)) ;;
+            3) run_once_skipped=$((run_once_skipped + 1)) ;;
+            *)
+                run_once_failed=$((run_once_failed + 1))
+                echo "Warning: $script exited with status $run_once_rc"
+                ;;
+        esac
     done
+    echo "Run-once: ${run_once_ran} ran, ${run_once_skipped} already applied, ${run_once_failed} failed."
 fi
 
 # Start the cron service
