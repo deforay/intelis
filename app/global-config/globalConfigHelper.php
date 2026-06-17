@@ -28,7 +28,7 @@ if (isset($_FILES['reportFormat']['name']) && isset($uploadedFiles['reportFormat
 if (isset($_FILES['instanceLogo']) && isset($uploadedFiles['instanceLogo'])) {
     $sanitizedInstanceLogo = _sanitizeFiles($uploadedFiles['instanceLogo'], ['png', 'jpg', 'jpeg', 'gif']);
 }
-if (isset($_FILES['logo']) && empty($_FILES['logo']) && isset($uploadedFiles['logo']) && !empty($uploadedFiles['logo'])) {
+if (isset($_FILES['logo']) && isset($uploadedFiles['logo']) && !empty($uploadedFiles['logo'])) {
     $sanitizedLogo = _sanitizeFiles($uploadedFiles['logo'], ['png', 'jpg', 'jpeg', 'gif']);
 }
 
