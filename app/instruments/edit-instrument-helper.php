@@ -72,6 +72,19 @@ try {
             'approved_by' => empty($_POST['approvedBy']) ? null : $_POST['approvedBy'],
             'status' => $_POST['status']
         ];
+        // Cloud-LIS lab operators may only edit instruments belonging to their OWN
+        // lab, and may not move one to another lab. Enforced server-side so a
+        // tampered/AJAX POST can't touch another lab's instrument. No-op otherwise.
+        if ($general->isCloudLisNonAdmin()) {
+            $myLab = (int) ($_SESSION['labId'] ?? 0);
+            $existingLab = (int) $db->where('instrument_id', $configId)->getValue('instruments', 'lab_id');
+            if ($myLab <= 0 || $existingLab !== $myLab) {
+                $_SESSION['alertMsg'] = _translate("You are not allowed to edit this instrument.");
+                header("Location:instruments.php");
+                exit;
+            }
+            $importConfigData['lab_id'] = $myLab;
+        }
         $db->where('instrument_id', $configId);
 
         $db->update($tableName, $importConfigData);

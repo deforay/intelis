@@ -158,6 +158,36 @@ try {
             $data['testing_lab_id'] = $scLab > 0 ? $scLab : null;
         }
 
+        // Cloud-LIS lab operators: may only edit users that already belong to their
+        // OWN lab, and may only assign non-admin, non-API testing-lab roles. Enforced
+        // server-side so a tampered/AJAX POST can never edit another lab's user or
+        // escalate one to Admin. No-op for everyone else.
+        if ($general->isCloudLisNonAdmin()) {
+            $myLab = (int) ($_SESSION['labId'] ?? 0);
+            $targetLab = (int) $db->where('user_id', $userId)->getValue('user_details', 'testing_lab_id');
+            if ($myLab <= 0 || $targetLab !== $myLab) {
+                $_SESSION['alertMsg'] = _translate("You are not allowed to edit this user.");
+                header("Location:users.php");
+                exit;
+            }
+            $role = $db->rawQueryOne(
+                "SELECT role_id, access_type, role_code, status FROM roles WHERE role_id = ?",
+                [(int) ($_POST['role'] ?? 0)]
+            );
+            $roleOk = !empty($role)
+                && $role['status'] === 'active'
+                && $role['access_type'] === 'testing-lab'
+                && (int) $role['role_id'] !== 1
+                && strtoupper((string) ($role['role_code'] ?? '')) !== 'API';
+            if (!$roleOk) {
+                $_SESSION['alertMsg'] = _translate("You are not allowed to assign this role.");
+                header("Location:editUser.php?id=" . rawurlencode((string) ($_POST['userId'] ?? '')));
+                exit;
+            }
+            // Force the operator's own lab; ignore any posted lab.
+            $data['testing_lab_id'] = $myLab ?: null;
+        }
+
         $db->where('user_id', $userId);
         $db->update("user_details", $data);
 
