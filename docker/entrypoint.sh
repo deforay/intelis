@@ -125,7 +125,10 @@ if [ -d run-once ]; then
         php "$script"
         run_once_rc=$?
         case "$run_once_rc" in
-            0) run_once_ran=$((run_once_ran + 1)) ;;
+            0)
+                run_once_ran=$((run_once_ran + 1))
+                echo "Ran run-once script: $script"
+                ;;
             3) run_once_skipped=$((run_once_skipped + 1)) ;;
             *)
                 run_once_failed=$((run_once_failed + 1))
