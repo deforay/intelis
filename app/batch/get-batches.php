@@ -73,6 +73,12 @@ try {
 
     $sWhere[] = " b.test_type like '" . $_POST['type'] . "'";
 
+    // Facility isolation: a mapped STS user only sees batches that contain their
+    // own facilities' samples (the join to the sample table carries facility_id).
+    // No-op on LIS and for unmapped (all-access) users.
+    if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+        $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+    }
 
     if (isset($_POST['testType']) && ($_POST['testType'] != "")) {
         $sWhere[] = " vl.test_type = '" . $_POST['testType'] . "'";
