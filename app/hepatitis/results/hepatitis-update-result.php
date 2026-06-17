@@ -70,6 +70,12 @@ $riskFactorsInfo = $hepatitisService->getRiskFactorsByHepatitisId($id);
 $hepatitisQuery = "SELECT * FROM form_hepatitis WHERE hepatitis_id=?";
 $hepatitisInfo = $db->rawQueryOne($hepatitisQuery, [$id]);
 
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($hepatitisInfo['facility_id'])) {
+	$general->assertFacilityAllowed((int) $hepatitisInfo['facility_id']);
+}
+
 //sample rejection reason
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_hepatitis_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);

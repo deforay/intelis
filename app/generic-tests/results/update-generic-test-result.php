@@ -74,6 +74,12 @@ $genericTestInfo = $db->rawQuery($genericTestQuery, [$id]);
 $vlQuery = "SELECT * FROM form_generic WHERE sample_id=?";
 $genericResultInfo = $db->rawQueryOne($vlQuery, [$id]);
 
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($genericResultInfo['facility_id'])) {
+    $general->assertFacilityAllowed((int) $genericResultInfo['facility_id']);
+}
+
 if (isset($genericResultInfo['patient_dob']) && trim((string) $genericResultInfo['patient_dob']) !== '' && $genericResultInfo['patient_dob'] != '0000-00-00') {
 	$genericResultInfo['patient_dob'] = DateUtility::humanReadableDateFormat($genericResultInfo['patient_dob']);
 } else {

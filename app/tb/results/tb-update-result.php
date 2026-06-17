@@ -71,6 +71,13 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $tbQuery = "SELECT * from form_tb where tb_id=?";
 $tbInfo = $db->rawQueryOne($tbQuery, [$id]);
+
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($tbInfo['facility_id'])) {
+    $general->assertFacilityAllowed((int) $tbInfo['facility_id']);
+}
+
 if (!$tbInfo) {
     header("Location:/tb/results/tb-manual-results.php");
 }

@@ -80,6 +80,11 @@ if ((isset($_POST['id']) && !in_array(trim((string) $_POST['id']), ['', '0'], tr
 	if (isset($_POST['sampleCodes']) && !in_array(trim((string) $_POST['sampleCodes']), ['', '0'], true)) {
 		$searchQueryWhere[] = " vl.sample_code IN(" . $_POST['sampleCodes'] . ") ";
 	}
+	// Facility isolation: a mapped STS user only gets PDFs for their own
+	// facilities. No-op on LIS and for unmapped (all-access) users.
+	if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+		$searchQueryWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+	}
 	if ($searchQueryWhere !== []) {
 		$searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
 	}
