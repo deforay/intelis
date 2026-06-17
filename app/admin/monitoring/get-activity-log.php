@@ -83,7 +83,8 @@ try {
      $sQuery = "SELECT a.*, r.display_name,
                     DATE_FORMAT(a.date_time,'%d-%b-%Y %H:%i:%s') AS createdOn
                     FROM activity_log as a
-                    LEFT JOIN resources as r ON a.resource = r.resource_id";
+                    LEFT JOIN resources as r ON a.resource = r.resource_id
+                    LEFT JOIN user_details as ud ON a.user_id = ud.user_id";
 
 
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
@@ -97,6 +98,18 @@ try {
 
      if (isset($_POST['typeOfAction']) && trim((string) $_POST['typeOfAction']) !== '') {
           $sWhere[] = ' event_type like "' . $_POST['typeOfAction'] . '"';
+     }
+
+     // Lab scope: a cloud-LIS lab operator only sees activity by users in their own
+     // lab (LIS = own lab + unassigned; cloud-LIS = strict, fail closed; STS = all).
+     // Keyed off the actor's user_details.testing_lab_id via the join above.
+     if ($scope = $general->labAdminScopeWhere('testing_lab_id', 'ud')) {
+          $sWhere[] = $scope;
+     }
+
+     // Session filter (EPT-style): show every action performed in one login session.
+     if (isset($_POST['sessionHash']) && trim((string) $_POST['sessionHash']) !== '') {
+          $sWhere[] = ' a.session_hash = "' . $db->escape(trim((string) $_POST['sessionHash'])) . '"';
      }
      /* Implode all the where fields for filtering the data */
      if ($sWhere !== []) {
@@ -128,7 +141,18 @@ try {
           $row[] = $aRow['action'];
           $row[] = $aRow['event_type'];
           $row[] = $aRow['ip_address'];
-          $row[] = $aRow['createdOn'];
+
+          // Session fingerprint chip under the timestamp: click to filter every
+          // action in the same login session (EPT-style). Shows first 8 of 16 hex.
+          $sh = (string) ($aRow['session_hash'] ?? '');
+          $chip = '';
+          if ($sh !== '') {
+               $chip = '<br><a href="javascript:void(0);" class="session-pill" data-hash="'
+                    . htmlspecialchars($sh) . '" title="' . _translate('Filter all actions in this session')
+                    . '" style="display:inline-block;margin-top:4px;padding:1px 7px;border-radius:10px;background:#eef;border:1px solid #ccd;font-size:11px;color:#446;white-space:nowrap;">'
+                    . '<em class="fa-solid fa-fingerprint"></em> ' . htmlspecialchars(substr($sh, 0, 8)) . '</a>';
+          }
+          $row[] = $aRow['createdOn'] . $chip;
 
           $output['aaData'][] = $row;
      }

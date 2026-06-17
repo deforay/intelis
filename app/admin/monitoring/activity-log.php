@@ -88,7 +88,16 @@ foreach ($actions as $list) {
 									<?php echo $general->generateSelectOptions($actionList, null, '--All--'); ?>
 								</select>
 							</td>
-							<td style=" display: contents; ">
+							<th scope="row">
+									<?php echo _translate("Session"); ?>&nbsp;:
+								</th>
+								<td>
+									<input type="text" id="sessionHash" name="sessionHash" class="form-control"
+										placeholder="<?php echo _translate('Session hash'); ?>"
+										title="<?php echo _translate('Filter all actions in one login session'); ?>"
+										style="width:220px;background:#fff;" />
+								</td>
+								<td style=" display: contents; ">
 								<button onclick="oTable.fnDraw();" value="Search" class="btn btn-primary btn-sm"><span>
 										<?php echo _translate("Search"); ?>
 									</span></button>
@@ -184,6 +193,12 @@ foreach ($actions as $list) {
 
 		loadVlRequestData();
 
+		// Click a session fingerprint chip to filter to that one login session.
+		$(document).on('click', '.session-pill', function () {
+			$('#sessionHash').val($(this).data('hash'));
+			if (oTable) { oTable.fnDraw(); }
+		});
+
 	});
 
 	function loadVlRequestData() {
@@ -220,7 +235,11 @@ foreach ($actions as $list) {
 					"name": "typeOfAction",
 					"value": $("#typeOfAction").val()
 				});
-				$.ajax({
+				aoData.push({
+						"name": "sessionHash",
+						"value": $("#sessionHash").val()
+					});
+					$.ajax({
 					"dataType": 'json',
 					"type": "POST",
 					"url": sSource,

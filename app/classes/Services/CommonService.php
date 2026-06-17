@@ -565,7 +565,39 @@ final class CommonService
             'ip_address' => $ipAddress,
         ];
 
+        // Per-session identifier (EPT-style) so all actions in one login session can
+        // be filtered together. Guarded: omitted on installs not yet migrated to the
+        // session_hash column, so logging never breaks.
+        if ($this->activityLogHasSessionHash()) {
+            $data['session_hash'] = $this->sessionHash() ?: null;
+        }
+
         $this->db->insert('activity_log', $data);
+    }
+
+    /**
+     * Short, opaque per-session id: sha256 of the PHP session id, first 16 hex
+     * chars (64 bits). Hashed (not the raw session id) so the stored value can't
+     * be replayed against a live session. '' in CLI / when no session exists.
+     */
+    public function sessionHash(): string
+    {
+        if (self::isCliRequest()) {
+            return '';
+        }
+        $sid = session_id();
+        return $sid !== '' && $sid !== false ? substr(hash('sha256', (string) $sid), 0, 16) : '';
+    }
+
+    /** Whether activity_log carries the session_hash column (cached per request). */
+    private function activityLogHasSessionHash(): bool
+    {
+        static $has = null;
+        if ($has === null) {
+            $col = $this->db->rawQueryOne("SHOW COLUMNS FROM `activity_log` LIKE 'session_hash'");
+            $has = !empty($col);
+        }
+        return $has;
     }
 
     public function getUserMappedProvinces($facilityMap = null): mixed
