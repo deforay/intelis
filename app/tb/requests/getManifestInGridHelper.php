@@ -36,6 +36,7 @@ $manifestGrid = [
     'orderColumns' => ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'],
     // TB referrals can arrive under either the package code or the referral code.
     'manifestWhere' => fn(string $code): string => " (vl.sample_package_code = '$code' OR vl.referral_manifest_code = '$code')",
+    'referrable' => true,
     'rowMapper' => function (array $aRow) use ($general): array {
         $row = [];
         $row[] = $aRow['sample_code'];

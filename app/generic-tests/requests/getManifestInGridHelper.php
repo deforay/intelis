@@ -26,6 +26,7 @@ $manifestGrid = [
                         '$code',
                         (SELECT DISTINCT sample_package_code FROM form_generic WHERE remote_sample_code LIKE '$code')
                     ) OR vl.referral_manifest_code = '$code')",
+    'referrable' => true,
     'rowMapper' => function (array $aRow) use ($general): array {
         $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_id']));
         $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_id']));
