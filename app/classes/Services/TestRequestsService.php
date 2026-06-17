@@ -25,6 +25,7 @@ use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
+use App\Services\FacilitiesService;
 
 final class TestRequestsService
 {
@@ -440,6 +441,81 @@ final class TestRequestsService
     }
 
     /**
+     * Cloud LIS verification: the manifest and its samples already live on this
+     * instance, so there is no remote hash to compare. We only need to confirm
+     * the manifest is registered to the current user's testing lab
+     * ($_SESSION['labId']) before activation. Mirrors the ownership branch of
+     * app/remote/v2/verify-manifest.php, run locally.
+     *
+     * @return array{status: string, message?: string, labName?: string}
+     */
+    private function verifyManifestLocally(string $manifestCode, string $testType): array
+    {
+        $labId = (int) ($_SESSION['labId'] ?? $this->commonService->getSystemConfig('sc_testing_lab_id') ?? 0);
+
+        // Is the manifest registered to this user's lab?
+        $this->db->reset();
+        $this->db->where('manifest_code', $manifestCode);
+        $this->db->where('module', $testType);
+        if ($labId > 0) {
+            $this->db->where('lab_id', $labId);
+        }
+        $manifestRecord = $this->db->getOne('specimen_manifests');
+
+        // TB and Custom (generic) tests link samples via referral_manifest_code;
+        // their manifest row may not exist even when samples do.
+        $isReferralModule = ($testType === 'tb' || $testType === 'generic-tests');
+
+        if (empty($manifestRecord)) {
+            // Not ours — is it registered to a different lab, or nowhere?
+            $this->db->reset();
+            $this->db->where('manifest_code', $manifestCode);
+            $this->db->where('module', $testType);
+            $otherLabManifest = $this->db->getOne('specimen_manifests', ['lab_id']);
+
+            if (!empty($otherLabManifest['lab_id']) && (int) $otherLabManifest['lab_id'] !== $labId) {
+                /** @var FacilitiesService $facilitiesService */
+                $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+                $otherLab = $facilitiesService->getFacilityById((int) $otherLabManifest['lab_id']);
+                return [
+                    'status' => 'wrong-lab',
+                    'message' => 'Manifest is registered to a different testing lab.',
+                    'labName' => $otherLab['facility_name'] ?? null,
+                ];
+            }
+
+            if (!$isReferralModule) {
+                return [
+                    'status' => 'not-found',
+                    'message' => 'Manifest not found.',
+                ];
+            }
+            // Referral module with no manifest row: fall through to the sample
+            // presence check below.
+        }
+
+        // Manifest belongs here (or is a referral with samples). Confirm samples
+        // exist locally, then it is ready to activate.
+        $tableName = TestsService::getTestTableName($testType);
+        $primaryKey = TestsService::getPrimaryColumn($testType);
+        $this->db->reset();
+        $this->db->where('sample_package_code', $manifestCode);
+        if ($isReferralModule) {
+            $this->db->orWhere('referral_manifest_code', $manifestCode);
+        }
+        $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
+
+        if (empty($selectedSamples)) {
+            return [
+                'status' => 'not-found',
+                'message' => 'Manifest not found.',
+            ];
+        }
+
+        return ['status' => 'match'];
+    }
+
+    /**
      * Compare the locally computed manifest hash with the remote STS hash via verify-manifest API.
      * Returns verification status, http response info, and raw payload for further handling.
      */
@@ -458,6 +534,15 @@ final class TestRequestsService
         if ($manifestCode === '' || $testType === '') {
             $result['message'] = 'Manifest code and test type are required.';
             return $result;
+        }
+
+        // Cloud LIS: this instance IS the STS that holds the manifest and its
+        // samples, so there is nothing to sync. Verify the manifest is mapped
+        // to the current user's testing lab locally, then let activation run.
+        // This skips the entire remote round-trip (and the remoteURL
+        // requirement below, which is empty on a pure STS box).
+        if ($this->commonService->isCloudLISMode()) {
+            return array_merge($result, $this->verifyManifestLocally($manifestCode, $testType));
         }
 
         $remoteURL = rtrim((string) $this->commonService->getRemoteURL(), '/');
