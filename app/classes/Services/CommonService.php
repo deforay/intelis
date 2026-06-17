@@ -1036,6 +1036,16 @@ final class CommonService
         return $this->getInstanceType() === 'standalone';
     }
 
+    public function isCloudLISMode(): bool
+    {
+        return $this->isSTSInstance() && (($_SESSION['accessType'] ?? null) === 'testing-lab');
+    }
+
+    public function treatAsLIS(): bool
+    {
+        return $this->isLISInstance() || $this->isCloudLISMode();
+    }
+
     /**
      * Whether the current user may act as the testing lab for $facilityId.
      *
