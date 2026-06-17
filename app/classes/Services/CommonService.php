@@ -1058,6 +1058,21 @@ final class CommonService
     }
 
     /**
+     * A cloud-LIS operator who is NOT the super-admin (roleId 1).
+     *
+     * These users get a restricted, lab-scoped admin surface: only User
+     * management and Instruments, both limited to their own lab. The super-admin
+     * (role 1) is exempt by design and keeps full access. Returns false for every
+     * LIS/standalone user and every STS collection-site user, so any gating built
+     * on it is a strict no-op outside cloud-LIS. This is the single chokepoint for
+     * the cloud-LIS admin restrictions -- grep it to find every gated surface.
+     */
+    public function isCloudLisNonAdmin(): bool
+    {
+        return $this->isCloudLISMode() && (int) ($_SESSION['roleId'] ?? 0) !== 1;
+    }
+
+    /**
      * SQL predicate that scopes a sample query to the current user's testing lab.
      *
      * This is the lab axis (which testing lab owns/processes the sample), a

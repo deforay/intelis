@@ -120,6 +120,29 @@ try {
             $data['testing_lab_id'] = $scLab > 0 ? $scLab : null;
         }
 
+        // Cloud-LIS lab operators are confined to their own lab and to non-admin,
+        // non-API testing-lab roles. Enforced here server-side (the dropdown filter
+        // is cosmetic) so a tampered or AJAX POST can NEVER escalate -- e.g. mint an
+        // Admin user -- or assign a user to another lab. No-op for everyone else.
+        if ($general->isCloudLisNonAdmin()) {
+            $role = $db->rawQueryOne(
+                "SELECT role_id, access_type, role_code, status FROM roles WHERE role_id = ?",
+                [(int) ($_POST['role'] ?? 0)]
+            );
+            $roleOk = !empty($role)
+                && $role['status'] === 'active'
+                && $role['access_type'] === 'testing-lab'
+                && (int) $role['role_id'] !== 1
+                && strtoupper((string) ($role['role_code'] ?? '')) !== 'API';
+            if (!$roleOk) {
+                $_SESSION['alertMsg'] = _translate("You are not allowed to assign this role.");
+                header("Location:addUser.php");
+                exit;
+            }
+            // Force the operator's own lab; ignore any posted lab.
+            $data['testing_lab_id'] = (int) ($_SESSION['labId'] ?? 0) ?: null;
+        }
+
         $id = $db->insert('user_details', $data);
 
 

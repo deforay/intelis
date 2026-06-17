@@ -56,11 +56,30 @@ final class AppMenuService
         $this->db->where('parent_id', $parentId);
         $this->db->orderBy("display_order", "asc");
         $menuData = $this->db->get($this->table);
+
+        // Cloud-LIS non-admin operators get a stripped admin section: only User
+        // management and Instruments. This is a WHITELIST (fails closed), so any
+        // future admin page is hidden by default until explicitly allowed here.
+        // No-op for the super-admin and every non-cloud-LIS user. Headers with no
+        // surviving child are pruned by the empty-children check below.
+        $restrictAdmin = $this->commonService->isCloudLisNonAdmin();
+        $allowedAdminLinks = ['/users/users.php', '/instruments/instruments.php'];
+
         $response = [];
         foreach ($menuData as $key => $menu) {
             $menu['access'] = true;
             if ($menu['link'] != "" && !empty($menu['link']) && !str_starts_with((string) $menu['link'], '#')) {
                 $menu['access'] = _isAllowed($menu['link']);
+            }
+
+            if (
+                $restrictAdmin
+                && ($menu['module'] ?? '') === 'admin'
+                && !empty($menu['link'])
+                && !str_starts_with((string) $menu['link'], '#')
+                && !in_array($menu['link'], $allowedAdminLinks, true)
+            ) {
+                $menu['access'] = false;
             }
 
             if ($menu['has_children'] == 'yes') {

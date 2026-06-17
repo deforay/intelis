@@ -35,7 +35,12 @@ if (!empty($userInfo['interface_user_name'])) {
      $interfaceUsers = implode(", ", json_decode((string) $userInfo['interface_user_name'], true));
 }
 
-$query = "SELECT * FROM roles WHERE status='active'";
+// Cloud-LIS non-admin operators may only assign non-admin, non-API testing-lab
+// roles (re-checked server-side in the save helper). No-op otherwise.
+$roleScope = $general->isCloudLisNonAdmin()
+     ? " AND access_type='testing-lab' AND role_id != 1 AND (role_code IS NULL OR role_code != 'API') "
+     : "";
+$query = "SELECT * FROM roles WHERE status='active' $roleScope";
 $result = $db->rawQuery($query);
 
 /** @var FacilitiesService $facilitiesService */
@@ -46,6 +51,10 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $testingLabs = [];
 if ($general->isSTSInstance()) {
      $testingLabs = $facilitiesService->getTestingLabs();
+     // A restricted cloud-LIS operator may only manage their OWN lab's users.
+     if ($general->isCloudLisNonAdmin() && !empty($_SESSION['labId'])) {
+          $testingLabs = array_intersect_key($testingLabs, [(int) $_SESSION['labId'] => 1]);
+     }
 }
 $initialAccessType = $userInfo['access_type'] ?? '';
 $currentTestingLabId = $userInfo['testing_lab_id'] ?? '';

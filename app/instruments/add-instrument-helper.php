@@ -68,6 +68,11 @@ try {
             'approved_by' => $_POST['approvedBy'] ?? null,
             'status' => 'active'
         ];
+        // Cloud-LIS lab operators may only add instruments for their OWN lab.
+        // Force it server-side so a tampered/AJAX POST can't target another lab.
+        if ($general->isCloudLisNonAdmin()) {
+            $data['lab_id'] = (int) ($_SESSION['labId'] ?? 0) ?: null;
+        }
         $id = $db->insert($tableName, $data);
         if ($id !== false && !empty($_POST['configMachineName'])) {
             $counter = count($_POST['configMachineName']);

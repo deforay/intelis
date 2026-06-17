@@ -63,12 +63,24 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-$sQuery = "SELECT * FROM instruments";
-
-if ($sWhere !== '' && $sWhere !== '0') {
-    $sWhere = ' WHERE ' . $sWhere;
-    $sQuery = $sQuery . ' ' . $sWhere;
+// Cloud-LIS lab operators only see their OWN lab's instruments. This endpoint is
+// AJAX (so it bypasses the ACL middleware) -- it must self-guard. No-op otherwise.
+$instrLabScope = '';
+$generalSvc = \App\Registries\ContainerRegistry::get(\App\Services\CommonService::class);
+if ($generalSvc->isCloudLisNonAdmin() && !empty($_SESSION['labId'])) {
+    $instrLabScope = " lab_id = " . (int) $_SESSION['labId'] . " ";
 }
+
+$whereParts = [];
+if ($sWhere !== '' && $sWhere !== '0') {
+    $whereParts[] = $sWhere;
+}
+if ($instrLabScope !== '') {
+    $whereParts[] = $instrLabScope;
+}
+$sWhere = empty($whereParts) ? '' : ' WHERE ' . implode(' AND ', $whereParts);
+
+$sQuery = "SELECT * FROM instruments" . $sWhere;
 
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
@@ -88,7 +100,7 @@ $aResultFilterTotal = $db->rawQuery("SELECT * FROM instruments $sWhere order by 
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
-$aResultTotal = $db->rawQuery("SELECT * FROM instruments");
+$aResultTotal = $db->rawQuery("SELECT * FROM instruments" . ($instrLabScope !== '' ? " WHERE $instrLabScope" : ""));
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
 $iTotal = count($aResultTotal);
