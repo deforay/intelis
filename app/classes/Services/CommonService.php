@@ -565,11 +565,15 @@ final class CommonService
             'ip_address' => $ipAddress,
         ];
 
-        // Per-session identifier (EPT-style) so all actions in one login session can
-        // be filtered together. Guarded: omitted on installs not yet migrated to the
-        // session_hash column, so logging never breaks.
-        if ($this->activityLogHasSessionHash()) {
+        // Forensic context. The proxy-aware IP above can be shared (CGNAT), so the
+        // per-session hash is what actually disambiguates concurrent users, and the
+        // user agent records the device/browser. Each is guarded so logging never
+        // breaks on an install not yet migrated to that column.
+        if ($this->activityLogHasColumn('session_hash')) {
             $data['session_hash'] = $this->sessionHash() ?: null;
+        }
+        if ($this->activityLogHasColumn('user_agent')) {
+            $data['user_agent'] = $this->userAgent() ?: null;
         }
 
         $this->db->insert('activity_log', $data);
@@ -589,15 +593,28 @@ final class CommonService
         return $sid !== '' && $sid !== false ? substr(hash('sha256', (string) $sid), 0, 16) : '';
     }
 
-    /** Whether activity_log carries the session_hash column (cached per request). */
-    private function activityLogHasSessionHash(): bool
+    /** Raw User-Agent of the current request (max 512 chars). '' in CLI. */
+    public function userAgent(): string
     {
-        static $has = null;
-        if ($has === null) {
-            $col = $this->db->rawQueryOne("SHOW COLUMNS FROM `activity_log` LIKE 'session_hash'");
-            $has = !empty($col);
+        if (self::isCliRequest()) {
+            return '';
         }
-        return $has;
+        $request = AppRegistry::get('request');
+        $ua = $request instanceof ServerRequestInterface
+            ? $request->getHeaderLine('User-Agent')
+            : (string) ($_SERVER['HTTP_USER_AGENT'] ?? '');
+        return substr((string) $ua, 0, 512);
+    }
+
+    /** Whether activity_log carries $column (cached per request, per column). */
+    private function activityLogHasColumn(string $column): bool
+    {
+        static $cache = [];
+        if (!array_key_exists($column, $cache)) {
+            $col = $this->db->rawQueryOne("SHOW COLUMNS FROM `activity_log` LIKE '" . $this->db->escape($column) . "'");
+            $cache[$column] = !empty($col);
+        }
+        return $cache[$column];
     }
 
     public function getUserMappedProvinces($facilityMap = null): mixed

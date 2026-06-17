@@ -9,3 +9,15 @@ ALTER TABLE `activity_log` ADD INDEX `idx_activity_log_session_hash` (`session_h
 
 UPDATE `system_config` SET `value` = '5.5.17' WHERE `system_config`.`name` = 'sc_version';
 
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
