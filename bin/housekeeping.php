@@ -21,6 +21,12 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Process\Process;
 
+// Files that must never be pruned from a cleaned directory, regardless of age or
+// size: directory-protection files (.htaccess / index.php — deleting them would
+// expose or re-enable script execution in upload/temp dirs) and VCS marker files
+// that keep otherwise-empty dirs tracked. Used by every cleanup path below.
+const HOUSEKEEPING_PROTECTED_FILES = ['.htaccess', 'index.php', '.gitkeep', '.hgkeep'];
+
 // Self-fork into the background. Housekeeping walks the whole filesystem under
 // the instance scanning for old temp files / logs; on a busy install this can
 // take many minutes. Called from `composer post-update` (@housekeeping), so
@@ -136,8 +142,8 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
             );
 
             foreach ($iterator as $fileInfo) {
-                if (in_array($fileInfo->getFilename(), ['.gitkeep', '.hgkeep'], true)) {
-                    continue; // keep marker files
+                if (in_array($fileInfo->getFilename(), HOUSEKEEPING_PROTECTED_FILES, true)) {
+                    continue; // keep protection / marker files
                 }
                 if (!$fileInfo->isFile()) {
                     continue;
@@ -195,10 +201,16 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
     $targetSize = $maxSizeBytes ? (int) ($maxSizeBytes * 0.8) : 0; // Clean to 80% of limit
     $streamingSucceeded = false;
 
-    // Try streaming with find + sort to avoid loading everything into memory
+    // Try streaming with find + sort to avoid loading everything into memory.
+    // Exclude the protected files (same set as the PHP cleanup paths).
+    $findExclusions = implode(' ', array_map(
+        static fn(string $name): string => '! -name ' . escapeshellarg($name),
+        HOUSEKEEPING_PROTECTED_FILES
+    ));
     $findCmd = sprintf(
-        'find %s -type f ! -name \'.htaccess\' ! -name \'index.php\' ! -name \'.gitkeep\' ! -name \'.hgkeep\' -printf \'%%T@|%%p|%%s\n\' 2>/dev/null | sort -n',
-        escapeshellarg($folder)
+        'find %s -type f %s -printf \'%%T@|%%p|%%s\n\' 2>/dev/null | sort -n',
+        escapeshellarg($folder),
+        $findExclusions
     );
 
     $process = Process::fromShellCommandline($findCmd);
@@ -294,11 +306,8 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
                     continue;
                 }
                 $basename = $file->getFilename();
-                if (in_array($basename, ['.htaccess', 'index.php'], true)) {
-                    continue;
-                }
-                if (in_array($basename, ['.gitkeep', '.hgkeep'], true)) {
-                    continue; // keep marker files
+                if (in_array($basename, HOUSEKEEPING_PROTECTED_FILES, true)) {
+                    continue; // keep protection / marker files
                 }
                 $mtime = $file->getMTime();
                 $files[] = [
