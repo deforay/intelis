@@ -75,6 +75,7 @@ $errorInfo ??= [];
       position: absolute;
       top: 20px;
       right: 20px;
+      z-index: 10;
       background-color: #dc3545;
       border: 1px solid #dc3545;
       color: white;
