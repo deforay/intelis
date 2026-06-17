@@ -257,35 +257,24 @@ $rInfo = $db->query($resourcesQuery);
 							</div>
 						</div>
 						<fieldset>
-							<div class="form-group">
-								<label class="col-sm-2 control-label">
-									<?php echo _translate("Note"); ?>:
-								</label>
-								<div class="col-sm-10">
-									<p class="form-control-static">
-										<?php echo _translate('Unless you choose the access privilege, the people belonging to this role will not be able to access other privileges like add, edit etc.'); ?>.
-									</p>
+							<hr style="margin: 18px 0 14px;">
+							<h4 style="font-weight: bold; margin: 0 0 6px;"><?php echo _translate("Privileges"); ?></h4>
+							<p class="text-muted" style="margin: 0 0 14px;">
+								<?php echo _translate('Unless you choose the access privilege, the people belonging to this role will not be able to access other privileges like add, edit etc.'); ?>.
+							</p>
+							<div class="row" style="margin-bottom: 12px;">
+								<div class="col-sm-5">
+									<div class="privilege-switch super-switch">
+										<input type="radio" id="allowAllPrivileges" name="allPrivilegesRadio" value="yes" />
+										<label for="allowAllPrivileges"><?php echo _translate("Select All"); ?></label>
+										<input type="radio" name="allPrivilegesRadio" id="denyAllPrivileges" value="no" />
+										<label for="denyAllPrivileges"><?php echo _translate("Unselect All"); ?></label>
+									</div>
+								</div>
+								<div class="col-sm-7">
+									<input type="text" class="form-control" id="searchInput" placeholder="<?php echo _translate('Search permissions...'); ?>" onkeyup="searchPermissions()">
 								</div>
 							</div>
-							<div class="form-group" style="padding-left:138px;">
-								<div class="privilege-switch super-switch">
-
-									<input type="radio" class='' id="allowAllPrivileges" name="allPrivilegesRadio" value="yes" /></a>
-									<label for="allowAllPrivileges">
-										<?php echo _translate("Select All"); ?>
-									</label>
-									<input type="radio" class='' name="allPrivilegesRadio" id="denyAllPrivileges" name="switch-one" value="no" /></a>
-									<label for="denyAllPrivileges">
-										<?php echo _translate("Unselect All"); ?>
-									</label>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md-12 col-lg-12">
-									<input type="text" class="form-control " id="searchInput" placeholder="Search Permissions..." onkeyup="searchPermissions()">
-								</div>
-							</div>
-							<br>
 							<div class="bs bs-tabs">
 								<?php require APPLICATION_PATH . '/roles/_privilege-matrix.php'; ?>
 
