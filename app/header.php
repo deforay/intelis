@@ -30,24 +30,29 @@ $skin = "skin-blue";
 
 $trainingMode = isset($arr['training_mode']) && trim((string) $arr['training_mode']) === 'yes';
 
-$logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>LIS</span>";
+$shortCode = 'LIS';
+$logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>$shortCode</span>";
 $smallLogoName = "<img src='/assets/img/flask.png'>";
 $systemDisplayName = _translate("Lab Sample Management Module");
 $shortName = _translate("Sample Management");
-$shortCode = 'LIS';
 if ($general->isSTSInstance()) {
 	$skin = "skin-red";
+	$shortCode = 'STS';
 	$systemDisplayName = _translate("Sample Tracking System");
-	$logoName = "<span class='fa fa-medkit'></span> STS";
+	$logoName = "<span class='fa fa-medkit'></span> $shortCode";
 	$smallLogoName = "<span class='fa fa-medkit'></span>";
 	$shortName = _translate("Sample Tracking");
-	$shortCode = 'STS';
 
 	// A testing-lab user works the lab (LIS) side of the STS. Give it a
 	// distinct skin so it reads apart from both the red STS-admin view and
 	// the blue standalone LIS.
 	if (($_SESSION['accessType'] ?? '') === 'testing-lab') {
 		$skin = "skin-purple";
+		$shortCode = "Cloud LIS";
+		$logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>$shortCode</span>";
+		$smallLogoName = "<img src='/assets/img/flask.png'>";
+		$systemDisplayName = _translate("Lab Sample Management Module");
+		$shortName = _translate("Sample Management");
 	}
 }
 
@@ -137,40 +142,40 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 	// they only feed the client-side searchText. Wrapped in _jsTranslate() so a
 	// deployment's translation file can localize them. Keyed by module + link patterns.
 	$spotlightModuleKeywords = [
-		'dashboard'     => ['home', 'overview', 'kpi', 'stats', 'summary'],
-		'vl'            => ['viral load', 'hiv rna', 'vl', 'plasma'],
-		'eid'           => ['early infant diagnosis', 'pcr', 'dbs', 'infant', 'baby', 'dna pcr'],
-		'tb'            => ['tuberculosis', 'genexpert', 'mtb', 'sputum', 'rif'],
-		'covid19'       => ['covid', 'covid-19', 'sars-cov-2', 'corona', 'coronavirus', 'antigen'],
-		'hepatitis'     => ['hepatitis', 'hep b', 'hep c', 'hbv', 'hcv', 'viral hepatitis'],
+		'dashboard' => ['home', 'overview', 'kpi', 'stats', 'summary'],
+		'vl' => ['viral load', 'hiv rna', 'vl', 'plasma'],
+		'eid' => ['early infant diagnosis', 'pcr', 'dbs', 'infant', 'baby', 'dna pcr'],
+		'tb' => ['tuberculosis', 'genexpert', 'mtb', 'sputum', 'rif'],
+		'covid19' => ['covid', 'covid-19', 'sars-cov-2', 'corona', 'coronavirus', 'antigen'],
+		'hepatitis' => ['hepatitis', 'hep b', 'hep c', 'hbv', 'hcv', 'viral hepatitis'],
 		'generic-tests' => ['other tests', 'lab test', 'generic'],
-		'admin'         => ['settings', 'configuration', 'setup', 'manage'],
+		'admin' => ['settings', 'configuration', 'setup', 'manage'],
 	];
 	$spotlightLinkKeywords = function (string $link, string $title): array {
 		$hay = _toLowerCase($link . ' ' . $title);
 		$map = [
 			'add-request|addvlrequest|addsamples|add-samples|add new request' => ['register', 'new sample', 'enter sample', 'accession', 'create request'],
-			'requests|view-requests'        => ['worklist', 'pending', 'samples', 'test list'],
+			'requests|view-requests' => ['worklist', 'pending', 'samples', 'test list'],
 			'testresult|manual-results|enter result' => ['enter result', 'edit result', 'report value'],
-			'approval|result-status'        => ['approve', 'authorize', 'verify', 'release', 'sign off', 'review'],
-			'failed'                        => ['hold', 'retest', 'repeat', 'rerun'],
-			'print'                         => ['report', 'pdf', 'printout'],
-			'export'                        => ['download', 'excel', 'csv', 'extract data'],
-			'rejection|reject'              => ['rejected', 'declined', 'discarded'],
-			'manifest|referral'             => ['referral', 'shipment', 'transfer', 'courier', 'dispatch'],
-			'batch'                         => ['batches', 'worklist', 'run'],
-			'import'                        => ['upload', 'load results', 'analyzer file'],
-			'sample-status|sample status'   => ['tracking', 'tat', 'turnaround', 'where is sample'],
-			'users'                         => ['accounts', 'staff', 'login', 'people'],
-			'roles'                         => ['permissions', 'access control', 'privileges'],
-			'facilities'                    => ['labs', 'clinics', 'sites', 'health facility', 'testing lab'],
-			'instruments'                   => ['analyzer', 'machine', 'equipment', 'device'],
-			'audit-trail'                   => ['changes', 'history', 'who changed'],
-			'activity-log'                  => ['user activity', 'logins', 'actions'],
-			'sync'                          => ['api', 'data sync', 'sts', 'server'],
-			'global-config'                 => ['settings', 'setup', 'preferences'],
-			'geographical'                  => ['province', 'district', 'region', 'location'],
-			'control'                       => ['qc', 'quality control'],
+			'approval|result-status' => ['approve', 'authorize', 'verify', 'release', 'sign off', 'review'],
+			'failed' => ['hold', 'retest', 'repeat', 'rerun'],
+			'print' => ['report', 'pdf', 'printout'],
+			'export' => ['download', 'excel', 'csv', 'extract data'],
+			'rejection|reject' => ['rejected', 'declined', 'discarded'],
+			'manifest|referral' => ['referral', 'shipment', 'transfer', 'courier', 'dispatch'],
+			'batch' => ['batches', 'worklist', 'run'],
+			'import' => ['upload', 'load results', 'analyzer file'],
+			'sample-status|sample status' => ['tracking', 'tat', 'turnaround', 'where is sample'],
+			'users' => ['accounts', 'staff', 'login', 'people'],
+			'roles' => ['permissions', 'access control', 'privileges'],
+			'facilities' => ['labs', 'clinics', 'sites', 'health facility', 'testing lab'],
+			'instruments' => ['analyzer', 'machine', 'equipment', 'device'],
+			'audit-trail' => ['changes', 'history', 'who changed'],
+			'activity-log' => ['user activity', 'logins', 'actions'],
+			'sync' => ['api', 'data sync', 'sts', 'server'],
+			'global-config' => ['settings', 'setup', 'preferences'],
+			'geographical' => ['province', 'district', 'region', 'location'],
+			'control' => ['qc', 'quality control'],
 		];
 		$out = [];
 		foreach ($map as $patterns => $words) {
@@ -374,7 +379,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
 						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
-						?>
+							?>
 							<li class="user-menu">
 								<a onclick="setCrossLogin();"
 									href="<?= rtrim((string) SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode((string) $_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode((string) $_SESSION['userName']); ?>"
@@ -396,7 +401,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 							<ul class="dropdown-menu">
 								<?php
 								if (!empty($arr['edit_profile']) && $arr['edit_profile'] == 'yes') {
-								?>
+									?>
 									<li class="user-footer">
 										<a href="/users/edit-profile.php" class="">
 											<?= _translate("Edit Profile"); ?>
@@ -439,7 +444,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 						if ($menu['is_header'] == 'yes') {
 							echo '<li class="header">' . $menu['display_text'];
 						} else {
-					?>
+							?>
 
 							<li class="<?= $classNames; ?>">
 								<?php
@@ -459,7 +464,7 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 							<?php if ($menu['has_children'] == "yes") {
 								if ($menu['is_header'] == 'no') { ?>
 									<ul class="treeview-menu">
-									<?php
+										<?php
 								}
 
 								foreach ($menu['children'] as $subMenu) {
@@ -496,20 +501,20 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 															$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
 															$innerPages = "data-inner-pages='$dataInnerPages'";
 														}
-													?>
+														?>
 														<li class="<?= $childMenu['additional_class_names'] ?>">
 															<a href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
 																<i class="<?= $childMenu['icon'] ?>"></i>
 																<?= _translate($childMenu['display_text']); ?>
 															</a>
 														</li>
-													<?php
+														<?php
 													}
 													?>
 												</ul>
 											<?php } ?>
 										</li>
-									<?php
+										<?php
 
 								} ?>
 									<?php if ($menu['is_header'] == 'no') { ?>
@@ -517,11 +522,11 @@ $langCode = explode('_', (string) $locale)[0]; // Gets 'en' from 'en_US'
 								<?php } ?>
 							<?php } ?>
 
-							</li>
+						</li>
 
-						<?php }
+					<?php }
 
-						?>
+					?>
 				</ul>
 
 			</section>
