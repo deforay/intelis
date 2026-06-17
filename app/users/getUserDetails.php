@@ -35,6 +35,14 @@ if (!empty($columnSearch) && $columnSearch != '') {
     $sWhere[] = $columnSearch;
 }
 
+if (!empty($_POST['role'])) {
+    $sWhere[] = "ud.role_id = " . (int) $_POST['role'];
+}
+
+if (!empty($_POST['status'])) {
+    $sWhere[] = "ud.status = '" . $db->escape($_POST['status']) . "'";
+}
+
 $sQuery = "SELECT ud.user_id,
             ud.user_name,
             ud.login_id,

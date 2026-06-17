@@ -1,7 +1,16 @@
 <?php
+
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
+
 $title = _translate("Users");
 
 require_once APPLICATION_PATH . '/header.php';
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+$roles = $db->rawQuery("SELECT role_id, role_name FROM roles WHERE status='active' GROUP BY role_code ORDER BY role_name ASC");
 ?>
 
 <!-- Content Wrapper. Contains page content -->
@@ -18,6 +27,44 @@ require_once APPLICATION_PATH . '/header.php';
   <!-- Main content -->
   <section class="content">
     <div class="row">
+      <div class="col-xs-12">
+        <div class="box">
+          <div id="advanceFilter" class="collapse" style="margin-left:1%;margin-top:20px;width:98%;">
+            <table class="table" aria-describedby="table" aria-hidden="true">
+              <tbody>
+                <tr>
+                  <td><strong><?= _translate("Role"); ?>&nbsp;:</strong></td>
+                  <td>
+                    <select class="form-control select2-element" id="role" name="role"
+                      title="<?php echo _translate('Please select Role'); ?>">
+                      <option value=""><?php echo _translate("-- Select --"); ?></option>
+                      <?php foreach ($roles as $role) { ?>
+                        <option value="<?php echo $role['role_id']; ?>"><?php echo $role['role_name']; ?></option>
+                      <?php } ?>
+                    </select>
+                  </td>
+                  <td><strong><?= _translate("Status"); ?>&nbsp;:</strong></td>
+                  <td>
+                    <select class="form-control select2-element" id="status" name="status"
+                      title="<?php echo _translate('Please select Status'); ?>">
+                      <option value=""><?php echo _translate("-- Select --"); ?></option>
+                      <option value="active"><?php echo _translate("Active"); ?></option>
+                      <option value="inactive"><?php echo _translate("Inactive"); ?></option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4">&nbsp;<input type="button" onclick="searchResultData();" value="<?= _translate("Search"); ?>"
+                      class="btn btn-success btn-sm">
+                    <button class="btn btn-danger btn-sm"
+                      onclick="document.location.href = document.location"><span><?= _translate("Reset"); ?></span></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
       <div class="col-xs-12">
 
 
@@ -52,9 +99,13 @@ require_once APPLICATION_PATH . '/header.php';
           <div class="box-header with-border">
 
             <?php if (_isAllowed("/users/addUser.php")) { ?>
-              <a href="addUser.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em>
+              <a href="addUser.php" class="btn btn-primary pull-right" style="margin-left: 1%;"> <em class="fa-solid fa-plus"></em>
                 <?php echo _translate("Add User"); ?></a>
             <?php } ?>
+            <button class="btn btn-ghost btn-icon pull-right" data-toggle="collapse" data-target="#advanceFilter"
+              aria-expanded="false" aria-controls="advanceFilter">
+              <em class="fa fa-filter"></em><span class="text"><?= _translate("Advanced Search") ?></span>
+            </button>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
 
@@ -99,6 +150,22 @@ require_once APPLICATION_PATH . '/header.php';
   });
 
   $(document).ready(function () {
+
+    var $btn = $('[data-target="#advanceFilter"]');
+    $('#advanceFilter').on('shown.bs.collapse', function () {
+      $btn.find('.text').text('<?= _translate("Hide Filters") ?>');
+    })
+      .on('hidden.bs.collapse', function () {
+        $btn.find('.text').text('<?= _translate("Advanced Search") ?>');
+      });
+
+    $("#role").select2({
+      placeholder: "<?php echo _translate("Select Role"); ?>"
+    });
+    $("#status").select2({
+      placeholder: "<?php echo _translate("Select Status"); ?>"
+    });
+
     oTable = $('#userDataTable').dataTable({
       "bJQueryUI": false,
       "bAutoWidth": false,
@@ -135,6 +202,14 @@ require_once APPLICATION_PATH . '/header.php';
       "bServerSide": true,
       "sAjaxSource": "/users/getUserDetails.php",
       "fnServerData": function (sSource, aoData, fnCallback) {
+        aoData.push({
+          "name": "role",
+          "value": $("#role").val()
+        });
+        aoData.push({
+          "name": "status",
+          "value": $("#status").val()
+        });
         $.ajax({
           "dataType": 'json',
           "type": "POST",
@@ -145,6 +220,12 @@ require_once APPLICATION_PATH . '/header.php';
       }
     });
   });
+
+  function searchResultData() {
+    $.blockUI();
+    oTable.fnDraw();
+    $.unblockUI();
+  }
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

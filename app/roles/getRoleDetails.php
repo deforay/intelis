@@ -41,6 +41,18 @@ if (isset($_POST['iSortCol_0'])) {
 /* Hide API User in data grid */
 $sWhere = [];
 $sWhere[] = " role_code != 'API'";
+
+if (!empty($_POST['accessType'])) {
+    $sWhere[] = " access_type = '" . $db->escape($_POST['accessType']) . "'";
+}
+
+if (!empty($_POST['status'])) {
+    $sWhere[] = " status = '" . $db->escape($_POST['status']) . "'";
+}
+
+if (!empty($_POST['permission'])) {
+    $sWhere[] = " role_id IN (SELECT role_id FROM roles_privileges_map WHERE privilege_id = " . (int) $_POST['permission'] . ")";
+}
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
