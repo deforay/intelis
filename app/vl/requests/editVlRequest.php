@@ -93,6 +93,11 @@ $vlTestReasonResult = $db->query($vlTestReasonQuery);
 $vlQuery = "SELECT * FROM form_vl WHERE vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, [$id]);
 
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($vlQueryInfo['facility_id'])) {
+    $general->assertFacilityAllowed((int) $vlQueryInfo['facility_id']);
+}
 
 $vlQueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($vlQueryInfo['patient_dob'] ?? '');
 $vlQueryInfo['test_request_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['test_request_date'] ?? '');

@@ -87,6 +87,12 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 $vlQuery = "SELECT * from form_vl where vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, [$id]);
 
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($vlQueryInfo['facility_id'])) {
+    $general->assertFacilityAllowed((int) $vlQueryInfo['facility_id']);
+}
+
 if (isset($vlQueryInfo['patient_dob']) && trim((string) $vlQueryInfo['patient_dob']) !== '' && $vlQueryInfo['patient_dob'] != '0000-00-00') {
 	$vlQueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($vlQueryInfo['patient_dob']);
 } else {

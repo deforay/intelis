@@ -90,6 +90,11 @@ $cd4TestReasonResult = $db->query($cd4TestReasonQuery);
 $cd4Query = "SELECT * FROM form_cd4 WHERE cd4_id=?";
 $cd4QueryInfo = $db->rawQueryOne($cd4Query, [$id]);
 
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($cd4QueryInfo['facility_id'])) {
+    $general->assertFacilityAllowed((int) $cd4QueryInfo['facility_id']);
+}
 
 $cd4QueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($cd4QueryInfo['patient_dob'] ?? '');
 

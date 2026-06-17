@@ -67,6 +67,12 @@ $eidResults = $eidService->getEidResults();
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($eidInfo['facility_id'])) {
+	$general->assertFacilityAllowed((int) $eidInfo['facility_id']);
+}
+
 //Funding source list
 $fundingSourceList = $general->getFundingSources();
 

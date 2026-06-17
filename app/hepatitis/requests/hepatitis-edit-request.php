@@ -76,6 +76,12 @@ $riskFactorsInfo = $hepatitisService->getRiskFactorsByHepatitisId($id);
 $hepatitisQuery = "SELECT * FROM form_hepatitis where hepatitis_id=?";
 $hepatitisInfo = $db->rawQueryOne($hepatitisQuery, [$id]);
 
+// Facility isolation: a mapped STS user may only open samples for facilities in
+// their facilityMap. No-op on LIS and for unmapped (all-access) users.
+if (!empty($hepatitisInfo['facility_id'])) {
+    $general->assertFacilityAllowed((int) $hepatitisInfo['facility_id']);
+}
+
 
 if (isset($hepatitisInfo['sample_collection_date']) && trim((string) $hepatitisInfo['sample_collection_date']) !== '' && $hepatitisInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $hepatitisInfo['sample_collection_date'];
