@@ -126,7 +126,8 @@ final class TestsService
                 'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_hepatitis_sample_type',
-                'serviceClass' => HepatitisService::class
+                'serviceClass' => HepatitisService::class,
+                'isReferrable' => false
             ],
             'tb' => [
                 'testName' => _translate('Tubercolosis', escapeTextOrContext: true),
@@ -140,7 +141,7 @@ final class TestsService
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_tb_sample_type',
                 'serviceClass' => TbService::class,
-                'referralManifest' => true
+                'isReferrable' => true
             ],
             'generic-tests' => [
                 'testName' => _translate('Other Tests', escapeTextOrContext: true),
@@ -154,7 +155,7 @@ final class TestsService
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_generic_sample_types',
                 'serviceClass' => GenericTestsService::class,
-                'referralManifest' => true
+                'isReferrable' => true
             ]
         ];
 
@@ -183,7 +184,7 @@ final class TestsService
      */
     public static function hasReferralManifest(string $testType): bool
     {
-        return !empty(self::getTestTypes()[$testType]['referralManifest']);
+        return !empty(self::getTestTypes()[$testType]['isReferrable']);
     }
 
     public static function getTestName(string $testType): string

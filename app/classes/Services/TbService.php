@@ -29,20 +29,10 @@ final class TbService extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['tb_sample_code'] ?? 'MMYY';
             $params['prefix'] ??= $globalConfig['tb_sample_code_prefix'] ?? $this->shortCode;
-            // Lab-aware postfix. LIS: single lab from sc_testing_lab_id. STS: trust the
-            // queued lab_id + access_type (see AbstractTestService::stsLabPostfix). The
-            // session-based userActsAsLabForFacility() check does NOT work here because
-            // the code-minting paths (API, CLI worker, activation) have no $_SESSION.
-            $postFix = '';
-            if ($this->commonService->isLISInstance()) {
-                $code = $this->labFacilityCode((int) ($this->commonService->getSystemConfig('sc_testing_lab_id') ?? 0));
-                if ($code !== '') {
-                    $postFix = "-" . $code;
-                }
-            } else {
-                $postFix = $this->stsLabPostfix($params);
-            }
-            $params['postfix'] ??= $postFix;
+            // TB is referable to other labs, so the testing lab is encoded on BOTH LIS and
+            // STS (see AbstractTestService::referableLabPostfix). Session-independent: the
+            // code-minting paths (API, CLI worker, activation) have no $_SESSION.
+            $params['postfix'] ??= $this->referableLabPostfix($params);
 
             try {
                 return $this->generateSampleCode($this->table, $params);
