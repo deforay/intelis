@@ -41,9 +41,13 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
 
 $isLisInstance = $general->isLISInstance();
 
+// "Referred from" = the user's own lab. Known on LIS (the install lab) and for a
+// testing-lab user on STS (cloud-LIS, their per-user lab); in both cases the
+// field is fixed and hidden. Regular STS (collection-site) users still pick it.
+// Falls back to sc_testing_lab_id so existing LIS sessions behave exactly as before.
 $fromLabId = null;
-if ($isLisInstance) {
-    $fromLabId = $general->getSystemConfig('sc_testing_lab_id');
+if ($general->treatAsLIS()) {
+    $fromLabId = $_SESSION['labId'] ?? ($isLisInstance ? $general->getSystemConfig('sc_testing_lab_id') : null);
 }
 
 ?>
@@ -75,7 +79,7 @@ if ($isLisInstance) {
                 action="save-tb-referral-helper.php">
                 <div class="box-body" style="margin-top:20px;">
                     <div class="row">
-                         <?php if ($isLisInstance && !empty($fromLabId)) { ?>
+                         <?php if (!empty($fromLabId)) { ?>
                         <input type="hidden" name="referralLabId" id="referralLabId"
                             value="<?php echo htmlspecialchars((string) $fromLabId); ?>" />
                     <?php } else { ?>
@@ -191,7 +195,7 @@ if ($isLisInstance) {
 
 <script type="text/javascript">
     $(document).ready(function() {
-         <?php if (!($isLisInstance && !empty($fromLabId))) { ?>
+         <?php if (empty($fromLabId)) { ?>
             $("#referralLabId").select2({
                 width: '100%',
                 placeholder: "<?php echo _translate("Select Referral Lab"); ?>"
