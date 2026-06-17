@@ -7,3 +7,15 @@ ALTER TABLE `activity_log` ADD `user_agent` VARCHAR(512) NULL DEFAULT NULL AFTER
 
 UPDATE `system_config` SET `value` = '5.5.18' WHERE `system_config`.`name` = 'sc_version';
 
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
