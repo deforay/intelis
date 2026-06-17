@@ -137,6 +137,10 @@ if (!empty($_SESSION['facilityMap'])) {
     $sWhere[] = "  vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
 }
 
+if ($labScope = $general->labScopeWhere('vl')) {
+    $sWhere[] = $labScope;
+}
+
 // Untested samples (no result yet) are still cancellable.
 if (!$cancellableFilter) {
     $sWhere[] =  ' vl.result not like "" AND vl.result is not null ';

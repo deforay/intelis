@@ -75,6 +75,10 @@ if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !
 if (!empty($_SESSION['facilityMap'])) {
     $sWhere .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
+
+if ($labScope = $general->labScopeWhere('vl')) {
+    $sWhere .= " AND $labScope";
+}
 $sWhere .= " AND tl.test_type = 'vl' ";
 
 $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';

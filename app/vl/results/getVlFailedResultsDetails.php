@@ -175,6 +175,10 @@ try {
         $sWhere[] = "  vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
     }
 
+    if ($labScope = $general->labScopeWhere('vl')) {
+        $sWhere[] = $labScope;
+    }
+
     //  $sWhere[] = ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
     if ($sWhere !== []) {
         $sWhere = implode(' AND ', $sWhere);

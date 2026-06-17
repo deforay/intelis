@@ -131,6 +131,10 @@ if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
      $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
+if ($labScope = $general->labScopeWhere('vl')) {
+    $sWhere[] = $labScope;
+}
+
 $sWhere = $sWhere === [] ? [] : ' WHERE ' . implode(' AND ', $sWhere);
 $sQuery = $sQuery . ' ' . $sWhere . ' GROUP BY f.facility_id, YEAR(vl.sample_tested_datetime), MONTH(vl.sample_tested_datetime)';
 if ($_POST['targetType'] == 1) {

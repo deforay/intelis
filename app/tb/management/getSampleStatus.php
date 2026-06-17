@@ -23,6 +23,10 @@ if (!empty($_SESSION['facilityMap'])) {
 	$whereConditionArray[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
+if ($labScope = $general->labScopeWhere('vl')) {
+    $whereConditionArray[] = $labScope;
+}
+
 $whereCondition = implode(" AND ", $whereConditionArray);
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";

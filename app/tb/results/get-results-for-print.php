@@ -206,6 +206,10 @@ if (!isset($_POST['status']) || trim((string) $_POST['status']) === '') {
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
+
+if ($labScope = $general->labScopeWhere('vl')) {
+    $sWhere[] = $labScope;
+}
 if ($sWhere !== []) {
     $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
 }

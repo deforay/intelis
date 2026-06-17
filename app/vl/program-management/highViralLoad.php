@@ -29,6 +29,10 @@ $fQuery = "SELECT * FROM facility_details WHERE status='active' Order By facilit
 if (!empty($_SESSION['facilityMap'])) {
 	$fQuery .= " AND facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
+
+if ($labScope = $general->labScopeWhere('')) {
+    $fQuery .= " AND $labScope";
+}
 $fResult = $db->rawQuery($fQuery);
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type = 'vl' AND batch_status='completed'";
