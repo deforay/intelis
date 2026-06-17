@@ -1141,6 +1141,14 @@ final class CommonService
         if (!$this->isSTSInstance()) {
             return;
         }
+        // No facility supplied means there is nothing to scope. facility_id is
+        // nullable -- a sample can legitimately be saved without a facility
+        // (e.g. lab-entered samples) -- so a 0/empty id must NOT be treated as
+        // "facility #0" and rejected. A real cross-facility write always carries
+        // a facility id > 0, which is still checked below.
+        if ($facilityId <= 0) {
+            return;
+        }
         $facilityMap = $_SESSION['facilityMap'] ?? '';
         // Unmapped users have access to all facilities, so there is nothing to
         // assert. This mirrors the list-view behaviour, which only adds the
@@ -1148,12 +1156,11 @@ final class CommonService
         if (empty($facilityMap)) {
             return;
         }
-        $allowed = $facilityId > 0
-            && in_array(
-                $facilityId,
-                array_map('intval', explode(',', (string) $facilityMap)),
-                true
-            );
+        $allowed = in_array(
+            $facilityId,
+            array_map('intval', explode(',', (string) $facilityMap)),
+            true
+        );
         if (!$allowed) {
             throw new SystemException(_translate('You are not authorized for this facility'), 403);
         }

@@ -386,4 +386,8 @@ try {
         'last_db_error' => $db->getLastError(),
         'last_db_query' => $db->getLastQuery()
     ]);
+    // Don't leave the user staring at a blank page: surface a message and send
+    // them back to the form instead of dying silently after logging.
+    $_SESSION['alertMsg'] = _translate("Unable to add this TB sample. Please try again later");
+    header("Location:/tb/requests/tb-add-request.php");
 }
