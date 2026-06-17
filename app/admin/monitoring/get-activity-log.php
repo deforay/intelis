@@ -9,160 +9,169 @@ use App\Services\DatabaseService;
 use Psr\Http\Message\ServerRequestInterface;
 use App\Registries\ContainerRegistry;
 
-// Sanitized values from $request object
+// Activity-log feed (EPT-style card timeline). Returns JSON:
+//   { page, pageSize, total, totalPages, items: [ {...} ] }
+// Each item carries everything the feed UI renders: action text, actionType
+// (drives the icon/colour), actor name/role/email/initials, IP, user agent,
+// session hash, context chip, and grouped date/time fields.
+
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 try {
+    // ---- paging ----
+    $page = max(1, (int) ($_POST['page'] ?? 1));
+    $pageSize = (int) ($_POST['pageSize'] ?? 25);
+    if ($pageSize < 1 || $pageSize > 200) {
+        $pageSize = 25;
+    }
+    $offset = ($page - 1) * $pageSize;
 
-     /** @var CommonService $general */
-     $general = ContainerRegistry::get(CommonService::class);
-     $tableName = "activity_log";
-     $primaryKey = "log_id";
+    // ---- filters ----
+    $where = [];
 
+    if (!empty($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
+        [$startDate, $endDate] = DateUtility::convertDateRange($_POST['dateRange'], includeTime: true);
+        $where[] = ' a.date_time BETWEEN "' . $startDate . '" AND "' . $endDate . '"';
+    }
 
-     $aColumns = ['action', 'event_type', 'r.display_name', "DATE_FORMAT(date_time,'%d-%b-%Y')"];
-     $orderColumns = ['action', 'event_type', 'r.display_name', 'date_time'];
+    if (!empty($_POST['createdBy']) && trim((string) $_POST['createdBy']) !== '') {
+        $where[] = ' a.user_id = "' . $db->escape($_POST['createdBy']) . '"';
+    }
 
-     /* Indexed column (used for fast and accurate table cardinality) */
-     $sIndexColumn = $primaryKey;
+    if (!empty($_POST['type']) && trim((string) $_POST['type']) !== '') {
+        $where[] = ' a.event_type = "' . $db->escape($_POST['type']) . '"';
+    }
 
-     $sTable = $tableName;
-     /*
-      * Paging
-      */
-     $sOffset = $sLimit = null;
-     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-          $sOffset = $_POST['iDisplayStart'];
-          $sLimit = $_POST['iDisplayLength'];
-     }
+    if (!empty($_POST['sessionHash']) && trim((string) $_POST['sessionHash']) !== '') {
+        $where[] = ' a.session_hash = "' . $db->escape(trim((string) $_POST['sessionHash'])) . '"';
+    }
 
+    // Source toggle: logins, actions (everything that isn't a login event), or all.
+    $loginEvents = "('login','log-out','login-fail','logout')";
+    $source = (string) ($_POST['source'] ?? 'all');
+    if ($source === 'logins') {
+        $where[] = " a.event_type IN $loginEvents";
+    } elseif ($source === 'actions') {
+        $where[] = " a.event_type NOT IN $loginEvents";
+    }
 
+    // Free-text search across the action text and the actor name.
+    if (!empty($_POST['search']) && trim((string) $_POST['search']) !== '') {
+        $term = $db->escape(trim((string) $_POST['search']));
+        $where[] = ' (a.action LIKE "%' . $term . '%" OR ud.user_name LIKE "%' . $term . '%" OR a.event_type LIKE "%' . $term . '%")';
+    }
 
-     $sOrder = "";
-     if (isset($_POST['iSortCol_0'])) {
-          $sOrder = "";
-          for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-               if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-                    " . ($_POST['sSortDir_' . $i]) . ", ";
-               }
-          }
-          $sOrder = substr_replace($sOrder, "", -2);
-     }
+    // Lab scope: cloud-LIS lab operator sees only their lab's users' activity
+    // (LIS = own lab + unassigned; cloud-LIS = strict, fail closed; STS = all).
+    if ($scope = $general->labAdminScopeWhere('testing_lab_id', 'ud')) {
+        $where[] = $scope;
+    }
 
+    $whereSql = $where === [] ? '' : ' WHERE ' . implode(' AND ', $where);
 
+    $from = " FROM activity_log as a
+              LEFT JOIN user_details as ud ON a.user_id = ud.user_id
+              LEFT JOIN roles as r ON ud.role_id = r.role_id
+              LEFT JOIN resources as res ON a.resource = res.resource_id ";
 
-     $sWhere = [];
-     if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-          $searchArray = explode(" ", (string) $_POST['sSearch']);
-          $sWhereSub = "";
-          foreach ($searchArray as $search) {
-               $sWhereSub .= " (";
-               $colSize = count($aColumns);
+    // total (for pagination)
+    $countRow = $db->rawQueryOne("SELECT COUNT(*) AS c FROM activity_log as a LEFT JOIN user_details as ud ON a.user_id = ud.user_id $whereSql");
+    $total = (int) ($countRow['c'] ?? 0);
 
-               for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-               }
-               $sWhereSub .= ")";
-          }
-          $sWhere[] = $sWhereSub;
-     }
+    $sQuery = "SELECT a.log_id, a.event_type, a.action, a.ip_address, a.session_hash, a.user_agent,
+                      a.date_time, ud.user_name, ud.email, r.role_name, res.display_name
+               $from $whereSql
+               ORDER BY a.date_time DESC, a.log_id DESC
+               LIMIT $offset, $pageSize";
 
-     $aWhere = '';
-     $sQuery = '';
+    $rows = $db->rawQuery($sQuery);
 
-     $sQuery = "SELECT a.*, r.display_name,
-                    DATE_FORMAT(a.date_time,'%d-%b-%Y %H:%i:%s') AS createdOn
-                    FROM activity_log as a
-                    LEFT JOIN resources as r ON a.resource = r.resource_id
-                    LEFT JOIN user_details as ud ON a.user_id = ud.user_id";
+    $items = [];
+    foreach ($rows as $aRow) {
+        $name = trim((string) ($aRow['user_name'] ?? ''));
+        $ts = !empty($aRow['date_time']) ? strtotime((string) $aRow['date_time']) : false;
+        $context = !empty($aRow['display_name'])
+            ? $aRow['display_name']
+            : ucwords(str_replace(['-', '_'], ' ', (string) ($aRow['event_type'] ?? '')));
 
+        $items[] = [
+            'action'       => (string) ($aRow['action'] ?? ''),
+            'actionType'   => activityActionType((string) ($aRow['event_type'] ?? '')),
+            'userName'     => $name !== '' ? $name : _translate('System'),
+            'userRole'     => (string) ($aRow['role_name'] ?? ''),
+            'userEmail'    => (string) ($aRow['email'] ?? ''),
+            'userInitials' => activityInitials($name),
+            'ipAddress'    => (string) ($aRow['ip_address'] ?? ''),
+            'userAgent'    => (string) ($aRow['user_agent'] ?? ''),
+            'sessionHash'  => (string) ($aRow['session_hash'] ?? ''),
+            'context'      => $context,
+            'eventType'    => (string) ($aRow['event_type'] ?? ''),
+            'time'         => $ts ? date('g:i a', $ts) : '',
+            'dateKey'      => $ts ? date('Y-m-d', $ts) : '',
+            'dateLabel'    => $ts ? strtoupper(date('D, d M Y', $ts)) : (string) ($aRow['date_time'] ?? ''),
+        ];
+    }
 
-     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
-
-     if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
-          $sWhere[] = ' date_time BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
-     }
-     if (isset($_POST['userName']) && trim((string) $_POST['userName']) !== '') {
-          $sWhere[] = ' user_id like "' . $_POST['userName'] . '"';
-     }
-
-     if (isset($_POST['typeOfAction']) && trim((string) $_POST['typeOfAction']) !== '') {
-          $sWhere[] = ' event_type like "' . $_POST['typeOfAction'] . '"';
-     }
-
-     // Lab scope: a cloud-LIS lab operator only sees activity by users in their own
-     // lab (LIS = own lab + unassigned; cloud-LIS = strict, fail closed; STS = all).
-     // Keyed off the actor's user_details.testing_lab_id via the join above.
-     if ($scope = $general->labAdminScopeWhere('testing_lab_id', 'ud')) {
-          $sWhere[] = $scope;
-     }
-
-     // Session filter (EPT-style): show every action performed in one login session.
-     if (isset($_POST['sessionHash']) && trim((string) $_POST['sessionHash']) !== '') {
-          $sWhere[] = ' a.session_hash = "' . $db->escape(trim((string) $_POST['sessionHash'])) . '"';
-     }
-     /* Implode all the where fields for filtering the data */
-     if ($sWhere !== []) {
-          $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
-     }
-
-     if (!empty($sOrder) && $sOrder !== '') {
-          $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-          $sQuery = $sQuery . " ORDER BY " . $sOrder;
-     }
-     $_SESSION['auditLogQuery'] = $sQuery;
-
-
-     if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
-     }
-
-     [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
-
-
-     $output = [
-          "sEcho" => (int) $_POST['sEcho'],
-          "iTotalRecords" => $resultCount,
-          "iTotalDisplayRecords" => $resultCount,
-          "aaData" => []
-     ];
-     foreach ($rResult as $key => $aRow) {
-          $row = [];
-          $row[] = $aRow['action'];
-          $row[] = $aRow['event_type'];
-          $row[] = $aRow['ip_address'];
-
-          // Session fingerprint chip under the timestamp: click to filter every
-          // action in the same login session (EPT-style). Shows first 8 of 16 hex.
-          $sh = (string) ($aRow['session_hash'] ?? '');
-          $chip = '';
-          if ($sh !== '') {
-               $chip = '<br><a href="javascript:void(0);" class="session-pill" data-hash="'
-                    . htmlspecialchars($sh) . '" title="' . _translate('Filter all actions in this session')
-                    . '" style="display:inline-block;margin-top:4px;padding:1px 7px;border-radius:10px;background:#eef;border:1px solid #ccd;font-size:11px;color:#446;white-space:nowrap;">'
-                    . '<em class="fa-solid fa-fingerprint"></em> ' . htmlspecialchars(substr($sh, 0, 8)) . '</a>';
-          }
-          $row[] = $aRow['createdOn'] . $chip;
-
-          $output['aaData'][] = $row;
-     }
-     echo JsonUtility::encodeUtf8Json($output);
+    echo JsonUtility::encodeUtf8Json([
+        'page'       => $page,
+        'pageSize'   => $pageSize,
+        'total'      => $total,
+        'totalPages' => $pageSize > 0 ? (int) ceil($total / $pageSize) : 1,
+        'items'      => $items,
+    ]);
 } catch (Throwable $e) {
-     LoggerUtility::logError($e->getMessage(), [
-          'trace' => $e->getTraceAsString(),
-          'file' => $e->getFile(),
-          'line' => $e->getLine(),
-          'last_db_error' => $db->getLastError(),
-          'last_db_query' => $db->getLastQuery()
-     ]);
+    LoggerUtility::logError($e->getMessage(), [
+        'trace' => $e->getTraceAsString(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery()
+    ]);
+    http_response_code(500);
+    echo JsonUtility::encodeUtf8Json(['page' => 1, 'pageSize' => 0, 'total' => 0, 'totalPages' => 1, 'items' => []]);
+}
+
+/** Map an activity event_type to a feed action class (icon + colour). */
+function activityActionType(string $eventType): string
+{
+    $e = strtolower($eventType);
+    return match (true) {
+        str_contains($e, 'login') && str_contains($e, 'fail') => 'login-fail',
+        str_contains($e, 'log-out'), str_contains($e, 'logout') => 'logout',
+        str_contains($e, 'login') => 'login',
+        str_contains($e, 'delete'), str_contains($e, 'remove') => 'delete',
+        str_contains($e, 'import') => 'import',
+        str_contains($e, 'add'), str_contains($e, 'create') => 'create',
+        str_contains($e, 'update'), str_contains($e, 'edit'), str_contains($e, 'modif') => 'update',
+        str_contains($e, 'export'), str_contains($e, 'download') => 'download',
+        str_contains($e, 'mail'), str_contains($e, 'email'), str_contains($e, 'sent') => 'message',
+        default => 'other',
+    };
+}
+
+/** 1-2 uppercase initials from a name; '?' when blank. */
+function activityInitials(string $name): string
+{
+    $name = trim($name);
+    if ($name === '') {
+        return '?';
+    }
+    $out = '';
+    foreach (preg_split('/\s+/', $name) ?: [] as $p) {
+        if ($p !== '' && ctype_alpha(substr($p, 0, 1))) {
+            $out .= strtoupper(substr($p, 0, 1));
+        }
+        if (strlen($out) >= 2) {
+            break;
+        }
+    }
+    return $out !== '' ? $out : strtoupper(substr($name, 0, 1));
 }
