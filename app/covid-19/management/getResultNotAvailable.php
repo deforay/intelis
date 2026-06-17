@@ -129,6 +129,10 @@ if (isset($_POST['noResultPatientBreastfeeding']) && $_POST['noResultPatientBrea
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
+
+if ($labScope = $general->labScopeWhere('vl')) {
+    $sWhere[] = $labScope;
+}
 $sWhere = $sWhere === [] ? "" : ' AND ' . implode(' AND ', $sWhere);
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery .= ' group by vl.covid19_id';

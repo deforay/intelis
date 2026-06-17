@@ -121,6 +121,13 @@ if (!empty($_SESSION['facilityMap'])) {
      $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
 
+if ($labScope = $general->labScopeWhere('vl')) {
+    $sWhere[] = $labScope;
+}
+if ($labScope = $general->labScopeWhere('vl')) {
+    $dWhere .= " AND $labScope";
+}
+
 $sWhere = $sWhere === [] ? "" : ' WHERE ' . implode(' AND ', $sWhere);
 
 $sQuery = $sQuery . ' ' . $sWhere;

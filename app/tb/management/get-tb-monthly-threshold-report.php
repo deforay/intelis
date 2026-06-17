@@ -158,6 +158,10 @@ if ($sWhere !== '') {
 if (!empty($_SESSION['facilityMap'])) {
      $sWhere .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
+
+if ($labScope = $general->labScopeWhere('vl')) {
+    $sWhere .= " AND $labScope";
+}
 $sWhere .= " AND hf.test_type = 'tb'";
 $sQuery = $sQuery . ' ' . $sWhere;
 $_SESSION['tbMonitoringThresholdReportQuery'] = $sQuery;

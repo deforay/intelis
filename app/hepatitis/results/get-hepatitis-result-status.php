@@ -106,6 +106,10 @@ try {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
     }
 
+    if ($labScope = $general->labScopeWhere('vl')) {
+        $sWhere[] = $labScope;
+    }
+
     // Untested samples (no viral load count yet) are still cancellable.
     if (!$cancellableFilter) {
         $sWhere[] = ' (vl.hcv_vl_count !="" OR vl.hbv_vl_count !="") ';

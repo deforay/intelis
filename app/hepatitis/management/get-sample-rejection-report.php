@@ -134,6 +134,10 @@ if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 
+if ($labScope = $general->labScopeWhere('vl')) {
+    $sWhere[] = $labScope;
+}
+
 $sWhere = $sWhere === [] ? [] : ' AND ' . implode(' AND ', $sWhere);
 $sQuery .= $sWhere;
 $sQuery .= ' group by vl.hepatitis_id';

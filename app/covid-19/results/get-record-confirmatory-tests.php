@@ -256,6 +256,13 @@ if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
      $sWhere = $sWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
      $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
 }
+
+if ($labScope = $general->labScopeWhere('vl')) {
+    $sWhere .= " AND $labScope";
+}
+if ($labScope = $general->labScopeWhere('vl')) {
+    $dWhere .= " AND $labScope";
+}
 $sQuery = $sQuery . ' ' . $sWhere . ' AND ct.result LIKE "positive" GROUP BY vl.covid19_id';
 $_SESSION['vlResultQuery'] = $sQuery;
 //echo $_SESSION['vlResultQuery'];die;
