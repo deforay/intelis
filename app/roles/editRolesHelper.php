@@ -34,8 +34,28 @@ try {
         $roleInfo = $db->rawQuery($roleQuery, [$roleId]);
 
         if (!empty($roleId) && $roleId > 0) {
+                // Server-side enforcement of the Access Type -> show_mode boundary
+                // (the JS filter in _privilege-matrix.php is UX only; never trust it).
+                // The superadmin role (id 1) is exempt -- it keeps every privilege.
+                $accessType = $_POST['accessType'] ?? '';
+                $enforceMode = ((int) $roleId !== 1);
+                $allowedModes = $accessType === 'collection-site'
+                        ? ['sts', 'always', '']
+                        : ($accessType === 'testing-lab' ? ['lis', 'always', ''] : ['always', '']);
+                $privModeMap = [];
+                if ($enforceMode) {
+                        foreach ($db->rawQuery("SELECT privilege_id, show_mode FROM privileges") as $pm) {
+                                $privModeMap[(int) $pm['privilege_id']] = (string) ($pm['show_mode'] ?? 'always');
+                        }
+                }
                 foreach ($_POST['resource'] as $key => $priviId) {
                         if ($priviId == 'allow') {
+                                if ($enforceMode) {
+                                        $mode = $privModeMap[(int) $key] ?? 'always';
+                                        if (!in_array($mode, $allowedModes, true)) {
+                                                continue; // privilege not valid for this role's access type
+                                        }
+                                }
                                 $value = ['role_id' => $roleId, 'privilege_id' => $key];
                                 $db->insert("roles_privileges_map", $value);
                         }

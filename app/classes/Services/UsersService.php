@@ -27,6 +27,14 @@ final class UsersService
     {
         $privileges ??= $_SESSION['privileges'] ?? null;
 
+        // Superadmin (role 1) is always allowed, independent of the stored
+        // privilege map -- so its access can never be narrowed by, e.g., the
+        // Access Type / show_mode filtering on the roles form. Single chokepoint
+        // behind both AclMiddleware and the _requirePrivilege AJAX guards.
+        if ((int) ($_SESSION['roleId'] ?? 0) === 1) {
+            return true;
+        }
+
         if (empty($currentRequest) || empty($privileges)) {
             return false;
         }
