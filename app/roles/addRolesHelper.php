@@ -19,8 +19,22 @@ try {
                 $lastId = $db->getInsertId();
                 if ($lastId != 0 && $lastId != '') {
                         if (isset($_POST['resource']) && $_POST['resource'] != '') {
+                                // Server-side enforcement of the Access Type -> show_mode boundary
+                                // (the JS filter in _privilege-matrix.php is UX only; never trust it).
+                                $accessType = $_POST['accessType'] ?? '';
+                                $allowedModes = $accessType === 'collection-site'
+                                        ? ['sts', 'always', '']
+                                        : ($accessType === 'testing-lab' ? ['lis', 'always', ''] : ['always', '']);
+                                $privModeMap = [];
+                                foreach ($db->rawQuery("SELECT privilege_id, show_mode FROM privileges") as $pm) {
+                                        $privModeMap[(int) $pm['privilege_id']] = (string) ($pm['show_mode'] ?? 'always');
+                                }
                                 foreach ($_POST['resource'] as $key => $priviId) {
                                         if ($priviId == 'allow') {
+                                                $mode = $privModeMap[(int) $key] ?? 'always';
+                                                if (!in_array($mode, $allowedModes, true)) {
+                                                        continue; // privilege not valid for this role's access type
+                                                }
                                                 $value = ['role_id' => $lastId, 'privilege_id' => $key];
                                                 $db->insert($tableName2, $value);
                                         }
