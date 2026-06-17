@@ -128,10 +128,17 @@ final class TestRequestsService
 
             // Process queue items
             $counter = 0;
-            $sampleCodeColumn = $this->commonService->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
 
             foreach ($queueItems as $item) {
                 $counter++;
+
+                // Which series this sample belongs to is decided by WHO is acting
+                // on it: a testing-lab actor (incl. cloud-LIS on an STS box) mints
+                // the local "lis" series into sample_code; collection-site / legacy
+                // actors on STS mint the network "sts" series into remote_sample_code.
+                $sampleCodeColumn = ($this->commonService->isSTSInstance() && ($item['access_type'] ?? '') !== 'testing-lab')
+                    ? 'remote_sample_code'
+                    : 'sample_code';
 
                 try {
                     // Refresh lock file periodically
@@ -231,9 +238,23 @@ final class TestRequestsService
                             $accessType = $item['access_type'] ?? null;
                             $tesRequestData = [];
 
-                            if ($this->commonService->isSTSInstance()) {
-                                // Only collection-site samples stay at the clinic; every other role
-                                // (testing-lab, or an unset/legacy access_type) works the lab side.
+                            if ($this->commonService->isSTSInstance() && $accessType === 'testing-lab') {
+                                // Cloud-LIS: the testing lab mints its own LIS-series
+                                // code (no R) into sample_code -- a separate series
+                                // from any collection-site/remote code. remote_sample_code
+                                // is left untouched: preserved when the sample came
+                                // from a site, NULL when the lab added it directly.
+                                $tesRequestData = [
+                                    'remote_sample' => 'yes',
+                                    'sample_code' => $sampleData['sampleCode'],
+                                    'sample_code_format' => $sampleData['sampleCodeFormat'],
+                                    'sample_code_key' => $sampleData['sampleCodeKey'],
+                                    'result_status' => $presetStatus ?? RECEIVED_AT_TESTING_LAB
+                                ];
+                            } elseif ($this->commonService->isSTSInstance()) {
+                                // Collection-site (or unset/legacy) actor on STS -> network
+                                // "sts" series. Legacy non-collection-site rows keep the
+                                // historical behaviour of mirroring into sample_code.
                                 $tesRequestData = [
                                     'remote_sample' => 'yes',
                                     'remote_sample_code' => $sampleData['sampleCode'],

@@ -233,7 +233,13 @@ abstract class AbstractTestService
 
                 $remotePrefix = '';
                 $sampleCodeType = 'sample_code';
-                if ($this->commonService->isSTSInstance()) {
+                // On STS the default is the network "sts" series: R-prefixed codes
+                // counted/stored under remote_sample_code. A testing-lab actor
+                // (cloud-LIS) instead mints the local "lis" series -- its own
+                // sample_code, no R -- so the lab's working code is a clean series
+                // separate from any collection-site/remote code on the same box.
+                $actsAsLab = ($params['accessType'] ?? '') === 'testing-lab';
+                if ($this->commonService->isSTSInstance() && !$actsAsLab) {
                     $remotePrefix = 'R';
                     $sampleCodeType = 'remote_sample_code';
                 }
