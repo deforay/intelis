@@ -39,6 +39,11 @@ if (!empty($_POST['batchOrManifestCodeValue'])) {
         if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
             $query .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
         }
+        // Lab isolation (cloud-LIS): scope to this user's lab. No-op unless the
+        // session carries a lab id, so byte-identical for every existing user.
+        if ($labScope = $general->labScopeWhere('vl')) {
+            $query .= " AND $labScope";
+        }
 
         $sampleResult = $db->rawQuery($query);
 

@@ -454,6 +454,11 @@ if (!empty($id)) {
             if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
                 $sQuery .= " AND facility_id IN (" . $_SESSION['facilityMap'] . ") ";
             }
+            // Lab isolation (cloud-LIS): scope to this user's lab. Bare alias since
+            // this is a single-table query. No-op unless the session carries a lab id.
+            if ($labScope = $general->labScopeWhere('')) {
+                $sQuery .= " AND $labScope";
+            }
             $result = $db->query($sQuery);
             $sampleCounter = 1;
             if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {

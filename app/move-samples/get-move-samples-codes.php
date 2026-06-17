@@ -54,6 +54,11 @@ if ($_POST['facilityId'] != '') {
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
 	$query .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
+// Lab isolation (cloud-LIS): scope to this user's lab. No-op unless the session
+// carries a lab id, so byte-identical for every existing LIS/STS user.
+if ($labScope = $general->labScopeWhere('vl')) {
+	$query .= " AND $labScope";
+}
 if (isset($scDate) && trim((string) $scDate) !== '') {
 	$s_c_date = explode("to", (string) $scDate);
 
