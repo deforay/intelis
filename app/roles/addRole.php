@@ -232,6 +232,7 @@ $rInfo = $db->query($resourcesQuery);
 						</div>
 						<div class="row">
 							<div class="col-md-6">
+								<?php if ($general->isSTSInstance()): ?>
 								<div class="form-group">
 									<label for="accessType" class="col-lg-4 control-label">
 										<?php echo _translate("Access Type"); ?> <span class="mandatory">*</span>
@@ -250,6 +251,9 @@ $rInfo = $db->query($resourcesQuery);
 										</select>
 									</div>
 								</div>
+								<?php else: ?>
+								<input type="hidden" name="accessType" id="accessType" value="testing-lab">
+								<?php endif; ?>
 							</div>
 						</div>
 						<fieldset>
@@ -283,80 +287,7 @@ $rInfo = $db->query($resourcesQuery);
 							</div>
 							<br>
 							<div class="bs bs-tabs">
-								<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
-									<?php
-									$a = 0;
-
-									foreach ($rInfo as $moduleRow) {
-										$moduleName = ($moduleRow['module'] == 'generic-tests') ? "Other Lab Tests" : $moduleRow['module'];
-										$liClass = $a == 0 ? "active" : ""; ?>
-										<li class="<?= $liClass; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper((string) $moduleName); ?> </a></li>
-									<?php
-										$a++;
-									} ?>
-								</ul>
-
-								<div id="myTabContent" class="tab-content">
-									<?php
-									$b = 0;
-									$j = 1;
-									foreach ($rInfo as $moduleRow) {
-										$tabCls = $b == 0 ? "active" : "";
-										echo '<div class="tab-pane fade in ' . $tabCls . '" id="' . $moduleRow['module'] . '">';
-										echo "<table aria-describedby='table' class='table table-striped responsive-utilities jambo_table'>";
-
-										$moduleResources = explode("##", (string) $moduleRow['module_resources']);
-										$i = 1;
-										foreach ($moduleResources as $mRes) {
-
-											$mRes = explode(",", $mRes);
-
-											echo "<tr class ='togglerTr'>";
-											echo "<th>"; ?>
-											<small class="toggler">
-												<h4 style="font-weight: bold;">
-													<?= _translate($mRes[1]); ?>
-												</h4>
-												<div class="super-switch privilege-switch pull-right">
-													<input type='radio' class='' id='all<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'>
-													<label for='all<?= $mRes[0]; ?>'><?= _translate("All"); ?></label>
-													<input type='radio' class='' id='none<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);'>
-													<label for='none<?= $mRes[0]; ?>'><?= _translate("None"); ?></label>
-												</div>
-											</small>
-									<?php
-											echo "</th>";
-											echo "</tr>";
-
-											$mode = " AND (show_mode like 'always')";
-											if ($general->isSTSInstance()) {
-												$mode = " AND (show_mode like 'sts' or show_mode like 'always')";
-											} elseif ($general->isLISInstance()) {
-												$mode = " AND (show_mode like 'lis' or show_mode like 'always')";
-											}
-
-											$pQuery = "SELECT * FROM privileges WHERE resource_id= ? $mode ORDER BY display_order ASC";
-											$pInfo = $db->rawQuery($pQuery, [$mRes[0]]);
-											echo "<tr class='permissionTr'>";
-											echo "<td style='text-align:center;vertical-align:middle;' class='privilegesNode' id='" . $mRes[0] . "'>";
-											foreach ($pInfo as $privilege) {
-												echo "<div class='col-lg-3 privilege-div' data-privilegeid='" . $privilege['privilege_id'] . "' id='div" . $privilege['privilege_id'] . "'>
-														<strong class='privilege-label' data-privilegeid='" . $privilege['privilege_id'] . "' id='label" . $privilege['privilege_id'] . "'>" . _translate($privilege['display_name']) . "</strong>
-														<br>
-														<div class='privilege-switch' data-privilegeid='" . $privilege['privilege_id'] . "' id='switch" . $privilege['privilege_id'] . "' style='margin: 30px 0 36px 90px;'>
-															<input type='radio' class='selectPrivilege'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='allow' id='selectPrivilege" . $privilege['privilege_id'] . "'><label for='selectPrivilege" . $privilege['privilege_id'] . "'>Yes</label>
-															<input type='radio' class='unselectPrivilege'  name='resource[" . $privilege['privilege_id'] . "]" . "' value='deny' id='unselectPrivilege" . $privilege['privilege_id'] . "'> <label for='unselectPrivilege" . $privilege['privilege_id'] . "'> No</label>
-														</div>
-													</div>";
-											}
-											echo "</td></tr>";
-											$i++;
-										}
-										echo "</table></div>";
-										$b++;
-										$j++;
-									} ?>
-								</div>
+								<?php require APPLICATION_PATH . '/roles/_privilege-matrix.php'; ?>
 
 							</div>
 					</div>
