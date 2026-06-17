@@ -120,8 +120,19 @@ $sQuery = "SELECT p.request_created_datetime,
             FROM specimen_manifests p
             LEFT JOIN facility_details lab on lab.facility_id = p.lab_id";
 
+// Facility isolation via the manifest's samples. Cloud-LIS receiving: a referred
+// manifest's samples keep the sending site's facility_id, so the EXISTS check
+// alone would hide it -- when the session carries a lab id (cloud-LIS only; null
+// for every existing LIS/STS user, so a no-op for them) also admit manifests this
+// lab processes via an additive OR (specimen_manifests.lab_id is backfilled to the
+// processing lab by the UPDATE above).
 if (!empty($_SESSION['facilityMap'])) {
-    $sWhere[] = " EXISTS (SELECT 1 FROM $tableName t WHERE t.sample_package_code = p.manifest_code AND t.facility_id IN(" . $_SESSION['facilityMap'] . ")) ";
+    $manifestExists = " EXISTS (SELECT 1 FROM $tableName t WHERE t.sample_package_code = p.manifest_code AND t.facility_id IN(" . $_SESSION['facilityMap'] . ")) ";
+    if (!empty($_SESSION['labId'])) {
+        $sWhere[] = " ( $manifestExists OR p.lab_id = " . (int) $_SESSION['labId'] . " ) ";
+    } else {
+        $sWhere[] = $manifestExists;
+    }
 }
 
 $sWhere = $sWhere === [] ? [] : ' WHERE ' . implode(' AND ', $sWhere);
