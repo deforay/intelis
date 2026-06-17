@@ -137,7 +137,7 @@ $rInfo = $db->query($resourcesQuery);
 									<label for="userName" class="col-lg-4 control-label">
 										<?php echo _translate("Role Name"); ?> <span class="mandatory">*</span>
 									</label>
-									<div class="col-lg-7">
+									<div class="col-lg-8">
 										<input type="text" class="form-control isRequired" id="roleName" name="roleName" placeholder="<?php echo _translate('Role Name'); ?>" title="<?php echo _translate('Please enter a name for this role'); ?>" onblur='checkNameValidation("roles","role_name",this,null,"<?php echo _translate("This role name that you entered already exists.Try another role name"); ?>",null)' />
 									</div>
 								</div>
@@ -147,7 +147,7 @@ $rInfo = $db->query($resourcesQuery);
 									<label for="email" class="col-lg-4 control-label">
 										<?php echo _translate("Role Code"); ?> <span class="mandatory">*</span>
 									</label>
-									<div class="col-lg-7">
+									<div class="col-lg-8">
 										<input type="text" class="form-control isRequired" id="roleCode" name="roleCode" placeholder="<?php echo _translate('Role Code'); ?>" title="<?php echo _translate('Please enter role code'); ?>" onblur='checkNameValidation("roles","role_code",this,null,"<?php echo _translate("This role code that you entered already exists.Try another role code"); ?>",null)' />
 									</div>
 								</div>
@@ -159,7 +159,7 @@ $rInfo = $db->query($resourcesQuery);
 									<label for="landingPage" class="col-lg-4 control-label">
 										<?php echo _translate("Landing Page"); ?>
 									</label>
-									<div class="col-lg-7">
+									<div class="col-lg-8">
 										<select class="form-control " name='landingPage' id='landingPage' title="<?php echo _translate('Please select landing page'); ?>">
 											<option value="">
 												<?php echo _translate("-- Select --"); ?>
@@ -214,7 +214,7 @@ $rInfo = $db->query($resourcesQuery);
 									<label for="status" class="col-lg-4 control-label">
 										<?php echo _translate("Status"); ?> <span class="mandatory">*</span>
 									</label>
-									<div class="col-lg-7">
+									<div class="col-lg-8">
 										<select class="form-control isRequired" name='status' id='status' title="<?php echo _translate('Please select the status'); ?>">
 											<option value="">
 												<?php echo _translate("-- Select --"); ?>
@@ -237,7 +237,7 @@ $rInfo = $db->query($resourcesQuery);
 									<label for="accessType" class="col-lg-4 control-label">
 										<?php echo _translate("Access Type"); ?> <span class="mandatory">*</span>
 									</label>
-									<div class="col-lg-7">
+									<div class="col-lg-8">
 										<select class="form-control isRequired" name='accessType' id='accessType' title="<?php echo _translate('Please select access type'); ?>">
 											<option value="">
 												<?php echo _translate("-- Select --"); ?>
