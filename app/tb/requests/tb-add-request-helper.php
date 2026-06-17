@@ -156,7 +156,7 @@ try {
     //$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
 
-    if (is_array($_POST['tbTestsRequested'])) {
+    if (isset($_POST['tbTestsRequested']) && is_array($_POST['tbTestsRequested'])) {
         $_POST['tbTestsRequested'] = json_encode($_POST['tbTestsRequested']);
     }
     if ((isset($_POST['isResultFinalized']) && !empty($_POST['isResultFinalized']) && isset($_POST['finalResult']) && !empty($_POST['finalResult'])) && $_POST['isResultFinalized'] == 'yes') {
@@ -174,9 +174,9 @@ try {
         $_POST['riskFactors'] = json_encode($_POST['riskFactors']);
     }
 
-     if(is_array($_POST['typeOfPatient']))
+    if (is_array($_POST['typeOfPatient']))
         $_POST['typeOfPatient']  = json_encode($_POST['typeOfPatient']);
-    
+
     $tbData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],
@@ -272,7 +272,7 @@ try {
         $tbData['source_of_request'] = 'vlsts';
     }
 
-   
+
     /**
      * TB Test Data Handling Logic:
      *
