@@ -68,8 +68,7 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 
 <?php require_once WEB_ROOT . '/assets/js/main.js.php'; ?>
 <?php require_once WEB_ROOT . '/assets/js/dates.js.php'; ?>
-<script type="text/javascript"
-	src="/assets/js/spotlight-search.js?v=<?= filemtime(WEB_ROOT . '/assets/js/spotlight-search.js'); ?>"></script>
+<?php require_once APPLICATION_PATH . '/_spotlight.php'; ?>
 
 <script type="text/javascript">
 	$(document).ready(function() {

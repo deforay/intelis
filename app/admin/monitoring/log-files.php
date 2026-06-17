@@ -1565,6 +1565,19 @@ require_once APPLICATION_PATH . '/header.php';
 				resetAndLoadLogs();
 		});
 
+		// Deep-link from the error page: ?q=<error id> opens straight into the
+		// application logs, server-side filtered to that error. Value is only ever
+		// read as text (.val() / AJAX data), never injected as HTML.
+		(function () {
+			var deepLinkQuery = new URLSearchParams(window.location.search).get('q');
+			if (deepLinkQuery && deepLinkQuery.trim() !== '') {
+				$('#logSearchInput').val(deepLinkQuery);
+				searchTerm = deepLinkQuery;
+				viewApplicationLogs();
+				$('#logSearchInput').focus();
+			}
+		})();
+
 		$('#searchLogsButton').on('click', function () {
 			clearTimeout(searchTimeout);
 			searchTerm = $('#logSearchInput').val();

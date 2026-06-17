@@ -153,6 +153,20 @@ class ErrorResponseGenerator
 
         $errorMessage = (APPLICATION_ENV === 'production') ? $safeMessage : $exception->getMessage();
 
+        // For access-denied, spell out *whose* access is the problem so the user
+        // knows it is a role/permission issue, not a broken page. roleName is set
+        // at login; fall back to roleCode for sessions created before that, and to
+        // a role-agnostic line if we have neither (e.g. not signed in).
+        if ($httpCode === 403) {
+            $role = $_SESSION['roleName'] ?? $_SESSION['roleCode'] ?? null;
+            $errorMessage = ($role !== null && $role !== '')
+                ? sprintf(
+                    _translate('Your role "%s" does not have access to the page or resource you are trying to open.'),
+                    $role
+                )
+                : _translate('Your account does not have access to the page or resource you are trying to open.');
+        }
+
         // Additional safe information for the error page
         $errorInfo = [
             'error_id' => $errorId,
