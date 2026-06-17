@@ -1,55 +1,25 @@
 <?php
 
-use App\Exceptions\SystemException;
+require_once __DIR__ . '/../bootstrap.php';
+
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
-use App\Utilities\LoggerUtility;
+use App\Utilities\RunOnceUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-// only run from command line
-if (php_sapi_name() !== 'cli') {
-    exit(0);
-}
-
-require_once(__DIR__ . '/../bootstrap.php');
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-$systemConfig = $general->getSystemConfig();
-$scriptName = basename(__FILE__);
-
-// Check for force flag (-f or --force)
-$forceRun = in_array('-f', $argv) || in_array('--force', $argv);
-$scriptSucceeded = false;
-if (!$forceRun) {
-    // Check if the script has already been run
-    $db->where('script_name', $scriptName);
-    $executed = $db->getOne('s_run_once_scripts_log');
-
-    if ($executed) {
-        // Script has already been run
-        //echo "Script $scriptName has already been executed. Exiting...";
-        exit(0);
-    }
-}
-
-try {
+RunOnceUtility::run(__FILE__, function (DatabaseService $db): void {
+    /** @var CommonService $general */
+    $general = ContainerRegistry::get(CommonService::class);
 
     if ($general->isSTSInstance()) {
-        $scriptSucceeded = true;
-        throw new SystemException("Script $scriptName not required for STS instance" . PHP_EOL);
+        // Not required on STS — return so the harness still records it as
+        // applied (it won't be retried every upgrade) without doing any work.
+        return;
     }
 
-
-    /* Save Province / State details to geolocation table */
-    $query = "SELECT * FROM instruments";
-    $instrumentResult = $db->rawQuery($query);
+    $instrumentResult = $db->rawQuery("SELECT * FROM instruments");
 
     $updatedOn = DateUtility::getCurrentDateTime();
 
@@ -114,21 +84,4 @@ try {
     if ($bar !== null) {
         MiscUtility::spinnerFinish($bar);
     }
-    $scriptSucceeded = true;
-} catch (Throwable $e) {
-    LoggerUtility::logError('Manifest hash update script failed', [
-        'exception' => $e->getMessage(),
-        'trace' => $e->getTraceAsString(),
-        'last_db_query' => $db->getLastQuery(),
-        'last_db_error' => $db->getLastError(),
-    ]);
-} finally {
-    if ($scriptSucceeded || $forceRun) {
-        echo "$scriptName executed and logged successfully" . PHP_EOL;
-        $db->setQueryOption('IGNORE')->insert('s_run_once_scripts_log', [
-            'script_name' => $scriptName,
-            'execution_date' => DateUtility::getCurrentDateTime(),
-            'status' => $scriptSucceeded ? 'executed' : 'forced'
-        ]);
-    }
-}
+});
