@@ -109,6 +109,7 @@ try {
         $_SESSION['userName'] = $userRow['user_name'];
         $_SESSION['roleCode'] = $userRow['role_code'];
         $_SESSION['roleId'] = $userRow['role_id'];
+        $_SESSION['roleName'] = $userRow['role_name'] ?? $userRow['role_code'];
         $_SESSION['accessType'] = $userRow['access_type'];
         // The single testing lab this user operates as -- a distinct axis from
         // facilityMap (data scope). Resolve the effective operating lab once,
