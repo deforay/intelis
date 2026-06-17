@@ -87,15 +87,22 @@ try {
                 $instanceId = $_SESSION['instanceId'];
                 $_POST['instanceId'] = $instanceId;
             }
+            // Normalise the imported code to plain uppercase Latin letters (A-Z) before
+            // matching/inserting; '' (nothing usable) is treated as NULL to respect the
+            // UNIQUE index (which permits many NULLs but not many empty strings).
+            $rowData['B'] = $facilityService->sanitizeFacilityCode($rowData['B']);
+
             $facilityCheck = $general->getDataFromOneFieldAndValue('facility_details', 'facility_name', $rowData['A']);
-            $facilityCodeCheck = $general->getDataFromOneFieldAndValue('facility_details', 'facility_code', $rowData['B']);
+            $facilityCodeCheck = empty($rowData['B'])
+                ? null
+                : $general->getDataFromOneFieldAndValue('facility_details', 'facility_code', $rowData['B']);
 
             $provinceId = $facilityService->getOrCreateProvince(trim((string) $rowData['D']));
             $districtId = $facilityService->getOrCreateDistrict(trim((string) $rowData['E']), null, $provinceId);
 
             $data = [
                 'facility_name' => trim((string) $rowData['A']) ?? null,
-                'facility_code' => trim((string) $rowData['B']) ?? null,
+                'facility_code' => empty($rowData['B']) ? null : $rowData['B'],
                 'vlsm_instance_id' => $instanceId,
                 'facility_mobile_numbers' => trim((string) $rowData['I']) ?? null,
                 'address' => trim((string) $rowData['G']) ?? null,

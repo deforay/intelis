@@ -129,9 +129,21 @@ try {
 			$_POST['district'] = $_POST['districtNew'];
 		}
 
+		/** @var \App\Services\FacilitiesService $facilitiesService */
+		$facilitiesService = ContainerRegistry::get(\App\Services\FacilitiesService::class);
+
+		// Normalise any entered code to plain uppercase Latin letters (A-Z only).
+		$facilityCode = $facilitiesService->sanitizeFacilityCode($_POST['facilityCode'] ?? null);
+
+		// Auto-generate a unique code from the name when none was entered.
+		// Scoped to testing labs (type 2): their code becomes the STS sample-code postfix.
+		if ($facilityCode === '' && (int) ($_POST['facilityType'] ?? 0) === 2) {
+			$facilityCode = $facilitiesService->generateFacilityCode((string) $_POST['facilityName']);
+		}
+
 		$data = [
 			'facility_name' => $_POST['facilityName'],
-			'facility_code' => empty($_POST['facilityCode']) ? null : $_POST['facilityCode'],
+			'facility_code' => empty($facilityCode) ? null : $facilityCode,
 			'vlsm_instance_id' => $instanceId ?? null,
 			'other_id' => empty($_POST['otherId']) ? null : $_POST['otherId'],
 			'facility_mobile_numbers' => $_POST['phoneNo'] ?? null,

@@ -12,6 +12,7 @@ use const SAMPLE_STATUS\TEST_FAILED;
 use Throwable;
 use DateTimeImmutable;
 use App\Services\TestsService;
+use App\Services\FacilitiesService;
 
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -125,15 +126,29 @@ abstract class AbstractTestService
         $fileCache = ContainerRegistry::get(FileCacheUtility::class);
         return $fileCache->get("lab_facility_code_$labId", function () use ($labId) {
             $row = $this->db->rawQueryOne(
-                "SELECT facility_code, facility_type FROM facility_details WHERE facility_id = ?",
+                "SELECT facility_name, facility_code, facility_type FROM facility_details WHERE facility_id = ?",
                 [$labId]
             );
             if (empty($row) || (int) ($row['facility_type'] ?? 0) !== 2) {
                 return ''; // not a testing lab -> no postfix
             }
-            return !empty($row['facility_code'])
-                ? $row['facility_code']
-                : strtoupper(substr(md5((string) $labId), 0, 4));
+            if (!empty($row['facility_code'])) {
+                return $row['facility_code'];
+            }
+
+            // No code on record yet: derive a stable, unique one from the lab name and
+            // persist it so every later sample code (and the rest of the app) reuses it.
+            // This runs from stsLabPostfix() before the sample-code transaction begins,
+            // so writing here does not nest inside the minting transaction.
+            /** @var FacilitiesService $facilitiesService */
+            $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+            $code = $facilitiesService->generateFacilityCode((string) ($row['facility_name'] ?? ''), $labId);
+            if ($code !== '') {
+                $this->db->where('facility_id', $labId);
+                $this->db->update('facility_details', ['facility_code' => $code]);
+                return $code;
+            }
+            return strtoupper(substr(md5((string) $labId), 0, 4));
         }, ['facility']);
     }
 
