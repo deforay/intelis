@@ -108,6 +108,154 @@ final class FacilitiesService
         return $this->db->rawQueryOne($fQuery, [$attributeValue]);
     }
 
+    /**
+     * Build a short, human-readable facility code from a facility name and make
+     * it unique against existing facility_details.facility_code values
+     * (the column carries a UNIQUE index, so callers must persist what this returns).
+     *
+     * The result is strictly uppercase Latin letters (A-Z) -- no digits, accents or
+     * symbols -- so on STS the "-<code>" sample-code postfix never blurs into the
+     * trailing numeric sequence. Heuristics, in order:
+     *   1. Single word      -> first 3 letters                 ("Kinshasa" -> KIN)
+     *   2. Multi-word       -> initial of each word, but short
+     *      all-caps tokens are kept whole as acronyms          ("CH Monkole" -> CHM,
+     *                                                            "National Reference Lab" -> NRL)
+     *   3. Still under 3    -> padded from the first word       ("Saint Mary" -> SMA)
+     *   4. Nothing usable   -> letters-only hash of the name    (non-latin / empty names)
+     *
+     * Capped at $maxLen (default 4). On collision a letter-only suffix is appended
+     * (A..Z, then AA..ZZ) while keeping the total within $maxLen ("NRL" -> "NRLA").
+     *
+     * @param int|null $excludeFacilityId Skip this facility when checking uniqueness (for edits).
+     */
+    public function generateFacilityCode(string $facilityName, ?int $excludeFacilityId = null, int $maxLen = 4): string
+    {
+        $base = $this->buildFacilityCodeCandidate($facilityName, $maxLen);
+        if ($base === '') {
+            // Last-ditch: derive letters-only from a hash of the name (no digits/symbols).
+            $base = substr(strtr(md5($facilityName), '0123456789abcdef', 'ABCDEFGHIJKLMNOP'), 0, $maxLen);
+        }
+        return $this->ensureUniqueFacilityCode($base, $excludeFacilityId, $maxLen);
+    }
+
+    /**
+     * Normalise a user-entered or imported facility code to plain uppercase Latin
+     * letters (A-Z). Accents are folded (É -> E), and anything that isn't a letter
+     * (digits, spaces, punctuation) is dropped. Returns '' when nothing usable remains.
+     */
+    public function sanitizeFacilityCode(?string $code, int $maxLen = 32): string
+    {
+        $code = $this->foldLatinAccents((string) $code);
+        $code = preg_replace('/[^A-Za-z]/', '', $code) ?? '';
+        return substr(strtoupper($code), 0, $maxLen);
+    }
+
+    /**
+     * Fold common Latin accents to ASCII so francophone/lusophone names (Hôpital,
+     * Général, São) tokenise on word boundaries instead of on the accented letter.
+     */
+    private function foldLatinAccents(string $text): string
+    {
+        return strtr($text, [
+            'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a',
+            'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
+            'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
+            'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o',
+            'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u',
+            'ç' => 'c', 'ñ' => 'n',
+            'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A',
+            'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E',
+            'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
+            'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O',
+            'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U',
+            'Ç' => 'C', 'Ñ' => 'N',
+        ]);
+    }
+
+    private function buildFacilityCodeCandidate(string $name, int $maxLen): string
+    {
+        $name = $this->foldLatinAccents(trim($name));
+        if ($name === '') {
+            return '';
+        }
+
+        // Split on anything that isn't a Latin letter (digits/symbols are not allowed in codes).
+        $words = preg_split('/[^A-Za-z]+/', $name, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+
+        // Drop common filler words, but never empty the list entirely.
+        $stopWords = ['of', 'the', 'and', 'for', 'de', 'des', 'du', 'la', 'le', 'les'];
+        $words = array_values(array_filter(
+            $words,
+            static fn($w) => !in_array(strtolower($w), $stopWords, true)
+        )) ?: $words;
+
+        if ($words === []) {
+            return '';
+        }
+
+        if (count($words) === 1) {
+            return strtoupper(substr($words[0], 0, 3));
+        }
+
+        $code = '';
+        foreach ($words as $word) {
+            // Keep short all-caps tokens whole (e.g. "CH", "NRL"); otherwise take the initial.
+            $code .= (preg_match('/^[A-Z]{2,4}$/', $word) === 1) ? $word : substr($word, 0, 1);
+            if (strlen($code) >= $maxLen) {
+                break;
+            }
+        }
+        $code = strtoupper($code);
+
+        // Pad from the first word if the initials came out too short ("Saint Mary" -> "SM" -> "SMA").
+        if (strlen($code) < 3) {
+            $code = strtoupper(substr($code . substr($words[0], 1), 0, 3));
+        }
+
+        return substr($code, 0, $maxLen);
+    }
+
+    private function ensureUniqueFacilityCode(string $base, ?int $excludeFacilityId, int $maxLen): string
+    {
+        $base = substr($base, 0, $maxLen);
+        if ($base !== '' && !$this->facilityCodeExists($base, $excludeFacilityId)) {
+            return $base;
+        }
+
+        // On collision append a letter-only suffix (A..Z, then AA..ZZ) so the code stays
+        // purely alphabetic, trimming the base so the whole code stays within $maxLen.
+        $letters = range('A', 'Z');
+        foreach ($letters as $l1) {
+            $candidate = substr($base, 0, max(1, $maxLen - 1)) . $l1;
+            if (!$this->facilityCodeExists($candidate, $excludeFacilityId)) {
+                return $candidate;
+            }
+        }
+        foreach ($letters as $l1) {
+            foreach ($letters as $l2) {
+                $candidate = substr($base, 0, max(1, $maxLen - 2)) . $l1 . $l2;
+                if (!$this->facilityCodeExists($candidate, $excludeFacilityId)) {
+                    return $candidate;
+                }
+            }
+        }
+
+        // Extremely unlikely safety net (letters-only hash of the base).
+        return substr(strtr(md5($base . microtime()), '0123456789abcdef', 'ABCDEFGHIJKLMNOP'), 0, $maxLen);
+    }
+
+    private function facilityCodeExists(string $code, ?int $excludeFacilityId): bool
+    {
+        $sql = "SELECT 1 FROM facility_details WHERE facility_code = ?";
+        $params = [$code];
+        if (!empty($excludeFacilityId)) {
+            $sql .= " AND facility_id != ?";
+            $params[] = $excludeFacilityId;
+        }
+        $sql .= " LIMIT 1";
+        return !empty($this->db->rawQueryOne($sql, $params));
+    }
+
     public function getTestingPoints($facilityId)
     {
 

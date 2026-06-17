@@ -133,9 +133,18 @@ try {
 			$_POST['testingPoints'] = null;
 		}
 
+		// Normalise any entered code to plain uppercase Latin letters (A-Z only).
+		$facilityCode = $facilityService->sanitizeFacilityCode($_POST['facilityCode'] ?? null);
+
+		// Auto-generate a unique code from the name when none was entered.
+		// Scoped to testing labs (type 2): their code becomes the STS sample-code postfix.
+		if ($facilityCode === '' && (int) ($_POST['facilityType'] ?? 0) === 2) {
+			$facilityCode = $facilityService->generateFacilityCode((string) $_POST['facilityName'], (int) $facilityId);
+		}
+
 		$data = [
 			'facility_name' => $_POST['facilityName'],
-			'facility_code' => $_POST['facilityCode'] ?? null,
+			'facility_code' => empty($facilityCode) ? null : $facilityCode,
 			'other_id' => empty($_POST['otherId']) ? null : $_POST['otherId'],
 			'facility_mobile_numbers' => $_POST['phoneNo'] ?? null,
 			'address' => $_POST['address'] ?? null,
