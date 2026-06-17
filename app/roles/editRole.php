@@ -167,7 +167,7 @@ if ($priInfo) {
 									<label for="userName" class="col-lg-4 control-label">
 										<?php echo _translate("Role Name"); ?> <span class="mandatory">*</span>
 									</label>
-									<div class="col-lg-7">
+									<div class="col-lg-8">
 										<input type="text" class="form-control isRequired" id="roleName" name="roleName"
 											placeholder="<?php echo _translate('Role Name'); ?>"
 											title="<?php echo _translate('Please enter a name for this role'); ?>"
@@ -184,7 +184,7 @@ if ($priInfo) {
 									<label for="email" class="col-lg-4 control-label">
 										<?php echo _translate("Role Code"); ?> <span class="mandatory">*</span>
 									</label>
-									<div class="col-lg-7">
+									<div class="col-lg-8">
 										<input type="text" class="form-control isRequired" id="roleCode" name="roleCode"
 											placeholder="<?php echo _translate('Role Code'); ?>"
 											title="<?php echo _translate('Please enter role code'); ?>"
@@ -201,7 +201,7 @@ if ($priInfo) {
 									<label for="landingPage" class="col-lg-4 control-label">
 										<?php echo _translate("Landing Page"); ?>
 									</label>
-									<div class="col-lg-7">
+									<div class="col-lg-8">
 										<select class="form-control " name='landingPage' id='landingPage'
 											title="<?php echo _translate('Please select landing page'); ?>"
 											<?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?>>
@@ -225,7 +225,7 @@ if ($priInfo) {
 									<label for="status" class="col-lg-4 control-label">
 										<?php echo _translate("Status"); ?> <span class="mandatory">*</span>
 									</label>
-									<div class="col-lg-7">
+									<div class="col-lg-8">
 										<select class="form-control isRequired" name='status' id='status'
 											title="<?php echo _translate('Please select the status'); ?>"
 											<?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?>>
@@ -248,7 +248,7 @@ if ($priInfo) {
 									<label for="accessType" class="col-lg-4 control-label">
 										<?php echo _translate("Access Type"); ?> <span class="mandatory">*</span>
 									</label>
-									<div class="col-lg-7">
+									<div class="col-lg-8">
 										<select class="form-control isRequired" name='accessType' id='accessType'
 											title="<?php echo _translate('Please select access type'); ?>">
 											<option value="">
