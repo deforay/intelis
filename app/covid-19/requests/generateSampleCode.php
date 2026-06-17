@@ -26,6 +26,11 @@ try {
     $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
     $sampleCodeParams['provinceCode'] = $provinceCode;
     $sampleCodeParams['insertOperation'] = false;
+    // Reflect the acting user so the preview shows the same series the queue will
+    // mint (testing-lab -> lis: no R + lab postfix; collection-site -> sts: R).
+    // Cosmetic only -- the authoritative code is minted server-side by the queue.
+    $sampleCodeParams['accessType'] = $_SESSION['accessType'] ?? null;
+    $sampleCodeParams['labId'] = $_SESSION['labId'] ?? null;
     echo $covid19Service->getSampleCode($sampleCodeParams);
   }
 } catch (Throwable $exception) {
