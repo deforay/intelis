@@ -393,4 +393,8 @@ try {
 		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
+	// Don't leave the user on a blank page: surface a message and send them
+	// back to the form instead of dying silently after logging.
+	$_SESSION['alertMsg'] = _translate("Unable to add this COVID-19 sample. Please try again later");
+	header("Location:/covid-19/requests/covid-19-add-request.php");
 }
