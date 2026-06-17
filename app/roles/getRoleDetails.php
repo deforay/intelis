@@ -104,7 +104,13 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['role_code']);
     $row[] = ucwords((string) $aRow['status']);
     if (_isAllowed("/roles/editRole.php")) {
-        $row[] = '<a href="editRole.php?id=' . base64_encode((string) $aRow['role_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+        // The superadmin role (id 1) is shown but not editable -- it bypasses ACL
+        // and its privileges must not be narrowed, so no edit button is offered.
+        if ((int) $aRow['role_id'] === 1) {
+            $row[] = '';
+        } else {
+            $row[] = '<a href="editRole.php?id=' . base64_encode((string) $aRow['role_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+        }
     }
     $output['aaData'][] = $row;
 }
