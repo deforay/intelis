@@ -231,15 +231,17 @@ final class TestRequestsService
                             $tesRequestData = [];
 
                             if ($this->commonService->isSTSInstance()) {
+                                // Only collection-site samples stay at the clinic; every other role
+                                // (testing-lab, or an unset/legacy access_type) works the lab side.
                                 $tesRequestData = [
                                     'remote_sample' => 'yes',
                                     'remote_sample_code' => $sampleData['sampleCode'],
                                     'remote_sample_code_format' => $sampleData['sampleCodeFormat'],
                                     'remote_sample_code_key' => $sampleData['sampleCodeKey'],
-                                    'result_status' => $presetStatus ?? RECEIVED_AT_CLINIC
+                                    'result_status' => $presetStatus ?? (($accessType === 'collection-site') ? RECEIVED_AT_CLINIC : RECEIVED_AT_TESTING_LAB)
                                 ];
 
-                                if ($accessType === 'testing-lab') {
+                                if ($accessType !== 'collection-site') {
                                     $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                                 }
                             } else {
