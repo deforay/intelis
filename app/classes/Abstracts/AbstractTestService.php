@@ -231,17 +231,29 @@ abstract class AbstractTestService
                 $autoFormatedString = "$year$month$day";
                 $currentYear = $dateObj->format('Y');
 
+                // A sample can carry up to two codes drawn from two SEPARATE
+                // counters:
+                //   - "sts" series -> remote_sample_code: ALWAYS R-prefixed, NEVER
+                //     a postfix. The network/origin id.
+                //   - "lis" series -> sample_code: NEVER R-prefixed, MAY carry a lab
+                //     postfix. The testing-lab's working id.
+                // The series is normally derived from who is acting (a testing-lab
+                // actor mints the lis series; every other actor on STS mints the sts
+                // series), but a caller can force one via $params['codeSeries'] --
+                // case 3 (testing-lab adds a sample directly on STS) mints BOTH,
+                // calling once per series.
+                $series = $params['codeSeries'] ?? null;
+                if ($series === null) {
+                    $actsAsLab = ($params['accessType'] ?? '') === 'testing-lab';
+                    $series = ($this->commonService->isSTSInstance() && !$actsAsLab) ? 'sts' : 'lis';
+                }
+
                 $remotePrefix = '';
                 $sampleCodeType = 'sample_code';
-                // On STS the default is the network "sts" series: R-prefixed codes
-                // counted/stored under remote_sample_code. A testing-lab actor
-                // (cloud-LIS) instead mints the local "lis" series -- its own
-                // sample_code, no R -- so the lab's working code is a clean series
-                // separate from any collection-site/remote code on the same box.
-                $actsAsLab = ($params['accessType'] ?? '') === 'testing-lab';
-                if ($this->commonService->isSTSInstance() && !$actsAsLab) {
+                if ($series === 'sts') {
                     $remotePrefix = 'R';
                     $sampleCodeType = 'remote_sample_code';
+                    $postfix = ''; // sts codes are always R and never carry a postfix
                 }
 
                 // Get the next sequence number using our improved atomic method
