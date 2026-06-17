@@ -43,10 +43,10 @@ if (!empty($_POST['status'])) {
     $sWhere[] = "ud.status = '" . $db->escape($_POST['status']) . "'";
 }
 
-// Cloud-LIS lab operators only manage their OWN lab's users. This endpoint is
-// AJAX (so it bypasses the ACL middleware) -- it must self-guard. No-op otherwise.
-if ($general->isCloudLisNonAdmin() && !empty($_SESSION['labId'])) {
-    $sWhere[] = "ud.testing_lab_id = " . (int) $_SESSION['labId'];
+// Lab scope (users): LIS = own lab + unassigned; cloud-LIS = strictly own lab
+// (fail closed); STS = all. AJAX endpoint -- bypasses ACL, so it self-guards.
+if ($scope = $general->labAdminScopeWhere('testing_lab_id', 'ud')) {
+    $sWhere[] = $scope;
 }
 
 $sQuery = "SELECT ud.user_id,

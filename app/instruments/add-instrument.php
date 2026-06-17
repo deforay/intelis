@@ -28,9 +28,10 @@ $vlsmSystemConfig = $general->getSystemConfig();
 $labNameList = $facilitiesService->getTestingLabs();
 // A restricted cloud-LIS operator may only add instruments for their OWN lab, so
 // collapse the lab dropdown to that single lab (keyed by facility_id). The save
-// helper re-forces the lab server-side. No-op for everyone else.
-if ($general->isCloudLisNonAdmin() && !empty($_SESSION['labId'])) {
-	$labNameList = array_intersect_key($labNameList, [(int) $_SESSION['labId'] => 1]);
+// helper re-forces the lab server-side. Fail closed: no resolved lab -> empty
+// dropdown, never all labs. No-op for everyone else.
+if ($general->isCloudLisNonAdmin()) {
+	$labNameList = array_intersect_key($labNameList, [(int) ($_SESSION['labId'] ?? 0) => 1]);
 }
 
 $activeTests = TestsService::getActiveTests();

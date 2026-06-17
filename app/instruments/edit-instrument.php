@@ -28,8 +28,9 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $vlsmSystemConfig = $general->getSystemConfig();
 $labNameList = $facilitiesService->getTestingLabs();
 // A restricted cloud-LIS operator may only manage their OWN lab's instruments.
-if ($general->isCloudLisNonAdmin() && !empty($_SESSION['labId'])) {
-	$labNameList = array_intersect_key($labNameList, [(int) $_SESSION['labId'] => 1]);
+// Fail closed: no resolved lab -> empty dropdown, never all labs.
+if ($general->isCloudLisNonAdmin()) {
+	$labNameList = array_intersect_key($labNameList, [(int) ($_SESSION['labId'] ?? 0) => 1]);
 }
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
