@@ -42,6 +42,13 @@ if ($general->isSTSInstance()) {
 	$smallLogoName = "<span class='fa fa-medkit'></span>";
 	$shortName = _translate("Sample Tracking");
 	$shortCode = 'STS';
+
+	// A testing-lab user works the lab (LIS) side of the STS. Give it a
+	// distinct skin so it reads apart from both the red STS-admin view and
+	// the blue standalone LIS.
+	if (($_SESSION['accessType'] ?? '') === 'testing-lab') {
+		$skin = "skin-purple";
+	}
 }
 
 $systemDisplayName = (SYSTEM_CONFIG['instance-name'] != null || SYSTEM_CONFIG['instance-name'] != '') ? SYSTEM_CONFIG['instance-name'] : $systemDisplayName;
