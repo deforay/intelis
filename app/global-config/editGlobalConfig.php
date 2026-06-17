@@ -54,7 +54,7 @@ $facilityReportFormat = (array) json_decode((string) $arr['report_format']);
 $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 
 ?>
-<!-- <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" /> -->
+<link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
 	.select2-selection__choice {
@@ -2672,7 +2672,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 	</section>
 	<!-- /.content -->
 </div>
-<!-- <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script> -->
+<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script src="/assets/js/jquery.multi-select.js"></script>
 <script src="/assets/js/jquery.quicksearch.js"></script>
 <script type="text/javascript">
