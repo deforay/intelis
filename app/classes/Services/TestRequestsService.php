@@ -39,7 +39,9 @@ final class TestRequestsService
      */
     private const MANIFEST_HASH_NONE = 'no-local-samples';
 
-    public function __construct(protected DatabaseService $db, protected CommonService $commonService) {}
+    public function __construct(protected DatabaseService $db, protected CommonService $commonService)
+    {
+    }
 
     public function addToSampleCodeQueue(?string $uniqueId, string $testType, string $sampleCollectionDate, ?string $provinceCode = null, ?string $sampleCodeFormat = null, ?string $prefix = null, ?string $accessType = null, ?int $labId = null): bool
     {
@@ -580,7 +582,7 @@ final class TestRequestsService
         // actually activate (otherwise their result_status stayed REFERRED).
         $manifestWhere = "sample_package_code = ?";
         $manifestParams = [$manifestCode];
-        if (TestsService::hasReferralManifest($testType)) {
+        if (TestsService::isReferrable($testType)) {
             $manifestWhere = "(sample_package_code = ? OR referral_manifest_code = ?)";
             $manifestParams = [$manifestCode, $manifestCode];
         }

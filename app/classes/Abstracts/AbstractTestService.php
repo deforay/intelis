@@ -175,17 +175,20 @@ abstract class AbstractTestService
     }
 
     /**
-     * Lab-aware postfix for test types that are referable to other labs (TB and
-     * Custom/Generic Tests): append "-<labFacilityCode>" on BOTH LIS and STS so the
-     * originating/testing lab is always encoded in the sample code.
+     * Lab-aware sample-code postfix, gated by the test type's referrability
+     * (TestsService::isReferrable()). All test services call this; behaviour is
+     * driven entirely by the isReferrable flag, not hard-coded per service.
      *
-     * On a LIS the single lab comes from sc_testing_lab_id; on STS it comes from the
-     * queued lab_id + access_type (see stsLabPostfix). Returns '' when no lab resolves.
-     * Unlike stsLabPostfix(), this does NOT short-circuit on LIS.
+     * Referrable test types (TB, Custom/Generic) are reported across labs, so the
+     * testing lab is encoded on BOTH LIS and STS:
+     *   - LIS: the instance's own lab from sc_testing_lab_id
+     *   - STS: the queued lab_id + access_type (see stsLabPostfix)
+     * Non-referrable types only get the postfix on STS, so a pure-LIS sample-code
+     * format is never changed. Returns '' when no lab resolves.
      */
-    protected function referableLabPostfix(array $params): string
+    protected function labPostfix(array $params): string
     {
-        if ($this->commonService->isLISInstance()) {
+        if (TestsService::isReferrable($this->testType ?? '') && $this->commonService->isLISInstance()) {
             $code = $this->labFacilityCode((int) ($this->commonService->getSystemConfig('sc_testing_lab_id') ?? 0));
             return $code !== '' ? "-$code" : '';
         }

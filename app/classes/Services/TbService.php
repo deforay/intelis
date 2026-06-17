@@ -29,10 +29,10 @@ final class TbService extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['tb_sample_code'] ?? 'MMYY';
             $params['prefix'] ??= $globalConfig['tb_sample_code_prefix'] ?? $this->shortCode;
-            // TB is referable to other labs, so the testing lab is encoded on BOTH LIS and
-            // STS (see AbstractTestService::referableLabPostfix). Session-independent: the
-            // code-minting paths (API, CLI worker, activation) have no $_SESSION.
-            $params['postfix'] ??= $this->referableLabPostfix($params);
+            // Lab-aware postfix; behaviour is driven by TestsService::isReferrable()
+            // (TB is referrable, so the testing lab is encoded on both LIS and STS).
+            // See AbstractTestService::labPostfix().
+            $params['postfix'] ??= $this->labPostfix($params);
 
             try {
                 return $this->generateSampleCode($this->table, $params);

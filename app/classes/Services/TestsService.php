@@ -61,7 +61,8 @@ final class TestsService
                 'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_vl_sample_type',
-                'serviceClass' => VlService::class
+                'serviceClass' => VlService::class,
+                'isReferrable' => false
             ],
             'recency' => [
                 'testName' => _translate('HIV Recency', escapeTextOrContext: true),
@@ -74,7 +75,8 @@ final class TestsService
                 'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_vl_sample_type',
-                'serviceClass' => VlService::class
+                'serviceClass' => VlService::class,
+                'isReferrable' => false
             ],
             'cd4' => [
                 'testName' => _translate('CD4', escapeTextOrContext: true),
@@ -87,7 +89,8 @@ final class TestsService
                 'resultColumn' => 'result_cd4',
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_vl_sample_type',
-                'serviceClass' => CD4Service::class
+                'serviceClass' => CD4Service::class,
+                'isReferrable' => false
             ],
             'eid' => [
                 'testName' => _translate('Early Infant Diagnosis', escapeTextOrContext: true),
@@ -100,7 +103,8 @@ final class TestsService
                 'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_eid_sample_type',
-                'serviceClass' => EidService::class
+                'serviceClass' => EidService::class,
+                'isReferrable' => false
             ],
             'covid19' => [
                 'testName' => _translate('Covid-19', escapeTextOrContext: true),
@@ -113,7 +117,8 @@ final class TestsService
                 'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_covid19_sample_type',
-                'serviceClass' => Covid19Service::class
+                'serviceClass' => Covid19Service::class,
+                'isReferrable' => false
             ],
             'hepatitis' => [
                 'testName' => _translate('Hepatitis', escapeTextOrContext: true),
@@ -178,11 +183,16 @@ final class TestsService
     }
 
     /**
-     * Whether this test type's table carries a referral_manifest_code column
-     * (the per-sample referral workflow). Only TB and Custom/Generic tests do;
-     * the other modules use sample_package_code only.
+     * Whether this test type is referrable to other labs. Only TB and
+     * Custom/Generic tests are; the other modules are not.
+     *
+     * Drives two behaviours:
+     *  - the per-sample referral workflow: referrable tables carry a
+     *    referral_manifest_code column (others use sample_package_code only);
+     *  - the lab-aware sample-code postfix: referrable types encode the testing
+     *    lab on both LIS and STS (see AbstractTestService::labPostfix()).
      */
-    public static function hasReferralManifest(string $testType): bool
+    public static function isReferrable(string $testType): bool
     {
         return !empty(self::getTestTypes()[$testType]['isReferrable']);
     }
