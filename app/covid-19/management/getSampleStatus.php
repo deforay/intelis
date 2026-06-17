@@ -25,6 +25,10 @@ if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
 }
 
+if ($labScope = $general->labScopeWhere('vl')) {
+    $whereCondition = (string) $whereCondition === '' ? $labScope : $whereCondition . " AND " . $labScope;
+}
+
 $sampleStatusColors = [];
 
 $sampleStatusColors[1] = "#dda41b"; // HOLD

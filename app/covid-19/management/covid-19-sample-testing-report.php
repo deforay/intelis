@@ -31,6 +31,10 @@ try {
         }
     }
 
+    if ($labScope = $general->labScopeWhere('covid19')) {
+        $whereCondition .= " AND $labScope";
+    }
+
     if (!empty($_POST['sampleCollectionDate'])) {
         [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
     } else {

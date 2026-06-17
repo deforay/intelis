@@ -103,6 +103,9 @@ try {
 					AND (vl.sample_tested_datetime IS NOT NULL)
 					AND vl.hcv_vl_count is not null
 					AND vl.hcv_vl_count != '' ";
+	if ($labScope = $general->labScopeWhere('vl')) {
+		$sQuery .= " AND $labScope";
+	}
 	if ($general->isSTSInstance()) {
 		$whereCondition = '';
 		if (!empty($_SESSION['facilityMap'])) {
