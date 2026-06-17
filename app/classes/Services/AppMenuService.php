@@ -68,6 +68,7 @@ final class AppMenuService
             '/users/users.php',
             '/instruments/instruments.php',
             '/admin/monitoring/audit-trail.php',
+            '/admin/monitoring/activity-log.php',
             '/admin/monitoring/log-files.php',
         ];
 
