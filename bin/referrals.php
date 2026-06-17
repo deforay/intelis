@@ -1,8 +1,11 @@
 #!/usr/bin/env php
 <?php
 
-// Push outbound inter-lab referrals (REFERRED status) to the configured partner
-// system, across every test module that supports lab-to-lab referrals.
+// Finalise inter-lab referrals on an STS / cloud-LIS instance (where both labs'
+// rows live in the same DB): for any sample referred to a different lab, move its
+// lab_id to the referred-to lab, mark it REFERRED, flag it for re-sync, and record
+// a referral-history row. Runs across every test module that supports lab-to-lab
+// referrals. Edge LIS installs are skipped (single lab; referrals leave via sync).
 //
 // To enable referrals for a new test type, add an entry to $referralConfig below;
 // the form table and primary key are resolved from TestsService.
