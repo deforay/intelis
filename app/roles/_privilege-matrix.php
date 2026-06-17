@@ -3,16 +3,25 @@
 /**
  * Shared privilege matrix for role add/edit (addRole.php, editRole.php).
  *
- * Renders the per-module tabbed grid of privileges with Yes/No switches, and
- * filters it on the client by the role's Access Type. Each privilege carries a
- * data-show-mode:
- *   lis    = Testing-lab function   (e.g. Add Samples from Manifest, Lab Storage)
- *   sts    = Collection-site function (e.g. create/manage manifests)
- *   always = both
- * applyAccessTypeFilter() shows only the privileges relevant to the selected
- * access type (testing-lab -> lis+always, collection-site -> sts+always, none
- * -> always). Hidden privileges are forced to "deny" so they can never be saved,
- * and a submit guard re-applies that just before the form posts.
+ * Single-page ACCORDION layout: one collapsible panel per module, each holding
+ * its resources and their Yes/No privilege switches. Replaces the old tabbed
+ * grid (which buried privileges across tabs and made it hard to see the whole
+ * picture at once).
+ *
+ * Two independent visibility layers, each driven by a CSS class so they never
+ * clobber each other:
+ *   .mode-hidden   -> applied by applyAccessTypeFilter() to privileges whose
+ *                     show_mode is not valid for the selected Access Type.
+ *                     Those cells are also forced to "deny" so they can never be
+ *                     saved (the server re-enforces this in add/editRolesHelper;
+ *                     the JS is UX only).
+ *   .search-hidden -> applied by searchPermissions() to privileges / resources /
+ *                     modules that don't match the search box.
+ * A cell shows only when it carries NEITHER class (see CSS below). Decoupling
+ * them is what fixes the old bug where searching un-hid cross-mode cells and the
+ * access filter wiped search results.
+ *
+ * show_mode legend: lis = testing-lab fn, sts = collection-site fn, always = both.
  *
  * Expected in scope (set by the including page before require):
  *   $rInfo        array  module/resource rows (the matrix source)
@@ -24,84 +33,254 @@
 $priId = $priId ?? [];
 $isSuperAdmin = $isSuperAdmin ?? false;
 ?>
-<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
-    <?php $a = 0;
+<style>
+    .privilege-accordion {
+        margin-bottom: 10px;
+    }
+
+    .privilege-module-panel {
+        border: 1px solid #d2d6de;
+        border-radius: 3px;
+        margin-bottom: 8px;
+        background: #fff;
+    }
+
+    .privilege-module-panel .module-heading {
+        cursor: pointer;
+        padding: 12px 16px;
+        font-size: 1.3em;
+        font-weight: bold;
+        color: #fff;
+        background-color: #3c8dbc;
+        border-radius: 3px 3px 0 0;
+        text-transform: uppercase;
+        user-select: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .privilege-module-panel.collapsed .module-heading {
+        border-radius: 3px;
+    }
+
+    .privilege-module-panel .module-heading .module-count {
+        font-size: 0.65em;
+        font-weight: normal;
+        opacity: 0.9;
+    }
+
+    .privilege-module-panel .module-heading .chevron {
+        transition: transform 0.15s ease-in-out;
+    }
+
+    .privilege-module-panel.collapsed .module-heading .chevron {
+        transform: rotate(-90deg);
+    }
+
+    .privilege-module-panel.collapsed .module-body {
+        display: none;
+    }
+
+    .privilege-module-panel .module-body {
+        padding: 6px 16px 16px;
+    }
+
+    .resource-block {
+        border-bottom: 1px solid #f0f0f0;
+        padding: 10px 0 6px;
+    }
+
+    .resource-block:last-child {
+        border-bottom: 0;
+    }
+
+    .resource-block .resource-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+    }
+
+    .resource-block .resource-heading h4 {
+        font-weight: bold;
+        margin: 0;
+        font-size: 15px;
+        color: #2c3e50;
+    }
+
+    .privilege-div.mode-hidden,
+    .privilege-div.search-hidden,
+    .resource-block.search-hidden,
+    .privilege-module-panel.search-hidden {
+        display: none !important;
+    }
+
+    .privilege-grid {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    /* Compact one-line-per-privilege rows: name on the left (wraps for long
+       names), Yes/No toggle pinned to the right. Packs 2-3 per row to use
+       horizontal space instead of stacking and wasting vertical space. */
+    .privilege-div {
+        padding: 4px 6px;
+    }
+
+    .privilege-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 6px 10px;
+        min-height: 38px;
+        border: 1px solid #ececec;
+        border-radius: 4px;
+        background: #fafafa;
+    }
+
+    .privilege-row .privilege-label {
+        flex: 1 1 auto;
+        text-align: left;
+        font-weight: 600;
+        font-size: 13px;
+        line-height: 1.25;
+        word-break: break-word;
+    }
+
+    .privilege-row .privilege-label.highlight {
+        background-color: #fff3a0;
+        border-radius: 2px;
+    }
+
+    .privilege-row .privilege-switch {
+        flex: 0 0 auto;
+        margin: 0;
+    }
+
+    /* Tighter Yes/No buttons than the page default (8px 16px). */
+    .privilege-row .privilege-switch label {
+        padding: 4px 11px;
+        font-size: 12px;
+    }
+
+    /* Floating Save/Cancel bar: pinned to the viewport bottom while scrolling,
+       and it snaps into its natural place once the page bottom is reached. */
+    .role-sticky-footer {
+        position: sticky;
+        bottom: 0;
+        z-index: 100;
+        background: #fff;
+        border-top: 1px solid #d2d6de;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.12);
+        padding: 12px 16px;
+        margin-top: 10px;
+        border-radius: 0 0 3px 3px;
+    }
+</style>
+
+<div class="form-group" style="margin: 0 0 12px;">
+    <a href="javascript:void(0);" class="btn btn-xs btn-default" onclick="expandAllModules(true);">
+        <em class="fa-solid fa-chevron-down"></em> <?= _translate("Expand all"); ?>
+    </a>
+    <a href="javascript:void(0);" class="btn btn-xs btn-default" onclick="expandAllModules(false);">
+        <em class="fa-solid fa-chevron-up"></em> <?= _translate("Collapse all"); ?>
+    </a>
+</div>
+
+<div class="privilege-accordion" id="privilegeAccordion">
+    <?php
+    $moduleIdx = 0;
     foreach ($rInfo as $moduleRow) {
         $moduleName = ($moduleRow['module'] == 'generic-tests') ? "Other Lab Tests" : $moduleRow['module'];
-        $liClass = $a == 0 ? "active" : ""; ?>
-        <li class="<?= $liClass; ?>"><a href="#<?= $moduleRow['module']; ?>" data-toggle="tab" class="bg-primary"><?php echo strtoupper((string) $moduleName); ?> </a></li>
-    <?php $a++;
-    } ?>
-</ul>
-
-<div id="myTabContent" class="tab-content">
-    <?php
-    $b = 0;
-    foreach ($rInfo as $moduleRow) {
-        $tabCls = $b == 0 ? "active" : "";
-        echo '<div class="tab-pane fade in ' . $tabCls . '" id="' . $moduleRow['module'] . '">';
-        echo "<table aria-describedby='table' class='table table-striped responsive-utilities jambo_table'>";
-
+        // First module open by default; the rest collapsed.
+        $collapsedCls = $moduleIdx === 0 ? "" : "collapsed";
         $moduleResources = explode("##", (string) $moduleRow['module_resources']);
-        foreach ($moduleResources as $mRes) {
-            $mRes = explode(",", $mRes);
-
-            echo "<tr class='togglerTr'>";
-            echo "<th>"; ?>
-            <small class="toggler">
-                <h4 style="font-weight: bold;"><?= _translate($mRes[1]); ?></h4>
-                <div class="super-switch privilege-switch pull-right">
-                    <input type='radio' id='all<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",true);'>
-                    <label for='all<?= $mRes[0]; ?>'><?= _translate("All"); ?></label>
-                    <input type='radio' id='none<?= $mRes[0]; ?>' name='<?= $mRes[1]; ?>' onclick='togglePrivilegesForThisResource("<?= $mRes[0]; ?>",false);' <?= $isSuperAdmin ? 'disabled' : ''; ?>>
-                    <label for='none<?= $mRes[0]; ?>'><?= _translate("None"); ?></label>
-                </div>
-            </small>
-            <?php
-            echo "</th></tr>";
-
-            // Render ALL privileges; the client filters by Access Type via
-            // data-show-mode (see applyAccessTypeFilter below).
-            $pInfo = $db->rawQuery("SELECT * FROM privileges WHERE resource_id = ? ORDER BY display_order ASC", [$mRes[0]]);
-            echo "<tr class='permissionTr'>";
-            echo "<td style='text-align:center;vertical-align:middle;' class='privilegesNode' id='" . $mRes[0] . "'>";
-            foreach ($pInfo as $privilege) {
-                if ($isSuperAdmin) {
-                    $allowChecked = " checked='checked' ";
-                    $denyChecked = "";
-                    $allowStyle = "allow-label";
-                    $denyStyle = "";
-                } elseif (in_array($privilege['privilege_id'], $priId)) {
-                    $allowChecked = " checked='checked' ";
-                    $denyChecked = "";
-                    $allowStyle = "allow-label";
-                    $denyStyle = "";
-                } else {
-                    $denyChecked = " checked='checked' ";
-                    $allowChecked = "";
-                    $denyStyle = "deny-label";
-                    $allowStyle = "";
-                }
-                $showMode = htmlspecialchars((string) ($privilege['show_mode'] ?? 'always'), ENT_QUOTES);
-                echo "<div class='col-lg-3 privilege-div' data-show-mode='" . $showMode . "' data-privilegeid='" . $privilege['privilege_id'] . "' id='div" . $privilege['privilege_id'] . "'>
-                        <strong class='privilege-label' data-privilegeid='" . $privilege['privilege_id'] . "' id='label" . $privilege['privilege_id'] . "'>" . _translate($privilege['display_name']) . "</strong>
-                        <br>
-                        <div class='privilege-switch' data-privilegeid='" . $privilege['privilege_id'] . "' id='switch" . $privilege['privilege_id'] . "' style='margin: 30px 0 36px 90px;'>
-                            <input type='radio' class='selectPrivilege' name='resource[" . $privilege['privilege_id'] . "]' value='allow' id='selectPrivilege" . $privilege['privilege_id'] . "' $allowChecked><label for='selectPrivilege" . $privilege['privilege_id'] . "' class='$allowStyle'>Yes</label>
-                            <input type='radio' class='unselectPrivilege' name='resource[" . $privilege['privilege_id'] . "]' value='deny' id='unselectPrivilege" . $privilege['privilege_id'] . "' $denyChecked " . ($isSuperAdmin ? "disabled='disabled'" : "") . "> <label for='unselectPrivilege" . $privilege['privilege_id'] . "' class='$denyStyle'> No</label>
+        ?>
+        <div class="privilege-module-panel <?= $collapsedCls; ?>" data-module="<?= htmlspecialchars((string) $moduleRow['module'], ENT_QUOTES); ?>">
+            <div class="module-heading" onclick="toggleModulePanel(this);">
+                <span><?= strtoupper((string) _translate($moduleName)); ?>
+                    <span class="module-count">(<?= count($moduleResources); ?>)</span>
+                </span>
+                <em class="fa-solid fa-chevron-down chevron"></em>
+            </div>
+            <div class="module-body">
+                <?php
+                foreach ($moduleResources as $mRes) {
+                    $mRes = explode(",", $mRes);
+                    $resourceId = $mRes[0];
+                    $resourceName = $mRes[1] ?? $mRes[0];
+                    ?>
+                    <div class="resource-block togglerTr">
+                        <div class="resource-heading">
+                            <h4><?= _translate($resourceName); ?></h4>
+                            <div class="super-switch privilege-switch">
+                                <input type='radio' id='all<?= $resourceId; ?>' name='<?= $resourceName; ?>' onclick='togglePrivilegesForThisResource("<?= $resourceId; ?>",true);'>
+                                <label for='all<?= $resourceId; ?>'><?= _translate("All"); ?></label>
+                                <input type='radio' id='none<?= $resourceId; ?>' name='<?= $resourceName; ?>' onclick='togglePrivilegesForThisResource("<?= $resourceId; ?>",false);' <?= $isSuperAdmin ? 'disabled' : ''; ?>>
+                                <label for='none<?= $resourceId; ?>'><?= _translate("None"); ?></label>
+                            </div>
                         </div>
-                    </div>";
-            }
-            echo "</td></tr>";
-        }
-        echo "</table></div>";
-        $b++;
+                        <?php
+                        // Render ALL privileges; the client filters by Access Type via
+                        // data-show-mode (applyAccessTypeFilter below).
+                        $pInfo = $db->rawQuery("SELECT * FROM privileges WHERE resource_id = ? ORDER BY display_order ASC", [$resourceId]);
+                        ?>
+                        <div class="privilege-grid privilegesNode" id="<?= $resourceId; ?>">
+                            <?php
+                            foreach ($pInfo as $privilege) {
+                                if ($isSuperAdmin || in_array($privilege['privilege_id'], $priId)) {
+                                    $allowChecked = " checked='checked' ";
+                                    $denyChecked = "";
+                                    $allowStyle = "allow-label";
+                                    $denyStyle = "";
+                                } else {
+                                    $denyChecked = " checked='checked' ";
+                                    $allowChecked = "";
+                                    $denyStyle = "deny-label";
+                                    $allowStyle = "";
+                                }
+                                $showMode = htmlspecialchars((string) ($privilege['show_mode'] ?? 'always'), ENT_QUOTES);
+                                $pid = $privilege['privilege_id'];
+                                ?>
+                                <div class='col-md-6 col-lg-4 privilege-div' data-show-mode='<?= $showMode; ?>' data-privilegeid='<?= $pid; ?>' id='div<?= $pid; ?>'>
+                                    <div class='privilege-row'>
+                                        <strong class='privilege-label' data-privilegeid='<?= $pid; ?>' id='label<?= $pid; ?>'><?= _translate($privilege['display_name']); ?></strong>
+                                        <div class='privilege-switch' data-privilegeid='<?= $pid; ?>' id='switch<?= $pid; ?>'>
+                                            <input type='radio' class='selectPrivilege' name='resource[<?= $pid; ?>]' value='allow' id='selectPrivilege<?= $pid; ?>' <?= $allowChecked; ?>><label for='selectPrivilege<?= $pid; ?>' class='<?= $allowStyle; ?>'><?= _translate("Yes"); ?></label>
+                                            <input type='radio' class='unselectPrivilege' name='resource[<?= $pid; ?>]' value='deny' id='unselectPrivilege<?= $pid; ?>' <?= $denyChecked; ?> <?= $isSuperAdmin ? "disabled='disabled'" : ""; ?>> <label for='unselectPrivilege<?= $pid; ?>' class='<?= $denyStyle; ?>'><?= _translate("No"); ?></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+        <?php
+        $moduleIdx++;
     } ?>
 </div>
 
 <script>
-    // Filter the privilege matrix by the role's Access Type. Registered with a
-    // vanilla listener so it is safe regardless of where jQuery is loaded.
+    // ---- Accordion expand/collapse ----
+    function toggleModulePanel(headingEl) {
+        var panel = headingEl.closest('.privilege-module-panel');
+        if (panel) { panel.classList.toggle('collapsed'); }
+    }
+
+    function expandAllModules(expand) {
+        var panels = document.querySelectorAll('.privilege-module-panel');
+        for (var i = 0; i < panels.length; i++) {
+            if (expand) { panels[i].classList.remove('collapsed'); }
+            else { panels[i].classList.add('collapsed'); }
+        }
+    }
+
+    // ---- Access Type filter + search (decoupled via .mode-hidden / .search-hidden) ----
     document.addEventListener('DOMContentLoaded', function () {
         if (!window.jQuery) { return; }
         var $ = window.jQuery;
@@ -121,18 +300,16 @@ $isSuperAdmin = $isSuperAdmin ?? false;
             }
         }
 
+        // Mark privileges not valid for the selected Access Type with .mode-hidden
+        // and force them to "deny" so they can never be granted.
         function applyAccessTypeFilter() {
             var allowed = allowedModes();
-            // Cell-level only: never hide tabs/rows. (Inactive Bootstrap tab-panes
-            // are display:none, so :visible can't be used to detect empty tabs --
-            // doing so hides every tab but the active one. Every module also has
-            // "always" privileges, so no tab is ever genuinely empty.)
             $('.privilege-div').each(function () {
                 var sm = ($(this).attr('data-show-mode') || 'always').toString();
                 if (allowed.indexOf(sm) !== -1) {
-                    $(this).show();
+                    $(this).removeClass('mode-hidden');
                 } else {
-                    $(this).hide();
+                    $(this).addClass('mode-hidden');
                     denyCell($(this)); // a hidden privilege must never be granted
                 }
             });
@@ -140,20 +317,85 @@ $isSuperAdmin = $isSuperAdmin ?? false;
         window.applyAccessTypeFilter = applyAccessTypeFilter;
 
         function denyHiddenPrivileges() {
-            $('.privilege-div:hidden').each(function () { denyCell($(this)); });
+            $('.privilege-div.mode-hidden').each(function () { denyCell($(this)); });
         }
 
         applyAccessTypeFilter();
         $('#accessType').on('change', applyAccessTypeFilter);
 
-        // A hidden privilege must never end up granted. The "Select All" controls
-        // (global #allowAllPrivileges and each resource's all<id> toggle) set
-        // every cell to allow, including hidden ones, so re-deny the hidden cells
-        // right after such a click. Done here rather than on submit because
-        // validateNow() calls the native form.submit(), which does not fire the
-        // jQuery submit event.
+        // "Select All" controls set every cell to allow, including mode-hidden ones,
+        // so re-deny the hidden cells right after such a click.
         $(document).on('click', '#allowAllPrivileges, [id^="all"]', function () {
             setTimeout(denyHiddenPrivileges, 0);
         });
     });
+
+    // Search across module names, resource (heading) names and privilege labels.
+    // Toggles .search-hidden only; .mode-hidden (access-type) is left untouched so
+    // cross-mode privileges never reappear via search.
+    function searchPermissions() {
+        var $ = window.jQuery;
+        var filter = ($('#searchInput').val() || '').toUpperCase();
+
+        // While searching, the bulk Select All / per-resource All-None controls are
+        // hidden to avoid acting on a filtered subset.
+        if (filter) { $('.super-switch').hide(); } else { $('.super-switch').show(); }
+
+        $('.privilege-module-panel').each(function () {
+            var $panel = $(this);
+            var moduleText = $panel.find('.module-heading').text().toUpperCase();
+            var moduleNameMatch = filter && moduleText.indexOf(filter) > -1;
+            var moduleHasVisibleChild = false;
+
+            $panel.find('.resource-block').each(function () {
+                var $block = $(this);
+                var headingText = $block.find('.resource-heading h4').text().toUpperCase();
+
+                if (!filter) {
+                    $block.removeClass('search-hidden');
+                    $block.find('.privilege-div').removeClass('search-hidden');
+                    $block.find('.privilege-label').removeClass('highlight');
+                    moduleHasVisibleChild = true;
+                    return;
+                }
+
+                // A matching module name or resource heading reveals the whole block.
+                if (moduleNameMatch || headingText.indexOf(filter) > -1) {
+                    $block.removeClass('search-hidden');
+                    $block.find('.privilege-div').removeClass('search-hidden');
+                    $block.find('.privilege-label').addClass('highlight');
+                    moduleHasVisibleChild = true;
+                    return;
+                }
+
+                var blockHasMatch = false;
+                $block.find('.privilege-label').each(function () {
+                    var $label = $(this);
+                    var $div = $label.closest('.privilege-div');
+                    if ($label.text().toUpperCase().indexOf(filter) > -1) {
+                        $div.removeClass('search-hidden');
+                        $label.addClass('highlight');
+                        blockHasMatch = true;
+                    } else {
+                        $div.addClass('search-hidden');
+                        $label.removeClass('highlight');
+                    }
+                });
+                if (blockHasMatch) {
+                    $block.removeClass('search-hidden');
+                    moduleHasVisibleChild = true;
+                } else {
+                    $block.addClass('search-hidden');
+                }
+            });
+
+            if (!filter) {
+                $panel.removeClass('search-hidden');
+            } else if (moduleHasVisibleChild) {
+                $panel.removeClass('search-hidden collapsed'); // auto-expand matches
+            } else {
+                $panel.addClass('search-hidden');
+            }
+        });
+    }
 </script>

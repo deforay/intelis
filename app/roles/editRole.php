@@ -305,7 +305,7 @@ if ($priInfo) {
 
 					</div>
 					<!-- /.box-body -->
-					<div class="box-footer">
+					<div class="box-footer role-sticky-footer">
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
 							<?php echo _translate("Submit"); ?>
 						</a>
@@ -438,87 +438,7 @@ if ($priInfo) {
 	}
 
 
-	function searchPermissions() {
-		let filter = $('#searchInput').val().toUpperCase();
-
-		// Handle visibility of the super-switch elements
-		if (filter) {
-			$('.super-switch').hide();
-		} else {
-			$('.super-switch').show();
-		}
-
-		// Iterate through each tab
-		$('#myTabContent .tab-pane').each(function () {
-			let $tab = $(this);
-			let $tabLink = $('#myTab a[href="#' + $tab.attr('id') + '"]').closest('li');
-
-			// Remove any previous hiddenTr class
-			$tab.find('.hiddenTr').removeClass('hiddenTr');
-
-			// Iterate through each togglerTr in the current tab
-			$tab.find('.togglerTr').each(function () {
-				let $togglerTr = $(this);
-				let $nextPermissionTr = $togglerTr.next('tr');
-				let togglerText = $togglerTr.find('h4').text().toUpperCase();
-
-				if (togglerText.indexOf(filter) > -1) {
-					$togglerTr.show();
-					$nextPermissionTr.show().removeClass('hiddenTr');
-					$nextPermissionTr.find('.privilege-div').show();
-					$nextPermissionTr.find('.privilege-label').addClass('highlight');
-				} else {
-					let hasVisiblePrivilege = false;
-
-					$nextPermissionTr.find('.privilege-label').each(function () {
-						let $label = $(this);
-						let labelText = $label.text().toUpperCase();
-						let $parentDiv = $label.closest('div.privilege-div');
-
-						if (labelText.indexOf(filter) > -1) {
-							$parentDiv.show();
-							$label.addClass('highlight');
-							hasVisiblePrivilege = true;
-						} else {
-							$parentDiv.hide();
-							$label.removeClass('highlight');
-						}
-					});
-
-					if (hasVisiblePrivilege) {
-						$togglerTr.show();
-						$nextPermissionTr.show().removeClass('hiddenTr');
-					} else {
-						$togglerTr.hide();
-						$nextPermissionTr.hide().addClass('hiddenTr');
-					}
-				}
-			});
-
-			// Adjust tab visibility based on the search result
-			let hiddenTrsCount = $tab.find('.hiddenTr').length;
-			let totalTrsCount = $tab.find('.permissionTr').length;
-
-			if (filter === '') {
-				$tabLink.show();
-				$tab.find('tr').show().removeClass('hiddenTr');
-			} else if (hiddenTrsCount === totalTrsCount) {
-				$tabLink.hide();
-			} else {
-				$tabLink.show();
-			}
-
-			let firstVisibleTabLink = $('#myTab li:visible:first a');
-			if (firstVisibleTabLink.length > 0) {
-				// Deactivate all tabs
-				$('#myTab li').removeClass('active');
-				$('#myTabContent .tab-pane').removeClass('active in');
-
-				// Activate the first visible tab
-				firstVisibleTabLink.tab('show');
-			}
-		});
-	}
+	// searchPermissions() now lives in _privilege-matrix.php (accordion-aware).
 </script>
 
 <?php
