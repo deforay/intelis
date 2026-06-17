@@ -93,6 +93,12 @@ if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
 	$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 }
+// Lab isolation (cloud-LIS): scope to this user's lab on the sample's lab_id. The
+// s.lab_id filter above is the storage location's lab and only auto-applies on
+// pure-LIS, so cloud-LIS needs this. No-op unless the session carries a lab id.
+if ($labScope = $general->labScopeWhere('vl')) {
+	$sWhere[] = $labScope;
+}
 
 $sWhere = isset($sWhere) && !empty($sWhere) ? ' AND ' . implode(" AND ", $sWhere) : "";
 $vlQuery = "SELECT vl.*,f.facility_name,s.storage_code,h.*,r.removal_reason_name FROM form_vl as vl
