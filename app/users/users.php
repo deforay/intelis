@@ -10,7 +10,13 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-$roles = $db->rawQuery("SELECT role_id, role_name FROM roles WHERE status='active' GROUP BY role_code ORDER BY role_name ASC");
+// A cloud-LIS lab operator only manages non-admin, non-API testing-lab users, so
+// the role filter shows just those roles (matches the add/edit form). The list
+// itself is lab-scoped in getUserDetails.php. No-op for everyone else.
+$roleScope = $general->isCloudLisNonAdmin()
+     ? " AND access_type='testing-lab' AND role_id != 1 AND (role_code IS NULL OR role_code != 'API') "
+     : "";
+$roles = $db->rawQuery("SELECT role_id, role_name FROM roles WHERE status='active' $roleScope GROUP BY role_code ORDER BY role_name ASC");
 ?>
 
 <!-- Content Wrapper. Contains page content -->

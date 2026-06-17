@@ -29,9 +29,10 @@ $testingLabs = [];
 if ($general->isSTSInstance()) {
      $testingLabs = $facilitiesService->getTestingLabs();
      // A restricted cloud-LIS operator may only assign users to their OWN lab, so
-     // collapse the dropdown to that single lab (keyed by facility_id).
-     if ($general->isCloudLisNonAdmin() && !empty($_SESSION['labId'])) {
-          $testingLabs = array_intersect_key($testingLabs, [(int) $_SESSION['labId'] => 1]);
+     // collapse the dropdown to that single lab (keyed by facility_id). Fail closed:
+     // no resolved lab -> empty dropdown, never all labs.
+     if ($general->isCloudLisNonAdmin()) {
+          $testingLabs = array_intersect_key($testingLabs, [(int) ($_SESSION['labId'] ?? 0) => 1]);
      }
 }
 

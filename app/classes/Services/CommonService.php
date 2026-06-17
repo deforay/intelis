@@ -1073,6 +1073,33 @@ final class CommonService
     }
 
     /**
+     * Lab scope for the admin LIST surfaces (users, instruments) on a lab column.
+     * Three cases, by design:
+     *  - LIS install:        own lab + legacy unassigned -> (col = labId OR col IS NULL)
+     *  - cloud-LIS operator: strictly own lab, FAIL CLOSED -> col = labId (or 1=0 if no lab)
+     *  - STS admin / collection-site / standalone: no scope (show all) -> ''
+     *
+     * Distinct from labScopeWhere() (the sample axis, NULL-tolerant for both LIS and
+     * cloud-LIS): here cloud-LIS is strict so a shared-STS lab operator never sees
+     * another lab's -- or legacy unassigned -- users/instruments.
+     *
+     * @param string $column the lab column (e.g. 'testing_lab_id' for users, 'lab_id')
+     * @param string $alias  table alias holding it; '' for an unaliased single-table query
+     */
+    public function labAdminScopeWhere(string $column, string $alias = ''): string
+    {
+        $col = $alias !== '' ? "$alias.$column" : $column;
+        $labId = (int) ($_SESSION['labId'] ?? 0);
+        if ($this->isLISInstance()) {
+            return $labId > 0 ? " ($col = $labId OR $col IS NULL) " : '';
+        }
+        if ($this->isCloudLisNonAdmin()) {
+            return $labId > 0 ? " $col = $labId " : ' 1=0 ';
+        }
+        return '';
+    }
+
+    /**
      * SQL predicate that scopes a sample query to the current user's testing lab.
      *
      * This is the lab axis (which testing lab owns/processes the sample), a
