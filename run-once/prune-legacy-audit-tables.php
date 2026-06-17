@@ -56,9 +56,13 @@ if (PHP_SAPI === 'cli' && !in_array('--child', $_SERVER['argv'] ?? [], true)) {
     try {
         /** @var DatabaseService $dbPrecheck */
         $dbPrecheck = ContainerRegistry::get(DatabaseService::class);
-        $doneFlag = $dbPrecheck->rawQueryValue(
+        // rawQueryOne()['value'], not rawQueryValue(): the latter returns an
+        // ARRAY of the column unless the query ends in "limit 1", so a string
+        // comparison against it would never match.
+        $flagRow = $dbPrecheck->rawQueryOne(
             "SELECT value FROM global_config WHERE name = 'audit_legacy_prune_done'"
         );
+        $doneFlag = is_array($flagRow) ? ($flagRow['value'] ?? null) : null;
         if (is_string($doneFlag) && strtolower(trim($doneFlag)) === 'yes') {
             // Already applied — exit SKIPPED so upgrade.sh counts this as
             // "already applied" in its run-once summary (and prints nothing).
@@ -102,9 +106,12 @@ $svc = ContainerRegistry::get(AuditArchiveService::class);
 
 // ----- 1. Short-circuit if already complete -----
 try {
-    $flag = $db->rawQueryValue(
+    // rawQueryOne()['value'], not rawQueryValue() (which returns an array of
+    // the column unless the query ends in "limit 1").
+    $flagRow = $db->rawQueryOne(
         "SELECT value FROM global_config WHERE name = 'audit_legacy_prune_done'"
     );
+    $flag = is_array($flagRow) ? ($flagRow['value'] ?? null) : null;
     if (is_string($flag) && strtolower(trim($flag)) === 'yes') {
         $log('Already complete on this instance; skipping.');
         exit(0);
@@ -161,21 +168,39 @@ try {
 $metadataPath = VAR_PATH . '/metadata/archive.mdata.json';
 $metadata = MiscUtility::loadMetadata($metadataPath);
 
+// Scalar row count. rawQueryValue() returns an ARRAY of the column unless the
+// query ends in "limit 1" — `(int) [0 => 0]` casts to 1, so a bare
+// rawQueryValue(COUNT(*)) is never === 0. rawQueryOne()['c'] is unambiguous.
+$rowCount = static function (string $table) use ($db): int {
+    $row = $db->rawQueryOne("SELECT COUNT(*) AS c FROM `{$table}`");
+    return (int) ($row['c'] ?? 0);
+};
+
 $allDropped = true;
 foreach (array_keys($legacyTables) as $auditTable) {
-    $lastDt = $metadata[$auditTable]['last_processed_date'] ?? null;
-    if (!is_string($lastDt) || $lastDt === '') {
-        $log("  {$auditTable}: no last_processed_date — will retry next upgrade.");
-        $allDropped = false;
-        continue;
-    }
-
     try {
+        // Already-empty legacy table: drained in a prior run (or never held
+        // rows), so the archive produced no last_processed_date for it. It is
+        // nonetheless safe to drop — do so directly instead of skipping it
+        // forever on the missing-high-water-mark guard below.
+        if ($rowCount($auditTable) === 0) {
+            $db->rawQuery("DROP TABLE `{$auditTable}`");
+            $log("  {$auditTable}: already empty — dropped.");
+            continue;
+        }
+
+        $lastDt = $metadata[$auditTable]['last_processed_date'] ?? null;
+        if (!is_string($lastDt) || $lastDt === '') {
+            $log("  {$auditTable}: rows present but no last_processed_date — will retry next upgrade.");
+            $allDropped = false;
+            continue;
+        }
+
         $db->rawQuery(
             "DELETE FROM `{$auditTable}` WHERE dt_datetime <= ?",
             [$lastDt]
         );
-        $remaining = (int) $db->rawQueryValue("SELECT COUNT(*) FROM `{$auditTable}`");
+        $remaining = $rowCount($auditTable);
         if ($remaining === 0) {
             $db->rawQuery("DROP TABLE `{$auditTable}`");
             $log("  {$auditTable}: drained + dropped (OS-level space reclaimed).");

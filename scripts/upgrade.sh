@@ -1737,7 +1737,10 @@ upgrade_instance() {
                 php "$script_path"
                 local run_once_rc=$?
                 case "$run_once_rc" in
-                    0) run_once_ran=$((run_once_ran + 1)) ;;
+                    0)
+                        run_once_ran=$((run_once_ran + 1))
+                        print success "Ran run-once script: ${script_name}"
+                        ;;
                     3) run_once_skipped=$((run_once_skipped + 1)) ;;
                     *)
                         run_once_failed=$((run_once_failed + 1))
