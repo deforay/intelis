@@ -116,7 +116,10 @@
             "@sts-setup"
         ],
         "system-admin": "@php bin/setup/system-admin.php",
-        "dev:switch-mode": "@php bin/dev/switch-mode.php",
+        "dev:switch-mode": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php bin/dev/switch-mode.php"
+        ],
         "migrate": "@php bin/migrate.php -y",
         "reset-metadata": [
             "@php app/tasks/remote/sts-metadata-receiver.php -ft",
