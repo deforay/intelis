@@ -96,6 +96,9 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 	if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
 		$searchQuery .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
 	}
+	if ($labScope = $general->labScopeWhere('vl')) {
+		$searchQuery .= " AND $labScope";
+	}
 } else {
 	$searchQuery = $allQuery;
 }
