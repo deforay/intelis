@@ -193,7 +193,10 @@ final class TbService extends AbstractTestService
 
             // Generate unique ID and get access type
             $uniqueId = $params['uniqueId'] ?? MiscUtility::generateULID();
-            $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
+            // Session first: an interactive user's own role is authoritative. The API/sync
+            // path (save-request.php) is token-authenticated with no session, so it falls
+            // through to the per-sample accessType passed in $params.
+            $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
             $userId = $_SESSION['userId'] ?? $params['userId'] ?? null;
             $currentDateTime = DateUtility::getCurrentDateTime();
 
@@ -228,9 +231,11 @@ final class TbService extends AbstractTestService
             // Set remote sample and result status based on instance type
             if ($this->commonService->isSTSInstance()) {
                 $testRequestData['remote_sample'] = 'yes';
-                $testRequestData['result_status'] = ($accessType === 'testing-lab')
-                    ? RECEIVED_AT_TESTING_LAB
-                    : RECEIVED_AT_CLINIC;
+                // Only collection-site samples stay at the clinic; every other role
+                // (testing-lab, or an unset/legacy access_type) works the lab side.
+                $testRequestData['result_status'] = ($accessType === 'collection-site')
+                    ? RECEIVED_AT_CLINIC
+                    : RECEIVED_AT_TESTING_LAB;
             } else {
                 $testRequestData['remote_sample'] = 'no';
                 $testRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;

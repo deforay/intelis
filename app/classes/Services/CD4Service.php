@@ -65,7 +65,10 @@ final class CD4Service extends AbstractTestService
             }
 
             $uniqueId = $params['uniqueId'] ?? MiscUtility::generateULID();
-            $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
+            // Session first: an interactive user's own role is authoritative. The API/sync
+            // path (save-request.php) is token-authenticated with no session, so it falls
+            // through to the per-sample accessType passed in $params.
+            $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
 
             // Insert into the Code Generation Queue
             $this->testRequestsService->addToSampleCodeQueue(
@@ -105,10 +108,11 @@ final class CD4Service extends AbstractTestService
 
             if ($this->commonService->isSTSInstance()) {
                 $tesRequestData['remote_sample'] = 'yes';
-                $tesRequestData['result_status'] = RECEIVED_AT_CLINIC;
-                if ($accessType === 'testing-lab') {
-                    $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
-                }
+                // Only collection-site samples stay at the clinic; every other role
+                // (testing-lab, or an unset/legacy access_type) works the lab side.
+                $tesRequestData['result_status'] = ($accessType === 'collection-site')
+                    ? RECEIVED_AT_CLINIC
+                    : RECEIVED_AT_TESTING_LAB;
             } else {
                 $tesRequestData['remote_sample'] = 'no';
                 $tesRequestData['result_status'] = RECEIVED_AT_TESTING_LAB;
