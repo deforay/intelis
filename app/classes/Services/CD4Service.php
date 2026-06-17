@@ -29,7 +29,7 @@ final class CD4Service extends AbstractTestService
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['cd4_sample_code'] ?? 'MMYY';
             $params['prefix'] ??= $globalConfig['cd4_sample_code_prefix'] ?? $this->shortCode;
-            $params['postfix'] ??= $this->stsLabPostfix($params);
+            $params['postfix'] ??= $this->labPostfix($params);
 
             try {
                 return $this->generateSampleCode($this->table, $params);
