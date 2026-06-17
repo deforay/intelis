@@ -1,37 +1,12 @@
 <?php
 
-use App\Utilities\DateUtility;
+require_once __DIR__ . '/../bootstrap.php';
+
 use App\Utilities\MiscUtility;
-use App\Services\CommonService;
-use App\Utilities\LoggerUtility;
+use App\Utilities\RunOnceUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
-// only run from command line
-if (php_sapi_name() !== 'cli') {
-    exit(0);
-}
-
-require_once(__DIR__ . '/../bootstrap.php');
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var FacilitiesService $facilitiesService */
-$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-
-$scriptName = basename(__FILE__);
-
-// Check for force flag (-f or --force)
-$forceRun = in_array('-f', $argv) || in_array('--force', $argv);
-$scriptSucceeded = false;
-if (!$forceRun) {
-    $db->where('script_name', $scriptName);
-    if ($db->getOne('s_run_once_scripts_log')) {
-        exit(0);
-    }
-}
 
 /*
  * On STS, each testing lab's facility_code is appended to its sample codes
@@ -44,7 +19,10 @@ if (!$forceRun) {
  * (or running after admins have set codes manually) is a no-op. The UNIQUE index on
  * facility_code is honoured by generateFacilityCode(), which disambiguates collisions.
  */
-try {
+RunOnceUtility::run(__FILE__, function (DatabaseService $db): void {
+    /** @var FacilitiesService $facilitiesService */
+    $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
     $labs = $db->rawQuery(
         "SELECT facility_id, facility_name
          FROM facility_details
@@ -57,46 +35,29 @@ try {
 
     if ($total === 0) {
         MiscUtility::safeCliEcho("Backfilling facility codes… no testing labs need one." . PHP_EOL);
-    } else {
-        $bar = MiscUtility::spinnerStart($total, "Backfilling facility codes");
+        return;
+    }
 
-        foreach ($labs as $row) {
-            $facilityId = (int) $row['facility_id'];
-            $name = trim((string) ($row['facility_name'] ?? ''));
+    $bar = MiscUtility::spinnerStart($total, "Backfilling facility codes");
 
-            $code = $facilitiesService->generateFacilityCode($name, $facilityId);
-            if ($code === '') {
-                $skipped++;
-                MiscUtility::spinnerAdvance($bar);
-                continue;
-            }
+    foreach ($labs as $row) {
+        $facilityId = (int) $row['facility_id'];
+        $name = trim((string) ($row['facility_name'] ?? ''));
 
-            $db->where('facility_id', $facilityId);
-            $db->update('facility_details', ['facility_code' => $code]);
-            $updated++;
-
+        $code = $facilitiesService->generateFacilityCode($name, $facilityId);
+        if ($code === '') {
+            $skipped++;
             MiscUtility::spinnerAdvance($bar);
+            continue;
         }
 
-        MiscUtility::spinnerFinish($bar);
-        MiscUtility::safeCliEcho("Backfilled {$updated} testing lab(s); skipped {$skipped} of {$total}." . PHP_EOL);
+        $db->where('facility_id', $facilityId);
+        $db->update('facility_details', ['facility_code' => $code]);
+        $updated++;
+
+        MiscUtility::spinnerAdvance($bar);
     }
 
-    $scriptSucceeded = true;
-} catch (Throwable $e) {
-    LoggerUtility::logError('backfill-facility-codes script failed', [
-        'exception' => $e->getMessage(),
-        'trace' => $e->getTraceAsString(),
-        'last_db_query' => $db->getLastQuery(),
-        'last_db_error' => $db->getLastError(),
-    ]);
-} finally {
-    if ($scriptSucceeded || $forceRun) {
-        echo "$scriptName executed and logged successfully" . PHP_EOL;
-        $db->setQueryOption('IGNORE')->insert('s_run_once_scripts_log', [
-            'script_name' => $scriptName,
-            'execution_date' => DateUtility::getCurrentDateTime(),
-            'status' => $scriptSucceeded ? 'executed' : 'forced'
-        ]);
-    }
-}
+    MiscUtility::spinnerFinish($bar);
+    MiscUtility::safeCliEcho("Backfilled {$updated} testing lab(s); skipped {$skipped} of {$total}." . PHP_EOL);
+});
