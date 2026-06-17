@@ -25,7 +25,11 @@ $referToLab = $_POST['labId'];
 $table = TestsService::getTestTableName($testType);
 $primaryKeyColumn = TestsService::getPrimaryColumn($testType);
 $patientIdColumn = TestsService::getPatientIdColumn($testType);
-$lisLabId = $general->getSystemConfig('sc_testing_lab_id');
+// Eligible-for-referral samples belong to the current user's own (sending) lab.
+// Use the session lab (authoritative, not a POST value) so a testing-lab user on
+// STS (cloud-LIS) sees their own lab's samples; on LIS this equals the install's
+// sc_testing_lab_id (fallback covers sessions predating the per-user lab).
+$lisLabId = $_SESSION['labId'] ?? $general->getSystemConfig('sc_testing_lab_id');
 
 $queryParams = [];
 $condition = "(COALESCE(vl.referred_to_lab_id, 0) = 0 OR vl.referred_to_lab_id = '')";
