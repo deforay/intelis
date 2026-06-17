@@ -61,6 +61,19 @@ try {
             echo "<div class='alert alert-danger' style='margin:10px 0;'>Failed to refresh audit archive.</div>";
             $uniqueId = null;
         }
+
+        // Cloud-LIS lab operators may only view the audit trail for samples in their
+        // OWN lab. The audit viewer is per-sample, so gate the lookup: a sample whose
+        // lab_id is not the operator's lab is treated as not found. No-op otherwise.
+        if ($general->isCloudLisNonAdmin() && !empty($uniqueId)) {
+            $myLab = (int) ($_SESSION['labId'] ?? 0);
+            $sampleLabId = (int) $db->where('unique_id', $uniqueId)->getValue($formTable, 'lab_id');
+            if ($myLab <= 0 || $sampleLabId !== $myLab) {
+                $uniqueId = null;
+                echo "<div class='alert alert-danger' style='margin:10px 0;'>"
+                    . _translate("This sample does not belong to your lab.") . "</div>";
+            }
+        }
     } else {
         $formTable = "";
         $uniqueId = "";
