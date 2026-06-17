@@ -13,7 +13,13 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-$query = "SELECT * FROM roles where status='active' GROUP BY role_code";
+// Cloud-LIS non-admin operators may only create non-admin, non-API testing-lab
+// users (so they can never mint an admin or escalate). The save helper re-checks
+// this server-side; the dropdown filter is just the matching UI. No-op otherwise.
+$roleScope = $general->isCloudLisNonAdmin()
+     ? " AND access_type='testing-lab' AND role_id != 1 AND (role_code IS NULL OR role_code != 'API') "
+     : "";
+$query = "SELECT * FROM roles where status='active' $roleScope GROUP BY role_code";
 $result = $db->rawQuery($query);
 
 // Per-user testing-lab assignment is an STS-only concept: a testing-lab user on
@@ -22,6 +28,11 @@ $result = $db->rawQuery($query);
 $testingLabs = [];
 if ($general->isSTSInstance()) {
      $testingLabs = $facilitiesService->getTestingLabs();
+     // A restricted cloud-LIS operator may only assign users to their OWN lab, so
+     // collapse the dropdown to that single lab (keyed by facility_id).
+     if ($general->isCloudLisNonAdmin() && !empty($_SESSION['labId'])) {
+          $testingLabs = array_intersect_key($testingLabs, [(int) $_SESSION['labId'] => 1]);
+     }
 }
 
 

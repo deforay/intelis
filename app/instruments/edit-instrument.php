@@ -27,6 +27,10 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $vlsmSystemConfig = $general->getSystemConfig();
 $labNameList = $facilitiesService->getTestingLabs();
+// A restricted cloud-LIS operator may only manage their OWN lab's instruments.
+if ($general->isCloudLisNonAdmin() && !empty($_SESSION['labId'])) {
+	$labNameList = array_intersect_key($labNameList, [(int) $_SESSION['labId'] => 1]);
+}
 // Sanitized values from $request object
 /** @var Psr\Http\Message\ServerRequestInterface $request */
 $request = AppRegistry::get('request');
@@ -35,6 +39,16 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $sQuery = "SELECT * from instruments where instrument_id=?";
 $sInfo = $db->rawQueryOne($sQuery, [$id]);
+
+// Block opening another lab's instrument directly by URL.
+if ($general->isCloudLisNonAdmin()) {
+	$myLab = (int) ($_SESSION['labId'] ?? 0);
+	if ($myLab <= 0 || (int) ($sInfo['lab_id'] ?? 0) !== $myLab) {
+		$_SESSION['alertMsg'] = _translate("You are not allowed to edit this instrument.");
+		header("Location:instruments.php");
+		exit;
+	}
+}
 
 $configDir = realpath(__DIR__);
 $directory = $configDir . DIRECTORY_SEPARATOR . 'vl';
