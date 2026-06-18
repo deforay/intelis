@@ -1662,10 +1662,14 @@ upgrade_instance() {
     # be unlinked. Instances upgraded by older (root-run) versions left
     # root-owned files/subdirs under var/cache, which www-data can't remove, so
     # clear() fails and aborts the whole post-update (migrations never run).
-    # Drop the regenerable cache as root and hand var/ to www-data so the
-    # www-data steps start from a clean, owned tree.
+    # Drop the regenerable cache as root, then hand only var/cache to www-data:
+    # the rest of var/ (logs, audit-trail, metadata) is already www-data-owned
+    # via move_dir_fully + the set_permissions quick-sync above + the running
+    # app, so a recursive chown over all of var/ — which can be a huge,
+    # unbounded audit-trail — is wasted work on every upgrade.
     rm -rf "${lis_path}/var/cache/file_cache" "${lis_path}/var/cache/CompiledContainer.php" 2>/dev/null || true
-    chown -R www-data:www-data "${lis_path}/var" 2>/dev/null || true
+    mkdir -p "${lis_path}/var/cache" 2>/dev/null || true
+    chown -R www-data:www-data "${lis_path}/var/cache" 2>/dev/null || true
 
     # Ensure composer files are writable by www-data before running composer commands
     chown www-data:www-data "${lis_path}/composer.json" "${lis_path}/composer.lock" 2>/dev/null || true
