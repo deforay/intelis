@@ -565,14 +565,25 @@ set_permissions() {
     # Who to grant (robust under sudo/non-interactive)
     local who="${SUDO_USER:-${USER:-root}}"
 
+    # The path may legitimately not exist yet (e.g. var/logs on a fresh
+    # instance). Don't let a missing directory get misdiagnosed as "no ACL
+    # support" and then abort the whole run when chown/chmod fail. Create it
+    # so permissions can actually be applied.
+    if [[ ! -e "$path" ]]; then
+        if ! mkdir -p "$path" 2>/dev/null; then
+            print warning "Path ${path} does not exist and could not be created. Skipping permissions."
+            return 0
+        fi
+    fi
+
     # Only THIS run's failures should drive the warning at the end.
     : > /tmp/acl_failures.log
 
     if ! command -v setfacl &>/dev/null; then
         print warning "setfacl not found. Falling back to chown/chmod..."
-        chown -R "$who":www-data "$path"
-        chmod -R u+rwX,g+rwX "$path"
-        return
+        chown -R "$who":www-data "$path" || true
+        chmod -R u+rwX,g+rwX "$path" || true
+        return 0
     fi
 
     # Probe: does this filesystem accept ACLs at all? If not, every setfacl
@@ -580,9 +591,9 @@ set_permissions() {
     # of forks.
     if ! setfacl -m "u:${who}:rwx" "$path" 2>/dev/null; then
         print warning "Filesystem at ${path} does not support ACLs. Falling back to chown/chmod..."
-        chown -R "$who":www-data "$path"
-        chmod -R u+rwX,g+rwX "$path"
-        return
+        chown -R "$who":www-data "$path" || true
+        chmod -R u+rwX,g+rwX "$path" || true
+        return 0
     fi
 
     # Tunables
