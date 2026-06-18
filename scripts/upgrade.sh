@@ -1647,6 +1647,26 @@ upgrade_instance() {
     print info "Running composer operations..."
     cd "${lis_path}"
 
+    # Finish the background directory migrations before touching var/ ownership
+    # so the reset below can't race a move_dir_fully still writing into var/.
+    if [ "${#dir_migration_pids[@]}" -gt 0 ]; then
+        for pid in "${dir_migration_pids[@]}"; do
+            wait "$pid" 2>/dev/null || true
+        done
+        dir_migration_pids=()
+    fi
+
+    # Everything below — composer install/post-update and the run-once scripts —
+    # runs as www-data. post-update's purge-cache clears var/cache via
+    # FilesystemAdapter::doClear(), which returns FALSE if a single entry can't
+    # be unlinked. Instances upgraded by older (root-run) versions left
+    # root-owned files/subdirs under var/cache, which www-data can't remove, so
+    # clear() fails and aborts the whole post-update (migrations never run).
+    # Drop the regenerable cache as root and hand var/ to www-data so the
+    # www-data steps start from a clean, owned tree.
+    rm -rf "${lis_path}/var/cache/file_cache" "${lis_path}/var/cache/CompiledContainer.php" 2>/dev/null || true
+    chown -R www-data:www-data "${lis_path}/var" 2>/dev/null || true
+
     # Ensure composer files are writable by www-data before running composer commands
     chown www-data:www-data "${lis_path}/composer.json" "${lis_path}/composer.lock" 2>/dev/null || true
 
@@ -1719,7 +1739,9 @@ upgrade_instance() {
         return 1
     fi
 
-    # Wait for directory migrations
+    # Directory migrations are already awaited before the composer step above
+    # (so the var/ ownership reset can't race them). This is a safety net in
+    # case any pid remains.
     if [ "${#dir_migration_pids[@]}" -gt 0 ]; then
         for pid in "${dir_migration_pids[@]}"; do
             wait "$pid" 2>/dev/null || true
