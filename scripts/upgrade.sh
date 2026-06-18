@@ -1321,8 +1321,8 @@ restore_rollback_snapshot() {
     if [ -f "${lp}/composer.lock" ]; then
         print info "Rebuilding vendor/ from snapshot composer.lock..."
         rm -rf "${lp}/vendor"
-        if (cd "$lp" && COMPOSER_ALLOW_SUPERUSER=1 sudo -u www-data composer install --prefer-dist --no-dev --no-interaction); then
-            (cd "$lp" && COMPOSER_ALLOW_SUPERUSER=1 sudo -u www-data composer dump-autoload -o --no-interaction) || true
+        if (cd "$lp" && wwwdata_composer install --prefer-dist --no-dev --no-interaction); then
+            (cd "$lp" && wwwdata_composer dump-autoload -o --no-interaction) || true
             chown -R www-data:www-data "${lp}/vendor" 2>/dev/null || true
             print success "vendor/ rebuilt from snapshot composer.lock"
         else
@@ -1677,8 +1677,8 @@ upgrade_instance() {
         exit 1
     fi
 
-    sudo -u www-data composer config process-timeout 30000 --no-interaction
-    sudo -u www-data composer clear-cache --no-interaction
+    wwwdata_composer config process-timeout 30000 --no-interaction
+    wwwdata_composer clear-cache --no-interaction
 
     # Install vendor from the pre-staged directory if available; otherwise fall
     # back to composer install. Prepare phase already downloaded + verified the
@@ -1700,13 +1700,13 @@ upgrade_instance() {
         # below) — so a vendor-latest release that lags master's lock can't leave
         # the instance with mismatched dependencies. A fast no-op when they match.
         print info "Reconciling staged vendor against composer.lock..."
-        sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev --no-interaction
+        wwwdata_composer install --no-scripts --no-autoloader --prefer-dist --no-dev --no-interaction
     else
         print info "Staged vendor not available; running composer install..."
-        sudo -u www-data composer install --prefer-dist --no-dev --no-interaction
+        wwwdata_composer install --prefer-dist --no-dev --no-interaction
     fi
 
-    sudo -u www-data composer dump-autoload -o --no-interaction
+    wwwdata_composer dump-autoload -o --no-interaction
     print success "Composer operations completed."
 
     # Database connectivity, migrations and repairs. These mutate the schema, so
@@ -1734,7 +1734,7 @@ upgrade_instance() {
     fi
 
     print info "Running database migrations..."
-    if ! sudo -u www-data composer post-update; then
+    if ! wwwdata_composer post-update; then
         _apply_failure_no_rollback "database migrations (composer post-update) failed"
         return 1
     fi
