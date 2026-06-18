@@ -154,7 +154,6 @@
         ],
         "post-update": [
             "@provision",
-            "@purge-cache",
             "@audit-triggers-drop",
             "@migrate",
             "@audit-triggers-install",
