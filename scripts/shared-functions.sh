@@ -1162,6 +1162,23 @@ ensure_switch_php() {
 }
 
 
+# Writable COMPOSER_HOME for www-data. The www-data passwd home (/var/www) is
+# root-owned and not writable by www-data, and bare `sudo -u www-data` leaves
+# HOME=/root (also unwritable), so composer otherwise runs cache-less, re-
+# downloads every package each run, and emits "Cannot create cache directory"
+# warnings. A dedicated www-data-owned home gives a shared, persistent package
+# cache across all instances in a run.
+WWW_DATA_COMPOSER_HOME="${WWW_DATA_COMPOSER_HOME:-/var/www/.composer}"
+
+# Run composer as www-data with that writable COMPOSER_HOME. The mkdir/chown is
+# idempotent and self-heals if the dir is missing or mis-owned. Use this for
+# EVERY composer invocation that must run as www-data (setup.sh + upgrade.sh).
+wwwdata_composer() {
+    mkdir -p "$WWW_DATA_COMPOSER_HOME" 2>/dev/null || true
+    chown www-data:www-data "$WWW_DATA_COMPOSER_HOME" 2>/dev/null || true
+    sudo -u www-data env COMPOSER_HOME="$WWW_DATA_COMPOSER_HOME" composer "$@"
+}
+
 ensure_composer() {
     ensure_path
 

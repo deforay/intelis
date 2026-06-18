@@ -1000,8 +1000,8 @@ if ! ensure_php_cli_extensions "${PHP_VERSION}"; then
 fi
 
 # Configure composer timeout regardless of installation path
-sudo -u www-data composer config process-timeout 30000
-sudo -u www-data composer clear-cache
+wwwdata_composer config process-timeout 30000
+wwwdata_composer clear-cache
 
 echo "Checking if composer dependencies need updating..."
 NEED_FULL_INSTALL=false
@@ -1099,20 +1099,20 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
 
         # Update the composer.lock file to match the current state
         print info "Finalizing composer installation..."
-        sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev
+        wwwdata_composer install --no-scripts --no-autoloader --prefer-dist --no-dev
     else
         print warning "Vendor package not found in GitHub releases. Proceeding with regular composer install."
 
         # Perform full install if vendor.tar.gz isn't available
         print info "Running full composer install (this may take a while)..."
-        sudo -u www-data composer install --prefer-dist --no-dev
+        wwwdata_composer install --prefer-dist --no-dev
     fi
 else
     print info "Dependencies are up to date. Skipping vendor download."
 fi
 
 # Always generate the optimized autoloader, regardless of install path
-sudo -u www-data composer dump-autoload -o
+wwwdata_composer dump-autoload -o
 
 log_action "Composer operations completed."
 
