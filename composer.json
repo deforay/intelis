@@ -159,6 +159,7 @@
             "@audit-triggers-install",
             "@fixes",
             "@db:collation",
+            "@purge-cache",
             "@token",
             "@metadata-sync",
             "@housekeeping",
