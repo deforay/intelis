@@ -77,7 +77,66 @@ class FileCacheUtility
 
     public function clear(): bool
     {
-        return $this->tagAwareAdapter->clear();
+        $ok = false;
+        try {
+            $ok = $this->tagAwareAdapter->clear();
+        } catch (Exception $e) {
+            LoggerUtility::logError('Cache adapter clear failed', ['exception' => $e]);
+        }
+
+        // The Symfony adapter's clear() returns false (or throws) if a single
+        // entry can't be unlinked -- a stale/locked file, a read-only entry, or
+        // one left behind with foreign ownership. A cache clear is non-critical,
+        // so fall back to a forceful filesystem sweep that chmods-then-unlinks
+        // whatever it can, instead of letting one stuck file fail the whole
+        // clear (and, via post-update, strand an instance in maintenance mode).
+        if (!$ok) {
+            $ok = $this->forceFilesystemClear();
+        }
+
+        return $ok;
+    }
+
+    /**
+     * Best-effort recursive removal of the on-disk cache. Returns true if the
+     * cache directory is empty afterwards (nothing left to serve stale data),
+     * false if at least one entry survived (e.g. foreign-owned files this
+     * process genuinely cannot remove).
+     */
+    private function forceFilesystemClear(): bool
+    {
+        $cacheDir = CACHE_PATH . DIRECTORY_SEPARATOR . 'file_cache';
+        if (!is_dir($cacheDir)) {
+            return true;
+        }
+
+        try {
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($cacheDir, RecursiveDirectoryIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::CHILD_FIRST
+            );
+
+            foreach ($iterator as $item) {
+                $path = $item->getPathname();
+                // Make sure the parent dir is traversable/writable before the
+                // unlink/rmdir; some Symfony shards land mode 700.
+                @chmod($item->isDir() ? $path : dirname($path), 0775);
+                if ($item->isDir()) {
+                    @rmdir($path);
+                } else {
+                    @chmod($path, 0664);
+                    @unlink($path);
+                }
+            }
+        } catch (Exception $e) {
+            LoggerUtility::logError('Cache filesystem clear failed', ['exception' => $e]);
+            return false;
+        }
+
+        // Empty == fully cleared. Anything remaining is something we couldn't
+        // remove (caller decides whether that's fatal -- for purge-cache it is
+        // not).
+        return (new \FilesystemIterator($cacheDir))->valid() === false;
     }
 
     public function invalidateTags(array $tags): bool

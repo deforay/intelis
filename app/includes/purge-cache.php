@@ -29,15 +29,19 @@ if ($isCli) {
     MiscUtility::deleteFile($compiledContainerPath);
 }
 
-// Clear the file cache. Signal failure via exit code (CLI) / HTTP status (web)
-// instead of echoing a bare boolean to stdout.
+// Clear the file cache. A cache clear is non-critical: when this runs inside
+// composer post-update/post-install it must NEVER hard-fail the chain, or a
+// single unremovable cache entry strands the whole instance in 503/maintenance
+// with migrations already applied. FileCacheUtility::clear() already falls back
+// to a forceful filesystem sweep; if something still survives we warn but exit
+// 0 so the upgrade completes. The stale cache self-heals on the next request or
+// a manual `composer purge-cache`.
 $ok = $fileCache->clear();
 if ($isCli) {
     if ($ok) {
         MiscUtility::consoleSuccess('Application cache cleared.');
     } else {
-        MiscUtility::consoleError('Could not clear the application cache.');
-        exit(1);
+        MiscUtility::consoleWarn('Could not fully clear the application cache (continuing). Some entries may be left behind; clear manually if stale data appears.');
     }
 } elseif (!$ok) {
     http_response_code(500);
