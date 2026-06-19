@@ -1649,9 +1649,15 @@ upgrade_instance() {
 
     # Finish the background directory migrations before touching var/ ownership
     # so the reset below can't race a move_dir_fully still writing into var/.
+    # Use spinner() per migration so a large audit-trail/cache copy shows live
+    # progress instead of a silent multi-minute stall at "Running composer
+    # operations..." (spinner() does the wait itself and prints dots while it
+    # runs).
     if [ "${#dir_migration_pids[@]}" -gt 0 ]; then
+        print info "Finishing directory migrations to var/ (large audit-trail/cache can take a while)..."
         for pid in "${dir_migration_pids[@]}"; do
-            wait "$pid" 2>/dev/null || true
+            local _mig_label="${dir_migration_labels[$pid]:-directory}"
+            spinner "$pid" "Migrating ${_mig_label} to var/${_mig_label}..." || true
         done
         dir_migration_pids=()
     fi
