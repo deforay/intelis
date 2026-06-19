@@ -50,7 +50,13 @@ class VLResultPDFHelper extends Fpdi
         } elseif ($this->htitle !== null && $this->htitle !== '' && $this->htitle !== '0' && $this->htitle !== '') {
             if ($this->logo !== null && $this->logo !== '' && $this->logo !== '0' && trim($this->logo) !== '') {
                 if (MiscUtility::isImageValid($this->logo)) {
-                    $this->Image($this->logo, 10, 5, 15, '', '', '', 'T');
+                    // $this->Image($this->logo, 10, 5, 15, '', '', '', 'C');
+                    // Get page width and image width, then calculate centered X
+                    $pageWidth = $this->GetPageWidth();
+                    $imgWidth = 15; // your image width
+                    $x = ($pageWidth - $imgWidth) / 2;
+
+                    $this->Image($this->logo, $x, 5, $imgWidth);
                 } elseif (MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo)) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->labFacilityId . DIRECTORY_SEPARATOR . $this->logo;
                     $this->Image($imageFilePath, 95, 5, 15, '', '', '', 'T');
