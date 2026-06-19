@@ -434,29 +434,173 @@ final class LoggerUtility
         $debugMode = defined('SYSTEM_CONFIG')
             && !empty(SYSTEM_CONFIG['system']['debug_mode']);
 
-        $safeTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+        // Page copy (all translatable). Intentionally vendor/role agnostic — the
+        // "support team" differs per deployment, so we never name who that is.
+        $pageTitle     = _htmlTranslate("System Temporarily Unavailable");
+        $heading       = _htmlTranslate("We can't reach the system right now");
+        $intro         = _htmlTranslate("InteLIS could not connect to its database. This is usually temporary and often resolves on its own within a few minutes.");
+        $stepsHeading  = _htmlTranslate("What you can try");
+        $step1         = _htmlTranslate("Wait a minute, then reload this page — the database may simply be restarting.");
+        $step2         = _htmlTranslate("If you can, restart the computer or server that runs InteLIS, then wait a minute and reload. This restarts the database and fixes the problem most of the time.");
+        $step3         = _htmlTranslate("Make sure the server has enough free disk space and memory.");
+        $step4         = _htmlTranslate("Confirm the database settings in the configuration are correct and the credentials have not changed.");
+        $reloadLabel   = _htmlTranslate("Reload page");
+        $supportLead   = _htmlTranslate("If the problem continues after a few minutes, please contact your support team and share the time this happened.");
+        $detailsLabel  = _htmlTranslate("Technical details");
+
         $detail = $debugMode
-            ? '<pre>' . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '</pre>'
+            ? '<details class="tech"><summary>' . $detailsLabel . '</summary><pre>'
+                . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . '</pre></details>'
             : '';
-        $intro = _htmlTranslate("The application could not start. Please check your configuration or contact an administrator.");
 
         echo <<<HTML
         <!DOCTYPE html>
         <html lang="en">
         <head>
         <meta charset="UTF-8">
-        <title>System Error</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{$pageTitle}</title>
         <style>
-        body { font-family: system-ui, sans-serif; background: #fafafa; color: #333; margin: 4rem; }
-        h1 { color: #c00; }
-        p  { max-width: 600px; }
-        pre { background: #f0f0f0; padding: 1rem; overflow-x: auto; }
+        :root {
+            --bg: #eef2f7;
+            --card: #ffffff;
+            --ink: #1f2937;
+            --muted: #6b7280;
+            --accent: #2563eb;
+            --line: #e5e7eb;
+            --warn-bg: #fef3f2;
+            --warn-ink: #b42318;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            line-height: 1.55;
+        }
+        .card {
+            background: var(--card);
+            width: 100%;
+            max-width: 760px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(15, 23, 42, 0.12);
+            overflow: hidden;
+        }
+        .card__top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 28px 32px;
+            background: var(--warn-bg);
+            border-bottom: 1px solid var(--line);
+        }
+        .icon {
+            flex: 0 0 auto;
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: var(--warn-ink);
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 26px; font-weight: 700;
+        }
+        h1 {
+            font-size: 1.3rem;
+            margin: 0;
+            color: var(--warn-ink);
+        }
+        .card__body { padding: 28px 32px 32px; }
+        .intro { margin: 0 0 22px; color: var(--ink); }
+        h2 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            margin: 0 0 12px;
+        }
+        ol.steps {
+            margin: 0 0 26px;
+            padding: 0;
+            list-style: none;
+            counter-reset: step;
+        }
+        ol.steps li {
+            counter-increment: step;
+            position: relative;
+            padding: 10px 0 10px 40px;
+            border-bottom: 1px solid var(--line);
+        }
+        ol.steps li:last-child { border-bottom: 0; }
+        ol.steps li::before {
+            content: counter(step);
+            position: absolute; left: 0; top: 9px;
+            width: 26px; height: 26px;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 600;
+        }
+        .actions { margin-bottom: 24px; }
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            text-decoration: none;
+            padding: 11px 22px;
+            border-radius: 9px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: 0;
+            cursor: pointer;
+        }
+        .btn:hover { background: #1d4ed8; }
+        .support {
+            background: #f8fafc;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--muted);
+            font-size: 0.92rem;
+            margin: 0;
+        }
+        .tech { margin-top: 22px; font-size: 0.88rem; }
+        .tech summary { cursor: pointer; color: var(--muted); }
+        .tech pre {
+            background: #0f172a; color: #e2e8f0;
+            padding: 14px; border-radius: 8px;
+            overflow-x: auto; margin-top: 10px;
+            font-size: 0.82rem;
+        }
         </style>
         </head>
         <body>
-        <h1>{$safeTitle}</h1>
-        <p>{$intro}</p>
-        {$detail}
+        <div class="card">
+            <div class="card__top">
+                <div class="icon">!</div>
+                <h1>{$heading}</h1>
+            </div>
+            <div class="card__body">
+                <p class="intro">{$intro}</p>
+                <h2>{$stepsHeading}</h2>
+                <ol class="steps">
+                    <li>{$step1}</li>
+                    <li>{$step2}</li>
+                    <li>{$step3}</li>
+                    <li>{$step4}</li>
+                </ol>
+                <div class="actions">
+                    <a class="btn" href="javascript:location.reload()">{$reloadLabel}</a>
+                </div>
+                <p class="support">{$supportLead}</p>
+                {$detail}
+            </div>
+        </div>
         </body>
         </html>
         HTML;
