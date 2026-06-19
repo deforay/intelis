@@ -734,7 +734,8 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 const commandName = $link.data('command') || 'command';
                 if (!commandId) return;
 
-                if (!window.confirm("<?= _translate('Cancel this pending'); ?> '" + commandName + "' <?= _translate('command? The lab has not yet picked it up.'); ?>")) {
+                const confirmMsg = "<?= _jsTranslate('Cancel this pending "%s" command? The lab has not yet picked it up.'); ?>".replace('%s', commandName);
+                if (!window.confirm(confirmMsg)) {
                     return;
                 }
 
