@@ -402,13 +402,13 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         $("#heroSuppressionPct").text(mWithResult > 0 ? suppPct + "%" : "—");
         $("#heroSuppressionSub").text(
             mWithResult > 0
-                ? mSuppressed.toLocaleString() + " / " + mWithResult.toLocaleString() +
-                  " <?= _jsTranslate('matched mothers with a VL result are suppressed'); ?>"
+                ? "<?= _jsTranslate('%s of %s matched mothers with a VL result are suppressed'); ?>"
+                      .replace('%s', mSuppressed.toLocaleString()).replace('%s', mWithResult.toLocaleString())
                 : "<?= _jsTranslate('No matched mothers with a VL result yet'); ?>"
         );
         $("#heroHighVl").text(mHighVl.toLocaleString());
         $("#heroHighVlSub").text(
-            mWithResult > 0 ? highPct + "% <?= _jsTranslate('of mothers with a VL result'); ?>" : ""
+            mWithResult > 0 ? "<?= _jsTranslate('%s% of mothers with a VL result'); ?>".replace('%s', highPct) : ""
         );
 
         // Outcome hero — infants who tested HIV-positive (the harm PMTCT prevents).
