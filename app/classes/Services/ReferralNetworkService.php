@@ -24,9 +24,7 @@ final class ReferralNetworkService
     public const CACHE_TTL = 1800; // 30 minutes
     private const CACHE_TAG = 'referral_network';
 
-    public function __construct(private DatabaseService $db, private FileCacheUtility $fileCache)
-    {
-    }
+    public function __construct(private DatabaseService $db, private FileCacheUtility $fileCache) {}
 
     /**
      * Per-(facility, lab, test type) referral rows matching the given filters.
@@ -69,6 +67,7 @@ final class ReferralNetworkService
         $normalised = [
             'testTypes' => $this->sortedStrings((array) ($filters['testTypes'] ?? [])),
             'dateRange' => trim((string) ($filters['dateRange'] ?? '')),
+            'sampleCode' => trim((string) ($filters['sampleCode'] ?? '')),
             'provinceIds' => $this->intList($filters['provinceIds'] ?? []),
             'districtIds' => $this->intList($filters['districtIds'] ?? []),
             'labIds' => $this->intList($filters['labIds'] ?? []),
@@ -107,6 +106,10 @@ final class ReferralNetworkService
             $dateClause = " AND t.request_created_datetime BETWEEN '$start' AND '$end'";
         }
 
+        if (!empty($filters['sampleCode']) && trim((string) $filters['sampleCode']) !== '') {
+            $dateClause = " AND t.sample_code LIKE '" . $filters['sampleCode'] . "'";
+        }
+
         $where = $this->buildWhere($dateClause, $labIds, $facilityIds, $provinceIds, $districtIds);
         $join = $needsFacilityJoin
             ? 'JOIN facility_details f ON t.facility_id = f.facility_id'
@@ -128,7 +131,6 @@ final class ReferralNetworkService
                       $join
                      WHERE $where
                   GROUP BY t.facility_id, t.lab_id";
-
             $result = $this->db->rawQuery($sql) ?: [];
             foreach ($result as $r) {
                 $rows[] = [

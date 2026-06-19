@@ -338,6 +338,12 @@ $activeTests = TestsService::getActiveTests();
                                 </select>
                             </div>
                             <div class="col-md-3 col-sm-6 form-group">
+                                <label for="sampleCode"><?= _translate("Sample Code"); ?></label>
+                                <input type="text" id="sampleCode" name="sampleCode"
+                                    class="form-control"
+                                    placeholder="<?php echo _translate('Enter sample code', true); ?>" />
+                            </div>
+                            <div class="col-md-3 col-sm-6 form-group">
                                 <label for="markerFilter"><?= _translate("Show on map"); ?></label>
                                 <select id="markerFilter" name="markerFilter" class="form-control">
                                     <option value="all"><?= _translate("All"); ?></option>
@@ -345,7 +351,7 @@ $activeTests = TestsService::getActiveTests();
                                     <option value="sites"><?= _translate("Referring Facilities only"); ?></option>
                                 </select>
                             </div>
-                            <div class="col-md-6 col-sm-6 form-group">
+                            <div class="col-md-3 col-sm-6 form-group">
                                 <div class="hidden-xs" style="height:27px;" aria-hidden="true"></div>
                                 <button onclick="applyFilters();" class="btn btn-primary">
                                     <em class="fa-solid fa-magnifying-glass"></em>&nbsp;<?php echo _translate("Search"); ?>
@@ -416,21 +422,32 @@ $activeTests = TestsService::getActiveTests();
     var TILE_URL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     var TILE_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
     var MAX_FLOWS_RENDERED = 600; // keep the map responsive on large networks
-    var LAB_COLOR = '#dd4b39', SITE_COLOR = '#3c8dbc';
+    var LAB_COLOR = '#dd4b39',
+        SITE_COLOR = '#3c8dbc';
     // Default flow colour, and a distinct colour for lab -> lab referrals
     // (one testing lab onward-referring to another).
-    var FLOW_COLOR = '#00838f', LAB_FLOW_COLOR = '#8e24aa';
+    var FLOW_COLOR = '#00838f',
+        LAB_FLOW_COLOR = '#8e24aa';
 
     var map, flowLayer, markerLayer, summaryTable, fsBtn, snapBtn, focusHintEl;
-    var mapNodesById = {}, mapFlows = [], focusedId = null, showAllLines = false;
+    var mapNodesById = {},
+        mapFlows = [],
+        focusedId = null,
+        showAllLines = false;
     // 'all' | 'labs' | 'sites' — restricts which marker type is shown on the map.
     var markerFilter = 'all';
     var tsState, tsDistrict, tsLab, tsTest;
 
     // Escape DB-sourced text before it goes into Leaflet popup/tooltip HTML.
     function esc(s) {
-        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            } [c];
         });
     }
 
@@ -440,7 +457,8 @@ $activeTests = TestsService::getActiveTests();
             state: $('#state').val(),
             district: $('#district').val(),
             labName: $('#labName').val(),
-            testType: $('#testType').val()
+            testType: $('#testType').val(),
+            sampleCode: $('#sampleCode').val().trim()
         };
     }
 
@@ -491,13 +509,20 @@ $activeTests = TestsService::getActiveTests();
     function applyZoomMode() {
         var revealed = clubbedRevealed();
         var el = document.getElementById('referralMap');
-        if (el) { el.classList.toggle('referral-revealed', revealed); }
-        if (focusedId !== null) { focusNode(focusedId); return; }
-        Object.keys(mapNodesById).forEach(function (k) {
+        if (el) {
+            el.classList.toggle('referral-revealed', revealed);
+        }
+        if (focusedId !== null) {
+            focusNode(focusedId);
+            return;
+        }
+        Object.keys(mapNodesById).forEach(function(k) {
             var item = mapNodesById[k];
             if (item.n.memberCount > 1) {
                 item.marker.setStyle(nodeStyle(item.n));
-                if (item.n.isLab) { safeFront(item.marker); }
+                if (item.n.isLab) {
+                    safeFront(item.marker);
+                }
             }
         });
     }
@@ -507,13 +532,19 @@ $activeTests = TestsService::getActiveTests();
     function setLabelOpacity(marker, op) {
         var tt = marker.getTooltip && marker.getTooltip();
         var el = tt && tt.getElement && tt.getElement();
-        if (el) { el.style.opacity = op; }
+        if (el) {
+            el.style.opacity = op;
+        }
     }
 
     // bringToFront throws if the marker is currently inside a cluster (not on
     // the map), so guard it.
     function safeFront(marker) {
-        try { marker.bringToFront(); } catch (e) { /* clustered / not rendered */ }
+        try {
+            marker.bringToFront();
+        } catch (e) {
+            /* clustered / not rendered */
+        }
     }
 
     // Render a lab's configured instruments for the marker popup. Each line is
@@ -524,23 +555,23 @@ $activeTests = TestsService::getActiveTests();
             return '<div class="rp-instr rp-instr-none"><?= _translate("No instruments configured", true); ?></div>';
         }
         var rows = '';
-        instruments.forEach(function (ins) {
-            var count = (ins.machines && ins.machines > 1)
-                ? ' <span class="rp-instr-count">&times; ' + Number(ins.machines) + '</span>'
-                : '';
-            var inactive = (ins.status && ins.status !== 'active')
-                ? ' <span class="rp-instr-off"><?= _translate("inactive", true); ?></span>'
-                : '';
+        instruments.forEach(function(ins) {
+            var count = (ins.machines && ins.machines > 1) ?
+                ' <span class="rp-instr-count">&times; ' + Number(ins.machines) + '</span>' :
+                '';
+            var inactive = (ins.status && ins.status !== 'active') ?
+                ' <span class="rp-instr-off"><?= _translate("inactive", true); ?></span>' :
+                '';
             rows += '<li>' + esc(ins.name) + count + inactive + '</li>';
         });
-        return '<div class="rp-instr"><div class="rp-instr-head"><?= _translate("Instruments", true); ?></div>'
-            + '<ul>' + rows + '</ul></div>';
+        return '<div class="rp-instr"><div class="rp-instr-head"><?= _translate("Instruments", true); ?></div>' +
+            '<ul>' + rows + '</ul></div>';
     }
 
     function nodeVisible(n) {
-        return markerFilter === 'all'
-            || (markerFilter === 'labs' && n.isLab)
-            || (markerFilter === 'sites' && !n.isLab);
+        return markerFilter === 'all' ||
+            (markerFilter === 'labs' && n.isLab) ||
+            (markerFilter === 'sites' && !n.isLab);
     }
 
     // (Re)populate the cluster layer with only the markers allowed by the
@@ -548,18 +579,26 @@ $activeTests = TestsService::getActiveTests();
     // mapNodesById, so switching the filter never re-fetches data.
     function renderMarkers() {
         markerLayer.clearLayers();
-        Object.keys(mapNodesById).forEach(function (k) {
+        Object.keys(mapNodesById).forEach(function(k) {
             var item = mapNodesById[k];
             if (nodeVisible(item.n)) {
                 markerLayer.addLayer(item.marker);
-                if (item.n.isLab) { safeFront(item.marker); }
+                if (item.n.isLab) {
+                    safeFront(item.marker);
+                }
             }
         });
     }
 
     function initMap() {
-        map = L.map('referralMap', { worldCopyJump: true }).setView([0, 20], 2);
-        L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTR, crossOrigin: true }).addTo(map);
+        map = L.map('referralMap', {
+            worldCopyJump: true
+        }).setView([0, 20], 2);
+        L.tileLayer(TILE_URL, {
+            maxZoom: 19,
+            attribution: TILE_ATTR,
+            crossOrigin: true
+        }).addTo(map);
         // Cluster markers so dense city points (hundreds of facilities on the
         // same coarse coordinate) collapse into count bubbles only when very
         // zoomed out (continent/country view), and separate as soon as you zoom
@@ -577,19 +616,28 @@ $activeTests = TestsService::getActiveTests();
         // Referral links are shown only when a single, real marker is clicked.
         // The group 'click' event fires exclusively for a standalone marker
         // (never a cluster bubble), so a cluster bubble can never trigger focus.
-        markerLayer.on('click', function (e) {
-            if (e.layer && e.layer.nodeId != null) { focusNode(e.layer.nodeId); }
+        markerLayer.on('click', function(e) {
+            if (e.layer && e.layer.nodeId != null) {
+                focusNode(e.layer.nodeId);
+            }
         });
         // Clicking a cluster just zooms in. Frame the cluster's members, capped
         // so an identical-coordinate pile (many facilities on one centroid)
         // steps past the de-cluster threshold instead of slamming to street
         // level. zoomToBoundsOnClick is off so this is the only zoom that runs.
-        markerLayer.on('clusterclick', function (e) {
-            map.fitBounds(e.layer.getBounds(), { padding: [40, 40], maxZoom: 12 });
+        markerLayer.on('clusterclick', function(e) {
+            map.fitBounds(e.layer.getBounds(), {
+                padding: [40, 40],
+                maxZoom: 12
+            });
         });
 
         // Clicking empty map clears any focused catchment.
-        map.on('click', function () { if (focusedId !== null) { clearFocus(); } });
+        map.on('click', function() {
+            if (focusedId !== null) {
+                clearFocus();
+            }
+        });
 
         // Reveal/fold clubbed markers as the zoom crosses the de-cluster level.
         map.on('zoomend', applyZoomMode);
@@ -599,21 +647,25 @@ $activeTests = TestsService::getActiveTests();
         document.addEventListener('fullscreenchange', afterFsChange);
         document.addEventListener('webkitfullscreenchange', afterFsChange);
 
-        var legend = L.control({ position: 'bottomright' });
-        legend.onAdd = function () {
+        var legend = L.control({
+            position: 'bottomright'
+        });
+        legend.onAdd = function() {
             var div = L.DomUtil.create('div', 'referral-legend');
-            div.innerHTML = '<span class="dot" style="background:' + LAB_COLOR + '"></span><?= _translate("Testing Lab", true); ?><br>'
-                + '<span class="dot" style="background:' + SITE_COLOR + '"></span><?= _translate("Referring Facility", true); ?><br>'
-                + '<span class="line" style="background:' + LAB_FLOW_COLOR + '"></span><?= _translate("Lab-to-lab referral", true); ?>'
-                + '<label><input type="checkbox" id="toggleLines"> <?= _translate("Show all referral lines", true); ?></label>';
+            div.innerHTML = '<span class="dot" style="background:' + LAB_COLOR + '"></span><?= _translate("Testing Lab", true); ?><br>' +
+                '<span class="dot" style="background:' + SITE_COLOR + '"></span><?= _translate("Referring Facility", true); ?><br>' +
+                '<span class="line" style="background:' + LAB_FLOW_COLOR + '"></span><?= _translate("Lab-to-lab referral", true); ?>' +
+                '<label><input type="checkbox" id="toggleLines"> <?= _translate("Show all referral lines", true); ?></label>';
             L.DomEvent.disableClickPropagation(div);
             return div;
         };
         legend.addTo(map);
 
         // Focus hint (shown only while a node is focused).
-        var focusControl = L.control({ position: 'topright' });
-        focusControl.onAdd = function () {
+        var focusControl = L.control({
+            position: 'topright'
+        });
+        focusControl.onAdd = function() {
             focusHintEl = L.DomUtil.create('div', 'referral-legend referral-focus-hint');
             focusHintEl.style.display = 'none';
             L.DomEvent.disableClickPropagation(focusHintEl);
@@ -622,21 +674,29 @@ $activeTests = TestsService::getActiveTests();
         focusControl.addTo(map);
 
         // Expand + snapshot controls (stacked, top-left).
-        var toolControl = L.control({ position: 'topleft' });
-        toolControl.onAdd = function () {
+        var toolControl = L.control({
+            position: 'topleft'
+        });
+        toolControl.onAdd = function() {
             var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
 
             fsBtn = L.DomUtil.create('a', 'referral-ctrl-btn', div);
             fsBtn.href = '#';
             fsBtn.title = '<?= _translate("Toggle expanded view", true); ?>';
             fsBtn.innerHTML = '<em class="fa-solid fa-expand"></em>';
-            L.DomEvent.on(fsBtn, 'click', function (e) { L.DomEvent.stop(e); toggleFullscreen(); });
+            L.DomEvent.on(fsBtn, 'click', function(e) {
+                L.DomEvent.stop(e);
+                toggleFullscreen();
+            });
 
             snapBtn = L.DomUtil.create('a', 'referral-ctrl-btn', div);
             snapBtn.href = '#';
             snapBtn.title = '<?= _translate("Download map as image", true); ?>';
             snapBtn.innerHTML = '<em class="fa-solid fa-camera"></em>';
-            L.DomEvent.on(snapBtn, 'click', function (e) { L.DomEvent.stop(e); captureSnapshot(); });
+            L.DomEvent.on(snapBtn, 'click', function(e) {
+                L.DomEvent.stop(e);
+                captureSnapshot();
+            });
 
             return div;
         };
@@ -654,7 +714,8 @@ $activeTests = TestsService::getActiveTests();
         snapBtn.innerHTML = '<em class="fa-solid fa-spinner fa-spin"></em>';
         // Render at 2x for a crisp image (dom-to-image rasterises at 1x by default).
         var scale = 2;
-        var w = node.offsetWidth, h = node.offsetHeight;
+        var w = node.offsetWidth,
+            h = node.offsetHeight;
         domtoimage.toBlob(node, {
             bgcolor: '#ffffff',
             width: w * scale,
@@ -665,10 +726,10 @@ $activeTests = TestsService::getActiveTests();
                 width: w + 'px',
                 height: h + 'px'
             },
-            filter: function (el) {
+            filter: function(el) {
                 return !(el.classList && el.classList.contains('leaflet-bar'));
             }
-        }).then(function (blob) {
+        }).then(function(blob) {
             var a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
             a.download = 'sample-referral-network-' + moment().format('YYYY-MM-DD-HHmm') + '.png';
@@ -677,7 +738,7 @@ $activeTests = TestsService::getActiveTests();
             a.remove();
             URL.revokeObjectURL(a.href);
             snapBtn.innerHTML = '<em class="fa-solid fa-camera"></em>';
-        }).catch(function () {
+        }).catch(function() {
             snapBtn.innerHTML = '<em class="fa-solid fa-camera"></em>';
             alert('<?= _translate("Could not capture the map image.", true); ?>');
         });
@@ -693,7 +754,9 @@ $activeTests = TestsService::getActiveTests();
         if (fsBtn) {
             fsBtn.innerHTML = on ? '<em class="fa-solid fa-compress"></em>' : '<em class="fa-solid fa-expand"></em>';
         }
-        setTimeout(function () { map.invalidateSize(); }, 200);
+        setTimeout(function() {
+            map.invalidateSize();
+        }, 200);
     }
 
     function toggleFullscreen(forceOff) {
@@ -702,15 +765,25 @@ $activeTests = TestsService::getActiveTests();
 
         if (forceOff || inFs) {
             // Exit.
-            if (document.exitFullscreen) { document.exitFullscreen(); }
-            else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); }
-            else { el.classList.remove('referral-map-fullscreen'); afterFsChange(); }
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else {
+                el.classList.remove('referral-map-fullscreen');
+                afterFsChange();
+            }
             return;
         }
         // Enter — prefer the native Fullscreen API (robust against ancestor transforms).
-        if (el.requestFullscreen) { el.requestFullscreen(); }
-        else if (el.webkitRequestFullscreen) { el.webkitRequestFullscreen(); }
-        else { el.classList.add('referral-map-fullscreen'); afterFsChange(); }
+        if (el.requestFullscreen) {
+            el.requestFullscreen();
+        } else if (el.webkitRequestFullscreen) {
+            el.webkitRequestFullscreen();
+        } else {
+            el.classList.add('referral-map-fullscreen');
+            afterFsChange();
+        }
     }
 
     function flowWeight(count) {
@@ -718,71 +791,95 @@ $activeTests = TestsService::getActiveTests();
     }
 
     function drawFlow(f, opts) {
-        var a = mapNodesById[f.from], b = mapNodesById[f.to];
-        if (!a || !b) { return; }
+        var a = mapNodesById[f.from],
+            b = mapNodesById[f.to];
+        if (!a || !b) {
+            return;
+        }
         // A line is only drawn when both endpoints are visible under the current
         // Show filter, so "Testing Labs only" drops facility -> lab lines and
         // leaves just the lab -> lab referrals.
-        if (!nodeVisible(a.n) || !nodeVisible(b.n)) { return; }
+        if (!nodeVisible(a.n) || !nodeVisible(b.n)) {
+            return;
+        }
         // Lab -> lab onward-referrals get their own colour regardless of context.
         var labToLab = a.n.isLab && b.n.isLab;
         var color = labToLab ? LAB_FLOW_COLOR : (opts.color || FLOW_COLOR);
-        var line = L.polyline([[a.n.lat, a.n.lng], [b.n.lat, b.n.lng]], {
-            color: color, weight: flowWeight(f.count), opacity: opts.opacity || 0.3,
+        var line = L.polyline([
+            [a.n.lat, a.n.lng],
+            [b.n.lat, b.n.lng]
+        ], {
+            color: color,
+            weight: flowWeight(f.count),
+            opacity: opts.opacity || 0.3,
             bubblingMouseEvents: false
         });
-        line.bindTooltip(esc(a.n.name) + ' &rarr; ' + esc(b.n.name) + '<br>'
-            + Number(f.count).toLocaleString() + ' <?= _translate("samples", true); ?>'
-            + (f.latest ? '<br><?= _translate("Latest", true); ?>: ' + f.latest : ''));
+        line.bindTooltip(esc(a.n.name) + ' &rarr; ' + esc(b.n.name) + '<br>' +
+            Number(f.count).toLocaleString() + ' <?= _translate("samples", true); ?>' +
+            (f.latest ? '<br><?= _translate("Latest", true); ?>: ' + f.latest : ''));
         line.addTo(flowLayer);
     }
 
     function drawAllFlows() {
         for (var i = 0; i < mapFlows.length && i < MAX_FLOWS_RENDERED; i++) {
-            drawFlow(mapFlows[i], { opacity: 0.25 });
+            drawFlow(mapFlows[i], {
+                opacity: 0.25
+            });
         }
     }
 
     // Default lines view (none, or all if the toggle is on) when nothing is focused.
     function redrawLines() {
         flowLayer.clearLayers();
-        if (showAllLines) { drawAllFlows(); }
+        if (showAllLines) {
+            drawAllFlows();
+        }
         updateMapNote();
     }
 
     function updateMapNote() {
         var note = '';
         if (showAllLines && mapFlows.length > MAX_FLOWS_RENDERED) {
-            note = '<?= _translate("Showing the busiest", true); ?> ' + MAX_FLOWS_RENDERED
-                + ' <?= _translate("referral links; the table below lists all of them.", true); ?>';
+            note = '<?= _translate("Showing the busiest", true); ?> ' + MAX_FLOWS_RENDERED +
+                ' <?= _translate("referral links; the table below lists all of them.", true); ?>';
         }
         $('#mapNote').html(note).toggle(note !== '');
     }
-
     // Show only the clicked node's referral links; dim everything else.
     function focusNode(id) {
         focusedId = id;
         flowLayer.clearLayers();
         var connected = {};
         connected[id] = true;
-        var links = [];   // the other endpoint of each incident flow + its count
-        mapFlows.forEach(function (f) {
+        var links = []; // the other endpoint of each incident flow + its count
+        mapFlows.forEach(function(f) {
             if (f.from === id || f.to === id) {
                 connected[f.from] = true;
                 connected[f.to] = true;
-                drawFlow(f, { opacity: 0.75, color: '#00695c' });
+                drawFlow(f, {
+                    opacity: 0.75,
+                    color: '#00695c'
+                });
                 var other = mapNodesById[f.from === id ? f.to : f.from];
-                if (other) { links.push({ name: other.n.name, count: f.count }); }
+                if (other) {
+                    links.push({
+                        name: other.n.name,
+                        count: f.count
+                    });
+                }
             }
         });
-        Object.keys(mapNodesById).forEach(function (k) {
+        Object.keys(mapNodesById).forEach(function(k) {
             var item = mapNodesById[k];
             if (connected[item.n.id]) {
                 item.marker.setStyle(nodeStyle(item.n));
                 setLabelOpacity(item.marker, '');
                 safeFront(item.marker);
             } else {
-                item.marker.setStyle({ opacity: 0.12, fillOpacity: 0.08 });
+                item.marker.setStyle({
+                    opacity: 0.12,
+                    fillOpacity: 0.08
+                });
                 setLabelOpacity(item.marker, '0.15');
             }
         });
@@ -790,46 +887,57 @@ $activeTests = TestsService::getActiveTests();
         var node = mapNodesById[id].n;
         // A referring facility lists the labs it sends to; a lab lists the
         // facilities it receives from. Names + counts, busiest first.
-        var heading = node.isLab
-            ? '<?= _translate("Receives from", true); ?>'
-            : '<?= _translate("Refers to", true); ?>';
-        links.sort(function (a, b) { return b.count - a.count; });
-        var cap = 15, rows = '';
-        links.slice(0, cap).forEach(function (l) {
-            rows += '<div class="rl-row"><span class="rl-name">' + esc(l.name) + '</span>'
-                + '<span class="rl-count">' + Number(l.count).toLocaleString() + '</span></div>';
+        var heading = node.isLab ?
+            '<?= _translate("Receives from", true); ?>' :
+            '<?= _translate("Refers to", true); ?>';
+        links.sort(function(a, b) {
+            return b.count - a.count;
+        });
+        var cap = 15,
+            rows = '';
+        links.slice(0, cap).forEach(function(l) {
+            rows += '<div class="rl-row"><span class="rl-name">' + esc(l.name) + '</span>' +
+                '<span class="rl-count">' + Number(l.count).toLocaleString() + '</span></div>';
         });
         if (links.length > cap) {
             rows += '<div class="rl-more">… ' + (links.length - cap) + ' <?= _translate("more", true); ?></div>';
         }
-        focusHintEl.innerHTML = '<strong>' + esc(node.name) + '</strong>'
-            + '<div class="rl-head">' + heading + ' (' + links.length + ')</div>'
-            + '<div class="rl-list">' + rows + '</div>'
-            + '<a href="#" onclick="clearFocus();return false;"><?= _translate("Show all", true); ?></a>';
+        focusHintEl.innerHTML = '<strong>' + esc(node.name) + '</strong>' +
+            '<div class="rl-head">' + heading + ' (' + links.length + ')</div>' +
+            '<div class="rl-list">' + rows + '</div>' +
+            '<a href="#" onclick="clearFocus();return false;"><?= _translate("Show all", true); ?></a>';
         focusHintEl.style.display = 'block';
     }
 
     function clearFocus() {
         focusedId = null;
-        Object.keys(mapNodesById).forEach(function (k) {
+        Object.keys(mapNodesById).forEach(function(k) {
             var item = mapNodesById[k];
             item.marker.setStyle(nodeStyle(item.n));
             setLabelOpacity(item.marker, '');
-            if (item.n.isLab) { safeFront(item.marker); }
+            if (item.n.isLab) {
+                safeFront(item.marker);
+            }
         });
         redrawLines();
-        if (focusHintEl) { focusHintEl.style.display = 'none'; }
+        if (focusHintEl) {
+            focusHintEl.style.display = 'none';
+        }
     }
 
     function loadMap(forceRefresh) {
         var payload = filterPayload();
-        if (forceRefresh) { payload.refresh = 'true'; }
-        return $.post('/admin/monitoring/get-referral-map-data.php', payload, function (resp) {
+        if (forceRefresh) {
+            payload.refresh = 'true';
+        }
+        return $.post('/admin/monitoring/get-referral-map-data.php', payload, function(resp) {
             markerLayer.clearLayers();
             flowLayer.clearLayers();
             mapNodesById = {};
             focusedId = null;
-            if (focusHintEl) { focusHintEl.style.display = 'none'; }
+            if (focusHintEl) {
+                focusHintEl.style.display = 'none';
+            }
 
             var rawNodes = resp.nodes || [];
             var rawFlows = resp.flows || [];
@@ -837,23 +945,33 @@ $activeTests = TestsService::getActiveTests();
             // Headline stats reflect the true network — every facility, every
             // lab, and every facility -> lab relationship — before co-located
             // sites are clubbed together for display.
-            var totalSamples = 0, labs = 0, sites = 0;
-            rawNodes.forEach(function (n) { if (n.isLab) { labs++; } else { sites++; } });
-            rawFlows.forEach(function (f) { totalSamples += f.count; });
+            var totalSamples = 0,
+                labs = 0,
+                sites = 0;
+            rawNodes.forEach(function(n) {
+                if (n.isLab) {
+                    labs++;
+                } else {
+                    sites++;
+                }
+            });
+            rawFlows.forEach(function(f) {
+                totalSamples += f.count;
+            });
             var trueLinks = rawFlows.length;
 
             // Club nodes sharing the exact same point — typically sites geocoded
             // to a shared admin-area centroid for lack of GPS — into one marker.
             // Nodes with a unique point are kept exactly as before.
             var groups = {};
-            rawNodes.forEach(function (n) {
+            rawNodes.forEach(function(n) {
                 var key = n.lat.toFixed(5) + ',' + n.lng.toFixed(5);
                 (groups[key] || (groups[key] = [])).push(n);
             });
 
-            var nodes = [];   // what actually gets drawn
-            var idMap = {};   // original node id -> drawn node id
-            Object.keys(groups).forEach(function (key) {
+            var nodes = []; // what actually gets drawn
+            var idMap = {}; // original node id -> drawn node id
+            Object.keys(groups).forEach(function(key) {
                 var g = groups[key];
                 if (g.length === 1) {
                     g[0].memberCount = 1;
@@ -862,21 +980,32 @@ $activeTests = TestsService::getActiveTests();
                     return;
                 }
                 var aggId = 'grp:' + key;
-                var labCount = 0, sent = 0, recv = 0, members = [], instruments = [];
-                g.forEach(function (m) {
+                var labCount = 0,
+                    sent = 0,
+                    recv = 0,
+                    members = [],
+                    instruments = [];
+                g.forEach(function(m) {
                     idMap[m.id] = aggId;
-                    if (m.isLab) { labCount++; }
+                    if (m.isLab) {
+                        labCount++;
+                    }
                     sent += m.samplesSent || 0;
                     recv += m.samplesReceived || 0;
-                    members.push({ name: m.name, isLab: !!m.isLab });
+                    members.push({
+                        name: m.name,
+                        isLab: !!m.isLab
+                    });
                     if (m.instruments && m.instruments.length) {
                         instruments = instruments.concat(m.instruments);
                     }
                 });
                 // List labs first, then alphabetically, so a lab in the pile is
                 // the first thing seen in the popup.
-                members.sort(function (a, b) {
-                    if (a.isLab !== b.isLab) { return a.isLab ? -1 : 1; }
+                members.sort(function(a, b) {
+                    if (a.isLab !== b.isLab) {
+                        return a.isLab ? -1 : 1;
+                    }
                     return a.name.localeCompare(b.name);
                 });
                 // Colour/treat the clubbed marker by its dominant type: a pile of
@@ -888,11 +1017,18 @@ $activeTests = TestsService::getActiveTests();
                 nodes.push({
                     id: aggId,
                     name: g.length + ' <?= _translate("sites at this location", true); ?>',
-                    district: g[0].district, province: g[0].province,
-                    lat: g[0].lat, lng: g[0].lng,
-                    isLab: isLab, samplesSent: sent, samplesReceived: recv,
-                    instruments: instruments, memberCount: g.length,
-                    members: members, labCount: labCount, hasLab: labCount > 0
+                    district: g[0].district,
+                    province: g[0].province,
+                    lat: g[0].lat,
+                    lng: g[0].lng,
+                    isLab: isLab,
+                    samplesSent: sent,
+                    samplesReceived: recv,
+                    instruments: instruments,
+                    memberCount: g.length,
+                    members: members,
+                    labCount: labCount,
+                    hasLab: labCount > 0
                 });
             });
 
@@ -900,72 +1036,95 @@ $activeTests = TestsService::getActiveTests();
             // several co-located sites referring to the same lab collapse to a
             // single line (and one row in the focus panel) instead of stacking.
             var fmap = {};
-            rawFlows.forEach(function (f) {
-                var from = idMap[f.from], to = idMap[f.to];
-                if (from === undefined || to === undefined || from === to) { return; }
+            rawFlows.forEach(function(f) {
+                var from = idMap[f.from],
+                    to = idMap[f.to];
+                if (from === undefined || to === undefined || from === to) {
+                    return;
+                }
                 var k = from + '|' + to;
-                if (!fmap[k]) { fmap[k] = { from: from, to: to, count: 0, latest: null }; }
+                if (!fmap[k]) {
+                    fmap[k] = {
+                        from: from,
+                        to: to,
+                        count: 0,
+                        latest: null
+                    };
+                }
                 fmap[k].count += f.count;
                 if (f.latest && (!fmap[k].latest || f.latest > fmap[k].latest)) {
                     fmap[k].latest = f.latest;
                 }
             });
-            mapFlows = Object.keys(fmap).map(function (k) { return fmap[k]; });
-            mapFlows.sort(function (a, b) { return b.count - a.count; });
+            mapFlows = Object.keys(fmap).map(function(k) {
+                return fmap[k];
+            });
+            mapFlows.sort(function(a, b) {
+                return b.count - a.count;
+            });
 
             var bounds = [];
-            nodes.forEach(function (n) {
+            nodes.forEach(function(n) {
                 bounds.push([n.lat, n.lng]);
                 var isAgg = n.memberCount > 1;
                 var popup;
 
                 if (isAgg) {
-                    var cap = 15, list = '';
-                    n.members.slice(0, cap).forEach(function (m) {
-                        list += '<li>' + esc(m.name)
-                            + (m.isLab ? ' <span class="rp-lab-badge"><?= _translate("Lab", true); ?></span>' : '')
-                            + '</li>';
+                    var cap = 15,
+                        list = '';
+                    n.members.slice(0, cap).forEach(function(m) {
+                        list += '<li>' + esc(m.name) +
+                            (m.isLab ? ' <span class="rp-lab-badge"><?= _translate("Lab", true); ?></span>' : '') +
+                            '</li>';
                     });
                     if (n.members.length > cap) {
                         list += '<li>… ' + (n.members.length - cap) + ' <?= _translate("more", true); ?></li>';
                     }
                     // Make any testing lab in the pile impossible to miss.
-                    var labLine = n.hasLab
-                        ? '<br><span class="rp-lab-note"><em class="fa-solid fa-flask"></em> '
-                            + n.labCount + ' <?= _translate("testing lab(s) at this point", true); ?></span>'
-                        : '';
-                    popup = '<div class="referral-popup"><strong>' + n.memberCount
-                        + ' <?= _translate("sites at this location", true); ?></strong><br>'
-                        + (n.district ? esc(n.district) + ', ' : '') + esc(n.province || '')
-                        + labLine + '<br>'
-                        + '<?= _translate("Samples referred out", true); ?>: ' + Number(n.samplesSent).toLocaleString()
-                        + '<div class="rp-instr"><div class="rp-instr-head"><?= _translate("Sites at this point", true); ?></div>'
-                        + '<ul>' + list + '</ul></div></div>';
+                    var labLine = n.hasLab ?
+                        '<br><span class="rp-lab-note"><em class="fa-solid fa-flask"></em> ' +
+                        n.labCount + ' <?= _translate("testing lab(s) at this point", true); ?></span>' :
+                        '';
+                    popup = '<div class="referral-popup"><strong>' + n.memberCount +
+                        ' <?= _translate("sites at this location", true); ?></strong><br>' +
+                        (n.district ? esc(n.district) + ', ' : '') + esc(n.province || '') +
+                        labLine + '<br>' +
+                        '<?= _translate("Samples referred out", true); ?>: ' + Number(n.samplesSent).toLocaleString() +
+                        '<div class="rp-instr"><div class="rp-instr-head"><?= _translate("Sites at this point", true); ?></div>' +
+                        '<ul>' + list + '</ul></div></div>';
                 } else {
-                    popup = '<div class="referral-popup"><strong>' + esc(n.name) + '</strong><br>'
-                        + (n.district ? esc(n.district) + ', ' : '') + esc(n.province || '') + '<br>'
-                        + '<?= _translate("Samples referred out", true); ?>: ' + Number(n.samplesSent).toLocaleString();
+                    popup = '<div class="referral-popup"><strong>' + esc(n.name) + '</strong><br>' +
+                        (n.district ? esc(n.district) + ', ' : '') + esc(n.province || '') + '<br>' +
+                        '<?= _translate("Samples referred out", true); ?>: ' + Number(n.samplesSent).toLocaleString();
                     if (n.isLab) {
-                        popup += '<br><?= _translate("Samples received for testing", true); ?>: '
-                            + Number(n.samplesReceived).toLocaleString();
+                        popup += '<br><?= _translate("Samples received for testing", true); ?>: ' +
+                            Number(n.samplesReceived).toLocaleString();
                         popup += instrumentsHtml(n.instruments);
                     }
                     popup += '</div>';
                 }
 
                 var marker = L.circleMarker([n.lat, n.lng],
-                    Object.assign({ bubblingMouseEvents: false }, nodeStyle(n)))
+                        Object.assign({
+                            bubblingMouseEvents: false
+                        }, nodeStyle(n)))
                     .bindPopup(popup);
                 if (isAgg) {
-                    marker.bindTooltip(String(n.memberCount),
-                        { permanent: true, direction: 'center', className: 'referral-cluster-label' });
+                    marker.bindTooltip(String(n.memberCount), {
+                        permanent: true,
+                        direction: 'center',
+                        className: 'referral-cluster-label'
+                    });
                 }
                 // Focus is wired through the cluster group's own 'click' event
                 // (see initMap), which only fires for a genuine standalone /
                 // spiderfied marker — never for a cluster bubble. Stash the node
                 // id so that handler knows which node was clicked.
                 marker.nodeId = n.id;
-                mapNodesById[n.id] = { n: n, marker: marker };
+                mapNodesById[n.id] = {
+                    n: n,
+                    marker: marker
+                };
             });
 
             // Add markers to the cluster layer honouring the current Show filter.
@@ -978,11 +1137,14 @@ $activeTests = TestsService::getActiveTests();
 
             redrawLines();
             if (bounds.length) {
-                map.fitBounds(bounds, { padding: [30, 30], maxZoom: 12 });
+                map.fitBounds(bounds, {
+                    padding: [30, 30],
+                    maxZoom: 12
+                });
             }
             // Set the initial folded/revealed state for the resulting zoom.
             applyZoomMode();
-        }, 'json').fail(function () {
+        }, 'json').fail(function() {
             $('#mapNote').html('<?= _translate("Unable to load the referral map data.", true); ?>').show();
         });
     }
@@ -997,11 +1159,24 @@ $activeTests = TestsService::getActiveTests();
             bProcessing: true,
             bServerSide: true,
             sAjaxSource: '/admin/monitoring/get-referral-summary.php',
-            aaSorting: [[5, 'desc']],
-            fnServerData: function (sSource, aoData, fnCallback) {
+            aaSorting: [
+                [5, 'desc']
+            ],
+            fnServerData: function(sSource, aoData, fnCallback) {
                 var f = filterPayload();
-                Object.keys(f).forEach(function (k) { aoData.push({ name: k, value: f[k] }); });
-                $.ajax({ dataType: 'json', type: 'POST', url: sSource, data: aoData, success: fnCallback });
+                Object.keys(f).forEach(function(k) {
+                    aoData.push({
+                        name: k,
+                        value: f[k]
+                    });
+                });
+                $.ajax({
+                    dataType: 'json',
+                    type: 'POST',
+                    url: sSource,
+                    data: aoData,
+                    success: fnCallback
+                });
             }
         });
     }
@@ -1012,7 +1187,9 @@ $activeTests = TestsService::getActiveTests();
     // for the same filters (a normal Search loads both in parallel from cache).
     function applyFilters(forceRefresh) {
         if (forceRefresh) {
-            loadMap(true).always(function () { loadTable(); });
+            loadMap(true).always(function() {
+                loadTable();
+            });
         } else {
             loadMap(false);
             loadTable();
@@ -1025,31 +1202,45 @@ $activeTests = TestsService::getActiveTests();
         tmp.innerHTML = html || '';
         ts.clear(true);
         ts.clearOptions();
-        Array.prototype.forEach.call(tmp.options, function (o) {
-            if (o.value !== '') { ts.addOption({ value: o.value, text: o.text }); }
+        Array.prototype.forEach.call(tmp.options, function(o) {
+            if (o.value !== '') {
+                ts.addOption({
+                    value: o.value,
+                    text: o.text
+                });
+            }
         });
         ts.refreshOptions(false);
     }
 
     function getByProvince() {
         $.post('/common/get-by-province-id.php', {
-            provinceId: $('#state').val(), districts: true, facilities: false, labs: true
-        }, function (data) {
+            provinceId: $('#state').val(),
+            districts: true,
+            facilities: false,
+            labs: true
+        }, function(data) {
             var obj = $.parseJSON(data);
             loadTomFromOptionHtml(tsDistrict, obj['districts']);
             loadTomFromOptionHtml(tsLab, obj['labs']);
         });
     }
 
-    $(document).ready(function () {
-        var tsOpts = { plugins: ['remove_button'], placeholder: '<?= _translate("-- All --", true); ?>' };
+    $(document).ready(function() {
+        var tsOpts = {
+            plugins: ['remove_button'],
+            placeholder: '<?= _translate("-- All --", true); ?>'
+        };
         tsState = new TomSelect('#state', tsOpts);
         tsDistrict = new TomSelect('#district', tsOpts);
         tsLab = new TomSelect('#labName', tsOpts);
         tsTest = new TomSelect('#testType', tsOpts);
 
         $('#dateRange').daterangepicker({
-            locale: { format: 'DD-MMM-YYYY', separator: ' to ' },
+            locale: {
+                format: 'DD-MMM-YYYY',
+                separator: ' to '
+            },
             startDate: moment().subtract(179, 'days'),
             endDate: moment(),
             maxDate: moment(),
@@ -1064,36 +1255,43 @@ $activeTests = TestsService::getActiveTests();
             }
         });
 
-        $('#toggleFilters').on('click', function () { $('#filterPanel').slideToggle(150); });
+        $('#toggleFilters').on('click', function() {
+            $('#filterPanel').slideToggle(150);
+        });
 
         // Refresh: re-fetch the current filters bypassing the server-side cache.
-        $('#refreshData').on('click', function () {
+        $('#refreshData').on('click', function() {
             var $btn = $(this).prop('disabled', true);
             var orig = $btn.html();
             $btn.html('<em class="fa-solid fa-rotate fa-spin"></em>&nbsp;<?= _translate("Refreshing…", true); ?>');
-            loadMap(true).always(function () {
+            loadMap(true).always(function() {
                 loadTable();
                 $btn.prop('disabled', false).html(orig);
             });
         });
 
-        $(document).on('change', '#toggleLines', function () {
+        $(document).on('change', '#toggleLines', function() {
             showAllLines = this.checked;
-            if (focusedId === null) { redrawLines(); }
+            if (focusedId === null) {
+                redrawLines();
+            }
         });
 
-        $(document).on('change', '#markerFilter', function () {
+        $(document).on('change', '#markerFilter', function() {
             markerFilter = this.value;
             // Drop any active focus so a now-hidden node can't stay highlighted.
             // clearFocus() redraws lines itself; otherwise redraw so the new
             // visibility filter is applied (e.g. labs-only leaves only lab->lab lines).
-            if (focusedId !== null) { clearFocus(); }
-            else { redrawLines(); }
+            if (focusedId !== null) {
+                clearFocus();
+            } else {
+                redrawLines();
+            }
             renderMarkers();
         });
 
         // Esc exits the expanded map view.
-        $(document).on('keyup', function (e) {
+        $(document).on('keyup', function(e) {
             if (e.key === 'Escape' && document.getElementById('referralMap').classList.contains('referral-map-fullscreen')) {
                 toggleFullscreen(true);
             }

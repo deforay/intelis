@@ -23,6 +23,7 @@ try {
     $filters = [
         'testTypes' => array_filter((array) ($_POST['testType'] ?? [])),
         'dateRange' => $_POST['dateRange'] ?? '',
+        'sampleCode' => $_POST['sampleCode'] ?? '',
         'provinceIds' => (array) ($_POST['state'] ?? []),
         'districtIds' => (array) ($_POST['district'] ?? []),
         'labIds' => (array) ($_POST['labName'] ?? []),
