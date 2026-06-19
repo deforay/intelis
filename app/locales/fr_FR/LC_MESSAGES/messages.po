@@ -15681,25 +15681,25 @@ msgstr "Motif de la demande de test"
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Date specimen received"
-msgstr "Date de réception du spécimen"
+msgstr "Date de réception de l'échantillon"
 
 #: app/covid-19/management/generate-export-drc.php:38
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Date specimen registered"
-msgstr "Date d'enregistrement du spécimen"
+msgstr "Date d'enregistrement de l'échantillon"
 
 #: app/covid-19/management/generate-export-drc.php:38
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Specimen Condition"
-msgstr "Condition du spécimen"
+msgstr "Condition de l'échantillon"
 
 #: app/covid-19/management/generate-export-drc.php:38
 #: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Specimen Status"
-msgstr "Statut du spécimen"
+msgstr "Statut de l'échantillon"
 
 #: app/covid-19/management/generate-export-drc.php:38
 #: app/covid-19/requests/export-covid19-requests.php:35
@@ -15714,7 +15714,7 @@ msgstr "Statut du spécimen"
 #: app/tb/results/forms/update-burkina-faso.php:336
 #: app/tb/results/forms/update-rwanda.php:483
 msgid "Specimen Type"
-msgstr "Type de spécimen"
+msgstr "Type d'échantillon"
 
 #: app/covid-19/management/generate-export-drc.php:38
 #: app/covid-19/requests/export-covid19-requests.php:35
@@ -16750,7 +16750,7 @@ msgstr "Veuillez saisir le numéro de passeport"
 #: app/tb/results/forms/update-burkina-faso.php:328
 #: app/tb/results/forms/update-rwanda.php:460
 msgid "SPECIMEN INFORMATION"
-msgstr "INFORMATIONS SUR LES SPÉCIMENS"
+msgstr "INFORMATIONS SUR L'ÉCHANTILLON"
 
 #: app/covid-19/requests/forms/add-cameroon.php:308
 #: app/covid-19/requests/forms/edit-cameroon.php:310
@@ -16858,7 +16858,7 @@ msgstr "Échantillon envoyé le"
 #: app/tb/requests/forms/edit-rwanda.php:566
 #: app/tb/results/forms/update-rwanda.php:487
 msgid "Please choose specimen type"
-msgstr "Veuillez choisir le type de spécimen"
+msgstr "Veuillez choisir le type d'échantillon"
 
 #: app/covid-19/requests/forms/add-cameroon.php:369
 #: app/covid-19/requests/forms/edit-cameroon.php:366
@@ -21541,7 +21541,7 @@ msgstr "Veuillez sélectionner les catégories de test"
 
 #: app/generic-tests/configuration/_test-type-form.php:353
 msgid "Sample/Specimen Types"
-msgstr "Types d'échantillons/spécimens"
+msgstr "Types d'échantillons"
 
 #: app/generic-tests/configuration/_test-type-form.php:357
 msgid "Please select the sample type"
@@ -21693,7 +21693,7 @@ msgstr "Patient"
 #: app/generic-tests/configuration/_test-type-form.php:547
 #: app/generic-tests/configuration/_test-type-form.php:1139
 msgid "Specimen"
-msgstr "Spécimen"
+msgstr "Échantillon"
 
 #: app/generic-tests/configuration/_test-type-form.php:548
 #: app/generic-tests/configuration/_test-type-form.php:1139
@@ -22602,7 +22602,7 @@ msgstr "Plate-forme de test VL"
 #: app/generic-tests/mail/mail-generic-tests-results.php:245
 #: app/vl/result-mail/editTestResultEmailConfig.php:111
 msgid "Specimen type"
-msgstr "Type de spécimen"
+msgstr "Type d'échantillon"
 
 #: app/generic-tests/mail/mail-generic-tests-results.php:246
 #: app/generic-tests/requests/_request-form-body.php:769
@@ -23217,7 +23217,7 @@ msgstr "Sélectionner les tests secondaires"
 #: app/generic-tests/requests/edit-request.php:503
 #: app/generic-tests/results/update-generic-test-result.php:541
 msgid "Select Specimen Type"
-msgstr "Sélectionner le type de spécimen"
+msgstr "Sélectionner le type d'échantillon"
 
 #: app/generic-tests/requests/add-request.php:286
 #: app/generic-tests/requests/edit-request.php:523
@@ -26716,7 +26716,7 @@ msgstr "DATE DE NAISSANCE"
 
 #: app/specimen-referral-manifest/generateVLManifest.php:102
 msgid "SPECIMEN TYPE"
-msgstr "TYPE DE SPÉCIMEN"
+msgstr "TYPE D'ÉCHANTILLON"
 
 #: app/specimen-referral-manifest/generateVLManifest.php:103
 msgid "COLLECTION DATE"
@@ -26759,7 +26759,7 @@ msgstr "Entrez la raison du déplacement du ou des manifestes sélectionnés."
 
 #: app/specimen-referral-manifest/view-manifests.php:53
 msgid "Add Specimen Referral Manifest"
-msgstr "Ajouter un manifeste d'envoi de spécimens"
+msgstr "Ajouter un manifeste d'envoi d'échantillons"
 
 #: app/specimen-referral-manifest/view-manifests.php:65
 #: app/tb/management/getSampleStatus.php:318
@@ -29107,7 +29107,7 @@ msgstr "Date et heure du prélèvement"
 #: app/tb/requests/forms/edit-rwanda.php:576
 #: app/tb/results/forms/update-rwanda.php:494
 msgid "Enter specimen type of others"
-msgstr "Saisir le type de spécimen des autres"
+msgstr "Saisir le type d'échantillon des autres"
 
 #: app/tb/requests/forms/add-rwanda.php:460
 #: app/tb/requests/forms/edit-rwanda.php:578
@@ -29284,7 +29284,7 @@ msgstr "Sélectionnez un facteur de risque"
 #: app/tb/requests/forms/edit-rwanda.php:1826
 #: app/tb/results/forms/update-rwanda.php:1676
 msgid "Select specimen type"
-msgstr "Sélectionner le type de spécimen"
+msgstr "Sélectionner le type d'échantillon"
 
 #: app/tb/requests/forms/add-rwanda.php:1402
 #: app/tb/requests/forms/edit-rwanda.php:1831
