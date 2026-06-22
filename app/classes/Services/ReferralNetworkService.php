@@ -100,14 +100,19 @@ final class ReferralNetworkService
         $needsFacilityJoin = $provinceIds !== [] || $districtIds !== [];
 
         $dateClause = '';
+        $params = [];
         if (!empty($filters['dateRange']) && trim((string) $filters['dateRange']) !== '') {
             // convertDateRange returns controlled 'Y-m-d H:i:s' strings, safe to interpolate.
             [$start, $end] = \App\Utilities\DateUtility::convertDateRange($filters['dateRange'], includeTime: true);
-            $dateClause = " AND t.request_created_datetime BETWEEN '$start' AND '$end'";
+            $dateClause .= " AND t.request_created_datetime BETWEEN '$start' AND '$end'";
         }
 
         if (!empty($filters['sampleCode']) && trim((string) $filters['sampleCode']) !== '') {
-            $dateClause = " AND t.sample_code LIKE '" . $filters['sampleCode'] . "'";
+            // Bind the user value as a parameter; escape LIKE wildcards so it
+            // matches the sample code literally (no injection, no accidental globbing).
+            $sampleCode = str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], trim((string) $filters['sampleCode']));
+            $dateClause .= ' AND t.sample_code LIKE ?';
+            $params[] = $sampleCode;
         }
 
         $where = $this->buildWhere($dateClause, $labIds, $facilityIds, $provinceIds, $districtIds);
@@ -131,7 +136,7 @@ final class ReferralNetworkService
                       $join
                      WHERE $where
                   GROUP BY t.facility_id, t.lab_id";
-            $result = $this->db->rawQuery($sql) ?: [];
+            $result = $this->db->rawQuery($sql, $params ?: null) ?: [];
             foreach ($result as $r) {
                 $rows[] = [
                     'facility_id' => (int) $r['facility_id'],
