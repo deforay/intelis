@@ -295,7 +295,11 @@ final class FacilitiesService
             $this->db->where("user_id", $userId);
             $response = $this->db->getValue("user_facility_map", "facility_id", null);
             if ($this->db->count > 0) {
-                $userfacilityMap = implode(",", $response);
+                // Normalize to a clean CSV of positive integer facility ids at the
+                // source so every consumer (login session, grid + manifest lab
+                // scoping) can interpolate it safely without re-sanitizing.
+                $facilityIds = array_values(array_filter(array_map('intval', (array) $response)));
+                $userfacilityMap = $facilityIds !== [] ? implode(",", $facilityIds) : null;
             }
             if ($sessionEnabled) {
                 $_SESSION['facilityMap'] = $userfacilityMap;
