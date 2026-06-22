@@ -101,6 +101,8 @@ $sWhere[] = $cfg['manifestWhere']($db->escape($manifestCode));
 //      only their tables carry referred_to_lab_id): also admit samples referred
 //      TO this lab via an additive OR.
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+    // facilityMap is a clean integer CSV normalized at its source
+    // (FacilitiesService::getUserFacilityMap), so interpolating it here is safe.
     $facilityClause = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
     $sessionLabId = (int) ($_SESSION['labId'] ?? 0);
 

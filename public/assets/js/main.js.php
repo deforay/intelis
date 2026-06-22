@@ -286,6 +286,12 @@ $remoteURL = $general->getRemoteURL();
                             $('#sampleId').val('');
                             return;
                         }
+                        if (response.status === 'no-lab') {
+                            toast.error("<?= _jsTranslate('No testing lab is assigned to your account. Please contact your administrator.'); ?>", '', MANIFEST_ERROR_TOAST_MS);
+                            $('.activateSample').hide();
+                            $('#sampleId').val('');
+                            return;
+                        }
                         if (response.status === 'match') {
                             $('.activateSample').show();
                             toast.success("<?= _jsTranslate('Samples loaded successfully for manifest'); ?>" + ' ' + manifestCode);

@@ -491,66 +491,91 @@ final class TestRequestsService
     {
         $labId = (int) ($_SESSION['labId'] ?? $this->commonService->getSystemConfig('sc_testing_lab_id') ?? 0);
 
-        // Is the manifest registered to this user's lab?
-        $this->db->reset();
-        $this->db->where('manifest_code', $manifestCode);
-        $this->db->where('module', $testType);
-        if ($labId > 0) {
-            $this->db->where('lab_id', $labId);
+        // A cloud-LIS operator must have an operating testing lab. Without one we
+        // cannot scope the manifest to a lab, so we refuse outright rather than
+        // hand back a misleading 'match' that the (correctly lab-scoped) grid
+        // would then render as an empty table. Mirrors the remote STS endpoint
+        // app/remote/v2/verify-manifest.php, which 400s on labId <= 0.
+        if ($labId <= 0) {
+            return [
+                'status' => 'no-lab',
+                'message' => 'No testing lab is assigned to your account. Please contact your administrator.',
+            ];
         }
-        $manifestRecord = $this->db->getOne('specimen_manifests');
 
         // TB and Custom (generic) tests link samples via referral_manifest_code;
         // their manifest row may not exist even when samples do.
         $isReferralModule = ($testType === 'tb' || $testType === 'generic-tests');
 
-        if (empty($manifestRecord)) {
-            // Not ours — is it registered to a different lab, or nowhere?
-            $this->db->reset();
-            $this->db->where('manifest_code', $manifestCode);
-            $this->db->where('module', $testType);
-            $otherLabManifest = $this->db->getOne('specimen_manifests', ['lab_id']);
-
-            if (!empty($otherLabManifest['lab_id']) && (int) $otherLabManifest['lab_id'] !== $labId) {
-                /** @var FacilitiesService $facilitiesService */
-                $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-                $otherLab = $facilitiesService->getFacilityById((int) $otherLabManifest['lab_id']);
-                return [
-                    'status' => 'wrong-lab',
-                    'message' => 'Manifest is registered to a different testing lab.',
-                    'labName' => $otherLab['facility_name'] ?? null,
-                ];
-            }
-
-            if (!$isReferralModule) {
-                return [
-                    'status' => 'not-found',
-                    'message' => 'Manifest not found.',
-                ];
-            }
-            // Referral module with no manifest row: fall through to the sample
-            // presence check below.
-        }
-
-        // Manifest belongs here (or is a referral with samples). Confirm samples
-        // exist locally, then it is ready to activate.
         $tableName = TestsService::getTestTableName($testType);
         $primaryKey = TestsService::getPrimaryColumn($testType);
-        $this->db->reset();
-        $this->db->where('sample_package_code', $manifestCode);
-        if ($isReferralModule) {
-            $this->db->orWhere('referral_manifest_code', $manifestCode);
-        }
-        $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
 
-        if (empty($selectedSamples)) {
+        // Is the manifest registered to THIS user's lab?
+        $this->db->reset();
+        $this->db->where('manifest_code', $manifestCode);
+        $this->db->where('module', $testType);
+        $this->db->where('lab_id', $labId);
+        $manifestRecord = $this->db->getOne('specimen_manifests');
+
+        if (!empty($manifestRecord)) {
+            // Lab owns the manifest -> every sample under this code belongs here.
+            // Confirm samples exist locally, then it is ready to activate.
+            $this->db->reset();
+            $this->db->where('sample_package_code', $manifestCode);
+            if ($isReferralModule) {
+                $this->db->orWhere('referral_manifest_code', $manifestCode);
+            }
+            $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
+
+            return empty($selectedSamples)
+                ? ['status' => 'not-found', 'message' => 'Manifest not found.']
+                : ['status' => 'match'];
+        }
+
+        // Not owned by this lab -- is it registered to a DIFFERENT lab?
+        $this->db->reset();
+        $this->db->where('manifest_code', $manifestCode);
+        $this->db->where('module', $testType);
+        $otherLabManifest = $this->db->getOne('specimen_manifests', ['lab_id']);
+
+        if (!empty($otherLabManifest['lab_id']) && (int) $otherLabManifest['lab_id'] !== $labId) {
+            /** @var FacilitiesService $facilitiesService */
+            $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+            $otherLab = $facilitiesService->getFacilityById((int) $otherLabManifest['lab_id']);
             return [
-                'status' => 'not-found',
-                'message' => 'Manifest not found.',
+                'status' => 'wrong-lab',
+                'message' => 'Manifest is registered to a different testing lab.',
+                'labName' => $otherLab['facility_name'] ?? null,
             ];
         }
 
-        return ['status' => 'match'];
+        if (!$isReferralModule) {
+            return ['status' => 'not-found', 'message' => 'Manifest not found.'];
+        }
+
+        // Referral module with no lab-owned manifest row: admit ONLY when the
+        // manifest actually has samples this lab may act on, using the SAME rule
+        // as the grid (app/specimen-referral-manifest/_get-manifest-in-grid-helper.php)
+        // so verify and the grid never disagree:
+        //   - no facility map  -> any sample for the code (matches "unmapped sees all")
+        //   - with facility map -> referred_to_lab_id = labId OR facility_id IN (map)
+        // A manifest whose samples are referred elsewhere is not ours to activate,
+        // even though the rows physically live on this STS box.
+        // $labId is an int; facilityMap is a clean integer CSV normalized at its
+        // source (FacilitiesService::getUserFacilityMap), so both interpolate safely.
+        $sampleScope = "(sample_package_code = ? OR referral_manifest_code = ?)";
+        if (!empty($_SESSION['facilityMap'])) {
+            $sampleScope .= " AND (referred_to_lab_id = " . $labId
+                . " OR facility_id IN (" . $_SESSION['facilityMap'] . "))";
+        }
+        $admissible = $this->db->rawQueryOne(
+            "SELECT 1 FROM $tableName WHERE $sampleScope LIMIT 1",
+            [$manifestCode, $manifestCode]
+        );
+
+        return !empty($admissible)
+            ? ['status' => 'match']
+            : ['status' => 'not-found', 'message' => 'Manifest not found for your lab.'];
     }
 
     /**
@@ -698,6 +723,18 @@ final class TestRequestsService
         if (empty($manifestCode)) {
             return 0;
         }
+
+        // Cloud-LIS: an operator with no testing lab assigned must not be able to
+        // activate -- the manifest cannot be lab-scoped to them. verifyManifestLocally
+        // already blocks the UI path with status 'no-lab'; this guards a direct POST
+        // to the activate endpoint from bypassing that.
+        if ($this->commonService->isCloudLISMode()) {
+            $activatingLabId = (int) ($_SESSION['labId'] ?? $this->commonService->getSystemConfig('sc_testing_lab_id') ?? 0);
+            if ($activatingLabId <= 0) {
+                return 0;
+            }
+        }
+
         $tableName = TestsService::getTestTableName($testType);
 
         // Referred samples carry the manifest in referral_manifest_code, while the
