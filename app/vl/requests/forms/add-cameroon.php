@@ -210,14 +210,12 @@ foreach ($testReasonsResultDetails as $row) {
                                                   </select>
                                              </div>
                                         </div>
-                                        <?php if ($general->isLISInstance()) { ?>
                                              <div class="row">
                                                   <div class="col-xs-3 col-md-3">
                                                        <label for="labAssignedCode"><?= _translate('Lab Assigned Code'); ?> </label>
                                                        <input name="labAssignedCode" value="<?php echo $_SESSION['vlData']['lab_assigned_code'] ?? null; ?>" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>" onblur='checkNameValidation("form_vl","lab_assigned_code",this,null,"<?php echo _translate("The Lab Assigned Code that you entered already exists.Enter another Lab Assigned Code"); ?>",null)'>
                                                   </div>
                                              </div>
-                                        <?php } ?>
                                    </div>
                               </div>
                               <div class="box box-primary">

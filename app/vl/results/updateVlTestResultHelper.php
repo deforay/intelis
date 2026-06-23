@@ -139,7 +139,9 @@ try {
         'result_reviewed_by' => $_POST['reviewedBy'] ?? null,
         'result_reviewed_datetime' => $_POST['reviewedOn'] ?? null,
         'cv_number' => $_POST['cvNumber'] ?? null,
-        'lab_assigned_code' => $_POST['labAssignedCode'] ?? null,
+        // 'lab_assigned_code' is set below, only when the field was actually
+        // submitted, so non-LIS forms (where the input isn't rendered) don't
+        // wipe the existing lab code on every manual result save.
         'vl_focal_person' => $_POST['vlFocalPerson'] ?? null,
         'vl_focal_person_phone_number' => $_POST['vlFocalPersonPhoneNumber'] ?? null,
         'tested_by' => $_POST['testedBy'] ?? null,
@@ -257,6 +259,13 @@ try {
     );
     if ($reasonForChanges !== null) {
         $vlData['reason_for_result_changes'] = $reasonForChanges;
+    }
+
+    // Only touch lab_assigned_code when the field was part of the submitted
+    // form. On non-LIS instances the input isn't rendered, so the key is absent
+    // and we must preserve the previously stored value instead of nulling it.
+    if (array_key_exists('labAssignedCode', $_POST)) {
+        $vlData['lab_assigned_code'] = $_POST['labAssignedCode'];
     }
 
 

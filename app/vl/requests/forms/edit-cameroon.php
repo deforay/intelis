@@ -250,14 +250,12 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", ["request_clin
                                                   </select>
                                              </div>
                                         </div>
-                                        <?php if ($general->isLISInstance()) { ?>
                                              <div class="row">
                                                   <div class="col-xs-3 col-md-3">
                                                        <label for="labAssignedCode"><?= _translate('Lab Assigned Code'); ?> </label>
                                                        <input name="labAssignedCode" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>" value="<?= $vlQueryInfo['lab_assigned_code']; ?>" <?php echo $labFieldDisabled; ?> onblur="checkNameValidation('form_vl','lab_assigned_code',this,'<?php echo "vl_sample_id##" . $id; ?>','This Lab Assigned Code that you entered already exists.Try another Lab Assigned Code',null)">
                                                   </div>
                                              </div>
-                                        <?php } ?>
                                    </div>
                               </div>
                               <div class="box box-primary">
