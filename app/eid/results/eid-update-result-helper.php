@@ -147,6 +147,12 @@ try {
   $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
   $eidData['form_attributes'] = $db->func($formAttributes);
 
+  // Only touch lab_assigned_code when the field was part of the submitted form,
+  // so EID result forms that don't render it don't wipe the stored lab code.
+  if (array_key_exists('labAssignedCode', $_POST)) {
+      $eidData['lab_assigned_code'] = $_POST['labAssignedCode'];
+  }
+
   $db->where('eid_id', $_POST['eidSampleId']);
   $id = $db->update($tableName, $eidData);
 

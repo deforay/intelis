@@ -444,15 +444,12 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _translate('Please specify other point of entry') ?>" placeholder="<?= _translate('Please specify other point of entry') ?>" style="display:<?php echo ($eidInfo['lab_testing_point'] == 'other') ? 'block' : 'none' ?>;" value="<?php echo ($eidInfo['lab_testing_point_other']); ?>" />
                                     </td>
                                 </tr>
-                                <?php if ($general->isLISInstance()) { ?>
-
                                     <tr>
                                         <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
                                         <td>
-                                            <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" />
+                                            <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onblur="checkNameValidation('form_eid','lab_assigned_code',this,'<?php echo "eid_id##" . $eidInfo['eid_id']; ?>','<?= _translate('This Lab Assigned Code that you entered already exists. Try another Lab Assigned Code', true); ?>',null)" style="width:100%;" />
                                         </td>
                                     </tr>
-                                <?php } ?>
                             </table>
                             <br><br>
                             <table aria-describedby="table" class="table" aria-hidden="true">
@@ -811,6 +808,28 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                 $('#machineName').html('');
                 if (data != "") {
                     $('#machineName').append(data);
+                }
+            });
+    }
+    // Duplicate check for the Lab Assigned Code. Catches a code that was typed
+    // incorrectly and collides with one already used on another sample; excludes
+    // the current sample via the eid_id##<id> filter.
+    function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
+        var cleaned = obj.value.replace(/\./g, "").replace(/\,/g, "").replace(/\s{2,}/g, ' ').trim();
+        if (cleaned === '') {
+            return;
+        }
+        $.post("/includes/checkDuplicate.php", {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: cleaned,
+                fnct: fnct,
+                format: "html"
+            },
+            function(data) {
+                if (data === '1') {
+                    alert(alrt);
+                    document.getElementById(obj.id).value = "";
                 }
             });
     }

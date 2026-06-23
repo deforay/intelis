@@ -167,7 +167,9 @@ try {
 	$eidData = [
 		'facility_id' => $_POST['facilityId'] ?? null,
 		'province_id' => $_POST['provinceId'] ?? null,
-		'lab_assigned_code' => $_POST['labAssignedCode'] ?? null,
+		// 'lab_assigned_code' is set below, only when the field was actually
+		// submitted, so non-LIS forms (where the input isn't rendered) don't
+		// wipe the existing lab code on every request edit.
 		'lab_id' => $_POST['labId'] ?? null,
 		'lab_testing_point' => $_POST['labTestingPoint'] ?? null,
 		//'system_patient_code' => $systemPatientCode,
@@ -381,6 +383,13 @@ try {
 
 	$formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
 	$eidData['form_attributes'] = $db->func($formAttributes);
+
+	// Only touch lab_assigned_code when the field was part of the submitted
+	// form, so non-LIS instances (where the input isn't rendered) preserve the
+	// previously stored value instead of nulling it.
+	if (array_key_exists('labAssignedCode', $_POST)) {
+		$eidData['lab_assigned_code'] = $_POST['labAssignedCode'];
+	}
 
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
 		$db->where('eid_id', $_POST['eidSampleId']);

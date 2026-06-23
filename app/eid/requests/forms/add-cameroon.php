@@ -682,8 +682,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 style="display:none;" />
                                         </td>
                                     </tr>
-                                    <?php if ($general->isLISInstance()) { ?>
-
                                         <tr>
                                             <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label>
                                             </th>
@@ -697,7 +695,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     onblur='checkNameValidation("form_eid","lab_assigned_code",this,null,"<?php echo _translate("The Lab Assigned Code that you entered already exists.Enter another Lab Assigned Code"); ?>",null)' />
                                             </td>
                                         </tr>
-                                    <?php } ?>
                                 </table>
 
                                 <br><br>

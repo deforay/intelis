@@ -254,7 +254,9 @@ try {
           'test_requested_on' => DateUtility::isoDateFormat($_POST['requestDate'] ?? null),
           'test_request_date' => DateUtility::isoDateFormat($_POST['testRequestDate'] ?? '', true),
           'cv_number' => $_POST['cvNumber'] ?? null,
-          'lab_assigned_code' => $_POST['labAssignedCode'] ?? null,
+          // 'lab_assigned_code' is set below, only when the field was actually
+          // submitted, so non-LIS forms (where the input isn't rendered) don't
+          // wipe the existing lab code on every request edit.
           'vl_focal_person' => $_POST['vlFocalPerson'] ?? null,
           'vl_focal_person_phone_number' => $_POST['vlFocalPersonPhoneNumber'] ?? null,
           'lab_id' => $_POST['labId'] ?? null,
@@ -395,6 +397,13 @@ try {
           $pngSpecificFields['report_date'] = DateUtility::isoDateFormat($_POST['reportDate'] ?? '');
      }
      $vlData = array_merge($vlData, $pngSpecificFields);
+
+     // Only touch lab_assigned_code when the field was part of the submitted
+     // form. On non-LIS instances the input isn't rendered, so the key is absent
+     // and we must preserve the previously stored value instead of nulling it.
+     if (array_key_exists('labAssignedCode', $_POST)) {
+          $vlData['lab_assigned_code'] = $_POST['labAssignedCode'];
+     }
 
      $vlData['is_encrypted'] = 'no';
      if (isset($_POST['encryptPII']) && $_POST['encryptPII'] == 'yes') {

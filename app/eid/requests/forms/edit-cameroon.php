@@ -734,8 +734,6 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                                 value="<?php echo ($eidInfo['lab_testing_point_other']); ?>" />
                                         </td>
                                     </tr>
-                                    <?php if ($general->isLISInstance()) { ?>
-
                                         <tr>
                                             <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label>
                                             </th>
@@ -749,7 +747,6 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                                     onblur="checkNameValidation('form_eid','lab_assigned_code',this,'<?php echo "eid_id##" . $id; ?>','This Lab Assigned Code that you entered already exists.Try another Lab Assigned Code',null)" />
                                             </td>
                                         </tr>
-                                    <?php } ?>
                                 </table>
 
                                 <br><br>
