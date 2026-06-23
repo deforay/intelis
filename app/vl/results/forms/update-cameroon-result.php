@@ -293,15 +293,13 @@ foreach ($testReasonsResultDetails as $row) {
 									</select>
 								</div>
 							</div>
-							<?php if ($general->isLISInstance()) { ?>
 								<div class="row">
 									<div class="col-md-3">
 										<label for="labAssignedCode"><?= _translate('Lab Assigned Code'); ?> </label>
-										<input <?php echo $disable; ?> name="labAssignedCode" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>" value="<?= $vlQueryInfo['lab_assigned_code']; ?>" <?php echo $labFieldDisabled; ?>>
+										<input <?php echo $disable; ?> name="labAssignedCode" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>" value="<?= $vlQueryInfo['lab_assigned_code']; ?>" <?php echo $labFieldDisabled; ?> onblur="checkNameValidation('form_vl','lab_assigned_code',this,'<?php echo "vl_sample_id##" . $vlQueryInfo['vl_sample_id']; ?>','<?= _translate('This Lab Assigned Code that you entered already exists. Try another Lab Assigned Code', true); ?>',null)">
 									</div>
 								</div>
 						</div>
-					<?php } ?>
 					</div>
 					<div class="box box-primary">
 						<div class="box-header with-border">
@@ -1019,6 +1017,29 @@ foreach ($testReasonsResultDetails as $row) {
 				$("#vlResult").val('');
 			}
 		}
+	}
+
+	// Duplicate check for the Lab Assigned Code. Catches a code that was typed
+	// incorrectly and collides with one already used on another sample; excludes
+	// the current sample via the vl_sample_id##<id> filter.
+	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
+		var cleaned = obj.value.replace(/\./g, "").replace(/\,/g, "").replace(/\s{2,}/g, ' ').trim();
+		if (cleaned === '') {
+			return;
+		}
+		$.post("/includes/checkDuplicate.php", {
+				tableName: tableName,
+				fieldName: fieldName,
+				value: cleaned,
+				fnct: fnct,
+				format: "html"
+			},
+			function(data) {
+				if (data === '1') {
+					alert(alrt);
+					document.getElementById(obj.id).value = "";
+				}
+			});
 	}
 	$('#vlRequestFormSudan').keypress((e) => {
 		// Enter key corresponds to number 13
