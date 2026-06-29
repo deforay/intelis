@@ -280,8 +280,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-
-
                                                 </tr>
                                                 <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Testing Labs"); ?> :</strong></td>
@@ -733,9 +731,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                     "value": $("#batchCode").val()
                 });
                 aoData.push({
-					"name": "manifestCode",
-					"value": $("#manifestCode").val()
-				});
+                    "name": "manifestCode",
+                    "value": $("#manifestCode").val()
+                });
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
@@ -890,9 +888,13 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                     "value": $("#printBatchCode").val()
                 });
                 aoData.push({
-					"name": "manifestCode",
-					"value": $("#printManifestCode").val()
-				});
+                    "name": "manifestCode",
+                    "value": $("#printManifestCode").val()
+                });
+                aoData.push({
+                    "name": "status",
+                    "value": "result"
+                });
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
