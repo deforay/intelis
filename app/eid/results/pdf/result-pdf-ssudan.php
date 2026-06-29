@@ -231,13 +231,12 @@ if (!empty($result)) {
     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">CHILD ID</td>';
     $html .= '</tr>';
     $html .= '<tr>';
-    $patientFname = ($general->crypto('doNothing', $result['child_name'], $result['child_id']));
+    $patientFname = $result['child_name'];
     if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
         $key = (string) $general->getGlobalConfig('key');
         $result['child_id'] = $general->crypto('decrypt', $result['child_id'], $key);
-        $patientFname = $general->crypto('decrypt', $patientFname, $key);
+        $patientFname = $general->crypto('decrypt', $result['child_name'], $key); // decrypt from original
         $result['mother_id'] = $general->crypto('decrypt', $result['mother_id'], $key);
-        //$aRow['mother_name'] = $general->crypto('decrypt', $aRow['mother_name'], $key);
     }
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['labName']) . '</td>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $patientFname . '</td>';
