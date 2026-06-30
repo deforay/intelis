@@ -216,6 +216,26 @@ try {
             copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name']);
         }
     }
+    // Map the per-row status the user submitted, keyed by temp_sample_id. The
+    // POST `status` array is aligned to the POST `value` (temp_sample_id) array,
+    // so we must look up by id here — indexing it by the accepted-loop counter
+    // below would leak a neighbouring row's status (e.g. a genuine "Failed")
+    // onto an unrelated valid result.
+    $submittedStatusByTempId = [];
+    $submittedRejectReasonByTempId = [];
+    foreach ($id as $idx => $tempId) {
+        $tempId = trim((string) $tempId);
+        if ($tempId === '') {
+            continue;
+        }
+        if (isset($status[$idx]) && $status[$idx] !== '') {
+            $submittedStatusByTempId[$tempId] = $status[$idx];
+        }
+        if (isset($rejectedReasonId[$idx]) && $rejectedReasonId[$idx] !== '') {
+            $submittedRejectReasonByTempId[$tempId] = $rejectedReasonId[$idx];
+        }
+    }
+
     //get all accepted data result
     $accQuery = "SELECT * FROM temp_sample_import as tsr
                         LEFT JOIN form_vl as vl ON vl.sample_code=tsr.sample_code
@@ -239,6 +259,7 @@ try {
                 'tested_by' => $_POST['testBy'],
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                'last_modified_by' => $_SESSION['userId'] ?? null,
                 'result_approved_by' => $_POST['appBy'],
                 'result_approved_datetime' => DateUtility::getCurrentDateTime(),
                 'import_machine_file_name' => $accResult[$i]['import_machine_file_name'],
@@ -250,16 +271,21 @@ try {
                 'cv_number' => $accResult[$i]['cv_number'],
             ];
 
+            $tempId = (string) ($accResult[$i]['temp_sample_id'] ?? '');
             if ($accResult[$i]['result_status'] == REJECTED) {
                 $data['is_sample_rejected'] = 'yes';
-                $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
+                $data['reason_for_sample_rejection'] = $submittedRejectReasonByTempId[$tempId] ?? null;
                 $data['result_value_log'] = null;
                 $data['result_value_absolute'] = null;
                 $data['result_value_text'] = null;
                 $data['result_value_absolute_decimal'] = null;
                 $data['result'] = null;
             } else {
-                $data['result_status'] = $status[$i] ?? ACCEPTED;
+                // These rows were selected because temp_sample_import marked them
+                // ACCEPTED. Honour an explicit per-row status the user submitted
+                // for this exact sample (looked up by temp_sample_id, never by the
+                // loop index), otherwise default to ACCEPTED.
+                $data['result_status'] = $submittedStatusByTempId[$tempId] ?? ACCEPTED;
                 $data['is_sample_rejected'] = 'no';
                 $data['reason_for_sample_rejection'] = null;
             }

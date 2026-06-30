@@ -167,6 +167,11 @@ $state = $geolocationService->getProvinces("yes");
                                 &nbsp;<button class="btn btn-success btn-sm pull-right retest-btn"
                                     style="margin-right:5px;display:none;"
                                     onclick="retestSample('',true);"><span><?php echo _translate("Retest the selected samples"); ?></span></button>
+                                <?php if (_isAllowed("/vl/requests/editVlRequest.php")) { ?>
+                                    &nbsp;<button class="btn btn-primary btn-sm pull-right accept-btn"
+                                        style="margin-right:5px;display:none;"
+                                        onclick="acceptFailedSample('',true);"><span><?php echo _translate("Move selected to Accepted"); ?></span></button>
+                                <?php } ?>
                             </td>
                         </tr>
                     </table>
@@ -427,9 +432,9 @@ $state = $geolocationService->getProvinces("yes");
             }
         });
         if (checkResult) {
-            $(".retest-btn").show();
+            $(".retest-btn, .accept-btn").show();
         } else {
-            $(".retest-btn").hide();
+            $(".retest-btn, .accept-btn").hide();
         }
     }
 
@@ -664,6 +669,37 @@ $state = $geolocationService->getProvinces("yes");
                     }
                 });
         }
+    }
+
+    function acceptFailedSample(id, bulk = false) {
+        if (bulk) {
+            id = selectedTests;
+        }
+        if (id == "" || (Array.isArray(id) && id.length === 0)) {
+            return;
+        }
+        if (!confirm("<?php echo _translate("Move the selected sample(s) back to Accepted? Genuine failed/invalid results will be skipped."); ?>")) {
+            return;
+        }
+        $.blockUI();
+        $.post("accept-failed-result.php", {
+            vlId: id,
+            bulkIds: bulk
+        },
+            function (data) {
+                $.unblockUI();
+                var moved = parseInt(data, 10);
+                if (moved > 0) {
+                    alert(moved + " <?php echo _translate("sample(s) moved to Accepted"); ?>.");
+                    oTable.fnDraw();
+                    selectedTests = [];
+                    selectedTestsId = [];
+                    $(".retest-btn, .accept-btn").hide();
+                    $("#checkTestsData").prop('checked', false);
+                } else {
+                    alert("<?php echo _translate("No samples were moved. They may be genuine failures or already accepted"); ?>.");
+                }
+            });
     }
 
     function getByProvince(provinceId) {
