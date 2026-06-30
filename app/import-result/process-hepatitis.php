@@ -195,6 +195,25 @@ try {
             copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name']);
         }
     }
+    // Look up the per-row status/reject-reason the user submitted, keyed by
+    // temp_sample_id. The POST arrays are aligned to the POST `value`
+    // (temp_sample_id) array, so indexing them by the accepted-loop counter
+    // below leaks a neighbouring row's status onto an unrelated valid result.
+    $submittedStatusByTempId = [];
+    $submittedRejectReasonByTempId = [];
+    foreach ($id as $idx => $tempId) {
+        $tempId = trim((string) $tempId);
+        if ($tempId === '') {
+            continue;
+        }
+        if (isset($status[$idx]) && $status[$idx] !== '') {
+            $submittedStatusByTempId[$tempId] = $status[$idx];
+        }
+        if (isset($rejectedReasonId[$idx]) && $rejectedReasonId[$idx] !== '') {
+            $submittedRejectReasonByTempId[$tempId] = $rejectedReasonId[$idx];
+        }
+    }
+
     //get all accepted data result
     $accQuery = "SELECT tsr.*
                     FROM temp_sample_import as tsr
@@ -237,6 +256,7 @@ try {
                 'tested_by' => $_POST['testBy'],
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                'last_modified_by' => $_SESSION['userId'] ?? null,
                 'result_approved_by' => $_POST['appBy'],
                 'result_approved_datetime' => DateUtility::getCurrentDateTime(),
                 'import_machine_file_name' => $accResult[$i]['import_machine_file_name'],
@@ -249,11 +269,12 @@ try {
             $data['hbv_vl_count'] = null;
             $data['hcv_vl_count'] = null;
 
+            $tempId = (string) ($accResult[$i]['temp_sample_id'] ?? '');
             if ($accResult[$i]['result_status'] == REJECTED) {
                 $data['is_sample_rejected'] = 'yes';
-                $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
+                $data['reason_for_sample_rejection'] = $submittedRejectReasonByTempId[$tempId] ?? null;
             } else {
-                $data['result_status'] = $status[$i] ?? 7;
+                $data['result_status'] = $submittedStatusByTempId[$tempId] ?? 7;
                 $data['is_sample_rejected'] = 'no';
                 $data['reason_for_sample_rejection'] = null;
                 $data[$resultField] = trim((string) $accResult[$i]['result']);
