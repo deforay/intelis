@@ -236,7 +236,17 @@ try {
         $row[] = $aRow['last_modified_datetime'];
         $row[] = $aRow['status_name'];
         if ($editRequest) {
-            $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim(base64_encode((string) $aRow['vl_sample_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';
+            $actions = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim(base64_encode((string) $aRow['vl_sample_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';
+
+            // Offer "Accept" only for rows currently flagged failed that carry a
+            // recoverable result (i.e. the result text is not itself a failure).
+            $resultText = strtolower(trim((string) $aRow['result']));
+            $isGenuineFailure = in_array($resultText, ['fail', 'failed', 'failure', 'error', 'err', 'invalid'], true);
+            if ((int) $aRow['result_status'] === TEST_FAILED && $resultText !== '' && !$isGenuineFailure) {
+                $actions .= '<a href="javascript:void(0);" class="btn btn-success btn-xs" title="' . _translate("Move this result to Accepted") . '" onclick="acceptFailedSample(\'' . trim(base64_encode((string) $aRow['vl_sample_id'])) . '\')"><em class="fa-solid fa-check"></em> ' . _translate("Accept") . '</a>';
+            }
+
+            $row[] = $actions;
         }
 
         $output['aaData'][] = $row;
