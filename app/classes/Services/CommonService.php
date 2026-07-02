@@ -1107,6 +1107,24 @@ final class CommonService
     }
 
     /**
+     * The lab this session operates AS, when acting as a LIS (treatAsLIS):
+     * $_SESSION['labId'] is the effective lab resolved at login (per-user on
+     * cloud-LIS); fall back to the install's configured lab (sc_testing_lab_id)
+     * so a LIS session that predates the per-user lab feature still resolves.
+     * Null when not acting as a lab, or when nothing resolves.
+     *
+     * Route every "which lab am I?" decision (e.g. constraining Testing Lab
+     * dropdowns) through this method so the resolution lives in one place.
+     */
+    public function getOwnLabId(): ?int
+    {
+        if (!$this->treatAsLIS()) {
+            return null;
+        }
+        return ((int) ($_SESSION['labId'] ?? 0)) ?: ((int) ($this->getSystemConfig('sc_testing_lab_id') ?? 0)) ?: null;
+    }
+
+    /**
      * A cloud-LIS operator who is NOT the super-admin (roleId 1).
      *
      * These users get a restricted, lab-scoped admin surface: only User
@@ -1317,14 +1335,11 @@ final class CommonService
     {
         // Show the operating lab's name when the user is acting as a lab (LIS,
         // or a testing-lab user on STS = cloud-LIS); otherwise the STS label.
-        // $_SESSION['labId'] is the effective lab resolved at login; fall back
-        // to the install's configured lab so a LIS footer still resolves for a
-        // session that predates the per-user lab feature. It is per-user on STS,
-        // so the cache key must include the lab id -- a single global key would
-        // leak one lab's name to another.
-        $labId = $this->treatAsLIS()
-            ? ((int) ($_SESSION['labId'] ?? 0) ?: (int) ($this->getSystemConfig('sc_testing_lab_id') ?? 0) ?: null)
-            : null;
+        // getOwnLabId() resolves the effective lab (session labId, else the
+        // install's configured lab). It is per-user on STS, so the cache key
+        // must include the lab id -- a single global key would leak one lab's
+        // name to another.
+        $labId = $this->getOwnLabId();
         $cacheKey = 'lisLabName_' . ($labId ?? ($this->isSTSInstance() ? 'sts' : 'plain'));
         return $this->fileCache->get($cacheKey, function () use ($labId) {
             $instanceName = [];
