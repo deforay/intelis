@@ -611,12 +611,14 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                         </div>
                                    </div>
                                    <div id="otherSection" class="<?= ltrim($dnr) ?>"></div>
-                                   <?php // Result entry lives ONLY on the result-update page (the per-Test multi-test
-                                   // cards). The add/edit REQUEST forms register the sample; results are entered
-                                   // later from the result page. So this whole "Laboratory Information" / result box
-                                   // renders only in result mode. (It can be brought back to add/edit later if needed.)
-                                   if ($formMode === 'result') { ?>
-                                        <div class="box box-primary">
+                                   <?php // Result entry: the result-update page always renders this box (per-Test
+                                   // multi-test cards). The add/edit REQUEST forms render it too when the page
+                                   // opts into multi-test mode ($multiTestResults) -- there the Test Section
+                                   // carries its own "Enter test results now?" toggle so plain registration
+                                   // stays result-free. Legacy single-result widgets still render only in
+                                   // result mode without multi-test.
+                                   if ($formMode === 'result' || !empty($multiTestResults)) { ?>
+                                        <div class="box box-primary<?= ($formMode === 'add') ? ' requestForm' : '' ?>" <?= ($formMode === 'add') ? 'style="display:none;"' : '' ?>>
                                              <?php // Multi-test mode supplies its own "TEST RESULTS INFORMATION" heading
                                              // via _test-section.php, so the box title would be a redundant second heading.
                                              if (empty($multiTestResults)) { ?>
@@ -826,10 +828,16 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
 
                                                   </div>
                                                   <?php
-                                                  // TB-style multi-test Test Section (only when the page opts in, i.e. the
-                                                  // result-update page). Replaces the single-result widgets above.
+                                                  // TB-style multi-test Test Section (when the page opts in). Replaces the
+                                                  // single-result widgets above. On the Add form the test type is chosen
+                                                  // client-side, so the section is fetched from getTestTypeForm.php and
+                                                  // injected into this placeholder; edit/result render it server-side.
                                                   if (!empty($multiTestResults)) {
-                                                       include __DIR__ . '/_test-section.php';
+                                                       if ($formMode === 'add') {
+                                                            echo '<div id="genericTestSectionAjax"></div>';
+                                                       } else {
+                                                            include __DIR__ . '/_test-section.php';
+                                                       }
                                                   }
                                                   ?>
                                                   <?php // Page-level Reviewed/Tested/Approved By are the legacy single-result

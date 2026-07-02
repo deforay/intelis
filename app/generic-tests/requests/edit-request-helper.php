@@ -298,6 +298,18 @@ try {
 
      $db->where('sample_id', $_POST['requestSampleId']);
      $id = $db->update($tableName, $genericData);
+
+     // Multi-test result cards from the edit form (LIS / cloud-LIS, opt-in via the
+     // section's toggle). Persisted AFTER the request-field update so the shared
+     // write path (GenericTestsService::saveMultiTestResults -- same as the result
+     // page) owns the result columns and result_status. Runs only when a card was
+     // actually filled or an existing test's deletion was confirmed; an opted-out
+     // or untouched section posts nothing and leaves results untouched.
+     $gtCardLabs = array_filter((array) ($_POST['testResult']['labId'] ?? []));
+     if (!empty($gtCardLabs) || !empty($_POST['deletedTestIds'])) {
+          $genericTestsService->saveMultiTestResults((int) $_POST['requestSampleId'], $_POST, (int) ($_SESSION['userId'] ?? 0));
+     }
+
      $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';
      if ($id === true) {
           $_SESSION['alertMsg'] = _translate("Request updated successfully");
