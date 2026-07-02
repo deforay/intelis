@@ -87,6 +87,12 @@ class MemoUtility
         return self::memo($key, $callback, $ttl, $crossRequest);
     }
 
+    public static function forget(string $key): void
+    {
+        unset(self::$cache[$key]);
+        ContainerRegistry::get(FileCacheUtility::class)->delete($key);
+    }
+
     public static function clear(): void
     {
         self::$cache = [];
