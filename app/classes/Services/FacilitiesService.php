@@ -277,35 +277,66 @@ final class FacilitiesService
 
     public function getUserFacilityMap($userId): mixed
     {
+        if (empty($userId)) {
+            return null;
+        }
 
-        return MemoUtility::remember(function () use ($userId) {
+        // Self lookups can reuse the session-cached scope map.
+        $isSelf = session_status() !== PHP_SESSION_NONE && $userId == ($_SESSION['userId'] ?? null);
+        if ($isSelf && isset($_SESSION['facilityMap'])) {
+            return $_SESSION['facilityMap'];
+        }
 
-            if (empty($userId)) {
+        // Explicit, deterministic cache key so the mapping can be invalidated
+        // by clearUserFacilityMapCache() the moment it is edited (otherwise a
+        // saved change appears "not persisted" until the cache TTL lapses).
+        $userfacilityMap = MemoUtility::memo(
+            self::userFacilityMapCacheKey($userId),
+            function () use ($userId) {
+                $this->db->where("user_id", $userId);
+                $response = $this->db->getValue("user_facility_map", "facility_id", null);
+                if ($this->db->count > 0) {
+                    // Normalize to a clean CSV of positive integer facility ids at the
+                    // source so every consumer (login session, grid + manifest lab
+                    // scoping) can interpolate it safely without re-sanitizing.
+                    $facilityIds = array_values(array_filter(array_map('intval', (array) $response)));
+                    return $facilityIds !== [] ? implode(",", $facilityIds) : null;
+                }
                 return null;
             }
-            $sessionEnabled = false;
-            if (session_status() !== PHP_SESSION_NONE && $userId == ($_SESSION['userId'] ?? null)) {
-                if (isset($_SESSION['facilityMap'])) {
-                    return $_SESSION['facilityMap'];
-                }
-                $sessionEnabled = true;
-            }
+        );
 
-            $userfacilityMap = null;
-            $this->db->where("user_id", $userId);
-            $response = $this->db->getValue("user_facility_map", "facility_id", null);
-            if ($this->db->count > 0) {
-                // Normalize to a clean CSV of positive integer facility ids at the
-                // source so every consumer (login session, grid + manifest lab
-                // scoping) can interpolate it safely without re-sanitizing.
-                $facilityIds = array_values(array_filter(array_map('intval', (array) $response)));
-                $userfacilityMap = $facilityIds !== [] ? implode(",", $facilityIds) : null;
-            }
-            if ($sessionEnabled) {
-                $_SESSION['facilityMap'] = $userfacilityMap;
-            }
-            return $userfacilityMap;
-        });
+        if ($isSelf) {
+            $_SESSION['facilityMap'] = $userfacilityMap;
+        }
+
+        return $userfacilityMap;
+    }
+
+    private static function userFacilityMapCacheKey($userId): string
+    {
+        return 'user_facility_map_' . hash('sha256', (string) $userId);
+    }
+
+    /**
+     * Invalidate every cache layer for a user's facility map after it is
+     * edited, so the next read reflects the DB immediately. Covers the
+     * cross-request file cache, the in-request memo, and (for self-edits)
+     * the session-cached scope map used for data isolation.
+     */
+    public function clearUserFacilityMapCache($userId): void
+    {
+        if (empty($userId)) {
+            return;
+        }
+
+        MemoUtility::forget(self::userFacilityMapCacheKey($userId));
+
+        if (session_status() !== PHP_SESSION_NONE && $userId == ($_SESSION['userId'] ?? null)) {
+            unset($_SESSION['facilityMap']);
+            // Re-derive fresh so lab-scoping that reads the session copy stays correct.
+            $this->getUserFacilityMap($userId);
+        }
     }
 
 

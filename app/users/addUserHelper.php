@@ -162,6 +162,9 @@ try {
                     $db->insertMulti('user_facility_map', $facilityUser);
                 }
             }
+
+            // Drop any cached facility map for this new user so lookups are fresh.
+            ContainerRegistry::get(\App\Services\FacilitiesService::class)->clearUserFacilityMapCache($data['user_id']);
         }
 
         $_SESSION['alertMsg'] = _translate("User saved successfully!");
