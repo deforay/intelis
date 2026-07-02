@@ -419,12 +419,19 @@ final readonly class AuditArchiveService
             }
 
             $batchSize = 500;
+            // Samples that threw this run (corrupt file, bad read, disk error).
+            // Their rows stay in audit_log; we skip re-attempting them on later
+            // batches so one bad sample can't slow or spam the whole drain.
+            $failedUids = [];
+            // Ascending id cursor. It advances past every fetched batch whether
+            // or not those rows were deleted, so skipped/failed samples are never
+            // re-fetched within a run — guaranteeing forward progress and loop
+            // termination even if an entire batch fails to archive.
+            $afterId = 0;
             while (true) {
-                // Build the batch query. Use a small id-anchored window so a
-                // concurrent insert during the drain doesn't deadlock the
-                // DELETE that follows.
-                $where  = '1=1';
-                $params = [];
+                // Build the batch query, walking strictly forward by id.
+                $where  = 'id > ?';
+                $params = [$afterId];
                 if ($formTableFilter !== null) {
                     $where  .= ' AND form_table = ?';
                     $params[] = $formTableFilter;
@@ -439,14 +446,16 @@ final readonly class AuditArchiveService
                       WHERE $where
                       ORDER BY id ASC
                       LIMIT $batchSize",
-                    // Pass null (not an empty array) when there are no filters:
-                    // MysqliDb::rawQuery() calls bind_param('') on an empty array,
-                    // which is a hard fatal on PHP 8.1+ ("types must not be empty")
-                    // and silently killed every unfiltered drain. null skips binding.
-                    $params ?: null
+                    $params
                 );
                 if (!$batch || count($batch) === 0) {
                     break;
+                }
+
+                // Advance the cursor past the highest id in this batch up front,
+                // so a batch that fails wholesale still moves the loop forward.
+                foreach ($batch as $br) {
+                    $afterId = max($afterId, (int) $br['id']);
                 }
 
                 // Group rows by (folder, uniqueId-from-row_data). Rows without a
@@ -476,81 +485,113 @@ final readonly class AuditArchiveService
                     MiscUtility::makeDirectory($targetDir);
 
                     foreach ($byUid as $uniqueId => $entries) {
-                        // Derive a "current" header set: standards first, then the
-                        // union of all columns we have on hand (existing file
-                        // headers ∪ row_data keys from new entries). Union semantics
-                        // are important: dropping a column from the form must NOT
-                        // erase that column's history from older revisions.
-                        $stdCols  = ['action', 'revision', 'dt_datetime'];
-                        $dataCols = [];
-                        foreach ($entries as $e) {
-                            foreach (array_keys($e['data']) as $k) {
-                                if (!in_array($k, $stdCols, true)) {
-                                    $dataCols[$k] = true;
+                        // Already failed earlier this run — leave its rows in
+                        // audit_log and don't retry until the next run.
+                        if (isset($failedUids[$uniqueId])) {
+                            continue;
+                        }
+                        try {
+                            // Derive a "current" header set: standards first, then the
+                            // union of all columns we have on hand (existing file
+                            // headers ∪ row_data keys from new entries). Union semantics
+                            // are important: dropping a column from the form must NOT
+                            // erase that column's history from older revisions.
+                            $stdCols  = ['action', 'revision', 'dt_datetime'];
+                            $dataCols = [];
+                            foreach ($entries as $e) {
+                                foreach (array_keys($e['data']) as $k) {
+                                    if (!in_array($k, $stdCols, true)) {
+                                        $dataCols[$k] = true;
+                                    }
                                 }
                             }
-                        }
 
-                        $existing      = $this->resolveExistingCompressed($targetDir, $uniqueId);
-                        $existingRows  = [];
-                        $existingHeaders = [];
-                        if ($existing) {
-                            $old = $this->readCompressedCsv($existing);
-                            $existingHeaders = $old['headers'];
-                            $existingRows    = $old['rows'];
-                            foreach ($existingHeaders as $h) {
-                                if (!in_array($h, $stdCols, true)) {
-                                    $dataCols[$h] = true;
+                            $existing      = $this->resolveExistingCompressed($targetDir, $uniqueId);
+                            $existingRows  = [];
+                            $existingHeaders = [];
+                            if ($existing) {
+                                $old = $this->readCompressedCsv($existing);
+                                $existingHeaders = $old['headers'];
+                                $existingRows    = $old['rows'];
+                                foreach ($existingHeaders as $h) {
+                                    if (!in_array($h, $stdCols, true)) {
+                                        $dataCols[$h] = true;
+                                    }
                                 }
                             }
-                        }
 
-                        $currentHeaders = array_merge($stdCols, array_keys($dataCols));
+                            $currentHeaders = array_merge($stdCols, array_keys($dataCols));
 
-                        // Align old rows to current headers (additive — never drops cells).
-                        $reheaderedExisting = $existingHeaders === []
-                            ? []
-                            : $this->reheaderIfNeeded($existingHeaders, $currentHeaders, $existingRows);
+                            // Align old rows to current headers (additive — never drops cells).
+                            $reheaderedExisting = $existingHeaders === []
+                                ? []
+                                : $this->reheaderIfNeeded($existingHeaders, $currentHeaders, $existingRows);
 
-                        // Compute the file's max revision so we can renumber the
-                        // new rows to continue the sequence — keeps display
-                        // contiguous across legacy + post-cutover history.
-                        $idxRev = $this->idx($currentHeaders, 'revision') ?? 1;
-                        $maxRev = 0;
-                        foreach ($reheaderedExisting as $r) {
-                            if (isset($r[$idxRev])) {
-                                $v = $this->jsonishScalar((string) $r[$idxRev]);
-                                if (is_numeric($v)) {
-                                    $maxRev = max($maxRev, (int) $v);
+                            // Compute the file's max revision so we can renumber the
+                            // new rows to continue the sequence — keeps display
+                            // contiguous across legacy + post-cutover history.
+                            $idxRev = $this->idx($currentHeaders, 'revision') ?? 1;
+                            $maxRev = 0;
+                            foreach ($reheaderedExisting as $r) {
+                                if (isset($r[$idxRev])) {
+                                    $v = $this->jsonishScalar((string) $r[$idxRev]);
+                                    if (is_numeric($v)) {
+                                        $maxRev = max($maxRev, (int) $v);
+                                    }
                                 }
                             }
-                        }
 
-                        // Append new entries in id order (chronological).
-                        $newRows = [];
-                        foreach ($entries as $e) {
-                            $r    = $e['row'];
-                            $data = $e['data'];
-                            $maxRev++;
-                            $record = $data + [
-                                'action'      => $r['action'],
-                                'revision'    => $maxRev,
-                                'dt_datetime' => $r['dt_datetime'],
-                            ];
-                            $newRows[]      = $this->buildRow($currentHeaders, $record);
-                            $archivedIds[]  = (int) $r['id'];
-                        }
+                            // Append new entries in id order (chronological). Collect
+                            // this sample's ids locally — they only join the batch
+                            // delete list after the file write below succeeds.
+                            $newRows = [];
+                            $newIds  = [];
+                            foreach ($entries as $e) {
+                                $r    = $e['row'];
+                                $data = $e['data'];
+                                $maxRev++;
+                                $record = $data + [
+                                    'action'      => $r['action'],
+                                    'revision'    => $maxRev,
+                                    'dt_datetime' => $r['dt_datetime'],
+                                ];
+                                $newRows[] = $this->buildRow($currentHeaders, $record);
+                                $newIds[]  = (int) $r['id'];
+                            }
 
-                        if ($newRows !== []) {
-                            $allRows = [...$reheaderedExisting, ...$newRows];
-                            // Normalize to preferred compression — remove any
-                            // existing file in another extension first.
-                            $dstBaseNoExt = $targetDir . DIRECTORY_SEPARATOR . $uniqueId;
-                            MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$uniqueId.csv.zst");
-                            MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$uniqueId.csv.gz");
-                            MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$uniqueId.csv.zip");
-                            MiscUtility::deleteFile($targetDir . DIRECTORY_SEPARATOR . "$uniqueId.csv");
-                            $this->writeCompressedCsv($dstBaseNoExt, $currentHeaders, $allRows);
+                            if ($newRows !== []) {
+                                $allRows = [...$reheaderedExisting, ...$newRows];
+                                $dstBaseNoExt = $targetDir . DIRECTORY_SEPARATOR . $uniqueId;
+                                // Write FIRST (overwrites the same-format file), then
+                                // prune any other-format leftovers. If the write throws,
+                                // the prior archive and the source rows are left intact
+                                // for a clean retry — no half-written history loss.
+                                $written = $this->writeCompressedCsv($dstBaseNoExt, $currentHeaders, $allRows);
+                                foreach (["$uniqueId.csv.zst", "$uniqueId.csv.gz", "$uniqueId.csv.zip", "$uniqueId.csv"] as $leftover) {
+                                    $lf = $targetDir . DIRECTORY_SEPARATOR . $leftover;
+                                    if ($lf !== $written) {
+                                        MiscUtility::deleteFile($lf);
+                                    }
+                                }
+                                // Write succeeded — now safe to drain these rows.
+                                foreach ($newIds as $id) {
+                                    $archivedIds[] = $id;
+                                }
+                            }
+                        } catch (Throwable $e) {
+                            // One sample failing (corrupt .zst, bad read, disk error)
+                            // must NOT wedge the whole drain. Log and skip: this
+                            // sample's rows stay in audit_log (never added to
+                            // $archivedIds) so they retry on a later run, while the
+                            // rest of the batch and queue keep draining.
+                            $failedUids[$uniqueId] = true;
+                            $this->log($progress, "audit_log drain: skipping sample '$uniqueId' in '$folder': " . $e->getMessage());
+                            LoggerUtility::logError('audit_log drain: sample skipped: ' . $e->getMessage(), [
+                                'uniqueId' => $uniqueId,
+                                'folder'   => $folder,
+                                'file'     => $e->getFile(),
+                                'line'     => $e->getLine(),
+                            ]);
                         }
                     }
                 }
