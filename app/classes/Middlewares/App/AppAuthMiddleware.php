@@ -72,7 +72,11 @@ class AppAuthMiddleware implements MiddlewareInterface
 
         if (!empty($_SESSION['forcePasswordReset']) && (int) $_SESSION['forcePasswordReset'] === 1) {
             $_SESSION['alertMsg'] = _translate("Please change your password to proceed.", true);
-            if (basename((string) $path) !== 'edit-profile.php') {
+            // Gate everything (every method, AJAX or not) back to edit-profile EXCEPT the
+            // handful of helper endpoints the edit-profile page itself needs to function
+            // (password generator + duplicate check). Otherwise those buttons silently fail.
+            $allowedDuringReset = ['edit-profile.php', 'generate-password.php', 'checkDuplicate.php'];
+            if (!in_array(basename((string) $path), $allowedDuringReset, true)) {
                 return $this->redirect('/users/edit-profile.php');
             }
         }
