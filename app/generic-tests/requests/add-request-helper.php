@@ -309,6 +309,17 @@ try {
     }
     $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';
     if ($id > 0) {
+        // Multi-test result cards entered at registration (LIS / cloud-LIS add form,
+        // opt-in via the section's toggle). Saved AFTER the request write so the shared
+        // path (GenericTestsService::saveMultiTestResults -- same as the result page)
+        // owns the result columns and result_status. requestSampleId is pre-created by
+        // insert-sample.php for auto sample codes; otherwise the row was just inserted.
+        $gtSampleId = !empty($_POST['requestSampleId']) ? (int) $_POST['requestSampleId'] : (int) $id;
+        $gtCardLabs = array_filter((array) ($_POST['testResult']['labId'] ?? []));
+        if (!empty($gtCardLabs)) {
+            $genericTestsService->saveMultiTestResults($gtSampleId, $_POST, (int) ($_SESSION['userId'] ?? 0));
+        }
+
         $_SESSION['alertMsg'] = _translate("Lab test request added successfully");
         //Add event log
 

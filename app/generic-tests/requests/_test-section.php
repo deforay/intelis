@@ -31,6 +31,23 @@ $gtEsc = static fn($v): string => htmlspecialchars((string) ($v ?? ''), ENT_QUOT
 
 $gtParent = is_array($genericResultInfo ?? null) ? $genericResultInfo : [];
 $gtRows = (isset($genericTestInfo) && is_array($genericTestInfo) && !empty($genericTestInfo)) ? $genericTestInfo : [[]];
+
+// On the add/edit REQUEST forms result entry is OPTIONAL: an "Enter test results
+// now?" toggle keeps plain registration result-free (everything inside is hidden,
+// disabled and stripped of isRequired while off, so nothing posts or validates).
+// The result page always shows the section, no toggle.
+$gtOptionalEntry = (($formMode ?? 'result') !== 'result');
+$gtHasSavedTests = false;
+foreach ($gtRows as $gtR) {
+	if (!empty($gtR)) {
+		$gtHasSavedTests = true;
+		break;
+	}
+}
+$gtEntryOn = !$gtOptionalEntry
+	|| $gtHasSavedTests
+	|| (($gtParent['is_sample_rejected'] ?? '') === 'yes')
+	|| trim((string) ($gtParent['result'] ?? '')) !== '';
 $gtMethodOptions = is_array($genericMethodOptions ?? null) ? $genericMethodOptions : [];
 $gtMethodGroups = is_array($genericMethodGroups ?? null) ? $genericMethodGroups : [];
 $gtDefaultGroup = is_array($genericDefaultGroup ?? null) ? $genericDefaultGroup : ['result_type' => 'qualitative', 'results' => []];
@@ -256,6 +273,22 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 		<div class="box-header with-border">
 			<h3 class="box-title"><?= _translate("TEST RESULTS INFORMATION"); ?></h3>
 		</div>
+		<?php if ($gtOptionalEntry) { // add/edit request forms: result entry is opt-in ?>
+			<table class="table" style="width:100%;margin-bottom:0;">
+				<tr>
+					<td style="width:33.33%;">
+						<label class="label-control" for="gtEnterResults"><?= _translate("Enter test results now?"); ?></label>
+						<select class="form-control" id="gtEnterResults" onchange="gtToggleEntry();"
+							title="<?= _translate("Choose Yes to record test results with this request"); ?>">
+							<option value="no" <?= $gtEntryOn ? '' : 'selected'; ?>><?= _translate("No"); ?></option>
+							<option value="yes" <?= $gtEntryOn ? 'selected' : ''; ?>><?= _translate("Yes"); ?></option>
+						</select>
+					</td>
+					<td style="width:66.66%;"></td>
+				</tr>
+			</table>
+		<?php } ?>
+		<div id="gtEntryBody" style="<?= $gtEntryOn ? '' : 'display:none;'; ?>">
 		<div class="box-header with-border">
 			<h3 class="box-title" style="font-size:1em;">
 				<?= _translate("Record each test performed on this sample. A test can be done at this lab or referred to another lab; use Add Test for each result. Enter the Final Interpretation only once you are done -- it locks further tests and referral."); ?>
@@ -357,11 +390,14 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 				</td>
 			</tr>
 		</table>
+		</div><?php // /gtEntryBody ?>
 	</div>
 </div>
 
 <script type="text/javascript">
 	var gtTestCount = <?= count($gtRows); ?>;
+	// Add/edit request forms: the section is opt-in via #gtEnterResults (see gtToggleEntry).
+	var gtEntryOptional = <?= $gtOptionalEntry ? 'true' : 'false'; ?>;
 	// method name -> { result_type, results[] }; picking a Test Type shows its group's result options.
 	var gtMethodGroups = <?= json_encode($gtMethodGroups, JSON_UNESCAPED_UNICODE) ?: '{}'; ?>;
 	var gtDefaultGroup = <?= json_encode($gtDefaultGroup, JSON_UNESCAPED_UNICODE) ?: '{"result_type":"qualitative","results":[]}'; ?>;
@@ -418,11 +454,43 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 		gtBuildResultControl(group, n, '').forEach(function (node) { $control.append(node); });
 	}
 
+	// Swap isRequired on/off without losing track of which fields need it: an
+	// element stripped of isRequired keeps a gtWasRequired marker so it can be
+	// restored later. Needed because deforayValidator validates every isRequired
+	// element, hidden or disabled ones included.
+	function gtSetRequired($els, on) {
+		if (on) {
+			$els.filter('.gtWasRequired').removeClass('gtWasRequired').addClass('isRequired');
+		} else {
+			$els.filter('.isRequired').removeClass('isRequired').addClass('gtWasRequired');
+		}
+	}
+
 	function gtToggleRejection(sel) {
 		var $card = $(sel).closest('.test-section');
 		var rejected = sel.value === 'yes';
 		$card.find('.gtRejectionRow').toggle(rejected);
 		$card.find('.gtResultRow, .gtWorkflowRow').toggle(!rejected);
+		// A rejected card's hidden result/workflow fields must not stay required,
+		// or the (visibility-blind) validator blocks saving the rejection.
+		gtSetRequired($card.find('.gtResultRow, .gtWorkflowRow').find('input, select, textarea'), !rejected);
+	}
+
+	// Add/edit request forms: apply the "Enter test results now?" toggle. While off,
+	// the whole section is hidden, disabled (so nothing posts -- the save helpers
+	// only persist results when a card actually submits) and stripped of isRequired.
+	function gtToggleEntry() {
+		if (!gtEntryOptional) { return; }
+		var on = $('#gtEnterResults').val() === 'yes';
+		$('#gtEntryBody').toggle(on);
+		var $fields = $('#gtEntryBody').find('input, select, textarea');
+		$fields.prop('disabled', !on);
+		gtSetRequired($fields, on);
+		if (on) {
+			// Re-strip required from rows hidden by a per-card rejection.
+			$('#gtEntryBody .gtRejected').each(function () { gtToggleRejection(this); });
+			gtToggleFinal();
+		}
 	}
 
 	function gtToggleFinal() {
@@ -551,6 +619,11 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 				}
 			});
 			gtToggleFinal();
+			// Cards already saved as rejected: their hidden result/workflow fields
+			// must not stay required (the validator ignores visibility).
+			$('#testSections .gtRejected').each(function () { gtToggleRejection(this); });
+			// Add/edit request forms: apply the opt-in state (no-op on the result page).
+			gtToggleEntry();
 		}, 0);
 		if ($('#testSections .test-section').length > 1) { $('#gtRemoveTestBtn').show(); }
 	});

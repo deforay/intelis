@@ -216,6 +216,21 @@ $testMethods = $genericTestsService->getTestMethod($genericResultInfo['test_type
 //$testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
 $testResultUnits = $genericTestsService->getTestResultUnit($genericResultInfo['test_type']);
 
+// Multi-test (TB-style) Test Results section on the edit form -- LIS / cloud-LIS
+// only (treatAsLIS). Same cards as the result page (_test-section.php), opt-in via
+// the section's "Enter test results now?" toggle so a plain request edit stays
+// result-free. Collection sites / STS admins never see it.
+$multiTestResults = $general->treatAsLIS();
+$genericTestInfo = [];
+if ($multiTestResults) {
+	$genericTestInfo = $db->rawQuery("SELECT * FROM generic_test_results WHERE generic_id = ? ORDER BY test_id ASC", [$id]);
+	$genericMultiTestConfig = $genericTestsService->getMultiTestConfig((int) $genericResultInfo['test_type']);
+	$genericMethodOptions = $genericMultiTestConfig['methodOptions'];
+	$genericMethodGroups = $genericMultiTestConfig['methodGroups'];
+	$genericDefaultGroup = $genericMultiTestConfig['defaultGroup'];
+	$genericResultUnitOptions = $genericMultiTestConfig['unitOptions'];
+}
+
 //Funding source list
 $fundingSourceList = $general->getFundingSources();
 
@@ -448,10 +463,14 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 	let __clone = null;
 	let reason = null;
 	let resultValue = null;
+	// Multi-test (TB-style) result entry is handled per Test card by _test-section.php.
+	// When on, the legacy single-result widgets (#resultSection, #subTestResult / .subTestFields)
+	// must stay hidden -- do not inject the old result table or sub-test picker into them.
+	var gtMultiTest = <?php echo !empty($multiTestResults) ? 'true' : 'false'; ?>;
 	$(document).ready(function () {
 
 
-		checkCollectionDate('<?php echo $genericTestInfo['sample_collection_date']; ?>');
+		checkCollectionDate('<?php echo $genericResultInfo['sample_collection_date']; ?>');
 
 
 		$("#subTestResult").multipleSelect({
@@ -705,8 +724,11 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 				$('#reasonForFailure').removeClass('isRequired');
 			}
 		});
-		getSubTestList($("#testType").val());
-		loadSubTests();
+		// Multi-test mode enters results per Test card; the legacy sub-test flow is unused.
+		if (!gtMultiTest) {
+			getSubTestList($("#testType").val());
+			loadSubTests();
+		}
 	});
 
 	function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
@@ -1065,7 +1087,11 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 		removeDynamicForm();
 		var testType = $("#testType").val();
 		getTestTypeConfigList(testType);
-		getSubTestList(testType);
+		// In multi-test mode results are entered per Test card; the legacy sub-test
+		// picker (and the second getTestTypeForm.php it triggers) is not used.
+		if (!gtMultiTest) {
+			getSubTestList(testType);
+		}
 		if (testType != "") {
 			var editId = $('#requestSampleId').val();
 			var resultVal = $('#result').val() ? $('#result').val() : '<?php echo $genericResultInfo['result']; ?>';
@@ -1098,10 +1124,10 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 					if (typeof (data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
 						$("#labSection").html(data.labSection);
 					}
-					if (typeof (data.result) != "undefined" && data.result !== null && data.result.length > 0) {
+					if (!gtMultiTest && typeof (data.result) != "undefined" && data.result !== null && data.result.length > 0) {
 						$("#resultSection").html(data.result);
 						$('#resultSection').show();
-					} 
+					}
 					if (typeof (data.specimenSection) != "undefined" && data.specimenSection !== null && data.specimenSection.length > 0) {
 						$("#specimenSection").after(data.specimenSection);
 					}
@@ -1179,6 +1205,10 @@ elseif($genericResultInfo['locked'] == 'no' && _isAllowed("/generic-tests/reques
 	}
 
 	function loadSubTests() {
+		// Per-card result entry (multi-test mode) does not use the legacy sub-test flow.
+		if (gtMultiTest) {
+			return;
+		}
 		var testType = $("#testType").val();
 		var subTestResult = $("#subTestResult").val();
 		if (testType != "") {

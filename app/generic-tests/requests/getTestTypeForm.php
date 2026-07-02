@@ -6,6 +6,8 @@ use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\UsersService;
+use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
@@ -458,5 +460,35 @@ if (!empty($testResultsAttribute)) {
             $n++;
         }
     }
+}
+// Multi-test (TB-style) Test Results section for the ADD request form: the test
+// type is chosen client-side, so the section (one blank card + SAMPLE OUTCOME,
+// entry opt-in via its own toggle) is rendered here and injected by the page into
+// #genericTestSectionAjax. LIS / cloud-LIS only (treatAsLIS), like the pages.
+if (!empty($_POST['multiTest']) && $general->treatAsLIS()) {
+    /** @var FacilitiesService $facilitiesService */
+    $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+    /** @var UsersService $usersService */
+    $usersService = ContainerRegistry::get(UsersService::class);
+
+    $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
+    $userInfo = [];
+    foreach ($usersService->getActiveUsers($_SESSION['facilityMap'] ?? '') as $gtUser) {
+        $userInfo[$gtUser['user_id']] = $gtUser['user_name'];
+    }
+    $rejectionResult = $db->rawQuery("SELECT * FROM r_generic_sample_rejection_reasons WHERE rejection_reason_status = 'active'");
+    $rejectionTypeResult = $db->rawQuery("SELECT DISTINCT rejection_type FROM r_generic_sample_rejection_reasons WHERE rejection_reason_status = 'active'");
+
+    $genericMultiTestConfig = $genericTestsService->getMultiTestConfig((int) $_POST['testType']);
+    $genericMethodOptions = $genericMultiTestConfig['methodOptions'];
+    $genericMethodGroups = $genericMultiTestConfig['methodGroups'];
+    $genericDefaultGroup = $genericMultiTestConfig['defaultGroup'];
+    $genericResultUnitOptions = $genericMultiTestConfig['unitOptions'];
+
+    $genericResultInfo = null; // add mode: no parent sample row yet
+    $formMode = 'add';         // marks entry as opt-in inside the partial
+    ob_start();
+    include __DIR__ . '/_test-section.php';
+    $result['testSection'] = ob_get_clean();
 }
 echo json_encode($result);
