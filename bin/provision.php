@@ -61,7 +61,7 @@ try {
         VAR_PATH . '/metadata',
         BACKUP_PATH,
         UPLOAD_PATH,
-        UPLOAD_PATH . '/track-api',
+        VAR_PATH . '/track-api',
         TEMP_PATH,
         CONFIG_PATH,
     ];
