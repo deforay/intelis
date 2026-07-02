@@ -439,7 +439,11 @@ final readonly class AuditArchiveService
                       WHERE $where
                       ORDER BY id ASC
                       LIMIT $batchSize",
-                    $params
+                    // Pass null (not an empty array) when there are no filters:
+                    // MysqliDb::rawQuery() calls bind_param('') on an empty array,
+                    // which is a hard fatal on PHP 8.1+ ("types must not be empty")
+                    // and silently killed every unfiltered drain. null skips binding.
+                    $params ?: null
                 );
                 if (!$batch || count($batch) === 0) {
                     break;
