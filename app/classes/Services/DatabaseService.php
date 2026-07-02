@@ -208,6 +208,23 @@ final class DatabaseService extends MysqliDb
 
 
     /**
+     * Normalize an empty bind-param array to null before delegating to the
+     * parent. MysqliDb::rawQuery() calls bind_param('') for an empty array,
+     * which is a hard fatal on PHP 8.1+ ("Argument #1 ($types) must not be
+     * empty") and silently killed every unparameterized rawQuery (e.g. the
+     * audit_log drain). Passing null makes the parent skip binding entirely.
+     * Also covers rawQueryOne()/rawQueryValue(), which funnel through here.
+     */
+    #[Override]
+    public function rawQuery($query, $bindParams = null)
+    {
+        if (is_array($bindParams) && $bindParams === []) {
+            $bindParams = null;
+        }
+        return parent::rawQuery($query, $bindParams);
+    }
+
+    /**
      * Execute a query and return a generator to fetch results row by row.
      *
      * @param string $query SQL query string
