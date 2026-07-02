@@ -204,6 +204,92 @@ final class GenericTestsService extends AbstractTestService
     }
 
     /**
+     * Multi-test (TB-style) config for a test type, shared by every page that
+     * renders _test-section.php (result update, edit request, add request via
+     * getTestTypeForm.php). Each Result Group in test_results_config declares the
+     * TEST METHODS (assays) that produce it, plus its result definition
+     * (qualitative answers, or numeric + unit). So a method resolves to its group,
+     * and that group decides the Test Result control. Many methods can share a
+     * group; a test can have several groups (e.g. Ebola RT-PCR vs Antigen).
+     *
+     * Returns:
+     *   methodOptions => [['id' => .., 'name' => ..], ...]   the test's methods
+     *   methodGroups  => [methodName => ['result_type' => .., 'results' => [..]]]
+     *   defaultGroup  => ['result_type' => .., 'results' => [..]]
+     *   unitOptions   => [['id' => .., 'name' => ..], ...]
+     */
+    public function getMultiTestConfig(int $testTypeId): array
+    {
+        $testMethods = $this->getTestMethod($testTypeId);
+        $testResultUnits = $this->getTestResultUnit($testTypeId);
+
+        $testTypeRow = $this->db->rawQueryOne("SELECT test_results_config FROM r_test_types WHERE test_type_id = ?", [$testTypeId]);
+        $resultConfig = json_decode((string) ($testTypeRow['test_results_config'] ?? ''), true) ?: [];
+
+        // Method id -> name (the test's configured methods).
+        $methodNameById = [];
+        foreach (($testMethods ?: []) as $m) {
+            $mid = (int) ($m['test_method_id'] ?? 0);
+            $mname = trim((string) ($m['test_method_name'] ?? ''));
+            if ($mid > 0 && $mname !== '') {
+                $methodNameById[$mid] = $mname;
+            }
+        }
+
+        // Per-group result definition: groupKey => [result_type, results[]].
+        $groupDefs = [];
+        foreach ((array) ($resultConfig['result_type'] ?? []) as $gk => $rt) {
+            $type = ($rt === 'quantitative') ? 'quantitative' : 'qualitative';
+            $results = [];
+            if ($type === 'qualitative' && !empty($resultConfig['qualitative']['expectedResult'][$gk])) {
+                foreach ((array) $resultConfig['qualitative']['expectedResult'][$gk] as $rv) {
+                    $rv = trim((string) $rv);
+                    if ($rv !== '' && !in_array($rv, $results, true)) {
+                        $results[] = $rv;
+                    }
+                }
+            }
+            $groupDefs[$gk] = ['result_type' => $type, 'results' => $results];
+        }
+        if (empty($groupDefs)) {
+            $groupDefs[1] = ['result_type' => 'qualitative', 'results' => []];
+        }
+        $firstGroupKey = array_key_first($groupDefs);
+
+        // Invert config['methods'] (groupKey => [methodId]) to methodId => groupKey.
+        $methodIdGroup = [];
+        foreach ((array) ($resultConfig['methods'] ?? []) as $gk => $mids) {
+            foreach ((array) $mids as $mid) {
+                $methodIdGroup[(int) $mid] = $gk;
+            }
+        }
+
+        // Resolve each method (keyed by NAME -- what the card stores and submits) to its group.
+        $methodGroups = [];
+        $methodOptions = [];
+        foreach ($methodNameById as $mid => $mname) {
+            $gk = $methodIdGroup[$mid] ?? $firstGroupKey;
+            if (!isset($groupDefs[$gk])) {
+                $gk = $firstGroupKey;
+            }
+            $methodGroups[$mname] = $groupDefs[$gk];
+            $methodOptions[] = ['id' => $mid, 'name' => $mname];
+        }
+
+        $unitOptions = [];
+        foreach (($testResultUnits ?: []) as $u) {
+            $unitOptions[] = ['id' => $u['unit_id'], 'name' => $u['unit_name']];
+        }
+
+        return [
+            'methodOptions' => $methodOptions,
+            'methodGroups' => $methodGroups,
+            'defaultGroup' => $groupDefs[$firstGroupKey],
+            'unitOptions' => $unitOptions,
+        ];
+    }
+
+    /**
      * Persist multi-test (TB-style) results for a sample: one generic_test_results
      * row per test card, then sync the LATEST test + the sample-level Final
      * Interpretation onto form_generic. This is the SINGLE source of truth for

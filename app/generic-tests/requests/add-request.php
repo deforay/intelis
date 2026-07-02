@@ -127,6 +127,13 @@ $minPatientIdLength = 0;
 if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id_length'] != "") {
      $minPatientIdLength = $arr['generic_min_patient_id_length'];
 }
+
+// Multi-test (TB-style) Test Results section on the add form -- LIS / cloud-LIS
+// only (treatAsLIS). The test type is chosen client-side, so the section itself is
+// rendered by getTestTypeForm.php (multiTest flag) and injected into the
+// #genericTestSectionAjax placeholder; entry is opt-in via the section's
+// "Enter test results now?" toggle. Collection sites / STS admins never see it.
+$multiTestResults = $general->treatAsLIS();
 ?>
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
 
@@ -233,6 +240,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
      let provinceName = true;
      let facilityName = true;
      let testCounter = 1;
+     // Multi-test (TB-style) result entry via _test-section.php cards, fetched from
+     // getTestTypeForm.php per chosen test type. When on, the legacy single-result
+     // table must not be injected into .subTestResultSection.
+     var gtMultiTest = <?php echo !empty($multiTestResults) ? 'true' : 'false'; ?>;
 
      $(document).ready(function () {
           $("#subTestResult").multipleSelect({
@@ -978,6 +989,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                     result: $('#result').val(),
                     testType: testType,
                     subTests: $('#subTestResult').val(),
+                    multiTest: gtMultiTest ? 1 : 0,
                },
                     function (data) {
                          if (data != undefined && data !== null) {
@@ -1002,7 +1014,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                               if (typeof (data.labSection) != "undefined" && data.labSection !== null && data.labSection.length > 0) {
                                    $("#labSection").html(data.labSection);
                               }
-                              if (typeof (data.result) != "undefined" && data.result !== null && data.result.length > 0) {
+                              if (!gtMultiTest && typeof (data.result) != "undefined" && data.result !== null && data.result.length > 0) {
                                    $(".subTestResultSection").html(data.result).show();
                               } else {
                                    $('.subTestResultSection').hide();
@@ -1012,6 +1024,12 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                               }
                               if (typeof (data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
                                    $("#otherSection").html(data.otherSection);
+                              }
+                              // Multi-test Test Results section for the chosen test type (its inline
+                              // script re-registers the gt* handlers; injecting before the picker
+                              // inits below lets initDatePicker/initDateTimePicker bind its fields).
+                              if (gtMultiTest && typeof (data.testSection) != "undefined" && data.testSection !== null && data.testSection.length > 0) {
+                                   $("#genericTestSectionAjax").html(data.testSection);
                               }
 
 
@@ -1060,6 +1078,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
      }
 
      function loadSubTests() {
+          // Per-card result entry (multi-test mode) does not use the legacy sub-test flow.
+          if (gtMultiTest) {
+               return;
+          }
           // While getSubTestList() populates the picker, multipleSelect fires a
           // change on #subTestResult. Ignore it -- getTestTypeForm() (called right
           // after, with the selected sub-tests) already loads the result table, so
