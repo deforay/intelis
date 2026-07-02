@@ -213,6 +213,9 @@ try {
                 }
             }
         }
+
+        // Drop cached facility map so the edit page reflects the new mapping on reload.
+        ContainerRegistry::get(\App\Services\FacilitiesService::class)->clearUserFacilityMapCache($userId);
         $_SESSION['alertMsg'] = _translate("User updated successfully");
 
 
