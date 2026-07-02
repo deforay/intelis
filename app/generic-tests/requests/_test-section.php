@@ -53,10 +53,36 @@ $gtMethodGroups = is_array($genericMethodGroups ?? null) ? $genericMethodGroups 
 $gtDefaultGroup = is_array($genericDefaultGroup ?? null) ? $genericDefaultGroup : ['result_type' => 'qualitative', 'results' => []];
 $gtUnits = is_array($genericResultUnitOptions ?? null) ? $genericResultUnitOptions : [];
 
+// Acting as a LIS (treatAsLIS): each card's Testing Lab is NOT a free choice --
+// constrain the options to the session's own lab. A card's already-saved lab
+// (older or referred test) stays visible so old data never blanks, and blank
+// cards default to the own lab. Mirrors the #labId rule in _request-form-body.php.
+$gtAllLabs = is_array($testingLabs ?? null) ? $testingLabs : [];
+$gtOwnLabId = (int) ($general->getOwnLabId() ?? 0);
+if ($gtOwnLabId > 0) {
+	$gtOwnLabName = $gtAllLabs[$gtOwnLabId] ?? null;
+	if ($gtOwnLabName === null) {
+		// Misconfigured edge: the own lab is not registered as a testing lab for
+		// this module -- still offer it (an empty required dropdown blocks saving).
+		$gtOwnLabRow = $general->fetchDataFromTable('facility_details', "facility_id = " . $gtOwnLabId)[0] ?? null;
+		$gtOwnLabName = $gtOwnLabRow['facility_name'] ?? (_translate("Lab") . ' #' . $gtOwnLabId);
+	}
+	$testingLabs = [$gtOwnLabId => $gtOwnLabName];
+}
+
 /** Render one test card. $row may be empty (blank card). */
-$gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $userInfo, $rejectionResult, $rejectionTypeResult, $gtParent, $gtMethodOptions, $gtMethodGroups, $gtDefaultGroup, $gtUnits, $gtEsc) {
+$gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $gtAllLabs, $gtOwnLabId, $userInfo, $rejectionResult, $rejectionTypeResult, $gtParent, $gtMethodOptions, $gtMethodGroups, $gtDefaultGroup, $gtUnits, $gtEsc) {
 	// Backfill per-test fields from the parent for rows that predate per-test columns.
 	$labId        = $row['lab_id'] ?? null ?: ($gtParent['lab_id'] ?? null);
+	// Constrained (own-lab) mode: blank cards default to the own lab; a saved
+	// DIFFERENT lab is appended as an option so old data never blanks.
+	if ($gtOwnLabId > 0 && empty($labId)) {
+		$labId = $gtOwnLabId;
+	}
+	$gtCardLabs = $testingLabs;
+	if (!empty($labId) && !isset($gtCardLabs[$labId])) {
+		$gtCardLabs[$labId] = $gtAllLabs[$labId] ?? (_translate("Lab") . ' #' . (int) $labId);
+	}
 	$received     = !empty($row['sample_received_at_lab_datetime']) ? $row['sample_received_at_lab_datetime'] : ($gtParent['sample_received_at_lab_datetime'] ?? '');
 	$rejected     = $row['is_sample_rejected'] ?? '';
 	$rejReason    = $row['reason_for_sample_rejection'] ?? '';
@@ -90,7 +116,7 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 					<label class="label-control"><?= _translate("Testing Lab"); ?></label>
 					<select name="testResult[labId][]" id="labId<?= $n; ?>" class="form-control select2 isRequired gtLab"
 						title="<?= _translate("Please select testing laboratory"); ?>">
-						<?= $general->generateSelectOptions($testingLabs, $labId, '-- ' . _translate("Select lab") . ' --'); ?>
+						<?= $general->generateSelectOptions($gtCardLabs, $labId, '-- ' . _translate("Select lab") . ' --'); ?>
 					</select>
 				</td>
 				<td style="width:33.33%;">
@@ -398,6 +424,8 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 	var gtTestCount = <?= count($gtRows); ?>;
 	// Add/edit request forms: the section is opt-in via #gtEnterResults (see gtToggleEntry).
 	var gtEntryOptional = <?= $gtOptionalEntry ? 'true' : 'false'; ?>;
+	// Own operating lab when acting as a LIS (0 = unconstrained): new cards default to it.
+	var gtOwnLabId = <?= (int) $gtOwnLabId; ?>;
 	// method name -> { result_type, results[] }; picking a Test Type shows its group's result options.
 	var gtMethodGroups = <?= json_encode($gtMethodGroups, JSON_UNESCAPED_UNICODE) ?: '{}'; ?>;
 	var gtDefaultGroup = <?= json_encode($gtDefaultGroup, JSON_UNESCAPED_UNICODE) ?: '{"result_type":"qualitative","results":[]}'; ?>;
@@ -541,6 +569,10 @@ $gtRenderCard = function (int $n, array $row) use ($general, $testingLabs, $user
 		$clone.find('input[type="text"], input[type="number"], textarea').val('');
 		$clone.find('input[type="hidden"][name="testResult[testId][]"]').val('');
 		$clone.find('select').prop('selectedIndex', 0);
+		// Constrained (own-lab) mode: a new card's Testing Lab defaults to the own lab.
+		if (gtOwnLabId > 0) {
+			$clone.find('.gtLab').val(String(gtOwnLabId));
+		}
 		$clone.find('.select2-container').remove();
 		$clone.find('.gtRejectionRow').hide();
 		$clone.find('.gtResultRow, .gtWorkflowRow').show();

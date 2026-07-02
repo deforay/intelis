@@ -51,6 +51,25 @@ $pfRaw = static fn(string $k) => $gri[$k] ?? null;                              
 $pfSel = static fn(string $k, $v): string => ((string) ($gri[$k] ?? '') === (string) $v) ? "selected='selected'" : ''; // <option>
 $pfChk = static fn(string $k, $v): string => ((string) ($gri[$k] ?? '') === (string) $v) ? "checked='checked'" : '';   // radio/checkbox
 $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF-8');                         // escape DB-sourced display text
+
+// Acting as a LIS (treatAsLIS): the Testing Lab is NOT a free choice -- constrain
+// the #labId dropdown to the session's own lab. The sample's already-saved lab
+// (edit/result of an older or referred sample) stays selectable so old data never
+// blanks. _test-section.php applies the same rule to the per-card lab selects.
+$ownLabId = (int) ($general->getOwnLabId() ?? 0);
+if ($ownLabId > 0) {
+     $savedLabId = (int) ($gri['lab_id'] ?? 0);
+     $allowedLabIds = array_unique(array_filter([$ownLabId, $savedLabId]));
+     $lResult = array_values(array_filter((array) ($lResult ?? []), static fn($l) => in_array((int) $l['facility_id'], $allowedLabIds, true)));
+     // Misconfigured edge: the own lab is not registered as a testing lab for this
+     // module -- still offer it (an empty required dropdown would block saving).
+     if (!in_array($ownLabId, array_map(static fn($l) => (int) $l['facility_id'], $lResult), true)) {
+          $ownLabRow = $general->fetchDataFromTable('facility_details', "facility_id = " . $ownLabId)[0] ?? null;
+          if (!empty($ownLabRow)) {
+               $lResult[] = $ownLabRow;
+          }
+     }
+}
 ?>
 <style>
     /* TB-style field layout: label sits on top of a full-width input (frees long labels
@@ -260,11 +279,14 @@ $e     = static fn($v): string => htmlspecialchars((string) $v, ENT_QUOTES, 'UTF
                                                             onchange="<?= $onLabChange ?>"
                                                             style="width:100%;">
                                                             <option value=""><?= _translate("-- Select --"); ?></option>
-                                                            <?php foreach ($lResult as $labName) { ?>
+                                                            <?php foreach ($lResult as $labName) {
+                                                                 // Constrained (own-lab) mode with no saved lab: preselect the own lab.
+                                                                 $labSelected = $pfSel('lab_id', $labName['facility_id'])
+                                                                      ?: (($ownLabId > 0 && (int) $labName['facility_id'] === $ownLabId && empty($gri['lab_id'])) ? "selected='selected'" : ''); ?>
                                                                  <option
                                                                       data-focalperson="<?= $e($labName['contact_person']) ?>"
                                                                       data-focalphone="<?= $e($labName['facility_mobile_numbers']) ?>"
-                                                                      value="<?php echo $labName['facility_id']; ?>" <?= $pfSel('lab_id', $labName['facility_id']) ?>>
+                                                                      value="<?php echo $labName['facility_id']; ?>" <?= $labSelected ?>>
                                                                       <?= $e($labName['facility_name']) ?></option>
                                                             <?php } ?>
                                                        </select>
