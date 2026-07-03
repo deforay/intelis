@@ -198,8 +198,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										<input type="text" class="form-control" id="facilityCode" name="facilityCode"
 											placeholder="<?php echo _translate('Facility Code'); ?>"
 											title="<?php echo _translate('Please enter facility code'); ?>"
-											value="<?= ((string) $facilityInfo['facility_code']); ?>"
-											onblur="checkNameValidation('facility_details','facility_code',this,'<?php echo 'facility_id##' . ((string) $facilityInfo['facility_id']); ?>','<?php echo _translate("The code that you entered already exists.Try another code"); ?>',null)" />
+											value="<?= ((string) $facilityInfo['facility_code']); ?>" autocomplete="off" />
+										<small id="facilityCodeMsg" class="form-text text-muted"></small>
 									</div>
 								</div>
 							</div>
@@ -1121,6 +1121,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
+<script type="text/javascript" src="/assets/js/facility-code-check.js"></script>
+<script type="text/javascript">
+	FacilityCodeCheck.init({
+		facilityId: '<?= base64_encode((string) $facilityInfo['facility_id']); ?>',
+		storedCode: <?php echo json_encode((string) $facilityInfo['facility_code']); ?>,
+		messages: {
+			invalid: '<?php echo _jsTranslate("Only letters and numbers are allowed in a facility code."); ?>',
+			taken: '<?php echo _jsTranslate("This code is already in use by another facility."); ?>',
+			available: '<?php echo _jsTranslate("Available."); ?>',
+			willSaveAs: '<?php echo _jsTranslate("Available. It will be saved as"); ?>'
+		}
+	});
+</script>
 <script type="text/javascript">
 	var deletedRowVar = [];
 	$(document).ready(function () {
@@ -1212,6 +1225,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		$("#selectedUser").val(selVal);
 		$('#state').val($("#stateId option:selected").text());
 		$('#district').val($("#districtId option:selected").text());
+
+		if (window.FacilityCodeCheck && !FacilityCodeCheck.isOk()) {
+			$('#facilityCode').focus();
+			return false;
+		}
+
 		flag = deforayValidator.init({
 			formId: 'editFacilityForm'
 		});
