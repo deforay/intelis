@@ -1395,7 +1395,14 @@ configure_php_ini() {
     local desired_opcache_enable_cli="opcache.enable_cli=0"
     local desired_opcache_memory="opcache.memory_consumption=256"
     local desired_opcache_max_files="opcache.max_accelerated_files=40000"
-    local desired_opcache_validate="opcache.validate_timestamps=0"
+    # Revalidate timestamps so edited PHP/config files are picked up without a
+    # manual OPcache reset or Apache restart. revalidate_freq caps the stat()
+    # cost to at most once per file per 60s. The app also self-heals instantly on
+    # upgrade (composer purge-cache bumps var/cache/opcache.gen; bootstrap.php
+    # resets OPcache on the next request), so this is the belt-and-suspenders for
+    # manual config edits.
+    local desired_opcache_validate="opcache.validate_timestamps=1"
+    local desired_opcache_revalidate_freq="opcache.revalidate_freq=60"
     local desired_opcache_save_comments="opcache.save_comments=1"
     local desired_opcache_jit="opcache.jit=disable"
     local desired_opcache_interned="opcache.interned_strings_buffer=16"
@@ -1418,7 +1425,7 @@ configure_php_ini() {
         # Check which settings are already correctly set
         local er_set de_set le_set pms_set umf_set sm_set sid_len_set sid_bits_set gc_maxlifetime_set expose_set
         local opcache_enable_set opcache_enable_cli_set opcache_memory_set opcache_max_files_set
-        local opcache_validate_set opcache_save_comments_set opcache_jit_set opcache_interned_set opcache_override_set
+        local opcache_validate_set opcache_revalidate_freq_set opcache_save_comments_set opcache_jit_set opcache_interned_set opcache_override_set
         local pcre_jit_set
 
         er_set=$(grep -q "^${desired_error_reporting}$" "$ini_file" && echo true || echo false)
@@ -1436,6 +1443,7 @@ configure_php_ini() {
         opcache_memory_set=$(grep -q "^${desired_opcache_memory}$" "$ini_file" && echo true || echo false)
         opcache_max_files_set=$(grep -q "^${desired_opcache_max_files}$" "$ini_file" && echo true || echo false)
         opcache_validate_set=$(grep -q "^${desired_opcache_validate}$" "$ini_file" && echo true || echo false)
+        opcache_revalidate_freq_set=$(grep -q "^${desired_opcache_revalidate_freq}$" "$ini_file" && echo true || echo false)
         opcache_save_comments_set=$(grep -q "^${desired_opcache_save_comments}$" "$ini_file" && echo true || echo false)
         opcache_jit_set=$(grep -q "^${desired_opcache_jit}$" "$ini_file" && echo true || echo false)
         opcache_interned_set=$(grep -q "^${desired_opcache_interned}$" "$ini_file" && echo true || echo false)
@@ -1447,7 +1455,7 @@ configure_php_ini() {
             || [ "$sid_len_set" = false ] || [ "$sid_bits_set" = false ] || [ "$gc_maxlifetime_set" = false ] \
             || [ "$expose_set" = false ] \
             || [ "$opcache_enable_set" = false ] || [ "$opcache_enable_cli_set" = false ] || [ "$opcache_memory_set" = false ] \
-            || [ "$opcache_max_files_set" = false ] || [ "$opcache_validate_set" = false ] || [ "$opcache_save_comments_set" = false ] || [ "$opcache_jit_set" = false ] \
+            || [ "$opcache_max_files_set" = false ] || [ "$opcache_validate_set" = false ] || [ "$opcache_revalidate_freq_set" = false ] || [ "$opcache_save_comments_set" = false ] || [ "$opcache_jit_set" = false ] \
             || [ "$opcache_interned_set" = false ] || [ "$opcache_override_set" = false ] \
             || [ "$pcre_jit_set" = false ]; then
             changes_needed=true
@@ -1491,6 +1499,8 @@ configure_php_ini() {
                     echo ";$line" >>"$temp_file"; echo "$desired_opcache_max_files" >>"$temp_file"; opcache_max_files_set=true
                 elif [[ "$line" =~ ^[[:space:]]*opcache\.validate_timestamps[[:space:]]*= ]] && [ "$opcache_validate_set" = false ]; then
                     echo ";$line" >>"$temp_file"; echo "$desired_opcache_validate" >>"$temp_file"; opcache_validate_set=true
+                elif [[ "$line" =~ ^[[:space:]]*opcache\.revalidate_freq[[:space:]]*= ]] && [ "$opcache_revalidate_freq_set" = false ]; then
+                    echo ";$line" >>"$temp_file"; echo "$desired_opcache_revalidate_freq" >>"$temp_file"; opcache_revalidate_freq_set=true
                 elif [[ "$line" =~ ^[[:space:]]*opcache\.save_comments[[:space:]]*= ]] && [ "$opcache_save_comments_set" = false ]; then
                     echo ";$line" >>"$temp_file"; echo "$desired_opcache_save_comments" >>"$temp_file"; opcache_save_comments_set=true
                 elif [[ "$line" =~ ^[[:space:]]*opcache\.jit[[:space:]]*= ]] && [ "$opcache_jit_set" = false ]; then
@@ -1522,6 +1532,7 @@ configure_php_ini() {
             [ "$opcache_memory_set" = true ] || echo "$desired_opcache_memory" >>"$temp_file"
             [ "$opcache_max_files_set" = true ] || echo "$desired_opcache_max_files" >>"$temp_file"
             [ "$opcache_validate_set" = true ] || echo "$desired_opcache_validate" >>"$temp_file"
+            [ "$opcache_revalidate_freq_set" = true ] || echo "$desired_opcache_revalidate_freq" >>"$temp_file"
             [ "$opcache_save_comments_set" = true ] || echo "$desired_opcache_save_comments" >>"$temp_file"
             [ "$opcache_jit_set" = true ] || echo "$desired_opcache_jit" >>"$temp_file"
             [ "$opcache_interned_set" = true ] || echo "$desired_opcache_interned" >>"$temp_file"
