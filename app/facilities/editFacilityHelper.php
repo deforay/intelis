@@ -421,6 +421,6 @@ try {
 		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
-	// $_SESSION['alertMsg'] = _translate("Something went wrong please try again.");
+	$_SESSION['alertMsg'] = _translate("Could not save the facility. Please check the facility code is unique and try again.");
 	header("Location:facilities.php");
 }
