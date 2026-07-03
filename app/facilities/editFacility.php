@@ -1127,7 +1127,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		facilityId: '<?= base64_encode((string) $facilityInfo['facility_id']); ?>',
 		storedCode: <?php echo json_encode((string) $facilityInfo['facility_code']); ?>,
 		messages: {
-			invalid: '<?php echo _jsTranslate("Only letters and numbers are allowed in a facility code."); ?>',
+			invalid: '<?php echo _jsTranslate("Only letters, numbers and hyphen (-) are allowed in a facility code."); ?>',
 			taken: '<?php echo _jsTranslate("This code is already in use by another facility."); ?>',
 			available: '<?php echo _jsTranslate("Available."); ?>',
 			willSaveAs: '<?php echo _jsTranslate("Available. It will be saved as"); ?>'
