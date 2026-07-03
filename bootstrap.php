@@ -62,6 +62,40 @@ define('TEMP_PATH', WEB_ROOT . '/temporary');
 define('VAR_TEMP_PATH', VAR_PATH . '/temporary');
 define('VENDOR_BIN', ROOT_PATH . '/vendor/bin');
 
+// OPcache self-heal. Production serves PHP with opcache.validate_timestamps=0,
+// so mod_php/FPM workers never re-read PHP/config files an upgrade changed. A
+// CLI `composer purge-cache` (part of post-install/post-update) bumps
+// var/cache/opcache.gen but cannot reach the web SAPI's OPcache from its own
+// separate segment. Here the first web request after that upgrade sees the new
+// token and resets OPcache once, so the very next compile — including di.php's
+// config include below — picks up fresh code. Steady state is one small file
+// read (the token is the only cross-SAPI channel); the "already applied" marker
+// lives in APCu when available, else a sibling file. CLI is skipped: its OPcache
+// is a different (and here disabled) segment.
+if (PHP_SAPI !== 'cli' && function_exists('opcache_reset')) {
+    $opcacheGen = @file_get_contents(CACHE_PATH . '/opcache.gen');
+    if ($opcacheGen !== false && $opcacheGen !== '') {
+        $opcacheGen = trim($opcacheGen);
+        $useApcu = function_exists('apcu_fetch');
+        $appliedKey = 'intelis_opcache_gen_' . md5(ROOT_PATH);
+        $appliedFile = CACHE_PATH . '/opcache.applied';
+        if ($useApcu) {
+            $applied = apcu_fetch($appliedKey);
+        } else {
+            $applied = @file_get_contents($appliedFile);
+            $applied = ($applied === false) ? null : trim($applied);
+        }
+        if ($opcacheGen !== $applied) {
+            @opcache_reset();
+            if ($useApcu) {
+                apcu_store($appliedKey, $opcacheGen);
+            } else {
+                @file_put_contents($appliedFile, $opcacheGen, LOCK_EX);
+            }
+        }
+    }
+}
+
 // Set up autoloading
 require_once ROOT_PATH . '/vendor/autoload.php';
 
