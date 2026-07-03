@@ -113,7 +113,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 										</small>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="<?php echo _translate('Facility Code'); ?>" title="<?php echo _translate('Please enter facility code'); ?>" onblur='checkNameValidation("facility_details","facility_code",this,null,"<?php echo _translate("The code that you entered already exists.Try another code"); ?>",null)' />
+										<input type="text" class="form-control" id="facilityCode" name="facilityCode" placeholder="<?php echo _translate('Facility Code'); ?>" title="<?php echo _translate('Please enter facility code'); ?>" autocomplete="off" />
+										<small id="facilityCodeMsg" class="form-text text-muted"></small>
 									</div>
 								</div>
 							</div>
@@ -820,6 +821,18 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
+<script type="text/javascript" src="/assets/js/facility-code-check.js"></script>
+<script type="text/javascript">
+	FacilityCodeCheck.init({
+		facilityId: '',
+		messages: {
+			invalid: '<?php echo _jsTranslate("Only letters and numbers are allowed in a facility code."); ?>',
+			taken: '<?php echo _jsTranslate("This code is already in use by another facility."); ?>',
+			available: '<?php echo _jsTranslate("Available."); ?>',
+			willSaveAs: '<?php echo _jsTranslate("Available. It will be saved as"); ?>'
+		}
+	});
+</script>
 <script type="text/javascript">
 	let testTypeFileCounter = 1;
 
@@ -910,6 +923,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			alert("Please Choose at least one test type");
 			return false;
 		}
+
+		if (window.FacilityCodeCheck && !FacilityCodeCheck.isOk()) {
+			$('#facilityCode').focus();
+			return false;
+		}
+
 		flag = deforayValidator.init({
 			formId: 'addFacilityForm'
 		});
