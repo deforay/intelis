@@ -141,8 +141,9 @@ final class FacilitiesService
     /**
      * Normalise a user-entered or imported facility code to plain uppercase
      * alphanumerics plus hyphen (A-Z, 0-9, "-"). Accents are folded (É -> E),
-     * spaces and every other symbol are dropped, and leading/trailing hyphens
-     * are trimmed. Returns '' when nothing usable remains.
+     * spaces and every other symbol are dropped, runs of hyphens are collapsed
+     * to a single "-", and leading/trailing hyphens are stripped (including any
+     * left dangling by length truncation). Returns '' when nothing usable remains.
      *
      * Digits are kept on purpose: facility codes legitimately contain them
      * (e.g. "CSL2", "FAC001", "102207"). Stripping them silently corrupts or
@@ -157,8 +158,10 @@ final class FacilitiesService
     {
         $code = $this->foldLatinAccents((string) $code);
         $code = preg_replace('/[^A-Za-z0-9-]/', '', $code) ?? '';
-        $code = trim($code, '-');
-        return substr(strtoupper($code), 0, $maxLen);
+        $code = preg_replace('/-{2,}/', '-', $code) ?? '';   // collapse "--" -> "-"
+        $code = trim($code, '-');                            // no leading/trailing hyphen
+        $code = substr(strtoupper($code), 0, $maxLen);
+        return trim($code, '-');                             // truncation may leave a trailing "-"
     }
 
     /**
