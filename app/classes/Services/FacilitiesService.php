@@ -139,14 +139,22 @@ final class FacilitiesService
     }
 
     /**
-     * Normalise a user-entered or imported facility code to plain uppercase Latin
-     * letters (A-Z). Accents are folded (É -> E), and anything that isn't a letter
-     * (digits, spaces, punctuation) is dropped. Returns '' when nothing usable remains.
+     * Normalise a user-entered or imported facility code to plain uppercase
+     * alphanumerics (A-Z, 0-9). Accents are folded (É -> E), and anything else
+     * (spaces, punctuation) is dropped. Returns '' when nothing usable remains.
+     *
+     * Digits are kept on purpose: facility codes legitimately contain them
+     * (e.g. "CSL2", "FAC001", "102207"). Stripping them silently corrupts or
+     * blanks an edited code, and distinct codes like "ABC1"/"ABC2" would fold
+     * to the same "ABC" and collide under the UNIQUE index, making the save
+     * fail. The sample-code postfix is hyphen-delimited ("...-<code>"), so a
+     * code with digits never blurs into the trailing numeric sequence.
+     * Auto-generated codes stay letters-only via generateFacilityCode().
      */
     public function sanitizeFacilityCode(?string $code, int $maxLen = 32): string
     {
         $code = $this->foldLatinAccents((string) $code);
-        $code = preg_replace('/[^A-Za-z]/', '', $code) ?? '';
+        $code = preg_replace('/[^A-Za-z0-9]/', '', $code) ?? '';
         return substr(strtoupper($code), 0, $maxLen);
     }
 
