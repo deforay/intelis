@@ -47,6 +47,7 @@ nav:
   - Backup:
       - Google Drive with Rclone: guides/backing-up-to-google-drive-with-rclone.md
       - Remote Backup Server: guides/backing-up-to-remote-server.md
+      - Windows Machine (Same Network): guides/backing-up-to-windows-machine.md
   - Maintenance:
       - Scripts & Tools: guides/maintenance.md
   - Troubleshooting:
