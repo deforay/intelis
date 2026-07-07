@@ -71,6 +71,21 @@ final class AuditTriggerService
         'user_details' => 'user_id',
     ];
 
+    /**
+     * Per-table columns whose VALUE must never be stored raw in audit_log. In the
+     * JSON snapshot they are fingerprinted with SHA2(..,256) instead of copied:
+     * the fingerprint still changes exactly when the credential changes (so
+     * rotations/resets stay fully auditable), but the audit trail — and every
+     * archive file, backup and sync derived from it — never carries a usable
+     * secret. `api_token` is a live plaintext bearer credential; `password` is a
+     * hash we still don't want to accumulate historically.
+     *
+     * @var array<string,list<string>>
+     */
+    public const array SENSITIVE_COLUMNS = [
+        'user_details' => ['api_token', 'password'],
+    ];
+
     public function __construct(private DatabaseService $db) {}
 
     public static function instance(): self
@@ -183,6 +198,9 @@ final class AuditTriggerService
         $audit = $this->qIdent(self::AUDIT_TABLE);
         $formLit = $this->qLit($formTable);
 
+        // Columns to fingerprint rather than store raw (credentials/secrets).
+        $sensitive = array_flip(self::SENSITIVE_COLUMNS[$formTable] ?? []);
+
         $defs = [
             ['suffix' => 'ai', 'timing' => 'AFTER INSERT',  'row' => 'NEW', 'action' => 'insert'],
             ['suffix' => 'au', 'timing' => 'AFTER UPDATE',  'row' => 'NEW', 'action' => 'update'],
@@ -200,7 +218,11 @@ final class AuditTriggerService
             // DELETE (OLD); only the row alias differs.
             $pairs = [];
             foreach ($cols as $col) {
-                $pairs[] = '    ' . $this->qLit($col) . ', ' . $rowAlias . '.' . $this->qIdent($col);
+                $valueExpr = $rowAlias . '.' . $this->qIdent($col);
+                if (isset($sensitive[$col])) {
+                    $valueExpr = 'SHA2(' . $valueExpr . ', 256)';
+                }
+                $pairs[] = '    ' . $this->qLit($col) . ', ' . $valueExpr;
             }
             $jsonObject = implode(",\n", $pairs);
 
