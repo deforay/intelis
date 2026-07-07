@@ -34,7 +34,13 @@ $_POST = array_map('trim', $_POST);
 
 $uploadedFiles = $request->getUploadedFiles();
 
-$sanitizedUserSignature = _sanitizeFiles($uploadedFiles['userSignature'], ['png', 'jpg', 'jpeg', 'gif']);
+// Only sanitize/validate the signature when a file was actually uploaded — an
+// empty file input arrives as an UploadedFile with UPLOAD_ERR_NO_FILE, which
+// would otherwise log a spurious "No file was uploaded" error on every add.
+$uploadedSignature = $uploadedFiles['userSignature'] ?? null;
+$sanitizedUserSignature = ($uploadedSignature instanceof UploadedFile && $uploadedSignature->getError() === UPLOAD_ERR_OK)
+    ? _sanitizeFiles($uploadedSignature, ['png', 'jpg', 'jpeg', 'gif'])
+    : null;
 
 $signatureImage = null;
 
@@ -143,7 +149,27 @@ try {
             $data['testing_lab_id'] = (int) ($_SESSION['labId'] ?? 0) ?: null;
         }
 
-        $id = $db->insert('user_details', $data);
+        // user_name, login_id and email each carry a UNIQUE index. A collision
+        // throws a duplicate-key error that the outer catch would otherwise
+        // swallow, leaving the operator with a silent no-op. Surface it clearly
+        // and send them back to the form (the on-blur checks catch most of these
+        // first, but an AJAX/bypassed submit still lands here).
+        try {
+            $id = $db->insert('user_details', $data);
+        } catch (Throwable $e) {
+            if (str_contains($e->getMessage(), 'Duplicate entry')) {
+                $_SESSION['alertMsg'] = _translate("A user with this full name, login ID or email already exists. Please use different details.");
+            } else {
+                LoggerUtility::logError('User add failed: ' . $e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                $_SESSION['alertMsg'] = _translate("The user could not be added due to a database error. Please contact your administrator.");
+            }
+            header("Location:addUser.php");
+            exit;
+        }
 
 
         if ($id === true && trim((string) $_POST['selectedFacility']) !== '') {

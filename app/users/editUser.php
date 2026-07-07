@@ -134,7 +134,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                        name="userName"
                                                        placeholder="<?php echo _translate('User Name'); ?>"
                                                        title="<?php echo _translate('Please enter user name'); ?>"
-                                                       value="<?php echo $userInfo['user_name']; ?>" />
+                                                       value="<?php echo $userInfo['user_name']; ?>"
+                                                       onblur="checkNameValidation('user_details','user_name',this,'<?php echo "user_id##" . $userInfo['user_id']; ?>','<?php echo _translate("A user with this full name already exists. Please use a different name."); ?>',null)" />
                                                   <input type="hidden" name="userId" id="userId"
                                                        value="<?php echo base64_encode((string) $userInfo['user_id']); ?>" />
                                              </div>
