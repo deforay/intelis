@@ -106,16 +106,16 @@ final class AuditTriggersCommand extends Command
      */
     private function resolveForms(AuditTriggerService $svc, ?string $only, SymfonyStyle $io): ?array
     {
-        $forms = $svc->trackedForms();
+        $forms = $svc->trackedTables();
         if ($only !== null) {
             $forms = array_values(array_filter($forms, static fn(array $f): bool => $f['table'] === $only));
             if ($forms === []) {
-                $io->error("No tracked form table matches '{$only}'.");
+                $io->error("No tracked table matches '{$only}'.");
                 return null;
             }
         }
         if ($forms === []) {
-            $io->warning('No tracked form tables found on this instance.');
+            $io->warning('No tracked tables found on this instance.');
         }
         return $forms;
     }
@@ -132,7 +132,8 @@ final class AuditTriggersCommand extends Command
         foreach ($forms as $f) {
             $output->writeln('');
             $output->writeln("-- {$f['table']}");
-            foreach ($svc->buildTriggersFor($f['table'], $f['pk']) as $sql) {
+            $installSql = [...$svc->buildDropLegacyTriggers($f['table']), ...$svc->buildTriggersFor($f['table'], $f['pk'])];
+            foreach ($installSql as $sql) {
                 $output->writeln($sql . ';');
                 $output->writeln('');
             }
@@ -157,8 +158,12 @@ final class AuditTriggersCommand extends Command
         $failed     = [];
 
         foreach ($forms as $f) {
+            // Install always drops the legacy `_data__` triggers first, so a bare
+            // `--apply install` self-heals a table whose legacy triggers were
+            // never retired by the v2 cutover (e.g. user_details). Idempotent:
+            // DROP IF EXISTS is a no-op where they're already gone.
             $statements = $mode === self::MODE_INSTALL
-                ? $svc->buildTriggersFor($f['table'], $f['pk'])
+                ? [...$svc->buildDropLegacyTriggers($f['table']), ...$svc->buildTriggersFor($f['table'], $f['pk'])]
                 : [...$svc->buildDropLegacyTriggers($f['table']), ...$svc->buildDropTriggersFor($f['table'])];
 
             $err = null;
