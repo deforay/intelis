@@ -51,6 +51,26 @@ final class AuditTriggerService
     /** Legacy trigger name template (for the cutover's drop step). */
     public const array LEGACY_SUFFIXES = ['ai', 'au', 'bd'];
 
+    /**
+     * Non-form tables we also audit, as table => primary key.
+     *
+     * These predate the form-centric v1 design: the old columnar `_data__`
+     * triggers covered them, but the v2 cutover only dropped legacy triggers for
+     * the tracked FORM tables — so these tables' legacy `_data__` triggers were
+     * orphaned and left in place. They kept working until a later `ADD COLUMN`
+     * desynced the fixed-column legacy INSERT (e.g. `user_details.testing_lab_id`
+     * in 5.5.16 → MySQL error 1136 on every user update).
+     *
+     * Listing them here brings them under {@see trackedTables()}, so the deploy
+     * reset drops the legacy triggers and (re)builds column-safe JSON triggers
+     * from live schema — a schema change can never desync them again.
+     *
+     * @var array<string,string>
+     */
+    public const array EXTRA_AUDITED_TABLES = [
+        'user_details' => 'user_id',
+    ];
+
     public function __construct(private DatabaseService $db) {}
 
     public static function instance(): self
@@ -81,6 +101,30 @@ final class AuditTriggerService
             $seen[$table] = true;
             if ($this->tableExists($table)) {
                 $out[] = ['table' => $table, 'pk' => $pk];
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * Every (table, pk) pair the audit triggers manage: the test-form tables
+     * ({@see trackedForms()}) plus {@see EXTRA_AUDITED_TABLES}. Deduped (an extra
+     * table that is also a form is not doubled) and filtered to tables that exist
+     * on this instance. This is what the trigger reset iterates.
+     *
+     * @return list<array{table:string, pk:string}>
+     */
+    public function trackedTables(): array
+    {
+        $out  = $this->trackedForms();
+        $seen = [];
+        foreach ($out as $f) {
+            $seen[$f['table']] = true;
+        }
+        foreach (self::EXTRA_AUDITED_TABLES as $table => $pk) {
+            if (!isset($seen[$table]) && $this->tableExists($table)) {
+                $out[] = ['table' => $table, 'pk' => $pk];
+                $seen[$table] = true;
             }
         }
         return $out;
