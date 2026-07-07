@@ -203,12 +203,16 @@ try {
         try {
             $db->update("user_details", $data);
         } catch (Throwable $e) {
-            LoggerUtility::log("error", 'User update failed for user_id ' . $userId . ': ' . $e->getMessage(), [
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            $_SESSION['alertMsg'] = _translate("The user could not be updated due to a database error. Please contact your administrator.");
+            if (str_contains($e->getMessage(), 'Duplicate entry')) {
+                $_SESSION['alertMsg'] = _translate("A user with this full name, login ID or email already exists. Please use different details.");
+            } else {
+                LoggerUtility::log("error", 'User update failed for user_id ' . $userId . ': ' . $e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                $_SESSION['alertMsg'] = _translate("The user could not be updated due to a database error. Please contact your administrator.");
+            }
             header("Location:editUser.php?id=" . rawurlencode((string) $_POST['userId']));
             exit;
         }
