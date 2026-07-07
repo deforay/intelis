@@ -32,7 +32,14 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 $uploadedFiles = $request->getUploadedFiles();
 
-$sanitizedUserSignature = !empty($uploadedFiles['userSignature']) ? _sanitizeFiles($uploadedFiles['userSignature'], ['png', 'jpg', 'jpeg', 'gif']) : null;
+// Only sanitize/validate the signature when a file was actually uploaded. An
+// empty file input still arrives as an UploadedFile with UPLOAD_ERR_NO_FILE,
+// which would otherwise log a spurious "No file was uploaded" error on every
+// save made without changing the signature.
+$uploadedSignature = $uploadedFiles['userSignature'] ?? null;
+$sanitizedUserSignature = ($uploadedSignature instanceof UploadedFile && $uploadedSignature->getError() === UPLOAD_ERR_OK)
+    ? _sanitizeFiles($uploadedSignature, ['png', 'jpg', 'jpeg', 'gif'])
+    : null;
 
 $userId = base64_decode((string) $_POST['userId']);
 
@@ -188,8 +195,23 @@ try {
             $data['testing_lab_id'] = $myLab ?: null;
         }
 
+        // Persist the core user record. A database-level failure here (e.g. a
+        // trigger on user_details rejecting the row) must NOT be swallowed by the
+        // outer catch and then fall through to a "success" redirect — surface it
+        // to the operator and return them to the edit page.
         $db->where('user_id', $userId);
-        $db->update("user_details", $data);
+        try {
+            $db->update("user_details", $data);
+        } catch (Throwable $e) {
+            LoggerUtility::log("error", 'User update failed for user_id ' . $userId . ': ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            $_SESSION['alertMsg'] = _translate("The user could not be updated due to a database error. Please contact your administrator.");
+            header("Location:editUser.php?id=" . rawurlencode((string) $_POST['userId']));
+            exit;
+        }
 
         // Deleting old mapping of user to facilities
         $db->where('user_id', $userId);
