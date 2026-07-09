@@ -313,6 +313,27 @@ final class DatabaseService extends MysqliDb
         }
     }
 
+    /**
+     * Liveness check for the active connection.
+     *
+     * Overrides MysqliDb::ping(), which calls mysqli::ping() — deprecated in
+     * PHP 8.4 and slated for removal. Instead we run a trivial query on the
+     * live handle: a dead connection ("server has gone away") throws, which the
+     * caller treats as "reconnect". Returns true only when the round-trip works.
+     */
+    public function ping(): bool
+    {
+        try {
+            $result = $this->mysqli()->query('SELECT 1');
+            if ($result instanceof \mysqli_result) {
+                $result->free();
+            }
+            return $result !== false;
+        } catch (Throwable $e) {
+            return false;
+        }
+    }
+
     public function ensureConnection(): void
     {
         $needsReconnect = false;
