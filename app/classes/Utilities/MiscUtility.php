@@ -688,8 +688,13 @@ final class MiscUtility
             return '';
         }
 
+        // pathinfo() already discards any directory part, so the extension can
+        // never hold a path separator. Allowlist to alphanumerics as well, so a
+        // crafted upload/client filename can't smuggle odd characters into a
+        // server-built file path (defense in depth for every upload/import
+        // call site; legitimate extensions are alphanumeric).
         $extension = pathinfo((string) $filename, PATHINFO_EXTENSION);
-        return strtolower($extension);
+        return strtolower(preg_replace('/[^A-Za-z0-9]/', '', $extension) ?? '');
     }
 
 
