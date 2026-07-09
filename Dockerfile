@@ -1,5 +1,9 @@
 # First stage: PHP with Apache
-FROM php:8.4-apache AS php-apache
+# PHP_VERSION is overridable at build time, e.g.:
+#   docker build --build-arg PHP_VERSION=8.5 -t intelis .
+# The app supports 8.2-8.5 (see composer.json); 8.4 is the default baseline.
+ARG PHP_VERSION=8.4
+FROM php:${PHP_VERSION}-apache AS php-apache
 
 # Install system dependencies and PHP extensions
 RUN apt-get update && \
