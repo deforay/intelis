@@ -11,9 +11,10 @@ on:
       - '.github/workflows/api-docs.yml'
   workflow_dispatch:
 
+# Least-privilege default for all jobs; the deploy job grants itself the
+# write scopes it needs (see below). Keeps Pages write off the build job.
 permissions:
-  pages: write
-  id-token: write
+  contents: read
 
 concurrency:
   group: pages
@@ -47,6 +48,9 @@ jobs:
     name: Deploy to GitHub Pages
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
