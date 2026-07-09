@@ -132,8 +132,10 @@ final class FacilitiesService
     {
         $base = $this->buildFacilityCodeCandidate($facilityName, $maxLen);
         if ($base === '') {
-            // Last-ditch: derive letters-only from a hash of the name (no digits/symbols).
-            $base = substr(strtr(md5($facilityName), '0123456789abcdef', 'ABCDEFGHIJKLMNOP'), 0, $maxLen);
+            // Last-ditch: derive letters-only from a non-cryptographic hash of
+            // the name (no digits/symbols). xxh128 keeps the 0-9a-f charset the
+            // strtr mapping relies on; this is code generation, not security.
+            $base = substr(strtr(hash('xxh128', $facilityName), '0123456789abcdef', 'ABCDEFGHIJKLMNOP'), 0, $maxLen);
         }
         return $this->ensureUniqueFacilityCode($base, $excludeFacilityId, $maxLen);
     }
@@ -254,8 +256,9 @@ final class FacilitiesService
             }
         }
 
-        // Extremely unlikely safety net (letters-only hash of the base).
-        return substr(strtr(md5($base . microtime()), '0123456789abcdef', 'ABCDEFGHIJKLMNOP'), 0, $maxLen);
+        // Extremely unlikely safety net (letters-only, non-cryptographic hash
+        // of the base). xxh128 preserves the 0-9a-f charset for the strtr map.
+        return substr(strtr(hash('xxh128', $base . microtime()), '0123456789abcdef', 'ABCDEFGHIJKLMNOP'), 0, $maxLen);
     }
 
     private function facilityCodeExists(string $code, ?int $excludeFacilityId): bool

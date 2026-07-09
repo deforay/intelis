@@ -77,7 +77,9 @@ final class ReferralNetworkService
         sort($normalised['districtIds']);
         sort($normalised['labIds']);
         sort($normalised['facilityIds']);
-        return 'referral_network_' . md5((string) json_encode($normalised));
+        // xxh128, not md5: a non-cryptographic cache-key digest of the
+        // normalised filters, never a security hash.
+        return 'referral_network_' . hash('xxh128', (string) json_encode($normalised));
     }
 
     /**
