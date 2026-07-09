@@ -55,7 +55,7 @@ See the full license text in [LICENSE.md](LICENSE.md).
 
 - Apache 2.x (with `rewrite` and `headers` modules enabled)
 - MySQL 5.7 or higher
-- PHP 8.4.x
+- PHP 8.4.x or 8.5.x
 - [Composer](https://getcomposer.org/download/)
 
 ------

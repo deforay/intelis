@@ -767,9 +767,16 @@ if ! command -v php &>/dev/null; then
     exit 1
 fi
 
-# Check for PHP version 8.4.x
+# Determine the target PHP version. The OS baseline is 8.4 on Ubuntu <=24.04 and
+# 8.5 on 26.04+ (which dropped 8.4). But if the box already runs a PHP the app
+# supports (8.4 or 8.5), keep it — don't churn/downgrade a working install, and
+# never try to switch a 26.04 box back to the unavailable 8.4.
 php_version=$(php -v | head -n 1 | grep -oP 'PHP \K([0-9]+\.[0-9]+)')
-desired_php_version="8.4"
+desired_php_version="$(default_php_version_for_os)"
+
+if [[ "${php_version}" == "8.4" || "${php_version}" == "8.5" ]]; then
+    desired_php_version="${php_version}"
+fi
 
 # Download and install switch-php script
 ensure_path
@@ -778,7 +785,7 @@ ensure_switch_php
 if [[ "${php_version}" != "${desired_php_version}" ]]; then
     print info "Current PHP version is ${php_version}. Switching to PHP ${desired_php_version}."
 
-    # Switch to PHP 8.4
+    # Switch to the target PHP
     # WHY: switch-php can exit non-zero even after doing useful work; don't let the ERR trap abort the upgrade.
     previous_err_trap="$(trap -p ERR || true)"
     trap - ERR
@@ -1682,7 +1689,7 @@ upgrade_instance() {
 
     # Make sure the CLI PHP Composer uses has phar (and friends) before we call it —
     # a phar blacklist here otherwise aborts Composer with a cryptic error.
-    if ! ensure_php_cli_extensions "${php_version:-8.4}"; then
+    if ! ensure_php_cli_extensions "${php_version:-$(default_php_version_for_os)}"; then
         print error "Aborting: required PHP CLI extensions are unavailable for Composer."
         exit 1
     fi

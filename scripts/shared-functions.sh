@@ -344,6 +344,30 @@ check_ubuntu_version() {
     print success "Ubuntu version check passed: Running Ubuntu ${current_version} LTS."
 }
 
+# Pick the default PHP major.minor for the running OS.
+# Ubuntu 24.04 and older carry (and ondrej's PPA still builds) PHP 8.4, our
+# well-tested baseline. Ubuntu 26.04 dropped PHP 8.4 — its archive/PPA ship
+# PHP 8.5 instead — so on 26.04+ we default to 8.5. The app itself supports
+# 8.2–8.5 (see composer.json), so both are safe; this only chooses the default
+# when the operator hasn't pinned one with --php.
+default_php_version_for_os() {
+    local ubuntu_version
+    ubuntu_version=$(lsb_release -rs 2>/dev/null || echo "")
+
+    # Can't detect the release -> stick with the current baseline.
+    if [[ -z "$ubuntu_version" ]]; then
+        echo "8.4"
+        return
+    fi
+
+    # 26.04 and newer no longer provide PHP 8.4; use 8.5.
+    if [[ "$(printf '%s\n' "26.04" "$ubuntu_version" | sort -V | head -n1)" == "26.04" ]]; then
+        echo "8.5"
+    else
+        echo "8.4"
+    fi
+}
+
 # Validate LIS application path
 is_valid_application_path() {
     local path=$1
@@ -1381,7 +1405,10 @@ configure_php_ini() {
     print header "Configuring PHP ${php_version}"
 
     # Define desired PHP settings
-    local desired_error_reporting="error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE & ~E_WARNING"
+    # NOTE: no ~E_STRICT here. E_STRICT has been a no-op since PHP 8.0 (all its
+    # notices were reclassified) and the constant itself is deprecated in 8.4+;
+    # naming it in php.ini emits a startup deprecation on 8.4/8.5.
+    local desired_error_reporting="error_reporting = E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING"
     local desired_display_errors="display_errors = Off"
     local desired_log_errors="log_errors = On"
     local desired_post_max_size="post_max_size = 1G"

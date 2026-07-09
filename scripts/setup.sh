@@ -24,7 +24,8 @@
 #
 #   --php=<version>
 #       PHP major.minor version to install via lamp-setup.sh (e.g. 8.4, 8.5).
-#       Defaults to 8.4. Equivalent long form: --php <version>
+#       Defaults to the OS baseline: 8.4 on Ubuntu <=24.04, 8.5 on 26.04+
+#       (which no longer ships 8.4). Equivalent long form: --php <version>
 #
 #   --resume
 #       Skip the database setup/import step (only allowed after a previous
@@ -808,7 +809,9 @@ DB_STRATEGY_FLAG=""
 resume_setup=false
 reuse_saved_answers=false
 remote_sts_url=""
-PHP_VERSION="8.4"
+# OS-aware default: 8.4 on Ubuntu <=24.04, 8.5 on 26.04+ (which dropped 8.4).
+# Overridable with --php. See default_php_version_for_os in shared-functions.sh.
+PHP_VERSION="$(default_php_version_for_os)"
 
 # Decryption inputs for encrypted (.gpg) backups. Both optional and never
 # persisted to the saved-answers file. --encryption-password is the full
