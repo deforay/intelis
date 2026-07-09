@@ -77,7 +77,9 @@ if (PHP_SAPI !== 'cli' && function_exists('opcache_reset')) {
     if ($opcacheGen !== false && $opcacheGen !== '') {
         $opcacheGen = trim($opcacheGen);
         $useApcu = function_exists('apcu_fetch');
-        $appliedKey = 'intelis_opcache_gen_' . md5(ROOT_PATH);
+        // xxh128, not md5: a non-cryptographic cache-key digest of the install
+        // path, never a security hash.
+        $appliedKey = 'intelis_opcache_gen_' . hash('xxh128', ROOT_PATH);
         $appliedFile = CACHE_PATH . '/opcache.applied';
         if ($useApcu) {
             $applied = apcu_fetch($appliedKey);
