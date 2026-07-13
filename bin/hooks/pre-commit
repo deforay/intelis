@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+#
+# pre-commit: three guards on the staged changes, scoped for speed. Blocks the
+# commit (exit 1) on any failure.
+#
+#   1. Merge-conflict markers — all staged files, any type. Uses git's own
+#      detector (`git diff --cached --check`); mirrors the no-conflict-markers CI
+#      check but catches it at commit time instead of after push.
+#   2. PHP syntax (`php -l`) — lints each staged PHP file so a parse error can't
+#      be committed. Skipped cleanly if php isn't on PATH.
+#   3. Debug-leftover guard — scans ONLY newly-added lines of staged PHP for
+#      stray debug statements (die / var_dump / dd / dump) so a forgotten
+#      `dd($x)` can't be committed. Deliberately does NOT flag `exit` (300+ legit
+#      uses), commented-out lines, or the legacy `... or die("msg")` idiom.
+#
+# Tracked here; .git/hooks/pre-commit is a symlink to this file (installed via
+# `composer install-hooks` / bin/install-hooks.sh). A global hooksPath dispatcher,
+# if present, exec()s the repo-local hook after its own checks.
+#
+# Bypass once with:  git commit --no-verify
+set -uo pipefail
+
+root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+cd "$root" || exit 0
+
+# --- guard 1: merge-conflict markers --------------------------------------
+# git's own detector, language-agnostic and covering EVERY staged file. Runs
+# before the PHP-only work so a conflicted non-PHP file is caught too. `--check`
+# also reports whitespace errors; grep isolates the conflict-marker lines.
+conflicts="$(git diff --cached --check 2>/dev/null | grep -i 'conflict marker' || true)"
+if [ -n "$conflicts" ]; then
+    printf '\n\033[31m✋ commit blocked\033[0m — merge-conflict markers in staged changes:\n' >&2
+    printf '%s\n' "$conflicts" | sed 's/^/  /' >&2
+    printf '\n  Resolve the conflict, then re-stage — or bypass once: \033[36mgit commit --no-verify\033[0m\n\n' >&2
+    exit 1
+fi
+
+# Collect staged, still-present PHP files (added/copied/modified). NUL-safe and
+# bash 3.2 compatible (macOS ships 3.2, so no mapfile).
+files=()
+while IFS= read -r -d '' f; do
+    files+=("$f")
+done < <(git diff --cached --name-only --diff-filter=ACM -z -- '*.php')
+
+[ "${#files[@]}" -eq 0 ] && exit 0
+
+# --- guard 2: PHP syntax (php -l) -----------------------------------------
+if command -v php >/dev/null 2>&1; then
+    lint_failed=""
+    for f in "${files[@]}"; do
+        out="$(php -l "$f" 2>&1)"
+        if [ "$?" -ne 0 ]; then
+            [ -z "$lint_failed" ] && printf '\n\033[31m✋ commit blocked\033[0m — PHP syntax errors:\n' >&2
+            # drop the "Module X is already loaded" notices some local php setups emit
+            printf '%s\n' "$out" | grep -viE 'module .* is already loaded' | sed 's/^/  /' >&2
+            lint_failed=1
+        fi
+    done
+    if [ -n "$lint_failed" ]; then
+        printf '\n  Fix the parse error(s), or bypass once: \033[36mgit commit --no-verify\033[0m\n\n' >&2
+        exit 1
+    fi
+else
+    echo "ℹ pre-commit: php not on PATH — skipping syntax lint." >&2
+fi
+
+# --- guard 3: debug leftovers ---------------------------------------------
+# Only ADDED lines (git diff -U0, '+' but not the '+++' header) are inspected, so
+# existing legit die()/exit stays untouched — you can only trip this on debug you
+# introduce in THIS commit. The leading [^>_:a-zA-Z] rejects method/member calls
+# (->dump, ::dump) and identifiers that merely end in a token (mydump, $died).
+debug_re='(^|[^>_:a-zA-Z])(die[[:space:]]*[(;]|var_dump[[:space:]]*\(|dd[[:space:]]*\(|dump[[:space:]]*\()'
+debug_hits=""
+for f in "${files[@]}"; do
+    while IFS= read -r line; do
+        content="${line#+}"                                   # strip the leading '+'
+        trimmed="${content#"${content%%[![:space:]]*}"}"      # left-trim for comment test
+        case "$trimmed" in
+            //*|'#'*|'*'*|/\**) continue ;;                   # skip comment lines
+        esac
+        case "$content" in
+            *'or die'*) continue ;;                           # legacy `... or die("msg")` idiom
+        esac
+        if printf '%s\n' "$content" | grep -qE "$debug_re"; then
+            [ -z "$debug_hits" ] && printf '\n\033[31m✋ commit blocked\033[0m — debug leftovers in staged changes:\n' >&2
+            printf '  \033[33m%s\033[0m: %s\n' "$f" "$trimmed" >&2
+            debug_hits="1"
+        fi
+    done < <(git diff --cached -U0 --diff-filter=ACM -- "$f" | grep -E '^\+[^+]')
+done
+if [ -n "$debug_hits" ]; then
+    printf '\n  Remove them, or bypass once: \033[36mgit commit --no-verify\033[0m\n\n' >&2
+    exit 1
+fi
+exit 0
