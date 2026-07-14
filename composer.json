@@ -175,6 +175,11 @@
         ],
         "post-update-cmd": [
             "@install-hooks"
+        ],
+        "refresh": [
+            "git refresh",
+            "@composer install",
+            "@composer post-update"
         ]
     },
     "scripts-descriptions": {
@@ -201,6 +206,8 @@
         "generate-translation-strings": "Generate translation strings from source code",
         "fix-app-menu": "Fix application menu entries",
         "lock-samples": "Lock sample records that have been completed",
-        "housekeeping": "Housekeeping \u2014 remove old backups, temporary files, logs, and stale DB rows"
+        "housekeeping": "Housekeeping \u2014 remove old backups, temporary files, logs, and stale DB rows",
+        "scan": "Scan source code for issues",
+        "archive-audit-tables": "Archive audit tables to reduce database size"
     }
 }
