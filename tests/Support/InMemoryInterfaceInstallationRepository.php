@@ -16,6 +16,8 @@ final class InMemoryInterfaceInstallationRepository implements InterfaceInstalla
     /** @var array<string, array<string, mixed>> */
     private array $installations = [];
 
+    private int $nextCodeId = 1;
+
     public function observe(string $installationId, string $sourceInstallationId, int $facilityId): void
     {
         $this->installations[$installationId] = [
@@ -25,8 +27,11 @@ final class InMemoryInterfaceInstallationRepository implements InterfaceInstalla
             'display_name' => 'Relayed installation',
             'credential_hash' => null,
             'credential_scopes' => null,
+            'credential_version' => 1,
             'status' => 'observed',
             'claimed_at' => null,
+            'reconnected_at' => null,
+            'created_at' => null,
             'last_seen_at' => null,
             'revoked_at' => null,
         ];
@@ -43,23 +48,61 @@ final class InMemoryInterfaceInstallationRepository implements InterfaceInstalla
         string $codeHash,
         DateTimeImmutable $expiresAt,
         DateTimeImmutable $createdAt,
-        string $createdBy
-    ): void {
+        string $createdBy,
+        string $purpose = 'new',
+        ?string $targetInstallationId = null
+    ): int {
+        if ($purpose === 'reconnect') {
+            $target = $this->installations[$targetInstallationId ?? ''] ?? null;
+            if ($target === null || (int) $target['facility_id'] !== $facilityId) {
+                throw new InterfaceApiException(
+                    'installation_not_found',
+                    'The installation does not belong to this facility.',
+                    404
+                );
+            }
+        }
+        $codeId = $this->nextCodeId++;
         $this->codes[$codeHash] = [
+            'activation_code_id' => $codeId,
             'facility_id' => $facilityId,
+            'purpose' => $purpose,
+            'target_installation_id' => $targetInstallationId,
             'expires_at' => $expiresAt,
             'used_at' => null,
             'revoked_at' => null,
             'created_at' => $createdAt,
             'created_by' => $createdBy,
         ];
+        return $codeId;
+    }
+
+    public function revokeActivationCode(
+        int $activationCodeId,
+        int $facilityId,
+        DateTimeImmutable $revokedAt
+    ): bool {
+        foreach ($this->codes as &$code) {
+            if (
+                $code['activation_code_id'] === $activationCodeId
+                && $code['facility_id'] === $facilityId
+                && $code['used_at'] === null
+                && $code['revoked_at'] === null
+            ) {
+                $code['revoked_at'] = $revokedAt;
+                unset($code);
+                return true;
+            }
+        }
+        unset($code);
+        return false;
     }
 
     public function activate(
         string $codeHash,
         string $installationId,
-        string $sourceInstallationId,
-        string $displayName,
+        ?string $sourceInstallationId,
+        ?string $displayName,
         string $credentialHash,
         array $scopes,
         DateTimeImmutable $now
@@ -78,17 +121,45 @@ final class InMemoryInterfaceInstallationRepository implements InterfaceInstalla
             throw new InterfaceApiException('activation_code_expired', 'The activation code has expired.', 410);
         }
 
-        $existing = $this->findBySource($sourceInstallationId);
-        if ($existing !== null && (int) $existing['facility_id'] !== (int) $code['facility_id']) {
-            throw new InterfaceApiException(
-                'source_facility_conflict',
-                'This source installation is already registered to another facility.',
-                409
-            );
+        if ($code['purpose'] === 'reconnect') {
+            $target = $this->installations[(string) $code['target_installation_id']] ?? null;
+            if ($target === null || (int) $target['facility_id'] !== (int) $code['facility_id']) {
+                throw new InterfaceApiException(
+                    'reconnect_facility_conflict',
+                    'The reconnect code is not valid for this facility installation.',
+                    409
+                );
+            }
+            $installationId = (string) $target['installation_id'];
+            $sourceInstallationId = (string) $target['source_installation_id'];
+            $displayName = (string) $target['display_name'];
+            $target['credential_hash'] = $credentialHash;
+            $target['credential_scopes'] = array_values($scopes);
+            $target['credential_version'] = (int) $target['credential_version'] + 1;
+            $target['status'] = 'active';
+            $target['reconnected_at'] = $now;
+            $target['revoked_at'] = null;
+            $this->installations[$installationId] = $target;
+            $this->codes[$codeHash]['used_at'] = $now;
+            return $target;
         }
 
+        if (
+            preg_match('/^[A-Za-z0-9._:-]{8,128}$/D', (string) $sourceInstallationId) !== 1
+            || $displayName === null
+            || $displayName === ''
+        ) {
+            throw new InterfaceApiException('invalid_activation_input', 'The activation input is invalid.', 422);
+        }
+        $existing = $this->findBySource($sourceInstallationId);
         if ($existing !== null) {
-            $installationId = (string) $existing['installation_id'];
+            throw new InterfaceApiException(
+                (int) $existing['facility_id'] === (int) $code['facility_id']
+                    ? 'source_already_registered'
+                    : 'source_facility_conflict',
+                'This source installation is already registered.',
+                409
+            );
         }
 
         $installation = [
@@ -98,8 +169,11 @@ final class InMemoryInterfaceInstallationRepository implements InterfaceInstalla
             'display_name' => $displayName,
             'credential_hash' => $credentialHash,
             'credential_scopes' => array_values($scopes),
+            'credential_version' => 1,
             'status' => 'active',
             'claimed_at' => $now,
+            'reconnected_at' => null,
+            'created_at' => $now,
             'last_seen_at' => null,
             'revoked_at' => null,
         ];
@@ -129,6 +203,20 @@ final class InMemoryInterfaceInstallationRepository implements InterfaceInstalla
         $this->installations[$installationId]['status'] = 'revoked';
         $this->installations[$installationId]['revoked_at'] = $revokedAt;
         return true;
+    }
+
+    public function revokeForFacility(
+        string $installationId,
+        int $facilityId,
+        DateTimeImmutable $revokedAt
+    ): bool {
+        if (
+            !isset($this->installations[$installationId])
+            || (int) $this->installations[$installationId]['facility_id'] !== $facilityId
+        ) {
+            return false;
+        }
+        return $this->revoke($installationId, $revokedAt);
     }
 
     public function listInstallations(?int $facilityId = null): array

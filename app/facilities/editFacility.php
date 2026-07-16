@@ -6,6 +6,8 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
+use App\Services\InterfaceApi\InterfaceFacilityAccessService;
+use App\Services\InterfaceApi\InterfaceInstallationService;
 
 
 
@@ -138,6 +140,24 @@ if (!empty($savedDistrictId) && !isset($geoLocationChildArray[$savedDistrictId])
 	}
 }
 $formId = (int) $general->getGlobalConfig('vl_form');
+$interfaceApiEnabled = strtolower((string) $general->getGlobalConfig('interface_api_enabled')) === 'yes';
+$showInterfaceConnections = false;
+$interfaceInstallations = [];
+$intelisUrl = '';
+if ($interfaceApiEnabled && (int) ($facilityInfo['facility_type'] ?? 0) === 2) {
+    /** @var InterfaceFacilityAccessService $interfaceFacilityAccess */
+    $interfaceFacilityAccess = ContainerRegistry::get(InterfaceFacilityAccessService::class);
+    $showInterfaceConnections = $interfaceFacilityAccess->canManage((int) $id);
+}
+if ($showInterfaceConnections) {
+    /** @var InterfaceInstallationService $interfaceInstallationService */
+    $interfaceInstallationService = ContainerRegistry::get(InterfaceInstallationService::class);
+    $interfaceInstallations = $interfaceInstallationService->listInstallations((int) $id);
+    $uri = $request->getUri();
+    $scheme = $uri->getScheme() ?: 'https';
+    $authority = $uri->getAuthority() ?: $request->getHeaderLine('Host');
+    $intelisUrl = $scheme . '://' . $authority;
+}
 ?>
 <style>
 	.ms-choice,
@@ -1113,6 +1133,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 </div>
 <!-- /.box -->
+
+<?php if ($showInterfaceConnections) {
+    require APPLICATION_PATH . '/facilities/partials/interface-connections.php';
+} ?>
 
 </section>
 <!-- /.content -->
