@@ -22,4 +22,15 @@ final class InterfaceMigrationTest extends TestCase
         self::assertStringNotContainsString('`sts_token`', $migration);
         self::assertStringNotContainsString('`vlsm_instance_id`', $migration);
     }
+
+    public function testReconnectMigrationIsAdditiveAndServerOwned(): void
+    {
+        $migration = file_get_contents(dirname(__DIR__, 3) . '/sys/migrations/5.5.22.sql');
+
+        self::assertIsString($migration);
+        self::assertStringContainsString('`purpose` VARCHAR(16) NOT NULL DEFAULT \'new\'', $migration);
+        self::assertStringContainsString('`target_installation_id` CHAR(36) NULL', $migration);
+        self::assertStringContainsString('`credential_version` INT NOT NULL DEFAULT 1', $migration);
+        self::assertStringContainsString('`reconnected_at` DATETIME NULL', $migration);
+    }
 }

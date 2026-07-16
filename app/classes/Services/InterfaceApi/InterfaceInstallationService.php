@@ -24,7 +24,7 @@ final readonly class InterfaceInstallationService
     ) {
     }
 
-    /** @return array{activationCode: string, expiresAt: string} */
+    /** @return array{activationCodeId: int, activationCode: string, expiresAt: string, purpose: string} */
     public function createActivationCode(
         int $facilityId,
         int $ttlMinutes = 30,
@@ -40,17 +40,54 @@ final readonly class InterfaceInstallationService
         $plainCode = $this->generateActivationCode();
         $expiresAt = $now->add(new DateInterval('PT' . $ttlMinutes . 'M'));
 
-        $this->repository->createActivationCode(
+        $activationCodeId = $this->repository->createActivationCode(
             $facilityId,
             $this->activationCodeHash($plainCode),
             $expiresAt,
             $now,
-            mb_substr($createdBy, 0, 255)
+            mb_substr($createdBy, 0, 255),
+            'new'
         );
 
         return [
+            'activationCodeId' => $activationCodeId,
             'activationCode' => $this->formatActivationCode($plainCode),
             'expiresAt' => $expiresAt->format(DATE_ATOM),
+            'purpose' => 'new',
+        ];
+    }
+
+    /** @return array{activationCodeId: int, activationCode: string, expiresAt: string, purpose: string} */
+    public function createReconnectCode(
+        int $facilityId,
+        string $installationId,
+        int $ttlMinutes = 15,
+        string $createdBy = 'cli',
+        ?DateTimeImmutable $now = null
+    ): array {
+        if ($facilityId <= 0 || !$this->isUuid($installationId)) {
+            throw new InterfaceApiException('invalid_installation', 'A valid installation is required.', 422);
+        }
+
+        $now ??= new DateTimeImmutable();
+        $ttlMinutes = max(5, min($ttlMinutes, 60));
+        $plainCode = $this->generateActivationCode();
+        $expiresAt = $now->add(new DateInterval('PT' . $ttlMinutes . 'M'));
+        $activationCodeId = $this->repository->createActivationCode(
+            $facilityId,
+            $this->activationCodeHash($plainCode),
+            $expiresAt,
+            $now,
+            mb_substr($createdBy, 0, 255),
+            'reconnect',
+            $installationId
+        );
+
+        return [
+            'activationCodeId' => $activationCodeId,
+            'activationCode' => $this->formatActivationCode($plainCode),
+            'expiresAt' => $expiresAt->format(DATE_ATOM),
+            'purpose' => 'reconnect',
         ];
     }
 
@@ -60,18 +97,19 @@ final readonly class InterfaceInstallationService
      *     sourceInstallationId: string,
      *     displayName: string,
      *     credential: string,
-     *     scopes: list<string>
+     *     scopes: list<string>,
+     *     credentialVersion: int
      * }
      */
     public function activate(
         string $activationCode,
-        string $sourceInstallationId,
-        string $displayName,
+        ?string $sourceInstallationId,
+        ?string $displayName,
         ?DateTimeImmutable $now = null
     ): array {
-        $sourceInstallationId = trim($sourceInstallationId);
-        $displayName = trim($displayName);
-        $this->validateActivationInput($activationCode, $sourceInstallationId, $displayName);
+        $sourceInstallationId = $sourceInstallationId !== null ? trim($sourceInstallationId) : null;
+        $displayName = $displayName !== null ? trim($displayName) : null;
+        $this->validateActivationCode($activationCode);
 
         $now ??= new DateTimeImmutable();
         $proposedInstallationId = Uuid::v4()->toRfc4122();
@@ -95,6 +133,7 @@ final readonly class InterfaceInstallationService
             'displayName' => (string) $installation['display_name'],
             'credential' => $this->credentials->formatToken($installationId, $credential['secret']),
             'scopes' => self::SCOPES,
+            'credentialVersion' => (int) ($installation['credential_version'] ?? 1),
         ];
     }
 
@@ -136,31 +175,68 @@ final readonly class InterfaceInstallationService
         return $this->repository->revoke($installationId, $now ?? new DateTimeImmutable());
     }
 
+    public function revokeForFacility(
+        string $installationId,
+        int $facilityId,
+        ?DateTimeImmutable $now = null
+    ): bool {
+        if ($facilityId <= 0 || !$this->isUuid($installationId)) {
+            return false;
+        }
+        return $this->repository->revokeForFacility(
+            $installationId,
+            $facilityId,
+            $now ?? new DateTimeImmutable()
+        );
+    }
+
+    public function revokeActivationCode(
+        int $activationCodeId,
+        int $facilityId,
+        ?DateTimeImmutable $now = null
+    ): bool {
+        if ($activationCodeId <= 0 || $facilityId <= 0) {
+            return false;
+        }
+        return $this->repository->revokeActivationCode(
+            $activationCodeId,
+            $facilityId,
+            $now ?? new DateTimeImmutable()
+        );
+    }
+
     /** @return list<array<string, mixed>> */
     public function listInstallations(?int $facilityId = null): array
     {
-        return $this->repository->listInstallations($facilityId);
+        $installations = $this->repository->listInstallations($facilityId);
+        foreach ($installations as &$installation) {
+            $installation['credential_scopes'] = $this->decodeScopes(
+                $installation['credential_scopes'] ?? []
+            );
+        }
+        unset($installation);
+        return $installations;
     }
 
-    private function validateActivationInput(string $code, string $sourceId, string $displayName): void
+    /** @return array<string, mixed>|null */
+    public function getInstallation(string $installationId): ?array
+    {
+        return $this->repository->findInstallation($installationId);
+    }
+
+    private function validateActivationCode(string $code): void
     {
         if (strlen($this->normalizeActivationCode($code)) !== 32) {
             throw new InterfaceApiException('invalid_activation_code', 'The activation code is invalid.', 422);
         }
-        if (preg_match('/^[A-Za-z0-9._:-]{8,128}$/D', $sourceId) !== 1) {
-            throw new InterfaceApiException(
-                'invalid_source_installation_id',
-                'The source installation ID is invalid.',
-                422
-            );
-        }
-        if ($displayName === '' || mb_strlen($displayName) > 150) {
-            throw new InterfaceApiException(
-                'invalid_display_name',
-                'The display name must be between 1 and 150 characters.',
-                422
-            );
-        }
+    }
+
+    private function isUuid(string $value): bool
+    {
+        return preg_match(
+            '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iD',
+            $value
+        ) === 1;
     }
 
     private function generateActivationCode(): string

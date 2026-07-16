@@ -60,6 +60,9 @@ jobs:
           php -l app/classes/Middlewares/Api/InterfaceApiEnabledMiddleware.php
           php -l app/classes/Middlewares/Api/InterfaceInstallationAuthMiddleware.php
           php -l app/classes/Middlewares/Api/ApiAuthMiddleware.php
+          php -l app/facilities/editFacility.php
+          php -l app/facilities/interfaceConnectionAction.php
+          php -l app/facilities/partials/interface-connections.php
           php -l app/system/di.php
           php -l bin/interface-api.php
           php -l public/api/index.php
@@ -73,7 +76,8 @@ jobs:
             app/classes/Middlewares/Api/InterfaceActivationGuardMiddleware.php \
             app/classes/Middlewares/Api/InterfaceApiEnabledMiddleware.php \
             app/classes/Middlewares/Api/InterfaceInstallationAuthMiddleware.php \
-            tests bin/interface-api.php
+            app/facilities/interfaceConnectionAction.php \
+            app/facilities/partials/interface-connections.php tests bin/interface-api.php
           vendor/bin/phpcs --standard=PSR12 --runtime-set ignore_warnings_on_exit 1 \
             app/classes/Middlewares/Api/ApiAuthMiddleware.php app/system/di.php \
             public/api/index.php

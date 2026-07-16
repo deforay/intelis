@@ -29,7 +29,7 @@ final readonly class MySqlInterfaceConnectionRepository implements InterfaceConn
 
         $rows = $this->db->rawQuery(
             "SELECT i.instrument_id, i.machine_name, i.supported_tests,
-                    im.config_machine_name AS alias
+                    im.config_machine_id, im.config_machine_name AS alias
                FROM instruments i
                LEFT JOIN instrument_machines im ON im.instrument_id = i.instrument_id
               WHERE i.lab_id = ? AND i.status = 'active'
@@ -49,12 +49,20 @@ final readonly class MySqlInterfaceConnectionRepository implements InterfaceConn
                     'name' => (string) ($row['machine_name'] ?? ''),
                     'supportedTests' => $tests,
                     'aliases' => [],
+                    'machines' => [],
                 ];
             }
 
             $alias = trim((string) ($row['alias'] ?? ''));
             if ($alias !== '' && !in_array($alias, $instruments[$instrumentId]['aliases'], true)) {
                 $instruments[$instrumentId]['aliases'][] = $alias;
+            }
+            $machineId = (int) ($row['config_machine_id'] ?? 0);
+            if ($machineId > 0 && $alias !== '') {
+                $instruments[$instrumentId]['machines'][] = [
+                    'id' => $machineId,
+                    'name' => $alias,
+                ];
             }
         }
 

@@ -23,9 +23,14 @@ final class InterfaceConnectionServiceTest extends TestCase
         self::assertSame(101, $connection['facility']['id']);
         self::assertSame('FAC-A', $connection['facility']['code']);
         self::assertSame('instrument-a', $connection['instruments'][0]['id']);
+        self::assertSame([
+            ['id' => 101, 'name' => 'Analyzer A'],
+            ['id' => 102, 'name' => 'Analyzer A2'],
+        ], $connection['instruments'][0]['machines']);
         self::assertSame('intelis', $connection['capabilities']['adapter']['id']);
         self::assertTrue($connection['capabilities']['adapter']['managed']);
         self::assertStringNotContainsString('Facility B', json_encode($connection, JSON_THROW_ON_ERROR));
+        self::assertStringNotContainsString('201', json_encode($connection['instruments'], JSON_THROW_ON_ERROR));
         self::assertArrayNotHasKey('coordinates', $connection['facility']);
         self::assertArrayNotHasKey('fileName', $connection['instruments'][0]);
     }
@@ -48,6 +53,20 @@ final class InterfaceConnectionServiceTest extends TestCase
         self::assertSame('facility_selector_not_allowed', $payload['error']['code']);
     }
 
+    public function testProductionMachineQueryUsesStableIdsAndFacilityScope(): void
+    {
+        $repository = file_get_contents(
+            dirname(__DIR__, 3) . '/app/classes/Repositories/InterfaceApi/MySqlInterfaceConnectionRepository.php'
+        );
+
+        self::assertIsString($repository);
+        self::assertStringContainsString('im.config_machine_id', $repository);
+        self::assertStringContainsString('WHERE i.lab_id = ?', $repository);
+        self::assertStringNotContainsString('im.file_name', $repository);
+        self::assertStringNotContainsString('im.latitude', $repository);
+        self::assertStringNotContainsString('im.longitude', $repository);
+    }
+
     private function service(): InterfaceConnectionService
     {
         return new InterfaceConnectionService(new InMemoryInterfaceConnectionRepository([
@@ -58,7 +77,11 @@ final class InterfaceConnectionServiceTest extends TestCase
                     'id' => 'instrument-a',
                     'name' => 'Instrument A',
                     'supportedTests' => ['vl'],
-                    'aliases' => ['Analyzer A'],
+                    'aliases' => ['Analyzer A', 'Analyzer A2'],
+                    'machines' => [
+                        ['id' => 101, 'name' => 'Analyzer A'],
+                        ['id' => 102, 'name' => 'Analyzer A2'],
+                    ],
                 ]],
             ],
             202 => [
@@ -69,6 +92,7 @@ final class InterfaceConnectionServiceTest extends TestCase
                     'name' => 'Instrument B',
                     'supportedTests' => ['tb'],
                     'aliases' => [],
+                    'machines' => [['id' => 201, 'name' => 'Analyzer B']],
                 ]],
             ],
         ]));
