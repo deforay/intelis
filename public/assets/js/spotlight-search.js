@@ -128,14 +128,7 @@
             // Click on regular result item (non-expandable)
             $(document).on('click', '.spotlight-result-item:not(.spotlight-expandable)', function(e) {
                 e.preventDefault();
-                var url = $(this).data('url');
-                var itemId = $(this).data('item-id');
-                if (itemId) {
-                    self.addToHistory(itemId);
-                }
-                if (url) {
-                    window.location.href = url;
-                }
+                self.navigateTo($(this).data('url'), $(this).data('item-id'), $(this));
             });
 
             // Click on expandable item to toggle
@@ -154,14 +147,8 @@
             $(document).on('click', '.spotlight-action-item', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                var url = $(this).data('url');
                 var parentId = $(this).closest('.spotlight-actions').data('parent-id');
-                if (parentId) {
-                    self.addToHistory(parentId);
-                }
-                if (url) {
-                    window.location.href = url;
-                }
+                self.navigateTo($(this).data('url'), parentId, $(this));
             });
 
             // Hover on result (no scroll, just highlight)
@@ -203,6 +190,7 @@
 
         open: function() {
             this.isOpen = true;
+            this.isNavigating = false;
             this.selectedIndex = -1;
             this.expandedIndex = -1;
             this.selectedActionIndex = -1;
@@ -216,13 +204,33 @@
 
         close: function() {
             this.isOpen = false;
+            this.isNavigating = false;
             this.expandedIndex = -1;
             this.selectedActionIndex = -1;
             this.currentQueryWords = [];
+            $('.spotlight-dialog').removeClass('spotlight-navigating');
             $('#spotlightModal').fadeOut(150);
             $('#spotlightInput').val('').attr('aria-expanded', 'false').attr('aria-activedescendant', '');
             $('#spotlightResults').empty();
             $('body').removeClass('spotlight-open');
+        },
+
+        // Show immediate visual feedback, then navigate. Because navigation is a
+        // full page load, the destination's server response is what the user waits
+        // on — without this the modal just sits there and the click feels ignored.
+        // The guard stops a second click/Enter from firing another navigation while
+        // the page is already on its way.
+        navigateTo: function(url, itemId, $row) {
+            if (!url || this.isNavigating) return;
+            this.isNavigating = true;
+            if (itemId) {
+                this.addToHistory(itemId);
+            }
+            $('.spotlight-dialog').addClass('spotlight-navigating');
+            if ($row && $row.length) {
+                $row.addClass('navigating');
+            }
+            window.location.href = url;
         },
 
         expandItem: function(index) {
@@ -606,8 +614,8 @@
                     case 'Enter':
                         e.preventDefault();
                         if (this.selectedActionIndex >= 0 && item && item.actions[this.selectedActionIndex]) {
-                            this.addToHistory(item.id);
-                            window.location.href = item.actions[this.selectedActionIndex].url;
+                            var $act = $('.spotlight-action-item[data-action-index="' + this.selectedActionIndex + '"]');
+                            this.navigateTo(item.actions[this.selectedActionIndex].url, item.id, $act);
                         }
                         break;
                 }
@@ -653,10 +661,8 @@
                         if (selectedItem.isExpandable) {
                             this.expandItem(this.selectedIndex);
                         } else {
-                            if (selectedItem.id) {
-                                this.addToHistory(selectedItem.id);
-                            }
-                            window.location.href = selectedItem.url;
+                            var $sel = $('.spotlight-result-item[data-index="' + this.selectedIndex + '"]');
+                            this.navigateTo(selectedItem.url, selectedItem.id, $sel);
                         }
                     }
                     break;
