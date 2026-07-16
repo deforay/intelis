@@ -91,7 +91,7 @@ $fundingSourceList = $general->getFundingSources();
 $implementingPartnerList = $general->getImplementationPartners();
 
 // Import machine config
-$testPlatformResult = $general->getTestingPlatforms('hepatitis');
+$testPlatformResult = $general->getTestingPlatforms('tb');
 $testPlatformList = [];
 foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];

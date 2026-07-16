@@ -128,7 +128,7 @@ if (isset($arr['tb_min_patient_id_length']) && $arr['tb_min_patient_id_length'] 
     $minPatientIdLength = $arr['tb_min_patient_id_length'];
 }
 // Import machine config
-$testPlatformResult = $general->getTestingPlatforms('hepatitis');
+$testPlatformResult = $general->getTestingPlatforms('tb');
 $testPlatformList = [];
 foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
