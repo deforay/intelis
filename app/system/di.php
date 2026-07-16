@@ -1,16 +1,21 @@
 <?php
 
 // app/system/di.php
-use function DI\factory;
-use function DI\get;
+use App\Contracts\InterfaceApi\InterfaceConnectionRepositoryInterface;
+use App\Contracts\InterfaceApi\InterfaceInstallationRepositoryInterface;
+use App\ErrorHandlers\ErrorResponseGenerator;
+use App\Exceptions\SystemException;
+use App\Factories\DatabaseFactory;
+use App\Registries\ContainerRegistry;
+use App\Repositories\InterfaceApi\MySqlInterfaceConnectionRepository;
+use App\Repositories\InterfaceApi\MySqlInterfaceInstallationRepository;
+use App\Services\DatabaseService;
+use DI\ContainerBuilder;
+
 use function DI\autowire;
 use function DI\create;
-use DI\ContainerBuilder;
-use App\Factories\DatabaseFactory;
-use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
-use App\Registries\ContainerRegistry;
-use App\ErrorHandlers\ErrorResponseGenerator;
+use function DI\factory;
+use function DI\get;
 
 try {
     // Load configuration
@@ -36,7 +41,6 @@ $builder->useAutowiring(true);
 
 // Enable compilation for better performance in production
 if (!$isCli && !empty($systemConfig['system']['cache_di']) && true === $systemConfig['system']['cache_di']) {
-
     if (!is_dir(CACHE_PATH)) {
         mkdir(CACHE_PATH, 0777, true);
     }
@@ -91,8 +95,8 @@ $builder->addDefinitions([
 
 // Services
 $builder->addDefinitions([
-    // If you need to manually wire a service, add it here.
-    // The manual definition will automatically override the auto-registered one.
+    InterfaceConnectionRepositoryInterface::class => get(MySqlInterfaceConnectionRepository::class),
+    InterfaceInstallationRepositoryInterface::class => get(MySqlInterfaceInstallationRepository::class),
 ]);
 
 // Utilities, Helpers and Other Classes

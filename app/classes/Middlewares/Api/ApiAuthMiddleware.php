@@ -18,9 +18,7 @@ readonly class ApiAuthMiddleware implements MiddlewareInterface
     #[Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-
         if ($this->shouldExcludeFromAuthCheck($request)) {
-
             // Skip the authentication check if the request is an AJAX request,
             // a CLI request, or if the requested URI is excluded from the
             // authentication check
@@ -100,6 +98,13 @@ readonly class ApiAuthMiddleware implements MiddlewareInterface
             '/api/version.php',
             // Add other routes to exclude from the authentication check here
         ];
+
+
+        // The Interface API has independent per-installation authentication.
+        // Never route these credentials through legacy user/STS token handling.
+        if ($uri === '/api/v1/interface' || str_starts_with($uri, '/api/v1/interface/')) {
+            return true;
+        }
 
 
         if (in_array($uri, $excludedRoutes, true)) {
