@@ -13,8 +13,16 @@ interface InterfaceInstallationRepositoryInterface
         string $codeHash,
         DateTimeImmutable $expiresAt,
         DateTimeImmutable $createdAt,
-        string $createdBy
-    ): void;
+        string $createdBy,
+        string $purpose = 'new',
+        ?string $targetInstallationId = null
+    ): int;
+
+    public function revokeActivationCode(
+        int $activationCodeId,
+        int $facilityId,
+        DateTimeImmutable $revokedAt
+    ): bool;
 
     /**
      * Atomically consumes an activation code and creates or claims an installation.
@@ -25,8 +33,8 @@ interface InterfaceInstallationRepositoryInterface
     public function activate(
         string $codeHash,
         string $installationId,
-        string $sourceInstallationId,
-        string $displayName,
+        ?string $sourceInstallationId,
+        ?string $displayName,
         string $credentialHash,
         array $scopes,
         DateTimeImmutable $now
@@ -38,6 +46,12 @@ interface InterfaceInstallationRepositoryInterface
     public function touchLastSeen(string $installationId, DateTimeImmutable $seenAt): void;
 
     public function revoke(string $installationId, DateTimeImmutable $revokedAt): bool;
+
+    public function revokeForFacility(
+        string $installationId,
+        int $facilityId,
+        DateTimeImmutable $revokedAt
+    ): bool;
 
     /** @return list<array<string, mixed>> */
     public function listInstallations(?int $facilityId = null): array;

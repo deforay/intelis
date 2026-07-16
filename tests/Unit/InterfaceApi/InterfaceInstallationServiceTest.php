@@ -102,21 +102,55 @@ final class InterfaceInstallationServiceTest extends TestCase
         );
     }
 
-    public function testSameFacilityCanClaimExistingSourceWithoutChangingServerIdentity(): void
+    public function testNewCodeRejectsAnAlreadyRegisteredSource(): void
     {
         $first = $this->service->activate($this->createCode(101), 'source-installation-009', 'Relayed', $this->now);
-        $claimed = $this->service->activate(
+        self::assertNotEmpty($first['installationId']);
+
+        $this->assertInterfaceError(
+            'source_already_registered',
+            fn() => $this->service->activate(
+                $this->createCode(101),
+                'source-installation-009',
+                'Duplicate',
+                $this->now->modify('+1 minute')
+            )
+        );
+    }
+
+    public function testReconnectPreservesIdentitiesAndRotatesCredential(): void
+    {
+        $first = $this->service->activate(
             $this->createCode(101),
-            'source-installation-009',
-            'Direct',
+            'source-installation-reconnect',
+            'Original computer',
+            $this->now
+        );
+        $reconnectCode = $this->service->createReconnectCode(
+            101,
+            $first['installationId'],
+            15,
+            'test',
+            $this->now
+        )['activationCode'];
+        $reconnected = $this->service->activate(
+            $reconnectCode,
+            null,
+            null,
             $this->now->modify('+1 minute')
         );
 
-        self::assertSame($first['installationId'], $claimed['installationId']);
-        self::assertNotSame($first['credential'], $claimed['credential']);
+        self::assertSame($first['installationId'], $reconnected['installationId']);
+        self::assertSame($first['sourceInstallationId'], $reconnected['sourceInstallationId']);
+        self::assertSame(2, $reconnected['credentialVersion']);
+        self::assertNotSame($first['credential'], $reconnected['credential']);
         $this->assertInterfaceError(
             'invalid_credential',
             fn() => $this->service->authenticate($first['credential'], 'connection:read')
+        );
+        self::assertSame(
+            101,
+            $this->service->authenticate($reconnected['credential'], 'connection:read')['facility_id']
         );
     }
 
@@ -126,12 +160,14 @@ final class InterfaceInstallationServiceTest extends TestCase
         $sourceInstallationId = 'source-installation-relayed';
         $this->repository->observe($serverInstallationId, $sourceInstallationId, 101);
 
-        $claimed = $this->service->activate(
-            $this->createCode(101),
-            $sourceInstallationId,
-            'Direct laboratory computer',
+        $reconnectCode = $this->service->createReconnectCode(
+            101,
+            $serverInstallationId,
+            15,
+            'test',
             $this->now
-        );
+        )['activationCode'];
+        $claimed = $this->service->activate($reconnectCode, null, null, $this->now);
 
         self::assertSame($serverInstallationId, $claimed['installationId']);
         self::assertSame(
@@ -157,9 +193,159 @@ final class InterfaceInstallationServiceTest extends TestCase
         self::assertSame(202, $this->service->authenticate($valid['credential'], 'connection:read')['facility_id']);
     }
 
+    public function testReconnectCodeCannotBeReplayed(): void
+    {
+        $installation = $this->service->activate(
+            $this->createCode(101),
+            'source-installation-replay',
+            'Replay computer',
+            $this->now
+        );
+        $code = $this->createReconnectCode(101, $installation['installationId']);
+        $this->service->activate($code, null, null, $this->now->modify('+1 minute'));
+
+        $this->assertInterfaceError(
+            'activation_code_used',
+            fn() => $this->service->activate($code, null, null, $this->now->modify('+2 minutes'))
+        );
+    }
+
+    public function testExpiredReconnectCodeFails(): void
+    {
+        $installation = $this->service->activate(
+            $this->createCode(101),
+            'source-installation-expired-reconnect',
+            'Expired reconnect',
+            $this->now
+        );
+        $code = $this->createReconnectCode(101, $installation['installationId'], 5);
+
+        $this->assertInterfaceError(
+            'activation_code_expired',
+            fn() => $this->service->activate($code, null, null, $this->now->modify('+6 minutes'))
+        );
+    }
+
+    public function testCrossFacilityReconnectCodeGenerationFails(): void
+    {
+        $installation = $this->service->activate(
+            $this->createCode(101),
+            'source-installation-cross-reconnect',
+            'Facility A',
+            $this->now
+        );
+
+        $this->assertInterfaceError(
+            'installation_not_found',
+            fn() => $this->service->createReconnectCode(
+                202,
+                $installation['installationId'],
+                15,
+                'test',
+                $this->now
+            )
+        );
+    }
+
+    public function testReconnectDoesNotAffectOtherInstallations(): void
+    {
+        $first = $this->service->activate(
+            $this->createCode(101),
+            'source-installation-reconnect-one',
+            'First',
+            $this->now
+        );
+        $second = $this->service->activate(
+            $this->createCode(101),
+            'source-installation-reconnect-two',
+            'Second',
+            $this->now
+        );
+        $secondCredential = $second['credential'];
+
+        $reconnected = $this->service->activate(
+            $this->createReconnectCode(101, $first['installationId']),
+            null,
+            null,
+            $this->now->modify('+1 minute')
+        );
+
+        self::assertSame($first['installationId'], $reconnected['installationId']);
+        self::assertSame(
+            $second['installationId'],
+            $this->service->authenticate($secondCredential, 'connection:read')['installation_id']
+        );
+    }
+
+    public function testReconnectReactivatesOnlySelectedRevokedInstallation(): void
+    {
+        $first = $this->service->activate(
+            $this->createCode(101),
+            'source-installation-reactivate-one',
+            'First',
+            $this->now
+        );
+        $second = $this->service->activate(
+            $this->createCode(101),
+            'source-installation-reactivate-two',
+            'Second',
+            $this->now
+        );
+        self::assertTrue($this->service->revokeForFacility($first['installationId'], 101, $this->now));
+        self::assertTrue($this->service->revokeForFacility($second['installationId'], 101, $this->now));
+
+        $reconnected = $this->service->activate(
+            $this->createReconnectCode(101, $first['installationId']),
+            null,
+            null,
+            $this->now->modify('+1 minute')
+        );
+
+        self::assertSame('active', $this->service->getInstallation($reconnected['installationId'])['status']);
+        self::assertSame('revoked', $this->service->getInstallation($second['installationId'])['status']);
+    }
+
+    public function testReconnectCodeCanBeRevokedIndependently(): void
+    {
+        $installation = $this->service->activate(
+            $this->createCode(101),
+            'source-installation-code-revoke',
+            'Code revoke',
+            $this->now
+        );
+        $code = $this->service->createReconnectCode(
+            101,
+            $installation['installationId'],
+            15,
+            'test',
+            $this->now
+        );
+        self::assertTrue($this->service->revokeActivationCode($code['activationCodeId'], 101, $this->now));
+
+        $this->assertInterfaceError(
+            'activation_code_revoked',
+            fn() => $this->service->activate($code['activationCode'], null, null, $this->now)
+        );
+        self::assertSame('active', $this->service->getInstallation($installation['installationId'])['status']);
+    }
+
     private function createCode(int $facilityId, int $ttlMinutes = 30): string
     {
         return $this->service->createActivationCode($facilityId, $ttlMinutes, 'test', $this->now)['activationCode'];
+    }
+
+    private function createReconnectCode(
+        int $facilityId,
+        string $installationId,
+        int $ttlMinutes = 15
+    ): string {
+        return $this->service->createReconnectCode(
+            $facilityId,
+            $installationId,
+            $ttlMinutes,
+            'test',
+            $this->now
+        )['activationCode'];
     }
 
     private function assertInterfaceError(string $errorCode, callable $operation): void

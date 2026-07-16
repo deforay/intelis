@@ -41,10 +41,15 @@ final readonly class ActivateInstallationHandler
                 );
             }
 
+            $activationCode = is_string($input['activationCode'] ?? null) ? $input['activationCode'] : '';
+            $sourceInstallationId = is_string($input['sourceInstallationId'] ?? null)
+                ? $input['sourceInstallationId']
+                : null;
+            $displayName = is_string($input['displayName'] ?? null) ? $input['displayName'] : null;
             $activation = $this->installations->activate(
-                is_string($input['activationCode'] ?? null) ? $input['activationCode'] : '',
-                is_string($input['sourceInstallationId'] ?? null) ? $input['sourceInstallationId'] : '',
-                is_string($input['displayName'] ?? null) ? $input['displayName'] : ''
+                $activationCode,
+                $sourceInstallationId,
+                $displayName
             );
 
             return InterfaceApiResponse::json([
