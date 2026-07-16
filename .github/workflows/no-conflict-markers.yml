@@ -1,4 +1,4 @@
-name: No Conflict Markers
+name: Verify
 
 on:
   push:
@@ -28,3 +28,54 @@ jobs:
             exit 1
           fi
           echo "No conflict markers found."
+
+  interface-api-tests:
+    name: Interface API tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: json, mbstring
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHPUnit
+        run: composer test
+
+      - name: Check PHP syntax
+        run: |
+          find app/classes/Contracts/InterfaceApi app/classes/Repositories/InterfaceApi \
+            app/classes/Services/InterfaceApi app/classes/HttpHandlers/InterfaceApi \
+            app/classes/Http tests -name '*.php' -print0 | xargs -0 -n1 php -l
+          php -l app/classes/Exceptions/InterfaceApiException.php
+          php -l app/classes/Middlewares/Api/InterfaceActivationGuardMiddleware.php
+          php -l app/classes/Middlewares/Api/InterfaceApiEnabledMiddleware.php
+          php -l app/classes/Middlewares/Api/InterfaceInstallationAuthMiddleware.php
+          php -l app/classes/Middlewares/Api/ApiAuthMiddleware.php
+          php -l app/system/di.php
+          php -l bin/interface-api.php
+          php -l public/api/index.php
+
+      - name: Check coding style
+        run: |
+          vendor/bin/phpcs --standard=PSR12 \
+            app/classes/Contracts/InterfaceApi app/classes/Repositories/InterfaceApi \
+            app/classes/Services/InterfaceApi app/classes/HttpHandlers/InterfaceApi \
+            app/classes/Http app/classes/Exceptions/InterfaceApiException.php \
+            app/classes/Middlewares/Api/InterfaceActivationGuardMiddleware.php \
+            app/classes/Middlewares/Api/InterfaceApiEnabledMiddleware.php \
+            app/classes/Middlewares/Api/InterfaceInstallationAuthMiddleware.php \
+            tests bin/interface-api.php
+          vendor/bin/phpcs --standard=PSR12 --runtime-set ignore_warnings_on_exit 1 \
+            app/classes/Middlewares/Api/ApiAuthMiddleware.php app/system/di.php \
+            public/api/index.php
+          vendor/bin/yaml-lint docs/api/openapi.yaml \
+            .github/workflows/no-conflict-markers.yml

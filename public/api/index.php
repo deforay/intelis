@@ -22,6 +22,7 @@ require_once dirname(__DIR__) . '/../bootstrap.php';
 
 use Slim\Factory\AppFactory;
 use Slim\Middleware\BodyParsingMiddleware;
+use Slim\Routing\RouteCollectorProxy;
 
 use Psr\Http\Message\ServerRequestInterface as ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface as ResponseInterface;
@@ -32,6 +33,12 @@ use App\Registries\ContainerRegistry;
 use App\Middlewares\Api\ApiAuthMiddleware;
 use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
+use App\HttpHandlers\InterfaceApi\ActivateInstallationHandler;
+use App\HttpHandlers\InterfaceApi\GetConnectionHandler;
+use App\Middlewares\Api\InterfaceActivationGuardMiddleware;
+use App\Middlewares\Api\InterfaceApiEnabledMiddleware;
+use App\Middlewares\Api\InterfaceInstallationAuthMiddleware;
+use App\Services\InterfaceApi\InterfaceInstallationService;
 
 /**
  * Helper: add middleware in FIFO order while respecting Slim's LIFO execution.
@@ -58,16 +65,29 @@ $app = AppFactory::create();
 // Routes
 // ---------------------------------------------------------------------
 
-$app->any('/api/v1.1/init', function (ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
-    // Start output buffering
-    ob_start();
-    require_once APPLICATION_PATH . '/api/v1.1/init.php';
-    $output = ob_get_clean();
+$app->any(
+    '/api/v1.1/init',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface {
+        // Start output buffering
+        ob_start();
+        require_once APPLICATION_PATH . '/api/v1.1/init.php';
+        $output = ob_get_clean();
 
-    // Set the output as the response body
-    $response->getBody()->write($output);
-    return $response;
+        // Set the output as the response body
+        $response->getBody()->write($output);
+        return $response;
+    }
+);
+
+$interfaceApi = $app->group('/api/v1/interface', function (RouteCollectorProxy $group): void {
+    $group->post('/activate', ActivateInstallationHandler::class);
+    $group->get('/connection', GetConnectionHandler::class)
+        ->add(new InterfaceInstallationAuthMiddleware(
+            ContainerRegistry::get(InterfaceInstallationService::class),
+            'connection:read'
+        ));
 });
+$interfaceApi->add(ContainerRegistry::get(InterfaceApiEnabledMiddleware::class));
 
 // TODO - Add more routes here
 // TODO - Next version API to use Controllers/Actions
@@ -84,7 +104,10 @@ $middlewareStack = [
     ContainerRegistry::get(ApiErrorHandlingMiddleware::class),
 
     // 1) CORS (handles OPTIONS and sets CORS headers)
-    function (ServerRequestInterface $request, RequestHandlerInterface $handler) use ($responseFactory): ResponseInterface {
+    function (
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) use ($responseFactory): ResponseInterface {
         $origin = $request->getHeaderLine('Origin');
 
         // Preflight request
@@ -126,27 +149,30 @@ $middlewareStack = [
     },
 
     // 2) Body parsing (JSON, form, etc.)
+    ContainerRegistry::get(InterfaceActivationGuardMiddleware::class),
+
+    // 3) Body parsing (JSON, form, etc.)
     new BodyParsingMiddleware(),
 
-    // 3) Always return JSON content-type
+    // 4) Always return JSON content-type
     function (ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $response = $handler->handle($request);
         return $response->withHeader('Content-Type', 'application/json');
     },
 
-    // 4) API Auth Middleware (Bearer token, etc.)
+    // 5) API Auth Middleware (Bearer token, etc.)
     ContainerRegistry::get(ApiAuthMiddleware::class),
 
-    // 5) Custom middleware to set the request in the AppRegistry
+    // 6) Custom middleware to set the request in the AppRegistry
     function (ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         AppRegistry::set('request', $request);
         return $handler->handle($request);
     },
 
-    // 6) Legacy fallback for existing PHP includes
+    // 7) Legacy fallback for existing PHP includes
     ContainerRegistry::get(ApiLegacyFallbackMiddleware::class),
 
-    // 7) Content-Length Middleware
+    // 8) Content-Length Middleware
     function (ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $response = $handler->handle($request);
 
