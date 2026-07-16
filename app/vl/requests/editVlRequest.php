@@ -53,8 +53,12 @@ $id = isset($_GET['id']) ? MiscUtility::desqid($_GET['id']) : null;
 
 
 // get instruments
-$importQuery = "SELECT * FROM instruments WHERE status = 'active'";
-$importResult = $db->query($importQuery);
+// Include active instruments plus this record's currently-saved platform even if it
+// has since been made inactive, so the testing platform doesn't render blank on edit.
+$importQuery = "SELECT * FROM instruments
+                     WHERE status = 'active'
+                        OR machine_name = (SELECT vl_test_platform FROM form_vl WHERE vl_sample_id = ?)";
+$importResult = $db->rawQuery($importQuery, [$id]);
 
 $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $userInfo = [];

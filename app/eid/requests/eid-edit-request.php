@@ -114,9 +114,20 @@ foreach ($iResult as $val) {
     $machine[$val['config_machine_id']] = $val['config_machine_name'];
 }
 
+$testPlatformList = [];
 $testPlatformResult = $general->getTestingPlatforms('eid');
 foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
+}
+
+// If this record's saved testing platform has since been made inactive, it won't be in
+// the active list above and the field would render blank on edit. Add it back, flagged
+// as inactive, keyed exactly to the value the form selects on so it stays selected.
+if (!empty($eidInfo['instrument_id'])) {
+    $savedPlatformKey = ($eidInfo['eid_test_platform'] ?? '') . '##' . $eidInfo['instrument_id'];
+    if (!isset($testPlatformList[$savedPlatformKey])) {
+        $testPlatformList[$savedPlatformKey] = ($eidInfo['eid_test_platform'] ?? '') . ' (' . _translate('Inactive') . ')';
+    }
 }
 
 
