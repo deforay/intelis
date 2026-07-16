@@ -120,6 +120,16 @@ foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name'] . '##' . $row['instrument_id']] = $row['machine_name'];
 }
 
+// If this record's saved testing platform has since been made inactive, it won't be in
+// the active list above and the field would render blank on edit. Add it back, flagged
+// as inactive, keyed exactly to the value the form selects on so it stays selected.
+if (!empty($hepatitisInfo['instrument_id'])) {
+    $savedPlatformKey = ($hepatitisInfo['hepatitis_test_platform'] ?? '') . '##' . $hepatitisInfo['instrument_id'];
+    if (!isset($testPlatformList[$savedPlatformKey])) {
+        $testPlatformList[$savedPlatformKey] = ($hepatitisInfo['hepatitis_test_platform'] ?? '') . ' (' . _translate('Inactive') . ')';
+    }
+}
+
 if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($hepatitisInfo['is_encrypted']) && $hepatitisInfo['is_encrypted'] == 'yes') {
     $key = (string) $general->getGlobalConfig('key');
     $hepatitisInfo['patient_id'] = $general->crypto('decrypt', $hepatitisInfo['patient_id'], $key);

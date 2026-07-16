@@ -60,8 +60,13 @@ $bQuery = "SELECT * FROM batch_details
 			ORDER BY last_modified_datetime DESC";
 $bResult = $db->rawQuery($bQuery);
 // get instruments
-$importQuery = "SELECT * FROM instruments WHERE status = 'active'";
-$importResult = $db->query($importQuery);
+// Include active instruments plus this record's currently-saved platforms even if they
+// have since been made inactive, so the testing platform doesn't render blank on edit.
+$importQuery = "SELECT * FROM instruments
+                     WHERE status = 'active'
+                        OR machine_name = (SELECT vl_test_platform FROM form_vl WHERE vl_sample_id = ?)
+                        OR machine_name = (SELECT failed_test_tech FROM form_vl WHERE vl_sample_id = ?)";
+$importResult = $db->rawQuery($importQuery, [$id, $id]);
 
 $aQuery = "SELECT * from r_vl_art_regimen WHERE art_status like 'active' ORDER by parent_art ASC, art_code ASC";
 $aResult = $db->query($aQuery);
@@ -594,7 +599,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 											<select name="testingPlatform" id="testingPlatform" onchange="getVlResults('testingPlatform','possibleVlResults', 'cphlvlResult');getVlResults('testingPlatform','finalPossibleVlResults', 'finalViralLoadResult');" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
-													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?>
+													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['vl_test_platform'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?><?php echo (($mName['status'] ?? '') !== 'active') ? ' (' . _translate('Inactive') . ')' : ''; ?>
 													</option>
 												<?php
 												}
@@ -660,7 +665,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 											<select name="failedTestingTech" id="failedTestingTech" onchange="getVlResults('failedTestingTech','failedPossibleVlResults', 'failedvlResult');" class="form-control" title="Please choose VL Testing Platform" style="width:100%;">
 												<option value="">-- Select --</option>
 												<?php foreach ($importResult as $mName) { ?>
-													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['failed_test_tech'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?>
+													<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($vlQueryInfo['failed_test_tech'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] === $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit']) ? "selected='selected'" : "" ?>><?php echo $mName['machine_name']; ?><?php echo (($mName['status'] ?? '') !== 'active') ? ' (' . _translate('Inactive') . ')' : ''; ?>
 													</option>
 												<?php
 												}
