@@ -27,6 +27,7 @@ $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $sQuery = "SELECT
                vl.patient_art_no,
                DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y') as sampleDate,
+               DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y') as sampleTestDate,
                f.facility_name,
                f.facility_code,
                s.sample_name,
@@ -132,21 +133,22 @@ if (empty($grouped)) {
 }
 
 $headings = [
-     'Patient ID',
-     'Sample Date',
-     'Facility Name',
-     'Facility Code',
-     'Sample Name',
-     'Testing Platform',
-     'Lab Name',
-     'Age',
-     'Sex',
-     'Pregnant',
-     'Breastfeeding',
-     'ART Start Date',
-     'Regimen',
-     'Current Regimen Start Date',
-     'VL Result'
+     _translate('Patient ID'),
+     _translate('Sample Date'),
+     _translate('Sample Test Date'),
+     _translate('Facility Name'),
+     _translate('Facility Code'),
+     _translate('Sample Name'),
+     _translate('Testing Platform'),
+     _translate('Lab Name'),
+     _translate('Age'),
+     _translate('Sex'),
+     _translate('Pregnant'),
+     _translate('Breastfeeding'),
+     _translate('ART Start Date'),
+     _translate('Regimen'),
+     _translate('Current Regimen Start Date'),
+     _translate('VL Result')
 ];
 
 $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-HIGH-VL-AND-VIROLOGIC-FAILURE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
