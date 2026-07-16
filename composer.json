@@ -4,7 +4,7 @@
     "homepage": "https://github.com/deforay/intelis",
     "type": "project",
     "license": "InteLIS-Community-Copyleft-NonCommercial-1.0",
-    "version": "5.5.20",
+    "version": "5.5.21",
     "authors": [
         {
             "name": "Deforay",
@@ -68,6 +68,11 @@
             "App\\": "app/classes/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
@@ -78,11 +83,13 @@
     },
     "require-dev": {
         "kint-php/kint": "^6.1",
+        "phpunit/phpunit": "^11.5",
         "rector/rector": "^2.5",
         "squizlabs/php_codesniffer": "^4.0",
         "symfony/var-dumper": "^8.0"
     },
     "scripts": {
+        "test": "@php vendor/bin/phpunit",
         "scan": "@php bin/scan.php",
         "housekeeping": "@php bin/housekeeping.php 30",
         "version": "@php bin/build/generate-version.php",
@@ -183,6 +190,7 @@
         ]
     },
     "scripts-descriptions": {
+        "test": "Run the PHPUnit test suite",
         "post-install": "Tasks to run after InteLIS install",
         "post-update": "Tasks to run after InteLIS update",
         "sync-sts": "Sync data with a connected STS server",
