@@ -90,6 +90,7 @@
     },
     "scripts": {
         "test": "@php vendor/bin/phpunit",
+        "check-di": "@php bin/build/check-di.php",
         "scan": "@php bin/scan.php",
         "housekeeping": "@php bin/housekeeping.php 30",
         "version": "@php bin/build/generate-version.php",
