@@ -80,6 +80,13 @@ foreach ($regex as $file) {
         // Only register instantiable classes (skips Interfaces, Traits, Abstract classes)
         $reflection = new ReflectionClass($className);
 
+        // Never autowire exceptions: they are thrown with explicit constructor
+        // args (e.g. an error code / message) that the container cannot guess,
+        // which breaks DI compilation in production.
+        if ($reflection->isSubclassOf(Throwable::class)) {
+            continue;
+        }
+
         if ($reflection->isInstantiable()) {
             $builder->addDefinitions([$className => autowire()]);
         }
