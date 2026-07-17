@@ -29,6 +29,33 @@ jobs:
           fi
           echo "No conflict markers found."
 
+  di-container:
+    name: DI container compiles
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: json, mbstring
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Provide a config (per-instance config.*.php is gitignored)
+        run: cp configs/config.production.dist.php configs/config.production.php
+
+      - name: Compile the DI container
+        # Forces PHP-DI compilation in CLI so a definition the container cannot
+        # autowire (e.g. an exception with a required constructor arg) fails CI
+        # instead of 500-ing production, where the container is compiled lazily.
+        run: composer check-di
+
   interface-api-tests:
     name: Interface API tests
     runs-on: ubuntu-latest

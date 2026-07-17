@@ -39,14 +39,23 @@ try {
 $builder = new ContainerBuilder();
 $builder->useAutowiring(true);
 
-// Enable compilation for better performance in production
-if (!$isCli && !empty($systemConfig['system']['cache_di']) && true === $systemConfig['system']['cache_di']) {
+// Enable compilation for better performance in production.
+// INTELIS_DI_COMPILE_CHECK forces compilation from the CLI so bin/build/check-di.php
+// (and CI) can catch a broken definition here instead of in production, where the
+// container is compiled only under the web SAPI.
+$compileCheck = getenv('INTELIS_DI_COMPILE_CHECK') === '1';
+$enableCompilation = $compileCheck
+    || (!$isCli && !empty($systemConfig['system']['cache_di']) && true === $systemConfig['system']['cache_di']);
+
+if ($enableCompilation) {
     if (!is_dir(CACHE_PATH)) {
         mkdir(CACHE_PATH, 0777, true);
     }
     $builder->enableCompilation(CACHE_PATH);
 
-    if (extension_loaded('apcu')) {
+    // The APCu definition cache is a production optimisation; skip it for the
+    // compile-check so each run compiles fresh rather than reusing a cache.
+    if (!$compileCheck && extension_loaded('apcu')) {
         $builder->enableDefinitionCache($systemConfig['instance-name'] ?? '');
     }
 }
