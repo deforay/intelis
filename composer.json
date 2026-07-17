@@ -177,7 +177,7 @@
             "@php bin/setup/regenerate-audit-triggers.php --apply install",
             "@php bin/reset-seq.php"
         ],
-        "install-hooks": "bin/install-hooks.sh",
+        "install-hooks": "bash bin/install-hooks.sh",
         "post-install-cmd": [
             "@install-hooks"
         ],
