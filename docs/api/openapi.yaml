@@ -223,6 +223,214 @@ paths:
         '503':
           description: Interface API is disabled.
 
+  "/api/v1/interface/results":
+    post:
+      servers:
+      - url: https://example.org
+      tags:
+      - Interface API
+      summary: Submit analyzer results
+      description: >
+        PLANNED, NOT YET IMPLEMENTED. This contract is published so the Interface Tool
+        can be built against it; the server returns 404 until it ships. Poll
+        capabilities.operations.resultsWrite on /api/v1/interface/connection, which
+        reports false today and true once this endpoint is live.
+
+
+        Submits rows from the Interface Tool `orders` table so a lab no longer needs the
+        LIS to reach into its local database. The fields are exactly the `orders` columns
+        the importer already consumes, so no new data has to be collected.
+
+
+        The facility is taken from the credential. A row is matched to a sample by
+        order_id and test_id; the client cannot address a sample any other way, and cannot
+        submit for another facility.
+
+
+        Locked samples are never overwritten over the API. The importer's `force` option
+        is deliberately not exposed.
+
+
+        The endpoint is idempotent: resubmitting a row that already holds the same values
+        returns `unchanged` and does not count as a second import, so a client that times
+        out may safely retry the whole batch.
+      security:
+      - InterfaceInstallationAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [results]
+              properties:
+                results:
+                  type: array
+                  minItems: 1
+                  maxItems: 500
+                  description: >
+                    Send every row of a run together. Where the same order is reported
+                    both in copies/ml and as a log value, the copies row wins and the log
+                    row is discarded, and that comparison can only be made within one request.
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required: [id, order_id, test_id, results, test_unit, machine_used]
+                    properties:
+                      id:
+                        type: integer
+                        description: >
+                          The client's own orders.id. Echoed back so the client knows which
+                          local row to stamp. Never stored.
+                      order_id:
+                        type: string
+                        maxLength: 255
+                        description: Matched against the sample's sample_code and remote_sample_code.
+                      test_id:
+                        type: string
+                        maxLength: 255
+                        description: Matched against the sample's remote_sample_code and lab_assigned_code.
+                      results:
+                        type: string
+                        nullable: true
+                        maxLength: 255
+                        description: >
+                          The analyzer result as reported. An empty value is accepted and
+                          leaves the sample awaiting approval with no result recorded.
+                          Failure words (failed, fail, invalid, inconclusive) mark the test failed.
+                      test_unit:
+                        type: string
+                        nullable: true
+                        maxLength: 50
+                        description: >
+                          Drives the copies-versus-log rule and viral load interpretation,
+                          e.g. cp/mL or Log.
+                      machine_used:
+                        type: string
+                        maxLength: 255
+                        description: >
+                          Resolved against the facility's configured instruments, first by
+                          machine name and then by machine alias.
+                      instrument_id:
+                        type: string
+                        nullable: true
+                        maxLength: 255
+                        description: Preferred over machine_used for instrument resolution when present.
+                      tested_by:
+                        type: string
+                        nullable: true
+                        maxLength: 255
+                        description: >
+                          Operator name. Where the analyzer packs both operators as
+                          "tester^releaser", only the tester is recorded.
+                      authorised_date_time:
+                        type: string
+                        nullable: true
+                        description: Recorded as the approval and review time. ISO 8601 or 'Y-m-d H:i:s'.
+                      result_accepted_date_time:
+                        type: string
+                        nullable: true
+                        description: Recorded as the sample tested time. ISO 8601 or 'Y-m-d H:i:s'.
+                      raw_text:
+                        type: string
+                        nullable: true
+                        description: >
+                          The raw ASTM/HL7 message. Only read where a country configuration
+                          extracts an extra field from it, and never stored verbatim.
+            example:
+              results:
+              - id: 4821
+                order_id: RVL1223167772
+                test_id: RVL1223167772
+                results: '1250'
+                test_unit: cp/mL
+                machine_used: Abbott m2000
+                tested_by: JDOE
+                authorised_date_time: '2026-07-20 09:14:00'
+                result_accepted_date_time: '2026-07-20 09:12:00'
+      responses:
+        '200':
+          description: >
+            The batch was processed. Every submitted row is reported individually; inspect
+            each outcome rather than the status code. A row that could not be applied does
+            not fail the request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success]
+                  imported:
+                    type: integer
+                    description: Rows whose outcome was `accepted`. Excludes `unchanged`.
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      required: [id, outcome, limsSyncStatus]
+                      properties:
+                        id:
+                          type: integer
+                          description: The orders.id that was submitted.
+                        outcome:
+                          type: string
+                          enum: [accepted, unchanged, rejected, retry]
+                          description: >
+                            accepted - the sample was updated.
+                            unchanged - the sample already held these values; nothing was written.
+                            rejected - the row cannot be applied and resending will not help.
+                            retry - the write failed server-side; send this row again.
+                        limsSyncStatus:
+                          type: integer
+                          enum: [0, 1, 2]
+                          description: >
+                            What to store in the client's own orders.lims_sync_status: 1 for
+                            accepted and unchanged, 2 for rejected, 0 for retry so the row is
+                            offered again. Provided explicitly so the client never has to infer it.
+                        reason:
+                          type: string
+                          enum:
+                          - updated
+                          - already_up_to_date
+                          - no_order_or_test_id
+                          - no_matching_sample
+                          - sample_locked
+                          - duplicate_unit_discarded
+                          - unsupported_test_type
+                          - update_failed
+                          description: Why this outcome was reached. Safe to log and show to a technician.
+              example:
+                status: success
+                imported: 1
+                results:
+                - id: 4821
+                  outcome: accepted
+                  limsSyncStatus: 1
+                  reason: updated
+                - id: 4822
+                  outcome: rejected
+                  limsSyncStatus: 2
+                  reason: no_matching_sample
+        '400':
+          description: The body was malformed or contained an unexpected field.
+        '401':
+          description: Installation credential is invalid or revoked.
+        '403':
+          description: Installation credential lacks results:write.
+        '404':
+          description: Not yet implemented on this server. Check capabilities.operations.resultsWrite.
+        '413':
+          description: Batch exceeded the body or item limit.
+        '415':
+          description: Request was not JSON.
+        '429':
+          description: Rate limit exceeded.
+        '503':
+          description: Interface API is disabled.
+
   "/generate-manifest.php":
     post:
       tags:
