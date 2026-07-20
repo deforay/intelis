@@ -222,18 +222,27 @@ final class InterfacingService
     }
 
     /**
-     * Says why a lookup found nothing, so a technician is not sent hunting for a
-     * request that is sitting right there. Only runs when a row already failed to
+     * Says why a lookup found nothing. Only runs once a row has already failed to
      * match, so the extra queries cost nothing on the happy path.
      */
     private function explainMiss(string $orderId, string $testId, bool $includeLocked, ?int $scopedLabId): string
     {
+        // Safe to report: the lookup is still lab scoped, so this can only ever
+        // describe a sample the caller is entitled to see.
         if (!$includeLocked && $this->findSample($orderId, $testId, true, $scopedLabId) !== null) {
             return 'sample_locked';
         }
 
+        // A sample that exists outside the caller's lab is recorded here and not in
+        // the response. Telling the caller would turn the endpoint into an oracle for
+        // whether a sample code exists anywhere in the fleet, which is enough to
+        // enumerate another lab's workload one guess at a time.
         if ($scopedLabId !== null && $this->findSample($orderId, $testId, true, null) !== null) {
-            return 'sample_not_in_lab';
+            LoggerUtility::logWarning('Interface result rejected: sample belongs to another lab', [
+                'submittingLabId' => $scopedLabId,
+                'orderId' => $orderId,
+                'testId' => $testId,
+            ]);
         }
 
         return 'no_matching_sample';
