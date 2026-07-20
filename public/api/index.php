@@ -35,7 +35,8 @@ use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 use App\HttpHandlers\InterfaceApi\ActivateInstallationHandler;
 use App\HttpHandlers\InterfaceApi\GetConnectionHandler;
-use App\Middlewares\Api\InterfaceActivationGuardMiddleware;
+use App\HttpHandlers\InterfaceApi\SubmitResultsHandler;
+use App\Middlewares\Api\InterfaceRequestGuardMiddleware;
 use App\Middlewares\Api\InterfaceApiEnabledMiddleware;
 use App\Middlewares\Api\InterfaceInstallationAuthMiddleware;
 use App\Services\InterfaceApi\InterfaceInstallationService;
@@ -85,6 +86,11 @@ $interfaceApi = $app->group('/api/v1/interface', function (RouteCollectorProxy $
         ->add(new InterfaceInstallationAuthMiddleware(
             ContainerRegistry::get(InterfaceInstallationService::class),
             'connection:read'
+        ));
+    $group->post('/results', SubmitResultsHandler::class)
+        ->add(new InterfaceInstallationAuthMiddleware(
+            ContainerRegistry::get(InterfaceInstallationService::class),
+            'results:write'
         ));
 });
 $interfaceApi->add(ContainerRegistry::get(InterfaceApiEnabledMiddleware::class));
@@ -149,7 +155,7 @@ $middlewareStack = [
     },
 
     // 2) Body parsing (JSON, form, etc.)
-    ContainerRegistry::get(InterfaceActivationGuardMiddleware::class),
+    ContainerRegistry::get(InterfaceRequestGuardMiddleware::class),
 
     // 3) Body parsing (JSON, form, etc.)
     new BodyParsingMiddleware(),

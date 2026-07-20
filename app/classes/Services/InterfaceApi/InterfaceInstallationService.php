@@ -25,7 +25,7 @@ final readonly class InterfaceInstallationService
      *
      * - single use, consumed atomically by the repository;
      * - a 30 minute expiry;
-     * - InterfaceActivationGuardMiddleware rate limits /activate per client IP
+     * - InterfaceRequestGuardMiddleware rate limits /activate per client IP
      *   (InterfaceConnectionService::ACTIVATION_MAX_ATTEMPTS per ACTIVATION_WINDOW_SECONDS).
      *
      * Do not lengthen the expiry, relax the rate limit or shorten the code without

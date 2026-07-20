@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Utilities\DateUtility;
+use App\Utilities\LoggerUtility;
 use App\Utilities\MiscUtility;
+use Throwable;
 
 use const COUNTRY\CAMEROON;
 use const SAMPLE_STATUS\ACCEPTED;
@@ -96,7 +98,8 @@ final class InterfacingService
         array $row,
         int $labId,
         bool $includeLocked = false,
-        bool $updateModifiedTime = true
+        bool $updateModifiedTime = true,
+        bool $scopeToLab = false
     ): array {
         if (empty($row['order_id']) && empty($row['test_id'])) {
             return $this->outcome(false, false, null, 'no_order_or_test_id');
@@ -104,10 +107,16 @@ final class InterfacingService
 
         $orderId = (string) ($row['order_id'] ?? '');
         $testId = (string) ($row['test_id'] ?? '');
+        $scopedLabId = $scopeToLab ? $labId : null;
 
-        $sample = $this->findSample($orderId, $testId, $includeLocked);
+        $sample = $this->findSample($orderId, $testId, $includeLocked, $scopedLabId);
         if ($sample === null) {
-            return $this->outcome(false, false, null, 'no_matching_sample');
+            // Tell a locked sample apart from one that does not exist, so a technician
+            // is not sent looking for a missing request when the sample is simply locked.
+            $locked = !$includeLocked
+                && $this->findSample($orderId, $testId, true, $scopedLabId) !== null;
+
+            return $this->outcome(false, false, null, $locked ? 'sample_locked' : 'no_matching_sample');
         }
 
         $table = $sample['table'];
@@ -143,6 +152,85 @@ final class InterfacingService
         return $this->outcome($updated, $updated, $table, $updated ? 'updated' : 'update_failed');
     }
 
+    /**
+     * Imports a batch of rows submitted over the API and reports each one back.
+     *
+     * The lab is always taken from the caller's credential, never from the payload,
+     * and the match is scoped to that lab. Each row commits on its own so one bad
+     * row cannot roll back the rest of the run.
+     *
+     * @param array<int, array<string, mixed>> $rows
+     * @return list<array{id: mixed, outcome: string, limsSyncStatus: int, reason: string}>
+     */
+    public function importBatch(array $rows, int $labId): array
+    {
+        // The copies-versus-log rule can only be applied across a whole run, which is
+        // why clients are asked to submit a run in one request.
+        $kept = $this->filterDuplicateUnits($rows);
+        $keptKeys = [];
+        foreach ($kept as $row) {
+            $keptKeys[$this->rowKey($row)] = true;
+        }
+
+        $report = [];
+        foreach ($rows as $row) {
+            $id = $row['id'] ?? null;
+
+            if (!isset($keptKeys[$this->rowKey($row)])) {
+                $report[] = $this->reportRow($id, 'duplicate_unit_discarded');
+                continue;
+            }
+
+            try {
+                $this->db->connection('default')->beginTransaction();
+                $outcome = $this->importResult($row, $labId, scopeToLab: true);
+                $this->db->connection('default')->commitTransaction();
+            } catch (Throwable $e) {
+                $this->db->connection('default')->rollbackTransaction();
+                LoggerUtility::logError('Interface result import failed: ' . $e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ]);
+                $report[] = $this->reportRow($id, 'update_failed');
+                continue;
+            }
+
+            $report[] = $this->reportRow($id, $outcome['reason']);
+        }
+
+        return $report;
+    }
+
+    /**
+     * Maps an internal reason onto what the client should do with its own row.
+     *
+     * @return array{id: mixed, outcome: string, limsSyncStatus: int, reason: string}
+     */
+    private function reportRow(mixed $id, string $reason): array
+    {
+        // limsSyncStatus is sent explicitly so a client never has to infer it:
+        // 1 dealt with, 2 will not apply, 0 leave for the next run.
+        [$outcome, $syncStatus] = match ($reason) {
+            'updated' => ['accepted', 1],
+            'already_up_to_date' => ['unchanged', 1],
+            'update_failed' => ['retry', 0],
+            default => ['rejected', 2],
+        };
+
+        return [
+            'id' => $id,
+            'outcome' => $outcome,
+            'limsSyncStatus' => $syncStatus,
+            'reason' => $reason,
+        ];
+    }
+
+    /** @param array<string, mixed> $row */
+    private function rowKey(array $row): string
+    {
+        return (string) ($row['id'] ?? '') . '|' . ($row['order_id'] ?? '') . '|' . ($row['test_id'] ?? '');
+    }
+
     // -----------------------------------------------------------------
     // Lookups
     // -----------------------------------------------------------------
@@ -152,23 +240,40 @@ final class InterfacingService
      *
      * @return array{table: string, primaryKey: string, row: array<string, mixed>}|null
      */
-    private function findSample(string $orderId, string $testId, bool $includeLocked): ?array
-    {
+    private function findSample(
+        string $orderId,
+        string $testId,
+        bool $includeLocked,
+        ?int $restrictToLabId = null
+    ): ?array {
         foreach ($this->activeModules() as $primaryKey => $table) {
             $conditions = [];
+            $params = [$orderId, $orderId, $orderId, $testId, $testId, $testId];
+
             if (!$includeLocked) {
                 $conditions[] = "IFNULL(locked, 'no') = 'no'";
             }
-            $conditions[] = '(sample_code IN (?, ?) OR remote_sample_code IN (?, ?) OR lab_assigned_code IN (?, ?))';
-            $conditions = implode(' AND ', $conditions);
 
             // NOTE: the bind order is carried over verbatim from bin/interface.php so that
             // moving this lookup does not change which samples match. It pairs up as
             // (order_id, order_id), (order_id, test_id), (test_id, test_id) rather than
             // giving each column both values.
+            $conditions[] = '(sample_code IN (?, ?) OR remote_sample_code IN (?, ?) OR lab_assigned_code IN (?, ?))';
+
+            // Callers that cannot be trusted to only send their own samples -- anything
+            // arriving over the API -- restrict the match to samples already belonging to
+            // that lab, or not yet assigned to any lab. Without this an installation could
+            // overwrite another lab's result by guessing a sample code.
+            if ($restrictToLabId !== null) {
+                $conditions[] = '(lab_id = ? OR lab_id IS NULL OR lab_id = 0)';
+                $params[] = $restrictToLabId;
+            }
+
+            $conditions = implode(' AND ', $conditions);
+
             $existing = $this->db->connection('default')->rawQueryOne(
                 "SELECT * FROM $table WHERE $conditions",
-                [$orderId, $orderId, $orderId, $testId, $testId, $testId]
+                $params
             );
 
             if (!empty($existing)) {

@@ -231,29 +231,28 @@ paths:
       - Interface API
       summary: Submit analyzer results
       description: >
-        PLANNED, NOT YET IMPLEMENTED. This contract is published so the Interface Tool
-        can be built against it; the server returns 404 until it ships. Poll
-        capabilities.operations.resultsWrite on /api/v1/interface/connection, which
-        reports false today and true once this endpoint is live.
-
-
         Submits rows from the Interface Tool `orders` table so a lab no longer needs the
         LIS to reach into its local database. The fields are exactly the `orders` columns
         the importer already consumes, so no new data has to be collected.
 
 
         The facility is taken from the credential. A row is matched to a sample by
-        order_id and test_id; the client cannot address a sample any other way, and cannot
-        submit for another facility.
+        order_id and test_id, and the match is restricted to samples that already belong
+        to that lab or are not yet assigned to any lab. An installation therefore cannot
+        reach another lab's results by guessing a sample code.
 
 
-        Locked samples are never overwritten over the API. The importer's `force` option
-        is deliberately not exposed.
+        Locked samples are never overwritten over the API; they come back as
+        `sample_locked`. The importer's `force` option is deliberately not exposed.
 
 
         The endpoint is idempotent: resubmitting a row that already holds the same values
         returns `unchanged` and does not count as a second import, so a client that times
         out may safely retry the whole batch.
+
+
+        Batch size and body limits are reported under `limits.results` on
+        /api/v1/interface/connection.
       security:
       - InterfaceInstallationAuth: []
       requestBody:
@@ -420,8 +419,6 @@ paths:
           description: Installation credential is invalid or revoked.
         '403':
           description: Installation credential lacks results:write.
-        '404':
-          description: Not yet implemented on this server. Check capabilities.operations.resultsWrite.
         '413':
           description: Batch exceeded the body or item limit.
         '415':
