@@ -237,9 +237,10 @@ paths:
 
 
         The facility is taken from the credential. A row is matched to a sample by
-        order_id and test_id, and the match is restricted to samples that already belong
-        to that lab or are not yet assigned to any lab. An installation therefore cannot
-        reach another lab's results by guessing a sample code.
+        order_id and test_id, and the match is restricted to samples already assigned to
+        that lab. A sample belonging to another lab, or not yet assigned to any lab, is
+        reported as `sample_not_in_lab` rather than matched, so an installation cannot
+        reach a sample by guessing a code.
 
 
         Locked samples are never overwritten over the API; they come back as
@@ -396,6 +397,7 @@ paths:
                           - already_up_to_date
                           - no_order_or_test_id
                           - no_matching_sample
+                          - sample_not_in_lab
                           - sample_locked
                           - duplicate_unit_discarded
                           - unsupported_test_type
