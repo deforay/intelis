@@ -1716,11 +1716,20 @@ final class CommonService
             $sOrder = null;
             if (isset($postData['iSortCol_0'])) {
                 for ($i = 0; $i < (int) $postData['iSortingCols']; $i++) {
+                    $column = $orderColumns[(int) $postData['iSortCol_' . $i]] ?? null;
+                    if ($column === null) {
+                        continue;
+                    }
                     if ($postData['bSortable_' . (int) $postData['iSortCol_' . $i]] == "true") {
-                        $sOrder .= $orderColumns[(int) $postData['iSortCol_' . $i]] . " " . ($postData['sSortDir_' . $i]) . ", ";
+                        // The column is chosen from a caller-supplied whitelist, but the
+                        // direction arrives verbatim from the request and lands straight in
+                        // an ORDER BY, so anything other than asc or desc is discarded.
+                        $direction = strtolower(trim((string) ($postData['sSortDir_' . $i] ?? '')));
+                        $direction = $direction === 'desc' ? 'DESC' : 'ASC';
+                        $sOrder .= $column . " " . $direction . ", ";
                     }
                 }
-                $sOrder = substr_replace($sOrder, "", -2);
+                $sOrder = substr_replace((string) $sOrder, "", -2);
             }
 
             return $sOrder;
