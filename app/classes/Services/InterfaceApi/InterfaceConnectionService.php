@@ -28,6 +28,10 @@ final readonly class InterfaceConnectionService
     public const RESULTS_MAX_ITEMS = 500;
     public const RESULTS_MAX_BODY_BYTES = 2097152;
 
+    /** Activity events are small, so a batch may carry more of them than results. */
+    public const ACTIVITY_MAX_ITEMS = 1000;
+    public const ACTIVITY_MAX_BODY_BYTES = 1048576;
+
     public function __construct(private DatabaseService $db)
     {
     }
@@ -50,7 +54,7 @@ final readonly class InterfaceConnectionService
                 'operations' => [
                     'connectionRead' => true,
                     'resultsWrite' => true,
-                    'telemetryWrite' => false,
+                    'activityWrite' => true,
                 ],
                 'credentialScopes' => array_values(is_array($scopes) ? $scopes : []),
             ],
@@ -63,6 +67,10 @@ final readonly class InterfaceConnectionService
                 'results' => [
                     'maxItems' => self::RESULTS_MAX_ITEMS,
                     'maxBodyBytes' => self::RESULTS_MAX_BODY_BYTES,
+                ],
+                'activity' => [
+                    'maxItems' => self::ACTIVITY_MAX_ITEMS,
+                    'maxBodyBytes' => self::ACTIVITY_MAX_BODY_BYTES,
                 ],
             ],
         ];

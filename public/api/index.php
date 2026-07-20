@@ -35,6 +35,7 @@ use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 use App\HttpHandlers\InterfaceApi\ActivateInstallationHandler;
 use App\HttpHandlers\InterfaceApi\GetConnectionHandler;
+use App\HttpHandlers\InterfaceApi\SubmitActivityHandler;
 use App\HttpHandlers\InterfaceApi\SubmitResultsHandler;
 use App\Middlewares\Api\InterfaceRequestGuardMiddleware;
 use App\Middlewares\Api\InterfaceApiEnabledMiddleware;
@@ -91,6 +92,11 @@ $interfaceApi = $app->group('/api/v1/interface', function (RouteCollectorProxy $
         ->add(new InterfaceInstallationAuthMiddleware(
             ContainerRegistry::get(InterfaceInstallationService::class),
             'results:write'
+        ));
+    $group->post('/activity', SubmitActivityHandler::class)
+        ->add(new InterfaceInstallationAuthMiddleware(
+            ContainerRegistry::get(InterfaceInstallationService::class),
+            'activity:write'
         ));
 });
 $interfaceApi->add(ContainerRegistry::get(InterfaceApiEnabledMiddleware::class));

@@ -15,7 +15,7 @@ final readonly class InterfaceInstallationService
     public const SCOPES = [
         'connection:read',
         'results:write',
-        'telemetry:write',
+        'activity:write',
     ];
 
     /**
