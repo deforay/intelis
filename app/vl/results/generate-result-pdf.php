@@ -162,13 +162,17 @@ $_SESSION['aliasPage'] = 1;
 foreach ($requestResult as $result) {
 	
 	$existingAttributes = !empty($result['form_attributes']) ? json_decode($result['form_attributes'], true) : [];
-	if ($general->isLISInstance()) {
-		$currentCount = (int)($existingAttributes['result_printed_lis_count'] ?? 0);
-
-		$pData = [
-			'result_printed_on_lis_datetime' => $currentDateTime,
+	$pData = [
 			'result_printed_datetime' => $currentDateTime
 		];
+	if ($general->isLISInstance()) {
+		$currentCount = (int)($existingAttributes['result_printed_lis_count'] ?? 0);
+		if(empty($result['result_printed_on_lis_datetime'])){
+			$currentCount = 0;
+			$pData = [
+				'result_printed_on_lis_datetime' => $currentDateTime,
+			];
+		}
 		$formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_lis_count' => $currentCount + 1]), 'form_attributes');
 	    $pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
 
@@ -176,11 +180,12 @@ foreach ($requestResult as $result) {
 		$id = $db->update('form_vl', $pData);
 	} elseif ($general->isSTSInstance()) {
 		$currentCount = (int)($existingAttributes['result_printed_sts_count'] ?? 0);
-
-		$pData = [
-			'result_printed_on_sts_datetime' => $currentDateTime,
-			'result_printed_datetime' => $currentDateTime
-		];
+		if(empty($result['result_printed_on_sts_datetime'])){
+			$currentCount = 0;
+			$pData = [
+				'result_printed_on_sts_datetime' => $currentDateTime,
+			];
+		}
 		$formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_sts_count' => $currentCount + 1]), 'form_attributes');
     	$pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
 		
