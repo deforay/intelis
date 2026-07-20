@@ -31,7 +31,18 @@ final class InterfaceRequestGuardMiddleware implements MiddlewareInterface
 
         return match ($request->getUri()->getPath()) {
             '/api/v1/interface/activate' => $this->guardActivation($request, $handler),
-            '/api/v1/interface/results' => $this->guardResults($request, $handler),
+            '/api/v1/interface/results' => $this->guardBodySize(
+                $request,
+                $handler,
+                InterfaceConnectionService::RESULTS_MAX_BODY_BYTES,
+                'The results request is too large. Send the run in smaller batches.'
+            ),
+            '/api/v1/interface/activity' => $this->guardBodySize(
+                $request,
+                $handler,
+                InterfaceConnectionService::ACTIVITY_MAX_BODY_BYTES,
+                'The activity request is too large. Send fewer events per batch.'
+            ),
             default => $handler->handle($request),
         };
     }
@@ -62,16 +73,14 @@ final class InterfaceRequestGuardMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
-    private function guardResults(
+    private function guardBodySize(
         ServerRequestInterface $request,
-        RequestHandlerInterface $handler
+        RequestHandlerInterface $handler,
+        int $maxBytes,
+        string $message
     ): ResponseInterface {
-        if ($this->bodySize($request) > InterfaceConnectionService::RESULTS_MAX_BODY_BYTES) {
-            return InterfaceApiResponse::error(
-                'payload_too_large',
-                'The results request is too large. Send the run in smaller batches.',
-                413
-            );
+        if ($this->bodySize($request) > $maxBytes) {
+            return InterfaceApiResponse::error('payload_too_large', $message, 413);
         }
 
         return $handler->handle($request);
