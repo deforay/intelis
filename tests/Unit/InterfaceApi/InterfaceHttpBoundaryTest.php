@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\InterfaceApi;
 
 use App\HttpHandlers\InterfaceApi\ActivateInstallationHandler;
-use App\Middlewares\Api\InterfaceActivationGuardMiddleware;
+use App\Middlewares\Api\InterfaceRequestGuardMiddleware;
 use App\Services\InterfaceApi\InterfaceCredentialService;
 use App\Services\InterfaceApi\InterfaceInstallationService;
 use PHPUnit\Framework\TestCase;
@@ -53,7 +53,7 @@ final class InterfaceHttpBoundaryTest extends TestCase
             }
         };
 
-        $response = (new InterfaceActivationGuardMiddleware())->process($request, $next);
+        $response = (new InterfaceRequestGuardMiddleware())->process($request, $next);
         $payload = json_decode((string) $response->getBody(), true, 512, JSON_THROW_ON_ERROR);
 
         self::assertSame(413, $response->getStatusCode());
@@ -89,7 +89,7 @@ final class InterfaceHttpBoundaryTest extends TestCase
         $root = dirname(__DIR__, 3);
         $paths = [
             $root . '/app/classes/HttpHandlers/InterfaceApi',
-            $root . '/app/classes/Middlewares/Api/InterfaceActivationGuardMiddleware.php',
+            $root . '/app/classes/Middlewares/Api/InterfaceRequestGuardMiddleware.php',
             $root . '/app/classes/Middlewares/Api/InterfaceApiEnabledMiddleware.php',
             $root . '/app/classes/Middlewares/Api/InterfaceInstallationAuthMiddleware.php',
             $root . '/app/classes/Repositories/InterfaceApi',
@@ -106,7 +106,7 @@ final class InterfaceHttpBoundaryTest extends TestCase
         }
 
         $guard = file_get_contents(
-            $root . '/app/classes/Middlewares/Api/InterfaceActivationGuardMiddleware.php'
+            $root . '/app/classes/Middlewares/Api/InterfaceRequestGuardMiddleware.php'
         );
         self::assertIsString($guard);
         self::assertStringContainsString('RateLimitUtility::exceeded', $guard);

@@ -20,6 +20,14 @@ final readonly class InterfaceConnectionService
     public const ACTIVATION_WINDOW_SECONDS = 60;
     public const ACTIVATION_MAX_BODY_BYTES = 16384;
 
+    /**
+     * A full run of results is far larger than an activation, but still bounded so a
+     * single request cannot exhaust memory. Both limits are reported to the client on
+     * /connection so a tool can size its batches without guessing.
+     */
+    public const RESULTS_MAX_ITEMS = 500;
+    public const RESULTS_MAX_BODY_BYTES = 2097152;
+
     public function __construct(private DatabaseService $db)
     {
     }
@@ -41,7 +49,7 @@ final readonly class InterfaceConnectionService
                 ],
                 'operations' => [
                     'connectionRead' => true,
-                    'resultsWrite' => false,
+                    'resultsWrite' => true,
                     'telemetryWrite' => false,
                 ],
                 'credentialScopes' => array_values(is_array($scopes) ? $scopes : []),
@@ -51,6 +59,10 @@ final readonly class InterfaceConnectionService
                     'maxAttempts' => self::ACTIVATION_MAX_ATTEMPTS,
                     'windowSeconds' => self::ACTIVATION_WINDOW_SECONDS,
                     'maxBodyBytes' => self::ACTIVATION_MAX_BODY_BYTES,
+                ],
+                'results' => [
+                    'maxItems' => self::RESULTS_MAX_ITEMS,
+                    'maxBodyBytes' => self::RESULTS_MAX_BODY_BYTES,
                 ],
             ],
         ];
