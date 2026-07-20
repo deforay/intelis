@@ -111,12 +111,8 @@ final class InterfacingService
 
         $sample = $this->findSample($orderId, $testId, $includeLocked, $scopedLabId);
         if ($sample === null) {
-            // Tell a locked sample apart from one that does not exist, so a technician
-            // is not sent looking for a missing request when the sample is simply locked.
-            $locked = !$includeLocked
-                && $this->findSample($orderId, $testId, true, $scopedLabId) !== null;
-
-            return $this->outcome(false, false, null, $locked ? 'sample_locked' : 'no_matching_sample');
+            $reason = $this->explainMiss($orderId, $testId, $includeLocked, $scopedLabId);
+            return $this->outcome(false, false, null, $reason);
         }
 
         $table = $sample['table'];
@@ -225,6 +221,24 @@ final class InterfacingService
         ];
     }
 
+    /**
+     * Says why a lookup found nothing, so a technician is not sent hunting for a
+     * request that is sitting right there. Only runs when a row already failed to
+     * match, so the extra queries cost nothing on the happy path.
+     */
+    private function explainMiss(string $orderId, string $testId, bool $includeLocked, ?int $scopedLabId): string
+    {
+        if (!$includeLocked && $this->findSample($orderId, $testId, true, $scopedLabId) !== null) {
+            return 'sample_locked';
+        }
+
+        if ($scopedLabId !== null && $this->findSample($orderId, $testId, true, null) !== null) {
+            return 'sample_not_in_lab';
+        }
+
+        return 'no_matching_sample';
+    }
+
     /** @param array<string, mixed> $row */
     private function rowKey(array $row): string
     {
@@ -261,11 +275,12 @@ final class InterfacingService
             $conditions[] = '(sample_code IN (?, ?) OR remote_sample_code IN (?, ?) OR lab_assigned_code IN (?, ?))';
 
             // Callers that cannot be trusted to only send their own samples -- anything
-            // arriving over the API -- restrict the match to samples already belonging to
-            // that lab, or not yet assigned to any lab. Without this an installation could
-            // overwrite another lab's result by guessing a sample code.
+            // arriving over the API -- match strictly on the lab the credential belongs
+            // to. A sample not yet assigned to any lab is not claimable this way: the
+            // lookup matches on sample codes alone, so anything looser would let an
+            // installation reach a sample by guessing a code.
             if ($restrictToLabId !== null) {
-                $conditions[] = '(lab_id = ? OR lab_id IS NULL OR lab_id = 0)';
+                $conditions[] = 'lab_id = ?';
                 $params[] = $restrictToLabId;
             }
 
