@@ -18,6 +18,19 @@ final readonly class InterfaceInstallationService
         'telemetry:write',
     ];
 
+    /**
+     * Connection Codes are short enough to read off a screen and type by hand. Twelve
+     * Crockford Base32 characters give ~60 bits of entropy, which is only safe because
+     * the surrounding controls bound how many guesses an attacker gets:
+     *
+     * - single use, consumed atomically by the repository;
+     * - a 30 minute expiry;
+     * - InterfaceActivationGuardMiddleware rate limits /activate per client IP
+     *   (InterfaceConnectionService::ACTIVATION_MAX_ATTEMPTS per ACTIVATION_WINDOW_SECONDS).
+     *
+     * Do not lengthen the expiry, relax the rate limit or shorten the code without
+     * redoing that arithmetic.
+     */
     public const ACTIVATION_CODE_LENGTH = 12;
     public const ACTIVATION_CODE_ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 
