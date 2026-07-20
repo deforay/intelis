@@ -26,14 +26,12 @@ if ($isCli && function_exists('pcntl_signal') && function_exists('pcntl_async_si
 
 declare(ticks=1);
 
-use App\Services\VlService;
-use App\Services\TestsService;
-use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\InterfacingService;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
@@ -50,9 +48,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var TestResultsService $testResultsService */
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
@@ -111,7 +106,6 @@ if ($lastInterfaceSync === null) {
 }
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
-$formId = (int) $general->getGlobalConfig('vl_form');
 
 if (empty($labId)) {
     LoggerUtility::logError("No Lab ID set in System Config. Skipping Interfacing Results");
@@ -183,50 +177,11 @@ try {
     }
 
 
-    // Group by order_id + test_id
-    $grouped = [];
-    foreach ($interfaceData as $row) {
-        $groupKey = $row['order_id'] . '::' . $row['test_id'];
-        $grouped[$groupKey][] = $row;
-    }
+    /** @var InterfacingService $interfacingService */
+    $interfacingService = ContainerRegistry::get(InterfacingService::class);
 
-    $filtered = [];
-
-    /** @var VlService $vlService */
-    $vlService = ContainerRegistry::get(VlService::class);
-
-    foreach ($grouped as $group) {
-        $hasCopiesUnit = false;
-
-        // First pass to check if any row has "copies"-type unit (but NOT containing "log")
-        foreach ($group as $row) {
-            $unit = strtolower((string) preg_replace('/\s+/', '', (string) ($row['test_unit'] ?? '')));
-
-            // Skip if it contains "log" - it's not a pure copies unit
-            if (str_contains($unit, 'log')) {
-                continue;
-            }
-
-            foreach ($vlService->copiesPatterns as $pattern) {
-                if (str_contains($unit, $pattern)) {
-                    $hasCopiesUnit = true;
-                    break 2; // Exit both loops
-                }
-            }
-        }
-
-        // Second pass to filter
-        foreach ($group as $row) {
-            $unit = strtolower((string) preg_replace('/\s+/', '', (string) ($row['test_unit'] ?? '')));
-            $isLog = str_contains($unit, 'log');
-
-            // If we have pure copies (not log), skip log results
-            if ($hasCopiesUnit && $isLog) {
-                continue;
-            }
-            $filtered[] = $row;
-        }
-    }
+    // Drop the log-unit row where the same order also reported a copies value.
+    $filtered = $interfacingService->filterDuplicateUnits($interfaceData);
 
     $filteredIds = array_column($filtered, 'id');
     $skippedIds = [];
@@ -247,442 +202,59 @@ try {
         exit(CLI\ERROR);
     }
 
-    $additionalColumns = [
-        'form_hepatitis' => ['hepatitis_test_type'],
-    ];
-
     $numberOfResults = 0;
-    if ($interfaceData !== []) {
+    $totalResults = count($interfaceData); // Get the total number of items
+    if ($isCli) {
+        echo "Processing $totalResults filtered results from Interface Tool" . PHP_EOL;
+    }
 
-        $totalResults = count($interfaceData); // Get the total number of items
+    foreach ($interfaceData as $key => $result) {
+        // This is to prevent the lock file from being deleted by the signal handler
+        // and to keep the script running
+        // touch the lock file every 10 iterations to reduce the number of times disk is accessed
+        if ($key % 10 === 0) {
+            MiscUtility::touchLockFile($lockFile);
+        }
+
+        $db->connection('default')->beginTransaction();
         if ($isCli) {
-            echo "Processing $totalResults filtered results from Interface Tool" . PHP_EOL;
+            MiscUtility::progressBar($key + 1, $totalResults); // Update progress bar
         }
 
-        $availableModules = [];
-
-        $activeTests = TestsService::getActiveTests();
-
-        foreach ($activeTests as $module) {
-            $primaryKey = TestsService::getPrimaryColumn($module);
-            $availableModules[$primaryKey] = TestsService::getTestTableName($module);
-        }
-
-        $processedResults = [];
-        //$allowRepeatedTests = false;
-
-        foreach ($interfaceData as $key => $result) {
-
-
-            // This is to prevent the lock file from being deleted by the signal handler
-            // and to keep the script running
-            // touch the lock file every 10 iterations to reduce the number of times disk is accessed
-            if ($key % 10 === 0) {
-                MiscUtility::touchLockFile($lockFile);
-            }
-
-            $db->connection('default')->beginTransaction();
-            if ($isCli) {
-                MiscUtility::progressBar($key + 1, $totalResults); // Update progress bar
-            }
-
-            if (empty($result['order_id']) && empty($result['test_id'])) {
-                $unsyncedIds[] = $result['id'];
-                $db->connection('default')->commitTransaction();
-                continue;
-            }
-
-            // if ($allowRepeatedTests === false && (in_array($result['test_id'], $processedResults) || in_array($result['order_id'], $processedResults))) {
-            //     continue;
-            // }
-
-
-            $tableInfo = [];
-            foreach ($availableModules as $primaryKeyColumn => $individualTableName) {
-
-                $columnsToSelect = "$primaryKeyColumn, unique_id, sample_code, remote_sample_code, lab_assigned_code";
-
-                // If the table name is there in $additionalColumns, add the additional columns
-                if ($additionalColumns !== [] && array_key_exists($individualTableName, $additionalColumns)) {
-                    $extraColumnsString = implode(', ', $additionalColumns[$individualTableName]);
-                    $columnsToSelect = "$primaryKeyColumn, unique_id, $extraColumnsString";
-                }
-
-                $conditions = [];
-                if ($forceExecution === false) {
-                    // Default: Exclude locked samples
-                    $conditions[] = "IFNULL(locked, 'no') = 'no'";
-                }
-                $conditions[] = "(sample_code IN (?, ?) OR remote_sample_code IN (?, ?) OR lab_assigned_code IN (?, ?))";
-
-                $conditions = implode(' AND ', $conditions);
-                $tableQuery = "SELECT *
-                                    FROM $individualTableName
-                                    WHERE $conditions";
-
-                // Execute the query
-                $tableInfo = $db->connection('default')
-                    ->rawQueryOne($tableQuery, [
-                        $result['order_id'],
-                        $result['order_id'],
-                        $result['order_id'],
-                        $result['test_id'],
-                        $result['test_id'],
-                        $result['test_id']
-                    ]);
-                // If we found the information, break out of the loop
-                // if (!empty($tableInfo[$primaryKeyColumn])) {
-                //     break;
-                // }
-
-                $matchedColumn = null;
-                $matchedTable = null;
-
-                // Check which columns match
-                // Determine which column matches
-                if (!empty($tableInfo)) {
-
-                    $matchedTable = $individualTableName;
-
-                    if ($result['order_id'] === $tableInfo['sample_code'] || $result['test_id'] === $tableInfo['sample_code']) {
-                        $matchedColumn = 'sample_code';
-                    } elseif ($result['order_id'] === $tableInfo['remote_sample_code'] || $result['test_id'] === $tableInfo['remote_sample_code']) {
-                        $matchedColumn = 'remote_sample_code';
-                    } elseif ($result['order_id'] === $tableInfo['lab_assigned_code'] || $result['test_id'] === $tableInfo['lab_assigned_code']) {
-                        $matchedColumn = 'lab_assigned_code';
-                    }
-                    break;
-                }
-            }
-
-            //Getting Approved By and Reviewed By from Instruments table
-            $instrumentDetails = $db->connection('default')
-                ->rawQueryOne(
-                    "SELECT * FROM instruments WHERE instruments.machine_name = ?",
-                    [$result['instrument_id'] ?? $result['machine_used']]
-                );
-
-            if (empty($instrumentDetails)) {
-                $sql = "SELECT * FROM instruments
-                    INNER JOIN instrument_machines ON instruments.instrument_id = instrument_machines.instrument_id
-                    WHERE instrument_machines.config_machine_name = ?";
-                $instrumentDetails = $db->connection('default')
-                    ->rawQueryOne($sql, [$result['instrument_id'] ?? $result['machine_used']]);
-            }
-
-
-            $approved = empty($instrumentDetails['approved_by']) ? [] : json_decode((string) $instrumentDetails['approved_by'], true);
-            $reviewed = empty($instrumentDetails['reviewed_by']) ? [] : json_decode((string) $instrumentDetails['reviewed_by'], true);
-            $instrumentId = $instrumentDetails['instrument_id'] ?? null;
-            $lowerLimit = $instrumentDetails['lower_limit'] ?? null;
-
-            if ($matchedTable === 'form_vl') {
-
-                $absDecimalVal = null;
-                $absVal = null;
-                $logVal = null;
-                $txtVal = null;
-                $vlResult = null;
-                $resultStatus = null;
-                //set result in result fields
-                if (!empty($result['results'])) {
-
-                    $vlResult = trim(str_ireplace(['cp/ml', 'copies/ml'], '', (string) $result['results']));
-
-                    $unit = trim((string) $result['test_unit']);
-
-                    if ($vlResult == "-1.00" || $vlResult == "BT") {
-                        $vlResult = "Target Not Detected";
-                    } elseif (strtolower($vlResult) == 'detected' && !empty($lowerLimit)) {
-                        $vlResult = "< $lowerLimit";
-                    }
-
-                    $logVal = null;
-                    $absDecimalVal = null;
-                    $absVal = null;
-                    $txtVal = null;
-                    $interpretedResults = [];
-
-
-                    if ($vlResult !== '' && $vlResult !== '0' && !in_array(strtolower($vlResult), ['fail', 'failed', 'failure', 'error', 'err'])) {
-                        $interpretedResults = $vlService->interpretViralLoadResult($vlResult, $unit, $instrumentDetails['low_vl_result_text'] ?? null);
-                        if (!empty($interpretedResults)) {
-                            $logVal = $interpretedResults['logVal'];
-                            $vlResult = $interpretedResults['result'] ?? $interpretedResults['txtVal'];
-                            $absDecimalVal = $interpretedResults['absDecimalVal'];
-                            $absVal = $interpretedResults['absVal'];
-                            $txtVal = $interpretedResults['txtVal'];
-                            $resultStatus = $interpretedResults['resultStatus'] ?? SAMPLE_STATUS\ACCEPTED;
-                        }
-                    }
-                }
-
-                $testedByUserId = null;
-                $tester = $result['tested_by'];
-                // if ^ exists it means the Operator Name has both tester and releaser name
-                if (str_contains(strtolower((string) $result['tested_by']), '^')) {
-                    $operatorArray = explode("^", (string) $result['tested_by']);
-                    $tester = $operatorArray[0];
-                }
-
-                $testedByUserId = $usersService->getOrCreateUser($tester);
-
-                $autoApprove = $general->getGlobalConfig('auto_approve_interface_results') === 'yes' ?? false;
-
-                if (empty($vlResult) || $vlResult == '' || $autoApprove === false) {
-                    $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL;
-                }
-
-                $data = [
-                    'lab_id' => $labId,
-                    'instrument_id' => $instrumentId,
-                    'tested_by' => $testedByUserId,
-                    'result_approved_by' => $approved['vl'] ?? null,
-                    'result_approved_datetime' => $result['authorised_date_time'],
-                    'result_reviewed_by' => $reviewed['vl'] ?? null,
-                    'result_reviewed_datetime' => $result['authorised_date_time'],
-                    'sample_tested_datetime' => $result['result_accepted_date_time'],
-                    'result_value_log' => $logVal,
-                    'result_value_absolute' => $absVal,
-                    'result_value_absolute_decimal' => $absDecimalVal,
-                    'result_value_text' => $txtVal,
-                    'result' => $vlResult,
-                    'result_status' => $resultStatus ?? SAMPLE_STATUS\ACCEPTED,
-                    'vl_test_platform' => $instrumentDetails['machine_name'] ?? $result['machine_used'],
-                    'manual_result_entry' => 'no',
-                    'import_machine_file_name' => 'interface',
-                    'result_printed_datetime' => null,
-                    // 'result_printed_on_lis_datetime' => null,
-                    // 'result_printed_on_sts_datetime' => null,
-                    'result_dispatched_datetime' => null,
-                    'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-                    'data_sync' => 0
-                ];
-
-                if ($silent) {
-                    unset($data['last_modified_datetime']);
-                }
-
-                if ($formId === COUNTRY\CAMEROON && !empty($result['raw_text'])) {
-                    $sampleCode = $tableInfo['sample_code'];
-
-                    $stringToSearch = preg_quote((string) $sampleCode, '/') . '\^CV\s+(\d+)';
-
-                    $pattern = "/$stringToSearch/i";
-
-                    $data['cv_number'] = (preg_match($pattern, (string) $result['raw_text'], $matches)) ? trim($matches[1]) : null;
-                }
-
-                if (strtolower((string) $vlResult) === 'failed' || strtolower((string) $vlResult) === 'fail' || strtolower((string) $vlResult) === 'invalid' || strtolower((string) $vlResult) === 'inconclusive') {
-                    $data['result_status'] = SAMPLE_STATUS\TEST_FAILED; // Invalid
-                }
-
-                $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
-                if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
-                    $data['result_status'] = SAMPLE_STATUS\TEST_FAILED;
-                } elseif ($data['vl_result_category'] == 'rejected') {
-                    $data['result_status'] = SAMPLE_STATUS\REJECTED;
-                }
-                // $db->connection('default')->where('vl_sample_id', $tableInfo['vl_sample_id']);
-                // $queryStatus = $db->connection('default')->update('form_vl', $data);
-                // $numberOfResults++;
-                // if ($queryStatus === true) {
-                //     $syncedIds[]  = $result['id'];
-                // }
-
-                $ignoredKeys = ['last_modified_datetime', 'result_printed_datetime']; // add more if needed
-
-                $needsUpdate = !MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
-
-                if ($needsUpdate) {
-                    //echo "Updating VL Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
-                    $db->connection('default')->where('vl_sample_id', $tableInfo['vl_sample_id']);
-                    $queryStatus = $db->connection('default')->update('form_vl', $data);
-                    if ($queryStatus === true) {
-                        $syncedIds[] = $result['id'];
-                        $numberOfResults++;
-                    }
-                } else {
-                    //echo "Skipping update for VL Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
-                    // Skip update, consider as synced anyway
-                    $syncedIds[] = $result['id'];
-                }
-            } elseif ($matchedTable === 'form_eid') {
-
-                $absDecimalVal = null;
-                $absVal = null;
-                $logVal = null;
-                $txtVal = null;
-                //set result in result fields
-                if (trim((string) $result['results']) !== "") {
-
-                    if (str_contains(strtolower((string) $result['results']), 'not detected')) {
-                        $eidResult = 'negative';
-                    } elseif ((str_contains(strtolower((string) $result['results']), 'detected')) || (str_contains(strtolower((string) $result['results']), 'passed'))) {
-                        $eidResult = 'positive';
-                    } else {
-                        $eidResult = strtolower((string) $result['results']);
-                    }
-                }
-
-                $autoApprove = $general->getGlobalConfig('auto_approve_interface_results') === 'yes' ?? false;
-                $resultStatus = ($autoApprove === false) ? SAMPLE_STATUS\PENDING_APPROVAL : SAMPLE_STATUS\ACCEPTED;
-                $data = [
-                    'lab_id' => $labId,
-                    'tested_by' => $result['tested_by'],
-                    'instrument_id' => $instrumentId,
-                    'result_approved_datetime' => $result['authorised_date_time'],
-                    'sample_tested_datetime' => $result['result_accepted_date_time'],
-                    'result' => $eidResult,
-                    'eid_test_platform' => $result['machine_used'],
-                    'result_status' => $resultStatus,
-                    'manual_result_entry' => 'no',
-                    'result_approved_by' => $approved['eid'] ?? null,
-                    'result_reviewed_by' => $reviewed['eid'] ?? null,
-                    'result_printed_datetime' => null,
-                    // 'result_printed_on_lis_datetime' => null,
-                    // 'result_printed_on_sts_datetime' => null,
-                    'result_dispatched_datetime' => null,
-                    'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-                    'data_sync' => 0
-                ];
-
-                if ($silent) {
-                    unset($data['last_modified_datetime']);
-                }
-
-                // $db->connection('default')->where('eid_id', $tableInfo['eid_id']);
-                // $queryStatus = $db->connection('default')->update('form_eid', $data);
-                // $numberOfResults++;
-                // if ($queryStatus === true) {
-                //     $syncedIds[]  = $result['id'];
-                // }
-
-                $ignoredKeys = ['last_modified_datetime', 'result_printed_datetime']; // add more if needed
-
-                $needsUpdate = !MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
-
-                if ($needsUpdate) {
-                    //echo "Updating EID Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
-                    $db->connection('default')->where('eid_id', $tableInfo['eid_id']);
-                    $queryStatus = $db->connection('default')->update('form_eid', $data);
-                    if ($queryStatus === true) {
-                        $syncedIds[] = $result['id'];
-                        $numberOfResults++;
-                    }
-                } else {
-                    //echo "Skipping update for EID Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
-                    $syncedIds[] = $result['id'];
-                }
-            } elseif ($matchedTable === 'form_covid19') {
-
-                // TODO: Add covid19 results
-                $unsyncedIds[] = $result['id'];
-
-            } elseif ($matchedTable === 'form_hepatitis') {
-
-                /** @var VlService $vlService */
-                $vlService = ContainerRegistry::get(VlService::class);
-
-                $absDecimalVal = null;
-                $absVal = null;
-                $logVal = null;
-                $txtVal = null;
-                $otherFieldResult = null;
-                $testType = strtolower((string) $tableInfo['hepatitis_test_type']);
-                if ($testType === 'hbv') {
-                    $resultField = "hbv_vl_count";
-                    $otherField = "hcv_vl_count";
-                } elseif ($testType === 'hcv') {
-                    $resultField = "hcv_vl_count";
-                    $otherField = "hbv_vl_count";
-                } else {
-                    $unsyncedIds[] = $result['id'];
-                    $db->connection('default')->commitTransaction();
-                    continue;
-                }
-                //set result in result fields
-                if (trim((string) $result['results']) !== "") {
-
-                    $hepatitisResult = trim((string) $result['results']);
-                    $unit = trim((string) $result['test_unit']);
-                    $interpretedResults = $vlService->interpretViralLoadResult($hepatitisResult, $unit, $instrumentDetails['low_vl_result_text']);
-                    $hepatitisResult = $interpretedResults['result'];
-                }
-
-                $userId = $usersService->getOrCreateUser($result['tested_by']);
-
-                $autoApprove = $general->getGlobalConfig('auto_approve_interface_results') === 'yes' ?? false;
-                $resultStatus = ($autoApprove === false) ? SAMPLE_STATUS\PENDING_APPROVAL : SAMPLE_STATUS\ACCEPTED;
-
-                $data = [
-                    'lab_id' => $labId,
-                    'instrument_id' => $instrumentId,
-                    'tested_by' => $userId,
-                    'result_approved_datetime' => $result['authorised_date_time'],
-                    'sample_tested_datetime' => $result['result_accepted_date_time'],
-                    $resultField => $hepatitisResult ?? null,
-                    $otherField => $otherFieldResult ?? null,
-                    'hepatitis_test_platform' => $result['machine_used'],
-                    'result_status' => $resultStatus,
-                    'manual_result_entry' => 'no',
-                    'result_approved_by' => $approved['hepatitis'] ?? null,
-                    'result_reviewed_by' => $reviewed['hepatitis'] ?? null,
-                    'result_printed_datetime' => null,
-                    // 'result_printed_on_lis_datetime' => null,
-                    // 'result_printed_on_sts_datetime' => null,
-                    'result_dispatched_datetime' => null,
-                    'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-                    'data_sync' => 0
-                ];
-
-                if ($silent) {
-                    unset($data['last_modified_datetime']);
-                }
-
-                // $db->connection('default')->where('hepatitis_id', $tableInfo['hepatitis_id']);
-                // $queryStatus = $db->connection('default')->update('form_hepatitis', $data);
-                // $numberOfResults++;
-                // // $processedResults[] = $result['order_id'];
-                // //  $processedResults[] = $result['test_id'];
-                // if ($queryStatus === true) {
-                //     $syncedIds[]  = $result['id'];
-                // }
-
-                $ignoredKeys = ['last_modified_datetime', 'result_printed_datetime']; // add more if needed
-
-                $needsUpdate = !MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
-
-                if ($needsUpdate) {
-                    //echo "Updating Hepatitis Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
-                    $db->connection('default')->where('hepatitis_id', $tableInfo['hepatitis_id']);
-                    $queryStatus = $db->connection('default')->update('form_hepatitis', $data);
-                    if ($queryStatus === true) {
-                        $syncedIds[] = $result['id'];
-                        $numberOfResults++;
-                    }
-                } else {
-                    //echo "Skipping update for Hepatitis Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
-                    $syncedIds[] = $result['id'];
-                }
+        $outcome = $interfacingService->importResult(
+            $result,
+            (int) $labId,
+            includeLocked: $forceExecution,
+            updateModifiedTime: !$silent
+        );
+
+        // A failed UPDATE is deliberately left unmarked: the row keeps lims_sync_status = 0
+        // so the next run picks it up again, instead of being written off as unsyncable.
+        if ($outcome['reason'] !== 'update_failed') {
+            if ($outcome['synced']) {
+                $syncedIds[] = $result['id'];
             } else {
                 $unsyncedIds[] = $result['id'];
             }
+        }
 
-            if (!empty($result['added_on'])) {
-                $addedOn = DateUtility::getDateTime((string) $result['added_on']);
-                if ($addedOn !== null && ($latestAddedOn === null || $addedOn > $latestAddedOn)) {
-                    $latestAddedOn = $addedOn;
-                }
+        if ($outcome['updated']) {
+            $numberOfResults++;
+        }
+
+        if (!empty($result['added_on'])) {
+            $addedOn = DateUtility::getDateTime((string) $result['added_on']);
+            if ($addedOn !== null && ($latestAddedOn === null || $addedOn > $latestAddedOn)) {
+                $latestAddedOn = $addedOn;
             }
-
-            $db->connection('default')->commitTransaction();
         }
 
-        if ($numberOfResults > 0) {
-            $importedBy = $_SESSION['userId'] ?? 'AUTO';
-            $testResultsService->resultImportStats($numberOfResults, 'interface', $importedBy);
-        }
+        $db->connection('default')->commitTransaction();
+    }
+
+    if ($numberOfResults > 0) {
+        $importedBy = $_SESSION['userId'] ?? 'AUTO';
+        $testResultsService->resultImportStats($numberOfResults, 'interface', $importedBy);
     }
 
 } catch (Throwable $e) {
