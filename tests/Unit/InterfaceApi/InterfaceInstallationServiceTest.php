@@ -8,6 +8,7 @@ use App\Exceptions\InterfaceApiException;
 use App\Services\InterfaceApi\InterfaceCredentialService;
 use App\Services\InterfaceApi\InterfaceInstallationService;
 use DateTimeImmutable;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Tests\Support\InMemoryInterfaceInstallationRepository;
 
@@ -129,7 +130,7 @@ final class InterfaceInstallationServiceTest extends TestCase
         $reconnectCode = $this->service->createReconnectCode(
             101,
             $first['installationId'],
-            15,
+            30,
             'test',
             $this->now
         )['activationCode'];
@@ -163,7 +164,7 @@ final class InterfaceInstallationServiceTest extends TestCase
         $reconnectCode = $this->service->createReconnectCode(
             101,
             $serverInstallationId,
-            15,
+            30,
             'test',
             $this->now
         )['activationCode'];
@@ -240,7 +241,7 @@ final class InterfaceInstallationServiceTest extends TestCase
             fn() => $this->service->createReconnectCode(
                 202,
                 $installation['installationId'],
-                15,
+                30,
                 'test',
                 $this->now
             )
@@ -316,7 +317,7 @@ final class InterfaceInstallationServiceTest extends TestCase
         $code = $this->service->createReconnectCode(
             101,
             $installation['installationId'],
-            15,
+            30,
             'test',
             $this->now
         );
@@ -329,6 +330,167 @@ final class InterfaceInstallationServiceTest extends TestCase
         self::assertSame('active', $this->service->getInstallation($installation['installationId'])['status']);
     }
 
+    public function testGeneratedCodeIsTwelveCrockfordCharactersInThreeGroups(): void
+    {
+        for ($attempt = 0; $attempt < 25; $attempt++) {
+            $code = $this->createCode(101);
+            self::assertMatchesRegularExpression(
+                '/^[0-9A-HJKMNP-TV-Z]{4}(?:-[0-9A-HJKMNP-TV-Z]{4}){2}$/D',
+                $code
+            );
+            self::assertSame(
+                InterfaceInstallationService::ACTIVATION_CODE_LENGTH,
+                strlen(str_replace('-', '', $code))
+            );
+        }
+    }
+
+    public function testReconnectCodeUsesTheSameShortFormat(): void
+    {
+        $installation = $this->service->activate(
+            $this->createCode(101),
+            'source-installation-format',
+            'Format check',
+            $this->now
+        );
+
+        self::assertMatchesRegularExpression(
+            '/^[0-9A-HJKMNP-TV-Z]{4}(?:-[0-9A-HJKMNP-TV-Z]{4}){2}$/D',
+            $this->createReconnectCode(101, $installation['installationId'])
+        );
+    }
+
+    /**
+     * @return list<array{0: string}>
+     */
+    public static function malformedCodeProvider(): array
+    {
+        return [
+            'eleven characters' => ['7KDM-P4XR-W9T'],
+            'thirteen characters' => ['7KDM-P4XR-W9TCP'],
+            'legacy thirty-two characters' => ['0123-4567-89AB-CDEF-GHJK-MNPQ-RSTV-WXYZ'],
+            'empty' => [''],
+            'stray punctuation' => ['7KDM.P4XR.W9TC'],
+            'non-alphanumeric padding' => ['7KDM-P4XR-W9T#'],
+        ];
+    }
+
+    #[DataProvider('malformedCodeProvider')]
+    public function testMalformedCodesAreRejected(string $code): void
+    {
+        $this->assertInterfaceError(
+            'invalid_activation_code',
+            fn() => $this->service->activate($code, 'source-installation-malformed', 'Bad', $this->now)
+        );
+    }
+
+    /**
+     * @return list<array{0: callable(string): string}>
+     */
+    public static function equivalentCodeFormatProvider(): array
+    {
+        return [
+            'as issued' => [static fn(string $code): string => $code],
+            'lowercase' => [static fn(string $code): string => strtolower($code)],
+            'ungrouped' => [static fn(string $code): string => str_replace('-', '', $code)],
+            'space separated' => [static fn(string $code): string => str_replace('-', ' ', $code)],
+            'surrounding whitespace' => [static fn(string $code): string => "  {$code}\n"],
+        ];
+    }
+
+    /** @param callable(string): string $transform */
+    #[DataProvider('equivalentCodeFormatProvider')]
+    public function testEquivalentCodeFormatsAllActivate(callable $transform): void
+    {
+        $code = $this->createCode(101);
+
+        $activation = $this->service->activate(
+            $transform($code),
+            'source-installation-format-variant',
+            'Variant',
+            $this->now
+        );
+
+        self::assertSame(
+            101,
+            $this->service->authenticate($activation['credential'], 'connection:read')['facility_id']
+        );
+    }
+
+    public function testLookAlikeCharactersAreNormalized(): void
+    {
+        $substitutions = ['1' => 'I', '0' => 'O', 'V' => 'U'];
+        $code = null;
+
+        // Generated codes exclude I, L, O and U, so find one containing a character a
+        // human might mistype as one of them.
+        for ($attempt = 0; $attempt < 50 && $code === null; $attempt++) {
+            $candidate = $this->createCode(101);
+            if (strpbrk($candidate, '10V') !== false) {
+                $code = $candidate;
+            }
+        }
+
+        self::assertNotNull($code, 'Expected a code containing at least one substitutable character.');
+
+        $mistyped = strtr($code, $substitutions);
+        self::assertNotSame($code, $mistyped);
+
+        $activation = $this->service->activate($mistyped, 'source-installation-lookalike', 'Mistyped', $this->now);
+        self::assertSame(
+            101,
+            $this->service->authenticate($activation['credential'], 'connection:read')['facility_id']
+        );
+    }
+
+    public function testNewAndReconnectCodesBothExpireAfterThirtyMinutes(): void
+    {
+        $new = $this->service->createActivationCode(101, 30, 'test', $this->now);
+        self::assertSame($this->now->modify('+30 minutes')->format(DATE_ATOM), $new['expiresAt']);
+
+        $installation = $this->service->activate(
+            $new['activationCode'],
+            'source-installation-ttl',
+            'TTL check',
+            $this->now
+        );
+        $reconnect = $this->service->createReconnectCode(
+            101,
+            $installation['installationId'],
+            30,
+            'test',
+            $this->now
+        );
+        self::assertSame($this->now->modify('+30 minutes')->format(DATE_ATOM), $reconnect['expiresAt']);
+
+        $this->assertInterfaceError(
+            'activation_code_expired',
+            fn() => $this->service->activate(
+                $reconnect['activationCode'],
+                null,
+                null,
+                $this->now->modify('+31 minutes')
+            )
+        );
+    }
+
+    public function testCodeRemainsValidJustBeforeTheThirtyMinuteExpiry(): void
+    {
+        $code = $this->createCode(101);
+
+        $activation = $this->service->activate(
+            $code,
+            'source-installation-just-in-time',
+            'Just in time',
+            $this->now->modify('+29 minutes')
+        );
+
+        self::assertSame(
+            101,
+            $this->service->authenticate($activation['credential'], 'connection:read')['facility_id']
+        );
+    }
+
     private function createCode(int $facilityId, int $ttlMinutes = 30): string
     {
         return $this->service->createActivationCode($facilityId, $ttlMinutes, 'test', $this->now)['activationCode'];
@@ -337,7 +499,7 @@ final class InterfaceInstallationServiceTest extends TestCase
     private function createReconnectCode(
         int $facilityId,
         string $installationId,
-        int $ttlMinutes = 15
+        int $ttlMinutes = 30
     ): string {
         return $this->service->createReconnectCode(
             $facilityId,

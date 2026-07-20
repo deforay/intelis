@@ -18,6 +18,9 @@ final readonly class InterfaceInstallationService
         'telemetry:write',
     ];
 
+    public const ACTIVATION_CODE_LENGTH = 12;
+    public const ACTIVATION_CODE_ALPHABET = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+
     public function __construct(
         private InterfaceInstallationRepositoryInterface $repository,
         private InterfaceCredentialService $credentials
@@ -61,7 +64,7 @@ final readonly class InterfaceInstallationService
     public function createReconnectCode(
         int $facilityId,
         string $installationId,
-        int $ttlMinutes = 15,
+        int $ttlMinutes = 30,
         string $createdBy = 'cli',
         ?DateTimeImmutable $now = null
     ): array {
@@ -226,7 +229,17 @@ final readonly class InterfaceInstallationService
 
     private function validateActivationCode(string $code): void
     {
-        if (strlen($this->normalizeActivationCode($code)) !== 32) {
+        // Accept grouped, ungrouped, lowercase and look-alike input, but reject stray
+        // punctuation outright rather than silently stripping it during normalization.
+        if (preg_match('/^[0-9A-Za-z]{4}(?:[- ]?[0-9A-Za-z]{4}){2}$/D', trim($code)) !== 1) {
+            throw new InterfaceApiException('invalid_activation_code', 'The activation code is invalid.', 422);
+        }
+
+        $normalized = $this->normalizeActivationCode($code);
+        $canonical = '/^[' . preg_quote(self::ACTIVATION_CODE_ALPHABET, '/') . ']{'
+            . self::ACTIVATION_CODE_LENGTH . '}$/D';
+
+        if (preg_match($canonical, $normalized) !== 1) {
             throw new InterfaceApiException('invalid_activation_code', 'The activation code is invalid.', 422);
         }
     }
@@ -241,10 +254,10 @@ final readonly class InterfaceInstallationService
 
     private function generateActivationCode(): string
     {
-        $alphabet = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
         $code = '';
-        for ($i = 0; $i < 32; $i++) {
-            $code .= $alphabet[random_int(0, 31)];
+        $maxIndex = strlen(self::ACTIVATION_CODE_ALPHABET) - 1;
+        for ($i = 0; $i < self::ACTIVATION_CODE_LENGTH; $i++) {
+            $code .= self::ACTIVATION_CODE_ALPHABET[random_int(0, $maxIndex)];
         }
         return $code;
     }
