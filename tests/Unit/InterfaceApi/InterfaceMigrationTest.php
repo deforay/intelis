@@ -33,4 +33,38 @@ final class InterfaceMigrationTest extends TestCase
         self::assertStringContainsString('`credential_version` INT NOT NULL DEFAULT 1', $migration);
         self::assertStringContainsString('`reconnected_at` DATETIME NULL', $migration);
     }
+
+    /**
+     * The same event can arrive from the importer and over the API, so the unique key
+     * is what keeps a second delivery from becoming a second row.
+     */
+    public function testActivityMigrationDedupesAndKeepsTheLabServerOwned(): void
+    {
+        $migration = file_get_contents(dirname(__DIR__, 3) . '/sys/migrations/5.5.23.sql');
+
+        self::assertIsString($migration);
+        self::assertStringContainsString('CREATE TABLE IF NOT EXISTS `instrument_activity_log`', $migration);
+        self::assertStringContainsString('UNIQUE KEY `uniq_instrument_activity_event_uid`', $migration);
+        self::assertStringContainsString('`lab_id` INT NOT NULL', $migration);
+        self::assertStringContainsString("SET `value` = '5.5.23'", $migration);
+    }
+
+    /** The word telemetry is not used anywhere in the application. */
+    public function testActivityIsNotCalledTelemetry(): void
+    {
+        $root = dirname(__DIR__, 3);
+        $paths = [
+            $root . '/sys/migrations/5.5.23.sql',
+            $root . '/app/classes/Services/InstrumentActivityService.php',
+            $root . '/app/classes/HttpHandlers/InterfaceApi/SubmitActivityHandler.php',
+            $root . '/app/classes/Services/InterfaceApi/InterfaceConnectionService.php',
+            $root . '/app/classes/Services/InterfaceApi/InterfaceInstallationService.php',
+        ];
+
+        foreach ($paths as $path) {
+            $contents = file_get_contents($path);
+            self::assertIsString($contents, "Could not read $path");
+            self::assertStringNotContainsStringIgnoringCase('telemetry', $contents, basename($path));
+        }
+    }
 }

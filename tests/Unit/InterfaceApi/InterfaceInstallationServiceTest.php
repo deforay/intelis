@@ -95,7 +95,7 @@ final class InterfaceInstallationServiceTest extends TestCase
             'Scoped computer',
             $this->now
         );
-        $this->repository->setScopes($activation['installationId'], ['telemetry:write']);
+        $this->repository->setScopes($activation['installationId'], ['activity:write']);
 
         $this->assertInterfaceError(
             'insufficient_scope',
