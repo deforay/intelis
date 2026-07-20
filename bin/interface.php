@@ -32,8 +32,10 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\InterfacingService;
+use App\Services\InstrumentActivityService;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
+use Symfony\Component\Uid\Uuid;
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
     MiscUtility::safeCliEcho('⚠️  Interfacing is not enabled. Please enable it in configuration.' . PHP_EOL);
@@ -255,6 +257,49 @@ try {
     if ($numberOfResults > 0) {
         $importedBy = $_SESSION['userId'] ?? 'AUTO';
         $testResultsService->resultImportStats($numberOfResults, 'interface', $importedBy);
+    }
+
+    // Instrument activity the Interface Tool recorded alongside the results. Older
+    // versions of the tool do not have this table, so its absence is not an error.
+    if ($mysqlConnected) {
+        try {
+            $activityRows = $db->connection('interface')->rawQuery(
+                "SELECT * FROM telemetry_events
+                  WHERE remote_uploaded_at IS NULL
+                  ORDER BY occurred_at ASC
+                  LIMIT 1000"
+            ) ?: [];
+
+            if ($activityRows !== []) {
+                /** @var InstrumentActivityService $instrumentActivity */
+                $instrumentActivity = ContainerRegistry::get(InstrumentActivityService::class);
+                $summary = $instrumentActivity->store(
+                    $activityRows,
+                    (int) $labId,
+                    InstrumentActivityService::VIA_IMPORTER
+                );
+
+                // Mark everything that was read, not just what was newly stored: a row we
+                // already held is still dealt with, and leaving it would re-read it forever.
+                $handledIds = array_column($activityRows, 'event_id');
+                if ($handledIds !== []) {
+                    $placeholders = implode(',', array_fill(0, count($handledIds), '?'));
+                    $db->connection('interface')->rawQuery(
+                        "UPDATE telemetry_events
+                            SET remote_uploaded_at = ?, remote_batch_id = ?
+                          WHERE event_id IN ($placeholders)",
+                        [DateUtility::getCurrentDateTime(), Uuid::v4()->toRfc4122(), ...$handledIds]
+                    );
+                }
+
+                if ($isCli) {
+                    echo "Instrument activity: {$summary['stored']} stored, "
+                        . "{$summary['duplicates']} already held, {$summary['skipped']} skipped" . PHP_EOL;
+                }
+            }
+        } catch (Throwable $activityError) {
+            LoggerUtility::logInfo('Instrument activity not imported: ' . $activityError->getMessage());
+        }
     }
 
 } catch (Throwable $e) {
