@@ -1,13 +1,11 @@
 <?php
 
 // app/system/di.php
-use App\Contracts\InterfaceApi\InterfaceConnectionRepositoryInterface;
 use App\Contracts\InterfaceApi\InterfaceInstallationRepositoryInterface;
 use App\ErrorHandlers\ErrorResponseGenerator;
 use App\Exceptions\SystemException;
 use App\Factories\DatabaseFactory;
 use App\Registries\ContainerRegistry;
-use App\Repositories\InterfaceApi\MySqlInterfaceConnectionRepository;
 use App\Repositories\InterfaceApi\MySqlInterfaceInstallationRepository;
 use App\Services\DatabaseService;
 use DI\ContainerBuilder;
@@ -111,7 +109,6 @@ $builder->addDefinitions([
 
 // Services
 $builder->addDefinitions([
-    InterfaceConnectionRepositoryInterface::class => get(MySqlInterfaceConnectionRepository::class),
     InterfaceInstallationRepositoryInterface::class => get(MySqlInterfaceInstallationRepository::class),
 ]);
 
