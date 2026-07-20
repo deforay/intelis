@@ -82,10 +82,10 @@ jobs:
           find app/classes/Contracts/InterfaceApi app/classes/Repositories/InterfaceApi \
             app/classes/Services/InterfaceApi app/classes/HttpHandlers/InterfaceApi \
             app/classes/Http tests -name '*.php' -print0 | xargs -0 -n1 php -l
+          find app/classes/Middlewares/Api -name 'Interface*.php' -print0 \
+            | xargs -0 -n1 php -l
           php -l app/classes/Exceptions/InterfaceApiException.php
-          php -l app/classes/Middlewares/Api/InterfaceActivationGuardMiddleware.php
-          php -l app/classes/Middlewares/Api/InterfaceApiEnabledMiddleware.php
-          php -l app/classes/Middlewares/Api/InterfaceInstallationAuthMiddleware.php
+          php -l app/classes/Services/InterfacingService.php
           php -l app/classes/Middlewares/Api/ApiAuthMiddleware.php
           php -l app/facilities/editFacility.php
           php -l app/facilities/interfaceConnectionAction.php
@@ -100,9 +100,8 @@ jobs:
             app/classes/Contracts/InterfaceApi app/classes/Repositories/InterfaceApi \
             app/classes/Services/InterfaceApi app/classes/HttpHandlers/InterfaceApi \
             app/classes/Http app/classes/Exceptions/InterfaceApiException.php \
-            app/classes/Middlewares/Api/InterfaceActivationGuardMiddleware.php \
-            app/classes/Middlewares/Api/InterfaceApiEnabledMiddleware.php \
-            app/classes/Middlewares/Api/InterfaceInstallationAuthMiddleware.php \
+            app/classes/Services/InterfacingService.php \
+            app/classes/Middlewares/Api/Interface*.php \
             app/facilities/interfaceConnectionAction.php \
             app/facilities/partials/interface-connections.php tests bin/interface-api.php
           vendor/bin/phpcs --standard=PSR12 --runtime-set ignore_warnings_on_exit 1 \
