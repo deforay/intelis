@@ -49,6 +49,15 @@ paths:
                 properties:
                   activationCode:
                     type: string
+                    minLength: 12
+                    maxLength: 14
+                    pattern: '^[0-9A-Za-z]{4}(?:[- ]?[0-9A-Za-z]{4}){2}$'
+                    description: >
+                      A single-use 12-character Connection Code. Input is case-insensitive
+                      and may be entered ungrouped or in three groups separated by hyphens
+                      or spaces. Common look-alike characters are normalized. The code
+                      expires 30 minutes after it is generated.
+                    example: 7KDM-P4XR-W9TC
                   sourceInstallationId:
                     type: string
                     minLength: 8
@@ -65,16 +74,25 @@ paths:
                 properties:
                   activationCode:
                     type: string
-                    description: Reconnect code bound server-side to an existing installation.
+                    minLength: 12
+                    maxLength: 14
+                    pattern: '^[0-9A-Za-z]{4}(?:[- ]?[0-9A-Za-z]{4}){2}$'
+                    description: >
+                      Single-use 12-character reconnect code bound server-side to an existing
+                      installation. Input is case-insensitive and may be entered ungrouped or
+                      in three groups separated by hyphens or spaces. Common look-alike
+                      characters are normalized. The code expires 30 minutes after it is
+                      generated.
+                    example: 3HRV-8WQK-5NXT
             examples:
               newConnection:
                 value:
-                  activationCode: 0123-4567-89AB-CDEF-GHJK-MNPQ-RSTV-WXYZ
+                  activationCode: 7KDM-P4XR-W9TC
                   sourceInstallationId: installation-550e8400-e29b-41d4-a716-446655440000
                   displayName: Laboratory computer
               reconnect:
                 value:
-                  activationCode: 9876-5432-10ZY-XWVT-SRQP-NMKJ-HGFE-DCBA
+                  activationCode: 3HRV-8WQK-5NXT
       responses:
         '201':
           description: Installation activated. The credential is returned only in this response.

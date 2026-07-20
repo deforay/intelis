@@ -60,7 +60,7 @@ try {
             $connectionCode = $installations->createReconnectCode(
                 $facilityId,
                 $installationId,
-                15,
+                30,
                 $createdBy
             );
             $auditMessage = "Generated an Interface Tool reconnect code for installation {$installationId}"
