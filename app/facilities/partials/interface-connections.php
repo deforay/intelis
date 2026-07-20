@@ -65,12 +65,19 @@ $interfaceUiConfig = [
                 <div class="col-md-8">
                     <strong id="interfaceCodeTitle"><?= _translate('Connection Code'); ?></strong>
                     <p class="help-block" style="margin-bottom:6px;">
-                        <?= _translate('Enter this code in the Interface Tool. It is shown only once.'); ?>
+                        <?= _translate(
+                            'Enter these three groups in the Interface Tool. '
+                            . 'This code is shown only once and can be used only once.'
+                        ); ?>
                     </p>
                     <div class="input-group">
-                        <input type="text" class="form-control" id="interfaceConnectionCode" readonly>
+                        <input type="text" class="form-control" id="interfaceConnectionCode" readonly
+                            style="font-family:'Courier New',Consolas,monospace;font-size:30px;line-height:1.3;
+                                   font-weight:700;letter-spacing:3px;text-align:center;height:auto;padding:10px 6px;
+                                   color:#111;background-color:#fff;">
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" id="copyInterfaceCode">
+                            <button type="button" class="btn btn-default" id="copyInterfaceCode"
+                                style="height:100%;">
                                 <em class="fa-regular fa-copy"></em> <?= _translate('Copy'); ?>
                             </button>
                         </span>
