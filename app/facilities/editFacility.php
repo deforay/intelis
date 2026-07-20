@@ -556,7 +556,6 @@ if ($showInterfaceConnections) {
 								</div>
 							</div>
 						</div>
-					</div>
 					<div class="row labDiv" style="display:<?php echo $labDiv; ?>;">
 						<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
 							$count = count($reportFormats['vl']); ?>

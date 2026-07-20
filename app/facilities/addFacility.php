@@ -251,6 +251,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									</div>
 								</div>
 							</div>
+						</div>
 
 
 
