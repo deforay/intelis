@@ -17,6 +17,7 @@ use const COUNTRY\RWANDA;
 use const COUNTRY\BURKINA_FASO;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -58,6 +59,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					vl.coinfection_type,
 					vl.reason_for_vl_testing_other,
 					vl.reason_for_result_changes,
+					vl.form_attributes, 
 					l_f.facility_name as labName,
 					l_f.report_format as reportFormat,
 					l_f.facility_attributes as vl_facility_attributes,
@@ -157,21 +159,31 @@ $resultFilename = '';
 $pages = [];
 $page = 1;
 $_SESSION['aliasPage'] = 1;
-
 foreach ($requestResult as $result) {
+	
+	$existingAttributes = !empty($result['form_attributes']) ? json_decode($result['form_attributes'], true) : [];
+	if ($general->isLISInstance()) {
+		$currentCount = (int)($existingAttributes['result_printed_lis_count'] ?? 0);
 
-	if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
 		$pData = [
 			'result_printed_on_lis_datetime' => $currentDateTime,
 			'result_printed_datetime' => $currentDateTime
 		];
+		$formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_lis_count' => $currentCount + 1]), 'form_attributes');
+	    $pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
+
 		$db->where('vl_sample_id', $result['vl_sample_id']);
 		$id = $db->update('form_vl', $pData);
-	} elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
+	} elseif ($general->isSTSInstance()) {
+		$currentCount = (int)($existingAttributes['result_printed_sts_count'] ?? 0);
+
 		$pData = [
 			'result_printed_on_sts_datetime' => $currentDateTime,
 			'result_printed_datetime' => $currentDateTime
 		];
+		$formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_sts_count' => $currentCount + 1]), 'form_attributes');
+    	$pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
+		
 		$db->where('vl_sample_id', $result['vl_sample_id']);
 		$id = $db->update('form_vl', $pData);
 	}
