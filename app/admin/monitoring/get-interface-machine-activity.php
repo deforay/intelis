@@ -40,10 +40,15 @@ try {
         'a.app_version',
     ];
 
+    // Cast before these reach the query. This endpoint is reachable directly, and
+    // AJAX endpoints are not covered by the access control layer.
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
-        $sOffset = $_POST['iDisplayStart'];
-        $sLimit = $_POST['iDisplayLength'];
+        $sOffset = max(0, (int) $_POST['iDisplayStart']);
+        $sLimit = (int) $_POST['iDisplayLength'];
+        if ($sLimit <= 0) {
+            $sOffset = $sLimit = null;
+        }
     }
 
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
