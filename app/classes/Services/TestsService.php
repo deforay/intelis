@@ -86,7 +86,7 @@ final class TestsService
                 'patientId' => 'patient_art_no',
                 'patientFirstName' => 'patient_first_name',
                 'patientLastName' => 'patient_last_name',
-                'resultColumn' => 'result_cd4',
+                'resultColumn' => 'cd4_result',
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_vl_sample_type',
                 'serviceClass' => CD4Service::class,
