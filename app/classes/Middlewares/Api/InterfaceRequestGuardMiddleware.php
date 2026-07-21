@@ -43,6 +43,12 @@ final class InterfaceRequestGuardMiddleware implements MiddlewareInterface
                 InterfaceConnectionService::ACTIVITY_MAX_BODY_BYTES,
                 'The activity request is too large. Send fewer events per batch.'
             ),
+            '/api/v1/interface/usage-statistics' => $this->guardBodySize(
+                $request,
+                $handler,
+                InterfaceConnectionService::USAGE_STATISTICS_MAX_BODY_BYTES,
+                'The usage statistics request is too large. Send fewer summaries per batch.'
+            ),
             default => $handler->handle($request),
         };
     }

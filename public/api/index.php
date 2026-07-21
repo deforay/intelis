@@ -36,6 +36,7 @@ use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 use App\HttpHandlers\InterfaceApi\ActivateInstallationHandler;
 use App\HttpHandlers\InterfaceApi\GetConnectionHandler;
 use App\HttpHandlers\InterfaceApi\SubmitActivityHandler;
+use App\HttpHandlers\InterfaceApi\SubmitUsageStatisticsHandler;
 use App\HttpHandlers\InterfaceApi\SubmitResultsHandler;
 use App\Middlewares\Api\InterfaceRequestGuardMiddleware;
 use App\Middlewares\Api\InterfaceApiEnabledMiddleware;
@@ -94,6 +95,14 @@ $interfaceApi = $app->group('/api/v1/interface', function (RouteCollectorProxy $
             'results:write'
         ));
     $group->post('/activity', SubmitActivityHandler::class)
+        ->add(new InterfaceInstallationAuthMiddleware(
+            ContainerRegistry::get(InterfaceInstallationService::class),
+            'activity:write'
+        ));
+    // Daily volume shares the activity scope rather than adding one of its own, so
+    // installations already paired can start reporting it without being re-issued
+    // a credential.
+    $group->post('/usage-statistics', SubmitUsageStatisticsHandler::class)
         ->add(new InterfaceInstallationAuthMiddleware(
             ContainerRegistry::get(InterfaceInstallationService::class),
             'activity:write'

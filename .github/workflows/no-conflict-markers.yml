@@ -86,7 +86,8 @@ jobs:
             | xargs -0 -n1 php -l
           php -l app/classes/Exceptions/InterfaceApiException.php
           php -l app/classes/Services/InterfacingService.php
-          php -l app/classes/Services/InstrumentActivityService.php
+          find app/classes/Services -maxdepth 1 -name "Instrument*.php" -print0 \
+            | xargs -0 -n1 php -l
           php -l app/classes/Middlewares/Api/ApiAuthMiddleware.php
           php -l app/facilities/editFacility.php
           php -l app/facilities/interfaceConnectionAction.php
@@ -103,6 +104,7 @@ jobs:
             app/classes/Http app/classes/Exceptions/InterfaceApiException.php \
             app/classes/Services/InterfacingService.php \
             app/classes/Services/InstrumentActivityService.php \
+            app/classes/Services/InstrumentUsageStatisticsService.php \
             app/classes/Middlewares/Api/Interface*.php \
             app/facilities/interfaceConnectionAction.php \
             app/facilities/partials/interface-connections.php tests bin/interface-api.php

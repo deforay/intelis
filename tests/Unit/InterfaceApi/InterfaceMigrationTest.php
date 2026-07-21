@@ -49,13 +49,35 @@ final class InterfaceMigrationTest extends TestCase
         self::assertStringContainsString("SET `value` = '5.5.23'", $migration);
     }
 
+    /**
+     * A summary is unique per lab rather than globally, so two labs generating the
+     * same identifier stay separate instead of overwriting one another.
+     */
+    public function testUsageStatisticsAreUniquePerLabAndServerOwned(): void
+    {
+        $migration = file_get_contents(dirname(__DIR__, 3) . '/sys/migrations/5.5.27.sql');
+
+        self::assertIsString($migration);
+        self::assertStringContainsString('CREATE TABLE IF NOT EXISTS `instrument_usage_statistics_daily`', $migration);
+        self::assertStringContainsString(
+            'UNIQUE KEY `uniq_instrument_usage_lab_aggregate` (`lab_id`, `aggregate_uid`)',
+            $migration
+        );
+        self::assertStringContainsString('`lab_id` INT NOT NULL', $migration);
+        self::assertStringContainsString('`revision` INT UNSIGNED NOT NULL', $migration);
+        self::assertStringContainsString("SET `value` = '5.5.27'", $migration);
+    }
+
     /** The word telemetry is not used anywhere in the application. */
     public function testActivityIsNotCalledTelemetry(): void
     {
         $root = dirname(__DIR__, 3);
         $paths = [
             $root . '/sys/migrations/5.5.23.sql',
+            $root . '/sys/migrations/5.5.27.sql',
             $root . '/app/classes/Services/InstrumentActivityService.php',
+            $root . '/app/classes/Services/InstrumentUsageStatisticsService.php',
+            $root . '/app/classes/HttpHandlers/InterfaceApi/SubmitUsageStatisticsHandler.php',
             $root . '/app/classes/HttpHandlers/InterfaceApi/SubmitActivityHandler.php',
             $root . '/app/classes/Services/InterfaceApi/InterfaceConnectionService.php',
             $root . '/app/classes/Services/InterfaceApi/InterfaceInstallationService.php',
