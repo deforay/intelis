@@ -92,6 +92,7 @@ final class InstrumentActivityService
     ): ?array {
         $eventUid = trim((string) ($event['event_id'] ?? $event['event_uid'] ?? ''));
         $eventType = trim((string) ($event['event_type'] ?? ''));
+        // getDateTime returns a formatted string, not a date object.
         $occurredAt = DateUtility::getDateTime((string) ($event['occurred_at'] ?? ''));
 
         if ($eventUid === '' || $eventType === '' || $occurredAt === null) {
@@ -105,7 +106,7 @@ final class InstrumentActivityService
             'received_via' => $receivedVia,
             'event_type' => mb_substr($eventType, 0, 64),
             'event_category' => mb_substr((string) ($event['event_category'] ?? 'unknown'), 0, 32),
-            'occurred_at' => $occurredAt->format('Y-m-d H:i:s'),
+            'occurred_at' => $occurredAt,
             'instrument_id' => $this->nullableText($event['instrument_id'] ?? null, 128),
             'machine_type' => $this->nullableText($event['machine_type'] ?? null, 128),
             'protocol' => $this->nullableText($event['protocol'] ?? null, 32),

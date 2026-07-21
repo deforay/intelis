@@ -32,6 +32,13 @@ final readonly class InterfaceConnectionService
     public const ACTIVITY_MAX_ITEMS = 1000;
     public const ACTIVITY_MAX_BODY_BYTES = 1048576;
 
+    /**
+     * A daily summary covers a whole day for one instrument and test type, so even a
+     * long backlog is a modest batch.
+     */
+    public const USAGE_STATISTICS_MAX_ITEMS = 500;
+    public const USAGE_STATISTICS_MAX_BODY_BYTES = 1048576;
+
     public function __construct(private DatabaseService $db)
     {
     }
@@ -55,6 +62,7 @@ final readonly class InterfaceConnectionService
                     'connectionRead' => true,
                     'resultsWrite' => true,
                     'activityWrite' => true,
+                    'usageStatisticsWrite' => true,
                 ],
                 'credentialScopes' => array_values(is_array($scopes) ? $scopes : []),
             ],
@@ -71,6 +79,10 @@ final readonly class InterfaceConnectionService
                 'activity' => [
                     'maxItems' => self::ACTIVITY_MAX_ITEMS,
                     'maxBodyBytes' => self::ACTIVITY_MAX_BODY_BYTES,
+                ],
+                'usageStatistics' => [
+                    'maxItems' => self::USAGE_STATISTICS_MAX_ITEMS,
+                    'maxBodyBytes' => self::USAGE_STATISTICS_MAX_BODY_BYTES,
                 ],
             ],
         ];
