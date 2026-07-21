@@ -58,6 +58,7 @@ $allowedMimeTypes = [
     'application/pdf',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     'application/vnd.ms-excel',
+    'application/json',
     'text/csv',
     'text/plain'
 ];
