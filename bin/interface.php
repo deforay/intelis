@@ -33,6 +33,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\InterfacingService;
 use App\Services\InstrumentActivityService;
+use App\Services\InstrumentUsageStatisticsService;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 use Symfony\Component\Uid\Uuid;
@@ -197,17 +198,15 @@ try {
 
     $interfaceData = $filtered;
 
-    if ($interfaceData === []) {
-        if ($isCli) {
-            echo "No results to process" . PHP_EOL;
-        }
-        exit(CLI\ERROR);
-    }
-
+    // A run with no new results is not the end of the run: the instrument activity and
+    // the daily volume below still have to be collected, and on a quiet day they are
+    // the only thing there is to collect.
     $numberOfResults = 0;
     $totalResults = count($interfaceData); // Get the total number of items
     if ($isCli) {
-        echo "Processing $totalResults filtered results from Interface Tool" . PHP_EOL;
+        echo $totalResults === 0
+            ? "No results to process" . PHP_EOL
+            : "Processing $totalResults filtered results from Interface Tool" . PHP_EOL;
     }
 
     foreach ($interfaceData as $key => $result) {
@@ -300,19 +299,132 @@ try {
         } catch (Throwable $activityError) {
             LoggerUtility::logInfo('Instrument activity not imported: ' . $activityError->getMessage());
         }
+
+        // Daily test volume per instrument. Kept separate from the activity above
+        // because a summary is revised through the day rather than being a one-off
+        // event: the tool raises its revision each time, and only the exact revision
+        // we were given is acknowledged, so a revision written while we were working
+        // is picked up on the next run instead of being skipped.
+        try {
+            $usageRows = $db->connection('interface')->rawQuery(
+                "SELECT * FROM usage_statistics_daily
+                  WHERE revision > COALESCE(remote_uploaded_revision, 0)
+                  ORDER BY activity_date ASC, id ASC
+                  LIMIT 500"
+            ) ?: [];
+
+            if ($usageRows !== []) {
+                /** @var InstrumentUsageStatisticsService $usageStatistics */
+                $usageStatistics = ContainerRegistry::get(InstrumentUsageStatisticsService::class);
+
+                $usageTotals = ['stored' => 0, 'updated' => 0, 'duplicates' => 0, 'stale' => 0, 'rejected' => 0];
+                $usageFailed = 0;
+                $usageRejectedRows = [];
+
+                // Only the exact revision that was sent is acknowledged, so a revision the
+                // tool wrote while we were working is picked up next run rather than skipped.
+                $acknowledge = function (array $usageRow) use ($db): void {
+                    $db->connection('interface')->rawQuery(
+                        "UPDATE usage_statistics_daily
+                            SET remote_uploaded_revision = ?
+                          WHERE aggregate_id = ? AND revision = ?",
+                        [$usageRow['revision'], $usageRow['aggregate_id'], $usageRow['revision']]
+                    );
+                };
+
+                // One summary at a time, so a row that cannot be stored costs only itself.
+                // Storing the batch in one call would mean a single bad row leaves every
+                // row in the window unacknowledged, and the next run reads the same window
+                // and fails on the same row -- usage statistics would never advance again.
+                foreach ($usageRows as $usageRow) {
+                    try {
+                        $rowSummary = $usageStatistics->store(
+                            [$usageRow],
+                            (int) $labId,
+                            InstrumentUsageStatisticsService::VIA_IMPORTER
+                        );
+                    } catch (Throwable $rowError) {
+                        // Left unacknowledged on purpose: unlike a rejected summary this
+                        // may well succeed next run, so it keeps its place in the queue.
+                        $usageFailed++;
+                        LoggerUtility::logError('Usage statistic could not be stored: ' . $rowError->getMessage(), [
+                            'labId' => (int) $labId,
+                            'aggregateId' => $usageRow['aggregate_id'] ?? null,
+                        ]);
+                        continue;
+                    }
+
+                    foreach ($usageTotals as $key => $value) {
+                        $usageTotals[$key] = $value + $rowSummary[$key];
+                    }
+
+                    // A rejected summary is held back until we know it is an isolated bad
+                    // row rather than a schema mismatch. Acknowledging it immediately
+                    // would be one-way: if the tool's columns did not match, every row
+                    // would be rejected and marked uploaded, and no amount of fixing this
+                    // side afterwards could get the data back.
+                    if ($rowSummary['rejected'] > 0) {
+                        $usageRejectedRows[] = $usageRow;
+                        LoggerUtility::logWarning('Usage statistic rejected as unusable', [
+                            'labId' => (int) $labId,
+                            'aggregateId' => $usageRow['aggregate_id'] ?? null,
+                            'revision' => $usageRow['revision'] ?? null,
+                        ]);
+                        continue;
+                    }
+
+                    $acknowledge($usageRow);
+                }
+
+                // Something in this window was usable, so the rejects really are bad rows
+                // and will be just as bad next run. Acknowledge them, or they would sit at
+                // the front of the window forever and starve everything behind them.
+                $usableRows = $usageTotals['stored'] + $usageTotals['updated']
+                    + $usageTotals['duplicates'] + $usageTotals['stale'];
+                if ($usageRejectedRows !== [] && $usableRows > 0) {
+                    foreach ($usageRejectedRows as $rejectedRow) {
+                        $acknowledge($rejectedRow);
+                    }
+                } elseif ($usageRejectedRows !== []) {
+                    // Nothing at all was usable. That looks like the tool's table not
+                    // matching what is expected rather than a handful of bad rows, so
+                    // nothing is acknowledged and the data stays recoverable.
+                    LoggerUtility::logError('Every usage statistic read was rejected; none acknowledged', [
+                        'labId' => (int) $labId,
+                        'read' => count($usageRows),
+                    ]);
+                }
+
+                if ($isCli) {
+                    echo "Usage statistics: {$usageTotals['stored']} stored, "
+                        . "{$usageTotals['updated']} updated, {$usageTotals['duplicates']} already held, "
+                        . "{$usageTotals['stale']} stale, {$usageTotals['rejected']} rejected, "
+                        . "$usageFailed failed" . PHP_EOL;
+                }
+            }
+        } catch (Throwable $usageError) {
+            // Reading the table at all failed. Older versions of the tool do not have it,
+            // which is the ordinary case and not an error.
+            LoggerUtility::logInfo('Usage statistics not imported: ' . $usageError->getMessage());
+        }
     }
 
 } catch (Throwable $e) {
     $db->connection('default')->rollbackTransaction();
-    LoggerUtility::logError($e->getMessage(), [
+    // Asking for the interface connection when it was never added throws, which here
+    // would replace the real error with a misleading one and skip the logging entirely.
+    $context = [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
-        'last_interface_db_query' => $db->connection('interface')->getLastQuery(),
-        'last_interface_db_error' => $db->connection('interface')->getLastError(),
         'last_default_db_query' => $db->connection('default')->getLastQuery(),
         'last_default_db_error' => $db->connection('default')->getLastError(),
         'trace' => $e->getTraceAsString()
-    ]);
+    ];
+    if ($mysqlConnected) {
+        $context['last_interface_db_query'] = $db->connection('interface')->getLastQuery();
+        $context['last_interface_db_error'] = $db->connection('interface')->getLastError();
+    }
+    LoggerUtility::logError($e->getMessage(), $context);
 } finally {
 
     $batchSize = 1000;
@@ -360,29 +472,40 @@ try {
 
 
     try {
+        // The interface connection only exists when interfacing MySQL is configured. On a
+        // SQLite-only install asking for it throws, and a throw here would escape the
+        // catch below (which would ask for it again) and leave the lock file behind.
+        if ($mysqlConnected) {
+            $db->connection('interface')->beginTransaction();
+        }
+
         // Update synced IDs
-        $db->connection('interface')->beginTransaction();
         $updateSyncStatus($db, $sqliteDb, $syncedIds, 1, $mysqlConnected, $sqliteConnected);
 
         // Update unsynced IDs
         $updateSyncStatus($db, $sqliteDb, $unsyncedIds, 2, $mysqlConnected, $sqliteConnected);
         $updateSyncStatus($db, $sqliteDb, $skippedIds, 2, $mysqlConnected, $sqliteConnected);
 
-        $db->connection('interface')->commitTransaction();
+        if ($mysqlConnected) {
+            $db->connection('interface')->commitTransaction();
+        }
     } catch (Throwable $e) {
         if ($isCli) {
             echo "Error while syncing interface results. Please check error log for more details." . PHP_EOL;
         }
-        $db->connection('interface')->rollbackTransaction();
-        LoggerUtility::logError($e->getMessage(), [
+        $context = [
             'file' => $e->getFile(),
             'line' => $e->getLine(),
-            'last_interface_db_query' => $db->connection('interface')->getLastQuery(),
-            'last_interface_db_error' => $db->connection('interface')->getLastError(),
             'last_default_db_query' => $db->connection('default')->getLastQuery(),
             'last_default_db_error' => $db->connection('default')->getLastError(),
             'trace' => $e->getTraceAsString()
-        ]);
+        ];
+        if ($mysqlConnected) {
+            $db->connection('interface')->rollbackTransaction();
+            $context['last_interface_db_query'] = $db->connection('interface')->getLastQuery();
+            $context['last_interface_db_error'] = $db->connection('interface')->getLastError();
+        }
+        LoggerUtility::logError($e->getMessage(), $context);
     }
     // Close SQLite connection
     if ($sqliteConnected && $sqliteDb instanceof \PDO) {
