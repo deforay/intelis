@@ -88,8 +88,28 @@ try {
         'instrument_controls' => 'instrumentControls',
     ];
 
+    // What the Interface Tool reported, forwarded on to STS. These do not belong with
+    // the tables above: they have no updated_datetime, they are append-only rather than
+    // a small fixed set of rows, and they carry their own watermark so a burst of
+    // activity cannot hold up the metadata sync (or arrive as one enormous payload).
+    $instrumentDataTables = [
+        'instrument_activity_log' => [
+            'payloadKey' => 'instrumentActivity',
+            'deltaColumn' => 'received_at',
+            'watermark' => 'last_instrument_activity_sync',
+            'limit' => 5000,
+        ],
+        'instrument_usage_statistics_daily' => [
+            'payloadKey' => 'instrumentUsageStatistics',
+            'deltaColumn' => 'updated_at',
+            'watermark' => 'last_instrument_usage_sync',
+            'limit' => 5000,
+        ],
+    ];
+
     // +1 for users table
-    $bar = MiscUtility::spinnerStart(count($metadataTables) + 1, 'Collecting table data…');
+    $totalSteps = count($metadataTables) + count($instrumentDataTables) + 1;
+    $bar = MiscUtility::spinnerStart($totalSteps, 'Collecting table data…');
 
     foreach ($metadataTables as $table => $payloadKey) {
         if ($forceFlag === false && !empty($lastUpdatedOn)) {
@@ -98,6 +118,30 @@ try {
         $records = $db->get($table);
         if (!empty($records)) {
             $payload[$payloadKey] = $records;
+        }
+        MiscUtility::spinnerAdvance($bar);
+    }
+
+    // Watermarks are advanced only after STS has accepted the payload, so a failed run
+    // resends rather than skipping. Re-sending is free: STS stores these by their own
+    // identifiers, so a row it already holds is a no-op there.
+    $instrumentWatermarks = [];
+    foreach ($instrumentDataTables as $table => $spec) {
+        $sentUpTo = $db->getValue('s_vlsm_instance', $spec['watermark']);
+
+        $db->reset();
+        if ($forceFlag === false && !empty($sentUpTo)) {
+            $db->where($spec['deltaColumn'] . ' > ?', [$sentUpTo]);
+        }
+        $db->orderBy($spec['deltaColumn'], 'ASC');
+        $records = $db->get($table, $spec['limit']);
+
+        if (!empty($records)) {
+            $payload[$spec['payloadKey']] = $records;
+            // The watermark follows the last row actually sent, not the clock, so rows
+            // written while this run was in flight are picked up next time.
+            $instrumentWatermarks[$spec['watermark']] =
+                end($records)[$spec['deltaColumn']] ?? null;
         }
         MiscUtility::spinnerAdvance($bar);
     }
@@ -140,11 +184,19 @@ try {
     $jsonResponse = $apiService->post($url, $payload, gzip: true);
     $output->writeln("<info>OK</info>");
 
+    // Only reached when the post above did not throw, so the watermarks advance solely
+    // on a delivery STS accepted. Each instrument watermark moves to the last row that
+    // was actually sent; a table with nothing new leaves its watermark untouched.
+    $syncUpdate = ['last_lab_metadata_sync' => DateUtility::getCurrentDateTime()];
+    foreach ($instrumentWatermarks as $watermarkColumn => $watermarkValue) {
+        if ($watermarkValue !== null) {
+            $syncUpdate[$watermarkColumn] = $watermarkValue;
+        }
+    }
+
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
-    $id = $db->update('s_vlsm_instance', [
-        'last_lab_metadata_sync' => DateUtility::getCurrentDateTime()
-    ]);
+    $id = $db->update('s_vlsm_instance', $syncUpdate);
 
     $output->writeln("<info>Sync complete.</info>");
 } catch (Exception $exc) {

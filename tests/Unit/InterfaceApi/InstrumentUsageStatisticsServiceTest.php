@@ -148,14 +148,29 @@ final class InstrumentUsageStatisticsServiceTest extends TestCase
     }
 
     /**
+     * A summary relayed from a LIS to STS is stored the same way, tagged so the path it
+     * arrived by is recorded rather than inferred.
+     */
+    public function testRelayReceivedViaIsPreserved(): void
+    {
+        $row = $this->normalize(self::VALID_SUMMARY, labId: 7, via: InstrumentUsageStatisticsService::VIA_RELAY);
+
+        self::assertIsArray($row);
+        self::assertSame('relay', $row['received_via']);
+    }
+
+    /**
      * @param array<string, mixed> $summary
      * @return array<string, mixed>|null
      */
-    private function normalize(array $summary, int $labId): ?array
-    {
+    private function normalize(
+        array $summary,
+        int $labId,
+        string $via = InstrumentUsageStatisticsService::VIA_API
+    ): ?array {
         $service = (new ReflectionClass(InstrumentUsageStatisticsService::class))->newInstanceWithoutConstructor();
         $normalize = new \ReflectionMethod($service, 'normalize');
 
-        return $normalize->invoke($service, $summary, $labId, InstrumentUsageStatisticsService::VIA_API, null);
+        return $normalize->invoke($service, $summary, $labId, $via, null);
     }
 }
