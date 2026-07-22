@@ -20,9 +20,9 @@ $general = ContainerRegistry::get(CommonService::class);
  * Build a SQL WHERE clause fragment from the user's filter inputs.
  * Returns an array of conditions to be ANDed together.
  */
-function pmtctBuildFilterConditions(array $post, DatabaseService $db): array
+function pmtctBuildFilterConditions(array $post, DatabaseService $db, string $alias = 'e'): array
 {
-    $where = ["e.mother_id IS NOT NULL", "TRIM(e.mother_id) != ''"];
+    $where = ["$alias.mother_id IS NOT NULL", "TRIM($alias.mother_id) != ''"];
 
     if (!empty($post['sampleCollectionDate'])) {
         $range = explode("to", (string) $post['sampleCollectionDate']);
@@ -31,16 +31,16 @@ function pmtctBuildFilterConditions(array $post, DatabaseService $db): array
             $end   = trim($range[1]);
             $startSql = date('Y-m-d', strtotime($start));
             $endSql   = date('Y-m-d', strtotime($end));
-            $where[] = "DATE(e.sample_collection_date) BETWEEN '" . $startSql . "' AND '" . $endSql . "'";
+            $where[] = "DATE($alias.sample_collection_date) BETWEEN '" . $startSql . "' AND '" . $endSql . "'";
         }
     }
 
     if (!empty($post['provinceId']) && ctype_digit((string) $post['provinceId'])) {
-        $where[] = "e.province_id = " . (int) $post['provinceId'];
+        $where[] = "$alias.province_id = " . (int) $post['provinceId'];
     }
 
     if (!empty($post['labName']) && ctype_digit((string) $post['labName'])) {
-        $where[] = "e.lab_id = " . (int) $post['labName'];
+        $where[] = "$alias.lab_id = " . (int) $post['labName'];
     }
 
     return $where;
@@ -81,6 +81,68 @@ function pmtctVlHasResultExpr(string $alias = 'v'): string
     return "$alias.vl_result_category IN ('suppressed','not suppressed')";
 }
 
+/**
+ * SQL fragment identifying a child across repeat EID tests. Prefers the
+ * facility-recorded Child ID; records without one fall back to their own
+ * eid_id so they count as single-test children instead of collapsing into
+ * one bogus "blank" child.
+ */
+function pmtctChildKeyExpr(string $alias = 'e'): string
+{
+    return "COALESCE(NULLIF(TRIM($alias.child_id), ''), CONCAT('eid:', $alias.eid_id))";
+}
+
+/**
+ * Normalise a date value for JSON output (zero dates and NULLs become '').
+ */
+function pmtctDateOrBlank($v): string
+{
+    if (empty($v) || str_starts_with((string) $v, '0000-00-00')) {
+        return '';
+    }
+    $ts = strtotime((string) $v);
+    return $ts ? date('Y-m-d', $ts) : '';
+}
+
+/**
+ * Classify whether the mother had a documented high VL strictly before the
+ * child's date of birth. Returns 'yes', 'no', or 'unknown' (no usable DOB).
+ */
+function pmtctPreBirthFlag(?string $childDob, ?string $firstHighVlDate): string
+{
+    $dob = pmtctDateOrBlank($childDob);
+    if ($dob === '') {
+        return 'unknown';
+    }
+    $firstHigh = pmtctDateOrBlank($firstHighVlDate);
+    if ($firstHigh === '' || $firstHigh >= $dob) {
+        return 'no';
+    }
+    return 'yes';
+}
+
+/**
+ * Given a mother's VL tests (ascending by collection date), find the most
+ * recent test with a categorised result on or before the given date.
+ */
+function pmtctVlStatusAsOf(array $vlTests, string $asOfDate): ?array
+{
+    if ($asOfDate === '') {
+        return null;
+    }
+    $latest = null;
+    foreach ($vlTests as $t) {
+        $d = $t['collectionDate'] ?? '';
+        if ($d === '' || $d > $asOfDate) {
+            continue;
+        }
+        if (($t['category'] ?? '') === 'suppressed' || ($t['category'] ?? '') === 'not suppressed') {
+            $latest = $t;
+        }
+    }
+    return $latest;
+}
+
 $action = $_POST['action'] ?? 'linked';
 
 // ---------------------------------------------------------------------------
@@ -92,6 +154,7 @@ if ($action === 'summary') {
     $whereSql = implode(' AND ', $where);
     $positiveExpr = pmtctEidPositiveExpr('e');
     $highVlExpr   = pmtctHighVlExpr('v');
+    $childKeyExpr = pmtctChildKeyExpr('e');
 
     // Children-side counts (one row per child)
     $childSql = "SELECT
@@ -102,6 +165,8 @@ if ($action === 'summary') {
                             THEN e.eid_id END) AS testedChildren,
             COUNT(DISTINCT CASE WHEN v.vl_sample_id IS NOT NULL AND $positiveExpr
                             THEN e.eid_id END) AS positiveChildren,
+            COUNT(DISTINCT CASE WHEN v.vl_sample_id IS NOT NULL AND $positiveExpr
+                            THEN $childKeyExpr END) AS positiveChildrenDistinct,
             COUNT(DISTINCT CASE WHEN v.vl_sample_id IS NULL THEN e.eid_id END) AS unmatchedChildren
         FROM form_eid e
         LEFT JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
@@ -122,14 +187,45 @@ if ($action === 'summary') {
         INNER JOIN form_vl v ON TRIM(e.mother_id) = TRIM(v.patient_art_no)
         WHERE $whereSql";
 
-    $childRow  = $db->rawQueryOne($childSql);
-    $motherRow = $db->rawQueryOne($motherSql);
+    // Of the HIV-positive children, how many had a mother with a documented
+    // high VL strictly BEFORE the child's date of birth? Children without a
+    // usable DOB cannot be classified and are excluded here (surfaced as
+    // "unknown" in the drilldown). The mother's first high-VL date is
+    // pre-aggregated in a derived table: joining form_vl row-by-row with the
+    // date inequality forces a nested-loop full scan per EID row (~30s),
+    // while "MIN(high VL date) < DOB" is equivalent and runs in ~2s.
+    $whereSqlE2     = implode(' AND ', pmtctBuildFilterConditions($_POST, $db, 'e2'));
+    $positiveExprE2 = pmtctEidPositiveExpr('e2');
+    $preBirthSql = "SELECT
+            COUNT(DISTINCT $childKeyExpr) AS preBirthHighVlChildren
+        FROM form_eid e
+        INNER JOIN (
+            SELECT TRIM(v.patient_art_no) AS mid,
+                   MIN(CASE WHEN v.vl_result_category = 'not suppressed' THEN DATE(v.sample_collection_date) END) AS firstHighVlDate
+            FROM form_vl v
+            INNER JOIN (
+                SELECT DISTINCT TRIM(e2.mother_id) AS mid
+                FROM form_eid e2
+                WHERE $whereSqlE2 AND $positiveExprE2
+            ) pm ON pm.mid = TRIM(v.patient_art_no)
+            GROUP BY TRIM(v.patient_art_no)
+        ) vm ON vm.mid = TRIM(e.mother_id)
+        WHERE $whereSql AND $positiveExpr
+          AND e.child_dob IS NOT NULL AND e.child_dob != '0000-00-00'
+          AND vm.firstHighVlDate IS NOT NULL
+          AND vm.firstHighVlDate < e.child_dob";
+
+    $childRow    = $db->rawQueryOne($childSql);
+    $motherRow   = $db->rawQueryOne($motherSql);
+    $preBirthRow = $db->rawQueryOne($preBirthSql);
 
     $payload = [
         'totalChildrenWithMotherId' => (int) ($childRow['totalChildrenWithMotherId'] ?? 0),
         'matchedChildren'           => (int) ($childRow['matchedChildren'] ?? 0),
         'testedChildren'            => (int) ($childRow['testedChildren'] ?? 0),
         'positiveChildren'          => (int) ($childRow['positiveChildren'] ?? 0),
+        'positiveChildrenDistinct'  => (int) ($childRow['positiveChildrenDistinct'] ?? 0),
+        'preBirthHighVlChildren'    => (int) ($preBirthRow['preBirthHighVlChildren'] ?? 0),
         'unmatchedChildren'         => (int) ($childRow['unmatchedChildren'] ?? 0),
         'distinctMothers'           => (int) ($motherRow['distinctMothers'] ?? 0),
         'vlTests'                   => (int) ($motherRow['vlTests'] ?? 0),
@@ -140,6 +236,335 @@ if ($action === 'summary') {
 
     header('Content-Type: application/json');
     echo json_encode($payload);
+    return;
+}
+
+// ---------------------------------------------------------------------------
+// POSITIVE CHILDREN drilldown - one row per distinct HIV-positive matched
+// child in the current filter window, with the mother's VL picture alongside.
+// Optional preBirthOnly=1 restricts to children whose mother had a documented
+// high VL before the child's date of birth.
+// ---------------------------------------------------------------------------
+if ($action === 'positiveChildren') {
+
+    $whereSql     = implode(' AND ', pmtctBuildFilterConditions($_POST, $db));
+    $whereSqlE2   = implode(' AND ', pmtctBuildFilterConditions($_POST, $db, 'e2'));
+    $positiveExpr   = pmtctEidPositiveExpr('e');
+    $positiveExprE2 = pmtctEidPositiveExpr('e2');
+    $childKeyExpr   = pmtctChildKeyExpr('e');
+
+    // Aggregate each mother's full VL history once (all time, on purpose:
+    // pre-birth tests usually predate the EID filter window), restricted to
+    // mothers of positive children in the window so the scan stays bounded.
+    $sql = "SELECT
+            $childKeyExpr AS childKey,
+            MAX(TRIM(e.child_id)) AS childId,
+            MAX(e.eid_id) AS eidId,
+            MAX(e.child_gender) AS childSex,
+            MAX(e.child_dob) AS childDob,
+            MAX(e.child_age) AS childAgeMonths,
+            TRIM(e.mother_id) AS motherId,
+            COUNT(DISTINCT e.eid_id) AS positiveTestsInWindow,
+            MAX(DATE(e.sample_collection_date)) AS latestPositiveDate,
+            vm.vlTests,
+            vm.highVlTests,
+            vm.firstHighVlDate,
+            vm.latestVlDate,
+            vm.latestVlResult,
+            vm.latestVlCategory
+        FROM form_eid e
+        INNER JOIN (
+            SELECT TRIM(v.patient_art_no) AS mid,
+                   COUNT(*) AS vlTests,
+                   SUM(CASE WHEN v.vl_result_category = 'not suppressed' THEN 1 ELSE 0 END) AS highVlTests,
+                   MIN(CASE WHEN v.vl_result_category = 'not suppressed' THEN DATE(v.sample_collection_date) END) AS firstHighVlDate,
+                   MAX(DATE(v.sample_collection_date)) AS latestVlDate,
+                   SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.result, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlResult,
+                   SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.vl_result_category, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlCategory
+            FROM form_vl v
+            INNER JOIN (
+                SELECT DISTINCT TRIM(e2.mother_id) AS mid
+                FROM form_eid e2
+                WHERE $whereSqlE2 AND $positiveExprE2
+            ) pm ON pm.mid = TRIM(v.patient_art_no)
+            GROUP BY TRIM(v.patient_art_no)
+        ) vm ON vm.mid = TRIM(e.mother_id)
+        WHERE $whereSql AND $positiveExpr
+        GROUP BY childKey, TRIM(e.mother_id)
+        ORDER BY latestPositiveDate DESC";
+
+    $preBirthOnly = !empty($_POST['preBirthOnly']) && $_POST['preBirthOnly'] !== '0';
+
+    $rows = [];
+    foreach ($db->rawQuery($sql) as $r) {
+        $preBirth = pmtctPreBirthFlag($r['childDob'] ?? null, $r['firstHighVlDate'] ?? null);
+        if ($preBirthOnly && $preBirth !== 'yes') {
+            continue;
+        }
+        $rows[] = [
+            'childId'               => $r['childId'] ?? '',
+            'eidId'                 => (int) ($r['eidId'] ?? 0),
+            'childSex'              => $r['childSex'] ?? '',
+            'childDob'              => pmtctDateOrBlank($r['childDob'] ?? null),
+            'childAgeMonths'        => $r['childAgeMonths'] ?? '',
+            'motherId'              => $r['motherId'] ?? '',
+            'positiveTestsInWindow' => (int) ($r['positiveTestsInWindow'] ?? 0),
+            'latestPositiveDate'    => pmtctDateOrBlank($r['latestPositiveDate'] ?? null),
+            'vlTests'               => (int) ($r['vlTests'] ?? 0),
+            'highVlTests'           => (int) ($r['highVlTests'] ?? 0),
+            'firstHighVlDate'       => pmtctDateOrBlank($r['firstHighVlDate'] ?? null),
+            'latestVlDate'          => pmtctDateOrBlank($r['latestVlDate'] ?? null),
+            'latestVlResult'        => $r['latestVlResult'] ?? '',
+            'latestVlCategory'      => $r['latestVlCategory'] ?? '',
+            'motherHighVlPreBirth'  => $preBirth,
+        ];
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode(['rows' => $rows]);
+    return;
+}
+
+// ---------------------------------------------------------------------------
+// HIGH VL MOTHERS drilldown - one row per distinct matched mother with at
+// least one high VL (>= 1000 cp/mL) test on record, for children in the
+// current filter window. VL history is all-time by design.
+// ---------------------------------------------------------------------------
+if ($action === 'highVlMothers') {
+
+    $whereSql     = implode(' AND ', pmtctBuildFilterConditions($_POST, $db));
+    $positiveExpr = pmtctEidPositiveExpr('e');
+    $childKeyExpr = pmtctChildKeyExpr('e');
+
+    $sql = "SELECT
+            em.mid AS motherId,
+            MAX(em.childrenInWindow) AS childrenInWindow,
+            MAX(em.positiveChildren) AS positiveChildren,
+            COUNT(*) AS vlTests,
+            SUM(CASE WHEN v.vl_result_category = 'not suppressed' THEN 1 ELSE 0 END) AS highVlTests,
+            MIN(CASE WHEN v.vl_result_category = 'not suppressed' THEN DATE(v.sample_collection_date) END) AS firstHighVlDate,
+            MAX(DATE(v.sample_collection_date)) AS latestVlDate,
+            SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.result, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlResult,
+            SUBSTRING_INDEX(GROUP_CONCAT(COALESCE(v.vl_result_category, '') ORDER BY v.sample_collection_date DESC SEPARATOR '||'), '||', 1) AS latestVlCategory
+        FROM (
+            SELECT TRIM(e.mother_id) AS mid,
+                   COUNT(DISTINCT $childKeyExpr) AS childrenInWindow,
+                   COUNT(DISTINCT CASE WHEN $positiveExpr THEN $childKeyExpr END) AS positiveChildren
+            FROM form_eid e
+            WHERE $whereSql
+            GROUP BY TRIM(e.mother_id)
+        ) em
+        INNER JOIN form_vl v ON TRIM(v.patient_art_no) = em.mid
+        GROUP BY em.mid
+        HAVING highVlTests > 0
+        ORDER BY latestVlDate DESC";
+
+    $rows = [];
+    foreach ($db->rawQuery($sql) as $r) {
+        $rows[] = [
+            'motherId'         => $r['motherId'] ?? '',
+            'childrenInWindow' => (int) ($r['childrenInWindow'] ?? 0),
+            'positiveChildren' => (int) ($r['positiveChildren'] ?? 0),
+            'vlTests'          => (int) ($r['vlTests'] ?? 0),
+            'highVlTests'      => (int) ($r['highVlTests'] ?? 0),
+            'firstHighVlDate'  => pmtctDateOrBlank($r['firstHighVlDate'] ?? null),
+            'latestVlDate'     => pmtctDateOrBlank($r['latestVlDate'] ?? null),
+            'latestVlResult'   => $r['latestVlResult'] ?? '',
+            'latestVlCategory' => $r['latestVlCategory'] ?? '',
+        ];
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode(['rows' => $rows]);
+    return;
+}
+
+// ---------------------------------------------------------------------------
+// Shared history loaders (used by childHistory / motherHistory).
+// ---------------------------------------------------------------------------
+
+/**
+ * All VL tests for a mother (ascending), matching the report's TRIM join.
+ */
+function pmtctLoadMotherVlTests(DatabaseService $db, string $motherId): array
+{
+    if ($motherId === '') {
+        return [];
+    }
+    $rows = $db->rawQuery(
+        "SELECT v.sample_code, v.remote_sample_code,
+                v.sample_collection_date, v.sample_tested_datetime,
+                v.result, v.result_value_absolute, v.result_value_log,
+                v.vl_result_category, v.vl_test_platform,
+                v.reason_for_vl_testing,
+                fvl.facility_name AS testing_lab,
+                fv.facility_name AS facility_name
+        FROM form_vl v
+        LEFT JOIN facility_details fvl ON fvl.facility_id = v.lab_id
+        LEFT JOIN facility_details fv ON fv.facility_id = v.facility_id
+        WHERE TRIM(v.patient_art_no) = ?
+        ORDER BY v.sample_collection_date ASC, v.vl_sample_id ASC",
+        [$motherId]
+    ) ?: [];
+
+    $tests = [];
+    foreach ($rows as $r) {
+        $tests[] = [
+            'sampleCode'     => $r['sample_code'] ?? '',
+            'remoteSampleCode' => $r['remote_sample_code'] ?? '',
+            'collectionDate' => pmtctDateOrBlank($r['sample_collection_date'] ?? null),
+            'testedDate'     => pmtctDateOrBlank($r['sample_tested_datetime'] ?? null),
+            'result'         => $r['result'] ?? '',
+            'resultAbsolute' => $r['result_value_absolute'] ?? '',
+            'resultLog'      => $r['result_value_log'] ?? '',
+            'category'       => $r['vl_result_category'] ?? '',
+            'platform'       => $r['vl_test_platform'] ?? '',
+            'reason'         => $r['reason_for_vl_testing'] ?? '',
+            'testingLab'     => $r['testing_lab'] ?? '',
+            'facility'       => $r['facility_name'] ?? '',
+        ];
+    }
+    return $tests;
+}
+
+/**
+ * All EID tests for a set of conditions (ascending), with per-test context.
+ */
+function pmtctLoadEidTests(DatabaseService $db, string $whereClause, array $bind): array
+{
+    $rows = $db->rawQuery(
+        "SELECT e.eid_id, e.child_id, e.child_gender, e.child_dob,
+                e.child_age, e.child_age_in_weeks, e.mother_id,
+                e.sample_code, e.remote_sample_code,
+                e.sample_collection_date, e.sample_tested_datetime,
+                e.result, e.eid_test_platform,
+                rs.status_name,
+                fel.facility_name AS testing_lab,
+                fe.facility_name AS facility_name
+        FROM form_eid e
+        LEFT JOIN facility_details fel ON fel.facility_id = e.lab_id
+        LEFT JOIN facility_details fe ON fe.facility_id = e.facility_id
+        LEFT JOIN r_sample_status rs ON rs.status_id = e.result_status
+        WHERE $whereClause
+        ORDER BY e.sample_collection_date ASC, e.eid_id ASC",
+        $bind
+    ) ?: [];
+
+    $positiveTest = static function ($result): bool {
+        $r = trim((string) $result);
+        if ($r === '') {
+            return false;
+        }
+        return strtolower($r) === 'positive'
+            || (stripos($r, 'DETECTED') !== false && stripos($r, 'NOT DETECTED') === false);
+    };
+
+    $tests = [];
+    foreach ($rows as $r) {
+        $tests[] = [
+            'eidId'          => (int) ($r['eid_id'] ?? 0),
+            'childId'        => trim((string) ($r['child_id'] ?? '')),
+            'childSex'       => $r['child_gender'] ?? '',
+            'childDob'       => pmtctDateOrBlank($r['child_dob'] ?? null),
+            'childAgeMonths' => $r['child_age'] ?? '',
+            'motherId'       => trim((string) ($r['mother_id'] ?? '')),
+            'sampleCode'     => $r['sample_code'] ?? '',
+            'remoteSampleCode' => $r['remote_sample_code'] ?? '',
+            'collectionDate' => pmtctDateOrBlank($r['sample_collection_date'] ?? null),
+            'testedDate'     => pmtctDateOrBlank($r['sample_tested_datetime'] ?? null),
+            'result'         => $r['result'] ?? '',
+            'isPositive'     => $positiveTest($r['result'] ?? null),
+            'status'         => $r['status_name'] ?? '',
+            'platform'       => $r['eid_test_platform'] ?? '',
+            'testingLab'     => $r['testing_lab'] ?? '',
+            'facility'       => $r['facility_name'] ?? '',
+        ];
+    }
+    return $tests;
+}
+
+// ---------------------------------------------------------------------------
+// CHILD HISTORY - every EID test for one child (all-time), and at each test
+// the mother's VL status as of that test date. Keyed by childId; records
+// without a Child ID fall back to the single EID record (eidId).
+// ---------------------------------------------------------------------------
+if ($action === 'childHistory') {
+
+    $childId = trim((string) ($_POST['childId'] ?? ''));
+    $eidId   = (int) ($_POST['eidId'] ?? 0);
+
+    if ($childId !== '') {
+        $eidTests = pmtctLoadEidTests($db, "TRIM(e.child_id) = ?", [$childId]);
+    } elseif ($eidId > 0) {
+        $eidTests = pmtctLoadEidTests($db, "e.eid_id = ?", [$eidId]);
+    } else {
+        $eidTests = [];
+    }
+
+    // Mother: first non-empty mother ID across the child's tests.
+    $motherId = '';
+    $childDob = '';
+    foreach ($eidTests as $t) {
+        if ($motherId === '' && $t['motherId'] !== '') {
+            $motherId = $t['motherId'];
+        }
+        if ($childDob === '' && $t['childDob'] !== '') {
+            $childDob = $t['childDob'];
+        }
+    }
+
+    $vlTests = pmtctLoadMotherVlTests($db, $motherId);
+
+    $firstHighVlDate = '';
+    foreach ($vlTests as $t) {
+        if ($t['category'] === 'not suppressed' && $t['collectionDate'] !== '') {
+            $firstHighVlDate = $t['collectionDate'];
+            break;
+        }
+    }
+
+    // Attach the mother's VL status as of each EID test.
+    foreach ($eidTests as &$t) {
+        $t['motherVlAtTest'] = pmtctVlStatusAsOf($vlTests, $t['collectionDate']);
+    }
+    unset($t);
+
+    header('Content-Type: application/json');
+    echo json_encode([
+        'childId'              => $childId,
+        'childDob'             => $childDob,
+        'motherId'             => $motherId,
+        'motherHighVlPreBirth' => pmtctPreBirthFlag($childDob ?: null, $firstHighVlDate ?: null),
+        'eidTests'             => $eidTests,
+        'vlTests'              => $vlTests,
+    ]);
+    return;
+}
+
+// ---------------------------------------------------------------------------
+// MOTHER HISTORY - every VL test for one mother (all-time), plus every EID
+// test of her linked children, each stamped with her VL status at that test.
+// ---------------------------------------------------------------------------
+if ($action === 'motherHistory') {
+
+    $motherId = trim((string) ($_POST['motherId'] ?? ''));
+
+    $vlTests  = pmtctLoadMotherVlTests($db, $motherId);
+    $eidTests = ($motherId !== '')
+        ? pmtctLoadEidTests($db, "TRIM(e.mother_id) = ?", [$motherId])
+        : [];
+
+    foreach ($eidTests as &$t) {
+        $t['motherVlAtTest'] = pmtctVlStatusAsOf($vlTests, $t['collectionDate']);
+    }
+    unset($t);
+
+    header('Content-Type: application/json');
+    echo json_encode([
+        'motherId' => $motherId,
+        'vlTests'  => $vlTests,
+        'eidTests' => $eidTests,
+    ]);
     return;
 }
 
