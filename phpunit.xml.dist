@@ -8,5 +8,8 @@
         <testsuite name="Interface API foundation">
             <directory>tests/Unit/InterfaceApi</directory>
         </testsuite>
+        <testsuite name="Services">
+            <directory>tests/Unit/Services</directory>
+        </testsuite>
     </testsuites>
 </phpunit>
