@@ -21,6 +21,8 @@ final class InstrumentActivityService
 {
     public const VIA_API = 'api';
     public const VIA_IMPORTER = 'importer';
+    /** Forwarded from a LIS to STS, where the event was first stored by one of the above. */
+    public const VIA_RELAY = 'relay';
 
     public function __construct(private readonly DatabaseService $db)
     {

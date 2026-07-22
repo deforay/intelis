@@ -11,6 +11,8 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\InstrumentActivityService;
+use App\Services\InstrumentUsageStatisticsService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 require_once __DIR__ . "/../../../bootstrap.php";
@@ -57,6 +59,14 @@ try {
 
     $labId = null;
 
+    // Instrument activity and daily usage volume are not table-mapped like the rest.
+    // They are stored through the same services the API and importer use, so a relayed
+    // row, a direct API post and the importer all land on one row keyed by its own
+    // identifier rather than by a local auto-increment. Collected here, applied once
+    // labId is known.
+    $instrumentActivityRows = [];
+    $instrumentUsageRows = [];
+
     $tableMap = [
         'labStorage' => [
             'primaryKey' => 'storage_id',
@@ -96,6 +106,14 @@ try {
         foreach ($parsedData as $name => $data) {
             if ($name === 'labId') {
                 $labId = $data;
+                continue;
+            }
+            if ($name === 'instrumentActivity') {
+                $instrumentActivityRows = is_array($data) ? $data : [];
+                continue;
+            }
+            if ($name === 'instrumentUsageStatistics') {
+                $instrumentUsageRows = is_array($data) ? $data : [];
                 continue;
             }
             if (isset($tableMap[$name])) {
@@ -173,6 +191,35 @@ try {
                     }
                 }
             }
+        }
+    }
+
+    // The lab is the payload's labId -- the same source every table above is stored
+    // under on this endpoint. Storing is idempotent on each row's own identifier, so a
+    // row already held (from an earlier relay, a direct API post, or the importer) is a
+    // no-op rather than a duplicate. The services read only known fields, so a relayed
+    // row's local activity_id / usage_statistic_id and its lab_id are ignored: the lab
+    // written is the one passed here.
+    if (!empty($labId)) {
+        if ($instrumentActivityRows !== []) {
+            /** @var InstrumentActivityService $instrumentActivityService */
+            $instrumentActivityService = ContainerRegistry::get(InstrumentActivityService::class);
+            $instrumentActivityService->store(
+                $instrumentActivityRows,
+                (int) $labId,
+                InstrumentActivityService::VIA_RELAY
+            );
+            $counter += count($instrumentActivityRows);
+        }
+        if ($instrumentUsageRows !== []) {
+            /** @var InstrumentUsageStatisticsService $instrumentUsageStatisticsService */
+            $instrumentUsageStatisticsService = ContainerRegistry::get(InstrumentUsageStatisticsService::class);
+            $instrumentUsageStatisticsService->store(
+                $instrumentUsageRows,
+                (int) $labId,
+                InstrumentUsageStatisticsService::VIA_RELAY
+            );
+            $counter += count($instrumentUsageRows);
         }
     }
 

@@ -69,6 +69,33 @@ final class InterfaceMigrationTest extends TestCase
     }
 
     /**
+     * The relay carries instrument activity from a LIS to STS, where one table holds
+     * the whole fleet. The activity key must become per-lab there, and each ALTER must
+     * be its own statement so the migrator's idempotent rewrites recognise it.
+     */
+    public function testRelayMigrationScopesActivityPerLabAndAddsWatermarks(): void
+    {
+        $migration = file_get_contents(dirname(__DIR__, 3) . '/sys/migrations/5.5.28.sql');
+
+        self::assertIsString($migration);
+        self::assertStringContainsString(
+            'DROP INDEX `uniq_instrument_activity_event_uid`',
+            $migration
+        );
+        self::assertStringContainsString(
+            'ADD UNIQUE KEY `uniq_instrument_activity_lab_event` (`lab_id`, `event_uid`)',
+            $migration
+        );
+        self::assertStringContainsString('`last_instrument_activity_sync` DATETIME', $migration);
+        self::assertStringContainsString('`last_instrument_usage_sync` DATETIME', $migration);
+        self::assertStringContainsString("SET `value` = '5.5.28'", $migration);
+
+        // Each ALTER stands alone: a combined statement bypasses the migrator's
+        // single-clause idempotent rewrites and fails on replay.
+        self::assertStringNotContainsString('DROP INDEX `uniq_instrument_activity_event_uid`,', $migration);
+    }
+
+    /**
      * migrate.php runs every statement through MysqliDb::rawAddPrefix(), whose regex
      * rewrites `UPDATE <word>` into `UPDATE ``<word>```. That turns ON UPDATE
      * CURRENT_TIMESTAMP into a syntax error which appears only under the migrator and
