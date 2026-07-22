@@ -24,29 +24,32 @@ function _translate(?string $text, bool|string $escapeTextOrContext = false): st
     if (session_status() !== PHP_SESSION_NONE) {
         $sessionLocale = $_SESSION['APP_LOCALE'] ?? '';
     }
+    // Backward compatibility: treat true/false as 'js'/'plain'
+    $context = match (gettype($escapeTextOrContext)) {
+        'boolean' => $escapeTextOrContext ? 'js' : 'plain',
+        'string' => $escapeTextOrContext,
+        default => 'plain',
+    };
+
+    // Escaping must apply even when translation is skipped (en_US or empty text)
     if ($text === null || $text === '' || $text === '0' || !is_string($text) || $sessionLocale === 'en_US') {
-        return $text ?? '';
+        return _escapeTranslated($text ?? '', $context);
     }
 
     $locale = $sessionLocale ?? 'en_US';
 
-    return MemoUtility::remember(function () use ($text, $escapeTextOrContext, $locale) {
-
-        $translated = SystemService::translate($text);
-
-        // Backward compatibility: treat true/false as 'js'/'plain'
-        $context = match (gettype($escapeTextOrContext)) {
-            'boolean' => $escapeTextOrContext ? 'js' : 'plain',
-            'string' => $escapeTextOrContext,
-            default => 'plain',
-        };
-
-        return match ($context) {
-            'js' => substr(json_encode($translated, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), 1, -1),
-            'html' => htmlspecialchars($translated, ENT_QUOTES, 'UTF-8'), // HTML attribute-safe
-            default => $translated, // Plain, unescaped
-        };
+    return MemoUtility::remember(function () use ($text, $context, $locale) {
+        return _escapeTranslated(SystemService::translate($text), $context);
     }, 300);
+}
+
+function _escapeTranslated(string $text, string $context): string
+{
+    return match ($context) {
+        'js' => substr(json_encode($text, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP), 1, -1),
+        'html' => htmlspecialchars($text, ENT_QUOTES, 'UTF-8'), // HTML attribute-safe
+        default => $text, // Plain, unescaped
+    };
 }
 
 function _jsTranslate(?string $text): string
