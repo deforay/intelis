@@ -52,6 +52,12 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
             }
             // Redirect to the login page if the system user is not logged in
             $redirect = $this->redirect('/system-admin/login/login.php');
+        } else {
+            // The main app and system-admin share one PHP session; refresh the
+            // app-side idle timer so cross-app calls made from system-admin pages
+            // (e.g. /includes/generate-password.php) do not hit a stale
+            // last_activity in AppAuthMiddleware and expire the shared session.
+            $_SESSION['last_activity'] = time();
         }
 
         if ($redirect instanceof ResponseInterface) {
