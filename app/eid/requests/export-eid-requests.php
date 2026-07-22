@@ -45,7 +45,7 @@ if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID",
 }
 
 if ($formId != CAMEROON) {
-    $headings = MiscUtility::removeMatchingElements($headings, [_translate("Lab Assigned Code")]);
+    $headings = MiscUtility::removeMatchingElements($headings, ["Lab Assigned Code"]);
 }
 if ($formId != DRC) {
     $headings = MiscUtility::removeMatchingElements($headings, ["Freezer", "Rack", "Box", "Position", "Volume (ml)"]);
