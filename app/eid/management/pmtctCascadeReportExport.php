@@ -29,23 +29,23 @@ $general = ContainerRegistry::get(CommonService::class);
 // Mirror the filter logic used in getPmtctCascadeReport.php so that the
 // exported file always matches what is on screen.
 // ---------------------------------------------------------------------------
-function pmtctExportFilterConditions(array $post): array
+function pmtctExportFilterConditions(array $post, string $alias = 'e'): array
 {
-    $where = ["e.mother_id IS NOT NULL", "TRIM(e.mother_id) != ''"];
+    $where = ["$alias.mother_id IS NOT NULL", "TRIM($alias.mother_id) != ''"];
 
     if (!empty($post['sampleCollectionDate'])) {
         $range = explode("to", (string) $post['sampleCollectionDate']);
         if (count($range) === 2) {
             $startSql = date('Y-m-d', strtotime(trim($range[0])));
             $endSql   = date('Y-m-d', strtotime(trim($range[1])));
-            $where[] = "DATE(e.sample_collection_date) BETWEEN '" . $startSql . "' AND '" . $endSql . "'";
+            $where[] = "DATE($alias.sample_collection_date) BETWEEN '" . $startSql . "' AND '" . $endSql . "'";
         }
     }
     if (!empty($post['provinceId']) && ctype_digit((string) $post['provinceId'])) {
-        $where[] = "e.province_id = " . (int) $post['provinceId'];
+        $where[] = "$alias.province_id = " . (int) $post['provinceId'];
     }
     if (!empty($post['labName']) && ctype_digit((string) $post['labName'])) {
-        $where[] = "e.lab_id = " . (int) $post['labName'];
+        $where[] = "$alias.lab_id = " . (int) $post['labName'];
     }
     return $where;
 }
@@ -76,6 +76,59 @@ function pmtctExportFormatDate($v): string
     }
     $ts = strtotime((string) $v);
     return $ts ? date('d-M-Y', $ts) : '';
+}
+
+function pmtctExportIsoDate($v): string
+{
+    if (empty($v) || str_starts_with((string) $v, '0000-00-00')) {
+        return '';
+    }
+    $ts = strtotime((string) $v);
+    return $ts ? date('Y-m-d', $ts) : '';
+}
+
+/**
+ * Same child-identity rule as the report screen: prefer the recorded Child
+ * ID, fall back to the EID record's own id for records without one.
+ */
+function pmtctExportChildKeyExpr(string $alias = 'e'): string
+{
+    return "COALESCE(NULLIF(TRIM($alias.child_id), ''), CONCAT('eid:', $alias.eid_id))";
+}
+
+/**
+ * 'yes' / 'no' / 'unknown' (no usable DOB): did the mother have a documented
+ * high VL strictly before the child's date of birth?
+ */
+function pmtctExportPreBirthFlag(string $childDob, string $firstHighVlDate): string
+{
+    if ($childDob === '') {
+        return 'unknown';
+    }
+    if ($firstHighVlDate === '' || $firstHighVlDate >= $childDob) {
+        return 'no';
+    }
+    return 'yes';
+}
+
+/**
+ * Latest categorised VL test (from an ascending list) on or before a date.
+ */
+function pmtctExportVlStatusAsOf(array $vlTests, string $asOfDate): ?array
+{
+    if ($asOfDate === '') {
+        return null;
+    }
+    $latest = null;
+    foreach ($vlTests as $t) {
+        if ($t['date'] === '' || $t['date'] > $asOfDate) {
+            continue;
+        }
+        if ($t['category'] === 'suppressed' || $t['category'] === 'not suppressed') {
+            $latest = $t;
+        }
+    }
+    return $latest;
 }
 
 
@@ -148,7 +201,81 @@ $motherRow = $db->rawQueryOne("SELECT
 
 
 // ---------------------------------------------------------------------------
-// Open the workbook (3 sheets: Summary, EID Data, VL Data). EID and VL are
+// Positive-children working set: every distinct HIV-positive matched child in
+// the filter window, plus each of their mothers' full VL history (all time).
+// Powers two Summary indicators and the "Positive Children History" sheet.
+// ---------------------------------------------------------------------------
+$childKeyExpr   = pmtctExportChildKeyExpr('e');
+$whereSqlE2     = implode(' AND ', pmtctExportFilterConditions($_POST, 'e2'));
+$positiveExprE2 = pmtctExportEidPositiveExpr('e2');
+
+$posMotherSubquery = "SELECT DISTINCT TRIM(e2.mother_id) AS mid
+    FROM form_eid e2
+    WHERE $whereSqlE2 AND $positiveExprE2";
+
+// Mothers' VL histories (ascending), keyed by trimmed mother ID.
+$vlHistoryByMother = [];
+$vlHistorySql = "SELECT TRIM(v.patient_art_no) AS mid,
+        DATE(v.sample_collection_date) AS cdate,
+        v.result, v.vl_result_category
+    FROM form_vl v
+    INNER JOIN ($posMotherSubquery) pm ON pm.mid = TRIM(v.patient_art_no)
+    ORDER BY v.sample_collection_date ASC, v.vl_sample_id ASC";
+foreach ($db->rawQueryGenerator($vlHistorySql) as $r) {
+    $mid = (string) ($r['mid'] ?? '');
+    if ($mid === '') {
+        continue;
+    }
+    $vlHistoryByMother[$mid][] = [
+        'date'     => pmtctExportIsoDate($r['cdate'] ?? null),
+        'result'   => (string) ($r['result'] ?? ''),
+        'category' => (string) ($r['vl_result_category'] ?? ''),
+    ];
+}
+
+// Distinct positive children in the window (matched = mother appears in VL).
+$posChildSql = "SELECT
+        $childKeyExpr AS childKey,
+        MAX(TRIM(e.child_id)) AS childId,
+        MAX(e.eid_id) AS anyEidId,
+        MAX(TRIM(e.mother_id)) AS motherId,
+        MAX(e.child_dob) AS childDob
+    FROM form_eid e
+    INNER JOIN (
+        SELECT DISTINCT TRIM(v.patient_art_no) AS mid FROM form_vl v
+    ) vm ON vm.mid = TRIM(e.mother_id)
+    WHERE $whereSql AND $positiveExpr
+    GROUP BY childKey";
+
+$positiveChildren = [];
+foreach ($db->rawQueryGenerator($posChildSql) as $r) {
+    $motherId = (string) ($r['motherId'] ?? '');
+    $childDob = pmtctExportIsoDate($r['childDob'] ?? null);
+
+    $firstHighVlDate = '';
+    foreach ($vlHistoryByMother[$motherId] ?? [] as $t) {
+        if ($t['category'] === 'not suppressed' && $t['date'] !== '') {
+            $firstHighVlDate = $t['date'];
+            break;
+        }
+    }
+
+    $positiveChildren[(string) $r['childKey']] = [
+        'childId'  => (string) ($r['childId'] ?? ''),
+        'anyEidId' => (int) ($r['anyEidId'] ?? 0),
+        'motherId' => $motherId,
+        'childDob' => $childDob,
+        'preBirth' => pmtctExportPreBirthFlag($childDob, $firstHighVlDate),
+    ];
+}
+
+$positiveChildrenDistinct = count($positiveChildren);
+$preBirthHighVlChildren   = count(array_filter($positiveChildren, static fn ($c) => $c['preBirth'] === 'yes'));
+
+
+// ---------------------------------------------------------------------------
+// Open the workbook (4 sheets: Summary, EID Data, VL Data, Positive Children
+// History). EID and VL are
 // kept on separate sheets — joining them inline duplicates child/mother
 // demographics whenever a mother has more than one VL test, which makes the
 // file hard to read and easy to double-count from. Mother ID is the link.
@@ -186,6 +313,8 @@ $summaryRows = [
     [_translate('VL tests pending result'),                                  max(0, (int) ($motherRow['vlTests'] ?? 0) - (int) ($motherRow['vlTestsWithResult'] ?? 0))],
     [_translate('Mothers with VL result available'),                         (int) ($motherRow['mothersWithResult'] ?? 0)],
     [_translate('Mothers with high VL (>= 1000 cp/mL)'),                     (int) ($motherRow['mothersHighVl'] ?? 0)],
+    [_translate('Distinct HIV-positive children'),                           $positiveChildrenDistinct],
+    [_translate('Of those, mother had high VL before the child\'s birth'),   $preBirthHighVlChildren],
 ];
 foreach ($summaryRows as $r) {
     $writer->addRow(Row::fromValues($r));
@@ -397,6 +526,117 @@ foreach ($db->rawQueryGenerator($vlSql) as $r) {
     if ($rowCount % 5000 === 0) {
         gc_collect_cycles();
     }
+}
+
+
+// --- Sheet 4: Positive Children History ------------------------------------
+// One row per EID test (all time) of every HIV-positive child from the filter
+// window, each stamped with the mother's VL status as of that test date and
+// whether she had a documented high VL before the child's birth. The mothers'
+// full VL timelines are on the VL Data sheet (Mother ID links the two).
+$historySheet = $writer->addNewSheetAndMakeItCurrent();
+$historySheet->setName(_translate('Positive Children History'));
+
+$historyHeaders = [
+    _translate('Child ID'),
+    _translate('Child DOB'),
+    _translate('Child Sex'),
+    _translate('Mother ID'),
+    _translate('EID Sample Code'),
+    _translate('Remote EID Sample Code'),
+    _translate('EID Sample Collection Date'),
+    _translate('EID Sample Tested Date'),
+    _translate('EID Sample Status'),
+    _translate('EID Result'),
+    _translate('EID Test Platform'),
+    _translate('EID Testing Lab'),
+    _translate('Mother VL Status at This Test'),
+    _translate('Mother VL Result at This Test'),
+    _translate('Mother VL Test Date at This Test'),
+    _translate('Mother Had High VL Before Birth'),
+];
+$writer->addRow(Row::fromValuesWithStyle($historyHeaders, $headerStyle));
+
+// Split the child set into "has a Child ID" (history keyed on it) and
+// "no Child ID" (single EID record, keyed on eid_id).
+$childIdList = [];
+$eidIdList   = [];
+foreach ($positiveChildren as $c) {
+    if ($c['childId'] !== '') {
+        $childIdList[] = $c['childId'];
+    } elseif ($c['anyEidId'] > 0) {
+        $eidIdList[] = $c['anyEidId'];
+    }
+}
+
+$historyEidSelect = "SELECT
+        e.eid_id, TRIM(e.child_id) AS child_id, e.child_dob, e.child_gender,
+        TRIM(e.mother_id) AS mother_id,
+        e.sample_code, e.remote_sample_code,
+        e.sample_collection_date, e.sample_tested_datetime,
+        e.result, e.eid_test_platform,
+        rs.status_name,
+        fel.facility_name AS testing_lab
+    FROM form_eid e
+    LEFT JOIN facility_details fel ON fel.facility_id = e.lab_id
+    LEFT JOIN r_sample_status rs ON rs.status_id = e.result_status";
+
+$writeHistoryRows = static function (array $rows) use ($writer, $positiveChildren, $vlHistoryByMother): void {
+    foreach ($rows as $r) {
+        $childId  = (string) ($r['child_id'] ?? '');
+        $childKey = $childId !== '' ? $childId : 'eid:' . (int) ($r['eid_id'] ?? 0);
+        $child    = $positiveChildren[$childKey] ?? null;
+        $motherId = (string) ($r['mother_id'] ?? '');
+
+        $collectionDate = pmtctExportIsoDate($r['sample_collection_date'] ?? null);
+        $atTest = pmtctExportVlStatusAsOf($vlHistoryByMother[$motherId] ?? [], $collectionDate);
+
+        $statusLabel = _translate('No VL result yet');
+        if ($atTest !== null) {
+            $statusLabel = $atTest['category'] === 'not suppressed'
+                ? _translate('High VL (>= 1000 cp/mL)')
+                : _translate('Suppressed');
+        }
+
+        $preBirth = $child['preBirth'] ?? 'unknown';
+        $preBirthLabel = match ($preBirth) {
+            'yes'   => _translate('Yes'),
+            'no'    => _translate('No'),
+            default => _translate('Unknown (no DOB)'),
+        };
+
+        $writer->addRow(Row::fromValues([
+            $childId,
+            pmtctExportFormatDate($r['child_dob'] ?? null),
+            $r['child_gender'] ?? '',
+            $motherId,
+            $r['sample_code'] ?? '',
+            $r['remote_sample_code'] ?? '',
+            pmtctExportFormatDate($r['sample_collection_date'] ?? null),
+            pmtctExportFormatDate($r['sample_tested_datetime'] ?? null),
+            $r['status_name'] ?? '',
+            !empty($r['result']) ? ucfirst((string) $r['result']) : '',
+            $r['eid_test_platform'] ?? '',
+            $r['testing_lab'] ?? '',
+            $statusLabel,
+            $atTest['result'] ?? '',
+            pmtctExportFormatDate($atTest['date'] ?? null),
+            $preBirthLabel,
+        ]));
+    }
+};
+
+foreach (array_chunk($childIdList, 500) as $chunk) {
+    $in = "'" . implode("','", array_map(static fn ($v) => $db->escape($v), $chunk)) . "'";
+    $rows = $db->rawQuery("$historyEidSelect WHERE TRIM(e.child_id) IN ($in)
+        ORDER BY TRIM(e.child_id), e.sample_collection_date ASC, e.eid_id ASC") ?: [];
+    $writeHistoryRows($rows);
+}
+foreach (array_chunk($eidIdList, 500) as $chunk) {
+    $in = implode(',', array_map('intval', $chunk));
+    $rows = $db->rawQuery("$historyEidSelect WHERE e.eid_id IN ($in)
+        ORDER BY e.sample_collection_date ASC, e.eid_id ASC") ?: [];
+    $writeHistoryRows($rows);
 }
 
 

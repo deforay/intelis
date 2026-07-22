@@ -162,6 +162,102 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         font-size: 13px;
     }
 
+    /* Purple = risk-timing signal (high maternal VL before the birth),
+       distinct from the red "current risk" and dark-red "harm" cards. */
+    .pmtct-hero-card.hero-prebirth {
+        background: linear-gradient(135deg, #8e44ad, #6c3483);
+    }
+
+    .pmtct-clickable {
+        cursor: pointer;
+        transition: transform .08s ease, box-shadow .08s ease;
+    }
+
+    .pmtct-clickable:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, .18);
+    }
+
+    .pmtct-drill-hint {
+        font-size: 10px;
+        opacity: .75;
+        margin-top: 6px;
+    }
+
+    .pmtct-modal-dialog {
+        width: 94%;
+        max-width: 1450px;
+    }
+
+    .pmtct-meta-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+        padding: 8px 12px;
+        background: #f4f6f9;
+        border: 1px solid #e1e5eb;
+        border-radius: 4px;
+        margin-bottom: 12px;
+        font-size: 12px;
+    }
+
+    .pmtct-meta-strip .pm-lbl {
+        color: #888;
+        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: .3px;
+        display: block;
+    }
+
+    .pmtct-meta-strip .pm-val {
+        font-weight: 600;
+        color: #222;
+        font-size: 13px;
+    }
+
+    .pmtct-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .pmtct-badge.b-danger {
+        background: #fdecea;
+        color: #c0392b;
+        border: 1px solid #f5b7b1;
+    }
+
+    .pmtct-badge.b-good {
+        background: #eafaf1;
+        color: #1e8449;
+        border: 1px solid #a9dfbf;
+    }
+
+    .pmtct-badge.b-muted {
+        background: #f0f1f3;
+        color: #777;
+        border: 1px solid #d8dbe0;
+    }
+
+    .pmtct-subhead {
+        font-size: 12px;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+        font-weight: 600;
+        margin: 16px 0 6px;
+    }
+
+    #pmtctDrillTable td,
+    #pmtctDrillTable th,
+    .pmtct-history-table td,
+    .pmtct-history-table th {
+        font-size: 12px;
+    }
+
     .select2-selection__choice {
         color: black !important;
     }
@@ -251,15 +347,23 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                                 <div class="pmtct-hero-value" id="heroSuppressionPct">&mdash;</div>
                                 <div class="pmtct-hero-sub" id="heroSuppressionSub">&nbsp;</div>
                             </div>
-                            <div class="pmtct-hero-card hero-danger">
+                            <div class="pmtct-hero-card hero-danger pmtct-clickable" onclick="openHighVlMothersDrill()">
                                 <div class="pmtct-hero-label"><?= _htmlTranslate("Mothers with High VL (≥1000 cp/mL)"); ?></div>
                                 <div class="pmtct-hero-value" id="heroHighVl">&mdash;</div>
                                 <div class="pmtct-hero-sub" id="heroHighVlSub">&nbsp;</div>
+                                <div class="pmtct-drill-hint"><em class="fa-solid fa-magnifying-glass"></em> <?= _htmlTranslate("Click to view mothers"); ?></div>
                             </div>
-                            <div class="pmtct-hero-card hero-critical">
+                            <div class="pmtct-hero-card hero-critical pmtct-clickable" onclick="openPositiveChildrenDrill(false)">
                                 <div class="pmtct-hero-label"><?= _htmlTranslate("HIV-Positive Infants"); ?></div>
                                 <div class="pmtct-hero-value" id="heroPositiveInfants">&mdash;</div>
                                 <div class="pmtct-hero-sub" id="heroPositiveInfantsSub">&nbsp;</div>
+                                <div class="pmtct-drill-hint"><em class="fa-solid fa-magnifying-glass"></em> <?= _htmlTranslate("Click to view children"); ?></div>
+                            </div>
+                            <div class="pmtct-hero-card hero-prebirth pmtct-clickable" onclick="openPositiveChildrenDrill(true)">
+                                <div class="pmtct-hero-label"><?= _htmlTranslate("Positive Infants — Mother High VL Before Birth"); ?></div>
+                                <div class="pmtct-hero-value" id="heroPreBirth">&mdash;</div>
+                                <div class="pmtct-hero-sub" id="heroPreBirthSub">&nbsp;</div>
+                                <div class="pmtct-drill-hint"><em class="fa-solid fa-magnifying-glass"></em> <?= _htmlTranslate("Click to view children"); ?></div>
                             </div>
                         </div>
 
@@ -338,6 +442,45 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
     </section>
 </div>
 
+<!-- Drilldown modal: list of HIV-positive children OR high-VL mothers -->
+<div class="modal fade" id="pmtctDrillModal" tabindex="-1" role="dialog" aria-labelledby="pmtctDrillModalLabel" aria-hidden="true">
+    <div class="modal-dialog pmtct-modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="pmtctDrillModalLabel">&nbsp;</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?= _htmlTranslate('Close'); ?>"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="pmtct-meta-strip" id="pmtctDrillMeta" style="display:none;"></div>
+                <div class="table-responsive" id="pmtctDrillTableWrap"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><?= _htmlTranslate("Close"); ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- History modal: one child's EID timeline (with mother VL status at each
+     test) or one mother's VL timeline (with her children's EID tests). -->
+<div class="modal fade" id="pmtctHistoryModal" tabindex="-1" role="dialog" aria-labelledby="pmtctHistoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog pmtct-modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="pmtctHistoryModalLabel">&nbsp;</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?= _htmlTranslate('Close'); ?>"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" id="pmtctHistoryBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-sm" id="pmtctHistoryBack" style="display:none;">
+                    <em class="fa-solid fa-arrow-left"></em>&nbsp;<?= _htmlTranslate("Back to list"); ?>
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal"><?= _htmlTranslate("Close"); ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script>
@@ -383,6 +526,9 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
             $step.append('<div class="pmtct-funnel-stage">' + s.label + '</div>');
             $step.append('<div class="pmtct-funnel-count">' + (s.count || 0).toLocaleString() + '</div>');
             if (pct) { $step.append('<div class="pmtct-funnel-pct">' + pct + '</div>'); }
+            if (s.drill) {
+                $step.addClass('pmtct-clickable').attr('title', "<?= _jsTranslate('Click to view the records behind this number'); ?>").on('click', s.drill);
+            }
             $c.append($step);
             if (i < stages.length - 1) {
                 $c.append('<div class="pmtct-funnel-arrow"><em class="fa-solid fa-chevron-right"></em></div>');
@@ -426,11 +572,22 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         // drop-off, so no % is drawn there). Every step after it stays in
         // distinct-mother units, so those %s are honest. High VL is the actionable
         // endpoint; Suppressed lives in the green hero (complementary outcome).
+        // Pre-birth risk hero — of the distinct HIV-positive children, how many
+        // had a mother with a documented high VL before the child's birth.
+        var posDistinct = s.positiveChildrenDistinct || 0;
+        var preBirth = s.preBirthHighVlChildren || 0;
+        $("#heroPreBirth").text(preBirth.toLocaleString());
+        $("#heroPreBirthSub").text(
+            posDistinct > 0
+                ? "<?= _jsTranslate('of %s HIV-positive children (needs child DOB on record)'); ?>".replace('%s', posDistinct.toLocaleString())
+                : "<?= _jsTranslate('No HIV-positive children in the selected period'); ?>"
+        );
+
         renderPmtctFunnel('pmtctMaternalFunnel', [
             { label: "<?= _jsTranslate('Children w/ Mother ID'); ?>", count: s.totalChildrenWithMotherId || 0 },
             { label: "<?= _jsTranslate('Matched Mothers'); ?>", count: s.distinctMothers || 0, crossUnit: true },
             { label: "<?= _jsTranslate('Mothers w/ VL Result'); ?>", count: mWithResult },
-            { label: "<?= _jsTranslate('Mothers w/ High VL ≥1000'); ?>", count: mHighVl, tone: 'danger' }
+            { label: "<?= _jsTranslate('Mothers w/ High VL ≥1000'); ?>", count: mHighVl, tone: 'danger', drill: function () { openHighVlMothersDrill(); } }
         ]);
 
         // Pivot note — explain the children → mothers unit change without repeating
@@ -445,7 +602,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         renderPmtctFunnel('pmtctInfantFunnel', [
             { label: "<?= _jsTranslate('Matched Children'); ?>", count: s.matchedChildren || 0 },
             { label: "<?= _jsTranslate('With EID Result'); ?>", count: s.testedChildren || 0 },
-            { label: "<?= _jsTranslate('HIV-Positive'); ?>", count: s.positiveChildren || 0, tone: 'danger' }
+            { label: "<?= _jsTranslate('HIV-Positive'); ?>", count: s.positiveChildren || 0, tone: 'danger', drill: function () { openPositiveChildrenDrill(false); } }
         ]);
 
         // VL test volume strip — test-level (a mother may have many tests over time).
@@ -498,6 +655,353 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         });
     }
 
+    // =====================================================================
+    // Drilldowns & histories
+    // =====================================================================
+
+    var pmtctDrillRows = [];          // rows behind the currently open drill list
+    var pmtctHistoryFromDrill = false; // whether Back should reopen the drill list
+
+    function escHtml(v) {
+        return $('<div></div>').text(v === null || v === undefined ? '' : String(v)).html();
+    }
+
+    function fmtIsoDate(iso) {
+        if (!iso) { return ''; }
+        var m = moment(iso, 'YYYY-MM-DD');
+        return m.isValid() ? m.format('DD-MMM-YYYY') : escHtml(iso);
+    }
+
+    function vlCategoryBadge(cat) {
+        if (cat === 'not suppressed') {
+            return '<span class="pmtct-badge b-danger"><?= _jsTranslate('High ≥1000'); ?></span>';
+        }
+        if (cat === 'suppressed') {
+            return '<span class="pmtct-badge b-good"><?= _jsTranslate('Suppressed'); ?></span>';
+        }
+        return '<span class="pmtct-badge b-muted"><?= _jsTranslate('No result'); ?></span>';
+    }
+
+    function preBirthBadge(flag) {
+        if (flag === 'yes') {
+            return '<span class="pmtct-badge b-danger"><?= _jsTranslate('Yes'); ?></span>';
+        }
+        if (flag === 'no') {
+            return '<span class="pmtct-badge b-good"><?= _jsTranslate('No'); ?></span>';
+        }
+        return '<span class="pmtct-badge b-muted"><?= _jsTranslate('Unknown (no DOB)'); ?></span>';
+    }
+
+    function eidResultBadge(result, isPositive) {
+        if (!result) { return '<span class="pmtct-badge b-muted"><?= _jsTranslate('No result'); ?></span>'; }
+        var txt = escHtml(result);
+        return isPositive ? '<span class="pmtct-badge b-danger">' + txt + '</span>' : txt;
+    }
+
+    // Mother's VL status at the time of one EID test (compact cell content).
+    function motherVlAtTestCell(at) {
+        if (!at) {
+            return '<span class="pmtct-badge b-muted"><?= _jsTranslate('No VL result yet'); ?></span>';
+        }
+        var out = vlCategoryBadge(at.category);
+        if (at.result) { out += ' ' + escHtml(at.result); }
+        if (at.collectionDate) { out += ' <span style="color:#999;">(' + fmtIsoDate(at.collectionDate) + ')</span>'; }
+        return out;
+    }
+
+    function freshDrillTable() {
+        $('#pmtctDrillTableWrap').html('<table id="pmtctDrillTable" class="table table-bordered table-striped" style="width:100%;"></table>');
+        return $('#pmtctDrillTable');
+    }
+
+    function renderDrillMeta(items) {
+        var $m = $('#pmtctDrillMeta').empty();
+        if (!items.length) { $m.hide(); return; }
+        items.forEach(function (it) {
+            $m.append('<div><span class="pm-lbl">' + it[0] + '</span><span class="pm-val">' + it[1] + '</span></div>');
+        });
+        $m.show();
+    }
+
+    // ---- HIV-positive children drilldown --------------------------------
+    function openPositiveChildrenDrill(preBirthOnly) {
+        $.blockUI();
+        $.post("/eid/management/getPmtctCascadeReport.php",
+            $.extend({ action: "positiveChildren", preBirthOnly: preBirthOnly ? 1 : 0 }, readFilters()),
+            function (data) {
+                $.unblockUI();
+                var payload = (typeof data === 'string') ? JSON.parse(data) : data;
+                var rows = payload.rows || [];
+                pmtctDrillRows = rows;
+
+                $('#pmtctDrillModalLabel').text(preBirthOnly
+                    ? "<?= _jsTranslate('HIV-Positive Children — Mother High VL Before Birth'); ?>"
+                    : "<?= _jsTranslate('HIV-Positive Children'); ?>");
+
+                // A child recorded under two mother IDs gets one row per pair,
+                // so count distinct children separately from the rows.
+                var totalTests = 0, yes = 0, no = 0, unknown = 0, childKeys = {};
+                rows.forEach(function (r) {
+                    totalTests += r.positiveTestsInWindow || 0;
+                    childKeys[r.childId || ('#' + r.eidId)] = true;
+                    if (r.motherHighVlPreBirth === 'yes') { yes++; }
+                    else if (r.motherHighVlPreBirth === 'no') { no++; }
+                    else { unknown++; }
+                });
+                renderDrillMeta([
+                    ["<?= _jsTranslate('Distinct children'); ?>", Object.keys(childKeys).length.toLocaleString()],
+                    ["<?= _jsTranslate('Positive EID results in period'); ?>", totalTests.toLocaleString()],
+                    ["<?= _jsTranslate('Mother high VL before birth'); ?>",
+                        yes.toLocaleString() + " <?= _jsTranslate('yes'); ?> / " + no.toLocaleString() + " <?= _jsTranslate('no'); ?> / " + unknown.toLocaleString() + " <?= _jsTranslate('unknown'); ?>"]
+                ]);
+
+                var aaData = rows.map(function (r, i) {
+                    var actions =
+                        '<button type="button" class="btn btn-xs btn-primary pmtct-child-history-btn" data-idx="' + i + '"><em class="fa-solid fa-timeline"></em> <?= _jsTranslate('Child History'); ?></button> ' +
+                        '<button type="button" class="btn btn-xs btn-default pmtct-mother-history-btn" data-idx="' + i + '"><em class="fa-solid fa-person-breastfeeding"></em> <?= _jsTranslate('Mother History'); ?></button>';
+                    return [
+                        escHtml(r.childId || ('#' + r.eidId)),
+                        escHtml(r.childSex),
+                        fmtIsoDate(r.childDob),
+                        escHtml(r.motherId),
+                        (r.positiveTestsInWindow || 0),
+                        fmtIsoDate(r.latestPositiveDate),
+                        (r.vlTests || 0),
+                        (r.highVlTests || 0),
+                        fmtIsoDate(r.firstHighVlDate),
+                        vlCategoryBadge(r.latestVlCategory) + (r.latestVlDate ? ' <span style="color:#999;">(' + fmtIsoDate(r.latestVlDate) + ')</span>' : ''),
+                        preBirthBadge(r.motherHighVlPreBirth),
+                        actions
+                    ];
+                });
+
+                freshDrillTable().dataTable({
+                    aaData: aaData,
+                    aoColumns: [
+                        { sTitle: "<?= _jsTranslate('Child ID'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Sex'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Child DOB'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Mother ID'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Positive EID Tests'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Latest Positive Date'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Mother VL Tests'); ?>" },
+                        { sTitle: "<?= _jsTranslate('High VL Tests'); ?>" },
+                        { sTitle: "<?= _jsTranslate('First High VL Date'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Mother Latest VL'); ?>" },
+                        { sTitle: "<?= _jsTranslate('High VL Before Birth'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Actions'); ?>", bSortable: false }
+                    ],
+                    bDestroy: true,
+                    bAutoWidth: false,
+                    iDisplayLength: 25
+                });
+                $('#pmtctDrillModal').modal('show');
+            });
+    }
+
+    // ---- High-VL mothers drilldown --------------------------------------
+    function openHighVlMothersDrill() {
+        $.blockUI();
+        $.post("/eid/management/getPmtctCascadeReport.php",
+            $.extend({ action: "highVlMothers" }, readFilters()),
+            function (data) {
+                $.unblockUI();
+                var payload = (typeof data === 'string') ? JSON.parse(data) : data;
+                var rows = payload.rows || [];
+                pmtctDrillRows = rows;
+
+                $('#pmtctDrillModalLabel').text("<?= _jsTranslate('Mothers with High VL (≥1000 cp/mL)'); ?>");
+
+                var vlTests = 0, posKids = 0;
+                rows.forEach(function (r) { vlTests += r.vlTests || 0; posKids += r.positiveChildren || 0; });
+                renderDrillMeta([
+                    ["<?= _jsTranslate('Mothers'); ?>", rows.length.toLocaleString()],
+                    ["<?= _jsTranslate('VL tests on record (all time)'); ?>", vlTests.toLocaleString()],
+                    ["<?= _jsTranslate('HIV-positive children (in period)'); ?>", posKids.toLocaleString()]
+                ]);
+
+                var aaData = rows.map(function (r, i) {
+                    var actions = '<button type="button" class="btn btn-xs btn-primary pmtct-mother-history-btn" data-idx="' + i + '"><em class="fa-solid fa-timeline"></em> <?= _jsTranslate('History'); ?></button>';
+                    return [
+                        escHtml(r.motherId),
+                        (r.childrenInWindow || 0),
+                        (r.positiveChildren || 0),
+                        (r.vlTests || 0),
+                        (r.highVlTests || 0),
+                        fmtIsoDate(r.firstHighVlDate),
+                        vlCategoryBadge(r.latestVlCategory) + (r.latestVlResult ? ' ' + escHtml(r.latestVlResult) : '') + (r.latestVlDate ? ' <span style="color:#999;">(' + fmtIsoDate(r.latestVlDate) + ')</span>' : ''),
+                        actions
+                    ];
+                });
+
+                freshDrillTable().dataTable({
+                    aaData: aaData,
+                    aoColumns: [
+                        { sTitle: "<?= _jsTranslate('Mother ID'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Children (in period)'); ?>" },
+                        { sTitle: "<?= _jsTranslate('HIV-Positive Children'); ?>" },
+                        { sTitle: "<?= _jsTranslate('VL Tests'); ?>" },
+                        { sTitle: "<?= _jsTranslate('High VL Tests'); ?>" },
+                        { sTitle: "<?= _jsTranslate('First High VL Date'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Latest VL'); ?>" },
+                        { sTitle: "<?= _jsTranslate('Actions'); ?>", bSortable: false }
+                    ],
+                    bDestroy: true,
+                    bAutoWidth: false,
+                    iDisplayLength: 25
+                });
+                $('#pmtctDrillModal').modal('show');
+            });
+    }
+
+    // ---- History modal plumbing -----------------------------------------
+    function showHistoryModal() {
+        if ($('#pmtctDrillModal').hasClass('in')) {
+            pmtctHistoryFromDrill = true;
+            $('#pmtctDrillModal').one('hidden.bs.modal', function () {
+                $('#pmtctHistoryModal').modal('show');
+            }).modal('hide');
+        } else {
+            pmtctHistoryFromDrill = false;
+            $('#pmtctHistoryModal').modal('show');
+        }
+        $('#pmtctHistoryBack').toggle(pmtctHistoryFromDrill);
+    }
+
+    function metaStripHtml(items) {
+        var h = '<div class="pmtct-meta-strip">';
+        items.forEach(function (it) {
+            h += '<div><span class="pm-lbl">' + it[0] + '</span><span class="pm-val">' + it[1] + '</span></div>';
+        });
+        return h + '</div>';
+    }
+
+    function vlHistoryTableHtml(vlTests) {
+        if (!vlTests || !vlTests.length) {
+            return '<div class="pmtct-empty-panel"><?= _jsTranslate('No VL tests on record for this mother.'); ?></div>';
+        }
+        var h = '<div class="table-responsive"><table class="table table-bordered table-striped pmtct-history-table"><thead><tr>' +
+            '<th>#</th>' +
+            '<th><?= _jsTranslate('VL Sample Code'); ?></th>' +
+            '<th><?= _jsTranslate('Collection Date'); ?></th>' +
+            '<th><?= _jsTranslate('Test Date'); ?></th>' +
+            '<th><?= _jsTranslate('Result'); ?></th>' +
+            '<th><?= _jsTranslate('cp/mL'); ?></th>' +
+            '<th><?= _jsTranslate('Log'); ?></th>' +
+            '<th><?= _jsTranslate('Category'); ?></th>' +
+            '<th><?= _jsTranslate('Platform'); ?></th>' +
+            '<th><?= _jsTranslate('Testing Lab'); ?></th>' +
+            '<th><?= _jsTranslate('Facility'); ?></th>' +
+            '</tr></thead><tbody>';
+        vlTests.forEach(function (t, i) {
+            h += '<tr>' +
+                '<td>' + (i + 1) + '</td>' +
+                '<td>' + escHtml(t.sampleCode || t.remoteSampleCode) + '</td>' +
+                '<td>' + fmtIsoDate(t.collectionDate) + '</td>' +
+                '<td>' + fmtIsoDate(t.testedDate) + '</td>' +
+                '<td>' + escHtml(t.result) + '</td>' +
+                '<td>' + escHtml(t.resultAbsolute) + '</td>' +
+                '<td>' + escHtml(t.resultLog) + '</td>' +
+                '<td>' + vlCategoryBadge(t.category) + '</td>' +
+                '<td>' + escHtml(t.platform) + '</td>' +
+                '<td>' + escHtml(t.testingLab) + '</td>' +
+                '<td>' + escHtml(t.facility) + '</td>' +
+                '</tr>';
+        });
+        return h + '</tbody></table></div>';
+    }
+
+    function eidHistoryTableHtml(eidTests, showChildCol) {
+        if (!eidTests || !eidTests.length) {
+            return '<div class="pmtct-empty-panel"><?= _jsTranslate('No EID tests on record.'); ?></div>';
+        }
+        var h = '<div class="table-responsive"><table class="table table-bordered table-striped pmtct-history-table"><thead><tr>' +
+            '<th>#</th>' +
+            (showChildCol ? '<th><?= _jsTranslate('Child ID'); ?></th>' : '') +
+            '<th><?= _jsTranslate('EID Sample Code'); ?></th>' +
+            '<th><?= _jsTranslate('Collection Date'); ?></th>' +
+            '<th><?= _jsTranslate('Test Date'); ?></th>' +
+            '<th><?= _jsTranslate('Result'); ?></th>' +
+            '<th><?= _jsTranslate('Status'); ?></th>' +
+            '<th><?= _jsTranslate('Platform'); ?></th>' +
+            '<th><?= _jsTranslate('Testing Lab'); ?></th>' +
+            '<th><?= _jsTranslate('Mother VL Status at This Test'); ?></th>' +
+            '</tr></thead><tbody>';
+        eidTests.forEach(function (t, i) {
+            h += '<tr>' +
+                '<td>' + (i + 1) + '</td>' +
+                (showChildCol ? '<td>' + escHtml(t.childId || ('#' + t.eidId)) + '</td>' : '') +
+                '<td>' + escHtml(t.sampleCode || t.remoteSampleCode) + '</td>' +
+                '<td>' + fmtIsoDate(t.collectionDate) + '</td>' +
+                '<td>' + fmtIsoDate(t.testedDate) + '</td>' +
+                '<td>' + eidResultBadge(t.result, t.isPositive) + '</td>' +
+                '<td>' + escHtml(t.status) + '</td>' +
+                '<td>' + escHtml(t.platform) + '</td>' +
+                '<td>' + escHtml(t.testingLab) + '</td>' +
+                '<td>' + motherVlAtTestCell(t.motherVlAtTest) + '</td>' +
+                '</tr>';
+        });
+        return h + '</tbody></table></div>';
+    }
+
+    function openChildHistory(childId, eidId) {
+        $.blockUI();
+        $.post("/eid/management/getPmtctCascadeReport.php",
+            { action: "childHistory", childId: childId || '', eidId: eidId || 0 },
+            function (data) {
+                $.unblockUI();
+                var d = (typeof data === 'string') ? JSON.parse(data) : data;
+
+                $('#pmtctHistoryModalLabel').text("<?= _jsTranslate('Child Test History'); ?>" + (d.childId ? ' — ' + d.childId : ''));
+
+                var html = metaStripHtml([
+                    ["<?= _jsTranslate('Child ID'); ?>", escHtml(d.childId || '—')],
+                    ["<?= _jsTranslate('Child DOB'); ?>", fmtIsoDate(d.childDob) || '—'],
+                    ["<?= _jsTranslate('Mother ID'); ?>", escHtml(d.motherId || '—')],
+                    ["<?= _jsTranslate('EID tests'); ?>", (d.eidTests || []).length],
+                    ["<?= _jsTranslate('Mother VL tests'); ?>", (d.vlTests || []).length],
+                    ["<?= _jsTranslate('Mother high VL before birth'); ?>", preBirthBadge(d.motherHighVlPreBirth)]
+                ]);
+                html += '<div class="pmtct-subhead"><?= _jsTranslate('EID Test History (all time)'); ?></div>';
+                html += eidHistoryTableHtml(d.eidTests, false);
+                html += '<div class="pmtct-subhead"><?= _jsTranslate('Mother VL Test History (all time)'); ?></div>';
+                html += vlHistoryTableHtml(d.vlTests);
+
+                $('#pmtctHistoryBody').html(html);
+                showHistoryModal();
+            });
+    }
+
+    function openMotherHistory(motherId) {
+        $.blockUI();
+        $.post("/eid/management/getPmtctCascadeReport.php",
+            { action: "motherHistory", motherId: motherId || '' },
+            function (data) {
+                $.unblockUI();
+                var d = (typeof data === 'string') ? JSON.parse(data) : data;
+
+                $('#pmtctHistoryModalLabel').text("<?= _jsTranslate('Mother Test History'); ?>" + (d.motherId ? ' — ' + d.motherId : ''));
+
+                var highTests = (d.vlTests || []).filter(function (t) { return t.category === 'not suppressed'; }).length;
+                var kids = {};
+                (d.eidTests || []).forEach(function (t) { kids[t.childId || ('#' + t.eidId)] = true; });
+
+                var html = metaStripHtml([
+                    ["<?= _jsTranslate('Mother ID'); ?>", escHtml(d.motherId || '—')],
+                    ["<?= _jsTranslate('VL tests'); ?>", (d.vlTests || []).length],
+                    ["<?= _jsTranslate('High VL tests'); ?>", highTests],
+                    ["<?= _jsTranslate('Linked children'); ?>", Object.keys(kids).length]
+                ]);
+                html += '<div class="pmtct-subhead"><?= _jsTranslate('VL Test History (all time)'); ?></div>';
+                html += vlHistoryTableHtml(d.vlTests);
+                html += '<div class="pmtct-subhead"><?= _jsTranslate('Children EID Tests (all time)'); ?></div>';
+                html += eidHistoryTableHtml(d.eidTests, true);
+
+                $('#pmtctHistoryBody').html(html);
+                showHistoryModal();
+            });
+    }
+
     function exportPmtctCascade() {
         $.blockUI();
         $.post("/eid/management/pmtctCascadeReportExport.php", readFilters(), function (data) {
@@ -532,6 +1036,21 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                 'Current Year To Date': [moment().startOf('year'), moment()]
             }
         });
+        // Drill-row action buttons (delegated: rows are re-rendered per drill)
+        $(document).on('click', '.pmtct-child-history-btn', function () {
+            var r = pmtctDrillRows[$(this).data('idx')] || {};
+            openChildHistory(r.childId || '', r.eidId || 0);
+        });
+        $(document).on('click', '.pmtct-mother-history-btn', function () {
+            var r = pmtctDrillRows[$(this).data('idx')] || {};
+            openMotherHistory(r.motherId || '');
+        });
+        $('#pmtctHistoryBack').on('click', function () {
+            $('#pmtctHistoryModal').one('hidden.bs.modal', function () {
+                $('#pmtctDrillModal').modal('show');
+            }).modal('hide');
+        });
+
         loadPmtctSummary();
         loadPmtctTable();
     });
