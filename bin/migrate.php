@@ -526,6 +526,14 @@ foreach ($versions as $version) {
         $totalMigrations++;
         $versionErrors = 0;
 
+        // Each migration file bumps sc_version itself as its last statement, but the
+        // loop keeps executing after a non-benign error, so that bump lands even when
+        // the run failed -- the file then reports itself done while missing schema
+        // (exactly the silent drift the withheld runner-bump below is meant to stop).
+        // Snapshot the version now so a failed run can be put back to it.
+        $db->where('name', 'sc_version');
+        $scVersionBefore = $db->getValue('system_config', 'value');
+
         // Parse and pre-build statements, filtering out empties, so we know the total
         $sql_contents = file_get_contents($file);
         // Normalize SQL comments: "-- comment" requires a space after "--" per the
@@ -752,8 +760,20 @@ foreach ($versions as $version) {
                 $db->where('name', 'sc_version');
                 $db->update('system_config', ['value' => $version]);
                 $lastVersion = $version;
-            } elseif (!$quietMode) {
-                $io->warning("app_version NOT bumped to $version: $versionErrors non-benign error(s) occurred. Fix the issue(s) above and re-run migrate.php.");
+            } else {
+                // The file's own bump already ran; undo it so a failed migration cannot
+                // report itself done. Restoring the snapshot rather than skipping the
+                // statement keeps every migration file untouched (they still apply
+                // standalone) and does not care whether the key is 'version' or
+                // 'sc_version' in older files. Only restore when there was a value to
+                // begin with, so a first-ever install with no key set is left alone.
+                if ($scVersionBefore !== null && $scVersionBefore !== '') {
+                    $db->where('name', 'sc_version');
+                    $db->update('system_config', ['value' => $scVersionBefore]);
+                }
+                if (!$quietMode) {
+                    $io->warning("app_version NOT bumped to $version: $versionErrors non-benign error(s) occurred. Fix the issue(s) above and re-run migrate.php.");
+                }
             }
 
             $db->commitTransaction();
