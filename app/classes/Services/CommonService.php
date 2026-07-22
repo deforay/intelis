@@ -1475,6 +1475,9 @@ final class CommonService
 
             $currentDateTime = DateUtility::getCurrentDateTime();
 
+            if (is_array($facilityIds)) {
+                $facilityIds = array_values(array_unique(array_filter($facilityIds)));
+            }
             if (!empty($facilityIds)) {
 
                 $facilityAttributes = [
@@ -1489,8 +1492,7 @@ final class CommonService
                 ];
 
                 if (is_array($facilityIds)) {
-                    $facilityIds = implode(",", array_unique(array_filter($facilityIds)));
-                    $this->db->where('facility_id', [$facilityIds], 'IN');
+                    $this->db->where('facility_id', $facilityIds, 'IN');
                 } else {
                     $this->db->where('facility_id', $facilityIds);
                 }
@@ -1498,6 +1500,9 @@ final class CommonService
                 $this->db->update('facility_details', $data);
             }
 
+            if (is_array($labId)) {
+                $labId = array_values(array_unique(array_filter($labId)));
+            }
             if (!empty($labId)) {
                 $facilityAttributes = [
                     "last{$syncType}Sync" => $currentDateTime,
@@ -1509,8 +1514,7 @@ final class CommonService
                 ];
 
                 if (is_array($labId)) {
-                    $labId = implode(",", array_unique(array_filter($labId)));
-                    $this->db->where('facility_id', [$labId], 'IN');
+                    $this->db->where('facility_id', $labId, 'IN');
                 } else {
                     $this->db->where('facility_id', $labId);
                 }
