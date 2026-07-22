@@ -92,11 +92,8 @@ try {
         $authToken
     );
 
-    // If you have facility IDs to bump sync time for, pass them here.
-    // If not available from receiveResults, skip this (prevents undefined var).
-    if (!empty($data['facilityIds']) && is_array($data['facilityIds'])) {
-        $general->updateResultSyncDateTime($testType, $data['facilityIds'], $labId);
-    }
+    $facilityIds = (!empty($data['facilityIds']) && is_array($data['facilityIds'])) ? $data['facilityIds'] : null;
+    $general->updateResultSyncDateTime($testType, $facilityIds, $labId);
 
     // Emit response hints for clients that want to adapt chunking; safe to ignore.
     $procTimeMs = (int) round((microtime(true) - $procStart) * 1000);

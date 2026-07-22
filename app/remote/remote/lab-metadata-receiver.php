@@ -10,6 +10,8 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
+use App\Services\STS\TokensService;
 use App\Registries\ContainerRegistry;
 use App\Services\InstrumentActivityService;
 use App\Services\InstrumentUsageStatisticsService;
@@ -29,6 +31,9 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
+
+/** @var TokensService $stsTokensService */
+$stsTokensService = ContainerRegistry::get(TokensService::class);
 
 function saveUserSignature(array &$data): void
 {
@@ -122,6 +127,16 @@ try {
                 $tableInfo['data'][$i] = $data;
                 $i++;
             }
+        }
+
+        // The payload is fully read but nothing is written yet: authenticate before any
+        // of it lands. The token must belong to the facility the payload claims, so a
+        // lab cannot file another lab's metadata -- or the relayed activity and usage
+        // below -- under a labId that is not its own. Same check the result and request
+        // receivers already apply.
+        $authToken = ApiService::extractBearerToken($request);
+        if (!$stsTokensService->validateToken($authToken, (int) $labId)) {
+            throw new SystemException('Unauthorized Access', 401);
         }
 
 
