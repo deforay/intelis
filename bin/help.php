@@ -79,6 +79,7 @@ $CATEGORY_MAP = [
 
     // Admin one-shots.
     'create-api-user.php' => 'Admin one-shots',
+    'reset-user-password.php' => 'Admin one-shots',
     'send-email.php' => 'Admin one-shots',
     'geocode-facilities.php' => 'Admin one-shots',
 
