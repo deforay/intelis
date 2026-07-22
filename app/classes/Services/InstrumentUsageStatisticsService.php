@@ -26,6 +26,8 @@ final class InstrumentUsageStatisticsService
 {
     public const VIA_API = 'api';
     public const VIA_IMPORTER = 'importer';
+    /** Forwarded from a LIS to STS, where the summary was first stored by one of the above. */
+    public const VIA_RELAY = 'relay';
 
     /** A day's count far beyond any real analyzer, so a corrupt figure is caught. */
     private const MAX_COUNT = 1000000;
