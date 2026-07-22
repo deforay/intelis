@@ -225,6 +225,34 @@ final class DatabaseService extends MysqliDb
     }
 
     /**
+     * The parent runs every raw query through a regex that rewrites the token after
+     * `from|into|update|join|describe` into `` `<prefix><token>` ``. Its only purpose
+     * is to inject a table prefix, but this application never sets one, so with an
+     * empty prefix the regex does nothing but wrap that token in backticks -- which is
+     * a no-op for a plain table name and outright corruption for anything that is not
+     * a table. `ON UPDATE CURRENT_TIMESTAMP` becomes `ON UPDATE ``CURRENT_TIMESTAMP```,
+     * a syntax error that surfaces only through this class and never via the mysql
+     * client, which is how a valid-looking migration silently failed to create its
+     * table.
+     *
+     * When a prefix is configured the parent runs verbatim, so prefixed installs are
+     * unchanged. When it is empty the whitespace normalization is kept identical and
+     * only the prefix-injection regex is skipped. Dropping it is safe here because no
+     * table in the schema is a reserved word, so none depends on being auto-backticked;
+     * already-backticked references in a query are left exactly as written.
+     */
+    #[Override]
+    public function rawAddPrefix($query)
+    {
+        if (self::$prefix !== '') {
+            return parent::rawAddPrefix($query);
+        }
+
+        $query = str_replace(PHP_EOL, '', (string) $query);
+        return preg_replace('/\s+/', ' ', $query);
+    }
+
+    /**
      * Execute a query and return a generator to fetch results row by row.
      *
      * @param string $query SQL query string
