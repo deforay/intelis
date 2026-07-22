@@ -211,6 +211,15 @@ class AppAuthMiddleware implements MiddlewareInterface
     private function expireSession(): void
     {
         if (CommonService::isSessionActive()) {
+            // The main app and system-admin share one PHP session; an idle app
+            // session must not evict a live system-admin login.
+            $systemAdmin = $_SESSION['_systemAdmin'] ?? null;
+            if (!empty($systemAdmin['userId'])) {
+                $_SESSION = ['_systemAdmin' => $systemAdmin];
+                session_regenerate_id(true);
+                $_SESSION['_session_regenerated'] = time();
+                return;
+            }
             $_SESSION = [];
             if (ini_get('session.use_cookies')) {
                 $params = session_get_cookie_params();
