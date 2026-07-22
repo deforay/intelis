@@ -68,6 +68,32 @@ final class InterfaceMigrationTest extends TestCase
         self::assertStringContainsString("SET `value` = '5.5.27'", $migration);
     }
 
+    /**
+     * migrate.php runs every statement through MysqliDb::rawAddPrefix(), whose regex
+     * rewrites `UPDATE <word>` into `UPDATE ``<word>```. That turns ON UPDATE
+     * CURRENT_TIMESTAMP into a syntax error which appears only under the migrator and
+     * never via the mysql client, so it is invisible until an install fails. Timestamps
+     * in migrations are stamped from PHP instead.
+     */
+    public function testNoMigrationUsesOnUpdateCurrentTimestamp(): void
+    {
+        $migrations = glob(dirname(__DIR__, 3) . '/sys/migrations/5.5.*.sql') ?: [];
+        self::assertNotEmpty($migrations);
+
+        foreach ($migrations as $path) {
+            $contents = file_get_contents($path);
+            self::assertIsString($contents, "Could not read $path");
+
+            // Comments warning about the pattern are the point; only real DDL matters.
+            $ddl = preg_replace('/^\s*--.*$/m', '', $contents);
+            self::assertDoesNotMatchRegularExpression(
+                '/\bON\s+UPDATE\s+CURRENT_TIMESTAMP\b/i',
+                (string) $ddl,
+                basename($path) . ' uses ON UPDATE CURRENT_TIMESTAMP, which migrate.php mangles'
+            );
+        }
+    }
+
     /** The word telemetry is not used anywhere in the application. */
     public function testActivityIsNotCalledTelemetry(): void
     {
