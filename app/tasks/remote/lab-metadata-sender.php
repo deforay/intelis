@@ -180,6 +180,10 @@ try {
     MiscUtility::spinnerAdvance($bar);
     MiscUtility::spinnerFinish($bar);
 
+    // Authenticate to STS with this lab's token, the same one the result sender and
+    // request receiver use, so STS can tie the payload to the facility it came from.
+    $apiService->setBearerToken((string) $general->getSTSToken());
+
     $output->write("Uploading to STS... ");
     $jsonResponse = $apiService->post($url, $payload, gzip: true);
     $output->writeln("<info>OK</info>");
