@@ -505,21 +505,22 @@ if (!empty($result)) {
      $bottomHtml .= '<tr>';
      $bottomHtml .= '<td colspan="3" style="line-height:2px;font-size:2em;border-bottom:2px solid #d3d3d3;padding-"><br><br></td>';
      $bottomHtml .= '</tr>';
+     $bottomHtml .= '<tr><td colspan="3">';
+     $bottomHtml .= '<table style="width:100%;">';
      $bottomHtml .= '<tr>';
-     $bottomHtml .= '<td colspan="3">';
-     $bottomHtml .= '<table>';
-     $bottomHtml .= '<tr>';
-     $bottomHtml .= '<td style="font-size:10px;text-align:left;width:75%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> VL < 1000 copies/mL: ' . _translate("Continue on current regimen") . '</td>';
-     $bottomHtml .= '<td style="font-size:10px;text-align:left;">' . _translate("Printed on") . ' : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
+     $bottomHtml .= '<td style="font-size:10px;text-align:left;width:65%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> VL < 1000 copies/mL: ' . _translate("Continue on current regimen") . '</td>';
+     $showContent = "";
+     if ($pdfPrintCount > 1)
+          $showContent = '(' . _translate("Duplicate: ") . $pdfPrintCount . ')';
+     $bottomHtml .= '<td style="font-size:10px;text-align:right;width:35%;">' . _translate("Printed on") . ' : ' . $printDate . ' ' . $showContent . '</td>';
      $bottomHtml .= '</tr>';
      $bottomHtml .= '<tr>';
-     $bottomHtml .= '<td colspan="2" style="font-size:10px;text-align:left;width:75%;">
+     $bottomHtml .= '<td colspan="2" style="font-size:10px;text-align:left;">
                               <img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:8px;height:8px;"/> VL >= 1000 copies/mL: ' . _translate("Clinical and counselling action required") .
           '</td>';
      $bottomHtml .= '</tr>';
      $bottomHtml .= '</table>';
-     $bottomHtml .= '</td>';
-     $bottomHtml .= '</tr>';
+     $bottomHtml .= '</td></tr>';
      $bottomHtml .= '</table>';
 
      $bottomTextLocation = !empty($vlFacilityAttributes) && !empty($vlFacilityAttributes->bottom_text_location) ? $vlFacilityAttributes->bottom_text_location : 'belowPlatformName';
