@@ -128,7 +128,7 @@ final class InstrumentUsageStatisticsService
             'UPDATE instrument_usage_statistics_daily
                 SET installation_id = ?, received_via = ?, instrument_id = ?, machine_type = ?,
                     test_type = ?, total_tests = ?, successful_tests = ?, failed_tests = ?,
-                    first_test_at = ?, last_test_at = ?, revision = ?
+                    first_test_at = ?, last_test_at = ?, revision = ?, updated_at = ?
               WHERE usage_statistic_id = ? AND revision < ?',
             [
                 $row['installation_id'],
@@ -142,6 +142,7 @@ final class InstrumentUsageStatisticsService
                 $row['first_test_at'],
                 $row['last_test_at'],
                 $row['revision'],
+                $row['updated_at'],
                 (int) $existing['usage_statistic_id'],
                 $row['revision'],
             ]
@@ -249,6 +250,11 @@ final class InstrumentUsageStatisticsService
             'first_test_at' => $firstTestAt,
             'last_test_at' => $lastTestAt,
             'revision' => $revision,
+            // Stamped here rather than by the column: the table cannot use
+            // DEFAULT/ON UPDATE CURRENT_TIMESTAMP, because migrate.php rewrites
+            // "ON UPDATE CURRENT_TIMESTAMP" into a syntax error.
+            'received_at' => DateUtility::getCurrentDateTime(),
+            'updated_at' => DateUtility::getCurrentDateTime(),
         ];
     }
 

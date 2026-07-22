@@ -32,8 +32,12 @@ CREATE TABLE IF NOT EXISTS `instrument_usage_statistics_daily` (
   `first_test_at` DATETIME NULL DEFAULT NULL,
   `last_test_at` DATETIME NULL DEFAULT NULL,
   `revision` INT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Increases as the tool revises the day',
-  `received_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  -- Stamped from PHP, never DEFAULT/ON UPDATE CURRENT_TIMESTAMP. migrate.php runs every
+  -- statement through MysqliDb::rawAddPrefix(), whose regex rewrites `UPDATE <word>` into
+  -- `UPDATE ``<word>``` -- so "ON UPDATE CURRENT_TIMESTAMP" becomes a syntax error that
+  -- only appears under the migrator, never via the mysql client. Same rule as 5.5.11/5.5.12.
+  `received_at` DATETIME NOT NULL,
+  `updated_at` DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (`usage_statistic_id`),
   UNIQUE KEY `uniq_instrument_usage_lab_aggregate` (`lab_id`, `aggregate_uid`),
   KEY `idx_instrument_usage_lab_date` (`lab_id`, `activity_date`),
