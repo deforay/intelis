@@ -159,6 +159,7 @@ $resultFilename = '';
 $pages = [];
 $page = 1;
 $_SESSION['aliasPage'] = 1;
+$pdfPrintCount = 0;
 foreach ($requestResult as $result) {
 	
 	$existingAttributes = !empty($result['form_attributes']) ? json_decode($result['form_attributes'], true) : [];
@@ -167,6 +168,7 @@ foreach ($requestResult as $result) {
 		];
 	if ($general->isLISInstance()) {
 		$currentCount = (int)($existingAttributes['result_printed_lis_count'] ?? 0);
+		$pdfPrintCount = $currentCount + 1;
 		if(empty($result['result_printed_on_lis_datetime'])){
 			$currentCount = 0;
 			$pData = [
@@ -180,6 +182,7 @@ foreach ($requestResult as $result) {
 		$id = $db->update('form_vl', $pData);
 	} elseif ($general->isSTSInstance()) {
 		$currentCount = (int)($existingAttributes['result_printed_sts_count'] ?? 0);
+		$pdfPrintCount = $currentCount + 1;
 		if(empty($result['result_printed_on_sts_datetime'])){
 			$currentCount = 0;
 			$pData = [
