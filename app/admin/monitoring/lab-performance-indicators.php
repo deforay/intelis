@@ -37,6 +37,46 @@ if (TestsService::isTestActive('generic-tests')) {
 $testingLabs = $facilitiesService->getTestingLabs();
 ?>
 <style>
+    #lpiReport .lpi-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 18px;
+        align-items: flex-end;
+        padding: 14px 16px;
+        margin: 0 0 18px;
+        background-color: #f8fafb;
+        border: 1px solid #e4e8ec;
+        border-radius: 4px;
+    }
+
+    #lpiReport .lpi-filter label {
+        display: block;
+        margin: 0 0 4px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #8a9299;
+    }
+
+    #lpiReport .lpi-filter-test {
+        flex: 1 1 240px;
+        max-width: 320px;
+    }
+
+    #lpiReport .lpi-filter-date {
+        flex: 0 1 230px;
+    }
+
+    #lpiReport .lpi-filter-group {
+        flex: 0 1 150px;
+    }
+
+    #lpiReport .lpi-filter-lab {
+        flex: 1 1 220px;
+        max-width: 300px;
+    }
+
     #lpiReport .lpi-summary {
         display: flex;
         flex-wrap: wrap;
@@ -45,16 +85,45 @@ $testingLabs = $facilitiesService->getTestingLabs();
     }
 
     #lpiReport .lpi-card {
-        flex: 1 1 160px;
-        padding: 12px 15px;
-        background-color: #f8fafb;
+        position: relative;
+        overflow: hidden;
+        flex: 1 1 180px;
+        padding: 14px 16px;
+        background-color: #fff;
         border: 1px solid #e4e8ec;
         border-left: 3px solid #3c8dbc;
-        border-radius: 3px;
+        border-radius: 4px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    #lpiReport .lpi-card-green {
+        border-left-color: #00a65a;
+    }
+
+    #lpiReport .lpi-card-orange {
+        border-left-color: #f39c12;
+    }
+
+    #lpiReport .lpi-card-purple {
+        border-left-color: #605ca8;
     }
 
     #lpiReport .lpi-card.is-alert {
         border-left-color: #c0392b;
+        background-color: #fdf6f5;
+    }
+
+    #lpiReport .lpi-card.is-alert .lpi-card-value {
+        color: #c0392b;
+    }
+
+    #lpiReport .lpi-card-icon {
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 30px;
+        color: rgba(60, 70, 80, 0.08);
     }
 
     #lpiReport .lpi-card-label {
@@ -65,7 +134,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
     }
 
     #lpiReport .lpi-card-value {
-        font-size: 22px;
+        font-size: 24px;
         font-weight: 700;
         color: #444;
         line-height: 1.3;
@@ -92,8 +161,25 @@ $testingLabs = $facilitiesService->getTestingLabs();
         border: 1px solid #e0e5ea;
     }
 
+    #lpiReport .lpi-tabbar {
+        position: relative;
+    }
+
+    #lpiReport .lpi-tabbar .lpi-toolbar {
+        position: absolute;
+        right: 0;
+        bottom: 8px;
+        margin: 0;
+    }
+
     #lpiReport .nav-tabs>li>a {
         font-weight: 600;
+        color: #5a6570;
+    }
+
+    #lpiReport .nav-tabs>li.active>a {
+        color: #3c8dbc;
+        border-top: 2px solid #3c8dbc;
     }
 
     #lpiReport .tab-pane {
@@ -103,6 +189,23 @@ $testingLabs = $facilitiesService->getTestingLabs();
     #lpiReport .lpi-chart {
         min-height: 320px;
         margin-bottom: 18px;
+        padding: 6px;
+        border: 1px solid #eef1f4;
+        border-radius: 4px;
+    }
+
+    #lpiReport .lpi-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 300px;
+        color: #a7b0b8;
+    }
+
+    #lpiReport .lpi-empty em {
+        font-size: 34px;
     }
 
     #lpiReport .lpi-toolbar {
@@ -128,20 +231,41 @@ $testingLabs = $facilitiesService->getTestingLabs();
     #lpiReport .lpi-methodology {
         background-color: #f8fafb;
         border: 1px solid #e4e8ec;
-        border-radius: 3px;
-        padding: 12px 16px;
+        border-left: 3px solid #3c8dbc;
+        border-radius: 4px;
+        padding: 14px 18px;
         margin: 0 0 15px;
         font-size: 12.5px;
-        max-width: 980px;
     }
 
-    #lpiReport .lpi-methodology dt {
-        margin-top: 10px;
+    #lpiReport .lpi-methodology-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 0 10px;
+        font-size: 13px;
+        font-weight: 700;
         color: #444;
     }
 
-    #lpiReport .lpi-methodology dt:first-child {
-        margin-top: 0;
+    #lpiReport .lpi-methodology-head a {
+        color: #8a9299;
+    }
+
+    #lpiReport .lpi-methodology dl {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 12px 28px;
+        margin: 0;
+    }
+
+    #lpiReport .lpi-m-wide {
+        grid-column: 1 / -1;
+    }
+
+    #lpiReport .lpi-methodology dt {
+        margin: 0 0 2px;
+        color: #444;
     }
 
     #lpiReport .lpi-methodology dd {
@@ -154,8 +278,31 @@ $testingLabs = $facilitiesService->getTestingLabs();
         padding-left: 18px;
     }
 
+    #lpiReport .lpi-subhead {
+        font-size: 15px;
+        font-weight: 600;
+        border-left: 3px solid #3c8dbc;
+        padding-left: 9px;
+        margin: 22px 0 12px;
+    }
+
+    #lpiReport table.lpi-table {
+        font-size: 13px;
+    }
+
     #lpiReport table.lpi-table th {
         background-color: #f4f6f8;
+        border-bottom-width: 2px;
+        white-space: nowrap;
+    }
+
+    #lpiReport table.lpi-table tbody tr:hover {
+        background-color: #f0f7fb;
+    }
+
+    #lpiReport .lpi-num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
     }
 
     th {
@@ -191,153 +338,176 @@ $testingLabs = $facilitiesService->getTestingLabs();
                         </p>
 
                         <div id="lpiMethodology" class="lpi-methodology" style="display:none;">
+                            <div class="lpi-methodology-head">
+                                <span><em class="fa-solid fa-circle-info"></em>
+                                    <?= _htmlTranslate('How are these numbers calculated?'); ?></span>
+                                <a href="javascript:void(0);" onclick="$('#lpiMethodology').slideUp(150);"
+                                    aria-label="<?= _htmlTranslate('Close'); ?>">
+                                    <em class="fa-solid fa-xmark"></em>
+                                </a>
+                            </div>
                             <dl>
-                                <dt><?= _htmlTranslate('Reporting period'); ?></dt>
-                                <dd><?= _htmlTranslate('Every sample is placed in a month, quarter or year using the sample collection date. When the collection date is missing, the date the request was created is used instead.'); ?></dd>
+                                <div class="lpi-m-item lpi-m-wide">
+                                    <dt><?= _htmlTranslate('Turnaround Time (TAT)'); ?></dt>
+                                    <dd>
+                                        <?= _htmlTranslate('Each stage is the average number of days between two recorded timestamps.'); ?>
+                                        <ul>
+                                            <li><strong><?= _htmlTranslate('Collection to Lab Receipt'); ?></strong>:
+                                                <?= _htmlTranslate('from the sample collection date to the date the lab received the sample.'); ?></li>
+                                            <li><strong><?= _htmlTranslate('Lab Receipt to Tested'); ?></strong>:
+                                                <?= _htmlTranslate('from lab receipt to the date the test was performed.'); ?></li>
+                                            <li><strong><?= _htmlTranslate('Tested to Result Released'); ?></strong>:
+                                                <?= _htmlTranslate('from the test date to the result dispatch date, or the result print date when no dispatch date is recorded.'); ?></li>
+                                            <li><strong><?= _htmlTranslate('Collection to Result Released'); ?></strong>:
+                                                <?= _htmlTranslate('the full journey from sample collection to result release.'); ?></li>
+                                        </ul>
+                                        <?= _htmlTranslate('A sample is counted in a stage only when both timestamps exist and are in the correct order. The n value next to each average is the number of samples counted for that stage.'); ?>
+                                    </dd>
+                                </div>
 
-                                <dt><?= _htmlTranslate('Turnaround Time (TAT)'); ?></dt>
-                                <dd>
-                                    <?= _htmlTranslate('Each stage is the average number of days between two recorded timestamps.'); ?>
-                                    <ul>
-                                        <li><strong><?= _htmlTranslate('Collection to Lab Receipt'); ?></strong>:
-                                            <?= _htmlTranslate('from the sample collection date to the date the lab received the sample.'); ?></li>
-                                        <li><strong><?= _htmlTranslate('Lab Receipt to Tested'); ?></strong>:
-                                            <?= _htmlTranslate('from lab receipt to the date the test was performed.'); ?></li>
-                                        <li><strong><?= _htmlTranslate('Tested to Result Released'); ?></strong>:
-                                            <?= _htmlTranslate('from the test date to the result dispatch date, or the result print date when no dispatch date is recorded.'); ?></li>
-                                        <li><strong><?= _htmlTranslate('Collection to Result Released'); ?></strong>:
-                                            <?= _htmlTranslate('the full journey from sample collection to result release.'); ?></li>
-                                    </ul>
-                                    <?= _htmlTranslate('A sample is counted in a stage only when both timestamps exist and are in the correct order. The n value next to each average is the number of samples counted for that stage.'); ?>
-                                </dd>
+                                <div class="lpi-m-item lpi-m-wide">
+                                    <dt><?= _htmlTranslate('Testing Volume'); ?></dt>
+                                    <dd><?= _htmlTranslate('Registered counts all samples in the period. Resulted counts samples that have a result. Each result is classified by how it reached the system: Manual Entry means it was typed in, Analyzer Interface means it was received directly from the instrument, and File Import means it was uploaded from a result file. Results saved before this tracking existed are shown as Unclassified.'); ?></dd>
+                                </div>
 
-                                <dt><?= _htmlTranslate('Testing Volume'); ?></dt>
-                                <dd><?= _htmlTranslate('Registered counts all samples in the period. Resulted counts samples that have a result. Each result is classified by how it reached the system: Manual Entry means it was typed in, Analyzer Interface means it was received directly from the instrument, and File Import means it was uploaded from a result file. Results saved before this tracking existed are shown as Unclassified.'); ?></dd>
+                                <div class="lpi-m-item">
+                                    <dt><?= _htmlTranslate('Reporting period'); ?></dt>
+                                    <dd><?= _htmlTranslate('Every sample is placed in a month, quarter or year using the sample collection date. When the collection date is missing, the date the request was created is used instead.'); ?></dd>
+                                </div>
 
-                                <dt><?= _htmlTranslate('Failure Rate'); ?></dt>
-                                <dd><?= _htmlTranslate('Failed tests divided by samples with an outcome, meaning a result or a recorded test failure. Samples that are still pending, or were rejected before testing, are not part of this rate.'); ?></dd>
+                                <div class="lpi-m-item">
+                                    <dt><?= _htmlTranslate('Failure Rate'); ?></dt>
+                                    <dd><?= _htmlTranslate('Failed tests divided by samples with an outcome, meaning a result or a recorded test failure. Samples that are still pending, or were rejected before testing, are not part of this rate.'); ?></dd>
+                                </div>
 
-                                <dt><?= _htmlTranslate('Rejection Rate'); ?></dt>
-                                <dd><?= _htmlTranslate('Rejected samples divided by all samples registered in the period.'); ?></dd>
+                                <div class="lpi-m-item">
+                                    <dt><?= _htmlTranslate('Rejection Rate'); ?></dt>
+                                    <dd><?= _htmlTranslate('Rejected samples divided by all samples registered in the period.'); ?></dd>
+                                </div>
 
-                                <dt><?= _htmlTranslate('Repeat Patients'); ?></dt>
-                                <dd><?= _htmlTranslate('Samples are linked into one patient using the patient identifier on the request. A result change is flagged when the linked samples do not all carry the same result. Samples without an identifier cannot be linked, so the identifier coverage is shown next to these numbers.'); ?></dd>
+                                <div class="lpi-m-item">
+                                    <dt><?= _htmlTranslate('Repeat Patients'); ?></dt>
+                                    <dd><?= _htmlTranslate('Samples are linked into one patient using the patient identifier on the request. A result change is flagged when the linked samples do not all carry the same result. Samples without an identifier cannot be linked, so the identifier coverage is shown next to these numbers.'); ?></dd>
+                                </div>
                             </dl>
                         </div>
 
-                        <table aria-describedby="lpi-description" class="table pageFilters" aria-hidden="true"
-                            cellspacing="3" style="margin-left:1%;margin-top:5px;width:98%;">
-                            <tr>
-                                <td><strong><?= _htmlTranslate('Test'); ?>&nbsp;:</strong></td>
-                                <td>
-                                    <select id="testType" class="form-control" style="width:100%;max-width:280px;">
-                                        <option value="all"><?= _htmlTranslate('All Tests (Overview)'); ?></option>
-                                        <?php foreach ($selectableTests as $testKey) { ?>
-                                            <option value="<?= htmlspecialchars($testKey, ENT_QUOTES); ?>">
-                                                <?= htmlspecialchars(TestsService::getTestName($testKey), ENT_QUOTES); ?>
-                                            </option>
-                                        <?php } ?>
-                                        <?php if (!empty($customTests)) { ?>
-                                            <optgroup label="<?= _htmlTranslate('Custom Tests'); ?>">
-                                                <?php foreach ($customTests as $customTest) { ?>
-                                                    <option value="generic-tests:<?= (int) $customTest['test_type_id']; ?>">
-                                                        <?= htmlspecialchars((string) $customTest['test_standard_name'], ENT_QUOTES); ?>
-                                                    </option>
-                                                <?php } ?>
-                                            </optgroup>
-                                        <?php } ?>
-                                    </select>
-                                </td>
-                                <td><strong><?= _htmlTranslate('Date Range'); ?>&nbsp;:</strong></td>
-                                <td>
-                                    <input type="text" id="dateRange" class="form-control daterangefield"
-                                        style="width:100%;max-width:240px;" />
-                                </td>
-                                <td><strong><?= _htmlTranslate('View By'); ?>&nbsp;:</strong></td>
-                                <td>
-                                    <select id="grouping" class="form-control" style="width:100%;max-width:150px;">
-                                        <option value="monthly"><?= _htmlTranslate('Monthly'); ?></option>
-                                        <option value="quarterly"><?= _htmlTranslate('Quarterly'); ?></option>
-                                        <option value="yearly"><?= _htmlTranslate('Yearly'); ?></option>
-                                    </select>
-                                </td>
-                                <?php if (!empty($testingLabs)) { ?>
-                                    <td><strong><?= _htmlTranslate('Lab'); ?>&nbsp;:</strong></td>
-                                    <td>
-                                        <select id="labId" class="form-control" style="width:100%;max-width:240px;">
-                                            <option value=""><?= _htmlTranslate('-- All Labs --'); ?></option>
-                                            <?php foreach ($testingLabs as $labId => $labName) { ?>
-                                                <option value="<?= (int) $labId; ?>">
-                                                    <?= htmlspecialchars((string) $labName, ENT_QUOTES); ?>
+                        <div class="lpi-filters">
+                            <div class="lpi-filter lpi-filter-test">
+                                <label for="testType"><?= _htmlTranslate('Test'); ?></label>
+                                <select id="testType" class="form-control" style="width:100%;">
+                                    <option value="all"><?= _htmlTranslate('All Tests (Overview)'); ?></option>
+                                    <?php foreach ($selectableTests as $testKey) { ?>
+                                        <option value="<?= htmlspecialchars($testKey, ENT_QUOTES); ?>">
+                                            <?= htmlspecialchars(TestsService::getTestName($testKey), ENT_QUOTES); ?>
+                                        </option>
+                                    <?php } ?>
+                                    <?php if (!empty($customTests)) { ?>
+                                        <optgroup label="<?= _htmlTranslate('Custom Tests'); ?>">
+                                            <?php foreach ($customTests as $customTest) { ?>
+                                                <option value="generic-tests:<?= (int) $customTest['test_type_id']; ?>">
+                                                    <?= htmlspecialchars((string) $customTest['test_standard_name'], ENT_QUOTES); ?>
                                                 </option>
                                             <?php } ?>
-                                        </select>
-                                    </td>
-                                <?php } ?>
-                                <td>
-                                    <button onclick="lpiApplyFilters();" class="btn btn-primary btn-sm">
-                                        <span><?= _htmlTranslate("Apply"); ?></span>
-                                    </button>
-                                </td>
-                            </tr>
-                        </table>
+                                        </optgroup>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="lpi-filter lpi-filter-date">
+                                <label for="dateRange"><?= _htmlTranslate('Date Range'); ?></label>
+                                <input type="text" id="dateRange" class="form-control daterangefield"
+                                    style="width:100%;" />
+                            </div>
+                            <div class="lpi-filter lpi-filter-group">
+                                <label for="grouping"><?= _htmlTranslate('View By'); ?></label>
+                                <select id="grouping" class="form-control" style="width:100%;">
+                                    <option value="monthly"><?= _htmlTranslate('Monthly'); ?></option>
+                                    <option value="quarterly"><?= _htmlTranslate('Quarterly'); ?></option>
+                                    <option value="yearly"><?= _htmlTranslate('Yearly'); ?></option>
+                                </select>
+                            </div>
+                            <?php if (!empty($testingLabs)) { ?>
+                                <div class="lpi-filter lpi-filter-lab">
+                                    <label for="labId"><?= _htmlTranslate('Lab'); ?></label>
+                                    <select id="labId" class="form-control" style="width:100%;">
+                                        <option value=""><?= _htmlTranslate('-- All Labs --'); ?></option>
+                                        <?php foreach ($testingLabs as $labId => $labName) { ?>
+                                            <option value="<?= (int) $labId; ?>">
+                                                <?= htmlspecialchars((string) $labName, ENT_QUOTES); ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            <?php } ?>
+                            <div class="lpi-filter">
+                                <button onclick="lpiApplyFilters();" class="btn btn-primary">
+                                    <em class="fa-solid fa-filter"></em>
+                                    <span><?= _htmlTranslate("Apply"); ?></span>
+                                </button>
+                            </div>
+                        </div>
 
                         <div class="lpi-summary">
                             <div class="lpi-card">
+                                <em class="fa-solid fa-vials lpi-card-icon"></em>
                                 <div class="lpi-card-label"><?= _htmlTranslate('Samples registered'); ?></div>
                                 <div class="lpi-card-value" id="cardRegistered">--</div>
                             </div>
-                            <div class="lpi-card">
+                            <div class="lpi-card lpi-card-green">
+                                <em class="fa-solid fa-clipboard-check lpi-card-icon"></em>
                                 <div class="lpi-card-label"><?= _htmlTranslate('Results available'); ?></div>
                                 <div class="lpi-card-value" id="cardResulted">--</div>
                             </div>
-                            <div class="lpi-card" id="cardFailureWrap">
+                            <div class="lpi-card lpi-card-orange" id="cardFailureWrap">
+                                <em class="fa-solid fa-triangle-exclamation lpi-card-icon"></em>
                                 <div class="lpi-card-label"><?= _htmlTranslate('Failure rate'); ?></div>
                                 <div class="lpi-card-value" id="cardFailure">--</div>
                             </div>
-                            <div class="lpi-card" id="cardRejectionWrap">
+                            <div class="lpi-card lpi-card-purple" id="cardRejectionWrap">
+                                <em class="fa-solid fa-ban lpi-card-icon"></em>
                                 <div class="lpi-card-label"><?= _htmlTranslate('Rejection rate'); ?></div>
                                 <div class="lpi-card-value" id="cardRejection">--</div>
                             </div>
                         </div>
 
-                        <div class="lpi-toolbar">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-sm dropdown-toggle"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <em class="fa-solid fa-download"></em>
-                                    <?= _htmlTranslate('Export'); ?> <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a href="javascript:void(0);" onclick="lpiExport('csv');">
-                                            <?= _htmlTranslate('Current view as CSV'); ?></a></li>
-                                    <li><a href="javascript:void(0);" onclick="lpiExport('xlsx');">
-                                            <?= _htmlTranslate('Current view as Excel'); ?></a></li>
-                                    <li><a href="javascript:void(0);" onclick="lpiExport('json');">
-                                            <?= _htmlTranslate('Current view as JSON'); ?></a></li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="javascript:void(0);" onclick="lpiExportAll();">
-                                            <?= _htmlTranslate('All indicators as JSON'); ?></a></li>
-                                </ul>
+                        <div class="lpi-tabbar">
+                            <div class="lpi-toolbar">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-sm dropdown-toggle"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <em class="fa-solid fa-download"></em>
+                                        <?= _htmlTranslate('Export'); ?> <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a href="javascript:void(0);" onclick="lpiExport('csv');">
+                                                <?= _htmlTranslate('Current view as CSV'); ?></a></li>
+                                        <li><a href="javascript:void(0);" onclick="lpiExport('xlsx');">
+                                                <?= _htmlTranslate('Current view as Excel'); ?></a></li>
+                                        <li><a href="javascript:void(0);" onclick="lpiExport('json');">
+                                                <?= _htmlTranslate('Current view as JSON'); ?></a></li>
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href="javascript:void(0);" onclick="lpiExportAll();">
+                                                <?= _htmlTranslate('All indicators as JSON'); ?></a></li>
+                                    </ul>
+                                </div>
                             </div>
+                            <ul class="nav nav-tabs" id="lpiTabs" role="tablist">
+                                <li role="presentation" class="lpi-tab-all"><a href="#tab-overview" data-section="overview"
+                                        role="tab" data-toggle="tab"><?= _htmlTranslate('Overview'); ?></a></li>
+                                <li role="presentation" class="lpi-tab-single"><a href="#tab-tat" data-section="tat"
+                                        role="tab" data-toggle="tab"><?= _htmlTranslate('Turnaround Time'); ?></a></li>
+                                <li role="presentation" class="lpi-tab-single"><a href="#tab-volume" data-section="volume"
+                                        role="tab" data-toggle="tab"><?= _htmlTranslate('Testing Volume'); ?></a></li>
+                                <li role="presentation" class="lpi-tab-single"><a href="#tab-failure" data-section="failure"
+                                        role="tab" data-toggle="tab"><?= _htmlTranslate('Failures'); ?></a></li>
+                                <li role="presentation" class="lpi-tab-single"><a href="#tab-rejection"
+                                        data-section="rejection" role="tab" data-toggle="tab"><?= _htmlTranslate('Rejections'); ?></a>
+                                </li>
+                                <li role="presentation" class="lpi-tab-single"><a href="#tab-patients"
+                                        data-section="patients" role="tab" data-toggle="tab"><?= _htmlTranslate('Repeat Patients'); ?></a>
+                                </li>
+                            </ul>
                         </div>
-
-                        <ul class="nav nav-tabs" id="lpiTabs" role="tablist">
-                            <li role="presentation" class="lpi-tab-all"><a href="#tab-overview" data-section="overview"
-                                    role="tab" data-toggle="tab"><?= _htmlTranslate('Overview'); ?></a></li>
-                            <li role="presentation" class="lpi-tab-single"><a href="#tab-tat" data-section="tat"
-                                    role="tab" data-toggle="tab"><?= _htmlTranslate('Turnaround Time'); ?></a></li>
-                            <li role="presentation" class="lpi-tab-single"><a href="#tab-volume" data-section="volume"
-                                    role="tab" data-toggle="tab"><?= _htmlTranslate('Testing Volume'); ?></a></li>
-                            <li role="presentation" class="lpi-tab-single"><a href="#tab-failure" data-section="failure"
-                                    role="tab" data-toggle="tab"><?= _htmlTranslate('Failures'); ?></a></li>
-                            <li role="presentation" class="lpi-tab-single"><a href="#tab-rejection"
-                                    data-section="rejection" role="tab" data-toggle="tab"><?= _htmlTranslate('Rejections'); ?></a>
-                            </li>
-                            <li role="presentation" class="lpi-tab-single"><a href="#tab-patients"
-                                    data-section="patients" role="tab" data-toggle="tab"><?= _htmlTranslate('Repeat Patients'); ?></a>
-                            </li>
-                        </ul>
 
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane" id="tab-overview">
@@ -377,7 +547,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
                                         aria-describedby="lpi-description"></table>
                                 </div>
                                 <div id="failureReasonsWrap" style="display:none;">
-                                    <h4><?= _htmlTranslate('Failure Reasons'); ?></h4>
+                                    <h4 class="lpi-subhead"><?= _htmlTranslate('Failure Reasons'); ?></h4>
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped lpi-table"
                                             id="tableFailureReasons" aria-describedby="lpi-description"></table>
@@ -392,7 +562,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
                                         aria-describedby="lpi-description"></table>
                                 </div>
                                 <div id="rejectionReasonsWrap" style="display:none;">
-                                    <h4><?= _htmlTranslate('Rejection Reasons'); ?></h4>
+                                    <h4 class="lpi-subhead"><?= _htmlTranslate('Rejection Reasons'); ?></h4>
                                     <div class="lpi-chart" id="chartRejectionReasons" style="min-height:260px;"></div>
                                     <div class="table-responsive">
                                         <table class="table table-bordered table-striped lpi-table"
@@ -405,14 +575,17 @@ $testingLabs = $facilitiesService->getTestingLabs();
                                 <p class="lpi-note" id="patientsCoverageNote"></p>
                                 <div class="lpi-summary">
                                     <div class="lpi-card">
+                                        <em class="fa-solid fa-users lpi-card-icon"></em>
                                         <div class="lpi-card-label"><?= _htmlTranslate('Patients with repeat tests'); ?></div>
                                         <div class="lpi-card-value" id="cardRepeatPatients">--</div>
                                     </div>
-                                    <div class="lpi-card">
+                                    <div class="lpi-card lpi-card-orange">
+                                        <em class="fa-solid fa-arrow-right-arrow-left lpi-card-icon"></em>
                                         <div class="lpi-card-label"><?= _htmlTranslate('Patients with a result change'); ?></div>
                                         <div class="lpi-card-value" id="cardChangedPatients">--</div>
                                     </div>
-                                    <div class="lpi-card">
+                                    <div class="lpi-card lpi-card-green">
+                                        <em class="fa-solid fa-id-card lpi-card-icon"></em>
                                         <div class="lpi-card-label"><?= _htmlTranslate('Samples with a patient identifier'); ?></div>
                                         <div class="lpi-card-value" id="cardIdentifierCoverage">--</div>
                                     </div>
@@ -481,8 +654,11 @@ $testingLabs = $facilitiesService->getTestingLabs();
 
     Highcharts.setOptions({
         colors: ['#3c8dbc', '#00a65a', '#f39c12', '#8a9299', '#c0392b', '#605ca8'],
-        chart: { style: { fontFamily: 'inherit' } },
+        chart: { style: { fontFamily: 'inherit' }, spacing: [16, 16, 12, 12] },
         title: { style: { fontSize: '14px', fontWeight: '600' } },
+        xAxis: { lineColor: '#e4e8ec', tickColor: '#e4e8ec' },
+        yAxis: { gridLineColor: '#eef1f4' },
+        legend: { itemStyle: { fontWeight: '600', color: '#5a6570' } },
         credits: { enabled: false }
     });
 
@@ -552,6 +728,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
             lpiRenderSection(section, lpiCache[key]);
             return;
         }
+        lpiChartLoading(section);
         lpiPost(section, null, function (json) {
             if (!json || json.error) { return; }
             lpiCache[key] = json;
@@ -601,9 +778,13 @@ $testingLabs = $facilitiesService->getTestingLabs();
         return $('<span>').text(value === null || value === undefined ? '' : String(value)).html();
     }
 
-    function buildTable(tableId, headers, rows) {
+    // numericFrom right-aligns every column from that index onward.
+    function buildTable(tableId, headers, rows, numericFrom) {
+        var numClass = function (i) {
+            return (numericFrom !== undefined && i >= numericFrom) ? ' class="lpi-num"' : '';
+        };
         var html = '<thead><tr>';
-        headers.forEach(function (h) { html += '<th>' + esc(h) + '</th>'; });
+        headers.forEach(function (h, i) { html += '<th' + numClass(i) + '>' + esc(h) + '</th>'; });
         html += '</tr></thead><tbody>';
         if (rows.length === 0) {
             html += '<tr><td colspan="' + headers.length + '" class="text-center text-muted">'
@@ -611,13 +792,30 @@ $testingLabs = $facilitiesService->getTestingLabs();
         }
         rows.forEach(function (row) {
             html += '<tr>';
-            row.forEach(function (cell) {
-                html += '<td>' + (cell === null || cell === undefined || cell === '' ? '-' : esc(cell)) + '</td>';
+            row.forEach(function (cell, i) {
+                html += '<td' + numClass(i) + '>'
+                    + (cell === null || cell === undefined || cell === '' ? '-' : esc(cell)) + '</td>';
             });
             html += '</tr>';
         });
         html += '</tbody>';
         $('#' + tableId).html(html);
+    }
+
+    // Renders the chart, or a friendly placeholder when there is nothing to plot.
+    function lpiChart(id, rows, config) {
+        if (!rows || rows.length === 0) {
+            $('#' + id).html('<div class="lpi-empty"><em class="fa-solid fa-chart-column"></em><div>'
+                + esc(LPI_LABELS.noData) + '</div></div>');
+            return;
+        }
+        Highcharts.chart(id, config);
+    }
+
+    function lpiChartLoading(section) {
+        $('#tab-' + section + ' .lpi-chart').first().html(
+            '<div class="lpi-empty"><em class="fa-solid fa-spinner fa-spin"></em><div>'
+            + esc(LPI_LABELS.loading) + '</div></div>');
     }
 
     function sumByPeriod(rows, fields) {
@@ -646,9 +844,9 @@ $testingLabs = $facilitiesService->getTestingLabs();
                 r.failureRate === null ? null : r.failureRate + '%',
                 r.rejected.toLocaleString(),
                 r.rejectionRate === null ? null : r.rejectionRate + '%'];
-            }));
+            }), 1);
 
-        Highcharts.chart('chartOverview', {
+        lpiChart('chartOverview', rows, {
             chart: { type: 'column' },
             title: { text: "<?= _jsTranslate('Results by entry mode, per test'); ?>" },
             xAxis: { categories: rows.map(function (r) { return r.testName; }) },
@@ -673,9 +871,9 @@ $testingLabs = $facilitiesService->getTestingLabs();
                 return [r.period, r.samples.toLocaleString()].concat(stages.map(function (s) {
                     return r[s] === null ? null : r[s] + ' ' + LPI_LABELS.days + ' (n=' + r[s + 'N'].toLocaleString() + ')';
                 }));
-            }));
+            }), 1);
 
-        Highcharts.chart('chartTat', {
+        lpiChart('chartTat', rows, {
             chart: { type: 'line' },
             title: { text: "<?= _jsTranslate('Average turnaround time in days'); ?>" },
             xAxis: { categories: rows.map(function (r) { return String(r.period); }) },
@@ -694,10 +892,10 @@ $testingLabs = $facilitiesService->getTestingLabs();
                 return [r.period, r.lab, r.registered.toLocaleString(), r.resulted.toLocaleString(),
                 r.manual.toLocaleString(), r.interface.toLocaleString(),
                 r.fileImport.toLocaleString(), r.unclassified.toLocaleString()];
-            }));
+            }), 2);
 
         var agg = sumByPeriod(rows, ['manual', 'interface', 'fileImport', 'unclassified']);
-        Highcharts.chart('chartVolume', {
+        lpiChart('chartVolume', rows, {
             chart: { type: 'column' },
             title: { text: "<?= _jsTranslate('Results by entry mode'); ?>" },
             xAxis: { categories: agg.periods },
@@ -718,10 +916,10 @@ $testingLabs = $facilitiesService->getTestingLabs();
             rows.map(function (r) {
                 return [r.period, r.lab, r.tested.toLocaleString(), r.failed.toLocaleString(),
                 r.failureRate === null ? null : r.failureRate + '%'];
-            }));
+            }), 2);
 
         var agg = sumByPeriod(rows, ['tested', 'failed']);
-        Highcharts.chart('chartFailure', {
+        lpiChart('chartFailure', rows, {
             title: { text: "<?= _jsTranslate('Failed tests and failure rate'); ?>" },
             xAxis: { categories: agg.periods },
             yAxis: [
@@ -746,7 +944,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
         $('#failureReasonsWrap').toggle(reasons.length > 0);
         if (reasons.length > 0) {
             buildTable('tableFailureReasons', [LPI_LABELS.reason, LPI_LABELS.total],
-                reasons.map(function (r) { return [r.reason, r.total.toLocaleString()]; }));
+                reasons.map(function (r) { return [r.reason, r.total.toLocaleString()]; }), 1);
         }
     }
 
@@ -756,10 +954,10 @@ $testingLabs = $facilitiesService->getTestingLabs();
             rows.map(function (r) {
                 return [r.period, r.lab, r.received.toLocaleString(), r.rejected.toLocaleString(),
                 r.rejectionRate === null ? null : r.rejectionRate + '%'];
-            }));
+            }), 2);
 
         var agg = sumByPeriod(rows, ['received', 'rejected']);
-        Highcharts.chart('chartRejection', {
+        lpiChart('chartRejection', rows, {
             title: { text: "<?= _jsTranslate('Rejected samples and rejection rate'); ?>" },
             xAxis: { categories: agg.periods },
             yAxis: [
@@ -784,7 +982,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
         $('#rejectionReasonsWrap').toggle(reasons.length > 0);
         if (reasons.length > 0) {
             buildTable('tableRejectionReasons', [LPI_LABELS.reason, LPI_LABELS.total],
-                reasons.map(function (r) { return [r.reason, r.total.toLocaleString()]; }));
+                reasons.map(function (r) { return [r.reason, r.total.toLocaleString()]; }), 1);
             Highcharts.chart('chartRejectionReasons', {
                 chart: { type: 'bar' },
                 title: { text: "<?= _jsTranslate('Top rejection reasons'); ?>" },
@@ -874,11 +1072,11 @@ $testingLabs = $facilitiesService->getTestingLabs();
             endDate: moment(),
             maxDate: moment(),
             ranges: {
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'Last 3 Months': [moment().subtract(3, 'month').startOf('month'), moment()],
-                'This Year': [moment().startOf('year'), moment()],
-                'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-                'Last 12 Months': [moment().subtract(12, 'month'), moment()]
+                "<?= _jsTranslate('Last 30 Days'); ?>": [moment().subtract(29, 'days'), moment()],
+                "<?= _jsTranslate('Last 3 Months'); ?>": [moment().subtract(3, 'month').startOf('month'), moment()],
+                "<?= _jsTranslate('This Year'); ?>": [moment().startOf('year'), moment()],
+                "<?= _jsTranslate('Last Year'); ?>": [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                "<?= _jsTranslate('Last 12 Months'); ?>": [moment().subtract(12, 'month'), moment()]
             }
         });
 
