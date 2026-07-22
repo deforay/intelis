@@ -151,8 +151,10 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$row[] = $aRow['recommended_corrective_action_name'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 		$row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
-		$row[] = $aRow['turnaround_reception'];
-		$row[] = $aRow['turnaround_collection'];
+		if ($formId == BURKINA_FASO) {
+			$row[] = $aRow['turnaround_reception'];
+			$row[] = $aRow['turnaround_collection'];
+		}
 		$row[] = $aRow['collection_lab_reception_delay'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 		$row[] = $aRow['lab_tech_comments'];

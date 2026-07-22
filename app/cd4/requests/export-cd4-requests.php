@@ -29,6 +29,10 @@ if ($general->isStandaloneInstance()) {
 	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
 }
 
+if (!isset($_POST['patientInfo']) || $_POST['patientInfo'] != 'yes') {
+	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Unique ART No."), _translate("Patient Name")]);
+}
+
 
 
 

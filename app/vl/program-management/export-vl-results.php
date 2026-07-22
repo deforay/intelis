@@ -224,8 +224,10 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = html_entity_decode((string) $aRow['result']);
 			$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 			$row[] = $logVal;
-			$row[] = $aRow['turnaround_reception'];
-			$row[] = $aRow['turnaround_collection'];
+			if ($formId == BURKINA_FASO) {
+				$row[] = $aRow['turnaround_reception'];
+				$row[] = $aRow['turnaround_collection'];
+			}
 			$row[] = $aRow['collection_lab_reception_delay'];
 			$row[] = $aRow['lab_tech_comments'];
 			$row[] = $aRow['funding_source_name'] ?? null;
