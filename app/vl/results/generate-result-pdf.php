@@ -171,9 +171,8 @@ foreach ($requestResult as $result) {
 		$pdfPrintCount = $currentCount + 1;
 		if(empty($result['result_printed_on_lis_datetime'])){
 			$currentCount = 0;
-			$pData = [
-				'result_printed_on_lis_datetime' => $currentDateTime,
-			];
+			$pData['result_printed_on_lis_datetime'] = $currentDateTime;
+			
 		}
 		$formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_lis_count' => $currentCount + 1]), 'form_attributes');
 	    $pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
@@ -185,9 +184,7 @@ foreach ($requestResult as $result) {
 		$pdfPrintCount = $currentCount + 1;
 		if(empty($result['result_printed_on_sts_datetime'])){
 			$currentCount = 0;
-			$pData = [
-				'result_printed_on_sts_datetime' => $currentDateTime,
-			];
+			$pData['result_printed_on_sts_datetime'] = $currentDateTime;
 		}
 		$formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_sts_count' => $currentCount + 1]), 'form_attributes');
     	$pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);

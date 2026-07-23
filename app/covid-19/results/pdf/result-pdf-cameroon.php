@@ -484,7 +484,7 @@ if (!empty($requestResult)) {
     $html .= '</tr>';
     $html .= '</table>';
 
-    $html .= '<table>';
+    $html .= '<table style="width:100%;">';
     $html .= '<tr>';
     $html .= '<td colspan="2" style="line-height:' . $lh . 'px;border-bottom:2px solid #d3d3d3;"></td>';
     $html .= '</tr>';
@@ -498,7 +498,9 @@ if (!empty($requestResult)) {
         $generatedAtTestingLab = "";
     }
     $html .= '<tr>';
-    $html .= '<td style="font-size:10px;text-align:left;" colspan="2">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab . '</td>';
+    if ($pdfPrintCount > 1)
+          $showContent = '(' . _translate("Duplicate: ") . $pdfPrintCount . ')';
+    $html .= '<td style="font-size:10px;text-align:left;" colspan="2">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab . ' ' . $showContent . '</td>';
     $html .= '</tr>';
 
     $html .= '<tr>';
