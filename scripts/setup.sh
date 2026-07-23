@@ -1106,9 +1106,11 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
     else
         print warning "Vendor package not found in GitHub releases. Proceeding with regular composer install."
 
-        # Perform full install if vendor.tar.gz isn't available
+        # Perform full install if vendor.tar.gz isn't available. --no-scripts:
+        # the only composer event script is install-hooks, a git-clone-only
+        # convenience that has no business printing in prod output.
         print info "Running full composer install (this may take a while)..."
-        wwwdata_composer install --prefer-dist --no-dev
+        wwwdata_composer install --no-scripts --prefer-dist --no-dev
     fi
 else
     print info "Dependencies are up to date. Skipping vendor download."
