@@ -15,10 +15,8 @@
 # globally-configured hooks dir instead of this repo's.
 set -u
 
-root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
-    echo "ℹ install-hooks: not a git checkout — skipping."
-    exit 0
-}
+# Silent no-op on non-git (tarball) deploys — prod output should not mention hooks.
+root="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
 cd "$root" || exit 0
 hooks_dir="$(git rev-parse --git-common-dir 2>/dev/null)/hooks"
 mkdir -p "$hooks_dir" 2>/dev/null || {

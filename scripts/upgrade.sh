@@ -1328,7 +1328,7 @@ restore_rollback_snapshot() {
     if [ -f "${lp}/composer.lock" ]; then
         print info "Rebuilding vendor/ from snapshot composer.lock..."
         rm -rf "${lp}/vendor"
-        if (cd "$lp" && wwwdata_composer install --prefer-dist --no-dev --no-interaction); then
+        if (cd "$lp" && wwwdata_composer install --no-scripts --prefer-dist --no-dev --no-interaction); then
             (cd "$lp" && wwwdata_composer dump-autoload -o --no-interaction) || true
             chown -R www-data:www-data "${lp}/vendor" 2>/dev/null || true
             print success "vendor/ rebuilt from snapshot composer.lock"
@@ -1541,8 +1541,13 @@ upgrade_instance() {
     _apply_failure_no_rollback() {
         local reason="$1"
         print error "Apply failed for ${lis_path}: ${reason}"
-        print error "  Left in MAINTENANCE mode (503) pending manual fix; code NOT rolled back."
-        log_action "Apply failed (no rollback) for ${lis_path}: ${reason}; left in maintenance mode"
+        if [ "${show_maintenance:-false}" = "true" ]; then
+            print error "  Left in MAINTENANCE mode (503) pending manual fix; code NOT rolled back."
+            log_action "Apply failed (no rollback) for ${lis_path}: ${reason}; left in maintenance mode"
+        else
+            print error "  Code NOT rolled back; fix the issue and re-run intelis-update."
+            log_action "Apply failed (no rollback) for ${lis_path}: ${reason}"
+        fi
     }
 
     # Remove old run-once directory
@@ -1719,8 +1724,10 @@ upgrade_instance() {
         print info "Reconciling staged vendor against composer.lock..."
         wwwdata_composer install --no-scripts --no-autoloader --prefer-dist --no-dev --no-interaction
     else
+        # --no-scripts: the only composer event script is install-hooks, a
+        # git-clone-only convenience that has no business printing in prod output.
         print info "Staged vendor not available; running composer install..."
-        wwwdata_composer install --prefer-dist --no-dev --no-interaction
+        wwwdata_composer install --no-scripts --prefer-dist --no-dev --no-interaction
     fi
 
     wwwdata_composer dump-autoload -o --no-interaction
