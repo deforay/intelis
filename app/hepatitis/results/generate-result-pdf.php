@@ -7,6 +7,7 @@ use const COUNTRY\RWANDA;
 use const COUNTRY\CAMEROON;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use const COUNTRY\SOUTH_SUDAN;
 use App\Services\CommonService;
@@ -98,14 +99,35 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) !== '') {
 $requestResult = $db->query($searchQuery);
 
 $currentDateTime = DateUtility::getCurrentDateTime();
-
+$pdfPrintCount = 0;
 foreach ($requestResult as $requestRow) {
-	if (($general->isLISInstance()) && empty($requestRow['result_printed_on_lis_datetime'])) {
-		$pData = ['result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
+	$existingAttributes = !empty($result['form_attributes']) ? json_decode($result['form_attributes'], true) : [];
+    $pData = [
+        'result_printed_datetime' => $currentDateTime,
+    ];
+	if ($general->isLISInstance()) {
+		$currentCount = (int)($existingAttributes['result_printed_lis_count'] ?? 0);
+		$pdfPrintCount = $currentCount + 1;
+		if(empty($result['result_printed_on_lis_datetime'])){
+			$currentCount = 0;
+			$pData['result_printed_on_lis_datetime'] = $currentDateTime;
+			
+		}
+		$formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_lis_count' => $currentCount + 1]), 'form_attributes');
+	    $pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
+		
 		$db->where('hepatitis_id', $requestRow['hepatitis_id']);
 		$id = $db->update('form_hepatitis', $pData);
-	} elseif (($general->isSTSInstance()) && empty($requestRow['result_printed_on_sts_datetime'])) {
-		$pData = ['result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
+	} elseif ($general->isSTSInstance()) {
+		$currentCount = (int)($existingAttributes['result_printed_sts_count'] ?? 0);
+		$pdfPrintCount = $currentCount + 1;
+		if(empty($result['result_printed_on_sts_datetime'])){
+			$currentCount = 0;
+			$pData['result_printed_on_sts_datetime'] = $currentDateTime;
+		}
+		$formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_sts_count' => $currentCount + 1]), 'form_attributes');
+    	$pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
+		
 		$db->where('hepatitis_id', $requestRow['hepatitis_id']);
 		$id = $db->update('form_hepatitis', $pData);
 	}
