@@ -188,7 +188,7 @@ try {
 
         // Cache for report format configurations
         static $formatCache = [];
-
+        $pdfPrintCount = 0;
         foreach ($requestResult as $result) {
             try {
                 // Set print time
@@ -201,14 +201,34 @@ try {
                 $expStr = explode(" ", $printedTime);
                 $printDate = DateUtility::humanReadableDateFormat($expStr[0]);
                 $printDateTime = $expStr[1];
-
+                $existingAttributes = !empty($result['form_attributes']) ? json_decode($result['form_attributes'], true) : [];
+                $pData = [
+                    'result_printed_datetime' => $currentDateTime,
+                ];
                 // Update print timestamps
-                if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
-                    $pData = ['result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
+                if ($general->isLISInstance()) {
+                    $currentCount = (int)($existingAttributes['result_printed_lis_count'] ?? 0);
+                    $pdfPrintCount = $currentCount + 1;
+                    if(empty($result['result_printed_on_lis_datetime'])){
+                        $currentCount = 0;
+                        $pData['result_printed_on_lis_datetime'] = $currentDateTime;
+                        
+                    }
+                    $formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_lis_count' => $currentCount + 1]), 'form_attributes');
+                    $pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
+                    
                     $db->where('tb_id', $result['tb_id']);
                     $db->update('form_tb', $pData);
-                } elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
-                    $pData = ['result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
+                } elseif ($general->isSTSInstance()) {
+                    $currentCount = (int)($existingAttributes['result_printed_sts_count'] ?? 0);
+                    $pdfPrintCount = $currentCount + 1;
+                    if(empty($result['result_printed_on_sts_datetime'])){
+                        $currentCount = 0;
+                        $pData['result_printed_on_sts_datetime'] = $currentDateTime;
+                    }
+                    $formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_sts_count' => $currentCount + 1]), 'form_attributes');
+                    $pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
+                    
                     $db->where('tb_id', $result['tb_id']);
                     $db->update('form_tb', $pData);
                 }

@@ -11,6 +11,7 @@ use const COUNTRY\RWANDA;
 use const COUNTRY\BURKINA_FASO;
 use App\Services\EidService;
 use App\Services\UsersService;
+use App\Utilities\JsonUtility;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -140,14 +141,35 @@ MiscUtility::makeDirectory($pathFront);
 $pages = [];
 $page = 1;
 $_SESSION['aliasPage'] = $page;
-
+$pdfPrintCount = 0;
 foreach ($requestResult as $result) {
-    if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
-        $pData = ['result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
+    $existingAttributes = !empty($result['form_attributes']) ? json_decode($result['form_attributes'], true) : [];
+    $pData = [
+        'result_printed_datetime' => $currentDateTime,
+    ];
+    if ($general->isLISInstance()) {
+		$currentCount = (int)($existingAttributes['result_printed_lis_count'] ?? 0);
+		$pdfPrintCount = $currentCount + 1;
+		if(empty($result['result_printed_on_lis_datetime'])){
+			$currentCount = 0;
+			$pData['result_printed_on_lis_datetime'] = $currentDateTime;
+			
+		}
+		$formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_lis_count' => $currentCount + 1]), 'form_attributes');
+	    $pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
+
         $db->where('eid_id', $result['eid_id']);
         $id = $db->update('form_eid', $pData);
-    } elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
-        $pData = ['result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
+    } elseif ($general->isSTSInstance()) {
+		$currentCount = (int)($existingAttributes['result_printed_sts_count'] ?? 0);
+		$pdfPrintCount = $currentCount + 1;
+		if(empty($result['result_printed_on_sts_datetime'])){
+			$currentCount = 0;
+			$pData['result_printed_on_sts_datetime'] = $currentDateTime;
+		}
+        $formAttributesStr = JsonUtility::jsonToSetString(json_encode(['result_printed_sts_count' => $currentCount + 1]), 'form_attributes');
+    	$pData['form_attributes'] = $formAttributesStr === null || $formAttributesStr === '' || $formAttributesStr === '0' ? null : $db->func($formAttributesStr);
+		
         $db->where('eid_id', $result['eid_id']);
         $id = $db->update('form_eid', $pData);
     }
