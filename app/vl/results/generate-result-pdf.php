@@ -201,7 +201,6 @@ foreach ($requestResult as $result) {
 	if (!empty($result['reportFormat'])) {
 		$selectedReportFormats = json_decode((string) $result['reportFormat'], true);
 	}
-
 	$fileToInclude = $fileArray[$arr['vl_form']];
 	if (!empty($selectedReportFormats) && !empty($selectedReportFormats['vl'])) {
 		$reportFilePath = realpath(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['vl']);

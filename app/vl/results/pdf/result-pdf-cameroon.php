@@ -511,7 +511,7 @@ if (!empty($result)) {
      $bottomHtml .= '<td style="font-size:10px;text-align:left;width:65%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> VL < 1000 copies/mL: ' . _translate("Continue on current regimen") . '</td>';
      $showContent = "";
      if ($pdfPrintCount > 1)
-          $showContent = '(' . _translate("Duplicate: ") . $pdfPrintCount . ')';
+          $showContent = '(' . _translate("Duplicata: ") . $pdfPrintCount . ')';
      $bottomHtml .= '<td style="font-size:10px;text-align:right;width:35%;">' . _translate("Printed on") . ' : ' . $printDate . ' ' . $showContent . '</td>';
      $bottomHtml .= '</tr>';
      $bottomHtml .= '<tr>';
