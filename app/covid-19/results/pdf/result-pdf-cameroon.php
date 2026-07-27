@@ -499,7 +499,7 @@ if (!empty($requestResult)) {
     }
     $html .= '<tr>';
     if ($pdfPrintCount > 1)
-          $showContent = '(' . _translate("Duplicate: ") . $pdfPrintCount . ')';
+          $showContent = '(' . _translate("Duplicata: ") . $pdfPrintCount . ')';
     $html .= '<td style="font-size:10px;text-align:left;" colspan="2">Printed on : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . $generatedAtTestingLab . ' ' . $showContent . '</td>';
     $html .= '</tr>';
 
