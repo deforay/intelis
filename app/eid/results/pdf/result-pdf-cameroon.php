@@ -555,8 +555,10 @@ if (!empty($result)) {
     $html .= '<td colspan="3">';
     $html .= '<table  style="width:100%;">';
     $html .= '<tr>';
+        
+    $showContent = '';
     if ($pdfPrintCount > 1)
-          $showContent = '(' . _translate("Duplicate: ") . $pdfPrintCount . ')';
+          $showContent = '(' . _translate("Duplicata: ") . $pdfPrintCount . ')';
     $html .= '<td style="font-size:10px;text-align:left;">' . _translate('Printed on') . ' : ' . $printDate . '&nbsp;&nbsp;' . $printDateTime . ' ' . $showContent . '</td>';
     $html .= '<td style="font-size:10px;text-align:left;width:60%;"></td>';
     $html .= '</tr>';
