@@ -34,6 +34,37 @@
 
     }
 
+    function showPatientListByMother(patientCode, timeOutDuration) {
+        if (patientSearchTimeout != null) {
+            clearTimeout(patientSearchTimeout);
+        }
+        patientSearchTimeout = setTimeout(function() {
+            patientSearchTimeout = null;
+
+            $("#showEmptyResult").hide();
+            if ($.trim(patientCode) != '') {
+                $.post("/eid/requests/search-patients.php", {
+                        motherNo: $.trim(patientCode)
+                    },
+                    function(data) {
+                        data = parseInt(data);
+                        if (data >= 1) {
+                            showModal('/eid/requests/patientModal.php?motherId=' + $.trim(patientCode), 900, 520);
+                        } else {
+                            $("#showEmptyResult").show();
+                        }
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        if (typeof reportError === 'function') {
+                            reportError('EID patient search failed: ' + textStatus + ' ' + errorThrown, { type: 'ajax_error', context: 'Status: ' + (jqXHR.status || '') + '\nResponse: ' + String(jqXHR.responseText || '').substring(0, 2000) });
+                        }
+                    });
+            }
+
+
+        }, timeOutDuration);
+
+    }
+
     function calculateAgeInMonths() {
         const dobVal = $("#childDob").val();
         if (!dobVal || $.trim(dobVal) === '') return;
