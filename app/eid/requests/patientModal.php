@@ -15,11 +15,19 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
 $artNo = urldecode((string) $_GET['id'] ?? $_GET['artNo'] ?? '');
+$motherId = urldecode((string) $_GET['id'] ?? $_GET['motherId'] ?? '');
 
 $db->join("facility_details fd", "fd.facility_id=vl.facility_id", "LEFT");
-$db->where("child_id LIKE ?", ["%$artNo%"]);
-$db->orWhere("child_name LIKE ?", ["%$artNo%"]);
-$db->orWhere("child_surname LIKE ?", ["%$artNo%"]);
+if(!empty($artNo)){
+	$db->where("child_id LIKE ?", ["%$artNo%"]);
+	$db->orWhere("child_name LIKE ?", ["%$artNo%"]);
+	$db->orWhere("child_surname LIKE ?", ["%$artNo%"]);
+}
+if(!empty($motherId)){
+	$db->where("mother_id LIKE ?", ["%$motherId%"]);
+	$db->orWhere("mother_name LIKE ?", ["%$motherId%"]);
+	$db->orWhere("mother_surname LIKE ?", ["%$motherId%"]);
+}
 $db->orderBy("sample_tested_datetime");
 $db->orderBy("sample_collection_date");
 
