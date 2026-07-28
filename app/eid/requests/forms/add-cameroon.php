@@ -194,10 +194,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);"
                                         class="btn btn-default btn-sm"
                                         onclick="showPatientList($('#childIdNo').val(), 0);"><em
-                                            class="fa-solid fa-magnifying-glass"></em>Search</a><span
-                                        id="showEmptyResult"
+                                            class="fa-solid fa-magnifying-glass"></em>Search By Child</a>
+                                            <span id="showEmptyResult"
                                         style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _translate('No Patient Found'); ?></strong></span>
-
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr class="encryptPIIContainer">
@@ -333,12 +332,20 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </table>
 
                                 <br><br>
+                                <div class="box-header with-border">
+                                    <h3 class="box-title"><?= _translate("MOTHER'S INFORMATION"); ?></h3>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <input style="width:30%;" type="text" name="matherNo" id="matherNo" class=""
+                                        placeholder="<?= _translate('Enter Infant Identification Number or Child Name'); ?>"
+                                        title="<?= _translate('Enter art number or patient name'); ?>" />&nbsp;&nbsp;
+                                    <a style="margin-top:-0.35%;" href="javascript:void(0);"
+                                        class="btn btn-default btn-sm"
+                                        onclick="showPatientListByMother($('#matherNo').val(), 0);"><em
+                                            class="fa-solid fa-magnifying-glass"></em>Search By Mother</a>
+                                            <span id="showEmptyResult"
+                                        style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _translate('No Patient Found'); ?></strong></span>
+                                </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                    <tr>
-                                        <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
-                                            <h4><?= _translate("MOTHER'S INFORMATION"); ?></h4>
-                                        </th>
-                                    </tr>
                                     <tr>
                                         <th scope="row" style="width:15% !important"><label
                                                 for="mothersName"><?= _translate('Mother name'); ?> </label></th>
