@@ -150,7 +150,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 </table>
                                 <br><br>
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">Section 2: Mother/Guardian Information</h3>
+                                    <h3 class="box-title"><?= _translate("Section 2: Mother/Guardian Information"); ?></h3>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <input style="width:30%;" type="text" name="matherNo" id="matherNo" class=""
+                                        placeholder="<?= _translate('Enter Infant Identification Number or Mother Name'); ?>"
+                                        title="<?= _translate('Enter art number or patient name'); ?>" />&nbsp;&nbsp;
+                                    <a style="margin-top:-0.35%;" href="javascript:void(0);"
+                                        class="btn btn-default btn-sm"
+                                        onclick="showPatientListByMother($('#matherNo').val(), 0);"><em
+                                            class="fa-solid fa-magnifying-glass"></em> Search By Mother</a>
+                                            <span id="showEmptyResultMother"
+                                        style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _translate('No Patient Found'); ?></strong></span>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
@@ -173,12 +183,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                 </table>
                                 <br><br>
-
-
                                 <div class="box-header with-border">
-                                    <h3 class="box-title">Section 3: Infant Information</h3>
-                                </div>
+                                    <h3 class="box-title"><?= _translate("Section 3: Infant Information"); ?></h3>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <input style="width:30%;" type="text" name="childIdNo" id="childIdNo" class=""
+                                        placeholder="<?= _translate('Enter Infant Identification Number or Child Name'); ?>"
+                                        title="<?= _translate('Enter art number or patient name'); ?>" />&nbsp;&nbsp;
+                                    <a style="margin-top:-0.35%;" href="javascript:void(0);"
+                                        class="btn btn-default btn-sm"
+                                        onclick="showPatientList($('#childIdNo').val(), 0);"><em
+                                            class="fa-solid fa-magnifying-glass"></em> Search By Child</a>
+                                        <span
+                                        id="showEmptyResult"
+                                        style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _translate('No Patient Found'); ?></strong></span>
 
+                                </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr class="encryptPIIContainer">
                                         <th scope="row" style="width:15% !important"><label for="encryptPII"><?= _translate('Encrypt PII'); ?> </label></th>

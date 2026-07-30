@@ -198,12 +198,20 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                     </tr>
                                 </table>
                                 <br>
+                                <div class="box-header with-border">
+                                    <h4 class="box-title"><?= _translate("Infant and Mother's Health Information"); ?></h4>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <input style="width:30%;" type="text" name="matherNo" id="matherNo" class=""
+                                        placeholder="<?= _translate('Enter Infant Identification Number or Mother Name'); ?>"
+                                        title="<?= _translate('Enter art number or patient name'); ?>" />&nbsp;&nbsp;
+                                    <a style="margin-top:-0.35%;" href="javascript:void(0);"
+                                        class="btn btn-default btn-sm"
+                                        onclick="showPatientListByMother($('#matherNo').val(), 0);"><em
+                                            class="fa-solid fa-magnifying-glass"></em>Search By Mother</a>
+                                            <span id="showEmptyResultMother"
+                                        style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _translate('No Patient Found'); ?></strong></span>
+                                </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-                                    <tr>
-                                        <th scope="row" colspan=4 style="border-top:#ccc 2px solid;">
-                                            <h4><?= _translate("Infant and Mother's Health Information"); ?></h4>
-                                        </th>
-                                    </tr>
                                     <tr>
                                         <th scope="row" style="width:15%" class="labels"><?= _translate("Is Mother Alive?"); ?>:</th>
                                         <td style="width:35%">

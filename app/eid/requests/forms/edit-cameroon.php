@@ -384,7 +384,7 @@ $reqClinicianList = $general->getDataByTableAndFields("form_eid", ["clinician_na
                                     <h3 class="box-title"><?= _translate("MOTHER'S INFORMATION"); ?></h3>
                                     &nbsp;&nbsp;&nbsp;
                                     <input style="width:30%;" type="text" name="matherNo" id="matherNo" class=""
-                                        placeholder="<?= _translate('Enter Infant Identification Number or Child Name'); ?>"
+                                        placeholder="<?= _translate('Enter Infant Identification Number or Mother Name'); ?>"
                                         title="<?= _translate('Enter art number or patient name'); ?>" />&nbsp;&nbsp;
                                     <a style="margin-top:-0.35%;" href="javascript:void(0);"
                                         class="btn btn-default btn-sm"
