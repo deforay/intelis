@@ -51,7 +51,7 @@
                         if (data >= 1) {
                             showModal('/eid/requests/patientModal.php?motherId=' + $.trim(patientCode), 900, 520);
                         } else {
-                            $("#showEmptyResult").show();
+                            $("#showEmptyResultMother").show();
                         }
                     }).fail(function(jqXHR, textStatus, errorThrown) {
                         if (typeof reportError === 'function') {

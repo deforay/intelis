@@ -223,7 +223,7 @@ $aResult = $db->query($aQuery);
                                         class="btn btn-default btn-sm"
                                         onclick="showPatientListByMother($('#matherNo').val(), 0);"><em
                                             class="fa-solid fa-magnifying-glass"></em>Search By Mother</a>
-                                            <span id="showEmptyResult"
+                                            <span id="showEmptyResultMother"
                                         style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;<?= _translate('No Patient Found'); ?></strong></span>
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">

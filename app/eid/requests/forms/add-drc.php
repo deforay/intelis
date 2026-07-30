@@ -195,21 +195,39 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 								<div class="box-header with-border">
 									<h4>1. Données démographiques mère / enfant </h4><br>
 									<h4 class="box-title">Information sur le patient </h4>&nbsp;&nbsp;&nbsp;
-									<input style="width:30%;" type="text" name="artPatientNo" id="artPatientNo"
-										placeholder="Code du patient"
-										title="<?= _translate("Please enter the Patient ID"); ?>" />&nbsp;&nbsp;
-									<a style="margin-top:-0.35%;font-weight:500;" href="javascript:void(0);"
-										class="btn btn-default btn-sm"
-										onclick="showPatientList($('#artPatientNo').val(),0);"><em
-											class="fa-solid fa-magnifying-glass"></em>Search</a><span
-										id="showEmptyResult"
-										style="display:none;color: #ff0000;font-size: 15px;"><strong>&nbsp;No
-											Patient Found</strong></span>
 								</div>
+								
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<th scope="row">
-											<h5 style="font-weight:bold;font-size:1.1em;">ID de la mère </h5>
+										<th>
+											<h5 style="font-weight:bold;font-size:1.1em;">ID de la mère</h5>
+										</th>
+										<th style=" display: flex; ">
+											<div class="box-header with-border" style=" width: 100%; display: flex; ">
+												<input
+													type="text"
+													name="matherNo"
+													id="matherNo"
+													class="form-control"
+													placeholder="<?= _translate('Enter Infant Identification Number or Mother Name'); ?>"
+													title="<?= _translate('Enter art number or patient name'); ?>"
+												/>
+												&nbsp;&nbsp;
+												<a
+													style="margin-top:-0.35%;"
+													href="javascript:void(0);"
+													class="btn btn-default btn-sm"
+													onclick="showPatientListByMother($('#matherNo').val(), 0);"
+												>
+													<em class="fa-solid fa-magnifying-glass"></em><?= _translate('Search By Mother');?>
+												</a>
+												<span
+													id="showEmptyResultMother"
+													style="display:none;color: #ff0000;font-size: 15px;"
+												>
+													<strong>&nbsp;<?= _translate('No Patient Found'); ?></strong>
+												</span>
+											</div>
 										</th>
 									</tr>
 									<tr>
@@ -253,8 +271,35 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 									</tr>
 
 									<tr>
-										<th scope="row">
+										<th>
 											<h5 style="font-weight:bold;font-size:1.1em;">ID de l'enfant</h5>
+										</th>
+										<th style=" display: flex; ">
+											<div class="box-header with-border" style=" width: 100%; display: flex; ">
+												<input
+													type="text"
+													name="artPatientNo"
+													id="artPatientNo"
+													class="form-control" style=" width: 350px; "
+													placeholder="<?= _translate('Enter Infant Identification Number or Child Name'); ?>"
+													title="<?= _translate('Enter art number or patient name'); ?>"
+												/>
+												&nbsp;&nbsp;
+												<a
+													style="margin-top:-0.35%;"
+													href="javascript:void(0);"
+													class="btn btn-default btn-sm"
+													onclick="showPatientList($('#artPatientNo').val(), 0);"
+												>
+													<em class="fa-solid fa-magnifying-glass"></em><?= _translate('Search By Child');?>
+												</a>
+												<span
+													id="showEmptyResult"
+													style="display:none;color: #ff0000;font-size: 15px;"
+												>
+													<strong>&nbsp;<?= _translate('No Patient Found'); ?></strong>
+												</span>
+											</div>
 										</th>
 									</tr>
 									<tr>
