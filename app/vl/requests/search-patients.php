@@ -15,10 +15,11 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 $artNo = $_POST['artPatientNo'];
 
+$searchTerm = '%' . $artNo . '%';
 $pQuery = "SELECT count(*) as 'count' FROM form_vl
-                WHERE patient_art_no like '%$artNo%'
-                OR patient_first_name like '%$artNo%'
-                OR patient_middle_name like '%$artNo%'
-                OR patient_last_name like '%$artNo%'";
-$pResult = $db->rawQueryOne($pQuery);
+                WHERE patient_art_no like ?
+                OR patient_first_name like ?
+                OR patient_middle_name like ?
+                OR patient_last_name like ?";
+$pResult = $db->rawQueryOne($pQuery, [$searchTerm, $searchTerm, $searchTerm, $searchTerm]);
 echo $pResult['count'];
