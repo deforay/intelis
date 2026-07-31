@@ -20,7 +20,9 @@
 
 set -o pipefail
 
-DEFAULT_LIS_PATH="/var/www/intelis"
+# Candidate install paths, tried in order. Older installations live at
+# /var/www/vlsm, so fall back to it when /var/www/intelis holds nothing.
+DEFAULT_LIS_PATHS=(/var/www/intelis /var/www/vlsm)
 DEFAULT_SERVER_NAME="intelis"
 # Names the vhost answers to in addition to its ServerName.
 STANDARD_ALIASES=(intelis vlsm)
@@ -29,7 +31,8 @@ usage() {
     cat <<'USAGE'
 Usage: default-host-setup.sh [-p PATH] [-n NAME] [-y]
 
-  -p PATH   InteLIS installation path (default: /var/www/intelis)
+  -p PATH   InteLIS installation path (default: /var/www/intelis,
+            falling back to /var/www/vlsm on older installations)
   -n NAME   ServerName for the vhost, e.g. vlsm or intelis (default: intelis)
   -y        Never prompt; take the defaults for anything not passed
   -h        Show this help
@@ -114,7 +117,22 @@ prompt_with_default() {
     printf '%s' "${answer:-$fallback}"
 }
 
-[ -n "$lis_path" ] || lis_path=$(prompt_with_default "Enter the LIS installation path" "$DEFAULT_LIS_PATH")
+# Pick the default install path: the first candidate that actually holds an
+# installation, so a box that predates the intelis rename still resolves. Prefer
+# a real installation over a bare directory — an empty /var/www/intelis left
+# behind by a half-finished setup must not win over a working /var/www/vlsm.
+detect_default_lis_path() {
+    local candidate
+    for candidate in "${DEFAULT_LIS_PATHS[@]}"; do
+        is_valid_application_path "$candidate" && { printf '%s' "$candidate"; return; }
+    done
+    for candidate in "${DEFAULT_LIS_PATHS[@]}"; do
+        [ -d "$candidate" ] && { printf '%s' "$candidate"; return; }
+    done
+    printf '%s' "${DEFAULT_LIS_PATHS[0]}"
+}
+
+[ -n "$lis_path" ] || lis_path=$(prompt_with_default "Enter the LIS installation path" "$(detect_default_lis_path)")
 [ -n "$server_name" ] || server_name=$(prompt_with_default "Enter the ServerName for this site" "$DEFAULT_SERVER_NAME")
 
 # A ServerName lands in both an Apache directive and /etc/hosts, so reject
