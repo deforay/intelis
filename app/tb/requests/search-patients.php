@@ -16,12 +16,13 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $artNo = $_POST['artPatientNo'];
 
 $count = 0;
+$searchTerm = '%' . $artNo . '%';
 $pQuery = "SELECT count(*) as 'count'
             FROM form_tb
-            WHERE patient_id like '%$artNo%'
-            OR patient_name like '%$artNo%'
-            OR patient_surname like '%$artNo%'
+            WHERE patient_id like ?
+            OR patient_name like ?
+            OR patient_surname like ?
             ORDER BY sample_tested_datetime DESC, sample_collection_date DESC
             LIMIT 25";
-$pResult = $db->rawQueryOne($pQuery);
+$pResult = $db->rawQueryOne($pQuery, [$searchTerm, $searchTerm, $searchTerm]);
 echo $pResult['count'];
