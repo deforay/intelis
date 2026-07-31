@@ -50,7 +50,9 @@ try {
         $orderParts = [];
         foreach ($_POST['order'] as $order) {
             $columnIndex = $order['column'];
-            $direction = $order['dir'];
+            // Whitelisted, never interpolated raw: this lands in ORDER BY, which
+            // cannot be parameterised.
+            $direction = strtoupper((string) ($order['dir'] ?? '')) === 'ASC' ? 'ASC' : 'DESC';
 
             // Map column index to actual database column
             switch ($columnIndex) {
@@ -74,55 +76,66 @@ try {
         $sOrder = implode(', ', $orderParts);
     }
 
+    // Get patient field names for this test type. Resolved before the filters
+    // below because the search clause names these columns.
+    $patientIdColumn = TestsService::getPatientIdColumn($testType);
+    $patientFirstNameColumn = TestsService::getPatientFirstNameColumn($testType);
+    $patientLastNameColumn = TestsService::getPatientLastNameColumn($testType);
+
+    // Reduce an id list (array, or comma-separated string) to integers for an
+    // IN() clause. Placeholders can't be used for a variable-length list here,
+    // so anything non-numeric is dropped rather than reaching the query.
+    $intIdList = static function ($value): string {
+        $ids = is_array($value) ? $value : explode(',', (string) $value);
+        $ids = array_filter($ids, static fn($id): bool => is_numeric($id));
+        return implode(',', array_map('intval', $ids));
+    };
+
     // Search functionality
     $sWhere = [];
+    $bindParams = [];
     if (isset($_POST['search']['value']) && !empty($_POST['search']['value'])) {
-        $searchValue = $_POST['search']['value'];
+        $searchValue = '%' . $_POST['search']['value'] . '%';
         // Add search conditions for searchable columns
         $searchConditions = [
-            "t1.$patientFirstNameColumn LIKE '%$searchValue%'",
-            "t1.$patientLastNameColumn LIKE '%$searchValue%'",
-            "t1.$patientIdColumn LIKE '%$searchValue%'",
-            "t1.sample_code LIKE '%$searchValue%'",
-            "t1.remote_sample_code LIKE '%$searchValue%'",
-            "f1.facility_name LIKE '%$searchValue%'"
+            "t1.$patientFirstNameColumn LIKE ?",
+            "t1.$patientLastNameColumn LIKE ?",
+            "t1.$patientIdColumn LIKE ?",
+            "t1.sample_code LIKE ?",
+            "t1.remote_sample_code LIKE ?",
+            "f1.facility_name LIKE ?"
         ];
         $sWhere[] = "(" . implode(" OR ", $searchConditions) . ")";
+        $bindParams = array_merge($bindParams, array_fill(0, count($searchConditions), $searchValue));
     }
 
     // Date range filter
     if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) !== '') {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
-        $sWhere[] = " t1.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
+        $sWhere[] = " t1.request_created_datetime BETWEEN ? AND ? ";
+        $bindParams[] = $start_date;
+        $bindParams[] = $end_date;
     }
 
     // Lab filter
-    if (isset($_POST['labName']) && trim((string) $_POST['labName']) !== '') {
-        $sWhere[] = " t1.lab_id IN (" . $_POST['labName'] . ")";
+    if (!empty($_POST['labName']) && ($labIds = $intIdList($_POST['labName'])) !== '') {
+        $sWhere[] = " t1.lab_id IN ($labIds)";
     }
 
     // State filter
-    if (isset($_POST['state']) && trim((string) $_POST['state']) !== '') {
-        $provinceId = implode(',', $_POST['state']);
+    if (!empty($_POST['state']) && ($provinceId = $intIdList($_POST['state'])) !== '') {
         $sWhere[] = " f1.facility_state_id IN ($provinceId)";  // Fixed: f1 instead of f
     }
 
     // District filter
-    if (isset($_POST['district']) && trim((string) $_POST['district']) !== '') {
-        $districtId = implode(',', $_POST['district']);
+    if (!empty($_POST['district']) && ($districtId = $intIdList($_POST['district'])) !== '') {
         $sWhere[] = " f1.facility_district_id IN ($districtId)";  // Fixed: f1 instead of f
     }
 
     // Facility filter
-    if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) !== '') {
-        $facilityId = implode(',', $_POST['facilityId']);
+    if (!empty($_POST['facilityId']) && ($facilityId = $intIdList($_POST['facilityId'])) !== '') {
         $sWhere[] = " t1.facility_id IN ($facilityId)";
     }
-
-    // Get patient field names for this test type
-    $patientIdColumn = TestsService::getPatientIdColumn($testType);
-    $patientFirstNameColumn = TestsService::getPatientFirstNameColumn($testType);
-    $patientLastNameColumn = TestsService::getPatientLastNameColumn($testType);
 
     // Base conditions for duplicates
     $sWhere[] = " (t1.$patientFirstNameColumn IS NOT NULL OR t1.$patientIdColumn IS NOT NULL) ";
@@ -184,16 +197,20 @@ try {
         $duplicatesQuery .= " ORDER BY last_collection DESC";
     }
 
-    // Count total records for pagination
+    // Count total records for pagination. Same placeholders, same order, so the
+    // filter bindings apply unchanged to the wrapped query. Pass null rather
+    // than an empty array when no filter is active — mysqli rejects an empty
+    // type string, which is the default unfiltered load.
+    $bindParams = $bindParams === [] ? null : $bindParams;
     $countQuery = "SELECT COUNT(*) as total FROM ($duplicatesQuery) as cnt";
-    $totalRecords = $db->rawQueryOne($countQuery)['total'];
+    $totalRecords = $db->rawQueryOne($countQuery, $bindParams)['total'];
 
-    // Add pagination
+    // Add pagination. Cast rather than bound: LIMIT takes no placeholders here.
     if (isset($sLimit) && isset($sOffset)) {
-        $duplicatesQuery .= " LIMIT $sOffset, $sLimit";
+        $duplicatesQuery .= " LIMIT " . (int) $sOffset . ", " . (int) $sLimit;
     }
 
-    $results = $db->rawQuery($duplicatesQuery);
+    $results = $db->rawQuery($duplicatesQuery, $bindParams);
 
     // Format results for DataTables
     $output = [

@@ -16,12 +16,13 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $artNo = $_POST['artPatientNo'];
 
 $count = 0;
+$searchTerm = '%' . $artNo . '%';
 $pQuery = "SELECT COUNT(*) AS count
             FROM form_covid19
-            WHERE patient_id like '%$artNo%'
-            OR patient_name like '%$artNo%'
-            OR patient_surname like '%$artNo%'
-            OR patient_phone_number like '%$artNo%'";
+            WHERE patient_id like ?
+            OR patient_name like ?
+            OR patient_surname like ?
+            OR patient_phone_number like ?";
 
-$pResult = $db->rawQueryOne($pQuery);
+$pResult = $db->rawQueryOne($pQuery, [$searchTerm, $searchTerm, $searchTerm, $searchTerm]);
 echo $pResult['count'];
