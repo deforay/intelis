@@ -14,14 +14,15 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
+use App\Services\UsersService;
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -83,6 +84,8 @@ try {
      vl.patient_middle_name,
      vl.patient_last_name,
      vl.lab_assigned_code,
+     vl.result_modified,
+     vl.reason_for_result_changes,
      f.facility_name,
      f.facility_district,
      f.facility_state,
@@ -239,13 +242,37 @@ try {
      ];
      foreach ($rResult as $aRow) {
           $row = [];
+          $resultTooltip = [];
+          $latestChange = \App\Utilities\MiscUtility::latestResultChangeReason($aRow['reason_for_result_changes'] ?? null);
+          $dateOfModified = $latestChange['dtime'] ?? '';
+          $userId = $latestChange['usr'];
+
+          $user = $usersService->getUserByID($userId);
+
+          if($aRow['result'] != ''){
+               $resultTooltip[] =  _htmlTranslate("Modified Result") . " : " . $aRow['result'];
+          }
+          if($user != ''){
+               $resultTooltip[] =  _htmlTranslate("Modified By") . " : " . $user['user_name'];
+          }
+          if($dateOfModified != ''){
+               $resultTooltip[] =  _htmlTranslate("Modified On") . " : " . DateUtility::humanReadableDateFormat($dateOfModified, true);
+          }
+          
+          $resultTooltip = $resultTooltip === [] ? '' : 'class="top-tooltip" title="' . implode("\n", $resultTooltip) . '"';
+
           if (isset($_POST['vlPrint'])) {
                if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {
-                    $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedRow(this);"  />';
+                   $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedRow(this);"  />';
                } else {
                     $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedPrintedRow(this);"  />';
                }
-               $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="generateResultPDF(' . $aRow['vl_sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
+               $resultModified = '';
+               if($aRow['result_modified'] == 'yes')
+                    {
+                         $resultModified = "<br><span ".$resultTooltip." style='color:#C76E00;'><i class='fa-solid fa-exclamation-triangle'></i> Result Modified</span>";
+                    }
+               $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="generateResultPDF(' . $aRow['vl_sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>' . $resultModified;
           } else {
                $print = '<a href="updateVlTestResult.php?id=' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
                if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/vl/requests/edit-locked-vl-samples")) {
