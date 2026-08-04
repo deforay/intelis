@@ -245,21 +245,24 @@ try {
           $resultTooltip = [];
           $latestChange = \App\Utilities\MiscUtility::latestResultChangeReason($aRow['reason_for_result_changes'] ?? null);
           $dateOfModified = $latestChange['dtime'] ?? '';
-          $userId = $latestChange['usr'];
+          $userId = $latestChange['usr'] ?? null;
 
-          $user = $usersService->getUserByID($userId);
+          $user = !empty($userId) ? $usersService->getUserByID($userId) : null;
 
-          if($aRow['result'] != ''){
-               $resultTooltip[] =  _htmlTranslate("Modified Result") . " : " . $aRow['result'];
+          // These land inside a title="..." attribute, so every value has to be
+          // escaped: a result or user name containing a quote would otherwise
+          // close the attribute and inject markup into the results grid.
+          if (!empty($aRow['result'])) {
+               $resultTooltip[] =  _htmlTranslate("Modified Result") . " : " . _sanitizeOutput($aRow['result']);
           }
-          if($user != ''){
-               $resultTooltip[] =  _htmlTranslate("Modified By") . " : " . $user['user_name'];
+          if (!empty($user['user_name'])) {
+               $resultTooltip[] =  _htmlTranslate("Modified By") . " : " . _sanitizeOutput($user['user_name']);
           }
-          if($dateOfModified != ''){
-               $resultTooltip[] =  _htmlTranslate("Modified On") . " : " . DateUtility::humanReadableDateFormat($dateOfModified, true);
+          if (!empty($dateOfModified)) {
+               $resultTooltip[] =  _htmlTranslate("Modified On") . " : " . _sanitizeOutput(DateUtility::humanReadableDateFormat($dateOfModified, true));
           }
-          
-          $resultTooltip = $resultTooltip === [] ? '' : 'class="top-tooltip" title="' . implode("\n", $resultTooltip) . '"';
+
+          $resultTooltip = $resultTooltip === [] ? '' : 'class="top-tooltip" title="' . implode("&#10;", $resultTooltip) . '"';
 
           if (isset($_POST['vlPrint'])) {
                if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {
@@ -270,7 +273,7 @@ try {
                $resultModified = '';
                if($aRow['result_modified'] == 'yes')
                     {
-                         $resultModified = "<br><span ".$resultTooltip." style='color:#C76E00;'><i class='fa-solid fa-exclamation-triangle'></i> Result Modified</span>";
+                         $resultModified = "<br><span " . $resultTooltip . " style='color:#C76E00;'><i class='fa-solid fa-exclamation-triangle'></i> " . _translate("Result Modified") . "</span>";
                     }
                $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="generateResultPDF(' . $aRow['vl_sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>' . $resultModified;
           } else {
