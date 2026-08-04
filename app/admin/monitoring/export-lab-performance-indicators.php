@@ -56,13 +56,15 @@ try {
     [$headings, $rows, $secondary] = match ($section) {
         'overview' => [
             [
-                _translate('Test'), _translate('Registered'), _translate('Resulted'),
+                _translate('Test'), _translate('Registered'), _translate('Samples Tested'),
+                _translate('Results Available'), _translate('Awaiting a Result'),
                 _translate('Manual Entry'), _translate('Analyzer Interface'), _translate('File Import'),
                 _translate('Unclassified'), _translate('Failed'), _translate('Failure Rate (%)'),
                 _translate('Rejected'), _translate('Rejection Rate (%)')
             ],
             array_map(static fn(array $r): array => [
-                $r['testName'], $r['registered'], $r['resulted'], $r['manual'], $r['interface'],
+                $r['testName'], $r['registered'], $r['sampleTested'], $r['resulted'],
+                $r['testedPending'], $r['manual'], $r['interface'],
                 $r['fileImport'], $r['unclassified'], $r['failed'], $r['failureRate'],
                 $r['rejected'], $r['rejectionRate']
             ], $indicators->getOverview($filters)),
@@ -87,19 +89,21 @@ try {
         ],
         'volume' => [
             [
-                _translate('Period'), _translate('Lab'), _translate('Registered'), _translate('Resulted'),
+                _translate('Period'), _translate('Lab'), _translate('Registered'),
+                _translate('Samples Tested'), _translate('Results Available'),
+                _translate('Awaiting a Result'),
                 _translate('Manual Entry'), _translate('Analyzer Interface'), _translate('File Import'),
                 _translate('Unclassified')
             ],
             array_map(static fn(array $r): array => [
-                $r['period'], $r['lab'], $r['registered'], $r['resulted'], $r['manual'],
-                $r['interface'], $r['fileImport'], $r['unclassified']
+                $r['period'], $r['lab'], $r['registered'], $r['sampleTested'], $r['resulted'],
+                $r['testedPending'], $r['manual'], $r['interface'], $r['fileImport'], $r['unclassified']
             ], $indicators->getVolume($filters)),
             null
         ],
         'failure' => [
             [
-                _translate('Period'), _translate('Lab'), _translate('Tested'),
+                _translate('Period'), _translate('Lab'), _translate('Tests with an Outcome'),
                 _translate('Failed'), _translate('Failure Rate (%)')
             ],
             array_map(static fn(array $r): array => [

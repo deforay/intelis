@@ -71,6 +71,18 @@ $testingLabs = $facilitiesService->getTestingLabs();
         line-height: 1.3;
     }
 
+    #lpiReport .lpi-card-basis {
+        font-size: 11px;
+        line-height: 1.4;
+        color: #8a9299;
+        margin-top: 3px;
+    }
+
+    #lpiReport .lpi-card-basis strong {
+        color: #5a6570;
+        font-weight: 600;
+    }
+
     .lpi-pill {
         display: inline-block;
         padding: 3px 9px;
@@ -158,6 +170,13 @@ $testingLabs = $facilitiesService->getTestingLabs();
         background-color: #f4f6f8;
     }
 
+    /* The preset list carries a year of named months, so it needs to scroll
+       rather than push the calendar off the bottom of the viewport. */
+    .daterangepicker .ranges ul {
+        max-height: 320px;
+        overflow-y: auto;
+    }
+
     th {
         display: revert !important;
     }
@@ -193,11 +212,23 @@ $testingLabs = $facilitiesService->getTestingLabs();
                         <div id="lpiMethodology" class="lpi-methodology" style="display:none;">
                             <dl>
                                 <dt><?= _htmlTranslate('Reporting period'); ?></dt>
-                                <dd><?= _htmlTranslate('Every sample is placed in a month, quarter or year using the sample collection date. When the collection date is missing, the date the request was created is used instead.'); ?></dd>
+                                <dd>
+                                    <?= _htmlTranslate('Every figure is measured on the date belonging to the event it counts, and the selected date range is applied to that date.'); ?>
+                                    <ul>
+                                        <li><strong><?= _htmlTranslate('Samples registered'); ?></strong>:
+                                            <?= _htmlTranslate('samples whose collection date falls in the period. When the collection date is missing, the date the request was created is used instead.'); ?></li>
+                                        <li><strong><?= _htmlTranslate('Samples tested'); ?></strong>:
+                                            <?= _htmlTranslate('tests whose test date falls in the period, whatever the outcome, so a test that failed or is still awaiting approval is still counted as work done.'); ?></li>
+                                    </ul>
+                                    <?= _htmlTranslate('The two are independent counts of two different events, so a period can show more tests than registrations when samples from an earlier period were worked through, or fewer when testing was held up. That difference is real and the report is meant to show it.'); ?>
+                                </dd>
+
+                                <dt><?= _htmlTranslate('Results available and awaiting a result'); ?></dt>
+                                <dd><?= _htmlTranslate('Both are taken from the tests performed in the period, so the two always add up to samples tested. Results available carries a result; awaiting a result does not have one yet. Awaiting a result is the backlog the period created.'); ?></dd>
 
                                 <dt><?= _htmlTranslate('Turnaround Time (TAT)'); ?></dt>
                                 <dd>
-                                    <?= _htmlTranslate('Each stage is the average number of days between two recorded timestamps.'); ?>
+                                    <?= _htmlTranslate('Each stage is the average number of days between two recorded timestamps, measured over the tests performed in the period.'); ?>
                                     <ul>
                                         <li><strong><?= _htmlTranslate('Collection to Lab Receipt'); ?></strong>:
                                             <?= _htmlTranslate('from the sample collection date to the date the lab received the sample.'); ?></li>
@@ -212,16 +243,16 @@ $testingLabs = $facilitiesService->getTestingLabs();
                                 </dd>
 
                                 <dt><?= _htmlTranslate('Testing Volume'); ?></dt>
-                                <dd><?= _htmlTranslate('Registered counts all samples in the period. Resulted counts samples that have a result. Each result is classified by how it reached the system: Manual Entry means it was typed in, Analyzer Interface means it was received directly from the instrument, and File Import means it was uploaded from a result file. Results saved before this tracking existed are shown as Unclassified.'); ?></dd>
+                                <dd><?= _htmlTranslate('The same registered, tested and resulted counts broken down per lab and period, each still measured on its own date. Every result is also classified by how it reached the system: Manual Entry means it was typed in, Analyzer Interface means it was received directly from the instrument, and File Import means it was uploaded from a result file. Results saved before this tracking existed are shown as Unclassified.'); ?></dd>
 
                                 <dt><?= _htmlTranslate('Failure Rate'); ?></dt>
-                                <dd><?= _htmlTranslate('Failed tests divided by samples with an outcome, meaning a result or a recorded test failure. Samples that are still pending, or were rejected before testing, are not part of this rate.'); ?></dd>
+                                <dd><?= _htmlTranslate('Of the tests performed in the period, failed tests divided by those with an outcome, meaning a result or a recorded test failure. Tests still awaiting approval have not resolved either way and are not part of this rate.'); ?></dd>
 
                                 <dt><?= _htmlTranslate('Rejection Rate'); ?></dt>
-                                <dd><?= _htmlTranslate('Rejected samples divided by all samples registered in the period.'); ?></dd>
+                                <dd><?= _htmlTranslate('Rejection happens at registration, before any test, so both sides of this rate count samples registered in the period: those rejected divided by all of them.'); ?></dd>
 
                                 <dt><?= _htmlTranslate('Repeat Patients'); ?></dt>
-                                <dd><?= _htmlTranslate('Samples are linked into one patient using the patient identifier on the request. A result change is flagged when the linked samples do not all carry the same result. Samples without an identifier cannot be linked, so the identifier coverage is shown next to these numbers.'); ?></dd>
+                                <dd><?= _htmlTranslate('Tests performed in the period are linked into one patient using the patient identifier on the request. A result change is flagged when the linked tests do not all carry the same result. Samples without an identifier cannot be linked, so the identifier coverage is shown next to these numbers.'); ?></dd>
                             </dl>
                         </div>
 
@@ -282,22 +313,38 @@ $testingLabs = $facilitiesService->getTestingLabs();
                             </tr>
                         </table>
 
+                        <p class="lpi-note" id="lpiBasisNote"></p>
+
                         <div class="lpi-summary">
-                            <div class="lpi-card">
+                            <div class="lpi-card" id="cardRegisteredWrap">
                                 <div class="lpi-card-label"><?= _htmlTranslate('Samples registered'); ?></div>
                                 <div class="lpi-card-value" id="cardRegistered">--</div>
+                                <div class="lpi-card-basis" id="basisRegistered"></div>
+                            </div>
+                            <div class="lpi-card">
+                                <div class="lpi-card-label"><?= _htmlTranslate('Samples tested'); ?></div>
+                                <div class="lpi-card-value" id="cardTested">--</div>
+                                <div class="lpi-card-basis" id="basisTested"></div>
                             </div>
                             <div class="lpi-card">
                                 <div class="lpi-card-label"><?= _htmlTranslate('Results available'); ?></div>
                                 <div class="lpi-card-value" id="cardResulted">--</div>
+                                <div class="lpi-card-basis" id="basisResulted"></div>
+                            </div>
+                            <div class="lpi-card">
+                                <div class="lpi-card-label"><?= _htmlTranslate('Awaiting a result'); ?></div>
+                                <div class="lpi-card-value" id="cardAwaitingResult">--</div>
+                                <div class="lpi-card-basis" id="basisAwaiting"></div>
                             </div>
                             <div class="lpi-card" id="cardFailureWrap">
                                 <div class="lpi-card-label"><?= _htmlTranslate('Failure rate'); ?></div>
                                 <div class="lpi-card-value" id="cardFailure">--</div>
+                                <div class="lpi-card-basis" id="basisFailure"></div>
                             </div>
                             <div class="lpi-card" id="cardRejectionWrap">
                                 <div class="lpi-card-label"><?= _htmlTranslate('Rejection rate'); ?></div>
                                 <div class="lpi-card-value" id="cardRejection">--</div>
+                                <div class="lpi-card-basis" id="basisRejection"></div>
                             </div>
                         </div>
 
@@ -461,6 +508,8 @@ $testingLabs = $facilitiesService->getTestingLabs();
         period: "<?= _jsTranslate('Period'); ?>",
         lab: "<?= _jsTranslate('Lab'); ?>",
         test: "<?= _jsTranslate('Test'); ?>",
+        sampleTested: "<?= _jsTranslate('Samples Tested'); ?>",
+        outcomes: "<?= _jsTranslate('Tests with an Outcome'); ?>",
         tested: "<?= _jsTranslate('Tested'); ?>",
         failed: "<?= _jsTranslate('Failed'); ?>",
         failureRate: "<?= _jsTranslate('Failure Rate (%)'); ?>",
@@ -476,7 +525,18 @@ $testingLabs = $facilitiesService->getTestingLabs();
         testedToReleased: "<?= _jsTranslate('Tested to Result Released'); ?>",
         collectionToReleased: "<?= _jsTranslate('Collection to Result Released'); ?>",
         noData: "<?= _jsTranslate('No data for the selected filters'); ?>",
-        loading: "<?= _jsTranslate('Loading...'); ?>"
+        loading: "<?= _jsTranslate('Loading...'); ?>",
+        awaiting: "<?= _jsTranslate('Awaiting a Result'); ?>",
+        pageNote: "<?= _jsTranslate('Registrations and tests are counted separately, each on its own date. A period can show more tests than registrations when samples from an earlier period were worked through, or fewer when testing was held up.'); ?>",
+        // Every card states the date it is measured on, so a figure copied off
+        // this page carries its own definition with it.
+        basisRegistered: "<?= _jsTranslate('Collection date in range'); ?>",
+        basisTested: "<?= _jsTranslate('Test date in range'); ?>",
+        basisResulted: "<?= _jsTranslate('Test date in range, result recorded'); ?>",
+        basisAwaiting: "<?= _jsTranslate('Test date in range, no result yet'); ?>",
+        basisFailure: "<?= _jsTranslate('Of tests with an outcome, test date in range'); ?>",
+        basisRejection: "<?= _jsTranslate('Of samples registered, collection date in range'); ?>",
+        allDates: "<?= _jsTranslate('all dates'); ?>"
     };
 
     Highcharts.setOptions({
@@ -514,8 +574,29 @@ $testingLabs = $facilitiesService->getTestingLabs();
     function lpiApplyFilters() {
         lpiCache = {};
         lpiToggleTabs();
+        lpiRenderBasisNote();
         lpiLoadSummary();
         lpiLoadSection(lpiActiveSection());
+    }
+
+    // Each card states the date it is measured on next to the range that date
+    // had to fall in. Registrations and tests are separate events on separate
+    // dates, so a card that did not say which one it used would be ambiguous
+    // the moment the number left the screen.
+    function lpiRenderBasisNote() {
+        var range = $.trim($('#dateRange').val() || '') || LPI_LABELS.allDates;
+        $('#lpiBasisNote').text(LPI_LABELS.pageNote);
+
+        function caption(what) {
+            return '<strong>' + esc(what) + '</strong><br>' + esc(range);
+        }
+
+        $('#basisRegistered').html(caption(LPI_LABELS.basisRegistered));
+        $('#basisTested').html(caption(LPI_LABELS.basisTested));
+        $('#basisResulted').html(caption(LPI_LABELS.basisResulted));
+        $('#basisAwaiting').html(caption(LPI_LABELS.basisAwaiting));
+        $('#basisFailure').html(caption(LPI_LABELS.basisFailure));
+        $('#basisRejection').html(caption(LPI_LABELS.basisRejection));
     }
 
     // All Tests shows only the overview; a single test shows everything else.
@@ -525,8 +606,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
         $('#lpiTabs .lpi-tab-single').toggle(!isAll);
         var active = $('#lpiTabs li.active:visible');
         if (active.length === 0) {
-            var first = $('#lpiTabs li:visible').first();
-            first.find('a').tab('show');
+            $('#lpiTabs li:visible').first().find('a').tab('show');
         }
     }
 
@@ -580,15 +660,20 @@ $testingLabs = $facilitiesService->getTestingLabs();
                     rows = rows.filter(function (r) { return r.genericTestTypeId === f.genericTestTypeId; });
                 }
             }
-            var registered = 0, resulted = 0, failed = 0, tested = 0, rejected = 0;
+            var registered = 0, sampleTested = 0, resulted = 0, pending = 0;
+            var failed = 0, outcomes = 0, rejected = 0;
             rows.forEach(function (r) {
-                registered += r.registered; resulted += r.resulted;
-                failed += r.failed; rejected += r.rejected;
-                tested += r.resulted + r.failed;
+                registered += r.registered; sampleTested += r.sampleTested;
+                resulted += r.resulted; pending += r.testedPending;
+                failed += r.failed; outcomes += r.outcomes; rejected += r.rejected;
             });
+
             $('#cardRegistered').text(registered.toLocaleString());
+            $('#cardTested').text(sampleTested.toLocaleString());
             $('#cardResulted').text(resulted.toLocaleString());
-            var failureRate = tested > 0 ? (failed * 100 / tested) : null;
+            $('#cardAwaitingResult').text(pending.toLocaleString());
+
+            var failureRate = outcomes > 0 ? (failed * 100 / outcomes) : null;
             var rejectionRate = registered > 0 ? (rejected * 100 / registered) : null;
             $('#cardFailure').text(failureRate === null ? '--' : failureRate.toFixed(2) + '%');
             $('#cardRejection').text(rejectionRate === null ? '--' : rejectionRate.toFixed(2) + '%');
@@ -636,11 +721,13 @@ $testingLabs = $facilitiesService->getTestingLabs();
 
     function renderOverview(rows) {
         buildTable('tableOverview',
-            [LPI_LABELS.test, LPI_LABELS.registered, LPI_LABELS.resulted, LPI_LABELS.manual,
-            LPI_LABELS.interface, LPI_LABELS.fileImport, LPI_LABELS.unclassified,
-            LPI_LABELS.failed, LPI_LABELS.failureRate, LPI_LABELS.rejected, LPI_LABELS.rejectionRate],
+            [LPI_LABELS.test, LPI_LABELS.registered, LPI_LABELS.sampleTested, LPI_LABELS.resulted,
+            LPI_LABELS.awaiting, LPI_LABELS.manual, LPI_LABELS.interface, LPI_LABELS.fileImport,
+            LPI_LABELS.unclassified, LPI_LABELS.failed, LPI_LABELS.failureRate,
+            LPI_LABELS.rejected, LPI_LABELS.rejectionRate],
             rows.map(function (r) {
-                return [r.testName, r.registered.toLocaleString(), r.resulted.toLocaleString(),
+                return [r.testName, r.registered.toLocaleString(), r.sampleTested.toLocaleString(),
+                r.resulted.toLocaleString(), r.testedPending.toLocaleString(),
                 r.manual.toLocaleString(), r.interface.toLocaleString(), r.fileImport.toLocaleString(),
                 r.unclassified.toLocaleString(), r.failed.toLocaleString(),
                 r.failureRate === null ? null : r.failureRate + '%',
@@ -688,33 +775,55 @@ $testingLabs = $facilitiesService->getTestingLabs();
 
     function renderVolume(rows) {
         buildTable('tableVolume',
-            [LPI_LABELS.period, LPI_LABELS.lab, LPI_LABELS.registered, LPI_LABELS.resulted,
-            LPI_LABELS.manual, LPI_LABELS.interface, LPI_LABELS.fileImport, LPI_LABELS.unclassified],
+            [LPI_LABELS.period, LPI_LABELS.lab, LPI_LABELS.registered, LPI_LABELS.sampleTested,
+            LPI_LABELS.resulted, LPI_LABELS.awaiting, LPI_LABELS.manual, LPI_LABELS.interface,
+            LPI_LABELS.fileImport, LPI_LABELS.unclassified],
             rows.map(function (r) {
-                return [r.period, r.lab, r.registered.toLocaleString(), r.resulted.toLocaleString(),
+                return [r.period, r.lab, r.registered.toLocaleString(), r.sampleTested.toLocaleString(),
+                r.resulted.toLocaleString(), r.testedPending.toLocaleString(),
                 r.manual.toLocaleString(), r.interface.toLocaleString(),
                 r.fileImport.toLocaleString(), r.unclassified.toLocaleString()];
             }));
 
-        var agg = sumByPeriod(rows, ['manual', 'interface', 'fileImport', 'unclassified']);
+        var agg = sumByPeriod(rows,
+            ['registered', 'sampleTested', 'manual', 'interface', 'fileImport', 'unclassified']);
+
+        // The stack is the results produced. The two lines are the separate
+        // events that bracket them: samples registered and tests performed.
+        // The gap between the lines is the spillover or the shortfall.
+        var series = ['manual', 'interface', 'fileImport', 'unclassified'].map(function (f) {
+            return {
+                type: 'column',
+                name: LPI_LABELS[f],
+                data: agg.periods.map(function (p) { return agg.byPeriod[p][f]; })
+            };
+        });
+        series.push({
+            type: 'line',
+            name: LPI_LABELS.registered,
+            color: '#8a9299',
+            dashStyle: 'ShortDash',
+            data: agg.periods.map(function (p) { return agg.byPeriod[p].registered; })
+        });
+        series.push({
+            type: 'line',
+            name: LPI_LABELS.sampleTested,
+            color: '#c0392b',
+            data: agg.periods.map(function (p) { return agg.byPeriod[p].sampleTested; })
+        });
+
         Highcharts.chart('chartVolume', {
-            chart: { type: 'column' },
-            title: { text: "<?= _jsTranslate('Results by entry mode'); ?>" },
+            title: { text: "<?= _jsTranslate('Samples registered, tests performed, and results by entry mode'); ?>" },
             xAxis: { categories: agg.periods },
-            yAxis: { min: 0, title: { text: LPI_LABELS.resulted }, stackLabels: { enabled: true } },
+            yAxis: { min: 0, title: { text: LPI_LABELS.samples }, stackLabels: { enabled: true } },
             plotOptions: { column: { stacking: 'normal' } },
-            series: ['manual', 'interface', 'fileImport', 'unclassified'].map(function (f) {
-                return {
-                    name: LPI_LABELS[f],
-                    data: agg.periods.map(function (p) { return agg.byPeriod[p][f]; })
-                };
-            })
+            series: series
         });
     }
 
     function renderFailure(rows, reasons) {
         buildTable('tableFailure',
-            [LPI_LABELS.period, LPI_LABELS.lab, LPI_LABELS.tested, LPI_LABELS.failed, LPI_LABELS.failureRate],
+            [LPI_LABELS.period, LPI_LABELS.lab, LPI_LABELS.outcomes, LPI_LABELS.failed, LPI_LABELS.failureRate],
             rows.map(function (r) {
                 return [r.period, r.lab, r.tested.toLocaleString(), r.failed.toLocaleString(),
                 r.failureRate === null ? null : r.failureRate + '%'];
@@ -863,6 +972,34 @@ $testingLabs = $facilitiesService->getTestingLabs();
         });
     }
 
+    // Named calendar months and quarters, so picking "November 2025" is one
+    // click instead of paging a calendar back to it. The custom picker is
+    // still there for anything these do not cover.
+    function lpiDateRanges() {
+        var ranges = {};
+        var i, m;
+
+        ranges["<?= _jsTranslate('This Month'); ?>"] = [moment().startOf('month'), moment()];
+        for (i = 1; i <= 12; i++) {
+            m = moment().subtract(i, 'month');
+            ranges[m.format('MMMM YYYY')] = [m.clone().startOf('month'), m.clone().endOf('month')];
+        }
+        for (i = 1; i <= 4; i++) {
+            m = moment().subtract(i, 'quarter');
+            ranges['Q' + m.quarter() + ' ' + m.year()] = [m.clone().startOf('quarter'), m.clone().endOf('quarter')];
+        }
+        ranges["<?= _jsTranslate('Last 30 Days'); ?>"] = [moment().subtract(29, 'days'), moment()];
+        ranges["<?= _jsTranslate('Last 12 Months'); ?>"] = [moment().subtract(12, 'month'), moment()];
+        ranges["<?= _jsTranslate('This Year'); ?>"] = [moment().startOf('year'), moment()];
+
+        m = moment().subtract(1, 'year');
+        ranges[m.year()] = [m.clone().startOf('year'), m.clone().endOf('year')];
+        m = moment().subtract(2, 'year');
+        ranges[m.year()] = [m.clone().startOf('year'), m.clone().endOf('year')];
+
+        return ranges;
+    }
+
     $(document).ready(function () {
         $('#dateRange').daterangepicker({
             locale: {
@@ -870,16 +1007,11 @@ $testingLabs = $facilitiesService->getTestingLabs();
                 format: 'DD-MMM-YYYY',
                 separator: ' to ',
             },
+            showDropdowns: true,
             startDate: moment().startOf('year'),
             endDate: moment(),
             maxDate: moment(),
-            ranges: {
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'Last 3 Months': [moment().subtract(3, 'month').startOf('month'), moment()],
-                'This Year': [moment().startOf('year'), moment()],
-                'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-                'Last 12 Months': [moment().subtract(12, 'month'), moment()]
-            }
+            ranges: lpiDateRanges()
         });
 
         $('#testType').select2();
@@ -896,6 +1028,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
         });
 
         lpiToggleTabs();
+        lpiRenderBasisNote();
         lpiLoadSummary();
         lpiLoadSection(lpiActiveSection());
     });
