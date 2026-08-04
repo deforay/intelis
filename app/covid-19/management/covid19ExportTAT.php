@@ -1,15 +1,22 @@
 <?php
 
-use App\Utilities\DateUtility;
+use Psr\Http\Message\ServerRequestInterface;
+use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\Covid19Service;
+use App\Abstracts\AbstractTestService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
+ini_set('memory_limit', '512M');
+set_time_limit(600);
+ini_set('max_execution_time', 600);
+
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -17,106 +24,63 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-if (isset($_SESSION['covid19TATQuery']) && trim((string) $_SESSION['covid19TATQuery']) !== "") {
+/** @var Covid19Service $covid19Service */
+$covid19Service = ContainerRegistry::get(Covid19Service::class);
 
-  $rResult = $db->rawQuery($_SESSION['covid19TATQuery']);
-
-  $excel = new Spreadsheet();
-  $output = [];
-  $sheet = $excel->getActiveSheet();
-
-  $headings = ["Covid-19 Sample ID", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Result Print Date", "Sample Email Date", "STS Result Print Date", "LIS Result Print Date"];
-
-  $colNo = 1;
-
-  $styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THICK]]];
-
-  $sheet->mergeCells('A1:AG1');
-  $nameValue = '';
-  foreach ($_POST as $key => $value) {
-    if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-      $nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-    }
-  }
-  $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-    ->setValueExplicit(html_entity_decode($nameValue));
-
-  foreach ($headings as $field => $value) {
-    $sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-      ->setValueExplicit(html_entity_decode($value));
-    $colNo++;
-  }
-  $sheet->getStyle('A3:H3')->applyFromArray($styleArray);
-
-  $no = 1;
-  foreach ($rResult as $aRow) {
-    $row = [];
-    //sample collecion date
-    $sampleCollectionDate = '';
-    if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) !== '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-      $expStr = explode(" ", (string) $aRow['sample_collection_date']);
-      $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
-    }
-    if (isset($aRow['sample_received_at_lab_datetime']) && trim((string) $aRow['sample_received_at_lab_datetime']) !== '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-      $sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
-    } else {
-      $sampleRecievedDate = '';
-    }
-    if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) !== '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-      $testDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
-    } else {
-      $testDate = '';
-    }
-    if (isset($aRow['result_printed_datetime']) && trim((string) $aRow['result_printed_datetime']) !== '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-      $printDate = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
-    } else {
-      $printDate = '';
-    }
-    if (isset($aRow['result_mail_datetime']) && trim((string) $aRow['result_mail_datetime']) !== '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
-      $mailDate = DateUtility::humanReadableDateFormat($aRow['result_mail_datetime']);
-    } else {
-      $mailDate = '';
+try {
+    if (empty($_SESSION['covid19TATQuery'])) {
+        echo '';
+        return;
     }
 
-    if (isset($aRow['result_printed_on_sts_datetime']) && trim((string) $aRow['result_printed_on_sts_datetime']) !== '' && $aRow['result_printed_on_sts_datetime'] != '0000-00-00 00:00:00') {
-      $printDateSts = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime']);
-    } else {
-      $printDateSts = '';
+    // SQL_CALC_FOUND_ROWS is only meaningful for the paged list behind this
+    // export, and it is deprecated, so drop it from the export's copy.
+    $sQuery = str_replace('SQL_CALC_FOUND_ROWS ', '', (string) $_SESSION['covid19TATQuery']);
+
+    // Applied independently of the session so the export can never widen past
+    // what this user is allowed to see, whatever the list page last stored.
+    if (!empty($_SESSION['facilityMap'])) {
+        $sQuery .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+    }
+    if ($labScope = $general->labScopeWhere('vl')) {
+        $sQuery .= " AND $labScope";
     }
 
-    if (isset($aRow['result_printed_on_lis_datetime']) && trim((string) $aRow['result_printed_on_lis_datetime']) !== '' && $aRow['result_printed_on_lis_datetime'] != '0000-00-00 00:00:00') {
-      $printDateLis = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime']);
-    } else {
-      $printDateLis = '';
-    }
+    $sampleCode = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
 
+    $appliedFilters = AbstractTestService::turnaroundTimeFilterSummary($_POST, [
+        'sampleCollectionDate' => _translate('Sample Collection Date'),
+        'sampleReceivedDateAtLab' => _translate('Sample Received Date in Lab'),
+        'sampleTestedDate' => _translate('Sample Test Date'),
+        'batchCodeLabel' => _translate('Batch Code'),
+        'sampleTypeLabel' => _translate('Sample Type'),
+        'labNameLabel' => _translate('Testing Lab'),
+    ]);
 
-    $row[] = $aRow['sample_code'];
-    $row[] = $sampleCollectionDate;
-    $row[] = $sampleRecievedDate;
-    $row[] = $testDate;
-    $row[] = $printDate;
-    $row[] = $mailDate;
-    $row[] = $printDateSts;
-    $row[] = $printDateLis;
-    $output[] = $row;
-    $no++;
-  }
-
-  $start = (count($output)) + 2;
-  foreach ($output as $rowNo => $rowData) {
-    $colNo = 1;
-    $rRowCount = $rowNo + 4;
-    foreach ($rowData as $field => $value) {
-      $sheet->setCellValue(
-        Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-        html_entity_decode((string) $value)
-      );
-      $colNo++;
-    }
-  }
-  $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-  $filename = 'COVID-19-TAT-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-  $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-  echo urlencode(basename($filename));
+    echo $covid19Service->writeTurnaroundTimeExport(
+        sql: $sQuery,
+        params: [],
+        columns: [
+            ['Covid-19 Sample ID', $sampleCode, false],
+            ['Sample Collection Date', 'sample_collection_date', true],
+            ['Sample Received Date in Lab', 'sample_received_at_lab_datetime', true],
+            ['Sample Test Date', 'sample_tested_datetime', true],
+            ['Result Print Date', 'result_printed_datetime', true],
+            ['Sample Email Date', 'result_mail_datetime', true],
+            ['STS Result Print Date', 'result_printed_on_sts_datetime', true],
+            ['LIS Result Print Date', 'result_printed_on_lis_datetime', true],
+        ],
+        appliedFilters: $appliedFilters,
+        fileLabel: 'COVID-19'
+    );
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'trace' => $e->getTraceAsString(),
+    ]);
+    http_response_code(500);
+    echo '';
 }
