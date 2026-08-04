@@ -1,14 +1,22 @@
 <?php
 
-use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use Psr\Http\Message\ServerRequestInterface;
+use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Services\HepatitisService;
+use App\Abstracts\AbstractTestService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
+
+ini_set('memory_limit', '512M');
+set_time_limit(600);
+ini_set('max_execution_time', 600);
+
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -16,91 +24,71 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$sQuery = "SELECT vl.sample_collection_date,
-				vl.sample_tested_datetime,
-				vl.sample_received_at_lab_datetime,
-				vl.result_printed_datetime,
-				vl.result_mail_datetime,
-				vl.request_created_by,
-				vl.remote_sample_code,
-				vl.sample_code
-				FROM form_hepatitis as vl
-				INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-				LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-				LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-				WHERE (vl.sample_collection_date is NOT NULL)
-				AND (vl.sample_tested_datetime IS NOT NULL)
-				AND vl.hcv_vl_count is not null
-				AND vl.hcv_vl_count != '' ";
-if (!empty($_SESSION['hepatitisTatData']['sWhere'])) {
-	$sQuery .= $_SESSION['hepatitisTatData']['sWhere'];
+/** @var HepatitisService $hepatitisService */
+$hepatitisService = ContainerRegistry::get(HepatitisService::class);
+
+try {
+    $sQuery = "SELECT vl.sample_code,
+                    vl.remote_sample_code,
+                    vl.external_sample_code,
+                    vl.sample_collection_date,
+                    vl.sample_dispatched_datetime,
+                    vl.sample_received_at_lab_datetime,
+                    vl.sample_tested_datetime,
+                    vl.result_printed_datetime,
+                    vl.result_printed_on_sts_datetime,
+                    vl.result_printed_on_lis_datetime
+                FROM form_hepatitis AS vl
+                INNER JOIN r_sample_status AS ts ON ts.status_id = vl.result_status
+                LEFT JOIN facility_details AS f ON vl.facility_id = f.facility_id
+                LEFT JOIN batch_details AS b ON b.batch_id = vl.sample_batch_id
+                WHERE vl.sample_collection_date IS NOT NULL
+                    AND vl.sample_tested_datetime IS NOT NULL
+                    AND IFNULL(vl.hcv_vl_count, '') != ''";
+
+    if (!empty($_SESSION['hepatitisTatData']['sWhere'])) {
+        $sQuery .= " AND " . $_SESSION['hepatitisTatData']['sWhere'];
+    }
+
+    // Applied independently of the session so the export can never widen past
+    // what this user is allowed to see, whatever the list page last stored.
+    if (!empty($_SESSION['facilityMap'])) {
+        $sQuery .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+    }
+    if ($labScope = $general->labScopeWhere('vl')) {
+        $sQuery .= " AND $labScope";
+    }
+
+    if (!empty($_SESSION['hepatitisTatData']['sOrder'])) {
+        $sQuery .= " ORDER BY " . $_SESSION['hepatitisTatData']['sOrder'];
+    } else {
+        $sQuery .= " ORDER BY vl.sample_collection_date DESC, vl.sample_code ASC";
+    }
+
+    $appliedFilters = AbstractTestService::turnaroundTimeFilterSummary($_POST, [
+        'sampleCollectionDate' => _translate('Sample Collection Date'),
+        'sampleReceivedDateAtLab' => _translate('Sample Received Date in Lab'),
+        'sampleTestedDate' => _translate('Sample Test Date'),
+        'batchCodeLabel' => _translate('Batch Code'),
+        'sampleTypeLabel' => _translate('Sample Type'),
+        'labNameLabel' => _translate('Testing Lab'),
+    ]);
+
+    echo $hepatitisService->writeTurnaroundTimeExport(
+        sql: $sQuery,
+        params: [],
+        columns: AbstractTestService::turnaroundTimeDetailColumns(),
+        appliedFilters: $appliedFilters,
+        fileLabel: 'HEPATITIS'
+    );
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'trace' => $e->getTraceAsString(),
+    ]);
+    http_response_code(500);
+    echo '';
 }
-
-if (!empty($_SESSION['hepatitisTatData']['sOrder'])) {
-	$sQuery = $sQuery . " ORDER BY " . $_SESSION['hepatitisTatData']['sOrder'];
-}
-$rResult = $db->rawQuery($sQuery);
-
-$excel = new Spreadsheet();
-$output = [];
-$sheet = $excel->getActiveSheet();
-
-$headings = ["hepatitis Sample ID", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Result Print Date", "Sample Email Date"];
-
-$colNo = 1;
-
-$styleArray = ['font' => ['bold' => true, 'size' => '13'], 'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER], 'borders' => ['outline' => ['style' => Border::BORDER_THICK]]];
-
-
-$sheet->mergeCells('A1:AE1');
-$nameValue = '';
-foreach ($_POST as $key => $value) {
-	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-	}
-}
-$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-	->setValueExplicit(html_entity_decode($nameValue));
-foreach ($headings as $field => $value) {
-	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-		->setValueExplicit(html_entity_decode($value));
-	$colNo++;
-}
-$sheet->getStyle('A3:F3')->applyFromArray($styleArray);
-
-$no = 1;
-foreach ($rResult as $aRow) {
-	$row = [];
-	//sample collecion date
-	$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-	$sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
-	$testDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
-	$printDate = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
-	$mailDate = DateUtility::humanReadableDateFormat($aRow['result_mail_datetime'] ?? '');
-
-	$row[] = $aRow['sample_code'];
-	$row[] = $sampleCollectionDate;
-	$row[] = $sampleRecievedDate;
-	$row[] = $testDate;
-	$row[] = $printDate;
-	$row[] = $mailDate;
-	$output[] = $row;
-	$no++;
-}
-
-$start = (count($output)) + 2;
-foreach ($output as $rowNo => $rowData) {
-	$colNo = 1;
-	$rRowCount = $rowNo + 4;
-	foreach ($rowData as $field => $value) {
-		$sheet->setCellValue(
-			Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-			html_entity_decode((string) $value)
-		);
-		$colNo++;
-	}
-}
-$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-$filename = 'Hepatitis-TAT-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-echo urlencode(basename($filename));
