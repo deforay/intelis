@@ -8,6 +8,7 @@ use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Abstracts\AbstractTestService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\TurnaroundTimeUtility;
 
 ini_set('memory_limit', '512M');
 set_time_limit(600);
@@ -57,6 +58,10 @@ try {
     if ($sWhere !== []) {
         $sQuery .= " AND " . implode(" AND ", $sWhere);
     }
+    // Same plausibility guards the chart applies, so the export reconciles
+    // against the chart drawn from the same filters.
+    $sWhere = array_merge($sWhere, TurnaroundTimeUtility::plausibleDateConditions('vl'));
+
     $sQuery .= " ORDER BY vl.sample_collection_date DESC, vl.sample_code ASC";
 
     $appliedFilters = AbstractTestService::turnaroundTimeFilterSummary($_POST, [

@@ -8,6 +8,7 @@ use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Abstracts\AbstractTestService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\TurnaroundTimeUtility;
 
 ini_set('memory_limit', '512M');
 set_time_limit(600);
@@ -50,6 +51,10 @@ try {
         $sQuery .= " AND " . $_SESSION['hepatitisTatData']['sWhere'];
     }
 
+
+    // Same plausibility guards the chart applies, so the export reconciles
+    // against the chart drawn from the same filters.
+    $sQuery .= " AND " . implode(" AND ", TurnaroundTimeUtility::plausibleDateConditions('vl'));
     // Applied independently of the session so the export can never widen past
     // what this user is allowed to see, whatever the list page last stored.
     if (!empty($_SESSION['facilityMap'])) {

@@ -55,11 +55,32 @@ final class TurnaroundTimeUtilityTest extends TestCase
 
         // An analyzer with a mis-set clock used to put phantom months years
         // away from the real data on the chart.
-        $this->assertStringContainsString('sample.sample_tested_datetime <= NOW()', $sql);
+        foreach (TurnaroundTimeUtility::plausibleDateConditions('sample') as $condition) {
+            $this->assertStringContainsString($condition, $sql);
+        }
+    }
+
+    public function testPlausibilityGuardsCompareDatesNotTimestamps(): void
+    {
+        $conditions = implode(' AND ', TurnaroundTimeUtility::plausibleDateConditions('sample'));
+
+        // Most samples never get a test time recorded, so it defaults to
+        // midnight. Comparing full timestamps would drop every same-day sample
+        // whose collection time was after 00:00 as "tested before collected".
         $this->assertStringContainsString(
-            'sample.sample_tested_datetime >= sample.sample_collection_date',
-            $sql
+            'DATE(sample.sample_tested_datetime) >= DATE(sample.sample_collection_date)',
+            $conditions
         );
+        $this->assertStringContainsString('DATE(sample.sample_tested_datetime) <= CURDATE()', $conditions);
+        $this->assertStringNotContainsString('<= NOW()', $conditions);
+    }
+
+    public function testPlausibilityGuardsAreAliasAware(): void
+    {
+        // The detail exports still alias the form table as vl.
+        $conditions = implode(' AND ', TurnaroundTimeUtility::plausibleDateConditions('vl'));
+
+        $this->assertStringContainsString('DATE(vl.sample_tested_datetime) <= CURDATE()', $conditions);
     }
 
     public function testResultColumnIsConfigurablePerModule(): void
