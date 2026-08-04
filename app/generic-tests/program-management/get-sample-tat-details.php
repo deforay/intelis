@@ -140,11 +140,11 @@ if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '
 	$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
 }
 if (isset($sWhere) && $sWhere !== []) {
-	$_SESSION['vlTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
+	$_SESSION['genericTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
 	$sQuery = "$sQuery AND $sWhere";
 }
 if (isset($sOrder) && $sOrder != "") {
-	$_SESSION['vlTatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+	$_SESSION['genericTatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
 	$sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 

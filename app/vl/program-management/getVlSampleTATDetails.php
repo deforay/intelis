@@ -1,7 +1,6 @@
 <?php
 
 use Psr\Http\Message\ServerRequestInterface;
-use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -19,6 +18,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+require_once __DIR__ . '/vlSampleTatFilters.php';
+
 $sampleCode = ($general->isSTSInstance()) ? 'remote_sample_code' : 'sample_code';
 $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.external_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_dispatched_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_on_sts_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_on_lis_datetime,'%d-%b-%Y')"];
 $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.external_sample_code', 'vl.sample_collection_date', 'vl.sample_dispatched_datetime', 'vl.sample_received_at_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_printed_on_sts_datetime', 'vl.result_printed_on_lis_datetime'];
@@ -32,8 +33,9 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
+[$sWhere, $params] = vlSampleTatFilterConditions($_POST, $general);
+
 $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
-$sWhere = [];
 if (!empty($columnSearch) && $columnSearch != '') {
 	$sWhere[] = $columnSearch;
 }
@@ -56,48 +58,12 @@ $sQuery = "SELECT vl.sample_code,
 			WHERE (vl.sample_collection_date is NOT NULL)
                         AND (vl.sample_tested_datetime IS NOT NULL)
 						AND IFNULL(vl.result, '') != '' ";
-if ($general->isSTSInstance()) {
-	if (!empty($_SESSION['facilityMap'])) {
-		$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
-	}
 
-	if ($labScope = $general->labScopeWhere('vl')) {
-	    $sWhere[] = $labScope;
-	}
-} else {
-	$sWhere[] = " vl.result_status != " . RECEIVED_AT_CLINIC;
-}
-
-
-
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-}
-if (!empty($_POST['sampleCollectionDate'])) {
-	[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-	$sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
-}
-if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
-	[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-	$sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
-}
-
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
-	[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
-	$sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
-}
-if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-	$sWhere[] = ' vl.specimen_type = "' . $_POST['sampleType'] . '"';
-}
-if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) !== '') {
-	$sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
-}
 if (!empty($sWhere)) {
-	$_SESSION['vlTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
-	$sQuery = "$sQuery AND $sWhere";
+	$sQuery = "$sQuery AND " . implode(" AND ", $sWhere);
 }
 if (!empty($sOrder) && $sOrder !== '') {
-	$_SESSION['vlTatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
+	$sOrder = preg_replace('/\s+/', ' ', (string) $sOrder);
 	$sQuery = "$sQuery ORDER BY $sOrder";
 }
 
@@ -105,7 +71,7 @@ if (isset($sLimit) && isset($sOffset)) {
 	$sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
 
-[$rResult, $resultCount] = $db->getDataAndCount($sQuery);
+[$rResult, $resultCount] = $db->getDataAndCount($sQuery, $params);
 
 
 $output = [

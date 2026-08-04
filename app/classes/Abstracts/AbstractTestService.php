@@ -16,6 +16,10 @@ use App\Services\FacilitiesService;
 
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
+use App\Utilities\TurnaroundTimeUtility;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
+use OpenSpout\Writer\XLSX\Writer as XlsxWriter;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -442,5 +446,135 @@ abstract class AbstractTestService
         return $this->db->update($this->table, [
             'form_attributes' => $this->db->func($setString),
         ]);
+    }
+
+    /**
+     * Monthly Laboratory Turnaround Time series for this test type.
+     *
+     * Every form_* table carries the same six milestone columns, so the
+     * measurement lives in one place (TurnaroundTimeUtility) and this method
+     * only supplies the module's table and result column. Callers pass the
+     * filters their page is already applying, so the TAT chart describes the
+     * same set of samples as the rest of the page.
+     *
+     * @param string[] $conditions WHERE conditions, ANDed together
+     * @param array    $params     Bind params matching the placeholders in $conditions
+     * @param string   $joins      Extra JOIN clauses the conditions rely on
+     * @param string   $alias      Alias for this module's form table
+     * @param string[] $stages     Subset of TurnaroundTimeUtility::STAGES keys
+     *
+     * @return array<string, string[]> Series key => JS literals, plus 'months'
+     */
+    public function getTurnaroundTimeSeries(
+        array $conditions = [],
+        array $params = [],
+        string $joins = '',
+        string $alias = 'sample',
+        array $stages = []
+    ): array {
+        $query = TurnaroundTimeUtility::buildQuery(
+            $this->table,
+            $conditions,
+            TestsService::getResultColumn($this->testType),
+            $joins,
+            $alias,
+            $stages
+        );
+
+        return TurnaroundTimeUtility::toChartSeries($this->db->rawQuery($query, $params), $stages);
+    }
+
+    /**
+     * Writes the per-sample turnaround time detail export for this test type.
+     *
+     * Streams rows straight to the file with OpenSpout so the export holds a
+     * constant amount of memory regardless of how many samples match. The
+     * previous per-module copies built an entire PhpSpreadsheet workbook in
+     * memory first, which is why they fell over on real datasets.
+     *
+     * @param string   $sql             Query returning the detail rows
+     * @param array    $params          Bind params for $sql
+     * @param array    $columns         [heading, column name, format as date?] per column
+     * @param string[] $appliedFilters  "Label : value" strings for the header row
+     * @param string   $fileLabel       Goes into the generated file name
+     *
+     * @return string URL-encoded base name of the generated file
+     */
+    public function writeTurnaroundTimeExport(
+        string $sql,
+        array $params,
+        array $columns,
+        array $appliedFilters,
+        string $fileLabel
+    ): string {
+        $headings = array_map(static fn(array $c): string => _translate($c[0]), $columns);
+
+        $filename = TEMP_PATH . DIRECTORY_SEPARATOR
+            . 'InteLIS-' . $fileLabel . '-TAT-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
+
+        $headerStyle = (new Style())->withFontBold(true);
+
+        $writer = new XlsxWriter();
+        $writer->openToFile($filename);
+
+        $writer->addRow(Row::fromValuesWithStyle([$fileLabel . ' ' . _translate('Turnaround Time Report')], $headerStyle));
+        if ($appliedFilters !== []) {
+            $writer->addRow(Row::fromValues([implode('   ', $appliedFilters)]));
+        }
+        $writer->addRow(Row::fromValues([]));
+        $writer->addRow(Row::fromValuesWithStyle($headings, $headerStyle));
+
+        foreach ($this->db->rawQueryGenerator($sql, $params) as $aRow) {
+            $values = [];
+            foreach ($columns as [$label, $column, $isDate]) {
+                $value = $aRow[$column] ?? '';
+                $values[] = $isDate ? DateUtility::humanReadableDateFormat($value ?? '') : $value;
+            }
+            $writer->addRow(Row::fromValues($values));
+        }
+
+        $writer->close();
+
+        return urlencode(basename($filename));
+    }
+
+    /**
+     * The column layout most modules' turnaround time exports use.
+     *
+     * @return array<int, array{0: string, 1: string, 2: bool}>
+     */
+    public static function turnaroundTimeDetailColumns(): array
+    {
+        return [
+            ['Sample ID', 'sample_code', false],
+            ['Remote Sample ID', 'remote_sample_code', false],
+            ['External Sample ID', 'external_sample_code', false],
+            ['Sample Collection Date', 'sample_collection_date', true],
+            ['Sample Dispatch Date', 'sample_dispatched_datetime', true],
+            ['Sample Received Date in Lab', 'sample_received_at_lab_datetime', true],
+            ['Sample Test Date', 'sample_tested_datetime', true],
+            ['Result Print Date', 'result_printed_datetime', true],
+            ['STS Result Print Date', 'result_printed_on_sts_datetime', true],
+            ['LIS Result Print Date', 'result_printed_on_lis_datetime', true],
+        ];
+    }
+
+    /**
+     * Filter summary for the top of a turnaround time export.
+     *
+     * @param array<string, string> $labels POST key => display label
+     * @return string[]
+     */
+    public static function turnaroundTimeFilterSummary(array $post, array $labels): array
+    {
+        $summary = [];
+        foreach ($labels as $key => $label) {
+            $value = trim((string) ($post[$key] ?? ''));
+            if ($value !== '' && $value !== '-- Select --') {
+                $summary[] = "$label : $value";
+            }
+        }
+
+        return $summary;
     }
 }

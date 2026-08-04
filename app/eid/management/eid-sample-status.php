@@ -156,6 +156,8 @@ $batResult = $db->rawQuery($batQuery);
 				<!-- /.box -->
 			</div>
 			<!-- /.col -->
+			<?php require APPLICATION_PATH . '/includes/turnaround-time-methodology.php'; ?>
+
 		</div>
 		<!-- /.row -->
 	</section>

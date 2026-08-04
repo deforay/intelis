@@ -1,11 +1,22 @@
 <?php
 
-use App\Utilities\DateUtility;
+use Psr\Http\Message\ServerRequestInterface;
+use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\GenericTestsService;
+use App\Abstracts\AbstractTestService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
+ini_set('memory_limit', '512M');
+set_time_limit(600);
+ini_set('max_execution_time', 600);
+
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -13,90 +24,71 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$excel = new Spreadsheet();
-$output = [];
-$sheet = $excel->getActiveSheet();
+/** @var GenericTestsService $genericTestsService */
+$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
 
-$sQuery = "SELECT vl.sample_collection_date,
-				vl.sample_tested_datetime,
-				vl.sample_received_at_lab_datetime,
-				vl.result_printed_datetime,
-				vl.remote_sample_code,
-				vl.external_sample_code,
-				vl.sample_dispatched_datetime,
-				vl.request_created_by,
-				vl.sample_code
-			FROM form_generic as vl
-			INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-			LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-			LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.specimen_type
-			LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-			WHERE (vl.sample_collection_date is not null) AND
-					(vl.sample_tested_datetime is not null) AND
-					vl.result is not null AND vl.result != ''";
+try {
+    $sQuery = "SELECT vl.sample_code,
+                    vl.remote_sample_code,
+                    vl.external_sample_code,
+                    vl.sample_collection_date,
+                    vl.sample_dispatched_datetime,
+                    vl.sample_received_at_lab_datetime,
+                    vl.sample_tested_datetime,
+                    vl.result_printed_datetime,
+                    vl.result_printed_on_sts_datetime,
+                    vl.result_printed_on_lis_datetime
+                FROM form_generic AS vl
+                INNER JOIN r_sample_status AS ts ON ts.status_id = vl.result_status
+                LEFT JOIN facility_details AS f ON vl.facility_id = f.facility_id
+                LEFT JOIN batch_details AS b ON b.batch_id = vl.sample_batch_id
+                WHERE vl.sample_collection_date IS NOT NULL
+                    AND vl.sample_tested_datetime IS NOT NULL
+                    AND IFNULL(vl.result, '') != ''";
 
-if (!empty($_SESSION['vlTatData']['sWhere'])) {
-	$sQuery = $sQuery . " AND " . $_SESSION['vlTatData']['sWhere'];
+    if (!empty($_SESSION['genericTatData']['sWhere'])) {
+        $sQuery .= " AND " . $_SESSION['genericTatData']['sWhere'];
+    }
+
+    // Applied independently of the session so the export can never widen past
+    // what this user is allowed to see, whatever the list page last stored.
+    if (!empty($_SESSION['facilityMap'])) {
+        $sQuery .= " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+    }
+    if ($labScope = $general->labScopeWhere('vl')) {
+        $sQuery .= " AND $labScope";
+    }
+
+    if (!empty($_SESSION['genericTatData']['sOrder'])) {
+        $sQuery .= " ORDER BY " . $_SESSION['genericTatData']['sOrder'];
+    } else {
+        $sQuery .= " ORDER BY vl.sample_collection_date DESC, vl.sample_code ASC";
+    }
+
+    $appliedFilters = AbstractTestService::turnaroundTimeFilterSummary($_POST, [
+        'sampleCollectionDate' => _translate('Sample Collection Date'),
+        'sampleReceivedDateAtLab' => _translate('Sample Received Date in Lab'),
+        'sampleTestedDate' => _translate('Sample Test Date'),
+        'batchCodeLabel' => _translate('Batch Code'),
+        'sampleTypeLabel' => _translate('Sample Type'),
+        'labNameLabel' => _translate('Testing Lab'),
+    ]);
+
+    echo $genericTestsService->writeTurnaroundTimeExport(
+        sql: $sQuery,
+        params: [],
+        columns: AbstractTestService::turnaroundTimeDetailColumns(),
+        appliedFilters: $appliedFilters,
+        fileLabel: 'CUSTOM-TESTS'
+    );
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'trace' => $e->getTraceAsString(),
+    ]);
+    http_response_code(500);
+    echo '';
 }
-
-if (!empty($_SESSION['vlTatData']['sOrder'])) {
-	$sQuery = $sQuery . " ORDER BY " . $_SESSION['vlTatData']['sOrder'];
-}
-$rResult = $db->rawQuery($sQuery);
-
-$headings = ["Sample ID", "Remote Sample ID", "External Sample ID", "Sample Collection Date", "Sample Dispatch Date", "Sample Received Date in Lab", "Sample Test Date", "Result Print Date"];
-
-$colNo = 1;
-
-$sheet->mergeCells('A1:AE1');
-$nameValue = '';
-foreach ($_POST as $key => $value) {
-	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-	}
-}
-
-$sheet->setCellValue('A1', $nameValue);
-
-$sheet->fromArray($headings, null, 'A3');
-
-
-$no = 1;
-foreach ($rResult as $aRow) {
-	$row = [];
-	//sample collecion date
-	$sampleCollectionDate = '';
-	$sampleCollectionDate =  DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-	if ($aRow['sample_dispatched_datetime'] != null && trim((string) $aRow['sample_dispatched_datetime']) !== '' && $aRow['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
-		$sampleDispatchedDate = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
-	}
-	if (isset($aRow['sample_received_at_lab_datetime']) && trim((string) $aRow['sample_received_at_lab_datetime']) !== '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-		$sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
-	} else {
-		$sampleRecievedDate = '';
-	}
-	$testDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
-	$printDate = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
-
-
-	$row[] = $aRow['sample_code'];
-	$row[] = $aRow['remote_sample_code'];
-	$row[] = $aRow['external_sample_code'];
-	$row[] = $sampleCollectionDate;
-	$row[] = $sampleDispatchedDate;
-	$row[] = $sampleRecievedDate;
-	$row[] = $testDate;
-	$row[] = $printDate;
-	$output[] = $row;
-	$no++;
-}
-
-$sheet->fromArray($output, null, 'A4');
-
-$sheet = $general->centerAndBoldRowInSheet($sheet, 'A3');
-$sheet = $general->applyBordersToSheet($sheet);
-
-$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-$filename = 'InteLIS-LAB-TESTS-TAT-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-echo urlencode(basename($filename));

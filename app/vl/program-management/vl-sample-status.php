@@ -143,7 +143,7 @@ $batResult = $db->rawQuery($batQuery);
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-body">
-						<button class="btn btn-success pull-right" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> Export to excel</button>
+						<button class="btn btn-success pull-right" type="button" onclick="exportInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to Excel"); ?></button>
 						<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
@@ -193,6 +193,9 @@ $batResult = $db->rawQuery($batQuery);
 				<!-- /.box -->
 			</div>
 			<!-- /.col -->
+
+			<?php require APPLICATION_PATH . '/includes/turnaround-time-methodology.php'; ?>
+
 		</div>
 		<!-- /.row -->
 	</section>
@@ -481,27 +484,33 @@ $batResult = $db->rawQuery($batQuery);
 	}
 
 	function exportInexcel() {
-		if (searchExecuted === false) {
-			searchResultData();
-		}
 		$.blockUI();
-		oTable.fnDraw();
+
+		// The export rebuilds the filters from what is posted here, so it always
+		// matches the on-screen table without waiting for a table redraw.
 		$.post("/vl/program-management/vlSampleTATDetailsExportInExcel.php", {
-				Sample_Collection_Date: $("#sampleCollectionDate").val(),
+				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
 				sampleTestedDate: $("#sampleTestedDate").val(),
-				Batch_Code: $("#batchCode  option:selected").text(),
-				Sample_Type: $("#sampleType  option:selected").text(),
-				Lab_Name: $("#labName option:selected").text(),
-			},
-			function(data) {
+				batchCode: $("#batchCode").val(),
+				sampleType: $("#sampleType").val(),
+				labName: $("#labName").val(),
+				sSearch: oTable.fnSettings().oPreviousSearch.sSearch,
+				batchCodeLabel: $("#batchCode option:selected").text(),
+				sampleTypeLabel: $("#sampleType option:selected").text(),
+				labNameLabel: $("#labName option:selected").text(),
+			})
+			.done(function(data) {
+				$.unblockUI();
 				if (data == "" || data == null || data == undefined) {
-					$.unblockUI();
-					alert("<?php echo _translate("Unable to generate excel"); ?>");
+					alert("<?php echo _jsTranslate("Unable to generate excel"); ?>");
 				} else {
-					$.unblockUI();
 					window.open('/download.php?f=' + data, '_blank');
 				}
+			})
+			.fail(function() {
+				$.unblockUI();
+				alert("<?php echo _jsTranslate("Unable to generate excel"); ?>");
 			});
 	}
 </script>
