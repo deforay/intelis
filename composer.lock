@@ -62,16 +62,16 @@
         },
         {
             "name": "amitdugar/db-tools",
-            "version": "3.2.0",
+            "version": "3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amitdugar/db-tools.git",
-                "reference": "f30e12538855bf4899e771e7bfe3386c3819e247"
+                "reference": "cb6a1b3a7a73603add0f08a223ea4185edb7219d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amitdugar/db-tools/zipball/f30e12538855bf4899e771e7bfe3386c3819e247",
-                "reference": "f30e12538855bf4899e771e7bfe3386c3819e247",
+                "url": "https://api.github.com/repos/amitdugar/db-tools/zipball/cb6a1b3a7a73603add0f08a223ea4185edb7219d",
+                "reference": "cb6a1b3a7a73603add0f08a223ea4185edb7219d",
                 "shasum": ""
             },
             "require": {
@@ -82,6 +82,7 @@
                 "symfony/process": "^8.1"
             },
             "require-dev": {
+                "phpstan/phpstan": "^2.2",
                 "phpunit/phpunit": "^13.1"
             },
             "bin": [
@@ -116,7 +117,7 @@
                 "issues": "https://github.com/amitdugar/db-tools/issues",
                 "source": "https://github.com/amitdugar/db-tools"
             },
-            "time": "2026-08-04T10:19:15+00:00"
+            "time": "2026-08-04T10:37:12+00:00"
         },
         {
             "name": "brick/phonenumber",
