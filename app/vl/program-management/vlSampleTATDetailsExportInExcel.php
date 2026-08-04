@@ -1,11 +1,22 @@
 <?php
 
-use App\Utilities\DateUtility;
+use Psr\Http\Message\ServerRequestInterface;
+use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\VlService;
+use App\Abstracts\AbstractTestService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
+ini_set('memory_limit', '512M');
+set_time_limit(600);
+ini_set('max_execution_time', 600);
+
+// Sanitized values from $request object
+/** @var ServerRequestInterface $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -13,80 +24,66 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$excel = new Spreadsheet();
-$output = [];
-$sheet = $excel->getActiveSheet();
+require_once __DIR__ . '/vlSampleTatFilters.php';
 
-$sQuery = "SELECT vl.sample_collection_date,
-				vl.sample_tested_datetime,
-				vl.sample_received_at_lab_datetime,
-				vl.result_printed_datetime,
-				vl.sample_code,
-				vl.remote_sample_code,
-				vl.external_sample_code,
-				vl.sample_dispatched_datetime,
-				vl.request_created_by,
-				vl.result_printed_on_lis_datetime,
-				vl.result_printed_on_sts_datetime
-			FROM form_vl as vl
-			INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-			LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-			LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
-			LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-			WHERE (vl.sample_collection_date is NOT NULL)
-                        AND (vl.sample_tested_datetime IS NOT NULL)
-						AND IFNULL(vl.result, '') != '' ";
+try {
+    $sQuery = "SELECT vl.sample_code,
+                    vl.remote_sample_code,
+                    vl.external_sample_code,
+                    vl.sample_collection_date,
+                    vl.sample_dispatched_datetime,
+                    vl.sample_received_at_lab_datetime,
+                    vl.sample_tested_datetime,
+                    vl.result_printed_datetime,
+                    vl.result_printed_on_sts_datetime,
+                    vl.result_printed_on_lis_datetime
+                FROM form_vl as vl
+                INNER JOIN r_sample_status as ts ON ts.status_id = vl.result_status
+                LEFT JOIN facility_details as f ON vl.facility_id = f.facility_id
+                LEFT JOIN batch_details as b ON b.batch_id = vl.sample_batch_id
+                WHERE vl.sample_collection_date IS NOT NULL
+                    AND vl.sample_tested_datetime IS NOT NULL
+                    AND IFNULL(vl.result, '') != '' ";
 
-if (!empty($_SESSION['vlTatData']['sWhere'])) {
-	$sQuery = $sQuery . " AND " . $_SESSION['vlTatData']['sWhere'];
+    [$sWhere, $params] = vlSampleTatFilterConditions($_POST, $general);
+
+    // Keep the free-text search from the on-screen table in sync with the export.
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.external_sample_code'];
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'] ?? '', $aColumns);
+    if (!empty($columnSearch)) {
+        $sWhere[] = $columnSearch;
+    }
+
+    if ($sWhere !== []) {
+        $sQuery .= " AND " . implode(" AND ", $sWhere);
+    }
+    $sQuery .= " ORDER BY vl.sample_collection_date DESC, vl.sample_code ASC";
+
+    $appliedFilters = AbstractTestService::turnaroundTimeFilterSummary($_POST, [
+        'sampleCollectionDate' => _translate('Sample Collection Date'),
+        'sampleReceivedDateAtLab' => _translate('Sample Received Date in Lab'),
+        'sampleTestedDate' => _translate('Sample Test Date'),
+        'batchCodeLabel' => _translate('Batch Code'),
+        'sampleTypeLabel' => _translate('Sample Type'),
+        'labNameLabel' => _translate('Testing Lab'),
+    ]);
+
+    /** @var VlService $vlService */
+    $vlService = ContainerRegistry::get(VlService::class);
+
+    echo $vlService->writeTurnaroundTimeExport(
+        sql: $sQuery,
+        params: $params,
+        columns: AbstractTestService::turnaroundTimeDetailColumns(),
+        appliedFilters: $appliedFilters,
+        fileLabel: 'VIRAL-LOAD'
+    );
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
+    http_response_code(500);
+    echo '';
 }
-
-if (!empty($_SESSION['vlTatData']['sOrder'])) {
-	$sQuery = $sQuery . " ORDER BY " . $_SESSION['vlTatData']['sOrder'];
-}
-
-$rResult = $db->rawQuery($sQuery);
-
-$headings = ["Sample ID", "Remote Sample ID", "External Sample ID", "Sample Collection Date", "Sample Dispatch Date", "Sample Received Date in Lab", "Sample Test Date", "Result Print Date", "STS Result Print Date", "LIS Result Print Date"];
-
-$colNo = 1;
-
-$sheet->mergeCells('A1:AE1');
-$nameValue = '';
-foreach ($_POST as $key => $value) {
-	if (trim((string) $value) !== '' && trim((string) $value) !== '-- Select --') {
-		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-	}
-}
-$sheet->setCellValue('A1', $nameValue);
-
-$sheet->fromArray($headings, null, 'A3');
-
-
-$no = 1;
-foreach ($rResult as $aRow) {
-	$row = [];
-
-	$row[] = $aRow['sample_code'];
-	$row[] = $aRow['remote_sample_code'];
-	$row[] = $aRow['external_sample_code'];
-	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
-	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
-	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
-	$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
-	$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime'] ?? '');
-	$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime'] ?? '');
-	$output[] = $row;
-	$no++;
-}
-
-$sheet->fromArray($output, null, 'A4');
-
-$sheet = $general->centerAndBoldRowInSheet($sheet, 'A3');
-$sheet = $general->applyBordersToSheet($sheet);
-
-$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-$filename = 'InteLIS-VIRAL-LOAD-TAT-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-echo urlencode(basename($filename));

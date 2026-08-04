@@ -4,7 +4,9 @@ use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\VlService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\TurnaroundTimeUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -17,31 +19,79 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$whereConditionArray = [];
-$whereConditionArray[] = " vl.result_status != " . SAMPLE_STATUS\CANCELLED;
-if (!empty($_SESSION['facilityMap'])) {
-    $whereConditionArray[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
-}
-
-if ($labScope = $general->labScopeWhere('vl')) {
-    $whereConditionArray[] = $labScope;
-}
-
-$whereCondition = implode(" AND ", $whereConditionArray);
-
 if (isset($_POST['type']) && trim((string) $_POST['type']) === 'recency') {
-    $recencyWhere = " reason_for_vl_testing = 9999 ";
+    $recencyWhere = " sample.reason_for_vl_testing = 9999 ";
     $sampleStatusOverviewContainer = "recencySampleStatusOverviewContainer";
     $samplesVlOverview = "recencySmplesVlOverview";
     $samplesResultview = "recencySampleResultView";
     $labAverageTat = "recencyLabAverageTat";
 } else {
-    $recencyWhere = " IFNULL(reason_for_vl_testing, 0) != 9999 ";
+    $recencyWhere = " IFNULL(sample.reason_for_vl_testing, 0) != 9999 ";
     $sampleStatusOverviewContainer = "vlSampleStatusOverviewContainer";
     $samplesVlOverview = "vlSmplesVlOverview";
     $samplesResultview = "vlSampleResultView";
     $labAverageTat = "vlLabAverageTat";
 }
+
+/*
+ * One filter set for the whole page. The status pie, the suppression pie and
+ * the turnaround time chart all used to build their own subsets of these
+ * conditions, so changing the collection date or batch code moved some charts
+ * and left others showing a different population.
+ */
+$filters = [];
+$params = [];
+
+$filters[] = " sample.result_status != " . SAMPLE_STATUS\CANCELLED;
+if (!$general->isSTSInstance()) {
+    $filters[] = " sample.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+}
+if (!empty($_SESSION['facilityMap'])) {
+    $filters[] = " sample.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+}
+if ($labScope = $general->labScopeWhere('sample')) {
+    $filters[] = $labScope;
+}
+$filters[] = $recencyWhere;
+
+if (!empty($_POST['batchCode'])) {
+    $filters[] = ' batch.batch_code = ?';
+    $params[] = (string) $_POST['batchCode'];
+}
+if (!empty($_POST['sampleCollectionDate'])) {
+    [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
+    if ($startDate !== '' && $endDate !== '') {
+        $filters[] = " DATE(sample.sample_collection_date) BETWEEN ? AND ?";
+        $params[] = $startDate;
+        $params[] = $endDate;
+    }
+}
+if (!empty($_POST['sampleReceivedDateAtLab'])) {
+    [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab']);
+    if ($labStartDate !== '' && $labEndDate !== '') {
+        $filters[] = " DATE(sample.sample_received_at_lab_datetime) BETWEEN ? AND ?";
+        $params[] = $labStartDate;
+        $params[] = $labEndDate;
+    }
+}
+if (!empty($_POST['sampleTestedDate'])) {
+    [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate']);
+    if ($testedStartDate !== '' && $testedEndDate !== '') {
+        $filters[] = " DATE(sample.sample_tested_datetime) BETWEEN ? AND ?";
+        $params[] = $testedStartDate;
+        $params[] = $testedEndDate;
+    }
+}
+if (!empty($_POST['sampleType'])) {
+    $filters[] = ' sample.specimen_type = ?';
+    $params[] = (int) $_POST['sampleType'];
+}
+if (!empty($_POST['labName'])) {
+    $filters[] = ' sample.lab_id = ?';
+    $params[] = (int) $_POST['labName'];
+}
+
+$whereCondition = implode(" AND ", $filters);
 
 $table = "form_vl";
 $highVL = "High Viral Load";
@@ -65,208 +115,42 @@ $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 $sampleStatusColors[10] = "#f0ad4e"; // NO_RESULT
 $sampleStatusColors[11] = "#20c997"; // CANCELLED
 
-//date
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+$tQuery = "SELECT COUNT(sample.vl_sample_id) as total,
+                sample.result_status,
+                status.status_id,
+                status.status_name
+            FROM $table as sample
+            LEFT JOIN r_sample_status as status ON status.status_id = sample.result_status
+            LEFT JOIN batch_details as batch ON batch.batch_id = sample.sample_batch_id
+            WHERE $whereCondition
+            GROUP BY sample.result_status
+            ORDER BY status.status_id";
 
-[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
+$tResult = $db->rawQuery($tQuery, $params);
 
-[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+$vlSuppressionQuery = "SELECT COUNT(sample.vl_sample_id) as total,
+        SUM(CASE WHEN IFNULL(sample.vl_result_category, '') like 'not suppressed' THEN 1 ELSE 0 END) AS highVL,
+        SUM(CASE WHEN IFNULL(sample.vl_result_category, '') like 'suppressed' THEN 1 ELSE 0 END) AS lowVL
+        FROM $table as sample
+        LEFT JOIN batch_details as batch ON batch.batch_id = sample.sample_batch_id
+        WHERE $whereCondition
+            AND IFNULL(sample.result_status, 0) = " . SAMPLE_STATUS\ACCEPTED;
 
-$sWhere = [];
-$tQuery = "SELECT COUNT(vl_sample_id) as total,
-                result_status,
-                status_id,
-                status_name
-            FROM $table as vl
-            LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-            LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id
-            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
-//filter
-
-if ($whereCondition !== '' && $whereCondition !== '0') {
-    $sWhere[] = $whereCondition;
-}
-$sWhere[] = $recencyWhere;
-if (!$general->isSTSInstance()) {
-    $sWhere[] = ' result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-}
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-}
-if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
-}
-if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
-    $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
-}
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
-    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
-}
-if (!empty($_POST['labName'])) {
-    $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
-}
-
-if ($sWhere !== []) {
-    $tQuery .= " WHERE " . implode(" AND ", $sWhere);
-}
-$tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
-
-$tResult = $db->rawQuery($tQuery);
-
-$sWhere = [];
-$vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
-        SUM(CASE
-                WHEN (IFNULL(vl.vl_result_category, '') like 'not suppressed') THEN 1
-                    ELSE 0
-                END) AS highVL,
-        (SUM(CASE
-                WHEN (IFNULL(vl.vl_result_category, '') like 'suppressed') THEN 1
-                    ELSE 0
-                END)) AS lowVL
-
-        FROM $table as vl
-        LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id
-        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
-
-if ($whereCondition !== '' && $whereCondition !== '0') {
-    $sWhere[] = $whereCondition;
-}
-
-
-$sWhere[] = $recencyWhere;
-$sWhere[] = " IFNULL(vl.result_status, 0) = 7 ";
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-}
-if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date'AND '$end_date'";
-}
-if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
-    $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
-}
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
-    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
-}
-if (!empty($_POST['labName'])) {
-    $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
-}
-if ($sWhere !== []) {
-    $vlSuppressionQuery .= " WHERE " . implode(" AND ", $sWhere);
-}
-
-
-$vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
-
-
-
-/* HIV Viral Load Detection query disabled along with its pie chart (users confused it with VL Suppression).
-$sWhere = [];
-$sampleResultQuery = "SELECT
-            SUM(CASE WHEN vl.result REGEXP '^-?[0-9]+$' THEN 1 ELSE 0 END) AS numberValue,
-            SUM(CASE WHEN vl.result like 'TND' OR vl.result like 'Target Not Detected' OR vl.result like 'Below Detection Level' OR vl.result like 'HIV-1 Not Detected' THEN 1 ELSE 0 END) AS charValue
-            FROM $table as vl
-            LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id
-            LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
-
-if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) !== '') {
-    $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
-}
-if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date'AND '$end_date'";
-}
-if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) !== '') {
-    $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
-}
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
-    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
-}
-if (!empty($_POST['labName'])) {
-    $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
-}
-if ($sWhere !== []) {
-    $sampleResultQuery .= " WHERE " . implode(" AND ", $sWhere);
-}
-
-$sampleResultQueryResult = $db->rawQueryOne($sampleResultQuery);
-*/
-
-//get LAB TAT
-if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) !== '') {
-    $tatStartDate = $testedStartDate;
-    $tatEndDate = $testedEndDate;
-} else {
-    $date = new DateTime();
-    $tatEndDate = $date->format('Y-m-d');
-    $date->modify('-1 year');
-    $tatStartDate = $date->format('Y-m-d');
-}
-
-$sWhere = [];
-$tatSampleQuery = "SELECT
-    COUNT(DISTINCT vl.unique_id) AS totalSamples,
-    COUNT(DISTINCT CASE WHEN vl.sample_collection_date BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS numberCollected,
-    COUNT(DISTINCT CASE WHEN vl.sample_tested_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS numberTested,
-    COUNT(DISTINCT CASE WHEN vl.sample_received_at_lab_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS numberReceived,
-
-    DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') AS monthDate,
-
-    ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.sample_tested_datetime), 0)), 2) AS AvgCollectedTested,
-    ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.sample_received_at_lab_datetime), 0)), 2) AS AvgCollectedReceived,
-    ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.sample_received_at_lab_datetime, vl.sample_tested_datetime), 0)), 2) AS AvgReceivedTested,
-    ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.result_printed_datetime), 0)), 2) AS AvgCollectedPrinted,
-    ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.sample_tested_datetime, vl.result_printed_datetime), 0)), 2) AS AvgTestedPrinted,
-    ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.result_printed_on_lis_datetime, vl.result_printed_on_sts_datetime), 0)), 2) AS AvgTestedPrintedFirstTime
-
-    FROM `$table` AS vl
-    LEFT JOIN facility_details AS f ON vl.lab_id = f.facility_id
-    LEFT JOIN r_vl_sample_type AS s ON s.sample_id = vl.specimen_type
-
-    WHERE
-        vl.result IS NOT NULL AND vl.result != '' AND
-        DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate'
-";
+$vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery, $params);
 
 
 
 
-if ($whereCondition !== '' && $whereCondition !== '0') {
-    $sWhere[] = $whereCondition;
-}
 
-$sWhere[] = $recencyWhere;
-if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) !== '') {
-    $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
-}
-
-if (!empty($_POST['labName'])) {
-    $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
-}
-
-if ($sWhere !== []) {
-    $tatSampleQuery .= " AND " . implode(" AND ", $sWhere);
-}
-$tatSampleQuery .= " GROUP BY monthDate ORDER BY sample_tested_datetime ";
-
-$tatResult = $db->rawQuery($tatSampleQuery);
-$j = 0;
-foreach ($tatResult as $sRow) {
-    if ($sRow["monthDate"] == null) {
-        continue;
-    }
-
-    $result['totalSamples'][$j] = (isset($sRow["totalSamples"]) && $sRow["totalSamples"] > 0 && $sRow["totalSamples"] != null) ? $sRow["totalSamples"] : 'null';
-    $result['numberCollected'][$j] = (isset($sRow["numberCollected"]) && $sRow["numberCollected"] > 0 && $sRow["numberCollected"] != null) ? $sRow["numberCollected"] : 'null';
-    $result['numberTested'][$j] = (isset($sRow["numberTested"]) && $sRow["numberTested"] > 0 && $sRow["numberTested"] != null) ? $sRow["numberTested"] : 'null';
-    $result['numberReceived'][$j] = (isset($sRow["numberReceived"]) && $sRow["numberReceived"] > 0 && $sRow["numberReceived"] != null) ? $sRow["numberReceived"] : 'null';
-    $result['AvgTestedPrinted'][$j] = (isset($sRow["AvgTestedPrinted"]) && $sRow["AvgTestedPrinted"] > 0 && $sRow["AvgTestedPrinted"] != null) ? $sRow["AvgTestedPrinted"] : 'null';
-    $result['AvgTestedPrintedFirstTime'][$j] = (isset($sRow["AvgTestedPrintedFirstTime"]) && $sRow["AvgTestedPrintedFirstTime"] > 0 && $sRow["AvgTestedPrintedFirstTime"] != null) ? $sRow["AvgTestedPrintedFirstTime"] : 'null';
-    $result['sampleTestedDiff'][$j] = (isset($sRow["AvgCollectedTested"]) && $sRow["AvgCollectedTested"] > 0 && $sRow["AvgCollectedTested"] != null) ? round($sRow["AvgCollectedTested"], 2) : 'null';
-    $result['sampleReceivedDiff'][$j] = (isset($sRow["AvgCollectedReceived"]) && $sRow["AvgCollectedReceived"] > 0 && $sRow["AvgCollectedReceived"] != null) ? round($sRow["AvgCollectedReceived"], 2) : 'null';
-    $result['sampleReceivedTested'][$j] = (isset($sRow["AvgReceivedTested"]) && $sRow["AvgReceivedTested"] > 0 && $sRow["AvgReceivedTested"] != null) ? round($sRow["AvgReceivedTested"], 2) : 'null';
-    $result['sampleReceivedPrinted'][$j] = (isset($sRow["AvgCollectedPrinted"]) && $sRow["AvgCollectedPrinted"] > 0 && $sRow["AvgCollectedPrinted"] != null) ? round($sRow["AvgCollectedPrinted"], 2) : 'null';
-    $result['date'][$j] = $sRow["monthDate"];
-    $j++;
-}
+// Laboratory turnaround time, monthly. Uses the same filters as the charts
+// above so the whole page describes one population of samples.
+/** @var VlService $vlService */
+$vlService = ContainerRegistry::get(VlService::class);
+$tat = $vlService->getTurnaroundTimeSeries(
+    conditions: $filters,
+    params: $params,
+    joins: "LEFT JOIN batch_details AS batch ON batch.batch_id = sample.sample_batch_id"
+);
 
 ?>
 <div class="col-xs-12">
@@ -281,13 +165,7 @@ foreach ($tatResult as $sRow) {
             <div id="<?php echo $samplesVlOverview; ?>" style="float:right;width:100%;margin: 0 auto;"></div>
         </div>
     </div>
-    <?php /* HIV Viral Load Detection chart container disabled.
-    <div class="box">
-        <div class="box-body">
-            <div id="<?php echo $samplesResultview; ?>" style="float:right;width:100%;margin: 0 auto;"></div>
-        </div>
-    </div>
-    */ ?>
+    
 </div>
 </div>
 <div class="col-xs-12 labAverageTatDiv">
@@ -421,69 +299,10 @@ foreach ($tatResult as $sRow) {
         });
         <?php
     }
-
-    /* HIV Viral Load Detection pie chart temporarily disabled — users confused it with VL Suppression. */
     ?>
     $('#<?php echo $samplesResultview; ?>').hide();
     <?php
-    /*
-    if (!empty($sampleResultQueryResult) && ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue']) > 0) {
-        ?>
-        Highcharts.setOptions({
-            colors: ['#7CB5ED', '#808080']
-        });
-        $('#<?php echo $samplesResultview; ?>').highcharts({
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: "<?php echo _translate("HIV Viral Load Detection (N = " . ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue']) . ")", escapeTextOrContext: true); ?>"
-            },
-            credits: {
-                enabled: false
-            },
-            tooltip: {
-                pointFormat: "<?php echo _translate("Viral Load Detection", escapeTextOrContext: true); ?> :<strong>{point.y}</strong>"
-            },
-            plotOptions: {
-                pie: {
-                    size: '100%',
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        useHTML: true,
-                        format: '<div style="padding-bottom:10px;"><strong>{point.name}</strong>: {point.y}</div>',
-                        style: {
-                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                        },
-                        distance: 10
-                    },
-                    showInLegend: true
-                }
-            },
-            series: [{
-                colorByPoint: true,
-                data: [{
-                    name: '<?php echo "Viral Load Detected"; ?>',
-                    y: <?php echo (isset($sampleResultQueryResult['numberValue']) && $sampleResultQueryResult['numberValue'] > 0) > 0 ? $sampleResultQueryResult['numberValue'] : 0; ?>
-                },
-                {
-                    name: '<?php echo "Viral Load Not Detected"; ?>',
-                    y: <?php echo (isset($sampleResultQueryResult['charValue']) && $sampleResultQueryResult['charValue'] > 0) > 0 ? $sampleResultQueryResult['charValue'] : 0; ?>
-                },
-                ]
-            }]
-        });
-        <?php
-    } else { ?>
-        $('#<?php echo $samplesResultview; ?>').hide();
-    <?php }
-    */
-    if (!empty($result)) {
+    if (!empty($tat['months'])) {
         ?>
         $('#<?php echo $labAverageTat; ?>').highcharts({
             chart: {
@@ -505,13 +324,7 @@ foreach ($tatResult as $sRow) {
                 enabled: false
             },
             xAxis: {
-                categories: [<?php
-                if (!empty($result['date'])) {
-                    foreach ($result['date'] as $date) {
-                        echo "'" . $date . "',";
-                    }
-                }
-                ?>]
+                categories: <?php echo json_encode($tat['months']); ?>
             },
             yAxis: [{
                 title: {
@@ -556,72 +369,18 @@ foreach ($tatResult as $sRow) {
             series: [{
                 type: 'column',
                 name: "<?php echo _translate("No. of Samples Tested", escapeTextOrContext: true); ?>",
-                data: [<?php echo implode(",", $result['totalSamples']); ?>],
+                data: [<?php echo implode(",", $tat['samplesTested']); ?>],
                 color: '#7CB5ED',
                 yAxis: 1
             },
-                <?php
-                if (isset($result['AvgTestedPrinted'])) {
-                    ?> {
+                <?php foreach (TurnaroundTimeUtility::chartSeries($tat) as $tatSeries) { ?> {
                     connectNulls: false,
                     showInLegend: true,
-                    name: "<?php echo _translate("Tested - Printed", escapeTextOrContext: true); ?>",
-                    data: [<?php echo implode(",", $result['AvgTestedPrinted']); ?>],
-                    color: '#0f3f6e',
+                    name: "<?php echo $tatSeries['name']; ?>",
+                    data: [<?php echo $tatSeries['data']; ?>],
+                    color: '<?php echo $tatSeries['color']; ?>',
                 },
-                    <?php
-                }
-                if (isset($result['sampleReceivedDiff'])) {
-                    ?> {
-                    connectNulls: false,
-                    showInLegend: true,
-                    name: "<?php echo _translate("Collected - Received at Lab", escapeTextOrContext: true); ?>",
-                    data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
-                    color: '#edb47c',
-                },
-                    <?php
-                }
-                if (isset($result['sampleReceivedTested'])) {
-                    ?> {
-                    connectNulls: false,
-                    showInLegend: true,
-                    name: "<?php echo _translate("Received - Tested", escapeTextOrContext: true); ?>",
-                    data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
-                    color: '#0f3f6e',
-                },
-                    <?php
-                }
-                if (isset($result['sampleTestedDiff'])) {
-                    ?> {
-                    connectNulls: false,
-                    showInLegend: true,
-                    name: "<?php echo _translate("Collected - Tested", escapeTextOrContext: true); ?>",
-                    data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
-                    color: '#ed7c7d',
-                },
-                    <?php
-                }
-                if (isset($result['sampleReceivedPrinted'])) {
-                    ?> {
-                    connectNulls: false,
-                    showInLegend: true,
-                    name: "<?php echo _translate("Collected - Printed", escapeTextOrContext: true); ?>",
-                    data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
-                    color: '#000',
-                },
-                    <?php
-                }
-                if (isset($result['AvgTestedPrintedFirstTime'])) {
-                    ?> {
-                    connectNulls: false,
-                    showInLegend: true,
-                    name: "<?php echo _translate("Collected - Printed First Time", escapeTextOrContext: true); ?>",
-                    data: [<?php echo implode(",", $result['AvgTestedPrintedFirstTime']); ?>],
-                    color: '#000',
-                },
-                    <?php
-                }
-                ?>
+                <?php } ?>
             ],
             exporting: {
                 sourceWidth: 1200,
