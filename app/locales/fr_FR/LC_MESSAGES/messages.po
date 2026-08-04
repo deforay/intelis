@@ -4032,25 +4032,25 @@ msgstr "jours"
 #: app/admin/monitoring/lab-performance-indicators.php:202
 #: app/admin/monitoring/lab-performance-indicators.php:474
 msgid "Collection to Lab Receipt"
-msgstr "Reçu de prélèvement au laboratoire"
+msgstr "Du prélèvement à la réception au laboratoire"
 
 #: app/admin/monitoring/export-lab-performance-indicators.php:50
 #: app/admin/monitoring/lab-performance-indicators.php:204
 #: app/admin/monitoring/lab-performance-indicators.php:475
 msgid "Lab Receipt to Tested"
-msgstr "Reçu de laboratoire à « Testé »"
+msgstr "De la réception au laboratoire à l'analyse"
 
 #: app/admin/monitoring/export-lab-performance-indicators.php:51
 #: app/admin/monitoring/lab-performance-indicators.php:206
 #: app/admin/monitoring/lab-performance-indicators.php:476
 msgid "Tested to Result Released"
-msgstr "Test effectué – Résultats publiés"
+msgstr "De l'analyse à la publication des résultats"
 
 #: app/admin/monitoring/export-lab-performance-indicators.php:52
 #: app/admin/monitoring/lab-performance-indicators.php:208
 #: app/admin/monitoring/lab-performance-indicators.php:477
 msgid "Collection to Result Released"
-msgstr "Publication des résultats de l'enquête"
+msgstr "Du prélèvement à la publication des résultats"
 
 #: app/admin/monitoring/export-lab-performance-indicators.php:59
 #: app/admin/monitoring/lab-performance-indicators.php:231
@@ -4070,7 +4070,7 @@ msgstr "Enregistré"
 #: app/admin/monitoring/export-lab-performance-indicators.php:90
 #: app/admin/monitoring/lab-performance-indicators.php:460
 msgid "Resulted"
-msgstr "Il en a résulté"
+msgstr "Avec résultat"
 
 #: app/admin/monitoring/export-lab-performance-indicators.php:60
 #: app/admin/monitoring/export-lab-performance-indicators.php:91
@@ -4116,7 +4116,7 @@ msgstr "Echec"
 #: app/admin/monitoring/export-lab-performance-indicators.php:103
 #: app/admin/monitoring/lab-performance-indicators.php:466
 msgid "Failure Rate (%)"
-msgstr "Taux de défaillance (%)"
+msgstr "Taux d'échec (%)"
 
 #: app/admin/monitoring/export-lab-performance-indicators.php:62
 #: app/admin/monitoring/export-lab-performance-indicators.php:118
@@ -4182,7 +4182,7 @@ msgstr "Labo"
 #: app/admin/monitoring/export-lab-performance-indicators.php:109
 #: app/admin/monitoring/lab-performance-indicators.php:380
 msgid "Failure Reasons"
-msgstr "Causes des défaillances"
+msgstr "Motifs d'échec"
 
 #: app/admin/monitoring/export-lab-performance-indicators.php:110
 #: app/admin/monitoring/export-lab-performance-indicators.php:125
@@ -4217,7 +4217,7 @@ msgstr "Tests"
 
 #: app/admin/monitoring/export-lab-performance-indicators.php:132
 msgid "First Date"
-msgstr "Premier rendez-vous"
+msgstr "Première date"
 
 #: app/admin/monitoring/export-lab-performance-indicators.php:132
 #: app/admin/monitoring/lab-performance-indicators.php:426
@@ -5313,11 +5313,11 @@ msgstr "Événements (7 derniers jours)"
 
 #: app/admin/monitoring/interface-machine-activity.php:139
 msgid "Failures (last 7 days)"
-msgstr "Pannes (7 derniers jours)"
+msgstr "Échecs (7 derniers jours)"
 
 #: app/admin/monitoring/interface-machine-activity.php:145
 msgid "Instruments reporting"
-msgstr "Déclaration des instruments"
+msgstr "Instruments transmettant des données"
 
 #: app/admin/monitoring/interface-machine-activity.php:151
 msgid "Last event"
@@ -5372,7 +5372,7 @@ msgstr "Date de l'événement"
 
 #: app/admin/monitoring/interface-machine-activity.php:230
 msgid "Failure Code"
-msgstr "Code d'erreur"
+msgstr "Code d'échec"
 
 #: app/admin/monitoring/interface-machine-activity.php:231
 msgid "Protocol / Mode"
@@ -5435,8 +5435,7 @@ msgstr ""
 
 #: app/admin/monitoring/lab-performance-indicators.php:205
 msgid "from lab receipt to the date the test was performed."
-msgstr ""
-"de la date du bon de laboratoire à la date à laquelle le test a été réalisé."
+msgstr "de la réception au laboratoire à la date à laquelle l'analyse a été réalisée."
 
 #: app/admin/monitoring/lab-performance-indicators.php:207
 msgid ""
@@ -5466,7 +5465,7 @@ msgstr ""
 #: app/admin/monitoring/lab-performance-indicators.php:214
 #: app/admin/monitoring/lab-performance-indicators.php:331
 msgid "Testing Volume"
-msgstr "Volume de test"
+msgstr "Volume d'analyses"
 
 #: app/admin/monitoring/lab-performance-indicators.php:215
 msgid ""
@@ -5488,18 +5487,14 @@ msgstr ""
 
 #: app/admin/monitoring/lab-performance-indicators.php:217
 msgid "Failure Rate"
-msgstr "Taux de défaillance"
+msgstr "Taux d'échec"
 
 #: app/admin/monitoring/lab-performance-indicators.php:218
 msgid ""
 "Failed tests divided by samples with an outcome, meaning a result or a "
 "recorded test failure. Samples that are still pending, or were rejected "
 "before testing, are not part of this rate."
-msgstr ""
-"Nombre de tests échoués divisé par le nombre d'échantillons ayant donné lieu "
-"à un résultat, c'est-à-dire un résultat positif ou un échec enregistré. Les "
-"échantillons dont les résultats sont encore en attente, ou qui ont été "
-"rejetés avant le test, ne sont pas pris en compte dans ce taux."
+msgstr "Nombre de tests en échec divisé par le nombre d'échantillons ayant abouti, c'est-à-dire ayant un résultat ou un échec de test enregistré. Les échantillons encore en attente, ou rejetés avant analyse, ne sont pas pris en compte dans ce taux."
 
 #: app/admin/monitoring/lab-performance-indicators.php:220
 msgid "Rejection Rate"
@@ -5514,7 +5509,7 @@ msgstr ""
 #: app/admin/monitoring/lab-performance-indicators.php:223
 #: app/admin/monitoring/lab-performance-indicators.php:338
 msgid "Repeat Patients"
-msgstr "Patients réguliers"
+msgstr "Patients avec tests répétés"
 
 #: app/admin/monitoring/lab-performance-indicators.php:224
 msgid ""
@@ -5553,7 +5548,7 @@ msgstr "Trimestriel"
 
 #: app/admin/monitoring/lab-performance-indicators.php:261
 msgid "Yearly"
-msgstr "Annuelle"
+msgstr "Annuel"
 
 #: app/admin/monitoring/lab-performance-indicators.php:268
 #: app/admin/monitoring/lab-performance-indicators.php:887
@@ -5587,7 +5582,7 @@ msgstr "Résultats disponibles"
 
 #: app/admin/monitoring/lab-performance-indicators.php:295
 msgid "Failure rate"
-msgstr "Taux de défaillance"
+msgstr "Taux d'échec"
 
 #: app/admin/monitoring/lab-performance-indicators.php:299
 msgid "Rejection rate"
@@ -5602,15 +5597,15 @@ msgstr "Exporter"
 
 #: app/admin/monitoring/lab-performance-indicators.php:313
 msgid "Current view as CSV"
-msgstr "Afficher la vue actuelle au format CSV"
+msgstr "Vue actuelle au format CSV"
 
 #: app/admin/monitoring/lab-performance-indicators.php:315
 msgid "Current view as Excel"
-msgstr "Afficher la vue actuelle au format Excel"
+msgstr "Vue actuelle au format Excel"
 
 #: app/admin/monitoring/lab-performance-indicators.php:317
 msgid "Current view as JSON"
-msgstr "Affichage actuel au format JSON"
+msgstr "Vue actuelle au format JSON"
 
 #: app/admin/monitoring/lab-performance-indicators.php:320
 msgid "All indicators as JSON"
@@ -5618,7 +5613,7 @@ msgstr "Tous les indicateurs au format JSON"
 
 #: app/admin/monitoring/lab-performance-indicators.php:327
 msgid "Overview"
-msgstr "Présentation générale"
+msgstr "Aperçu"
 
 #: app/admin/monitoring/lab-performance-indicators.php:329
 msgid "Turnaround Time"
@@ -5630,7 +5625,7 @@ msgstr "Échecs"
 
 #: app/admin/monitoring/lab-performance-indicators.php:335
 msgid "Rejections"
-msgstr "Refus"
+msgstr "Rejets"
 
 #: app/admin/monitoring/lab-performance-indicators.php:353
 msgid ""
@@ -5677,15 +5672,15 @@ msgstr "Chargement..."
 
 #: app/admin/monitoring/lab-performance-indicators.php:653
 msgid "Results by entry mode, per test"
-msgstr "Résultats par mode d'inscription, par épreuve"
+msgstr "Résultats par mode de saisie, par test"
 
 #: app/admin/monitoring/lab-performance-indicators.php:680
 msgid "Average turnaround time in days"
-msgstr "Délai moyen de traitement en jours"
+msgstr "Délai d'exécution moyen en jours"
 
 #: app/admin/monitoring/lab-performance-indicators.php:702
 msgid "Results by entry mode"
-msgstr "Résultats par mode d'inscription"
+msgstr "Résultats par mode de saisie"
 
 #: app/admin/monitoring/lab-performance-indicators.php:725
 msgid "Failed tests and failure rate"
@@ -5697,16 +5692,13 @@ msgstr "Échantillons rejetés et taux de rejet"
 
 #: app/admin/monitoring/lab-performance-indicators.php:790
 msgid "Top rejection reasons"
-msgstr "Principales raisons de refus"
+msgstr "Principaux motifs de rejet"
 
 #: app/admin/monitoring/lab-performance-indicators.php:839
 msgid ""
 "Repeat visits can only be linked for samples that carry a patient "
 "identifier. Coverage below shows how much of the data that is."
-msgstr ""
-"Les visites répétées ne peuvent être associées qu'aux échantillons "
-"comportant un identifiant de patient. Le graphique ci-dessous indique la "
-"part des données concernées."
+msgstr "Les visites répétées ne peuvent être associées qu'aux échantillons comportant un identifiant de patient. La couverture ci-dessous indique la part des données concernées."
 
 #: app/admin/monitoring/lab-sync-details.php:11
 #: app/admin/monitoring/sources-of-requests.php:12
@@ -6345,7 +6337,7 @@ msgstr "Nom du laboratoire de test"
 
 #: app/admin/monitoring/sample-referral-network.php:344
 msgid "Enter sample code"
-msgstr "Saisir un exemple de code"
+msgstr "Saisir le code de l'échantillon"
 
 #: app/admin/monitoring/sample-referral-network.php:347
 msgid "Show on map"
@@ -19640,14 +19632,12 @@ msgstr "de l'étape précédente"
 
 #: app/eid/management/pmtct-cascade-report.php:530
 msgid "Click to view the records behind this number"
-msgstr "Cliquez ici pour consulter les informations associées à ce numéro"
+msgstr "Cliquez pour consulter les enregistrements à l'origine de ce chiffre"
 
 #: app/eid/management/pmtct-cascade-report.php:551
 #, php-format
 msgid "%s of %s matched mothers with a VL result are suppressed"
-msgstr ""
-"%s sur %s des mères pour lesquelles un résultat de charge virale a été "
-"obtenu sont masquées"
+msgstr "%s sur %s mères appariées ayant un résultat de charge virale sont en suppression virale"
 
 #: app/eid/management/pmtct-cascade-report.php:553
 msgid "No matched mothers with a VL result yet"
@@ -19754,7 +19744,7 @@ msgstr "Inconnu (date de naissance inconnue)"
 #: app/eid/management/pmtct-cascade-report.php:704
 #: app/eid/management/pmtctCascadeReportExport.php:594
 msgid "No VL result yet"
-msgstr "Pas encore de résultat VL"
+msgstr "Pas encore de résultat de charge virale"
 
 #: app/eid/management/pmtct-cascade-report.php:738
 msgid "HIV-Positive Children — Mother High VL Before Birth"
@@ -19797,7 +19787,7 @@ msgstr "Antécédents de l'enfant"
 
 #: app/eid/management/pmtct-cascade-report.php:761
 msgid "Mother History"
-msgstr "L'histoire de la mère"
+msgstr "Antécédents de la mère"
 
 #: app/eid/management/pmtct-cascade-report.php:783
 #: app/eid/management/pmtct-cascade-report.php:959
@@ -19816,7 +19806,7 @@ msgstr "Date du dernier résultat positif"
 
 #: app/eid/management/pmtct-cascade-report.php:787
 msgid "Mother VL Tests"
-msgstr "Tests Mother VL"
+msgstr "Tests de charge virale de la mère"
 
 #: app/eid/management/pmtct-cascade-report.php:788
 #: app/eid/management/pmtct-cascade-report.php:844
@@ -19830,7 +19820,7 @@ msgstr "Première date de VL élevée"
 
 #: app/eid/management/pmtct-cascade-report.php:790
 msgid "Mother Latest VL"
-msgstr "Maman - Dernière version VL"
+msgstr "Dernière charge virale de la mère"
 
 #: app/eid/management/pmtct-cascade-report.php:791
 msgid "High VL Before Birth"
@@ -19838,11 +19828,11 @@ msgstr "Charge virale élevée avant la naissance"
 
 #: app/eid/management/pmtct-cascade-report.php:818
 msgid "Mothers"
-msgstr "Les mères"
+msgstr "Mères"
 
 #: app/eid/management/pmtct-cascade-report.php:819
 msgid "VL tests on record (all time)"
-msgstr "Records de VL (tous temps confondus)"
+msgstr "Tests de charge virale enregistrés (depuis le début)"
 
 #: app/eid/management/pmtct-cascade-report.php:820
 msgid "HIV-positive children (in period)"
@@ -19850,23 +19840,23 @@ msgstr "Enfants séropositifs (au cours de la période)"
 
 #: app/eid/management/pmtct-cascade-report.php:824
 msgid "History"
-msgstr "Histoire"
+msgstr "Historique"
 
 #: app/eid/management/pmtct-cascade-report.php:841
 msgid "Children (in period)"
-msgstr "Enfants (à l'époque)"
+msgstr "Enfants (sur la période)"
 
 #: app/eid/management/pmtct-cascade-report.php:843
 msgid "VL Tests"
-msgstr "Tests VL"
+msgstr "Tests de charge virale"
 
 #: app/eid/management/pmtct-cascade-report.php:846
 msgid "Latest VL"
-msgstr "Dernière version de VL"
+msgstr "Dernière charge virale"
 
 #: app/eid/management/pmtct-cascade-report.php:881
 msgid "No VL tests on record for this mother."
-msgstr "Aucun test VL n'est enregistré pour cette mère."
+msgstr "Aucun test de charge virale enregistré pour cette mère."
 
 #: app/eid/management/pmtct-cascade-report.php:886
 #: app/eid/management/pmtct-cascade-report.php:922
@@ -19910,11 +19900,11 @@ msgstr "Aucun test EID n'est enregistré."
 #: app/eid/management/pmtct-cascade-report.php:928
 #: app/eid/management/pmtctCascadeReportExport.php:553
 msgid "Mother VL Status at This Test"
-msgstr "Statut de la mère VL lors de ce test"
+msgstr "Charge virale de la mère lors de ce test"
 
 #: app/eid/management/pmtct-cascade-report.php:955
 msgid "Child Test History"
-msgstr "Antécédents médicaux de l'enfant"
+msgstr "Historique des tests de l'enfant"
 
 #: app/eid/management/pmtct-cascade-report.php:961
 msgid "EID tests"
@@ -19922,7 +19912,7 @@ msgstr "Tests EID"
 
 #: app/eid/management/pmtct-cascade-report.php:962
 msgid "Mother VL tests"
-msgstr "Tests Mother VL"
+msgstr "Tests de charge virale de la mère"
 
 #: app/eid/management/pmtct-cascade-report.php:965
 msgid "EID Test History (all time)"
@@ -19930,7 +19920,7 @@ msgstr "Historique des tests EID (depuis le début)"
 
 #: app/eid/management/pmtct-cascade-report.php:967
 msgid "Mother VL Test History (all time)"
-msgstr "Historique des tests Mother VL (depuis le début)"
+msgstr "Historique des tests de charge virale de la mère (depuis le début)"
 
 #: app/eid/management/pmtct-cascade-report.php:983
 msgid "Mother Test History"
@@ -19938,7 +19928,7 @@ msgstr "Historique des tests de la mère"
 
 #: app/eid/management/pmtct-cascade-report.php:991
 msgid "VL tests"
-msgstr "Tests VL"
+msgstr "tests de charge virale"
 
 #: app/eid/management/pmtct-cascade-report.php:992
 msgid "High VL tests"

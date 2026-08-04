@@ -50,6 +50,31 @@ final class TurnaroundTimeUtility
     ];
 
     /**
+     * Guards against test dates that cannot be real: in the future, or before
+     * the sample was collected. An analyzer with a mis-set clock produces
+     * thousands of these, and because the chart groups by test month they used
+     * to surface as phantom columns years away from the real data.
+     *
+     * Compared at date granularity, matching the calendar-day basis used to
+     * measure the stages. Comparing full timestamps would throw away same-day
+     * samples whose test time was never recorded and therefore defaults to
+     * midnight, which is most of them.
+     *
+     * The detail exports apply these too, so an export reconciles against the
+     * chart drawn from the same filters.
+     *
+     * @return string[]
+     */
+    public static function plausibleDateConditions(string $alias = 'sample'): array
+    {
+        return [
+            "DATE($alias.sample_tested_datetime) <= CURDATE()",
+            "($alias.sample_collection_date IS NULL"
+                . " OR DATE($alias.sample_tested_datetime) >= DATE($alias.sample_collection_date))",
+        ];
+    }
+
+    /**
      * The aggregation SQL. Call it through
      * AbstractTestService::getTurnaroundTimeSeries(), which supplies the table
      * and result column for the module and runs the query.
@@ -85,19 +110,10 @@ final class TurnaroundTimeUtility
 
         // A sample only has a turnaround time once it has been tested and has
         // a result to show for it.
-        //
-        // The last two guards drop samples whose test date is impossible: in
-        // the future, or before the sample was even collected. An analyzer
-        // with a mis-set clock produces thousands of these, and because the
-        // chart groups by test month they used to surface as phantom columns
-        // years away from the real data, squashing the trend line.
         $where = array_merge($conditions, [
             "$alias.sample_tested_datetime IS NOT NULL",
             "IFNULL($alias.$resultColumn, '') != ''",
-            "$alias.sample_tested_datetime <= NOW()",
-            "($alias.sample_collection_date IS NULL"
-                . " OR $alias.sample_tested_datetime >= $alias.sample_collection_date)",
-        ]);
+        ], self::plausibleDateConditions($alias));
 
         // Grouping and ordering on the year and month values, rather than on
         // the formatted month string, is what keeps the x-axis chronological.

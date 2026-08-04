@@ -8,6 +8,7 @@ use App\Services\DatabaseService;
 use App\Services\Covid19Service;
 use App\Abstracts\AbstractTestService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\TurnaroundTimeUtility;
 
 ini_set('memory_limit', '512M');
 set_time_limit(600);
@@ -36,6 +37,10 @@ try {
     // SQL_CALC_FOUND_ROWS is only meaningful for the paged list behind this
     // export, and it is deprecated, so drop it from the export's copy.
     $sQuery = str_replace('SQL_CALC_FOUND_ROWS ', '', (string) $_SESSION['covid19TATQuery']);
+
+    // Same plausibility guards the chart applies, so the export reconciles
+    // against the chart drawn from the same filters.
+    $sQuery .= " AND " . implode(" AND ", TurnaroundTimeUtility::plausibleDateConditions('vl'));
 
     // Applied independently of the session so the export can never widen past
     // what this user is allowed to see, whatever the list page last stored.
