@@ -75,6 +75,31 @@ final class TurnaroundTimeUtility
     }
 
     /**
+     * Which samples a turnaround time figure is allowed to be built from: it
+     * has been tested, it produced a result to show for it, and its test date
+     * is not impossible.
+     *
+     * The chart, the detail table behind it and the Excel export of that table
+     * all take their conditions from here, so clicking into a month lists
+     * exactly the samples the month was averaged from. They used to each carry
+     * their own copy and disagreed: on one instance a VL month charted 6,280
+     * samples while its own drilldown listed 6,273, two opposing omissions
+     * partly cancelling rather than agreeing.
+     *
+     * @return string[]
+     */
+    public static function eligibilityConditions(string $alias = 'sample', string $resultColumn = 'result'): array
+    {
+        return array_merge(
+            [
+                "$alias.sample_tested_datetime IS NOT NULL",
+                "IFNULL($alias.$resultColumn, '') != ''",
+            ],
+            self::plausibleDateConditions($alias)
+        );
+    }
+
+    /**
      * The aggregation SQL. Call it through
      * AbstractTestService::getTurnaroundTimeSeries(), which supplies the table
      * and result column for the module and runs the query.
@@ -108,12 +133,7 @@ final class TurnaroundTimeUtility
             $columns[] = "ROUND(AVG(CASE WHEN $diff >= 0 THEN $diff END), 2) AS $stage";
         }
 
-        // A sample only has a turnaround time once it has been tested and has
-        // a result to show for it.
-        $where = array_merge($conditions, [
-            "$alias.sample_tested_datetime IS NOT NULL",
-            "IFNULL($alias.$resultColumn, '') != ''",
-        ], self::plausibleDateConditions($alias));
+        $where = array_merge($conditions, self::eligibilityConditions($alias, $resultColumn));
 
         // Grouping and ordering on the year and month values, rather than on
         // the formatted month string, is what keeps the x-axis chronological.

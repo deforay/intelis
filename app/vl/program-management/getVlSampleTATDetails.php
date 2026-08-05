@@ -6,6 +6,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\TurnaroundTimeUtility;
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -55,9 +56,7 @@ $sQuery = "SELECT vl.sample_code,
 			INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
 			LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
 			LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-			WHERE (vl.sample_collection_date is NOT NULL)
-                        AND (vl.sample_tested_datetime IS NOT NULL)
-						AND IFNULL(vl.result, '') != '' ";
+			WHERE " . implode(' AND ', TurnaroundTimeUtility::eligibilityConditions('vl', 'result'));
 
 if (!empty($sWhere)) {
 	$sQuery = "$sQuery AND " . implode(" AND ", $sWhere);
