@@ -270,8 +270,8 @@ try {
           }
 
           $row = [];
-          $sampleCodeTooltip = '';
-          $patientTooltip = '';
+          $sampleCodeTooltipLines = [];
+          $patientTooltipLines = [];
           if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
                $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
                $aRow['patient_name'] = $general->crypto('decrypt', $aRow['patient_name'], $key);
@@ -279,30 +279,33 @@ try {
           }
 
           if (!empty($aRow['sample_package_code'])) {
-               $sampleCodeTooltip .= _translate("Manifest Code", true) . " : " . $aRow['sample_package_code'] . '<br>';
+               $sampleCodeTooltipLines[] = _translate("Manifest Code") . " : " . $aRow['sample_package_code'];
           }
           if (!empty($aRow['batch_code'])) {
-               $sampleCodeTooltip .= _translate("Batch Code", true) . " : " . $aRow['batch_code'];
+               $sampleCodeTooltipLines[] = _translate("Batch Code") . " : " . $aRow['batch_code'];
           }
           if (!empty($aRow['patient_dob'])) {
-               $patientTooltip .= _translate("Patient DoB", true) . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']) . '<br>';
+               $patientTooltipLines[] = _translate("Patient DoB") . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']);
           }
           if (!empty($aRow['patient_age'])) {
-               $patientTooltip .= _translate("Patient Age", true) . " : " . $aRow['patient_age'] . '<br>';
+               $patientTooltipLines[] = _translate("Patient Age") . " : " . $aRow['patient_age'];
           }
           if (!empty($aRow['patient_gender'])) {
-               $patientTooltip .= _translate("Patient Sex", true) . " : " . $aRow['patient_gender'] . '<br>';
+               $patientTooltipLines[] = _translate("Patient Sex") . " : " . $aRow['patient_gender'];
           }
 
-          if ($sampleCodeTooltip !== '' && $sampleCodeTooltip !== '0') {
-               $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['sample_code'] . (empty($aRow['external_sample_code']) ? '' : "<br>/" . $aRow['external_sample_code']) . '</span>';
+          $sampleCodeTooltip = _tooltipAttribute($sampleCodeTooltipLines);
+          $patientTooltip = _tooltipAttribute($patientTooltipLines);
+
+          if ($sampleCodeTooltip !== '') {
+               $row[] = '<span class="top-tooltip"' . $sampleCodeTooltip . '>' . $aRow['sample_code'] . (empty($aRow['external_sample_code']) ? '' : "<br>/" . $aRow['external_sample_code']) . '</span>';
           } else {
                $row[] = '<span>' . $aRow['sample_code'] . (empty($aRow['external_sample_code']) ? '' : "<br>/" . $aRow['external_sample_code']) . '</span>';
           }
           //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow[$primaryKey] . '"  value="' . $aRow[$primaryKey] . '" onclick="toggleTest(this);"  />';
           if (!$general->isStandaloneInstance()) {
-               if ($sampleCodeTooltip !== '' && $sampleCodeTooltip !== '0') {
-                    $row[] = '<span class="top-tooltip" title="' . $sampleCodeTooltip . '">' . $aRow['remote_sample_code'] . '</span>';
+               if ($sampleCodeTooltip !== '') {
+                    $row[] = '<span class="top-tooltip"' . $sampleCodeTooltip . '>' . $aRow['remote_sample_code'] . '</span>';
                } else {
                     $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
                }
@@ -312,8 +315,8 @@ try {
           $row[] = $aRow['batch_code'];
           $row[] = $aRow['labName'];
           $row[] = $aRow['facility_name'];
-          if ($patientTooltip !== '' && $patientTooltip !== '0') {
-               $row[] = '<span class="top-tooltip" title="' . $patientTooltip . '">' . $aRow['patient_id'] . '</span>';
+          if ($patientTooltip !== '') {
+               $row[] = '<span class="top-tooltip"' . $patientTooltip . '>' . $aRow['patient_id'] . '</span>';
           } else {
                $row[] = '<span>' . $aRow['patient_id'] . '</span>';
           }
