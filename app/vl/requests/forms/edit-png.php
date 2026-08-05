@@ -563,12 +563,15 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 										</td>
 									</tr>
 									<tr>
+										<?php // On STS the testing lab is chosen at the top of the form. ?>
+										<?php if (!$general->isSTSInstance()) { ?>
 										<td class="labId labels"><label for="labId">Laboratory Name</label></td>
 										<td>
 											<select name="labId" id="labId" class="form-control" title="Please choose lab name" style="width:100%;">
 												<?= $general->generateSelectOptions($testingLabs, $vlQueryInfo['lab_id'], '-- Select --'); ?>
 											</select>
 										</td>
+										<?php } ?>
 										<td class="specimenType labels"><label for="specimenType">Sample Type
 												Received</label></td>
 										<td>

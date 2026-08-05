@@ -124,7 +124,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php } ?>
                                             </select>
                                         </td>
-                                        <?php if ($general->isSTSInstance()) { ?>
+                                        <?php if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') { ?>
                                             <!-- <tr> -->
                                             <td><label for="labId">Lab Name <span class="mandatory">*</span></label> </td>
                                             <td>

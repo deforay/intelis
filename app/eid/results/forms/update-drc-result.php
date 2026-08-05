@@ -487,7 +487,7 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 										<th scope="row">Raison du rejet<span class="mandatory rejection-mandatory" style="display:none;">*</span></th>
 										<td>
-											<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?> <option value=""><?= _translate("-- Select --"); ?> </option>
+											<select name="sampleRejectionReason" id="sampleRejectionReason" class="form-control labSection" title="Veuillez choisir la raison du rejet" <?php echo $labFieldDisabled; ?>>
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($rejectionTypeResult as $type) { ?>
 													<optgroup label="<?php echo strtoupper((string) $type['rejection_type']); ?>">
