@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+#
+# review — run the adversarial review pass with this repository's standing brief.
+#
+# Usage:
+#   bin/dev/review                 # review the working branch against master
+#   bin/dev/review <commit-sha>    # review one commit
+#   bin/dev/review --uncommitted   # review the working tree before committing
+#
+# The reviewing CLI is named by $REVIEW_AGENT rather than hard-coded, so the repository
+# carries no vendor name and the reviewer can be swapped without editing anything here.
+#
+# The brief is EXTRACTED from docs/engineering-standards.md §1 rather than duplicated here.
+# Two copies of a review checklist means the one nobody edits is the one that gets used.
+set -euo pipefail
+
+cd "$(dirname "$0")/../.."
+
+# Falls back to the untracked .env, so the reviewer's name lives on the machine rather than
+# in a shell profile — and never in the repository. Only these keys are read: the reviewing
+# CLI has no business inheriting database credentials just to read a diff.
+read_env() {
+    [ -f .env ] || return 0
+    awk -v key="$1" -F= '$0 ~ "^[[:space:]]*" key "[[:space:]]*=" {
+        sub(/^[^=]*=[[:space:]]*/, ""); gsub(/^["'\'']|["'\'']$/, ""); print; exit }' .env
+}
+
+[ -n "${REVIEW_AGENT:-}" ]       || REVIEW_AGENT="$(read_env REVIEW_AGENT)"
+[ -n "${REVIEW_AGENT_STDIN:-}" ] || REVIEW_AGENT_STDIN="$(read_env REVIEW_AGENT_STDIN)"
+
+if [ -z "${REVIEW_AGENT:-}" ]; then
+    echo "REVIEW_AGENT is not set — it names the CLI that performs the review." >&2
+    echo "Set it in the untracked .env:   REVIEW_AGENT='<your-review-cli> <subcommand>'" >&2
+    echo "or in your shell profile:       export REVIEW_AGENT='<your-review-cli> <subcommand>'" >&2
+    exit 1
+fi
+
+BRIEF="$(awk '/^\*\*The review brief/{found=1; next} found && /^> /{sub(/^> /,""); gsub(/^"|"$/,""); print; exit}' \
+    docs/engineering-standards.md)"
+
+if [ -z "$BRIEF" ]; then
+    echo "Could not extract the review brief from docs/engineering-standards.md §1." >&2
+    echo "Has the '**The review brief**' heading changed?" >&2
+    exit 1
+fi
+
+# The reviewer reads the repository itself, so it gets pointers rather than pasted files.
+# Naming where the invariants live is the difference between a review of this system and a
+# review of some PHP: without them it cannot know that a query missing the lab scope, or a
+# request save touching a result column, is a bug rather than a style choice. Several of
+# these invariants live in code rather than prose, so the pointers name the code.
+CONTEXT="Before reviewing, read these for the rules this codebase is held to:
+- docs/engineering-standards.md — the bar, and what counts as a finding
+- docs/ARCHITECTURE.md — entry points, the UI and API middleware stacks, and the legacy
+  app/ layout that most changes land in
+- app/classes/Services/CommonService.php — labScopeWhere, labAdminScopeWhere and
+  isCloudLisNonAdmin: the lab-axis read isolation and the cloud-instance admin gate
+- sys/migrations/ — every schema change belongs here and must replay on a fresh install;
+  sql/init.sql is a seed and is never edited to make a schema change
+- docs/remote-command-plane.md — how instances receive and acknowledge remote commands
+- app/system/functions.php — the translation and escaping helpers, and which is correct
+  for which output context
+
+A finding is a defect with a failure scenario: concrete inputs or state, and the wrong
+output or lost data that results. A deliberate trade-off already recorded in these
+documents is a rebuttal, not a fix — say so rather than reporting it.
+
+$BRIEF"
+
+# The scope travels inside the prompt rather than as a --base/--commit flag: those flags
+# select a built-in review mode and are mutually exclusive with custom instructions, and
+# the instructions are the entire point of this script.
+case "${1:-}" in
+    --uncommitted) SCOPE="Review the staged, unstaged and untracked changes in the working tree (\`git status\`, \`git diff\`, \`git diff --cached\`)." ;;
+    "")            SCOPE="Review the changes on the current branch relative to master: \`git diff master...HEAD\`. Ignore code outside that diff except where you need it to judge the diff." ;;
+    *)             SCOPE="Review the changes introduced by commit $1: \`git show $1\`. Ignore code outside that diff except where you need it to judge the diff." ;;
+esac
+
+PROMPT="$SCOPE
+
+$CONTEXT"
+
+# REVIEW_AGENT is a command line, not just a binary, so a reviewer that wants a subcommand
+# and one that wants a flag are both a setting rather than an edit here. Word-splitting is
+# intended. Reviewers that read the prompt from stdin get REVIEW_AGENT_STDIN=1.
+# shellcheck disable=SC2086
+if [ "${REVIEW_AGENT_STDIN:-}" = "1" ]; then
+    printf '%s' "$PROMPT" | exec $REVIEW_AGENT
+else
+    exec $REVIEW_AGENT "$PROMPT"
+fi
