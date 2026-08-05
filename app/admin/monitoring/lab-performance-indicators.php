@@ -228,18 +228,21 @@ $testingLabs = $facilitiesService->getTestingLabs();
 
                                 <dt><?= _htmlTranslate('Turnaround Time (TAT)'); ?></dt>
                                 <dd>
-                                    <?= _htmlTranslate('Each stage is the average number of days between two recorded timestamps, measured over the tests performed in the period.'); ?>
+                                    <?= _htmlTranslate('Each stage is the average number of calendar days between two recorded timestamps, measured over the tests performed in the period that produced a result.'); ?>
                                     <ul>
                                         <li><strong><?= _htmlTranslate('Collection to Lab Receipt'); ?></strong>:
                                             <?= _htmlTranslate('from the sample collection date to the date the lab received the sample.'); ?></li>
                                         <li><strong><?= _htmlTranslate('Lab Receipt to Tested'); ?></strong>:
                                             <?= _htmlTranslate('from lab receipt to the date the test was performed.'); ?></li>
+                                        <li><strong><?= _htmlTranslate('Tested to Result Printed'); ?></strong>:
+                                            <?= _htmlTranslate('from the test date to the date the result was printed.'); ?></li>
                                         <li><strong><?= _htmlTranslate('Tested to Result Released'); ?></strong>:
-                                            <?= _htmlTranslate('from the test date to the result dispatch date, or the result print date when no dispatch date is recorded.'); ?></li>
+                                            <?= _htmlTranslate('from the test date to the result dispatch date, or the result print date when no dispatch date is recorded. A lab that dispatches results without printing them shows a figure here but not against Tested to Result Printed.'); ?></li>
                                         <li><strong><?= _htmlTranslate('Collection to Result Released'); ?></strong>:
                                             <?= _htmlTranslate('the full journey from sample collection to result release.'); ?></li>
                                     </ul>
-                                    <?= _htmlTranslate('A sample is counted in a stage only when both timestamps exist and are in the correct order. The n value next to each average is the number of samples counted for that stage.'); ?>
+                                    <?= _htmlTranslate('A sample is counted in a stage only when both timestamps exist and are in the correct order. The n value next to each average is the number of samples counted for that stage. Tests dated in the future, or dated before their sample was collected, are excluded entirely, because a single analyzer with a mis-set clock would otherwise distort a whole period.'); ?>
+                                    <?= _htmlTranslate('These rules are shared with the Sample Status page in every test module, so Collection to Lab Receipt, Lab Receipt to Tested and Tested to Result Printed reconcile against it for the same test, lab and period.'); ?>
                                 </dd>
 
                                 <dt><?= _htmlTranslate('Testing Volume'); ?></dt>
@@ -397,7 +400,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
 
                             <div role="tabpanel" class="tab-pane" id="tab-tat">
                                 <p class="lpi-note">
-                                    <?= _htmlTranslate('Average number of days between milestones. Samples missing a milestone, or with dates recorded out of order, are left out of that stage.'); ?>
+                                    <?= _htmlTranslate('Average number of calendar days between milestones, over the tests performed in the period that produced a result. Samples missing a milestone, or with dates recorded out of order, are left out of that stage. Collection to Lab Receipt, Lab Receipt to Tested and Tested to Result Printed are measured the same way as on the Sample Status page and should match it.'); ?>
                                 </p>
                                 <div class="lpi-chart" id="chartTat"></div>
                                 <div class="table-responsive">
@@ -522,6 +525,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
         days: "<?= _jsTranslate('days'); ?>",
         collectionToReceipt: "<?= _jsTranslate('Collection to Lab Receipt'); ?>",
         receiptToTested: "<?= _jsTranslate('Lab Receipt to Tested'); ?>",
+        testedToPrinted: "<?= _jsTranslate('Tested to Result Printed'); ?>",
         testedToReleased: "<?= _jsTranslate('Tested to Result Released'); ?>",
         collectionToReleased: "<?= _jsTranslate('Collection to Result Released'); ?>",
         noData: "<?= _jsTranslate('No data for the selected filters'); ?>",
@@ -751,11 +755,13 @@ $testingLabs = $facilitiesService->getTestingLabs();
     }
 
     function renderTat(rows) {
-        var stages = ['collectionToReceipt', 'receiptToTested', 'testedToReleased', 'collectionToReleased'];
+        var stages = ['collectionToReceipt', 'receiptToTested', 'testedToPrinted',
+            'testedToReleased', 'collectionToReleased'];
         buildTable('tableTat',
             [LPI_LABELS.period, LPI_LABELS.samples,
             LPI_LABELS.collectionToReceipt, LPI_LABELS.receiptToTested,
-            LPI_LABELS.testedToReleased, LPI_LABELS.collectionToReleased],
+            LPI_LABELS.testedToPrinted, LPI_LABELS.testedToReleased,
+            LPI_LABELS.collectionToReleased],
             rows.map(function (r) {
                 return [r.period, r.samples.toLocaleString()].concat(stages.map(function (s) {
                     return r[s] === null ? null : r[s] + ' ' + LPI_LABELS.days + ' (n=' + r[s + 'N'].toLocaleString() + ')';
