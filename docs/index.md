@@ -2,6 +2,10 @@
 
 Welcome to the InteLIS documentation. Use the sidebar to navigate through the guides.
 
+## Contributing
+
+- [Engineering Standards](engineering-standards.md) — the bar for a change, the adversarial review step, and the standing invariants
+
 ## Installation
 
 - [Installing InteLIS on Ubuntu](guides/installing-intelis-on-ubuntu.md) — Ubuntu 22.04 LTS or above
