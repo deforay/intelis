@@ -544,8 +544,6 @@ $storageInfo = $storageService->getLabStorage();
 												</select>
 												<input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" />
 											</td>
-											<td class="newRejectionReason" style="text-align:center;display:none;"><label for="newRejectionReason" class="newRejectionReason" style="display:none;">Autre, à préciser <span class="mandatory">*</span></label></td>
-											<td class="newRejectionReason" style="display:none;"><input type="text" class="form-control newRejectionReason" id="newRejectionReason" name="newRejectionReason" placeholder="Motifs de rejet" title="Please enter motifs de rejet" <?php echo $labFieldDisabled; ?> style="width:100%;display:none;" /></td>
 											<th scope="row" class="rejectionReason" style="display:none;">
 												<?php echo _translate("Rejection Date"); ?> <span class="mandatory rejection-mandatory" style="display:none;">*</span>
 											</th>

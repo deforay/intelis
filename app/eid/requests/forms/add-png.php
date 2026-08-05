@@ -262,7 +262,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row">Name of EID Personnel Collecting DBS</th>
                                         <td>
-                                            <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Name of EID Personnel Collecting DBS" title="Name of EID Personnel Collecting DBS" style="width:100%;" onchange="" />
+                                            <input type="text" class="form-control" id="dbsCollectedBy" name="dbsCollectedBy" placeholder="Name of EID Personnel Collecting DBS" title="Name of EID Personnel Collecting DBS" style="width:100%;" onchange="" />
                                         </td>
                                         <th scope="row" style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">

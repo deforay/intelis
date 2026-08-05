@@ -134,7 +134,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <td><label for="supportPartner">Implementing Partner </label></td>
                                         <td>
 
-                                            <select class="form-control" name="fundingSource" id="fundingSource"
+                                            <select class="form-control" name="implementingPartner" id="implementingPartner"
                                                 title="Please choose implementing partner" style="width:100%;">
                                                 <option value=""> -- Select -- </option>
                                                 <?php

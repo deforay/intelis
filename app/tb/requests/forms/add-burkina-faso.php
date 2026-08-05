@@ -118,7 +118,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
                                     <tr>
                                         <th class="th-label" scope="row"><label for="requestedDate"><?= _translate("Date of request"); ?> <span class="mandatory">*</span></label></th>
                                         <td class="td-input">
-                                            <input type="text" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
+                                            <input type="text" class="date-time form-control" id="requestedDate" name="requestedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
                                         </td>
                                         <th class="th-label"><label class="label-control" for="referringUnit"><?= _translate("Referring Unit"); ?> </label></th>
                                         <td class="td-input">
