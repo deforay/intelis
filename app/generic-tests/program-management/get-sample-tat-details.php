@@ -5,6 +5,8 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestsService;
+use App\Utilities\TurnaroundTimeUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -86,11 +88,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 			LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
 			LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.specimen_type
 			LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-			WHERE
-			(vl.sample_collection_date is NOT NULL) AND
-			(vl.sample_tested_datetime IS NOT NULL)
-			AND vl.result is not null
-			AND vl.result != '' ";
+			WHERE " . implode(' AND ', TurnaroundTimeUtility::eligibilityConditions('vl', TestsService::getResultColumn('generic-tests')));
 
 if ($general->isSTSInstance()) {
 	if (!empty($_SESSION['facilityMap'])) {
