@@ -515,6 +515,85 @@ function _sanitizeOutput($string): string
 }
 
 /**
+ * Build a title="..." attribute for a tooltipster tooltip, from a list of lines.
+ *
+ * The request grids initialise tooltipster with contentAsHTML, so it re-renders
+ * the title attribute as HTML *after* the browser has already decoded that
+ * attribute once. A single escape is consumed by the decode, which would leave a
+ * stored value such as <img src=x onerror=...> to be parsed as markup and run.
+ * Each line is therefore escaped twice, so it survives the decode still escaped
+ * and renders as literal text; only the <br> joining the lines stays markup.
+ *
+ * Pass raw values and plain-context labels (`_translate("Patient DoB")`). Do not
+ * pre-escape with _sanitizeOutput()/_htmlTranslate(), and do not pass the 'js'
+ * context (`_translate($label, true)`) -- that mangles apostrophes into '.
+ *
+ * Empty and whitespace-only lines are dropped; an empty result means the caller
+ * should render the element without a tooltip at all.
+ *
+ * @param array<int, string|null> $lines One tooltip line per entry, unescaped.
+ * @return string ' title="..."' including a leading space, or '' if no lines.
+ */
+function _tooltipAttribute(array $lines): string
+{
+    $lines = array_filter(
+        array_map(static fn($line): string => trim((string) $line), $lines),
+        static fn(string $line): bool => $line !== ''
+    );
+
+    if ($lines === []) {
+        return '';
+    }
+
+    $escaped = array_map(
+        static fn(string $line): string => _sanitizeOutput(_sanitizeOutput($line)),
+        $lines
+    );
+
+    return ' title="' . implode('<br>', $escaped) . '"';
+}
+
+/**
+ * Build a title="..." attribute holding a compact HTML table, for tooltipster.
+ *
+ * Same double-escaping contract as _tooltipAttribute(): each cell is escaped
+ * twice so it survives the browser's attribute decode still escaped, and
+ * tooltipster's contentAsHTML render shows it as literal text.
+ *
+ * The table markup deliberately carries no attributes of its own. Any attribute
+ * would need quotes, and a double quote inside title="..." terminates the
+ * attribute early. Style it from CSS instead, via `.tooltipster-content table`.
+ *
+ * @param array<int, string> $headers Column headings, unescaped.
+ * @param array<int, array<int, string|null>> $rows One array of cells per row, unescaped.
+ * @return string ' title="..."' including a leading space, or '' if there are no rows.
+ */
+function _tooltipTableAttribute(array $headers, array $rows): string
+{
+    if ($rows === []) {
+        return '';
+    }
+
+    $cell = static fn($value): string => _sanitizeOutput(_sanitizeOutput(trim((string) $value)));
+
+    $html = '<table><thead><tr>';
+    foreach ($headers as $header) {
+        $html .= '<th>' . $cell($header) . '</th>';
+    }
+    $html .= '</tr></thead><tbody>';
+
+    foreach ($rows as $cells) {
+        $html .= '<tr>';
+        foreach ($cells as $value) {
+            $html .= '<td>' . $cell($value) . '</td>';
+        }
+        $html .= '</tr>';
+    }
+
+    return ' title="' . $html . '</tbody></table>"';
+}
+
+/**
  * Escape a value for safe output inside a JavaScript context (inside a
  * <script> block or an inline handler). Returns a complete, quoted JS literal
  * via json_encode, so do NOT wrap the output in additional quotes.
