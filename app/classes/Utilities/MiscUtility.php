@@ -1473,8 +1473,88 @@ final class MiscUtility
     }
 
     /**
+     * Resolve a change entry's 'usr' to a display name.
+     *
+     * Current records store a user_id (a UUID), while the legacy
+     * "userName##message##datetime" entries store the user name itself. The
+     * lookup returns nothing for the legacy form, so fall back to the raw value
+     * rather than showing a blank -- and never show a bare UUID.
+     */
+    public static function resultChangeUserName($usr, $usersService): string
+    {
+        $usr = trim((string) ($usr ?? ''));
+        if ($usr === '') {
+            return '';
+        }
+        return (string) ($usersService->getUserName($usr) ?: $usr);
+    }
+
+    /**
+     * Build the tooltipster title="..." attribute holding the full result change
+     * history (newest first), for the "Result Modified" chip on the print pages.
+     *
+     * Each stored entry records what the result was *before* that edit, so the
+     * "Changed To" column is read from the next entry down -- and the newest entry
+     * is the one that produced $currentResult.
+     *
+     * Returns '' when there is no history, meaning the caller should render the
+     * chip without a tooltip.
+     *
+     * @param string|null $raw           The stored history column, any supported format.
+     * @param mixed       $usersService  Resolves user ids to names.
+     * @param string|null $currentResult The result as it stands now.
+     */
+    public static function resultChangeHistoryTooltipAttribute(?string $raw, $usersService, ?string $currentResult): string
+    {
+        $history = array_reverse(self::parseResultChangeHistory($raw));
+        if (empty($history)) {
+            return '';
+        }
+
+        // The legacy "name##message##datetime" entries carry no previousResult, so
+        // the from/to columns would be blank for those records. Show them only when
+        // at least one entry can actually fill them in.
+        $showResultColumns = false;
+        foreach ($history as $change) {
+            if (($change['previousResult'] ?? '') !== '') {
+                $showResultColumns = true;
+                break;
+            }
+        }
+
+        $rows = [];
+        $changedTo = (string) ($currentResult ?? '');
+
+        foreach ($history as $change) {
+            $row = [
+                !empty($change['dtime']) ? DateUtility::humanReadableDateFormat($change['dtime'], true) : '',
+                self::resultChangeUserName($change['usr'] ?? null, $usersService),
+            ];
+            if ($showResultColumns) {
+                $row[] = $change['previousResult'] ?? '';
+                $row[] = $changedTo;
+            }
+            $row[] = $change['msg'] ?? '';
+            $rows[] = $row;
+
+            // Walking backwards in time: this entry's "before" is the previous
+            // entry's "after".
+            $changedTo = $change['previousResult'] ?? '';
+        }
+
+        $headers = [_translate("Changed On"), _translate("Changed By")];
+        if ($showResultColumns) {
+            $headers[] = _translate("Changed From");
+            $headers[] = _translate("Changed To");
+        }
+        $headers[] = _translate("Reason");
+
+        return _tooltipTableAttribute($headers, $rows);
+    }
+
+    /**
      * Build the read-only "Result Changes History" table (newest first) for the edit/result forms.
-     * Returns '' when there is no history. $usersService resolves numeric user ids to names.
+     * Returns '' when there is no history. $usersService resolves user ids to names.
      */
     public static function renderResultChangeHistoryHtml(?string $raw, $usersService): string
     {
@@ -1490,9 +1570,7 @@ final class MiscUtility
             . '<th style="width:20%;text-align:center;">' . _htmlTranslate('Date') . '</th>'
             . '</tr></thead><tbody>';
         foreach (array_reverse($history) as $change) {
-            $changedBy = is_numeric($change['usr'] ?? null)
-                ? ($usersService->getUserByID($change['usr'])['user_name'] ?? '')
-                : (string) ($change['usr'] ?? '');
+            $changedBy = self::resultChangeUserName($change['usr'] ?? null, $usersService);
             $parts = explode(' ', trim((string) ($change['dtime'] ?? '')));
             $changedOn = ($parts[0] ?? '') !== ''
                 ? DateUtility::humanReadableDateFormat($parts[0]) . ' ' . ($parts[1] ?? '')

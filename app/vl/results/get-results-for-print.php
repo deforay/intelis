@@ -242,27 +242,13 @@ try {
      ];
      foreach ($rResult as $aRow) {
           $row = [];
-          $resultTooltip = [];
-          $latestChange = \App\Utilities\MiscUtility::latestResultChangeReason($aRow['reason_for_result_changes'] ?? null);
-          $dateOfModified = $latestChange['dtime'] ?? '';
-          $userId = $latestChange['usr'] ?? null;
 
-          $user = !empty($userId) ? $usersService->getUserByID($userId) : null;
-
-          // These land inside a title="..." attribute, so every value has to be
-          // escaped: a result or user name containing a quote would otherwise
-          // close the attribute and inject markup into the results grid.
-          if (!empty($aRow['result'])) {
-               $resultTooltip[] =  _htmlTranslate("Modified Result") . " : " . _sanitizeOutput($aRow['result']);
-          }
-          if (!empty($user['user_name'])) {
-               $resultTooltip[] =  _htmlTranslate("Modified By") . " : " . _sanitizeOutput($user['user_name']);
-          }
-          if (!empty($dateOfModified)) {
-               $resultTooltip[] =  _htmlTranslate("Modified On") . " : " . _sanitizeOutput(DateUtility::humanReadableDateFormat($dateOfModified, true));
-          }
-
-          $resultTooltip = $resultTooltip === [] ? '' : 'class="top-tooltip" title="' . implode("&#10;", $resultTooltip) . '"';
+          $resultTooltip = MiscUtility::resultChangeHistoryTooltipAttribute(
+               $aRow['reason_for_result_changes'] ?? null,
+               $usersService,
+               $aRow['result'] ?? null
+          );
+          $hasResultTooltip = $resultTooltip !== '';
 
           if (isset($_POST['vlPrint'])) {
                if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {
@@ -271,10 +257,10 @@ try {
                     $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedPrintedRow(this);"  />';
                }
                $resultModified = '';
-               if($aRow['result_modified'] == 'yes')
-                    {
-                         $resultModified = "<br><span " . $resultTooltip . " style='color:#C76E00;'><i class='fa-solid fa-exclamation-triangle'></i> " . _translate("Result Modified") . "</span>";
-                    }
+               if ($aRow['result_modified'] == 'yes') {
+                    $modifiedClass = $hasResultTooltip ? 'result-modified-badge top-tooltip' : 'result-modified-badge';
+                    $resultModified = '<br><span class="' . $modifiedClass . '"' . $resultTooltip . '><em class="fa-solid fa-triangle-exclamation"></em> ' . _translate("Result Modified") . '</span>';
+               }
                $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="generateResultPDF(' . $aRow['vl_sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>' . $resultModified;
           } else {
                $print = '<a href="updateVlTestResult.php?id=' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';

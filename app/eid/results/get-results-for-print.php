@@ -5,7 +5,9 @@ use const SAMPLE_STATUS\REJECTED;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\UsersService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -15,6 +17,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $sarr = $general->getSystemConfig();
 $key = (string) $general->getGlobalConfig('key');
@@ -206,13 +211,27 @@ try {
 
     foreach ($rResult as $aRow) {
         $row = [];
+
+        // EID stores the same canonical change history as VL, under a different
+        // column name.
+        $resultTooltip = MiscUtility::resultChangeHistoryTooltipAttribute(
+            $aRow['reason_for_changing'] ?? null,
+            $usersService,
+            $aRow['result'] ?? null
+        );
+
         if (isset($_POST['vlPrint'])) {
             if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'not-print') {
                 $row[] = '<input type="checkbox" name="chk[]" class="checkRows" id="chk' . $aRow['eid_id'] . '"  value="' . $aRow['eid_id'] . '" onclick="checkedRow(this);"  />';
             } else {
                 $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['eid_id'] . '"  value="' . $aRow['eid_id'] . '" onclick="checkedPrintedRow(this);"  />';
             }
-            $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="resultPDF(' . $aRow['eid_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
+            $resultModified = '';
+            if (($aRow['result_modified'] ?? '') == 'yes') {
+                $modifiedClass = $resultTooltip !== '' ? 'result-modified-badge top-tooltip' : 'result-modified-badge';
+                $resultModified = '<br><span class="' . $modifiedClass . '"' . $resultTooltip . '><em class="fa-solid fa-triangle-exclamation"></em> ' . _translate("Result Modified") . '</span>';
+            }
+            $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="resultPDF(' . $aRow['eid_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>' . $resultModified;
         }
 
         $decrypt = $aRow['remote_sample'] == 'yes' ? 'remote_sample_code' : 'sample_code';

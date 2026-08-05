@@ -370,17 +370,17 @@ try {
                $patientLname = CommonService::crypto('decrypt', $patientLname, $key);
           }
 
-          $sampleCodeTooltip[] = _htmlTranslate("Request Created On") . " : " . _sanitizeOutput(DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true));
-          $sampleCodeTooltip[] = _htmlTranslate("Request Created By") . " : " . _sanitizeOutput($usersService->getUserName($aRow['request_created_by'] ?? ''));
+          $sampleCodeTooltip[] = _translate("Request Created On") . " : " . DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
+          $sampleCodeTooltip[] = _translate("Request Created By") . " : " . $usersService->getUserName($aRow['request_created_by'] ?? '');
           if (!empty($aRow['last_modified_by']) && $aRow['last_modified_by'] != '') {
-               $sampleCodeTooltip[] = _htmlTranslate("Last Modified By") . " : " . _sanitizeOutput($usersService->getUserName($aRow['last_modified_by'] ?? ''));
+               $sampleCodeTooltip[] = _translate("Last Modified By") . " : " . $usersService->getUserName($aRow['last_modified_by'] ?? '');
           }
 
           if (!empty($aRow['sample_package_code'])) {
-               $sampleCodeTooltip[] = _htmlTranslate("Manifest Code") . " : " . _sanitizeOutput($aRow['sample_package_code']);
+               $sampleCodeTooltip[] = _translate("Manifest Code") . " : " . $aRow['sample_package_code'];
           }
           if (!empty($aRow['batch_code'])) {
-               $sampleCodeTooltip[] = _htmlTranslate("Batch Code") . " : " . _sanitizeOutput($aRow['batch_code']);
+               $sampleCodeTooltip[] = _translate("Batch Code") . " : " . $aRow['batch_code'];
           }
           if ($aRow['form_attributes'] != "") {
                $formAttributes = json_decode((string) $aRow['form_attributes']);
@@ -393,40 +393,40 @@ try {
                     $box = $storageObj->box;
                     $position = $storageObj->position;
 
-                    $sampleCodeTooltip[] = _htmlTranslate("Freezer") . ' - ' . _sanitizeOutput($freezer) . ', ' . _htmlTranslate("Rack") . ' - ' . _sanitizeOutput($rack) . ', ' . _htmlTranslate("Box") . ' - ' . _sanitizeOutput($box) . ', ' . _htmlTranslate("Position") . ' - ' . _sanitizeOutput($position);
+                    $sampleCodeTooltip[] = _translate("Freezer") . ' - ' . $freezer . ', ' . _translate("Rack") . ' - ' . $rack . ', ' . _translate("Box") . ' - ' . $box . ', ' . _translate("Position") . ' - ' . $position;
                }
           }
 
           if (!empty($aRow['patient_dob'])) {
-               $patientTooltip[] = _htmlTranslate("Patient Date of Birth") . " : " . _sanitizeOutput(DateUtility::humanReadableDateFormat($aRow['patient_dob']));
+               $patientTooltip[] = _translate("Patient Date of Birth") . " : " . DateUtility::humanReadableDateFormat($aRow['patient_dob']);
           }
           if (!empty($aRow['patient_age_in_years'])) {
-               $patientTooltip[] = _htmlTranslate("Patient Age") . " : " . _sanitizeOutput($aRow['patient_age_in_years']);
+               $patientTooltip[] = _translate("Patient Age") . " : " . $aRow['patient_age_in_years'];
           }
           if (!empty($aRow['patient_gender'])) {
-               $patientTooltip[] = _htmlTranslate("Patient Sex") . " : " . _sanitizeOutput($aRow['patient_gender']);
+               $patientTooltip[] = _translate("Patient Sex") . " : " . $aRow['patient_gender'];
           }
           if (!empty($aRow['current_regimen'])) {
-               $patientTooltip[] = _htmlTranslate("Current Regimen") . " : " . _sanitizeOutput($aRow['current_regimen']);
+               $patientTooltip[] = _translate("Current Regimen") . " : " . $aRow['current_regimen'];
           }
 
-          $patientTooltip = $patientTooltip === [] ? '' : 'class="top-tooltip" title="' . implode('<br>', $patientTooltip) . '"';
+          // _tooltipAttribute returns '' when there is nothing to show, so the
+          // class only goes on spans that actually carry a tooltip.
+          $patientTooltip = _tooltipAttribute($patientTooltip);
+          $patientTooltip = $patientTooltip === '' ? '' : ' class="top-tooltip"' . $patientTooltip;
 
-          if ($sampleCodeTooltip !== []) {
-               $sampleCodeTooltip = 'class="top-tooltip" title="' . implode('<br>', $sampleCodeTooltip) . '"';
-          } else {
-               $sampleCodeTooltip = [];
-          }
+          $sampleCodeTooltip = _tooltipAttribute($sampleCodeTooltip);
+          $sampleCodeTooltip = $sampleCodeTooltip === '' ? '' : ' class="top-tooltip"' . $sampleCodeTooltip;
 
-          $row[] = "<span $sampleCodeTooltip>" . $aRow['sample_code'] . '</span>';
+          $row[] = "<span$sampleCodeTooltip>" . $aRow['sample_code'] . '</span>';
 
           if ($general->isStandaloneInstance() === false) {
-               $row[] = "<span $sampleCodeTooltip>" . $aRow['remote_sample_code'] . '</span>';
+               $row[] = "<span$sampleCodeTooltip>" . $aRow['remote_sample_code'] . '</span>';
           }
 
           $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
           $row[] = $aRow['batch_code'];
-          $row[] = "<span $patientTooltip>" . $aRow['patient_art_no'] . "</span>";
+          $row[] = "<span$patientTooltip>" . $aRow['patient_art_no'] . "</span>";
           $row[] = trim(implode(" ", [$patientFname, $patientMname, $patientLname]));
           $row[] = $aRow['lab_name'];
           $row[] = $aRow['facility_name'];

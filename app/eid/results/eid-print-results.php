@@ -42,7 +42,55 @@ $formId = (int) $general->getGlobalConfig('vl_form');
     .select2-selection__choice {
         color: #000000 !important;
     }
+
+    .result-modified-badge {
+        display: inline-block;
+        margin-top: 5px;
+        padding: 2px 8px;
+        border: 1px solid #f0c078;
+        border-radius: 10px;
+        background: #fdf3e3;
+        color: #b06000;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.6;
+        white-space: nowrap;
+    }
+
+    .result-modified-badge.top-tooltip {
+        cursor: help;
+    }
+
+    /* The tooltip table is built without attributes (a quote would close the
+       title attribute), so it is styled by element from here. */
+    .tooltipster-content table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        text-align: left;
+    }
+
+    .tooltipster-content th,
+    .tooltipster-content td {
+        padding: 4px 8px;
+        vertical-align: top;
+    }
+
+    .tooltipster-content th {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .tooltipster-content tbody tr+tr td {
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .tooltipster-content td:first-child {
+        white-space: nowrap;
+    }
 </style>
+<link rel="stylesheet" type="text/css" href="/assets/css/tooltipster.bundle.min.css" />
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -433,6 +481,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/js/tooltipster.bundle.min.js"></script>
 <script type="text/javascript">
     var startDate = "";
     var endDate = "";
@@ -582,6 +631,16 @@ $formId = (int) $general->getGlobalConfig('vl_form');
         }
     });
 
+    // DataTables replaces the row markup on every draw, so the tooltips have to be
+    // re-attached each time. .tooltipstered guards against double-binding.
+    function initResultTooltips() {
+        $('.top-tooltip').not('.tooltipstered').tooltipster({
+            contentAsHTML: true,
+            maxWidth: 560,
+            interactive: true
+        });
+    }
+
     function fnShowHide(iCol) {
         var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
         oTable.fnSetColumnVis(iCol, bVis ? false : true);
@@ -681,6 +740,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                         checkBoxes[c].setAttribute("checked", true);
                     }
                 }
+                initResultTooltips();
             },
             "bProcessing": true,
             "bServerSide": true,
@@ -837,6 +897,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                         checkBoxes[c].setAttribute("checked", true);
                     }
                 }
+                initResultTooltips();
             },
             "bProcessing": true,
             "bServerSide": true,

@@ -394,8 +394,10 @@ foreach ($sourceOfRequests as $value => $displayText) {
 	</section>
 	<!-- /.content -->
 </div>
+<link rel="stylesheet" type="text/css" href="/assets/css/tooltipster.bundle.min.css" />
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/js/tooltipster.bundle.min.js"></script>
 
 <?= CommonService::barcodeScripts(); ?>
 
@@ -532,6 +534,9 @@ foreach ($sourceOfRequests as $value => $displayText) {
 						checkBoxes[c].setAttribute("checked", true);
 					}
 				}
+				$('.top-tooltip').not('.tooltipstered').tooltipster({
+					contentAsHTML: true
+				});
 			},
 			"bProcessing": true,
 			"bServerSide": true,
