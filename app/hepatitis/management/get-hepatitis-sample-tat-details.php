@@ -9,6 +9,8 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestsService;
+use App\Utilities\TurnaroundTimeUtility;
 
 
 // Sanitized values from $request object
@@ -99,10 +101,7 @@ try {
 				INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
 				LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
 				LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-				WHERE (vl.sample_collection_date is NOT NULL)
-					AND (vl.sample_tested_datetime IS NOT NULL)
-					AND vl.hcv_vl_count is not null
-					AND vl.hcv_vl_count != '' ";
+				WHERE " . implode(' AND ', TurnaroundTimeUtility::eligibilityConditions('vl', TestsService::getResultColumn('hepatitis')));
 	if ($labScope = $general->labScopeWhere('vl')) {
 		$sQuery .= " AND $labScope";
 	}

@@ -2,6 +2,8 @@
 
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use App\Registries\ContainerRegistry;
+use App\Services\TestsService;
+use App\Utilities\TurnaroundTimeUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
@@ -87,10 +89,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_collection_date,
 					INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
 					LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
 					LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
-					WHERE (vl.sample_collection_date is NOT NULL)
-					AND (vl.sample_tested_datetime is NOT NULL)
-					AND vl.result is not null
-					AND vl.result != ''";
+					WHERE " . implode(' AND ', TurnaroundTimeUtility::eligibilityConditions('vl', TestsService::getResultColumn('covid19')));
 if ($general->isSTSInstance()) {
 	if (!empty($_SESSION['facilityMap'])) {
 		$sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
