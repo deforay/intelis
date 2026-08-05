@@ -48,6 +48,7 @@ try {
     $tatStages = [
         'collectionToReceipt' => _translate('Collection to Lab Receipt'),
         'receiptToTested' => _translate('Lab Receipt to Tested'),
+        'testedToPrinted' => _translate('Tested to Result Printed'),
         'testedToReleased' => _translate('Tested to Result Released'),
         'collectionToReleased' => _translate('Collection to Result Released'),
     ];

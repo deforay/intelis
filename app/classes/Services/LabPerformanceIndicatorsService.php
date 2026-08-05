@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Exceptions\SystemException;
 use App\Utilities\DateUtility;
+use App\Utilities\TurnaroundTimeUtility;
 
 /**
  * Query layer for the Lab Performance Indicators report.
@@ -320,30 +321,53 @@ final class LabPerformanceIndicatorsService
     /**
      * Turnaround is a property of a completed test, so a period holds the
      * tests performed in it and reports how long each leg took to get there.
+     *
+     * Measured exactly as every module's Sample Status page measures it, by
+     * taking the milestone pairs and the sanity rules from
+     * TurnaroundTimeUtility rather than keeping a second hand-written copy:
+     * calendar days via DATEDIFF, only tests that produced a result, and
+     * impossible test dates excluded. The three shared stages therefore
+     * reconcile figure for figure against that page. The two release stages are
+     * additional -- Sample Status stops at the print date, which understates a
+     * lab that dispatches results without printing them.
      */
     public function getTat(array $f): array
     {
         $table = TestsService::getTestTableName($f['testKey']);
         $period = $this->periodExpr($f, self::TESTED_ON);
-        $where = $this->buildWhere($f, dateClause: $this->testedInRange($f));
+
+        $guards = array_merge(
+            [$this->resultedPredicate($f['testKey'])],
+            TurnaroundTimeUtility::plausibleDateConditions('t')
+        );
+        $where = $this->buildWhere(
+            $f,
+            extra: implode(' AND ', $guards),
+            dateClause: $this->testedInRange($f)
+        );
 
         // A result is "released" when dispatched, or failing that, printed.
         $released = "COALESCE(t.result_dispatched_datetime, t.result_printed_datetime)";
+        $shared = TurnaroundTimeUtility::STAGES;
+        $col = static fn(string $column): string => "t.$column";
 
         $stages = [
-            'collectionToReceipt' => ['t.sample_collection_date', 't.sample_received_at_lab_datetime'],
-            'receiptToTested' => ['t.sample_received_at_lab_datetime', self::TESTED_ON],
+            'collectionToReceipt' => [$col($shared['collectedToReceived'][0]), $col($shared['collectedToReceived'][1])],
+            'receiptToTested' => [$col($shared['receivedToTested'][0]), $col($shared['receivedToTested'][1])],
+            'testedToPrinted' => [$col($shared['testedToPrinted'][0]), $col($shared['testedToPrinted'][1])],
             'testedToReleased' => [self::TESTED_ON, $released],
             'collectionToReleased' => ['t.sample_collection_date', $released],
         ];
 
         $selects = [];
         foreach ($stages as $name => [$from, $to]) {
-            // Guard each stage against missing milestones and backwards data
-            // entry; AVG ignores the NULLs the CASE leaves behind.
-            $valid = "$from IS NOT NULL AND $to IS NOT NULL AND $to >= $from";
-            $selects[] = "AVG(CASE WHEN $valid THEN TIMESTAMPDIFF(HOUR, $from, $to) / 24.0 END) AS {$name}_days";
-            $selects[] = "SUM($valid) AS {$name}_n";
+            // DATEDIFF is NULL when either milestone is missing, so a stage the
+            // sample never reached drops out of the average and the count
+            // without a separate null test. Out-of-order dates are data entry
+            // errors and are left out rather than counted as zero days.
+            $diff = "DATEDIFF($to, $from)";
+            $selects[] = "ROUND(AVG(CASE WHEN $diff >= 0 THEN $diff END), 2) AS {$name}_days";
+            $selects[] = "SUM($diff >= 0) AS {$name}_n";
         }
 
         $sql = "SELECT $period AS period, COUNT(*) AS samples, " . implode(', ', $selects) . "
@@ -356,7 +380,7 @@ final class LabPerformanceIndicatorsService
         foreach ($this->db->rawQuery($sql) ?: [] as $row) {
             $out = ['period' => (string) $row['period'], 'samples' => (int) $row['samples']];
             foreach (array_keys($stages) as $name) {
-                $out[$name] = isset($row["{$name}_days"]) ? round((float) $row["{$name}_days"], 1) : null;
+                $out[$name] = isset($row["{$name}_days"]) ? round((float) $row["{$name}_days"], 2) : null;
                 $out["{$name}N"] = (int) $row["{$name}_n"];
             }
             $rows[] = $out;
