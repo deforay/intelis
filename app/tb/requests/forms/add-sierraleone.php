@@ -166,7 +166,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 													class="mandatory">*</span></label></th>
 										<td>
 											<input type="text" class="date-time form-control" id="requestedDate"
-												name="sampleReceivedDate"
+												name="requestedDate"
 												placeholder="<?= _translate("Please enter date"); ?>"
 												title="Please enter date of request date" style="width:100%;" />
 										</td>

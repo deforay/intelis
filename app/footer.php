@@ -189,6 +189,128 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 		if (window.jQuery) { jQuery(initChangeReasonCapture); }
 	})();
 </script>
+
+<?php // Rejection reason is mandatory whenever a sample (or a single test) is marked rejected. ?>
+<script type="text/javascript">
+	(function () {
+		var REASON_TITLE = <?= json_encode(_htmlTranslate('Please select the reason for sample rejection')) ?>;
+		var SPECIFY_TITLE = <?= json_encode(_htmlTranslate('Please enter the reason for sample rejection')) ?>;
+
+		// Rejection toggles across the modules. Sample level is #isSampleRejected
+		// (VL / EID / COVID-19 / CD4 / Hepatitis / TB / Custom Tests) or #gtSampleRejected
+		// (Custom Tests sample outcome); per-test cards suffix the id with the card number.
+		var TOGGLES = '[id^="isSampleRejected"], #gtSampleRejected';
+		var REASONS = '#rejectionReason, [id^="sampleRejectionReason"], #gtSampleRejectionReason';
+
+		function byId(id) {
+			var el = id ? document.getElementById(id) : null;
+			return el ? $(el) : $();
+		}
+
+		// The reason field governed by a given rejection toggle.
+		function reasonFor($toggle) {
+			var id = $toggle.attr('id') || '';
+			if (id === 'gtSampleRejected') return byId('gtSampleRejectionReason');
+			if (id.indexOf('isSampleRejected') !== 0) return $();
+			var n = id.slice('isSampleRejected'.length);
+			var $reason = byId('rejectionReason' + n);
+			return $reason.length ? $reason : byId('sampleRejectionReason' + n);
+		}
+
+		// Free-text box behind the "Other (Please Specify)" option, where a form offers it.
+		function specifyFor($reason, n) {
+			var $box = byId('newRejectionReason' + n);
+			return $box.length ? $box : $reason.closest('div, td').find('.newRejectionReason').first();
+		}
+
+		// A field the user must fill has to be reachable. Only inline-hidden wrappers are
+		// re-shown, so stylesheet-driven layout (table cells and the like) stays intact.
+		function inlineHidden() {
+			return this.style && this.style.display === 'none';
+		}
+
+		function reveal($field) {
+			if (!$field.length || $field.is(':visible')) return;
+			$field.parentsUntil('form').addBack().filter(inlineHidden).show();
+			// Table layouts hide the label cell separately from the input cell.
+			$field.closest('tr').children().filter(inlineHidden).show();
+		}
+
+		function hasChoices($reason) {
+			if (!$reason.is('select')) return true;
+			return $reason.find('option').filter(function () { return this.value !== ''; }).length > 0;
+		}
+
+		function markMandatory($field, on) {
+			var id = $field.attr('id');
+			if (!id) return;
+			var $label = $('label[for="' + id + '"]');
+			if (!$label.length) return;
+			if (on) {
+				if (!$label.find('.mandatory').length) {
+					$label.append(' <span class="mandatory rejectionReasonStar">*</span>');
+				}
+			} else {
+				$label.find('.rejectionReasonStar').remove();
+			}
+		}
+
+		function sync($toggle) {
+			var $reason = reasonFor($toggle);
+			if (!$reason.length) return;
+			var id = $toggle.attr('id') || '';
+			var n = (id.indexOf('isSampleRejected') === 0) ? id.slice('isSampleRejected'.length) : '';
+			var rejected = String($toggle.val() || '').toLowerCase() === 'yes';
+			var $specify = specifyFor($reason, n);
+
+			markMandatory($reason, rejected);
+
+			// Not rejected, a field the user cannot edit (read-only lab section), or a list
+			// with nothing to pick (no rejection reasons configured for this test yet):
+			// none of these may block the save.
+			if (!rejected || $reason.prop('disabled') || !hasChoices($reason)) {
+				$reason.removeClass('isRequired');
+				$specify.removeClass('isRequired');
+				return;
+			}
+
+			$reason.addClass('isRequired');
+			if (!$reason.attr('title')) $reason.attr('title', REASON_TITLE);
+			reveal($reason);
+
+			if ($specify.length && String($reason.val()) === 'other') {
+				$specify.addClass('isRequired');
+				if (!$specify.attr('title')) $specify.attr('title', SPECIFY_TITLE);
+				reveal($specify);
+			} else {
+				$specify.removeClass('isRequired');
+			}
+		}
+
+		function syncAll() {
+			$(TOGGLES).each(function () { sync($(this)); });
+		}
+
+		// Delegated, so this runs after each form's own handlers and also covers
+		// per-test cards added after page load.
+		$(document).on('change', TOGGLES, function () { sync($(this)); });
+		$(document).on('change', REASONS, function () { syncAll(); });
+
+		// Let each form's own on-load triggers settle before the first pass.
+		$(function () { setTimeout(syncAll, 700); });
+
+		// Last line of defence: whatever a form did to the classes in between,
+		// re-apply the rule immediately before the form is validated.
+		// deforayValidator is a top-level `let`, so it is a bare global, not a window property.
+		if (typeof deforayValidator !== 'undefined' && typeof deforayValidator.validate === 'function') {
+			var originalValidate = deforayValidator.validate;
+			deforayValidator.validate = function () {
+				syncAll();
+				return originalValidate.apply(this, arguments);
+			};
+		}
+	})();
+</script>
 </body>
 
 </html>

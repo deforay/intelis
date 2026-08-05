@@ -361,9 +361,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <input class="form-control" type="text" name="patientOccupation" id="patientOccupation" placeholder="Patient's Occupation" title="Please enter the patient's occupation" />
                                         </td>
-                                        <th scope="row"><label for="hasRecentTravelHistory"><strong>In past 14 days</strong> has the patient been in a healthcare facility (as a patient, worker, or visitor) in PNG or other country(ies) with confirmed COVID-19?</label><span class="mandatory">*</span></th>
+                                        <th scope="row"><label for="healthcareFacilityExposure"><strong>In past 14 days</strong> has the patient been in a healthcare facility (as a patient, worker, or visitor) in PNG or other country(ies) with confirmed COVID-19?</label><span class="mandatory">*</span></th>
                                         <td>
-                                            <select name="hasRecentTravelHistory" id="hasRecentTravelHistory" class="form-control isRequired" title="Please choose if the patient has had a recent history of travelling to an affected area" style="width:100%">
+                                            <select name="healthcareFacilityExposure" id="healthcareFacilityExposure" class="form-control isRequired" title="Please choose whether the patient has been in a healthcare facility in the past 14 days" style="width:100%">
                                                 <option value="">-- Select --</option>
                                                 <option value='yes'> Yes </option>
                                                 <option value='no'> No </option>
