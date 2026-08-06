@@ -61,12 +61,14 @@ try {
                 _translate('Results Available'), _translate('Awaiting a Result'),
                 _translate('Manual Entry'), _translate('Analyzer Interface'), _translate('File Import'),
                 _translate('Unclassified'), _translate('Failed'), _translate('Failure Rate (%)'),
+                _translate('Re-tested'), _translate('Re-test Rate (%)'),
                 _translate('Rejected'), _translate('Rejection Rate (%)')
             ],
             array_map(static fn(array $r): array => [
                 $r['testName'], $r['registered'], $r['sampleTested'], $r['resulted'],
                 $r['testedPending'], $r['manual'], $r['interface'],
                 $r['fileImport'], $r['unclassified'], $r['failed'], $r['failureRate'],
+                $r['retested'], $r['retestRate'],
                 $r['rejected'], $r['rejectionRate']
             ], $indicators->getOverview($filters)),
             null
@@ -105,10 +107,12 @@ try {
         'failure' => [
             [
                 _translate('Period'), _translate('Lab'), _translate('Tests with an Outcome'),
-                _translate('Failed'), _translate('Failure Rate (%)')
+                _translate('Failed'), _translate('Failure Rate (%)'),
+                _translate('Re-tested'), _translate('Re-test Rate (%)')
             ],
             array_map(static fn(array $r): array => [
-                $r['period'], $r['lab'], $r['tested'], $r['failed'], $r['failureRate']
+                $r['period'], $r['lab'], $r['tested'], $r['failed'], $r['failureRate'],
+                $r['retested'], $r['retestRate']
             ], $indicators->getFailure($filters)),
             [
                 'name' => _translate('Failure Reasons'),

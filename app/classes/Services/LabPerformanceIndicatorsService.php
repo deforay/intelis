@@ -177,11 +177,17 @@ final class LabPerformanceIndicatorsService
         return $rows;
     }
 
-    /** Failures are a property of tests, so this counts tests run in range. */
+    /**
+     * Failures are a property of tests, so this counts tests run in range -- including the
+     * ones that were re-tested afterwards, which the live row no longer remembers.
+     *
+     * `retested` is the count of those earlier attempts. It is reported alongside rather
+     * than folded away, because "how often do we have to run a sample twice" is the
+     * operational question a failure rate is usually a proxy for.
+     */
     public function getFailure(array $f): array
     {
-        $table = TestsService::getTestTableName($f['testKey']);
-        $resulted = $this->resultedPredicate($f['testKey']);
+        $events = $this->testEventsFrom($f['testKey']);
         $period = $this->periodExpr($f, self::TESTED_ON);
         $where = $this->buildWhere($f, dateClause: $this->testedInRange($f));
 
@@ -190,9 +196,10 @@ final class LabPerformanceIndicatorsService
         // resolved either way, so it stays out of the rate.
         $sql = "SELECT $period AS period,
                        COALESCE(f.facility_name, '" . $this->db->escape(_translate('Not assigned to a lab')) . "') AS lab_name,
-                       SUM(($resulted) OR t.result_status = " . \SAMPLE_STATUS\TEST_FAILED . ") AS tested,
-                       SUM(t.result_status = " . \SAMPLE_STATUS\TEST_FAILED . ") AS failed
-                  FROM $table AS t
+                       SUM(t.is_resulted OR t.is_failed) AS tested,
+                       SUM(t.is_failed) AS failed,
+                       SUM(t.is_retest) AS retested
+                  FROM $events
                   LEFT JOIN facility_details AS f ON f.facility_id = t.lab_id
                  $where
                  GROUP BY period, lab_name
@@ -208,31 +215,38 @@ final class LabPerformanceIndicatorsService
                 'tested' => $tested,
                 'failed' => $failed,
                 'failureRate' => $tested > 0 ? round($failed * 100 / $tested, 2) : null,
+                'retested' => (int) $row['retested'],
+                'retestRate' => $tested > 0 ? round((int) $row['retested'] * 100 / $tested, 2) : null,
             ];
         }
         return $rows;
     }
 
     /**
-     * Failure reasons exist per sample only on VL (reason_for_failure).
-     * Other modules express failure solely through result_status, so this
-     * returns an empty list for them and the UI hides the breakdown.
+     * Why tests failed, counted over the same events as the failure rate so the two
+     * breakdowns always add up to the same total.
+     *
+     * This covered viral load alone until reason_for_failure was levelled across every
+     * module (5.6.2), and it read r_vl_test_failure_reasons, which ships empty -- which is
+     * why the breakdown reported "Not specified" for practically everything. It now reads
+     * the shared r_test_failure_reasons vocabulary, and falls back to the legacy VL table
+     * for ids recorded before the merge.
      */
     public function getFailureReasons(array $f): array
     {
-        if (!in_array($f['testKey'], ['vl', 'recency'], true)) {
-            return [];
-        }
+        $events = $this->testEventsFrom($f['testKey']);
         $where = $this->buildWhere(
             $f,
-            extra: ' t.result_status = ' . \SAMPLE_STATUS\TEST_FAILED . ' ',
+            extra: ' t.is_failed = 1 ',
             dateClause: $this->testedInRange($f)
         );
 
-        $sql = "SELECT COALESCE(r.failure_reason, '" . $this->db->escape(_translate('Not specified')) . "') AS reason,
+        $sql = "SELECT COALESCE(r.failure_reason, legacy.failure_reason,
+                                '" . $this->db->escape(_translate('Not specified')) . "') AS reason,
                        COUNT(*) AS total
-                  FROM form_vl AS t
-                  LEFT JOIN r_vl_test_failure_reasons AS r ON r.failure_id = t.reason_for_failure
+                  FROM $events
+                  LEFT JOIN r_test_failure_reasons AS r ON r.failure_id = t.reason_for_failure
+                  LEFT JOIN r_vl_test_failure_reasons AS legacy ON legacy.failure_id = t.reason_for_failure
                  $where
                  GROUP BY reason
                  ORDER BY total DESC";
@@ -480,6 +494,10 @@ final class LabPerformanceIndicatorsService
             $where = $this->buildWhere($moduleFilters, dateClause: $this->anyEventInRange($moduleFilters));
             $aggregates = $this->overviewAggregates($moduleFilters);
 
+            // Failure figures come from the shared event definition, not from this pass over
+            // the live rows, so the overview and the failure-rate chart cannot disagree.
+            $failures = $this->failureEventTotals($moduleFilters);
+
             if ($testKey === 'generic-tests') {
                 $grouped = $this->db->rawQuery(
                     "SELECT tt.test_standard_name, t.test_type, $aggregates
@@ -490,18 +508,26 @@ final class LabPerformanceIndicatorsService
                       ORDER BY tt.test_standard_name ASC"
                 ) ?: [];
                 foreach ($grouped as $row) {
+                    $genericTestTypeId = (int) ($row['test_type'] ?? 0);
                     $rows[] = $this->shapeOverviewRow(
                         $testKey,
                         (string) ($row['test_standard_name'] ?? TestsService::getTestName($testKey)),
                         $row,
-                        (int) ($row['test_type'] ?? 0)
+                        $genericTestTypeId,
+                        $failures[(string) $genericTestTypeId] ?? []
                     );
                 }
                 continue;
             }
 
             $row = $this->db->rawQueryOne("SELECT $aggregates FROM $table AS t $where") ?: [];
-            $rows[] = $this->shapeOverviewRow($testKey, TestsService::getTestName($testKey), $row);
+            $rows[] = $this->shapeOverviewRow(
+                $testKey,
+                TestsService::getTestName($testKey),
+                $row,
+                0,
+                $failures[''] ?? []
+            );
         }
         return $rows;
     }
@@ -524,20 +550,65 @@ final class LabPerformanceIndicatorsService
                 SUM(($tested) AND (($resulted) AND (" . self::ENTRY_MANUAL . "))) AS manual_entry,
                 SUM(($tested) AND (($resulted) AND (" . self::ENTRY_INTERFACE . "))) AS interfaced,
                 SUM(($tested) AND (($resulted) AND (" . self::ENTRY_FILE_IMPORT . "))) AS file_imported,
-                SUM(($tested) AND (($resulted) OR t.result_status = " . \SAMPLE_STATUS\TEST_FAILED . ")) AS outcomes,
-                SUM(($tested) AND t.result_status = " . \SAMPLE_STATUS\TEST_FAILED . ") AS failed,
                 SUM(($registered) AND " . $this->rejectedPredicate() . ") AS rejected";
+        // outcomes and failed are deliberately absent: they are counted per test event by
+        // failureEventTotals(), because a form_* row no longer holds every test run on the
+        // sample once a failure has been re-tested.
     }
 
-    private function shapeOverviewRow(string $testKey, string $testName, array $row, int $genericTestTypeId = 0): array
+    /**
+     * Failure figures for the overview, over the same events as getFailure().
+     *
+     * Keyed by custom test type id for generic-tests -- which the overview breaks out
+     * individually -- and under '' for every other module, which reports as one row.
+     *
+     * @return array<string, array{outcomes: int, failed: int, retested: int}>
+     */
+    private function failureEventTotals(array $f): array
     {
+        $events = $this->testEventsFrom($f['testKey']);
+        $where = $this->buildWhere($f, dateClause: $this->testedInRange($f));
+        $groupKey = $f['testKey'] === 'generic-tests' ? 't.test_type' : "''";
+
+        $sql = "SELECT $groupKey AS grp,
+                       SUM(t.is_resulted OR t.is_failed) AS outcomes,
+                       SUM(t.is_failed) AS failed,
+                       SUM(t.is_retest) AS retested
+                  FROM $events
+                 $where
+                 GROUP BY grp";
+
+        $totals = [];
+        foreach ($this->db->rawQuery($sql) ?: [] as $row) {
+            $totals[(string) ($row['grp'] ?? '')] = [
+                'outcomes' => (int) $row['outcomes'],
+                'failed' => (int) $row['failed'],
+                'retested' => (int) $row['retested'],
+            ];
+        }
+        return $totals;
+    }
+
+    /**
+     * @param array{outcomes?: int, failed?: int, retested?: int} $failures
+     *        Per-test-event figures from failureEventTotals(); empty when the module had no
+     *        events in range, which reads as zero rather than as a missing figure.
+     */
+    private function shapeOverviewRow(
+        string $testKey,
+        string $testName,
+        array $row,
+        int $genericTestTypeId = 0,
+        array $failures = []
+    ): array {
         $registered = (int) ($row['registered'] ?? 0);
         $sampleTested = (int) ($row['sample_tested'] ?? 0);
         $testedPending = (int) ($row['tested_pending'] ?? 0);
         $resultedCount = (int) ($row['resulted'] ?? 0);
         $classified = (int) ($row['manual_entry'] ?? 0) + (int) ($row['interfaced'] ?? 0) + (int) ($row['file_imported'] ?? 0);
-        $outcomes = (int) ($row['outcomes'] ?? 0);
-        $failed = (int) ($row['failed'] ?? 0);
+        $outcomes = (int) ($failures['outcomes'] ?? 0);
+        $failed = (int) ($failures['failed'] ?? 0);
+        $retested = (int) ($failures['retested'] ?? 0);
         $rejected = (int) ($row['rejected'] ?? 0);
 
         return [
@@ -555,6 +626,8 @@ final class LabPerformanceIndicatorsService
             'outcomes' => $outcomes,
             'failed' => $failed,
             'failureRate' => $outcomes > 0 ? round($failed * 100 / $outcomes, 2) : null,
+            'retested' => $retested,
+            'retestRate' => $outcomes > 0 ? round($retested * 100 / $outcomes, 2) : null,
             'rejected' => $rejected,
             'rejectionRate' => $registered > 0 ? round($rejected * 100 / $registered, 2) : null,
         ];
@@ -651,6 +724,80 @@ final class LabPerformanceIndicatorsService
     private function rejectedPredicate(): string
     {
         return "(t.is_sample_rejected = 'yes' OR t.result_status = " . \SAMPLE_STATUS\REJECTED . ")";
+    }
+
+    /**
+     * Every completed test, as a derived table aliased `t`.
+     *
+     * A form_* row holds only the CURRENT result, so counting failures off it undercounts
+     * badly: re-testing a failed sample resets result_status, and the failure that was
+     * acted on disappears from the numerator. The better a lab is at re-testing, the fewer
+     * failures it appeared to have. Retained attempts (see TestAttemptService) are the rest
+     * of the picture, and this is the one place the two are combined, so every failure
+     * figure on this report counts the same thing.
+     *
+     * Only attempts superseded by a RE-TEST are counted as separate tests. The other
+     * supersession reasons -- a result edit, an import, an instrument re-send -- replace the
+     * value of the same run rather than recording a second run, so counting them would
+     * inflate the test count every time somebody corrected a typo. They stay retained for
+     * audit; they are simply not events here.
+     *
+     * Each event is dated by its own sample_tested_datetime, so a failure lands in the month
+     * it happened rather than being re-bucketed onto the date of the test that replaced it.
+     *
+     * Columns are named to match the live table so buildWhere() and the lab scope apply
+     * unchanged. is_failed / is_resulted are precomputed because the resulted test differs
+     * per module and must not be re-derived per call site.
+     */
+    private function testEventsFrom(string $testKey): string
+    {
+        $table = TestsService::getTestTableName($testKey);
+        $primaryKey = TestsService::getPrimaryColumn($testKey);
+        $resultColumn = TestsService::getResultColumn($testKey);
+        $failed = \SAMPLE_STATUS\TEST_FAILED;
+        $isGeneric = $testKey === 'generic-tests';
+
+        $liveResulted = "(live.`$resultColumn` IS NOT NULL AND live.`$resultColumn` != '')";
+        if ($isGeneric) {
+            $liveResulted = "($liveResulted OR EXISTS (SELECT 1 FROM generic_test_results AS gtr
+                                WHERE gtr.generic_id = live.`$primaryKey`
+                                  AND COALESCE(gtr.final_result, gtr.result, '') != ''))";
+        }
+
+        // Only generic-tests filters on a test_type column, and the two sides mean different
+        // things: form_generic.test_type is the custom test type id, while
+        // test_result_attempts.test_type is the module key. The archived id is read back out
+        // of the row snapshot so both sides carry the same value.
+        $liveTestType = $isGeneric ? "live.test_type AS test_type," : '';
+        $archivedTestType = $isGeneric
+            ? "CAST(JSON_UNQUOTE(JSON_EXTRACT(a.attempt_data, '$.row.test_type')) AS UNSIGNED) AS test_type,"
+            : '';
+
+        return "(
+                    SELECT live.lab_id AS lab_id,
+                           live.facility_id AS facility_id,
+                           $liveTestType
+                           live.sample_tested_datetime AS sample_tested_datetime,
+                           (live.result_status = $failed) AS is_failed,
+                           $liveResulted AS is_resulted,
+                           live.reason_for_failure AS reason_for_failure,
+                           0 AS is_retest
+                      FROM `$table` AS live
+
+                    UNION ALL
+
+                    SELECT a.lab_id,
+                           a.facility_id,
+                           $archivedTestType
+                           a.sample_tested_datetime,
+                           a.result_failed,
+                           (a.result IS NOT NULL AND a.result != ''),
+                           a.reason_for_failure,
+                           1
+                      FROM test_result_attempts AS a
+                     WHERE a.form_table = '" . $this->db->escape($table) . "'
+                       AND a.superseded_by = '" . TestAttemptService::BY_RETEST . "'
+                ) AS t";
     }
 
     private function rejectionReasonTable(string $testKey): string
