@@ -11,6 +11,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\TestResultsService;
+use App\Services\TestAttemptService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -26,6 +27,9 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var TestResultsService $testResultsService */
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
+
+/** @var TestAttemptService $attempts */
+$attempts = ContainerRegistry::get(TestAttemptService::class);
 
 $fileName = null;
 $importedBy = $_SESSION['userId'];
@@ -125,6 +129,16 @@ try {
                     if (!empty($vlResult)) {
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['data_sync'] = 0;
+
+                        // Retain the outgoing result before the import overwrites it. This path
+                        // matches on sample_code alone with no "already has a result" guard, so
+                        // re-importing a file replaces whatever was there, including a failure.
+                        $attempts->archive(
+                            'eid',
+                            (int) $vlResult[0]['eid_id'],
+                            TestAttemptService::BY_IMPORT
+                        );
+
                         $db->where('sample_code', $rResult['sample_code']);
                         $result = $db->update("form_eid", $data);
                         $eidId = $vlResult[0]['eid_id'];
@@ -170,7 +184,9 @@ try {
     }
 
     //get all accepted data result
-    $accQuery = "SELECT tsr.*
+    // eid_id is selected from the join so the outgoing result can be archived before the
+    // update below replaces it.
+    $accQuery = "SELECT tsr.*, vl.eid_id
                     FROM temp_sample_import as tsr
                     LEFT JOIN form_eid as vl ON vl.sample_code=tsr.sample_code
                     WHERE imported_by = ? AND tsr.result_status=7";
@@ -211,6 +227,15 @@ try {
             }
 
             $data['data_sync'] = 0;
+
+            // eid_id comes from the LEFT JOIN above and is null for a sample_code with no
+            // matching row, in which case there is nothing to archive.
+            $attempts->archive(
+                'eid',
+                (int) ($accResult[$i]['eid_id'] ?? 0),
+                TestAttemptService::BY_IMPORT
+            );
+
             $db->where('sample_code', $accResult[$i]['sample_code']);
             $result = $db->update("form_eid", $data);
 

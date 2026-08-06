@@ -9,6 +9,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestAttemptService;
 
 
 /** @var DatabaseService $db */
@@ -153,8 +154,30 @@ try {
       $eidData['lab_assigned_code'] = $_POST['labAssignedCode'];
   }
 
-  $db->where('eid_id', $_POST['eidSampleId']);
-  $id = $db->update($tableName, $eidData);
+  // Retain the outgoing result before it is replaced. See TestAttemptService: editing a
+  // result overwrites it just as surely as a re-test does, and nothing is written when
+  // there is no prior result to keep.
+  /** @var TestAttemptService $attempts */
+  $attempts = ContainerRegistry::get(TestAttemptService::class);
+
+  $db->beginTransaction();
+
+  try {
+      $attempts->archive(
+          'eid',
+          (int) $_POST['eidSampleId'],
+          TestAttemptService::BY_RESULT_EDIT,
+          $_POST['reasonForResultChanges'] ?? $_POST['reasonForChanging'] ?? null
+      );
+
+      $db->where('eid_id', $_POST['eidSampleId']);
+      $id = $db->update($tableName, $eidData);
+
+      $db->commitTransaction();
+  } catch (Throwable $e) {
+      $db->rollbackTransaction();
+      throw $e;
+  }
 
   $_SESSION['alertMsg'] = _translate("EID result updated successfully");
   //Add event log
