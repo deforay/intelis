@@ -2,6 +2,7 @@
 
 // this file is included in eid/results/generate-result-pdf.php
 use const SAMPLE_STATUS\REJECTED;
+use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Helpers\PdfWatermarkHelper;
@@ -326,7 +327,7 @@ if (!empty($result)) {
     if (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') {
         $finalResult = 'Rejected';
     } else {
-        $finalResult = $eidResults[$result['result']] ?? ucwords((string) $result['result']);
+        $finalResult = EidService::resultLabel($eidResults, $result['result']);
     }
 
     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:40px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $finalResult . '</td><td >' . $smileyContent . '</td></tr>';

@@ -2,6 +2,7 @@
 
 // this file is included in eid/results/generate-result-pdf.php
 use const SAMPLE_STATUS\REJECTED;
+use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\ResultPdfService;
@@ -345,7 +346,7 @@ if (!empty($result)) {
     if (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') {
         $finalResult = _translate('Rejected');
     } else {
-        $finalResult = $eidResults[$result['result']] ?? ucwords((string) $result['result']);
+        $finalResult = EidService::resultLabel($eidResults, $result['result']);
     }
 
     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:40px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;' . _translate('Result') . '    &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . _translate($finalResult) . '</td><td >' . $smileyContent . '</td></tr>';
@@ -374,7 +375,7 @@ if (!empty($result)) {
         // Read the most recent change entry; tolerant of the legacy single-object format and the array.
         $latestChange = \App\Utilities\MiscUtility::latestResultChangeReason($result['reason_for_changing'] ?? null);
         $dateOfModified = $latestChange['dtime'] ?? '';
-        $prevResult = $eidResults[$latestChange['previousResult'] ?? ''] ?? '';
+        $prevResult = EidService::resultLabel($eidResults, $latestChange['previousResult'] ?? '');
         $reasonForChange = $latestChange['msg'] ?? '';
     }
 
