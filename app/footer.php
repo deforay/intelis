@@ -193,8 +193,10 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 <?php // Rejection reason is mandatory whenever a sample (or a single test) is marked rejected. ?>
 <script type="text/javascript">
 	(function () {
-		var REASON_TITLE = <?= json_encode(_htmlTranslate('Please select the reason for sample rejection')) ?>;
-		var SPECIFY_TITLE = <?= json_encode(_htmlTranslate('Please enter the reason for sample rejection')) ?>;
+		<?php // These reach the DOM through .attr('title', ...), which does not decode entities,
+		// so they must not be HTML-escaped -- json_encode already makes them safe JS literals. ?>
+		var REASON_TITLE = <?= json_encode(_translate('Please select the reason for sample rejection')) ?>;
+		var SPECIFY_TITLE = <?= json_encode(_translate('Please enter the reason for sample rejection')) ?>;
 
 		// Rejection toggles across the modules. Sample level is #isSampleRejected
 		// (VL / EID / COVID-19 / CD4 / Hepatitis / TB / Custom Tests) or #gtSampleRejected
