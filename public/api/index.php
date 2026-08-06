@@ -169,7 +169,7 @@ $middlewareStack = [
         return $response;
     },
 
-    // 2) Body parsing (JSON, form, etc.)
+    // 2) Gate the Interface Tool API surface
     ContainerRegistry::get(InterfaceRequestGuardMiddleware::class),
 
     // 3) Body parsing (JSON, form, etc.)

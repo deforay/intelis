@@ -102,12 +102,18 @@ sequenceDiagram
 
 - Error handling: `App\Middlewares\Api\ApiErrorHandlingMiddleware`
 - CORS (including preflight handling)
+- Interface Tool API guard: `App\Middlewares\Api\InterfaceRequestGuardMiddleware`
 - Body parsing: `Slim\Middleware\BodyParsingMiddleware`
 - JSON content-type enforcement
 - Auth: `App\Middlewares\Api\ApiAuthMiddleware`
 - Request context: `AppRegistry` request
 - Legacy fallback: `App\Middlewares\Api\ApiLegacyFallbackMiddleware`
 - Content-Length header
+
+The Interface Tool endpoints are registered as real Slim routes rather than
+legacy includes. They carry their own `InterfaceApiEnabledMiddleware` and
+`InterfaceInstallationAuthMiddleware`, so a lab is always resolved from the
+credential instead of the request.
 
 ## Legacy Application Layout
 

@@ -1,12 +1,15 @@
 # Fix Illegal/Mismatched Collation Issue
 
-This guide provides steps to resolve collation mismatches in the VLSM database using phpMyAdmin by standardizing all tables and columns to use `utf8mb4_general_ci` collation.
+This guide resolves collation mismatches in the InteLIS database using phpMyAdmin. It sets every table and column to the `utf8mb4_general_ci` collation.
+
+On a server with CLI access, `vendor/bin/db-tools collation` does the same job
+without phpMyAdmin. See [Maintenance Scripts](maintenance.md#database-tools-db-tools).
 
 ## Steps
 
 1. **Access phpMyAdmin** — Open your browser and navigate to the phpMyAdmin interface. Authenticate with your credentials.
 
-2. **Navigate to VLSM Database** — Select the `vlsm` database from the left sidebar.
+2. **Navigate to the database** — Select the `vlsm` database from the left sidebar.
 
 3. **Open Operations Tab** — Click the "Operations" tab at the top of the page.
 

@@ -20,7 +20,7 @@ Do these five things on the Windows PC first. They take about five minutes.
 
 Create a folder, for example:
 
-```
+```text
 C:\InteLIS-Backups
 ```
 
@@ -28,7 +28,7 @@ C:\InteLIS-Backups
 
 1. Right-click the folder → **Properties** → **Sharing** tab → **Advanced Sharing…**
 2. Tick **Share this folder**.
-3. Set the **Share name** to `InteLIS-Backups` (⚠️ **no spaces** in the name).
+3. Set the **Share name** to `InteLIS-Backups`. The name must not contain spaces.
 4. Click **Permissions**, and give the backup user (created next) **Change** and **Read**.
 5. Click **OK** on all windows.
 
@@ -70,7 +70,7 @@ Run these three commands on the InteLIS server.
 
 ```bash
 cd ~
-wget -O remote-backup-windows.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/remote-backup-windows.sh
+wget -O remote-backup-windows.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup-windows.sh
 ```
 
 ### 2. Make it executable
@@ -85,7 +85,7 @@ sudo chmod u+x remote-backup-windows.sh
 sudo ./remote-backup-windows.sh
 ```
 
-The script will ask you a few questions:
+The script asks a few questions:
 
 - **Lab name / code** — a short identifier for this lab (e.g. `centrallab`).
 - **LIS folder path** — press Enter to accept the default `/var/www/intelis`.

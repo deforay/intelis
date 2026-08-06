@@ -1,6 +1,12 @@
-# Remote Command Plane — Plan
+# Remote Command Plane — Design
 
-STS queues commands for LIS instances; LIS pulls them on its existing `sync-sts` tick; non-privileged commands run in PHP as www-data, root-privileged commands are dispatched to a local systemd-timed runner.
+How the remote command plane works and why it is built this way. For the
+operator procedures, see the
+[Remote Command Plane runbook](guides/remote-command-plane.md).
+
+The STS queues commands for LIS instances. Each LIS pulls them on its existing
+`sync-sts` tick. Non-privileged commands run in PHP as www-data. Root-privileged
+commands are dispatched to a local systemd-timed runner.
 
 ## 1. Architecture
 
@@ -34,20 +40,22 @@ Three trust boundaries. Each layer trusts the layer below to do strictly less th
 
 ## 2. Command dictionary
 
-| Command           | Runs as      | Uses                                                          |
-| ----------------- | ------------ | ------------------------------------------------------------- |
-| `resend-results`  | www-data PHP | `app/tasks/remote/results-sender.php [module] <days>`         |
-| `resend-requests` | www-data PHP | `app/tasks/remote/requests-receiver.php`                      |
-| `metadata-resync` | www-data PHP | `composer run metadata-sync --force`                          |
-| `refresh-cache`   | www-data PHP | clear `var/cache`, invalidate file cache                      |
-| `rotate-token`    | www-data PHP | drop STS token, re-fetch                                      |
-| `upgrade`         | root runner  | prepare + apply back-to-back                                  |
-| `upgrade-prepare` | root runner  | prepare only, stop at `READY`                                 |
-| `upgrade-apply`   | root runner  | apply a previously prepared tree (by `commandId`)             |
-| `refresh-perms`   | root runner  | `intelis-refresh -p <path> -m full`                           |
-| `restart-apache`  | root runner  | `systemctl reload apache2`                                    |
+| Command           | Runs as      | Uses                                                                 |
+| ----------------- | ------------ | -------------------------------------------------------------------- |
+| `resend-results`  | www-data PHP | `app/tasks/remote/results-sender.php [module] <days>`                |
+| `resend-requests` | www-data PHP | `app/tasks/remote/requests-receiver.php`                             |
+| `metadata-resync` | www-data PHP | `composer run metadata-sync --force`                                 |
+| `refresh-cache`   | www-data PHP | clear `var/cache`, invalidate file cache                             |
+| `rotate-token`    | www-data PHP | drop STS token, re-fetch                                             |
+| `upgrade`         | root runner  | prepare + apply back-to-back                                         |
+| `upgrade-prepare` | root runner  | prepare only, stop at `READY`                                        |
+| `upgrade-apply`   | root runner  | apply a previously prepared tree (by `commandId`)                    |
+| `refresh-perms`   | root runner  | `intelis-refresh -p <path> -m full`                                  |
+| `restart-apache`  | root runner  | `apache2ctl -k graceful`, falling back to `systemctl reload apache2` |
 
 Default path is www-data in-PHP. The root runner is reserved for the narrow set of ops that genuinely need root.
+
+The runbook carries the same list described for operators. Change both together.
 
 ## 3. Data model
 
@@ -167,7 +175,7 @@ Starts only when:
 
 Steps:
 
-1. Take a hardlink snapshot of current tree → `/var/intelis-rollback/<commandId>/` (via `rsync -a --link-dest`)
+1. Take a hardlink snapshot of current tree → `/var/intelis-rollback/<timestamp>/<basename>/` (via `rsync -a --link-dest`)
 2. Drop Apache maintenance conf → returns 503 with `Retry-After`
 3. rsync staging tree → `lis_path` (local FS, fast)
 4. rsync pre-extracted vendor → `lis_path/vendor`
@@ -221,7 +229,7 @@ Operator workflow for a version that needs approval:
   ```
 
 - Writes `var/remote-commands/results/<commandId>.json` throughout
-- Logs to `var/logs/runner-<date>.log`
+- Logs to `/var/log/intelis-runner/runner-<date>.log`, rotated by logrotate
 - Does no network I/O for authorization — trusts that www-data wrote the marker only because STS told it to; the trust chain stops at the PHP layer
 
 ## 8. File layout
@@ -246,14 +254,15 @@ Operator workflow for a version that needs approval:
 
 ## 9. Build order
 
-Each step ships value on its own; each is testable without the next.
+The order the plane was built in, kept as the record of why the pieces are
+separable. Each step shipped value on its own and was testable without the next.
 
 1. **Refactor `scripts/upgrade.sh` into `prepare_phase()` + `apply_phase()`.** Default invocation (`sudo intelis-update`) runs both back-to-back — manual UX unchanged. Add `--prepare-only` and `--apply-prepared <dir>` flags. Add rollback snapshot via `rsync -a --link-dest`. Add Apache maintenance-mode drop-in during apply. Parallel downloads of master + vendor. **Ships standalone benefit to every lab: shorter downtime, cleaner failure modes, no remote-command plumbing involved.**
 2. **STS: table + admin UI** to queue `resend-results`. Safest remote command. Verify schema end-to-end.
 3. **LIS: courier** (`pending-commands.php`) + `composer.json` wiring. Gated behind `global_config.remote_commands_enabled` (default false). Still only `resend-results`. Prove pull/execute/report loop.
 4. **LIS: more www-data handlers** — `metadata-resync`, `refresh-cache`, `rotate-token`, `resend-requests`. No new infrastructure.
 5. **Root runner + systemd timer** — dispatch the simpler root commands first (`refresh-perms`, `restart-apache`).
-6. **Upgrade through the runner** — `upgrade`, `upgrade-prepare`, `upgrade-apply`. Runner just invokes `intelis-update --prepare-only` and `--apply-prepared <dir>` from step 1. Smoke check. Nonce enforcement.
+6. **Upgrade through the runner** — `upgrade`, `upgrade-prepare`, `upgrade-apply`. Runner invokes `intelis-update --prepare-only` and `--apply-prepared <dir>` from step 1. Smoke check. Nonce enforcement.
 7. **Safety rails** — kill switch, `not_before`, `expires_at`, dependency gating.
 8. **Gated-apply UI** — admin UI shows `prepared` labs with staged version; operator picks from that list to queue `upgrade-apply`.
 

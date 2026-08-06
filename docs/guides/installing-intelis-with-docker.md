@@ -61,11 +61,11 @@ The entrypoint script automatically handles everything that `setup.sh` does manu
 
 Once the containers are running, open your browser and navigate to:
 
-```
+```text
 http://localhost/
 ```
 
-The system will prompt you to finalize LIS configuration and create an administrator account.
+InteLIS then prompts you to finalize the configuration and create an administrator account.
 
 ## Environment Variables Reference
 
@@ -87,7 +87,7 @@ The system will prompt you to finalize LIS configuration and create an administr
 
 On a traditional Ubuntu installation, updating requires running `upgrade.sh` — a ~1200-line script that handles Ubuntu package updates, PHP version switching, OPcache configuration, MySQL performance tuning (buffer pool sizing based on RAM, SSD detection, slow query logs), Composer updates, Apache config validation, database backups, vendor checksum verification, directory structure migrations, cron job setup, run-once scripts, file permissions, and multi-instance coordination.
 
-With Docker, updating is simply:
+With Docker, updating is three commands:
 
 ```bash
 cd intelis
@@ -134,4 +134,4 @@ docker compose up -d
 ```
 
 !!! warning
-    Using `docker compose down -v` will **delete all database data**. Only use this if you want a fresh start.
+    `docker compose down -v` **deletes all database data**. Use it only for a fresh start.

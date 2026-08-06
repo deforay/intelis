@@ -3,9 +3,9 @@ set -Eeuo pipefail
 
 # To use this script:
 #   cd ~
-#   wget -O remote-intelis-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
-#   chmod u+x remote-intelis-backup.sh
-#   sudo ./remote-intelis-backup.sh
+#   wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
+#   chmod u+x remote-backup.sh
+#   sudo ./remote-backup.sh
 
 trap 'echo -e "\033[1;91m❌ Error:\033[0m setup failed at line $LINENO (status $?)"' ERR
 

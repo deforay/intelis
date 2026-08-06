@@ -1,6 +1,6 @@
 # Updating InteLIS on Ubuntu 22.04 or above (only Ubuntu LTS)
 
-**Note:** This will work on Ubuntu 22.04 or above (ONLY LTS).
+**Note:** This works on Ubuntu 22.04 or above, LTS versions only.
 
 ## Update Steps
 
@@ -16,7 +16,7 @@ sudo intelis-update
 
 ## Important Requirements
 
-When the update process runs, you will be prompted to provide two critical pieces of information:
+The update prompts for two pieces of information:
 
 1. MySQL password
 2. STS URL

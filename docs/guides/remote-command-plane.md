@@ -1,7 +1,7 @@
 # Remote Command Plane — Operator Runbook
 
-> Admin-facing guide. For the architectural plan and the trust model, see
-> [remote-command-plane.md](../remote-command-plane.md) in the repo root of docs.
+> Admin-facing guide. For the architecture and the trust model, see the
+> [Remote Command Plane design](../remote-command-plane.md).
 
 This guide is for operators who manage STS and the labs connected to it.
 It covers how to enable remote commands on a lab, queue common commands,
@@ -18,18 +18,18 @@ by LIS, which preserves the usual one-way security model.
 
 Commands in the whitelist:
 
-| Command            | Runs as       | What it does                                  |
-|--------------------|---------------|-----------------------------------------------|
-| `resend-results`   | www-data PHP  | Re-runs `results-sender.php` with optional module + days filter |
-| `resend-requests`  | www-data PHP  | Re-runs `requests-receiver.php` with optional module + manifest |
-| `metadata-resync`  | www-data PHP  | Force metadata sync from STS + lab metadata send |
-| `refresh-cache`    | www-data PHP  | Clears the file cache (optional tag filter) |
-| `rotate-token`     | www-data PHP  | Drops + re-fetches the STS bearer token |
-| `refresh-perms`    | root runner   | `intelis-refresh -p <lis> -m full` |
-| `restart-apache`   | root runner   | `apache2ctl -k graceful` |
-| `upgrade`          | root runner   | Prepare + auto-apply back-to-back in one shot |
-| `upgrade-prepare`  | root runner   | Download + extract + validate; does not apply |
-| `upgrade-apply`    | root runner   | Apply a previously prepared upgrade |
+| Command           | Runs as      | What it does                                                    |
+|-------------------|--------------|-----------------------------------------------------------------|
+| `resend-results`  | www-data PHP | Re-runs `results-sender.php` with optional module + days filter |
+| `resend-requests` | www-data PHP | Re-runs `requests-receiver.php` with optional module + manifest |
+| `metadata-resync` | www-data PHP | Force metadata sync from STS + lab metadata send                |
+| `refresh-cache`   | www-data PHP | Clears the file cache (optional tag filter)                     |
+| `rotate-token`    | www-data PHP | Drops + re-fetches the STS bearer token                         |
+| `refresh-perms`   | root runner  | `intelis-refresh -p <lis> -m full`                              |
+| `restart-apache`  | root runner  | `apache2ctl -k graceful`                                        |
+| `upgrade`         | root runner  | Prepare + auto-apply back-to-back in one shot                   |
+| `upgrade-prepare` | root runner  | Download + extract + validate. Does not apply.                  |
+| `upgrade-apply`   | root runner  | Apply a previously prepared upgrade                             |
 
 ## Enabling remote commands on a lab
 
@@ -63,7 +63,7 @@ Disable again at any time:
 
 - Flip `global_config.remote_commands_enabled` to anything non-truthy →
   courier stops polling the pending-commands endpoint. Queued commands
-  on STS just sit at `pending` until you turn it back on or cancel them.
+  on STS sit at `pending` until you turn it back on or cancel them.
 - Flip `global_config.allow_remote_upgrade` to `no` → courier drops a
   `var/remote-commands/disabled` flag file; the runner refuses all root
   commands. Non-root commands (resends, cache refresh) still work.
@@ -127,26 +127,31 @@ stale staging.
 ## Troubleshooting
 
 ### "Queue" button doesn't appear
+
 You don't have the `Queue Lab Command` privilege. Ask an admin to add
 the `/admin/monitoring/queue-lis-command.php` privilege to your role.
 
 ### Command sits at `pending` forever
+
 Likely the lab has `remote_commands_enabled = no` (or unset). The LIS
 courier never polls, so STS never learns the command was "seen".
 Options: turn the flag on at the lab, or cancel the command on STS.
 
 ### Command gets to `picked` then stalls
+
 Means the courier pulled it but hasn't reported back yet. For non-root
 commands, check `/var/log/apache2/error.log` or the LIS cron log for
 exceptions. For root commands, check `/var/log/intelis-runner/runner-*.log`
 and `systemctl status intelis-runner.service`.
 
 ### Upgrade gets to `prepared` and waits
+
 The command's `not_before` hasn't arrived yet. STS withholds the
 command from the lab until that timestamp passes. Check the details
 pane of the row on Lab Command History.
 
 ### Rolling back a bad upgrade
+
 The apply phase always takes a hardlink snapshot at
 `/var/intelis-rollback/<timestamp>/<basename>/` before rsyncing the
 new tree. If the smoke check fails, the runner restores the snapshot

@@ -1,37 +1,45 @@
 # InteLIS Documentation
 
-Welcome to the InteLIS documentation. Use the sidebar to navigate through the guides.
+InteLIS is an open-source laboratory information system for HIV viral load, EID,
+TB, hepatitis, COVID-19, CD4, and custom tests. Use the sidebar to navigate.
 
-## Contributing
-
-- [Engineering Standards](engineering-standards.md) — the bar for a change, the adversarial review step, and the standing invariants
+InteLIS was previously called VLSM. Some paths and the database keep the old
+name, and the guides say so where it matters.
 
 ## Installation
 
+- [Installing InteLIS with Docker](guides/installing-intelis-with-docker.md) — the quickest route, and the recommended one
 - [Installing InteLIS on Ubuntu](guides/installing-intelis-on-ubuntu.md) — Ubuntu 22.04 LTS or above
-- [Installing VLSM on Windows](guides/installing-vlsm-on-windows.md) — Full setup with WampServer, PHP, MySQL, and interfacing
+- [Installing InteLIS on Windows](guides/installing-intelis-on-windows.md) — WampServer, PHP, MySQL, and interfacing
 
-## Updates & Migration
+## Updates and migration
 
 - [Updating InteLIS on Ubuntu](guides/updating-intelis-on-ubuntu.md)
-- [Updating VLSM on Windows](guides/updating-vlsm-on-windows.md)
-- [Migrating Between Ubuntu Machines](guides/migrating-ubuntu-machines.md)
+- [Updating InteLIS on Windows](guides/updating-intelis-on-windows.md)
+- [Migrating between Ubuntu machines](guides/migrating-ubuntu-machines.md)
 
 ## Backup
 
-- [Backup to Google Drive with Rclone](guides/backing-up-to-google-drive-with-rclone.md)
-- [Backup to Remote Server](guides/backing-up-to-remote-server.md)
+- [Backing up to Google Drive with Rclone](guides/backing-up-to-google-drive-with-rclone.md)
+- [Backing up to a remote server](guides/backing-up-to-remote-server.md)
+- [Backing up to a Windows machine](guides/backing-up-to-windows-machine.md) — over the local network
 
 ## Maintenance
 
-- [Scripts & Tools](guides/maintenance.md) — Service guard, resource monitor, db-tools, cleanup, scanner, and scheduled tasks
+- [Maintenance scripts](guides/maintenance.md) — service guard, resource monitor, db-tools, cleanup, scanner, and scheduled tasks
+
+## Remote administration
+
+- [Remote command plane runbook](guides/remote-command-plane.md) — queue commands from the STS and monitor them
 
 ## Troubleshooting
 
-- [Fix Collation Mismatch](guides/fix-collation-issue.md)
-- [Permission Denied Issue](guides/permission-denied-issue.md)
-- [Setting up Interfacing Tool](guides/setting-up-interfacing-tool.md)
+- [Fix a collation mismatch](guides/fix-collation-issue.md)
+- [Fix a permission denied error](guides/permission-denied-issue.md)
+- [Set up the interfacing tool](guides/setting-up-interfacing-tool.md)
 
-## API Reference
+## Reference
 
-The interactive API documentation is available at [api/](api/).
+- [Architecture](ARCHITECTURE.md) — how a request travels through the codebase
+- [Engineering standards](engineering-standards.md) — the bar for a change, the review step, and the standing invariants
+- [API reference](api/) — the interactive OpenAPI documentation

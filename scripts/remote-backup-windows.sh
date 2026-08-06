@@ -3,9 +3,9 @@ set -Eeuo pipefail
 
 # To use this script:
 #   cd ~
-#   wget -O remote-backup-windows.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/remote-backup-windows.sh
-#   chmod u+x remote-intelis-backup-windows.sh
-#   sudo ./remote-intelis-backup-windows.sh
+#   wget -O remote-backup-windows.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup-windows.sh
+#   chmod u+x remote-backup-windows.sh
+#   sudo ./remote-backup-windows.sh
 #
 # This is the Windows-destination twin of remote-backup.sh.
 # Instead of rsync-over-SSH to an Ubuntu box, it mounts a Windows shared

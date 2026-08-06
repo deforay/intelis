@@ -134,6 +134,7 @@ php bin/housekeeping.php [DAYS]
 |-----------|---------|----------|
 | `var/logs/` | — | 1 GB |
 | `var/temporary/` | 3 days | 500 MB |
+| `public/temporary/` | 3 days | 500 MB |
 | `var/track-api/requests/` | 120 days | 1 GB |
 | `var/track-api/responses/` | 120 days | 1 GB |
 
@@ -200,6 +201,8 @@ InteLIS uses [Crunz](https://github.com/lavary/crunz) for task scheduling. All d
 | Archive Audit Tables | Every 6 hours |
 | Generate Sample Codes | Every minute |
 | Update Sample Status | Daily 00:05 |
+| VL Result Interpretation | Every minute |
+| Prune Remote Command Rows | Daily 03:15 |
 
 **Conditional tasks** (run only when the feature is enabled):
 
@@ -207,10 +210,10 @@ InteLIS uses [Crunz](https://github.com/lavary/crunz) for task scheduling. All d
 |------|----------|-----------|
 | SQLite-to-MySQL Sync | Every 5 min | Interfacing enabled |
 | Interface Import | Every minute | Interfacing enabled |
-| STS Sync | Every 5 min | STS URL configured |
+| STS Sync | Every 5 min | STS URL configured, on a LIS instance |
 | SmartConnect Metadata | Every 20 min | SmartConnect configured |
 | SmartConnect VL/EID/COVID | Every 25–35 min | Module + SmartConnect |
-| TB Referrals | Every minute | TB module active |
+| Inter-lab Referrals | Every minute | On an STS instance |
 
 Each task uses `preventOverlapping()` to prevent concurrent execution. A heartbeat file at `var/.cron_heartbeat` is updated on every scheduler run.
 
