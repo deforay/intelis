@@ -116,13 +116,6 @@ $disable = "disabled = 'disabled'";
 										<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Enter Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" value="<?= ($cd4QueryInfo['sample_code']); ?>" <?php echo $disable; ?> style="width:100%;" />
 									</div>
 								</div>
-								<div class="col-xs-3 col-md-3">
-									<div class="form-group">
-										<label for="sampleReordered">
-											<input type="checkbox" class="" id="sampleReordered" name="sampleReordered" value="yes" <?php echo (trim((string) $cd4QueryInfo['sample_reordered']) === 'yes') ? 'checked="checked"' : '' ?> <?php echo $disable; ?> title="Please indicate if this is a reordered sample"> Sample Reordered
-										</label>
-									</div>
-								</div>
 							</div>
 							<div class="row">
 								<div class="col-xs-3 col-md-3">
@@ -305,8 +298,8 @@ $disable = "disabled = 'disabled'";
 									</div>
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
-											<label for="">Is sample re-ordered as part of corrective action? <span class="mandatory">*</span></label>
-											<select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" title="Please choose adherence">
+											<label for="isSampleReordered"><?= _translate("Is sample re-ordered as part of corrective action?"); ?> <span class="mandatory">*</span></label>
+											<select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" title="<?= _translate("Please choose if sample is reordered"); ?>" <?php echo $disable; ?>>
 												<option value=""> -- Select -- </option>
 												<option value="yes" <?php echo $cd4QueryInfo['sample_reordered'] == 'yes' ? 'selected="selected"' : ''; ?>>Yes</option>
 												<option value="no" <?php echo $cd4QueryInfo['sample_reordered'] == 'no' ? 'selected="selected"' : ''; ?>>No</option>
@@ -561,20 +554,6 @@ $disable = "disabled = 'disabled'";
 											</div>
 										</div>
 
-										<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
-											<div class="row">
-												<div class="col-md-6">
-													<div class="form-group">
-														<div class="col-lg-12">
-															<label class="radio-inline">
-																<input type="radio" class="" id="recencyTest" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" <?php echo $disable; ?> <?php echo trim((string) $cd4QueryInfo['reason_for_cd4_testing']) === '9999' ? "checked='checked'" : ""; ?> onclick="showTesting('recency')">
-																<strong>Confirmation Test for Recency</strong>
-															</label>
-														</div>
-													</div>
-												</div>
-											</div>
-										<?php } ?>
 										<hr>
 										<div class="row">
 											<div class="col-md-4">
@@ -731,7 +710,7 @@ $disable = "disabled = 'disabled'";
 											</div>
 											<div class="row crAgResults" style="display:none;">
 												<div class="col-md-6 cd4Result">
-													<label class="col-lg-5 control-label" for="cd4Result">CrAg test Result (If CD4 Count <= 200)</label>
+													<label class="col-lg-5 control-label" for="crAgResults">CrAg test Result (If CD4 Count <= 200)</label>
 															<div class="col-lg-7">
 																<select class="form-control" id="crAgResults" name="crAgResults" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
 																	<option value="">--Select--</option>
@@ -819,14 +798,6 @@ $disable = "disabled = 'disabled'";
 </div>
 <script>
 	$(document).ready(function() {
-		$("#vlLog").on('keyup keypress blur change paste', function() {
-			if ($(this).val() != '') {
-				if ($(this).val() != $(this).val().replace(/[^\d\.]/g, "")) {
-					$(this).val('');
-					alert('Please enter only numeric values for Viral Load Log')
-				}
-			}
-		});
 		$('#labId').select2({
 			placeholder: "Select Lab Name"
 		});
@@ -858,7 +829,10 @@ $disable = "disabled = 'disabled'";
 		$('#sampleReceivedDate,#sampleTestingDateAtLab,#resultDispatchedOn').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?> 99:99');
 		__clone = $("#cd4RequestFormRwd .labSection").clone();
 		reason = ($("#reasonForResultChanges").length) ? $("#reasonForResultChanges").val() : '';
-		result = ($("#vlResult").length) ? $("#vlResult").val() : '';
+		// Read the CD4 result, not #vlResult -- this form was copied from viral load and
+		// #vlResult does not exist here, so `result` was always empty and the change
+		// detection below could never fire.
+		result = ($("#cd4Result").length) ? $("#cd4Result").val() : '';
 	});
 
 	$("#isSampleRejected").on("change", function() {
@@ -899,29 +873,6 @@ $disable = "disabled = 'disabled'";
 		}
 	}
 
-	function calculateLogValue(obj) {
-		if (obj.id == "vlResult") {
-			absValue = $("#vlResult").val();
-			absValue = Number.parseFloat(absValue).toFixed();
-			if (absValue != '' && absValue != 0 && !isNaN(absValue)) {
-				//$("#vlResult").val(absValue);
-				$("#vlLog").val(Math.round(Math.log10(absValue) * 100) / 100);
-			} else {
-				$("#vlLog").val('');
-			}
-		}
-		if (obj.id == "vlLog") {
-			logValue = $("#vlLog").val();
-			if (logValue != '' && logValue != 0 && !isNaN(logValue)) {
-				var absVal = Math.round(Math.pow(10, logValue) * 100) / 100;
-				if (absVal != 'Infinity' && !isNaN(absVal)) {
-					$("#vlResult").val(Math.round(Math.pow(10, logValue) * 100) / 100);
-				}
-			} else {
-				$("#vlResult").val('');
-			}
-		}
-	}
 
 	function validateNow() {
 		flag = deforayValidator.init({
