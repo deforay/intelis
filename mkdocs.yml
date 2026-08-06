@@ -34,15 +34,17 @@ theme:
   icon:
     repo: fontawesome/brands/github
 
+# Keep this list and the one in docs/index.md in the same order. They are the
+# site's two tables of contents and they drift apart if edited separately.
 nav:
   - Home: index.md
   - Installation:
       - Using Docker (Recommended): guides/installing-intelis-with-docker.md
       - InteLIS on Ubuntu: guides/installing-intelis-on-ubuntu.md
-      - VLSM on Windows: guides/installing-vlsm-on-windows.md
+      - InteLIS on Windows: guides/installing-intelis-on-windows.md
   - Updates & Migration:
       - Updating InteLIS on Ubuntu: guides/updating-intelis-on-ubuntu.md
-      - Updating VLSM on Windows: guides/updating-vlsm-on-windows.md
+      - Updating InteLIS on Windows: guides/updating-intelis-on-windows.md
       - Migrating Ubuntu Machines: guides/migrating-ubuntu-machines.md
   - Backup:
       - Google Drive with Rclone: guides/backing-up-to-google-drive-with-rclone.md
@@ -50,13 +52,25 @@ nav:
       - Windows Machine (Same Network): guides/backing-up-to-windows-machine.md
   - Maintenance:
       - Scripts & Tools: guides/maintenance.md
+  - Remote Administration:
+      - Remote Command Plane (runbook): guides/remote-command-plane.md
   - Troubleshooting:
       - Fix Collation Mismatch: guides/fix-collation-issue.md
       - Permission Denied Issue: guides/permission-denied-issue.md
       - Setting up Interfacing Tool: guides/setting-up-interfacing-tool.md
-  - Remote Administration:
-      - Remote Command Plane (runbook): guides/remote-command-plane.md
-  - Architecture: ARCHITECTURE.md
+  - Reference:
+      - Architecture: ARCHITECTURE.md
+      - Engineering Standards: engineering-standards.md
+      - Remote Command Plane (design): remote-command-plane.md
+
+# The Windows guides were renamed when VLSM became InteLIS. These keep the
+# published URLs working. Add an entry here whenever a page is renamed.
+plugins:
+  - search
+  - redirects:
+      redirect_maps:
+        guides/installing-vlsm-on-windows.md: guides/installing-intelis-on-windows.md
+        guides/updating-vlsm-on-windows.md: guides/updating-intelis-on-windows.md
 
 markdown_extensions:
   - admonition

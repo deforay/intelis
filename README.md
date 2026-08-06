@@ -55,7 +55,7 @@ See the full license text in [LICENSE.md](LICENSE.md).
 
 - Apache 2.x (with `rewrite` and `headers` modules enabled)
 - MySQL 5.7 or higher
-- PHP 8.4.x or 8.5.x
+- PHP 8.2 to 8.5. The Ubuntu installer selects 8.4, or 8.5 on Ubuntu 26.04 and newer.
 - [Composer](https://getcomposer.org/download/)
 
 ------
@@ -64,7 +64,7 @@ See the full license text in [LICENSE.md](LICENSE.md).
 
 ### Option 1 — Automated Installation (Ubuntu LTS only)
 
-**Supports Ubuntu 22.04 and above (LTS versions only)**
+Supports Ubuntu 22.04 and above, LTS versions only.
 
 ```bash
 # Download the script to a file, then run it. Do NOT pipe it (curl ... | bash).
@@ -85,7 +85,7 @@ After the script completes:
    sudo gedit /var/www/intelis/configs/config.production.php
    ```
 
-2. Continue with [Complete the Setup](#-complete-the-setup).
+2. Continue with [Complete the Setup](#complete-the-setup).
 
 ------
 
@@ -108,8 +108,8 @@ composer post-install
 
 #### Step 3 — Set up the database
 
-1. Create a blank database called `intelis`.
-2. Import `init.sql` from the `sql` folder into it (e.g., via phpMyAdmin or MySQL CLI).
+1. Create a blank database called `vlsm`.
+2. Import `init.sql` from the `sql` folder into it (via phpMyAdmin or the MySQL CLI).
 
 #### Step 4 — Configure the application
 
@@ -126,7 +126,7 @@ Edit `configs/config.production.php`:
 $systemConfig['database']['host']     = 'localhost';
 $systemConfig['database']['username'] = 'dbuser';
 $systemConfig['database']['password'] = 'dbpassword';
-$systemConfig['database']['db']       = 'intelis';
+$systemConfig['database']['db']       = 'vlsm';
 $systemConfig['database']['port']     = 3306;
 $systemConfig['database']['charset']  = 'utf8mb4';
 ```
@@ -137,10 +137,11 @@ Enable or disable modules as needed:
 // Enable/Disable Modules
 $systemConfig['modules']['vl'] = true;              // Viral Load
 $systemConfig['modules']['eid'] = true;             // Early Infant Diagnosis
-$systemConfig['modules']['covid19'] = false;        // Covid-19
-$systemConfig['modules']['generic-tests'] = false;  // Generic Tests
+$systemConfig['modules']['covid19'] = true;         // Covid-19
 $systemConfig['modules']['hepatitis'] = false;      // Hepatitis
 $systemConfig['modules']['tb'] = false;             // Tuberculosis
+$systemConfig['modules']['cd4'] = false;            // CD4
+$systemConfig['modules']['generic-tests'] = false;  // Custom Tests
 ```
 
 #### Step 5 — Set up Apache virtual host
@@ -149,7 +150,7 @@ $systemConfig['modules']['tb'] = false;             // Tuberculosis
 
 2. Add this to `/etc/hosts`:
 
-   ```
+   ```text
    127.0.0.1  intelis.example.org
    ```
 
@@ -187,11 +188,11 @@ Add this line:
 
 ## Complete the Setup
 
-**Applies to both automated and manual installations.**
+These steps apply to both automated and manual installations.
 
 1. Visit the application in your browser:
-   - **Manual:** Use the hostname you configured (e.g., http://intelis.example.org/)
-   - **Automated:** Use the hostname you chose during setup (default: http://intelis/)
+   - **Manual:** Use the hostname you configured, for example <http://intelis.example.org/>
+   - **Automated:** Use the hostname you chose during setup, `intelis` by default: <http://intelis/>
 
 2. Register and set up the admin user.
 
