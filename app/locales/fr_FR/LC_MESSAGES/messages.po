@@ -18717,11 +18717,31 @@ msgstr "Sélectionner le nom de l'établissement à filtrer"
 msgid "SAMPLES REGISTERED BY COLLECTION POINT"
 msgstr "ÉCHANTILLONS ENREGISTRÉS PAR POINT DE COLLECTE"
 
-#: app/dashboard/getSampleCount.php:139 app/dashboard/getSampleResult.php:511
-#: app/dashboard/getSampleResult.php:533 app/dashboard/getSampleResult.php:556
-#: app/dashboard/getSampleResult.php:577
+#: app/dashboard/getSampleCount.php:139
 msgid "In Selected Range"
 msgstr "Dans la plage sélectionnée"
+
+#: app/dashboard/getSampleResult.php:511 app/dashboard/getSampleResult.php:559
+msgid "Collected in"
+msgstr "Prélevés sur la période"
+
+#: app/dashboard/getSampleResult.php:533
+msgid "Tested in"
+msgstr "Testés sur la période"
+
+#: app/dashboard/getSampleResult.php:536
+msgid "Accepted results only. Includes samples collected before this range."
+msgstr ""
+"Uniquement les résultats acceptés. Inclut les échantillons prélevés avant "
+"cette période."
+
+#: app/dashboard/getSampleResult.php:580
+msgid "Status of samples collected in"
+msgstr "Statut des échantillons prélevés sur la période"
+
+#: app/dashboard/getSampleResult.php:588
+msgid "Tested (any outcome)"
+msgstr "Testés (tous résultats)"
 
 #: app/dashboard/getSampleCount.php:163
 msgid "Total Samples Registered"
