@@ -99,7 +99,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		<div class="box box-default">
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span>
-					<?= _translate("indicates required fields"); ?> &nbsp;</div>
+					<?= _translate("indicates required fields"); ?> &nbsp;
+				</div>
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
@@ -182,8 +183,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										<td>
 											<input type="text"
 												value="<?php echo $tbInfo['request_created_datetime']; ?>"
-												class="date-time form-control" id="requestedDate"
-												name="requestedDate"
+												class="date-time form-control" id="requestedDate" name="requestedDate"
 												placeholder="<?= _translate("Please enter date"); ?>"
 												title="Please enter date of request date" style="width:100%;" />
 										</td>
@@ -209,15 +209,15 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												id="otherReferringUnit" placeholder="Enter other reffering unit"
 												title="Please enter the other referring unit" />
 										</td>
-										</tr>
-										<tr>
-											<td><label class="label-control" for="labId">Testing Laboratory </label></td>
-											<td>
-												<select name="labId" id="labId" class="form-control select2"
-													title="Please select Testing Laboratory" style="width:100%;">
-													<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
-												</select>
-											</td>
+									</tr>
+									<tr>
+										<td><label class="label-control" for="labId">Testing Laboratory </label></td>
+										<td>
+											<select name="labId" id="labId" class="form-control select2"
+												title="Please select Testing Laboratory" style="width:100%;">
+												<?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
+											</select>
+										</td>
 									</tr>
 								</table>
 
@@ -238,14 +238,16 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<th scope="row" style="width:15%"><label for="patientId">TB Registration Unique ID </label></th>
+										<th scope="row" style="width:15%"><label for="patientId">TB Registration Unique
+												ID </label></th>
 										<td style="width:35%">
 											<input type="text" value="<?php echo $tbInfo['patient_id']; ?>"
 												class="form-control" id="patientId" name="patientId"
 												placeholder="Patient Identification" title="Please enter Patient ID"
 												style="width:100%;" onchange="" />
 										</td>
-										<th scope="row" style="width:15%"><label for="firstName">First Name </label></th>
+										<th scope="row" style="width:15%"><label for="firstName">First Name </label>
+										</th>
 										<td style="width:35%">
 											<input type="text" value="<?php echo $tbInfo['patient_name']; ?>"
 												class="form-control" id="firstName" name="firstName"
@@ -305,8 +307,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<tr>
 										<th scope="row"><label for="typeOfPatient">Type of patient </label></th>
 										<td>
-											<select class="select2 form-control" name="typeOfPatient"
-												id="typeOfPatient" title="Please select the type of patient"
+											<select class="select2 form-control" name="typeOfPatient" id="typeOfPatient"
+												title="Please select the type of patient"
 												onchange="showOther(this.value,'typeOfPatientOther');">
 												<option value=''> -- Select -- </option>
 												<option value='new' <?php echo ($typeOfPatient == 'new') ? "selected='selected'" : ""; ?>> New </option>
@@ -343,13 +345,14 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</label>
 										</td>
 									</tr>
-									<tr class="diagnosis hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "table-row" : "none"; ?>; border: 1px solid #8080804f;">
+									<tr class="diagnosis hide-reasons"
+										style="display: <?php echo (isset($reasonForTbTest->reason->diagnosis) && $reasonForTbTest->reason->diagnosis == "yes") ? "table-row" : "none"; ?>; border: 1px solid #8080804f;">
 										<td colspan="2" style="text-align: left; padding: 10px;">
-											<ul style="display: inline-flex; list-style: none; padding: 0px; margin: 0;">
+											<ul
+												style="display: inline-flex; list-style: none; padding: 0px; margin: 0;">
 												<li style="margin-right: 20px;">
 													<label class="radio-inline" style="margin-left:0;">
-														<input type="checkbox"
-															class="diagnosis-check reason-checkbox"
+														<input type="checkbox" class="diagnosis-check reason-checkbox"
 															id="presumptiveTb"
 															name="reasonForTbTest[elaboration][diagnosis][Presumptive TB]"
 															value="yes" <?php echo (isset($diagnosis['Presumptive TB']) && $diagnosis['Presumptive TB'] == "yes") ? "checked" : ""; ?>>
@@ -358,8 +361,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												</li>
 												<li style="margin-right: 20px;">
 													<label class="radio-inline" style="margin-left:0;">
-														<input type="checkbox"
-															class="diagnosis-check reason-checkbox"
+														<input type="checkbox" class="diagnosis-check reason-checkbox"
 															id="rifampicinResistantTb"
 															name="reasonForTbTest[elaboration][diagnosis][Rifampicin-resistant TB]"
 															value="yes" <?php echo (isset($diagnosis['Rifampicin-resistant TB']) && $diagnosis['Rifampicin-resistant TB'] == "yes") ? "checked" : ""; ?>>
@@ -368,8 +370,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												</li>
 												<li>
 													<label class="radio-inline" style="margin-left:0;">
-														<input type="checkbox"
-															class="diagnosis-check reason-checkbox" id="mdrtb"
+														<input type="checkbox" class="diagnosis-check reason-checkbox"
+															id="mdrtb"
 															name="reasonForTbTest[elaboration][diagnosis][MDR-TB]"
 															value="yes" <?php echo (isset($diagnosis['MDR-TB']) && $diagnosis['MDR-TB'] == "yes") ? "checked" : ""; ?>>
 														MDR-TB
@@ -379,10 +381,12 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</td>
 										<td colspan="2"></td>
 									</tr>
-									<tr class="follow-up hide-reasons" style="display: <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "table-row" : "none"; ?>; border: 1px solid #8080804f;">
+									<tr class="follow-up hide-reasons"
+										style="display: <?php echo (isset($reasonForTbTest->reason->followup) && $reasonForTbTest->reason->followup == "yes") ? "table-row" : "none"; ?>; border: 1px solid #8080804f;">
 										<td colspan="2"></td>
 										<td colspan="2" style="text-align: left; padding: 10px;">
-											<ul class="followUp" style="display: inline-flex; list-style: none; padding: 0px; margin: 0;">
+											<ul class="followUp"
+												style="display: inline-flex; list-style: none; padding: 0px; margin: 0;">
 												<li style="margin-right: 20px;">
 													<label>Month Of Treatment</label>
 													<input type="text"
@@ -423,22 +427,14 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								</div>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
-										<th scope="row" style="width:15%"><label class="label-control" for="sampleCollectionDate">Date
+										<th scope="row" style="width:15%"><label class="label-control"
+												for="sampleCollectionDate">Date
 												Specimen Collected </label></th>
 										<td style="width:35%">
 											<input class="form-control"
-												value="<?php echo $tbInfo['sample_collection_date']; ?>"  type="text"
+												value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text"
 												name="sampleCollectionDate" id="sampleCollectionDate"
 												placeholder="Sample Collection Date" />
-										</td>
-										<th scope="row" style="width:15%"><label class="label-control" for="sampleReceivedDate">Date of
-												Specimen Reception </label></th>
-										<td style="width:35%">
-											<input type="text" class="date-time form-control"
-												value="<?php echo $tbInfo['sample_received_at_lab_datetime']; ?>"
-												id="sampleReceivedDate" name="sampleReceivedDate"
-												placeholder="<?= _translate("Please enter date"); ?>"
-												title="Please enter sample receipt date" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
@@ -498,7 +494,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 						</div>
 						<?php if (_isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
 							<?php // if (false) {
-							?>
+								?>
 							<div class="box box-primary">
 								<div class="box-body">
 									<div class="box-header with-border">
@@ -506,7 +502,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									</div>
 									<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 										<tr>
-											
+
 											<th scope="row"><label class="label-control" for="sampleReceivedDate">Date of
 													Reception </label></th>
 											<td>
@@ -527,7 +523,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											</td>
 										</tr>
 										<tr>
-											
+
+											<!-- Duplicate of the Tested By control in the sign-off row below, which is later in
+											     the DOM and is therefore the value PHP keeps. Editing this one had no effect. -->
+											<!--
 											<th scope="row"><label class="label-control" for="testedBy">Tested By</label>
 											</th>
 											<td>
@@ -536,18 +535,19 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row"><label class="label-control" for="testedBy">Date Of
+											-->
+											<th scope="row"><label class="label-control" for="resultDate">Date Of
 													Result</label></th>
 											<td>
 												<input type="text" value="<?php echo $tbInfo['result_date']; ?>"
 													class="date-time form-control"
-													value="<?php echo $tbInfo['result_date']; ?>" id="resultDate"
+													id="resultDate"
 													name="resultDate" placeholder="<?= _translate("Please enter date"); ?>"
 													title="Please enter result date" style="width:100%;" />
 											</td>
 										</tr>
 										<tr>
-											
+
 											<th scope="row"><label class="label-control" for="sampleDispatchedDate">Sample
 													Dispatched On</label></th>
 											<td>
@@ -571,9 +571,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 
 										</tr>
 										<tr class="show-rejection" style="display:none;">
-											
-											<th scope="row"><label
-													class="label-control" for="sampleRejectionReason">Reason for Rejection
+
+											<th scope="row"><label class="label-control" for="sampleRejectionReason">Reason
+													for Rejection
 													<span class="mandatory">*</span></label></th>
 											<td class="show-rejection" style="display:none;">
 												<select class="form-control" name="sampleRejectionReason"
@@ -590,7 +590,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 																	<option value="<?php echo $reject['rejection_reason_id']; ?>" <?php echo ($tbInfo['reason_for_sample_rejection'] == $reject['rejection_reason_id']) ? 'selected="selected"' : ''; ?>>
 																		<?= $reject['rejection_reason_name']; ?>
 																	</option>
-															<?php }
+																<?php }
 															} ?>
 														</optgroup>
 													<?php }
@@ -673,7 +673,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 																			title="Please enter the actual number" />
 																	</td>
 																</tr>
-															<?php
+																<?php
 															} else { ?>
 																<tr>
 																	<td class="text-center"><?php echo $no; ?></td>
@@ -693,7 +693,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 																			title="Please enter the actual number" />
 																	</td>
 																</tr>
-														<?php }
+															<?php }
 														} ?>
 													</tbody>
 												</table>
@@ -918,13 +918,13 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
 		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
+			tableName: tableName,
+			fieldName: fieldName,
+			value: removeDots.trim(),
+			fnct: fnct,
+			format: "html"
+		},
+			function (data) {
 				if (data === '1') {
 					alert(alrt);
 					document.getElementById(obj.id).value = "";
@@ -937,10 +937,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		var selectedTestingPoint = null;
 		if (labId) {
 			$.post("/includes/getTestingPoints.php", {
-					labId: labId,
-					selectedTestingPoint: selectedTestingPoint
-				},
-				function(data) {
+				labId: labId,
+				selectedTestingPoint: selectedTestingPoint
+			},
+				function (data) {
 					if (data != "") {
 						$(".testingPointField").show();
 						$("#testingPoint").html(data);
@@ -962,10 +962,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		}
 		if ($.trim(pName) != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-					pName: pName,
-					testType: 'tb'
-				},
-				function(data) {
+				pName: pName,
+				testType: 'tb'
+			},
+				function (data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#facilityId").html(details[0]);
@@ -989,10 +989,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		var pName = obj.value;
 		if ($.trim(pName) != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-					pName: pName,
-					testType: 'tb'
-				},
-				function(data) {
+				pName: pName,
+				testType: 'tb'
+			},
+				function (data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#patientDistrict").html(details[1]);
@@ -1020,7 +1020,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		$("#patientNationality").select2('val', patientArray[12]);
 		$("#patientCity").val(patientArray[13]);
 
-		setTimeout(function() {
+		setTimeout(function () {
 			$("#patientDistrict").val(patientArray[15]).trigger('change');
 		}, 3000);
 	}
@@ -1032,11 +1032,11 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		var cName = $("#facilityId").val();
 		if (dName != '') {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-					dName: dName,
-					cliName: cName,
-					testType: 'tb'
-				},
-				function(data) {
+				dName: dName,
+				cliName: cName,
+				testType: 'tb'
+			},
+				function (data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#facilityId").html(details[0]);
@@ -1058,10 +1058,10 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		}
 		if (cName != '' && facilityName) {
 			$.post("/includes/siteInformationDropdownOptions.php", {
-					cName: cName,
-					testType: 'tb'
-				},
-				function(data) {
+				cName: cName,
+				testType: 'tb'
+			},
+				function (data) {
 					if (data != "") {
 						details = data.split("###");
 						$("#province").html(details[0]);
@@ -1091,7 +1091,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 		}
 	}
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 
 
 
@@ -1125,11 +1125,11 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 			placeholder: "Select Patient Region"
 		});
 
-		$('#isResultAuthorized').change(function(e) {
+		$('#isResultAuthorized').change(function (e) {
 			checkIsResultAuthorized();
 		});
 
-		$('#sourceOfAlertPOE').change(function(e) {
+		$('#sourceOfAlertPOE').change(function (e) {
 			if (this.value == 'others') {
 				$('.show-alert-poe').show();
 				$('#alertPoeOthers').addClass('isRequired');
@@ -1139,22 +1139,22 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 			}
 		});
 		<?php if (isset($arr['tb_positive_confirmatory_tests_required_by_central_lab']) && $arr['tb_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
-			$(document).on('change', '.test-result, #result', function(e) {
+			$(document).on('change', '.test-result, #result', function (e) {
 				checkPostive();
 			});
 		<?php } ?>
 		getfacilityProvinceDetails($("#facilityId").val());
-		$("#labId").change(function(e) {
+		$("#labId").change(function (e) {
 			if ($(this).val() != "") {
 				$.post("/tb/requests/get-attributes-data.php", {
-						id: this.value,
-					},
-					function(data) {
+					id: this.value,
+				},
+					function (data) {
 						//console.log(data);
 						if (data != "" && data != false) {
 							_data = jQuery.parseJSON(data);
 							$(".platform").hide();
-							$.each(_data, function(index, value) {
+							$.each(_data, function (index, value) {
 								$("." + value).show();
 							});
 						}
