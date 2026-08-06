@@ -387,7 +387,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                 </table>
                             </div>
                         </div>
-                        <?php if ($_SESSION['accessType'] != 'collection-site') { ?>
+                        <?php if (_isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
                             <?php // if (false) {
                             ?>
                             <div class="box box-primary">
@@ -401,12 +401,15 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                             <td class="td-input">
                                                 <input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
                                             </td>
+                                            <?php // Collection-site users pick the testing lab at the top of the form. ?>
+                                            <?php if ($_SESSION['accessType'] != 'collection-site') { ?>
                                             <th class="th-label"><label class="label-control" for="labId"><?= _translate("Testing Laboratory"); ?> <span class="mandatory">*</span></label> </th>
                                             <td class="td-input">
                                                 <select name="labId" id="labId" class="form-control select2 isRequired" title="Please select Testing Testing Laboratory" style="width:100%;">
                                                     <?= $general->generateSelectOptions($testingLabs, $tbInfo['lab_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
+                                            <?php } ?>
                                         </tr>
                                         <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleDispatchedDate"><?= _translate("Sample Dispatched On"); ?></label></th>
