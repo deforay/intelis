@@ -249,7 +249,10 @@ $testingLabs = $facilitiesService->getTestingLabs();
                                 <dd><?= _htmlTranslate('The same registered, tested and resulted counts broken down per lab and period, each still measured on its own date. Every result is also classified by how it reached the system: Manual Entry means it was typed in, Analyzer Interface means it was received directly from the instrument, and File Import means it was uploaded from a result file. Results saved before this tracking existed are shown as Unclassified.'); ?></dd>
 
                                 <dt><?= _htmlTranslate('Failure Rate'); ?></dt>
-                                <dd><?= _htmlTranslate('Of the tests performed in the period, failed tests divided by those with an outcome, meaning a result or a recorded test failure. Tests still awaiting approval have not resolved either way and are not part of this rate.'); ?></dd>
+                                <dd><?= _htmlTranslate('Of the tests performed in the period, failed tests divided by those with an outcome, meaning a result or a recorded test failure. Tests still awaiting approval have not resolved either way and are not part of this rate. A sample that failed and was then re-tested counts as two tests, each on the date it was run, so a failure still counts even after a later run replaced it. Correcting a stored result is not a second test and does not add to these counts.'); ?></dd>
+
+                                <dt><?= _htmlTranslate('Re-test Rate'); ?></dt>
+                                <dd><?= _htmlTranslate('How many of the tests performed in the period were earlier attempts on a sample that had to be run again, divided by all tests with an outcome. It answers how often a sample takes more than one run, which a failure rate on its own does not show.'); ?></dd>
 
                                 <dt><?= _htmlTranslate('Rejection Rate'); ?></dt>
                                 <dd><?= _htmlTranslate('Rejection happens at registration, before any test, so both sides of this rate count samples registered in the period: those rejected divided by all of them.'); ?></dd>
@@ -516,6 +519,8 @@ $testingLabs = $facilitiesService->getTestingLabs();
         tested: "<?= _jsTranslate('Tested'); ?>",
         failed: "<?= _jsTranslate('Failed'); ?>",
         failureRate: "<?= _jsTranslate('Failure Rate (%)'); ?>",
+        retested: "<?= _jsTranslate('Re-tested'); ?>",
+        retestRate: "<?= _jsTranslate('Re-test Rate (%)'); ?>",
         received: "<?= _jsTranslate('Samples'); ?>",
         rejected: "<?= _jsTranslate('Rejected'); ?>",
         rejectionRate: "<?= _jsTranslate('Rejection Rate (%)'); ?>",
@@ -728,6 +733,7 @@ $testingLabs = $facilitiesService->getTestingLabs();
             [LPI_LABELS.test, LPI_LABELS.registered, LPI_LABELS.sampleTested, LPI_LABELS.resulted,
             LPI_LABELS.awaiting, LPI_LABELS.manual, LPI_LABELS.interface, LPI_LABELS.fileImport,
             LPI_LABELS.unclassified, LPI_LABELS.failed, LPI_LABELS.failureRate,
+            LPI_LABELS.retested, LPI_LABELS.retestRate,
             LPI_LABELS.rejected, LPI_LABELS.rejectionRate],
             rows.map(function (r) {
                 return [r.testName, r.registered.toLocaleString(), r.sampleTested.toLocaleString(),
@@ -735,6 +741,8 @@ $testingLabs = $facilitiesService->getTestingLabs();
                 r.manual.toLocaleString(), r.interface.toLocaleString(), r.fileImport.toLocaleString(),
                 r.unclassified.toLocaleString(), r.failed.toLocaleString(),
                 r.failureRate === null ? null : r.failureRate + '%',
+                r.retested.toLocaleString(),
+                r.retestRate === null ? null : r.retestRate + '%',
                 r.rejected.toLocaleString(),
                 r.rejectionRate === null ? null : r.rejectionRate + '%'];
             }));
@@ -829,10 +837,13 @@ $testingLabs = $facilitiesService->getTestingLabs();
 
     function renderFailure(rows, reasons) {
         buildTable('tableFailure',
-            [LPI_LABELS.period, LPI_LABELS.lab, LPI_LABELS.outcomes, LPI_LABELS.failed, LPI_LABELS.failureRate],
+            [LPI_LABELS.period, LPI_LABELS.lab, LPI_LABELS.outcomes, LPI_LABELS.failed, LPI_LABELS.failureRate,
+            LPI_LABELS.retested, LPI_LABELS.retestRate],
             rows.map(function (r) {
                 return [r.period, r.lab, r.tested.toLocaleString(), r.failed.toLocaleString(),
-                r.failureRate === null ? null : r.failureRate + '%'];
+                r.failureRate === null ? null : r.failureRate + '%',
+                r.retested.toLocaleString(),
+                r.retestRate === null ? null : r.retestRate + '%'];
             }));
 
         var agg = sumByPeriod(rows, ['tested', 'failed']);
