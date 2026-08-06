@@ -182,7 +182,7 @@ if (!empty($result)) {
     $messageTextSize = '12px';
     if ($result['result'] != null && trim((string) $result['result']) !== '') {
         $resultType = is_numeric($result['result']);
-        $vlResult = $eidResults[$result['result']] ?? (string) $result['result'];
+        $vlResult = EidService::resultLabel($eidResults, $result['result']);
         if ($vlResult == 'positive') {
             $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="smile_face"/>';
         } elseif ($vlResult == 'negative') {
