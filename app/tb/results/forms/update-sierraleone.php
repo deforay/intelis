@@ -789,7 +789,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											<td class="text-center">Drug Susceptibility Results (MGIT - 1st Line)</td>
 											<td>
 												<select class="form-control" name="drugMGITResult" id="drugMGITResult"
-													title="Please select the Xpert MTM Result">
+													title="<?= _htmlTranslate('Please select the Drug MGIT result'); ?>">
 													<?= $general->generateSelectOptions($tbdrugMGITResults, $tbInfo['drug_mgit_result'], '-- Select --'); ?>
 												</select>
 											</td>
