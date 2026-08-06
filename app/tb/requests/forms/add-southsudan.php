@@ -477,7 +477,7 @@ $microscope = ["No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+"];
 											</th>
 											<td>
 												<select name="testedBy" id="testedBy" class="select2 form-control"
-													title="Please choose approved by" style="width: 100%;">
+													title="<?= _htmlTranslate('Please choose who tested the sample'); ?>" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
 												</select>
 											</td>
