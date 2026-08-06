@@ -61,6 +61,28 @@ final class EidService extends AbstractTestService
     }
 
     /**
+     * Renders a stored EID result for display.
+     *
+     * The lookup is case-insensitive on purpose. r_eid_results is keyed in lowercase
+     * but nothing constrains what lands in form_eid.result, and a case-sensitive miss
+     * would print the stored "POSITIVE" where the rest of the system shows
+     * "Positive". Text that maps to nothing is returned exactly as stored, rather
+     * than title-cased into something that reads like a real label: raw instrument
+     * output such as "HIV-1 NON DÉTECTÉ" should look like the unresolved value it is.
+     *
+     * @param array<string, string> $eidResults keyed by result_id, as getEidResults() returns
+     */
+    public static function resultLabel(array $eidResults, ?string $result): string
+    {
+        $result = trim((string) $result);
+        if ($result === '') {
+            return '';
+        }
+
+        return array_change_key_case($eidResults, CASE_LOWER)[mb_strtolower($result, 'UTF-8')] ?? $result;
+    }
+
+    /**
      * Instruments report the qualitative EID result as free text in the language the
      * machine is configured in, so "HIV-1 NOT DETECTED", "HIV-1 NON DÉTECTÉ" and
      * "hiv-1 non detecte" all have to land on the same r_eid_results key.
