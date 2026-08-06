@@ -411,7 +411,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										<tr>
 											<th scope="row" class="th-label"><label class="label-control" for="testedBy"><?= _translate("Tested By"); ?></label></th>
 											<td class="td-input">
-												<select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
+												<select name="testedBy" id="testedBy" class="select2 form-control" title="<?= _htmlTranslate('Please choose who tested the sample'); ?>" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
 												</select>
 											</td>
