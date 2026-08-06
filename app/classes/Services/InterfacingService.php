@@ -33,6 +33,16 @@ final class InterfacingService
     private ?array $activeModules = null;
     private ?int $formId = null;
     private ?bool $autoApprove = null;
+    private ?TestAttemptService $attempts = null;
+
+    /**
+     * Resolved lazily rather than constructor-injected, so the existing call sites that
+     * build this service by hand keep working unchanged.
+     */
+    private function attempts(): TestAttemptService
+    {
+        return $this->attempts ??= new TestAttemptService($this->db->connection('default'));
+    }
 
     public function __construct(
         private readonly DatabaseService $db,
@@ -140,6 +150,19 @@ final class InterfacingService
         $ignoredKeys = ['last_modified_datetime', 'result_printed_datetime'];
         if (MiscUtility::isArrayEqual($data, $existing, $ignoredKeys)) {
             return $this->outcome(true, false, $table, 'already_up_to_date');
+        }
+
+        // Retain the outgoing result before the instrument write replaces it. findSample()
+        // guards only on `locked`, never on whether a result is already present, so an
+        // instrument re-sending a corrected result silently overwrites the earlier one --
+        // including a failure. Nothing is written when there is no prior result to keep.
+        $testType = TestsService::getTestTypeByTable($table);
+        if ($testType !== null) {
+            $this->attempts()->archive(
+                $testType,
+                (int) $existing[$sample['primaryKey']],
+                TestAttemptService::BY_INTERFACE
+            );
         }
 
         $this->db->connection('default')->where($sample['primaryKey'], $existing[$sample['primaryKey']]);

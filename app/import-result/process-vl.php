@@ -16,6 +16,7 @@ use App\Services\DatabaseService;
 use App\Services\TestResultsService;
 
 use App\Registries\ContainerRegistry;
+use App\Services\TestAttemptService;
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -33,6 +34,9 @@ $vlService = ContainerRegistry::get(VlService::class);
 
 /** @var TestResultsService $testResultsService */
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
+
+/** @var TestAttemptService $attempts */
+$attempts = ContainerRegistry::get(TestAttemptService::class);
 
 $fileName = null;
 $importedBy = $_SESSION['userId'];
@@ -178,6 +182,16 @@ try {
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['data_sync'] = 0;
 
+                        // Retain the outgoing result before the import overwrites it. This path
+                        // matches on sample_code alone and has no "already has a result" guard,
+                        // so re-importing a file replaces whatever was there, including a failure.
+                        // Nothing is written when there is no prior result to keep.
+                        $attempts->archive(
+                            'vl',
+                            (int) $vlResult[0]['vl_sample_id'],
+                            TestAttemptService::BY_IMPORT
+                        );
+
                         $db->where('sample_code', $rResult['sample_code']);
                         $db->update('form_vl', $data);
 
@@ -298,6 +312,16 @@ try {
                 $data['result_status'] = REJECTED;
             }
             $data['data_sync'] = 0;
+
+            // Retain the outgoing result before the import overwrites it. vl_sample_id comes
+            // from the LEFT JOIN above and is null for a sample_code with no matching row, in
+            // which case there is nothing to archive.
+            $attempts->archive(
+                'vl',
+                (int) ($accResult[$i]['vl_sample_id'] ?? 0),
+                TestAttemptService::BY_IMPORT
+            );
+
             $db->where('sample_code', $accResult[$i]['sample_code']);
             $db->update('form_vl', $data);
 

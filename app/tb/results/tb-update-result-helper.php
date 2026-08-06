@@ -10,6 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
+use App\Services\TestAttemptService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -166,6 +167,14 @@ try {
     } else {
         $tbData['result_modified'] = "no";
     }
+    // Retain the outgoing result before anything below mutates it. This has to run here
+    // rather than next to the form update, because tb_tests is delete-recreated further
+    // down and that table carries no audit triggers -- once deleted those rows are gone.
+    // Nothing is written when there is no prior result to keep.
+    /** @var TestAttemptService $attempts */
+    $attempts = ContainerRegistry::get(TestAttemptService::class);
+    $attempts->archive('tb', (int) $_POST['tbSampleId'], TestAttemptService::BY_RESULT_EDIT);
+
 //echo "<pre>"; print_r($tbData); die;
     $id = 0;
 

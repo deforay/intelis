@@ -11,6 +11,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\TestAttemptService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -142,6 +143,19 @@ try {
         $resultChangeHistory[] = ['usr' => $_SESSION['userId'], 'msg' => $_POST['reasonForResultChanges'], 'dtime' => DateUtility::getCurrentDateTime()];
     }
     $resultChangeHistoryJson = !empty($resultChangeHistory) ? json_encode($resultChangeHistory) : null;
+
+    // Retain the outgoing result before anything below mutates it. This runs ahead of the
+    // generic_test_results deletes further down, and captures those per-test rows into the
+    // snapshot -- that table carries no audit triggers. Nothing is written when there is no
+    // prior result to keep.
+    /** @var TestAttemptService $attempts */
+    $attempts = ContainerRegistry::get(TestAttemptService::class);
+    $attempts->archive(
+        'generic-tests',
+        (int) ($_POST['requestSampleId'] ?? 0),
+        TestAttemptService::BY_RESULT_EDIT,
+        $_POST['reasonForResultChanges'] ?? null
+    );
 
     $_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
     $_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
