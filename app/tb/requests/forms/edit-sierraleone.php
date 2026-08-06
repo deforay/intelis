@@ -631,7 +631,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 											</th>
 											<td>
 												<select name="testedBy" id="testedBy" class="select2 form-control"
-													title="Please choose approved by" style="width: 100%;">
+													title="<?= _htmlTranslate('Please choose who tested the sample'); ?>" style="width: 100%;">
 													<?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
 												</select>
 											</td>
@@ -877,7 +877,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 											<td class="text-center">Drug Susceptibility Results (MGIT - 1st Line)</td>
 											<td>
 												<select class="form-control" name="drugMGITResult" id="drugMGITResult"
-													title="Please select the Xpert MTM Result">
+													title="<?= _htmlTranslate('Please select the Drug MGIT result'); ?>">
 													<?= $general->generateSelectOptions($tbdrugMGITResults, $tbInfo['drug_mgit_result'], '-- Select --'); ?>
 												</select>
 											</td>
