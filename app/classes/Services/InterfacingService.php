@@ -441,13 +441,7 @@ final class InterfacingService
         $result = null;
         if (trim((string) $row['results']) !== '') {
             $reported = strtolower((string) $row['results']);
-            if (str_contains($reported, 'not detected')) {
-                $result = 'negative';
-            } elseif (str_contains($reported, 'detected') || str_contains($reported, 'passed')) {
-                $result = 'positive';
-            } else {
-                $result = $reported;
-            }
+            $result = EidService::interpretEidResult($row['results']) ?? $reported;
         }
 
         return [

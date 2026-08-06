@@ -5,6 +5,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\ON_HOLD;
 use League\Csv\Reader;
+use App\Services\EidService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -114,12 +115,7 @@ try {
 
                     $parsedResult = (str_replace("|", "", strtoupper($testResultsService->removeControlCharsAndEncode($record[1]))));
 
-                    if ($general->checkIfStringExists($parsedResult, ['not detected', 'notdetected']) !== false) {
-                        $parsedResult = 'negative';
-                    } elseif ($general->checkIfStringExists($parsedResult, ['detected'])) {
-                        $parsedResult = 'positive';
-                    }
-                    $infoFromFile[$sampleCode]['result'] = strtolower($parsedResult);
+                    $infoFromFile[$sampleCode]['result'] = EidService::interpretEidResult($parsedResult) ?? strtolower($parsedResult);
                 }
             }
         }
