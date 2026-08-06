@@ -47,6 +47,19 @@ final class TestsService
     }
 
 
+    /**
+     * Per-module registry.
+     *
+     * The retest keys (testPlatformColumn, childResultTable, childResultKey,
+     * deleteChildOnRetest, clearOnRetest) live here rather than alongside the archiving
+     * code so that adding a module means editing one map. They were previously implicit,
+     * duplicated across seven copies of failed-results-retest.php, which is how TB and
+     * Hepatitis ended up recording their history under the wrong test type.
+     *
+     * clearOnRetest lists the columns wiped when a failed sample is sent back for
+     * re-testing. result_status is set separately by the caller and is not listed.
+     * TestAttemptService consumes these; see app/classes/Services/TestAttemptService.php.
+     */
     public static function getTestTypes(): array
     {
         $testTypes = [
@@ -62,7 +75,18 @@ final class TestsService
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_vl_sample_type',
                 'serviceClass' => VlService::class,
-                'isReferrable' => false
+                'isReferrable' => false,
+                'testPlatformColumn' => 'vl_test_platform',
+                'childResultTable' => null,
+                'childResultKey' => null,
+                'deleteChildOnRetest' => false,
+                'clearOnRetest' => [
+                    'result', 'result_value_log', 'result_value_absolute', 'result_value_text',
+                    'result_value_absolute_decimal', 'sample_tested_datetime', 'sample_batch_id',
+                    'lot_expiration_date', 'lot_number',
+                    // Previously left stale, so a wiped sample kept looking categorised.
+                    'vl_result_category',
+                ]
             ],
             'recency' => [
                 'testName' => _translate('HIV Recency', escapeTextOrContext: true),
@@ -76,7 +100,16 @@ final class TestsService
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_vl_sample_type',
                 'serviceClass' => VlService::class,
-                'isReferrable' => false
+                'isReferrable' => false,
+                'testPlatformColumn' => 'vl_test_platform',
+                'childResultTable' => null,
+                'childResultKey' => null,
+                'deleteChildOnRetest' => false,
+                'clearOnRetest' => [
+                    'result', 'result_value_log', 'result_value_absolute', 'result_value_text',
+                    'result_value_absolute_decimal', 'sample_tested_datetime', 'sample_batch_id',
+                    'lot_expiration_date', 'lot_number', 'vl_result_category',
+                ]
             ],
             'cd4' => [
                 'testName' => _translate('CD4', escapeTextOrContext: true),
@@ -90,7 +123,14 @@ final class TestsService
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_vl_sample_type',
                 'serviceClass' => CD4Service::class,
-                'isReferrable' => false
+                'isReferrable' => false,
+                'testPlatformColumn' => 'cd4_test_platform',
+                'childResultTable' => null,
+                'childResultKey' => null,
+                'deleteChildOnRetest' => false,
+                'clearOnRetest' => [
+                    'cd4_result', 'sample_tested_datetime', 'sample_batch_id',
+                ]
             ],
             'eid' => [
                 'testName' => _translate('Early Infant Diagnosis', escapeTextOrContext: true),
@@ -104,7 +144,15 @@ final class TestsService
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_eid_sample_type',
                 'serviceClass' => EidService::class,
-                'isReferrable' => false
+                'isReferrable' => false,
+                'testPlatformColumn' => 'eid_test_platform',
+                'childResultTable' => null,
+                'childResultKey' => null,
+                'deleteChildOnRetest' => false,
+                'clearOnRetest' => [
+                    'result', 'sample_tested_datetime', 'sample_batch_id',
+                    'lot_expiration_date', 'lot_number',
+                ]
             ],
             'covid19' => [
                 'testName' => _translate('Covid-19', escapeTextOrContext: true),
@@ -118,7 +166,15 @@ final class TestsService
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_covid19_sample_type',
                 'serviceClass' => Covid19Service::class,
-                'isReferrable' => false
+                'isReferrable' => false,
+                'testPlatformColumn' => 'covid19_test_platform',
+                'childResultTable' => 'covid19_tests',
+                'childResultKey' => 'covid19_id',
+                'deleteChildOnRetest' => true,
+                'clearOnRetest' => [
+                    'result', 'sample_tested_datetime', 'sample_batch_id',
+                    'lot_expiration_date', 'lot_number',
+                ]
             ],
             'hepatitis' => [
                 'testName' => _translate('Hepatitis', escapeTextOrContext: true),
@@ -132,7 +188,15 @@ final class TestsService
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_hepatitis_sample_type',
                 'serviceClass' => HepatitisService::class,
-                'isReferrable' => false
+                'isReferrable' => false,
+                'testPlatformColumn' => 'hepatitis_test_platform',
+                'childResultTable' => null,
+                'childResultKey' => null,
+                'deleteChildOnRetest' => false,
+                'clearOnRetest' => [
+                    'result', 'sample_tested_datetime', 'sample_batch_id',
+                    'lot_expiration_date', 'lot_number',
+                ]
             ],
             'tb' => [
                 'testName' => _translate('Tubercolosis', escapeTextOrContext: true),
@@ -146,7 +210,14 @@ final class TestsService
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_tb_sample_type',
                 'serviceClass' => TbService::class,
-                'isReferrable' => true
+                'isReferrable' => true,
+                'testPlatformColumn' => 'tb_test_platform',
+                'childResultTable' => 'tb_tests',
+                'childResultKey' => 'tb_id',
+                'deleteChildOnRetest' => true,
+                'clearOnRetest' => [
+                    'result', 'xpert_mtb_result', 'sample_tested_datetime', 'sample_batch_id',
+                ]
             ],
             'generic-tests' => [
                 'testName' => _translate('Other Tests', escapeTextOrContext: true),
@@ -160,7 +231,17 @@ final class TestsService
                 'specimenType' => 'specimen_type',
                 'specimenTypeTable' => 'r_generic_sample_types',
                 'serviceClass' => GenericTestsService::class,
-                'isReferrable' => true
+                'isReferrable' => true,
+                'testPlatformColumn' => 'test_platform',
+                'childResultTable' => 'generic_test_results',
+                'childResultKey' => 'generic_id',
+                // Custom Tests keep their per-test rows on retest, matching this module's
+                // existing behaviour. They are archived either way.
+                'deleteChildOnRetest' => false,
+                'clearOnRetest' => [
+                    'result', 'sample_tested_datetime', 'sample_batch_id',
+                    'lot_expiration_date', 'lot_number',
+                ]
             ]
         ];
 
@@ -230,6 +311,63 @@ final class TestsService
     public static function getSpecimenTypeTable(string $testType): string
     {
         return self::getTestTypes()[$testType]['specimenTypeTable'] ?? throw new SystemException("Invalid test type key");
+    }
+
+    /**
+     * Reverse lookup: form_* table name to test type key.
+     *
+     * 'recency' shares form_vl with 'vl', so the first match wins and resolves to 'vl' --
+     * correct for anything keyed off the table, which cannot tell the two apart anyway.
+     */
+    public static function getTestTypeByTable(string $tableName): ?string
+    {
+        foreach (self::getTestTypes() as $testType => $module) {
+            if (($module['tableName'] ?? null) === $tableName) {
+                return $testType;
+            }
+        }
+
+        return null;
+    }
+
+    /** Column holding the testing platform. Named differently in every module. */
+    public static function getTestPlatformColumn(string $testType): string
+    {
+        return self::getTestTypes()[$testType]['testPlatformColumn'] ?? throw new SystemException("Invalid test type key");
+    }
+
+    /**
+     * Per-test child result table for modules that store one row per sub-test
+     * (tb_tests, covid19_tests, generic_test_results), or null where the result is flat.
+     *
+     * @return array{table: string, key: string}|null
+     */
+    public static function getChildResultTable(string $testType): ?array
+    {
+        $module = self::getTestTypes()[$testType] ?? throw new SystemException("Invalid test type key");
+
+        if (empty($module['childResultTable']) || empty($module['childResultKey'])) {
+            return null;
+        }
+
+        return ['table' => $module['childResultTable'], 'key' => $module['childResultKey']];
+    }
+
+    /** Whether sending a sample back for re-testing also deletes its child result rows. */
+    public static function deletesChildOnRetest(string $testType): bool
+    {
+        return (bool) (self::getTestTypes()[$testType]['deleteChildOnRetest'] ?? false);
+    }
+
+    /**
+     * Columns wiped when a failed sample is sent back for re-testing. result_status is
+     * set by the caller and is deliberately not in this list.
+     *
+     * @return string[]
+     */
+    public static function getColumnsClearedOnRetest(string $testType): array
+    {
+        return self::getTestTypes()[$testType]['clearOnRetest'] ?? throw new SystemException("Invalid test type key");
     }
 
 

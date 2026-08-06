@@ -9,6 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestAttemptService;
 
 
 
@@ -112,6 +113,19 @@ try {
 	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$getPrevResult = $db->getOne('form_covid19');
 	$covid19Data['result_modified'] = ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) ? "yes" : "no";
+
+	// Retain the outgoing result before anything below mutates it. This has to run here
+	// rather than next to the form update, because the covid19_tests rows are deleted and
+	// rebuilt further down and that table carries no audit triggers -- once deleted they are
+	// gone. Nothing is written when there is no prior result to keep.
+	/** @var TestAttemptService $attempts */
+	$attempts = ContainerRegistry::get(TestAttemptService::class);
+	$attempts->archive(
+		'covid19',
+		(int) $_POST['covid19SampleId'],
+		TestAttemptService::BY_RESULT_EDIT,
+		$_POST['reasonForResultChanges'] ?? $_POST['reasonForChanging'] ?? null
+	);
 
 	// Append the change reason (preserving prior history) whenever the result or rejection changed.
 	$reasonForChanges = MiscUtility::appendResultChangeReason(

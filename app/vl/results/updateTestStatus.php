@@ -12,6 +12,7 @@ use App\Services\BulkResultStatusService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\TestAttemptService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -74,6 +75,15 @@ try {
                 $status['result_status'] = TEST_FAILED;
             } elseif ($status['vl_result_category'] == 'rejected') {
                 $status['result_status'] = REJECTED;
+            }
+
+            // Only the rejection branch above destroys the stored result, so only that case
+            // has something to retain. Archiving every bulk status change would add an
+            // attempt row for routine flips like marking a sample approved.
+            if ($_POST['status'] == REJECTED) {
+                /** @var TestAttemptService $attempts */
+                $attempts = ContainerRegistry::get(TestAttemptService::class);
+                $attempts->archive('vl', (int) $id[$i], TestAttemptService::BY_BULK_STATUS);
             }
 
             $db->where('vl_sample_id', $id[$i]);

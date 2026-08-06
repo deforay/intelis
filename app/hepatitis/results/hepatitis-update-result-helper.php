@@ -7,6 +7,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestAttemptService;
 
 
 
@@ -93,8 +94,30 @@ try {
 		$hepatitisData['reason_for_changing'] = $reasonForChanges;
 	}
 
-	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
-	$id = $db->update($tableName, $hepatitisData);
+	// Retain the outgoing result before it is replaced. See TestAttemptService: editing a
+	// result overwrites it just as surely as a re-test does, and nothing is written when
+	// there is no prior result to keep.
+	/** @var TestAttemptService $attempts */
+	$attempts = ContainerRegistry::get(TestAttemptService::class);
+
+	$db->beginTransaction();
+
+	try {
+		$attempts->archive(
+			'hepatitis',
+			(int) $_POST['hepatitisSampleId'],
+			TestAttemptService::BY_RESULT_EDIT,
+			$_POST['reasonForResultChanges'] ?? $_POST['reasonForChanging'] ?? null
+		);
+
+		$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
+		$id = $db->update($tableName, $hepatitisData);
+
+		$db->commitTransaction();
+	} catch (Throwable $e) {
+		$db->rollbackTransaction();
+		throw $e;
+	}
 	error_log($db->getLastError() . PHP_EOL);
 	if ($id === true) {
 		$_SESSION['alertMsg'] = _translate("Hepatitis result updated successfully");
