@@ -304,7 +304,7 @@ if (!empty($result)) {
     if (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') {
         $finalResult = _translate('Rejected');
     } else {
-        $finalResult = _translate($eidResults[$result['result']]);
+        $finalResult = _translate($eidResults[$result['result']] ?? (string) $result['result']);
     }
 
     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:40px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;' . _translate("Result") . ' &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . _translate($finalResult) . '</td><td >' . $smileyContent . '</td></tr>';

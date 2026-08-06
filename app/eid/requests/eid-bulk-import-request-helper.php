@@ -3,6 +3,7 @@
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\REJECTED;
+use App\Services\EidService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -64,6 +65,15 @@ try {
                 $labName = $general->getDataFromOneFieldAndValue('facility_details', 'facility_name', $rowData['AA'], 'facility_type = 2');
                 $rejectionReason = $general->getDataFromOneFieldAndValue('r_eid_sample_rejection_reasons', 'rejection_reason_name', $rowData['AC']);
                 $result = $general->getDataFromOneFieldAndValue('r_eid_results', 'result', $rowData['AE']);
+                // The sheet carries whatever wording the instrument used, so try to
+                // interpret anything that isn't already one of our results, and import
+                // the cell as it stands when even that fails. Dropping the result
+                // would leave the sample looking untested.
+                if (empty($result) && trim((string) ($rowData['AE'] ?? '')) !== '') {
+                    $result = [
+                        'result_id' => EidService::interpretEidResult($rowData['AE']) ?? trim((string) $rowData['AE'])
+                    ];
+                }
                 $resultStatus = $general->getDataFromOneFieldAndValue('r_sample_status', 'status_name', $rowData['AK']);
 
                 if (trim((string) $rowData['W']) !== '') {

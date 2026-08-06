@@ -4,6 +4,7 @@
 // File gets called in import-file-helper.php based on the selected instrument type
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\PENDING_APPROVAL;
+use App\Services\EidService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -107,13 +108,7 @@ try {
 
             $result = $absVal = $logVal = $absDecimalVal = $txtVal = '';
             $resultInLowerCase = strtolower((string) $rowData[$resultCol]);
-            if (str_contains($resultInLowerCase, 'not detected')) {
-                $result = 'negative';
-            } elseif ((str_contains($resultInLowerCase, 'detected')) || (str_contains(strtolower((string) $rowData[$resultCol]), 'passed'))) {
-                $result = 'positive';
-            } else {
-                $result = $resultInLowerCase;
-            }
+            $result = EidService::interpretEidResult($rowData[$resultCol]) ?? $resultInLowerCase;
 
 
             $lotNumberVal = $rowData[$lotNumberCol];
