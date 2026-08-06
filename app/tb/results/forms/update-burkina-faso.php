@@ -137,7 +137,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								<tr>
 									<th class="th-label" scope="row"><label for="requestedDate"><?= _translate("Date of request"); ?> <span class="mandatory">*</span></label></th>
 									<td class="td-input">
-										<input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
+										<input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="requestedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
 									</td>
 									<th class="th-label"><label class="label-control" for="referringUnit"><?= _translate("Referring Unit"); ?> </label></th>
 									<td class="td-input">
