@@ -271,7 +271,7 @@ foreach ($rResult as $aRow) {
         '</span>';
     $row[] = $controlName;
     if ($aRow['module'] == 'eid') {
-        $row[] = $eidResults[$aRow['result']];
+        $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
     } elseif ($aRow['module'] == 'covid19') {
         $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
     } else {
