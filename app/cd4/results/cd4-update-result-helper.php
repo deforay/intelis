@@ -118,6 +118,16 @@ try {
         'manual_result_entry' => 'yes',
     ];
 
+    // The result form asks "Is sample re-ordered as part of corrective action?" and marks it
+    // required on STS instances, but nothing here ever saved the answer, so it was discarded
+    // on every save. Read under the same name the add/edit request helpers use.
+    //
+    // Only written when the field was actually submitted, so a country form that doesn't
+    // render it cannot null out the stored value.
+    if (array_key_exists('isSampleReordered', $_POST)) {
+        $vlData['sample_reordered'] = $_POST['isSampleReordered'];
+    }
+
     $db->where('cd4_id', $_POST['cd4SampleId']);
     $getPrevResult = $db->getOne('form_cd4');
     $vlData['result_modified'] = ($getPrevResult['cd4_result'] != "" && $getPrevResult['cd4_result'] != $finalResult) ? "yes" : "no";
