@@ -4,7 +4,7 @@
 
 ```bash
 cd ~
-wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/remote-backup.sh
+wget -O remote-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
 ```
 
 ## Step 2: Make the Script Executable
@@ -19,20 +19,21 @@ sudo chmod u+x remote-backup.sh
 sudo ./remote-backup.sh
 ```
 
-## What the Script Does
+## What the script asks for
 
-1. **Instance Name Configuration** — You'll specify a unique identifier for your facility (such as `lab1` or `centerA`), which the script processes for system compatibility.
+| Prompt | Example |
+|--------|---------|
+| Lab name or lab code | `lab1` |
+| LIS folder path | `/var/www/intelis` (press Enter to accept) |
+| Backup server username | `lisbackup` |
+| Backup server hostname or IP | `192.168.1.60` |
+| SSH port | `22` (press Enter to accept) |
 
-2. **Tool Installation** — The script verifies and installs `rsync` if needed.
+## What the script does
 
-3. **SSH Key Generation** — An SSH keypair is created to establish secure, encrypted communication channels with your backup destination.
-
-4. **Backup Server Configuration** — You'll provide the username and network address (IP or hostname) of your backup server.
-
-5. **Connection Testing** — The script validates connectivity and requests corrected credentials if the initial connection attempt fails.
-
-6. **Key Transfer** — Your SSH public key is automatically deployed to the backup server.
-
-7. **Backup Script Creation** — A dedicated script is generated to synchronize `/var/www/vlsm` with your backup location.
-
-8. **Scheduling** — Cron jobs are configured to execute backups every 6 hours and upon system restart.
+1. Installs `rsync` if it is missing.
+2. Generates an SSH keypair for the connection to the backup server.
+3. Copies the public key to the backup server.
+4. Tests the connection, and asks again if the credentials fail.
+5. Writes `/usr/local/bin/intelis-backup.sh`, which syncs the LIS folder to the backup server.
+6. Schedules that script to run every 8 hours and on every reboot.

@@ -15,6 +15,7 @@ rclone config
 ```
 
 Follow these steps:
+
 - Select "n" for new remote
 - Name your remote (e.g., "gdrive")
 - Choose "drive" for Google Drive storage
@@ -40,7 +41,7 @@ Paste this content (update LABNAME):
 ```bash
 #!/bin/bash
 
-source_dir="/var/www/vlsm"
+source_dir="/var/www/intelis"
 remote_name="gdrive"
 remote_dir="LABNAME"
 
@@ -61,7 +62,8 @@ chmod +x /var/www/backup.sh
 /var/www/backup.sh
 ```
 
-Rclone will synchronize your `/var/www/vlsm` folder to Google Drive.
+Rclone synchronizes your `/var/www/intelis` folder to Google Drive. On an
+installation made before the rename, the folder is `/var/www/vlsm`.
 
 ## 6. Automate Backups
 

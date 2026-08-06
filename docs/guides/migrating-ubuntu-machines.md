@@ -2,7 +2,7 @@
 
 InteLIS backs up its databases automatically every 6 hours to
 `<install-path>/backups/db/` — compressed `.sql.zst` files for both the main
-(`intelis-…`) and, if used, the interfacing (`interfacing-…`) database. Migration
+(`vlsm-…`) and, if used, the interfacing (`interfacing-…`) database. Migration
 reuses those backups directly; there is no separate manual export step.
 
 Backups are usually **encrypted** (the file ends in `.sql.zst.gpg`). setup.sh
@@ -13,11 +13,17 @@ below for how it gets the key.
 
 Connect the drive that holds the old machine's `backups` folder, or copy that
 folder onto the new machine (USB/external drive, or by mounting the old disk).
-You only need `backups/db/`. A main-database backup is named like:
+You only need `backups/db/`. Each backup is named after the database it came
+from, so the main-database files start with `vlsm-` and the interfacing files
+start with `interfacing-`:
 
 ```text
-intelis-YYYYMMDD-HHMM.sql.zst
+vlsm-20260615-095652.sql.zst                                    # unencrypted
+vlsm-20260615-095652-ObzpDjNoe5NkHF0ootx2nYxxfD2wJoPU.sql.zst.gpg   # encrypted
 ```
+
+Encrypted backups carry a random token in the filename. Keep the name intact.
+The restore uses that token to rebuild the passphrase.
 
 > Want the freshest possible snapshot and the old machine still runs? Force one
 > first, then copy the new file across:
@@ -42,14 +48,14 @@ cd ~ && wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/mast
   `/media/<user>/<drive>/backups/db`, `~/Desktop/backups/db`, or
   `/mnt/old-disk/var/www/intelis/backups/db`.
 - To restore one specific file instead of the newest, pass it directly:
-  `sudo bash setup.sh --db /media/USB/intelis-20260608-0100.sql.zst`
+  `sudo bash setup.sh --db /media/USB/vlsm-20260608-010012.sql.zst`
 
 When prompted, enter the **new** machine's MySQL credentials and the STS URL.
 
 ## If your backups are encrypted (`.gpg`)
 
 If the files end in `.sql.zst.gpg`, setup.sh still restores them with `--db` /
-`--db latest:` exactly as above — it just needs the key. Use whichever fits:
+`--db latest:` exactly as above — it needs the key. Use whichever fits:
 
 - **Easiest — use the same MySQL root password** on the new machine as the old
   one. setup.sh then derives the key automatically and the restore needs nothing
@@ -75,7 +81,7 @@ If the files end in `.sql.zst.gpg`, setup.sh still restores them with `--db` /
   and pass it directly:
 
   ```bash
-  sudo bash setup.sh --db /media/USB/intelis-….sql.zst.gpg --encryption-password '<recovery-code>'
+  sudo bash setup.sh --db /media/USB/vlsm-….sql.zst.gpg --encryption-password '<recovery-code>'
   ```
 
 > The STS-based recovery (token / recovery code) requires the STS to be running a
@@ -97,5 +103,5 @@ data, so you do **not** create a new admin or re-select the lab:
 its backup separately after install:
 
 ```bash
-cd /var/www/intelis && sudo -u www-data php vendor/bin/db-tools restore /media/USB/backups/db/interfacing-YYYYMMDD-HHMM.sql.zst
+cd /var/www/intelis && sudo -u www-data php vendor/bin/db-tools restore /media/USB/backups/db/interfacing-20260615-095737.sql.zst
 ```
