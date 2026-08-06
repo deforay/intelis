@@ -362,8 +362,8 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <th scope="row">Name of EID Personnel Collecting DBS</th>
                                         <td>
                                             <input type="text" class="form-control"
-                                                value="<?php echo ($eidInfo['clinician_name']); ?>" id="clinicianName"
-                                                name="clinicianName" placeholder="Name of EID Personnel Collecting DBS"
+                                                value="<?php echo ($eidInfo['clinician_name']); ?>" id="dbsCollectedBy"
+                                                name="dbsCollectedBy" placeholder="Name of EID Personnel Collecting DBS"
                                                 title="Name of EID Personnel Collecting DBS" style="width:100%;"
                                                 onchange="" />
                                         </td>

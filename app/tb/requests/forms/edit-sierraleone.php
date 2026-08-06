@@ -195,7 +195,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 											<input type="text"
 												value="<?php echo $tbInfo['request_created_datetime']; ?>"
 												class="date-time form-control" id="requestedDate"
-												name="sampleReceivedDate"
+												name="requestedDate"
 												placeholder="<?= _translate("Please enter date"); ?>"
 												title="Please enter date of request date" style="width:100%;" />
 										</td>
