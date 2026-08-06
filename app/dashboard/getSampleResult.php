@@ -508,7 +508,7 @@ try {
                     <?= _translate("SAMPLES COLLECTED"); ?>
                 </small><br>
                 <small style="color:#2ab4c0;font-size:0.75em;">
-                    <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>
+                    <?php echo _translate("Collected in") . " : " . $selectedRange; ?>
                 </small>
             </div>
             <div class="icon">
@@ -530,7 +530,10 @@ try {
                     <?php echo _translate("SAMPLES TESTED"); ?>
                 </small><br>
                 <small style="color:#7cb72a;font-size:0.75em;">
-                    <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>
+                    <?php echo _translate("Tested in") . " : " . $selectedRange; ?>
+                </small><br>
+                <small style="color:#7cb72a;font-size:0.7em;">
+                    <?php echo _translate("Accepted results only. Includes samples collected before this range."); ?>
                 </small>
             </div>
             <div class="icon">
@@ -553,7 +556,7 @@ try {
                     <?php echo _translate("SAMPLES REJECTED"); ?>
                 </small><br>
                 <small style="color:#5C9BD1;font-size:0.75em;">
-                    <?php echo _translate("In Selected Range") . " - " . $selectedRange; ?>
+                    <?php echo _translate("Collected in") . " : " . $selectedRange; ?>
                 </small>
             </div>
             <div class="icon">
@@ -574,7 +577,7 @@ try {
                     <?= _translate("CURRENT SAMPLES STATUS - OVERALL"); ?>
                 </h4>
                 <small class="font-purple-soft" style="font-size:0.75em;">
-                    <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>
+                    <?php echo _translate("Status of samples collected in") . " : " . $selectedRange; ?>
                 </small>
             </div>
             <?php if (!empty($aggregateResult)) { ?>
@@ -582,7 +585,7 @@ try {
                     <?php
                     $overviewKpis = [
                         ['label' => _translate("Collected"), 'count' => (int) ($aggregateResult['totalCollected'] ?? 0), 'color' => '#2C3333'],
-                        ['label' => _translate("Tested"),    'count' => (int) ($aggregateResult['samplesTested'] ?? 0), 'color' => '#039BE6'],
+                        ['label' => _translate("Tested (any outcome)"), 'count' => (int) ($aggregateResult['samplesTested'] ?? 0), 'color' => '#039BE6'],
                         ['label' => _translate("Rejected"),  'count' => (int) ($aggregateResult['rejected'] ?? 0),      'color' => '#c0392b'],
                     ];
                     foreach ($overviewKpis as $kpi) { ?>
