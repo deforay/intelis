@@ -3,6 +3,7 @@
 // File gets called in import-file-helper.php based on the selected instrument type
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use App\Services\EidService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -101,13 +102,7 @@ try {
 
                     $result = '';
 
-                    if (str_contains(strtolower((string) $sheetData[$resultCol]), 'not detected')) {
-                        $result = 'negative';
-                    } elseif ((str_contains(strtolower((string) $sheetData[$resultCol]), 'detected')) || (str_contains(strtolower((string) $sheetData[$resultCol]), 'passed'))) {
-                        $result = 'positive';
-                    } else {
-                        $result = 'indeterminate';
-                    }
+                    $result = EidService::interpretEidResult($sheetData[$resultCol]) ?? 'indeterminate';
 
 
                     $lotNumberVal = $sheetData[$lotNumberCol];

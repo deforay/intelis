@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Override;
+use Normalizer;
 use const COUNTRY\PNG;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
@@ -57,6 +58,78 @@ final class EidService extends AbstractTestService
             $response[$row['result_id']] = $row['result'];
         }
         return $response;
+    }
+
+    /**
+     * Instruments report the qualitative EID result as free text in the language the
+     * machine is configured in, so "HIV-1 NOT DETECTED", "HIV-1 NON DÉTECTÉ" and
+     * "hiv-1 non detecte" all have to land on the same r_eid_results key.
+     *
+     * A single result can also carry several targets separated by a pipe
+     * ("HIV-1 Detected | HIV-2 Not Detected"); any detected target makes the sample
+     * positive. Returns null when nothing matches, so each caller keeps its own
+     * fallback for unrecognised text.
+     */
+    public static function interpretEidResult(?string $result): ?string
+    {
+        $negativeKeywords = [
+            'not detected', 'notdetected', 'non detecte', 'nondetecte',
+            'negative', 'negatif', 'non reactive', 'non reactif',
+        ];
+        $positiveKeywords = [
+            'detected', 'detecte', 'positive', 'positif',
+            'reactive', 'reactif', 'passed',
+        ];
+
+        $normalized = self::normalizeResultText($result);
+        if ($normalized === '') {
+            return null;
+        }
+
+        $isPositive = false;
+        $isNegative = false;
+        foreach (explode('|', $normalized) as $part) {
+            $hasNegative = array_any($negativeKeywords, fn($keyword) => str_contains($part, $keyword));
+            $isNegative = $isNegative || $hasNegative;
+            // A negative keyword always wins within its own target, because every
+            // positive keyword is a substring of the matching negative one.
+            if (!$hasNegative && array_any($positiveKeywords, fn($keyword) => str_contains($part, $keyword))) {
+                $isPositive = true;
+            }
+        }
+
+        if ($isPositive) {
+            return 'positive';
+        }
+
+        return $isNegative ? 'negative' : null;
+    }
+
+    /**
+     * Lowercases, strips accents and flattens punctuation so the keyword lists above
+     * only ever have to carry the plain ASCII form of each word.
+     */
+    private static function normalizeResultText(?string $result): string
+    {
+        $text = trim((string) MiscUtility::cleanString($result));
+        if ($text === '') {
+            return '';
+        }
+
+        $text = mb_strtolower($text, 'UTF-8');
+
+        if (class_exists('Normalizer')) {
+            $decomposed = Normalizer::normalize($text, Normalizer::FORM_D);
+            if ($decomposed !== false) {
+                $text = preg_replace('/\p{Mn}/u', '', $decomposed) ?? $text;
+            }
+        }
+
+        // Keep the pipe, it separates targets. Everything else becomes a space so
+        // "non-reactive" and "non réactif" collapse onto the same keyword.
+        $text = preg_replace('/[^a-z0-9|]+/', ' ', $text) ?? $text;
+
+        return trim((string) preg_replace('/\s+/', ' ', $text));
     }
 
     public function getEidSampleTypes($updatedDateTime = null): array

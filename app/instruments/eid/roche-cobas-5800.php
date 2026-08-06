@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -56,25 +57,7 @@ try {
             $result = (string) $row['Result'];
             $resultInLowerCase = strtolower($result);
 
-            $negativeKeywords = ['non-reactive', 'non reactive', 'not detected', 'negative'];
-            $positiveKeywords = ['reactive', 'detected', 'positive', 'passed'];
-
-            $parts = array_map('trim', explode('|', $resultInLowerCase));
-            $isPositive = array_any($parts, fn($part) =>
-                array_any($positiveKeywords, fn($kw) => str_contains($part, $kw)) &&
-                !array_any($negativeKeywords, fn($kw) => str_contains($part, $kw))
-            );
-            $isNegative = array_any($parts, fn($part) =>
-                array_any($negativeKeywords, fn($kw) => str_contains($part, $kw))
-            );
-
-            if ($isPositive) {
-                $result = 'positive';
-            } elseif ($isNegative) {
-                $result = 'negative';
-            } else {
-                $result = $resultInLowerCase;
-            }
+            $result = EidService::interpretEidResult($result) ?? $resultInLowerCase;
 
             $testingDate = DateUtility::isoDateFormat($row['Released date/time'] ?? null, true);
 

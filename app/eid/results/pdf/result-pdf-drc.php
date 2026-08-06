@@ -165,7 +165,7 @@ if (!empty($result)) {
     $messageTextSize = '12px';
     if ($result['result'] != null && trim((string) $result['result']) !== '') {
         $resultType = is_numeric($result['result']);
-        $vlResult = $eidResults[$result['result']];
+        $vlResult = $eidResults[$result['result']] ?? (string) $result['result'];
         if ($vlResult == 'negative') {
             if (isset($smileyShow) && $smileyShow != '') {
                 $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
