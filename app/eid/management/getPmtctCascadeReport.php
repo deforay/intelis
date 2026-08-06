@@ -121,28 +121,6 @@ function pmtctPreBirthFlag(?string $childDob, ?string $firstHighVlDate): string
     return 'yes';
 }
 
-/**
- * Given a mother's VL tests (ascending by collection date), find the most
- * recent test with a categorised result on or before the given date.
- */
-function pmtctVlStatusAsOf(array $vlTests, string $asOfDate): ?array
-{
-    if ($asOfDate === '') {
-        return null;
-    }
-    $latest = null;
-    foreach ($vlTests as $t) {
-        $d = $t['collectionDate'] ?? '';
-        if ($d === '' || $d > $asOfDate) {
-            continue;
-        }
-        if (($t['category'] ?? '') === 'suppressed' || ($t['category'] ?? '') === 'not suppressed') {
-            $latest = $t;
-        }
-    }
-    return $latest;
-}
-
 $action = $_POST['action'] ?? 'linked';
 
 // ---------------------------------------------------------------------------
@@ -484,9 +462,9 @@ function pmtctLoadEidTests(DatabaseService $db, string $whereClause, array $bind
 }
 
 // ---------------------------------------------------------------------------
-// CHILD HISTORY - every EID test for one child (all-time), and at each test
-// the mother's VL status as of that test date. Keyed by childId; records
-// without a Child ID fall back to the single EID record (eidId).
+// CHILD HISTORY - every EID test for one child (all-time), plus the mother's
+// full VL timeline. Keyed by childId; records without a Child ID fall back to
+// the single EID record (eidId).
 // ---------------------------------------------------------------------------
 if ($action === 'childHistory') {
 
@@ -523,12 +501,6 @@ if ($action === 'childHistory') {
         }
     }
 
-    // Attach the mother's VL status as of each EID test.
-    foreach ($eidTests as &$t) {
-        $t['motherVlAtTest'] = pmtctVlStatusAsOf($vlTests, $t['collectionDate']);
-    }
-    unset($t);
-
     header('Content-Type: application/json');
     echo json_encode([
         'childId'              => $childId,
@@ -543,7 +515,7 @@ if ($action === 'childHistory') {
 
 // ---------------------------------------------------------------------------
 // MOTHER HISTORY - every VL test for one mother (all-time), plus every EID
-// test of her linked children, each stamped with her VL status at that test.
+// test of her linked children, grouped per child in the modal.
 // ---------------------------------------------------------------------------
 if ($action === 'motherHistory') {
 
@@ -553,11 +525,6 @@ if ($action === 'motherHistory') {
     $eidTests = ($motherId !== '')
         ? pmtctLoadEidTests($db, "TRIM(e.mother_id) = ?", [$motherId])
         : [];
-
-    foreach ($eidTests as &$t) {
-        $t['motherVlAtTest'] = pmtctVlStatusAsOf($vlTests, $t['collectionDate']);
-    }
-    unset($t);
 
     header('Content-Type: application/json');
     echo json_encode([

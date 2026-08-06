@@ -251,6 +251,24 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         margin: 16px 0 6px;
     }
 
+    .pmtct-child-head {
+        overflow: hidden;
+        font-size: 13px;
+        font-weight: 600;
+        color: #444;
+        background: #f0f1f3;
+        border: 1px solid #d8dbe0;
+        border-bottom: none;
+        padding: 6px 10px;
+        margin-top: 12px;
+    }
+
+    .pmtct-child-head .pm-dob {
+        float: right;
+        font-weight: normal;
+        color: #777;
+    }
+
     #pmtctDrillTable td,
     #pmtctDrillTable th,
     .pmtct-history-table td,
@@ -698,15 +716,13 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         return isPositive ? '<span class="pmtct-badge b-danger">' + txt + '</span>' : txt;
     }
 
-    // Mother's VL status at the time of one EID test (compact cell content).
-    function motherVlAtTestCell(at) {
-        if (!at) {
-            return '<span class="pmtct-badge b-muted"><?= _jsTranslate('No VL result yet'); ?></span>';
-        }
-        var out = vlCategoryBadge(at.category);
-        if (at.result) { out += ' ' + escHtml(at.result); }
-        if (at.collectionDate) { out += ' <span style="color:#999;">(' + fmtIsoDate(at.collectionDate) + ')</span>'; }
-        return out;
+    // Child's age in completed months on the date of one test.
+    function ageMonthsAtTest(dob, testDate) {
+        if (!dob || !testDate) { return ''; }
+        var d = moment(dob, 'YYYY-MM-DD'), t = moment(testDate, 'YYYY-MM-DD');
+        if (!d.isValid() || !t.isValid() || t.isBefore(d)) { return ''; }
+        var months = t.diff(d, 'months');
+        return months < 1 ? '&lt;1' : String(months);
     }
 
     function freshDrillTable() {
@@ -911,37 +927,73 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
         return h + '</tbody></table></div>';
     }
 
-    function eidHistoryTableHtml(eidTests, showChildCol) {
+    // opts: showChildCol, ageFromDob (child DOB to measure each test against;
+    // omit to leave the age column out).
+    function eidHistoryTableHtml(eidTests, opts) {
         if (!eidTests || !eidTests.length) {
             return '<div class="pmtct-empty-panel"><?= _jsTranslate('No EID tests on record.'); ?></div>';
         }
+        opts = opts || {};
+        var showChildCol = !!opts.showChildCol;
+        var showAge = Object.prototype.hasOwnProperty.call(opts, 'ageFromDob');
+
         var h = '<div class="table-responsive"><table class="table table-bordered table-striped pmtct-history-table"><thead><tr>' +
             '<th>#</th>' +
             (showChildCol ? '<th><?= _jsTranslate('Child ID'); ?></th>' : '') +
             '<th><?= _jsTranslate('EID Sample Code'); ?></th>' +
             '<th><?= _jsTranslate('Collection Date'); ?></th>' +
             '<th><?= _jsTranslate('Test Date'); ?></th>' +
+            (showAge ? '<th><?= _jsTranslate('Child Age at Test (months)'); ?></th>' : '') +
             '<th><?= _jsTranslate('Result'); ?></th>' +
             '<th><?= _jsTranslate('Status'); ?></th>' +
             '<th><?= _jsTranslate('Platform'); ?></th>' +
             '<th><?= _jsTranslate('Testing Lab'); ?></th>' +
-            '<th><?= _jsTranslate('Mother VL Status at This Test'); ?></th>' +
             '</tr></thead><tbody>';
         eidTests.forEach(function (t, i) {
+            var age = showAge ? ageMonthsAtTest(opts.ageFromDob, t.collectionDate || t.testedDate) : '';
             h += '<tr>' +
                 '<td>' + (i + 1) + '</td>' +
                 (showChildCol ? '<td>' + escHtml(t.childId || ('#' + t.eidId)) + '</td>' : '') +
                 '<td>' + escHtml(t.sampleCode || t.remoteSampleCode) + '</td>' +
                 '<td>' + fmtIsoDate(t.collectionDate) + '</td>' +
                 '<td>' + fmtIsoDate(t.testedDate) + '</td>' +
+                (showAge ? '<td>' + (age !== '' ? age : '—') + '</td>' : '') +
                 '<td>' + eidResultBadge(t.result, t.isPositive) + '</td>' +
                 '<td>' + escHtml(t.status) + '</td>' +
                 '<td>' + escHtml(t.platform) + '</td>' +
                 '<td>' + escHtml(t.testingLab) + '</td>' +
-                '<td>' + motherVlAtTestCell(t.motherVlAtTest) + '</td>' +
                 '</tr>';
         });
         return h + '</tbody></table></div>';
+    }
+
+    // Mother modal: one block per linked child, headed by that child's DOB.
+    function childEidGroupsHtml(eidTests) {
+        if (!eidTests || !eidTests.length) {
+            return '<div class="pmtct-empty-panel"><?= _jsTranslate('No EID tests on record.'); ?></div>';
+        }
+        var order = [], byKey = Object.create(null);
+        eidTests.forEach(function (t) {
+            var key = t.childId || ('#' + t.eidId);
+            if (!byKey[key]) {
+                byKey[key] = { key: key, childDob: '', tests: [] };
+                order.push(key);
+            }
+            if (!byKey[key].childDob && t.childDob) {
+                byKey[key].childDob = t.childDob;
+            }
+            byKey[key].tests.push(t);
+        });
+
+        var h = '';
+        order.forEach(function (key) {
+            var g = byKey[key];
+            h += '<div class="pmtct-child-head"><?= _jsTranslate('Child ID'); ?>: ' + escHtml(g.key) +
+                '<span class="pm-dob"><?= _jsTranslate('Child DOB'); ?>: ' + (fmtIsoDate(g.childDob) || '—') + '</span>' +
+                '</div>';
+            h += eidHistoryTableHtml(g.tests, { ageFromDob: g.childDob });
+        });
+        return h;
     }
 
     function openChildHistory(childId, eidId) {
@@ -963,7 +1015,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                     ["<?= _jsTranslate('Mother high VL before birth'); ?>", preBirthBadge(d.motherHighVlPreBirth)]
                 ]);
                 html += '<div class="pmtct-subhead"><?= _jsTranslate('EID Test History (all time)'); ?></div>';
-                html += eidHistoryTableHtml(d.eidTests, false);
+                html += eidHistoryTableHtml(d.eidTests, { ageFromDob: d.childDob });
                 html += '<div class="pmtct-subhead"><?= _jsTranslate('Mother VL Test History (all time)'); ?></div>';
                 html += vlHistoryTableHtml(d.vlTests);
 
@@ -995,7 +1047,7 @@ $provinces = $db->rawQuery("SELECT province_id, province_name FROM province_deta
                 html += '<div class="pmtct-subhead"><?= _jsTranslate('VL Test History (all time)'); ?></div>';
                 html += vlHistoryTableHtml(d.vlTests);
                 html += '<div class="pmtct-subhead"><?= _jsTranslate('Children EID Tests (all time)'); ?></div>';
-                html += eidHistoryTableHtml(d.eidTests, true);
+                html += childEidGroupsHtml(d.eidTests);
 
                 $('#pmtctHistoryBody').html(html);
                 showHistoryModal();
