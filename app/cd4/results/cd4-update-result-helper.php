@@ -10,6 +10,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\TestAttemptService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -133,8 +134,30 @@ try {
         $vlData['reason_for_result_changes'] = $reasonForChanges;
     }
 
-    $db->where('cd4_id', $_POST['cd4SampleId']);
-    $id = $db->update('form_cd4', $vlData);
+    // Retain the outgoing result before it is replaced. See TestAttemptService: editing a
+    // result overwrites it just as surely as a re-test does, and nothing is written when
+    // there is no prior result to keep.
+    /** @var TestAttemptService $attempts */
+    $attempts = ContainerRegistry::get(TestAttemptService::class);
+
+    $db->beginTransaction();
+
+    try {
+        $attempts->archive(
+            'cd4',
+            (int) $_POST['cd4SampleId'],
+            TestAttemptService::BY_RESULT_EDIT,
+            $_POST['reasonForResultChanges'] ?? null
+        );
+
+        $db->where('cd4_id', $_POST['cd4SampleId']);
+        $id = $db->update('form_cd4', $vlData);
+
+        $db->commitTransaction();
+    } catch (Throwable $e) {
+        $db->rollbackTransaction();
+        throw $e;
+    }
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("CD4 request updated successfully");
         //Log result updates

@@ -21,6 +21,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use App\Services\TestAttemptService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use JsonMachine\Exception\PathNotFoundException;
 
@@ -506,6 +507,14 @@ try {
         $id = false;
 
         if (!empty($data['vlSampleId'])) {
+            // Retain the outgoing result before the API write replaces it. There is no
+            // "already has a result" guard here -- the duplicate check above covers
+            // duplicate registrations, not repeated results -- so a re-posted sample
+            // overwrites whatever was stored, including a failure.
+            /** @var TestAttemptService $attempts */
+            $attempts = ContainerRegistry::get(TestAttemptService::class);
+            $attempts->archive('vl', (int) $data['vlSampleId'], TestAttemptService::BY_API);
+
             $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);
         }

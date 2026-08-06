@@ -11,6 +11,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\SecurityService;
+use App\Services\TestAttemptService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -276,8 +277,33 @@ try {
 
     $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
 
-    $db->where('vl_sample_id', $_POST['vlSampleId']);
-    $id = $db->update($tableName, $vlData);
+    // Retain the outgoing result before it is replaced. Editing a result overwrites it just
+    // as surely as a re-test does, and the change-reason history above only records the
+    // previous value when the operator typed a reason -- leaving it blank discarded it.
+    // Nothing is written when there is no prior result to keep, so first-time result entry
+    // is unaffected.
+    /** @var TestAttemptService $attempts */
+    $attempts = ContainerRegistry::get(TestAttemptService::class);
+
+    $db->beginTransaction();
+
+    try {
+        $attempts->archive(
+            'vl',
+            (int) $_POST['vlSampleId'],
+            TestAttemptService::BY_RESULT_EDIT,
+            $_POST['reasonForResultChanges'] ?? null
+        );
+
+        $db->where('vl_sample_id', $_POST['vlSampleId']);
+        $id = $db->update($tableName, $vlData);
+
+        $db->commitTransaction();
+    } catch (Throwable $e) {
+        $db->rollbackTransaction();
+        throw $e;
+    }
+
     $patientId = $_POST['artNo'] ?? '';
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("VL result updated successfully");

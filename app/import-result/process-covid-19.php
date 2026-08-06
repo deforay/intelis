@@ -12,6 +12,7 @@ use App\Services\Covid19Service;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Services\TestResultsService;
+use App\Services\TestAttemptService;
 use App\Registries\ContainerRegistry;
 
 
@@ -34,6 +35,9 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var TestResultsService $testResultsService */
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
+
+/** @var TestAttemptService $attempts */
+$attempts = ContainerRegistry::get(TestAttemptService::class);
 
 $tableName = "temp_sample_import";
 $tableName1 = "form_covid19";
@@ -150,6 +154,16 @@ try {
                     if (!empty($vlResult)) {
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['data_sync'] = 0;
+
+                        // Retain the outgoing result before the import overwrites it. This path
+                        // matches on sample_code alone with no "already has a result" guard, so
+                        // re-importing a file replaces whatever was there, including a failure.
+                        $attempts->archive(
+                            'covid19',
+                            (int) $vlResult[0]['covid19_id'],
+                            TestAttemptService::BY_IMPORT
+                        );
+
                         $db->where('sample_code', $rResult['sample_code']);
 
                         $result = $db->update($tableName1, $data);
@@ -246,6 +260,15 @@ try {
             }
 
             $data['data_sync'] = 0;
+
+            // covid19_id comes from the LEFT JOIN above and is null for a sample_code with
+            // no matching row, in which case there is nothing to archive.
+            $attempts->archive(
+                'covid19',
+                (int) ($accResult[$i]['covid19_id'] ?? 0),
+                TestAttemptService::BY_IMPORT
+            );
+
             $db->where('sample_code', $accResult[$i]['sample_code']);
             $result = $db->update($tableName1, $data);
 
@@ -283,10 +306,9 @@ try {
     $samplePrintQuery .= ' WHERE vl.sample_code IN ( ' . $sCode . ')';
 
     $_SESSION['covid19PrintQuery'] = $samplePrintQuery;
-    $stQuery = "SELECT * FROM temp_sample_import as tsr
-                    LEFT JOIN form_eid as vl ON vl.sample_code=tsr.sample_code
-                    WHERE imported_by =? AND tsr.sample_type='s'";
-    $stResult = $db->rawQuery($stQuery, [$importedBy]);
+
+    // A query joining form_eid -- the wrong module's table -- ran here on every Covid-19
+    // import and its result was never read. Removed.
 
     if ($numberOfResults > 0) {
         $importedBy = $_SESSION['userId'] ?? 'AUTO';
