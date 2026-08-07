@@ -48,8 +48,9 @@ nav:
       - Migrating Ubuntu Machines: guides/migrating-ubuntu-machines.md
   - Backup:
       - Google Drive with Rclone: guides/backing-up-to-google-drive-with-rclone.md
-      - Remote Backup Server: guides/backing-up-to-remote-server.md
+      - Another Linux Machine: guides/backing-up-to-remote-server.md
       - Windows Machine (Same Network): guides/backing-up-to-windows-machine.md
+      - Restoring from a Backup: guides/restoring-from-backup.md
   - Maintenance:
       - Scripts & Tools: guides/maintenance.md
   - Remote Administration:

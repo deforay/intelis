@@ -21,8 +21,9 @@ name, and the guides say so where it matters.
 ## Backup
 
 - [Backing up to Google Drive with Rclone](guides/backing-up-to-google-drive-with-rclone.md)
-- [Backing up to a remote server](guides/backing-up-to-remote-server.md)
+- [Backing up to another Linux machine](guides/backing-up-to-remote-server.md) — over SSH
 - [Backing up to a Windows machine](guides/backing-up-to-windows-machine.md) — over the local network
+- [Restoring from a backup](guides/restoring-from-backup.md) — fetch a backup and put the data back
 
 ## Maintenance
 
