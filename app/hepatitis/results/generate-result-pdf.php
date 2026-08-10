@@ -2,7 +2,6 @@
 
 use const COUNTRY\DRC;
 use const COUNTRY\PNG;
-use const COUNTRY\WHO;
 use const COUNTRY\RWANDA;
 use const COUNTRY\CAMEROON;
 use App\Services\UsersService;
@@ -142,7 +141,7 @@ $_SESSION['aliasPage'] = $page;
 //print_r($requestResult);die;
 
 
-$fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php', DRC => 'pdf/result-pdf-drc.php', CAMEROON => 'pdf/result-pdf-cameroon.php', PNG => 'pdf/result-pdf-png.php', WHO => 'pdf/result-pdf-who.php', RWANDA => 'pdf/result-pdf-rwanda.php'];
+$fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php', DRC => 'pdf/result-pdf-drc.php', CAMEROON => 'pdf/result-pdf-cameroon.php', PNG => 'pdf/result-pdf-png.php', RWANDA => 'pdf/result-pdf-rwanda.php'];
 
 require_once($fileArray[$formId]);
 

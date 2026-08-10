@@ -126,7 +126,6 @@ $fileArray = [
     COUNTRY\DRC => 'forms/update-drc.php',
     COUNTRY\CAMEROON => 'forms/update-cameroon.php',
     COUNTRY\PNG => 'forms/update-png.php',
-    COUNTRY\WHO => 'forms/update-who.php',
     COUNTRY\RWANDA => 'forms/update-rwanda.php',
     COUNTRY\BURKINA_FASO => 'forms/update-burkina-faso.php'
 ];

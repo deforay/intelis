@@ -7,7 +7,6 @@ use const COUNTRY\SIERRA_LEONE;
 use const COUNTRY\DRC;
 use const COUNTRY\CAMEROON;
 use const COUNTRY\PNG;
-use const COUNTRY\WHO;
 use const COUNTRY\RWANDA;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -127,7 +126,7 @@ if (isset($_POST['type']) && $_POST['type'] == "qr") {
 
 $countryFormId = (int) $general->getGlobalConfig('vl_form');
 
-$fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php', DRC => 'pdf/result-pdf-drc-1.php', CAMEROON => 'pdf/result-pdf-cameroon.php', PNG => 'pdf/result-pdf-png.php', WHO => 'pdf/result-pdf-who.php', RWANDA => 'pdf/result-pdf-rwanda.php'];
+$fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php', DRC => 'pdf/result-pdf-drc-1.php', CAMEROON => 'pdf/result-pdf-cameroon.php', PNG => 'pdf/result-pdf-png.php', RWANDA => 'pdf/result-pdf-rwanda.php'];
 
 
 $resultFilename = '';
