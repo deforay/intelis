@@ -6,7 +6,6 @@ use const COUNTRY\SIERRA_LEONE;
 use const COUNTRY\DRC;
 use const COUNTRY\CAMEROON;
 use const COUNTRY\PNG;
-use const COUNTRY\WHO;
 use const COUNTRY\RWANDA;
 
 ini_set('memory_limit', -1);
@@ -121,7 +120,7 @@ $printDate = DateUtility::humanReadableDateFormat($currentDateTime, true);
 
 $currentDateTime = DateUtility::getCurrentDateTime();
 
-$fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php', DRC => 'pdf/result-pdf-drc.php', CAMEROON => 'pdf/result-pdf-cameroon.php', PNG => 'pdf/result-pdf-png.php', WHO => 'pdf/result-pdf-who.php', RWANDA => 'pdf/result-pdf-rwanda.php'];
+$fileArray = [SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php', SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php', DRC => 'pdf/result-pdf-drc.php', CAMEROON => 'pdf/result-pdf-cameroon.php', PNG => 'pdf/result-pdf-png.php', RWANDA => 'pdf/result-pdf-rwanda.php'];
 
 $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR . time() . '-' . MiscUtility::generateRandomString(6);
 MiscUtility::makeDirectory($pathFront);
