@@ -30,12 +30,11 @@ affected samples individually. See
 
 InteLIS lists every sample on that manifest.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Request Management → Add Samples from Manifest
-
-    **Capture:** the manifest code entered and the sample list loaded below it
-
-    **Highlight:** the Sample Manifest Code field and the Submit button
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Request Management → Add Samples from Manifest
+     Capture: the manifest code entered and the sample list loaded below it
+     Highlight: the Sample Manifest Code field and the Submit button
+-->
 
 4. Check the listed count against the tubes on the bench.
 5. Set **Sample Received at Testing Lab** to the date the package arrived.
