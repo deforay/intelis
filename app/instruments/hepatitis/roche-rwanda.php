@@ -135,10 +135,17 @@ try {
                 }
 
                 if ($resultLogValue !== null && $resultLogValue !== '' && $resultLogValue !== '0') {
+                    // Lifted verbatim out of the parenthetical, so a corrupted cell
+                    // would be stored as text in a column that only ever holds a
+                    // number. The below-detection check runs first, on the raw string
+                    // it was written against; anything that isn't a number is dropped.
                     $logVal = substr(trim($resultLogValue), 0, -1);
                     if ($logVal === "1.30" || $logVal === "1.3") {
                         $absDecimalVal = 20;
                         $absVal = "< 20";
+                    }
+                    if (!is_numeric($logVal)) {
+                        $logVal = null;
                     }
                 }
 
