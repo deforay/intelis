@@ -24,7 +24,9 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   features:
-    - navigation.instant
+    # navigation.instant is deliberately absent. It is incompatible with the
+    # language switcher's contextual link, which is what sends a reader to the
+    # same page in the other language instead of dumping them on the home page.
     - navigation.tracking
     - navigation.sections
     - navigation.expand
@@ -82,9 +84,74 @@ nav:
       - Engineering Standards: engineering-standards.md
       - Remote Command Plane (design): remote-command-plane.md
 
-# The Windows guides were renamed when VLSM became InteLIS. These keep the
-# published URLs working. Add an entry here whenever a page is renamed.
+# i18n goes first: it rewrites the file list, and search has to index what it
+# produces. English is the default, so any page without a .fr.md alongside it
+# falls back to English rather than 404ing. That is why the server guides can
+# stay untranslated without breaking the French site.
+#
+# The Windows guides were renamed when VLSM became InteLIS. The redirects keep
+# the published URLs working. Add an entry there whenever a page is renamed.
 plugins:
+  - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: fr
+          name: Français
+          build: true
+          site_name: Documentation InteLIS
+          site_description: Guides d'utilisation, guides d'installation et référence API pour InteLIS
+          nav_translations:
+            Home: Accueil
+            Using InteLIS: Utiliser InteLIS
+            How a Sample Moves Through InteLIS: Le parcours d'un échantillon
+            Signing In and Navigating InteLIS: Se connecter et naviguer
+            Register a Test Request: Enregistrer une demande de test
+            Receive Samples Sent on a Manifest: Réceptionner un colis avec manifeste
+            Send Samples on a Manifest: Envoyer des échantillons avec un manifeste
+            Batch Samples for Testing: Créer un batch pour le test
+            Capture Results: Saisir les résultats
+            Review and Approve Results: Vérifier et approuver les résultats
+            Handle Failed and Held Samples: Gérer les échecs et les échantillons en attente
+            Release Results: Diffuser les résultats
+            Record Where a Sample Is Stored: Enregistrer le stockage d'un échantillon
+            Administer InteLIS: Administrer InteLIS
+            For Requesting Facilities: Pour les structures demandeuses
+            Sample Statuses: Statuts des échantillons
+            Viral Load Reports: Rapports charge virale
+            Printable Job Aids: Aide-mémoires imprimables
+            Job Aids: Aide-mémoires
+            Installation: Installation
+            Using Docker (Recommended): Avec Docker (recommandé)
+            InteLIS on Ubuntu: InteLIS sur Ubuntu
+            InteLIS on Windows: InteLIS sur Windows
+            Updates & Migration: Mises à jour et migration
+            Updating InteLIS on Ubuntu: Mettre à jour InteLIS sur Ubuntu
+            Updating InteLIS on Windows: Mettre à jour InteLIS sur Windows
+            Migrating Ubuntu Machines: Migrer entre machines Ubuntu
+            Backup: Sauvegarde
+            Google Drive with Rclone: Google Drive avec Rclone
+            Another Linux Machine: Une autre machine Linux
+            Windows Machine (Same Network): Une machine Windows (même réseau)
+            Restoring from a Backup: Restaurer depuis une sauvegarde
+            Maintenance: Maintenance
+            Scripts & Tools: Scripts et outils
+            Remote Administration: Administration à distance
+            Remote Command Plane (runbook): Plan de commande à distance (procédure)
+            Troubleshooting: Dépannage
+            Fix Collation Mismatch: Corriger une incohérence de collation
+            Permission Denied Issue: Corriger une erreur de permission
+            Setting up Interfacing Tool: Configurer l'outil d'interfaçage
+            Reference: Référence
+            Architecture: Architecture
+            Engineering Standards: Standards d'ingénierie
+            Remote Command Plane (design): Plan de commande à distance (conception)
   - search
   - redirects:
       redirect_maps:
