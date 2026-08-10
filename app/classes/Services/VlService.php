@@ -25,6 +25,11 @@ use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 
 final class VlService extends AbstractTestService
 {
+    // Upper bound on a value the Log field can plausibly hold. A log of 10 is ten
+    // billion copies per millilitre, well past anything an assay reports, so a figure
+    // above this is a copies value typed into the wrong box rather than a log.
+    private const MAX_PLAUSIBLE_VL_LOG = 10;
+
     // keep in lowercase to make them easier to compare
     protected array $suppressedArray = [
         'hiv-1 not detected',
@@ -309,8 +314,21 @@ final class VlService extends AbstractTestService
                 $txtVal = $interpretedResults['txtVal'] ?? null;
             }
         } elseif (!empty($params['vlLog']) && is_numeric($params['vlLog'])) {
-            $resultStatus = PENDING_APPROVAL; // Awaiting Approval
-            $finalResult = 10 ** $params['vlLog'];
+            // Result left blank and a log entered, so the copies figure is derived from
+            // it. Bounded, because 10 ** an unbounded entry turns a copies value typed
+            // into the Log box into a result no assay could produce -- an operator
+            // entering 20 meaning "<20 copies" otherwise gets a result of 1.0E+20, and
+            // an entry of 839 overflows to INF outright.
+            //
+            // Out of range, nothing is derived: the result stays empty and the status
+            // is left as it came in, so the sample does not advance to approval
+            // carrying a fabricated figure. The entry is kept either way, so whatever
+            // was typed is still on the record for someone to correct.
+            $logVal = $params['vlLog'];
+            if ((float) $params['vlLog'] <= self::MAX_PLAUSIBLE_VL_LOG) {
+                $resultStatus = PENDING_APPROVAL; // Awaiting Approval
+                $finalResult = 10 ** $params['vlLog'];
+            }
         }
 
         $hivDetection ??= '';
