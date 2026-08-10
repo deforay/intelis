@@ -20,20 +20,16 @@ no sample.
 1. Go to **HIV VIRAL LOAD → Request Management → Manage Batch**.
 2. Select **Create New Batch**.
 3. Choose the analyzer in **Testing Platform**.
+4. Enter a **Batch Code**.
+5. Choose the **Positions** numbering, either **Numeric** or **Alpha Numeric**,
+   to match how positions are labelled on the analyzer.
 
 Choose the analyzer first. InteLIS caps the number of samples a batch can hold
 based on the analyzer chosen, and it refuses to go further without one.
 
-4. Enter a **Batch Code**.
-
 Batch codes are unique. If the code is already used, InteLIS says so and the
 batch cannot be saved until the code is changed. Use the lab's own naming
 convention so the batch can be traced back later.
-
-5. Enter the **Lab Assigned Batch Code** if the lab keeps a separate run number
-   on the analyzer.
-6. Choose the **Positions** numbering, either **Numeric** or **Alpha Numeric**,
-   to match how positions are labelled on the analyzer.
 
 ## Find the samples
 
