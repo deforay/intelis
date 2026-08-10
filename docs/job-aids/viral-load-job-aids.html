@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InteLIS viral load job aids</title>
+<style>
+  :root {
+    --ink: #14181c;
+    --muted: #5b6670;
+    --rule: #c8d0d6;
+    --tint: #eef3f5;
+    --accent: #00695c;
+    --warn: #8a4b00;
+    --warn-bg: #fdf3e6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #f4f6f7;
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.42;
+  }
+  .toolbar {
+    max-width: 200mm;
+    margin: 0 auto 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .toolbar h1 { font-size: 16pt; margin: 0; }
+  .toolbar p { margin: 0; color: var(--muted); font-size: 10pt; }
+  button {
+    font: inherit;
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .card {
+    max-width: 200mm;
+    min-height: 250mm;
+    margin: 0 auto 20px;
+    padding: 16mm 15mm;
+    background: #fff;
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+  .card > header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+  .kicker {
+    font-size: 8.5pt;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .card h2 { font-size: 17pt; margin: 3px 0 0; }
+  .card h2 + p { margin: 5px 0 0; color: var(--muted); }
+
+  h3 {
+    font-size: 10.5pt;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 18px 0 7px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 3px;
+  }
+
+  ol, ul { margin: 0 0 10px; padding-left: 20px; }
+  li { margin-bottom: 5px; }
+  ol.steps { counter-reset: s; list-style: none; padding-left: 0; }
+  ol.steps > li {
+    counter-increment: s;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 9px;
+  }
+  ol.steps > li::before {
+    content: counter(s);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 21px; height: 21px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 9.5pt;
+    text-align: center;
+    line-height: 18px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 0 0 10px; font-size: 10pt; }
+  th, td { text-align: left; vertical-align: top; padding: 5px 8px; border-bottom: 1px solid var(--rule); }
+  th { background: var(--tint); font-size: 9pt; text-transform: uppercase; letter-spacing: .04em; }
+  td:first-child { white-space: nowrap; font-weight: 600; }
+  table.wrapfirst td:first-child { white-space: normal; }
+
+  .path {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9.5pt;
+    background: var(--tint);
+    padding: 1px 5px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .ui { font-weight: 700; }
+
+  .warn {
+    border-left: 4px solid var(--warn);
+    background: var(--warn-bg);
+    padding: 9px 12px;
+    margin: 12px 0;
+  }
+  .warn strong { color: var(--warn); display: block; margin-bottom: 2px; font-size: 9.5pt; text-transform: uppercase; letter-spacing: .04em; }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; margin: 10px 0 14px; }
+  .flow .step {
+    flex: 1 1 90px;
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
+    padding: 7px 8px;
+    font-size: 9.5pt;
+    background: #fff;
+  }
+  .flow .step b { display: block; font-size: 8pt; color: var(--accent); letter-spacing: .05em; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+  footer.cardfoot {
+    margin-top: 16px; padding-top: 7px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 8.5pt;
+    display: flex; justify-content: space-between; gap: 10px;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; font-size: 10.5pt; }
+    .toolbar { display: none; }
+    .card {
+      margin: 0; border: 0; box-shadow: none;
+      min-height: 0; max-width: none;
+      padding: 12mm 14mm;
+      page-break-after: always;
+      break-after: page;
+    }
+    .card:last-of-type { page-break-after: auto; break-after: auto; }
+  }
+  @page { size: A4 portrait; margin: 10mm; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <h1>InteLIS viral load job aids</h1>
+    <p>Seven single-page cards. Print and pin at the workstation.</p>
+  </div>
+  <button onclick="window.print()">Print all cards</button>
+</div>
+
+<!-- CARD 1 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 1 of 7</div>
+    <h2>The viral load sample journey</h2>
+    <p>Where a sample goes, and who does what at each stage.</p>
+  </header>
+
+  <h3>Two ways a sample reaches the lab</h3>
+  <table>
+    <tr><td>Direct to lab</td><td>The sample arrives with a paper form. A lab user registers it. InteLIS issues the Sample ID.</td></tr>
+    <tr><td>On a manifest</td><td>The facility registered it already. The lab types one manifest code and activates the whole package.</td></tr>
+  </table>
+
+  <h3>The stages</h3>
+  <div class="flow">
+    <div class="step"><b>1</b>Register request, or activate manifest</div>
+    <div class="step"><b>2</b>Add samples to a batch</div>
+    <div class="step"><b>3</b>Print the batch PDF</div>
+    <div class="step"><b>4</b>Register on the analyzer from the PDF</div>
+    <div class="step"><b>5</b>Run the test</div>
+    <div class="step"><b>6</b>Capture the result</div>
+    <div class="step"><b>7</b>Review and approve</div>
+    <div class="step"><b>8</b>Print or email</div>
+  </div>
+
+  <div class="warn">
+    <strong>The one rule that matters</strong>
+    The analyzer and InteLIS agree on the Sample ID and nothing else. Always register samples
+    on the analyzer from the printed batch PDF. Never from the paper form, a separate worklist,
+    or memory. An ID that differs by one character produces a result that matches no sample.
+  </div>
+
+  <h3>Who does what</h3>
+  <table class="wrapfirst">
+    <tr><th>Role</th><th>Work</th></tr>
+    <tr><td>Health facility staff</td><td>Register requests, build manifests, read results back</td></tr>
+    <tr><td>Lab data entry</td><td>Register direct samples, activate manifests, capture results</td></tr>
+    <tr><td>Lab supervisor</td><td>Review and approve, handle failures, release reports</td></tr>
+    <tr><td>Administrator</td><td>Users, facilities, analyzers, and the form dropdown lists</td></tr>
+  </table>
+
+  <h3>Menu map</h3>
+  <table class="wrapfirst">
+    <tr><td>Request Management</td><td>Register requests, activate manifests, build batches</td></tr>
+    <tr><td>Test Result Management</td><td>Import, enter, approve, and email results</td></tr>
+    <tr><td>Management</td><td>Reports, exports, printing</td></tr>
+  </table>
+
+  <footer class="cardfoot"><span>InteLIS viral load job aid</span><span>Card 1: the sample journey</span></footer>
+</section>
+
+<!-- CARD 2 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 2 of 7</div>
+    <h2>Register a test request</h2>
+    <p>For a sample that arrives with a paper form and no Sample ID.</p>
+  </header>
+
+  <p><span class="path">HIV VIRAL LOAD &rsaquo; Request Management &rsaquo; Add New Request</span></p>
+
+  <ol class="steps">
+    <li>Choose <span class="ui">State/Province</span>, then <span class="ui">District/County</span>, then <span class="ui">Clinic/Health Center</span>. Each list filters the next.</li>
+    <li>Choose the <span class="ui">Testing Lab</span>.</li>
+    <li>Enter the patient identifier exactly as written on the paper form.</li>
+    <li>Read the previous-request notice that appears. Stop if this sample is already registered.</li>
+    <li>Enter date of birth, or age in years, or age in months for an infant.</li>
+    <li>Enter <span class="ui">Date of Sample Collection</span> and <span class="ui">Sample Dispatched On</span> from the paper form, not today's date.</li>
+    <li>Choose the <span class="ui">Sample Type</span>.</li>
+    <li>Fill the treatment section and the indication for testing.</li>
+    <li>Leave the laboratory section empty. The lab fills it after testing.</li>
+    <li>Select <span class="ui">Save</span>, or <span class="ui">Save and Next</span> to go straight to the next form.</li>
+  </ol>
+
+  <div class="warn">
+    <strong>Do not type a Sample ID</strong>
+    InteLIS generates the Sample ID when the request is saved.
+  </div>
+
+  <h3>Quick answers</h3>
+  <table class="wrapfirst">
+    <tr><th>Question</th><th>Answer</th></tr>
+    <tr><td>Facility missing from the list</td><td>It is not linked to viral load testing. Ask the administrator.</td></tr>
+    <tr><td>Red asterisk</td><td>Mandatory. InteLIS refuses to save without it.</td></tr>
+    <tr><td>Optional fields</td><td>Fill them where the paper form has the data. Reports count only what was recorded.</td></tr>
+    <tr><td>Barcode label</td><td>Set <span class="ui">Print Barcode Label</span> before saving. Use <span class="ui">Change/Retry</span> if no printer is listed.</td></tr>
+    <tr><td>Mistake after saving</td><td>Find it in View Test Requests and select <span class="ui">Edit</span>. Requests lock after a set number of days.</td></tr>
+  </table>
+
+  <h3>Receiving a package instead</h3>
+  <p>Do not register manifest samples one at a time. Go to
+  <span class="path">Request Management &rsaquo; Add Samples from Manifest</span>,
+  count the tubes against the manifest, enter the manifest code, set the received date,
+  and select <span class="ui">Activate Samples</span>.</p>
+
+  <footer class="cardfoot"><span>InteLIS viral load job aid</span><span>Card 2: register a request</span></footer>
+</section>
+
+<!-- CARD 3 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 3 of 7</div>
+    <h2>Batch samples and run the analyzer</h2>
+    <p>The step that keeps analyzer IDs and InteLIS IDs identical.</p>
+  </header>
+
+  <p><span class="path">HIV VIRAL LOAD &rsaquo; Request Management &rsaquo; Manage Batch</span></p>
+
+  <ol class="steps">
+    <li>Select <span class="ui">Create New Batch</span>.</li>
+    <li>Choose the <span class="ui">Testing Platform</span> first. It sets the sample limit.</li>
+    <li>Enter a unique <span class="ui">Batch Code</span>.</li>
+    <li>Set <span class="ui">Positions</span> to match how the analyzer labels positions.</li>
+    <li>Filter the sample list, then set <span class="ui">Sort By</span> to the order the run is loaded in.</li>
+    <li>Tick the samples, or use <span class="ui">Automatically select samples for Batch</span>.</li>
+    <li>Select <span class="ui">Save and Next</span>.</li>
+    <li>Back on the batch list, select <span class="ui">Batch PDF</span> or <span class="ui">Compact Batch PDF</span>.</li>
+    <li>Print it and take it to the analyzer.</li>
+    <li>Scan or enter each Sample ID at the analyzer from the printed PDF.</li>
+    <li>Run the batch.</li>
+  </ol>
+
+  <div class="warn">
+    <strong>Never type Sample IDs from anywhere else</strong>
+    Not from the paper request form. Not from a separate worklist. Not from memory.
+    A result carrying an unrecognised ID attaches to no sample, and the sample stays
+    in the untested queue.
+  </div>
+
+  <h3>If InteLIS blocks the save</h3>
+  <table class="wrapfirst">
+    <tr><th>Message</th><th>Fix</th></tr>
+    <tr><td>Choose a testing platform to proceed</td><td>Select the analyzer.</td></tr>
+    <tr><td>Select at least one sample</td><td>Tick samples in the list.</td></tr>
+    <tr><td>More than the allowed number for this platform</td><td>Untick samples down to the analyzer's limit.</td></tr>
+    <tr><td>Batch code already exists</td><td>Use a different code.</td></tr>
+  </table>
+
+  <h3>Batch row actions</h3>
+  <table class="wrapfirst">
+    <tr><td>Edit</td><td>Change batch details and samples</td></tr>
+    <tr><td>Edit Position</td><td>Change which position each sample sits in</td></tr>
+    <tr><td>Batch PDF / Compact</td><td>Reprint the barcode sheet</td></tr>
+    <tr><td>Delete</td><td>Disappears once any sample in the batch has a result. Deleting releases samples back to the untested queue. It does not delete samples.</td></tr>
+  </table>
+
+  <footer class="cardfoot"><span>InteLIS viral load job aid</span><span>Card 3: batch and run</span></footer>
+</section>
+
+<!-- CARD 4 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 4 of 7</div>
+    <h2>Capture results: three methods</h2>
+    <p>Use the highest method the lab and the analyzer support.</p>
+  </header>
+
+  <h3>Method 1 &mdash; Interface Tool (preferred)</h3>
+  <ol class="steps">
+    <li>Confirm the Interface Tool is installed, running, and on the current version.</li>
+    <li>Confirm the analyzer shows as <span class="ui">Connected</span> in the Interface Tool.</li>
+    <li>If the analyzer supports manual release, release the run after review. Otherwise it releases on its own schedule.</li>
+    <li>Results reach InteLIS on their own. There is no import step and no button.</li>
+  </ol>
+  <p>Some analyzers only connect while sending. A tool not showing <span class="ui">Connected</span>
+  between runs is not necessarily faulty. Check again during release.</p>
+
+  <h3>Method 2 &mdash; File import</h3>
+  <p><span class="path">Test Result Management &rsaquo; Import Results From File</span></p>
+  <ol class="steps">
+    <li>Export the result file from the analyzer. It must carry the InteLIS Sample IDs.</li>
+    <li>Choose <span class="ui">Instrument/Platform Name</span> and <span class="ui">Specific Machine Name/Code</span>. The wrong choice garbles the import.</li>
+    <li>Choose the <span class="ui">Testing Lab Name</span> and select the file. Accepts xls, xlsx, csv, txt.</li>
+    <li>Select <span class="ui">Submit</span>.</li>
+    <li>Check the <span class="ui">Sample source</span> note on every row before accepting.</li>
+    <li>Set a status on each row, set tester, reviewer, and approver, then <span class="ui">Save</span>.</li>
+  </ol>
+  <table class="wrapfirst">
+    <tr><th>Sample source note</th><th>Action</th></tr>
+    <tr><td>Result for Sample ID from VLSM</td><td>Accept</td></tr>
+    <tr><td>Sample ID not from VLSM</td><td>Do not accept. Find why the ID differs</td></tr>
+    <tr><td>Result already exists</td><td>Overwrite only if the new result is correct</td></tr>
+    <tr><td>Test date 1+ month or 1+ year from collection</td><td>Check the date. A year's gap is usually a typing error</td></tr>
+  </table>
+
+  <h3>Method 3 &mdash; Manual entry (last resort)</h3>
+  <p><span class="path">Test Result Management &rsaquo; Enter Result Manually</span></p>
+  <ol class="steps">
+    <li>Set <span class="ui">Status</span> to <span class="ui">Results Not Recorded</span> and find the sample.</li>
+    <li>Select <span class="ui">Enter Result</span>.</li>
+    <li>Enter received date, testing date, platform, and the result.</li>
+    <li>Read the result back against the analyzer printout before saving.</li>
+    <li>Select <span class="ui">Save</span>. The result then needs approval.</li>
+  </ol>
+
+  <div class="warn">
+    <strong>If results do not arrive</strong>
+    Check the analyzer released the run. Check the Interface Tool shows Connected.
+    Check the Sample IDs match. Then ask the administrator to check Last Seen under
+    Facilities, the testing lab, Interface Tool Connections.
+  </div>
+
+  <footer class="cardfoot"><span>InteLIS viral load job aid</span><span>Card 4: capture results</span></footer>
+</section>
+
+<!-- CARD 5 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 5 of 7</div>
+    <h2>Approve and release results</h2>
+    <p>Approval is the check that the result belongs to the sample.</p>
+  </header>
+
+  <h3>Approve</h3>
+  <p><span class="path">Test Result Management &rsaquo; Manage Results Status</span></p>
+  <ol class="steps">
+    <li>Set <span class="ui">Show Samples that are</span> to <span class="ui">Not Approved/Rejected</span>.</li>
+    <li>Filter by <span class="ui">Batch Code</span>. One run on screen, one printout to check against.</li>
+    <li>For each row check three things against the printout: the Sample ID matches, the result matches, the patient is the one expected.</li>
+    <li>Tick the rows to approve.</li>
+    <li>In <span class="ui">Bulk Actions</span>, set <span class="ui">Status</span> to <span class="ui">Accepted</span>.</li>
+    <li>Set <span class="ui">Approver</span>, and tester and reviewer if the lab records them.</li>
+    <li>Select <span class="ui">Apply</span> and confirm.</li>
+  </ol>
+  <p><span class="ui">Replace existing</span> overwrites names already on those samples. Leave it off to fill only blanks.</p>
+
+  <div class="warn">
+    <strong>Sample ID and patient do not match</strong>
+    Do not approve. The sample was registered against the wrong patient, or loaded into
+    the wrong analyzer position. Hold it and investigate.
+  </div>
+
+  <h3>Print</h3>
+  <p><span class="path">Management &rsaquo; Print Result</span></p>
+  <ul>
+    <li>Work from the <span class="ui">Results not yet Printed</span> tab.</li>
+    <li>Filter, tick, then <span class="ui">Print Selected Results PDF</span>.</li>
+    <li>Limit is 1000 results per print. Reprints live on the second tab.</li>
+  </ul>
+
+  <h3>Email</h3>
+  <p><span class="path">Test Result Management &rsaquo; E-mail Test Result</span></p>
+  <ul>
+    <li>Choose <span class="ui">Facility Name (To)</span>, enter subject and message.</li>
+    <li>Set <span class="ui">Mail Sent Status</span> to <span class="ui">Samples Not yet Mailed</span>.</li>
+    <li>Tick results, select <span class="ui">Next</span>, confirm. Limit is 100 per email.</li>
+    <li>Results go to the addresses held against the facility.</li>
+  </ul>
+
+  <p>Only approved results appear on the print and email pages.</p>
+
+  <footer class="cardfoot"><span>InteLIS viral load job aid</span><span>Card 5: approve and release</span></footer>
+</section>
+
+<!-- CARD 6 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 6 of 7</div>
+    <h2>Failed, rejected, lost, or cancelled?</h2>
+    <p>Choosing the wrong one distorts the lab's reports.</p>
+  </header>
+
+  <h3>Pick the right action</h3>
+  <table class="wrapfirst">
+    <tr><th>Situation</th><th>Action</th><th>Where</th></tr>
+    <tr><td>Analyzer failed or gave an invalid reading, sample still viable</td><td>Retest</td><td>Failed/Hold Samples</td></tr>
+    <tr><td>Sample not fit to test, facility should resend</td><td>Reject, with a reason</td><td>Manage Results Status</td></tr>
+    <tr><td>Sample cannot be found</td><td>Lost</td><td>Manage Results Status</td></tr>
+    <tr><td>Request entered twice, or withdrawn by the clinician</td><td>Cancel</td><td>Manage Results Status</td></tr>
+    <tr><td>Import wrongly marked good results as failed</td><td>Move to Accepted</td><td>Failed/Hold Samples</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Never cancel a sample that was tested and failed</strong>
+    Cancelled means never tested. It drops out of testing counts and turnaround time.
+    Failed stays in the failure rate. Using cancel to tidy up failures hides a real
+    quality signal.
+  </div>
+
+  <h3>Retest</h3>
+  <p><span class="path">Test Result Management &rsaquo; Failed/Hold Samples</span></p>
+  <ol class="steps">
+    <li>Set <span class="ui">Result Status</span> to <span class="ui">Failed</span> and select <span class="ui">Search</span>.</li>
+    <li>Tick the samples.</li>
+    <li>Select <span class="ui">Retest the selected samples</span>.</li>
+  </ol>
+  <p>The result clears and the sample returns to the untested queue as
+  <span class="ui">Sample Registered at Testing Lab</span>. Add it to a new batch.
+  The failed attempt stays on record, so the failure rate stays accurate.</p>
+
+  <h3>Recover results marked failed by mistake</h3>
+  <ol class="steps">
+    <li>Tick the affected samples.</li>
+    <li>Select <span class="ui">Move selected to Accepted</span> and confirm.</li>
+  </ol>
+  <p>Only samples with a usable recorded result move. Genuine failures are skipped.
+  If nothing moves, those samples need a retest, not recovery.</p>
+
+  <h3>Cancel</h3>
+  <ol class="steps">
+    <li>Set <span class="ui">Show Samples that are</span> to <span class="ui">Available for Cancellation</span>.</li>
+    <li>Tick the samples, set <span class="ui">Status</span> to <span class="ui">Cancelled</span>, select <span class="ui">Apply</span>.</li>
+    <li>Type the confirmation word when asked.</li>
+  </ol>
+
+  <footer class="cardfoot"><span>InteLIS viral load job aid</span><span>Card 6: failures and rejections</span></footer>
+</section>
+
+<!-- CARD 7 -->
+<section class="card">
+  <header>
+    <div class="kicker">Job aid 7 of 7</div>
+    <h2>Sample statuses at a glance</h2>
+    <p>Every status a sample can carry, and what it means.</p>
+  </header>
+
+  <table class="wrapfirst">
+    <tr><th>Status</th><th>Meaning</th></tr>
+    <tr><td>Sample Currently Registered at Health Center</td><td>Registered at a facility. The lab has not received it</td></tr>
+    <tr><td>Sample Registered at Testing Lab</td><td>Received by the lab, waiting to be tested</td></tr>
+    <tr><td>Sample Referred to another Lab</td><td>Sent on to a different lab</td></tr>
+    <tr><td>Awaiting Approval</td><td>A result is recorded, waiting for sign-off</td></tr>
+    <tr><td>Accepted</td><td>Approved and available to print or email</td></tr>
+    <tr><td>Rejected</td><td>Not fit to test. A rejection reason is recorded</td></tr>
+    <tr><td>Failed/Invalid</td><td>The test ran and gave no usable result</td></tr>
+    <tr><td>Hold</td><td>Paused pending a decision</td></tr>
+    <tr><td>Sample Reordered</td><td>Sent back for testing again</td></tr>
+    <tr><td>Lost</td><td>Cannot be found, will not be tested</td></tr>
+    <tr><td>Expired</td><td>Past the storage life the installation allows</td></tr>
+    <tr><td>No Result</td><td>No result recorded</td></tr>
+    <tr><td>Cancelled</td><td>Testing will not be performed</td></tr>
+  </table>
+
+  <h3>Effect on reports</h3>
+  <table class="wrapfirst">
+    <tr><td>Cancelled</td><td>Treated as never tested. Out of testing counts and turnaround time</td></tr>
+    <tr><td>Failed/Invalid</td><td>Counted in the failure rate. A retest keeps the failed attempt on record</td></tr>
+    <tr><td>Rejected</td><td>Appears in the sample rejection report with its reason</td></tr>
+    <tr><td>Accepted</td><td>The only status that can be printed or emailed</td></tr>
+  </table>
+
+  <h3>Common situations</h3>
+  <table class="wrapfirst">
+    <tr><th>Seen</th><th>Usual cause</th></tr>
+    <tr><td>Stuck at Sample Currently Registered at Health Center</td><td>The lab has not activated the manifest yet</td></tr>
+    <tr><td>Stuck at Sample Registered at Testing Lab after a run</td><td>The result did not attach. Check the Sample ID on the analyzer</td></tr>
+    <tr><td>Stuck at Awaiting Approval</td><td>Nobody has approved it yet</td></tr>
+    <tr><td>Whole run shows Failed/Invalid</td><td>Often an import problem. Try Move to Accepted before retesting</td></tr>
+  </table>
+
+  <footer class="cardfoot"><span>InteLIS viral load job aid</span><span>Card 7: sample statuses</span></footer>
+</section>
+
+</body>
+</html>

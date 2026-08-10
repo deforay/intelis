@@ -38,6 +38,24 @@ theme:
 # site's two tables of contents and they drift apart if edited separately.
 nav:
   - Home: index.md
+  - Using InteLIS:
+      - How a Sample Moves Through InteLIS: user-guides/index.md
+      - Signing In and Navigating InteLIS: user-guides/signing-in.md
+      - Register a Test Request: user-guides/register-a-request.md
+      - Receive Samples Sent on a Manifest: user-guides/receive-referred-samples.md
+      - Send Samples on a Manifest: user-guides/send-samples-on-a-manifest.md
+      - Batch Samples for Testing: user-guides/batch-samples.md
+      - Capture Results: user-guides/capture-results.md
+      - Review and Approve Results: user-guides/approve-results.md
+      - Handle Failed and Held Samples: user-guides/failed-and-held-samples.md
+      - Release Results: user-guides/release-results.md
+      - Record Where a Sample Is Stored: user-guides/store-samples.md
+      - Administer InteLIS: user-guides/administer-intelis.md
+      - For Requesting Facilities: user-guides/for-requesting-facilities.md
+      - Sample Statuses: user-guides/sample-statuses.md
+      - Viral Load Reports: user-guides/reports.md
+  - Printable Job Aids:
+      - Job Aids: job-aids/index.md
   - Installation:
       - Using Docker (Recommended): guides/installing-intelis-with-docker.md
       - InteLIS on Ubuntu: guides/installing-intelis-on-ubuntu.md
