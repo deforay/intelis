@@ -24,12 +24,11 @@ filled.
 Fill the optional fields too where the paper form has the information. Reports
 can only count what was recorded.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Request Management → Add New Request
-
-    **Capture:** the whole form collapsed to show its section headings
-
-    **Highlight:** the red asterisk legend at the top
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Request Management → Add New Request
+     Capture: the whole form collapsed to show its section headings
+     Highlight: the red asterisk legend at the top
+-->
 
 ## Fill the clinic information
 
@@ -113,10 +112,10 @@ saving.
 InteLIS generates the Sample ID when the request is saved. Do not try to type
 one in.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Request Management → Add New Request, foot of the form
-
-    **Highlight:** the Save and Save and Next buttons side by side
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Request Management → Add New Request, foot of the form
+     Highlight: the Save and Save and Next buttons side by side
+-->
 
 ## Print the barcode label
 

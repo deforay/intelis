@@ -19,10 +19,10 @@ Configuration → Lab Storage**.
 1. Go to **HIV VIRAL LOAD → Request Management → View Test Requests**.
 2. Select **Samples Storage** at the top right of the list.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Request Management → View Test Requests
-
-    **Highlight:** the Samples Storage button at the top right
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Request Management → View Test Requests
+     Highlight: the Samples Storage button at the top right
+-->
 
 ## Record a position
 
@@ -47,12 +47,11 @@ Record the position at the moment the tube goes into the freezer. A position
 written down later, from memory, is the position the tube was meant to go in,
 not necessarily where it is.
 
-!!! info "Screenshot"
-    **Page:** the Samples Storage page with samples loaded
-
-    **Capture:** several rows with rack, box, and position filled
-
-    **Highlight:** the Lab and Freezer selectors at the top
+<!-- SCREENSHOT NEEDED
+     Page: the Samples Storage page with samples loaded
+     Capture: several rows with rack, box, and position filled
+     Highlight: the Lab and Freezer selectors at the top
+-->
 
 ## Record many samples at once
 

@@ -34,12 +34,11 @@ always pass through this page.
 Filtering by batch code is the most reliable approach. It puts one analyzer run
 on screen, which can be checked against one printout.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Test Result Management → Manage Results Status
-
-    **Capture:** the list filtered to Not Approved/Rejected for one batch
-
-    **Highlight:** the Show Samples that are filter
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Test Result Management → Manage Results Status
+     Capture: the list filtered to Not Approved/Rejected for one batch
+     Highlight: the Show Samples that are filter
+-->
 
 ## Check each result
 
@@ -70,12 +69,11 @@ Where the same person is chosen for more than one of approver, tester, and
 reviewer, InteLIS either warns or refuses, depending on the lab's configuration.
 Where it warns, confirm only if the lab permits one person to hold both roles.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Test Result Management → Manage Results Status
-
-    **Capture:** the Bulk Actions panel with Status set to Accepted and an approver chosen
-
-    **Highlight:** the Apply button and the Replace existing checkbox
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Test Result Management → Manage Results Status
+     Capture: the Bulk Actions panel with Status set to Accepted and an approver chosen
+     Highlight: the Apply button and the Replace existing checkbox
+-->
 
 ## Reject a sample
 
@@ -118,10 +116,10 @@ Do not cancel a sample that was tested and failed. Failure and cancellation mean
 different things in the reports. See
 [How to handle failed and held samples](failed-and-held-samples.md).
 
-!!! info "Screenshot"
-    **Page:** the cancellation confirmation dialog
-
-    **Capture:** the dialog with the word to type visible
+<!-- SCREENSHOT NEEDED
+     Page: the cancellation confirmation dialog
+     Capture: the dialog with the word to type visible
+-->
 
 ## Correct an approved result
 

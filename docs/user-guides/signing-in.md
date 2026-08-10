@@ -20,10 +20,10 @@ If no login exists, ask the administrator.
 InteLIS opens on the page set for the role. For most lab users that is the
 dashboard.
 
-!!! info "Screenshot"
-    **Page:** the login screen
-
-    **Capture:** the Login ID and password fields with the lab logo above them
+<!-- SCREENSHOT NEEDED
+     Page: the login screen
+     Capture: the Login ID and password fields with the lab logo above them
+-->
 
 ## Read the screen
 
@@ -47,12 +47,11 @@ three sections.
 The menu only shows what the role allows. A menu item missing from the sidebar
 means the role does not permit it, not that the feature is absent.
 
-!!! info "Screenshot"
-    **Page:** any page, sidebar expanded
-
-    **Capture:** the sidebar with HIV VIRAL LOAD open, showing all three sections
-
-    **Highlight:** the three section headings
+<!-- SCREENSHOT NEEDED
+     Page: any page, sidebar expanded
+     Capture: the sidebar with HIV VIRAL LOAD open, showing all three sections
+     Highlight: the three section headings
+-->
 
 ## Check for the training banner
 

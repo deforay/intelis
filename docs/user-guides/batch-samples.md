@@ -35,12 +35,11 @@ convention so the batch can be traced back later.
 6. Choose the **Positions** numbering, either **Numeric** or **Alpha Numeric**,
    to match how positions are labelled on the analyzer.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Request Management → Manage Batch → Create New Batch
-
-    **Capture:** the top of the form with Testing Platform and Batch Code filled
-
-    **Highlight:** the Testing Platform field
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Request Management → Manage Batch → Create New Batch
+     Capture: the top of the form with Testing Platform and Batch Code filled
+     Highlight: the Testing Platform field
+-->
 
 ## Find the samples
 
@@ -98,12 +97,11 @@ case, **Batch PDF** does not appear on the row.
 
 Print the PDF and take it to the analyzer.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Request Management → Manage Batch
-
-    **Capture:** the batch list with one row's action buttons visible
-
-    **Highlight:** the Batch PDF and Compact Batch PDF buttons
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Request Management → Manage Batch
+     Capture: the batch list with one row's action buttons visible
+     Highlight: the Batch PDF and Compact Batch PDF buttons
+-->
 
 ## Register the samples on the analyzer
 

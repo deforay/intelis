@@ -34,12 +34,11 @@ InteLIS builds one PDF holding every selected report.
 The limit is 1000 results at a time. Selecting more than that stops the print.
 Split the work across several prints.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Management → Print Result
-
-    **Capture:** the Results not yet Printed tab with results selected
-
-    **Highlight:** the two tabs and the Print Selected Results PDF button
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Management → Print Result
+     Capture: the Results not yet Printed tab with results selected
+     Highlight: the two tabs and the Print Selected Results PDF button
+-->
 
 ### Reprint a result
 
@@ -67,12 +66,11 @@ The results go to the email addresses recorded against the facility. If a
 facility has no address recorded, ask the administrator to add one under
 **ADMIN → Facilities**.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Test Result Management → E-mail Test Result
-
-    **Capture:** the subject, recipient facility, and message filled, with results selected below
-
-    **Highlight:** the Mail Sent Status filter
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Test Result Management → E-mail Test Result
+     Capture: the subject, recipient facility, and message filled, with results selected below
+     Highlight: the Mail Sent Status filter
+-->
 
 ## Export results to a spreadsheet
 

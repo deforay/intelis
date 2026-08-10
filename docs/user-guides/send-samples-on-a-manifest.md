@@ -27,12 +27,11 @@ from requests that already exist.
 6. Set the **Sample Collection Point** if the facility collects at more than one
    point.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Request Management → VL Manifest → Add Specimen Referral Manifest
-
-    **Capture:** the top of the form with testing lab and manifest code set
-
-    **Highlight:** the Testing Lab field
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Request Management → VL Manifest → Add Specimen Referral Manifest
+     Capture: the top of the form with testing lab and manifest code set
+     Highlight: the Testing Lab field
+-->
 
 ## Add the samples
 
@@ -56,12 +55,11 @@ Put the printed manifest in the package. Keep a copy at the sending site.
 The receiving lab needs the manifest code from this sheet to register the
 package. See [How to receive samples sent on a manifest](receive-referred-samples.md).
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Request Management → VL Manifest
-
-    **Capture:** the manifest list with one row's actions visible
-
-    **Highlight:** the Print Manifest PDF button
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Request Management → VL Manifest
+     Capture: the manifest list with one row's actions visible
+     Highlight: the Print Manifest PDF button
+-->
 
 ## Change a manifest before it ships
 
