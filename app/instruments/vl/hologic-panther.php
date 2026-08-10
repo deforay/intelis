@@ -73,7 +73,13 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
                 $sampleCode = isset($sheetData[$sampleIdCol]) ? trim((string) $sheetData[$sampleIdCol]) : "";
                 $sampleType = isset($sheetData[$sampleTypeCol]) ? trim((string) $sheetData[$sampleTypeCol]) : "";
                 $resultValue = isset($sheetData[$resultCol]) ? trim((string) $sheetData[$resultCol]) : "";
+                // Read straight off the sheet, so a formula that errored in the export
+                // ("#NUM!" from a LOG10 over an empty cell) would otherwise be stored
+                // as text in a column that only ever holds a number.
                 $logVal = isset($sheetData[$logValCol]) ? trim((string) $sheetData[$logValCol]) : "";
+                if (!is_numeric($logVal)) {
+                    $logVal = "";
+                }
                 $validity = isset($sheetData[$validityCol]) ? trim((string) $sheetData[$validityCol]) : "";
 
                 // Process the result value
