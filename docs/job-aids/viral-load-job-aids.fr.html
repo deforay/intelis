@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InteLIS — aide-mémoires charge virale</title>
+<style>
+  :root {
+    --ink: #14181c;
+    --muted: #5b6670;
+    --rule: #c8d0d6;
+    --tint: #eef3f5;
+    --accent: #00695c;
+    --warn: #8a4b00;
+    --warn-bg: #fdf3e6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #f4f6f7;
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.42;
+  }
+  .toolbar {
+    max-width: 200mm;
+    margin: 0 auto 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .toolbar h1 { font-size: 16pt; margin: 0; }
+  .toolbar p { margin: 0; color: var(--muted); font-size: 10pt; }
+  button {
+    font: inherit;
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .card {
+    max-width: 200mm;
+    min-height: 250mm;
+    margin: 0 auto 20px;
+    padding: 16mm 15mm;
+    background: #fff;
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+  .card > header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+  .kicker {
+    font-size: 8.5pt;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .card h2 { font-size: 17pt; margin: 3px 0 0; }
+  .card h2 + p { margin: 5px 0 0; color: var(--muted); }
+
+  h3 {
+    font-size: 10.5pt;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 18px 0 7px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 3px;
+  }
+
+  ol, ul { margin: 0 0 10px; padding-left: 20px; }
+  li { margin-bottom: 5px; }
+  ol.steps { counter-reset: s; list-style: none; padding-left: 0; }
+  ol.steps > li {
+    counter-increment: s;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 9px;
+  }
+  ol.steps > li::before {
+    content: counter(s);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 21px; height: 21px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 9.5pt;
+    text-align: center;
+    line-height: 18px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 0 0 10px; font-size: 10pt; }
+  th, td { text-align: left; vertical-align: top; padding: 5px 8px; border-bottom: 1px solid var(--rule); }
+  th { background: var(--tint); font-size: 9pt; text-transform: uppercase; letter-spacing: .04em; }
+  td:first-child { white-space: nowrap; font-weight: 600; }
+  table.wrapfirst td:first-child { white-space: normal; }
+
+  .path {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9.5pt;
+    background: var(--tint);
+    padding: 1px 5px;
+    border-radius: 2px;
+  }
+  .ui { font-weight: 700; }
+
+  .warn {
+    border-left: 4px solid var(--warn);
+    background: var(--warn-bg);
+    padding: 9px 12px;
+    margin: 12px 0;
+  }
+  .warn strong { color: var(--warn); display: block; margin-bottom: 2px; font-size: 9.5pt; text-transform: uppercase; letter-spacing: .04em; }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; margin: 10px 0 14px; }
+  .flow .step {
+    flex: 1 1 90px;
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
+    padding: 7px 8px;
+    font-size: 9.5pt;
+    background: #fff;
+  }
+  .flow .step b { display: block; font-size: 8pt; color: var(--accent); letter-spacing: .05em; }
+
+  footer.cardfoot {
+    margin-top: 16px; padding-top: 7px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 8.5pt;
+    display: flex; justify-content: space-between; gap: 10px;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; font-size: 10.5pt; }
+    .toolbar { display: none; }
+    .card {
+      margin: 0; border: 0; box-shadow: none;
+      min-height: 0; max-width: none;
+      padding: 12mm 14mm;
+      page-break-after: always;
+      break-after: page;
+    }
+    .card:last-of-type { page-break-after: auto; break-after: auto; }
+  }
+  @page { size: A4 portrait; margin: 10mm; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <h1>InteLIS — aide-mémoires charge virale</h1>
+    <p>Sept fiches d'une page. À imprimer et à afficher au poste de travail.</p>
+  </div>
+  <button onclick="window.print()">Imprimer toutes les fiches</button>
+</div>
+
+<!-- FICHE 1 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 1 sur 7</div>
+    <h2>Le parcours d'un échantillon</h2>
+    <p>Le trajet d'un échantillon, et qui intervient à chaque étape.</p>
+  </header>
+
+  <h3>Deux voies d'arrivée au laboratoire</h3>
+  <table>
+    <tr><td>Directement</td><td>L'échantillon arrive avec une fiche papier. Un utilisateur du laboratoire l'enregistre. InteLIS attribue l'ID.</td></tr>
+    <tr><td>Avec manifeste</td><td>La structure l'a déjà enregistré. Le laboratoire saisit un seul code de manifeste et active le colis entier.</td></tr>
+  </table>
+
+  <h3>Les étapes</h3>
+  <div class="flow">
+    <div class="step"><b>1</b>Enregistrer la demande, ou activer le manifeste</div>
+    <div class="step"><b>2</b>Ajouter les échantillons à un batch</div>
+    <div class="step"><b>3</b>Imprimer le PDF du batch</div>
+    <div class="step"><b>4</b>Enregistrer sur l'automate depuis le PDF</div>
+    <div class="step"><b>5</b>Lancer le test</div>
+    <div class="step"><b>6</b>Saisir le résultat</div>
+    <div class="step"><b>7</b>Vérifier et approuver</div>
+    <div class="step"><b>8</b>Imprimer ou envoyer</div>
+  </div>
+
+  <div class="warn">
+    <strong>La règle essentielle</strong>
+    L'automate et InteLIS ne s'accordent que sur l'ID de l'échantillon. Toujours enregistrer
+    les échantillons sur l'automate à partir du PDF du batch imprimé. Jamais depuis la fiche
+    papier, une liste de travail séparée ou de mémoire. Un ID qui diffère d'un seul caractère
+    produit un résultat qui ne correspond à aucun échantillon.
+  </div>
+
+  <h3>Qui fait quoi</h3>
+  <table class="wrapfirst">
+    <tr><th>Rôle</th><th>Travail</th></tr>
+    <tr><td>Personnel de la structure</td><td>Enregistrer les demandes, constituer les manifestes, consulter les résultats</td></tr>
+    <tr><td>Saisie au laboratoire</td><td>Enregistrer les échantillons directs, activer les manifestes, saisir les résultats</td></tr>
+    <tr><td>Superviseur</td><td>Vérifier et approuver, traiter les échecs, diffuser les rapports</td></tr>
+    <tr><td>Administrateur</td><td>Utilisateurs, structures, automates et listes des formulaires</td></tr>
+  </table>
+
+  <h3>Plan du menu</h3>
+  <table class="wrapfirst">
+    <tr><td>Gestion des demandes</td><td>Enregistrer les demandes, activer les manifestes, constituer les batchs</td></tr>
+    <tr><td>Gestion des résultats des tests</td><td>Importer, saisir, approuver et envoyer les résultats</td></tr>
+    <tr><td>Gestion</td><td>Rapports, exports, impression</td></tr>
+  </table>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire charge virale</span><span>Fiche 1 : le parcours d'un échantillon</span></footer>
+</section>
+
+<!-- FICHE 2 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 2 sur 7</div>
+    <h2>Enregistrer une demande de test</h2>
+    <p>Pour un échantillon arrivé avec une fiche papier et sans ID.</p>
+  </header>
+
+  <p><span class="path">CHARGE VIRALE DU VIH &rsaquo; Gestion des demandes &rsaquo; Ajouter une nouvelle demande</span></p>
+
+  <ol class="steps">
+    <li>Choisir la <span class="ui">Province</span>, puis le <span class="ui">District</span>, puis la <span class="ui">Clinique/Centre de santé</span>. Chaque liste filtre la suivante.</li>
+    <li>Choisir le <span class="ui">Labo de test</span>.</li>
+    <li>Saisir l'identifiant du patient exactement comme sur la fiche papier.</li>
+    <li>Lire l'avis sur les demandes antérieures qui s'affiche. S'arrêter si cet échantillon est déjà enregistré.</li>
+    <li>Saisir la date de naissance, ou l'âge en années, ou l'âge en mois pour un nourrisson.</li>
+    <li>Saisir la <span class="ui">Date de prélèvement</span> et <span class="ui">Échantillon envoyé le</span> depuis la fiche papier, pas la date du jour.</li>
+    <li>Choisir le <span class="ui">Type d'échantillon</span>.</li>
+    <li>Remplir la section traitement et l'indication du test.</li>
+    <li>Laisser la section laboratoire vide. Le laboratoire la remplit après le test.</li>
+    <li>Sélectionner <span class="ui">Sauvegarder</span>, ou <span class="ui">Sauvegarder et Suivant</span> pour enchaîner.</li>
+  </ol>
+
+  <div class="warn">
+    <strong>Ne pas saisir d'ID d'échantillon</strong>
+    InteLIS génère l'ID de l'échantillon au moment de l'enregistrement.
+  </div>
+
+  <h3>Réponses rapides</h3>
+  <table class="wrapfirst">
+    <tr><th>Question</th><th>Réponse</th></tr>
+    <tr><td>Structure absente de la liste</td><td>Elle n'est pas rattachée au test de charge virale. S'adresser à l'administrateur.</td></tr>
+    <tr><td>Astérisque rouge</td><td>Champ obligatoire. InteLIS refuse d'enregistrer sans lui.</td></tr>
+    <tr><td>Champs facultatifs</td><td>Les remplir quand la fiche papier a l'information. Les rapports ne comptent que ce qui est saisi.</td></tr>
+    <tr><td>Étiquette code-barres</td><td>Régler <span class="ui">Imprimer une étiquette de code-barres</span> avant d'enregistrer. Utiliser <span class="ui">Change/Retry</span> si aucune imprimante n'apparaît.</td></tr>
+    <tr><td>Erreur après enregistrement</td><td>La retrouver dans Afficher les demandes de test et sélectionner <span class="ui">Modifier</span>. Les demandes se verrouillent après quelques jours.</td></tr>
+  </table>
+
+  <h3>Réceptionner un colis à la place</h3>
+  <p>Ne pas enregistrer les échantillons d'un manifeste un par un. Aller à
+  <span class="path">Gestion des demandes &rsaquo; Ajouter des échantillons à partir du manifeste</span>,
+  compter les tubes par rapport au manifeste, saisir le code, renseigner la date de réception
+  et sélectionner <span class="ui">Activer les échantillons</span>.</p>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire charge virale</span><span>Fiche 2 : enregistrer une demande</span></footer>
+</section>
+
+<!-- FICHE 3 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 3 sur 7</div>
+    <h2>Créer un batch et lancer l'automate</h2>
+    <p>L'étape qui garantit des ID identiques entre l'automate et InteLIS.</p>
+  </header>
+
+  <p><span class="path">CHARGE VIRALE DU VIH &rsaquo; Gestion des demandes &rsaquo; Gérer le batch</span></p>
+
+  <ol class="steps">
+    <li>Sélectionner <span class="ui">Créer un nouveau batch</span>.</li>
+    <li>Choisir d'abord la <span class="ui">Plateforme de test</span>. Elle fixe la capacité du batch.</li>
+    <li>Saisir un <span class="ui">Code de batch</span> unique.</li>
+    <li>Régler les <span class="ui">Positions</span> selon l'étiquetage de l'automate.</li>
+    <li>Filtrer la liste, puis régler <span class="ui">Sort By</span> sur l'ordre de chargement de la série.</li>
+    <li>Cocher les échantillons, ou utiliser <span class="ui">Automatically select samples for Batch</span>.</li>
+    <li>Sélectionner <span class="ui">Sauvegarder et Suivant</span>.</li>
+    <li>De retour sur la liste, sélectionner <span class="ui">PDF par lots</span> ou <span class="ui">PDF par lots compacts</span>.</li>
+    <li>Imprimer le PDF et l'emporter à l'automate.</li>
+    <li>Scanner ou saisir chaque ID d'échantillon à l'automate depuis le PDF imprimé.</li>
+    <li>Lancer le batch.</li>
+  </ol>
+
+  <div class="warn">
+    <strong>Ne jamais saisir les ID depuis une autre source</strong>
+    Ni depuis la fiche papier. Ni depuis une liste de travail séparée. Ni de mémoire.
+    Un résultat portant un ID non reconnu ne se rattache à aucun échantillon, et
+    l'échantillon reste dans la file des non testés.
+  </div>
+
+  <h3>Si InteLIS bloque l'enregistrement</h3>
+  <table class="wrapfirst">
+    <tr><th>Message</th><th>Correction</th></tr>
+    <tr><td>Choose a testing platform to proceed</td><td>Sélectionner l'automate.</td></tr>
+    <tr><td>Select at least one sample</td><td>Cocher des échantillons dans la liste.</td></tr>
+    <tr><td>More than the allowed number for this platform</td><td>Décocher jusqu'à la capacité de l'automate.</td></tr>
+    <tr><td>Batch code already exists</td><td>Utiliser un code différent.</td></tr>
+  </table>
+
+  <h3>Actions sur une ligne de batch</h3>
+  <table class="wrapfirst">
+    <tr><td>Modifier</td><td>Changer les informations du batch et ses échantillons</td></tr>
+    <tr><td>Edit Position</td><td>Changer la position de chaque échantillon</td></tr>
+    <tr><td>PDF par lots / compacts</td><td>Réimprimer la planche de codes-barres</td></tr>
+    <tr><td>Supprimer</td><td>Disparaît dès qu'un échantillon du batch a un résultat. La suppression libère les échantillons vers la file des non testés. Elle ne supprime pas les échantillons.</td></tr>
+  </table>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire charge virale</span><span>Fiche 3 : batch et série</span></footer>
+</section>
+
+<!-- FICHE 4 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 4 sur 7</div>
+    <h2>Saisir les résultats : trois méthodes</h2>
+    <p>Utiliser la méthode la plus haute que le laboratoire et l'automate permettent.</p>
+  </header>
+
+  <h3>Méthode 1 &mdash; Outil d'interface (à privilégier)</h3>
+  <ol class="steps">
+    <li>Confirmer que l'outil d'interface est installé, en cours d'exécution et à jour.</li>
+    <li>Confirmer que l'automate est indiqué comme connecté dans l'outil d'interface.</li>
+    <li>Si l'automate permet la libération manuelle, libérer la série après vérification. Sinon il libère selon sa propre logique.</li>
+    <li>Les résultats parviennent à InteLIS d'eux-mêmes. Pas d'import, pas de bouton.</li>
+  </ol>
+  <p>Certains automates ne se connectent que pendant l'envoi. Un outil non connecté entre
+  deux séries n'est pas forcément en panne. Vérifier pendant la libération.</p>
+
+  <h3>Méthode 2 &mdash; Import de fichier</h3>
+  <p><span class="path">Gestion des résultats des tests &rsaquo; Importer les résultats d'un fichier</span></p>
+  <ol class="steps">
+    <li>Exporter le fichier depuis l'automate. Il doit porter les ID d'InteLIS.</li>
+    <li>Choisir le <span class="ui">Nom de l'instrument/plateforme</span> et le <span class="ui">Specific Machine Name/Code</span>. Un mauvais choix rend l'import illisible.</li>
+    <li>Choisir le <span class="ui">Nom du laboratoire de test</span> et le fichier. Formats acceptés : xls, xlsx, csv, txt.</li>
+    <li>Sélectionner <span class="ui">Envoyer</span>.</li>
+    <li>Vérifier la mention <span class="ui">Sample source</span> sur chaque ligne avant d'accepter.</li>
+    <li>Renseigner un statut par ligne, puis testeur, réviseur et approbateur, et <span class="ui">Sauvegarder</span>.</li>
+  </ol>
+  <table class="wrapfirst">
+    <tr><th>Mention Sample source</th><th>Action</th></tr>
+    <tr><td>Result for Sample ID from VLSM</td><td>Accepter</td></tr>
+    <tr><td>Sample ID not from VLSM</td><td>Ne pas accepter. Chercher pourquoi l'ID diffère</td></tr>
+    <tr><td>Result already exists</td><td>N'écraser que si le nouveau résultat est le bon</td></tr>
+    <tr><td>Test date 1+ mois ou 1+ an après le prélèvement</td><td>Vérifier la date. Un écart d'un an est presque toujours une faute de frappe</td></tr>
+  </table>
+
+  <h3>Méthode 3 &mdash; Saisie manuelle (dernier recours)</h3>
+  <p><span class="path">Gestion des résultats des tests &rsaquo; Saisir le résultat manuellement</span></p>
+  <ol class="steps">
+    <li>Régler <span class="ui">Statut</span> sur <span class="ui">Résultats non enregistrés</span> et trouver l'échantillon.</li>
+    <li>Sélectionner <span class="ui">Saisir le résultat</span>.</li>
+    <li>Renseigner la date de réception, la date du test, la plateforme et le résultat.</li>
+    <li>Relire le résultat par rapport au tirage de l'automate avant d'enregistrer.</li>
+    <li>Sélectionner <span class="ui">Sauvegarder</span>. Le résultat doit ensuite être approuvé.</li>
+  </ol>
+
+  <div class="warn">
+    <strong>Si les résultats n'arrivent pas</strong>
+    Vérifier que l'automate a libéré la série. Vérifier que l'outil d'interface indique
+    l'automate comme connecté. Vérifier que les ID correspondent. Puis demander à
+    l'administrateur de contrôler la Dernière connexion sous Structures sanitaires,
+    le laboratoire de test, Connexions des outils d'interface.
+  </div>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire charge virale</span><span>Fiche 4 : saisir les résultats</span></footer>
+</section>
+
+<!-- FICHE 5 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 5 sur 7</div>
+    <h2>Approuver et diffuser les résultats</h2>
+    <p>L'approbation vérifie que le résultat appartient bien à l'échantillon.</p>
+  </header>
+
+  <h3>Approuver</h3>
+  <p><span class="path">Gestion des résultats des tests &rsaquo; Gérer le statut des résultats</span></p>
+  <ol class="steps">
+    <li>Régler <span class="ui">Afficher les échantillons qui sont</span> sur <span class="ui">Non approuvé/rejeté</span>.</li>
+    <li>Filtrer par <span class="ui">Code de batch</span>. Une série à l'écran, un tirage à vérifier.</li>
+    <li>Pour chaque ligne, contrôler trois points sur le tirage : l'ID correspond, le résultat correspond, le patient est celui attendu.</li>
+    <li>Cocher les lignes à approuver.</li>
+    <li>Dans <span class="ui">Actions groupées</span>, régler <span class="ui">Statut</span> sur <span class="ui">Accepté</span>.</li>
+    <li>Renseigner <span class="ui">Approbateur</span>, et testeur et réviseur si le laboratoire les enregistre.</li>
+    <li>Sélectionner <span class="ui">Appliquer</span> et confirmer.</li>
+  </ol>
+  <p><span class="ui">Remplacer l'existant</span> écrase les noms déjà enregistrés. Laisser désactivé pour ne remplir que les champs vides.</p>
+
+  <div class="warn">
+    <strong>L'ID et le patient ne correspondent pas</strong>
+    Ne pas approuver. L'échantillon a été enregistré sur le mauvais patient, ou chargé
+    dans la mauvaise position de l'automate. Le mettre en attente et investiguer.
+  </div>
+
+  <h3>Imprimer</h3>
+  <p><span class="path">Gestion &rsaquo; Imprimer le résultat</span></p>
+  <ul>
+    <li>Travailler depuis l'onglet <span class="ui">Résultats pas encore imprimés</span>.</li>
+    <li>Filtrer, cocher, puis <span class="ui">Imprimer les résultats sélectionnés PDF</span>.</li>
+    <li>Limite de 1000 résultats par impression. Les réimpressions sont sur le second onglet.</li>
+  </ul>
+
+  <h3>Envoyer par courriel</h3>
+  <p><span class="path">Gestion des résultats des tests &rsaquo; Envoyer le résultat du test par courriel</span></p>
+  <ul>
+    <li>Choisir <span class="ui">Facility Name (To)</span>, saisir l'objet et le message.</li>
+    <li>Régler <span class="ui">Mail Sent Status</span> sur <span class="ui">Samples Not yet Mailed</span>.</li>
+    <li>Cocher les résultats, sélectionner <span class="ui">Suivante</span>, confirmer. Limite de 100 par courriel.</li>
+    <li>Les résultats partent vers les adresses enregistrées pour la structure.</li>
+  </ul>
+
+  <p>Seuls les résultats approuvés apparaissent sur les pages d'impression et d'envoi.</p>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire charge virale</span><span>Fiche 5 : approuver et diffuser</span></footer>
+</section>
+
+<!-- FICHE 6 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 6 sur 7</div>
+    <h2>Échec, rejet, perte ou annulation ?</h2>
+    <p>Un mauvais choix fausse les rapports du laboratoire.</p>
+  </header>
+
+  <h3>Choisir la bonne action</h3>
+  <table class="wrapfirst">
+    <tr><th>Situation</th><th>Action</th><th>Où</th></tr>
+    <tr><td>Échec ou lecture invalide, échantillon encore exploitable</td><td>Retest</td><td>Échec/Echantillons en attente</td></tr>
+    <tr><td>Échantillon non exploitable, la structure doit renvoyer</td><td>Rejeter, avec un motif</td><td>Gérer le statut des résultats</td></tr>
+    <tr><td>Échantillon introuvable</td><td>Perdu</td><td>Gérer le statut des résultats</td></tr>
+    <tr><td>Demande saisie deux fois, ou retirée par le clinicien</td><td>Annuler</td><td>Gérer le statut des résultats</td></tr>
+    <tr><td>Un import a marqué à tort de bons résultats en échec</td><td>Déplacer vers Accepté</td><td>Échec/Echantillons en attente</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Ne jamais annuler un échantillon testé et en échec</strong>
+    Annulé signifie jamais testé. L'échantillon sort des volumes de test et du délai de rendu.
+    Échec le maintient dans le taux d'échec. Utiliser l'annulation pour effacer des échecs
+    masque un indicateur réel de qualité.
+  </div>
+
+  <h3>Retester</h3>
+  <p><span class="path">Gestion des résultats des tests &rsaquo; Échec/Echantillons en attente</span></p>
+  <ol class="steps">
+    <li>Régler <span class="ui">Résultat Statut</span> sur <span class="ui">Échec</span> et sélectionner <span class="ui">Rechercher</span>.</li>
+    <li>Cocher les échantillons.</li>
+    <li>Sélectionner <span class="ui">Retester les échantillons sélectionnés</span>.</li>
+  </ol>
+  <p>Le résultat est effacé et l'échantillon retourne dans la file des non testés avec le
+  statut <span class="ui">Échantillon enregistré au laboratoire de test</span>. L'ajouter à un
+  nouveau batch. La tentative en échec reste enregistrée, le taux d'échec reste exact.</p>
+
+  <h3>Récupérer des résultats marqués en échec par erreur</h3>
+  <ol class="steps">
+    <li>Cocher les échantillons concernés.</li>
+    <li>Sélectionner <span class="ui">Déplacer la sélection vers « Accepté »</span> et confirmer.</li>
+  </ol>
+  <p>Seuls les échantillons dont le résultat est exploitable sont déplacés. Les échecs réels
+  sont ignorés. Si rien n'est déplacé, ces échantillons nécessitent un retest.</p>
+
+  <h3>Annuler</h3>
+  <ol class="steps">
+    <li>Régler <span class="ui">Afficher les échantillons qui sont</span> sur <span class="ui">Peut être annulé</span>.</li>
+    <li>Cocher les échantillons, régler <span class="ui">Statut</span> sur <span class="ui">Annulée</span>, sélectionner <span class="ui">Appliquer</span>.</li>
+    <li>Saisir le mot de confirmation demandé.</li>
+  </ol>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire charge virale</span><span>Fiche 6 : échecs et rejets</span></footer>
+</section>
+
+<!-- FICHE 7 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 7 sur 7</div>
+    <h2>Les statuts en un coup d'œil</h2>
+    <p>Tous les statuts possibles d'un échantillon et leur signification.</p>
+  </header>
+
+  <table class="wrapfirst">
+    <tr><th>Statut</th><th>Signification</th></tr>
+    <tr><td>Échantillon actuellement enregistré au centre de santé</td><td>Enregistré dans une structure. Le laboratoire ne l'a pas reçu</td></tr>
+    <tr><td>Échantillon enregistré au laboratoire de test</td><td>Reçu par le laboratoire, en attente de test</td></tr>
+    <tr><td>Échantillon envoyé à un autre laboratoire</td><td>Transmis à un autre laboratoire</td></tr>
+    <tr><td>En attente d'approbation</td><td>Un résultat est enregistré, en attente de validation</td></tr>
+    <tr><td>Accepté</td><td>Approuvé et disponible à l'impression ou à l'envoi</td></tr>
+    <tr><td>Rejeté</td><td>Non propre au test. Un motif de rejet est enregistré</td></tr>
+    <tr><td>Échec/Invalidité</td><td>Le test a eu lieu sans résultat exploitable</td></tr>
+    <tr><td>En attente</td><td>Suspendu dans l'attente d'une décision</td></tr>
+    <tr><td>Échantillon réorganisé</td><td>Renvoyé au test</td></tr>
+    <tr><td>Perdu</td><td>Introuvable, ne sera pas testé</td></tr>
+    <tr><td>Expiré</td><td>Au-delà de la durée de conservation autorisée</td></tr>
+    <tr><td>Aucun résultats</td><td>Aucun résultat enregistré</td></tr>
+    <tr><td>Annulée</td><td>Le test ne sera pas réalisé</td></tr>
+  </table>
+
+  <h3>Effet sur les rapports</h3>
+  <table class="wrapfirst">
+    <tr><td>Annulée</td><td>Considéré comme jamais testé. Hors volumes de test et délai de rendu</td></tr>
+    <tr><td>Échec/Invalidité</td><td>Compté dans le taux d'échec. Un retest conserve la tentative en échec</td></tr>
+    <tr><td>Rejeté</td><td>Figure dans le rapport de rejet d'échantillons avec son motif</td></tr>
+    <tr><td>Accepté</td><td>Le seul statut imprimable ou envoyable par courriel</td></tr>
+  </table>
+
+  <h3>Situations courantes</h3>
+  <table class="wrapfirst">
+    <tr><th>Constat</th><th>Cause habituelle</th></tr>
+    <tr><td>Bloqué à Échantillon actuellement enregistré au centre de santé</td><td>Le laboratoire n'a pas encore activé le manifeste</td></tr>
+    <tr><td>Bloqué à Échantillon enregistré au laboratoire de test après une série</td><td>Le résultat ne s'est pas rattaché. Vérifier l'ID sur l'automate</td></tr>
+    <tr><td>Bloqué à En attente d'approbation</td><td>Personne ne l'a encore approuvé</td></tr>
+    <tr><td>Toute une série affichée en Échec/Invalidité</td><td>Souvent un problème d'import. Essayer Déplacer vers Accepté avant de retester</td></tr>
+  </table>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire charge virale</span><span>Fiche 7 : statuts des échantillons</span></footer>
+</section>
+
+</body>
+</html>
