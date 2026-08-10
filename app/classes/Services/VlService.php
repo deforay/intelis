@@ -596,7 +596,18 @@ final class VlService extends AbstractTestService
 
             $absDecimalVal = 0;
             if ($numericValue !== null) {
-                if ($unit !== null && $unit !== '' && $unit !== '0' && str_contains($unit, 'Log')) {
+                // A Log unit only settles how the value is labelled, not what was
+                // actually typed, so the figure is exponentiated solely when it could
+                // be a log. Without the bound, an operator entering copies on a form
+                // configured in log units had them raised to that power: "< 40" became
+                // an absolute of "< 1.0E+40" and a decimal of 1e40 while `result` kept
+                // reading "< 40", so the row looked right on screen and was wrong
+                // everywhere the numeric value was used.
+                //
+                // Out of range the value falls through to be read as copies, which is
+                // what it is, and the log is then derived from it below.
+                if ($unit !== null && $unit !== '' && $unit !== '0' && str_contains($unit, 'Log')
+                    && $numericValue <= self::MAX_PLAUSIBLE_VL_LOG) {
                     $logVal = $numericValue;
                     $absDecimalVal = round(10 ** $logVal);
                 } elseif ($unit !== null && $unit !== '' && $unit !== '0') {
