@@ -7,7 +7,6 @@ use const COUNTRY\SIERRA_LEONE;
 use const COUNTRY\DRC;
 use const COUNTRY\CAMEROON;
 use const COUNTRY\PNG;
-use const COUNTRY\WHO;
 use const COUNTRY\RWANDA;
 use const COUNTRY\BURKINA_FASO;
 use App\Services\TbService;
@@ -157,7 +156,6 @@ try {
         DRC => 'pdf/result-pdf-drc.php',
         CAMEROON => 'pdf/result-pdf-cameroon.php',
         PNG => 'pdf/result-pdf-png.php',
-        WHO => 'pdf/result-pdf-who.php',
         RWANDA => 'pdf/result-pdf-rwanda.php',
         BURKINA_FASO => 'pdf/result-pdf-burkina-faso.php'
     ];
@@ -169,7 +167,6 @@ try {
         'pdf/result-pdf-drc.php',
         'pdf/result-pdf-cameroon.php',
         'pdf/result-pdf-png.php',
-        'pdf/result-pdf-who.php',
         'pdf/result-pdf-rwanda.php',
         'pdf/result-pdf-burkina-faso.php',
         'pdf/result-pdf-tb-custom.php',

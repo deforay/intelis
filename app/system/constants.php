@@ -38,7 +38,8 @@ namespace COUNTRY {
     const DRC = 3;
     const CAMEROON = 4;
     const PNG = 5;
-    const WHO = 6;
+    // 6 was WHO. The form files never existed for most modules, so selecting it
+    // fatalled. Removed, and the number is not reused: it is stored on saved rows.
     const RWANDA = 7;
     const BURKINA_FASO = 8;
 }

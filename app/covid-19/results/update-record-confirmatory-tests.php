@@ -125,7 +125,6 @@ $forms = [
 	COUNTRY\DRC => 'forms/update-drc-result.php',
 	COUNTRY\CAMEROON => 'forms/update-cameroon-result.php',
 	COUNTRY\PNG => 'forms/update-png-result.php',
-	COUNTRY\WHO => 'forms/update-who-result.php',
 	COUNTRY\RWANDA => 'forms/update-rwanda-result.php'
 ];
 
