@@ -123,7 +123,13 @@ try {
                         $multipleVal = substr($expAbsVal[1], 1);
                         $absDecimalVal = $expAbsVal[0] * 10 ** $multipleVal;
                     }
+                    // Lifted verbatim out of the parenthetical, so a corrupted cell
+                    // would be stored as text in a column that only ever holds a
+                    // number. Drop anything that isn't one.
                     $logVal = substr(trim($resVal[1]), 0, -1);
+                    if (!is_numeric($logVal)) {
+                        $logVal = null;
+                    }
                 } else {
                     $txtVal = trim((string) $row[$absValCol]);
                     if ($txtVal === 'Invalid') {
