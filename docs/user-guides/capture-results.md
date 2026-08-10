@@ -71,12 +71,11 @@ Work through these in order.
 If results still do not arrive, use file import for the run and raise the
 connection problem with the administrator.
 
-!!! info "Screenshot"
-    **Page:** ADMIN → Facilities → (a testing lab) → Interface Tool Connections
-
-    **Capture:** the Connected Installations table
-
-    **Highlight:** the Status and Last Seen columns
+<!-- SCREENSHOT NEEDED
+     Page: ADMIN → Facilities → (a testing lab) → Interface Tool Connections
+     Capture: the Connected Installations table
+     Highlight: the Status and Last Seen columns
+-->
 
 ---
 
@@ -107,12 +106,11 @@ produces a garbled import or none at all.
 Where the file's date format is not recognised, paste a date copied from the
 file into the date format field. InteLIS works out the format from it.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Test Result Management → Import Results From File
-
-    **Capture:** the form with instrument, machine, lab, and file chosen
-
-    **Highlight:** the Instrument/Platform Name and Specific Machine Name/Code fields
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Test Result Management → Import Results From File
+     Capture: the form with instrument, machine, lab, and file chosen
+     Highlight: the Instrument/Platform Name and Specific Machine Name/Code fields
+-->
 
 ### Review what was imported
 
@@ -140,12 +138,11 @@ same person is set as both reviewer and approver.
 
 7. Select **Save**.
 
-!!! info "Screenshot"
-    **Page:** the imported results review screen
-
-    **Capture:** several rows with different Sample source notes
-
-    **Highlight:** the Sample source column and the Accept All Samples button
+<!-- SCREENSHOT NEEDED
+     Page: the imported results review screen
+     Capture: several rows with different Sample source notes
+     Highlight: the Sample source column and the Accept All Samples button
+-->
 
 ---
 
@@ -175,12 +172,11 @@ Read the result back off the screen against the analyzer printout before saving.
 A manually entered result is not released until it is approved. See
 [How to review and approve results](approve-results.md).
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Test Result Management → Enter Result Manually
-
-    **Capture:** the list filtered to Results Not Recorded
-
-    **Highlight:** the Enter Result button on a row
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Test Result Management → Enter Result Manually
+     Capture: the list filtered to Results Not Recorded
+     Highlight: the Enter Result button on a row
+-->
 
 ---
 

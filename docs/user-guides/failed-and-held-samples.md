@@ -22,12 +22,11 @@ results that were marked failed by mistake.
 
 3. Narrow with the other filters if needed, then select **Search**.
 
-!!! info "Screenshot"
-    **Page:** HIV VIRAL LOAD → Test Result Management → Failed/Hold Samples
-
-    **Capture:** the list filtered to Failed, several rows visible
-
-    **Highlight:** the Result Status filter
+<!-- SCREENSHOT NEEDED
+     Page: HIV VIRAL LOAD → Test Result Management → Failed/Hold Samples
+     Capture: the list filtered to Failed, several rows visible
+     Highlight: the Result Status filter
+-->
 
 ## Send samples for retesting
 
