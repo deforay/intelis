@@ -123,7 +123,8 @@ try {
         vl.result_dispatched_datetime                        as resultDispatchedOn,
         vl.reason_for_sample_rejection                       as rejectionReasonId,
         vl.rejection_on                                      as rejectionDate,
-        vl.result_value_absolute                             as vlResult,
+        -- result_value_absolute also carried this alias and was silently overwritten
+        -- by the decimal below; publishing it needs a distinct key and a spec change.
         vl.result_value_absolute_decimal                     as vlResult,
         vl.result                                            as result,
         vl.result_value_log                                  as vlLog,
