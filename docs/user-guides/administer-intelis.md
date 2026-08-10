@@ -46,12 +46,11 @@ those records worthless.
 To disable a departing user, edit the account and set the status to inactive. Do
 not reuse the login for someone else. The old records stay attached to the name.
 
-!!! info "Screenshot"
-    **Page:** ADMIN → Access Control → Users → Add User
-
-    **Capture:** the form with name, role, testing lab, and login ID filled
-
-    **Highlight:** the Role and Testing Lab fields
+<!-- SCREENSHOT NEEDED
+     Page: ADMIN → Access Control → Users → Add User
+     Capture: the form with name, role, testing lab, and login ID filled
+     Highlight: the Role and Testing Lab fields
+-->
 
 ## Add or change a role
 
@@ -160,12 +159,11 @@ status and a **Last Seen** time. Use **Last Seen** when results stop arriving.
 | **Reconnect / Reinstall** | The lab computer is rebuilt or the tool is reinstalled |
 | **Revoke** | The computer is retired or lost. Other installations are unaffected |
 
-!!! info "Screenshot"
-    **Page:** ADMIN → Facilities → (a testing lab) → Interface Tool Connections
-
-    **Capture:** a generated connection code with its expiry, and the connected installations table below
-
-    **Highlight:** the three code groups and the InteLIS URL
+<!-- SCREENSHOT NEEDED
+     Page: ADMIN → Facilities → (a testing lab) → Interface Tool Connections
+     Capture: a generated connection code with its expiry, and the connected installations table below
+     Highlight: the three code groups and the InteLIS URL
+-->
 
 ## Maintain the viral load option lists
 
