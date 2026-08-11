@@ -764,7 +764,14 @@ final class VlService extends AbstractTestService
 
         $numericValue = null;
         $operator = '';
-        if ($extracted !== null && preg_match('/^([<>])?\s*(\d+(\.\d+)?)/', $extracted, $matches)) {
+        // The exponent is part of the number. Without it this read "1.0" out of
+        // "< 1.0E+20" and silently discarded the magnitude, turning a figure that is
+        // obviously wrong into one copy per millilitre -- which looks like a deeply
+        // suppressed patient and passes every check downstream. Small values were
+        // unaffected because extractViralLoadValue() has already resolved them to
+        // plain decimals; only results too large to print without an exponent reached
+        // here still carrying one, which is exactly the set worth reading correctly.
+        if ($extracted !== null && preg_match('/^([<>])?\s*(\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/', $extracted, $matches)) {
             $operator = $matches[1] ?? '';
             $numericValue = $this->parseNumericValue($matches[2]);
 

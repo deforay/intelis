@@ -1546,9 +1546,34 @@ chmod +x /usr/local/bin/intelis-refresh
 (print success "Setting final permissions in the background..." &&
     intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
     find "${lis_path}" -exec chown www-data:www-data {} + 2>/dev/null || true) &
-disown
+permissions_pid=$!
 
 restart_service apache
+
+# Wait for the permission pass rather than disowning it. The preflight below
+# reports on what www-data can write, and a half-chowned tree would have it
+# reporting failures that fix themselves seconds later — which is worse than not
+# reporting at all, because the installer learns to ignore it. Nothing follows
+# this point, so the wait costs the install nothing.
+wait "${permissions_pid}" 2>/dev/null || true
+
+# ---------------------------------------------------------------------------
+# Install preflight — advisory, never fatal.
+#
+# Everything above installs and configures; this is the only step that stands
+# back and asks whether the result actually works. A fresh install is where the
+# answer is most often "not quite": a MySQL user without rights on the new
+# database, an Apache php.ini the distro shipped its own defaults into, a
+# tryCrypt still holding the placeholder.
+#
+# `|| true` because setup has genuinely completed by now — a finding here is
+# something to fix on this machine, not a reason to report the install as failed.
+# ---------------------------------------------------------------------------
+if [ -f "${lis_path}/bin/preflight.php" ]; then
+    print header "Install Check"
+    sudo -u www-data php "${lis_path}/bin/preflight.php" || true
+    print info "Re-run any time: cd ${lis_path} && composer preflight"
+fi
 
 print success "Setup complete. Proceed to LIS setup."
 log_action "Setup complete. Proceed to LIS setup."

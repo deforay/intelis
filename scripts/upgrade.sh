@@ -2041,3 +2041,31 @@ if [ ${#failed_instances[@]} -gt 0 ]; then
 fi
 
 log_action "Upgrade complete. Updated: ${#updated_instances[@]}, Failed: ${#failed_instances[@]}"
+
+# ---------------------------------------------------------------------------
+# Post-upgrade preflight — advisory, never fatal.
+#
+# smoke_check already gated the upgrade on "does the app respond", and that gate
+# has done its job by now. This is the other question: the upgrade completed, so
+# what is still wrong with this instance? Schema behind the code, audit triggers
+# not reinstalled, a directory the app cannot write to, an Apache php.ini nobody
+# updated. All of it survives a successful upgrade silently.
+#
+# Run as www-data because that is who has to live with the answer, --quiet so a
+# clean instance costs one line, and `|| true` because a finding here is
+# information about the instance, not a failure of the upgrade — the upgrade is
+# already done and its exit status must keep meaning what it meant.
+# ---------------------------------------------------------------------------
+if [ ${#updated_instances[@]} -gt 0 ]; then
+    print header "Post-Upgrade Check"
+    for p in "${updated_instances[@]}"; do
+        if [ ! -f "${p}/bin/preflight.php" ]; then
+            continue
+        fi
+        if [ ${#updated_instances[@]} -gt 1 ]; then
+            print info "${p}"
+        fi
+        sudo -u www-data php "${p}/bin/preflight.php" --quiet || true
+    done
+    print info "Full report any time: cd <instance> && composer preflight"
+fi
