@@ -38,7 +38,7 @@
  *
  * Usage:
  *   composer preflight             run all checks
- *   php bin/preflight.php --quiet  only print warnings and failures (CI / hooks)
+ *   composer preflight -- --quiet  only print warnings and failures (CI / hooks)
  *   php bin/preflight.php --help   print this docblock
  *
  * Exit codes: 0 nothing failed (warnings still exit 0), 1 one or more failed.
@@ -135,7 +135,7 @@ if ($webIni === null) {
         $webPhp = $m[1];
         $cliPhp = PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
         check(
-            'Web and CLI PHP match',
+            'Web and CLI PHP',
             $webPhp === $cliPhp ? PF_OK : PF_WARN,
             $webPhp === $cliPhp
                 ? "both {$cliPhp}"
@@ -153,11 +153,11 @@ if ($webIni === null) {
     // spend an afternoon on.
     $validate = $ini['opcache.validate_timestamps'] ?? null;
     if ($validate === null) {
-        check('OPcache picks up edits', PF_SKIP, 'opcache.validate_timestamps not set in the Apache ini');
+        check('OPcache revalidation', PF_SKIP, 'opcache.validate_timestamps not set in the Apache ini');
     } else {
         $on = pf_ini_bool($validate);
         check(
-            'OPcache picks up edits',
+            'OPcache revalidation',
             $on ? PF_OK : PF_WARN,
             $on
                 ? 'opcache.validate_timestamps=1'
@@ -207,20 +207,37 @@ if (!$hasVendor) {
 }
 
 // An interrupted upgrade leaves a new composer.lock beside the old vendor tree,
-// and the app then fails on a class that the lock says is installed. Mtime is a
-// coarse signal, so this only ever warns.
-$lockTime   = (int) @filemtime($root . '/composer.lock');
-$vendorTime = (int) @filemtime($root . '/vendor/autoload.php');
+// and the app then fails on a class the lock says is installed.
+//
+// Modification times cannot answer this. upgrade.sh lays down composer.lock and
+// a prebuilt vendor tarball as two separate extractions, so on a correctly
+// upgraded instance the lock is routinely the newer of the two — an mtime
+// comparison flags every healthy production box and nothing else, which is how
+// the first version of this check behaved.
+//
+// What actually settles it is the package list Composer records in
+// vendor/composer/installed.json. Comparing that against the lock's own
+// non-dev packages answers the real question — is what is on disk what the lock
+// asked for — without caring when either arrived.
+$comparison = pf_compare_lock_to_vendor($root);
 
-if ($lockTime > 0 && $vendorTime > 0 && $lockTime > $vendorTime) {
+if ($comparison === null) {
+    check('vendor/ matches lock', PF_SKIP, 'composer.lock or vendor/composer/installed.json is unreadable');
+} elseif ($comparison['problems'] === []) {
+    check('vendor/ matches lock', PF_OK, $comparison['count'] . ' package(s)');
+} else {
+    // Three examples: enough to recognise which upgrade stopped half-way,
+    // short enough to stay one finding rather than a wall of package names.
+    $shown = array_slice($comparison['problems'], 0, 3);
+    $extra = count($comparison['problems']) - count($shown);
+
     check(
-        'vendor/ current',
+        'vendor/ matches lock',
         PF_WARN,
-        'composer.lock is newer than vendor/ — the last install may not have finished' . "\n"
+        count($comparison['problems']) . ' package(s) differ from composer.lock: '
+            . implode(', ', $shown) . ($extra > 0 ? ", and {$extra} more" : '') . "\n"
             . '  run: composer install --no-dev',
     );
-} else {
-    check('vendor/ current', PF_OK);
 }
 
 // ─── 4. Configuration ───
@@ -254,37 +271,42 @@ if ($hasConfig) {
     }
 }
 
+// Every label below names the setting; every detail states what that setting
+// actually is. A label naming the wanted state instead ("debug_mode off")
+// contradicts its own detail line the moment the check fails, and the reader has
+// to work out which of the two is the finding.
 if ($config !== []) {
     $dbConfig = is_array($config['database'] ?? null) ? $config['database'] : [];
 
-    foreach (['host', 'username', 'db'] as $key) {
-        $set = ($dbConfig[$key] ?? '') !== '';
-        check("database.{$key} set", $set ? PF_OK : PF_FAIL, $set ? '' : 'fill it in in configs/config.production.php');
+    $dbLabels = ['host' => 'Database host', 'username' => 'Database username', 'db' => 'Database name'];
+
+    foreach ($dbLabels as $key => $label) {
+        $value = (string) ($dbConfig[$key] ?? '');
+        check(
+            $label,
+            $value !== '' ? PF_OK : PF_FAIL,
+            $value !== '' ? $value : 'not set in configs/config.production.php',
+        );
     }
 
-    // tryCrypt keys the application's own encryption. Left at the shipped
-    // placeholder it is identical on every instance in the fleet.
-    $crypt = (string) ($config['tryCrypt'] ?? '');
-    $cryptOk = $crypt !== '' && $crypt !== 'PUT-A-RANDOM-STRING-HERE';
-    check(
-        'tryCrypt set',
-        $cryptOk ? PF_OK : PF_FAIL,
-        $cryptOk ? '' : "still the shipped placeholder\n"
-            . '  generate: php -r "echo bin2hex(random_bytes(32)) . PHP_EOL;"',
-    );
-
+    // Reported, not judged. instance-name is the title on the login and header
+    // bars, so leaving it empty is a choice about branding rather than a fault —
+    // most of the fleet sets its wording through global_config.header instead.
+    // It used to also namespace the APCu definition cache, which was the one
+    // thing that made an empty value actually harmful; app/system/di.php now
+    // falls back to a digest of the install path for that.
     $instance = (string) ($config['instance-name'] ?? '');
     check(
-        'instance-name set',
-        $instance !== '' ? PF_OK : PF_WARN,
-        $instance !== '' ? $instance : 'unnamed — the STS cannot tell this instance apart from any other',
+        'Instance name',
+        PF_OK,
+        $instance !== '' ? $instance : 'not set — the default title is shown',
     );
 
     $remote = (string) ($config['remoteURL'] ?? '');
     check(
-        'remoteURL set',
+        'STS URL',
         $remote !== '' ? PF_OK : PF_WARN,
-        $remote !== '' ? $remote : 'no STS configured — sync and remote commands are off',
+        $remote !== '' ? $remote : 'not set — sync and remote commands are off',
     );
 
     $modules = is_array($config['modules'] ?? null) ? $config['modules'] : [];
@@ -292,14 +314,14 @@ if ($config !== []) {
     check(
         'Modules enabled',
         $enabled === [] ? PF_WARN : PF_OK,
-        $enabled === [] ? 'no module is enabled — every menu will be empty' : implode(', ', $enabled),
+        $enabled === [] ? 'none — every menu will be empty' : implode(', ', $enabled),
     );
 
     $debug = (bool) ($config['system']['debug_mode'] ?? false);
     check(
-        'debug_mode off',
+        'Debug mode',
         $debug ? PF_WARN : PF_OK,
-        $debug ? 'debug_mode is on in a production config' : '',
+        $debug ? 'on — verbose errors in a production config' : 'off',
     );
 }
 
@@ -387,7 +409,7 @@ if ($webUser === null) {
 
     if ($notWritable !== []) {
         check(
-            'Ownership fix',
+            'How to fix',
             PF_WARN,
             'run as root:' . "\n"
                 . '  chown -R ' . $webUser['name'] . ':' . $webUser['name'] . ' '
@@ -446,17 +468,17 @@ usort($migrations, 'version_compare');
 $latestMigration = $migrations === [] ? null : end($migrations);
 
 if ($scVersion === null) {
-    check('Schema migrated', PF_FAIL, 'no sc_version — this database has never been migrated' . "\n"
+    check('Schema version', PF_FAIL, 'no sc_version — this database has never been migrated' . "\n"
         . '  run: composer migrate');
 } elseif ($latestMigration !== null && version_compare($latestMigration, $scVersion, '>')) {
     check(
-        'Schema migrated',
+        'Schema version',
         PF_FAIL,
         "database is at {$scVersion}, migrations go to {$latestMigration}\n"
             . '  run: composer migrate',
     );
 } else {
-    check('Schema migrated', PF_OK, "sc_version {$scVersion}");
+    check('Schema version', PF_OK, "sc_version {$scVersion}");
 }
 
 // The app's version and the schema's version are bumped together by policy, so a
@@ -469,7 +491,7 @@ if ($scVersion !== null && defined('VERSION')) {
     $appVersion = (string) constant('VERSION');
     $matched    = version_compare($appVersion, $scVersion, '=');
     check(
-        'Code and schema in step',
+        'Code and schema',
         $matched ? PF_OK : PF_WARN,
         $matched
             ? "both {$appVersion}"
@@ -594,6 +616,61 @@ function pf_satisfies_php_constraint(string $version, string $constraint): bool
     }
 
     return false;
+}
+
+/**
+ * What composer.lock asks for against what Composer recorded as installed.
+ *
+ * Only the lock's non-dev packages are compared, because production installs run
+ * --no-dev and every dev package would otherwise read as missing. installed.json
+ * names its own dev packages in dev-package-names, so the same filter applies to
+ * both sides and a --no-dev vendor tree matches a full lock cleanly.
+ *
+ * @return array{count:int, problems:list<string>}|null null when either file is
+ *         unreadable, which is a different answer from "they disagree"
+ */
+function pf_compare_lock_to_vendor(string $root): ?array
+{
+    $lock      = json_decode((string) @file_get_contents($root . '/composer.lock'), true);
+    $installed = json_decode((string) @file_get_contents($root . '/vendor/composer/installed.json'), true);
+
+    if (!is_array($lock['packages'] ?? null) || !is_array($installed['packages'] ?? null)) {
+        return null;
+    }
+
+    $devNames = array_flip(is_array($installed['dev-package-names'] ?? null) ? $installed['dev-package-names'] : []);
+
+    $onDisk = [];
+
+    foreach ($installed['packages'] as $package) {
+        $name = (string) ($package['name'] ?? '');
+        if ($name !== '' && !isset($devNames[$name])) {
+            $onDisk[$name] = (string) ($package['version'] ?? '');
+        }
+    }
+
+    $problems = [];
+
+    foreach ($lock['packages'] as $package) {
+        $name = (string) ($package['name'] ?? '');
+
+        if ($name === '') {
+            continue;
+        }
+
+        $wanted = (string) ($package['version'] ?? '');
+
+        if (!isset($onDisk[$name])) {
+            $problems[] = "{$name} missing";
+            continue;
+        }
+
+        if ($onDisk[$name] !== $wanted) {
+            $problems[] = "{$name} {$onDisk[$name]} != {$wanted}";
+        }
+    }
+
+    return ['count' => count($lock['packages']), 'problems' => $problems];
 }
 
 /**
