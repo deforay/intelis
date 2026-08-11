@@ -34,7 +34,8 @@
  *   4. configs/config.production.php present, parseable, and filled in
  *   5. Paths writable BY THE WEB SERVER USER, not by whoever ran this
  *   6. Database reachable, migrations current, collation clean, audit triggers
- *      installed
+ *      installed, instance registered — and when the connection fails, why it
+ *      failed rather than only that it did
  *
  * Usage:
  *   composer preflight             run all checks
@@ -408,11 +409,24 @@ if ($webUser === null) {
     }
 
     if ($notWritable !== []) {
+        // bin/provision.php already does exactly this repair — it creates what is
+        // missing and, run as root, sets owner:www-data group-writable so both the
+        // CLI user and the web server can write. It is idempotent and exits 0
+        // regardless, so pointing at it beats a hand-written chown that fixes only
+        // the paths this run happened to notice.
+        //
+        // The chown stays as a second line for the one case provision cannot help
+        // with: it boots the app to learn the paths, so a root-owned var/cache can
+        // stop it before it starts — the same failure upgrade.sh pre-empts by
+        // chowning var/cache before it calls composer.
         check(
             'How to fix',
             PF_WARN,
-            'run as root:' . "\n"
-                . '  chown -R ' . $webUser['name'] . ':' . $webUser['name'] . ' '
+            'sudo composer provision' . "\n"
+                . 'if that cannot start, clear the way for it first:' . "\n"
+                . '  sudo chown -R $(logname):' . $webUser['name'] . ' '
+                . implode(' ', array_map(static fn(string $d): string => $root . '/' . $d, $notWritable)) . "\n"
+                . '  sudo chmod -R g+w '
                 . implode(' ', array_map(static fn(string $d): string => $root . '/' . $d, $notWritable)),
         );
     }
@@ -443,7 +457,20 @@ try {
     check('DB reachable', PF_OK);
 } catch (PDOException $e) {
     check('DB reachable', PF_FAIL, $e->getMessage());
-    check('DB fix', PF_WARN, pf_db_remedy($host, $e));
+
+    // The driver message says what happened to the connection, never why. It
+    // reports the same "Connection refused" whether MySQL is stopped, crashed on
+    // startup, or running fine behind a closed firewall port — three problems
+    // with three different fixes. These rows go looking for the difference, and
+    // they run only on failure, so a healthy instance never pays for them and
+    // this stays a diagnosis rather than the ongoing service monitoring that
+    // belongs in bin/health.php.
+    // The generic remedy is the fallback for when the probing above could not
+    // narrow it down. Printing both makes the report restate itself at exactly
+    // the moment it had something specific to say.
+    if (!pf_diagnose_db($host, $port, $e)) {
+        check('DB fix', PF_WARN, pf_db_remedy($host, $e));
+    }
     pf_render($results, $quiet);
     exit(1);
 }
@@ -919,6 +946,163 @@ function pf_current_user(): string
     $name = trim((string) @shell_exec('id -nu 2>/dev/null'));
 
     return $name === '' ? 'the current user' : $name;
+}
+
+/**
+ * Why the database is unreachable, as far as this machine can tell.
+ *
+ * Emits its own findings rather than returning a string, because the answer is
+ * several independent observations and collapsing them into one line loses which
+ * of them is the surprising one.
+ *
+ * Split by where the database lives, since the useful evidence differs. For a
+ * local server the question is whether mysqld is running and, if it is not,
+ * whether it failed rather than was stopped. For a remote one this machine can
+ * only say whether anything answers on the port, which is exactly the line
+ * between a network problem and a MySQL problem.
+ *
+ * @return bool true when it reached a conclusion specific enough to act on, so
+ *         the caller can drop the generic remedy rather than restate it
+ */
+function pf_diagnose_db(string $host, string $port, PDOException $e): bool
+{
+    // Rejected credentials and an unknown database are answers, not mysteries:
+    // MySQL was reached and replied. Probing the service after one of those adds
+    // rows that all say "working fine" underneath a failure, which reads as a
+    // contradiction and buries the line that actually matters.
+    $message = strtolower($e->getMessage());
+
+    foreach (['access denied', 'unknown database'] as $answered) {
+        if (str_contains($message, $answered)) {
+            return false;
+        }
+    }
+
+    if (!in_array($host, ['localhost', '127.0.0.1', '::1', gethostname()], true)) {
+        // A refused connection is a host that answered; a timeout is one that
+        // never did. That difference decides whether to look at MySQL's bind
+        // address or at the firewall between here and there.
+        $errno  = 0;
+        $errstr = '';
+        $socket = @fsockopen($host, (int) $port, $errno, $errstr, 5);
+
+        if ($socket !== false) {
+            fclose($socket);
+            check('MySQL port', PF_OK, "{$host}:{$port} accepts connections — MySQL itself rejected us");
+            return false;
+        }
+
+        check(
+            'MySQL port',
+            PF_FAIL,
+            "nothing answers on {$host}:{$port} — {$errstr}\n"
+                . '  the credentials are not the problem; check the firewall, the port, '
+                . "and MySQL's bind-address",
+        );
+        return true;
+    }
+
+    $diagnosed = false;
+    $service   = pf_mysql_service();
+
+    if ($service === null) {
+        check('MySQL service', PF_SKIP, 'systemctl not available — cannot tell whether MySQL is running');
+    } else {
+        [$name, $state] = $service;
+
+        if ($state === 'active') {
+            // Running, yet the connection failed: the socket path or the bind
+            // address is wrong, or the credentials are. Not a service problem,
+            // and saying so stops the next hour going into restarting it.
+            check(
+                'MySQL service',
+                PF_OK,
+                "{$name} is running — so this is a socket, bind-address or credentials problem",
+            );
+        } else {
+            check(
+                'MySQL service',
+                PF_FAIL,
+                "{$name} is {$state}\n"
+                    . "  systemctl status {$name} --no-pager -n 20",
+            );
+            $diagnosed = true;
+        }
+    }
+
+    // The error log names the actual cause when MySQL failed to start — a
+    // corrupt InnoDB page, a full disk, a permissions change on the data
+    // directory. It is normally root-readable only, and preflight runs as
+    // www-data, so the path is worth printing even when the contents are not
+    // reachable from here.
+    $logs = array_values(array_filter(
+        ['/var/log/mysql/error.log', '/var/log/mysqld.log', '/var/log/mariadb/mariadb.log'],
+        static fn(string $path): bool => is_file($path),
+    ));
+
+    if ($logs === []) {
+        return $diagnosed;
+    }
+
+    $log = $logs[0];
+
+    if (!is_readable($log)) {
+        check(
+            'MySQL error log',
+            PF_SKIP,
+            "{$log} — not readable as " . pf_current_user() . "\n  try: sudo tail -20 " . $log,
+        );
+        return $diagnosed;
+    }
+
+    $lines = @file($log, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
+    $errors = array_values(array_filter(
+        array_slice($lines, -200),
+        static fn(string $line): bool => stripos($line, '[error]') !== false,
+    ));
+
+    check(
+        'MySQL error log',
+        $errors === [] ? PF_OK : PF_WARN,
+        $errors === []
+            ? "no errors in the tail of {$log}"
+            : 'last error in ' . $log . ":\n  " . end($errors),
+    );
+
+    return $diagnosed;
+}
+
+/**
+ * The MySQL unit on this machine and its current state.
+ *
+ * The unit is named mysql on Debian, mysqld on RHEL and mariadb where MariaDB
+ * replaced it, and asking for the wrong one returns "inactive" rather than an
+ * error — which would report a running server as stopped. So each candidate is
+ * checked for existence before its state is believed.
+ *
+ * @return array{0:string, 1:string}|null
+ */
+function pf_mysql_service(): ?array
+{
+    if (trim((string) @shell_exec('command -v systemctl 2>/dev/null')) === '') {
+        return null;
+    }
+
+    foreach (['mysql', 'mariadb', 'mysqld'] as $name) {
+        $loaded = trim((string) @shell_exec(
+            'systemctl show ' . escapeshellarg($name) . ' --property=LoadState --value 2>/dev/null',
+        ));
+
+        if ($loaded !== 'loaded') {
+            continue;
+        }
+
+        $state = trim((string) @shell_exec('systemctl is-active ' . escapeshellarg($name) . ' 2>/dev/null'));
+
+        return [$name, $state === '' ? 'unknown' : $state];
+    }
+
+    return null;
 }
 
 /**
