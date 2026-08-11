@@ -136,6 +136,33 @@ final class VlServiceDerivedValueGateTest extends TestCase
         $this->assertNull($sanitized['result_value_log']);
     }
 
+    /**
+     * The exponent is part of the number. Reading "1.0" out of "< 1.0E+20" discarded the
+     * magnitude and produced one copy per millilitre -- a figure that looks like a
+     * deeply suppressed patient and passes every check downstream, which is a far worse
+     * outcome than the obviously broken value it replaced. Parsed whole, it is over the
+     * ceiling and is dropped instead.
+     */
+    public function testAResultInScientificNotationIsNotTruncatedToItsMantissa(): void
+    {
+        $interpreted = VlServiceFactory::build()->interpretViralLoadNumericResult('< 1.0E+20');
+
+        $this->assertNotEquals(1.0, (float) $interpreted['absDecimalVal']);
+        $this->assertNull($interpreted['absDecimalVal']);
+        $this->assertNull($interpreted['logVal']);
+    }
+
+    /**
+     * A magnitude an assay can actually report still converts.
+     */
+    public function testAScientificNotationResultWithinRangeIsKept(): void
+    {
+        $interpreted = VlServiceFactory::build()->interpretViralLoadNumericResult('1.0E+6');
+
+        $this->assertEqualsWithDelta(1000000.0, (float) $interpreted['absDecimalVal'], 1.0);
+        $this->assertEqualsWithDelta(6.0, (float) $interpreted['logVal'], 0.01);
+    }
+
     public function testARowWithNoDerivedColumnsIsReturnedUnchanged(): void
     {
         $row = ['result' => 'Target Not Detected', 'result_status' => 4];
