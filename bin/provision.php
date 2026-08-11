@@ -75,11 +75,28 @@ try {
     if ($dryRun) {
         $io->note('Dry run — nothing will be created or changed.');
     }
-    $io->text([
-        "Owner  : <info>$owner</info>",
-        "Group  : <info>$webGroup</info>" . ($haveGroup ? '' : ' <comment>(not present on this host — ownership skipped)</comment>'),
-        "As root: <info>" . ($isRoot ? 'yes' : 'no — permissions left to set_permissions / web server') . "</info>",
-    ]);
+    // Said as one sentence about what this run will do. The previous
+    // Owner/Group/As-root block listed the things it was NOT doing — "not
+    // present on this host", "permissions left to..." — which reads as three
+    // failures on a machine where every one of them is the normal state. A
+    // developer's laptop has no www-data and a non-root run is the usual way to
+    // call this; neither is a problem, and neither stops the directories being
+    // created, which is the part that always happens and the part that matters.
+    if (!$haveGroup) {
+        $io->text([
+            "Creating any missing directories, owned by <info>$owner</info>.",
+            "No <info>$webGroup</info> account on this machine, which is usual off a server —"
+                . ' web server ownership gets set on the hosts that have one.',
+        ]);
+    } elseif ($isRoot) {
+        $io->text("Creating any missing directories, then setting <info>$owner:$webGroup</info> ownership and group-write.");
+    } else {
+        $io->text([
+            "Creating any missing directories, owned by <info>$owner</info>.",
+            'Ownership and group-write need root — setup.sh and upgrade.sh apply those,'
+                . ' or re-run this with sudo.',
+        ]);
+    }
 
     $created = 0;
     $problems = [];
