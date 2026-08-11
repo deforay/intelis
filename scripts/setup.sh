@@ -1564,7 +1564,7 @@ wait "${permissions_pid}" 2>/dev/null || true
 # back and asks whether the result actually works. A fresh install is where the
 # answer is most often "not quite": a MySQL user without rights on the new
 # database, an Apache php.ini the distro shipped its own defaults into, a
-# tryCrypt still holding the placeholder.
+# directory the app cannot write to.
 #
 # `|| true` because setup has genuinely completed by now — a finding here is
 # something to fix on this machine, not a reason to report the install as failed.
