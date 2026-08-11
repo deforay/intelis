@@ -314,6 +314,10 @@ try {
     $vlData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
 
+    // The log and absolute columns are derived in a dozen places and nothing downstream
+    // checks they can be true. Drop any that cannot before they reach the table.
+    $vlData = $vlService->sanitizeResultColumnsForWrite($vlData, 'add-vl-request');
+
     $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
 
 
