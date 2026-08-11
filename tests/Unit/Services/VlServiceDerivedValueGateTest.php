@@ -27,12 +27,16 @@ final class VlServiceDerivedValueGateTest extends TestCase
      */
     public static function implausibleValuesProvider(): array
     {
+        $log = 'result_value_log';
+        $absolute = 'result_value_absolute';
+        $decimal = 'result_value_absolute_decimal';
+
         return [
-            'exponentiated absolute'   => [40, '< 1.0E+40', '1e40', ['result_value_absolute_decimal', 'result_value_absolute', 'result_value_log']],
-            'overflowed to INF'        => [null, 'INF', 'INF', ['result_value_absolute_decimal', 'result_value_absolute']],
-            'spreadsheet error in log' => ['#NUM!', null, null, ['result_value_log']],
-            'negative sentinel'        => [null, '-1', '-1', ['result_value_absolute_decimal', 'result_value_absolute']],
-            'log beyond any assay'     => ['42', null, null, ['result_value_log']],
+            'exponentiated absolute'   => [40, '< 1.0E+40', '1e40', [$decimal, $absolute, $log]],
+            'overflowed to INF'        => [null, 'INF', 'INF', [$decimal, $absolute]],
+            'spreadsheet error in log' => ['#NUM!', null, null, [$log]],
+            'negative sentinel'        => [null, '-1', '-1', [$decimal, $absolute]],
+            'log beyond any assay'     => ['42', null, null, [$log]],
         ];
     }
 
@@ -40,8 +44,12 @@ final class VlServiceDerivedValueGateTest extends TestCase
      * @param string[] $expectedDropped
      */
     #[DataProvider('implausibleValuesProvider')]
-    public function testImplausibleValuesAreDropped(mixed $log, mixed $absolute, mixed $decimal, array $expectedDropped): void
-    {
+    public function testImplausibleValuesAreDropped(
+        mixed $log,
+        mixed $absolute,
+        mixed $decimal,
+        array $expectedDropped
+    ): void {
         $sanitized = VlServiceFactory::build()->sanitizeDerivedVlValues($log, $absolute, $decimal);
 
         sort($expectedDropped);
