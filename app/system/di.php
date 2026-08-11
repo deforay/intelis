@@ -54,7 +54,21 @@ if ($enableCompilation) {
     // The APCu definition cache is a production optimisation; skip it for the
     // compile-check so each run compiles fresh rather than reusing a cache.
     if (!$compileCheck && extension_loaded('apcu')) {
-        $builder->enableDefinitionCache($systemConfig['instance-name'] ?? '');
+        // This string namespaces the APCu keys, and APCu is one segment shared by
+        // every vhost under the same Apache. instance-name is empty on most
+        // installs -- it is the login/header title, not an identifier -- so two
+        // instances on one machine namespaced by it share definitions, and during
+        // a staggered upgrade one can serve the other's. Falling back to a digest
+        // of the install path keeps them apart without giving the machine a title
+        // nobody asked for. Same idiom as the OPcache token in bootstrap.php:
+        // xxh128 is a cache-key digest here, never a security hash.
+        $definitionCacheNamespace = (string) ($systemConfig['instance-name'] ?? '');
+
+        if ($definitionCacheNamespace === '') {
+            $definitionCacheNamespace = hash('xxh128', ROOT_PATH);
+        }
+
+        $builder->enableDefinitionCache($definitionCacheNamespace);
     }
 }
 
