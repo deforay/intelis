@@ -108,6 +108,10 @@ try {
 
                 $data['status'] = $status[$i];
 
+                // Controls carry the same derived columns from the same parsers, so they
+                // are checked on the same terms as a patient sample.
+                $data = $vlService->sanitizeResultColumnsForWrite($data, 'import-result-vl-control');
+
                 $db->insert('vl_imported_controls', $data);
             } else {
 
@@ -173,6 +177,13 @@ try {
                     if (in_array(strtolower((string) $data['result']), ['fail', 'failed', 'err', 'error'])) {
                         $data['result_status'] = TEST_FAILED;
                     }
+
+                    // Staging holds whatever the parser produced, so a reviewer can see
+                    // it on the import screen, and these columns are copied across
+                    // verbatim. Fourteen of the twenty VL parsers do their own
+                    // arithmetic and never pass through interpretation, so this
+                    // promotion into form_vl is where their values are checked.
+                    $data = $vlService->sanitizeResultColumnsForWrite($data, 'import-result-vl');
 
                     $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
 
@@ -303,6 +314,10 @@ try {
                 $data['is_sample_rejected'] = 'no';
                 $data['reason_for_sample_rejection'] = null;
             }
+
+            // Same promotion out of staging as above: the parser's arithmetic is checked
+            // here, on the way into form_vl.
+            $data = $vlService->sanitizeResultColumnsForWrite($data, 'import-result-vl-accepted');
 
             $data['vl_result_category'] = $vlService->getVLResultCategory($data['result_status'], $data['result']);
 

@@ -444,6 +444,11 @@ final class InterfacingService
             $data['result_status'] = TEST_FAILED;
         }
 
+        // Analyzers report a unit alongside the result and the interpretation follows it,
+        // so a mislabelled unit turns into an impossible copies figure. Drop what cannot
+        // be true before it reaches the table.
+        $data = $this->vlService->sanitizeResultColumnsForWrite($data, 'interfacing');
+
         $data['vl_result_category'] = $this->vlService->getVLResultCategory($data['result_status'], $data['result']);
         if ($data['vl_result_category'] == 'failed' || $data['vl_result_category'] == 'invalid') {
             $data['result_status'] = TEST_FAILED;

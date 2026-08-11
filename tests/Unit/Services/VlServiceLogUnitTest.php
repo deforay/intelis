@@ -4,16 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Services;
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Services\VlService;
-use App\Utilities\FileCacheUtility;
-use App\Utilities\MemoUtility;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
-use ReflectionClass;
+use Tests\Support\VlServiceFactory;
 
 /**
  * A "Log" unit says how a result is labelled, not what an operator actually typed.
@@ -24,7 +18,7 @@ use ReflectionClass;
  * wrong in every numeric field, which is why it went unnoticed -- the API publishes the
  * decimal, and 183 rows in one client database carried figures of that size.
  *
- * The service is built without its constructor and given a cache that answers from
+ * The service is built by VlServiceFactory, which answers its config and cache from
  * memory, so these cases run without a database.
  */
 final class VlServiceLogUnitTest extends TestCase
@@ -33,59 +27,7 @@ final class VlServiceLogUnitTest extends TestCase
 
     protected function setUp(): void
     {
-        MemoUtility::clear();
-
-        // MemoUtility::remember() resolves a cache out of the container. Pass-through:
-        // compute every time, touch no filesystem.
-        $passThroughCache = new class extends FileCacheUtility {
-            public function __construct() {}
-
-            public function get(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600): mixed
-            {
-                return $computeValueCallback();
-            }
-        };
-
-        ContainerRegistry::setContainer(new class ($passThroughCache) implements ContainerInterface {
-            public function __construct(private readonly FileCacheUtility $cache) {}
-
-            public function get(string $id): mixed
-            {
-                return $this->cache;
-            }
-
-            public function has(string $id): bool
-            {
-                return true;
-            }
-        });
-
-        // getGlobalConfig() reads global_config through the same cache. Answer with the
-        // settings under test instead of hitting the database.
-        $configCache = new class extends FileCacheUtility {
-            public function __construct() {}
-
-            public function get(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600): mixed
-            {
-                return ['vl_interpret_and_convert_results' => 'no'];
-            }
-        };
-
-        $commonService = (new ReflectionClass(CommonService::class))->newInstanceWithoutConstructor();
-        $commonRef = new ReflectionClass(CommonService::class);
-        $fileCacheProp = $commonRef->getProperty('fileCache');
-        $fileCacheProp->setAccessible(true);
-        $fileCacheProp->setValue($commonService, $configCache);
-
-        // getGlobalConfig() reads $this->db into a local before handing the cache a
-        // callback it never runs here, so the property has to exist. It is never used.
-        $dbProp = $commonRef->getProperty('db');
-        $dbProp->setAccessible(true);
-        $dbProp->setValue($commonService, (new ReflectionClass(DatabaseService::class))->newInstanceWithoutConstructor());
-
-        // No constructor: it would open a database connection and none is needed here.
-        $this->vlService = (new ReflectionClass(VlService::class))->newInstanceWithoutConstructor();
-        $this->vlService->commonService = $commonService;
+        $this->vlService = VlServiceFactory::build(['vl_interpret_and_convert_results' => 'no']);
     }
 
     /**
