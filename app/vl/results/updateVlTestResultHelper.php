@@ -275,6 +275,10 @@ try {
         $vlData['result_status'] = $resultStatus;
     }
 
+    // The log and absolute columns are derived in a dozen places and nothing downstream
+    // checks they can be true. Drop any that cannot before they reach the table.
+    $vlData = $vlService->sanitizeResultColumnsForWrite($vlData, 'update-vl-result');
+
     $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
 
     // Retain the outgoing result before it is replaced. Editing a result overwrites it just
