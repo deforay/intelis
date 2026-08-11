@@ -358,6 +358,134 @@ final class VlService extends AbstractTestService
         return MiscUtility::arrayEmptyStringsToNull($response);
     }
 
+    /**
+     * The numeric columns beside a viral load result -- log, absolute and absolute
+     * decimal -- are all derived from the same measurement, so they can be checked
+     * against each other and against the range an assay can physically report.
+     *
+     * This exists because they are not derived in one place. Six of the twenty VL
+     * instrument parsers call interpretViralLoadResult(); the other fourteen do their
+     * own arithmetic, write it to temp_sample_import, and process-vl.php copies those
+     * columns into form_vl verbatim. Bounding each site individually has not converged
+     * -- an unbounded 10 ** produced absolutes of 1.0E+40 and INF, a log column read
+     * straight off a spreadsheet produced "#NUM!" -- so the check lives here and is
+     * applied wherever these columns are written, whatever computed them.
+     *
+     * Only derived values are dropped. `result` is never the caller's to lose here: it
+     * holds what the instrument reported or the operator typed.
+     *
+     * @return array{logVal: float|null, absVal: mixed, absDecimalVal: float|null, dropped: string[]}
+     */
+    public function sanitizeDerivedVlValues(mixed $logVal, mixed $absVal, mixed $absDecimalVal): array
+    {
+        $dropped = [];
+        $maxCopies = 10 ** self::MAX_PLAUSIBLE_VL_LOG;
+
+        // A copies figure has to be a finite, non-negative number no larger than the
+        // most an assay can report. "INF" and "#NUM!" fail is_numeric() and land here
+        // too, which is the point: the check is on the value, not on where it came from.
+        $decimal = null;
+        if ($absDecimalVal !== null && trim((string) $absDecimalVal) !== '') {
+            if (is_numeric($absDecimalVal) && is_finite((float) $absDecimalVal)
+                && (float) $absDecimalVal >= 0 && (float) $absDecimalVal <= $maxCopies) {
+                $decimal = (float) $absDecimalVal;
+            } else {
+                $dropped[] = 'result_value_absolute_decimal';
+            }
+        }
+
+        // The absolute is the same measurement carrying its operator ("< 40"), so it is
+        // judged on its numeric part and kept verbatim when that part is sound.
+        $absolute = $absVal;
+        if ($absVal !== null && trim((string) $absVal) !== '') {
+            $numericPart = null;
+            if (preg_match('/-?\d+(\.\d+)?([eE][+-]?\d+)?/', (string) $absVal, $matches)) {
+                $numericPart = (float) $matches[0];
+            }
+            $unreadable = $numericPart === null && !is_numeric($absVal);
+            if ($unreadable || ($numericPart !== null
+                && (!is_finite($numericPart) || $numericPart < 0 || $numericPart > $maxCopies))) {
+                $absolute = null;
+                $dropped[] = 'result_value_absolute';
+            }
+        }
+
+        $log = null;
+        if ($logVal !== null && trim((string) $logVal) !== '') {
+            if (is_numeric($logVal) && is_finite((float) $logVal)
+                && (float) $logVal >= 0 && (float) $logVal <= self::MAX_PLAUSIBLE_VL_LOG) {
+                $log = (float) $logVal;
+            } else {
+                $dropped[] = 'result_value_log';
+            }
+        }
+
+        // Both survived their own bounds but describe different measurements. The log is
+        // the one dropped: it is recomputable from the copies figure, and the copies
+        // figure is what the assay actually reports. The tolerance absorbs the varying
+        // rounding across the parsers, which store anywhere from two to four decimals.
+        if ($log !== null && $decimal !== null && $decimal > 0
+            && abs($log - log10($decimal)) > 0.5) {
+            $log = null;
+            $dropped[] = 'result_value_log';
+        }
+
+        return [
+            'logVal' => $log,
+            'absVal' => $absolute,
+            'absDecimalVal' => $decimal,
+            'dropped' => array_values(array_unique($dropped)),
+        ];
+    }
+
+    /**
+     * The gate as the write paths use it: hand it the row about to be inserted or
+     * updated and it returns the row with any derived value that cannot be true removed.
+     *
+     * `result`, `result_value_text` and every other column are passed through unchanged.
+     * Keys absent from the row stay absent, so a partial update is not turned into a
+     * full one.
+     */
+    public function sanitizeResultColumnsForWrite(array $data, ?string $context = null): array
+    {
+        $hasAny = array_key_exists('result_value_log', $data)
+            || array_key_exists('result_value_absolute', $data)
+            || array_key_exists('result_value_absolute_decimal', $data);
+        if (!$hasAny) {
+            return $data;
+        }
+
+        $sanitized = $this->sanitizeDerivedVlValues(
+            $data['result_value_log'] ?? null,
+            $data['result_value_absolute'] ?? null,
+            $data['result_value_absolute_decimal'] ?? null
+        );
+
+        if ($sanitized['dropped'] === []) {
+            return $data;
+        }
+
+        foreach (
+            [
+                'result_value_log' => 'logVal',
+                'result_value_absolute' => 'absVal',
+                'result_value_absolute_decimal' => 'absDecimalVal',
+            ] as $column => $key
+        ) {
+            if (array_key_exists($column, $data)) {
+                $data[$column] = $sanitized[$key];
+            }
+        }
+
+        LoggerUtility::log('warning', 'Implausible viral load values dropped before write', [
+            'context' => $context,
+            'columns' => $sanitized['dropped'],
+            'result' => $data['result'] ?? null,
+        ]);
+
+        return $data;
+    }
+
     public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null, int|string|null $specimenType = null): ?array
     {
         return MemoUtility::remember(function () use ($result, $unit, $defaultLowVlResultText, $specimenType): ?array {
@@ -557,7 +685,18 @@ final class VlService extends AbstractTestService
         }
 
         $vlResult = $this->countrySpecificInterpretations($vlResult);
-        $resultToUse = $interpretAndConvertResult ? $vlResult : $originalResultValue;
+
+        $sanitized = $this->sanitizeDerivedVlValues($logVal, $absVal, $absDecimalVal);
+        $logVal = $sanitized['logVal'];
+        $absVal = $sanitized['absVal'];
+        $absDecimalVal = $sanitized['absDecimalVal'];
+
+        $resultToUse = $this->resultToStore(
+            $interpretAndConvertResult,
+            $vlResult,
+            $originalResultValue,
+            $sanitized['dropped']
+        );
 
         return [
             'logVal' => $logVal,
@@ -569,6 +708,41 @@ final class VlService extends AbstractTestService
             'originalResult' => $originalResultValue,
             'resultStatus' => $resultStatus
         ];
+    }
+
+    /**
+     * Which value ends up in `result`.
+     *
+     * With vl_interpret_and_convert_results off -- the default -- the entry is stored
+     * exactly as it arrived and interpretation only ever populates the columns beside
+     * it. With the flag on, the interpreted value replaces the entry, which makes the
+     * interpretation itself the stored record and raises the bar for accepting it.
+     *
+     * So when the sanitiser has just rejected part of that interpretation as impossible,
+     * the interpreted result is not trustworthy enough to overwrite what was reported.
+     * The original is kept instead: an entry that reads oddly is a question someone can
+     * answer, and a fabricated figure that reads plausibly is not.
+     */
+    private function resultToStore(
+        bool $interpretAndConvertResult,
+        mixed $interpretedResult,
+        mixed $originalResultValue,
+        array $dropped
+    ): mixed {
+        if (!$interpretAndConvertResult) {
+            return $originalResultValue;
+        }
+
+        if ($dropped !== []) {
+            LoggerUtility::log('warning', 'Keeping the reported viral load result: its interpretation was implausible', [
+                'columns' => $dropped,
+                'reported' => $originalResultValue,
+                'rejected' => $interpretedResult,
+            ]);
+            return $originalResultValue;
+        }
+
+        return $interpretedResult;
     }
 
     public function interpretViralLoadNumericResult(string $result, ?string $unit = null): ?array
@@ -630,7 +804,17 @@ final class VlService extends AbstractTestService
             $logVal = round(log10($absDecimalVal), 2);
         }
 
-        $resultToUse = $interpretAndConvertResult ? $vlResult : $originalResultValue;
+        $sanitized = $this->sanitizeDerivedVlValues($logVal, $absVal, $absDecimalVal);
+        $logVal = $sanitized['logVal'];
+        $absVal = $sanitized['absVal'];
+        $absDecimalVal = $sanitized['absDecimalVal'];
+
+        $resultToUse = $this->resultToStore(
+            $interpretAndConvertResult,
+            $vlResult,
+            $originalResultValue,
+            $sanitized['dropped']
+        );
 
         return [
             'logVal' => $logVal,

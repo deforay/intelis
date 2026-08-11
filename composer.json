@@ -102,6 +102,7 @@
         ],
         "interface": "@php bin/interface.php",
         "lock-samples": "@php bin/update-sample-status.php",
+        "vl-recompute-derived": "@php bin/vl-recompute-derived.php",
         "purge-cache": "@php app/includes/purge-cache.php",
         "provision": "@php bin/provision.php",
         "clear-logs": "@php bin/clear-logs.php",
@@ -226,6 +227,7 @@
         "generate-translation-strings": "Generate translation strings from source code",
         "fix-app-menu": "Fix application menu entries",
         "lock-samples": "Lock sample records that have been completed",
+        "vl-recompute-derived": "Report, and with --apply repair, viral load rows whose derived log and copies columns cannot be true (never writes the result itself)",
         "housekeeping": "Housekeeping \u2014 remove old backups, temporary files, logs, and stale DB rows",
         "scan": "Scan source code for issues",
         "archive-audit-tables": "Archive audit tables to reduce database size"
