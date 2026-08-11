@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# pre-commit: three guards on the staged changes, scoped for speed. Blocks the
+# pre-commit: four guards on the staged changes, scoped for speed. Blocks the
 # commit (exit 1) on any failure.
 #
 #   1. Merge-conflict markers — all staged files, any type. Uses git's own
@@ -12,6 +12,9 @@
 #      stray debug statements (die / var_dump / dd / dump) so a forgotten
 #      `dd($x)` can't be committed. Deliberately does NOT flag `exit` (300+ legit
 #      uses), commented-out lines, or the legacy `... or die("msg")` idiom.
+#   4. PSR12 style (`phpcs`) — only on the paths CI style-checks, since the rest of
+#      the app predates PSR12. Warnings are fatal on the main set, matching CI.
+#      Skipped cleanly when vendor/bin/phpcs is absent (--no-dev installs).
 #
 # Tracked here; .git/hooks/pre-commit is a symlink to this file (installed via
 # `composer install-hooks` / bin/install-hooks.sh). A global hooksPath dispatcher,
@@ -92,4 +95,52 @@ if [ -n "$debug_hits" ]; then
     printf '\n  Remove them, or bypass once: \033[36mgit commit --no-verify\033[0m\n\n' >&2
     exit 1
 fi
+
+# --- guard 4: PSR12 coding style ------------------------------------------
+# Mirrors the Verify workflow's "Check coding style" step, the same way guard 1
+# mirrors the conflict-marker job. Most of the app predates PSR12 and would fail
+# wholesale, so this is scoped to exactly the paths that step passes to phpcs --
+# keep the two lists in step when either changes (.github/workflows/no-conflict-markers.yml).
+# CI remains the gate; this only moves the finding from after the push to before
+# the commit.
+#
+# Note the workflow does NOT set ignore_warnings_on_exit for the first set, so a
+# warning there fails the build just like an error. A line over 120 characters in
+# a test is enough to turn CI red, which is exactly the trip-up worth catching here.
+if command -v php >/dev/null 2>&1 && [ -x vendor/bin/phpcs ]; then
+    strict_re='^(app/classes/(Contracts|Repositories|Services|HttpHandlers)/InterfaceApi/|app/classes/Http/|app/classes/Exceptions/InterfaceApiException\.php$|app/classes/Services/(InterfacingService|InstrumentActivityService|InstrumentUsageStatisticsService)\.php$|app/classes/Middlewares/Api/Interface[^/]*\.php$|app/facilities/interfaceConnectionAction\.php$|app/facilities/partials/interface-connections\.php$|tests/|bin/interface-api\.php$)'
+    lenient_re='^(app/classes/Middlewares/Api/ApiAuthMiddleware\.php|app/system/di\.php|public/api/index\.php)$'
+
+    strict_files=()
+    lenient_files=()
+    for f in "${files[@]}"; do
+        if printf '%s\n' "$f" | grep -qE "$strict_re"; then
+            strict_files+=("$f")
+        elif printf '%s\n' "$f" | grep -qE "$lenient_re"; then
+            lenient_files+=("$f")
+        fi
+    done
+
+    style_failed=""
+    if [ "${#strict_files[@]}" -gt 0 ]; then
+        if ! out="$(vendor/bin/phpcs --standard=PSR12 "${strict_files[@]}" 2>&1)"; then
+            printf '\n\033[31m✋ commit blocked\033[0m — PSR12 violations (warnings count here, as in CI):\n' >&2
+            printf '%s\n' "$out" >&2
+            style_failed=1
+        fi
+    fi
+    if [ "${#lenient_files[@]}" -gt 0 ]; then
+        if ! out="$(vendor/bin/phpcs --standard=PSR12 --runtime-set ignore_warnings_on_exit 1 "${lenient_files[@]}" 2>&1)"; then
+            printf '\n\033[31m✋ commit blocked\033[0m — PSR12 errors:\n' >&2
+            printf '%s\n' "$out" >&2
+            style_failed=1
+        fi
+    fi
+    if [ -n "$style_failed" ]; then
+        printf '  Most of this is auto-fixable: \033[36mvendor/bin/phpcbf --standard=PSR12 <file>\033[0m\n' >&2
+        printf '  Or bypass once: \033[36mgit commit --no-verify\033[0m\n\n' >&2
+        exit 1
+    fi
+fi
+
 exit 0
