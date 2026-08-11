@@ -34,16 +34,24 @@ final class VlServiceFactory
         // MemoUtility::remember() resolves a cache out of the container. Pass-through:
         // compute every time, touch no filesystem.
         $passThroughCache = new class extends FileCacheUtility {
-            public function __construct() {}
-
-            public function get(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600): mixed
+            public function __construct()
             {
+            }
+
+            public function get(
+                string $key,
+                callable $computeValueCallback,
+                ?array $tags = [],
+                int $expiration = 3600
+            ): mixed {
                 return $computeValueCallback();
             }
         };
 
         ContainerRegistry::setContainer(new class ($passThroughCache) implements ContainerInterface {
-            public function __construct(private readonly FileCacheUtility $cache) {}
+            public function __construct(private readonly FileCacheUtility $cache)
+            {
+            }
 
             public function get(string $id): mixed
             {
@@ -60,10 +68,16 @@ final class VlServiceFactory
         // settings under test instead of hitting the database.
         $configCache = new class ($globalConfig) extends FileCacheUtility {
             /** @param array<string, string> $config */
-            public function __construct(private readonly array $config) {}
-
-            public function get(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600): mixed
+            public function __construct(private readonly array $config)
             {
+            }
+
+            public function get(
+                string $key,
+                callable $computeValueCallback,
+                ?array $tags = [],
+                int $expiration = 3600
+            ): mixed {
                 return $this->config;
             }
         };
@@ -79,7 +93,8 @@ final class VlServiceFactory
         // callback it never runs here, so the property has to exist. It is never used.
         $dbProp = $commonRef->getProperty('db');
         $dbProp->setAccessible(true);
-        $dbProp->setValue($commonService, (new ReflectionClass(DatabaseService::class))->newInstanceWithoutConstructor());
+        $stubDb = (new ReflectionClass(DatabaseService::class))->newInstanceWithoutConstructor();
+        $dbProp->setValue($commonService, $stubDb);
 
         // No constructor: it would open a database connection and none is needed here.
         $vlService = (new ReflectionClass(VlService::class))->newInstanceWithoutConstructor();

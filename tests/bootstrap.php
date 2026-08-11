@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+// A bootstrap both defines constants and requires files by definition, which is the one
+// thing PSR1's side-effects rule asks a file not to do. The rule is right about ordinary
+// files and cannot be satisfied by this one.
+// phpcs:disable PSR1.Files.SideEffects
+
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 // The application's constants -- sample statuses, country identifiers -- are plain
