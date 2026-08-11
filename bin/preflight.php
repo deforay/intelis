@@ -574,6 +574,53 @@ try {
     check('Audit triggers', PF_SKIP, $e->getMessage());
 }
 
+// s_vlsm_instance holds the one row that identifies this machine: the ULID
+// minted once at registration and the STS token issued against it. Both come
+// from app/setup/registerProcess.php, and nothing else ever writes them.
+//
+// With no row there is no instance id and no token, so every remote call —
+// metadata sync, results, requests, pending commands — runs unidentified and
+// unauthenticated. Each one fails on its own and logs its own failure, and none
+// of them says the cause is that this instance was never registered.
+//
+// How much that matters depends entirely on whether an STS is configured, so the
+// severity follows remoteURL rather than treating a deliberately standalone lab
+// as broken.
+$remoteUrl = (string) ($config['remoteURL'] ?? '');
+
+try {
+    $instanceRow = $pdo->query('SELECT vlsm_instance_id, sts_token FROM s_vlsm_instance LIMIT 1');
+    $instance    = $instanceRow === false ? false : $instanceRow->fetch(PDO::FETCH_ASSOC);
+    $instanceId  = (string) ($instance['vlsm_instance_id'] ?? '');
+
+    if ($instanceId !== '') {
+        check('Instance registered', PF_OK, $instanceId);
+
+        // The id and the token are written by the same registration and rotated
+        // together, so an id without a token means a rotation that did not
+        // finish rather than a machine that was never registered.
+        if ($remoteUrl !== '' && (string) ($instance['sts_token'] ?? '') === '') {
+            check(
+                'STS token',
+                PF_WARN,
+                "registered, but no STS token is stored\n"
+                    . '  run: composer token',
+            );
+        }
+    } elseif ($remoteUrl === '') {
+        check('Instance registered', PF_WARN, 'not registered — expected on a standalone instance with no STS');
+    } else {
+        check(
+            'Instance registered',
+            PF_FAIL,
+            "not registered, but an STS is configured — sync cannot identify this instance\n"
+                . '  complete setup in a browser at /setup/index.php',
+        );
+    }
+} catch (PDOException $e) {
+    check('Instance registered', PF_SKIP, $e->getMessage());
+}
+
 pf_render($results, $quiet);
 exit(pf_exit_code($results));
 
