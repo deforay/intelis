@@ -692,6 +692,10 @@ if [ "$changes_needed" = true ]; then
     # first instance's DB steps race the restart and fail with ENOENT.
     if ! wait_for_mysql 30; then
         print error "MySQL did not become reachable after restart. Aborting."
+        # The config this script just wrote is the prime suspect at this point,
+        # so capture the evidence before exiting (the EXIT trap's
+        # ensure_mysql_running will still try to restore the previous cnf).
+        mysql_diagnostics || true
         exit 1
     fi
 
@@ -1768,18 +1772,56 @@ upgrade_instance() {
     # recreated), and a transient blip shouldn't fail a healthy instance. Probe
     # as www-data so we exercise the same credentials/socket the migrations use.
     print info "Checking database connectivity..."
-    local db_ok=0 db_try
+    local db_ok=0 db_try db_probe_out=""
     for db_try in 1 2 3 4 5; do
-        if sudo -u www-data php "${lis_path}/vendor/bin/db-tools" db:test --all >/dev/null 2>&1; then
+        # Probe the default profile (the instance's own database) rather than
+        # --all: --all also walks the optional interfacing profile, and a second
+        # database that is absent or misconfigured is no reason to refuse to
+        # upgrade the main one. It is checked separately, as a warning, below.
+        if db_probe_out=$(sudo -u www-data php "${lis_path}/vendor/bin/db-tools" db:test 2>&1); then
             db_ok=1
             break
         fi
+
+        # Only a server that is genuinely down is worth waiting out. If mysqld is
+        # answering, the probe failed for a reason no amount of backoff will fix
+        # (bad credentials, a fatal while db-tools.php boots the app), and five
+        # rounds of sleeping only delay the message that explains it.
+        if mysqladmin ping --silent >/dev/null 2>&1; then
+            print warning "MySQL is answering, so the failure is not a transient blip; skipping the remaining retries."
+            break
+        fi
+
         print warning "Database not reachable (attempt ${db_try}/5); retrying in $((db_try * 3))s..."
         sleep $((db_try * 3))
     done
+
     if [ "$db_ok" -ne 1 ]; then
-        _apply_failure_no_rollback "database connectivity check failed after 5 attempts"
+        # The probe's own output is the only thing that says WHY. Swallowing it
+        # (as this used to) leaves the operator with "not reachable" and nothing
+        # to act on, which is useless on a machine we cannot log in to.
+        print error "Database connectivity probe failed. Its output was:"
+        printf '%s\n' "$db_probe_out" | tail -n 20
+        if mysqladmin ping --silent >/dev/null 2>&1; then
+            print info "MySQL itself is running, so the server is not the problem. The probe reads"
+            print info "  ${lis_path}/db-tools.php, which boots the application, so wrong credentials in"
+            print info "  configs/config.production.php and any fatal during bootstrap (root-owned"
+            print info "  var/cache is the usual one) surface here as well."
+        else
+            # The server is gone. Say why, rather than leaving the operator to
+            # guess on a machine none of us can log in to.
+            print error "MySQL is not answering. Collecting diagnostics..."
+            mysql_diagnostics || true
+        fi
+        _apply_failure_no_rollback "database connectivity check failed"
         return 1
+    fi
+
+    # Secondary profiles are informational only: the interfacing database is
+    # optional, often lives on another machine, and must never hold up the
+    # upgrade of the instance that is actually being updated.
+    if ! sudo -u www-data php "${lis_path}/vendor/bin/db-tools" db:test --all >/dev/null 2>&1; then
+        print warning "A secondary database profile (interfacing) is unreachable; continuing, since the main database is fine."
     fi
 
     print info "Running database migrations..."

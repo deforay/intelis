@@ -1479,7 +1479,19 @@ chown -R www-data:www-data "${lis_path}/var" 2>/dev/null || true
 # Run as www-data (not root): db-tools bootstraps the app and warms var/cache,
 # so running it as root leaves root-owned cache files that the subsequent
 # www-data `composer post-install` (purge-cache) can't clear.
-sudo -u www-data php "${lis_path}/vendor/bin/db-tools" db:test --all
+# Probe the main profile only. --all also walks the optional interfacing
+# profile, and with the ERR trap armed an absent secondary database would abort
+# the whole setup. On failure, explain it instead of dying on an exit code.
+if ! db_probe_out=$(sudo -u www-data php "${lis_path}/vendor/bin/db-tools" db:test 2>&1); then
+    print error "Database connectivity probe failed. Its output was:"
+    printf '%s\n' "$db_probe_out" | tail -n 20
+    if ! mysql_is_up; then
+        mysql_diagnostics || true
+    fi
+    print error "Fix the database connection and re-run the setup."
+    exit 1
+fi
+printf '%s\n' "$db_probe_out"
 
 print header "Running database migrations and other post-install tasks"
 cd "${lis_path}"
