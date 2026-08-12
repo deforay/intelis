@@ -1486,6 +1486,9 @@ print success "LIS package ready for deployment to ${#lis_paths[@]} instance(s).
 
 # Track which instances were updated for summary
 declare -a updated_instances=()
+# Background permission jobs, one per updated instance, waited on before the
+# post-upgrade check so it reports settled ownership rather than a moving target.
+declare -a permission_pids=()
 declare -a failed_instances=()
 # Per-instance commit-to-commit change, keyed by lis_path (set in upgrade_instance).
 declare -A instance_commit_change=()
@@ -1861,10 +1864,13 @@ upgrade_instance() {
     # Apply succeeded — remove maintenance mode.
     disable_maintenance_mode "${lis_path}"
 
-    # Set final permissions in background
+    # Set final permissions in background. The PID is kept rather than disowned so
+    # the post-upgrade check at the end of the run can wait for it: that check
+    # reports what www-data can write, and a tree still being chowned reports
+    # root-owned directories that fix themselves seconds later.
     (intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
         chown -R www-data:www-data "${lis_path}" 2>/dev/null || true) &
-    disown
+    permission_pids+=("$!")
 
     # --- Report which commit-to-commit jump this update made ---
     local _change_summary=""
@@ -2055,8 +2061,31 @@ log_action "Upgrade complete. Updated: ${#updated_instances[@]}, Failed: ${#fail
 # clean instance costs one line, and `|| true` because a finding here is
 # information about the instance, not a failure of the upgrade — the upgrade is
 # already done and its exit status must keep meaning what it meant.
+#
+# Two things have to settle before this runs, or it reports problems that are
+# already fixing themselves:
+#
+#   MySQL. The config rewrite restarts the server, and on_exit_restore_mysql
+#   brings it back — but that is an EXIT trap, so it fires AFTER everything here.
+#   Left alone, the check catches the server mid-restart and reports "mysql is
+#   deactivating" moments before the trap starts it cleanly. ensure_mysql_running
+#   is a no-op when MySQL is already up, so calling it here costs nothing and the
+#   trap still stands as the last guard.
+#
+#   Ownership. The per-instance permission pass runs in the background, and the
+#   check reports what www-data can write. Waiting first is the difference
+#   between reporting the finished tree and reporting a half-chowned one.
 # ---------------------------------------------------------------------------
 if [ ${#updated_instances[@]} -gt 0 ]; then
+    ensure_mysql_running "/etc/mysql/mysql.conf.d/mysqld.cnf" || true
+
+    if [ ${#permission_pids[@]} -gt 0 ]; then
+        print info "Waiting for the permission pass to finish before checking..."
+        for _pid in "${permission_pids[@]}"; do
+            wait "${_pid}" 2>/dev/null || true
+        done
+    fi
+
     print header "Post-Upgrade Check"
     for p in "${updated_instances[@]}"; do
         if [ ! -f "${p}/bin/preflight.php" ]; then
