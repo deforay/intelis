@@ -795,10 +795,136 @@ ensure_mysql_running() {
     fi
 
     # 3) Give up, but leave breadcrumbs.
-    print error "MySQL is still down after recovery attempts. Recent service log:"
-    journalctl -u "$unit" -n 30 --no-pager 2>/dev/null | sed 's/^/    /' || true
+    print error "MySQL is still down after recovery attempts."
+    mysql_diagnostics || true
     log_action "ensure_mysql_running: FAILED to recover MySQL"
     return 1
+}
+
+# Resolve the MySQL/MariaDB error log, which is where the reason for a refusal
+# to start is actually written (the journal usually only says "failed").
+mysql_error_log_path() {
+    local candidate cnf
+    for cnf in /etc/mysql/mysql.conf.d/mysqld.cnf /etc/mysql/my.cnf /etc/my.cnf /etc/mysql/mariadb.conf.d/50-server.cnf; do
+        if [ -f "$cnf" ]; then
+            candidate="$(awk -F= '/^[[:space:]]*log[-_]error[[:space:]]*=/ {gsub(/[[:space:]]/, "", $2); print $2; exit}' "$cnf" 2>/dev/null || true)"
+            if [ -n "$candidate" ] && [ -f "$candidate" ]; then
+                echo "$candidate"
+                return 0
+            fi
+        fi
+    done
+
+    for candidate in /var/log/mysql/error.log /var/log/mysqld.log /var/log/mariadb/mariadb.log /var/log/mysql/mysql.err; do
+        if [ -f "$candidate" ]; then
+            echo "$candidate"
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+# Explain why MySQL is down or unreachable.
+#
+# "Database not reachable" on its own is useless on a machine we cannot log in
+# to, and these boxes are in labs on the other side of the world. So gather the
+# evidence that actually distinguishes the handful of real causes — the OOM
+# killer, a full disk, a config option mysqld refuses, a crash loop — print a
+# verdict, and leave the full detail in a file the operator can send back.
+#
+# Every probe here is best-effort and individually guarded: this runs on a host
+# that is already in trouble and must never itself abort the caller.
+mysql_diagnostics() {
+    local report="${1:-/var/log/intelis-mysql-diagnostics-$(date +%Y%m%d%H%M%S).log}"
+    local unit err_log verdicts=() line
+    local oom_hits="" disk_line="" avail_kb="" mem_total_kb="" pool_setting="" refusal=""
+
+    command -v mysqladmin >/dev/null 2>&1 || return 0
+    unit="$(mysql_unit_name)"
+
+    {
+        echo "=== InteLIS MySQL diagnostics: $(date +'%F %T') ==="
+        echo "--- host ---"
+        uname -a 2>/dev/null || true
+        echo
+        echo "--- unit: ${unit} ---"
+        systemctl is-active "$unit" 2>/dev/null || true
+        systemctl is-enabled "$unit" 2>/dev/null || true
+        systemctl status "$unit" --no-pager -l 2>/dev/null | head -n 25 || true
+        echo
+        echo "--- journal (last 60 lines) ---"
+        journalctl -u "$unit" -n 60 --no-pager 2>/dev/null || true
+        echo
+        echo "--- kernel: OOM / I/O errors (last 24h) ---"
+        journalctl -k --since "-24 hours" --no-pager 2>/dev/null |
+            grep -iE 'out of memory|oom.?kill|killed process|I/O error|EXT4-fs error' | tail -n 40 || true
+        echo
+        echo "--- memory ---"
+        free -m 2>/dev/null || true
+        echo
+        echo "--- disk (data dir + root) ---"
+        df -h /var/lib/mysql / 2>/dev/null || true
+        df -i /var/lib/mysql / 2>/dev/null || true
+        echo
+        echo "--- innodb sizing in effect ---"
+        grep -rhiE '^[[:space:]]*innodb_(buffer_pool_size|log_file_size|log_buffer_size)' /etc/mysql 2>/dev/null || true
+        echo
+        echo "--- recent config changes ---"
+        ls -1t /etc/mysql/mysql.conf.d/mysqld.cnf.bak.* /etc/mysql/mysql.conf.d/mysqld.cnf.failed.* 2>/dev/null | head -n 5 || true
+    } >"$report" 2>&1 || true
+
+    err_log="$(mysql_error_log_path 2>/dev/null || true)"
+    if [ -n "$err_log" ]; then
+        {
+            echo
+            echo "--- error log: ${err_log} (last 80 lines) ---"
+            tail -n 80 "$err_log" 2>/dev/null || true
+        } >>"$report" 2>&1 || true
+    fi
+
+    # --- work out a verdict from what was collected ---
+
+    oom_hits="$(journalctl -k --since "-24 hours" --no-pager 2>/dev/null |
+        grep -iE 'oom.?kill|out of memory' | grep -ci mysql || true)"
+    if [ -n "$oom_hits" ] && [ "$oom_hits" -gt 0 ] 2>/dev/null; then
+        verdicts+=("The kernel OOM killer has killed mysqld (${oom_hits} event(s) in the last 24h). The server is running out of RAM — check innodb_buffer_pool_size against actual memory, and what else runs on this box.")
+    fi
+
+    avail_kb="$(df -Pk /var/lib/mysql 2>/dev/null | awk 'NR==2 {print $4}' || true)"
+    if [ -n "$avail_kb" ] && [ "$avail_kb" -lt 524288 ] 2>/dev/null; then
+        disk_line="$(df -h /var/lib/mysql 2>/dev/null | awk 'NR==2 {print $4" free of "$2}' || true)"
+        verdicts+=("The MySQL data partition is nearly full (${disk_line}). InnoDB stops and the server shuts down when it cannot extend its files.")
+    fi
+
+    if [ -n "$err_log" ]; then
+        refusal="$(grep -iE "unknown variable|unknown option|can't start server|aborting|permission denied|corrupt|table space|Cannot allocate memory" "$err_log" 2>/dev/null | tail -n 3 || true)"
+        if [ -n "$refusal" ]; then
+            verdicts+=("mysqld reported: ${refusal}")
+        fi
+    fi
+
+    if [ -n "$(ls -1t /etc/mysql/mysql.conf.d/mysqld.cnf.failed.* 2>/dev/null | head -n 1 || true)" ]; then
+        verdicts+=("A previous run already had to roll back the MySQL config (see mysqld.cnf.failed.* in /etc/mysql/mysql.conf.d), so the tuning this script applies is a suspect.")
+    fi
+
+    if [ "${#verdicts[@]}" -eq 0 ]; then
+        # Total RAM vs configured buffer pool is worth stating even with no
+        # smoking gun: it is the setting this script itself writes.
+        mem_total_kb="$(awk '/MemTotal/ {print $2}' /proc/meminfo 2>/dev/null || true)"
+        pool_setting="$(grep -rhiE '^[[:space:]]*innodb_buffer_pool_size' /etc/mysql 2>/dev/null | tail -n 1 || true)"
+        print warning "No single obvious cause found. Total RAM: $(( ${mem_total_kb:-0} / 1024 ))MB; ${pool_setting:-innodb_buffer_pool_size not set in /etc/mysql}"
+    else
+        print error "Likely cause:"
+        for line in "${verdicts[@]}"; do
+            printf '    - %s\n' "$line"
+        done
+    fi
+
+    print info "Full MySQL diagnostics written to: ${report}"
+    print info "  Send that file along when reporting this, it has the service log, the error log, memory and disk."
+    log_action "mysql_diagnostics written to ${report}"
+    return 0
 }
 
 
