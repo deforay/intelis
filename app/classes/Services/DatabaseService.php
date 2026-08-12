@@ -876,6 +876,109 @@ final class DatabaseService extends MysqliDb
         parent::reset();
     }
 
+    /**
+     * MysqliDb assembles a query out of state accumulated on the handle -- where(),
+     * join(), orderBy() and the bind-param list -- and clears it in reset(), which
+     * every terminal method calls only AFTER $stmt->execute() has returned. mysqli
+     * runs in exception mode on PHP 8.1+, so a statement that fails (a broken trigger
+     * on the table, a constraint violation, a dropped connection) unwinds straight
+     * past that call and leaves the state sitting on the handle.
+     *
+     * The next query on the same handle then inherits it. The stale WHERE is appended
+     * and bound a second time while its original values are still at the head of the
+     * bind list, so the query ends up with fewer placeholders than bound variables and
+     * bind_param() rejects it: "The number of variables must match the number of
+     * parameters in the prepared statement" -- reported against a statement that is
+     * itself well formed, in a helper that never touched the table that actually
+     * failed.
+     *
+     * The silent case is worse. When the counts happen to line up, the leaked values
+     * shift the whole SET list along and the write lands with every column holding its
+     * neighbour's value, under a WHERE that is no longer the caller's. That is how an
+     * UPDATE facility_details, failing on a pre-5.5.3 audit trigger left on a table
+     * outside AuditTriggerService::trackedTables(), corrupted the form_vl UPDATE that
+     * followed it in the same request.
+     *
+     * So the state is cleared on the failure path as well. Subquery objects are exempt:
+     * they hold their built query and bind params for the outer query to consume and
+     * never execute anything themselves.
+     */
+    private function resetStateOnFailure(callable $query): mixed
+    {
+        try {
+            return $query();
+        } catch (Throwable $e) {
+            if (!$this->isSubQuery) {
+                // The parent copies these off the statement after execute(), which is
+                // exactly the line we did not reach, so callers inspecting
+                // getLastError()/getLastErrno() in their catch block would otherwise
+                // see the previous statement's result. reset() leaves them alone.
+                if ($e instanceof \mysqli_sql_exception) {
+                    $this->_stmtError = $e->getMessage();
+                    $this->_stmtErrno = (int) $e->getCode();
+                }
+                $this->reset();
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * getOne(), getValue(), has() and paginate() all funnel through get(), so guarding
+     * it here covers them too.
+     */
+    #[Override]
+    public function get($tableName, $numRows = null, $columns = '*')
+    {
+        return $this->resetStateOnFailure(fn() => parent::get($tableName, $numRows, $columns));
+    }
+
+    #[Override]
+    public function insert($tableName, $insertData)
+    {
+        return $this->resetStateOnFailure(fn() => parent::insert($tableName, $insertData));
+    }
+
+    #[Override]
+    public function replace($tableName, $insertData)
+    {
+        return $this->resetStateOnFailure(fn() => parent::replace($tableName, $insertData));
+    }
+
+    #[Override]
+    public function update($tableName, $tableData, $numRows = null)
+    {
+        return $this->resetStateOnFailure(fn() => parent::update($tableName, $tableData, $numRows));
+    }
+
+    #[Override]
+    public function delete($tableName, $numRows = null)
+    {
+        return $this->resetStateOnFailure(fn() => parent::delete($tableName, $numRows));
+    }
+
+    /**
+     * The insert() guard covers the individual rows, but not the transaction the parent
+     * opens around the loop when one is not already running: it rolls that back when a
+     * row returns false and not when a row throws, which leaves the connection inside an
+     * open transaction with autocommit off. Only a transaction this call started is
+     * rolled back here -- an outer one belongs to the caller.
+     */
+    #[Override]
+    public function insertMulti($tableName, array $multiInsertData, ?array $dataKeys = null)
+    {
+        $outerTransaction = $this->_transaction_in_progress;
+
+        try {
+            return $this->resetStateOnFailure(fn() => parent::insertMulti($tableName, $multiInsertData, $dataKeys));
+        } catch (Throwable $e) {
+            if (!$outerTransaction && $this->_transaction_in_progress) {
+                $this->rollback();
+            }
+            throw $e;
+        }
+    }
+
 
     /**
      * Insert multiple rows into a table in a single query with configurable insert options.
