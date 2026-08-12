@@ -16,6 +16,10 @@ use App\Utilities\DateUtility;
  * The lab is always supplied by the caller from a trusted source -- the system
  * config for the importer, the credential for the API -- and never read from the
  * event itself, which carries whatever the tool was configured with.
+ *
+ * The installation is not the same kind of fact. Only the API is told which one it
+ * is talking to; the importer and the relay have to work it out from the event, so
+ * they leave it to InstrumentInstallationResolver rather than passing one in.
  */
 final class InstrumentActivityService
 {
@@ -24,8 +28,10 @@ final class InstrumentActivityService
     /** Forwarded from a LIS to STS, where the event was first stored by one of the above. */
     public const VIA_RELAY = 'relay';
 
-    public function __construct(private readonly DatabaseService $db)
-    {
+    public function __construct(
+        private readonly DatabaseService $db,
+        private readonly InstrumentInstallationResolver $installations
+    ) {
     }
 
     /**
@@ -45,8 +51,24 @@ final class InstrumentActivityService
         $skipped = 0;
         $storedUids = [];
 
-        foreach ($events as $event) {
-            $row = $this->normalize($event, $labId, $receivedVia, $installationId);
+        // An installation named as an empty string is no installation at all: the API
+        // handler reads it off the credential with a string cast, so an absent one
+        // arrives as '' rather than null and would otherwise be stored as given.
+        $installationId = $installationId !== null && trim($installationId) !== ''
+            ? trim($installationId)
+            : null;
+
+        // The API was told which installation it is; nobody else was. Worked out for
+        // the whole batch up front, in one query, rather than per event.
+        $resolved = $installationId === null ? $this->installations->resolve($events, $labId) : [];
+
+        foreach ($events as $key => $event) {
+            $row = $this->normalize(
+                $event,
+                $labId,
+                $receivedVia,
+                $installationId ?? ($resolved[$key] ?? null)
+            );
             if ($row === null) {
                 $skipped++;
                 continue;

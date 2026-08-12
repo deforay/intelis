@@ -99,3 +99,15 @@ ALTER TABLE `r_vl_art_regimen` ADD COLUMN `art_source` varchar(45) DEFAULT NULL 
 -- paths cannot drift. That is PHP's job, not this file's.
 
 UPDATE `system_config` SET `value` = '5.6.4' WHERE `system_config`.`name` = 'sc_version';
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
