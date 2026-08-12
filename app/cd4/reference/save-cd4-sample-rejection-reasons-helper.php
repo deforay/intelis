@@ -38,4 +38,5 @@ try {
 	header("Location:/cd4/reference/cd4-sample-rejection-reasons.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
+	throw $exc;
 }

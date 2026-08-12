@@ -272,4 +272,5 @@ try {
     header("Location:/import-result/imported-results.php?t=$type");
 } catch (Exception $exc) {
     LoggerUtility::logError($exc->getMessage());
+    throw $exc;
 }

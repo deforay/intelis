@@ -39,4 +39,5 @@ try {
 	header("Location:cd4-sample-type.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
+	throw $exc;
 }

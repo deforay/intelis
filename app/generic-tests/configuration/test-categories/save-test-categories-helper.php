@@ -39,4 +39,5 @@ try {
     header("location:generic-test-categories.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
+    throw $exc;
 }

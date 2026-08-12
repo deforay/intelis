@@ -149,4 +149,5 @@ try {
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError()
     ]);
+    throw $e;
 }

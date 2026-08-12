@@ -46,4 +46,5 @@ try {
         header("Location:roles.php");
 } catch (Exception $exc) {
         LoggerUtility::logError($exc->getMessage());
+        throw $exc;
 }

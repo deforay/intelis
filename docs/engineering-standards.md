@@ -65,6 +65,14 @@ against them without running a review.
 - **User-visible strings are translatable** and escaped with the helper matching their output
   context.
 - **Exports use OpenSpout.**
+- **A caught error still has to reach someone.** `LegacyRequestHandler` discards the page
+  buffer on a throw and hands off to `ErrorResponseGenerator`, which renders the styled page
+  for a browser, JSON for an AJAX caller, and logs both with an error ID the user can quote.
+  A terminal `try/catch` that only logs bypasses all of that and returns a blank 200: the
+  page looks like it worked. Log and rethrow, or handle it visibly (flash message plus
+  redirect). Swallowing is only correct where the failure is genuinely optional, and that
+  belongs in service code, not at the bottom of a page. Log `$e->getFile()`/`$e->getLine()`,
+  never `__FILE__`/`__LINE__` — the latter records the catch, not the failure.
 
 ## 4. Before you push
 

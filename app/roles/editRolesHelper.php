@@ -69,4 +69,5 @@ try {
         error_log($exc->getMessage());
 
         $db->rollbackTransaction();
+        throw $exc;
 }

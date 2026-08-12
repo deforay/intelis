@@ -186,4 +186,5 @@ try {
      echo JsonUtility::encodeUtf8Json($output);
 } catch (Throwable $exc) {
      LoggerUtility::logError($exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+     throw $exc;
 }

@@ -352,4 +352,5 @@ try {
     echo "importedStatistics.php";
 } catch (Exception $exc) {
     error_log($exc->getMessage());
+    throw $exc;
 }

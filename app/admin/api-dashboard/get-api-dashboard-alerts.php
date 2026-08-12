@@ -261,4 +261,5 @@ try {
         <strong>' . _translate('Error') . '</strong><br>
         ' . _translate('Failed to load alerts') . $e->getMessage() . '
     </div>');
+    throw $e;
 }

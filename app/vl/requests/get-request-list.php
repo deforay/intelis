@@ -490,4 +490,5 @@ try {
           'last_db_error' => $db->getLastError(),
           'stacktrace' => $e->getTraceAsString()
      ]);
+     throw $e;
 }

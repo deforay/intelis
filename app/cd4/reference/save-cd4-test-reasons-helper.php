@@ -35,4 +35,5 @@ try {
 	header("Location:cd4-test-reasons.php");
 } catch (Exception $exc) {
 	error_log($exc->getMessage());
+	throw $exc;
 }

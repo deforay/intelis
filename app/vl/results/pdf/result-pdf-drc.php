@@ -430,4 +430,5 @@ try {
 		'line' => $e->getLine(),
 		'stacktrace' => $e->getTraceAsString()
 	]);
+	throw $e;
 }

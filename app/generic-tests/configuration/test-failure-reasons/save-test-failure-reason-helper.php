@@ -39,4 +39,5 @@ try {
     header("location:generic-test-failure-reason.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
+    throw $exc;
 }

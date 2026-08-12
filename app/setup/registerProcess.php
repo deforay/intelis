@@ -209,7 +209,8 @@ try {
 } catch (Throwable $exc) {
     LoggerUtility::logError($exc->getFile() . ':' . $exc->getLine() . ':' . $exc->getMessage(), [
         'exception' => $exc->getMessage(),
-        'line' => __LINE__,
-        'file' => __FILE__
+        'line' => $exc->getLine(),
+        'file' => $exc->getFile()
     ]);
+    throw $exc;
 }

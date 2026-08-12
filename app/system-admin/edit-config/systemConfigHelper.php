@@ -90,4 +90,5 @@ try {
     header("Location:index.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
+    throw $exc;
 }

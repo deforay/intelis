@@ -179,4 +179,5 @@ try {
 		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
+	throw $e;
 }
