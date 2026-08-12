@@ -1783,6 +1783,19 @@ configure_php_ini() {
             [ "$opcache_override_set" = true ] || echo "$desired_opcache_override" >>"$temp_file"
             [ "$pcre_jit_set" = true ] || echo "$desired_pcre_jit" >>"$temp_file"
 
+            # mktemp creates its file 0600 root:root, and mv carries those bits
+            # onto the destination — so a plain mv here quietly turns a 0644
+            # php.ini into a root-only one. Nothing appears to break: Apache
+            # opens its ini as root at startup and keeps serving. What breaks is
+            # every other PHP on the box. `php -i` as www-data then reports
+            # "Loaded Configuration File => (none)", so the cron jobs, bin/
+            # scripts and composer migrations that run as www-data execute on
+            # PHP's built-in defaults instead of these settings — and preflight,
+            # which reads the Apache ini off disk as www-data, falls through to
+            # whichever older version's ini is still readable and reports the
+            # wrong PHP version for the whole instance.
+            chmod --reference="$ini_file" "$temp_file" 2>/dev/null || chmod 0644 "$temp_file"
+            chown --reference="$ini_file" "$temp_file" 2>/dev/null || true
             mv "$temp_file" "$ini_file"
             print success "Updated PHP settings in $ini_file"
 
@@ -1799,6 +1812,17 @@ configure_php_ini() {
     # Apply changes to PHP configuration files
     for phpini in /etc/php/${php_version}/apache2/php.ini /etc/php/${php_version}/cli/php.ini; do
         if [ -f "$phpini" ]; then
+            # Repair a box the old mv already narrowed to 0600. The rewrite below
+            # is skipped entirely once every setting is correct, so without this
+            # the permissions are never revisited and an instance stays in that
+            # state through every future upgrade.
+            case "$(stat -c %a "$phpini" 2>/dev/null || echo '')" in
+            *[4567][4567]) : ;;
+            *)
+                chmod 0644 "$phpini" && print info "Restored read permissions on $phpini"
+                ;;
+            esac
+
             _update_php_ini_file "$phpini"
         else
             print warning "PHP configuration file not found: $phpini"
