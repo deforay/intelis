@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use App\Services\CD4Service;
+use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -22,6 +23,9 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var Cd4Service $cd4Service */
 $cd4Service = ContainerRegistry::get(CD4Service::class);
+
+/** @var VlService $vlService */
+$vlService = ContainerRegistry::get(VlService::class);
 
 /** @var PatientsService $patientsService */
 $patientsService = ContainerRegistry::get(PatientsService::class);
@@ -74,21 +78,16 @@ try {
     }
 
 
+    // The "other" box. CD4 shares r_vl_art_regimen with VL, so this resolves through the
+    // same path as the VL helpers and the API rather than registering regimens its own way.
+    //
+    // The lookup this replaces passed no bind parameters to a query holding a `?`, so it
+    // matched nothing and the branch below it inserted a fresh row on every save --
+    // re-typing an existing regimen added a duplicate to the dropdown rather than reusing
+    // it, in a table VL reads too. resolveArtRegimen() matches art_code, then the alias
+    // table, and inserts only when both miss.
     if (isset($_POST['newArtRegimen']) && trim((string) $_POST['newArtRegimen']) !== "") {
-        $artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen
-                        WHERE art_code like ?";
-        $artResult = $db->rawQueryOne($artQuery);
-        if (empty($artResult)) {
-            $data = [
-                'art_code' => $_POST['newArtRegimen'],
-                'parent_art' => 0,
-                'updated_datetime' => DateUtility::getCurrentDateTime(),
-            ];
-            $result = $db->insert('r_vl_art_regimen', $data);
-            $_POST['artRegimen'] = $_POST['newArtRegimen'];
-        } else {
-            $_POST['artRegimen'] = $artResult['art_code'];
-        }
+        $_POST['artRegimen'] = $vlService->resolveArtRegimen($_POST['newArtRegimen'], 'form');
     }
 
     try {

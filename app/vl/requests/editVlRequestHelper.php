@@ -85,21 +85,16 @@ try {
           }
      }
 
+     // The "other" box. Resolved through the same path as an API-supplied regimen, so a
+     // value typed here and one posted by an EMR cannot end up registered differently.
+     //
+     // The lookup this replaces passed no bind parameters to a query holding a `?`, so it
+     // matched nothing and the branch below it inserted a fresh row on every save --
+     // re-typing an existing regimen added a duplicate to the dropdown rather than reusing
+     // it. resolveArtRegimen() matches art_code, then the alias table, and inserts only
+     // when both miss.
      if (isset($_POST['newArtRegimen']) && trim((string) $_POST['newArtRegimen']) !== "") {
-          $artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen
-                         WHERE art_code like ?";
-          $artResult = $db->rawQueryOne($artQuery);
-          if (empty($artResult)) {
-               $data = [
-                    'art_code' => $_POST['newArtRegimen'],
-                    'parent_art' => 0,
-                    'updated_datetime' => DateUtility::getCurrentDateTime(),
-               ];
-               $result = $db->insert('r_vl_art_regimen', $data);
-               $_POST['artRegimen'] = $_POST['newArtRegimen'];
-          } else {
-               $_POST['artRegimen'] = $artResult['art_code'];
-          }
+          $_POST['artRegimen'] = $vlService->resolveArtRegimen($_POST['newArtRegimen'], 'form');
      }
 
 

@@ -232,6 +232,105 @@ final class VlService extends AbstractTestService
             : null;
     }
 
+    /**
+     * Resolve an incoming ART regimen string to a value the request form can render.
+     *
+     * form_vl.current_regimen stores an art_code, and the request form preselects an
+     * <option> only on an exact match against r_vl_art_regimen. A caller that does not
+     * share that vocabulary — an EMR posting over the API with its own catalogue labels —
+     * therefore produces a row whose regimen is stored and printed correctly but shows as
+     * an empty dropdown, and which the next save of the request form overwrites with the
+     * blank select.
+     *
+     * What the caller sent is what gets stored. The method only guarantees the string is
+     * registered in r_vl_art_regimen, so the form has an <option> to select:
+     *
+     *   1. Return the stored spelling when the code is already known.
+     *   2. Otherwise register it (art_source = '<source>-auto') and return it unchanged.
+     *
+     * r_vl_art_regimen_alias is deliberately NOT consulted here. Mapping an external code
+     * onto a canonical regimen is a reporting concern, applied when regimens are grouped
+     * for a query, never when one is written. Resolving it on write would mean the same
+     * incoming value was stored one way before an administrator created the mapping and
+     * another way after, so what a row means would depend on when it was saved — the same
+     * hazard that keeps an Edit button off the ART Regimen reference page, where changing
+     * an art_code would silently reinterpret every historical row holding that string.
+     *
+     * For the same reason a mapped code must stay active. The request and result forms
+     * populate the dropdown from art_status = 'active', so deactivating a code that
+     * history still references puts those samples back to a blank dropdown.
+     *
+     * No fuzzy matching: r_vl_art_regimen holds drug-identical regimens under different
+     * line codes (2b, 4c and 5c are all AZT+3TC+LPV/r), so a normalised comparison returns
+     * several candidates with no way to choose. Registering and letting an administrator
+     * map it once, for reporting, is the only outcome that cannot be quietly wrong.
+     *
+     * Fails open throughout. A regimen is reference data hanging off a test request, never
+     * a reason to fail one, so any error here returns the caller's string unchanged rather
+     * than propagating — the value still reaches current_regimen and still reaches the PDF
+     * and the exports, exactly as it did before this method existed.
+     */
+    public function resolveArtRegimen(?string $regimen, string $source = 'api'): ?string
+    {
+        $regimen = trim((string) $regimen);
+        if ($regimen === '') {
+            return null;
+        }
+
+        // Longer than the column can hold. Registering it would store a value that never
+        // matches on the way back out, so leave it to the caller untouched.
+        if (mb_strlen($regimen) > 255) {
+            return $regimen;
+        }
+
+        try {
+            // 1. Already a known regimen. Return the stored spelling rather than the
+            // caller's, so that a difference the collation ignores (case, accents) does
+            // not reach current_regimen and defeat the form's exact comparison.
+            //
+            // Inactive codes count as known. Deactivating one is how the reference page
+            // retires a regimen from the dropdown without disturbing the rows that hold
+            // it, so treating it as unknown would register a duplicate on the next
+            // request carrying it and undo that. Active rows are preferred where both
+            // exist, which is possible for codes registered before this release.
+            $row = $this->db->rawQueryOne(
+                "SELECT art_code FROM r_vl_art_regimen
+                 WHERE art_code = ?
+                 ORDER BY (art_status = 'active') DESC, art_id
+                 LIMIT 1",
+                [$regimen]
+            );
+            if (!empty($row['art_code'])) {
+                return $row['art_code'];
+            }
+
+            // 2. Unrecognised. Register it so the form has something to select. This runs
+            // even where an alias already maps the string, because an alias is a reporting
+            // instruction and does not put an <option> in the dropdown -- the value still
+            // has to exist in r_vl_art_regimen to render on the request that carries it.
+            $this->db->insert('r_vl_art_regimen', [
+                'art_code' => $regimen,
+                'parent_art' => 0,
+                'art_status' => 'active',
+                'art_source' => $source . '-auto',
+                'updated_datetime' => DateUtility::getCurrentDateTime(),
+            ]);
+
+            LoggerUtility::log('info', "Registered unrecognised ART regimen from $source", [
+                'regimen' => $regimen,
+                'source' => $source,
+            ]);
+        } catch (Throwable $e) {
+            LoggerUtility::logError("Unable to resolve ART regimen: " . $e->getMessage(), [
+                'regimen' => $regimen,
+                'source' => $source,
+                'exception' => $e,
+            ]);
+        }
+
+        return $regimen;
+    }
+
     public function getVLResultCategory($resultStatus, $finalResult): ?string
     {
         return MemoUtility::remember(function () use ($resultStatus, $finalResult): ?string {

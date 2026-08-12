@@ -40,12 +40,14 @@ require_once APPLICATION_PATH . '/header.php';
 								<tr>
 									<th scope="row"><?php echo _translate("ART Code"); ?></th>
 									<th scope="row"><?php echo _translate("Category"); ?></th>
+									<th scope="row"><?php echo _translate("Source"); ?></th>
+									<th scope="row"><?php echo _translate("Maps To (reporting)"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="3" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
+									<td colspan="5" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 
@@ -82,9 +84,18 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
+				{
+					// Assembled from r_vl_art_regimen_alias rather than a column of this
+					// table, so there is nothing for the server to sort on.
+					"sClass": "center",
+					"bSortable": false
+				},
+				{
+					"sClass": "center"
+				},
 			],
 			"order": [
-				[2, "desc"],
+				[4, "desc"],
 				[0, "asc"]
 			],
 			"bProcessing": true,
@@ -102,6 +113,46 @@ require_once APPLICATION_PATH . '/header.php';
 		});
 		$.unblockUI();
 	});
+
+	// Records that two codes name the same regimen, for reporting only.
+	//
+	// Nothing stored changes: no art_code is edited and no sample is rewritten, which is
+	// why this page has no Edit button in the first place — current_regimen holds the code
+	// text, so altering a code would reinterpret every historical row that carries it.
+	//
+	// Mapping a code is NOT a reason to then deactivate it. The request and result forms
+	// build their dropdown from active codes only, so retiring one that samples still hold
+	// leaves those samples showing an empty dropdown.
+	function updateAlias(obj) {
+		var artId = obj.id.replace('alias_', '');
+		var artCode = $(obj).data('art-code');
+		var targetLabel = obj.options[obj.selectedIndex].text;
+		var msg = (obj.value === '') ?
+			"<?php echo _translate("Remove the reporting mapping for"); ?> \"" + artCode + "\"?" :
+			"<?php echo _translate("Group"); ?> \"" + artCode + "\" <?php echo _translate("with"); ?> \"" + targetLabel + "\" <?php echo _translate("when reporting"); ?>?";
+
+		if (!confirm(msg)) {
+			oTable.fnDraw();
+			return;
+		}
+
+		$.post("/vl/reference/update-vl-art-code-alias.php", {
+				id: artId,
+				mapsTo: obj.value
+			},
+			function(data) {
+				if (data !== "") {
+					oTable.fnDraw();
+					alert("<?php echo _translate("Updated successfully"); ?>.");
+				} else {
+					alert("<?php echo _translate("Unable to update the mapping. Please try again."); ?>");
+					oTable.fnDraw();
+				}
+			}).fail(function() {
+			alert("<?php echo _translate("Unable to update the mapping. Please try again."); ?>");
+			oTable.fnDraw();
+		});
+	}
 
 	function updateStatus(obj, optVal) {
 		if (obj.value != '') {
