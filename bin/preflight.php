@@ -566,9 +566,12 @@ try {
     $stmt->execute([$name]);
     $formTables = $stmt->fetchAll(PDO::FETCH_COLUMN) ?: [];
 
-    $stmt = $pdo->prepare('SELECT TRIGGER_NAME FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA = ?');
+    $stmt = $pdo->prepare(
+        'SELECT TRIGGER_NAME, EVENT_OBJECT_TABLE FROM information_schema.TRIGGERS WHERE TRIGGER_SCHEMA = ?',
+    );
     $stmt->execute([$name]);
-    $triggers = array_flip($stmt->fetchAll(PDO::FETCH_COLUMN) ?: []);
+    $triggerRows = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    $triggers    = array_flip(array_column($triggerRows, 'TRIGGER_NAME'));
 
     if ($formTables === []) {
         check('Audit triggers', PF_SKIP, 'no form tables yet');
@@ -589,6 +592,19 @@ try {
 
         // Pre-5.5.3 triggers wrote to the columnar audit_form_* tables. Left in
         // place alongside the v2 triggers they double-write every change.
+        //
+        // The tables are named, not just counted. These survive precisely because
+        // they sit on a table the reinstall does not visit, so "2 still installed"
+        // sends someone to re-run a command that has already run and will not help,
+        // while the table name is the whole diagnosis.
+        $legacyTables = [];
+
+        foreach ($triggerRows as $row) {
+            if (str_contains((string) $row['TRIGGER_NAME'], '_data__')) {
+                $legacyTables[(string) $row['EVENT_OBJECT_TABLE']] = true;
+            }
+        }
+
         $legacy = count(array_filter(
             array_keys($triggers),
             static fn(string $trigger): bool => str_contains($trigger, '_data__'),
@@ -598,7 +614,8 @@ try {
             check(
                 'Legacy audit triggers',
                 PF_WARN,
-                "{$legacy} pre-5.5.3 trigger(s) still installed\n"
+                "{$legacy} pre-5.5.3 trigger(s) still installed on: "
+                    . implode(', ', array_keys($legacyTables)) . "\n"
                     . '  run: composer audit-triggers-install',
             );
         }
