@@ -21,6 +21,10 @@ use App\Utilities\DateUtility;
  * The lab is always supplied by the caller from a trusted source -- the system
  * config for the importer, the credential for the API -- and never read from the
  * summary itself.
+ *
+ * The installation is not the same kind of fact. Only the API is told which one it
+ * is talking to; the importer and the relay have to work it out from the summary, so
+ * they leave it to InstrumentInstallationResolver rather than passing one in.
  */
 final class InstrumentUsageStatisticsService
 {
@@ -35,8 +39,10 @@ final class InstrumentUsageStatisticsService
     /** The ceiling of the INT UNSIGNED column the revision is stored in. */
     private const MAX_REVISION = 4294967295;
 
-    public function __construct(private readonly DatabaseService $db)
-    {
+    public function __construct(
+        private readonly DatabaseService $db,
+        private readonly InstrumentInstallationResolver $installations
+    ) {
     }
 
     /**
@@ -57,8 +63,24 @@ final class InstrumentUsageStatisticsService
         $counts = ['stored' => 0, 'updated' => 0, 'duplicates' => 0, 'stale' => 0, 'rejected' => 0];
         $outcomes = [];
 
-        foreach ($summaries as $summary) {
-            $row = $this->normalize($summary, $labId, $receivedVia, $installationId);
+        // An installation named as an empty string is no installation at all: the API
+        // handler reads it off the credential with a string cast, so an absent one
+        // arrives as '' rather than null and would otherwise be stored as given.
+        $installationId = $installationId !== null && trim($installationId) !== ''
+            ? trim($installationId)
+            : null;
+
+        // The API was told which installation it is; nobody else was. Worked out for
+        // the whole batch up front, in one query, rather than per summary.
+        $resolved = $installationId === null ? $this->installations->resolve($summaries, $labId) : [];
+
+        foreach ($summaries as $key => $summary) {
+            $row = $this->normalize(
+                $summary,
+                $labId,
+                $receivedVia,
+                $installationId ?? ($resolved[$key] ?? null)
+            );
             if ($row === null) {
                 $counts['rejected']++;
                 $outcomes[] = [
@@ -126,9 +148,16 @@ final class InstrumentUsageStatisticsService
         // Guarded by the revision as well as the id: if a newer summary landed between
         // the read above and this write, this update does nothing rather than going
         // backwards.
+        //
+        // The installation is coalesced rather than assigned. Every other column here is
+        // a fact about the revision being written and belongs to whichever summary is
+        // newest, but the installation is a fact about where the day came from, and a
+        // path that cannot name it must not erase a path that could. Without this, one
+        // revision arriving unattributed blanks an attribution already held.
         $this->db->connection('default')->rawQuery(
             'UPDATE instrument_usage_statistics_daily
-                SET installation_id = ?, received_via = ?, instrument_id = ?, machine_type = ?,
+                SET installation_id = COALESCE(?, installation_id),
+                    received_via = ?, instrument_id = ?, machine_type = ?,
                     test_type = ?, total_tests = ?, successful_tests = ?, failed_tests = ?,
                     first_test_at = ?, last_test_at = ?, revision = ?, updated_at = ?
               WHERE usage_statistic_id = ? AND revision < ?',
