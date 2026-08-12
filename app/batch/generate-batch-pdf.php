@@ -8,6 +8,7 @@ use App\Utilities\MiscUtility;
 use App\Helpers\BatchPdfHelper;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -34,6 +35,11 @@ if (empty($_GET['type'])) {
 }
 
 $id = MiscUtility::desqid((string) $_GET['id']);
+// desqid() hands back an empty array when the id in the URL cannot be decoded. Say so
+// instead of falling through every branch below and returning a blank page.
+if (empty($id) || !is_numeric($id)) {
+    throw new SystemException(_translate('Invalid Batch'), 500);
+}
 
 $testTableData = TestsService::getAllData($_GET['type']);
 
@@ -183,8 +189,21 @@ if (!empty($id)) {
                     </tr>
                 </table><hr>';
         }
+        // A batch whose label_order is unreadable (truncated or not JSON at all) used to
+        // hand null to count() and kill the whole worksheet with a TypeError. Fall back
+        // to listing the batch's samples in insertion order instead.
+        $jsonToArray = null;
         if (isset($bResult['label_order']) && trim((string) $bResult['label_order']) !== '') {
             $jsonToArray = json_decode((string) $bResult['label_order'], true);
+            if (!is_array($jsonToArray) || $jsonToArray === []) {
+                LoggerUtility::logError('Batch worksheet: unreadable label_order, listing samples in insertion order', [
+                    'batch_id' => $id,
+                    'type' => $_GET['type'],
+                ]);
+                $jsonToArray = null;
+            }
+        }
+        if ($jsonToArray !== null) {
             $sampleCounter = 1;
             if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
                 foreach ($batchService->excelColumnRange('A', 'H') as $value) {
@@ -448,7 +467,9 @@ if (!empty($id)) {
                                 ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
                             END AS lot_expiration_date,
                             $resultColumn,
-                            $patientIdColumn
+                            $patientIdColumn,
+                            $patientFirstName,
+                            $patientLastName
                             FROM $table
                             WHERE sample_batch_id=$id";
             if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
@@ -482,9 +503,10 @@ if (!empty($id)) {
                 }
                 $lotDetails = $sample['lot_number'] . $lotExpirationDate;
 
-                $patientIdentifier = $sample[$patientIdColumn];
+                $patientIdentifier = (string) $sample[$patientIdColumn];
                 if ($showPatientName) {
-                    $patientIdentifier = trim($patientIdentifier . " " . $patientFirstName . " " . $patientLastName);
+                    // These are column names, not values -- read the row, do not print the header.
+                    $patientIdentifier = trim($patientIdentifier . " " . ($sample[$patientFirstName] ?? '') . " " . ($sample[$patientLastName] ?? ''));
                 }
 
                 $tbl .= '<table nobr="true" cellspacing="0" cellpadding="2" style="width:100%;border-bottom:1px solid black;">';
@@ -509,8 +531,8 @@ if (!empty($id)) {
                 $tbl .= '</tr>';
                 $tbl .= '</table>';
                 if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
-                    $sampleCounter = $alphaNumeric[($j + 1)];
-                    $J++;
+                    $j++;
+                    $sampleCounter = $alphaNumeric[$j] ?? $sampleCounter;
                 } else {
                     $sampleCounter++;
                 }
@@ -519,9 +541,11 @@ if (!empty($id)) {
 
         $pdf->writeHTML($tbl);
         $filename = "BATCH-" . trim((string) $bResult['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . MiscUtility::generateRandomString(5) . '.pdf';
-        $batchesPath = MiscUtility::buildSafePath(TEMP_PATH, ["batches"]);
         $filename = MiscUtility::cleanFileName($filename);
-        $pdf->Output($batchesPath . DIRECTORY_SEPARATOR . $filename);
+        // The PDF streams to the browser, so an unwritable temp directory only costs us
+        // the suggested download name -- it must not stop the worksheet from printing.
+        $batchesPath = MiscUtility::buildSafePath(TEMP_PATH, ["batches"]);
+        $pdf->Output($batchesPath === false ? $filename : $batchesPath . DIRECTORY_SEPARATOR . $filename);
         if ($bResult['printed_datetime'] == '') {
             $printedDatetime = DateUtility::getCurrentDateTime();
             $update = "UPDATE batch_details SET printed_datetime = ? WHERE batch_id = ?";
@@ -529,4 +553,6 @@ if (!empty($id)) {
         }
         exit;
     }
+
+    throw new SystemException(_translate('Invalid Batch'), 500);
 }

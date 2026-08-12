@@ -36,6 +36,11 @@ try {
     }
 
     $id = MiscUtility::desqid((string) $_GET['id']);
+    // desqid() hands back an empty array when the id in the URL cannot be decoded. Say so
+    // instead of falling through every branch below and returning a blank page.
+    if (empty($id) || !is_numeric($id)) {
+        throw new SystemException(_translate('Invalid Batch'), 500);
+    }
 
     $testTableData = TestsService::getAllData($_GET['type']);
 
@@ -91,7 +96,8 @@ try {
                     WHERE sample_batch_id= ?
                     GROUP BY covid19.covid19_id";
         } else {
-            $dateQuery = "SELECT sample_tested_datetime, lab_assigned_code
+            $dateQuery = "SELECT sample_tested_datetime,
+                        lab_assigned_code,
                         result_reviewed_datetime
                         FROM $table
                         WHERE sample_batch_id= ?";
@@ -176,8 +182,21 @@ try {
             <hr>';
             }
 
+            // A batch whose label_order is unreadable (truncated or not JSON at all) used
+            // to hand null to count() and kill the whole worksheet with a TypeError. Fall
+            // back to listing the batch's samples in insertion order instead.
+            $jsonToArray = null;
             if (isset($bResult['label_order']) && trim((string) $bResult['label_order']) !== '') {
                 $jsonToArray = json_decode((string) $bResult['label_order'], true);
+                if (!is_array($jsonToArray) || $jsonToArray === []) {
+                    LoggerUtility::logError('Compact batch worksheet: unreadable label_order, listing samples in insertion order', [
+                        'batch_id' => $id,
+                        'type' => $_GET['type'],
+                    ]);
+                    $jsonToArray = null;
+                }
+            }
+            if ($jsonToArray !== null) {
                 $sampleCounter = 1;
                 $tbl .= '<table border="1" style="width:100%;border-bottom:1px solid black;"><tr nobr="true" style="width:100%;">';
                 if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
@@ -437,7 +456,9 @@ try {
                                 ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
                             END AS lot_expiration_date,
                             $resultColumn,
-                            $patientIdColumn
+                            $patientIdColumn,
+                            $patientFirstName,
+                            $patientLastName
                             FROM $table
                             WHERE sample_batch_id=$id  AND $resultColumn IS NULL";
                 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
@@ -472,15 +493,18 @@ try {
                     }
                     $lotDetails = $sample['lot_number'] . $lotExpirationDate;
 
-                    $patientIdentifier = $sample[$patientIdColumn];
+                    $patientIdentifier = (string) $sample[$patientIdColumn];
                     if ($showPatientName) {
-                        $patientIdentifier = trim($patientIdentifier . " " . $patientFirstName . " " . $patientLastName);
+                        // These are column names, not values -- read the row, do not print the header.
+                        $patientIdentifier = trim($patientIdentifier . " " . ($sample[$patientFirstName] ?? '') . " " . ($sample[$patientLastName] ?? ''));
                     }
 
                     $tbl .= '<td align="center">';
                     $tbl .= 'Sample ID : ' . $sample['sample_code'] . '<br>';
-                    if (isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])) {
-                        $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
+                    // $sampleResult belongs to the positioned-batch branch above; this loop
+                    // has its own row, so the code printed here was the previous sample's.
+                    if (!empty($sample['lab_assigned_code'])) {
+                        $tbl .= '(' . $sample['lab_assigned_code'] . ')<br>';
                     }
                     if ($barcodeFormat == 'QRCODE') {
                         $tbl .= BatchPdfHelper::buildBarcodeImageTag($general, $sample['sample_code'], $barcodeFormat) . '<br>';
@@ -518,9 +542,11 @@ try {
 
 
             $filename = "BATCH-" . trim((string) $bResult['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . MiscUtility::generateRandomString(5) . '.pdf';
-            $batchesPath = MiscUtility::buildSafePath(TEMP_PATH, ["batches"]);
             $filename = MiscUtility::cleanFileName($filename);
-            $pdf->Output($batchesPath . DIRECTORY_SEPARATOR . $filename);
+            // The PDF streams to the browser, so an unwritable temp directory only costs us
+            // the suggested download name -- it must not stop the worksheet from printing.
+            $batchesPath = MiscUtility::buildSafePath(TEMP_PATH, ["batches"]);
+            $pdf->Output($batchesPath === false ? $filename : $batchesPath . DIRECTORY_SEPARATOR . $filename);
             if ($bResult['printed_datetime'] == '') {
                 $printedDatetime = DateUtility::getCurrentDateTime();
                 $update = "UPDATE batch_details SET printed_datetime = ? WHERE batch_id = ?";
@@ -534,4 +560,8 @@ try {
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),
     ]);
+    // Swallowing this left the user staring at a blank tab with no way to tell a broken
+    // worksheet from a slow one. Hand it to the error handler so they get a page and an
+    // error ID to quote.
+    throw $e;
 }
