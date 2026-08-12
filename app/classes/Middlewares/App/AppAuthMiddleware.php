@@ -32,8 +32,12 @@ class AppAuthMiddleware implements MiddlewareInterface
         '/tasks/remote/*',
     ];
 
-    // Inactivity window (seconds).
-    private int $maxIdle = 1800; // 30 minutes
+    // Inactivity window (seconds). Sliding: every authenticated request extends
+    // it. Overridable per instance via $systemConfig['security']['session_idle_timeout']
+    // and capped at session.gc_maxlifetime, since PHP's session GC deletes the
+    // session file at that age no matter what this timer says.
+    private const DEFAULT_MAX_IDLE = 14400; // 4 hours
+    private const MIN_MAX_IDLE = 300;       // 5 minutes
 
     // Session ID regeneration interval (seconds) - prevents session fixation.
     private int $regenInterval = 1800; // 30 minutes
@@ -83,7 +87,7 @@ class AppAuthMiddleware implements MiddlewareInterface
 
         $now = time();
         $last = $_SESSION['last_activity'] ?? $now;
-        if (($now - $last) > $this->maxIdle) {
+        if (($now - $last) > $this->maxIdle()) {
             $this->expireSession();
             return $isAjax
                 ? $this->jsonExpired()
@@ -111,6 +115,28 @@ class AppAuthMiddleware implements MiddlewareInterface
         }
 
         return $response;
+    }
+
+    /**
+     * Idle window in seconds. Config wins, but never below MIN_MAX_IDLE and never
+     * above session.gc_maxlifetime - past that point PHP (or Debian's
+     * phpsessionclean timer) removes the session file anyway, so a larger number
+     * here would only promise a timeout the storage layer will not honour.
+     */
+    private function maxIdle(): int
+    {
+        $configured = (defined('SYSTEM_CONFIG') && isset(SYSTEM_CONFIG['security']['session_idle_timeout']))
+            ? (int) SYSTEM_CONFIG['security']['session_idle_timeout']
+            : self::DEFAULT_MAX_IDLE;
+
+        $maxIdle = max(self::MIN_MAX_IDLE, $configured);
+
+        $gcMaxLifetime = (int) ini_get('session.gc_maxlifetime');
+        if ($gcMaxLifetime > 0) {
+            $maxIdle = min($maxIdle, $gcMaxLifetime);
+        }
+
+        return $maxIdle;
     }
 
     private function safeRequestedUri(ServerRequestInterface $req, string $path): string
