@@ -42,7 +42,9 @@ class ManifestPdfHelper extends TCPDF
         $this->SetFont('helvetica', '', 10);
         $this->writeHTMLCell(0, 0, 0, 20, $this->labname, 0, 0, 0, true, 'C');
 
-        if (trim((string) $this->logo) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+        // file_exists() is not enough: a half-downloaded or zero-byte logo passes it and
+        // then TCPDF aborts the whole PDF on Image(). Validate it like the left-hand copy.
+        if (trim((string) $this->logo) != "" && MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
             $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
             $this->Image($imageFilePath, 262, 10, 15, '', '', '', 'T');
         }
