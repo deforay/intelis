@@ -36,4 +36,5 @@ try {
     }
 } catch (Throwable $exception) {
     error_log("Error while generating Sample ID : " . $exception->getMessage());
+    throw $exception;
 }

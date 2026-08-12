@@ -72,4 +72,5 @@ try {
     header("Location:covid-19-qc-data.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
+    throw $exc;
 }

@@ -179,4 +179,5 @@ try {
     header("Location:/covid-19/requests/covid-19-requests.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
+    throw $exc;
 }

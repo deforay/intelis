@@ -32,4 +32,5 @@ try {
     header("Location:covid19-qc-test-kits.php");
 } catch (Exception $exc) {
     error_log($exc->getMessage());
+    throw $exc;
 }

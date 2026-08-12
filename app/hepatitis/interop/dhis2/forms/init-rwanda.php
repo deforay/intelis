@@ -127,4 +127,5 @@ try {
         'line' => $e->getLine(),
         'file' => $e->getFile()
     ]);
+    throw $e;
 }

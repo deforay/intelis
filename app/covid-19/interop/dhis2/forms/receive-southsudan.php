@@ -299,4 +299,5 @@ try {
 } catch (Throwable $exception) {
     $db->rollbackTransaction();
     error_log("Error while generating receiving DHIS2 data : " . $exception->getMessage());
+    throw $exception;
 }
