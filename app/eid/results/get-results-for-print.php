@@ -279,4 +279,5 @@ try {
         'las_db_error' => $db->getLastError(),
         'trace' => $e->getTraceAsString()
     ]);
+    throw $e;
 }

@@ -121,8 +121,8 @@ try {
 } catch (Throwable $e) {
 
     LoggerUtility::log("error", "TB Referral Error: " . $e->getMessage(), [
-        'file' => __FILE__,
-        'line' => __LINE__,
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
         'trace' => $e->getTraceAsString(),
