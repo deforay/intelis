@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use const SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
 use const SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 use const SAMPLE_STATUS\REJECTED;
+use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -22,6 +23,11 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var PatientsService $patientsService */
 $patientsService = ContainerRegistry::get(PatientsService::class);
+
+// Shared with VL and CD4: the mother's ARV regimen is stored in r_vl_art_regimen, and
+// VlService::resolveArtRegimen() is the single path that registers a value there.
+/** @var VlService $vlService */
+$vlService = ContainerRegistry::get(VlService::class);
 
 // Sanitized values from $request object
 /** @var ServerRequestInterface $request */
@@ -86,20 +92,18 @@ try {
 	}
 
 
+	// The "other" box for the mother's regimen. EID shares r_vl_art_regimen with VL and
+	// CD4, so this resolves through the same path as those helpers and the API.
+	//
+	// The lookup this replaces interpolated $_POST['newArtRegimen'] directly into the
+	// query string, three times, unescaped -- a SQL injection reachable by anyone who can
+	// submit an EID request. resolveArtRegimen() binds the value as a parameter.
+	//
+	// The three OR'd comparisons it also drops were redundant: two of them were the same
+	// strtolower() expression, and art_code is matched under a case-insensitive collation
+	// in any case, so lowercasing changed nothing.
 	if (isset($_POST['newArtRegimen']) && trim((string) $_POST['newArtRegimen']) !== "") {
-		$artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower((string) $_POST['newArtRegimen']) . "' OR art_code='" . (strtolower((string) $_POST['newArtRegimen'])) . "')";
-		$artResult = $db->rawQuery($artQuery);
-		if (!isset($artResult[0]['art_id'])) {
-			$data = [
-				'art_code' => $_POST['newArtRegimen'],
-				'parent_art' => 0,
-				'updated_datetime' => DateUtility::getCurrentDateTime(),
-			];
-			$result = $db->insert('r_vl_art_regimen', $data);
-			$_POST['motherRegimen'] = $_POST['newArtRegimen'];
-		} else {
-			$_POST['motherRegimen'] = $artResult[0]['art_code'];
-		}
+		$_POST['motherRegimen'] = $vlService->resolveArtRegimen($_POST['newArtRegimen'], 'form');
 	}
 
 	if (!isset($_POST['sampleCode']) || trim((string) $_POST['sampleCode']) === '') {
