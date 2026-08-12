@@ -780,18 +780,53 @@ $jsResponse = JsonUtility::encodeUtf8Json($res['decoded']);
             }
         }
 
+        function legacyCopyToClipboard(text) {
+            const tempArea = document.createElement('textarea');
+            tempArea.style.position = 'absolute';
+            tempArea.style.left = '-9999px';
+            tempArea.setAttribute('readonly', 'readonly');
+            tempArea.value = text;
+            document.body.appendChild(tempArea);
+            tempArea.select();
+            let copied = false;
+            try {
+                copied = document.execCommand('copy');
+            } catch (err) {
+                copied = false;
+            }
+            document.body.removeChild(tempArea);
+            return copied;
+        }
+
         function copyJSON(which) {
             const data = which === 'request' ? requestData : responseData;
             if (data === null) {
                 alert('No data');
                 return;
             }
-            navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(() => {
-                const btn = event.target.closest('button');
+            const btn = event.target.closest('button');
+            const text = JSON.stringify(data, null, 2);
+            const markCopied = () => {
+                if (!btn) {
+                    return;
+                }
                 const old = btn.innerHTML;
                 btn.innerHTML = '<i class="fa fa-check"></i> Copied';
                 setTimeout(() => btn.innerHTML = old, 1500);
-            }).catch(err => alert('Copy failed: ' + err));
+            };
+
+            // navigator.clipboard is undefined outside secure contexts (plain http),
+            // so it can only be touched after this guard.
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text)
+                    .then(markCopied)
+                    .catch(() => {
+                        legacyCopyToClipboard(text) ? markCopied() : alert('Copy failed');
+                    });
+                return;
+            }
+
+            legacyCopyToClipboard(text) ? markCopied() : alert('Copy failed');
         }
 
         function downloadJSON(which, filename) {
