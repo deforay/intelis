@@ -356,7 +356,12 @@ try {
             'treatment_initiated_date' => DateUtility::isoDateFormat($data['dateOfArtInitiation'] ?? ''),
             'reason_for_regimen_change' => $data['reasonForArvRegimenChange'] ?? null,
             'regimen_change_date' => DateUtility::isoDateFormat($data['dateOfArvRegimenChange'] ?? ''),
-            'current_regimen' => $data['artRegimen'] ?? null,
+            // Resolved rather than stored verbatim: a caller with its own regimen
+            // vocabulary would otherwise write a value the request form cannot render,
+            // leaving the dropdown blank and the value exposed to the next blank save.
+            // Registers the string when it matches nothing, so a request is never
+            // failed over reference data. See VlService::resolveArtRegimen().
+            'current_regimen' => $vlService->resolveArtRegimen($data['artRegimen'] ?? null),
             'date_of_initiation_of_current_regimen' => DateUtility::isoDateFormat($data['regimenInitiatedOn'] ?? '', true),
             'patient_mobile_number' => $data['patientPhoneNumber'] ?? null,
             'consent_to_receive_sms' => $data['receiveSms'] ?? 'no',
