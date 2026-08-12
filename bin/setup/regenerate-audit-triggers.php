@@ -98,7 +98,9 @@ final class AuditTriggersCommand extends Command
         if ($mode === null) {
             return $this->dryRun($output, $svc, $forms);
         }
-        return $this->apply($output, $svc, $mysqli, $forms, $mode);
+        // A run scoped to one table stays scoped to it; the orphan sweep is a
+        // whole-schema operation and would be a surprise from a targeted run.
+        return $this->apply($output, $svc, $mysqli, $forms, $mode, $only === null);
     }
 
     /**
@@ -152,7 +154,8 @@ final class AuditTriggersCommand extends Command
         AuditTriggerService $svc,
         \mysqli $mysqli,
         array $forms,
-        string $mode
+        string $mode,
+        bool $sweepOrphans = true
     ): int {
         $successful = [];
         $failed     = [];
@@ -181,6 +184,23 @@ final class AuditTriggersCommand extends Command
             $successful[] = $f['table'];
         }
 
+        // Orphan sweep. The loop above only ever visits trackedTables(), so a
+        // legacy trigger on anything else survives every run — which is why an
+        // instance can report leftover `_data__` triggers immediately after a
+        // successful `--apply install`. Asking the schema what is actually there
+        // catches those, and needs no list to be kept up to date.
+        $orphansDropped = 0;
+
+        if ($sweepOrphans) {
+            foreach ($svc->findLegacyTriggers() as $legacy) {
+                if ($mysqli->query($svc->buildDropLegacyTriggerByName($legacy['trigger']))) {
+                    $orphansDropped++;
+                    continue;
+                }
+                $failed[] = ['table' => $legacy['trigger'], 'error' => $mysqli->error];
+            }
+        }
+
         $verb = $mode === self::MODE_INSTALL ? 'installed' : 'cleared';
 
         if ($failed === []) {
@@ -190,6 +210,9 @@ final class AuditTriggersCommand extends Command
                 : "{$tableCount} form table(s)";
             $output->writeln("Audit triggers {$verb} ({$summary}).");
             $output->writeln("  " . implode(', ', $successful));
+            if ($orphansDropped > 0) {
+                $output->writeln("Also dropped {$orphansDropped} orphaned legacy trigger(s) on untracked tables.");
+            }
             return Command::SUCCESS;
         }
 
