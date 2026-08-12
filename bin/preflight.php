@@ -357,7 +357,13 @@ if ($webUser === null) {
 
     $webUser = pf_resolve_user(pf_current_user());
 } else {
-    check('Web server user', PF_OK, $webUser['name'] . " (uid {$webUser['uid']})");
+    // How the answer is reached matters more than who it is about, so it is said
+    // here once instead of on every directory row.
+    check(
+        'Web server user',
+        PF_OK,
+        $webUser['name'] . " (uid {$webUser['uid']}) — " . pf_write_test_method($webUser),
+    );
 }
 
 if ($webUser === null) {
@@ -375,7 +381,7 @@ if ($webUser === null) {
         if (!is_dir($path)) {
             $parent = dirname($path);
 
-            if (pf_writable_by($parent, $webUser)) {
+            if (pf_can_write($parent, $webUser)) {
                 check("{$dir} writable", PF_OK, 'absent — will be created on first use');
             } else {
                 check(
@@ -390,7 +396,7 @@ if ($webUser === null) {
             continue;
         }
 
-        if (pf_writable_by($path, $webUser)) {
+        if (pf_can_write($path, $webUser)) {
             check("{$dir} writable", PF_OK, 'by ' . $webUser['name']);
             continue;
         }
@@ -904,8 +910,29 @@ function pf_resolve_user(string $name): ?array
     return ['name' => $name, 'uid' => (int) $uid, 'gids' => $gids];
 }
 
-/** @param array{name:string, uid:int, gids:list<int>} $user */
-function pf_writable_by(string $path, array $user): bool
+/**
+ * Whether a user can write to a path — tested against the kernel where possible,
+ * inferred only as a last resort.
+ *
+ * The distinction is the whole point. scripts/shared-functions.sh::set_permissions
+ * grants the web server access with POSIX ACLs (setfacl -m u:www-data:rwx), which
+ * leave owner and group untouched. Reading owner/group/mode therefore reports
+ * "root, 0775, www-data cannot write here" about a directory www-data writes to
+ * all day, and every instance in the fleet is set up that way. Inference cannot
+ * see an ACL; a write test does not have to.
+ *
+ * Three tiers, best first:
+ *   1. Already running as that user — is_writable() asks the kernel, which
+ *      applies ACLs, and is exactly the question being asked. This is the live
+ *      path: setup.sh and upgrade.sh both invoke preflight as www-data.
+ *   2. Running as root — sudo can pose the question as that user, same accuracy.
+ *   3. Neither — fall back to the permission bits, plus getfacl where it exists
+ *      so the common ACL grant is still seen. Approximate, and pf_write_test_method()
+ *      says so in the report rather than letting a guess read like a measurement.
+ *
+ * @param array{name:string, uid:int, gids:list<int>} $user
+ */
+function pf_can_write(string $path, array $user): bool
 {
     // Callers ask about a directory's parent, and on a half-installed tree that
     // parent can be missing too. Nothing can be written into what is not there,
@@ -915,6 +942,77 @@ function pf_writable_by(string $path, array $user): bool
         return false;
     }
 
+    if (pf_euid() === $user['uid']) {
+        return is_writable($path);
+    }
+
+    if (pf_euid() === 0) {
+        // -n so a sudoers rule needing a password fails immediately instead of
+        // blocking a report on a prompt nobody is watching.
+        @exec(
+            'sudo -n -u ' . escapeshellarg($user['name']) . ' test -w ' . escapeshellarg($path) . ' 2>/dev/null',
+            $ignored,
+            $code,
+        );
+
+        if ($code === 0 || $code === 1) {
+            return $code === 0;
+        }
+        // Any other code means sudo itself failed; fall through and infer.
+    }
+
+    return pf_probably_writable_by($path, $user);
+}
+
+/**
+ * How pf_can_write() will answer for this user, in words for the report.
+ *
+ * A check that cannot say whether it measured or guessed invites the guess to be
+ * acted on, which is how the mode-bit version sent people to chown directories
+ * that were already writable.
+ *
+ * @param array{name:string, uid:int, gids:list<int>} $user
+ */
+function pf_write_test_method(array $user): string
+{
+    if (pf_euid() === $user['uid']) {
+        return 'writability tested directly';
+    }
+
+    if (pf_euid() === 0) {
+        return 'writability tested via sudo';
+    }
+
+    return 'writability inferred from permissions, not tested — re-run as root or '
+        . $user['name'] . ' to be sure';
+}
+
+/** Effective uid, without assuming ext-posix is installed. */
+function pf_euid(): int
+{
+    static $euid = null;
+
+    if ($euid !== null) {
+        return $euid;
+    }
+
+    if (function_exists('posix_geteuid')) {
+        return $euid = posix_geteuid();
+    }
+
+    $reported = trim((string) @shell_exec('id -u 2>/dev/null'));
+
+    return $euid = ctype_digit($reported) ? (int) $reported : -1;
+}
+
+/**
+ * The inference tier: permission bits, widened by any ACL granting this user
+ * write access. Only ever reached when neither tier above could run.
+ *
+ * @param array{name:string, uid:int, gids:list<int>} $user
+ */
+function pf_probably_writable_by(string $path, array $user): bool
+{
     $perms = fileperms($path);
     $owner = fileowner($path);
     $group = filegroup($path);
@@ -923,15 +1021,40 @@ function pf_writable_by(string $path, array $user): bool
         return false;
     }
 
-    if ($owner === $user['uid']) {
-        return ($perms & 0o200) !== 0;
+    if ($owner === $user['uid'] && ($perms & 0o200) !== 0) {
+        return true;
     }
 
-    if (in_array((int) $group, $user['gids'], true)) {
-        return ($perms & 0o020) !== 0;
+    if (in_array((int) $group, $user['gids'], true) && ($perms & 0o020) !== 0) {
+        return true;
     }
 
-    return ($perms & 0o002) !== 0;
+    if (($perms & 0o002) !== 0) {
+        return true;
+    }
+
+    // getfacl prints one entry per line as user:<name>:<rwx>. Only -p is passed:
+    // it is the one flag every version has, and anything narrower risks the
+    // command erroring out and being read as "no access". Some versions append
+    // a "\t#effective:r-x" comment, so the entry is matched without anchoring
+    // the end of the line, and the mask -- which can strip a granted w -- is
+    // checked separately.
+    $acl = (string) @shell_exec('getfacl -p ' . escapeshellarg($path) . ' 2>/dev/null');
+
+    if ($acl === '') {
+        return false;
+    }
+
+    if (preg_match('/^user:' . preg_quote($user['name'], '/') . ':[r-]w/m', $acl) !== 1) {
+        return false;
+    }
+
+    // No mask line means nothing is being masked, so the grant stands as written.
+    if (preg_match('/^mask::/m', $acl) !== 1) {
+        return true;
+    }
+
+    return preg_match('/^mask::[r-]w/m', $acl) === 1;
 }
 
 function pf_owner_name(int $uid): string
