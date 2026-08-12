@@ -909,20 +909,42 @@ if [ "$skip_ubuntu_updates" = false ]; then
     apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev mosh pigz gnupg
 fi
 
-# Check if SSH service is enabled
-if ! systemctl is-enabled ssh >/dev/null 2>&1; then
-    print info "Enabling SSH service..."
-    systemctl enable ssh
-else
-    print success "SSH service is already enabled."
-fi
+# SSH is a convenience for remote support, not something the LIS needs, so this
+# whole block is best-effort: the unit is called ssh on Debian/Ubuntu and sshd on
+# RHEL-alikes, and it is absent entirely when openssh-server was never installed
+# (e.g. -s / --apply-prepared skips the package step, or a container image).
+ssh_unit=""
+for candidate in ssh sshd; do
+    if systemctl list-unit-files "${candidate}.service" 2>/dev/null | grep -q "^${candidate}.service"; then
+        ssh_unit="$candidate"
+        break
+    fi
+done
 
-# Check if SSH service is running
-if ! systemctl is-active ssh >/dev/null 2>&1; then
-    print info "Starting SSH service..."
-    systemctl start ssh
+if [ -z "$ssh_unit" ]; then
+    print warning "No ssh/sshd service unit found (openssh-server is most likely not installed). Skipping."
 else
-    print success "SSH service is already running."
+    if ! systemctl is-enabled "$ssh_unit" >/dev/null 2>&1; then
+        print info "Enabling SSH service..."
+        if systemctl enable "$ssh_unit" >/dev/null 2>&1; then
+            print success "SSH service enabled."
+        else
+            print warning "Could not enable the SSH service. Continuing."
+        fi
+    else
+        print success "SSH service is already enabled."
+    fi
+
+    if ! systemctl is-active "$ssh_unit" >/dev/null 2>&1; then
+        print info "Starting SSH service..."
+        if systemctl start "$ssh_unit" >/dev/null 2>&1; then
+            print success "SSH service started."
+        else
+            print warning "Could not start the SSH service. Continuing."
+        fi
+    else
+        print success "SSH service is already running."
+    fi
 fi
 
 log_action "Ubuntu packages updated/installed."
