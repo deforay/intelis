@@ -176,6 +176,62 @@ final class AuditTriggerService
     }
 
     /**
+     * Every legacy `_data__` trigger still present, found by asking the database
+     * rather than by iterating a list of tables.
+     *
+     * The v2 cutover retired legacy triggers table by table, walking
+     * {@see trackedTables()}. Anything holding legacy triggers that is not on
+     * that list was therefore never reached, and no later run reaches it either
+     * — the sweep keeps visiting the same tables and keeps missing the same
+     * orphans. {@see EXTRA_AUDITED_TABLES} was how that got patched last time,
+     * one name at a time, after each orphan was found the hard way.
+     *
+     * Discovery ends that: whatever is actually in the schema gets dropped,
+     * including triggers on tables this version has never heard of, tables a
+     * migration renamed out from under them, and modules retired releases ago.
+     * A trigger nothing maintains is worse than no trigger — it keeps writing to
+     * the old columnar shape until an ADD COLUMN desyncs the fixed-column INSERT
+     * and every write to that table starts failing with error 1136.
+     *
+     * @return list<array{trigger:string, table:string}>
+     */
+    public function findLegacyTriggers(): array
+    {
+        // Matched on the suffix set rather than a bare LIKE '%_data__%' so a
+        // table legitimately named something_data__foo cannot have unrelated
+        // triggers swept up by a pattern that was only meant to catch ours.
+        $names = array_map(
+            fn(string $suffix): string => '%_data__' . $suffix,
+            self::LEGACY_SUFFIXES
+        );
+
+        $placeholders = implode(' OR ', array_fill(0, count($names), 'TRIGGER_NAME LIKE ?'));
+
+        $rows = $this->db->rawQuery(
+            "SELECT TRIGGER_NAME, EVENT_OBJECT_TABLE
+               FROM information_schema.TRIGGERS
+              WHERE TRIGGER_SCHEMA = DATABASE()
+                AND ({$placeholders})
+              ORDER BY EVENT_OBJECT_TABLE, TRIGGER_NAME",
+            $names
+        );
+
+        return array_map(
+            static fn($r): array => [
+                'trigger' => (string) $r['TRIGGER_NAME'],
+                'table'   => (string) $r['EVENT_OBJECT_TABLE'],
+            ],
+            $rows ?: []
+        );
+    }
+
+    /** DROP for one legacy trigger addressed by name, for orphans with no tracked table. */
+    public function buildDropLegacyTriggerByName(string $trigger): string
+    {
+        return 'DROP TRIGGER IF EXISTS ' . $this->qIdent($trigger);
+    }
+
+    /**
      * Generate the DROP + CREATE TRIGGER statements for one form table — the
      * three v2 triggers (after-insert, after-update, before-delete), each
      * preceded by its own `DROP TRIGGER IF EXISTS` so re-running the generator
