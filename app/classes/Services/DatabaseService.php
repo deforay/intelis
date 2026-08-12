@@ -214,6 +214,12 @@ final class DatabaseService extends MysqliDb
      * empty") and silently killed every unparameterized rawQuery (e.g. the
      * audit_log drain). Passing null makes the parent skip binding entirely.
      * Also covers rawQueryOne()/rawQueryValue(), which funnel through here.
+     *
+     * Guarded by resetStateOnFailure() for the same reason as the builder methods. This
+     * one binds from its own local array, so it contributes nothing of its own to leak;
+     * what it does do is clear whatever was already on the handle, and only when it
+     * succeeds -- so a raw query failing between a where() and the write that where() was
+     * meant for still leaves that clause behind for the write to inherit.
      */
     #[Override]
     public function rawQuery($query, $bindParams = null)
@@ -221,7 +227,7 @@ final class DatabaseService extends MysqliDb
         if (is_array($bindParams) && $bindParams === []) {
             $bindParams = null;
         }
-        return parent::rawQuery($query, $bindParams);
+        return $this->resetStateOnFailure(fn() => parent::rawQuery($query, $bindParams));
     }
 
     /**
@@ -255,6 +261,12 @@ final class DatabaseService extends MysqliDb
     /**
      * Execute a query and return a generator to fetch results row by row.
      *
+     * The cleanup sits in a finally so it also covers the two paths that used to skip it:
+     * a throw from execute(), and a caller that breaks out of the loop and abandons the
+     * generator, which reaches it when the generator is destroyed. Both otherwise leave
+     * the statement open and whatever state the caller had accumulated on the handle
+     * behind -- see resetStateOnFailure() for what that state then does to the next query.
+     *
      * @param string $query SQL query string
      * @param array|null $bindParams Parameters to bind to the query
      * @return Generator
@@ -271,40 +283,41 @@ final class DatabaseService extends MysqliDb
             throw new Exception("Failed to prepare statement: " . $this->mysqli()->error);
         }
 
-        // parameter binding
-        if (is_array($bindParams) && $bindParams !== []) {
-            $types = '';
-            $values = [];
+        try {
+            // parameter binding
+            if (is_array($bindParams) && $bindParams !== []) {
+                $types = '';
+                $values = [];
 
-            foreach ($bindParams as $val) {
-                $types .= $this->_determineType($val);
-                $values[] = $val;
+                foreach ($bindParams as $val) {
+                    $types .= $this->_determineType($val);
+                    $values[] = $val;
+                }
+
+                // Use reference binding
+                $bindReferences = array_merge([&$types], $this->createReferences($values));
+                call_user_func_array($stmt->bind_param(...), $bindReferences);
             }
 
-            // Use reference binding
-            $bindReferences = array_merge([&$types], $this->createReferences($values));
-            call_user_func_array($stmt->bind_param(...), $bindReferences);
-        }
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-        $stmt->execute();
-        $result = $stmt->get_result();
+            if ($result === false) { // Only false indicates failure
+                LoggerUtility::logError('DB Result Error: ' . $this->mysqli()->error);
+                throw new Exception("Failed to get result: " . $this->mysqli()->error);
+            }
 
-        if ($result === false) { // Only false indicates failure
+            // Fetch results row by row
+            while ($row = $result->fetch_assoc()) {
+                yield $row;
+            }
+
+            $result->free();
+        } finally {
+            // Always reached, including for empty result sets
             $stmt->close();
             $this->reset();
-            LoggerUtility::logError('DB Result Error: ' . $this->mysqli()->error);
-            throw new Exception("Failed to get result: " . $this->mysqli()->error);
         }
-
-        // Fetch results row by row
-        while ($row = $result->fetch_assoc()) {
-            yield $row;
-        }
-
-        // These should always be called, even for empty result sets
-        $result->free();
-        $stmt->close();
-        $this->reset();
     }
 
     /**
@@ -956,6 +969,18 @@ final class DatabaseService extends MysqliDb
     {
         return $this->resetStateOnFailure(fn() => parent::delete($tableName, $numRows));
     }
+
+    /**
+     * query() takes the SQL verbatim but still runs it through _buildQuery(), so a
+     * where() or join() chained before it is appended and bound like anywhere else --
+     * it leaks exactly as get() does.
+     */
+    #[Override]
+    public function query($query, $numRows = null)
+    {
+        return $this->resetStateOnFailure(fn() => parent::query($query, $numRows));
+    }
+
 
     /**
      * The insert() guard covers the individual rows, but not the transaction the parent
