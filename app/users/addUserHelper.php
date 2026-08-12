@@ -68,7 +68,11 @@ try {
             'force_password_reset' => 1
         ];
 
-        $password = $usersService->passwordHash($_POST['password']);
+        // Hash the raw password. The sanitized copy has been through HTML
+        // Purifier, which rewrites & as &amp; and eats anything tag-shaped, so
+        // hashing it would lock the user out of an account they can never
+        // log in to (the login form reads $_POST directly). See _rawInput().
+        $password = $usersService->passwordHash(_rawInput('password'));
         $data['password'] = $password;
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";

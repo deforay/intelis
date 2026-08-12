@@ -36,8 +36,10 @@ if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty($_POST['u']) && !empty($_PO
 }
 
 if ($fromRecencyAPI) {
-    $_POST['userName'] = $_POST['u'];
-    $_POST['password'] = $_POST['t'];
+    // Raw: 't' is ciphertext and the password it carries must survive byte for
+    // byte - the sanitized copy has been through HTML Purifier. See _rawInput().
+    $_POST['userName'] = _rawInput('u');
+    $_POST['password'] = _rawInput('t');
     $userId = null;
 } else {
     // A user may only edit their OWN profile. This endpoint is intentionally
@@ -76,16 +78,19 @@ try {
                 'phone_number' => $_POST['phoneNo'],
             ];
 
-            if (isset($_POST['password']) && trim((string) $_POST['password']) !== "") {
+            // Raw, not sanitized: see _rawInput(). Hashing the purified copy
+            // would store a password the user cannot log in with.
+            $submittedPassword = _rawInput('password');
+            if (isset($submittedPassword) && trim((string) $submittedPassword) !== "") {
                 $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", [$userId]);
-                if ($usersService->passwordVerify((string) $_SESSION['loginId'], (string) $_POST['password'], (string) $userRow['password'])) {
+                if ($usersService->passwordVerify((string) $_SESSION['loginId'], (string) $submittedPassword, (string) $userRow['password'])) {
                     $_SESSION['alertMsg'] = _translate("Your new password cannot be same as the current password. Please try another password.");
                     header("Location:edit-profile.php");
                     exit;
                 }
 
                 if (SYSTEM_CONFIG['recency']['crosslogin']) {
-                    $_SESSION['crossLoginPass'] = $newCrossLoginPassword = CommonService::encrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
+                    $_SESSION['crossLoginPass'] = $newCrossLoginPassword = CommonService::encrypt($submittedPassword, base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
                     $client = new Client();
                     $url = rtrim((string) SYSTEM_CONFIG['recency']['url'], "/");
                     $result = $client->post("$url/api/update-password", [
@@ -101,7 +106,7 @@ try {
                     }
                 }
 
-                $newPassword = $usersService->passwordHash($_POST['password']);
+                $newPassword = $usersService->passwordHash($submittedPassword);
                 $data['password'] = $newPassword;
                 $data['force_password_reset'] = 0;
                 unset($_SESSION['forcePasswordReset']);
