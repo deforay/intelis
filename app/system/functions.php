@@ -91,7 +91,46 @@ function _requirePrivilege(string $page, ?string $message = null): void
 }
 
 /**
+ * Reads a value straight from the request body, deliberately skipping _sanitizeInput().
+ *
+ * Secrets must never be sanitized. _sanitizeInput() runs the value through HTML
+ * Purifier, which is an HTML sanitizer and behaves like one: it rewrites & as
+ * &amp; and removes anything shaped like a tag. So the password "mko)(*&^" is
+ * stored as "mko)(*&amp;^" and "P@ss<word>" is silently cut down to "P@ss".
+ *
+ * What gets saved is then not what was typed, and nothing complains at the time.
+ * A user password mangled this way can never be used to log in, because the login
+ * form reads $_POST directly; a database password mangled this way is written into
+ * configs/config.production.php and fails every connection from then on.
+ *
+ * Passwords are never rendered back into a page, so there is nothing to escape
+ * against here - they are hashed, or handed to MySQL as a bound value.
+ *
+ * @param string $key Field name in the parsed request body
+ * @param mixed $default Returned when the field is absent
+ * @return mixed The raw, untouched submitted value
+ */
+function _rawInput(string $key, mixed $default = null): mixed
+{
+    $request = \App\Registries\AppRegistry::get('request');
+    $body = ($request instanceof \Psr\Http\Message\ServerRequestInterface)
+        ? $request->getParsedBody()
+        : null;
+
+    if (!is_array($body)) {
+        // Fall back to the superglobal so callers still work outside the Slim
+        // request cycle (CLI helpers, legacy includes).
+        $body = $_POST ?? [];
+    }
+
+    return $body[$key] ?? $default;
+}
+
+/**
  * Sanitizes input data against XSS and other injection attacks
+ *
+ * NOTE: do not use this for passwords, API keys or any other secret. See
+ * _rawInput() for why.
  *
  * @param mixed $input The input to sanitize
  * @param bool $nullifyEmptyStrings Whether to convert empty strings to null

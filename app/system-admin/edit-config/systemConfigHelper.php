@@ -39,8 +39,12 @@ $tableName = "system_config";
 try {
     $currentDateTime = DateUtility::getCurrentDateTime();
     foreach ($systemConfigFields as $fieldName) {
+        // The support mailbox password is a credential: take it raw, or an
+        // ampersand in it is stored as &amp; and SMTP auth fails. See _rawInput().
         $data = [
-            'value' => $_POST[$fieldName] ?? null
+            'value' => $fieldName === 'sup_password'
+                ? _rawInput($fieldName)
+                : ($_POST[$fieldName] ?? null)
         ];
         $db->where('name', $fieldName);
         $db->update('system_config', $data);
