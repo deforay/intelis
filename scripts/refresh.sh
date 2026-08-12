@@ -94,15 +94,42 @@ log_action "LIS path: $lis_path"
 set_permissions "$lis_path" "$mode"
 wait  # Ensure background ACL jobs are done
 
-# Fix ownerships
-for d in cache logs public/temporary public/uploads; do
-    [ -d "${lis_path}/$d" ] && chown -R www-data:www-data "${lis_path}/$d"
+# Fix ownerships.
+#
+# These were "cache logs public/temporary public/uploads" — paths from before the
+# runtime tree moved under var/. Nothing lives at <install>/cache or
+# <install>/logs any more, so `[ -d ]` was false every time and the chown
+# silently never ran on the directories that needed it, while backups and
+# var/temporary were not listed at all. set_permissions covers the tree with
+# ACLs, so the app kept working and the dead loop went unnoticed; what showed up
+# was root-owned var/logs and backups in the post-upgrade check.
+#
+# Kept in step with the path constants in bootstrap.php.
+for d in var/cache var/logs var/temporary public/temporary public/uploads backups; do
+    if [ -d "${lis_path}/$d" ]; then
+        chown -R www-data:www-data "${lis_path}/$d"
+    fi
 done
 
-restart_service apache
-restart_service mysql
+# Restarts happen only when asked for. -a and -d have always been parsed into
+# restart_apache/restart_mysql and then never read, so both services were
+# restarted on every run — including the hourly `-m quick` cron this script
+# installs itself, which made every instance in the fleet bounce Apache and
+# MySQL at five past every hour. A permissions sweep has no reason to interrupt
+# either one, and callers that do want it already pass the flags.
+if [ "$restart_apache" = true ]; then
+    restart_service apache
+fi
 
-sudo chmod 644 /etc/mysql/mysql.conf.d/mysqld.cnf
+if [ "$restart_mysql" = true ]; then
+    restart_service mysql
+fi
+
+# Already running as root, and absent on MariaDB or a non-Debian layout — where
+# an unguarded chmod fails and the ERR trap turns the whole run into an error.
+if [ -f /etc/mysql/mysql.conf.d/mysqld.cnf ]; then
+    chmod 644 /etc/mysql/mysql.conf.d/mysqld.cnf
+fi
 
 print success "✅ LIS refresh complete."
 log_action "LIS refresh complete"
