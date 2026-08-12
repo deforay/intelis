@@ -708,27 +708,52 @@ require_once APPLICATION_PATH . '/header.php';
 		return clone.html();
 	}
 
+	function legacyCopyToClipboard(text) {
+		const tempArea = document.createElement('textarea');
+		tempArea.style.position = 'absolute';
+		tempArea.style.left = '-9999px';
+		tempArea.setAttribute('readonly', 'readonly');
+		tempArea.value = text;
+		document.body.appendChild(tempArea);
+		tempArea.select();
+		let copied = false;
+		try {
+			copied = document.execCommand('copy');
+		} catch (err) {
+			copied = false;
+		}
+		document.body.removeChild(tempArea);
+		return copied;
+	}
+
 	function copyToClipboard(text, lineNumber) {
 		const tempDiv = document.createElement('div');
 		tempDiv.innerHTML = text;
 		const cleanText = tempDiv.textContent || tempDiv.innerText || '';
+		const copiedMessage = "<?= _translate("Copied to clipboard - Line Number", true); ?> - " + lineNumber;
 
-		navigator.clipboard.writeText(cleanText)
-			.then(() => {
-				toast.success("<?= _translate("Copied to clipboard - Line Number", true); ?> - " + lineNumber);
-			})
-			.catch(err => {
-				const tempInput = document.createElement('input');
-				tempInput.style.position = 'absolute';
-				tempInput.style.left = '-9999px';
-				tempInput.value = cleanText;
-				document.body.appendChild(tempInput);
-				tempInput.select();
-				document.execCommand('copy');
-				document.body.removeChild(tempInput);
+		// navigator.clipboard only exists in secure contexts (https or localhost),
+		// so reading .writeText off it directly would throw on plain http installs.
+		if (navigator.clipboard && window.isSecureContext) {
+			navigator.clipboard.writeText(cleanText)
+				.then(() => {
+					toast.success(copiedMessage);
+				})
+				.catch(() => {
+					if (legacyCopyToClipboard(cleanText)) {
+						toast.success(copiedMessage);
+					} else {
+						toast.error("<?= _translate("Unable to copy to clipboard", true); ?>");
+					}
+				});
+			return;
+		}
 
-				toast.success("<?= _translate("Copied to clipboard - Line Number", true); ?> - " + lineNumber);
-			});
+		if (legacyCopyToClipboard(cleanText)) {
+			toast.success(copiedMessage);
+		} else {
+			toast.error("<?= _translate("Unable to copy to clipboard", true); ?>");
+		}
 	}
 
 	function detectLogLevel(logText) {
