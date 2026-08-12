@@ -116,6 +116,22 @@ check(
             )),
 );
 
+// The same unreadable-ini failure as under Apache below, seen from the inside:
+// PHP skips an ini it cannot open and carries on with its built-in defaults,
+// silently. Only raised when the file is there to be loaded and was not, so a
+// deployment that genuinely ships no php.ini (a slim container) stays quiet.
+$cliIni      = php_ini_loaded_file();
+$expectedIni = '/etc/php/' . PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION . '/cli/php.ini';
+
+if ($cliIni === false && is_file($expectedIni)) {
+    check(
+        'CLI php.ini',
+        PF_WARN,
+        "{$expectedIni} exists but was not loaded — not readable by " . pf_current_user() . "\n"
+            . '  this PHP is running on built-in defaults; run: sudo chmod 0644 ' . $expectedIni,
+    );
+}
+
 // ─── 2. The web server's PHP, which is a different PHP ───
 
 // mod_php and the CLI load separate php.ini files. Everything else in this repo
@@ -142,6 +158,22 @@ if ($webIni === null) {
                 ? "both {$cliPhp}"
                 : "Apache runs {$webPhp}, CLI runs {$cliPhp} — migrations and the app "
                     . 'run on different engines',
+        );
+    }
+
+    // An unreadable php.ini is not a reporting inconvenience, it is the finding.
+    // Apache reads its ini as root before dropping privileges, so mod_php keeps
+    // serving and nothing looks wrong — but every non-root PHP process on the box
+    // silently loses the file. `php -i` run as www-data then says "Loaded
+    // Configuration File => (none)" and the cron jobs, bin/ scripts and composer
+    // migrations that run as www-data are executing on PHP's built-in defaults
+    // rather than on the settings this instance was configured with.
+    if (!is_readable($webIni)) {
+        check(
+            'Web SAPI php.ini readable',
+            PF_WARN,
+            'not readable by ' . pf_current_user() . " — every non-root PHP process is ignoring it\n"
+                . '  run: sudo chmod 0644 ' . $webIni,
         );
     }
 
@@ -303,12 +335,10 @@ if ($config !== []) {
         $instance !== '' ? $instance : 'not set — the default title is shown',
     );
 
-    $remote = (string) ($config['remoteURL'] ?? '');
-    check(
-        'STS URL',
-        $remote !== '' ? PF_OK : PF_WARN,
-        $remote !== '' ? $remote : 'not set — sync and remote commands are off',
-    );
+    // remoteURL is read here but reported further down, next to the instance
+    // identity checks. Whether an empty one is a fault depends on what kind of
+    // instance this is, and that lives in system_config — so the row cannot be
+    // judged until the database is open.
 
     $modules = is_array($config['modules'] ?? null) ? $config['modules'] : [];
     $enabled = array_keys(array_filter($modules));
@@ -440,13 +470,15 @@ if ($webUser === null) {
 
 // ─── 6. Database ───
 
-$dbConfig = is_array($config['database'] ?? null) ? $config['database'] : [];
-$host     = (string) ($dbConfig['host'] ?? '');
-$port     = (string) ($dbConfig['port'] ?? '3306');
-$name     = (string) ($dbConfig['db'] ?? '');
+$dbConfig  = is_array($config['database'] ?? null) ? $config['database'] : [];
+$host      = (string) ($dbConfig['host'] ?? '');
+$port      = (string) ($dbConfig['port'] ?? '3306');
+$name      = (string) ($dbConfig['db'] ?? '');
+$remoteUrl = (string) ($config['remoteURL'] ?? '');
 
 if ($host === '' || $name === '') {
     check('Database', PF_SKIP, 'no database configured — nothing to connect to');
+    pf_check_sts_url($remoteUrl, null);
     pf_render($results, $quiet);
     exit(pf_exit_code($results));
 }
@@ -477,6 +509,7 @@ try {
     if (!pf_diagnose_db($host, $port, $e)) {
         check('DB fix', PF_WARN, pf_db_remedy($host, $e));
     }
+    pf_check_sts_url($remoteUrl, null);
     pf_render($results, $quiet);
     exit(1);
 }
@@ -484,11 +517,18 @@ try {
 // Schema version against the migration files on disk. A lab left mid-upgrade
 // runs new code on an old schema, and the symptom is an unrelated SQL error on
 // whichever page happens to touch a new column first.
-$scVersion = null;
+// sc_user_type comes along for the ride: it is what makes this machine an STS,
+// an LIS or a standalone lab, and several rows below read differently depending
+// on which one it is.
+$scVersion    = null;
+$instanceType = null;
 
 try {
-    $stmt      = $pdo->query("SELECT `value` FROM system_config WHERE `name` = 'sc_version'");
-    $scVersion = $stmt === false ? null : ((string) $stmt->fetchColumn() ?: null);
+    $stmt = $pdo->query("SELECT `name`, `value` FROM system_config WHERE `name` IN ('sc_version', 'sc_user_type')");
+    $rows = $stmt === false ? [] : ($stmt->fetchAll(PDO::FETCH_KEY_PAIR) ?: []);
+
+    $scVersion    = ((string) ($rows['sc_version'] ?? '')) ?: null;
+    $instanceType = ((string) ($rows['sc_user_type'] ?? '')) ?: null;
 } catch (PDOException) {
     // system_config absent — migrations have never run against this database.
 }
@@ -624,6 +664,14 @@ try {
     check('Audit triggers', PF_SKIP, $e->getMessage());
 }
 
+check(
+    'Instance type',
+    $instanceType !== null ? PF_OK : PF_SKIP,
+    $instanceType ?? 'system_config has no sc_user_type row',
+);
+
+pf_check_sts_url($remoteUrl, $instanceType);
+
 // s_vlsm_instance holds the one row that identifies this machine: the ULID
 // minted once at registration and the STS token issued against it. Both come
 // from app/setup/registerProcess.php, and nothing else ever writes them.
@@ -634,10 +682,8 @@ try {
 // of them says the cause is that this instance was never registered.
 //
 // How much that matters depends entirely on whether an STS is configured, so the
-// severity follows remoteURL rather than treating a deliberately standalone lab
-// as broken.
-$remoteUrl = (string) ($config['remoteURL'] ?? '');
-
+// severity follows remoteURL rather than treating an instance that syncs with
+// nobody as broken.
 try {
     $instanceRow = $pdo->query('SELECT vlsm_instance_id, sts_token FROM s_vlsm_instance LIMIT 1');
     $instance    = $instanceRow === false ? false : $instanceRow->fetch(PDO::FETCH_ASSOC);
@@ -658,7 +704,7 @@ try {
             );
         }
     } elseif ($remoteUrl === '') {
-        check('Instance registered', PF_WARN, 'not registered — expected on a standalone instance with no STS');
+        check('Instance registered', PF_WARN, 'not registered — expected when no STS is configured');
     } else {
         check(
             'Instance registered',
@@ -675,6 +721,48 @@ pf_render($results, $quiet);
 exit(pf_exit_code($results));
 
 /* ---------------------- Helpers ---------------------- */
+
+/**
+ * The STS URL row. An empty remoteURL is only a finding on an instance that is
+ * supposed to sync to an STS, so the severity is decided by sc_user_type and not
+ * by the setting alone:
+ *
+ *   stsmode / remoteuser  this machine IS the STS; it has no STS above it to
+ *                         point at, so empty is the correct configuration
+ *   standalone            deliberately syncs with nobody
+ *   vluser / lismode      an LIS with nowhere to send results — the real finding
+ *
+ * $instanceType is null when the database could not be read, which is the one
+ * case where the row can only state the setting without judging it. The status
+ * mirrors CommonService::isSTSInstance()/isLISInstance(); those two are the
+ * definition and this restates them because preflight runs pre-boot and cannot
+ * load the class.
+ */
+function pf_check_sts_url(string $remoteUrl, ?string $instanceType): void
+{
+    if ($remoteUrl !== '') {
+        check('STS URL', PF_OK, $remoteUrl);
+        return;
+    }
+
+    if ($instanceType === null) {
+        check('STS URL', PF_OK, 'not set — instance type unknown, so whether that is expected cannot be told');
+        return;
+    }
+
+    $isLis = $instanceType === 'vluser' || $instanceType === 'lismode';
+    $isSts = $instanceType === 'stsmode' || $instanceType === 'remoteuser';
+
+    check(
+        'STS URL',
+        $isLis ? PF_WARN : PF_OK,
+        match (true) {
+            $isLis  => 'not set — sync and remote commands are off',
+            $isSts  => 'not set — this instance is the STS',
+            default => "not set — expected on a {$instanceType} instance",
+        },
+    );
+}
 
 /** @param list<array{status:string,label:string,detail:string}> $results */
 function pf_exit_code(array $results): int
@@ -779,10 +867,15 @@ function pf_compare_lock_to_vendor(string $root): ?array
  */
 function pf_apache_ini_path(): ?string
 {
+    // Existence, not readability. A php.ini this script cannot read is still the
+    // file Apache is serving under, and testing readability here made the
+    // unreadable case fall through to the search below and answer with a
+    // different PHP version entirely — a confident, wrong report. Whether the
+    // file can be read is a separate finding, raised by the caller.
     foreach ((array) glob('/etc/apache2/mods-enabled/php*.load') as $module) {
         if (preg_match('/php([0-9]+\.[0-9]+)\.load$/', (string) $module, $m) === 1) {
             $ini = "/etc/php/{$m[1]}/apache2/php.ini";
-            if (is_readable($ini)) {
+            if (is_file($ini)) {
                 return $ini;
             }
         }
@@ -790,7 +883,7 @@ function pf_apache_ini_path(): ?string
 
     $found = array_values(array_filter(
         (array) glob('/etc/php/*/apache2/php.ini'),
-        static fn($path): bool => is_readable((string) $path),
+        static fn($path): bool => is_file((string) $path),
     ));
 
     return count($found) === 1 ? (string) $found[0] : null;
