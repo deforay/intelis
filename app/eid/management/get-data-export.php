@@ -328,4 +328,5 @@ try {
      echo JsonUtility::encodeUtf8Json($output);
 } catch (Exception $exc) {
      LoggerUtility::logError($exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+     throw $exc;
 }

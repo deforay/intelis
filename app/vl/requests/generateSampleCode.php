@@ -34,4 +34,5 @@ try {
   }
 } catch (Throwable $exception) {
   LoggerUtility::logError("Error while generating Sample ID : " . $exception->getMessage());
+  throw $exception;
 }

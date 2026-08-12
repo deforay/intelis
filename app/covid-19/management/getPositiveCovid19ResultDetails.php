@@ -223,4 +223,5 @@ try {
         'last_db_query' => $db->getLastQuery(),
 
     ]);
+    throw $e;
 }

@@ -24,4 +24,5 @@ try {
     MiscUtility::redirect("/vl/result-mail/testResultEmailConfig.php");
 } catch (Throwable $exc) {
     LoggerUtility::logError($exc->getMessage());
+    throw $exc;
 }
