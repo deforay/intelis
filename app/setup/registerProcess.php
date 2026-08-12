@@ -27,7 +27,8 @@ $_POST['loginId'] = str_replace(' ', '', $_POST['loginId']);
 $userName = $_POST['userName'];
 $emailId = $_POST['email'];
 $loginId = $_POST['loginId'];
-$password = $_POST['password'];
+// Credentials come from the raw body, never the sanitized copy - see _rawInput().
+$password = _rawInput('password');
 $vlForm = $_POST['vl_form'];
 $timeZone = $_POST['default_time_zone'];
 $locale = $_POST['app_locale'];
@@ -104,11 +105,15 @@ try {
             'modules.tb' => in_array('tb', $modulesToEnable),
             'modules.cd4' => in_array('cd4', $modulesToEnable),
             'modules.generic-tests' => in_array('generic-tests', $modulesToEnable),
-            'database.host' => (empty($_POST['dbHostName'])) ? '127.0.0.1' : $_POST['dbHostName'],
-            'database.username' => (empty($_POST['dbUserName'])) ? 'root' : $_POST['dbUserName'],
-            'database.password' => (empty($_POST['dbPassword'])) ? 'zaq12345' : $_POST['dbPassword'],
-            'database.db' => (empty($_POST['dbName'])) ? 'vlsm' : $_POST['dbName'],
-            'database.port' => (empty($_POST['dbPort'])) ? 3306 : $_POST['dbPort'],
+            // Database credentials are written verbatim into config.production.php,
+            // so they must be the raw submitted values. Sanitizing them turned a
+            // password like mko)(*&^ into mko)(*&amp;^ and broke every connection
+            // the installed instance ever made.
+            'database.host' => (empty(_rawInput('dbHostName'))) ? '127.0.0.1' : _rawInput('dbHostName'),
+            'database.username' => (empty(_rawInput('dbUserName'))) ? 'root' : _rawInput('dbUserName'),
+            'database.password' => (empty(_rawInput('dbPassword'))) ? 'zaq12345' : _rawInput('dbPassword'),
+            'database.db' => (empty(_rawInput('dbName'))) ? 'vlsm' : _rawInput('dbName'),
+            'database.port' => (empty(_rawInput('dbPort'))) ? 3306 : _rawInput('dbPort'),
         ];
 
         if (isset($instanceType) && trim((string) $instanceType) === 'stsmode') {

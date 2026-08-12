@@ -74,12 +74,20 @@ print_instance_status() {
 }
 
 escape_php_string_for_sed() {
-    # Escape for PHP single-quoted strings and sed replacement
+    # Escape for a PHP single-quoted string that is delivered through a sed
+    # replacement. Order matters, and the two layers are separate:
+    #
+    #   1. PHP layer: \ and ' must be backslash-escaped inside '...'.
+    #   2. sed layer: sed consumes one level of backslashes in the replacement
+    #      text, so every backslash produced by step 1 has to be doubled or the
+    #      PHP escaping is eaten on the way through and the file stops parsing.
+    #      (A password containing an apostrophe used to write a broken config.)
     local value="$1"
-    value=${value//\\/\\\\}   # escape backslashes for PHP single-quoted strings
-    value=${value//\'/\\\'}   # escape single quotes
-    value=${value//|/\\|}     # escape sed delimiter
-    value=${value//&/\\&}     # escape sed replacement backreference
+    value=${value//\\/\\\\}   # PHP: escape backslashes
+    value=${value//\'/\\\'}   # PHP: escape single quotes
+    value=${value//\\/\\\\}   # sed: double every backslash so one survives
+    value=${value//|/\\|}     # sed: escape the delimiter used by our s|| commands
+    value=${value//&/\\&}     # sed: & means "the whole match" in a replacement
     printf '%s' "$value"
 }
 
@@ -982,6 +990,89 @@ extract_mysql_password_from_config() {
         \$config = include '$config_file';
         echo isset(\$config['database']['password']) ? trim(\$config['database']['password']) : '';
     "
+}
+
+# Read any dotted key out of an instance config, e.g. database.username.
+extract_config_value() {
+    local config_file="$1" dotted_key="$2"
+    [ -f "$config_file" ] || return 1
+    php -r "
+        error_reporting(0);
+        \$config = include '$config_file';
+        \$value = \$config;
+        foreach (explode('.', '$dotted_key') as \$part) {
+            if (!is_array(\$value) || !isset(\$value[\$part])) { echo ''; exit; }
+            \$value = \$value[\$part];
+        }
+        echo is_scalar(\$value) ? trim((string) \$value) : '';
+    " 2>/dev/null
+}
+
+# Repair a database password that was HTML-escaped on its way into the config.
+#
+# The app's input sanitizer is an HTML purifier, and until this was fixed it ran
+# over the setup form's database fields too: a password of mko)(*&^ was written
+# to config.production.php as mko)(*&amp;^. Every connection from that instance
+# then fails with access denied, which surfaces as "database not reachable" and
+# blocks upgrades on a machine that is otherwise fine.
+#
+# Only rewrites the file when the escaped password fails AND the decoded one is
+# proven to work, so it cannot make a working instance worse. Returns 0 if it
+# repaired the config.
+repair_html_escaped_db_password() {
+    local config_file="$1"
+    local current decoded user host port db_name backup
+
+    [ -f "$config_file" ] || return 1
+    command -v mysql >/dev/null 2>&1 || return 1
+
+    current="$(extract_mysql_password_from_config "$config_file" 2>/dev/null || true)"
+    [ -n "$current" ] || return 1
+
+    case "$current" in
+        *"&amp;"* | *"&lt;"* | *"&gt;"* | *"&quot;"* | *"&#039;"* | *"&#39;"*) ;;
+        *) return 1 ;;
+    esac
+
+    decoded="$(php -r 'echo html_entity_decode($argv[1], ENT_QUOTES | ENT_HTML5, "UTF-8");' "$current" 2>/dev/null || true)"
+    [ -n "$decoded" ] || return 1
+    [ "$decoded" != "$current" ] || return 1
+
+    user="$(extract_config_value "$config_file" "database.username" || true)"
+    host="$(extract_config_value "$config_file" "database.host" || true)"
+    port="$(extract_config_value "$config_file" "database.port" || true)"
+    db_name="$(extract_config_value "$config_file" "database.db" || true)"
+    [ -n "$user" ] || user="root"
+    [ -n "$host" ] || host="localhost"
+    [ -n "$port" ] || port="3306"
+
+    # The stored password must actually be broken...
+    if MYSQL_PWD="$current" mysql -u "$user" -h "$host" -P "$port" ${db_name:+"$db_name"} -e "SELECT 1" >/dev/null 2>&1; then
+        return 1
+    fi
+    # ...and the decoded one must actually work.
+    if ! MYSQL_PWD="$decoded" mysql -u "$user" -h "$host" -P "$port" ${db_name:+"$db_name"} -e "SELECT 1" >/dev/null 2>&1; then
+        return 1
+    fi
+
+    backup="${config_file}.bak.$(date +%Y%m%d%H%M%S)"
+    cp "$config_file" "$backup" || return 1
+
+    local escaped
+    escaped="$(escape_php_string_for_sed "$decoded")"
+    sed -i "s|\$systemConfig\['database'\]\['password'\][[:space:]]*=.*|\$systemConfig['database']['password'] = '$escaped';|" "$config_file"
+
+    # Verify the file still parses and now holds the working password, or put it back.
+    if [ "$(extract_mysql_password_from_config "$config_file" 2>/dev/null || true)" != "$decoded" ]; then
+        cp "$backup" "$config_file"
+        print warning "Could not rewrite the database password in ${config_file}; restored the original."
+        return 1
+    fi
+
+    print success "Repaired an HTML-escaped database password in ${config_file} (backup: ${backup})."
+    print info "  The stored password contained &amp; and similar entities, which MySQL rejected."
+    log_action "repair_html_escaped_db_password: fixed ${config_file}"
+    return 0
 }
 
 # Log action to log file

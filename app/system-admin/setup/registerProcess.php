@@ -19,12 +19,19 @@ $usersService = ContainerRegistry::get(UsersService::class);
 try {
     $secretKey = file_get_contents(SYSADMIN_SECRET_KEY_FILE);
 
-    if ($_POST['secretKey'] == trim($secretKey)) {
-        if (!empty($_POST['password'])) {
+    // Secret key and password are read raw: the sanitized copy has been through
+    // HTML Purifier, which would break the key comparison and hash a password
+    // that the login form (which reads $_POST directly) can never match.
+    // See _rawInput().
+    $submittedKey = (string) _rawInput('secretKey');
+    $submittedPassword = _rawInput('password');
+
+    if ($submittedKey == trim($secretKey)) {
+        if (!empty($submittedPassword)) {
             $insertData = [
                 'system_admin_email' => $_POST['email'] ?? null,
                 'system_admin_login' => $_POST['loginid'],
-                'system_admin_password' => $usersService->passwordHash($_POST['password'])
+                'system_admin_password' => $usersService->passwordHash($submittedPassword)
             ];
             $db->insert("system_admin", $insertData);
             MiscUtility::deleteFile(SYSADMIN_SECRET_KEY_FILE);

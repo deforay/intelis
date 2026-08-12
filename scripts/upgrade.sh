@@ -1796,6 +1796,16 @@ upgrade_instance() {
         sleep $((db_try * 3))
     done
 
+    # Self-heal one known-bad state: instances installed before the sanitizer fix
+    # have an HTML-escaped database password in their config (mko)(*&^ stored as
+    # mko)(*&amp;^), which MySQL rejects on every connection. The repair only
+    # fires when the stored password fails and the decoded one is proven to work.
+    if [ "$db_ok" -ne 1 ] && repair_html_escaped_db_password "${lis_path}/configs/config.production.php"; then
+        if db_probe_out=$(sudo -u www-data php "${lis_path}/vendor/bin/db-tools" db:test 2>&1); then
+            db_ok=1
+        fi
+    fi
+
     if [ "$db_ok" -ne 1 ]; then
         # The probe's own output is the only thing that says WHY. Swallowing it
         # (as this used to) leaves the operator with "not reachable" and nothing

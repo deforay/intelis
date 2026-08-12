@@ -121,13 +121,17 @@ try {
             $signatureImagePath = isset($userInfo['user_signature']) ? $signatureImagePath . DIRECTORY_SEPARATOR . $userInfo['user_signature'] : null;
         }
 
-        if (isset($_POST['password']) && trim((string) $_POST['password']) !== "") {
+        // Raw, not sanitized: HTML Purifier would rewrite & as &amp; and drop
+        // anything tag-shaped, so the stored hash would be of a password the
+        // user never typed and can never log in with. See _rawInput().
+        $newPassword = _rawInput('password');
+        if (isset($newPassword) && trim((string) $newPassword) !== "") {
 
             /* Recency cross login block */
             if (SYSTEM_CONFIG['recency']['crosslogin'] && !empty(SYSTEM_CONFIG['recency']['url'])) {
                 $client = new Client();
                 $url = rtrim((string) SYSTEM_CONFIG['recency']['url'], "/");
-                $newCrossLoginPassword = CommonService::encrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
+                $newCrossLoginPassword = CommonService::encrypt($newPassword, base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
                 $result = $client->post($url . '/api/update-password', [
                     'form_params' => [
                         'u' => $_POST['loginId'],
@@ -140,7 +144,7 @@ try {
                 }
             }
 
-            $password = $usersService->passwordHash($_POST['password']);
+            $password = $usersService->passwordHash($newPassword);
             $data['password'] = $password;
             $data['force_password_reset'] = 1;
         }
