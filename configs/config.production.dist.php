@@ -85,6 +85,13 @@ $systemConfig['security'] = [
     //          requests with no token are allowed through. Use this to roll back
     //          quickly if a token-less form is discovered in production.
     'csrf_enforce' => true,
+
+    // How long a logged-in user can sit idle before being sent back to the login
+    // page, in seconds. The window slides: every request the user makes resets it,
+    // so this only ever fires on a genuinely unattended screen.
+    // Capped at session.gc_maxlifetime (php.ini, 28800 on a scripted install)
+    // because PHP deletes the session file at that age regardless.
+    'session_idle_timeout' => 14400, // 4 hours
 ];
 
 return $systemConfig;
