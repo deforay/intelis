@@ -19,7 +19,7 @@ folder instead, see
 On the InteLIS server, run:
 
 ```bash
-sudo intelis backup setup
+intelis backup setup
 ```
 
 ??? info "If `intelis` is not recognised"
@@ -55,7 +55,7 @@ The script runs the first backup before it finishes, and reports the result. To
 check again at any time:
 
 ```bash
-sudo intelis backup status
+intelis backup status
 ```
 
 A working setup looks like this:
@@ -91,13 +91,13 @@ to `backups/db` every 6 hours. It leaves out files that are rebuilt on install:
 
 | Task | Command |
 |------|---------|
-| Check the last backup | `sudo intelis backup status` |
-| Test the connection without copying | `sudo intelis backup test` |
-| Back up right now | `sudo intelis backup` |
+| Check the last backup | `intelis backup status` |
+| Test the connection without copying | `intelis backup test` |
+| Back up right now | `intelis backup` |
 | Watch a backup as it runs | `tail -f /var/log/intelis-backup.log` |
-| Stop the scheduled backups | `sudo intelis backup disable` |
-| Start them again | `sudo intelis backup enable` |
-| Change any setting | Re-run `sudo intelis backup setup` |
+| Stop the scheduled backups | `intelis backup disable` |
+| Start them again | `intelis backup enable` |
+| Change any setting | Re-run `intelis backup setup` |
 
 ## Getting the backup back
 
@@ -117,7 +117,7 @@ See [Restoring from a Backup](restoring-from-backup.md).
 
 !!! failure "The backup folder does not belong to this installation any more"
     The folder at the destination was replaced by another machine's backup. Re-run
-    `sudo intelis backup setup` to set the destination up again.
+    `intelis backup setup` to set the destination up again.
 
 !!! warning "The newest database dump is more than 24 hours old"
     The scheduled job that dumps the database has stopped. The file copy still
