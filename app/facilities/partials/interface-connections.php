@@ -13,6 +13,13 @@ $connectionDescription = _translate(
 $statusPillClasses = [
     'active' => 'ifc-pill-active',
     'revoked' => 'ifc-pill-revoked',
+    // Seen reporting through the importer but never connected. Not a fault, and for a
+    // lab that syncs only that way it is the normal and permanent state, so it reads as
+    // a state rather than a warning.
+    'observed' => 'ifc-pill-muted',
+];
+$statusLabels = [
+    'observed' => _translate('Reporting via importer'),
 ];
 $interfaceUiConfig = [
     'endpoint' => '/facilities/interfaceConnectionAction.php',
@@ -221,6 +228,7 @@ $interfaceUiConfig = [
                     <tr>
                         <th><?= _translate('Display Name'); ?></th>
                         <th><?= _translate('Status'); ?></th>
+                        <th><?= _translate('Reporting'); ?></th>
                         <th><?= _translate('Created'); ?></th>
                         <th><?= _translate('Last Seen'); ?></th>
                         <th><?= _translate('Scopes'); ?></th>
@@ -230,7 +238,7 @@ $interfaceUiConfig = [
                 <tbody>
                     <?php if ($interfaceInstallations === []) { ?>
                         <tr>
-                            <td colspan="6" class="text-center text-muted">
+                            <td colspan="7" class="text-center text-muted">
                                 <?= _translate('No Interface Tool installations are connected yet.'); ?>
                             </td>
                         </tr>
@@ -245,8 +253,31 @@ $interfaceUiConfig = [
                                 <td><?= $escape((string) $installation['display_name']); ?></td>
                                 <td>
                                     <span class="ifc-pill <?= $statusClass; ?>">
-                                        <?= $escape(ucfirst($status)); ?>
+                                        <?= $escape($statusLabels[$status] ?? ucfirst($status)); ?>
                                     </span>
+                                </td>
+                                <td>
+                                    <?php
+                                    // What this tool actually does, so it can be told from
+                                    // the others. An importer-registered tool is named after
+                                    // itself and nothing else; the analyzer it drives is what
+                                    // an administrator recognises it by.
+                                    $machines = (string) ($installation['activity_machines'] ?? '');
+                                    $lastActivity = (string) ($installation['activity_last_seen'] ?? '');
+                                    ?>
+                                    <?php if ($machines !== '') { ?>
+                                        <?= $escape($machines); ?>
+                                        <?php if ($lastActivity !== '') { ?>
+                                            <br><small class="text-muted">
+                                                <?= _translate('last reported'); ?>
+                                                <?= $escape($lastActivity); ?>
+                                            </small>
+                                        <?php } ?>
+                                    <?php } else { ?>
+                                        <span class="text-muted">
+                                            <?= _translate('Nothing reported yet'); ?>
+                                        </span>
+                                    <?php } ?>
                                 </td>
                                 <td><?= $escape((string) ($installation['created_at'] ?? '-')); ?></td>
                                 <td><?= $escape((string) ($installation['last_seen_at'] ?? '-')); ?></td>
@@ -258,11 +289,21 @@ $interfaceUiConfig = [
                                     <?php } ?>
                                 </td>
                                 <td class="ifc-actions">
+                                    <?php
+                                    // A tool that has never held a credential is being
+                                    // connected for the first time, not reconnected. Same
+                                    // code underneath; the word has to match what the
+                                    // administrator thinks they are doing.
+                                    $isObserved = $status === 'observed';
+                                    ?>
                                     <button type="button" class="btn btn-xs btn-primary interface-reconnect"
                                         data-installation-id="<?= $escape($installationId); ?>">
-                                        <?= _translate('Reconnect / Reinstall'); ?>
+                                        <?= $isObserved
+                                            ? _translate('Connect this tool')
+                                            : _translate('Reconnect / Reinstall'); ?>
                                     </button>
-                                    <?php if ($status !== 'revoked') { ?>
+                                    <?php // Nothing to revoke while there is no credential. ?>
+                                    <?php if ($status !== 'revoked' && !$isObserved) { ?>
                                         <button type="button" class="btn btn-xs btn-danger interface-revoke"
                                             data-installation-id="<?= $escape($installationId); ?>">
                                             <?= _translate('Revoke'); ?>

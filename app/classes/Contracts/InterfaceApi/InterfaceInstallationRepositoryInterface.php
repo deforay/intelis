@@ -78,4 +78,18 @@ interface InterfaceInstallationRepositoryInterface
 
     /** @return list<array<string, mixed>> */
     public function listInstallations(?int $facilityId = null): array;
+
+    /**
+     * What each of a facility's installations has been doing, so a person can tell them
+     * apart. A tool registered by the importer is named after itself and nothing else;
+     * what makes it recognisable is the analyzer it drives and when it last reported.
+     *
+     * Kept separate from listInstallations rather than joined into it, because that query
+     * also serves an unscoped listing and this aggregate is only bounded when a facility
+     * bounds it.
+     *
+     * @return array<string, array{machines: ?string, last_activity: ?string, events: int}>
+     *         keyed by installation_id
+     */
+    public function activitySummary(int $facilityId): array;
 }

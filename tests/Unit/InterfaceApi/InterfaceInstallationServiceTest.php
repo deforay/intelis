@@ -248,6 +248,46 @@ final class InterfaceInstallationServiceTest extends TestCase
         self::assertSame($first, $second);
     }
 
+    /**
+     * A listing has to say what each tool has been doing, or an administrator picking the
+     * one to connect is choosing between rows they cannot tell apart.
+     */
+    public function testTheListingSaysWhatEachToolHasBeenDoing(): void
+    {
+        $source = 'interface-with-activity';
+        $installationId = $this->repository->registerObserved(
+            '550e8400-e29b-41d4-a716-4466554400ee',
+            $source,
+            101,
+            'Cobas 5800 (auto-detected)',
+            $this->now
+        );
+        $this->repository->recordActivity(101, (string) $installationId, [
+            'machines' => 'roche-cobas-5800',
+            'last_activity' => '2026-08-13 09:15:00',
+            'events' => 42,
+        ]);
+
+        $listed = $this->service->listInstallations(101);
+
+        self::assertCount(1, $listed);
+        self::assertSame('roche-cobas-5800', $listed[0]['activity_machines']);
+        self::assertSame('2026-08-13 09:15:00', $listed[0]['activity_last_seen']);
+        self::assertSame(42, $listed[0]['activity_events']);
+    }
+
+    /** A tool that has reported nothing says so, rather than showing a gap. */
+    public function testAToolThatHasReportedNothingIsListedAsSuch(): void
+    {
+        $this->service->activate($this->createCode(101), 'interface-quiet-tool', 'Quiet', $this->now);
+
+        $listed = $this->service->listInstallations(101);
+
+        self::assertNull($listed[0]['activity_machines']);
+        self::assertNull($listed[0]['activity_last_seen']);
+        self::assertSame(0, $listed[0]['activity_events']);
+    }
+
     public function testCrossFacilityClaimIsRejectedWithoutConsumingCode(): void
     {
         $source = 'source-installation-010';
