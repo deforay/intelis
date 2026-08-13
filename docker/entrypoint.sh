@@ -107,6 +107,25 @@ sed -i "s|\$systemConfig\['interfacing'\]\['database'\]\['password'\]\s*=.*|\$sy
 sed -i "s|\$systemConfig\['interfacing'\]\['database'\]\['db'\]\s*=.*|\$systemConfig['interfacing']['database']['db'] = '$iface_db_name';|" "$config_file"
 sed -i "s|\$systemConfig\['interfacing'\]\['database'\]\['port'\]\s*=.*|\$systemConfig['interfacing']['database']['port'] = $iface_db_port;|" "$config_file"
 
+# Put the intelis command on PATH, the way setup.sh and upgrade.sh do on an
+# Ubuntu install. Nothing did it here, so a Docker instance was the one kind of
+# installation where the documented command did not exist — `intelis check`,
+# `intelis backup status` and the rest all answered "command not found", and
+# every guide and job aid that names them was wrong for this install method.
+#
+# A symlink rather than a copy, so a bind-mounted checkout runs the file the
+# developer is editing.
+chmod +x /var/www/html/intelis 2>/dev/null || true
+ln -sf /var/www/html/intelis /usr/local/bin/intelis
+
+# The privileged command runner. On Ubuntu, install-runner.sh puts this in place
+# with a systemd timer; a container has no systemd, so the file is installed here
+# and cron.sh drives it. Without it a Docker instance can receive a root command
+# from the STS and then has nothing able to execute it.
+if [ -f /var/www/html/scripts/intelis-runner.sh ]; then
+    install -m 0755 /var/www/html/scripts/intelis-runner.sh /usr/local/bin/intelis-runner
+fi
+
 # The app writes its logs as www-data. Anything root created here first — a log
 # file from an earlier start, or a freshly bind-mounted directory — it cannot
 # then chmod, and every log call fails with "Operation not permitted" and falls
