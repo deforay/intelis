@@ -1,5 +1,12 @@
 # Installing InteLIS on Ubuntu 22.04 or above (only Ubuntu LTS)
 
+This is the recommended way to install a lab. Everything that keeps an
+installation running afterwards — `intelis update`, off-machine backup, restore,
+and remote commands from the STS — is built for an Ubuntu host and works here
+without qualification. [Docker](installing-intelis-with-docker.md) is quicker to
+stand up and is the better choice for evaluating InteLIS or developing against
+it, but several of those operations do not apply inside a container.
+
 This guide installs InteLIS on a fresh Ubuntu server.
 
 **Prerequisites:** Ubuntu 22.04 LTS or a later LTS release. Non-LTS releases are not supported. The installer needs administrator rights and an internet connection.
