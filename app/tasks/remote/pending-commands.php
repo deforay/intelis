@@ -90,6 +90,30 @@ MiscUtility::makeDirectory($resultsDir);
 // disables all root command execution for this instance.
 $allowUpgrade = strtolower(trim((string) $general->getGlobalConfig('allow_remote_upgrade')));
 $upgradeAllowed = in_array($allowUpgrade, ['1', 'true', 'yes', 'on'], true);
+
+// A containerised instance cannot take a remote upgrade, whatever the switch
+// says. upgrade.sh manages the operating system around the application — apt
+// packages, the PHP version, systemd units, MySQL tuning — and refuses on
+// anything that is not Ubuntu. The official PHP images are Debian, so it stops
+// at "This script requires Ubuntu 20.04 or newer" after having already spent
+// several minutes installing packages into a layer that the next rebuild
+// discards. A container is upgraded by rebuilding its image, not from inside.
+//
+// Better to not advertise the verb than to accept the command and fail: the STS
+// greys out what a lab does not support, so an operator sees an upgrade is
+// unavailable here instead of queueing one and reading a stack of apt output an
+// hour later.
+$isContainer = is_file('/.dockerenv')
+    || is_file('/run/.containerenv')
+    || (is_readable('/proc/1/cgroup')
+        && preg_match('/docker|containerd|kubepods|lxc/i', (string) @file_get_contents('/proc/1/cgroup')) === 1);
+
+if ($isContainer && $upgradeAllowed) {
+    $upgradeAllowed = false;
+    if ($io) {
+        $io->note('Containerised instance: remote upgrade commands are not advertised. Rebuild the image to upgrade.');
+    }
+}
 $disabledFlag = $baseDir . DIRECTORY_SEPARATOR . 'disabled';
 if ($upgradeAllowed) {
     if (is_file($disabledFlag)) {
