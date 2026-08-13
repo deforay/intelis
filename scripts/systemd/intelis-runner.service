@@ -6,12 +6,25 @@ ConditionPathExists=/usr/local/bin/intelis-runner
 [Service]
 Type=oneshot
 ExecStart=/usr/local/bin/intelis-runner
-# Hardening: runner only reads/writes under /var/www/*/var, /var/log/intelis-runner,
-# /var/lock, /var/intelis-staging, /var/intelis-rollback, and calls specific
-# binaries. Keep the rest of the filesystem read-only.
-ProtectSystem=strict
-ReadWritePaths=/var/www /var/log/intelis-runner /var/lock /var/intelis-staging /var/intelis-rollback /tmp /etc/apache2/conf-available /etc/apache2/conf-enabled
-ProtectHome=true
+# Filesystem hardening was tried here and does not fit what this unit does.
+#
+# ProtectSystem=strict with a ReadWritePaths allowlist assumes the runner only
+# touches the application. It does not: its whitelisted commands include
+# "upgrade", and upgrade.sh manages the operating system around the application
+# — it writes /root/.my.cnf, tunes /etc/mysql, touches /var/log/mysql, switches
+# PHP versions and restarts services. Under the sandbox each of those fails as a
+# read-only filesystem, one at a time, and the upgrade dies partway through
+# having already changed things.
+#
+# Enumerating every path upgrade.sh might touch is not a boundary, it is a list
+# that goes stale the next time that script learns to configure something. The
+# real boundary is elsewhere and is unaffected by this: the runner accepts only
+# command names from a hardcoded whitelist, refuses anything else, verifies a
+# nonce so a command cannot be replayed, and stops entirely when the kill-switch
+# file is present. A root process whose job is to run the system updater cannot
+# also be confined to the application directory.
+ProtectSystem=false
+ProtectHome=false
 PrivateTmp=true
 NoNewPrivileges=false
 # NoNewPrivileges must be false because intelis-update needs to sudo to www-data
