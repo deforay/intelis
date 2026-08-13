@@ -71,6 +71,25 @@ final class InMemoryInterfaceInstallationRepository implements InterfaceInstalla
         return $proposedInstallationId;
     }
 
+    /** @var array<int, array<string, array{machines: ?string, last_activity: ?string, events: int}>> */
+    private array $activity = [];
+
+    /**
+     * Absent by default: an installation with no telemetry genuinely has no summary, and
+     * callers must read that as "nothing reported yet" rather than as missing data.
+     *
+     * @param array{machines: ?string, last_activity: ?string, events: int} $summary
+     */
+    public function recordActivity(int $facilityId, string $installationId, array $summary): void
+    {
+        $this->activity[$facilityId][$installationId] = $summary;
+    }
+
+    public function activitySummary(int $facilityId): array
+    {
+        return $this->activity[$facilityId] ?? [];
+    }
+
     /** @param list<string> $scopes */
     public function setScopes(string $installationId, array $scopes): void
     {

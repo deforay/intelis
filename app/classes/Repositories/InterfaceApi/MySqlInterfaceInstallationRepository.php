@@ -362,6 +362,34 @@ final readonly class MySqlInterfaceInstallationRepository implements InterfaceIn
         ) ?: [];
     }
 
+    public function activitySummary(int $facilityId): array
+    {
+        // Filtered on lab_id first so idx_instrument_activity_lab_time bounds the scan to
+        // one facility's rows; there is no index on installation_id, and this does not
+        // need one while the lab is always the leading condition.
+        $rows = $this->db->rawQuery(
+            "SELECT installation_id,
+                    MAX(occurred_at) AS last_activity,
+                    COUNT(*) AS events,
+                    GROUP_CONCAT(DISTINCT machine_type ORDER BY machine_type SEPARATOR ', ') AS machines
+               FROM instrument_activity_log
+              WHERE lab_id = ? AND installation_id IS NOT NULL
+              GROUP BY installation_id",
+            [$facilityId]
+        ) ?: [];
+
+        $summary = [];
+        foreach ($rows as $row) {
+            $summary[(string) $row['installation_id']] = [
+                'machines' => $row['machines'] !== null ? (string) $row['machines'] : null,
+                'last_activity' => $row['last_activity'] !== null ? (string) $row['last_activity'] : null,
+                'events' => (int) $row['events'],
+            ];
+        }
+
+        return $summary;
+    }
+
     /** @param array<string, mixed>|null $code */
     private function assertActivationCodeIsUsable(?array $code, DateTimeImmutable $now): void
     {
