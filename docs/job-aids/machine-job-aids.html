@@ -223,11 +223,11 @@ Type a number and press Enter:</div>
   <table class="wrapfirst">
     <tr><th>To do this</th><th>Type</th></tr>
     <tr><td>Check the machine is working</td><td><span class="path">intelis check</span></td></tr>
-    <tr><td>See whether backups are working</td><td><span class="path">sudo intelis backup status</span></td></tr>
-    <tr><td>Back up right now</td><td><span class="path">sudo intelis backup</span></td></tr>
-    <tr><td>Update InteLIS</td><td><span class="path">sudo intelis update</span></td></tr>
-    <tr><td>Restore from a backup</td><td><span class="path">sudo intelis restore</span></td></tr>
-    <tr><td>Change where backups go</td><td><span class="path">sudo intelis backup setup</span></td></tr>
+    <tr><td>See whether backups are working</td><td><span class="path">intelis backup status</span></td></tr>
+    <tr><td>Back up right now</td><td><span class="path">intelis backup</span></td></tr>
+    <tr><td>Update InteLIS</td><td><span class="path">intelis update</span></td></tr>
+    <tr><td>Restore from a backup</td><td><span class="path">intelis restore</span></td></tr>
+    <tr><td>Change where backups go</td><td><span class="path">intelis backup setup</span></td></tr>
   </table>
 
   <h3>How often</h3>
@@ -240,10 +240,11 @@ Type a number and press Enter:</div>
   </table>
 
   <div class="warn">
-    <strong>About the word sudo</strong>
-    Some commands start with <span class="path">sudo</span>. It means "do this as the
-    administrator", and the machine will ask for the password once. If a command fails
-    saying permission denied, it needed <span class="path">sudo</span> in front.
+    <strong>Never type sudo in front of intelis</strong>
+    It asks for administrator rights itself, only for the steps that need them, and
+    only then does it ask for the password. Adding <span class="path">sudo</span> is
+    not needed and for some commands makes things worse, because it runs work as the
+    administrator that is supposed to run as the account InteLIS itself uses.
   </div>
 
   <h3>If typing intelis says "command not found"</h3>
@@ -315,7 +316,7 @@ Type a number and press Enter:</div>
     <p>Do this when the programme asks for it.</p>
   </header>
 
-  <div class="cmd big">sudo intelis update</div>
+  <div class="cmd big">intelis update</div>
 
   <p>That is the whole procedure. Leave the window open until it finishes and says so.</p>
 
@@ -331,7 +332,7 @@ Type a number and press Enter:</div>
   <h3>Before and after</h3>
   <table class="wrapfirst">
     <tr><td>Before</td><td>Tell the lab. There is a short spell where pages may not load.</td></tr>
-    <tr><td>Before</td><td>Check backups are current: <span class="path">sudo intelis backup status</span></td></tr>
+    <tr><td>Before</td><td>Check backups are current: <span class="path">intelis backup status</span></td></tr>
     <tr><td>After</td><td>Run <span class="path">intelis check</span>. Every line should say PASS.</td></tr>
     <tr><td>After</td><td>Log in and open one page, to see it with your own eyes.</td></tr>
   </table>
@@ -365,7 +366,7 @@ Type a number and press Enter:</div>
   </header>
 
   <h3>Setting it up, once per machine</h3>
-  <div class="cmd">sudo intelis backup setup</div>
+  <div class="cmd">intelis backup setup</div>
   <p>It asks where backups should go, and tests the connection before saving anything:</p>
   <table class="wrapfirst">
     <tr><td>1 &mdash; Another Linux machine</td><td>Over the network. Needs that machine's address, a username, and its password once.</td></tr>
@@ -379,7 +380,7 @@ Type a number and press Enter:</div>
   <p>Every 8 hours, and after every restart. Nobody has to remember.</p>
 
   <h3>The weekly ten seconds</h3>
-  <div class="cmd">sudo intelis backup status</div>
+  <div class="cmd">intelis backup status</div>
   <div class="screen">Lab            : kigali-central (kigali-central-a1b2c3d4)
 Backing up to  : backup@192.168.1.20:/home/backup/backups/...
 Last good backup: 2026-08-13T04:00:11Z (6 hours ago)
@@ -390,16 +391,16 @@ Schedule        : every 8 hours and after every restart</div>
   <table class="wrapfirst">
     <tr><th>What it says</th><th>What to do</th></tr>
     <tr><td>Last good backup: a few hours ago</td><td>Nothing. This is what right looks like.</td></tr>
-    <tr><td>Last good backup: never</td><td>It has never worked. Run <span class="path">sudo intelis backup test</span>.</td></tr>
-    <tr><td>More than a day old</td><td>Run <span class="path">sudo intelis backup test</span> to find out why.</td></tr>
+    <tr><td>Last good backup: never</td><td>It has never worked. Run <span class="path">intelis backup test</span>.</td></tr>
+    <tr><td>More than a day old</td><td>Run <span class="path">intelis backup test</span> to find out why.</td></tr>
     <tr><td>Last attempt: FAILED</td><td>Read the reason on the next line. Usually the other machine is switched off.</td></tr>
     <tr><td>Schedule: OFF</td><td>Backups are not scheduled. Call support.</td></tr>
   </table>
 
   <h3>The other two commands</h3>
   <table class="wrapfirst">
-    <tr><td><span class="path">sudo intelis backup test</span></td><td>Checks the connection and reports what would be copied. Changes nothing. Safe any time.</td></tr>
-    <tr><td><span class="path">sudo intelis backup</span></td><td>Backs up right now, on this machine and off it. Use before an update or a move.</td></tr>
+    <tr><td><span class="path">intelis backup test</span></td><td>Checks the connection and reports what would be copied. Changes nothing. Safe any time.</td></tr>
+    <tr><td><span class="path">intelis backup</span></td><td>Backs up right now, on this machine and off it. Use before an update or a move.</td></tr>
   </table>
 
   <div class="warn">
@@ -426,10 +427,10 @@ Schedule        : every 8 hours and after every restart</div>
   </div>
 
   <h3>See what backups exist</h3>
-  <div class="cmd">sudo intelis restore --list</div>
+  <div class="cmd">intelis restore --list</div>
 
   <h3>Restore one</h3>
-  <div class="cmd big">sudo intelis restore</div>
+  <div class="cmd big">intelis restore</div>
   <p>It connects to wherever backups were sent, shows every lab stored there, copies the
   chosen one back, and checks the files are readable before doing anything with them.</p>
 
@@ -444,7 +445,7 @@ Schedule        : every 8 hours and after every restart</div>
   <ol class="steps">
     <li>Install Ubuntu on the new machine.</li>
     <li>Connect it to the same network as the backup destination, or plug in the backup drive.</li>
-    <li>Run <span class="path">sudo intelis restore</span> and choose the lab.</li>
+    <li>Run <span class="path">intelis restore</span> and choose the lab.</li>
     <li>Copy the command it prints, and run it. Allow an hour.</li>
     <li>Run <span class="path">intelis check</span>, then log in and confirm the data is there.</li>
     <li>Set backups up again with card 4. The new machine is not backing anything up yet.</li>

@@ -21,7 +21,7 @@ first. That guide covers the whole rebuild. This one covers fetching the backup.
 ## Fetch the backup
 
 ```bash
-sudo intelis restore
+intelis restore
 ```
 
 ??? info "If `intelis` is not recognised"
@@ -61,7 +61,7 @@ Choose the lab by number. Then choose what to copy back:
 | 2 | Everything, including uploads and attachments | Files are missing as well as data |
 
 To see what is stored without copying anything, run
-`sudo intelis restore --list`.
+`intelis restore --list`.
 
 ## Put the data back
 
@@ -111,7 +111,7 @@ needed. For the other options, see
 !!! failure "There are no backups in this folder"
     The destination holds no lab folders. Confirm you connected to the right
     machine or drive. On the InteLIS server, run
-    `sudo intelis backup status` to see where its backups go.
+    `intelis backup status` to see where its backups go.
 
 !!! failure "A backup file is damaged"
     The script reports which file failed its check. Choose an older backup from

@@ -93,13 +93,32 @@ as_root() {
 # one whose answer about writable paths is the true one, and the one whose
 # cache files the web server can later replace.
 web_user() {
-    local candidate
-    for candidate in www-data apache _www http; do
-        if id -u "$candidate" >/dev/null 2>&1; then
-            printf '%s' "$candidate"
-            return 0
-        fi
+    local target owner
+
+    # Who owns the application's writable state, not who exists. _www is present
+    # on every Mac and www-data on hosts that serve nothing, so treating mere
+    # existence as proof would have a developer's `intelis migrate` stop to ask
+    # for a password so it could switch to an account that serves nothing and
+    # owns none of these files. The owner of var/cache is the account the app
+    # actually runs as, and it is the one whose files must stay replaceable.
+    for target in "${APP_DIR}/var/cache" "${APP_DIR}/var" "$APP_DIR"; do
+        [ -e "$target" ] || continue
+
+        owner="$(stat -c %U "$target" 2>/dev/null || stat -f %Su "$target" 2>/dev/null)"
+        [ -n "$owner" ] || continue
+
+        case "$owner" in
+            www-data|apache|apache2|_www|http|nginx)
+                printf '%s' "$owner"
+                return 0
+                ;;
+        esac
+
+        # Owned by somebody else — a developer's checkout. That is the answer;
+        # do not keep walking up looking for a more convenient one.
+        return 1
     done
+
     return 1
 }
 
@@ -291,11 +310,33 @@ run_composer() {
     ( cd "$APP_DIR" && COMPOSER_ALLOW_SUPERUSER=1 composer "$@" )
 }
 
+# provision is the one repair that wants root rather than the application's
+# account: it creates the missing directories and then chowns them to
+# invoking-user:www-data, and it can do neither as www-data. It reads the
+# invoking user from SUDO_USER, which sudo sets for us here.
+cmd_provision() {
+    if [ "$(id -u)" -eq 0 ]; then
+        run_composer provision "$@"
+        return $?
+    fi
+
+    if ! command -v sudo >/dev/null 2>&1; then
+        error "Setting up directories needs administrator rights, and sudo is not installed."
+        error "Log in as root and run 'intelis provision' again."
+        return 1
+    fi
+
+    info "This needs administrator rights. You may be asked for your password." >&2
+    # sudo clears the environment, so the variable is handed over explicitly
+    # rather than exported and hoped for.
+    ( cd "$APP_DIR" && sudo env COMPOSER_ALLOW_SUPERUSER=1 composer provision "$@" )
+}
+
 # Composer run by root leaves root-owned files in var/cache that the web server
 # can no longer replace, which is how `composer purge-cache` starts failing and
 # takes post-install down with it. The passthrough above is left exactly as it
 # always was, but anything this file invokes on the operator's behalf — who will
-# quite reasonably have typed `sudo intelis backup` — runs as the application's
+# quite reasonably have typed `intelis backup` — runs as the application's
 # own account when there is one to run as.
 run_app_composer() {
     local runner
@@ -307,7 +348,7 @@ run_app_composer() {
     fi
 
     # A lab typing `intelis backup` as themselves cannot write the backup files,
-    # and a lab typing `sudo intelis backup` writes them as root. Both are wrong
+    # and a lab typing `intelis backup` writes them as root. Both are wrong
     # in the same way, so switch to the application's account from either side.
     # sudo can do that from an ordinary account with sudo rights just as well as
     # from root, so there is no need to become root first.
@@ -408,5 +449,17 @@ case "$command" in
     menu)               menu ;;
     help|--help|-h)     cmd_help ;;
     composer)           run_composer "$@" ;;
+
+    # The repairs preflight prescribes. They are named here rather than left to
+    # the passthrough so that each one runs as the account it needs, which is
+    # what lets every printed remedy be typed exactly as printed, with no sudo
+    # and no wondering. Through the passthrough they would run as whoever
+    # typed them: `intelis migrate` as the operator litters var/cache with
+    # files the web server cannot replace, and `intelis provision` silently
+    # fails to chown anything at all.
+    provision)          cmd_provision "$@" ;;
+    install|migrate|token|db:collation|audit-triggers-install|purge-cache)
+                        run_app_composer "$command" "$@" ;;
+
     *)                  run_composer "$command" "$@" ;;
 esac

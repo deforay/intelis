@@ -4,7 +4,7 @@ set -Eeuo pipefail
 # Fetches an InteLIS backup back from wherever remote-backup.sh sent it.
 #
 # To use this script:
-#   sudo intelis restore
+#   intelis restore
 #
 # On a machine with no InteLIS on it yet, fetch it directly instead:
 #   cd ~
@@ -74,7 +74,7 @@ trim() {
 
 no_more_input() {
   print error "Ran out of answers — the input ended before the questions did."
-  print info  "Run this directly in a terminal: sudo intelis restore"
+  print info  "Run this directly in a terminal: intelis restore"
   exit 1
 }
 
@@ -471,7 +471,7 @@ if [ -n "$LIS_PATH" ]; then
     print info "Restoring $(basename "$newest_dump")..."
     if sudo -u www-data php "${LIS_PATH}/vendor/bin/db-tools" restore "$newest_dump"; then
       print success "Database restored"
-      sudo -u www-data php "${LIS_PATH}/bin/migrate.php" || print warning "Could not apply database migrations; run 'sudo intelis migrate' by hand."
+      sudo -u www-data php "${LIS_PATH}/bin/migrate.php" || print warning "Could not apply database migrations; run 'intelis migrate' by hand."
       print info "Log in and check Admin → System Config."
     else
       print error "The restore did not finish. The safety copy of the previous database is in ${LIS_PATH}/backups/db."
