@@ -1977,6 +1977,21 @@ upgrade_instance() {
 download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh
 chmod +x /usr/local/bin/intelis-refresh
 
+# Make sure the update command is installed for next time. Instances upgraded by
+# running a downloaded copy of this script directly — the documented route until
+# setup.sh started installing it — never gained the command, so every one of
+# their updates began by fetching this file again by hand.
+#
+# Only when absent, which is also what keeps this safe: bash reads a script as
+# it executes it, so overwriting the file currently being run would corrupt the
+# rest of this run. If we are running as /usr/local/bin/intelis-update then it
+# exists, and this does nothing.
+if [ ! -x /usr/local/bin/intelis-update ]; then
+    download_file "/usr/local/bin/intelis-update" https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh
+    chmod +x /usr/local/bin/intelis-update
+    print success "Update command installed — next time just run 'intelis update'"
+fi
+
 # Install or refresh the remote command runner (root-owned, systemd-timed).
 # Idempotent — the installer overwrites the binary + unit files and reloads
 # systemd. If any lab doesn't want remote commands, it can simply set

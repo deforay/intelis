@@ -1,14 +1,406 @@
 #!/usr/bin/env bash
 # File: intelis
+#
+# The single front door for running an InteLIS machine.
+#
+# Everything a lab has to do to keep an installation alive — update it, back it
+# up, check the backup is real, restore from one, find out why it is unwell —
+# used to be a different ritual: a different script, fetched from a different
+# long URL, run a different way, and named a different thing once installed.
+# Four procedures, four things to get exactly right, and the one needed most
+# urgently (restore) was the one with nothing installed to run.
+#
+# None of that machinery has changed. This file is a front door onto it: it
+# knows where each script lives, fetches it when it is missing, and asks for
+# administrator rights only when the thing being run actually needs them. What
+# an operator has to remember is one word.
+#
+#   intelis                  a numbered menu — no words to remember at all
+#   intelis update           update InteLIS to the current release
+#   intelis backup           back up now, on this machine and off it
+#   intelis backup status    when the last backup worked, and whether it did
+#   intelis backup test      check the backup destination, change nothing
+#   intelis backup setup     choose or change where backups are sent
+#   intelis restore          bring a backup back from where it was sent
+#   intelis check            can this machine run and serve InteLIS?
+#   intelis health           disk, database, backups: is it well right now?
+#
+# Anything else is passed through to composer exactly as before, so every
+# `intelis migrate`, `intelis preflight` and `intelis post-install` in the
+# existing runbooks keeps working. `intelis composer <args>` forces that
+# passthrough for the two words this file now claims for itself: `update` means
+# "update InteLIS" here, so `composer update` is reached as
+# `intelis composer update`.
 
-# If we're already in a directory with composer.json, use current directory
+set -uo pipefail
+
+RAW_BASE="https://raw.githubusercontent.com/deforay/intelis/master/scripts"
+
+# --- where the application lives ----------------------------------------------
+# Unchanged from the original: a directory holding composer.json wins, so a
+# developer sitting in a checkout drives that checkout. Otherwise resolve
+# through the symlink in /usr/local/bin to the installation this command was
+# installed from.
+
 if [ -f "composer.json" ]; then
-    WORK_DIR="$(pwd)"
+    APP_DIR="$(pwd)"
 else
-    # Otherwise, use script's directory
-    WORK_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
-    cd "$WORK_DIR"
+    APP_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 fi
 
-# Run composer with the passed arguments
-COMPOSER_ALLOW_SUPERUSER=1 composer "$@"
+# --- output -------------------------------------------------------------------
+
+say()     { printf "%s\n" "$*"; }
+info()    { printf "\033[1;96mℹ️ \033[0m %s\n" "$*"; }
+success() { printf "\033[1;92m✅\033[0m %s\n" "$*"; }
+warning() { printf "\033[1;93m⚠️ \033[0m %s\n" "$*"; }
+error()   { printf "\033[1;91m❌\033[0m %s\n" "$*" >&2; }
+
+header() {
+    printf "\n\033[1;96m%s\033[0m\n" "$*"
+    printf "\033[1;96m%s\033[0m\n\n" "$(printf '%*s' "${#1}" '' | tr ' ' '=')"
+}
+
+# --- privileges ---------------------------------------------------------------
+# Elevation is per-command rather than for the whole script. Re-executing all of
+# `intelis` under sudo would also elevate the composer passthrough, and composer
+# run as root leaves a root-owned var/cache that the next www-data run cannot
+# clear — the exact failure upgrade.sh has to chown its way around.
+
+as_root() {
+    if [ "$(id -u)" -eq 0 ]; then
+        "$@"
+        return $?
+    fi
+
+    if ! command -v sudo >/dev/null 2>&1; then
+        error "This needs administrator rights, and sudo is not installed."
+        error "Log in as root and run the same command again."
+        return 1
+    fi
+
+    # To stderr: callers capture the stdout of helpers that elevate, and a
+    # courtesy notice landing in a command substitution would be read as part of
+    # the value.
+    info "This needs administrator rights. You may be asked for your password." >&2
+    sudo "$@"
+}
+
+# The account the application runs as, when this is running as root and can
+# choose. Anything that boots the app is better run as that account: it is the
+# one whose answer about writable paths is the true one, and the one whose
+# cache files the web server can later replace.
+web_user() {
+    local candidate
+    for candidate in www-data apache _www http; do
+        if id -u "$candidate" >/dev/null 2>&1; then
+            printf '%s' "$candidate"
+            return 0
+        fi
+    done
+    return 1
+}
+
+# --- fetching a script that is not here yet -----------------------------------
+
+
+# Downloads as the current user into a temporary file and only then puts it in
+# place as root. Downloading as root would mean handing sudo a command line
+# built from a URL, and it fails messily on a machine where root has no network
+# proxy configured but the operator does.
+install_script() { # install_script <script-name.sh> <destination-name>
+    local url="${RAW_BASE}/$1" dest="/usr/local/bin/$2" tmp
+    tmp="$(mktemp)" || return 1
+
+    if command -v wget >/dev/null 2>&1; then
+        wget -q -O "$tmp" "$url" || { rm -f "$tmp"; return 1; }
+    elif command -v curl >/dev/null 2>&1; then
+        curl -fsSL -o "$tmp" "$url" || { rm -f "$tmp"; return 1; }
+    else
+        rm -f "$tmp"
+        error "Neither wget nor curl is installed, so nothing can be downloaded."
+        return 1
+    fi
+
+    # A truncated download is still a file. Refusing to install something that
+    # is not a script beats installing it and failing later with a syntax error
+    # from a line nobody wrote.
+    if [ "$(head -c 2 "$tmp")" != '#!' ]; then
+        rm -f "$tmp"
+        error "What was downloaded is not a script. The machine may be behind a portal that intercepted the download."
+        return 1
+    fi
+
+    as_root install -m 0755 "$tmp" "$dest"
+    local status=$?
+    rm -f "$tmp"
+    return $status
+}
+
+# Where a helper script can be found, in the order worth trying: the copy that
+# shipped with this installation first, because it matches this installation and
+# works with no network at all — which is the situation a restore from a USB
+# drive is actually performed in. Then a previously downloaded copy. Only then
+# the network.
+locate_script() { # locate_script <script-name.sh> <installed-name>
+    local script=$1 installed=$2
+
+    if [ -f "${APP_DIR}/scripts/${script}" ]; then
+        printf '%s' "${APP_DIR}/scripts/${script}"
+        return 0
+    fi
+
+    if [ -x "/usr/local/bin/${installed}" ]; then
+        printf '%s' "/usr/local/bin/${installed}"
+        return 0
+    fi
+
+    info "Fetching ${installed}..." >&2
+    if install_script "$script" "$installed" >&2; then
+        printf '%s' "/usr/local/bin/${installed}"
+        return 0
+    fi
+
+    error "Could not download ${script}. Check this machine's internet connection."
+    return 1
+}
+
+# --- the commands -------------------------------------------------------------
+
+cmd_update() {
+    header "Updating InteLIS"
+
+    # Refresh the updater before running it. Nothing else ever does: setup.sh and
+    # upgrade.sh both install it only when absent, and upgrade.sh cannot replace
+    # itself while it is the file being executed. Left alone, a machine keeps
+    # whatever updater it was first given, forever — which is why the old
+    # instructions had operators re-download it by hand before every update.
+    # Doing it here is that same step, minus the copy-paste.
+    #
+    # Safe to overwrite because it is not running yet; it is invoked below.
+    local updater="/usr/local/bin/intelis-update"
+
+    if ! install_script upgrade.sh intelis-update; then
+        if [ -x "$updater" ]; then
+            warning "Could not check for a newer update command; using the one already installed."
+        elif [ -f "${APP_DIR}/scripts/upgrade.sh" ]; then
+            warning "Could not download the update command; using the copy that came with this installation."
+            updater="${APP_DIR}/scripts/upgrade.sh"
+        else
+            error "Could not download the update command. Check this machine's internet connection."
+            return 1
+        fi
+    fi
+
+    as_root bash "$updater" -p "$APP_DIR" "$@"
+}
+
+cmd_backup() {
+    case "${1:-now}" in
+        status) shift; backup_runner_action --status "$@" ;;
+        test)   shift; backup_runner_action --test "$@" ;;
+        setup)  shift; backup_setup "$@" ;;
+        now)    backup_now ;;
+        *)
+            error "Unknown backup command: $1"
+            say "Try: intelis backup | intelis backup status | intelis backup test | intelis backup setup"
+            return 2
+            ;;
+    esac
+}
+
+# A lab that asks for a backup means both halves of one: a current dump of the
+# data, and a copy of it somewhere this machine's failure cannot reach. Running
+# only the local half leaves the data on the disk that is about to die; running
+# only the off-machine half copies whatever stale dump was last written, which
+# is why the backup runner warns about the dump's age but cannot fix it. So this
+# does the dump first and then sends it.
+backup_now() {
+    header "Backing up"
+
+    say "Step 1 of 2 — saving a fresh copy of the database and settings on this machine"
+    if ! run_app_composer backup; then
+        error "The local backup did not finish. Nothing has been sent off this machine."
+        return 1
+    fi
+    success "Database and settings saved on this machine"
+    say ""
+
+    if [ ! -x /usr/local/bin/intelis-backup.sh ]; then
+        warning "This machine does not send backups anywhere else yet."
+        say "Everything just saved is on this machine only, so it would be lost with it."
+        say ""
+        if confirm "Set up off-machine backups now?"; then
+            backup_setup
+        else
+            say "You can set this up later with: intelis backup setup"
+        fi
+        return 0
+    fi
+
+    say "Step 2 of 2 — sending it off this machine"
+    as_root /usr/local/bin/intelis-backup.sh
+}
+
+backup_runner_action() {
+    if [ ! -x /usr/local/bin/intelis-backup.sh ]; then
+        warning "Off-machine backups are not set up on this machine."
+        say "Set them up with: intelis backup setup"
+        return 1
+    fi
+    as_root /usr/local/bin/intelis-backup.sh "$@"
+}
+
+backup_setup() {
+    local script
+    script="$(locate_script remote-backup.sh intelis-backup-setup)" || return 1
+    as_root bash "$script" "$@"
+}
+
+cmd_restore() {
+    local script
+    script="$(locate_script restore-backup.sh intelis-restore)" || return 1
+    as_root bash "$script" "$@"
+}
+
+cmd_check() {
+    # preflight reports on paths the web server has to write to, and its answer
+    # is only measured rather than guessed when it runs as that account.
+    local runner
+    if [ "$(id -u)" -eq 0 ] && runner="$(web_user)"; then
+        ( cd "$APP_DIR" && sudo -u "$runner" php bin/preflight.php "$@" )
+    else
+        ( cd "$APP_DIR" && php bin/preflight.php "$@" )
+    fi
+}
+
+cmd_health() {
+    local runner
+    if [ "$(id -u)" -eq 0 ] && runner="$(web_user)"; then
+        ( cd "$APP_DIR" && sudo -u "$runner" php bin/health.php "$@" )
+    else
+        ( cd "$APP_DIR" && php bin/health.php "$@" )
+    fi
+}
+
+run_composer() {
+    ( cd "$APP_DIR" && COMPOSER_ALLOW_SUPERUSER=1 composer "$@" )
+}
+
+# Composer run by root leaves root-owned files in var/cache that the web server
+# can no longer replace, which is how `composer purge-cache` starts failing and
+# takes post-install down with it. The passthrough above is left exactly as it
+# always was, but anything this file invokes on the operator's behalf — who will
+# quite reasonably have typed `sudo intelis backup` — runs as the application's
+# own account when there is one to run as.
+run_app_composer() {
+    local runner
+
+    # Already that account, or no such account on this machine: run it directly.
+    if ! runner="$(web_user)" || [ "$(id -un)" = "$runner" ]; then
+        run_composer "$@"
+        return $?
+    fi
+
+    # A lab typing `intelis backup` as themselves cannot write the backup files,
+    # and a lab typing `sudo intelis backup` writes them as root. Both are wrong
+    # in the same way, so switch to the application's account from either side.
+    # sudo can do that from an ordinary account with sudo rights just as well as
+    # from root, so there is no need to become root first.
+    if [ "$(id -u)" -ne 0 ]; then
+        if ! command -v sudo >/dev/null 2>&1; then
+            run_composer "$@"
+            return $?
+        fi
+        info "This needs administrator rights. You may be asked for your password." >&2
+    fi
+
+    ( cd "$APP_DIR" && sudo -u "$runner" composer "$@" )
+}
+
+confirm() {
+    local answer
+    read -r -p "$1 (y/N): " answer || return 1
+    [[ "$answer" =~ ^[Yy]$ ]]
+}
+
+# --- help and menu ------------------------------------------------------------
+
+cmd_help() {
+    header "InteLIS"
+    say "  intelis                  Show the menu"
+    say ""
+    say "  intelis check            Check this machine can run InteLIS"
+    say "  intelis health           Check disk, database and backups right now"
+    say "  intelis update           Update InteLIS to the current release"
+    say ""
+    say "  intelis backup           Back up now, on this machine and off it"
+    say "  intelis backup status    See whether backups are working"
+    say "  intelis backup test      Test the backup destination, change nothing"
+    say "  intelis backup setup     Choose or change where backups are sent"
+    say "  intelis restore          Bring a backup back from where it was sent"
+    say ""
+    say "  Anything else is passed to composer, e.g. intelis migrate."
+    say "  Use 'intelis composer update' for composer's own update command."
+    say ""
+}
+
+menu() {
+    header "InteLIS"
+    say "  1) Check this machine is working"
+    say "  2) See whether backups are working"
+    say "  3) Back up now"
+    say "  4) Update InteLIS"
+    say "  5) Restore from a backup"
+    say "  6) Change where backups are sent"
+    say "  7) Quit"
+    say ""
+
+    local choice
+    read -r -p "Type a number and press Enter: " choice || return 0
+    say ""
+
+    case "$(printf '%s' "$choice" | tr -d '[:space:]')" in
+        1) cmd_check ;;
+        2) backup_runner_action --status ;;
+        3) backup_now ;;
+        4) cmd_update ;;
+        5) cmd_restore ;;
+        6) backup_setup ;;
+        7|q|Q|"") return 0 ;;
+        *)
+            warning "That was not one of the numbers. Nothing has been done."
+            say "Run 'intelis' again and type a number between 1 and 7."
+            return 2
+            ;;
+    esac
+}
+
+# --- dispatch -----------------------------------------------------------------
+
+if [ $# -eq 0 ]; then
+    # A menu is only useful to somebody who can answer it. Anywhere else — a
+    # cron line, a pipeline, a remote command — printing the help and exiting is
+    # the honest response, rather than blocking forever on a read nobody sees.
+    if [ -t 0 ]; then
+        menu
+    else
+        cmd_help
+    fi
+    exit $?
+fi
+
+command=$1
+shift
+
+case "$command" in
+    update)             cmd_update "$@" ;;
+    backup)             cmd_backup "$@" ;;
+    restore)            cmd_restore "$@" ;;
+    check|preflight)    cmd_check "$@" ;;
+    health)             cmd_health "$@" ;;
+    menu)               menu ;;
+    help|--help|-h)     cmd_help ;;
+    composer)           run_composer "$@" ;;
+    *)                  run_composer "$command" "$@" ;;
+esac
