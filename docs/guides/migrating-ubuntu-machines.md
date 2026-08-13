@@ -11,7 +11,7 @@ below for how it gets the key.
 
 !!! tip "If off-machine backups were set up, there is a shorter route"
 
-    `sudo intelis restore` on the new machine fetches the backup from wherever
+    `intelis restore` on the new machine fetches the backup from wherever
     it was sent, checks the files are readable, and prints the exact install
     command below with the path already filled in. This page is the manual
     version of the same thing, for when the backups are on a drive in your hand.
@@ -37,7 +37,7 @@ The restore uses that token to rebuild the passphrase.
 > first, then copy the new file across:
 >
 > ```bash
-> sudo intelis backup
+> intelis backup
 > ```
 >
 > That takes a fresh dump and also sends it to wherever off-machine backups go,

@@ -465,7 +465,7 @@ if ($webUser === null) {
         check(
             'How to fix',
             PF_WARN,
-            'sudo intelis provision' . "\n"
+            'intelis provision' . "\n"
                 . 'if that cannot start, clear the way for it first:' . "\n"
                 . '  sudo chown -R $(logname):' . $webUser['name'] . ' '
                 . implode(' ', array_map(static fn(string $d): string => $root . '/' . $d, $notWritable)) . "\n"

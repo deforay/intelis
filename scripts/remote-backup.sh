@@ -4,7 +4,7 @@ set -Eeuo pipefail
 # Sets up automatic off-machine backups of an InteLIS installation.
 #
 # To use this script:
-#   sudo intelis backup setup
+#   intelis backup setup
 #
 # On a machine without the intelis command, fetch it directly instead:
 #   cd ~
@@ -69,7 +69,7 @@ trim() {
 
 no_more_input() {
   print error "Ran out of answers — the input ended before the questions did."
-  print info  "Run this directly in a terminal: sudo intelis backup setup"
+  print info  "Run this directly in a terminal: intelis backup setup"
   exit 1
 }
 
@@ -482,7 +482,7 @@ require_cmd rsync
 umask 077
 cat > "$CONF_FILE" <<CONF
 # InteLIS backup configuration. Written by remote-backup.sh.
-# Re-run 'sudo intelis backup setup' to change any of this.
+# Re-run 'intelis backup setup' to change any of this.
 INSTANCE_NAME='${SANITIZED_NAME}'
 LAB_UUID='${LAB_UUID}'
 DEST_FOLDER='${DEST_FOLDER}'
@@ -528,12 +528,12 @@ usage() {
 This is the backup runner. It is normally reached through the intelis command,
 which is the form to use and the form the documentation carries:
 
-  sudo intelis backup            Run a backup now
-  sudo intelis backup status     Show when the last backup ran and whether it worked
-  sudo intelis backup test       Check the connection and report what would be copied
-  sudo intelis backup disable    Stop the scheduled backups
-  sudo intelis backup enable     Start the scheduled backups again
-  sudo intelis backup setup      Choose or change where backups are sent
+  intelis backup            Run a backup now
+  intelis backup status     Show when the last backup ran and whether it worked
+  intelis backup test       Check the connection and report what would be copied
+  intelis backup disable    Stop the scheduled backups
+  intelis backup enable     Start the scheduled backups again
+  intelis backup setup      Choose or change where backups are sent
 
 Running this file directly takes the same actions as options:
 
@@ -575,7 +575,7 @@ case "$ACTION" in
   disable)
     if crontab -l 2>/dev/null | grep -q "$CRON_MARKER"; then
       crontab -l 2>/dev/null | grep -v "$CRON_MARKER" | crontab -
-      echo "Scheduled backups stopped. Run 'sudo intelis backup enable' to start them again."
+      echo "Scheduled backups stopped. Run 'intelis backup enable' to start them again."
     else
       echo "Scheduled backups were already stopped."
     fi
@@ -617,7 +617,7 @@ if [ "$ACTION" = "status" ]; then
       echo "Size on backup  : ${LAST_SIZE}"
       if [ "$age" -gt 86400 ]; then
         echo
-        echo "⚠️  The last good backup is more than a day old. Run 'sudo intelis backup test' to find out why."
+        echo "⚠️  The last good backup is more than a day old. Run 'intelis backup test' to find out why."
       fi
     else
       echo "Last good backup: never"
@@ -962,7 +962,7 @@ case "$DEST_MODE" in
 esac
 print info "Schedule       : every 8 hours and after every restart"
 echo
-print info "Check it is working : sudo intelis backup status"
-print info "Test the connection : sudo intelis backup test"
-print info "Back up right now   : sudo intelis backup"
-print info "Stop the backups    : sudo intelis backup disable"
+print info "Check it is working : intelis backup status"
+print info "Test the connection : intelis backup test"
+print info "Back up right now   : intelis backup"
+print info "Stop the backups    : intelis backup disable"
