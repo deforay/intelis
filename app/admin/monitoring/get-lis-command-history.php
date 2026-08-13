@@ -66,7 +66,7 @@ try {
     $db->where('command_id', $post['detailFor']);
     $row = $db->getOne(
         's_lis_remote_commands',
-        'command_id, lab_id, command, params, status, requested_by, requested_at, picked_at, completed_at, not_before, expires_at, depends_on, result, last_error, nonce'
+        'command_id, lab_id, command, params, status, requested_by, requested_at, picked_at, picked_by_instance, completed_at, not_before, expires_at, depends_on, result, last_error, nonce'
     );
     if (empty($row)) {
         echo '<p class="text-danger">Command not found.</p>';
@@ -109,6 +109,14 @@ try {
         <?php } ?>
         <?php if (!empty($row['picked_at'])) { ?>
             <dt><?= _translate('Picked at'); ?></dt><dd><?= htmlspecialchars((string) $row['picked_at']); ?></dd>
+            <dt><?= _translate('Picked by installation'); ?></dt>
+            <dd>
+                <?php if (!empty($row['picked_by_instance'])) { ?>
+                    <code><?= htmlspecialchars((string) $row['picked_by_instance']); ?></code>
+                <?php } else { ?>
+                    <span class="text-muted"><?= _translate('not recorded — delivered before instances were tracked, or by a courier that does not report one'); ?></span>
+                <?php } ?>
+            </dd>
         <?php } ?>
         <?php if (!empty($row['completed_at'])) { ?>
             <dt><?= _translate('Completed at'); ?></dt><dd><?= htmlspecialchars((string) $row['completed_at']); ?></dd>

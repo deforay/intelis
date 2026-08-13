@@ -70,6 +70,81 @@ try {
         [$now, (int) $labId]
     );
 
+    // 0-i) Record WHICH installation is polling, and notice when that changes.
+    //
+    // The courier has always sent instanceId; nothing ever read it. Everything
+    // else here keys on lab_id, and the sts_token is a single column on
+    // facility_details, so two installations of the same lab authenticate
+    // identically and are indistinguishable to every query below. One will take
+    // a command the other never sees, and the sync-status row will show
+    // whichever reported last.
+    //
+    // This does not resolve that -- it makes it visible. A single change is a
+    // machine rebuilt or restored. A count that keeps climbing is two live
+    // instances taking turns, which is the case worth catching, because nothing
+    // else about it looks wrong.
+    // Same defensive shape check as the capabilities block below: this lands in
+    // JSON the admin UI renders and in a column the command history prints, and
+    // it arrives over the network. Anything that fails it is discarded here
+    // rather than filtered at each use, so nothing downstream can reach a value
+    // that was never checked.
+    $reportedInstance = $data['instanceId'] ?? null;
+    $reportedInstance = is_string($reportedInstance) ? trim($reportedInstance) : '';
+    if ($reportedInstance !== '' && preg_match('/^[A-Za-z0-9._-]{1,64}$/', $reportedInstance) !== 1) {
+        $reportedInstance = '';
+    }
+
+    if ($reportedInstance !== '') {
+        $knownInstance = (string) ($db->rawQueryOne(
+            "SELECT facility_attributes->>'$.instanceId' AS instanceId
+               FROM facility_details WHERE facility_id = ?",
+            [(int) $labId]
+        )['instanceId'] ?? '');
+
+        // MySQL's ->> yields the string "null" for a JSON null, which is not the
+        // same as an absent key and must not be mistaken for a previous id.
+        if ($knownInstance === 'null') {
+            $knownInstance = '';
+        }
+
+        if ($knownInstance !== '' && !hash_equals($knownInstance, $reportedInstance)) {
+            $db->rawQuery(
+                "UPDATE facility_details
+                    SET facility_attributes = JSON_SET(
+                        COALESCE(facility_attributes, '{}'),
+                        '$.instanceId',          ?,
+                        '$.instanceSeenAt',      ?,
+                        '$.previousInstanceId',  ?,
+                        '$.instanceChangedAt',   ?,
+                        -- CAST, because ->> returns the value as a string and
+                        -- string + 1 in MySQL yields a DOUBLE: the counter would
+                        -- be stored as 1.0, 2.0, and printed that way.
+                        '$.instanceChangeCount',
+                            CAST(COALESCE(facility_attributes->>'$.instanceChangeCount', 0) AS UNSIGNED) + 1
+                    )
+                  WHERE facility_id = ?",
+                [$reportedInstance, $now, $knownInstance, $now, (int) $labId]
+            );
+
+            LoggerUtility::log('warning', 'Remote command plane: reporting instance changed for lab', [
+                'labId' => (int) $labId,
+                'previousInstanceId' => $knownInstance,
+                'instanceId' => $reportedInstance,
+            ]);
+        } else {
+            $db->rawQuery(
+                "UPDATE facility_details
+                    SET facility_attributes = JSON_SET(
+                        COALESCE(facility_attributes, '{}'),
+                        '$.instanceId',     ?,
+                        '$.instanceSeenAt', ?
+                    )
+                  WHERE facility_id = ?",
+                [$reportedInstance, $now, (int) $labId]
+            );
+        }
+    }
+
     // 0a) Sweep expired rows for this lab so we never hand out commands that
     //     are past their deadline. Any non-terminal row whose expires_at has
     //     passed moves to 'expired'.
@@ -195,6 +270,11 @@ try {
         $db->update('s_lis_remote_commands', [
             'status' => 'picked',
             'picked_at' => $now,
+            // Which installation actually took it. Null where the courier is
+            // old enough not to send an id, or sends one that fails the shape
+            // check — an honest "unknown" beats attributing the run to the lab
+            // and letting the reader assume it means the machine.
+            'picked_by_instance' => $reportedInstance !== '' ? $reportedInstance : null,
         ]);
     }
 
