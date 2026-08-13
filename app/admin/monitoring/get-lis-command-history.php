@@ -78,11 +78,40 @@ try {
         ? $db->where('user_id', $row['requested_by'])->getValue('user_details', 'user_name')
         : null;
 
+    // The result is a small object — an exit code, a tail of output, sometimes a
+    // staging path. Pretty-printing the JSON showed all of it as one run-on
+    // blob: JSON_PRETTY_PRINT indents the object but does nothing to the \n
+    // escapes inside a string, so several hundred lines of apt output arrived
+    // as a single unbroken paragraph with the actual error somewhere in it.
+    //
+    // So the fields are pulled apart: the exit code is a row of its own, and the
+    // output is rendered as the lines it always was.
+    $resultExitCode = null;
+    $resultOutput = '';
+    $resultExtras = [];
     $resultPretty = '';
+
     if (!empty($row['result'])) {
         $decoded = json_decode((string) $row['result'], true);
         if (is_array($decoded)) {
-            $resultPretty = json_encode($decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $resultExitCode = $decoded['exitCode'] ?? null;
+            $resultOutput = (string) ($decoded['outputTail'] ?? '');
+
+            foreach ($decoded as $k => $v) {
+                if ($k === 'exitCode' || $k === 'outputTail') {
+                    continue;
+                }
+                $resultExtras[$k] = is_scalar($v) ? (string) $v : json_encode($v);
+            }
+
+            // Terminal colour written by a script that expected a terminal.
+            // Left in, it renders as literal "[1;92m" noise around the very
+            // lines an operator is trying to read.
+            $resultOutput = (string) preg_replace('/\e\[[0-9;]*[A-Za-z]/', '', $resultOutput);
+            // Carriage returns from apt's progress redraws leave the text
+            // overwriting itself in a <pre>.
+            $resultOutput = str_replace("\r", "\n", $resultOutput);
+            $resultOutput = (string) preg_replace("/\n{3,}/", "\n\n", $resultOutput);
         } else {
             $resultPretty = (string) $row['result'];
         }
@@ -128,6 +157,32 @@ try {
     <?php if ($paramsPretty !== '') { ?>
         <h5><?= _translate('Params'); ?></h5>
         <pre class="result-tail-box"><?= htmlspecialchars($paramsPretty); ?></pre>
+    <?php } ?>
+    <?php if ($resultExitCode !== null || $resultExtras !== []) { ?>
+        <dl class="dl-horizontal">
+            <?php if ($resultExitCode !== null) { ?>
+                <dt><?= _translate('Exit code'); ?></dt>
+                <dd>
+                    <code><?= htmlspecialchars((string) $resultExitCode); ?></code>
+                    <?php if ((int) $resultExitCode === 0) { ?>
+                        <span class="text-success"><?= _translate('succeeded'); ?></span>
+                    <?php } else { ?>
+                        <span class="text-danger"><?= _translate('the command reported a failure'); ?></span>
+                    <?php } ?>
+                </dd>
+            <?php }
+            foreach ($resultExtras as $k => $v) { ?>
+                <dt><?= htmlspecialchars((string) $k); ?></dt>
+                <dd><code><?= htmlspecialchars($v); ?></code></dd>
+            <?php } ?>
+        </dl>
+    <?php } ?>
+    <?php if ($resultOutput !== '') { ?>
+        <h5>
+            <?= _translate('Output'); ?>
+            <small class="text-muted"><?= _translate('last lines from the machine, newest at the bottom'); ?></small>
+        </h5>
+        <pre class="result-tail-box"><?= htmlspecialchars($resultOutput); ?></pre>
     <?php } ?>
     <?php if ($resultPretty !== '') { ?>
         <h5><?= _translate('Result'); ?></h5>
