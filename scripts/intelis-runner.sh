@@ -199,12 +199,15 @@ dispatch_marker() {
         upgrade)
             # Prepare + auto-apply back-to-back in one invocation.
             # intelis-update default flow is prepare+apply; -s skips Ubuntu
-            # updates; -b skips backup prompts (operator-triggered upgrade).
+            # updates. There is no flag for skipping prompts: upgrade.sh only
+            # prompts when config.production.php is missing or malformed, and
+            # on an instance in that state a remote upgrade should stop rather
+            # than guess at a database password.
             if ! command -v intelis-update >/dev/null 2>&1; then
                 echo "intelis-update is not installed" >>"$output_log"; rc=127
             else
                 # $maint_arg is either empty (silent, the default) or "-M".
-                intelis-update -p "$lp" -s -b $maint_arg >>"$output_log" 2>&1 || rc=$?
+                intelis-update -p "$lp" -s $maint_arg >>"$output_log" 2>&1 || rc=$?
             fi
             ;;
 
@@ -213,7 +216,7 @@ dispatch_marker() {
             if ! command -v intelis-update >/dev/null 2>&1; then
                 echo "intelis-update is not installed" >>"$output_log"; rc=127
             else
-                intelis-update -p "$lp" --prepare-only -s -b >>"$output_log" 2>&1 || rc=$?
+                intelis-update -p "$lp" --prepare-only -s >>"$output_log" 2>&1 || rc=$?
                 if [ "$rc" -eq 0 ]; then
                     # Extract staging dir from our known output format:
                     # "Prepared at /var/intelis-staging/..." on a line by itself.
@@ -270,7 +273,7 @@ dispatch_marker() {
                     echo "intelis-update is not installed" >>"$output_log"; rc=127
                 else
                     # $maint_arg is either empty (silent, the default) or "-M".
-                    intelis-update -p "$lp" --apply-prepared "$staging_dir" -s -b $maint_arg >>"$output_log" 2>&1 || rc=$?
+                    intelis-update -p "$lp" --apply-prepared "$staging_dir" -s $maint_arg >>"$output_log" 2>&1 || rc=$?
                     if [ "$rc" -eq 0 ]; then
                         rm -f "$prepared_dir/$depends_on.json"
                     fi

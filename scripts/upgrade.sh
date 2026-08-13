@@ -34,7 +34,6 @@
 #   sudo intelis-update -p /var/www/intelis      # Specific path
 #   sudo intelis-update -A                       # Update all instances in /var/www
 #   sudo intelis-update -A -i                    # Detect instances, pick which to update
-#   sudo intelis-update -A -s -b                 # Non-interactive, update all instances
 #   sudo intelis-update --prepare-only           # Stage the update now; apply later
 #   sudo intelis-update --apply-prepared /var/intelis-staging/20260422-120000-1234
 
@@ -220,7 +219,18 @@ while getopts ":sAiPp:a:k:M" opt; do
         ROLLBACK_KEEP="$OPTARG"
         ;;
     M) show_maintenance=true ;;
-        # Ignore invalid options silently
+    \?)
+        # Say so rather than continuing with an option the caller believed was
+        # doing something. The runner passed -b for years — documented in this
+        # header as the non-interactive flag, never implemented, silently
+        # dropped on every remote upgrade.
+        echo "Error: unknown option -${OPTARG}" >&2
+        exit 2
+        ;;
+    :)
+        echo "Error: option -${OPTARG} requires a value" >&2
+        exit 2
+        ;;
     esac
 done
 

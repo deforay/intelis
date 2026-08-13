@@ -10,17 +10,30 @@ mv /etc/apache2/sites-enabled/000-default.conf.tmp /etc/apache2/sites-enabled/00
 # Add domain to /etc/hosts
 echo "127.0.0.1 ${DOMAIN}" >>/etc/hosts
 
-# Debian's default-mysql-client is MariaDB's, and since 11.4 it verifies the
-# server certificate by default. mysql:8.4 generates a self-signed one on first
-# start, so every client call below fails with "self-signed certificate in
-# certificate chain" — and the readiness loop, having no way to distinguish that
-# from a server still starting, waits for it forever. The container never gets
-# past "Waiting for main MySQL to be ready".
+# Which TLS flag the client understands, asked rather than assumed.
+#
+# "default-mysql-client" is a different program depending on the distribution:
+# MariaDB's on Debian, Oracle's on Ubuntu. They disagree on the spelling and
+# each rejects the other's — MariaDB wants --skip-ssl, Oracle wants
+# --ssl-mode=DISABLED and dropped --skip-ssl in 8.0.
+#
+# It matters because MariaDB's client verifies the server certificate by
+# default since 11.4, and mysql:8.4 generates a self-signed one on first start.
+# Every call then fails with "self-signed certificate in certificate chain",
+# including the readiness probe — which cannot tell that apart from a server
+# still coming up, so it waits forever and the container never gets past
+# "Waiting for main MySQL to be ready".
 #
 # These connections are container-to-container on a private compose network, so
-# turn TLS off rather than provision a CA to satisfy a check that is protecting
-# nothing here.
-MYSQL_TLS="--skip-ssl"
+# TLS is turned off rather than provisioning a CA for a check protecting nothing.
+if mysqladmin --help 2>/dev/null | grep -q -- '--ssl-mode'; then
+    MYSQL_TLS="--ssl-mode=DISABLED"
+elif mysqladmin --help 2>/dev/null | grep -q -- '--skip-ssl'; then
+    MYSQL_TLS="--skip-ssl"
+else
+    MYSQL_TLS=""
+fi
+echo "MySQL client TLS option: ${MYSQL_TLS:-(none needed)}"
 
 # Main DB config
 main_db_host="intelis-db"
@@ -205,5 +218,10 @@ fi
 # Start the cron service
 service cron start
 
-# Start Apache in the foreground
-exec apache2-foreground
+# Start Apache in the foreground.
+#
+# apache2-foreground is a helper that ships with the official PHP images; on
+# Ubuntu the binary is started directly. Any stale pid file from an ungraceful
+# stop is cleared first, since apache2 refuses to start over one.
+rm -f "${APACHE_PID_FILE:-/var/run/apache2/apache2.pid}"
+exec apache2ctl -D FOREGROUND
