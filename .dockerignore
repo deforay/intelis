@@ -22,6 +22,12 @@ docker/mysql/data/
 *.pid
 *.orig
 *.lock
+# composer.lock has to reach the image. Without it `composer install` has no
+# lock to install from, silently resolves every dependency afresh, and the
+# resulting image is whatever upstream published that morning rather than the
+# set this release was built and tested against. Two images built from the same
+# commit a week apart were not the same image.
+!composer.lock
 .cron_heartbeat
 
 # Node modules
