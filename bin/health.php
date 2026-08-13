@@ -37,6 +37,17 @@ $warnDiskUsagePct = 80;
 $criticalDiskUsagePct = 90;
 $mysqlDegradedMs = 800;
 
+// Off-machine backups. These three paths are written by scripts/remote-backup.sh
+// and its installed runner; they are hard-coded there, so they are restated here
+// rather than discovered. /etc/intelis/backup.conf is deliberately not read: it
+// is mode 600 and holds the SMB credentials, and the status file already carries
+// everything this check needs.
+$backupStatusFile = '/var/lib/intelis/backup-status.json';
+$backupRunner = '/usr/local/bin/intelis-backup.sh';
+// The runner is scheduled every 8 hours, so one missed run is not yet a finding.
+$backupStaleHours = 24;
+$backupCriticalHours = 72;
+
 $stateFile = CACHE_PATH . '/health_state.json';
 // ---------------------------------------------------------
 
@@ -294,6 +305,128 @@ if ($mysqlLatencyStatus === 'ok') {
     $criticalCount++;
 }
 
+// ---- 5) Off-machine backup ----
+// Reports what the backup runner already recorded; it never contacts the backup
+// destination itself. A second, differently-configured connection test could
+// disagree with the runner and there would be no way to tell which one was
+// right — and the runner is the one whose opinion decides whether data is
+// actually leaving this machine.
+//
+// Off-machine backup is opt-in, so an instance without it is reported as
+// unknown rather than failed: it counts towards nothing and raises no alert.
+// What is worth waking someone for is a backup that was set up and has since
+// stopped working, because that is the case that looks fine from the outside.
+$backupStatus = 'unknown';
+$backupDetail = 'Not set up (run scripts/remote-backup.sh)';
+$backupAgeHours = null;
+
+if (is_file($backupStatusFile) && !is_readable($backupStatusFile)) {
+    // get_current_user() would answer for the owner of this file rather than the
+    // account running it, which is the one that cannot read the status file.
+    $runningAs = function_exists('posix_geteuid')
+        ? (posix_getpwuid(posix_geteuid())['name'] ?? 'this user')
+        : (trim((string) @shell_exec('id -nu 2>/dev/null')) ?: 'this user');
+
+    $backupDetail = sprintf('%s is not readable by %s', $backupStatusFile, $runningAs);
+} elseif (is_file($backupStatusFile)) {
+    $backupState = loadState($backupStatusFile);
+    $lastSuccessEpoch = (int) ($backupState['last_success_epoch'] ?? 0);
+    $lastAttempt = (string) ($backupState['status'] ?? 'unknown');
+    $lastError = trim((string) ($backupState['last_error'] ?? ''));
+    $destination = (string) ($backupState['destination'] ?? '');
+    $dbDumpAgeHours = (int) ($backupState['db_dump_age_hours'] ?? -1);
+
+    if ($backupState === []) {
+        // The file is there and readable but did not parse — a run killed
+        // part-way through writing it, or something else owns the path.
+        $backupStatus = 'warn';
+        $backupDetail = sprintf('%s is unreadable or not valid JSON', $backupStatusFile);
+    } elseif ($lastSuccessEpoch <= 0) {
+        $backupStatus = 'critical';
+        $backupDetail = 'Set up, but no backup has ever finished'
+            . ($lastError !== '' ? ' — ' . $lastError : '');
+    } else {
+        $backupAgeHours = (int) floor((time() - $lastSuccessEpoch) / 3600);
+
+        if ($backupAgeHours >= $backupCriticalHours) {
+            $backupStatus = 'critical';
+        } elseif ($backupAgeHours >= $backupStaleHours || $lastAttempt === 'failed') {
+            $backupStatus = 'warn';
+        } else {
+            $backupStatus = 'ok';
+        }
+
+        $backupDetail = sprintf(
+            'Last good backup %dh ago%s',
+            $backupAgeHours,
+            $destination !== '' ? sprintf(' (%s)', $destination) : ''
+        );
+
+        // The runner keeps the last success and the last attempt apart, so a
+        // fresh backup and a failing one are both true at once after the first
+        // failure. Saying only the age would hide the failure that matters.
+        if ($lastAttempt === 'failed') {
+            $backupDetail .= '; last attempt FAILED' . ($lastError !== '' ? ': ' . $lastError : '');
+        }
+
+        // The files are only half a backup — the data is in the dump written by
+        // the scheduled db-tools job. A current copy of a stale dump restores to
+        // whenever that dump was taken.
+        if ($dbDumpAgeHours > $backupStaleHours) {
+            $backupDetail .= sprintf('; newest DB dump %dh old', $dbDumpAgeHours);
+            if ($backupStatus === 'ok') {
+                $backupStatus = 'warn';
+            }
+        }
+    }
+} elseif (is_file($backupRunner)) {
+    // The runner is installed, so someone set this up, but it has never written
+    // a status file — its very first run never completed.
+    $backupStatus = 'critical';
+    $backupDetail = 'Set up, but no backup has ever run';
+}
+
+setStateAndMaybeAlert(
+    $state,
+    'backup_remote',
+    $backupStatus,
+    function ($old, $new) use ($backupDetail, $backupAgeHours): void {
+        if ($new === 'critical' || $new === 'warn') {
+            SystemService::insertSystemAlert(
+                $new === 'critical' ? 'critical' : 'warn',
+                'backup_remote',
+                _translate('Off-machine backup is not current:') . ' ' . $backupDetail,
+                ['age_hours' => $backupAgeHours],
+                'admin'
+            );
+            return;
+        }
+
+        // Recovery only. Arriving at ok from 'unknown' is either the first run
+        // on this instance or an instance that has just had backups set up, and
+        // neither is something recovering. 'unknown' is both this check's
+        // not-set-up state and setStateAndMaybeAlert's no-previous-state
+        // sentinel; the right answer happens to be the same for both.
+        if ($new === 'ok' && $old !== 'unknown') {
+            SystemService::insertSystemAlert(
+                'info',
+                'backup_remote',
+                _translate('Off-machine backup is current again'),
+                ['age_hours' => $backupAgeHours],
+                'admin'
+            );
+        }
+    }
+);
+
+if ($backupStatus === 'ok') {
+    $okCount++;
+} elseif ($backupStatus === 'warn') {
+    $warnCount++;
+} elseif ($backupStatus === 'critical') {
+    $criticalCount++;
+}
+
 // persist state
 saveState($stateFile, $state);
 
@@ -319,6 +452,7 @@ $servicesTable->setRows([
         formatStatus($diskStatus),
         sprintf('%.1f%% used (warn: %d%%, critical: %d%%)', $usedPct, $warnDiskUsagePct, $criticalDiskUsagePct)
     ],
+    ['Off-machine Backup', formatStatus($backupStatus), $backupDetail],
 ]);
 
 $servicesTable->render();
