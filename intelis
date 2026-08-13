@@ -16,7 +16,7 @@
 # an operator has to remember is one word.
 #
 #   intelis                  a numbered menu — no words to remember at all
-#   intelis update           update InteLIS to the current release (see the note below)
+#   intelis update           update InteLIS to the current release
 #   intelis backup           back up now, on this machine and off it
 #   intelis backup status    when the last backup worked, and whether it did
 #   intelis backup test      check the backup destination, change nothing
@@ -34,32 +34,74 @@
 # "update InteLIS" here, so `composer update` is reached as
 # `intelis composer update`.
 #
-# One transitional note, and the reason the help below says `sudo intelis-update`
-# rather than `intelis update`. This file only reaches a machine when that
-# machine takes an upgrade. Until then /usr/local/bin/intelis is still the plain
-# composer wrapper this replaced, and there `intelis update` means
-# `composer update` — which rewrites composer.lock to whatever upstream released
-# that morning and installs the dev toolchain onto a server running a lab. It
-# has already happened to one instance. Every other verb degrades harmlessly on
-# the old wrapper (`check`, `restore` and `health` are not composer commands at
-# all, and `backup`, `migrate` and `token` are our own scripts), so `update` is
-# the only one the documentation avoids for now. Once the fleet has all taken an
-# upgrade, the hyphen can go and this note with it.
+# How a machine gets this file, and why that mattered enough to build a
+# bootstrap for it. Until a machine takes an upgrade, /usr/local/bin/intelis is
+# still the plain composer wrapper this replaced — and there `intelis update`
+# means `composer update`, which rewrites composer.lock to whatever upstream
+# released that morning and installs the dev toolchain onto a server running a
+# lab. It has already happened to one instance. The command could not fix itself
+# either, since the fixed version only arrived with the upgrade you would have
+# used the broken command to get.
+#
+# scripts/bootstrap.sh breaks that circle from outside: one line, run once per
+# machine, that installs this file and the updater straight from master. After
+# it, `intelis update` is correct everywhere, and because it fetches the current
+# upgrade.sh every time it runs, improvements to either reach a lab without
+# anybody being asked to type a different command again.
 
 set -uo pipefail
 
 RAW_BASE="https://raw.githubusercontent.com/deforay/intelis/master/scripts"
 
 # --- where the application lives ----------------------------------------------
-# Unchanged from the original: a directory holding composer.json wins, so a
-# developer sitting in a checkout drives that checkout. Otherwise resolve
-# through the symlink in /usr/local/bin to the installation this command was
-# installed from.
+# A directory holding composer.json wins, so a developer sitting in a checkout
+# drives that checkout. Otherwise resolve through the symlink in /usr/local/bin
+# to the installation this command was installed from.
+#
+# The third case is why the search exists. This file can now arrive on a machine
+# on its own — fetched straight from master to bring an old installation's
+# commands up to date, before any upgrade has run — and then it is a real file
+# in /usr/local/bin rather than a symlink into an installation, so resolving its
+# own path finds /usr/local/bin and no application at all. So when that is the
+# answer, go and look for the installation instead.
+
+looks_like_install() {
+    [ -f "$1/composer.json" ] && [ -d "$1/public" ] && [ -f "$1/configs/config.production.php" ]
+}
+
+find_install() {
+    local candidate
+
+    for candidate in /var/www/intelis /var/www/vlsm; do
+        if looks_like_install "$candidate"; then
+            printf '%s' "$candidate"
+            return 0
+        fi
+    done
+
+    for candidate in /var/www/*/; do
+        candidate="${candidate%/}"
+        if looks_like_install "$candidate"; then
+            printf '%s' "$candidate"
+            return 0
+        fi
+    done
+
+    return 1
+}
 
 if [ -f "composer.json" ]; then
     APP_DIR="$(pwd)"
 else
     APP_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+
+    if [ ! -f "${APP_DIR}/composer.json" ]; then
+        APP_DIR="$(find_install)" || {
+            printf '\033[1;91m❌\033[0m No InteLIS installation found under /var/www.\n' >&2
+            printf '   Run this from inside the installation directory, or install InteLIS first.\n' >&2
+            exit 1
+        }
+    fi
 fi
 
 # --- output -------------------------------------------------------------------
@@ -389,7 +431,7 @@ cmd_help() {
     say ""
     say "  intelis check            Check this machine can run InteLIS"
     say "  intelis health           Check disk, database and backups right now"
-    say "  sudo intelis-update      Update InteLIS to the current release"
+    say "  intelis update           Update InteLIS to the current release"
     say ""
     say "  intelis backup           Back up now, on this machine and off it"
     say "  intelis backup status    See whether backups are working"
