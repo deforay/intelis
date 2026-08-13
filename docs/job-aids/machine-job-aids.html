@@ -225,7 +225,7 @@ Type a number and press Enter:</div>
     <tr><td>Check the machine is working</td><td><span class="path">intelis check</span></td></tr>
     <tr><td>See whether backups are working</td><td><span class="path">intelis backup status</span></td></tr>
     <tr><td>Back up right now</td><td><span class="path">intelis backup</span></td></tr>
-    <tr><td>Update InteLIS</td><td><span class="path">sudo intelis-update</span></td></tr>
+    <tr><td>Update InteLIS</td><td><span class="path">intelis update</span></td></tr>
     <tr><td>Restore from a backup</td><td><span class="path">intelis restore</span></td></tr>
     <tr><td>Change where backups go</td><td><span class="path">intelis backup setup</span></td></tr>
   </table>
@@ -316,16 +316,15 @@ Type a number and press Enter:</div>
     <p>Do this when the programme asks for it.</p>
   </header>
 
-  <div class="cmd big">sudo intelis-update</div>
+  <h3>Once per machine, the first time only</h3>
+  <p>This brings the machine's own commands up to date. Skip it if the machine has
+  already had it done.</p>
+  <div class="cmd">sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/deforay/intelis/master/scripts/bootstrap.sh)"</div>
+
+  <h3>Every time after that</h3>
+  <div class="cmd big">intelis update</div>
 
   <p>That is the whole procedure. Leave the window open until it finishes and says so.</p>
-
-  <div class="warn">
-    <strong>Note the hyphen</strong>
-    <span class="path">intelis-update</span>, not <span class="path">intelis update</span>.
-    On a machine that has not been updated for a while the spaced form runs something
-    else entirely, so use the hyphen until every machine has been updated once.
-  </div>
 
   <h3>What happens while it runs</h3>
   <div class="flow">
@@ -350,12 +349,6 @@ Type a number and press Enter:</div>
     If the window is closed by accident, run the same command again rather than
     anything else. It is safe to re-run.
   </div>
-
-  <h3>Only if "intelis: command not found"</h3>
-  <p>An older machine may not have the short command. Type these two lines once, and it
-  will exist from then on.</p>
-  <div class="cmd">sudo wget -O /usr/local/bin/intelis-update https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh</div>
-  <div class="cmd">sudo chmod +x /usr/local/bin/intelis-update &amp;&amp; sudo intelis-update</div>
 
   <h3>If it fails</h3>
   <p>The update keeps a snapshot and reports what went wrong. Do not try to fix the machine

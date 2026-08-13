@@ -9,32 +9,33 @@ This guide updates an existing InteLIS installation to the current release.
 Open a terminal on the InteLIS machine and run:
 
 ```bash
-sudo intelis-update
+intelis update
 ```
 
 That is the whole procedure. It fetches the current release, takes a snapshot it
 can roll back to, puts the new files in place, applies database migrations, and
 restarts the web server. Leave the window open until it finishes.
 
-!!! warning "`intelis-update`, with a hyphen — not `intelis update`"
+## First time on a given machine
 
-    On a machine that has not taken an upgrade since August 2026, `/usr/local/bin/intelis`
-    is still a plain composer wrapper, so the spaced form runs `composer update`. That
-    rewrites `composer.lock` to whatever upstream released today and installs the
-    development toolchain on a server that runs a lab. Use the hyphenated command until
-    every machine in the fleet has been updated at least once; after that the two are
-    equivalent.
-
-## If `intelis-update` is not recognised
-
-Older installations do not have the command. Run these two lines once, and
-`sudo intelis-update` works from then on:
+Run this once per machine, before the command above. It installs the current
+`intelis` and `intelis-update` straight from master, and nothing else.
 
 ```bash
-sudo wget -O /usr/local/bin/intelis-update https://github.com/deforay/intelis/raw/master/scripts/upgrade.sh
-
-sudo chmod +x /usr/local/bin/intelis-update && sudo intelis-update
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/deforay/intelis/master/scripts/bootstrap.sh)"
 ```
+
+!!! warning "Do this first on any machine last updated before August 2026"
+
+    On those, `/usr/local/bin/intelis` is still a plain composer wrapper, so
+    `intelis update` runs `composer update` — rewriting `composer.lock` to whatever
+    upstream released today and installing the development toolchain onto a server
+    that runs a lab. The line above replaces the wrapper, after which `intelis update`
+    is correct. It is safe to run on a machine that is already current.
+
+    Note it is `bash -c "$(curl …)"`, not `curl … | bash`. Piping makes the script
+    bash's standard input, which is harmless for the bootstrap but ruins the two
+    interactive scripts it installs.
 
 The update prompts for the MySQL password and the STS URL. Enter both correctly.
 Wrong entries can make the update fail.
