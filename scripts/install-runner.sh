@@ -80,6 +80,12 @@ cat > /etc/logrotate.d/intelis-runner <<'EOF'
 EOF
 
 echo "Reloading systemd and enabling timer"
+# The unit tolerates these being absent, but upgrade.sh writes to both and
+# creating them here means the first remote upgrade is not also the first time
+# they are needed.
+mkdir -p /var/intelis-staging /var/intelis-rollback /var/log/intelis-runner
+chmod 755 /var/intelis-staging /var/intelis-rollback /var/log/intelis-runner
+
 systemctl daemon-reload
 systemctl enable --now intelis-runner.timer
 
