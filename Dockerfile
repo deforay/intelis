@@ -28,6 +28,7 @@ RUN apt-get update && \
     locales \
     unzip \
     vim \
+    wget \
     zip && \
     sed -i 's/^# *en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen && locale-gen && \
     apt-get upgrade -y openssl apache2 curl libxml2 && \
