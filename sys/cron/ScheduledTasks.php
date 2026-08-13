@@ -85,6 +85,18 @@ $schedule->run(PHP_BINARY . ' ' . BIN_PATH . '/housekeeping.php 30')
     ->preventOverlapping()
     ->description('Housekeeping: prune old backups, temp files, and stale rows');
 
+// System health — disk, MySQL, writable paths, and off-machine backups.
+// It raises an admin alert only when a check changes state, so an instance that
+// stays healthy writes nothing and one that stays broken alerts once rather than
+// every hour. Off-machine backup staleness in particular has no other way of
+// being noticed: the backup runner records its own failures on the machine, and
+// until now nothing ever read them back.
+$schedule->run(PHP_BINARY . " " . BIN_PATH . "/health.php")
+    ->hourly()
+    ->timezone($timezone)
+    ->preventOverlapping()
+    ->description('System health checks and admin alerts');
+
 // Expiring/Locking Samples
 $schedule->run(PHP_BINARY . " " . BIN_PATH . "/update-sample-status.php")
     ->cron('5 0 * * *')
