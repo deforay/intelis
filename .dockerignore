@@ -16,6 +16,14 @@
 # Docker data (avoid recursive copy)
 docker/mysql/data/
 
+# A developer's own instance config. It is gitignored, so it never reaches the
+# repository — but the Docker build context is not git, and without this the
+# image carries whichever database password and STS URL happened to be on the
+# machine that built it. The entrypoint creates this file from the dist template
+# when it is absent, which is what should happen.
+configs/config.*.php
+!configs/config.production.dist.php
+
 # Logs, runtime state
 *.log
 *error_log
