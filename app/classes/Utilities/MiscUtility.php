@@ -1160,8 +1160,17 @@ final class MiscUtility
         // Remove common invisible Unicode characters
         $string = preg_replace('/[\x{00A0}\x{200B}\x{FEFF}\x{202F}\x{2060}\x{00AD}]/u', '', (string) $string);
 
-        // Remove ASCII control characters (0–31 and 127)
-        $string = preg_replace('/[\x00-\x1F\x7F]/u', '', $string);
+        // Remove ASCII control characters, but not tab, newline or carriage
+        // return. Those three are ordinary text, and stripping them silently
+        // flattened every multi-line value that passed through _sanitizeInput()
+        // — which is every request body the app parses.
+        //
+        // It surfaced on the remote command plane: a LIS reported the tail of an
+        // upgrade, the runner having produced proper lines, and the STS stored
+        // several hundred lines of output as one unbroken paragraph with the
+        // failure somewhere inside it. Nothing was lost in transit; it was
+        // removed on arrival.
+        $string = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $string);
 
         // Trim Unicode whitespace and control characters from both ends
         return preg_replace('/^[\p{Z}\p{C}]+|[\p{Z}\p{C}]+$/u', '', $string);
