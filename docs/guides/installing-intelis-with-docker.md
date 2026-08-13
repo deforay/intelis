@@ -7,35 +7,29 @@ Docker is the quickest way to get InteLIS running. The traditional setup
 hosts, cron jobs, file permissions and MySQL tuning; Docker does all of that in
 one command.
 
-!!! warning "For evaluation and development, not for running a lab"
+!!! note "Docker installs are updated differently"
 
-    Install a production lab on Ubuntu with [setup.sh](installing-intelis-on-ubuntu.md).
-    Three things behave differently in a container, and each is structural rather
-    than a gap waiting to be filled:
+    A container is not updated by `upgrade.sh`. That script manages the operating
+    system around the application — apt packages, PHP versions, systemd units,
+    MySQL tuning — none of which a container owns. Use
+    [`scripts/docker-upgrade.sh`](#updating-intelis) instead, which pulls the new
+    code, refreshes dependencies and restarts the stack so the entrypoint runs
+    migrations.
 
-    **Remote upgrades do not apply.** `upgrade.sh` manages the operating system
-    around the application — apt packages, PHP versions, systemd units, MySQL
-    tuning — and a container has no local MySQL to tune and no systemd to manage.
-    A containerised instance therefore does not advertise the upgrade command to
-    the STS, and the queue dialog greys it out. Upgrade a container by rebuilding
-    its image.
+    One consequence today: **remote upgrades from the STS are not offered to a
+    containerised instance.** The command plane's runner drives `upgrade.sh`, so
+    a container declines to advertise the verb rather than accept a command it
+    cannot honour. Remote updates for Docker installs are a solvable problem —
+    the runner would need to sit on the host and call `docker-upgrade.sh` — and
+    it has not been built yet.
 
-    **Off-machine backup expects a host installation.** `remote-backup.sh`
-    recognises an installation by finding `configs/config.production.php` and
-    `public/` on the machine it runs on. That works here only because the compose
-    file mounts the source into the container, so those paths exist on the host
-    too.
-
-    **The database is not in the installation directory.** MySQL's data lives in
-    the `intelis_db_data` Docker volume, so copying the installation folder does
-    not copy the database. What protects you is the scheduled `db-tools` job
-    writing dumps into `backups/db`, which reaches the host through that same
-    mount.
-
-    All three depend on the bind mount that `docker-compose.yml` ships with.
-    Removing it — for instance by switching to a published image — takes the
-    installation out of view of the backup tooling and makes the configuration
-    reset on every container replacement.
+    Two things to keep in mind about backups. `remote-backup.sh` recognises an
+    installation by finding `configs/config.production.php` and `public/` on the
+    machine it runs on, and MySQL's data lives in the `intelis_db_data` volume
+    rather than the installation folder — so what protects you is the scheduled
+    `db-tools` job writing dumps into `backups/db`. Both work because
+    `docker-compose.yml` mounts the source into the container, putting those
+    paths on the host. Keep that mount.
 
 ## Installation Steps
 
@@ -149,13 +143,23 @@ run them with `docker compose exec intelis intelis <command>`.
 
 On a traditional Ubuntu installation, updating requires running `upgrade.sh` — a ~1200-line script that handles Ubuntu package updates, PHP version switching, OPcache configuration, MySQL performance tuning (buffer pool sizing based on RAM, SSD detection, slow query logs), Composer updates, Apache config validation, database backups, vendor checksum verification, directory structure migrations, cron job setup, run-once scripts, file permissions, and multi-instance coordination.
 
-With Docker, updating is three commands:
+With Docker, updating is one command:
 
 ```bash
 cd intelis
-git pull
-docker compose up -d --build
+sudo ./scripts/docker-upgrade.sh
 ```
+
+It backs up the database first, downloads the current release over the
+installation (leaving `.env`, `configs/`, uploads, `var/` and `backups/` alone),
+refreshes Composer dependencies only when `composer.json` or `composer.lock`
+changed, and restarts the stack so the entrypoint runs migrations and the
+run-once scripts. `-b` skips the backup prompt; `-s` restarts without updating
+the code, which is the way to re-run migrations on their own.
+
+If you are working from a git checkout and want only the code, `git pull &&
+docker compose up -d --build` does that much — but it skips the backup and the
+dependency check.
 
 The container rebuild picks up the new code, and the entrypoint script automatically runs database migrations, repairs, composer updates, and any run-once scripts — the same post-update tasks that `upgrade.sh` handles, without needing to worry about system-level configuration.
 
