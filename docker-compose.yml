@@ -6,7 +6,13 @@ services:
       args:
         UBUNTU_VERSION: ${UBUNTU_VERSION:-24.04}
         PHP_VERSION: ${PHP_VERSION:-8.4}
-      # image: deforay/intelis:latest
+      # Deliberately not "image: deforay/intelis:latest". Using a published
+      # image means dropping the bind mount below, and three things depend on
+      # it: the configuration would reset from the dist template on every
+      # container replacement, backups/db would stay inside the container where
+      # remote-backup.sh cannot reach it, and the installation would be
+      # invisible to the backup tooling entirely. Publishing an image is a
+      # reasonable thing to want — it needs those three answered first.
     ports:
       - "${APACHE_PORT:-80}:80"
     volumes:

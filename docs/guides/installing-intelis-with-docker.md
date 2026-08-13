@@ -2,7 +2,40 @@
 
 **Prerequisites:** [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) must be installed on your system.
 
-Docker is the simplest way to get InteLIS running. The traditional setup (`setup.sh`) requires manually installing and configuring PHP, Apache, MySQL, Composer, virtual hosts, cron jobs, file permissions, and MySQL tuning — Docker handles all of this automatically in a single command.
+Docker is the quickest way to get InteLIS running. The traditional setup
+(`setup.sh`) installs and configures PHP, Apache, MySQL, Composer, virtual
+hosts, cron jobs, file permissions and MySQL tuning; Docker does all of that in
+one command.
+
+!!! warning "For evaluation and development, not for running a lab"
+
+    Install a production lab on Ubuntu with [setup.sh](installing-intelis-on-ubuntu.md).
+    Three things behave differently in a container, and each is structural rather
+    than a gap waiting to be filled:
+
+    **Remote upgrades do not apply.** `upgrade.sh` manages the operating system
+    around the application — apt packages, PHP versions, systemd units, MySQL
+    tuning — and a container has no local MySQL to tune and no systemd to manage.
+    A containerised instance therefore does not advertise the upgrade command to
+    the STS, and the queue dialog greys it out. Upgrade a container by rebuilding
+    its image.
+
+    **Off-machine backup expects a host installation.** `remote-backup.sh`
+    recognises an installation by finding `configs/config.production.php` and
+    `public/` on the machine it runs on. That works here only because the compose
+    file mounts the source into the container, so those paths exist on the host
+    too.
+
+    **The database is not in the installation directory.** MySQL's data lives in
+    the `intelis_db_data` Docker volume, so copying the installation folder does
+    not copy the database. What protects you is the scheduled `db-tools` job
+    writing dumps into `backups/db`, which reaches the host through that same
+    mount.
+
+    All three depend on the bind mount that `docker-compose.yml` ships with.
+    Removing it — for instance by switching to a published image — takes the
+    installation out of view of the backup tooling and makes the configuration
+    reset on every container replacement.
 
 ## Installation Steps
 
