@@ -159,7 +159,13 @@ if [ -f "$CONF_FILE" ]; then
     smb)   print info "Windows share: //${SMB_HOST}/${SMB_SHARE}" ;;
     local) print info "Drive: ${LOCAL_ROOT}" ;;
   esac
-  confirm "Fetch the backup from there?" || SRC_MODE=""
+  # Listing only reads the destination, so there is nothing to agree to. Asking
+  # "Fetch the backup from there?" ahead of a --list describes something that is
+  # not about to happen, and it stops the listing being usable from anywhere
+  # without a person sitting at the keyboard.
+  if [ "$ACTION" != "list" ]; then
+    confirm "Fetch the backup from there?" || SRC_MODE=""
+  fi
 fi
 
 if [ -z "$SRC_MODE" ]; then
