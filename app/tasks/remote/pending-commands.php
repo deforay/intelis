@@ -91,29 +91,42 @@ MiscUtility::makeDirectory($resultsDir);
 $allowUpgrade = strtolower(trim((string) $general->getGlobalConfig('allow_remote_upgrade')));
 $upgradeAllowed = in_array($allowUpgrade, ['1', 'true', 'yes', 'on'], true);
 
-// A containerised instance cannot take a remote upgrade, whatever the switch
-// says. upgrade.sh manages the operating system around the application — apt
-// packages, the PHP version, systemd units, MySQL tuning — and refuses on
-// anything that is not Ubuntu. The official PHP images are Debian, so it stops
-// at "This script requires Ubuntu 20.04 or newer" after having already spent
-// several minutes installing packages into a layer that the next rebuild
-// discards. A container is upgraded by rebuilding its image, not from inside.
+// Whether upgrade.sh can do its job here, asked directly rather than inferred
+// from whether this is a container.
 //
-// Better to not advertise the verb than to accept the command and fail: the STS
-// greys out what a lab does not support, so an operator sees an upgrade is
-// unavailable here instead of queueing one and reading a stack of apt output an
-// hour later.
-$isContainer = is_file('/.dockerenv')
-    || is_file('/run/.containerenv')
-    || (is_readable('/proc/1/cgroup')
-        && preg_match('/docker|containerd|kubepods|lxc/i', (string) @file_get_contents('/proc/1/cgroup')) === 1);
+// upgrade.sh manages the operating system around the application: apt packages,
+// the PHP version, service restarts, and MySQL's configuration and data
+// directory. The part that decides it is the database. When MySQL runs on
+// another machine — as it does in a compose stack, where it is a second
+// container — upgrade.sh reaches a chown against a mysql user that does not
+// exist here, then tries to restart a service that was never local, and fails
+// after several minutes of real work.
+//
+// "Is this a container?" was the first version of this check and it is the
+// wrong question. A container running systemd with MySQL alongside the
+// application is upgradeable, and is exactly how these scripts get tested;
+// meanwhile an Ubuntu host pointed at a remote database is not. What matters is
+// whether the things upgrade.sh manages are on this machine.
+$dbHost = strtolower(trim((string) (SYSTEM_CONFIG['database']['host'] ?? '')));
+$databaseIsLocal = in_array($dbHost, ['localhost', '127.0.0.1', '::1', ''], true)
+    || $dbHost === strtolower((string) gethostname());
 
-if ($isContainer && $upgradeAllowed) {
+// Service management, because upgrade.sh restarts Apache and MySQL through it.
+$hasServiceManager = is_file('/run/systemd/system')
+    || is_dir('/run/systemd/system')
+    || trim((string) @shell_exec('command -v systemctl 2>/dev/null')) !== '';
+
+if ($upgradeAllowed && (!$databaseIsLocal || !$hasServiceManager)) {
     $upgradeAllowed = false;
+    $reason = !$databaseIsLocal
+        ? "the database is on another host ({$dbHost})"
+        : 'this machine has no service manager';
     if ($io) {
-        $io->note('Containerised instance: remote upgrade commands are not advertised. Rebuild the image to upgrade.');
+        $io->note("Remote upgrade commands are not advertised: {$reason}. "
+            . 'Upgrade this installation the way it was installed.');
     }
 }
+
 $disabledFlag = $baseDir . DIRECTORY_SEPARATOR . 'disabled';
 if ($upgradeAllowed) {
     if (is_file($disabledFlag)) {
