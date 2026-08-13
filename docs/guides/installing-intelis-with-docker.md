@@ -21,7 +21,8 @@ Copy the example environment file and edit it:
 cp .env.example .env
 ```
 
-Edit `.env` and set at minimum the MySQL root password:
+`MYSQL_ROOT_PASSWORD` is deliberately empty in the example. Set it before
+starting anything:
 
 ```ini
 DOMAIN=intelis
@@ -31,6 +32,11 @@ MYSQL_ROOT_PASSWORD=your_secure_password
 MYSQL_PORT=3306
 MYSQL_DATABASE=vlsm
 ```
+
+`APACHE_PORT` and `MYSQL_PORT` are **host** ports only — the ports you reach the
+containers on from this machine. Inside the containers Apache always listens on
+80 and MySQL on 3306. Change them when something already holds those ports
+locally, which on a developer machine is common.
 
 ### 3. Start the Containers
 
@@ -49,7 +55,10 @@ The entrypoint script automatically handles everything that `setup.sh` does manu
 - Initializes the main database from `sql/init.sql`
 - Creates and configures the interfacing database (if enabled)
 - Generates `config.production.php` with the correct database credentials
-- Installs Composer dependencies with optimized autoloading
+- Installs Composer dependencies if they are absent. The image installs them
+  during the build, but the compose file mounts your working copy over
+  `/var/www/html` and hides that copy, so on a fresh clone the entrypoint
+  installs them into the mount instead
 - Runs database migrations (`composer post-update`) then generates Audit Trail v2
   triggers (`composer db:repair`, which calls `bin/setup/regenerate-audit-triggers.php
   --apply install` + `bin/reset-seq.php`)
@@ -59,13 +68,29 @@ The entrypoint script automatically handles everything that `setup.sh` does manu
 
 ### 4. Access InteLIS
 
-Once the containers are running, open your browser and navigate to:
+Once the containers are running, open your browser at the `APACHE_PORT` you set:
 
 ```text
-http://localhost/
+http://localhost/          # APACHE_PORT=80
+http://localhost:8080/     # APACHE_PORT=8080
 ```
 
-InteLIS then prompts you to finalize the configuration and create an administrator account.
+InteLIS then prompts you to finalize the configuration and create an
+administrator account.
+
+The first start takes a few minutes: it initialises the database, runs every
+migration, and installs dependencies. Watch it with
+`docker compose logs -f intelis` and wait for Apache's
+`resuming normal operations`.
+
+### 5. Check it came up clean
+
+```bash
+docker compose exec -u www-data intelis php bin/preflight.php
+```
+
+Every line should say PASS. Anything that says FAIL prints the command that
+fixes it.
 
 ## Environment Variables Reference
 
@@ -98,7 +123,11 @@ docker compose up -d --build
 The container rebuild picks up the new code, and the entrypoint script automatically runs database migrations, repairs, composer updates, and any run-once scripts — the same post-update tasks that `upgrade.sh` handles, without needing to worry about system-level configuration.
 
 !!! tip
-    The MySQL and PHP configurations are baked into the Docker images (`docker/mysql/my.cnf` and `docker/php-apache/custom-php.ini`), so you don't need to tune them manually.
+    The PHP configuration is baked into the image (`docker/php-apache/custom-php.ini`)
+    and the MySQL one is mounted from `docker/mysql/my.cnf`, so neither needs tuning
+    by hand. `docker/php-apache/dev-php.ini` is mounted on top for development: it
+    turns OPcache revalidation back on, so an edit on your machine takes effect on
+    the next request instead of waiting for a restart.
 
 ## Common Commands
 
@@ -112,7 +141,8 @@ docker compose logs -f intelis
 # Stop containers
 docker compose down
 
-# Rebuild after code changes
+# Rebuild — only for Dockerfile or dependency changes. Editing PHP needs
+# nothing: the source is mounted and OPcache revalidates on every request.
 docker compose up -d --build
 
 # Access the application container shell
