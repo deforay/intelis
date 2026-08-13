@@ -104,6 +104,75 @@ $stateNameList = $geolocationService->getProvinces("yes");
         box-shadow: 0 0 0 2px rgba(154, 160, 166, 0.3);
     }
 
+    /* Command-plane chips.
+       Muted background with a coloured dot, rather than a saturated fill: two
+       filled labels stacked read as one alarming block, and at fleet scale the
+       column became a wall of red that carried less information than a single
+       dot would. The dot holds the state, the text stays legible, and the chip
+       is sized to its content instead of filling the cell. */
+    .plane-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        justify-content: center;
+        margin-top: 3px;
+    }
+
+    .plane-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        white-space: nowrap;
+        font-size: 11px;
+        line-height: 1;
+        padding: 4px 8px;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        color: #3c4043;
+        background: #f1f3f4;
+    }
+
+    .plane-chip b {
+        font-weight: 600;
+    }
+
+    .plane-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        flex: 0 0 6px;
+    }
+
+    /* Fresh — both loops reporting inside the expected window. */
+    .plane-ok {
+        background: #e6f4ea;
+        border-color: #ceead6;
+        color: #137333;
+    }
+
+    /* Late — a few minutes behind. Normal enough not to alarm, visible enough
+       to notice, and previously indistinguishable from nine weeks dead. */
+    .plane-late {
+        background: #fef7e0;
+        border-color: #feefc3;
+        color: #b06000;
+    }
+
+    /* Stopped — reported once and then stopped. This is the actionable one. */
+    .plane-stale {
+        background: #fce8e6;
+        border-color: #fad2cf;
+        color: #c5221f;
+    }
+
+    /* Never reported. Grey, because nothing has regressed. */
+    .plane-never {
+        background: #f1f3f4;
+        border-color: #e0e3e6;
+        color: #5f6368;
+    }
+
     /* Status summary cards */
     .status-summary {
         margin-bottom: 20px;
