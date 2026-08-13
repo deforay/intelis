@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InteLIS — aide-mémoires machine</title>
+<style>
+  :root {
+    --ink: #14181c;
+    --muted: #5b6670;
+    --rule: #c8d0d6;
+    --tint: #eef3f5;
+    --accent: #00695c;
+    --warn: #8a4b00;
+    --warn-bg: #fdf3e6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 24px;
+    background: #f4f6f7;
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.42;
+  }
+  .toolbar {
+    max-width: 200mm;
+    margin: 0 auto 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .toolbar h1 { font-size: 16pt; margin: 0; }
+  .toolbar p { margin: 0; color: var(--muted); font-size: 10pt; }
+  button {
+    font: inherit;
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+
+  .card {
+    max-width: 200mm;
+    min-height: 250mm;
+    margin: 0 auto 20px;
+    padding: 16mm 15mm;
+    background: #fff;
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  }
+  .card > header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+  }
+  .kicker {
+    font-size: 8.5pt;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .card h2 { font-size: 17pt; margin: 3px 0 0; }
+  .card h2 + p { margin: 5px 0 0; color: var(--muted); }
+
+  h3 {
+    font-size: 10.5pt;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 18px 0 7px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 3px;
+  }
+
+  ol, ul { margin: 0 0 10px; padding-left: 20px; }
+  li { margin-bottom: 5px; }
+  ol.steps { counter-reset: s; list-style: none; padding-left: 0; }
+  ol.steps > li {
+    counter-increment: s;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 9px;
+  }
+  ol.steps > li::before {
+    content: counter(s);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 21px; height: 21px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 9.5pt;
+    text-align: center;
+    line-height: 18px;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin: 0 0 10px; font-size: 10pt; }
+  th, td { text-align: left; vertical-align: top; padding: 5px 8px; border-bottom: 1px solid var(--rule); }
+  th { background: var(--tint); font-size: 9pt; text-transform: uppercase; letter-spacing: .04em; }
+  td:first-child { white-space: nowrap; font-weight: 600; }
+  table.wrapfirst td:first-child { white-space: normal; }
+
+  .path {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9.5pt;
+    background: var(--tint);
+    padding: 1px 5px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .ui { font-weight: 700; }
+
+  /* A command to be typed, on its own line. Deliberately not nowrap: a long one
+     must wrap on the page rather than run off the edge of the paper, because a
+     command that is printed incomplete is worse than one that is printed ugly. */
+  .cmd {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 10pt;
+    background: var(--tint);
+    border-left: 3px solid var(--accent);
+    padding: 7px 10px;
+    margin: 8px 0 12px;
+    word-break: break-all;
+  }
+  .cmd.big { font-size: 12pt; font-weight: 700; }
+  .screen {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9pt;
+    background: #14181c;
+    color: #e6edf0;
+    padding: 9px 11px;
+    margin: 8px 0 12px;
+    white-space: pre-wrap;
+    line-height: 1.35;
+  }
+
+  .warn {
+    border-left: 4px solid var(--warn);
+    background: var(--warn-bg);
+    padding: 9px 12px;
+    margin: 12px 0;
+  }
+  .warn strong { color: var(--warn); display: block; margin-bottom: 2px; font-size: 9.5pt; text-transform: uppercase; letter-spacing: .04em; }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; margin: 10px 0 14px; }
+  .flow .step {
+    flex: 1 1 90px;
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
+    padding: 7px 8px;
+    font-size: 9.5pt;
+    background: #fff;
+  }
+  .flow .step b { display: block; font-size: 8pt; color: var(--accent); letter-spacing: .05em; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+  footer.cardfoot {
+    margin-top: 16px; padding-top: 7px;
+    border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 8.5pt;
+    display: flex; justify-content: space-between; gap: 10px;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; font-size: 10.5pt; }
+    .toolbar { display: none; }
+    .card {
+      margin: 0; border: 0; box-shadow: none;
+      min-height: 0; max-width: none;
+      padding: 12mm 14mm;
+      page-break-after: always;
+      break-after: page;
+    }
+    .card:last-of-type { page-break-after: auto; break-after: auto; }
+    .screen { background: #fff; color: var(--ink); border: 1px solid var(--rule); }
+  }
+  @page { size: A4 portrait; margin: 10mm; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <div>
+    <h1>InteLIS — aide-mémoires machine</h1>
+    <p>Six fiches d'une page pour la personne qui s'occupe de la machine. Les imprimer et les garder près d'elle.</p>
+  </div>
+  <button onclick="window.print()">Imprimer toutes les fiches</button>
+</div>
+
+<!-- FICHE 1 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 1 sur 6</div>
+    <h2>Une seule commande pilote la machine</h2>
+    <p>Tout ce qui figure sur ces fiches commence de la même façon.</p>
+  </header>
+
+  <p>Ouvrir la fenêtre noire du terminal sur la machine InteLIS et saisir :</p>
+
+  <div class="cmd big">intelis</div>
+
+  <p>Une liste numérotée s'affiche. Saisir un numéro, appuyer sur Entrée. Rien à retenir.</p>
+
+  <div class="screen">  1) Vérifier que cette machine fonctionne
+  2) Voir si les sauvegardes fonctionnent
+  3) Sauvegarder maintenant
+  4) Mettre à jour InteLIS
+  5) Restaurer depuis une sauvegarde
+  6) Changer la destination des sauvegardes
+  7) Quitter
+
+Saisir un numéro et appuyer sur Entrée :</div>
+
+  <h3>Ou saisir les mots, si c'est plus rapide</h3>
+  <table class="wrapfirst">
+    <tr><th>Pour faire ceci</th><th>Saisir</th></tr>
+    <tr><td>Vérifier que la machine fonctionne</td><td><span class="path">intelis check</span></td></tr>
+    <tr><td>Voir si les sauvegardes fonctionnent</td><td><span class="path">intelis backup status</span></td></tr>
+    <tr><td>Sauvegarder tout de suite</td><td><span class="path">intelis backup</span></td></tr>
+    <tr><td>Mettre à jour InteLIS</td><td><span class="path">intelis update</span></td></tr>
+    <tr><td>Restaurer depuis une sauvegarde</td><td><span class="path">intelis restore</span></td></tr>
+    <tr><td>Changer la destination des sauvegardes</td><td><span class="path">intelis backup setup</span></td></tr>
+  </table>
+
+  <h3>À quelle fréquence</h3>
+  <table class="wrapfirst">
+    <tr><th>Quand</th><th>Quoi</th></tr>
+    <tr><td>Chaque lundi</td><td>Vérifier que les sauvegardes fonctionnent (menu 2). Dix secondes.</td></tr>
+    <tr><td>Sur demande</td><td>Mettre à jour InteLIS (menu 4).</td></tr>
+    <tr><td>Quand quelque chose cloche</td><td>Vérifier la machine (menu 1) avant d'appeler qui que ce soit.</td></tr>
+    <tr><td>Jamais, normalement</td><td>Sauvegarder à la main. La machine se sauvegarde toutes les 8 heures.</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Ne jamais saisir sudo devant intelis</strong>
+    La commande demande elle-même les droits d'administrateur, uniquement pour les
+    étapes qui en ont besoin, et c'est seulement à ce moment-là qu'elle demande le mot
+    de passe. Ajouter <span class="path">sudo</span> est inutile et, pour certaines
+    commandes, aggrave les choses : cela exécute en tant qu'administrateur un travail
+    qui doit s'exécuter sous le compte qu'utilise InteLIS.
+  </div>
+
+  <h3>Si la saisie de intelis répond « command not found »</h3>
+  <p>La machine est une installation ancienne. Lancer la mise à jour une fois avec la
+  commande longue de la fiche 3 ; la commande courte fonctionne ensuite.</p>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire machine</span><span>Fiche 1 : une seule commande</span></footer>
+</section>
+
+<!-- FICHE 2 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 2 sur 6</div>
+    <h2>Installer InteLIS sur une machine neuve</h2>
+    <p>Une machine avec Ubuntu et rien d'autre.</p>
+  </header>
+
+  <h3>Avant de commencer</h3>
+  <table class="wrapfirst">
+    <tr><td>Ubuntu installé</td><td>Ubuntu 22.04 ou plus récent</td></tr>
+    <tr><td>Internet</td><td>Nécessaire pendant toute l'installation. Le volume téléchargé est important.</td></tr>
+    <tr><td>Mot de passe administrateur</td><td>Celui utilisé pour ouvrir la session sur la machine</td></tr>
+    <tr><td>Temps</td><td>Prévoir une heure. Ne pas lancer dix minutes avant de partir.</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Il s'agit de remettre un ancien laboratoire sur une machine neuve ?</strong>
+    Ne pas utiliser cette fiche. Aller à la fiche 5 et lancer d'abord la restauration.
+    Elle affiche la commande d'installation exacte, avec la sauvegarde déjà rattachée,
+    pour que la machine revienne avec ses données au lieu d'être vide.
+  </div>
+
+  <h3>Saisir ces trois lignes, une à la fois</h3>
+  <div class="cmd">cd ~</div>
+  <div class="cmd">wget -O setup.sh "https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh?v=$(date +%s)"</div>
+  <div class="cmd">sudo bash setup.sh</div>
+
+  <div class="warn">
+    <strong>Toujours télécharger le fichier d'abord</strong>
+    Ne jamais réunir ces lignes en une seule qui enverrait le téléchargement
+    directement dans le shell. L'installateur pose des questions, et dans ce cas il y
+    répondrait avec son propre texte. Il refuse de démarrer ainsi, volontairement.
+  </div>
+
+  <h3>Ce qui sera demandé</h3>
+  <table class="wrapfirst">
+    <tr><th>Question</th><th>Réponse</th></tr>
+    <tr><td>Où installer</td><td>Appuyer sur Entrée pour l'emplacement standard, sauf indication contraire</td></tr>
+    <tr><td>Mot de passe de la base</td><td>En choisir un et le noter en lieu sûr. Il est irrécupérable.</td></tr>
+    <tr><td>Adresse du STS</td><td>L'adresse fournie par le programme. Laisser vide pour un laboratoire autonome.</td></tr>
+    <tr><td>Quels modules</td><td>Les tests réalisés par ce laboratoire</td></tr>
+  </table>
+
+  <h3>Une fois terminé</h3>
+  <ol class="steps">
+    <li>Saisir <span class="path">intelis check</span>. Chaque ligne doit indiquer PASS.</li>
+    <li>Ouvrir un navigateur sur la machine et se connecter.</li>
+    <li>Configurer les sauvegardes immédiatement, avec la fiche 4. Une machine sans sauvegarde est à une panne de disque de tout perdre.</li>
+  </ol>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire machine</span><span>Fiche 2 : installer</span></footer>
+</section>
+
+<!-- FICHE 3 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 3 sur 6</div>
+    <h2>Mettre à jour InteLIS</h2>
+    <p>À faire lorsque le programme le demande.</p>
+  </header>
+
+  <div class="cmd big">intelis update</div>
+
+  <p>C'est toute la procédure. Laisser la fenêtre ouverte jusqu'à ce qu'elle annonce la fin.</p>
+
+  <h3>Ce qui se passe pendant l'exécution</h3>
+  <div class="flow">
+    <div class="step"><b>1</b>Télécharge la nouvelle version</div>
+    <div class="step"><b>2</b>Prend un instantané de secours</div>
+    <div class="step"><b>3</b>Met les nouveaux fichiers en place</div>
+    <div class="step"><b>4</b>Met à jour la base de données</div>
+    <div class="step"><b>5</b>Redémarre le serveur web</div>
+  </div>
+
+  <h3>Avant et après</h3>
+  <table class="wrapfirst">
+    <tr><td>Avant</td><td>Prévenir le laboratoire. Les pages peuvent ne pas s'afficher pendant un court moment.</td></tr>
+    <tr><td>Avant</td><td>Vérifier que les sauvegardes sont à jour : <span class="path">intelis backup status</span></td></tr>
+    <tr><td>Après</td><td>Lancer <span class="path">intelis check</span>. Chaque ligne doit indiquer PASS.</td></tr>
+    <tr><td>Après</td><td>Se connecter et ouvrir une page, pour le constater de ses propres yeux.</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Ne pas fermer la fenêtre, débrancher ni redémarrer</strong>
+    Une mise à jour interrompue laisse du code neuf face à une base ancienne. Si la
+    fenêtre est fermée par accident, relancer la même commande plutôt qu'autre chose.
+    Elle peut être relancée sans risque.
+  </div>
+
+  <h3>Uniquement si « intelis: command not found »</h3>
+  <p>Une machine ancienne peut ne pas avoir la commande courte. Saisir ces deux lignes
+  une fois ; elle existera ensuite.</p>
+  <div class="cmd">sudo wget -O /usr/local/bin/intelis-update https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh</div>
+  <div class="cmd">sudo chmod +x /usr/local/bin/intelis-update &amp;&amp; sudo intelis-update</div>
+
+  <h3>En cas d'échec</h3>
+  <p>La mise à jour conserve un instantané et indique ce qui n'a pas fonctionné. Ne pas
+  tenter de réparer la machine à la main. Lancer <span class="path">intelis check</span>
+  et envoyer la totalité du résultat au support.</p>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire machine</span><span>Fiche 3 : mettre à jour</span></footer>
+</section>
+
+<!-- FICHE 4 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 4 sur 6</div>
+    <h2>Les sauvegardes</h2>
+    <p>À configurer une fois. À vérifier chaque semaine.</p>
+  </header>
+
+  <h3>La configuration, une fois par machine</h3>
+  <div class="cmd">intelis backup setup</div>
+  <p>La commande demande où doivent aller les sauvegardes, et teste la connexion avant
+  d'enregistrer quoi que ce soit :</p>
+  <table class="wrapfirst">
+    <tr><td>1 &mdash; Une autre machine Linux</td><td>Par le réseau. Il faut son adresse, un nom d'utilisateur et son mot de passe une fois.</td></tr>
+    <tr><td>2 &mdash; Un dossier partagé Windows</td><td>Partager d'abord un dossier sur le PC Windows, et donner à l'utilisateur la permission Modifier.</td></tr>
+    <tr><td>3 &mdash; Un disque USB ou externe</td><td>Le brancher d'abord. Le plus simple, mais quelqu'un doit garder le disque en lieu sûr.</td></tr>
+  </table>
+  <p>La première sauvegarde est ensuite lancée sous vos yeux. Si elle échoue, elle le dit
+  au lieu de faire croire que tout s'est bien passé.</p>
+
+  <h3>Ensuite, elle se lance toute seule</h3>
+  <p>Toutes les 8 heures, et après chaque redémarrage. Personne n'a à y penser.</p>
+
+  <h3>Les dix secondes hebdomadaires</h3>
+  <div class="cmd">intelis backup status</div>
+  <div class="screen">Lab            : kigali-central (kigali-central-a1b2c3d4)
+Backing up to  : labstore@192.168.1.20:/home/labstore/backups/...
+Last good backup: 2026-08-13T04:00:11Z (6 hours ago)
+Size on backup  : 4.2G
+Last attempt    : succeeded in 143s
+Schedule        : every 8 hours and after every restart</div>
+
+  <table class="wrapfirst">
+    <tr><th>Ce qui est affiché</th><th>Que faire</th></tr>
+    <tr><td>Last good backup : il y a quelques heures</td><td>Rien. C'est exactement ce qu'il faut voir.</td></tr>
+    <tr><td>Last good backup : never</td><td>Elle n'a jamais fonctionné. Lancer <span class="path">intelis backup test</span>.</td></tr>
+    <tr><td>Plus d'un jour</td><td>Lancer <span class="path">intelis backup test</span> pour en connaître la raison.</td></tr>
+    <tr><td>Last attempt : FAILED</td><td>Lire la raison à la ligne suivante. En général, l'autre machine est éteinte.</td></tr>
+    <tr><td>Schedule : OFF</td><td>Les sauvegardes ne sont pas programmées. Appeler le support.</td></tr>
+  </table>
+
+  <h3>Les deux autres commandes</h3>
+  <table class="wrapfirst">
+    <tr><td><span class="path">intelis backup test</span></td><td>Vérifie la connexion et indique ce qui serait copié. Ne modifie rien. Sans risque à tout moment.</td></tr>
+    <tr><td><span class="path">intelis backup</span></td><td>Sauvegarde tout de suite, sur cette machine et en dehors. À utiliser avant une mise à jour ou un déménagement.</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>Une sauvegarde jamais restaurée n'est pas une sauvegarde</strong>
+    C'est un espoir. Une fois par an, en restaurer une sur une machine de réserve et
+    vérifier que les données sont bien là. La fiche 5 explique comment.
+  </div>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire machine</span><span>Fiche 4 : les sauvegardes</span></footer>
+</section>
+
+<!-- FICHE 5 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 5 sur 6</div>
+    <h2>Restaurer depuis une sauvegarde</h2>
+    <p>Pour une machine en panne, ou des données perdues.</p>
+  </header>
+
+  <div class="warn">
+    <strong>S'arrêter et réfléchir d'abord</strong>
+    Restaurer remplace les données actuelles par des données plus anciennes. Tout ce qui
+    a été saisi depuis cette sauvegarde est perdu. Si la machine fonctionne encore,
+    appeler le support avant de restaurer.
+  </div>
+
+  <h3>Voir quelles sauvegardes existent</h3>
+  <div class="cmd">intelis restore --list</div>
+
+  <h3>En restaurer une</h3>
+  <div class="cmd big">intelis restore</div>
+  <p>La commande se connecte là où les sauvegardes ont été envoyées, affiche chaque
+  laboratoire qui s'y trouve, recopie celui qui est choisi, et vérifie que les fichiers
+  sont lisibles avant d'en faire quoi que ce soit.</p>
+
+  <h3>La suite dépend de l'état de la machine</h3>
+  <table class="wrapfirst">
+    <tr><th>Situation</th><th>Ce qui se passe</th></tr>
+    <tr><td>InteLIS est installé et fonctionne</td><td>La restauration de la base est proposée sur place. Une copie de sécurité des données actuelles est prise d'abord, ce qui permet de revenir en arrière.</td></tr>
+    <tr><td>La machine est vierge ou vient d'être réinstallée</td><td>Une seule commande est affichée : elle installe InteLIS <em>et</em> charge la sauvegarde dans la même étape. Copier cette ligne et la lancer.</td></tr>
+  </table>
+
+  <h3>Remonter une machine complètement perdue</h3>
+  <ol class="steps">
+    <li>Installer Ubuntu sur la nouvelle machine.</li>
+    <li>La raccorder au même réseau que la destination des sauvegardes, ou brancher le disque de sauvegarde.</li>
+    <li>Lancer <span class="path">intelis restore</span> et choisir le laboratoire.</li>
+    <li>Copier la commande affichée et la lancer. Prévoir une heure.</li>
+    <li>Lancer <span class="path">intelis check</span>, puis se connecter et vérifier que les données sont là.</li>
+    <li>Reconfigurer les sauvegardes avec la fiche 4. La nouvelle machine ne sauvegarde encore rien.</li>
+  </ol>
+
+  <div class="warn">
+    <strong>Si les sauvegardes sont chiffrées</strong>
+    La commande affichée suffit lorsque la nouvelle machine utilise le même mot de passe
+    de base de données que l'ancienne. Sinon, l'administrateur du STS doit d'abord
+    émettre un jeton de récupération. Le demander avant de commencer, pas à mi-parcours.
+  </div>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire machine</span><span>Fiche 5 : restaurer</span></footer>
+</section>
+
+<!-- FICHE 6 -->
+<section class="card">
+  <header>
+    <div class="kicker">Aide-mémoire 6 sur 6</div>
+    <h2>Quand quelque chose ne va pas</h2>
+    <p>À faire avant d'appeler qui que ce soit. Cela répond souvent à la question.</p>
+  </header>
+
+  <div class="cmd big">intelis check</div>
+
+  <p>La commande examine la machine et affiche une ligne par élément vérifié. Elle
+  fonctionne même quand InteLIS refuse de démarrer, c'est-à-dire précisément quand on
+  en a besoin.</p>
+
+  <div class="screen">  PASS  PHP version                8.4.5
+  PASS  Database host              localhost
+  WARN  Apache post_max_size       8M — large imports will be truncated
+  FAIL  Schema version             database is at 5.6.3, migrations go to 5.6.5
+                                     run: intelis migrate</div>
+
+  <h3>Comment la lire</h3>
+  <table class="wrapfirst">
+    <tr><td>PASS</td><td>Correct. Ne rien faire.</td></tr>
+    <tr><td>WARN</td><td>Fonctionne, mais quelque chose posera problème plus tard. À signaler.</td></tr>
+    <tr><td>FAIL</td><td>Cassé. C'est la ligne qui compte.</td></tr>
+    <tr><td>La ligne en retrait</td><td>La commande exacte qui corrige le problème. La saisir telle quelle.</td></tr>
+  </table>
+
+  <h3>L'autre vérification</h3>
+  <div class="cmd">intelis health</div>
+  <p>L'espace disque, la vitesse de la base de données, et si les sauvegardes sont à
+  jour. À utiliser quand la machine fonctionne mais paraît lente ou pleine.</p>
+
+  <h3>Les cas les plus courants</h3>
+  <table class="wrapfirst">
+    <tr><th>Symptôme</th><th>Cause probable</th></tr>
+    <tr><td>Pages blanches ou qui ne chargent pas</td><td>Lancer <span class="path">intelis check</span>. En général une mise à jour interrompue ou une base arrêtée.</td></tr>
+    <tr><td>Disque utilisé à plus de 90 %</td><td>Le disque se remplit. Appeler le support avant d'arriver à 100 %, pas après.</td></tr>
+    <tr><td>Tout est lent</td><td>Lancer <span class="path">intelis health</span> et signaler la latence de la base de données.</td></tr>
+    <tr><td>Les résultats n'arrivent pas au programme</td><td>Vérifier les lignes STS URL et STS token dans <span class="path">intelis check</span>.</td></tr>
+  </table>
+
+  <div class="warn">
+    <strong>En appelant le support, envoyer le résultat</strong>
+    Lancer <span class="path">intelis check</span>, sélectionner tout le texte de la
+    fenêtre, le copier et l'envoyer. Cela répond à la plupart des questions que le
+    support devrait sinon poser, et transforme deux jours d'échanges en un seul message.
+  </div>
+
+  <h3>Ce qu'il ne faut pas faire</h3>
+  <ul>
+    <li>Ne pas réinstaller pour corriger un problème. Restaurer après une réinstallation inutile fait perdre tout ce qui a été saisi depuis la dernière sauvegarde.</li>
+    <li>Ne pas supprimer de fichiers pour libérer de l'espace disque. Demander d'abord.</li>
+    <li>Ne pas exécuter de commandes trouvées sur internet. Exécuter celle qu'InteLIS a affichée.</li>
+  </ul>
+
+  <footer class="cardfoot"><span>InteLIS — aide-mémoire machine</span><span>Fiche 6 : quand quelque chose ne va pas</span></footer>
+</section>
+
+</body>
+</html>
