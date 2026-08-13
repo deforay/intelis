@@ -462,6 +462,11 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 </div>
                 <div class="modal-body">
                     <p class="text-muted" id="queueCommandLabName" style="margin-bottom: 15px;"></p>
+                    <!-- Shown only when more than one installation has reported for
+                         this lab. Placed above the command picker deliberately: it
+                         changes what queueing means, so it has to be read before the
+                         choice rather than after it. -->
+                    <div class="alert" id="queueInstanceWarning" style="display:none; margin-bottom: 15px;"></div>
                     <div class="form-group">
                         <label for="queueCommandType"><?= _translate('Command'); ?></label>
                         <select class="form-control" id="queueCommandType">
@@ -604,6 +609,22 @@ $stateNameList = $geolocationService->getProvinces("yes");
                 const labName = $(this).data('labName') || '';
                 const prepared = $(this).data('prepared') || [];
                 const supports = $(this).data('supports') || [];
+                const instanceState = $(this).data('instance-state') || 'single';
+                const instanceWarning = $(this).data('instance-warning') || '';
+
+                // Say it here, where the command is actually committed. The row
+                // badge is easy to miss, and this is the moment the choice is
+                // made: with two installations answering for one lab, the plane
+                // cannot say which will take it.
+                if (instanceState === 'contested' || instanceState === 'changed') {
+                    $('#queueInstanceWarning')
+                        .removeClass('alert-warning alert-danger')
+                        .addClass(instanceState === 'contested' ? 'alert-danger' : 'alert-warning')
+                        .text(instanceWarning)
+                        .show();
+                } else {
+                    $('#queueInstanceWarning').hide().text('');
+                }
                 $('#queueCommandModal').data('labId', labId);
                 $('#queueCommandModal').data('prepared', prepared);
                 $('#queueCommandLabName').text(labName ? ('<?= _translate('Lab'); ?>: ' + labName) : '');

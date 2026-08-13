@@ -1,0 +1,49 @@
+-- Migration file for version 5.6.6
+--
+-- Records which LIS instance a remote command was handed to.
+--
+-- The command plane identifies a lab and nothing finer. Every query keys on
+-- lab_id: delivery, status updates, heartbeats, capabilities. The courier has
+-- always sent an instanceId in its poll payload and the STS has always ignored
+-- it -- read nowhere, stored nowhere, displayed nowhere.
+--
+-- That is invisible while a lab runs one installation, which is the normal case.
+-- It stops being invisible the moment a lab runs two, and there are ordinary
+-- ways to get there: a machine rebuilt while the old one is still powered on, a
+-- staging copy restored from a lab's backup, a test instance pointed at the
+-- production STS to try something out. The sts_token lives in one column on
+-- facility_details, so both installations authenticate identically and the STS
+-- cannot tell them apart.
+--
+-- What follows from that is worse than the ambiguity itself. A queued command
+-- goes to whichever instance polls first; the other never learns it existed.
+-- The sync-status row shows whichever reported last, so an operator reads one
+-- machine's version and heartbeats believing they belong to the other. Nothing
+-- in the UI hints that two are answering.
+--
+-- This does not fix the ambiguity -- that needs per-instance credentials, which
+-- is a larger change. It makes the ambiguity observable, which has to come
+-- first: nobody can weigh a fix for a situation they cannot yet see happening.
+--
+-- picked_by_instance is set when a command is handed over, so the history
+-- answers "which machine actually ran this" rather than only "which lab".
+-- Nullable, and every existing row stays NULL: commands delivered before this
+-- migration were delivered to an unknown instance, and recording that honestly
+-- beats guessing.
+--
+-- The reporting instance itself is tracked in facility_details.facility_attributes
+-- alongside the heartbeats and capabilities already kept there, so it needs no
+-- column of its own:
+--   instanceId          the instance that polled most recently
+--   instanceSeenAt      when it last polled
+--   previousInstanceId  the one before it, when the id changes
+--   instanceChangedAt   when that change was seen
+--   instanceChangeCount how many times it has changed -- one change is a
+--                       machine rebuild, a rising count is two live instances
+--                       taking turns
+
+ALTER TABLE `s_lis_remote_commands`
+  ADD COLUMN `picked_by_instance` VARCHAR(64) NULL DEFAULT NULL AFTER `picked_at`;
+
+
+UPDATE `system_config` SET `value` = '5.6.6' WHERE `system_config`.`name` = 'sc_version';
