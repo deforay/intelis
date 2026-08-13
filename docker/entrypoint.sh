@@ -4,7 +4,7 @@
 source /var/www/html/scripts/shared-functions.sh
 
 # Replace placeholders with actual environment variables
-envsubst '${APACHE_PORT} ${DOMAIN}' </etc/apache2/sites-enabled/000-default.conf >/etc/apache2/sites-enabled/000-default.conf.tmp
+envsubst '${DOMAIN}' </etc/apache2/sites-enabled/000-default.conf >/etc/apache2/sites-enabled/000-default.conf.tmp
 mv /etc/apache2/sites-enabled/000-default.conf.tmp /etc/apache2/sites-enabled/000-default.conf
 
 # Add domain to /etc/hosts
@@ -107,6 +107,13 @@ sed -i "s|\$systemConfig\['interfacing'\]\['database'\]\['password'\]\s*=.*|\$sy
 sed -i "s|\$systemConfig\['interfacing'\]\['database'\]\['db'\]\s*=.*|\$systemConfig['interfacing']['database']['db'] = '$iface_db_name';|" "$config_file"
 sed -i "s|\$systemConfig\['interfacing'\]\['database'\]\['port'\]\s*=.*|\$systemConfig['interfacing']['database']['port'] = $iface_db_port;|" "$config_file"
 
+# The app writes its logs as www-data. Anything root created here first — a log
+# file from an earlier start, or a freshly bind-mounted directory — it cannot
+# then chmod, and every log call fails with "Operation not permitted" and falls
+# back to stderr. Cheap to make sure before anything runs.
+mkdir -p /var/www/html/var/logs /var/www/html/var/cache /var/www/html/var/temporary
+chown -R www-data:www-data /var/www/html/var 2>/dev/null || true
+
 # Navigate to the application directory
 cd /var/www/html/
 
@@ -114,6 +121,19 @@ cd /var/www/html/
 rm -f var/cache/CompiledContainer.php 2>/dev/null || true
 rm -f startup.php && touch startup.php 2>/dev/null || true
 rm -f public/test.php 2>/dev/null || true
+
+# The image installs vendor/ during the build, but docker-compose bind-mounts the
+# source over /var/www/html and hides it. On a fresh clone — where the host has
+# no vendor/ at all — the container therefore has none either, and every command
+# below dies on a missing autoloader. Install it once, into the mount.
+if [ ! -f vendor/autoload.php ]; then
+    echo "vendor/ is missing (bind mount over the image's copy). Installing..."
+    # sudo is not in this image, so composer runs as root and vendor/ is handed
+    # to www-data afterwards — root-owned files there would be unwritable by the
+    # account that has to replace them on the next install.
+    COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --prefer-dist --no-interaction --no-progress
+    chown -R www-data:www-data vendor 2>/dev/null || true
+fi
 
 # Run composer post-update (superset of post-install: purge-cache + migrate + fixes)
 composer post-update
