@@ -1,16 +1,19 @@
 # Aide-mémoires imprimables
 
-Sept fiches d'une page pour le circuit de la charge virale. Chaque fiche
-s'imprime sur une page A4. Les imprimer et afficher chacune au poste de travail
-concerné.
+Des fiches d'une page, chacune imprimée sur une page A4. Deux séries : une pour
+les personnes qui utilisent InteLIS, une pour celle qui s'occupe de la machine
+sur laquelle il tourne.
 
-[Ouvrir les aide-mémoires imprimables](viral-load-job-aids.html){ .md-button .md-button--primary }
-
-Ouvrir la page et sélectionner **Imprimer toutes les fiches**, ou imprimer une
+Ouvrir une série et sélectionner **Imprimer toutes les fiches**, ou imprimer une
 seule fiche depuis la boîte de dialogue d'impression du navigateur en indiquant
 son numéro de page.
 
-## Contenu de chaque fiche
+## Pour le laboratoire
+
+Sept fiches sur le circuit de la charge virale. Afficher chacune au poste de
+travail concerné.
+
+[Ouvrir les aide-mémoires charge virale](viral-load-job-aids.html){ .md-button .md-button--primary }
 
 | Fiche | Contenu | À afficher |
 |---|---|---|
@@ -22,6 +25,23 @@ son numéro de page.
 | 6. Échec, rejet, perte ou annulation ? | Choisir la bonne action, retest, récupération | Au poste du superviseur |
 | 7. Les statuts en un coup d'œil | Chaque statut et son effet sur les rapports | Partout dans le laboratoire |
 
+## Pour la machine
+
+Six fiches sur l'installation, la mise à jour, les sauvegardes et la
+restauration. Les garder près de la machine, et non dans un tiroir d'une autre
+pièce : la fiche 5 sert un jour où la machine ne peut pas l'afficher.
+
+[Ouvrir les aide-mémoires machine](machine-job-aids.html){ .md-button .md-button--primary }
+
+| Fiche | Contenu | Qui en a besoin |
+|---|---|---|
+| 1. Une seule commande pilote la machine | Le menu `intelis`, et à quelle fréquence faire quoi | La personne qui s'occupe de la machine |
+| 2. Installer InteLIS sur une machine neuve | Les trois lignes à saisir, et ce que demande l'installation | La personne qui installe |
+| 3. Mettre à jour InteLIS | `intelis update`, quoi vérifier avant et après | La personne qui s'occupe de la machine |
+| 4. Les sauvegardes | Choisir une destination, et la vérification hebdomadaire de dix secondes | La personne qui s'occupe de la machine |
+| 5. Restaurer depuis une sauvegarde | Restaurer sur place, et remonter une machine perdue | À imprimer et garder près de la machine |
+| 6. Quand quelque chose ne va pas | Lire `intelis check`, et quoi envoyer au support | N'importe qui, avant d'appeler le support |
+
 ## Lien entre les fiches et les guides
 
 Les fiches ne portent que les étapes. Les guides portent le détail, les
@@ -29,10 +49,14 @@ exceptions et la conduite à tenir en cas de problème.
 
 | Fiche | Guide complet |
 |---|---|
-| 1 | [Le parcours d'un échantillon dans InteLIS](../user-guides/index.md) |
-| 2 | [Enregistrer une demande de test de charge virale](../user-guides/register-a-request.md) |
-| 3 | [Créer un batch pour le test](../user-guides/batch-samples.md) |
-| 4 | [Saisir les résultats de charge virale](../user-guides/capture-results.md) |
-| 5 | [Vérifier et approuver les résultats](../user-guides/approve-results.md) et [Diffuser les résultats](../user-guides/release-results.md) |
-| 6 | [Gérer les échecs et les échantillons en attente](../user-guides/failed-and-held-samples.md) |
-| 7 | [Statuts des échantillons](../user-guides/sample-statuses.md) |
+| Labo 1 | [Le parcours d'un échantillon dans InteLIS](../user-guides/index.md) |
+| Labo 2 | [Enregistrer une demande de test de charge virale](../user-guides/register-a-request.md) |
+| Labo 3 | [Créer un batch pour le test](../user-guides/batch-samples.md) |
+| Labo 4 | [Saisir les résultats de charge virale](../user-guides/capture-results.md) |
+| Labo 5 | [Vérifier et approuver les résultats](../user-guides/approve-results.md) et [Diffuser les résultats](../user-guides/release-results.md) |
+| Labo 6 | [Gérer les échecs et les échantillons en attente](../user-guides/failed-and-held-samples.md) |
+| Labo 7 | [Statuts des échantillons](../user-guides/sample-statuses.md) |
+| Machine 2 | [Installer InteLIS sur Ubuntu](../guides/installing-intelis-on-ubuntu.md) |
+| Machine 3 | [Mettre à jour InteLIS sur Ubuntu](../guides/updating-intelis-on-ubuntu.md) |
+| Machine 4 | [Sauvegarder vers une autre machine Linux](../guides/backing-up-to-remote-server.md) et [vers une machine Windows](../guides/backing-up-to-windows-machine.md) |
+| Machine 5 | [Restaurer depuis une sauvegarde](../guides/restoring-from-backup.md) et [Migrer entre machines Ubuntu](../guides/migrating-ubuntu-machines.md) |
